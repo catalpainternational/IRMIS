@@ -1,0 +1,68 @@
+{% load static i18n %}
+
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>
+            {% block title %}
+                {% if site_name %}{{ site_name }}{% endif %}
+            {% endblock %}
+            {% block title_suffix %}
+            {% endblock %}
+        </title>
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        {# Global stylesheets #}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/irmis.css' %}">
+
+        {% block extra_css %}
+            {# Override this in templates to add extra stylesheets #}
+        {% endblock %}
+    </head>
+
+    <body class="{% block body_class %}{% endblock %}">
+
+        <!--- language change -->
+        {% block language_change %}
+        <form action="{% url 'set_language' %}" method="post">{% csrf_token %}
+            <input name="next" type="hidden" value="{{ redirect_to }}">
+            <select name="language">
+                {% get_current_language as LANGUAGE_CODE %}
+                {% get_available_languages as LANGUAGES %}
+                {% get_language_info_list for LANGUAGES as languages %}
+                {% for language in languages %}
+                    <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+                        {{ language.name_local }} ({{ language.code }})
+                    </option>
+                {% endfor %}
+            </select>
+            <input type="submit" value="Go">
+        </form>
+        <!-- end language change -->
+        {% endblock %}
+
+        <!--- login -->
+        {% block login %}
+            {% if user.is_authenticated %}
+            {% block change_password %}
+                <a href="{% url 'password_change' %}">{% trans 'Change password' %}</a>
+            {% endblock %}
+            <a href="{% url 'logout' %}">{% trans 'Log out' %}</a>
+            {% else %}
+            <a href="{% url 'login' %}">{% trans 'Log in' %}</a>
+            {% endif %}
+        {% endblock %}
+        <!-- end login -->
+
+        {% block base_content %}{% endblock %}
+
+        {# Global javascript #}
+        <script type="text/javascript" src="{% static 'js/irmis.js' %}"></script>
+
+        {% block extra_js %}
+            {# Override this in templates to add extra javascript #}
+        {% endblock %}
+    </body>
+</html>
