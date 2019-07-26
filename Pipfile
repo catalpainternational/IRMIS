@@ -10,6 +10,7 @@ django = "*"
 wagtail = "*"
 wagtail-modeltranslation = "*"
 sentry-sdk = "*"
+django-rosetta = "*"
 
 [requires]
 python_version = "3.7"

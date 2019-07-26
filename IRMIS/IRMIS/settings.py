@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # ROSETTA
+    'rosetta',
+
     # GEODJANGO
     'django.contrib.gis',
 

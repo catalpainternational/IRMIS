@@ -13,7 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
+from django.contrib.gis import admin
 from django.contrib.auth import urls as django_auth_urls
 from django.conf import settings
 from django.conf.urls import i18n as i18n_urls
@@ -36,5 +36,14 @@ urlpatterns = [
     re_path(r'^documents/', include(wagtaildocs_urls)),
     re_path(r'^accounts/', include(django_auth_urls)),
     re_path(r'^i18n/', include(i18n_urls)),
-    re_path(r'', include(wagtail_urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if 'rosetta' in settings.INSTALLED_APPS:
+    urlpatterns += [
+        re_path(r'^rosetta/', include('rosetta.urls'))
+    ]
+
+# catchall must come last
+urlpatterns += [
+    re_path(r'', include(wagtail_urls)),
+]
