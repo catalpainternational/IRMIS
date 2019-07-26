@@ -1,4 +1,4 @@
-{% load static i18n %}
+{% load static i18n google_analytics %}
 
 <!DOCTYPE html>
 <html class="no-js" lang="en">
@@ -64,5 +64,7 @@
         {% block extra_js %}
             {# Override this in templates to add extra javascript #}
         {% endblock %}
+
+        {% google_analyics_global_site_tag %}
     </body>
 </html>

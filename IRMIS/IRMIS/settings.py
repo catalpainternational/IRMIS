@@ -72,6 +72,9 @@ INSTALLED_APPS = [
     # IRMIS
     'IRMIS_wagtail',
     'assets',
+
+    # CATALPA UTILS
+    'catalpa_django_apps.google_analytics',
 ]
 
 MIDDLEWARE = [
