@@ -5,6 +5,4 @@ from modeltranslation.decorators import register
 
 @register(HomePage)
 class HomePageTR(TranslationOptions):
-    fields = (
-       'body',
-    )
+    fields = ("body",)

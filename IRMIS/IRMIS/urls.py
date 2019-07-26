@@ -26,24 +26,20 @@ from wagtail.core import urls as wagtail_urls
 
 
 def trigger_error(request):
-    division_by_zero = 1 / 0 # noqa
+    division_by_zero = 1 / 0  # noqa
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('sentry-debug/', trigger_error),
-    re_path(r'^cms/', include(wagtailadmin_urls)),
-    re_path(r'^documents/', include(wagtaildocs_urls)),
-    re_path(r'^accounts/', include(django_auth_urls)),
-    re_path(r'^i18n/', include(i18n_urls)),
+    path("admin/", admin.site.urls),
+    path("sentry-debug/", trigger_error),
+    re_path(r"^cms/", include(wagtailadmin_urls)),
+    re_path(r"^documents/", include(wagtaildocs_urls)),
+    re_path(r"^accounts/", include(django_auth_urls)),
+    re_path(r"^i18n/", include(i18n_urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-if 'rosetta' in settings.INSTALLED_APPS:
-    urlpatterns += [
-        re_path(r'^rosetta/', include('rosetta.urls'))
-    ]
+if "rosetta" in settings.INSTALLED_APPS:
+    urlpatterns += [re_path(r"^rosetta/", include("rosetta.urls"))]
 
 # catchall must come last
-urlpatterns += [
-    re_path(r'', include(wagtail_urls)),
-]
+urlpatterns += [re_path(r"", include(wagtail_urls))]

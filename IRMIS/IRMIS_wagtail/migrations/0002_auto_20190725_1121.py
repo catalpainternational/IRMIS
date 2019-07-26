@@ -6,24 +6,22 @@ import wagtail.core.fields
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('IRMIS_wagtail', '0001_initial'),
-    ]
+    dependencies = [("IRMIS_wagtail", "0001_initial")]
 
     operations = [
         migrations.AddField(
-            model_name='homepage',
-            name='body_en',
+            model_name="homepage",
+            name="body_en",
             field=wagtail.core.fields.RichTextField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='homepage',
-            name='body_pt',
+            model_name="homepage",
+            name="body_pt",
             field=wagtail.core.fields.RichTextField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='homepage',
-            name='body_tet',
+            model_name="homepage",
+            name="body_tet",
             field=wagtail.core.fields.RichTextField(blank=True, null=True),
         ),
     ]

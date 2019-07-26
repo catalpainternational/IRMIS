@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'v-@02p0r80m1%5_6$di-95etf&1o02v#(u_h&m9-7o@3f=z^53'
+SECRET_KEY = "v-@02p0r80m1%5_6$di-95etf&1o02v#(u_h&m9-7o@3f=z^53"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -35,92 +35,85 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     # DJANGO
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
     # ROSETTA
-    'rosetta',
-
+    "rosetta",
     # GEODJANGO
-    'django.contrib.gis',
-
+    "django.contrib.gis",
     # WAGTAIL
-    'wagtail.contrib.forms',
-    'wagtail.contrib.redirects',
-    'wagtail.embeds',
-    'wagtail.sites',
-    'wagtail.users',
-    'wagtail.snippets',
-    'wagtail.documents',
-    'wagtail.images',
-    'wagtail.search',
-    'wagtail.admin',
-    'wagtail.core',
-
-    'modelcluster',
-    'taggit',
-
+    "wagtail.contrib.forms",
+    "wagtail.contrib.redirects",
+    "wagtail.embeds",
+    "wagtail.sites",
+    "wagtail.users",
+    "wagtail.snippets",
+    "wagtail.documents",
+    "wagtail.images",
+    "wagtail.search",
+    "wagtail.admin",
+    "wagtail.core",
+    "modelcluster",
+    "taggit",
     # WAGTAIL MODELTRANSLATIONS
-    'wagtail_modeltranslation',
-    'wagtail_modeltranslation.makemigrations',
-    'wagtail_modeltranslation.migrate',
-
+    "wagtail_modeltranslation",
+    "wagtail_modeltranslation.makemigrations",
+    "wagtail_modeltranslation.migrate",
     # IRMIS
-    'IRMIS_wagtail',
-    'assets',
-
+    "IRMIS_wagtail",
+    "assets",
     # CATALPA UTILS
-    'catalpa_django_apps.google_analytics',
+    "catalpa_django_apps.google_analytics",
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'wagtail.core.middleware.SiteMiddleware',
-    'wagtail.contrib.redirects.middleware.RedirectMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "wagtail.core.middleware.SiteMiddleware",
+    "wagtail.contrib.redirects.middleware.RedirectMiddleware",
 ]
 
-ROOT_URLCONF = 'IRMIS.urls'
+ROOT_URLCONF = "IRMIS.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            os.path.join(BASE_DIR, 'registration_templates'),
-            os.path.join(BASE_DIR, 'project_templates'),
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [
+            os.path.join(BASE_DIR, "registration_templates"),
+            os.path.join(BASE_DIR, "project_templates"),
         ],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ]
         },
-    },
+    }
 ]
 
-WSGI_APPLICATION = 'IRMIS.wsgi.application'
+WSGI_APPLICATION = "IRMIS.wsgi.application"
 
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.spatialite',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    "default": {
+        "ENGINE": "django.contrib.gis.db.backends.spatialite",
+        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     }
 }
 
@@ -130,44 +123,34 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
     },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'tet'
-LANGUAGES = [
-    ('tet', 'Tetum'),
-    ('en', 'English'),
-    ('pt', 'Português')
-]
+LANGUAGE_CODE = "tet"
+LANGUAGES = [("tet", "Tetum"), ("en", "English"), ("pt", "Português")]
 
 EXTRA_LANG_INFO = {
-    'tet': {
-        'bidi': False,  # right-to-left
-        'code': 'tet',
-        'name': 'Tetum',
-        'name_local': 'Tetum',  # unicode codepoints here
-    },
+    "tet": {
+        "bidi": False,  # right-to-left
+        "code": "tet",
+        "name": "Tetum",
+        "name_local": "Tetum",  # unicode codepoints here
+    }
 }
 
 # Add custom languages not provided by Django
 # LANG_INFO = dict(django.conf.locale.LANG_INFO.items() + EXTRA_LANG_INFO.items())
 django.conf.locale.LANG_INFO.update(EXTRA_LANG_INFO)
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
@@ -179,22 +162,22 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # Media files (user uploaded files)
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = "/media/"
 
-WAGTAIL_SITE_NAME = _('IRMIS')
+WAGTAIL_SITE_NAME = _("IRMIS")
 
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
-WAGTAIL_FRONTEND_LOGIN_URL = '/accounts/login/'
-PASSWORD_REQUIRED_TEMPLATE = 'home/password_required.html'
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
+WAGTAIL_FRONTEND_LOGIN_URL = "/accounts/login/"
+PASSWORD_REQUIRED_TEMPLATE = "home/password_required.html"
 
 try:
-    from .local_settings import * # noqa
+    from .local_settings import *  # noqa
 except ImportError:
     pass
