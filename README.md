@@ -4,7 +4,7 @@
 
 1. git clone this repository and cd into it
 2. create a python 3.6 virtual environment and install pip-tools `pip install pip-tools`
-3. install requirements with `pip-sync requirements/dev-requirements.txt`
+3. install requirements with `pip-sync requirements/requirements-dev.txt`
 4. we require GEODJANGO support, create a `irmis_db` postgresql database with the POSTGIS extension
   - see https://docs.djangoproject.com/en/2.2/ref/contrib/gis/ for installation instructions
   - Sqlite is possible in development ( using spatiallite )
