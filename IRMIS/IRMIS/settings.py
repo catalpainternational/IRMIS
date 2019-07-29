@@ -111,10 +111,7 @@ WSGI_APPLICATION = "IRMIS.wsgi.application"
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.contrib.gis.db.backends.postgis",
-        "NAME": "irmis_db",
-    }
+    "default": {"ENGINE": "django.contrib.gis.db.backends.postgis", "NAME": "irmis_db"}
 }
 
 

@@ -12,7 +12,7 @@ class Road(models.Model):
     )
     geometry = models.MultiLineStringField(
         verbose_name=_("Name"),
-        help_text=_("Add a name to help identity this road"),
+        help_text=_("The path of the road"),
         null=True,
         blank=True,
     )
