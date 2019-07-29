@@ -3,10 +3,25 @@
 ## Installation
 
 1. git clone this repository and cd into it
-2. install Pipenv https://docs.pipenv.org and `pipenv install`
-3. we require GEODJANGO support, install and create a `irmis_db` database  
+2. create a python 3.6 virtual environment and install pip-tools `pip install pip-tools`
+3. install requirements with `pip-sync requirements/dev-requirements.txt`
+4. we require GEODJANGO support, create a `irmis_db` postgresql database with the POSTGIS extension
   - see https://docs.djangoproject.com/en/2.2/ref/contrib/gis/ for installation instructions
-  - Postgresql is recommended for deployments, sqlite _may_ be possible in development
-4. migrate `pipenv run IRMIS/manage.py migrate`
-5. create a super user `pipenv run IRMIS/manage.py createsuperuser`
-6. run the dev server `pipenv run IRMIS/manage.py runserver`
+  - Sqlite is possible in development ( using spatiallite )
+5. In your virtual environment run `manage.py migrate` `manage.py createsuperuser` `manage.py runserver`
+
+## Pip-tools
+
+https://pypi.org/project/pip-tools/
+
+When adding python dependencies, add them to `requirements/requirements.in`, do not pin the version
+When adding python development dependencies, add them to `requirements/requirements-dev.in`, do not pin the version
+
+Run `pip-compile requirements/requirements.in` to produce `requirements/requirements.txt`
+Run `pip-compile requirements/requirements-dev.in` to produce `requirements/requirements-dev.txt`
+
+Use `pip-compile --upgrade` to upgrade versions of libraries, then test the result!
+
+## Testing
+
+Add details of testing here...
