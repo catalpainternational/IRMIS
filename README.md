@@ -2,7 +2,8 @@
 
 ## Installation
 
-1. git clone this repository and cd into it
+1. git clone this repository using `--recurse-submodules` and cd into it
+  - If you forgot to `--recurse-submodules` then `git submodule init && git submodule update`
 2. create a python 3.6 virtual environment and install pip-tools `pip install pip-tools`
 3. install requirements with `pip-sync requirements/requirements-dev.txt`
 4. we require GEODJANGO support, create a `irmis_db` postgresql database with the POSTGIS extension
