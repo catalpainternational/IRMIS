@@ -6,6 +6,11 @@
 	"repository": "https://github.com/catalpainternational/roads",
 	"author": "Catalpa International",
 	"license": "MIT",
+	"scripts": {
+		"start": "webpack --watch --config webpack.dev.js",
+		"build": "webpack --config webpack.prod.js",
+		"dev": "webpack --config webpack.dev.js"
+	},
 	"devDependencies": {
 		"babel-core": "^6.26.3",
 		"babel-loader": "^7.1.5",
