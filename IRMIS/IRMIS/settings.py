@@ -112,8 +112,8 @@ WSGI_APPLICATION = "IRMIS.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.contrib.gis.db.backends.spatialite",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        "ENGINE": "django.contrib.gis.db.backends.postgis",
+        "NAME": "irmis_db",
     }
 }
 
