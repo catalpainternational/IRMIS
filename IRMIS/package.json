@@ -1,0 +1,9 @@
+{
+	"name": "irmis",
+	"version": "1.0.0",
+	"description": "Integrated Roads Management Information System",
+	"main": "index.js",
+	"repository": "https://github.com/catalpainternational/roads",
+	"author": "Catalpa International",
+	"license": "MIT"
+}
