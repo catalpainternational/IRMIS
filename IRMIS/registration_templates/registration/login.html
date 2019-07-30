@@ -9,14 +9,16 @@
 <div class="authentication">
 	<span class="image app-logo"></span>
 
-	<form method="post" action=".">
+	<form class="{% if form.non_field_errors or form.password.errors or form.username.errors %}error{% endif %}" method="post" action=".">
 		{% csrf_token %}
 
+		<div class="error-message">{% trans "Please insert your correct username and password." %}</div>
+
 		<div class="form-group">
-			<input class="form-control" autofocus autocomplete="on" name="username" type="text" maxlength="254" placeholder="{% trans 'Username' %}">
+			<input class="form-control" autofocus name="username" type="text" maxlength="254" placeholder="{% trans 'Username' %}">
 		</div>
 		<div class="form-group">
-			<input class="form-control" autocomplete="on" name="password" type="password" maxlength="254" placeholder="{% trans 'Password' %}">
+			<input class="form-control" name="password" type="password" maxlength="254" placeholder="{% trans 'Password' %}">
 		</div>
 
 		<a class="float-left" href="{% url 'password_reset' %}">{% trans "Forgot your password?" %}</a>

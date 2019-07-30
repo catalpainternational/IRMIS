@@ -2,19 +2,47 @@ div.authentication {
     justify-content: center;
     flex-direction: column;
     align-items: center;
+    margin: 0 auto;
     display: flex;
     height: 100%;
+    width: 300px;
 
     .app-logo {
         margin-bottom: 20px;
     }
 
-    input {
-        width: 315px;
+    form {
+        width: 100%;
 
-        &::-webkit-input-placeholder { color: $gray; } /* Chrome/Opera/Safari */
-        &:-ms-input-placeholder { color: $gray; } /* IE 10+ */
-        &::-moz-placeholder { color: $gray; } /* Firefox 19+ */
-        &:-moz-placeholder { color: $gray; } /* Firefox 18- */
+        .error-message {
+            background-color: $red;
+            border-radius: $radius;
+            margin-bottom: 20px;
+            display: none;
+            color: $white;
+            padding: 5px;
+        }
+
+        input {
+            &::-webkit-input-placeholder { color: $gray; } /* Chrome/Opera/Safari */
+            &:-ms-input-placeholder { color: $gray; } /* IE 10+ */
+            &::-moz-placeholder { color: $gray; } /* Firefox 19+ */
+            &:-moz-placeholder { color: $gray; } /* Firefox 18- */
+        }
+    }
+
+    form.error {
+        .error-message {
+            display: block;
+        }
+
+        input {
+            border-color: $red;
+
+            &::-webkit-input-placeholder { color: $red; } /* Chrome/Opera/Safari */
+            &:-ms-input-placeholder { color: $red; } /* IE 10+ */
+            &::-moz-placeholder { color: $red; } /* Firefox 19+ */
+            &:-moz-placeholder { color: $red; } /* Firefox 18- */
+        }
     }
 }
