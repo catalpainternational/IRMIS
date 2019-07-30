@@ -1,2 +1,25 @@
 // Vendor
 @import "~bootstrap/scss/bootstrap";
+
+// Base
+@import "variables";
+@import "buttons";
+@import "images";
+@import "forms";
+
+// Pages
+@import "authentication";
+
+// General
+html, body {
+    height: 100%;
+}
+
+a {
+    color: $dark-green;
+
+    &:hover {
+        text-decoration: none;
+        color: $dark-green;
+    }
+}

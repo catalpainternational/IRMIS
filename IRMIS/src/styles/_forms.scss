@@ -1,0 +1,15 @@
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-control {
+    border: 1px solid #c9c9c9;
+    margin-bottom: 20px;
+    padding-right: 10px;
+    padding-left: 10px;
+    height: 40px;
+
+    &:focus {
+        outline: 0;
+    }
+}

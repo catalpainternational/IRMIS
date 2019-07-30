@@ -1,0 +1,13 @@
+.btn {
+    padding-right: 20px;
+    padding-left: 20px;
+    border: none;
+}
+
+.btn-primary {
+    background-color: $green;
+
+    &:hover {
+        background-color: $green;
+    }
+}
