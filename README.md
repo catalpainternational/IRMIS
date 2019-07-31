@@ -26,12 +26,9 @@ Use `pip-compile --upgrade` to upgrade versions of libraries, then test the resu
 ## Set up front-end
 
 1. Install [Yarn](https://yarnpkg.com/en/docs/install).
-
 2. Navigate to the project's root directory and run `yarn` to install dependencies.
-
-2. You can compile SASS and JavaScript assets with `yarn run dev`.
-
-3. Yarn can detect changes in these assets and rebuild them automatically. Use `yarn run watch`.
+3. You can compile SASS and JavaScript assets with `yarn run dev`.
+4. Yarn can detect changes in these assets and rebuild them automatically. Use `yarn run watch`.
 
 ## Testing
 
