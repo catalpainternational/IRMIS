@@ -7,3 +7,4 @@
 - Authentication
 - Yarn/Webpack/Bootstrap
 - Jenkins
+- Pytest
