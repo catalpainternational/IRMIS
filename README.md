@@ -1,4 +1,4 @@
-# ILO Integrated Roads Management System
+# ILO Integrated Roads Management Information System
 
 ## Installation
 
@@ -22,6 +22,13 @@ Run `pip-compile requirements/requirements.in` to produce `requirements/requirem
 Run `pip-compile requirements/requirements-dev.in` to produce `requirements/requirements-dev.txt`
 
 Use `pip-compile --upgrade` to upgrade versions of libraries, then test the result!
+
+## Set up front-end
+
+1. Install [Yarn](https://yarnpkg.com/en/docs/install).
+2. Navigate to the project's root directory and run `yarn` to install dependencies.
+3. You can compile SASS and JavaScript assets with `yarn run dev`.
+4. Yarn can detect changes in these assets and rebuild them automatically. Use `yarn run watch`.
 
 ## Testing
 
