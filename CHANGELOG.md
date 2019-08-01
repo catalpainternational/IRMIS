@@ -7,4 +7,5 @@
 - Authentication
 - Yarn/Webpack/Bootstrap
 - Jenkins
+- ESLint
 - Pytest
