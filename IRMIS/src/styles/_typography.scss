@@ -35,6 +35,7 @@
 
 body {
     font-family: DIN;
+    font-size: 16px;
 }
 
 label {
@@ -42,6 +43,10 @@ label {
     line-height: 17px;
     font-weight: 700;
     font-size: 14px;
+
+    &.danger {
+        color: $red;
+    }
 }
 
 a {
@@ -54,4 +59,29 @@ a {
         text-decoration: none;
         color: $dark-green;
     }
+}
+
+span {
+    color: $dark-green;
+    line-height: 17px;
+    font-weight: 700;
+    font-size: 14px;
+
+    &.danger {
+        color: $white;
+    }
+}
+
+input.form-control {
+    color: $dark-green;
+    line-height: 12px;
+
+    &:focus {
+        color: $dark-green;
+    }
+}
+
+button.btn {
+    line-height: 14px;
+    font-weight: 700;
 }

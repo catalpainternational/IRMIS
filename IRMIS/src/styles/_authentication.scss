@@ -14,35 +14,17 @@ div.authentication {
     form {
         width: 325px;
 
-        .error-message {
+        span.danger {
             background-color: $red;
             border-radius: $radius;
             margin-bottom: 20px;
-            display: none;
-            color: $white;
-            padding: 5px;
-        }
-
-        input {
-            &::-webkit-input-placeholder { color: $gray; } /* Chrome/Opera/Safari */
-            &:-ms-input-placeholder { color: $gray; } /* IE 10+ */
-            &::-moz-placeholder { color: $gray; } /* Firefox 19+ */
-            &:-moz-placeholder { color: $gray; } /* Firefox 18- */
-        }
-    }
-
-    form.error {
-        .error-message {
+            text-align: center;
             display: block;
+            padding: 7px;
         }
 
-        input {
+        input.danger {
             border-color: $red;
-
-            &::-webkit-input-placeholder { color: $red; } /* Chrome/Opera/Safari */
-            &:-ms-input-placeholder { color: $red; } /* IE 10+ */
-            &::-moz-placeholder { color: $red; } /* Firefox 19+ */
-            &:-moz-placeholder { color: $red; } /* Firefox 18- */
         }
     }
 }
