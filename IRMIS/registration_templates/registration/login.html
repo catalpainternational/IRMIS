@@ -18,17 +18,39 @@
 
         <div class="form-group">
             <label class="{% if form.non_field_errors or form.password.errors or form.username.errors %}danger{% endif %}" for="username">{% trans "Username" %}</label>
-            <input id="username" class="{% if form.non_field_errors or form.password.errors or form.username.errors %}danger{% endif %} form-control" autofocus name="username" type="text" maxlength="254">
+            <input id="username" class="{% if form.non_field_errors or form.password.errors or form.username.errors %}danger{% endif %} form-control inactive" autofocus name="username" type="text" maxlength="254" onkeyup="highlight()">
         </div>
         <div class="form-group">
             <label class="{% if form.non_field_errors or form.password.errors or form.username.errors %}danger{% endif %}" for="password">{% trans "Password" %}</label>
-            <input id="password" class="{% if form.non_field_errors or form.password.errors or form.username.errors %}danger{% endif %} form-control" name="password" type="password" maxlength="254">
+            <input id="password" class="{% if form.non_field_errors or form.password.errors or form.username.errors %}danger{% endif %} form-control inactive" name="password" type="password" maxlength="254" onkeyup="highlight()">
         </div>
 
         <div class="align-items-center d-flex justify-content-between">
             <a href="{% url 'password_reset' %}">{% trans "Forgot your password?" %}</a>
-            <button class="btn btn-primary" type="submit">{% trans "Log in" %}</button>
+            <button id="submit" class="btn btn-inactive" type="submit">{% trans "Log in" %}</button>
         </div>
     </form>
 </div>
+
+<script>
+    var username = document.getElementById('username');
+    var password = document.getElementById('password');
+    var submit = document.getElementById('submit');
+
+    function highlight() {
+        if (username.value) username.classList.remove('inactive');
+        else username.classList.add('inactive');
+
+        if (password.value) password.classList.remove('inactive');
+        else password.classList.add('inactive');
+
+        if (username.value && password.value) {
+            submit.classList.remove('btn-inactive');
+            submit.classList.add('btn-primary');
+        } else {
+            submit.classList.remove('btn-primary');
+            submit.classList.add('btn-inactive');
+        }
+    }
+</script>
 {% endblock %}

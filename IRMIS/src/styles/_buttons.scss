@@ -15,3 +15,13 @@
         background-color: $green;
     }
 }
+
+.btn-inactive {
+    background-color: $gray;
+    color: $dark-gray;
+
+    &:hover {
+        background-color: $gray;
+        color: $dark-gray;
+    }
+}
