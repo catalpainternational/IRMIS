@@ -2,6 +2,7 @@
 @import "~bootstrap/scss/bootstrap";
 
 // Base
+@import "typography";
 @import "variables";
 @import "buttons";
 @import "images";
@@ -12,6 +13,7 @@
 
 // General
 html, body {
+    font-family: DIN;
     height: 100%;
 }
 

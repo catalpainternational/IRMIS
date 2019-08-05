@@ -44,6 +44,16 @@ module.exports = {
                         'encoding': 'base64'
                     }
                 }
+            },
+            {
+                'test': /\.(woff|woff2)$/,
+                'exclude': [ /node_modules/ ],
+                'use': {
+                    'loader': 'file-loader',
+                    'options': {
+                        'name': '[name].[ext]'
+                    }
+                }
             }
         ]
     },
