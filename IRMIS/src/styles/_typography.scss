@@ -32,3 +32,26 @@
          url("../fonts/DIN-Black.woff") format("woff");
     font-weight: 900;
 }
+
+body {
+    font-family: DIN;
+}
+
+label {
+    color: $dark-green;
+    line-height: 17px;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+a {
+    color: $dark-green;
+    line-height: 11px;
+    font-weight: 700;
+    font-size: 14px;
+
+    &:hover {
+        text-decoration: none;
+        color: $dark-green;
+    }
+}

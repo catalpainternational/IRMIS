@@ -2,8 +2,8 @@
 @import "~bootstrap/scss/bootstrap";
 
 // Base
-@import "typography";
 @import "variables";
+@import "typography";
 @import "buttons";
 @import "images";
 @import "forms";
@@ -13,15 +13,5 @@
 
 // General
 html, body {
-    font-family: DIN;
     height: 100%;
-}
-
-a {
-    color: $dark-green;
-
-    &:hover {
-        text-decoration: none;
-        color: $dark-green;
-    }
 }

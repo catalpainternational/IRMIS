@@ -1,15 +1,22 @@
+// Override Bootstrap form styles
+
 .form-group {
     margin-bottom: 20px;
+
+    label {
+        margin-bottom: 10px;
+    }
 }
 
 .form-control {
-    border: 1px solid #c9c9c9;
-    margin-bottom: 20px;
+    border: 1px solid $green;
     padding-right: 10px;
     padding-left: 10px;
-    height: 40px;
+    color: $dark-green;
+    line-height: 12px;
 
     &:focus {
+        color: $dark-green;
         outline: 0;
     }
 }

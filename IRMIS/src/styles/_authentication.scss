@@ -2,17 +2,17 @@ div.authentication {
     justify-content: center;
     flex-direction: column;
     align-items: center;
+    max-width: 1024px;
     margin: 0 auto;
     display: flex;
     height: 100%;
-    width: 300px;
 
     .app-logo {
-        margin-bottom: 20px;
+        margin-bottom: 40px;
     }
 
     form {
-        width: 100%;
+        width: 325px;
 
         .error-message {
             background-color: $red;
