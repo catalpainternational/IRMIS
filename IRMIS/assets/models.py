@@ -6,7 +6,7 @@ import django.db.models.deletion
 class Shapefile(models.Model):
     filename = models.CharField(max_length=255)
     file = models.FileField(upload_to="media/shapefiles", null=True)
-    srs = models.CharField(max_length=255)
+    srs = models.CharField(max_length=255, primary=True)
     file_update_date = models.DateField(_(""), auto_now=False, auto_now_add=False)
 
 
