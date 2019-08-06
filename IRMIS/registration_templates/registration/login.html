@@ -18,11 +18,11 @@
 
         <div class="form-group">
             <label class="{% if form.non_field_errors or form.password.errors or form.username.errors %}danger{% endif %}" for="username">{% trans "Username" %}</label>
-            <input id="username" class="{% if form.non_field_errors or form.password.errors or form.username.errors %}danger{% endif %} form-control inactive" autofocus name="username" type="text" maxlength="254" onkeyup="highlight()">
+            <input id="username" class="{% if form.non_field_errors or form.password.errors or form.username.errors %}danger{% endif %} form-control inactive" autofocus required name="username" type="text" maxlength="254" onkeyup="highlight()">
         </div>
         <div class="form-group">
             <label class="{% if form.non_field_errors or form.password.errors or form.username.errors %}danger{% endif %}" for="password">{% trans "Password" %}</label>
-            <input id="password" class="{% if form.non_field_errors or form.password.errors or form.username.errors %}danger{% endif %} form-control inactive" name="password" type="password" maxlength="254" onkeyup="highlight()">
+            <input id="password" class="{% if form.non_field_errors or form.password.errors or form.username.errors %}danger{% endif %} form-control inactive" required name="password" type="password" maxlength="254" onkeyup="highlight()">
         </div>
 
         <div class="align-items-center d-flex justify-content-between">
