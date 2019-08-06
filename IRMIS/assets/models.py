@@ -4,13 +4,13 @@ from django.utils.translation import ugettext_lazy as _
 
 class Shapefile(models.Model):
     filename = models.CharField(max_length=255)
-    file = models.FileField(upload_to="/media")
+    file = models.FileField(upload_to="media/shapefiles")
     srs = models.CharField(max_length=255)
     file_update_date = models.DateField(_(""), auto_now=False, auto_now_add=False)
 
 
 class Feature(models.Model):
-    shapefile = models.ForeignKey(Shapefile)
+    shapefile = models.ForeignKey(Shapefile, on_delete="")
     name = models.CharField(
         verbose_name=_("Name"),
         null=False,
