@@ -11,8 +11,24 @@ div.authentication {
         margin-bottom: 40px;
     }
 
+    h5 {
+        margin-bottom: 20px;
+    }
+
+    ul.hints {
+        margin-bottom: 20px;
+        text-align: center;
+        color: $dark-green;
+        padding-left: 0;
+    }
+
     form {
         width: 325px;
+
+        .errorlist {
+            margin-bottom: 0;
+            padding-left: 0;
+        }
 
         span.danger {
             background-color: $red;
