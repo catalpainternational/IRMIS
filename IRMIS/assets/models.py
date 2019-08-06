@@ -6,8 +6,6 @@ class Shapefile(models.Model):
     filename = models.CharField(max_length=255)
     file = models.FileField(upload_to="/media")
     srs = models.CharField(max_length=255)
-    encoding = models.CharField(max_length=20)
-    meta_data = models.JSONField(encoder="")
     file_update_date = models.DateField(_(""), auto_now=False, auto_now_add=False)
 
 
