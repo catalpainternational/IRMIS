@@ -10,20 +10,14 @@ class Shapefile(models.Model):
     file_update_date = models.DateField(_(""), auto_now=False, auto_now_add=False)
 
 
-class Feature(models.Model):
+class Road(models.Model):
     shapefile = models.ForeignKey(Shapefile, null=True, on_delete=django.db.models.deletion.CASCADE)
     name = models.CharField(
         verbose_name=_("Name"),
         null=False,
         blank=False,
-        max_length=150,
+        max_length=50,
     )
-
-    def __str__(self):
-        return self.name
-
-
-class Road(models.Model):
     geometry = models.MultiLineStringField(
         verbose_name=_("Name"),
         help_text=_("The path of the road"),
@@ -32,8 +26,18 @@ class Road(models.Model):
         null=True
     )
 
+    def __str__(self):
+        return self.name
+
 
 class Bridge(models.Model):
+    shapefile = models.ForeignKey(Shapefile, null=True, on_delete=django.db.models.deletion.CASCADE)
+    name = models.CharField(
+        verbose_name=_("Name"),
+        null=False,
+        blank=False,
+        max_length=50,
+    )
     geometry = models.MultiPolygonField(
         verbose_name=_("Name"),
         help_text=_("The area of the bridge"),
@@ -41,3 +45,6 @@ class Bridge(models.Model):
         blank=True,
         null=True
     )
+
+    def __str__(self):
+        return self.name
