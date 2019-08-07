@@ -1,4 +1,5 @@
 from django.db import connection
+from django.core.management import call_command
 import subprocess
 
 
@@ -24,12 +25,12 @@ def import_shapefile_features(filename, feature, meta=None, dryrun=False):
 def create_unmanged_models(dryrun=False):
     ''' Create unmanged models from inspection of DB tables'''
     try:
-        cmd = "./manage.py inspectdb %s" % " ".join(valid_features)
         if dryrun:
             # outputs model.py file to screen
-            subprocess.call(cmd, shell=True)
+            call_command("inspectdb", *valid_features)
         else:
-            # write output to file
-            subprocess.call(cmd + ' > ./assets/feature_models.py', shell=True)
+            with open('assets/feature_models.py', 'w') as f:
+                # write output to file
+                call_command("inspectdb", *valid_features, stdout=f)
     except Exception as e:
-        print("Table inspection failed - %s - " % feature, str(e))
+        print("Table inspection failed - %s" % str(e))
