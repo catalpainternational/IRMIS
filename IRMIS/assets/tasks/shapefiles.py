@@ -4,7 +4,7 @@ import os
 import subprocess
 
 
-valid_features = ['road_nat', 'road_muni', 'road_rural', 'bridge']
+valid_features = ['road_nat', 'road_muni', 'road_rural']
 
 def import_shapefile_features(shapefile, feature_type, dry_run=False):
     if feature_type in valid_features:
@@ -16,6 +16,8 @@ def import_shapefile_features(shapefile, feature_type, dry_run=False):
                 'file_update_date': datetime.fromtimestamp(os.path.getmtime(shapefile)).strftime("%Y-%m-%d"),
                 'feature_type': feature_type
             }).save()
+            # drop the table (if it exists) before importing new shapefile data
+            # import new shapefile data
             cmd = "shp2pgsql -I -s 2263 %s %s | psql -d irmis_db" % (shapefile, feature_type)
             if not dry_run:
                 subprocess.call(cmd, shell=True)
@@ -28,10 +30,10 @@ def create_unmanged_models(dry_run=False):
     ''' Create unmanged models from inspection of DB tables'''
     for feature_type in valid_features:
         try:
-            cmd = "django-admin inspectdb %s" % (feature_type)
+            cmd = "./manage.py inspectdb %s" % (feature_type)
             if dry_run:
                 subprocess.call(cmd, shell=True)
             else:
-                subprocess.call(cmd + ' > ./feature_models.py', shell=True)
+                subprocess.call(cmd + ' > ./assets/feature_models.py', shell=True)
         except Exception as e:
             print("Table inspection failed - %s - " % feature_type, str(e))
