@@ -3,7 +3,7 @@ from assets.tasks.shapefiles import import_shapefile_features
 
 
 class Command(BaseCommand):
-    help = 'Imports exchange rates for Transactions which have missing data'
+    help = 'Build unmanaged Django models from shapefiles derived Postgresql tables'
 
     def add_arguments(self, parser):
         parser.add_argument('--filename', default=None, help='The shapefile to import into PostgreSQL')

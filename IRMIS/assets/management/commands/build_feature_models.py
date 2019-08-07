@@ -3,7 +3,7 @@ from assets.tasks.shapefiles import create_unmanged_models
 
 
 class Command(BaseCommand):
-    help = 'Imports exchange rates for Transactions which have missing data'
+    help = 'Import shapefile GIS data into postgresql table'
 
     def add_arguments(self, parser):
         parser.add_argument('--dryrun', default=False, help='Whether or not to save models')
