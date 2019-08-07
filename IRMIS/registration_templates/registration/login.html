@@ -18,7 +18,7 @@
 
         <div class="form-group">
             <label class="{% if form.non_field_errors %}danger{% endif %}" for="username">{% trans "Username" %}</label>
-            <input id="username" class="{% if form.non_field_errors %}danger{% endif %} form-control inactive" autofocus required name="username" type="text" maxlength="254" onkeyup="highlight()" value="{{ form.username.value }}">
+            <input id="username" class="{% if form.non_field_errors %}danger{% endif %} form-control inactive" autofocus required name="username" type="text" maxlength="254" onkeyup="highlight()" value="{% if form.username.value is not None %}{{ form.username.value }}{% endif %}">
         </div>
         <div class="form-group">
             <label class="{% if form.non_field_errors %}danger{% endif %}" for="password">{% trans "Password" %}</label>
