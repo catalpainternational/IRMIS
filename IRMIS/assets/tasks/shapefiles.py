@@ -1,29 +1,37 @@
-from django.contrib.gis.utils import LayerMapping
-from django.contrib.gis.gdal import DataSource
-from assets.models import Shapefile, Road
-import glob
-import os
+from assets.models import Shapefile
 from datetime import datetime
+import os
+import subprocess
 
 
-def import_shapefiles(file_glob="*.shp", metadata=dict(), dry_run=False):
-    for f in glob.glob(file_glob):
+valid_features = ['road_nat', 'road_muni', 'road_rural', 'bridge']
+
+def import_shapefile_features(shapefile, feature_type, dry_run=False):
+    if feature_type in valid_features:
         try:
-            ds = DataSource(f)
-            layer = ds[0]
             # create shapefile to link to all imported features
             sf = Shapefile(**{
-                'filename': str(layer.name),
-                'file': f,
-                'file_update_date': datetime.fromtimestamp(os.path.getmtime(f)).strftime("%Y-%m-%d")
-                'srs': str(layer.srs.ptr)
+                'filename': os.path.splitext(shapefile)[0],
+                'file': shapefile,
+                'file_update_date': datetime.fromtimestamp(os.path.getmtime(shapefile)).strftime("%Y-%m-%d"),
+                'feature_type': feature_type
             }).save()
-
-            print("DS Layer Srs: ", layer.srs)
-            print("DS Layer Fields: ", layer.fields)
-            mapping = { 'name': 'ID', 'geometry' : layer.geom_type.name }
-            lm = LayerMapping(Road, f, mapping)
+            cmd = "shp2pgsql -I -s 2263 %s %s | psql -d irmis_db" % (shapefile, feature_type)
             if not dry_run:
-                lm.save()
+                subprocess.call(cmd, shell=True)
         except Exception as e:
-            print("Import Failed! - ", str(e))
+            print("Import of shapefile failed - ", str(e))
+    else:
+        print("Not a valid feature")
+
+def create_unmanged_models(dry_run=False):
+    ''' Create unmanged models from inspection of DB tables'''
+    for feature_type in valid_features:
+        try:
+            cmd = "django-admin inspectdb %s" % (feature_type)
+            if dry_run:
+                subprocess.call(cmd, shell=True)
+            else:
+                subprocess.call(cmd + ' > ./feature_models.py', shell=True)
+        except Exception as e:
+            print("Table inspection failed - %s - " % feature_type, str(e))
