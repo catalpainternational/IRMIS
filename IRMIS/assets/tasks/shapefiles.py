@@ -16,9 +16,8 @@ def import_shapefile_features(shapefile, feature_type, dry_run=False):
                 'file_update_date': datetime.fromtimestamp(os.path.getmtime(shapefile)).strftime("%Y-%m-%d"),
                 'feature_type': feature_type
             }).save()
-            # drop the table (if it exists) before importing new shapefile data
             # import new shapefile data
-            cmd = "shp2pgsql -I -s 2263 %s %s | psql -d irmis_db" % (shapefile, feature_type)
+            cmd = "shp2pgsql -I -a -s 2263 %s %s | psql -d irmis_db" % (shapefile, feature_type)
             if not dry_run:
                 subprocess.call(cmd, shell=True)
         except Exception as e:
