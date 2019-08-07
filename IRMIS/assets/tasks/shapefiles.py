@@ -3,12 +3,12 @@ import subprocess
 
 valid_features = ['road_nat', 'road_muni', 'road_rural']
 
-def import_shapefile_features(shapefile, feature, dryrun=False):
+def import_shapefile_features(filename, feature, dryrun=False):
     if feature in valid_features:
         try:
             # import new shapefile data
-            cmd = "shp2pgsql -I -a -s 2263 %s %s | psql -d irmis_db" % (shapefile, feature)
-            if not dry_run:
+            cmd = "shp2pgsql -I -a -s 2263 %s %s | psql -d irmis_db" % (filename, feature)
+            if not dryrun:
                 subprocess.call(cmd, shell=True)
         except Exception as e:
             print("Import of shapefile failed - ", str(e))
@@ -19,7 +19,7 @@ def create_unmanged_models(dryrun=False):
     ''' Create unmanged models from inspection of DB tables'''
     try:
         cmd = "./manage.py inspectdb %s" % " ".join(valid_features)
-        if dry_run:
+        if dryrun:
             # outputs model.py file to screen
             subprocess.call(cmd, shell=True)
         else:
