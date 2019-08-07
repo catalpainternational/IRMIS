@@ -8,11 +8,13 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('--filename', default=None, help='The shapefile to import into PostgreSQL')
         parser.add_argument('--feature', default=None, help='The type of feature in the shapefile')
+        parser.add_argument('--meta', default=None, help='Meta data to add to the table (as JSON string)')
         parser.add_argument('--dryrun', default=False, help='Whether or not to save models')
 
     def handle(self, *args, **options):
         import_shapefile_features(
             filename=options.get('filename'),
             feature=options.get('feature'),
+            meta=options.get('meta')
             dryrun=options.get('dryrun')
         )
