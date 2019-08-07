@@ -46,5 +46,9 @@ div.authentication {
         input.danger {
             border-color: $red;
         }
+
+        &.larger {
+            width: 450px;
+        }
     }
 }
