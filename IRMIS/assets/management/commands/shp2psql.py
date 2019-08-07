@@ -12,7 +12,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         import_shapefile_features(
-            shapefile=options.get('filename'),
+            filename=options.get('filename'),
             feature=options.get('feature'),
             dryrun=options.get('dryrun')
         )
