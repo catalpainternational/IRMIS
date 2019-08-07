@@ -27,12 +27,13 @@ def import_shapefile_features(shapefile, feature_type, dry_run=False):
 
 def create_unmanged_models(dry_run=False):
     ''' Create unmanged models from inspection of DB tables'''
-    for feature_type in valid_features:
-        try:
-            cmd = "./manage.py inspectdb %s" % (feature_type)
-            if dry_run:
-                subprocess.call(cmd, shell=True)
-            else:
-                subprocess.call(cmd + ' > ./assets/feature_models.py', shell=True)
-        except Exception as e:
-            print("Table inspection failed - %s - " % feature_type, str(e))
+    try:
+        cmd = "./manage.py inspectdb %s" % " ".join(valid_features)
+        if dry_run:
+            # outputs model.py file to screen
+            subprocess.call(cmd, shell=True)
+        else:
+            # write output to file
+            subprocess.call(cmd + ' > ./assets/feature_models.py', shell=True)
+    except Exception as e:
+        print("Table inspection failed - %s - " % feature_type, str(e))

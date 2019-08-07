@@ -8,6 +8,35 @@
 from django.contrib.gis.db import models
 
 
+class RoadNat(models.Model):
+    gid = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=254, blank=True, null=True)
+    descriptio = models.CharField(max_length=254, blank=True, null=True)
+    type = models.CharField(max_length=12, blank=True, null=True)
+    length_1 = models.FloatField(blank=True, null=True)
+    code = models.CharField(max_length=10, blank=True, null=True)
+    subcode = models.CharField(max_length=2, blank=True, null=True)
+    status = models.IntegerField(blank=True, null=True)
+    geom = models.MultiLineStringField(srid=2263, dim=4, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'road_nat'
+
+
+class RoadMuni(models.Model):
+    gid = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=254, blank=True, null=True)
+    descriptio = models.CharField(max_length=254, blank=True, null=True)
+    lenkm = models.FloatField(blank=True, null=True)
+    condi = models.CharField(max_length=5, blank=True, null=True)
+    geom = models.MultiLineStringField(srid=2263, dim=4, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'road_muni'
+
+
 class RoadRural(models.Model):
     gid = models.AutoField(primary_key=True)
     id2 = models.CharField(max_length=50, blank=True, null=True)
