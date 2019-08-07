@@ -11,6 +11,20 @@ div.authentication {
         margin-bottom: 40px;
     }
 
+    h5 {
+        margin-bottom: 20px;
+    }
+
+    ul.hints {
+        margin-bottom: 20px;
+        color: $dark-green;
+        padding-left: 0;
+    }
+
+    p {
+        margin-bottom: 20px;
+    }
+
     form {
         width: 325px;
 
@@ -30,5 +44,9 @@ div.authentication {
         input.danger {
             border-color: $red;
         }
+    }
+
+    .larger {
+        width: 450px;
     }
 }
