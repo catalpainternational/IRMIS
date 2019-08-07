@@ -15,6 +15,6 @@ class Command(BaseCommand):
         import_shapefile_features(
             filename=options.get('filename'),
             feature=options.get('feature'),
-            meta=options.get('meta')
+            meta=options.get('meta'),
             dryrun=options.get('dryrun')
         )
