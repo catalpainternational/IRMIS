@@ -9,3 +9,4 @@
 - Jenkins
 - ESLint
 - Pytest
+- Login page styling
