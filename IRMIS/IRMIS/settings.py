@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     "assets",
     # CATALPA UTILS
     "catalpa_django_apps.google_analytics",
+    "debug_toolbar",
 ]
 
 MIDDLEWARE = [
@@ -175,6 +176,7 @@ LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 WAGTAIL_FRONTEND_LOGIN_URL = "/accounts/login/"
 PASSWORD_REQUIRED_TEMPLATE = "home/password_required.html"
+
 
 try:
     from .local_settings import *  # noqa
