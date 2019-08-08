@@ -34,7 +34,7 @@ Use `pip-compile --upgrade` to upgrade versions of libraries, then test the resu
 
 Two management commands exist for these tasks:
   - uploading new shapefiles (`import_shapefile_features`)
-  - re-building unmanaged models (`build_feature_models`) NOTE: This should only be run after all new shapefiles have been imported.
+  - re-building unmanaged model (`build_feature_model`) NOTE: This should only be run after the shapefile has been imported.
 
 Instructions to import Shapefile:
 Example management command (use help (`--help`) for more details):
