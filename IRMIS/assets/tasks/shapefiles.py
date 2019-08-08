@@ -16,7 +16,7 @@ def import_shapefile_features(filename, table, meta=None, dryrun=False):
             if not dryrun:
                 try:
                     # write SQL2PGSQL output to temp file
-                    cmd = "shp2pgsql -I -c -s 2263 %s %s" % (
+                    cmd = "shp2pgsql -I -c -s :4326 %s %s" % (
                         filename,
                         table
                     )
