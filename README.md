@@ -38,11 +38,11 @@ Two management commands exist for these tasks:
 
 Instructions to import Shapefile:
 Example management command (use help (`--help`) for more details):
-`./manage.py import_shapefile_features --filename=~/Shapefiles_GIS/National_Road.shp --feature=road_national -p`
-        Feature types supported: road_nat, road_muni, road_rural
+`./manage.py import_shapefile_features --filename=/Shapefiles_GIS/National_Road.shp --table=road_national --dry-run`
 
-Instructions to re-build the unmanaged models (use help (`--help`) for more details):
-`./manage.py build_feature_models`
+Instructions to re-build the unmanaged models
+Example of management command (use help (`--help`) for more details):
+`./manage.py build_feature_model --table=road_national`
 
 ## Testing
 
