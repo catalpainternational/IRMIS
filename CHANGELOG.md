@@ -9,7 +9,6 @@
 - Jenkins
 - ESLint
 - Pytest
-- Login page styling
 - Login page
 - Change password pages
 - Forgot password pages
