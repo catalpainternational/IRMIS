@@ -34,6 +34,26 @@ module.exports = {
                     { 'loader': 'css-loader' },
                     { 'loader': 'sass-loader' }
                 ]
+            },
+            {
+                'test': /\.svg$/,
+                'exclude': [ /node_modules/ ],
+                'use': {
+                    'loader': 'svg-url-loader',
+                    'options': {
+                        'encoding': 'base64'
+                    }
+                }
+            },
+            {
+                'test': /\.(woff|woff2)$/,
+                'exclude': [ /node_modules/ ],
+                'use': {
+                    'loader': 'file-loader',
+                    'options': {
+                        'name': '[name].[ext]'
+                    }
+                }
             }
         ]
     },

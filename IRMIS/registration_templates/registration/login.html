@@ -1,17 +1,56 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block login %}
-{% endblock %}
+{% block language_change %}{% endblock %} // hide language selector while there's no design for it
+
+{% block login %}{% endblock %}
 
 {% block base_content %}
+<div class="authentication">
+    <span class="image app-logo"></span>
+
     <form method="post" action=".">
-      {% csrf_token %} 
-      {{ form.as_p }}
+        {% csrf_token %}
 
-      <input type="submit" value="{% trans 'Log in' %}" />
-      <input type="hidden" name="next" value="{{ next }}" />
+        {% if form.non_field_errors %}
+        <span class="danger text-center">{{ form.non_field_errors }}</span>
+        {% endif %}
+
+        <div class="form-group">
+            <label class="{% if form.non_field_errors %}danger{% endif %}" for="username">{% trans "Username" %}</label>
+            <input id="username" class="{% if form.non_field_errors %}danger{% endif %} form-control inactive" autofocus required placeholder="{% trans 'Username' %}" name="username" type="text" maxlength="254" onkeyup="highlight()" value="{% if form.username.value is not None %}{{ form.username.value }}{% endif %}">
+        </div>
+        <div class="form-group">
+            <label class="{% if form.non_field_errors %}danger{% endif %}" for="password">{% trans "Password" %}</label>
+            <input id="password" class="{% if form.non_field_errors %}danger{% endif %} form-control inactive" required placeholder="{% trans 'Password' %}" name="password" type="password" maxlength="254" onkeyup="highlight()">
+        </div>
+
+        <div class="align-items-center d-flex justify-content-between">
+            <a href="{% url 'password_reset' %}">{% trans "Forgot your password?" %}</a>
+            <button id="submit" class="btn btn-inactive" type="submit">{% trans "Log in" %}</button>
+        </div>
     </form>
+</div>
 
-    <p>{% trans "Forgot password" %}? <a href="{% url 'password_reset' %}">{% trans "Reset it" %}</a>!</p>
+<script>
+    var username = document.getElementById('username');
+    var password = document.getElementById('password');
+    var submit = document.getElementById('submit');
+
+    function highlight() {
+        if (username.value) username.classList.remove('inactive');
+        else username.classList.add('inactive');
+
+        if (password.value) password.classList.remove('inactive');
+        else password.classList.add('inactive');
+
+        if (username.value && password.value) {
+            submit.classList.remove('btn-inactive');
+            submit.classList.add('btn-primary');
+        } else {
+            submit.classList.remove('btn-primary');
+            submit.classList.add('btn-inactive');
+        }
+    }
+</script>
 {% endblock %}

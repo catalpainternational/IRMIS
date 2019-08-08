@@ -110,3 +110,6 @@ node_modules
 
 # VSCode
 .vscode
+
+# Mac
+.DS_Store
