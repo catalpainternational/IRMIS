@@ -5,21 +5,25 @@ import os
 import subprocess
 
 
-valid_features = getattr(settings, 'FEATURE_TABLES', [])
-file_path = os.path.join(os.path.abspath(__file__ + "/../../"), 'feature_models.py')
+valid_features = getattr(settings, "FEATURE_TABLES", [])
+file_path = os.path.join(os.path.abspath(__file__ + "/../../"), "feature_models.py")
 
 
 def import_shapefile_features(filename, table, meta=None, dryrun=False):
     if table in valid_features:
         try:
             # import new shapefile data
-            db_name = getattr(settings, 'DATABASES')['default']['NAME']
+            db_name = getattr(settings, "DATABASES")["default"]["NAME"]
             if not dryrun:
-                cmd = "shp2pgsql -I -d -s 2263 %s %s | psql -d %s" % (filename, table, db_name)
+                cmd = "shp2pgsql -I -d -s 2263 %s %s | psql -d %s" % (
+                    filename,
+                    table,
+                    db_name,
+                )
                 subprocess.call(cmd, shell=True)
                 if meta:
                     # add JSON meta data to table
-                    meta_sql = "COMMENT ON TABLE %s IS \"%s\";" % (table, meta)
+                    meta_sql = 'COMMENT ON TABLE %s IS "%s";' % (table, meta)
                     cursor = connection.cursor()
                     cursor.execute(meta_sql)
             else:
@@ -31,7 +35,7 @@ def import_shapefile_features(filename, table, meta=None, dryrun=False):
 
 
 def create_unmanged_models(dryrun=False):
-    ''' Create unmanged models from inspection of DB tables'''
+    """ Create unmanged models from inspection of DB tables"""
     try:
         if dryrun:
             # outputs model.py file to screen
@@ -39,7 +43,7 @@ def create_unmanged_models(dryrun=False):
         else:
             if os.path.isfile(file_path):
                 os.remove(file_path)
-            with open(file_path, 'w') as f:
+            with open(file_path, "w") as f:
                 # write output to file
                 call_command("inspectdb", *valid_features, stdout=f)
     except Exception as e:

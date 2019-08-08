@@ -5,12 +5,6 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('assets', '0002_road_geometry_help'),
-    ]
+    dependencies = [("assets", "0002_road_geometry_help")]
 
-    operations = [
-        migrations.DeleteModel(
-            name='Road',
-        ),
-    ]
+    operations = [migrations.DeleteModel(name="Road")]

@@ -6,14 +6,18 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('assets', '0001_initial'),
-    ]
+    dependencies = [("assets", "0001_initial")]
 
     operations = [
         migrations.AlterField(
-            model_name='road',
-            name='geometry',
-            field=django.contrib.gis.db.models.fields.MultiLineStringField(blank=True, help_text='The path of the road', null=True, srid=4326, verbose_name='Name'),
-        ),
+            model_name="road",
+            name="geometry",
+            field=django.contrib.gis.db.models.fields.MultiLineStringField(
+                blank=True,
+                help_text="The path of the road",
+                null=True,
+                srid=4326,
+                verbose_name="Name",
+            ),
+        )
     ]

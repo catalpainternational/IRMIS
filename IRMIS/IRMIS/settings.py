@@ -177,7 +177,7 @@ WAGTAIL_FRONTEND_LOGIN_URL = "/accounts/login/"
 PASSWORD_REQUIRED_TEMPLATE = "home/password_required.html"
 
 # unmanaged feature tables
-FEATURE_TABLES = ['road_national', 'road_municipal', 'road_rural']
+FEATURE_TABLES = ["road_national", "road_municipal", "road_rural"]
 
 try:
     from .local_settings import *  # noqa
