@@ -6,7 +6,8 @@ import subprocess
 
 
 valid_features = getattr(settings, 'FEATURE_TABLES', [])
-file_path = os.path.join(os.path.abspath(__file__ + "/../../"),'feature_models.py')
+file_path = os.path.join(os.path.abspath(__file__ + "/../../"), 'feature_models.py')
+
 
 def import_shapefile_features(filename, table, meta=None, dryrun=False):
     if table in valid_features:
@@ -27,6 +28,7 @@ def import_shapefile_features(filename, table, meta=None, dryrun=False):
             print("Import of shapefile failed - ", str(e))
     else:
         print("Not a valid feature")
+
 
 def create_unmanged_models(dryrun=False):
     ''' Create unmanged models from inspection of DB tables'''

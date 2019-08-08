@@ -1,9 +1,6 @@
 from django.contrib.gis import admin
-from .models import *
+from .feature_models import RoadNational, RoadMunicipal, RoadRural
 
-try:
-    admin.site.register(RoadNational, admin.OSMGeoAdmin)
-    admin.site.register(RoadMunicpal, admin.OSMGeoAdmin)
-    admin.site.register(RoadRural, admin.OSMGeoAdmin)
-except:
-    pass
+admin.site.register(RoadNational, admin.OSMGeoAdmin)
+admin.site.register(RoadMunicipal, admin.OSMGeoAdmin)
+admin.site.register(RoadRural, admin.OSMGeoAdmin)
