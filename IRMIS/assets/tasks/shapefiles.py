@@ -3,7 +3,7 @@ from django.core.management import call_command
 import subprocess
 
 
-valid_features = ['road_nat', 'road_muni', 'road_rural']
+valid_features = ['road_national', 'road_municipal', 'road_rural']
 
 def import_shapefile_features(filename, feature, meta=None, dryrun=False):
     if feature in valid_features:
