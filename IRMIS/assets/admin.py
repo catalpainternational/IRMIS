@@ -1,6 +1,10 @@
 from django.contrib.gis import admin
-from .feature_models import RoadNational, RoadMunicipal, RoadRural
+from django.conf import settings
 
-admin.site.register(RoadNational, admin.OSMGeoAdmin)
-admin.site.register(RoadMunicipal, admin.OSMGeoAdmin)
-admin.site.register(RoadRural, admin.OSMGeoAdmin)
+
+for m in getattr(settings, "FEATURE_TABLES", []):
+    try:
+        from .feature_models import m
+        admin.site.register(m, admin.OSMGeoAdmin)
+    except ImportError:
+        pass
