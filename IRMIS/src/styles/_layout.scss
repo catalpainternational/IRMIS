@@ -1,0 +1,12 @@
+// General layout styles
+
+body.registration {
+    flex-direction: column;
+    max-width: 1024px;
+    margin: 0 auto;
+    display: flex;
+}
+
+ul {
+    list-style: none;
+}

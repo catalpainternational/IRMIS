@@ -17,6 +17,10 @@
         border: 1px solid $dark-gray;
     }
 
+    &.danger {
+        border: 1px solid $red;
+    }
+
     &:focus {
         outline: 0;
     }

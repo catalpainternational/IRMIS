@@ -1,12 +1,6 @@
-div.authentication {
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    max-width: 1024px;
-    margin: 0 auto;
-    display: flex;
-    height: 100%;
+$larger-form: 450px;
 
+.registration-content {
     .app-logo {
         margin-bottom: 40px;
     }
@@ -15,14 +9,18 @@ div.authentication {
         margin-bottom: 20px;
     }
 
+    p {
+        margin-bottom: 20px;
+
+        &.larger {
+            width: $larger-form;
+        }
+    }
+
     ul.hints {
         margin-bottom: 20px;
         color: $dark-green;
         padding-left: 0;
-    }
-
-    p {
-        margin-bottom: 20px;
     }
 
     form {
@@ -41,12 +39,8 @@ div.authentication {
             padding: 7px;
         }
 
-        input.danger {
-            border-color: $red;
+        &.larger {
+            width: $larger-form;
         }
-    }
-
-    .larger {
-        width: 450px;
     }
 }
