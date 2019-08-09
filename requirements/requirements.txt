@@ -9,11 +9,13 @@ certifi==2019.6.16        # via requests, sentry-sdk
 chardet==3.0.4            # via requests
 django-modelcluster==4.4  # via wagtail
 django-modeltranslation==0.13.3  # via wagtail-modeltranslation
+django-rest-framework-condition==0.1.1
 django-rosetta==0.9.3
 django-taggit==0.24.0     # via wagtail
 django-treebeard==4.3     # via wagtail
-django==2.2.3             # via django-rosetta, django-taggit, django-treebeard, wagtail
-djangorestframework==3.10.1  # via wagtail
+django==2.2.3             # via django-rest-framework-condition, django-rosetta, django-taggit, django-treebeard, wagtail
+djangorestframework-gis==0.14
+djangorestframework==3.10.1  # via djangorestframework-gis, wagtail
 draftjs-exporter==2.1.6   # via wagtail
 html5lib==1.0.1           # via wagtail
 idna==2.8                 # via requests
