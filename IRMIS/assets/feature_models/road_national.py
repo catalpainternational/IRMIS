@@ -21,4 +21,4 @@ class RoadNational(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'road_national'
+        db_table = "road_national"

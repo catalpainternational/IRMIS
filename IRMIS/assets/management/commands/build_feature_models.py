@@ -18,7 +18,4 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        create_unmanged_model(
-            table=options.get("table"),
-            dryrun=options.get("dryrun")
-        )
+        create_unmanged_model(table=options.get("table"), dryrun=options.get("dryrun"))

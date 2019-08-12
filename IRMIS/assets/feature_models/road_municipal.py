@@ -18,4 +18,4 @@ class RoadMunicipal(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'road_municipal'
+        db_table = "road_municipal"

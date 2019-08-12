@@ -16,11 +16,8 @@ def import_shapefile_features(filename, table, meta=None, dryrun=False):
             if not dryrun:
                 try:
                     # write SQL2PGSQL output to temp file
-                    cmd = "shp2pgsql -I -c -s 32751 %s %s" % (
-                        filename,
-                        table
-                    )
-                    with open('feature_sql_temp.sql', "w") as sql_f:
+                    cmd = "shp2pgsql -I -c -s 32751 %s %s" % (filename, table)
+                    with open("feature_sql_temp.sql", "w") as sql_f:
                         subprocess.call(cmd, shell=True, stdout=sql_f)
                     # read temp SQL file commands into cursor for execution
                     with open("feature_sql_temp.sql", "r") as f:
@@ -29,12 +26,19 @@ def import_shapefile_features(filename, table, meta=None, dryrun=False):
                             statement = ""
                             delimiter = ";\n"
                             for line in file_data:
-                                if re.findall("DELIMITER", line): # found delimiter
+                                if re.findall("DELIMITER", line):  # found delimiter
                                     if re.findall("^\s*DELIMITER\s+(\S+)\s*$", line):
-                                        delimiter = re.findall("^\s*DELIMITER\s+(\S+)\s*$", line)[0] + "\n"
+                                        delimiter = (
+                                            re.findall(
+                                                "^\s*DELIMITER\s+(\S+)\s*$", line
+                                            )[0]
+                                            + "\n"
+                                        )
                                         continue
                                     else:
-                                        raise SyntaxError("Your use of DELIMITER is not correct")
+                                        raise SyntaxError(
+                                            "Your use of DELIMITER is not correct"
+                                        )
                                 # add lines while not met lines with current delimiter
                                 statement += line
                                 if line.endswith(delimiter):
@@ -42,11 +46,11 @@ def import_shapefile_features(filename, table, meta=None, dryrun=False):
                                     c.execute(statement)
                                     # begin collect next statement
                                     statement = ""
-                    os.remove('feature_sql_temp.sql')
+                    os.remove("feature_sql_temp.sql")
                 except Exception:
                     # last minute clean up check of temp SQL file
-                    if os.path.isfile('feature_sql_temp.sql'):
-                        os.remove('feature_sql_temp.sql')
+                    if os.path.isfile("feature_sql_temp.sql"):
+                        os.remove("feature_sql_temp.sql")
                 if meta:
                     # add JSON meta data to table
                     with connection.cursor() as c:
@@ -80,10 +84,15 @@ def create_unmanged_model(table, dryrun=False):
             # IE: ^ pointing to position of SQL error
             if "^" not in last_line:
                 os.remove(model_file + ".old")
-                print("Model creation from table inspection was successful - %s" % table)
+                print(
+                    "Model creation from table inspection was successful - %s" % table
+                )
             else:
                 # rollback to old file and print error notice
                 os.rename(model_file, model_file + ".old")
-                print("Table inspection failed - %s - rolled back to old model file (if available)" % table)
+                print(
+                    "Table inspection failed - %s - rolled back to old model file (if available)"
+                    % table
+                )
     except Exception as e:
         print("Table inspection failed - %s" % str(e))

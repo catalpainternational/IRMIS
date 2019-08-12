@@ -14,7 +14,9 @@ class RoadRural(models.Model):
     id = models.CharField(max_length=254, blank=True, null=True)
     road_lin_1 = models.CharField(max_length=254, blank=True, null=True)
     type_of_ro = models.CharField(max_length=254, blank=True, null=True)
-    length_km = models.CharField(db_column='length__km', max_length=254, blank=True, null=True)  # Field renamed because it contained more than one '_' in a row.
+    length_km = models.CharField(
+        db_column="length__km", max_length=254, blank=True, null=True
+    )  # Field renamed because it contained more than one '_' in a row.
     municipali = models.CharField(max_length=254, blank=True, null=True)
     road_cod_1 = models.CharField(max_length=254, blank=True, null=True)
     year_1 = models.FloatField(blank=True, null=True)
@@ -22,4 +24,4 @@ class RoadRural(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'road_rural'
+        db_table = "road_rural"
