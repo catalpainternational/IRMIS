@@ -9,150 +9,155 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-09 04:54+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2019-08-09 06:23+0000\n"
+"Last-Translator: b'  <juliana@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Translated-Using: django-rosetta 0.9.3\n"
 
 #: IRMIS/settings.py:172
 msgid "IRMIS"
-msgstr ""
+msgstr "IRMIS"
 
 #: project_templates/base.html:49
 msgid "Change password"
-msgstr ""
+msgstr "Alterar palavra-passe"
 
 #: project_templates/base.html:51
 msgid "Log out"
-msgstr ""
+msgstr "Sair"
 
 #: project_templates/base.html:53
 #: registration_templates/registration/login.html:23
 msgid "Log in"
-msgstr ""
+msgstr "Entrar"
 
 #: registration_templates/registration/login.html:13
 #: registration_templates/registration/login.html:14
 msgid "Username"
-msgstr ""
+msgstr "Nome de utilizador"
 
 #: registration_templates/registration/login.html:17
 #: registration_templates/registration/login.html:18
 msgid "Password"
-msgstr ""
+msgstr "Palavra-passe"
 
 #: registration_templates/registration/login.html:22
 #: registration_templates/registration/password_reset_form.html:5
 msgid "Forgot your password?"
-msgstr ""
+msgstr "Esqueceu-se da sua palavra-passe?"
 
 #: registration_templates/registration/logout.html:5
 msgid "Logged out"
-msgstr ""
+msgstr "Não autenticado"
 
 #: registration_templates/registration/password_change_done.html:5
 #: registration_templates/registration/password_reset_complete.html:5
 msgid "Well done!"
-msgstr ""
+msgstr "Sucesso"
 
 #: registration_templates/registration/password_change_done.html:6
 #: registration_templates/registration/password_reset_complete.html:6
 msgid "Your password has been reset successfully"
-msgstr ""
+msgstr "A sua palavra-passe foi alterada com sucesso"
 
 #: registration_templates/registration/password_change_done.html:7
 #: registration_templates/registration/password_reset_complete.html:7
 msgid "Continue"
-msgstr ""
+msgstr "Continuar"
 
 #: registration_templates/registration/password_change_form.html:5
 #: registration_templates/registration/password_reset_confirm.html:5
 msgid "Create a new password"
-msgstr ""
+msgstr "Alterar palavra-passe"
 
 #: registration_templates/registration/password_change_form.html:8
 #: registration_templates/registration/password_reset_confirm.html:8
 msgid "Your password can't be too similar to your other personal information"
-msgstr ""
+msgstr "A sua palavra-passe não pode ser semelhante à sua informação pessoal"
 
 #: registration_templates/registration/password_change_form.html:9
 #: registration_templates/registration/password_reset_confirm.html:9
 msgid "Your password must contain at least 8 characters"
-msgstr ""
+msgstr "A sua palavra-passe deve conter pelo menos 8 caracteres"
 
 #: registration_templates/registration/password_change_form.html:10
 #: registration_templates/registration/password_reset_confirm.html:10
 msgid "Your password can't be a commonly used password"
-msgstr ""
+msgstr "A sua palavra-passe não pode ser uma palavra-passe comum"
 
 #: registration_templates/registration/password_change_form.html:11
 #: registration_templates/registration/password_reset_confirm.html:11
 msgid "Your password can't be entirely numeric"
-msgstr ""
+msgstr "A sua palavra-passe não pode conter apenas números"
 
 #: registration_templates/registration/password_change_form.html:25
 #: registration_templates/registration/password_change_form.html:26
 msgid "Old password"
-msgstr ""
+msgstr "Palavra-passe antiga"
 
 #: registration_templates/registration/password_change_form.html:32
 #: registration_templates/registration/password_change_form.html:33
 #: registration_templates/registration/password_reset_confirm.html:26
 #: registration_templates/registration/password_reset_confirm.html:27
 msgid "New password"
-msgstr ""
+msgstr "Nova palavra-passe"
 
 #: registration_templates/registration/password_change_form.html:36
 #: registration_templates/registration/password_change_form.html:37
 #: registration_templates/registration/password_reset_confirm.html:30
 #: registration_templates/registration/password_reset_confirm.html:31
 msgid "New password confirmation"
-msgstr ""
+msgstr "Confirme a nova palavra-passe"
 
 #: registration_templates/registration/password_change_form.html:41
 #: registration_templates/registration/password_reset_confirm.html:35
 #: registration_templates/registration/password_reset_form.html:17
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 #: registration_templates/registration/password_change_form.html:42
 #: registration_templates/registration/password_reset_confirm.html:36
 msgid "Save changes"
-msgstr ""
+msgstr "Guardar alterações"
 
 #: registration_templates/registration/password_reset_confirm.html:41
 msgid "Password reset failed"
-msgstr ""
+msgstr "A alteração de palavra-passe falhou"
 
 #: registration_templates/registration/password_reset_done.html:5
 msgid "Reset your password"
-msgstr ""
+msgstr "Redefinir a sua palavra-passe"
 
 #: registration_templates/registration/password_reset_done.html:6
 msgid ""
 "We have sent a reset password link to your email. Please, click on the link "
 "to set your new password. Thanks."
 msgstr ""
+"Enviamos um link para o seu email. Por favor, clique no link para redefinir "
+"a sua nova palavra-passe. Obrigada."
 
 #: registration_templates/registration/password_reset_email.html:2
 #, python-format
 msgid "Reset password at %(site_name)s"
-msgstr ""
+msgstr "Redefinir palavra-passe em %(site_name)s"
 
 #: registration_templates/registration/password_reset_form.html:10
 msgid ""
-"Don’t worry. Resetting your password is easy, just tell us the email address "
-"you registered with Estrada."
+"Don’t worry. Resetting your password is easy, just tell us the email address"
+" you registered with Estrada."
 msgstr ""
+"Não se preocupe! Redefinir a sua palavra-passe é simples, indique-nos apenas"
+" o endereço de email com que se registou no Estrada."
 
 #: registration_templates/registration/password_reset_form.html:13
 msgid "Email address"
-msgstr ""
+msgstr "Endereço de email"
 
 #: registration_templates/registration/password_reset_form.html:18
 msgid "Send"
-msgstr ""
+msgstr "Enviar"
