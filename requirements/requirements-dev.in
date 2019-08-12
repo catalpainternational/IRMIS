@@ -3,3 +3,4 @@ black
 django-debug-toolbar
 pytest-django
 django-extensions
+pre-commit
