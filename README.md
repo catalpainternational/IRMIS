@@ -44,6 +44,9 @@ Instructions to re-build the unmanaged models
 Example of management command (use help (`--help`) for more details):
 `./manage.py build_feature_model --table=road_national`
 
+Clean up any bad import GEO data from shapefiles
+`./manage.py cleanup_feature_imports --dryrun=True`
+
 ## Testing
 
 Add details of testing here...
