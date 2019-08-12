@@ -70,7 +70,6 @@ INSTALLED_APPS = [
     "rest_framework_gis",
     # CATALPA UTILS
     "catalpa_django_apps.google_analytics",
-    "debug_toolbar",
 ]
 
 MIDDLEWARE = (
@@ -84,7 +83,6 @@ MIDDLEWARE = (
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "wagtail.core.middleware.SiteMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
 )
 
 ROOT_URLCONF = "IRMIS.urls"
