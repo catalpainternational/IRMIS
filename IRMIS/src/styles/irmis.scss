@@ -1,2 +1,16 @@
 // Vendor
 @import "~bootstrap/scss/bootstrap";
+
+// Base
+@import "variables";
+@import "typography";
+@import "buttons";
+@import "images";
+@import "layout";
+@import "forms";
+
+// Pages
+@import "registration";
+
+// Components
+@import "language";

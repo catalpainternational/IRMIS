@@ -1,7 +1,7 @@
 {% load static i18n google_analytics %}
 
 <!DOCTYPE html>
-<html class="no-js" lang="en">
+<html class="h-100 no-js" lang="en">
     <head>
         <meta charset="utf-8" />
         <title>
@@ -22,8 +22,7 @@
         {% endblock %}
     </head>
 
-    <body class="{% block body_class %}{% endblock %}">
-
+    <body class="h-100 {% block body_class %}{% endblock %}">
         <!--- language change -->
         {% block language_change %}
         <form action="{% url 'set_language' %}" method="post">{% csrf_token %}
@@ -40,8 +39,8 @@
             </select>
             <input type="submit" value="Go">
         </form>
-        <!-- end language change -->
         {% endblock %}
+        <!-- end language change -->
 
         <!--- login -->
         {% block login %}

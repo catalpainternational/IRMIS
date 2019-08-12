@@ -1,0 +1,46 @@
+$larger-form: 450px;
+
+.registration-content {
+    .app-logo {
+        margin-bottom: 40px;
+    }
+
+    h5 {
+        margin-bottom: 20px;
+    }
+
+    p {
+        margin-bottom: 20px;
+
+        &.larger {
+            width: $larger-form;
+        }
+    }
+
+    ul.hints {
+        margin-bottom: 20px;
+        color: $dark-green;
+        padding-left: 0;
+    }
+
+    form {
+        width: 325px;
+
+        .errorlist {
+            margin-bottom: 0;
+            padding-left: 0;
+        }
+
+        span.danger {
+            background-color: $red;
+            border-radius: $radius;
+            margin-bottom: 20px;
+            display: block;
+            padding: 7px;
+        }
+
+        &.larger {
+            width: $larger-form;
+        }
+    }
+}
