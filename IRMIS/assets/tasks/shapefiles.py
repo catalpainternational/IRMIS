@@ -114,8 +114,7 @@ def check_objects(model, fields):
         try:
             model.objects.get(gid=id[0])
         except GEOSException as ex:
-            if dryrun:
-                print("Issue Found:\n", id[0], id[1], ex)
-            else:
+            print("ISSUE FOUND:\n", id[0], id[1], ex)
+            if not dryrun:
                 fm.objects.filter(gid=id[0]).delete()
-                print("Data Removed:\n", id[0], id[1], ex)
+                print("DATA REMOVED:\n", id[0], id[1])
