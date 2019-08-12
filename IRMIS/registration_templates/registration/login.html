@@ -1,36 +1,28 @@
-{% extends "base.html" %}
+{% extends "base_registration.html" %}
 {% load i18n %}
 
-{% block language_change %}{% endblock %} // hide language selector while there's no design for it
+{% block registration %}
+<form method="post" action=".">
+    {% csrf_token %}
 
-{% block login %}{% endblock %}
+    {% if form.non_field_errors %}
+    <span class="danger text-center">{{ form.non_field_errors }}</span>
+    {% endif %}
 
-{% block base_content %}
-<div class="authentication">
-    <span class="image app-logo"></span>
+    <div class="form-group">
+        <label for="username">{% trans "Username" %}</label>
+        <input id="username" class="form-control {% if form.username.value is None %}inactive{% endif %}" autofocus required placeholder="{% trans 'Username' %}" name="username" type="text" maxlength="254" value="{% if form.username.value is not None %}{{ form.username.value }}{% endif %}" onkeyup="highlight()">
+    </div>
+    <div class="form-group">
+        <label class="{% if form.non_field_errors %}danger{% endif %}" for="password">{% trans "Password" %}</label>
+        <input id="password" class="{% if form.non_field_errors %}danger{% else %}inactive{% endif %} form-control" required placeholder="{% trans 'Password' %}" name="password" type="password" maxlength="254" onkeyup="highlight()">
+    </div>
 
-    <form method="post" action=".">
-        {% csrf_token %}
-
-        {% if form.non_field_errors %}
-        <span class="danger text-center">{{ form.non_field_errors }}</span>
-        {% endif %}
-
-        <div class="form-group">
-            <label class="{% if form.non_field_errors %}danger{% endif %}" for="username">{% trans "Username" %}</label>
-            <input id="username" class="{% if form.non_field_errors %}danger{% endif %} form-control inactive" autofocus required placeholder="{% trans 'Username' %}" name="username" type="text" maxlength="254" onkeyup="highlight()" value="{% if form.username.value is not None %}{{ form.username.value }}{% endif %}">
-        </div>
-        <div class="form-group">
-            <label class="{% if form.non_field_errors %}danger{% endif %}" for="password">{% trans "Password" %}</label>
-            <input id="password" class="{% if form.non_field_errors %}danger{% endif %} form-control inactive" required placeholder="{% trans 'Password' %}" name="password" type="password" maxlength="254" onkeyup="highlight()">
-        </div>
-
-        <div class="align-items-center d-flex justify-content-between">
-            <a href="{% url 'password_reset' %}">{% trans "Forgot your password?" %}</a>
-            <button id="submit" class="btn btn-inactive" type="submit">{% trans "Log in" %}</button>
-        </div>
-    </form>
-</div>
+    <div class="align-items-center d-flex justify-content-between">
+        <a href="{% url 'password_reset' %}">{% trans "Forgot your password?" %}</a>
+        <button id="submit" class="btn btn-inactive" type="submit">{% trans "Log in" %}</button>
+    </div>
+</form>
 
 <script>
     var username = document.getElementById('username');
@@ -41,8 +33,10 @@
         if (username.value) username.classList.remove('inactive');
         else username.classList.add('inactive');
 
-        if (password.value) password.classList.remove('inactive');
-        else password.classList.add('inactive');
+        if (password.value) {
+            password.labels.item(0).classList.remove('danger');
+            password.classList.remove('danger', 'inactive');
+        } else password.classList.add('inactive');
 
         if (username.value && password.value) {
             submit.classList.remove('btn-inactive');

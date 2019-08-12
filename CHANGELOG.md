@@ -12,3 +12,4 @@
 - Login page
 - Change password pages
 - Forgot password pages
+- Language selector
