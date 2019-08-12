@@ -22,7 +22,10 @@ class Command(BaseCommand):
             help="Meta data to add to the table (as JSON string)",
         )
         parser.add_argument(
-            "--dryrun", default=False, type=bool, help="Prints output, but does not save"
+            "--dryrun",
+            default=False,
+            type=bool,
+            help="Prints output, but does not save",
         )
 
     def handle(self, *args, **options):
