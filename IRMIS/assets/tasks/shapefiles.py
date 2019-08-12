@@ -104,14 +104,18 @@ def create_unmanged_model(table, dryrun=False):
 
 def cleanup_feature_imports(dryrun=False):
     """Delete data points with erroneous GEODATA from feature DB tables"""
-    feature_models = [RoadNational, RoadMunicipal]
-    for fm in feature_models:
-        for id in fm.objects.values_list("gid", "name"):
-            try:
-                fm.objects.get(gid=id[0])
-            except GEOSException as ex:
-                if dryrun:
-                    print("Issue Found:\n", id[0], id[1], ex)
-                else:
-                    fm.objects.filter(gid=id[0]).delete()
-                    print("Data Removed:\n", id[0], id[1], ex)
+    check_objects(RoadNational, ["gid", "name"])
+    check_objects(RoadMunicipal, ["gid", "name"])
+    check_objects(RoadRural, ["gid", "id"])
+
+
+def check_objects(model, fields):
+    for id in model.objects.values_list(*fields):
+        try:
+            model.objects.get(gid=id[0])
+        except GEOSException as ex:
+            if dryrun:
+                print("Issue Found:\n", id[0], id[1], ex)
+            else:
+                fm.objects.filter(gid=id[0]).delete()
+                print("Data Removed:\n", id[0], id[1], ex)
