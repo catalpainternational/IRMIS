@@ -143,6 +143,9 @@ EXTRA_LANG_INFO = {
     }
 }
 
+LOCALE_PATHS = [os.path.join(BASE_DIR, "locale")]
+
+
 # Add custom languages not provided by Django
 # LANG_INFO = dict(django.conf.locale.LANG_INFO.items() + EXTRA_LANG_INFO.items())
 django.conf.locale.LANG_INFO.update(EXTRA_LANG_INFO)
