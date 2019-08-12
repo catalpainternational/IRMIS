@@ -106,7 +106,7 @@ def cleanup_feature_imports(dryrun=False):
     """Delete data points with erroneous GEODATA from feature DB tables"""
     feature_models = [RoadNational, RoadMunicipal]
     for fm in feature_models:
-        for id in fm.objects.values_list('gid', 'name'):
+        for id in fm.objects.values_list("gid", "name"):
             try:
                 fm.objects.get(gid=id[0])
             except GEOSException as ex:
