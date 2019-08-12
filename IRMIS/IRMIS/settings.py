@@ -66,11 +66,13 @@ INSTALLED_APPS = [
     # IRMIS
     "IRMIS_wagtail",
     "assets",
+    "rest_framework",
+    "rest_framework_gis",
     # CATALPA UTILS
     "catalpa_django_apps.google_analytics",
 ]
 
-MIDDLEWARE = [
+MIDDLEWARE = (
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
@@ -81,7 +83,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "wagtail.core.middleware.SiteMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
-]
+)
 
 ROOT_URLCONF = "IRMIS.urls"
 
