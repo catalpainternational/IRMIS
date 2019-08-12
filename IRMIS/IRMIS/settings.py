@@ -73,7 +73,7 @@ INSTALLED_APPS = [
     "debug_toolbar",
 ]
 
-MIDDLEWARE = [
+MIDDLEWARE = (
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
@@ -84,7 +84,8 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "wagtail.core.middleware.SiteMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
-]
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
+)
 
 ROOT_URLCONF = "IRMIS.urls"
 
