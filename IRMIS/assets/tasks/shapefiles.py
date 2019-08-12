@@ -1,6 +1,10 @@
 from django.db import connection
 from django.core.management import call_command
 from django.conf import settings
+from django.contrib.gis.geos.error import GEOSException
+from assets.feature_models.road_national import RoadNational
+from assets.feature_models.road_rural import RoadRural
+from assets.feature_models.road_municipal import RoadMunicipal
 import os
 import re
 import subprocess
@@ -65,7 +69,7 @@ def import_shapefile_features(filename, table, meta=None, dryrun=False):
 
 
 def create_unmanged_model(table, dryrun=False):
-    """ Create unmanged model from inspection of DB tables"""
+    """Create unmanged model from inspection of DB tables"""
     try:
         if dryrun:
             # outputs model.py file to screen
@@ -96,3 +100,18 @@ def create_unmanged_model(table, dryrun=False):
                 )
     except Exception as e:
         print("Table inspection failed - %s" % str(e))
+
+
+def cleanup_feature_imports(dryrun=False):
+    """Delete data points with erroneous GEODATA from feature DB tables"""
+    feature_models = [RoadNational, RoadMunicipal]
+    for fm in feature_models:
+        for id in fm.objects.values_list('gid', 'name'):
+            try:
+                fm.objects.get(gid=id[0])
+            except GEOSException as ex:
+                if dryrun:
+                    print("Issue Found:\n", id[0], id[1], ex)
+                else:
+                    fm.objects.filter(gid=id[0]).delete()
+                    print("Data Removed:\n", id[0], id[1], ex)
