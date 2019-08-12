@@ -3,11 +3,11 @@ from rest_framework import routers
 from .views import RoadNationalViewSet
 
 router = routers.DefaultRouter()
-router.register(r'national_roads', RoadNationalViewSet)
+router.register(r"national_roads", RoadNationalViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    path('', include(router.urls)),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    path("", include(router.urls)),
+    path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
 ]

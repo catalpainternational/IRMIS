@@ -7,5 +7,6 @@ class RoadNationalViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
+
     queryset = RoadNational.objects.all()
     serializer_class = RoadNationalSerializer
