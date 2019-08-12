@@ -14,7 +14,7 @@ class Command(BaseCommand):
             help="The table name of the feature to import",
         )
         parser.add_argument(
-            "-p", default=False, type=bool, help="Prints output, but does not save"
+            "--dryrun", default=False, type=bool, help="Prints output, but does not save"
         )
 
     def handle(self, *args, **options):
