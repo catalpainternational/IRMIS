@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-25 13:22+0000\n"
+"POT-Creation-Date: 2019-08-09 04:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,30 +18,36 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: IRMIS/settings.py:183
+#: IRMIS/settings.py:172
 msgid "IRMIS"
 msgstr ""
 
-#: project_templates/base.html:50
+#: project_templates/base.html:49
 msgid "Change password"
 msgstr ""
 
-#: project_templates/base.html:52
+#: project_templates/base.html:51
 msgid "Log out"
 msgstr ""
 
-#: project_templates/base.html:54
-#: registration_templates/registration/login.html:12
-#: registration_templates/registration/password_reset_complete.html:8
+#: project_templates/base.html:53
+#: registration_templates/registration/login.html:23
 msgid "Log in"
 msgstr ""
 
-#: registration_templates/registration/login.html:16
-msgid "Forgot password"
+#: registration_templates/registration/login.html:13
+#: registration_templates/registration/login.html:14
+msgid "Username"
 msgstr ""
 
-#: registration_templates/registration/login.html:16
-msgid "Reset it"
+#: registration_templates/registration/login.html:17
+#: registration_templates/registration/login.html:18
+msgid "Password"
+msgstr ""
+
+#: registration_templates/registration/login.html:22
+#: registration_templates/registration/password_reset_form.html:5
+msgid "Forgot your password?"
 msgstr ""
 
 #: registration_templates/registration/logout.html:5
@@ -49,28 +55,104 @@ msgid "Logged out"
 msgstr ""
 
 #: registration_templates/registration/password_change_done.html:5
-msgid "Password changed"
+#: registration_templates/registration/password_reset_complete.html:5
+msgid "Well done!"
+msgstr ""
+
+#: registration_templates/registration/password_change_done.html:6
+#: registration_templates/registration/password_reset_complete.html:6
+msgid "Your password has been reset successfully"
+msgstr ""
+
+#: registration_templates/registration/password_change_done.html:7
+#: registration_templates/registration/password_reset_complete.html:7
+msgid "Continue"
+msgstr ""
+
+#: registration_templates/registration/password_change_form.html:5
+#: registration_templates/registration/password_reset_confirm.html:5
+msgid "Create a new password"
+msgstr ""
+
+#: registration_templates/registration/password_change_form.html:8
+#: registration_templates/registration/password_reset_confirm.html:8
+msgid "Your password can't be too similar to your other personal information"
+msgstr ""
+
+#: registration_templates/registration/password_change_form.html:9
+#: registration_templates/registration/password_reset_confirm.html:9
+msgid "Your password must contain at least 8 characters"
+msgstr ""
+
+#: registration_templates/registration/password_change_form.html:10
+#: registration_templates/registration/password_reset_confirm.html:10
+msgid "Your password can't be a commonly used password"
 msgstr ""
 
 #: registration_templates/registration/password_change_form.html:11
-#: registration_templates/registration/password_reset_confirm.html:12
-#: registration_templates/registration/password_reset_form.html:9
-msgid "Submit"
+#: registration_templates/registration/password_reset_confirm.html:11
+msgid "Your password can't be entirely numeric"
 msgstr ""
 
-#: registration_templates/registration/password_reset_complete.html:6
-msgid "Password reset successfully"
+#: registration_templates/registration/password_change_form.html:25
+#: registration_templates/registration/password_change_form.html:26
+msgid "Old password"
 msgstr ""
 
-#: registration_templates/registration/password_reset_confirm.html:17
+#: registration_templates/registration/password_change_form.html:32
+#: registration_templates/registration/password_change_form.html:33
+#: registration_templates/registration/password_reset_confirm.html:26
+#: registration_templates/registration/password_reset_confirm.html:27
+msgid "New password"
+msgstr ""
+
+#: registration_templates/registration/password_change_form.html:36
+#: registration_templates/registration/password_change_form.html:37
+#: registration_templates/registration/password_reset_confirm.html:30
+#: registration_templates/registration/password_reset_confirm.html:31
+msgid "New password confirmation"
+msgstr ""
+
+#: registration_templates/registration/password_change_form.html:41
+#: registration_templates/registration/password_reset_confirm.html:35
+#: registration_templates/registration/password_reset_form.html:17
+msgid "Cancel"
+msgstr ""
+
+#: registration_templates/registration/password_change_form.html:42
+#: registration_templates/registration/password_reset_confirm.html:36
+msgid "Save changes"
+msgstr ""
+
+#: registration_templates/registration/password_reset_confirm.html:41
 msgid "Password reset failed"
 msgstr ""
 
 #: registration_templates/registration/password_reset_done.html:5
-msgid "Email with password reset instructions has been sent."
+msgid "Reset your password"
+msgstr ""
+
+#: registration_templates/registration/password_reset_done.html:6
+msgid ""
+"We have sent a reset password link to your email. Please, click on the link "
+"to set your new password. Thanks."
 msgstr ""
 
 #: registration_templates/registration/password_reset_email.html:2
 #, python-format
 msgid "Reset password at %(site_name)s"
+msgstr ""
+
+#: registration_templates/registration/password_reset_form.html:10
+msgid ""
+"Don’t worry. Resetting your password is easy, just tell us the email address "
+"you registered with Estrada."
+msgstr ""
+
+#: registration_templates/registration/password_reset_form.html:13
+msgid "Email address"
+msgstr ""
+
+#: registration_templates/registration/password_reset_form.html:18
+msgid "Send"
 msgstr ""

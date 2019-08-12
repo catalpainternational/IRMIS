@@ -136,7 +136,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
 LANGUAGE_CODE = "tet"
-LANGUAGES = [("tet", "Tetum"), ("en", "English"), ("pt", "Português")]
+LANGUAGES = [("tet", "Tetum"), ("pt", "Português"), ("en", "English")]
 
 EXTRA_LANG_INFO = {
     "tet": {
