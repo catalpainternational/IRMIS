@@ -22,7 +22,7 @@ class Command(BaseCommand):
             help="Meta data to add to the table (as JSON string)",
         )
         parser.add_argument(
-            "-p", default=False, type=bool, help="Prints output, but does not save"
+            "--dryrun", default=False, type=bool, help="Prints output, but does not save"
         )
 
     def handle(self, *args, **options):
@@ -30,5 +30,5 @@ class Command(BaseCommand):
             filename=options.get("filename"),
             table=options.get("table"),
             meta=options.get("meta"),
-            dryrun=options.get("p"),
+            dryrun=options.get("dryrun"),
         )
