@@ -66,6 +66,8 @@ INSTALLED_APPS = [
     # IRMIS
     "IRMIS_wagtail",
     "assets",
+    "rest_framework",
+    "rest_framework_gis",
     # CATALPA UTILS
     "catalpa_django_apps.google_analytics",
 ]

@@ -1,0 +1,17 @@
+from django.core.management.base import BaseCommand
+from assets.tasks.shapefiles import create_unmanged_model
+
+
+class Command(BaseCommand):
+    help = "Build unmanaged Django models from shapefiles derived Postgresql tables"
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "--table", required=True, help="The table name of the feature to import"
+        )
+        parser.add_argument(
+            "--dry-run", action="store_true", help="Prints output, but does not save"
+        )
+
+    def handle(self, *args, **options):
+        create_unmanged_model(table=options.get("table"), dryrun=options["dry-run"])

@@ -30,6 +30,7 @@ def trigger_error(request):
 
 
 urlpatterns = [
+    path("assets/", include("assets.urls")),
     path("admin/", admin.site.urls),
     path("sentry-debug/", trigger_error),
     re_path(r"^cms/", include(wagtailadmin_urls)),

@@ -30,6 +30,16 @@ Use `pip-compile --upgrade` to upgrade versions of libraries, then test the resu
 3. You can compile SASS and JavaScript assets with `yarn run dev`.
 4. Yarn can detect changes in these assets and rebuild them automatically. Use `yarn run watch`.
 
+## How to Import New Features from a Shapefile (.shp) and re-build the unmanaged models.
+
+1. Import Shapefiles into the database (2 options available)
+  - Using management command (use help (`--help`) for more details) to import and build un-managed model in 1 step: `./manage.py import_shapefile_features --filename=./Shapefiles_GIS/National_Road.shp`
+  - Using `shp2pgsql` command line tool to import and a seperate management command:
+      - Import the data into the DB: `shp2psql -I -c -s 32751 ./path/to/file.shp <table_name>`
+      - Management command run after import to build an unmanaged model: `./manage.py build_feature_model --table=<table_name>` (table name is "source_" + <shapefile_name>)
+2. Remove any bad import GEO data from shapefiles
+`./manage.py remove_problematic_features`
+
 ## Testing
 
 Add details of testing here...
