@@ -35,6 +35,32 @@ msgstr "Sai"
 msgid "Log in"
 msgstr "Tama"
 
+#: registration_templates/base_registration.html:29
+msgid ""
+"Please enter a correct username and password. Note that both fields may be "
+"case-sensitive"
+msgstr ""
+
+#: registration_templates/base_registration.html:30
+msgid "This password is too short. It must contain at least 8 characters"
+msgstr ""
+
+#: registration_templates/base_registration.html:31
+msgid "Your old password was entered incorrectly. Please enter it again"
+msgstr ""
+
+#: registration_templates/base_registration.html:32
+msgid "The two password fields didn't match"
+msgstr ""
+
+#: registration_templates/base_registration.html:33
+msgid "This password is entirely numeric"
+msgstr ""
+
+#: registration_templates/base_registration.html:34
+msgid "This password is too common"
+msgstr ""
+
 #: registration_templates/registration/login.html:13
 #: registration_templates/registration/login.html:14
 msgid "Username"
