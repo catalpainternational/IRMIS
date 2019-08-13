@@ -7,9 +7,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            "--table",
-            required=True,
-            help="The table name of the feature to import",
+            "--table", required=True, help="The table name of the feature to import"
         )
         parser.add_argument(
             "--dryrun",
