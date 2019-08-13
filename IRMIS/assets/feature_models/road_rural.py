@@ -20,7 +20,7 @@ class RoadRural(models.Model):
     municipali = models.CharField(max_length=254, blank=True, null=True)
     road_cod_1 = models.CharField(max_length=254, blank=True, null=True)
     year_1 = models.FloatField(blank=True, null=True)
-    geom = models.MultiLineStringField(srid=2263, dim=4, blank=True, null=True)
+    geom = models.MultiLineStringField(srid=32751, dim=4, blank=True, null=True)
 
     class Meta:
         managed = False

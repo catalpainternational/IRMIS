@@ -14,7 +14,7 @@ class RoadMunicipal(models.Model):
     descriptio = models.CharField(max_length=254, blank=True, null=True)
     lenkm = models.FloatField(blank=True, null=True)
     condi = models.CharField(max_length=5, blank=True, null=True)
-    geom = models.MultiLineStringField(srid=2263, dim=4, blank=True, null=True)
+    geom = models.MultiLineStringField(srid=32751, dim=4, blank=True, null=True)
 
     class Meta:
         managed = False

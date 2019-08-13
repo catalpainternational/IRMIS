@@ -17,7 +17,7 @@ class RoadNational(models.Model):
     code = models.CharField(max_length=10, blank=True, null=True)
     subcode = models.CharField(max_length=2, blank=True, null=True)
     status = models.IntegerField(blank=True, null=True)
-    geom = models.MultiLineStringField(srid=2263, dim=4, blank=True, null=True)
+    geom = models.MultiLineStringField(srid=32751, dim=4, blank=True, null=True)
 
     class Meta:
         managed = False
