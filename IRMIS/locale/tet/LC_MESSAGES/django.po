@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: 1.0 VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-12 06:19+0000\n"
-"PO-Revision-Date: 2019-08-12 08:18+0000\n"
-"Last-Translator: b'  <juliana@catalpa.io>'\n"
+"PO-Revision-Date: 2019-08-13 06:29+0000\n"
+"Last-Translator: b'  <januario@catalpa.io>'\n"
 "Language-Team: Catalpa International <info@catalpa.io>\n"
 "Language: tet\n"
 "MIME-Version: 1.0\n"
@@ -24,7 +24,7 @@ msgstr "IRMIS "
 
 #: project_templates/base.html:49
 msgid "Change password"
-msgstr "Troka password "
+msgstr "Troka seña"
 
 #: project_templates/base.html:51
 msgid "Log out"
@@ -40,55 +40,57 @@ msgid ""
 "Please enter a correct username and password. Note that both fields may be "
 "case-sensitive"
 msgstr ""
+"Favor hatama naran utilisador ho seña nebe los. Nota Katak linha rua ne "
+"talvez sensitivu"
 
 #: registration_templates/base_registration.html:30
 msgid "This password is too short. It must contain at least 8 characters"
-msgstr ""
+msgstr "Seña ne badak liu. Tenki inklui mazemeinus 8 karateristiku"
 
 #: registration_templates/base_registration.html:31
 msgid "Your old password was entered incorrectly. Please enter it again"
-msgstr ""
+msgstr "Ita bot nia seña tuan hatama lalos. Favor hatama fali"
 
 #: registration_templates/base_registration.html:32
 msgid "The two password fields didn't match"
-msgstr ""
+msgstr "Lina rua ba seña nian ne hatama la hanesan"
 
 #: registration_templates/base_registration.html:33
 msgid "This password is entirely numeric"
-msgstr ""
+msgstr "Seña ida ne numeru hotu "
 
 #: registration_templates/base_registration.html:34
 msgid "This password is too common"
-msgstr ""
+msgstr "Seña ida ne komun liu "
 
 #: registration_templates/registration/login.html:13
 #: registration_templates/registration/login.html:14
 msgid "Username"
-msgstr "Username"
+msgstr "Naran utilisador "
 
 #: registration_templates/registration/login.html:17
 #: registration_templates/registration/login.html:18
 msgid "Password"
-msgstr "Password "
+msgstr "Seña"
 
 #: registration_templates/registration/login.html:22
 #: registration_templates/registration/password_reset_form.html:5
 msgid "Forgot your password?"
-msgstr "Haluha password "
+msgstr "Haluha ita bot nia seña?"
 
 #: registration_templates/registration/logout.html:5
 msgid "Logged out"
-msgstr ""
+msgstr "Sai "
 
 #: registration_templates/registration/password_change_done.html:5
 #: registration_templates/registration/password_reset_complete.html:5
 msgid "Well done!"
-msgstr "Diak los! "
+msgstr "Diak los!"
 
 #: registration_templates/registration/password_change_done.html:6
 #: registration_templates/registration/password_reset_complete.html:6
 msgid "Your password has been reset successfully"
-msgstr "Ita nia password troka ona ho susesu "
+msgstr "Ita bot nia seña troka ona ho susesu"
 
 #: registration_templates/registration/password_change_done.html:7
 #: registration_templates/registration/password_reset_complete.html:7
@@ -98,46 +100,46 @@ msgstr "Kontinua"
 #: registration_templates/registration/password_change_form.html:5
 #: registration_templates/registration/password_reset_confirm.html:5
 msgid "Create a new password"
-msgstr "Kria password foun"
+msgstr "Kria seña foun"
 
 #: registration_templates/registration/password_change_form.html:8
 #: registration_templates/registration/password_reset_confirm.html:8
 msgid "Your password can't be too similar to your other personal information"
-msgstr "Ita nia password labele hanesan liu ho ita nia informasaun pesoal "
+msgstr "Ita bot nia seña labele hanesan liu ho ita nia informasaun pesoal "
 
 #: registration_templates/registration/password_change_form.html:9
 #: registration_templates/registration/password_reset_confirm.html:9
 msgid "Your password must contain at least 8 characters"
-msgstr "Ita nia password mazemenus tenke inklui características 8"
+msgstr "Ita nia password mazemenus tenke inklui karateristiku 8"
 
 #: registration_templates/registration/password_change_form.html:10
 #: registration_templates/registration/password_reset_confirm.html:10
 msgid "Your password can't be a commonly used password"
-msgstr "Ita labele uza password nebe komun "
+msgstr "Ita bot labele uza seña nebe komun "
 
 #: registration_templates/registration/password_change_form.html:11
 #: registration_templates/registration/password_reset_confirm.html:11
 msgid "Your password can't be entirely numeric"
-msgstr "Ita nia password labele uza numeru hotu "
+msgstr "Ita bot nia seña labele uza numeru hotu "
 
 #: registration_templates/registration/password_change_form.html:25
 #: registration_templates/registration/password_change_form.html:26
 msgid "Old password"
-msgstr "Password tuan"
+msgstr "Seña tuan"
 
 #: registration_templates/registration/password_change_form.html:32
 #: registration_templates/registration/password_change_form.html:33
 #: registration_templates/registration/password_reset_confirm.html:26
 #: registration_templates/registration/password_reset_confirm.html:27
 msgid "New password"
-msgstr "Password foun"
+msgstr "Seña foun"
 
 #: registration_templates/registration/password_change_form.html:36
 #: registration_templates/registration/password_change_form.html:37
 #: registration_templates/registration/password_reset_confirm.html:30
 #: registration_templates/registration/password_reset_confirm.html:31
 msgid "New password confirmation"
-msgstr "Konfirmasaun password foun "
+msgstr "Konfirmasaun seña foun "
 
 #: registration_templates/registration/password_change_form.html:41
 #: registration_templates/registration/password_reset_confirm.html:35
@@ -148,39 +150,39 @@ msgstr "Kansela "
 #: registration_templates/registration/password_change_form.html:42
 #: registration_templates/registration/password_reset_confirm.html:36
 msgid "Save changes"
-msgstr ""
+msgstr "Salva mudansa"
 
 #: registration_templates/registration/password_reset_confirm.html:41
 msgid "The link to reset your password is not valid anymore."
-msgstr "Ligasaun atu hadia ita nia password la validu ona "
+msgstr "Ligasaun atu hadia ita bot nia seña la validu ona "
 
 #: registration_templates/registration/password_reset_confirm.html:42
 msgid "Go back to the login page"
-msgstr "Fila fali ba pagina login nian"
+msgstr "Fila fali ba pagina tama nian"
 
 #: registration_templates/registration/password_reset_done.html:5
 msgid "Reset your password"
-msgstr "Troka ita nia password "
+msgstr "Troka ita bot nia seña"
 
 #: registration_templates/registration/password_reset_done.html:6
 msgid ""
 "We have sent a reset password link to your email. Please, click on the link "
 "to set your new password. Thanks."
 msgstr ""
-"Ami manda ona ligasaun atu hadia password ba ita nia email. Favor klik iha "
-"ligasaun ne atu troka ita nia password "
+"Ami manda ona ligasaun atu hadia seña ba ita bot nia email. Favor hanehan "
+"iha ligasaun ne atu troka ita bot nia seña. Obrigado.  "
 
 #: registration_templates/registration/password_reset_email.html:2
 #, python-format
 msgid "Reset password at %(site_name)s"
-msgstr "Troka password iha  %(site_name)s"
+msgstr "Troka seña iha  %(site_name)s"
 
 #: registration_templates/registration/password_reset_form.html:10
 msgid ""
 "Don’t worry. Resetting your password is easy, just tell us the email address"
 " you registered with Estrada."
 msgstr ""
-"Lalika tauk. Atu troka ita nia password fasil. Dehan mai ami email ida nebe "
+"Lalika tauk. Atu troka ita bot nia seña fasil. Dehan mai ami email ida nebe "
 "ita uza hodi halo rejistrasaun ho Estrada"
 
 #: registration_templates/registration/password_reset_form.html:13
