@@ -125,9 +125,13 @@ msgstr "Cancelar"
 msgid "Save changes"
 msgstr "Guardar alterações"
 
-#: registration_templates/registration/password_reset_confirm.html:41
-msgid "Password reset failed"
-msgstr "A alteração de palavra-passe falhou"
+#: registration_templates/registration/password_reset_confirm.html:41V
+msgid "The link to reset your password is not valid anymore."
+msgstr "O link para redefinir a sua palavra-passe expirou."
+
+#: registration_templates/registration/password_reset_confirm.html:42
+msgid "Go back to the login page"
+msgstr "Regressar à página de entrada"
 
 #: registration_templates/registration/password_reset_done.html:5
 msgid "Reset your password"
@@ -139,7 +143,7 @@ msgid ""
 "to set your new password. Thanks."
 msgstr ""
 "Enviamos um link para o seu email. Por favor, clique no link para redefinir "
-"a sua nova palavra-passe. Obrigada."
+"a sua nova palavra-passe. Obrigado."
 
 #: registration_templates/registration/password_reset_email.html:2
 #, python-format

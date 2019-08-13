@@ -8,46 +8,47 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0 VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-09 04:54+0000\n"
-"PO-Revision-Date: 2019-07-25 11:27+0000\n"
-"Last-Translator: Peter Coward <peter@catalpa.io>\n"
+"POT-Creation-Date: 2019-08-12 06:19+0000\n"
+"PO-Revision-Date: 2019-08-12 08:18+0000\n"
+"Last-Translator: b'  <juliana@catalpa.io>'\n"
 "Language-Team: Catalpa International <info@catalpa.io>\n"
 "Language: tet\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Translated-Using: django-rosetta 0.9.3\n"
 
 #: IRMIS/settings.py:172
 msgid "IRMIS"
-msgstr ""
+msgstr "IRMIS "
 
 #: project_templates/base.html:49
 msgid "Change password"
-msgstr ""
+msgstr "Troka password "
 
 #: project_templates/base.html:51
 msgid "Log out"
-msgstr ""
+msgstr "Sai"
 
 #: project_templates/base.html:53
 #: registration_templates/registration/login.html:23
 msgid "Log in"
-msgstr ""
+msgstr "Tama"
 
 #: registration_templates/registration/login.html:13
 #: registration_templates/registration/login.html:14
 msgid "Username"
-msgstr ""
+msgstr "Username"
 
 #: registration_templates/registration/login.html:17
 #: registration_templates/registration/login.html:18
 msgid "Password"
-msgstr ""
+msgstr "Password "
 
 #: registration_templates/registration/login.html:22
 #: registration_templates/registration/password_reset_form.html:5
 msgid "Forgot your password?"
-msgstr ""
+msgstr "Haluha password "
 
 #: registration_templates/registration/logout.html:5
 msgid "Logged out"
@@ -56,67 +57,67 @@ msgstr ""
 #: registration_templates/registration/password_change_done.html:5
 #: registration_templates/registration/password_reset_complete.html:5
 msgid "Well done!"
-msgstr ""
+msgstr "Diak los! "
 
 #: registration_templates/registration/password_change_done.html:6
 #: registration_templates/registration/password_reset_complete.html:6
 msgid "Your password has been reset successfully"
-msgstr ""
+msgstr "Ita nia password troka ona ho susesu "
 
 #: registration_templates/registration/password_change_done.html:7
 #: registration_templates/registration/password_reset_complete.html:7
 msgid "Continue"
-msgstr ""
+msgstr "Kontinua"
 
 #: registration_templates/registration/password_change_form.html:5
 #: registration_templates/registration/password_reset_confirm.html:5
 msgid "Create a new password"
-msgstr ""
+msgstr "Kria password foun"
 
 #: registration_templates/registration/password_change_form.html:8
 #: registration_templates/registration/password_reset_confirm.html:8
 msgid "Your password can't be too similar to your other personal information"
-msgstr ""
+msgstr "Ita nia password labele hanesan liu ho ita nia informasaun pesoal "
 
 #: registration_templates/registration/password_change_form.html:9
 #: registration_templates/registration/password_reset_confirm.html:9
 msgid "Your password must contain at least 8 characters"
-msgstr ""
+msgstr "Ita nia password mazemenus tenke inklui características 8"
 
 #: registration_templates/registration/password_change_form.html:10
 #: registration_templates/registration/password_reset_confirm.html:10
 msgid "Your password can't be a commonly used password"
-msgstr ""
+msgstr "Ita labele uza password nebe komun "
 
 #: registration_templates/registration/password_change_form.html:11
 #: registration_templates/registration/password_reset_confirm.html:11
 msgid "Your password can't be entirely numeric"
-msgstr ""
+msgstr "Ita nia password labele uza numeru hotu "
 
 #: registration_templates/registration/password_change_form.html:25
 #: registration_templates/registration/password_change_form.html:26
 msgid "Old password"
-msgstr ""
+msgstr "Password tuan"
 
 #: registration_templates/registration/password_change_form.html:32
 #: registration_templates/registration/password_change_form.html:33
 #: registration_templates/registration/password_reset_confirm.html:26
 #: registration_templates/registration/password_reset_confirm.html:27
 msgid "New password"
-msgstr ""
+msgstr "Password foun"
 
 #: registration_templates/registration/password_change_form.html:36
 #: registration_templates/registration/password_change_form.html:37
 #: registration_templates/registration/password_reset_confirm.html:30
 #: registration_templates/registration/password_reset_confirm.html:31
 msgid "New password confirmation"
-msgstr ""
+msgstr "Konfirmasaun password foun "
 
 #: registration_templates/registration/password_change_form.html:41
 #: registration_templates/registration/password_reset_confirm.html:35
 #: registration_templates/registration/password_reset_form.html:17
 msgid "Cancel"
-msgstr ""
+msgstr "Kansela "
 
 #: registration_templates/registration/password_change_form.html:42
 #: registration_templates/registration/password_reset_confirm.html:36
@@ -124,34 +125,42 @@ msgid "Save changes"
 msgstr ""
 
 #: registration_templates/registration/password_reset_confirm.html:41
-msgid "Password reset failed"
-msgstr ""
+msgid "The link to reset your password is not valid anymore."
+msgstr "Ligasaun atu hadia ita nia password la validu ona "
+
+#: registration_templates/registration/password_reset_confirm.html:42
+msgid "Go back to the login page"
+msgstr "Fila fali ba pagina login nian"
 
 #: registration_templates/registration/password_reset_done.html:5
 msgid "Reset your password"
-msgstr ""
+msgstr "Troka ita nia password "
 
 #: registration_templates/registration/password_reset_done.html:6
 msgid ""
 "We have sent a reset password link to your email. Please, click on the link "
 "to set your new password. Thanks."
 msgstr ""
+"Ami manda ona ligasaun atu hadia password ba ita nia email. Favor klik iha "
+"ligasaun ne atu troka ita nia password "
 
 #: registration_templates/registration/password_reset_email.html:2
 #, python-format
 msgid "Reset password at %(site_name)s"
-msgstr ""
+msgstr "Troka password iha  %(site_name)s"
 
 #: registration_templates/registration/password_reset_form.html:10
 msgid ""
-"Don’t worry. Resetting your password is easy, just tell us the email address "
-"you registered with Estrada."
+"Don’t worry. Resetting your password is easy, just tell us the email address"
+" you registered with Estrada."
 msgstr ""
+"Lalika tauk. Atu troka ita nia password fasil. Dehan mai ami email ida nebe "
+"ita uza hodi halo rejistrasaun ho Estrada"
 
 #: registration_templates/registration/password_reset_form.html:13
 msgid "Email address"
-msgstr ""
+msgstr "Email"
 
 #: registration_templates/registration/password_reset_form.html:18
 msgid "Send"
-msgstr ""
+msgstr "Haruka "
