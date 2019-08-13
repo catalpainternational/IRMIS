@@ -131,7 +131,7 @@ def create_unmanged_model(table, dryrun=False):
         print("Table inspection failed - %s" % str(e))
 
 
-def cleanup_feature_imports(dryrun=False):
+def remove_problematic_features(dryrun=False):
     """Delete data points with erroneous GEODATA from feature DB tables"""
     check_objects(RoadNational, ["gid", "name"], dryrun)
     check_objects(RoadMunicipal, ["gid", "name"], dryrun)

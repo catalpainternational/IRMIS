@@ -1,9 +1,9 @@
 from django.core.management.base import BaseCommand
-from assets.tasks.shapefiles import cleanup_feature_imports
+from assets.tasks.shapefiles import remove_problematic_features
 
 
 class Command(BaseCommand):
-    help = "Clean up problematic data from the importing of shapefile GIS data into PostgreSQL tables"
+    help = "Remove problematic data from the importing of shapefile GIS data into PostgreSQL tables"
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -14,4 +14,4 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        cleanup_feature_imports(dryrun=options.get("dryrun"))
+        remove_problematic_features(dryrun=options.get("dryrun"))
