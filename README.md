@@ -36,16 +36,18 @@ Two management commands exist for these tasks:
   - uploading new shapefiles (`import_shapefile_features`)
   - re-building unmanaged model (`build_feature_model`) NOTE: This should only be run after the shapefile has been imported.
 
-Instructions to import Shapefile:
-Example management command (use help (`--help`) for more details):
-`./manage.py import_shapefile_features --filename=/Shapefiles_GIS/National_Road.shp --table=road_national`
+Instructions to import Shapefile into the database:
+- Using management command (use help (`--help`) for more details):
+    `./manage.py import_shapefile_features --filename=/Shapefiles_GIS/National_Road.shp --table=road_national`
+- Using `shp2pgsql` command line tool:
+    `shp2psql -I -c -s 32751 ./path/to/file.shp <table_name>`
 
-Instructions to re-build the unmanaged models
+Instructions to re-build the unmanaged models:
 Example of management command (use help (`--help`) for more details):
-`./manage.py build_feature_model --table=road_national`
+`./manage.py build_feature_model --table=<table_name>`
 
-Remove any bad import GEO data from shapefiles
-`./manage.py cleanup_feature_imports --dryrun=True`
+Remove any bad import GEO data from shapefiles:
+`./manage.py remove_problematic_features --dryrun=True`
 
 ## Testing
 
