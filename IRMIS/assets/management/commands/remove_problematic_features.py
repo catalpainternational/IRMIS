@@ -7,11 +7,11 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            "--dryrun",
+            "--dry-run",
             default=False,
             type=bool,
             help="Prints output, but does not delete bad data",
         )
 
     def handle(self, *args, **options):
-        remove_problematic_features(dryrun=options.get("dryrun"))
+        remove_problematic_features(dryrun=options.get("dry-run"))

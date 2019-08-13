@@ -16,7 +16,7 @@ class Command(BaseCommand):
             help="Meta data to add to the table (as JSON string)",
         )
         parser.add_argument(
-            "--dryrun",
+            "--dry-run",
             default=False,
             type=bool,
             help="Prints output, but does not save",
@@ -26,5 +26,5 @@ class Command(BaseCommand):
         import_shapefile_features(
             filename=options.get("filename"),
             meta=options.get("meta"),
-            dryrun=options.get("dryrun"),
+            dryrun=options.get("dry-run"),
         )

@@ -10,11 +10,11 @@ class Command(BaseCommand):
             "--table", required=True, help="The table name of the feature to import"
         )
         parser.add_argument(
-            "--dryrun",
+            "--dry-run",
             default=False,
             type=bool,
             help="Prints output, but does not save",
         )
 
     def handle(self, *args, **options):
-        create_unmanged_model(table=options.get("table"), dryrun=options.get("dryrun"))
+        create_unmanged_model(table=options.get("table"), dryrun=options.get("dry-run"))
