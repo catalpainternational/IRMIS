@@ -145,6 +145,9 @@ EXTRA_LANG_INFO = {
     }
 }
 
+LOCALE_PATHS = [os.path.join(BASE_DIR, "locale")]
+
+
 # Add custom languages not provided by Django
 # LANG_INFO = dict(django.conf.locale.LANG_INFO.items() + EXTRA_LANG_INFO.items())
 django.conf.locale.LANG_INFO.update(EXTRA_LANG_INFO)
@@ -164,7 +167,10 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "dist"),)
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "dist"),
+    os.path.join(BASE_DIR, "src/favicon"),
+)
 
 # Media files (user uploaded files)
 
