@@ -72,7 +72,7 @@ INSTALLED_APPS = [
     "catalpa_django_apps.google_analytics",
 ]
 
-MIDDLEWARE = (
+MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
@@ -82,8 +82,8 @@ MIDDLEWARE = (
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "wagtail.core.middleware.SiteMiddleware",
-    "wagtail.contrib.redirects.middleware.RedirectMiddleware",
-)
+    "wagtail.contrib.redirects.middleware.RedirectMiddleware"
+]
 
 ROOT_URLCONF = "IRMIS.urls"
 
@@ -183,9 +183,6 @@ LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 WAGTAIL_FRONTEND_LOGIN_URL = "/accounts/login/"
 PASSWORD_REQUIRED_TEMPLATE = "home/password_required.html"
-
-# unmanaged feature tables
-FEATURE_TABLES = ["road_national", "road_municipal", "road_rural"]
 
 try:
     from .local_settings import *  # noqa

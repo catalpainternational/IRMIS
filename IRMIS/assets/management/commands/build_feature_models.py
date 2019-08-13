@@ -1,5 +1,4 @@
 from django.core.management.base import BaseCommand
-from django.conf import settings
 from assets.tasks.shapefiles import create_unmanged_model
 
 
@@ -10,7 +9,6 @@ class Command(BaseCommand):
         parser.add_argument(
             "--table",
             required=True,
-            choices=getattr(settings, "FEATURE_TABLES", []),
             help="The table name of the feature to import",
         )
         parser.add_argument(
