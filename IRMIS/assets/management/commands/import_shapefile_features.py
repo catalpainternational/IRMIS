@@ -16,10 +16,7 @@ class Command(BaseCommand):
             help="Meta data to add to the table (as JSON string)",
         )
         parser.add_argument(
-            "--dry-run",
-            default=False,
-            type=bool,
-            help="Prints output, but does not save",
+            "--dry-run", action="store_true", help="Prints output, but does not save"
         )
 
     def handle(self, *args, **options):

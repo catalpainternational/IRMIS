@@ -38,7 +38,7 @@ Use `pip-compile --upgrade` to upgrade versions of libraries, then test the resu
       - Import the data into the DB: `shp2psql -I -c -s 32751 ./path/to/file.shp <table_name>`
       - Management command run after import to build an unmanaged model: `./manage.py build_feature_model --table=<table_name>` (table name is "source_" + <shapefile_name>)
 2. Remove any bad import GEO data from shapefiles
-`./manage.py remove_problematic_features --dry-run=True`
+`./manage.py remove_problematic_features`
 
 ## Testing
 

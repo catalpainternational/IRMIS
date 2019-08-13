@@ -8,8 +8,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument(
             "--dry-run",
-            default=False,
-            type=bool,
+            action="store_true",
             help="Prints output, but does not delete bad data",
         )
 
