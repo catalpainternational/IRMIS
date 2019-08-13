@@ -104,12 +104,12 @@ def create_unmanged_model(table, dryrun=False):
 
 def cleanup_feature_imports(dryrun=False):
     """Delete data points with erroneous GEODATA from feature DB tables"""
-    check_objects(RoadNational, ["gid", "name"])
-    check_objects(RoadMunicipal, ["gid", "name"])
-    check_objects(RoadRural, ["gid", "id"])
+    check_objects(RoadNational, ["gid", "name"], dryrun)
+    check_objects(RoadMunicipal, ["gid", "name"], dryrun)
+    check_objects(RoadRural, ["gid", "id"], dryrun)
 
 
-def check_objects(model, fields):
+def check_objects(model, fields, dryrun):
     for id in model.objects.values_list(*fields):
         try:
             model.objects.get(gid=id[0])
