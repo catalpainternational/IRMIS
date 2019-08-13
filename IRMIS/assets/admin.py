@@ -1,10 +1,13 @@
 from django.contrib.gis import admin
 from django.conf import settings
-from assets.feature_models.road_municipal import RoadMunicipal
-from assets.feature_models.road_national import RoadNational
-from assets.feature_models.road_rural import RoadRural
+from assets.feature_models.source_national_road import SourceNationalRoad
+from assets.feature_models.source_rural_road_r4d_timor_leste import (
+    SourceRuralRoadR4DTimorLeste,
+)
+from assets.feature_models.source_municipal_road import SourceMunicipalRoad
+from assets.feature_models.source_rrmpis_2014 import SourceRrmpis2014
 
-
-admin.site.register(RoadMunicipal, admin.OSMGeoAdmin)
-admin.site.register(RoadNational, admin.OSMGeoAdmin)
-admin.site.register(RoadRural, admin.OSMGeoAdmin)
+admin.site.register(SourceMunicipalRoad, admin.OSMGeoAdmin)
+admin.site.register(SourceNationalRoad, admin.OSMGeoAdmin)
+admin.site.register(SourceRuralRoadR4DTimorLeste, admin.OSMGeoAdmin)
+admin.site.register(SourceRrmpis2014, admin.OSMGeoAdmin)

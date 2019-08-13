@@ -8,7 +8,7 @@
 from django.contrib.gis.db import models
 
 
-class RoadNational(models.Model):
+class SourceNationalRoad(models.Model):
     gid = models.AutoField(primary_key=True)
     name = models.CharField(max_length=254, blank=True, null=True)
     descriptio = models.CharField(max_length=254, blank=True, null=True)
@@ -21,4 +21,4 @@ class RoadNational(models.Model):
 
     class Meta:
         managed = False
-        db_table = "road_national"
+        db_table = "source_national_road"

@@ -1,11 +1,15 @@
 from rest_framework import viewsets
-from .feature_models.road_national import RoadNational
-from .feature_models.road_rural import RoadRural
-from .feature_models.road_municipal import RoadMunicipal
+from .feature_models.source_national_road import SourceNationalRoad
+from .feature_models.source_rural_road_r4d_timor_leste import (
+    SourceRuralRoadR4DTimorLeste,
+)
+from .feature_models.source_municipal_road import SourceMunicipalRoad
+from assets.feature_models.source_rrmpis_2014 import SourceRrmpis2014
 from .serializers import (
     RoadMunicipalSerializer,
     RoadNationalSerializer,
     RoadRuralSerializer,
+    Rrmpis2014Serializer,
 )
 
 
@@ -14,7 +18,7 @@ class RoadMunicipalViewSet(viewsets.ModelViewSet):
     API endpoint that allows users to be viewed or edited.
     """
 
-    queryset = RoadMunicipal.objects.all()
+    queryset = SourceMunicipalRoad.objects.all()
     serializer_class = RoadMunicipalSerializer
 
 
@@ -23,7 +27,7 @@ class RoadNationalViewSet(viewsets.ModelViewSet):
     API endpoint that allows users to be viewed or edited.
     """
 
-    queryset = RoadNational.objects.all()
+    queryset = SourceNationalRoad.objects.all()
     serializer_class = RoadNationalSerializer
 
 
@@ -32,5 +36,14 @@ class RoadRuralViewSet(viewsets.ModelViewSet):
     API endpoint that allows users to be viewed or edited.
     """
 
-    queryset = RoadRural.objects.all()
+    queryset = SourceRuralRoadR4DTimorLeste.objects.all()
     serializer_class = RoadRuralSerializer
+
+
+class RoadRrmpisViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+
+    queryset = SourceRrmpis2014.objects.all()
+    serializer_class = Rrmpis2014Serializer

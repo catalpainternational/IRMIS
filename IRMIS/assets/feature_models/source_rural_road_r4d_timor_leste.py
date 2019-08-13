@@ -8,7 +8,7 @@
 from django.contrib.gis.db import models
 
 
-class RoadRural(models.Model):
+class SourceRuralRoadR4DTimorLeste(models.Model):
     gid = models.AutoField(primary_key=True)
     id2 = models.CharField(max_length=50, blank=True, null=True)
     id = models.CharField(max_length=254, blank=True, null=True)
@@ -24,4 +24,4 @@ class RoadRural(models.Model):
 
     class Meta:
         managed = False
-        db_table = "road_rural"
+        db_table = "source_rural_road_r4d_timor_leste"

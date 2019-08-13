@@ -11,12 +11,6 @@ class Command(BaseCommand):
             "--filename", required=True, help="The shapefile to import into PostgreSQL"
         )
         parser.add_argument(
-            "--table",
-            required=True,
-            choices=getattr(settings, "FEATURE_TABLES", []),
-            help="The table name of the feature to import",
-        )
-        parser.add_argument(
             "--meta",
             default=None,
             help="Meta data to add to the table (as JSON string)",
@@ -31,7 +25,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         import_shapefile_features(
             filename=options.get("filename"),
-            table=options.get("table"),
             meta=options.get("meta"),
             dryrun=options.get("dryrun"),
         )

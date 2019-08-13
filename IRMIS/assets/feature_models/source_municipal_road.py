@@ -8,7 +8,7 @@
 from django.contrib.gis.db import models
 
 
-class RoadMunicipal(models.Model):
+class SourceMunicipalRoad(models.Model):
     gid = models.AutoField(primary_key=True)
     name = models.CharField(max_length=254, blank=True, null=True)
     descriptio = models.CharField(max_length=254, blank=True, null=True)
@@ -18,4 +18,4 @@ class RoadMunicipal(models.Model):
 
     class Meta:
         managed = False
-        db_table = "road_municipal"
+        db_table = "source_municipal_road"
