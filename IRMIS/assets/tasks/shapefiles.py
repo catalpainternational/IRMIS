@@ -18,7 +18,10 @@ def import_shapefile_features(filename, table, meta=None, dryrun=False):
     if table in valid_features:
         try:
             # check if SQL table exists to determine shp2pgsql command to use
-            check_sql = "select exists(select count(*) from %s)" % table
+            check_sql = (
+                "SELECT EXISTS (SELECT relname FROM pg_class WHERE relname = '%s');"
+                % table
+            )
             c = connection.cursor()
             c.execute(check_sql)
             if c.fetchone()[0]:
