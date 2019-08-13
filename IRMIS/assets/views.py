@@ -1,10 +1,5 @@
 from rest_framework import viewsets
-from .feature_models.source_national_road import SourceNationalRoad
-from .feature_models.source_rural_road_r4d_timor_leste import (
-    SourceRuralRoadR4DTimorLeste,
-)
-from .feature_models.source_municipal_road import SourceMunicipalRoad
-from assets.feature_models.source_rrmpis_2014 import SourceRrmpis2014
+from .feature_models import *
 from .serializers import (
     RoadMunicipalSerializer,
     RoadNationalSerializer,

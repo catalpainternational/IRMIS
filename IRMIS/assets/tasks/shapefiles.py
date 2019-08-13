@@ -2,12 +2,7 @@ from django.db import connection
 from django.core.management import call_command
 from django.conf import settings
 from django.contrib.gis.geos.error import GEOSException
-from assets.feature_models.source_national_road import SourceNationalRoad
-from assets.feature_models.source_rural_road_r4d_timor_leste import (
-    SourceRuralRoadR4DTimorLeste,
-)
-from assets.feature_models.source_municipal_road import SourceMunicipalRoad
-from assets.feature_models.source_rrmpis_2014 import SourceRrmpis2014
+from assets.feature_models import *
 import os
 import re
 import subprocess
