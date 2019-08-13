@@ -8,7 +8,6 @@ import re
 import subprocess
 
 
-valid_features = getattr(settings, "FEATURE_TABLES", [])
 file_path = os.path.join(os.path.abspath(__file__ + "/../../"), "feature_models")
 
 
