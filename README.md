@@ -32,9 +32,10 @@ Use `pip-compile --upgrade` to upgrade versions of libraries, then test the resu
 
 ## How to Import New Features from a Shapefile (.shp) and re-build the unmanaged models.
 
-Two management commands exist for these tasks:
+Three management commands exist for these tasks:
   - uploading new shapefiles (`import_shapefile_features`)
-  - re-building unmanaged model (`build_feature_model`) NOTE: This should only be run after the shapefile has been imported.
+  - re-building unmanaged model (`build_feature_model`) NOTE: This should only be run after the shapefile has been imported if it does not already exist, not for basic populating of the DB.
+  - removing bad feature data from the DB (`remove_problematic_features`)
 
 Instructions to import Shapefile into the database:
 - Using management command (use help (`--help`) for more details):
