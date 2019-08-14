@@ -15,10 +15,11 @@ Including another URLconf
 """
 from django.contrib.gis import admin
 from django.contrib.auth import urls as django_auth_urls
+from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls import i18n as i18n_urls
 from django.conf.urls.static import static
-from django.urls import path, re_path, include
+from django.urls import path, re_path, include, reverse_lazy
 
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.documents import urls as wagtaildocs_urls
@@ -35,6 +36,12 @@ urlpatterns = [
     path("sentry-debug/", trigger_error),
     re_path(r"^cms/", include(wagtailadmin_urls)),
     re_path(r"^documents/", include(wagtaildocs_urls)),
+    re_path(
+        r"^accounts/password_reset/$",
+        auth_views.PasswordResetView.as_view(
+            html_email_template_name="registration/password_reset_email.html"
+        ),
+    ),
     re_path(r"^accounts/", include(django_auth_urls)),
     re_path(r"^i18n/", include(i18n_urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

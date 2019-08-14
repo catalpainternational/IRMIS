@@ -14,3 +14,4 @@
 - Forgot password pages
 - Language selector
 - Add favicon
+- HTML template email
