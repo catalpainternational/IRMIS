@@ -34,9 +34,14 @@ $larger-form: 450px;
         span.danger {
             background-color: $red;
             border-radius: $radius;
-            margin-bottom: 20px;
+            margin-bottom: 5px;
+            margin-top: 20px;
             display: block;
             padding: 7px;
+
+            &:first-of-type {
+                margin-top: 0;
+            }
         }
 
         &.larger {
