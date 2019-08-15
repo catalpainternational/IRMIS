@@ -19,14 +19,8 @@ class Migration(migrations.Migration):
                 ("descriptio", models.CharField(blank=True, max_length=254, null=True)),
                 ("lenkm", models.FloatField(blank=True, null=True)),
                 ("condi", models.CharField(blank=True, max_length=5, null=True)),
-                (
-                    "geom",
-                    django.contrib.gis.db.models.fields.MultiLineStringField(
-                        blank=True, dim=4, null=True, srid=32751
-                    ),
-                ),
             ],
-            options={"db_table": "source_municipal_road", "managed": False},
+            options={"db_table": "source_municipal_road", "managed": True},
         ),
         migrations.CreateModel(
             name="SourceNationalRoad",
@@ -39,14 +33,8 @@ class Migration(migrations.Migration):
                 ("code", models.CharField(blank=True, max_length=10, null=True)),
                 ("subcode", models.CharField(blank=True, max_length=2, null=True)),
                 ("status", models.IntegerField(blank=True, null=True)),
-                (
-                    "geom",
-                    django.contrib.gis.db.models.fields.MultiLineStringField(
-                        blank=True, dim=4, null=True, srid=32751
-                    ),
-                ),
             ],
-            options={"db_table": "source_national_road", "managed": False},
+            options={"db_table": "source_national_road", "managed": True},
         ),
         migrations.CreateModel(
             name="SourceRrmpis2014",
@@ -186,14 +174,8 @@ class Migration(migrations.Migration):
                 ("subdistrct", models.CharField(blank=True, max_length=20, null=True)),
                 ("sucocode", models.IntegerField(blank=True, null=True)),
                 ("rdidfin", models.CharField(blank=True, max_length=10, null=True)),
-                (
-                    "geom",
-                    django.contrib.gis.db.models.fields.MultiLineStringField(
-                        blank=True, dim=4, null=True, srid=32751
-                    ),
-                ),
             ],
-            options={"db_table": "source_rrmpis_2014", "managed": False},
+            options={"db_table": "source_rrmpis", "managed": True},
         ),
         migrations.CreateModel(
             name="SourceRuralRoadR4DTimorLeste",
@@ -212,13 +194,7 @@ class Migration(migrations.Migration):
                 ("municipali", models.CharField(blank=True, max_length=254, null=True)),
                 ("road_cod_1", models.CharField(blank=True, max_length=254, null=True)),
                 ("year_1", models.FloatField(blank=True, null=True)),
-                (
-                    "geom",
-                    django.contrib.gis.db.models.fields.MultiLineStringField(
-                        blank=True, dim=4, null=True, srid=32751
-                    ),
-                ),
             ],
-            options={"db_table": "source_rural_road_r4d_timor_leste", "managed": False},
+            options={"db_table": "source_r4d", "managed": True},
         ),
     ]

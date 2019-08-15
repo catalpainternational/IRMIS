@@ -1,25 +1,28 @@
 import os
-from .settings import MIDDLEWARE
+from .settings import INSTALLED_APPS, MIDDLEWARE
 
-# support for sqlite spatialite - see https://docs.djangoproject.com/en/2.2/ref/contrib/gis/install/spatialite/
-SPATIALITE_LIBRARY_PATH = '/usr/local/lib/mod_spatialite.dylib'
 
 DATABASES = {
-    'default': {
-        # If running postgresql + postgis
-        # 'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'irms_db',
-        # If running sqlite + spatialite
-        'ENGINE': 'django.contrib.gis.db.backends.spatialite',
-        'NAME': os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'db.sqlite3'),
+    "default": {
+        "ENGINE": "django.contrib.gis.db.backends.postgis",
+        "NAME": "irmis_db",
     }
-} 
+}
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+# django extensions
+try:
+    import django_extensions
+    INSTALLED_APPS.append("django_extensions")
+except ImportError:
+    pass
 
 # django debug toolbar configuration
-INTERNAL_IPS = [
-    '127.0.0.1',
-]
-# You should include the Debug Toolbar middleware as early as possible in the list. However, it must come after any other middleware that encodes the response’s content, such as GZipMiddleware. see https://django-debug-toolbar.readthedocs.io/en/latest/installation.html#enabling-middleware
-MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
+try:
+    import debug_toolbar
+    INSTALLED_APPS.append("debug_toolbar")
+    MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
+    INTERNAL_IPS = ['127.0.0.1']
+except:
+    pass

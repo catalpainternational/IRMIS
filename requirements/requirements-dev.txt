@@ -5,15 +5,21 @@
 #    pip-compile ../requirements/requirements-dev.in
 #
 appdirs==1.4.3            # via black
+appnope==0.1.0            # via ipython
 aspy.yaml==1.3.0          # via pre-commit
 atomicwrites==1.3.0       # via pytest
-attrs==19.1.0             # via black, pytest
+attrs==19.1.0             # via black, jsonschema, pytest
+backcall==0.1.0           # via ipython
 beautifulsoup4==4.6.0
 black==19.3b0
+bleach==3.1.0             # via nbconvert
 certifi==2019.6.16
 cfgv==2.0.1               # via pre-commit
 chardet==3.0.4
 click==7.0                # via black
+decorator==4.4.0          # via ipython, traitlets
+defusedxml==0.6.0         # via nbconvert
+django-debug-toolbar==2.0
 django-extensions==2.2.1
 django-modelcluster==4.4
 django-modeltranslation==0.13.3
@@ -21,40 +27,76 @@ django-rest-framework-condition==0.1.1
 django-rosetta==0.9.3
 django-taggit==0.24.0
 django-treebeard==4.3
-django==2.2.3
+django==2.2.4
 djangorestframework-gis==0.14
-djangorestframework==3.10.1
+djangorestframework==3.10.2
 draftjs-exporter==2.1.6
+entrypoints==0.3          # via nbconvert
 html5lib==1.0.1
 identify==1.4.5           # via pre-commit
 idna==2.8
 importlib-metadata==0.19  # via pluggy, pre-commit, pytest
 importlib-resources==1.0.2  # via pre-commit
+ipykernel==5.1.2          # via notebook
+ipython-genutils==0.2.0   # via nbformat, notebook, traitlets
+ipython==7.7.0            # via ipykernel
+jedi==0.15.1              # via ipython
+jinja2==2.10.1            # via nbconvert, notebook
+json5==0.8.5              # via jupyterlab-server
+jsonschema==3.0.2         # via jupyterlab-server, nbformat
+jupyter-client==5.3.1     # via ipykernel, notebook
+jupyter-core==4.5.0       # via jupyter-client, nbconvert, nbformat, notebook
+jupyterlab-server==1.0.2  # via jupyterlab
+jupyterlab==1.0.5
+markupsafe==1.1.1         # via jinja2
+mistune==0.8.4            # via nbconvert
 more-itertools==7.2.0     # via pytest
+nbconvert==5.6.0          # via notebook
+nbformat==4.4.0           # via nbconvert, notebook
 nodeenv==1.3.3            # via pre-commit
+notebook==6.0.0           # via jupyterlab, jupyterlab-server
 packaging==19.0           # via pytest
-pillow==5.4.1
+pandocfilters==1.4.2      # via nbconvert
+parso==0.5.1              # via jedi
+pexpect==4.7.0            # via ipython
+pickleshare==0.7.5        # via ipython
+pillow==6.1.0
 pluggy==0.12.0            # via pytest
 polib==1.1.0
 pre-commit==1.18.1
+prometheus-client==0.7.1  # via notebook
+prompt-toolkit==2.0.9     # via ipython
 psycopg2-binary==2.8.3
+ptyprocess==0.6.0         # via pexpect, terminado
 py==1.8.0                 # via pytest
+pygments==2.4.2           # via ipython, nbconvert
 pyparsing==2.4.1.1        # via packaging
+pyrsistent==0.15.4        # via jsonschema
 pytest-django==3.5.1
 pytest==5.0.1             # via pytest-django
-pytz==2019.1
+python-dateutil==2.8.0    # via jupyter-client
+pytz==2019.2
 pyyaml==5.1.2             # via aspy.yaml, pre-commit
+pyzmq==18.1.0             # via jupyter-client, notebook
 requests==2.22.0
+send2trash==1.5.0         # via notebook
 sentry-sdk==0.10.2
 six==1.12.0
 sqlparse==0.3.0
+terminado==0.8.2          # via notebook
+testpath==0.4.2           # via nbconvert
 toml==0.10.0              # via black, pre-commit
+tornado==6.0.3            # via ipykernel, jupyter-client, jupyterlab, notebook, terminado
+traitlets==4.3.2          # via ipykernel, ipython, jupyter-client, jupyter-core, nbconvert, nbformat, notebook
 unidecode==1.1.1
 urllib3==1.25.3
 virtualenv==16.7.2        # via pre-commit
 wagtail-modeltranslation==0.10.2
-wagtail==2.5.1
-wcwidth==0.1.7            # via pytest
+wagtail==2.6.1
+wcwidth==0.1.7            # via prompt-toolkit, pytest
 webencodings==0.5.1
 willow==1.1
 zipp==0.5.2               # via importlib-metadata
+
+# The following packages are considered to be unsafe in a requirements file:
+# setuptools==41.1.0        # via ipython, jsonschema

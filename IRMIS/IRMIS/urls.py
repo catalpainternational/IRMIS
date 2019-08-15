@@ -46,8 +46,14 @@ urlpatterns = [
     re_path(r"^i18n/", include(i18n_urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-if "rosetta" in settings.INSTALLED_APPS:
-    urlpatterns += [re_path(r"^rosetta/", include("rosetta.urls"))]
 
 # catchall must come last
 urlpatterns += [re_path(r"", include(wagtail_urls))]
+
+if "rosetta" in settings.INSTALLED_APPS:
+    urlpatterns = [re_path(r"^rosetta/", include("rosetta.urls"))] + urlpatterns
+
+if "debug_toolbar" in settings.INSTALLED_APPS:
+    import debug_toolbar
+
+    urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns

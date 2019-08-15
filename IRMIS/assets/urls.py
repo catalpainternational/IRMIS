@@ -1,17 +1,9 @@
 from django.urls import include, path
 from rest_framework import routers
-from .views import (
-    RoadNationalViewSet,
-    RoadMunicipalViewSet,
-    RoadRuralViewSet,
-    RoadRrmpisViewSet,
-)
+from .views import RoadViewSet
 
 router = routers.DefaultRouter()
-router.register(r"municipal_roads", RoadMunicipalViewSet)
-router.register(r"national_roads", RoadNationalViewSet)
-router.register(r"rural_roads", RoadRuralViewSet)
-router.register(r"rrmpis_roads", RoadRrmpisViewSet)
+router.register(r"roads", RoadViewSet, basename="road")
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
