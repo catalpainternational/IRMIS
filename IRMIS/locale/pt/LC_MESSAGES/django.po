@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-14 03:06+0000\n"
-"PO-Revision-Date: 2019-08-13 05:48+0000\n"
+"PO-Revision-Date: 2019-08-15 08:25+0000\n"
 "Last-Translator: b'  <juliana@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -50,11 +50,12 @@ msgstr "A sua palavra-passe deve conter pelo menos 8 caracteres"
 
 #: registration_templates/base_registration.html:31
 msgid "Your old password was entered incorrectly. Please enter it again"
-msgstr "A palavra-passe introduzida está incorrecta. Por favor volte a tentar."
+msgstr ""
+"A palavra-passe introduzida está incorrecta. Por favor volte a tentar."
 
 #: registration_templates/base_registration.html:32
 msgid "The two password fields didn't match"
-msgstr "Os dois campos de palavra-passe não coincidem"
+msgstr "Os dois campos da nova palavra-passe não coincidem"
 
 #: registration_templates/base_registration.html:33
 msgid "This password is entirely numeric"
@@ -175,16 +176,17 @@ msgstr ""
 
 #: registration_templates/registration/password_reset_email.html:6
 msgid "Hello there"
-msgstr ""
+msgstr "Viva"
 
 #: registration_templates/registration/password_reset_email.html:7
 msgid ""
 "We received a request to change your Estrada password. Click the button "
 "below to create a new password"
 msgstr ""
+"Recebemos um pedido para redefinir a sua palavra-passe no Estrada. Clique no"
+" botão abaixo para criar uma nova palavra-passe"
 
 #: registration_templates/registration/password_reset_email.html:9
-#, fuzzy
 #| msgid "Reset your password"
 msgid "Reset my password"
 msgstr "Redefinir a sua palavra-passe"
@@ -194,14 +196,16 @@ msgid ""
 "If you didn't mean to reset your password, then you can just ignore this "
 "email. Your password will not change"
 msgstr ""
+"Se não pretende alterar a sua palavra-passe, por favor ignore este email. A "
+"sua palavra-passe não será alterada"
 
 #: registration_templates/registration/password_reset_form.html:10
 msgid ""
-"Don’t worry. Resetting your password is easy, just tell us the email address "
-"you registered with Estrada."
+"Don’t worry. Resetting your password is easy, just tell us the email address"
+" you registered with Estrada."
 msgstr ""
-"Não se preocupe! Redefinir a sua palavra-passe é simples, indique-nos apenas "
-"o endereço de email com que se registou no Estrada."
+"Não se preocupe! Redefinir a sua palavra-passe é simples, indique-nos apenas"
+" o endereço de email com que se registou no Estrada."
 
 #: registration_templates/registration/password_reset_form.html:13
 msgid "Email address"
