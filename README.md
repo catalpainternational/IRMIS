@@ -53,4 +53,8 @@ If you want to enable it, run the following command in the repo folder, after ha
 
 ## Testing
 
-Add details of testing here...
+This project uses pytest-django https://pytest-django.readthedocs.io/en/latest/tutorial.html
+To run tests cd to the django directory ( next to manage.py ) and type `pytest`
+To run tests with debugger breakpoint support use `pytest -s`
+To run tests then keep the db, and re-use it next time use `pytest --reuse-db` and the `pytest --create-db` when you have changed models and migrations
+To run tests that match a pattern use `-k` e.g. `pytest -k api`

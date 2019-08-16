@@ -1,9 +1,11 @@
 import hashlib
 import json
 from django.shortcuts import get_object_or_404
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
-from rest_framework_condition import condition, etag
+from rest_framework_condition import condition
 from .models import Road
 from .serializers import RoadSerializer
 
@@ -31,6 +33,9 @@ def get_last_modified(request, pk=None):
 
 
 class RoadViewSet(ViewSet):
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+
     @condition(etag_func=get_etag, last_modified_func=get_last_modified)
     def list(self, request):
         queryset = Road.objects.all()

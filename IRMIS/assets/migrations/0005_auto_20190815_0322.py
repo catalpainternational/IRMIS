@@ -8,28 +8,44 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('contenttypes', '0002_remove_content_type_name'),
-        ('assets', '0004_source_road_models'),
+        ("contenttypes", "0002_remove_content_type_name"),
+        ("assets", "0004_source_road_models"),
     ]
 
     operations = [
         migrations.RenameModel(
-            old_name='SourceRuralRoadR4DTimorLeste',
-            new_name='SourceR4D',
+            old_name="SourceRuralRoadR4DTimorLeste", new_name="SourceR4D"
         ),
-        migrations.RenameModel(
-            old_name='SourceRrmpis2014',
-            new_name='SourceRrmpis',
-        ),
+        migrations.RenameModel(old_name="SourceRrmpis2014", new_name="SourceRrmpis"),
         migrations.CreateModel(
-            name='Road',
+            name="Road",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('geom', django.contrib.gis.db.models.fields.MultiLineStringField(blank=True, dim=3, null=True, srid=32751)),
-                ('properties_object_id', models.PositiveIntegerField()),
-                ('date_created', models.DateTimeField(auto_now_add=True, null=True)),
-                ('last_modified', models.DateTimeField(auto_now=True)),
-                ('properties_content_type', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='contenttypes.ContentType')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "geom",
+                    django.contrib.gis.db.models.fields.MultiLineStringField(
+                        blank=True, dim=3, null=True, srid=32751
+                    ),
+                ),
+                ("properties_object_id", models.PositiveIntegerField()),
+                ("date_created", models.DateTimeField(auto_now_add=True, null=True)),
+                ("last_modified", models.DateTimeField(auto_now=True)),
+                (
+                    "properties_content_type",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="contenttypes.ContentType",
+                    ),
+                ),
             ],
         ),
     ]
