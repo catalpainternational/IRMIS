@@ -1,17 +1,203 @@
 from django.contrib.gis.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.utils.translation import get_language, ugettext, ugettext_lazy as _
+from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator
+
+
+def no_spaces(value):
+    if " " in value:
+        raise ValidationError(_("%(value)s contains spaces"), params={"value": value})
+
+
+class RoadStatus(models.Model):
+    code = models.CharField(max_length=3, unique=True, verbose_name=_("name"))
+    name = models.CharField(max_length=50, verbose_name=_("code"))
+
+    def __str__(self):
+        return self.name
+
+
+class SurfaceType(models.Model):
+    code = models.CharField(max_length=3, unique=True, verbose_name=_("name"))
+    name = models.CharField(max_length=50, verbose_name=_("code"))
+
+    def __str__(self):
+        return self.name
+
+
+class PavementClass(models.Model):
+    code = models.CharField(max_length=3, unique=True, verbose_name=_("name"))
+    name = models.CharField(max_length=50, verbose_name=_("code"))
+
+    def __str__(self):
+        return self.name
+
+
+class MaintenanceNeed(models.Model):
+    code = models.CharField(max_length=3, unique=True, verbose_name=_("name"))
+    name = models.CharField(max_length=50, verbose_name=_("code"))
+
+    def __str__(self):
+        return self.name
+
+
+class TechnicalClass(models.Model):
+    code = models.CharField(max_length=3, unique=True, verbose_name=_("name"))
+    name = models.CharField(max_length=50, verbose_name=_("code"))
+
+    def __str__(self):
+        return self.name
 
 
 class Road(models.Model):
+    ROAD_TYPE_CHOICES = [
+        ("NAT", _("National")),
+        ("HIGH", _("Highway")),
+        ("MUN", _("Municipal")),
+        ("URB", _("Urban")),
+        ("RUR", _("Rural")),
+    ]
+    TRAFFIC_LEVEL_CHOICES = [("L", _("Low")), ("M", _("Medium")), ("H", _("High"))]
+    SURFACE_CONDITION_CHOICES = [
+        ("1", _("Good")),
+        ("2", _("Fair")),
+        ("3", _("Bad")),
+        ("4", _("Poor")),
+    ]
+
     geom = models.MultiLineStringField(srid=32751, dim=3, blank=True, null=True)
     properties_content_type = models.ForeignKey(
         ContentType, null=True, on_delete=models.SET_NULL
     )
     properties_object_id = models.PositiveIntegerField()
     properties = GenericForeignKey("properties_content_type", "properties_object_id")
-    date_created = models.DateTimeField(auto_now_add=True, null=True)
-    last_modified = models.DateTimeField(auto_now=True)
+    date_created = models.DateTimeField(
+        verbose_name=_("date created"), auto_now_add=True, null=True
+    )
+    last_modified = models.DateTimeField(verbose_name=_("last modified"), auto_now=True)
+    # ROAD INVENTORY META DATA
+    road_code = models.CharField(
+        verbose_name=_("road code"),
+        validators=[no_spaces],
+        max_length=12,
+        unique=True,
+        blank=True,
+        null=True,
+    )
+    road_name = models.CharField(
+        verbose_name=_("road name"), max_length=50, blank=True, null=True
+    )
+    administrative_area = models.CharField(
+        verbose_name=_("administrative area"), max_length=50, default=None, null=True
+    )  # need to link to admin area model
+    funding_source = models.CharField(
+        verbose_name=_("funding source"), max_length=50, default=None, null=True
+    )  # need to link to funding model
+    link_code = models.CharField(
+        verbose_name=_("link code"),
+        validators=[no_spaces],
+        max_length=12,
+        unique=True,
+        blank=True,
+        null=True,
+    )
+    link_start_name = models.CharField(
+        verbose_name=_("link start name"), max_length=150, blank=True, null=True
+    )  # need to link to suco/admin area models
+    link_end_name = models.CharField(
+        verbose_name=_("link end name"), max_length=150, blank=True, null=True
+    )  # need to link to suco/admin area models
+    link_end_chainage = models.DecimalField(
+        verbose_name=_("link end chainage"),
+        max_digits=12,
+        decimal_places=5,
+        blank=True,
+        null=True,
+    )
+    link_start_chainage = models.DecimalField(
+        verbose_name=_("link start chainage"),
+        max_digits=12,
+        decimal_places=5,
+        blank=True,
+        null=True,
+    )
+    link_length = models.DecimalField(
+        verbose_name=_("link length"),
+        max_digits=8,
+        decimal_places=3,
+        blank=True,
+        null=True,
+    )
+    surface_type = models.ForeignKey(
+        "SurfaceType",
+        verbose_name=_("surface type"),
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    pavement_class = models.ForeignKey(
+        "PavementClass",
+        verbose_name=_("pavement class"),
+        validators=[MinValueValidator(0)],
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    carriageway_width = models.DecimalField(
+        verbose_name=_("carriageway width"),
+        validators=[MinValueValidator(0)],
+        max_digits=5,
+        decimal_places=3,
+        blank=True,
+        null=True,
+    )
+    road_type = models.CharField(
+        verbose_name=_("road type"),
+        max_length=4,
+        choices=ROAD_TYPE_CHOICES,
+        blank=True,
+        null=True,
+    )
+    road_status = models.ForeignKey(
+        "RoadStatus",
+        verbose_name=_("road status"),
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    project = models.CharField(
+        verbose_name=_("project"), max_length=150, blank=True, null=True
+    )
+    traffic_level = models.CharField(
+        max_length=1, choices=TRAFFIC_LEVEL_CHOICES, blank=True, null=True
+    )
+    surface_condition = models.CharField(
+        verbose_name=_("surface condition"),
+        max_length=1,
+        choices=SURFACE_CONDITION_CHOICES,
+        blank=True,
+        null=True,
+    )
+    maintanance_need = models.ForeignKey(
+        "MaintenanceNeed",
+        verbose_name=_("maintenance need"),
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    technical_class = models.ForeignKey(
+        "TechnicalClass",
+        verbose_name=_("technical class"),
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+
+    @property
+    def link_name(self):
+        return self.link_start_name + " - " + self.link_end_name
 
     def __str__(self,):
         return "%s - %s" % (self.properties_content_type, self.properties_object_id)

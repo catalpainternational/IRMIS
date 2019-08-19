@@ -1,5 +1,6 @@
 import hashlib
 import json
+from datetime import datetime
 from django.shortcuts import get_object_or_404
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -26,10 +27,13 @@ def get_etag(request, pk=None):
 
 
 def get_last_modified(request, pk=None):
-    if pk:
-        return Road.objects.filter(id=pk).latest("last_modified").last_modified
-    else:
-        return Road.objects.all().latest("last_modified").last_modified
+    try:
+        if pk:
+            return Road.objects.filter(id=pk).latest("last_modified").last_modified
+        else:
+            return Road.objects.all().latest("last_modified").last_modified
+    except Road.DoesNotExist:
+        return datetime.now()
 
 
 class RoadViewSet(ViewSet):
@@ -38,7 +42,32 @@ class RoadViewSet(ViewSet):
 
     @condition(etag_func=get_etag, last_modified_func=get_last_modified)
     def list(self, request):
-        queryset = Road.objects.all()
+        queryset = Road.objects.values(
+            "properties_content_type",
+            "properties_object_id",
+            "date_created",
+            "last_modified",
+            "road_code",
+            "road_name",
+            "administrative_area",
+            "funding_source",
+            "link_code",
+            "link_start_name",
+            "link_end_name",
+            "link_end_chainage",
+            "link_start_chainage",
+            "link_length",
+            "surface_type",
+            "pavement_class",
+            "carriageway_width",
+            "road_type",
+            "road_status",
+            "project",
+            "traffic_level",
+            "surface_condition",
+            "maintanance_need",
+            "technical_class",
+        ).all()
         serializer = RoadSerializer(queryset, many=True)
         return Response(serializer.data)
 
