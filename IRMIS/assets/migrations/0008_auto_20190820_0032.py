@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('assets', '0007_populate_meta_tables'),
-    ]
+    dependencies = [("assets", "0007_populate_meta_tables")]
 
     operations = [
         migrations.AlterField(
-            model_name='road',
-            name='properties_object_id',
+            model_name="road",
+            name="properties_object_id",
             field=models.PositiveIntegerField(null=True),
-        ),
+        )
     ]
