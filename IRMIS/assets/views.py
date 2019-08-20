@@ -8,7 +8,7 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework_condition import condition
 from .models import Road
-from .serializers import RoadSerializer
+from .serializers import RoadSerializer, RoadMetaOnlySerializer
 
 
 def get_etag(request, pk=None):
@@ -42,33 +42,8 @@ class RoadViewSet(ViewSet):
 
     @condition(etag_func=get_etag, last_modified_func=get_last_modified)
     def list(self, request):
-        queryset = Road.objects.values(
-            "properties_content_type",
-            "properties_object_id",
-            "date_created",
-            "last_modified",
-            "road_code",
-            "road_name",
-            "administrative_area",
-            "funding_source",
-            "link_code",
-            "link_start_name",
-            "link_end_name",
-            "link_end_chainage",
-            "link_start_chainage",
-            "link_length",
-            "surface_type",
-            "pavement_class",
-            "carriageway_width",
-            "road_type",
-            "road_status",
-            "project",
-            "traffic_level",
-            "surface_condition",
-            "maintanance_need",
-            "technical_class",
-        ).all()
-        serializer = RoadSerializer(queryset, many=True)
+        queryset = Road.objects.all()
+        serializer = RoadMetaOnlySerializer(queryset, many=True)
         return Response(serializer.data)
 
     @condition(etag_func=get_etag, last_modified_func=get_last_modified)
