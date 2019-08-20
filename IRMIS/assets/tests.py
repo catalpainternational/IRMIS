@@ -13,6 +13,19 @@ def test_api_requires_auth(client):
 
 
 @pytest.mark.django_db
+def test_api_road_list_does_not_error(client, django_user_model):
+    """ This test will fail if the road list api throws an error """
+    # create a road
+    road = Road.objects.create(geom=None, properties_object_id=44)
+    # create a user
+    user = django_user_model.objects.create_user(username="user1", password="bar")
+    client.force_login(user)
+    # hit the road api
+    url = reverse("road-list")
+    response = client.get(url)
+
+
+@pytest.mark.django_db
 def test_api_lastmod_and_etag_present(client, django_user_model):
     """ check the road api etag and last-modified are present on requests """
 
