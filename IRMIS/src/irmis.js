@@ -1,2 +1,3 @@
 import './styles/irmis.scss';
-import './js/roads_api';
+// eslint-disable-next-line no-unused-vars
+import { getRoadMetadata, getRoadGeometry } from './js/roads_api';
