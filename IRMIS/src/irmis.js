@@ -1,3 +1,2 @@
 import './styles/irmis.scss';
-
-window.road_api = require('./js/roads_api.js');
+import './js/roads_api.js';
