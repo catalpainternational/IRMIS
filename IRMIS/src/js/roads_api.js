@@ -1,7 +1,4 @@
-var headers = {
-    "Content-Type": "application/json",
-    "Authorization": "Basic " + btoa("username:password"),
-}
+var headers = { "Content-Type": "application/json", }
 
 function getRoadMetadata() {
     window.fetch('http://127.0.0.1:8000/assets/roads', { method: 'GET', headers: headers })
