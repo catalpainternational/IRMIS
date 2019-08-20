@@ -12,4 +12,10 @@ class RoadSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = Road
         geo_field = "geom"
-        fields = ["id", "geom"]
+        exclude = ["properties_object_id", "properties_content_type"]
+
+
+class RoadMetaOnlySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Road
+        exclude = ["geom", "properties_object_id", "properties_content_type"]

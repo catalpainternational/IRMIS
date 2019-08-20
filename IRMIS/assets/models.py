@@ -71,7 +71,7 @@ class Road(models.Model):
     properties_content_type = models.ForeignKey(
         ContentType, null=True, on_delete=models.SET_NULL
     )
-    properties_object_id = models.PositiveIntegerField()
+    properties_object_id = models.PositiveIntegerField(null=True)
     properties = GenericForeignKey("properties_content_type", "properties_object_id")
     date_created = models.DateTimeField(
         verbose_name=_("date created"), auto_now_add=True, null=True
