@@ -12,40 +12,40 @@ def no_spaces(value):
 
 
 class RoadStatus(models.Model):
-    code = models.CharField(max_length=3, unique=True, verbose_name=_("name"))
-    name = models.CharField(max_length=50, verbose_name=_("code"))
+    code = models.CharField(max_length=3, unique=True, verbose_name=_("code"))
+    name = models.CharField(max_length=50, verbose_name=_("name"))
 
     def __str__(self):
         return self.name
 
 
 class SurfaceType(models.Model):
-    code = models.CharField(max_length=3, unique=True, verbose_name=_("name"))
-    name = models.CharField(max_length=50, verbose_name=_("code"))
+    code = models.CharField(max_length=3, unique=True, verbose_name=_("code"))
+    name = models.CharField(max_length=50, verbose_name=_("name"))
 
     def __str__(self):
         return self.name
 
 
 class PavementClass(models.Model):
-    code = models.CharField(max_length=3, unique=True, verbose_name=_("name"))
-    name = models.CharField(max_length=50, verbose_name=_("code"))
+    code = models.CharField(max_length=3, unique=True, verbose_name=_("code"))
+    name = models.CharField(max_length=50, verbose_name=_("name"))
 
     def __str__(self):
         return self.name
 
 
 class MaintenanceNeed(models.Model):
-    code = models.CharField(max_length=3, unique=True, verbose_name=_("name"))
-    name = models.CharField(max_length=50, verbose_name=_("code"))
+    code = models.CharField(max_length=3, unique=True, verbose_name=_("code"))
+    name = models.CharField(max_length=50, verbose_name=_("name"))
 
     def __str__(self):
         return self.name
 
 
 class TechnicalClass(models.Model):
-    code = models.CharField(max_length=3, unique=True, verbose_name=_("name"))
-    name = models.CharField(max_length=50, verbose_name=_("code"))
+    code = models.CharField(max_length=3, unique=True, verbose_name=_("code"))
+    name = models.CharField(max_length=50, verbose_name=_("name"))
 
     def __str__(self):
         return self.name
