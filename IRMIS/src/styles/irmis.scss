@@ -1,5 +1,6 @@
 // Vendor
 @import "~bootstrap/scss/bootstrap";
+@import "~leaflet/dist/leaflet.css";
 
 // Base
 @import "variables";
@@ -14,3 +15,4 @@
 
 // Components
 @import "language";
+@import "map";
