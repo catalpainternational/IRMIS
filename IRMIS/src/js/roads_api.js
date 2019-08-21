@@ -1,6 +1,6 @@
 const headers = { 'Content-Type': 'application/json' };
 
-function getRoadMetadata() {
+export function getRoadMetadata() {
     return window.fetch(`${window.location.origin}/assets/roads`, { method: 'GET', headers })
         .then((response) => {
             if (response.ok) return response.json();
@@ -8,7 +8,7 @@ function getRoadMetadata() {
         }).then(json => json);
 }
 
-function getRoadGeometry(roadId) {
+export function getRoadGeometry(roadId) {
     return window.fetch(`${window.location.origin}/assets/roads/${roadId}`, { method: 'GET', headers })
         .then((response) => {
             if (response.ok) return response.json();
@@ -16,4 +16,3 @@ function getRoadGeometry(roadId) {
         }).then(json => json);
 }
 
-exports = { getRoadMetadata, getRoadGeometry };
