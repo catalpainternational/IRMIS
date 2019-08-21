@@ -15,4 +15,3 @@ export function getRoadGeometry(roadId) {
             throw new Error('Network response was not ok.');
         }).then(json => json);
 }
-
