@@ -14,7 +14,7 @@ from .serializers import RoadSerializer, RoadMetaOnlySerializer, RoadToWGSSerial
 def get_etag(request, pk=None):
     if pk:
         return hashlib.md5(
-            json.dumps(RoadSerializer(Road.objects.all().filter(id=pk).get()).data).encode(
+            json.dumps(RoadSerializer(Road.objects.filter(id=pk).get()).data).encode(
                 "utf-8"
             )
         ).hexdigest()
