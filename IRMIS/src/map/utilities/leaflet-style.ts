@@ -3,14 +3,14 @@ import { CircleMarkerOptions } from "leaflet";
 
 import { GeoDataStyle, IPointToLayerHtmlStyle, PointToLayerStyle } from "../models/geo-data-style";
 
-import { hashGeoTypeName } from "../utilities/text";
+import { hashFeatureTypeName } from "../utilities/text";
 
-/** Generate a fall-back colour based on the geoType name */
-export function FallbackLayerStyle(geoType: string): GeoDataStyle {
-  // Generate a fall-back colour based on a hash of the geoType name
+/** Generate a fall-back colour based on the featureType name */
+export function FallbackLayerStyle(featureType: string): GeoDataStyle {
+  // Generate a fall-back colour based on a hash of the featureType name
   // tslint:disable-next-line
-  const geoTypeHash = hashGeoTypeName(geoType) >> 8;
-  const fbColour = "#" + ("000000" + geoTypeHash.toString(16)).slice(-6);
+  const featureTypeHash = hashFeatureTypeName(featureType) >> 8;
+  const fbColour = "#" + ("000000" + featureTypeHash.toString(16)).slice(-6);
 
   return { style: { style: { color: fbColour } } } as GeoDataStyle;
 }
