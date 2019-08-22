@@ -1,5 +1,6 @@
 import hashlib
 import json
+from datetime import datetime
 from django.shortcuts import get_object_or_404
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -7,7 +8,7 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework_condition import condition
 from .models import Road
-from .serializers import RoadSerializer
+from .serializers import RoadSerializer, RoadMetaOnlySerializer
 
 
 def get_etag(request, pk=None):
@@ -26,10 +27,13 @@ def get_etag(request, pk=None):
 
 
 def get_last_modified(request, pk=None):
-    if pk:
-        return Road.objects.filter(id=pk).latest("last_modified").last_modified
-    else:
-        return Road.objects.all().latest("last_modified").last_modified
+    try:
+        if pk:
+            return Road.objects.filter(id=pk).latest("last_modified").last_modified
+        else:
+            return Road.objects.all().latest("last_modified").last_modified
+    except Road.DoesNotExist:
+        return datetime.now()
 
 
 class RoadViewSet(ViewSet):
@@ -39,7 +43,7 @@ class RoadViewSet(ViewSet):
     @condition(etag_func=get_etag, last_modified_func=get_last_modified)
     def list(self, request):
         queryset = Road.objects.all()
-        serializer = RoadSerializer(queryset, many=True)
+        serializer = RoadMetaOnlySerializer(queryset, many=True)
         return Response(serializer.data)
 
     @condition(etag_func=get_etag, last_modified_func=get_last_modified)

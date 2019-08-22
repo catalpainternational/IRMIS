@@ -11,7 +11,7 @@ module.exports = merge(common, {
             cssProcessorPluginOptions: {
                 preset: ['default', { discardComments: { removeAll: true } }],
             },
-            canPrint: false
+            canPrint: false,
         }),
     ],
 });

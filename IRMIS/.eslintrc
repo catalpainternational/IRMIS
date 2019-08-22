@@ -11,6 +11,7 @@
     "rules": {
         "indent": ["error", 4],
         "camelcase": "off",
-        "max-len": ["error", { "ignoreComments": true, "code": 120 }]
+        "max-len": ["error", { "ignoreComments": true, "code": 120 }],
+        "import/prefer-default-export": "off"
     }
 }

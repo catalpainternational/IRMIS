@@ -1,12 +1,22 @@
 // General layout styles
 
-body.registration {
+.registration {
     flex-direction: column;
     max-width: 1024px;
     margin: 0 auto;
     display: flex;
 }
 
+.content {
+    background-color: #3D4758;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
 ul {
     list-style: none;
+
+    li:hover {
+        cursor: pointer;
+    }
 }

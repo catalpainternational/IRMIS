@@ -7,9 +7,15 @@ from .models import Road
 class RoadSerializer(GeoFeatureModelSerializer):
     """ A class to serialize locations as GeoJSON compatible data """
 
-    geom = GeometryField(read_only=True, precision=2)
+    geom = GeometryField(read_only=True, precision=5)
 
     class Meta:
         model = Road
         geo_field = "geom"
-        fields = ["id", "geom"]
+        fields = ["geom"]
+
+
+class RoadMetaOnlySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Road
+        exclude = ["geom", "properties_object_id", "properties_content_type"]

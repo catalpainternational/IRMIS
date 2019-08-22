@@ -32,37 +32,19 @@
     </head>
 
     <body class="h-100 {% block body_class %}{% endblock %}">
-        <!--- language change -->
-        {% block language_change %}
-        <form action="{% url 'set_language' %}" method="post">{% csrf_token %}
-            <input name="next" type="hidden" value="{{ redirect_to }}">
-            <select name="language">
+        <div class="align-items-center d-flex justify-content-end top-menu">
+            {% block top_menu %}
+            <form class="language-selector text-right" action="{% url 'set_language' %}" method="post">
+                {% csrf_token %}
                 {% get_current_language as LANGUAGE_CODE %}
                 {% get_available_languages as LANGUAGES %}
                 {% get_language_info_list for LANGUAGES as languages %}
                 {% for language in languages %}
-                    <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
-                        {{ language.name_local }} ({{ language.code }})
-                    </option>
+                <button class="{% if language.code == LANGUAGE_CODE %}active{% endif %} btn" type="submit" name="language" value="{{ language.code }}">{{ language.name_local }}</button>
                 {% endfor %}
-            </select>
-            <input type="submit" value="Go">
-        </form>
-        {% endblock %}
-        <!-- end language change -->
-
-        <!--- login -->
-        {% block login %}
-            {% if user.is_authenticated %}
-            {% block change_password %}
-                <a href="{% url 'password_change' %}">{% trans 'Change password' %}</a>
+            </form>
             {% endblock %}
-            <a href="{% url 'logout' %}">{% trans 'Log out' %}</a>
-            {% else %}
-            <a href="{% url 'login' %}">{% trans 'Log in' %}</a>
-            {% endif %}
-        {% endblock %}
-        <!-- end login -->
+        </div>
 
         {% block base_content %}{% endblock %}
 
