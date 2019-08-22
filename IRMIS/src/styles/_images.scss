@@ -1,9 +1,59 @@
+%plus-minus-shared {
+    background-position: center;
+    height: 25px;
+    width: 16px;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
 .image {
     background-repeat: no-repeat;
+    display: inline-block;
 }
 
 .app-logo {
     background-image: url("../images/app_logo.svg");
     height: 72px;
     width: 287px;
+}
+
+.app-logo-dark-bg {
+    background-image: url("../images/app_logo_dark_bg.svg");
+    height: 34px;
+    width: 131px;
+}
+
+.checkbox {
+    background-image: url("../images/checkbox.svg");
+    vertical-align: middle;
+    height: 15px;
+    width: 15px;
+
+    &.selected {
+        background-image: url("../images/checkbox_active.svg");
+    }
+}
+
+.plus {
+    @extend %plus-minus-shared;
+    background-image: url("../images/plus.svg");
+    background-size: 16px 15px;
+}
+
+.minus {
+    @extend %plus-minus-shared;
+    background-image: url("../images/minus.svg");
+    background-size: 16px 4px;
+}
+
+.arrow {
+    background-image: url("../images/arrow.svg");
+    height: 14px;
+    width: 15px;
+
+    &:hover {
+        cursor: pointer;
+    }
 }

@@ -1,24 +1,31 @@
-.language-selector {
-    padding: 10px;
+.registration .language-selector button {
+    color: $dark-gray;
 
-    button {
-        text-transform: uppercase;
+    &:not(.active):hover {
         color: $dark-gray;
+    }
+}
+
+.content .language-selector button {
+    color: $white;
+
+    &:not(.active):hover {
+        color: $white;
+    }
+}
+
+.language-selector button {
+    text-transform: uppercase;
+    box-shadow: none;
+    min-width: unset;
+    padding: 5px;
+    border: none;
+
+    &.active {
+        color: $green;
+    }
+
+    &:focus {
         box-shadow: none;
-        min-width: unset;
-        padding: 5px;
-        border: none;
-
-        &.active {
-            color: $green;
-        }
-
-        &:not(.active):hover {
-            color: $dark-gray;
-        }
-
-        &:focus {
-            box-shadow: none;
-        }
     }
 }

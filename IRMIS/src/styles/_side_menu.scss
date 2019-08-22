@@ -1,0 +1,91 @@
+%filter-shared {
+    background-color: #5F6775;
+    border-radius: $radius;
+    color: $white;
+}
+
+%filter-active-shared {
+    background-color: #818893;
+}
+
+#side-menu {
+    background-color: #3D4758;
+
+    #view {
+        margin-bottom: 40px;
+
+        a {
+            @extend %filter-shared;
+            margin-right: 2.5px;
+            margin-left: 2.5px;
+            padding: 15px;
+            flex: 1;
+
+            &:hover {
+                cursor: pointer;
+            }
+
+            &:first-child {
+                margin-left: 0;
+            }
+
+            &:last-child {
+                margin-right: 0;
+            }
+
+            &.active {
+                @extend %filter-active-shared;
+            }
+        }
+    }
+
+    .filter {
+        @extend %filter-shared;
+        margin-bottom: 10px;
+
+        .header {
+            margin-bottom: 0;
+            min-height: 45px;
+            padding: 10px;
+
+            &.active {
+                @extend %filter-active-shared;
+                border-radius: $radius;
+            }
+
+            label {
+                margin-bottom: 0;
+            }
+
+            .clear-filter {
+                margin-right: 20px;
+
+                &:hover {
+                    cursor: pointer;
+                }
+            }
+        }
+
+        .options {
+            padding: 10px;
+
+            ul {
+                margin-bottom: 0;
+                padding-left: 0;
+            }
+        }
+    }
+
+    .clear-all-filters, .full-screen {
+        top: -5px;
+        right: 0;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}
+
+#collapsed-side-menu {
+    width: 30px;
+}

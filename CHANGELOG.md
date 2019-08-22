@@ -8,6 +8,7 @@
 - Yarn/Webpack/Bootstrap
 - Jenkins
 - ESLint
+- Initial tabular view implementation using DataTables.net.
 - Pytest
 - Login page
 - Change password pages
