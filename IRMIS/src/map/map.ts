@@ -2,9 +2,10 @@
 import { Feature, FeatureCollection, GeoJSON, LineString, MultiLineString, MultiPoint, MultiPolygon, Point, Polygon } from "geojson";
 import * as L from "leaflet";
 
+import { getRoadGeometry } from "../roads/roads_api";
 import { Config } from "./config";
 import { BaseLayers } from "./layers/BaseLayers";
-import { displayGeoJSON, getGeoJSON } from "./utilities/getGeoJSON";
+import { displayGeoJSON } from "./utilities/displayGeoJSON";
 
 export class Map {
     private lMap = {} as L.Map;
@@ -28,42 +29,23 @@ export class Map {
         return this.lMap;
     }
 
-    public async loadMapData(geoJsonSource: string, id?: number) {
-        if (id) {
-            try {
-                const json = await getGeoJSON(geoJsonSource, id);
-                if (json) {
-                    const geoJSON = json as GeoJSON;
-                    const firstCoords = this.getFirstCoords(geoJSON);
-                    if (firstCoords[0] >= 0 && firstCoords[0] < 500) {
-                        displayGeoJSON(this.lMap, this.layerControl, json);
+    public async loadMapData(roadId: number) {
+        try {
+            const json = await getRoadGeometry(roadId);
+            if (json) {
+                const geoJSON = json as GeoJSON;
+                const firstCoords = this.getFirstCoords(geoJSON);
+                if (firstCoords[0] >= 0 && firstCoords[0] < 500) {
+                    displayGeoJSON(this.lMap, this.layerControl, json);
 
-                        return Promise.resolve(true);
-                    }
+                    return Promise.resolve(true);
                 }
-
-                return Promise.resolve(false);
-            } catch (error) {
-                return Promise.reject(error);
             }
+
+            return Promise.resolve(false);
+        } catch (error) {
+            return Promise.reject(error);
         }
-
-        // No id, so just get everything
-        this.getGeoJSONRecursively(geoJsonSource, 1)
-            .then(() => {
-                // Handle 'zoom to extents' (AKA fitBounds) for each type of data
-                this.lMap.addEventListener("overlayadd", (event: L.LeafletEvent) => {
-                    const overlayEvent = event as L.LayersControlEvent;
-                    const layerbounds = (overlayEvent.layer as L.FeatureGroup).getBounds();
-
-                    try {
-                        this.lMap.fitBounds(layerbounds);
-                    } catch {
-                        // throw it away
-                    }
-                });
-            })
-            .catch();
     }
 
     private getFirstCoords(geoJSON: GeoJSON): number[] {
@@ -87,31 +69,5 @@ export class Map {
         }
 
         return [-1, -1];
-    }
-
-    // tslint:disable-next-line: max-line-length
-    private async getGeoJSONRecursively(geoJsonSource: string, id: number, errorCount: number = 0): Promise<any> {
-        if (errorCount > 10) {
-            return Promise.resolve(false);
-        }
-
-        try {
-            const json = await getGeoJSON(geoJsonSource, id);
-            if (json) {
-                const geoJSON = json as GeoJSON;
-                const firstCoords = this.getFirstCoords(geoJSON);
-                if (firstCoords[0] >= 0 && firstCoords[0] < 500) {
-                    displayGeoJSON(this.lMap, this.layerControl, json);
-                }
-
-                errorCount = 0;
-            } else {
-                errorCount++;
-            }
-            id++;
-            return this.getGeoJSONRecursively(geoJsonSource, id, errorCount);
-        } catch (error) {
-            return Promise.resolve(false);
-        }
     }
 }
