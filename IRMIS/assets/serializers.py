@@ -27,7 +27,7 @@ class RoadSerializer(GeoFeatureModelSerializer):
     but avoids unnecessary transformation when calculating etags
     """
 
-    to_wgs = GeometryField(read_only=True, precision=5)
+    geom = GeometryField(read_only=True, precision=5)
 
     class Meta:
         model = Road
