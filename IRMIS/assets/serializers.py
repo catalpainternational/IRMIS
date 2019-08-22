@@ -5,14 +5,19 @@ from .models import Road
 
 
 class RoadSerializer(GeoFeatureModelSerializer):
-    """ A class to serialize locations as GeoJSON compatible data """
+    """ 
+    A class to serialize locations as GeoJSON compatible data
+    This expects a "to_wgs" field which is a transform of the geom field to
+    SRID 4326 for web mapping and valid geoJSON output
+    """
 
-    geom = GeometryField(read_only=True, precision=5)
+    to_wgs = GeometryField(read_only=True, precision=5)
 
     class Meta:
         model = Road
-        geo_field = "geom"
-        fields = ["geom"]
+
+        geo_field = "to_wgs"
+        fields = ["to_wgs"]
 
 
 class RoadMetaOnlySerializer(serializers.ModelSerializer):
