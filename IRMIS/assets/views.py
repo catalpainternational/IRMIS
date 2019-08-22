@@ -8,19 +8,19 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework_condition import condition
 from .models import Road
-from .serializers import RoadSerializer, RoadMetaOnlySerializer
+from .serializers import RoadSerializer, RoadMetaOnlySerializer, RoadToWGSSerializer
 
 
 def get_etag(request, pk=None):
     if pk:
         return hashlib.md5(
-            json.dumps(RoadSerializer(Road.objects.to_wgs().filter(id=pk).get()).data).encode(
+            json.dumps(RoadSerializer(Road.objects.all().filter(id=pk).get()).data).encode(
                 "utf-8"
             )
         ).hexdigest()
     else:
         return hashlib.md5(
-            json.dumps(RoadSerializer(Road.objects.to_wgs().all(), many=True).data).encode(
+            json.dumps(RoadSerializer(Road.objects.all(), many=True).data).encode(
                 "utf-8"
             )
         ).hexdigest()
@@ -29,9 +29,9 @@ def get_etag(request, pk=None):
 def get_last_modified(request, pk=None):
     try:
         if pk:
-            return Road.objects.to_wgs().filter(id=pk).latest("last_modified").last_modified
+            return Road.objects.filter(id=pk).latest("last_modified").last_modified
         else:
-            return Road.objects.to_wgs().all().latest("last_modified").last_modified
+            return Road.objects.all().latest("last_modified").last_modified
     except Road.DoesNotExist:
         return datetime.now()
 
@@ -50,5 +50,5 @@ class RoadViewSet(ViewSet):
     def retrieve(self, request, pk):
         queryset = Road.objects.to_wgs()
         road = get_object_or_404(queryset, pk=pk)
-        serializer = RoadSerializer(road)
+        serializer = RoadToWGSSerializer(road)
         return Response(serializer.data)
