@@ -1,8 +1,10 @@
 import "./styles/irmis.scss";
 
-export * from './roads/roads_api';
-
 import { Map } from "./map/map";
+
+export * from './table';
+export * from './side_menu';
+export * from './roads/roads_api';
 
 window.onload = () => {
     const map = new Map();
@@ -11,7 +13,7 @@ window.onload = () => {
     const geoJsonSource = `${location.origin}/assets/roads/`;
     const maxRoadIdInDB = 182;
     for (let id = 1; id <= maxRoadIdInDB; id++) {
-        // This returns a Promise, which we currently don't care about
+        // This returns a Promise, which we currently do not care about
         map.loadMapData(geoJsonSource, id);
     }
 };

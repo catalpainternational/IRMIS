@@ -1,0 +1,17 @@
+.content .top-menu {
+    background-color: #3D4758;
+}
+
+.top-menu {
+    height: 60px;
+
+    a  {
+        margin-left: 40px;
+        box-shadow: none;
+        min-width: unset;
+
+        &:focus {
+            outline: none;
+        }
+    }
+}
