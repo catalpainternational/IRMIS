@@ -1,4 +1,17 @@
-#mapirmis {
-    width: 100%;
-    height: 88vh;
+#map-table-irmis.map.table {
+    #map-irmis {
+        height: 40vh;
+    }
+}
+
+#map-table-irmis.map:not(.table) {
+    #map-irmis {
+        height: calc(100vh - 60px);
+    }
+}
+
+#map-table-irmis.table:not(.map) {
+    #map-irmis {
+        display: none;
+    }
 }

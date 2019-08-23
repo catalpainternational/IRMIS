@@ -6,8 +6,10 @@ export * from './table';
 export * from './side_menu';
 export * from './roads/roads_api';
 
+export let map: Map;
+
 window.onload = () => {
-    const map = new Map();
+    map = new Map();
     map.loadMap();
 
     const geoJsonSource = `${location.origin}/assets/roads/`;

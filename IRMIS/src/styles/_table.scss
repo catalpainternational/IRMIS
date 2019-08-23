@@ -1,0 +1,11 @@
+#map-table-irmis.map:not(.table) {
+    #table-irmis {
+        display: none;
+    }
+}
+
+#map-table-irmis.table:not(.map) {
+    #table-irmis {
+        height: calc(100vh - 60px);
+    }
+}
