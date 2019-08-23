@@ -5,5 +5,4 @@ black
 django-extensions
 pre-commit
 django-debug-toolbar
-jupyterlab
 ipdb
