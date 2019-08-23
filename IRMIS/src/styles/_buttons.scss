@@ -17,11 +17,11 @@
 }
 
 .btn-inactive {
-    background-color: $gray;
+    background-color: $light-gray;
     color: $dark-gray;
 
     &:hover {
-        background-color: $gray;
+        background-color: $light-gray;
         color: $dark-gray;
     }
 }
