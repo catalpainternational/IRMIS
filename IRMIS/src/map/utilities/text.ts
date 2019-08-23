@@ -2,12 +2,12 @@ export function isNullOrWhiteSpace(str: string): boolean {
   return str === null || str.replace(/\s/g, "").length < 1;
 }
 
-/** Generate an unsigned 32 bit integer hash from any string, such as a geoType name */
-export function hashGeoTypeName(geoType: string): number {
+/** Generate an unsigned 32 bit integer hash from any string, such as a featureType name */
+export function hashFeatureTypeName(featureType: string): number {
   let hash = 0;
 
-  for (let ix = 0; ix < geoType.length; ix++) {
-    const char = geoType.charCodeAt(ix);
+  for (let ix = 0; ix < featureType.length; ix++) {
+    const char = featureType.charCodeAt(ix);
     // tslint:disable-next-line
     hash = char + (hash << 6) + (hash << 16) - hash; // magic constant is (effectively) 65599
   }

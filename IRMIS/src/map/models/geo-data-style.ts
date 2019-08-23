@@ -25,7 +25,7 @@ export type PointToLayerStyle = IPointToLayerHtmlStyle | IPointToLayerBaseStyle;
 
 export class GeoDataStyle {
   /** The actual geo_type this style is associated with */
-  public geoType?: string;
+  public featureType?: string;
   /** A string that identifies an arbitrary grouping that this layer belongs to */
   public mapPane?: string;
   public displaySequence?: number;

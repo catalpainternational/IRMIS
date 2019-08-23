@@ -8,7 +8,7 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework_condition import condition
 from .models import Road
-from .serializers import RoadSerializer, RoadMetaOnlySerializer
+from .serializers import RoadSerializer, RoadMetaOnlySerializer, RoadToWGSSerializer
 
 
 def get_etag(request, pk=None):
@@ -48,7 +48,7 @@ class RoadViewSet(ViewSet):
 
     @condition(etag_func=get_etag, last_modified_func=get_last_modified)
     def retrieve(self, request, pk):
-        queryset = Road.objects.all()
+        queryset = Road.objects.to_wgs()
         road = get_object_or_404(queryset, pk=pk)
-        serializer = RoadSerializer(road)
+        serializer = RoadToWGSSerializer(road)
         return Response(serializer.data)

@@ -1,9 +1,8 @@
-
 import "datatables.net-bs4";
 
 import $ from "jquery";
 
-const roads = [
+const tableData = [
     {
         code: "A1", condition: "Poor", length: 10, name: "Aileu",
     },
@@ -45,7 +44,7 @@ const roads = [
     },
 ];
 
-const table = $("#roads-table").DataTable({
+const table = $("#data-table").DataTable({
     columns: [
         {
             data: "name", title: "Name",
@@ -60,9 +59,9 @@ const table = $("#roads-table").DataTable({
             data: "length", title: "Length",
         },
     ],
+    data: tableData,
     // lengthChange: false, // hide table entries filter
     // searching: false, // hide search box
-    data: roads,
     search: {
         regex: true, // Enable escaping of regular expression characters in the search term.
     },
@@ -118,4 +117,11 @@ export function filter(element, elementId) {
         header.classList.remove("active");
         clear.hidden = true;
     }
+}
+
+export function toggle_column(element) {
+    const checkbox = element.getElementsByClassName("checkbox").item(0);
+    const column = table.column(element.dataset.column);
+    checkbox.classList.toggle("selected");
+    column.visible(!column.visible());
 }

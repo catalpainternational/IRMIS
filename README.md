@@ -34,7 +34,7 @@ Use `pip-compile --upgrade` to upgrade versions of libraries, then test the resu
 1. Import the shapefile schema and data - NOTE: This does not import geometries
   1. run `shp2pgsql -d -n path/to/your/.dbf source_table_name` and check the outputted SQL
   2. read the help https://helpmanual.io/help/shp2pgsql/ if you need to make changes
-  3. run that sql against your database using `psql` or `manage.py dbshell`
+  3. run that sql against your database using `psql` or `manage.py dbshell`: eg `shp2pgsql -d -n ../../ngis/National_Road.dbf source_national_road | ./manage.py dbshell`
   
 2. Create unmanaged model code by using inspectdb
   1. `./manage.py inspectdb source_table_name` this will output some django model code, drop it into models.py
