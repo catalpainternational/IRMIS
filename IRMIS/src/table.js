@@ -59,12 +59,8 @@ const table = $("#data-table").DataTable({
             data: "length", title: "Length",
         },
     ],
-    // lengthChange: false, // hide table entries filter
-    // searching: false, // hide search box
     data: roads,
-    search: {
-        regex: true, // Enable escaping of regular expression characters in the search term.
-    },
+    searching: false, // hide search box
 });
 
 // params: (settings, data, dataIndex, row, counter)
