@@ -27,9 +27,9 @@
 {% block base_content %}
     {% wagtailuserbar %}
 
-    <div class="row">
+    <div class="h-100 row">
         {% block side_menu %}
-        <div id="side-menu" class="col-3">
+        <div id="side-menu" class="col-3 h-100">
             <div class="position-relative">
                 <h6>{% trans "View" %}</h6>
                 <span class="full-screen position-absolute" onclick="roads.collapse_side_menu(this)">{% trans "Fullscreen view" %}</span>
@@ -40,7 +40,7 @@
                 </div>
             </div>
 
-            <div class="position-relative">
+            <div class="filters overflow-auto position-relative">
                 <h6>{% trans "Filters" %}</h6>
                 <span class="clear-all-filters position-absolute" onclick="roads.clear_all_filters()">{% trans "Clear all filters" %}</span>
                 <!-- To be replaced with actual filter values and translations -->
@@ -117,7 +117,7 @@
             <span class="arrow image"></span>
         </div>
 
-        <div id="map-table-irmis" class="col-9 map table">
+        <div id="map-table-irmis" class="col-9 overflow-auto map table">
             {% block content %}{% endblock %}
         </div>
     </div>
