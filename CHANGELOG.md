@@ -18,3 +18,4 @@
 - Tabular data view implementation using DataTables.net.
 - Leaflet map
 - Change layout view
+- Toggle table columns
