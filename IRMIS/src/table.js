@@ -2,7 +2,7 @@ import "datatables.net-bs4";
 
 import $ from "jquery";
 
-const roads = [
+const tableData = [
     {
         code: "A1", condition: "Poor", length: 10, name: "Aileu",
     },
@@ -59,7 +59,7 @@ const table = $("#data-table").DataTable({
             data: "length", title: "Length",
         },
     ],
-    data: roads,
+    data: tableData,
     searching: false, // hide search box
 });
 
@@ -113,4 +113,11 @@ export function filter(element, elementId) {
         header.classList.remove("active");
         clear.hidden = true;
     }
+}
+
+export function toggle_column(element) {
+    const checkbox = element.getElementsByClassName("checkbox").item(0);
+    const column = table.column(element.dataset.column);
+    checkbox.classList.toggle("selected");
+    column.visible(!column.visible());
 }
