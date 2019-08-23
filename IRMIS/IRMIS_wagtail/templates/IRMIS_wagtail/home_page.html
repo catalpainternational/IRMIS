@@ -5,10 +5,8 @@
 {% block body_class %}content{% endblock %}
 
 {% block content %}
-    {{ page.body|richtext }}
-
-    <div id="mapirmis"></div>
-
-    <table id="roads-table" class="table table-bordered table-striped w-100"></table>
-
+    <div id="map-irmis"></div>
+    <div id="table-irmis">
+        <table id="data-table" class="table table-bordered table-striped w-100"></table>
+    </div>
 {% endblock %}

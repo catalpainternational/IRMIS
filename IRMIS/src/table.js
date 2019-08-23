@@ -1,4 +1,3 @@
-
 import "datatables.net-bs4";
 
 import $ from "jquery";
@@ -45,7 +44,7 @@ const roads = [
     },
 ];
 
-const table = $("#roads-table").DataTable({
+const table = $("#data-table").DataTable({
     columns: [
         {
             data: "name", title: "Name",
