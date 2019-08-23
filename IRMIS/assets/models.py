@@ -51,7 +51,23 @@ class TechnicalClass(models.Model):
         return self.name
 
 
+class RoadManager(models.Manager):
+    def to_wgs(self):
+        """
+        "To World Geodetic System"
+        Adds a `to_wgs` param which is the geometry transformed into latitude, longitude coordinates
+        """
+        return (
+            super()
+            .get_queryset()
+            .annotate(to_wgs=models.functions.Transform("geom", 4326))
+        )
+
+
 class Road(models.Model):
+
+    objects = RoadManager()
+
     ROAD_TYPE_CHOICES = [
         ("NAT", _("National")),
         ("HIGH", _("Highway")),

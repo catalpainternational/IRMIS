@@ -6,8 +6,10 @@ export * from "./table";
 export * from "./side_menu";
 export * from "./assets/assets_api";
 
+export let map: Map;
+
 window.onload = () => {
-    const map = new Map();
+    map = new Map();
     map.loadMap();
 
     // This is sample code to get a selection of available roads and display them
