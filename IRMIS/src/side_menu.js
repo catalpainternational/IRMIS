@@ -29,11 +29,11 @@ export function change_view(element, view) {
     const siblings = document.getElementById("view").children;
 
     if (view === 0) {
-        mapTable.className = "col-9 map table";
+        mapTable.className = "col-9 overflow-auto map table";
     } else if (view === 1) {
-        mapTable.className = "col-9 map";
+        mapTable.className = "col-9 overflow-auto map";
     } else {
-        mapTable.className = "col-9 table";
+        mapTable.className = "col-9 overflow-auto table";
     }
 
     for (let index = 0; index < siblings.length; index += 1) {
