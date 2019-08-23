@@ -4,7 +4,7 @@ import { Map } from "./map/map";
 
 export * from "./table";
 export * from "./side_menu";
-export * from "./roads/roads_api";
+export * from "./assets/assets_api";
 
 window.onload = () => {
     const map = new Map();
