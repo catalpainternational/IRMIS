@@ -79,8 +79,8 @@ class Road(models.Model):
     SURFACE_CONDITION_CHOICES = [
         ("1", _("Good")),
         ("2", _("Fair")),
-        ("3", _("Bad")),
-        ("4", _("Poor")),
+        ("3", _("Poor")),
+        ("4", _("Bad")),
     ]
 
     geom = models.MultiLineStringField(srid=32751, dim=3, blank=True, null=True)
@@ -97,13 +97,13 @@ class Road(models.Model):
     road_code = models.CharField(
         verbose_name=_("road code"),
         validators=[no_spaces],
-        max_length=12,
-        unique=True,
+        max_length=25,
+        # unique=True,
         blank=True,
         null=True,
     )
     road_name = models.CharField(
-        verbose_name=_("road name"), max_length=50, blank=True, null=True
+        verbose_name=_("road name"), max_length=100, blank=True, null=True
     )
     administrative_area = models.CharField(
         verbose_name=_("administrative area"), max_length=50, default=None, null=True
@@ -114,8 +114,8 @@ class Road(models.Model):
     link_code = models.CharField(
         verbose_name=_("link code"),
         validators=[no_spaces],
-        max_length=12,
-        unique=True,
+        max_length=25,
+        # unique=True,
         blank=True,
         null=True,
     )
