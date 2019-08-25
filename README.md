@@ -69,5 +69,5 @@ The files are saved in the media root for access by the client.
 
 We use google protobuf to compress road metadata for transfer down the wire.
 https://developers.google.com/protocol-buffers/docs/pythontutorial is the best resource I have found for learning about it.
-To make any message schema changes go here https://github.com/protocolbuffers/protobuf/releases/tag/v3.9.1 to find a suitable package for your OS and follow the instructions in the README.
-run `yarn protoc_py` to update the generated python code.
+To make any message schema changes go here https://github.com/protocolbuffers/protobuf/releases/tag/v3.9.1 to find a suitable package for your OS and follow the instructions in the README. Make sure the protoc binary is available on your PATH.
+run `yarn protoc` to update the generated python and javascript code.
