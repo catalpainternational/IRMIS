@@ -58,3 +58,9 @@ To run tests cd to the django directory ( next to manage.py ) and type `pytest`
 To run tests with debugger breakpoint support use `pytest -s`
 To run tests then keep the db, and re-use it next time use `pytest --reuse-db` and the `pytest --create-db` when you have changed models and migrations
 To run tests that match a pattern use `-k` e.g. `pytest -k api`
+
+## Geobuf
+
+We use https://github.com/mapbox/geobuf for compressing GeoJson for transfer down the wire.
+`./manage.py collate_geometries` will group Road models and merge their geometries into a GeoJson FeatureCollection, then encode it into a geobuf file.
+The files are saved in the media root for access by the client.

@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
-from .models import Road
+from django.core.files.base import ContentFile
+from .models import CollatedGeoJsonFile, Road
 import pytest
 
 
@@ -74,3 +75,25 @@ def test_api_etag_caches(client, django_user_model):
     response2 = client.get(url, HTTP_IF_NONE_MATCH=etag)
     # check the response2 is 304
     assert response2.status_code == 304
+
+
+@pytest.mark.django_db
+def test_geojson_details_requires_auth(client):
+    """ This test will fail if an unauthenticated request can access the roads api """
+    url = reverse("geojson_details")
+    response = client.get(url)
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db
+def test_geojson_details_does_not_error(client, django_user_model):
+    """ This test will fail if the road list api throws an error """
+    # create a user
+    user = django_user_model.objects.create_user(username="user1", password="bar")
+    client.force_login(user)
+    # create a road
+    road = CollatedGeoJsonFile.objects.create(key="test", geobuf_file=ContentFile(b""))
+    # hit the road api
+    url = reverse("geojson_details")
+    response = client.get(url)
+    assert response.status_code == 200

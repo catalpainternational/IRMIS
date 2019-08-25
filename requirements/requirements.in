@@ -5,3 +5,4 @@ django-rosetta
 psycopg2-binary
 djangorestframework-gis
 django-rest-framework-condition
+geobuf

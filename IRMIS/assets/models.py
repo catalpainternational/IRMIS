@@ -211,12 +211,24 @@ class Road(models.Model):
         null=True,
     )
 
+    # a reference to the collated geojson file this road's geometry is in
+    geojson_file = models.ForeignKey(
+        "CollatedGeoJsonFile", on_delete=models.DO_NOTHING, blank=True, null=True
+    )
+
     @property
     def link_name(self):
         return self.link_start_name + " - " + self.link_end_name
 
     def __str__(self,):
         return "%s - %s" % (self.properties_content_type, self.properties_object_id)
+
+
+class CollatedGeoJsonFile(models.Model):
+    """ FeatureCollection GeoJson(srid=4326) files made up of collated geometries """
+
+    key = models.SlugField(unique=True)
+    geobuf_file = models.FileField(upload_to="geojson/geobuf/")
 
 
 class SourceNationalRoad(models.Model):
