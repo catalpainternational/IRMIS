@@ -2,10 +2,19 @@ import "datatables.net-bs4";
 
 import $ from "jquery";
 
+let table;
+let currentFilter = (p) => true;
+
+$.fn.dataTableExt.afnFiltering.push(
+    function( oSettings, aData, iDataIndex ) {
+        let properties = oSettings.aoData[iDataIndex]._aData;
+        return currentFilter(properties);
+    }
+);
 
 export function initializeDataTable(roadList) {
 
-    const table = $("#data-table").DataTable({
+    table = $("#data-table").DataTable({
         columns: [
             { data: "roadCode", title: "Road Code", "defaultContent": "<i>Not set</i>" },
             { data: "roadType", title: "Road Type", "defaultContent": "<i>Not set</i>" },
@@ -24,21 +33,9 @@ export function initializeDataTable(roadList) {
     });
 }
 
-export function filter(element, elementId) {
-    // table.draw();
-    const filterBlock = document.getElementById(elementId);
-    const clear = filterBlock.getElementsByClassName("clear-filter").item(0);
-    const header = filterBlock.getElementsByClassName("header").item(0);
-    const checkbox = element.getElementsByTagName("span").item(0);
-
-    checkbox.classList.toggle("selected");
-    if (filterBlock.getElementsByClassName("selected").length) {
-        header.classList.add("active");
-        clear.hidden = false;
-    } else {
-        header.classList.remove("active");
-        clear.hidden = true;
-    }
+export function filterRows(filter) {
+    currentFilter = filter;
+    table.draw();
 }
 
 export function toggle_column(element) {

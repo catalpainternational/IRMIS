@@ -7,6 +7,7 @@ import { addToMap } from "./map/map_simple";
 
 export * from "./table";
 export * from "./side_menu";
+export { filterFeatures } from "./map/map_simple";
 export let map;
 
 
@@ -24,7 +25,7 @@ window.onload = () => {
 
         // now we have our metadata we can intialize the data table
         initializeDataTable(Object.values(roadsLookup).map(r => r.toObject()));
-
+        
         // retrieve each geojson file
         return Promise.all(geoJsonDetails.map(geoJsonDetail => { 
             return getGeoJson(
@@ -38,4 +39,5 @@ window.onload = () => {
             })
         }));
     }, err => console.log(err));
+
 };
