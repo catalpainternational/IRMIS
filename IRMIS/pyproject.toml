@@ -1,0 +1,7 @@
+title = "Estrada"
+
+[tool.black]
+line-length = 88
+exclude = '''
+    node_modules | protobuf/roads_pb2.py
+'''

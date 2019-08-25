@@ -11,8 +11,9 @@
 		"tslint": "tslint src/**/*.ts src/**/*.js src/**/*.html",
 		"start": "webpack --watch --config webpack.dev.js",
 		"build": "webpack --config webpack.prod.js",
-		"dev": "webpack --config webpack.dev.js"
-	},
+		"dev": "webpack --config webpack.dev.js",
+        "protoc_py": "protoc -I=./protobuf --python_out=./protobuf ./protobuf/roads.proto"
+    },
 	"devDependencies": {
 		"babel-core": "^6.26.3",
 		"babel-loader": "^7.1.5",
@@ -38,12 +39,12 @@
 		"webpack-merge": "^4.2.1"
 	},
 	"dependencies": {
+		"@types/leaflet": "^1.5.0",
+		"@types/ua-parser-js": "^0.7.33",
 		"babel-polyfill": "^6.26.0",
 		"datatables.net": "^1.10.19",
 		"datatables.net-bs4": "^1.10.19",
 		"jquery": "^3.4.1",
-		"@types/leaflet": "^1.5.0",
-		"@types/ua-parser-js": "^0.7.33",
 		"leaflet": "^1.5.1",
 		"ua-parser-js": "^0.7.20"
 	}

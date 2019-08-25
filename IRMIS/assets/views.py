@@ -1,13 +1,15 @@
 import hashlib
 import json
 from datetime import datetime
+
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponseForbidden, JsonResponse
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework_condition import condition
+
 from .models import CollatedGeoJsonFile, Road
 from .serializers import RoadSerializer, RoadMetaOnlySerializer, RoadToWGSSerializer
 
@@ -64,3 +66,16 @@ def geojson_details(request):
     geojson_files = CollatedGeoJsonFile.objects.values("id", "geobuf_file")
 
     return JsonResponse(list(geojson_files), safe=False)
+
+
+def protobuf_road_set(request):
+    """ returns a protobuf object with the set of all Roads """
+
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+
+    roads_protobuf = Road.objects.to_protobuf()
+
+    return HttpResponse(
+        roads_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )
