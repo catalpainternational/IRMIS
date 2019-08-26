@@ -1,5 +1,5 @@
 const requestAssetUrl = `${window.location.origin}/assets`;
-const requestAssetInit: RequestInit = {
+const requestAssetInit = {
     headers: { "Content-Type": "application/json" },
     method: "GET",
     mode: "no-cors",
@@ -13,7 +13,7 @@ const requestAssetInit: RequestInit = {
  *  - Promise.resolve(json) on success
  *  - Throws error on failure
  */
-export function getAssetsMetadata(assetType: string = "roads"): Promise<any> {
+export function getAssetsMetadata(assetType = "roads") {
     return window.fetch(`${requestAssetUrl}/${assetType}`, requestAssetInit)
         .then((response) => {
             if (response.ok) { return response.json(); }
@@ -30,7 +30,7 @@ export function getAssetsMetadata(assetType: string = "roads"): Promise<any> {
  *  - Promise.resolve(json) on success (hopefully that's GeoJSON)
  *  - Throws error on failure
  */
-export function getAssetGeometry(assetId: number, assetType: string = "roads"): Promise<any> {
+export function getAssetGeometry(assetId, assetType = "roads") {
     const requestUrl = `${requestAssetUrl}/${assetType}/${assetId}`;
 
     return window.fetch(requestUrl, requestAssetInit)

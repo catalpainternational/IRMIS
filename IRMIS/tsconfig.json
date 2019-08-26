@@ -7,9 +7,9 @@
       "es2015",                               /* specifies our transpilation target, for our purposes es2015 is a good compromise */
       "dom"                                   /* dom gives us access to the standard dom methods */
     ],
-    "allowJs": true,                       /* Allow javascript files to be compiled. */
+    "allowJs": true,                          /* Allow javascript files to be compiled. */
     // "checkJs": true,                       /* Report errors in .js files. */
-    // "declaration": true,                      /* Generates corresponding '.d.ts' file. */
+    // "declaration": true,                   /* Generates corresponding '.d.ts' file. */
     "sourceMap": true,                        /* Generates corresponding '.map' file. */
     "outDir": "lib",                          /* Redirect output structure to the directory. */
     // "downlevelIteration": true,            /* Provide full support for iterables in 'for-of', spread, and destructuring when targeting 'ES5' or 'ES3'. */
