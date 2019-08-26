@@ -1,4 +1,4 @@
-import { toggleFilter, isFilterApplied, applyFilter } from './filter';
+import { toggleFilter, isFilterApplied, applyFilter, clearFilter } from './filter';
 
 const filters = ["road-condition", "road-code"];
 
@@ -101,6 +101,8 @@ export function clear_filter(elementId) {
     }
     filter.getElementsByClassName("header").item(0).classList.remove("active");
     filter.getElementsByClassName("clear-filter").item(0).hidden = true;
+    clearFilter(elementId);
+    applyFilter();
 }
 
 export function clear_all_filters() {

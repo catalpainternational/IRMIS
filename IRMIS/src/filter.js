@@ -36,6 +36,11 @@ export function isFilterApplied(slug, value) {
     return filterState[slug].indexOf(value) !== -1;
 }
 
+// clear a slug filter
+export function clearFilter(slug) {
+   filterState[slug] = []; 
+}
+
 // actually make the filter happen
 export function applyFilter() {
     
