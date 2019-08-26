@@ -1,6 +1,6 @@
-import { toggleFilter, isFilterApplied, applyFilter, clearFilter } from './filter';
+import { toggleFilter, isFilterApplied, clearFilter, clearAllFilters } from './filter';
 
-const filters = ["road-condition", "road-code"];
+const filters = ["road_type", "road-condition", "road-code"];
 
 let filterUIState = {};
 
@@ -63,7 +63,6 @@ export function toggleFilterOption(element, elementId, value) {
     }
     toggleFilter(elementId, value);
     clear.hidden = !isFilterApplied(elementId, value);
-    applyFilter();
 }
 
 export function toggleFilterOpen(element, elementId) {
@@ -102,9 +101,9 @@ export function clear_filter(elementId) {
     filter.getElementsByClassName("header").item(0).classList.remove("active");
     filter.getElementsByClassName("clear-filter").item(0).hidden = true;
     clearFilter(elementId);
-    applyFilter();
 }
 
 export function clear_all_filters() {
     filters.forEach(filter => clear_filter(filter));
+    clearAllFilters();
 }

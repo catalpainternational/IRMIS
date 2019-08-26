@@ -23,6 +23,7 @@ export function toggleFilter(slug, value) {
     } else {
         slugFilterValues.splice(index, 1);
     }
+    applyFilter();
 }
 
 // ensures the slug filterstate is ready for adding values
@@ -38,11 +39,18 @@ export function isFilterApplied(slug, value) {
 
 // clear a slug filter
 export function clearFilter(slug) {
-   filterState[slug] = []; 
+    filterState[slug] = []; 
+    applyFilter();
+}
+
+// clear a slug filter
+export function clearAllFilters() {
+    filterState = {}; 
+    applyFilter();
 }
 
 // actually make the filter happen
-export function applyFilter() {
+function applyFilter() {
     
     // filter function passed to map and table
     function filter(properties) {
