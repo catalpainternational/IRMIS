@@ -8,16 +8,18 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Municipality',
+            name="Municipality",
             fields=[
-                ('id', models.IntegerField(primary_key=True, serialize=False)),
-                ('name', models.TextField()),
-                ('geom', django.contrib.gis.db.models.fields.MultiPolygonField(srid=32751)),
+                ("id", models.IntegerField(primary_key=True, serialize=False)),
+                ("name", models.TextField()),
+                (
+                    "geom",
+                    django.contrib.gis.db.models.fields.MultiPolygonField(srid=32751),
+                ),
             ],
-        ),
+        )
     ]
