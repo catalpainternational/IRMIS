@@ -23,6 +23,8 @@ export function initializeDataTable(roadList) {
             { data: "linkLength", title: "Link Length", "defaultContent": "<i>Not set</i>" },
             { data: "surfaceType", title: "Surface Type", "defaultContent": "<i>Not set</i>" },
             { data: "surfaceCondition", title: "Surface Condition", "defaultContent": "<i>Not set</i>" },
+            { data: "roadStatus", title: "Road Status", "defaultContent": "<i>Not set</i>" },
+            { data: "administrativeArea", title: "Administrative Area", "defaultContent": "<i>Not set</i>" },
         ],
         data: roadList,
         // lengthChange: false, // hide table entries filter

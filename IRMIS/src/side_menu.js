@@ -1,6 +1,6 @@
 import { toggleFilter, isFilterApplied, clearFilter, clearAllFilters } from './filter';
 
-const filters = ["road_type", "road-condition", "road-code"];
+const filters = ["road_type", "surface_type", "surface_condition", "road_status" ,"administrative_area"]; //  "road-code",
 
 let filterUIState = {};
 

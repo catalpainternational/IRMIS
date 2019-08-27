@@ -38,6 +38,7 @@ def get_schema_data():
     }
 
     road_schema["road_type"].update({"options": Road.ROAD_TYPE_CHOICES})
+    road_schema["surface_condition"].update({"options": Road.SURFACE_CONDITION_CHOICES})
     road_schema["surface_type"].update(
         {"options": list(SurfaceType.objects.all().values())}
     )

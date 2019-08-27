@@ -15,62 +15,145 @@
             <div class="filters overflow-auto position-relative">
                 <h6>{% trans "Filters" %}</h6>
                 <span class="clear-all-filters position-absolute" onclick="roads.clear_all_filters()">{% trans "Clear all filters" %}</span>
-                
-                {% with slug=road_schema.road_type.slug %} 
-                <div id="{{ slug }}" class="filter">
-                    <div class="d-flex header justify-content-between">
-                        <div class="align-items-center d-flex">
-                            <label>{{ road_schema.road_type.display }}</label>
+                {% comment %} SECTION - LOCATION {% endcomment %}
+                <div class="filters-section">
+                    <span class="subtitle">Location</span>
+                    {% comment %} ADMINISTRATIVE AREA {% endcomment %}
+                    {% with slug=road_schema.administrative_area.slug %}
+                    <div id="{{ slug }}" class="filter">
+                        <div class="d-flex header justify-content-between">
+                            <div class="align-items-center d-flex">
+                                <label>{{ road_schema.administrative_area.display }}</label>
+                            </div>
+                            <div class="align-items-center d-flex">
+                                <span class="clear-filter" onclick="roads.clear_filter('{{ slug }}')" hidden>{% trans "Clear" %}</span>
+                                <span class="plus image" onclick="roads.toggleFilterOpen(this, '{{ slug }}')"></span>
+                            </div>
                         </div>
-                        <div class="align-items-center d-flex">
-                            <span class="clear-filter" onclick="roads.clear_filter('{{ slug }}')" hidden>{% trans "Clear" %}</span>
-                            <span class="plus image" onclick="roads.toggleFilterOpen(this, '{{ slug }}')"></span>
-                        </div>
-                    </div>
-                    <div class="options" hidden>
-                        <ul>
-                            {% for option in road_schema.road_type.options %}
-                            <li onclick="roads.toggleFilterOption(this, '{{ slug }}', '{{ option.0 }}')">
-                                <span class="checkbox image"></span>
-                                {{ option.1 }}
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-                {% endwith %} 
-
-                <!-- To be replaced with actual filter values and translations -->
-                <div id="road-condition" class="filter">
-                    <div class="d-flex header justify-content-between">
-                        <div class="align-items-center d-flex">
-                            <label>{% trans "Road condition" %}</label>
-                        </div>
-                        <div class="align-items-center d-flex">
-                            <span class="clear-filter" onclick="roads.clear_filter('road-condition')" hidden>{% trans "Clear" %}</span>
-                            <span class="plus image" onclick="roads.toggle_filter(this, 'road-condition')"></span>
+                        <div class="options" hidden>
+                            <ul>
+                                {% for option in road_schema.administrative_area.options %}
+                                <li onclick="roads.toggleFilterOption(this, '{{ slug }}', '{{ option.0 }}')">
+                                    <span class="checkbox image"></span>
+                                    {{ option.1 }}
+                                </li>
+                                {% endfor %}
+                            </ul>
                         </div>
                     </div>
-                    <div class="options" hidden>
-                        <ul>
-                            <li onclick="roads.filter(this, 'road-condition')">
-                                <span class="checkbox image"></span>
-                                Poor
-                            </li>
-                            <li onclick="roads.filter(this, 'road-condition')">
-                                <span class="checkbox image"></span>
-                                Good
-                            </li>
-                            <li onclick="roads.filter(this, 'road-condition')">
-                                <span class="checkbox image"></span>
-                                Excelent
-                            </li>
-                        </ul>
-                    </div>
+                    {% endwith %}
                 </div>
 
+                {% comment %} SECTION - ASSET {% endcomment %}
+                <div class="filters-section">
+                    <span class="subtitle">Asset</span>
+                    {% comment %} ROAD TYPE {% endcomment %}
+                    {% with slug=road_schema.road_type.slug %}
+                    <div id="{{ slug }}" class="filter">
+                        <div class="d-flex header justify-content-between">
+                            <div class="align-items-center d-flex">
+                                <label>{{ road_schema.road_type.display }}</label>
+                            </div>
+                            <div class="align-items-center d-flex">
+                                <span class="clear-filter" onclick="roads.clear_filter('{{ slug }}')" hidden>{% trans "Clear" %}</span>
+                                <span class="plus image" onclick="roads.toggleFilterOpen(this, '{{ slug }}')"></span>
+                            </div>
+                        </div>
+                        <div class="options" hidden>
+                            <ul>
+                                {% for option in road_schema.road_type.options %}
+                                <li onclick="roads.toggleFilterOption(this, '{{ slug }}', '{{ option.0 }}')">
+                                    <span class="checkbox image"></span>
+                                    {{ option.1 }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    {% endwith %}
 
-                <div id="road-code" class="filter">
+                    {% comment %} ROAD STATUS {% endcomment %}
+                    {% with slug=road_schema.road_status.slug %}
+                    <div id="{{ slug }}" class="filter">
+                        <div class="d-flex header justify-content-between">
+                            <div class="align-items-center d-flex">
+                                <label>{{ road_schema.road_status.display }}</label>
+                            </div>
+                            <div class="align-items-center d-flex">
+                                <span class="clear-filter" onclick="roads.clear_filter('{{ slug }}')" hidden>{% trans "Clear" %}</span>
+                                <span class="plus image" onclick="roads.toggleFilterOpen(this, '{{ slug }}')"></span>
+                            </div>
+                        </div>
+                        <div class="options" hidden>
+                            <ul>
+                                {% for option in road_schema.road_status.options %}
+                                <li onclick="roads.toggleFilterOption(this, '{{ slug }}', '{{ option.code }}')">
+                                    <span class="checkbox image"></span>
+                                    {{ option.name }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    {% endwith %}
+
+                    {% comment %} PAVEMENT CLASS {% endcomment %}
+                    {% with slug=road_schema.surface_type.slug %}
+                    <div id="{{ slug }}" class="filter">
+                        <div class="d-flex header justify-content-between">
+                            <div class="align-items-center d-flex">
+                                <label>{{ road_schema.surface_type.display }}</label>
+                            </div>
+                            <div class="align-items-center d-flex">
+                                <span class="clear-filter" onclick="roads.clear_filter('{{ slug }}')" hidden>{% trans "Clear" %}</span>
+                                <span class="plus image" onclick="roads.toggleFilterOpen(this, '{{ slug }}')"></span>
+                            </div>
+                        </div>
+                        <div class="options" hidden>
+                            <ul>
+                                {% for option in road_schema.surface_type.options %}
+                                <li onclick="roads.toggleFilterOption(this, '{{ slug }}', '{{ option.code }}')">
+                                    <span class="checkbox image"></span>
+                                    {{ option.name }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    {% endwith %}
+                </div>
+
+                {% comment %} SECTION - ASSET CONDITION {% endcomment %}
+                <div class="filters-section">
+                    <span class="subtitle">Asset condition</span>
+                    {% comment %} SURFACE CONDITION {% endcomment %}
+                    {% with slug=road_schema.surface_condition.slug %}
+                    <div id="{{ slug }}" class="filter">
+                        <div class="d-flex header justify-content-between">
+                            <div class="align-items-center d-flex">
+                                <label>{{ road_schema.surface_condition.display }}</label>
+                            </div>
+                            <div class="align-items-center d-flex">
+                                <span class="clear-filter" onclick="roads.clear_filter('{{ slug }}')" hidden>{% trans "Clear" %}</span>
+                                <span class="plus image" onclick="roads.toggleFilterOpen(this, '{{ slug }}')"></span>
+                            </div>
+                        </div>
+                        <div class="options" hidden>
+                            <ul>
+                                {% for option in road_schema.surface_condition.options %}
+                                <li onclick="roads.toggleFilterOption(this, '{{ slug }}', '{{ option.0 }}')">
+                                    <span class="checkbox image"></span>
+                                    {{ option.1 }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    {% endwith %}
+                </div>
+
+                <!--
+                    <div id="road-code" class="filter">
                     <div class="d-flex header justify-content-between">
                         <div class="align-items-center d-flex">
                             <label>{% trans "Road code" %}</label>
@@ -101,12 +184,13 @@
                         </ul>
                     </div>
                 </div>
-                <!-- <label>Road minimum length</label>
+
+                <label>Road minimum length</label>
                 <input id="min-length-filter" type="number" onkeyup="roads.filter()">
 
                 <label>Road maximum length</label>
-                <input id="max-length-filter" type="number" onkeyup="roads.filter()"> -->
-                <!-- To be replaced with actual filter values and translations -->
+                <input id="max-length-filter" type="number" onkeyup="roads.filter()">
+                 To be replaced with actual filter values and translations -->
             </div>
         </div>
 

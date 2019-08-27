@@ -62,6 +62,7 @@
 
                 label {
                     margin-bottom: 0;
+                    text-transform: capitalize;
                 }
 
                 .clear-filter {
@@ -92,8 +93,18 @@
             cursor: pointer;
         }
     }
+
+    .filters-section {
+        padding-bottom: 20px;
+
+        .subtitle {
+            font-size: 70%;
+            text-transform: uppercase;
+        }
+    }
 }
 
 #collapsed-side-menu {
     width: 30px;
 }
+
