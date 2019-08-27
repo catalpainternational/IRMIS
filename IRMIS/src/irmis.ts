@@ -1,7 +1,5 @@
 import "./styles/irmis.scss";
 
-import 'bootstrap';
-
 import { Map } from "./map/map";
 
 export * from "./table";

@@ -60,6 +60,7 @@ const table = $("#data-table").DataTable({
         },
     ],
     data: tableData,
+    bLengthChange : false, // hide table length
     searching: false, // hide search box
 });
 
