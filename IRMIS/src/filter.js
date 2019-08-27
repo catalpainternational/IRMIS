@@ -11,6 +11,10 @@ let filterState = {};
 // we'll need to add more in here as we add more filters
 const slugToPropertyName = {
     road_type: 'roadType',
+    surface_type: 'surfaceType',
+    surface_condition: 'surfaceCondition',
+    road_status: 'roadStatus',
+    administrative_area: 'administrativeArea',
 };
 
 // applies or unapplies the value to the slug filter
@@ -39,19 +43,19 @@ export function isFilterApplied(slug, value) {
 
 // clear a slug filter
 export function clearFilter(slug) {
-    filterState[slug] = []; 
+    filterState[slug] = [];
     applyFilter();
 }
 
 // clear a slug filter
 export function clearAllFilters() {
-    filterState = {}; 
+    filterState = {};
     applyFilter();
 }
 
 // actually make the filter happen
 function applyFilter() {
-    
+
     // filter function passed to map and table
     function filter(properties) {
         // every filter state must match
