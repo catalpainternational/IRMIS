@@ -3,7 +3,8 @@ import { CircleMarkerOptions } from "leaflet";
 
 import { GeoDataStyle, IPointToLayerHtmlStyle, PointToLayerStyle } from "../models/geo-data-style";
 
-import { hashFeatureTypeName } from "../utilities/text";
+import { getFeatureType } from "./displayGeoJSON";
+import { hashFeatureTypeName } from "./text";
 
 /** Generate a fall-back colour based on the featureType name */
 export function FallbackLayerStyle(featureType: string): GeoDataStyle {
@@ -36,7 +37,10 @@ export function FixLayerStyleDefaults(styleRecord: GeoDataStyle) {
   }
 }
 
-/** Creates a name to use in the overlay control from the supplied name and stylerecord */
+/** Creates a name to use in the overlay control from the supplied name and stylerecord
+ *
+ * Note: If we are not showing a leaflet layer control then this function and all references to it should be deleted.
+ */
 export function CreateOverlayControlName(layerName: string, styleRecord: GeoDataStyle): string {
   if (!styleRecord.style) {
     styleRecord.style = { style: { color: "BLACK"} };
@@ -86,6 +90,13 @@ export function styleGeometry(
   return styleRecord.style.style;
 }
 
+/** Defines everything needed to style points (markers) properly.
+ *
+ * Note: Do NOT delete this function EVER.
+ * Even if you think we will never support markers.
+ * This thing does an absolute bucket load of work properly,
+ * and it's very hard to replicate from stackoverflow / leaflet docs
+ */
 export function stylePoint(
   feature: GeoJSON.Feature<GeoJSON.Point>,
   latlng: L.LatLng, pointStyle: PointToLayerStyle,
@@ -132,7 +143,7 @@ export function stylePoint(
     }
 
     const myIcon = L.divIcon({
-      // className: feature.properties['geo_type'],
+      className: getFeatureType(feature),
       html: mappedHtmlStyle,
       iconSize: undefined, // Must do this or otherwise css styling is ignored
     });

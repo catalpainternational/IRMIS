@@ -1,26 +1,75 @@
+import { GeoJSON } from "geojson";
 import * as L from "leaflet";
 
 import { KnownGeometries } from "../layers/KnownGeometries";
 // tslint:disable-next-line: max-line-length
 import { CreateOverlayControlName, FallbackLayerStyle, FixLayerStyleDefaults, styleGeometry, stylePoint } from "./leaflet-style";
 
-export let geoFeatureGroups: any = {};
-export let geoJsonFiles = Array<string>();
+/** The collection of all GeoJSON elements currently added to the map,
+ * organised by their featureType
+ */
+export let geoFeatureGroups: { [name: string]: L.FeatureGroup } = {};
 
-export function displayGeoJSON(mymap: L.Map, layerControl: L.Control.Layers, json: any): Promise<any> {
-    const layerName = "not set"; // getLayerNameFromGeoJSONProperties(json);
+/** Gets the featureType from the GeoJSON properties.
+ * Allows for a default featureType to be defined.
+ * And if all else fails it will give us a value of "not set".
+ */
+export function getFeatureType(json: GeoJSON, defaultFeatureType: string = "Road"): string {
+    let featureType;
 
-    if (KnownGeometries.Excluded.indexOf(layerName) !== -1) {
+    try {
+        switch (json.type) {
+            case "FeatureCollection":
+                featureType = json.features![0]!.properties!.featureType;
+                break;
+            case "Feature":
+                featureType = json!.properties!.featureType;
+                break;
+        }
+    } catch {
+        featureType = "";
+    }
+
+    return featureType || defaultFeatureType || "not set";
+}
+
+/** A simple default popup
+ *
+ * Feel free to remove / change later.
+ */
+function definePopUp(layer: any) {
+    // Deep copy the properties for use in a simple popup
+    const popUpProps = JSON.parse(JSON.stringify(layer.feature.properties));
+
+    // Get rid of anything we know we don't want to show:
+    delete popUpProps.points;
+    delete popUpProps.pk;
+    delete popUpProps.id;
+    delete popUpProps.geojsonId;
+
+    // Put everything else into the popup
+    return Object.keys(popUpProps).map((propKey) => {
+        const propName = propKey.replace("road", "");
+        const propLabel = `<span class="popup label">${propName}:</span>`;
+        const propValue = `<span class="popup value">${popUpProps[propKey]}</span>`;
+        return (`${propLabel}${propValue} `);
+    }).join("");
+}
+
+export function displayGeoJSON(mymap: L.Map, layerControl: L.Control.Layers, json: GeoJSON): Promise<any> {
+    const featureType = getFeatureType(json);
+
+    if (KnownGeometries.Excluded.indexOf(featureType) !== -1) {
         return Promise.resolve(true);
     }
 
-    const geoFeatureGroupExists = !!geoFeatureGroups[layerName];
-    const geoFeatureGroup = geoFeatureGroups[layerName] || new L.FeatureGroup();
+    const geoFeatureGroupExists = !!geoFeatureGroups[featureType];
+    const geoFeatureGroup = geoFeatureGroups[featureType] || new L.FeatureGroup();
 
     // Get the style
-    const styleRecord = KnownGeometries.Known[layerName]
-        ? KnownGeometries.Known[layerName]
-        : FallbackLayerStyle(layerName);
+    const styleRecord = KnownGeometries.Known[featureType]
+        ? KnownGeometries.Known[featureType]
+        : FallbackLayerStyle(featureType);
     FixLayerStyleDefaults(styleRecord);
     const mapPane = "" + (styleRecord.map_pane || styleRecord.display_sequence || styleRecord.geo_type);
 
@@ -34,22 +83,17 @@ export function displayGeoJSON(mymap: L.Map, layerControl: L.Control.Layers, jso
     };
 
     // Actually build the GeoJSON layer
-    const geoLayer = L.geoJSON(json, geoJsonOptions)
-        .bindPopup((layer: any) => {
-            // Deep copy the properties for use in a simple popup
-            const popUpProps = JSON.parse(JSON.stringify(layer.feature.properties));
-            popUpProps.points = undefined;
-            return JSON.stringify(popUpProps, undefined, 2);
-        });
+    // Note: If we do not want popups in the MVP then the correct place to remove them is here
+    const geoLayer = L.geoJSON(json, geoJsonOptions).bindPopup(definePopUp);
 
     // Add it to the feature group
     geoFeatureGroup.addLayer(geoLayer);
 
     if (!geoFeatureGroupExists) {
         // New feature group - add it to the map
-        layerControl.addOverlay(geoFeatureGroup, CreateOverlayControlName(layerName, styleRecord));
+        layerControl.addOverlay(geoFeatureGroup, CreateOverlayControlName(featureType, styleRecord));
         geoFeatureGroup.addTo(mymap);
-        geoFeatureGroups[layerName] = geoFeatureGroup;
+        geoFeatureGroups[featureType] = geoFeatureGroup;
     }
 
     return Promise.resolve(true);
