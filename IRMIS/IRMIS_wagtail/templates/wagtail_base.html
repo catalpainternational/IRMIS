@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% load static wagtailuserbar %}
+{% load static wagtailuserbar road_schema_data %}
 
 {% block title %}
     {% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.title }}{% endif %}
@@ -26,7 +26,7 @@
 
 {% block base_content %}
     {% wagtailuserbar %}
-
+    {% assets_road_schema_data_tag %}
     <div class="h-100 row">
         {% block side_menu %}
         <div id="side-menu" class="col-3 h-100">

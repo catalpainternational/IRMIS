@@ -2,28 +2,10 @@ import * as L from "leaflet";
 
 import { KnownGeometries } from "../layers/KnownGeometries";
 // tslint:disable-next-line: max-line-length
-import { CreateOverlayControlName, FallbackLayerStyle, FixLayerStyleDefaults, styleGeometry, stylePoint } from "../utilities/leaflet-style";
+import { CreateOverlayControlName, FallbackLayerStyle, FixLayerStyleDefaults, styleGeometry, stylePoint } from "./leaflet-style";
 
 export let geoFeatureGroups: any = {};
 export let geoJsonFiles = Array<string>();
-
-export async function getGeoJSON(geoSourceUrl: string, id: number): Promise<any> {
-    try {
-        const response = await fetch(`${geoSourceUrl}${id}`, {mode: "no-cors"});
-        if (!response.ok) {
-            return Promise.resolve(undefined);
-        }
-        const responsejson = response.json();
-        if (!responsejson) {
-            // no json
-            return Promise.resolve(undefined);
-        }
-        return Promise.resolve(responsejson);
-    } catch (error) {
-        // TODO: log this error, network error
-        return Promise.reject(id);
-    }
-}
 
 export function displayGeoJSON(mymap: L.Map, layerControl: L.Control.Layers, json: any): Promise<any> {
     const layerName = "not set"; // getLayerNameFromGeoJSONProperties(json);
