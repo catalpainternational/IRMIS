@@ -127,3 +127,26 @@ h6 {
     font-size: 16px;
     color: $white;
 }
+
+table {
+    th {
+        color: $darker-gray;
+        line-height: 17px;
+        font-size: 14px;
+    }
+
+    td {
+        color: $darker-gray;
+        line-height: 10px;
+        font-size: 14px;
+    }
+}
+
+// Override DataTables.net styles
+
+.dataTables_info, .page-link {
+    line-height: 17px;
+    font-weight: 700;
+    font-size: 14px;
+    color: $white;
+}
