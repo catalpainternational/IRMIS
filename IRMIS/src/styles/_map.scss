@@ -1,12 +1,13 @@
 #map-table-irmis.map.table {
     #map-irmis {
+        margin-bottom: 10px;
         height: 40vh;
     }
 }
 
 #map-table-irmis.map:not(.table) {
     #map-irmis {
-        height: calc(100vh - 60px);
+        height: calc(100vh - 60px - 15px);
     }
 }
 

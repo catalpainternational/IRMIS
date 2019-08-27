@@ -1,5 +1,5 @@
 %filter-shared {
-    background-color: #5F6775;
+    background-color: $dark-gray;
     border-radius: $radius;
     color: $white;
 }
@@ -9,7 +9,7 @@
 }
 
 #side-menu {
-    background-color: #3D4758;
+    background-color: $darker-gray;
 
     #view {
         margin-bottom: 40px;

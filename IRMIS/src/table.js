@@ -3,7 +3,9 @@ import "datatables.net-bs4";
 import $ from "jquery";
 
 let table;
-let currentFilter = (p) => true;
+let currentFilter = (p) => {
+    return true;
+}
 
 $.fn.dataTableExt.afnFiltering.push(
     function( oSettings, aData, iDataIndex ) {
@@ -33,20 +35,13 @@ export function initializeDataTable(roadList) {
             regex: true, // Enable escaping of regular expression characters in the search term.
         },
     });
+
 }
 
 export function filterRows(filter) {
     currentFilter = filter;
     table.draw();
 }
-
-export function toggle_column(element) {
-    const checkbox = element.getElementsByClassName("checkbox").item(0);
-    const column = table.column(element.dataset.column);
-    checkbox.classList.toggle("selected");
-    column.visible(!column.visible());
-}
-
 
 // params: (settings, data, dataIndex, row, counter)
 /*

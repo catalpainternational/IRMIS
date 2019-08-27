@@ -1,15 +1,55 @@
-#map-table-irmis.map:not(.table) {
-    #table-irmis {
+#map-table-irmis {
+    overflow: hidden auto;
+
+    &.map:not(.table) #table-irmis {
         display: none;
     }
-}
 
-#map-table-irmis.table:not(.map) {
-    #table-irmis {
-        height: calc(100vh - 60px);
+    &.table:not(.map) #table-irmis {
+        height: calc(100vh - 60px - 15px);
+    }
+
+    #data-table {
+        margin-bottom: 0 !important;
+        background-color: $white;
+        margin-top: 0 !important;
+        table-layout: fixed;
+        overflow-x: auto;
     }
 }
 
-#data-table_wrapper {
-    overflow: scroll;
+// Override DataTables.net styles
+
+.dataTables_wrapper .row:nth-child(3) {
+    padding-top: 15px;
+}
+
+li.paginate_button.page-item {
+    &:focus {
+        outline: none;
+    }
+
+    &.active a.page-link {
+        background-color: $white;
+        border-radius: $radius;
+        color: $dark-gray;
+    }
+
+    a.page-link {
+        background-color: inherit;
+        box-shadow: none;
+        color: $white;
+        border: 0;
+    }
+}
+
+// Override Bootstrap table styles
+
+table.table.table-bordered {
+    border: none;
+
+    thead th, tbody td {
+        border: 1px solid $light-gray;
+        width: 1%;
+    }
 }

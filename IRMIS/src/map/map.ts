@@ -2,7 +2,6 @@
 import { Feature, FeatureCollection, GeoJSON, LineString, MultiLineString, MultiPoint, MultiPolygon, Point, Polygon } from "geojson";
 import * as L from "leaflet";
 
-import { getAssetGeometry } from "../assets/assets_api";
 import { Config } from "./config";
 import { BaseLayers } from "./layers/BaseLayers";
 import { displayGeoJSON } from "./utilities/displayGeoJSON";
@@ -31,7 +30,7 @@ export class Map {
 
     public async loadMapData(roadId: number) {
         try {
-            const json = await getAssetGeometry(roadId, "roads");
+            const json = null; // await getAssetGeometry(roadId, "roads");
             if (json) {
                 const geoJSON = json as GeoJSON;
                 const firstCoords = this.getFirstCoords(geoJSON);
