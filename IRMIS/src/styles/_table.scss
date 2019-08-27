@@ -10,19 +10,13 @@
     }
 
     #data-table {
-        margin-bottom: 0 !important;
         background-color: $white;
         margin-top: 0 !important;
-        table-layout: fixed;
         overflow-x: auto;
     }
 }
 
 // Override DataTables.net styles
-
-.dataTables_wrapper .row:nth-child(3) {
-    padding-top: 15px;
-}
 
 li.paginate_button.page-item {
     &:focus {
