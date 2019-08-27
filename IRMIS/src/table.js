@@ -2,70 +2,52 @@ import "datatables.net-bs4";
 
 import $ from "jquery";
 
-const tableData = [
-    {
-        code: "A1", condition: "Poor", length: 10, name: "Aileu",
-    },
-    {
-        code: "A2", condition: "Good", length: 15, name: "Ainaro",
-    },
-    {
-        code: "B1", condition: "Poor", length: 30, name: "Baucau",
-    },
-    {
-        code: "B2", condition: "Good", length: 70, name: "Bobonaro",
-    },
-    {
-        code: "C1", condition: "Poor", length: 30, name: "Covalima",
-    },
-    {
-        code: "D1", condition: "Excellent", length: 50, name: "Dili",
-    },
-    {
-        code: "E1", condition: "Poor", length: 45, name: "Ermera",
-    },
-    {
-        code: "L1", condition: "Good", length: 60, name: "Lautem",
-    },
-    {
-        code: "L2", condition: "Poor", length: 90, name: "Liquica",
-    },
-    {
-        code: "M1", condition: "Good", length: 100, name: "Manatuto",
-    },
-    {
-        code: "M2", condition: "Poor", length: 5, name: "Manufahi",
-    },
-    {
-        code: "O1", condition: "Good", length: 35, name: "Oecusse",
-    },
-    {
-        code: "V1", condition: "Poor", length: 80, name: "Viqueque",
-    },
-];
 
-const table = $("#data-table").DataTable({
-    columns: [
-        {
-            data: "name", title: "Name",
+export function initializeDataTable(roadList) {
+
+    const table = $("#data-table").DataTable({
+        columns: [
+            { data: "roadCode", title: "Road Code", "defaultContent": "<i>Not set</i>" },
+            { data: "roadType", title: "Road Type", "defaultContent": "<i>Not set</i>" },
+            { data: "roadName", title: "Road Name", "defaultContent": "<i>Not set</i>" },
+            { data: "linkCode", title: "Link Name", "defaultContent": "<i>Not set</i>" },
+            { data: "linkLength", title: "Link Length", "defaultContent": "<i>Not set</i>" },
+            { data: "surfaceType", title: "Surface Type", "defaultContent": "<i>Not set</i>" },
+            { data: "surfaceCondition", title: "Surface Condition", "defaultContent": "<i>Not set</i>" },
+        ],
+        data: roadList,
+        // lengthChange: false, // hide table entries filter
+        // searching: false, // hide search box
+        search: {
+            regex: true, // Enable escaping of regular expression characters in the search term.
         },
-        {
-            data: "code", title: "Code",
-        },
-        {
-            data: "condition", title: "Condition",
-        },
-        {
-            data: "length", title: "Length",
-        },
-    ],
-    data: tableData,
-    // lengthChange: false, // hide table entries filter
-    // searching: false, // hide search box
-    search: {
-        regex: true, // Enable escaping of regular expression characters in the search term.
-    },
-});
+    });
+}
+
+export function filter(element, elementId) {
+    // table.draw();
+    const filterBlock = document.getElementById(elementId);
+    const clear = filterBlock.getElementsByClassName("clear-filter").item(0);
+    const header = filterBlock.getElementsByClassName("header").item(0);
+    const checkbox = element.getElementsByTagName("span").item(0);
+
+    checkbox.classList.toggle("selected");
+    if (filterBlock.getElementsByClassName("selected").length) {
+        header.classList.add("active");
+        clear.hidden = false;
+    } else {
+        header.classList.remove("active");
+        clear.hidden = true;
+    }
+}
+
+export function toggle_column(element) {
+    const checkbox = element.getElementsByClassName("checkbox").item(0);
+    const column = table.column(element.dataset.column);
+    checkbox.classList.toggle("selected");
+    column.visible(!column.visible());
+}
+
 
 // params: (settings, data, dataIndex, row, counter)
 /*
@@ -101,27 +83,3 @@ $.fn.dataTable.ext.search.push(condition_search);
 $.fn.dataTable.ext.search.push(length_search);
 $.fn.dataTable.ext.search.push(code_search);
 */
-
-export function filter(element, elementId) {
-    // table.draw();
-    const filterBlock = document.getElementById(elementId);
-    const clear = filterBlock.getElementsByClassName("clear-filter").item(0);
-    const header = filterBlock.getElementsByClassName("header").item(0);
-    const checkbox = element.getElementsByTagName("span").item(0);
-
-    checkbox.classList.toggle("selected");
-    if (filterBlock.getElementsByClassName("selected").length) {
-        header.classList.add("active");
-        clear.hidden = false;
-    } else {
-        header.classList.remove("active");
-        clear.hidden = true;
-    }
-}
-
-export function toggle_column(element) {
-    const checkbox = element.getElementsByClassName("checkbox").item(0);
-    const column = table.column(element.dataset.column);
-    checkbox.classList.toggle("selected");
-    column.visible(!column.visible());
-}

@@ -58,3 +58,16 @@ To run tests cd to the django directory ( next to manage.py ) and type `pytest`
 To run tests with debugger breakpoint support use `pytest -s`
 To run tests then keep the db, and re-use it next time use `pytest --reuse-db` and the `pytest --create-db` when you have changed models and migrations
 To run tests that match a pattern use `-k` e.g. `pytest -k api`
+
+## Geobuf
+
+We use https://github.com/mapbox/geobuf for compressing GeoJson for transfer down the wire.
+`./manage.py collate_geometries` will group Road models and merge their geometries into a GeoJson FeatureCollection, then encode it into a geobuf file.
+The files are saved in the media root for access by the client.
+
+## Protobuf
+
+We use google protobuf to compress road metadata for transfer down the wire.
+https://developers.google.com/protocol-buffers/docs/pythontutorial is the best resource I have found for learning about it.
+To make any message schema changes go here https://github.com/protocolbuffers/protobuf/releases/tag/v3.9.1 to find a suitable package for your OS and follow the instructions in the README. Make sure the protoc binary is available on your PATH.
+run `yarn protoc` to update the generated python and javascript code.

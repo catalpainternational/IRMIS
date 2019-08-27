@@ -15,3 +15,15 @@
         display: none;
     }
 }
+
+#map-table-irmis.map.table {
+    #map-irmis span.popup {
+        font-size: 12px;
+    }
+    #map-irmis span.popup.label {
+        font-weight: 300
+    }
+    #map-irmis span.popup.value {
+        font-weight: 700
+    }
+}

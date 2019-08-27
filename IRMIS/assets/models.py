@@ -5,6 +5,8 @@ from django.utils.translation import get_language, ugettext, ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 
+from protobuf.roads_pb2 import Roads as ProtoRoads
+
 
 def no_spaces(value):
     if " " in value:
@@ -51,7 +53,40 @@ class TechnicalClass(models.Model):
         return self.name
 
 
+class RoadQuerySet(models.QuerySet):
+    def to_protobuf(self):
+        """ returns a roads protobuf object from the queryset """
+
+        roads_protobuf = ProtoRoads()
+        fields = dict(
+            road_code="road_code",
+            road_type="road_type",
+            road_name="road_name",
+            link_code="link_code",
+            link_length="link_length",
+            surface_type="surface_type__code",
+            surface_condition="surface_condition",
+            geojson_id="geojson_file_id",
+        )
+
+        for road in Road.objects.order_by("id").values("id", *fields.values()):
+            road_protobuf = roads_protobuf.roads.add()
+            road_protobuf.id = road["id"]
+            for protobuf_key, query_key in fields.items():
+                if road[query_key]:
+                    setattr(road_protobuf, protobuf_key, road[query_key])
+
+        return roads_protobuf
+
+
 class RoadManager(models.Manager):
+    def get_queryset(self):
+        return RoadQuerySet(self.model, using=self._db)
+
+    def to_protobuf(self):
+        """ returns a roads protobuf object from the manager """
+        return self.get_queryset().to_protobuf()
+
     def to_wgs(self):
         """
         "To World Geodetic System"
@@ -211,12 +246,24 @@ class Road(models.Model):
         null=True,
     )
 
+    # a reference to the collated geojson file this road's geometry is in
+    geojson_file = models.ForeignKey(
+        "CollatedGeoJsonFile", on_delete=models.DO_NOTHING, blank=True, null=True
+    )
+
     @property
     def link_name(self):
         return self.link_start_name + " - " + self.link_end_name
 
     def __str__(self,):
         return "%s - %s" % (self.properties_content_type, self.properties_object_id)
+
+
+class CollatedGeoJsonFile(models.Model):
+    """ FeatureCollection GeoJson(srid=4326) files made up of collated geometries """
+
+    key = models.SlugField(unique=True)
+    geobuf_file = models.FileField(upload_to="geojson/geobuf/")
 
 
 class SourceNationalRoad(models.Model):

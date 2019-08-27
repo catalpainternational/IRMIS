@@ -4,7 +4,7 @@ const path = require('path');
 module.exports = {
     context: path.resolve(__dirname, './src'),
     entry: {
-        app: './irmis.ts',
+        app: './estrada.js',
     },
     output: {
         filename: 'irmis.js',
