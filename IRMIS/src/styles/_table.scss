@@ -6,17 +6,21 @@
     }
 
     &.table:not(.map) #table-irmis {
-        height: calc(100vh - 60px);
+        height: calc(100vh - 60px - 15px);
     }
 
     #data-table {
-        overflow-x: auto;
         background-color: $white;
-        table-layout: fixed;
+        margin-top: 0 !important;
+        overflow-x: auto;
     }
 }
 
 // Override DataTables.net styles
+
+.dataTables_wrapper .row:nth-child(3) {
+    margin-top: 9px;
+}
 
 li.paginate_button.page-item {
     &:focus {

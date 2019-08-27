@@ -7,24 +7,6 @@
 {% block content %}
     <div id="map-irmis"></div>
     <div id="table-irmis">
-        <ul>
-            <li data-column="0" onclick="roads.toggle_column(this)">
-                <span class="checkbox image selected"></span>
-                Name
-            </li>
-            <li data-column="1" onclick="roads.toggle_column(this)">
-                <span class="checkbox image selected"></span>
-                Code
-            </li>
-            <li data-column="2" onclick="roads.toggle_column(this)">
-                <span class="checkbox image selected"></span>
-                Condition
-            </li>
-            <li data-column="3" onclick="roads.toggle_column(this)">
-                <span class="checkbox image selected"></span>
-                Length
-            </li>
-        </ul>
         <table id="data-table" class="d-block table table-bordered w-100" style="border-collapse: collapse !important;"></table>
     </div>
 {% endblock %}
