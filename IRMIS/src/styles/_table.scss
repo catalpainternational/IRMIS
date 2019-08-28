@@ -18,6 +18,10 @@
 
 // Override DataTables.net styles
 
+.dataTables_wrapper .row:first-of-type {
+    display: none;
+}
+
 li.paginate_button.page-item {
     &:focus {
         outline: none;

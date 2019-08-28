@@ -34,21 +34,23 @@
 
 // Override Leaflet styles
 
-.leaflet-touch  .leaflet-bar {
-    margin-right: 30px;
-    margin-top: 40px;
-    border: none;
+.leaflet-touch {
+    .leaflet-bar {
+        margin-right: 30px;
+        margin-top: 40px;
+        border: none;
 
-    a.leaflet-control-zoom-in, a.leaflet-control-zoom-out {
-        box-shadow: 0 3px 8px 0 rgba(61, 71, 88, 0.25);
-        color: $darker-gray;
-        line-height: 34px;
-        border-bottom: 0;
-        height: 34px;
-        width: 34px;
+        a.leaflet-control-zoom-in, a.leaflet-control-zoom-out {
+            box-shadow: 0 3px 8px 0 rgba(61, 71, 88, 0.25);
+            color: $darker-gray;
+            line-height: 34px;
+            border-bottom: 0;
+            height: 34px;
+            width: 34px;
 
-        &:hover {
-            background-color: $white;
+            &:hover {
+                background-color: $white;
+            }
         }
     }
 }
