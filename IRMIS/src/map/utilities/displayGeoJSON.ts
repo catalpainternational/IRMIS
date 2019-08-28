@@ -1,9 +1,10 @@
-import { Feature, GeoJSON, Geometry } from "geojson";
+import { Feature, GeoJSON, GeoJsonProperties, Geometry } from "geojson";
 import * as L from "leaflet";
 
 import { KnownGeometries } from "../layers/KnownGeometries";
 // tslint:disable-next-line: max-line-length
 import { CreateOverlayControlName, FallbackLayerStyle, FixLayerStyleDefaults, styleGeometry, stylePoint } from "./leaflet-style";
+import { rebuildProps } from "./rebuildProps";
 
 /** The collection of all GeoJSON elements currently added to the map,
  * organised by their featureType
@@ -36,27 +37,29 @@ export function getFeatureType(json: GeoJSON, defaultFeatureType: string = "Road
     return featureType || defaultFeatureType || "not set";
 }
 
-/** A simple default popup
+/** A 'simple' default popup
  *
- * Feel free to remove / change later.
  */
 function definePopUp(layer: any) {
-    // Deep copy the properties for use in a simple popup
-    const popUpProps = JSON.parse(JSON.stringify(layer.feature.properties));
+    // Prepare the properties for use in a simple popup
+    const popUpProps = rebuildProps(layer.feature.properties as GeoJsonProperties);
 
-    // Get rid of anything we know we don't want to show:
-    delete popUpProps.points;
-    delete popUpProps.pk;
-    delete popUpProps.id;
-    delete popUpProps.geojsonId;
+    function propToHTML(props: any): string {
+        return Object.keys(props).map((propKey) => {
+            if (Object.prototype.toString.call(props[propKey]) === "[object Object]") {
+                const propLabel = `<span class="popup heading">${propKey}:</span>`;
+                const propGroup = propToHTML(props[propKey]);
+                return (`<br/>${propLabel}<br/>${propGroup}<br/>`);
+            } else {
+                const propLabel = `<span class="popup label">${propKey}:</span>`;
+                const propValue = `<span class="popup value">${props[propKey]}</span>`;
+                return (`<span class="popup">${propLabel}${propValue}</span> `);
+            }
+        }).join("");
+    }
 
-    // Put everything else into the popup
-    return Object.keys(popUpProps).map((propKey) => {
-        const propName = propKey.replace("road", "");
-        const propLabel = `<span class="label">${propName}:</span>`;
-        const propValue = `<span class="value">${popUpProps[propKey]}</span>`;
-        return (`<span class="popup">${propLabel}${propValue}</span> `);
-    }).join("");
+    // Put everything into the popup
+    return propToHTML(popUpProps);
 }
 
 function registerFeature(feature: Feature<Geometry, any>, layer: L.Layer) {

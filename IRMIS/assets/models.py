@@ -56,17 +56,23 @@ class TechnicalClass(models.Model):
 class RoadQuerySet(models.QuerySet):
     def to_protobuf(self):
         """ returns a roads protobuf object from the queryset """
+        # See roads.proto
 
         roads_protobuf = ProtoRoads()
         fields = dict(
+            geojson_id="geojson_file_id",
             road_code="road_code",
-            road_type="road_type",
             road_name="road_name",
+            road_type="road_type",
             link_code="link_code",
+            # link_name gets included here in the protobuf
+            link_start_chainage="link_start_chainage",
+            link_end_chainage="link_end_chainage",
             link_length="link_length",
             surface_type="surface_type__code",
             surface_condition="surface_condition",
-            geojson_id="geojson_file_id",
+            pavement_class="pavement_class",
+            carriageway_width="carriageway_width",
         )
 
         for road in Road.objects.order_by("id").values("id", *fields.values()):

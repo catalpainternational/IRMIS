@@ -1,11 +1,9 @@
 import "datatables.net-bs4";
-
 import $ from "jquery";
 
 let table;
-let currentFilter = (p) => {
-    return true;
-}
+
+let currentFilter = (p) => (true);
 
 $.fn.dataTableExt.afnFiltering.push(
     function( oSettings, aData, iDataIndex ) {
@@ -14,19 +12,27 @@ $.fn.dataTableExt.afnFiltering.push(
     }
 );
 
-export function initializeDataTable(roadList) {
+let defineColumn = (data, title) => ({ data: data, title: title, defaultContent: "<i>Not set</i>"});
 
+export function initializeDataTable(roadList) {
     table = $("#data-table").DataTable({
         columns: [
-            { data: "roadCode", title: "Road Code", "defaultContent": "<i>Not set</i>" },
-            { data: "roadType", title: "Road Type", "defaultContent": "<i>Not set</i>" },
-            { data: "roadName", title: "Road Name", "defaultContent": "<i>Not set</i>" },
-            { data: "linkCode", title: "Link Name", "defaultContent": "<i>Not set</i>" },
-            { data: "linkLength", title: "Link Length", "defaultContent": "<i>Not set</i>" },
-            { data: "surfaceType", title: "Surface Type", "defaultContent": "<i>Not set</i>" },
-            { data: "surfaceCondition", title: "Surface Condition", "defaultContent": "<i>Not set</i>" },
-            { data: "roadStatus", title: "Road Status", "defaultContent": "<i>Not set</i>" },
-            { data: "administrativeArea", title: "Administrative Area", "defaultContent": "<i>Not set</i>" },
+            defineColumn("roadCode", "Code"),
+            defineColumn("roadType", "Type"),
+            defineColumn("roadName", "Name"),
+
+            defineColumn("linkCode", "Link Code"),
+            defineColumn("linkName", "Link Name"),
+            defineColumn("linkStartChainage", "Chainage Start"),
+            defineColumn("linkEndChainage", "Chainage End"),
+            defineColumn("linkLength", "Link Length"),
+
+            defineColumn("surfaceType", "Surface Type"),
+            defineColumn("surfaceCondition", "Surface Condition"),
+            defineColumn("pavementClass", "Pavement Class"),
+
+            defineColumn("administrativeArea", "Administrative Area"),
+            defineColumn("carriagewayWidth", "Carriageway Width"),
         ],
         data: roadList,
         // lengthChange: false, // hide table entries filter
@@ -35,9 +41,7 @@ export function initializeDataTable(roadList) {
             regex: true, // Enable escaping of regular expression characters in the search term.
         },
     });
-
 }
-
 export function filterRows(filter) {
     currentFilter = filter;
     table.draw();
