@@ -16,14 +16,13 @@ export class Map {
         this.lMap = L.map("map-irmis", { maxBounds: Config.tlBounds, zoomControl: false }).setView(Config.tlCenter, 9);
 
         // Add back in the zoom control
-        this.zoomControl = L.control.zoom({ position: "bottomleft" });
+        this.zoomControl = L.control.zoom({ position: "topright" });
         this.zoomControl.addTo(this.lMap);
 
         // Set up the baseLayers and the layer control
         const bl = BaseLayers.baseLayers;
-        bl["Street OSM Mapnik"].addTo(this.lMap);
+        bl["Street OSM HOT"].addTo(this.lMap);
         this.layerControl = L.control.layers(bl, {});
-        this.layerControl.addTo(this.lMap);
 
         return this.lMap;
     }
