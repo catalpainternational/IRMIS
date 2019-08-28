@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     # IRMIS
     "IRMIS_wagtail",
     "assets",
+    "basemap",
     "rest_framework",
     "rest_framework_gis",
     # CATALPA UTILS
