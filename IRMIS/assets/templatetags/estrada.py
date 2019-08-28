@@ -12,9 +12,18 @@ from ..models import (
 register = template.Library()
 
 
-@register.inclusion_tag("assets/road_schema_data_tag.html")
-def assets_road_schema_data_tag():
+@register.inclusion_tag("assets/estrada_main.html")
+def estrada_main():
+    return {}
+
+
+@register.inclusion_tag("assets/filter_pane.html")
+def filter_pane():
     """ Returns script tags that contain translations of Road Schema data. """
+    return {"road_schema": get_schema_data()}
+
+
+def get_schema_data():
     road_fields = list(
         filter(
             lambda x: (
@@ -24,8 +33,12 @@ def assets_road_schema_data_tag():
             Road._meta.fields,
         )
     )
-    road_schema = {x.name: {"display": x.verbose_name} for x in road_fields}
+    road_schema = {
+        x.name: {"display": x.verbose_name, "slug": x.name} for x in road_fields
+    }
 
+    road_schema["road_type"].update({"options": Road.ROAD_TYPE_CHOICES})
+    road_schema["surface_condition"].update({"options": Road.SURFACE_CONDITION_CHOICES})
     road_schema["surface_type"].update(
         {"options": list(SurfaceType.objects.all().values())}
     )
@@ -43,4 +56,4 @@ def assets_road_schema_data_tag():
         {"options": list(TechnicalClass.objects.all().values())}
     )
 
-    return dict(data={"road_fields": road_schema})
+    return road_schema

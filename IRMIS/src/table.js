@@ -2,10 +2,21 @@ import "datatables.net-bs4";
 
 import $ from "jquery";
 
+let table;
+let currentFilter = (p) => {
+    return true;
+}
+
+$.fn.dataTableExt.afnFiltering.push(
+    function( oSettings, aData, iDataIndex ) {
+        let properties = oSettings.aoData[iDataIndex]._aData;
+        return currentFilter(properties);
+    }
+);
 
 export function initializeDataTable(roadList) {
 
-    const table = $("#data-table").DataTable({
+    table = $("#data-table").DataTable({
         columns: [
             { data: "roadCode", title: "Road Code", "defaultContent": "<i>Not set</i>" },
             { data: "roadType", title: "Road Type", "defaultContent": "<i>Not set</i>" },
@@ -14,6 +25,8 @@ export function initializeDataTable(roadList) {
             { data: "linkLength", title: "Link Length", "defaultContent": "<i>Not set</i>" },
             { data: "surfaceType", title: "Surface Type", "defaultContent": "<i>Not set</i>" },
             { data: "surfaceCondition", title: "Surface Condition", "defaultContent": "<i>Not set</i>" },
+            { data: "roadStatus", title: "Road Status", "defaultContent": "<i>Not set</i>" },
+            { data: "administrativeArea", title: "Administrative Area", "defaultContent": "<i>Not set</i>" },
         ],
         data: roadList,
         // lengthChange: false, // hide table entries filter
@@ -22,32 +35,13 @@ export function initializeDataTable(roadList) {
             regex: true, // Enable escaping of regular expression characters in the search term.
         },
     });
+
 }
 
-export function filter(element, elementId) {
-    // table.draw();
-    const filterBlock = document.getElementById(elementId);
-    const clear = filterBlock.getElementsByClassName("clear-filter").item(0);
-    const header = filterBlock.getElementsByClassName("header").item(0);
-    const checkbox = element.getElementsByTagName("span").item(0);
-
-    checkbox.classList.toggle("selected");
-    if (filterBlock.getElementsByClassName("selected").length) {
-        header.classList.add("active");
-        clear.hidden = false;
-    } else {
-        header.classList.remove("active");
-        clear.hidden = true;
-    }
+export function filterRows(filter) {
+    currentFilter = filter;
+    table.draw();
 }
-
-export function toggle_column(element) {
-    const checkbox = element.getElementsByClassName("checkbox").item(0);
-    const column = table.column(element.dataset.column);
-    checkbox.classList.toggle("selected");
-    column.visible(!column.visible());
-}
-
 
 // params: (settings, data, dataIndex, row, counter)
 /*

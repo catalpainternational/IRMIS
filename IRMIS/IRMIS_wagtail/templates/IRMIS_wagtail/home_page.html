@@ -1,30 +1,9 @@
 {% extends "wagtail_base.html" %}
 
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags estrada %}
 
 {% block body_class %}content{% endblock %}
 
 {% block content %}
-    <div id="map-irmis"></div>
-    <div id="table-irmis">
-        <ul>
-            <li data-column="0" onclick="roads.toggle_column(this)">
-                <span class="checkbox image selected"></span>
-                Name
-            </li>
-            <li data-column="1" onclick="roads.toggle_column(this)">
-                <span class="checkbox image selected"></span>
-                Code
-            </li>
-            <li data-column="2" onclick="roads.toggle_column(this)">
-                <span class="checkbox image selected"></span>
-                Condition
-            </li>
-            <li data-column="3" onclick="roads.toggle_column(this)">
-                <span class="checkbox image selected"></span>
-                Length
-            </li>
-        </ul>
-        <table id="data-table" class="table table-bordered table-striped w-100"></table>
-    </div>
+    {% estrada_main %}
 {% endblock %}

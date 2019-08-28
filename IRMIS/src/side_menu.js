@@ -1,4 +1,8 @@
-const filters = ["road-condition", "road-code"];
+import { toggleFilter, isFilterApplied, clearFilter, clearAllFilters } from './filter';
+
+const filters = ["road_type", "surface_type", "surface_condition", "road_status" ,"administrative_area"]; //  "road-code",
+
+let filterUIState = {};
 
 export function collapse_side_menu() {
     const collapsedSideMenu = document.getElementById("collapsed-side-menu");
@@ -44,17 +48,48 @@ export function change_view(element, view) {
     roads.map.lMap.invalidateSize();
 }
 
-export function toggle_filter(element, elementId) {
+export function toggleFilterOption(element, elementId, value) {
+    const filterBlock = document.getElementById(elementId);
+    const clear = filterBlock.getElementsByClassName("clear-filter").item(0);
+    const header = filterBlock.getElementsByClassName("header").item(0);
+    const checkbox = element.getElementsByTagName("span").item(0);
+
+    checkbox.classList.toggle("selected");
+    if (filterBlock.getElementsByClassName("selected").length) {
+        header.classList.add("active");
+        clear.hidden = false;
+    } else {
+        header.classList.remove("active");
+    }
+    toggleFilter(elementId, value);
+    clear.hidden = !isFilterApplied(elementId, value);
+}
+
+export function toggleFilterOpen(element, elementId) {
     const filter = document.getElementById(elementId);
     const options = filter.getElementsByClassName("options").item(0);
 
+    toggleFilterUIState(elementId);
     if (element.classList.contains("plus")) {
         element.classList.replace("plus", "minus");
-        options.hidden = false;
     } else {
         element.classList.replace("minus", "plus");
-        options.hidden = true;
     }
+    options.hidden = !isFilterOpen(elementId);
+}
+
+function isFilterOpen(elementId) {
+    initFilterUIState(elementId);
+    return filterUIState[elementId];
+}
+
+function initFilterUIState(elementId) {
+    if( !filterUIState.hasOwnProperty(elementId) ) filterUIState[elementId] = false;
+}
+
+function toggleFilterUIState(elementId) {
+    initFilterUIState(elementId);
+    filterUIState[elementId] = !filterUIState[elementId];
 }
 
 export function clear_filter(elementId) {
@@ -65,8 +100,10 @@ export function clear_filter(elementId) {
     }
     filter.getElementsByClassName("header").item(0).classList.remove("active");
     filter.getElementsByClassName("clear-filter").item(0).hidden = true;
+    clearFilter(elementId);
 }
 
 export function clear_all_filters() {
     filters.forEach(filter => clear_filter(filter));
+    clearAllFilters();
 }

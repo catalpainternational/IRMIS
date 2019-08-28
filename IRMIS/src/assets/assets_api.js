@@ -28,8 +28,8 @@ export function getRoadsMetadata() {
         // build a map to access roads by id
         var list = roadMessages.Roads.deserializeBinary(protobufBytes).getRoadsList();
         return list.reduce(
-            (roadsLookup, roadsMetadata) => {
-                roadsLookup[roadsMetadata.getId()] = roadsMetadata;
+            (roadsLookup, roadMetadata) => {
+                roadsLookup[roadMetadata.getId()] = roadMetadata;
                 return roadsLookup;
             },
             {},

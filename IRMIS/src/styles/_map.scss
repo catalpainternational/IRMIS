@@ -1,12 +1,13 @@
 #map-table-irmis.map.table {
     #map-irmis {
+        margin-bottom: 10px;
         height: 40vh;
     }
 }
 
 #map-table-irmis.map:not(.table) {
     #map-irmis {
-        height: calc(100vh - 60px);
+        height: calc(100vh - 60px - 15px);
     }
 }
 
@@ -18,12 +19,14 @@
 
 #map-table-irmis.map.table {
     #map-irmis span.popup {
+        white-space: nowrap;
         font-size: 12px;
-    }
-    #map-irmis span.popup.label {
-        font-weight: 300
-    }
-    #map-irmis span.popup.value {
-        font-weight: 700
+
+        .label {
+            font-weight: 300
+        }
+        .value {
+            font-weight: 700
+        }
     }
 }

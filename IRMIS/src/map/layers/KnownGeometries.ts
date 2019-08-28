@@ -1,3 +1,5 @@
+import { GeoDataStyle } from "models/geo-data-style";
+
 // tslint:disable: object-literal-sort-keys
 
 export class KnownGeometries {
@@ -15,23 +17,25 @@ export class KnownGeometries {
      *
      * Supports all SVG styling options
      */
-    public static Known: any = {
+    public static Known: {[name: string]: GeoDataStyle} = {
         // Some of the data that came from the original shapefiles
-        "SeaBoundary": { style: { style: {color: "SEAGREEN"}}},
+        "SeaBoundary": { style: {color: "SEAGREEN"}},
 
-        "Hydro_TL_Geographic": { style: { style: {color: "CORNFLOWERBLUE"}}},
-        "rivers": { style: { style: {color: "CORNFLOWERBLUE"}}},
-        "braiding riverbeds": { style: { style: {color: "CORNFLOWERBLUE"}}},
+        "Hydro_TL_Geographic": { style: {color: "CORNFLOWERBLUE"}},
+        "rivers": { style: {color: "CORNFLOWERBLUE"}},
+        "braiding riverbeds": { style: {color: "CORNFLOWERBLUE"}},
 
         // Shows a sample of how to set up marker styles, identified in leaflet as 'pointToLayer'
         // This styling would support areas, lines and points that have a featureType of 'Bridge'
-        "Bridge": { style: {
+        "Bridge": {
             style: {color: "MAROON"},
-            pointToLayer: {radius: 3, fillColor: "MAROON", color: "#111", weight: 2, opacity: 0.65, fillOpacity: 0.35}},
+            pointToLayer: {radius: 3, fillColor: "MAROON", color: "#111", weight: 2, opacity: 0.65, fillOpacity: 0.35},
         },
 
         // New - as per the protobuf import
         // see assets_api.js populateGeoJsonProperties()
-        "Road": { style: { style: {color: "#1e38ae"}}},
+        "Road": { style: {color: "DARKBLUE", opacity: 1}},
+        "Road.on": { style: {color: "DARKBLUE", opacity: 1}},
+        "Road.off": { style: {color: "DARKBLUE", opacity: 0.3}},
     };
 }
