@@ -19,12 +19,14 @@
 
 #map-table-irmis.map.table {
     #map-irmis span.popup {
+        white-space: nowrap;
         font-size: 12px;
-    }
-    #map-irmis span.popup.label {
-        font-weight: 300
-    }
-    #map-irmis span.popup.value {
-        font-weight: 700
+
+        .label {
+            font-weight: 300
+        }
+        .value {
+            font-weight: 700
+        }
     }
 }

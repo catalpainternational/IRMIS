@@ -1,4 +1,4 @@
-import { GeoJSON } from "geojson";
+import { Feature, GeoJSON, Geometry } from "geojson";
 import * as L from "leaflet";
 
 import { KnownGeometries } from "../layers/KnownGeometries";
@@ -9,6 +9,9 @@ import { CreateOverlayControlName, FallbackLayerStyle, FixLayerStyleDefaults, st
  * organised by their featureType
  */
 export let geoFeatureGroups: { [name: string]: L.FeatureGroup } = {};
+
+export let featureLookup: { [name: string]: Feature<Geometry, any> } = {};
+export let layerLookup: { [name: string]: L.Layer } = {};
 
 /** Gets the featureType from the GeoJSON properties.
  * Allows for a default featureType to be defined.
@@ -50,10 +53,15 @@ function definePopUp(layer: any) {
     // Put everything else into the popup
     return Object.keys(popUpProps).map((propKey) => {
         const propName = propKey.replace("road", "");
-        const propLabel = `<span class="popup label">${propName}:</span>`;
-        const propValue = `<span class="popup value">${popUpProps[propKey]}</span>`;
-        return (`${propLabel}${propValue} `);
+        const propLabel = `<span class="label">${propName}:</span>`;
+        const propValue = `<span class="value">${popUpProps[propKey]}</span>`;
+        return (`<span class="popup">${propLabel}${propValue}</span> `);
     }).join("");
+}
+
+function registerFeature(feature: Feature<Geometry, any>, layer: L.Layer) {
+    featureLookup[feature.properties.pk] = feature;
+    layerLookup[feature.properties.pk] = layer;
 }
 
 export function displayGeoJSON(mymap: L.Map, layerControl: L.Control.Layers, json: GeoJSON): Promise<any> {
@@ -71,13 +79,14 @@ export function displayGeoJSON(mymap: L.Map, layerControl: L.Control.Layers, jso
         ? KnownGeometries.Known[featureType]
         : FallbackLayerStyle(featureType);
     FixLayerStyleDefaults(styleRecord);
-    const mapPane = "" + (styleRecord.map_pane || styleRecord.display_sequence || styleRecord.geo_type);
+    const mapPane = "" + (styleRecord.mapPane || styleRecord.featureType);
 
     // Assemble the presentation options & styling
     const geoJsonOptions: L.GeoJSONOptions = {
+        onEachFeature: registerFeature,
         pane: mapPane === "undefined" ? undefined : mapPane,
         pointToLayer: (feature: GeoJSON.Feature<GeoJSON.Point>, latlng: L.LatLng) =>
-            stylePoint(feature, latlng, styleRecord.style.pointToLayer),
+            stylePoint(feature, latlng, styleRecord.pointToLayer),
         style: (feature?: GeoJSON.Feature<GeoJSON.GeometryObject, any>): L.PathOptions =>
             styleGeometry(feature, styleRecord),
     };

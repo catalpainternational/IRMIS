@@ -1,7 +1,7 @@
 import * as L from "leaflet";
 import { CircleMarkerOptions } from "leaflet";
 
-import { GeoDataStyle, IPointToLayerHtmlStyle, PointToLayerStyle } from "../models/geo-data-style";
+import { GeoDataStyle, IPointToLayerBaseStyle, IPointToLayerHtmlStyle } from "../models/geo-data-style";
 
 import { getFeatureType } from "./displayGeoJSON";
 import { hashFeatureTypeName } from "./text";
@@ -13,22 +13,22 @@ export function FallbackLayerStyle(featureType: string): GeoDataStyle {
   const featureTypeHash = hashFeatureTypeName(featureType) >> 8;
   const fbColour = "#" + ("000000" + featureTypeHash.toString(16)).slice(-6);
 
-  return { style: { style: { color: fbColour } } } as GeoDataStyle;
+  return { style: { color: fbColour } } as GeoDataStyle;
 }
 
 /** Ensure that default styles are set for points and lines */
 export function FixLayerStyleDefaults(styleRecord: GeoDataStyle) {
   if (!styleRecord.style) {
-    styleRecord.style = { style: { color: "BLACK"} };
+    styleRecord.style = { color: "BLACK"};
   }
-  if (!styleRecord.style.style.weight) {
-    styleRecord.style.style.weight = 2;
+  if (!styleRecord.style.weight) {
+    styleRecord.style.weight = 2;
   }
 
-  if (!styleRecord.style.pointToLayer) {
-    styleRecord.style.pointToLayer = {
+  if (!styleRecord.pointToLayer) {
+    styleRecord.pointToLayer = {
       color: "#111",
-      fillColor: styleRecord.style.style.color,
+      fillColor: styleRecord.style.color || "BLACK",
       fillOpacity: 0.35,
       opacity: 0.65,
       radius: 3,
@@ -43,10 +43,10 @@ export function FixLayerStyleDefaults(styleRecord: GeoDataStyle) {
  */
 export function CreateOverlayControlName(layerName: string, styleRecord: GeoDataStyle): string {
   if (!styleRecord.style) {
-    styleRecord.style = { style: { color: "BLACK"} };
+    styleRecord.style = { color: "BLACK"};
   }
 
-  const lineStyle = styleRecord.style.style;
+  const lineStyle = styleRecord.style;
   let lineStyleSvg = '<svg width="12" height="12"><g>';
   lineStyleSvg += `<path viewBox="0 0 12 12" fill-rule="evenodd" d="M0 0 L12 12" stroke="${lineStyle.color}"`;
   if (!!lineStyle.opacity) {
@@ -77,17 +77,10 @@ export function styleGeometry(
   }
 
   if (!styleRecord.style) {
-    styleRecord.style = { style: { color: "BLACK"} };
+    styleRecord.style = { color: "BLACK"};
   }
 
-  if (!!styleRecord.styleProp) {
-    const styleProp = styleRecord.styleProp;
-    const featureStyleProp = "style" + feature.properties[styleProp];
-
-    return (styleRecord.style[featureStyleProp]) ? styleRecord.style[featureStyleProp] : styleRecord.style.style;
-  }
-
-  return styleRecord.style.style;
+  return styleRecord.style;
 }
 
 /** Defines everything needed to style points (markers) properly.
@@ -99,7 +92,7 @@ export function styleGeometry(
  */
 export function stylePoint(
   feature: GeoJSON.Feature<GeoJSON.Point>,
-  latlng: L.LatLng, pointStyle: PointToLayerStyle,
+  latlng: L.LatLng, pointStyle: IPointToLayerHtmlStyle | IPointToLayerBaseStyle | undefined,
 ): L.Marker | L.CircleMarker {
   const templateMatches = /{{([a-zA-Z_0-9]*)}}/g;
   // Note that this escaped regex template does NOT handle nested arrays, and deliberately does not match objects

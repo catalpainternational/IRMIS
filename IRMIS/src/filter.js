@@ -3,8 +3,8 @@
  * communicate the filter function to the map and table
  * */
 
-import { filterFeatures } from "./map/map_simple.js"
-import { filterRows } from "./table.js"
+import { filterFeatures } from "./map/utilities/filterGeoJSON";
+import { filterRows } from "./table.js";
 
 let filterState = {};
 

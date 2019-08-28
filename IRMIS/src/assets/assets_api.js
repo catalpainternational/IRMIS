@@ -12,20 +12,24 @@ const requestAssetInit = {
 };
 const requestMediaUrl = `${window.location.origin}/media`;
 
-export function getRoadMetadata() {
-    // retrieves the road metadata from the server
-    // returns a map {id: road_object}
-
-    const metadataUrl = `${requestAssetUrl}/protobuf_roads`;
+/** getRoadsMetadata
+ *
+ * Retrieves the road metadata from the server
+ *
+ * @returns a map {id: road_object}
+ */
+export function getRoadsMetadata() {
+    const assetTypeUrlFragment = "protobuf_roads";
+    const metadataUrl = `${requestAssetUrl}/${assetTypeUrlFragment}`;
 
     return fetch(metadataUrl, requestAssetInit).then(metadataResponse => {
         return metadataResponse.arrayBuffer();
     }).then(protobufBytes => {
         // build a map to access roads by id
-        var list =  roadMessages.Roads.deserializeBinary(protobufBytes).getRoadsList();
+        var list = roadMessages.Roads.deserializeBinary(protobufBytes).getRoadsList();
         return list.reduce(
-            (roadsLookup, road) => {
-                roadsLookup[road.getId()] = road;
+            (roadsLookup, roadMetadata) => {
+                roadsLookup[roadMetadata.getId()] = roadMetadata;
                 return roadsLookup;
             },
             {},
@@ -56,12 +60,27 @@ export function getGeoJson(geoJsonDetail) {
     });
 }
 
-export function populateGeoJsonProperties(geoJson, roadsLookup) {
-    // for each feature in a geojson FetureCollection, use the property pk to access the road metadata
-    // and add it to the feature properties
-
+/** populateGeoJsonProperties
+ *
+ * for each feature in a geojson FeatureCollection,
+ * use the property `pk` to access the relevant metadata from the propertiesLookup
+ * and add it to the feature properties.
+ *
+ * also ensure that each feature.properties has a validly set `featureType`
+ *
+ * @param geoJson - the GeoJSON that needs its feature.properties populated
+ * @param propertiesLookup - the source of the properties data referenced by properties.pk
+ */
+export function populateGeoJsonProperties(geoJson, propertiesLookup) {
     geoJson.features.forEach(feature => {
-        const road = roadsLookup[feature.properties.pk];
-        Object.assign(feature.properties, road.toObject());
+        const propertySet = propertiesLookup[feature.properties.pk];
+        Object.assign(feature.properties, propertySet.toObject());
+
+        // Special handling for the mandatory property `featureType`
+        if (!feature.properties.featureType) {
+            if (feature.properties.roadType) {
+                feature.properties.featureType = "Road";
+            }
+        }
     });
 }

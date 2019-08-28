@@ -1,13 +1,15 @@
 import "./styles/irmis.scss";
 
 import { Map } from "./map/map";
-import { getRoadMetadata, getGeoJsonDetails, getGeoJson, populateGeoJsonProperties } from "./assets/assets_api.js";
+import { getRoadsMetadata, getGeoJsonDetails, getGeoJson, populateGeoJsonProperties } from "./assets/assets_api.js";
 import { initializeDataTable } from "./table";
-import { addToMap } from "./map/map_simple";
+
+export { filterFeatures } from "./map/utilities/filterGeoJSON";
+export { geoFeatureGroups } from "./map/utilities/displayGeoJSON";
 
 export * from "./table";
 export * from "./side_menu";
-export { filterFeatures } from "./map/map_simple";
+
 export let map;
 
 
@@ -17,7 +19,7 @@ window.onload = () => {
 
     // First retrieve the road metadata, and the urls of the geojson files
     Promise.all([
-        getRoadMetadata(),
+        getRoadsMetadata(),
         getGeoJsonDetails(),
     ]).then(values => {
         let roadsLookup = values[0];
@@ -35,7 +37,7 @@ window.onload = () => {
                 populateGeoJsonProperties(geoJson, roadsLookup);
                 
                 // add to map
-                addToMap(geoJson, map.lMap);
+                map.addMapData(geoJson);
             })
         }));
     }, err => console.log(err));
