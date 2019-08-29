@@ -1,0 +1,35 @@
+// Override Bootstrap button styles
+
+.btn {
+    box-shadow: 0 2px 4px 0 rgba(0, 52, 62, 0.3);
+    padding-bottom: 7px;
+    padding-top: 10px;
+    min-width: 135px;
+    border: none;
+}
+
+.btn-lg {
+    padding-right: 0.75rem;
+    border-radius: 0.25rem;
+    padding-left: 0.75rem;
+    font-size: inherit;
+    width: 316px;
+}
+
+.btn-primary {
+    background-color: $green;
+
+    &:hover {
+        background-color: $green;
+    }
+}
+
+.btn-inactive {
+    background-color: $gray;
+    color: $dark-gray;
+
+    &:hover {
+        background-color: $gray;
+        color: $dark-gray;
+    }
+}

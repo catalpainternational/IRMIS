@@ -1,0 +1,39 @@
+.registration .language-selector button {
+    color: $dark-gray;
+
+    &:not(.active):hover {
+        color: $dark-gray;
+    }
+}
+
+.content .language-selector button {
+    color: $white;
+
+    &:not(.active):hover {
+        color: $white;
+    }
+}
+
+.language-selector button {
+    text-transform: uppercase;
+    box-shadow: none;
+    min-width: unset;
+    padding: 5px;
+    border: none;
+
+    &:first-of-type {
+        padding-left: 0;
+    }
+
+    &:last-of-type {
+        padding-right: 0;
+    }
+
+    &.active {
+        color: $green;
+    }
+
+    &:focus {
+        box-shadow: none;
+    }
+}

@@ -1,0 +1,28 @@
+import os
+from .settings import INSTALLED_APPS, MIDDLEWARE
+
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.contrib.gis.db.backends.postgis",
+        "NAME": "irmis_db",
+    }
+}
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+# django extensions
+try:
+    import django_extensions
+    INSTALLED_APPS.append("django_extensions")
+except ImportError:
+    pass
+
+# django debug toolbar configuration
+try:
+    import debug_toolbar
+    INSTALLED_APPS.append("debug_toolbar")
+    MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
+    INTERNAL_IPS = ['127.0.0.1']
+except:
+    pass

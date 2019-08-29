@@ -1,0 +1,166 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-08-19 04:24+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: assets/models.py:11
+#, python-format
+msgid "%(value)s contains spaces"
+msgstr ""
+
+#: assets/models.py:15 assets/models.py:23 assets/models.py:31
+#: assets/models.py:39 assets/models.py:47
+msgid "name"
+msgstr ""
+
+#: assets/models.py:16 assets/models.py:24 assets/models.py:32
+#: assets/models.py:40 assets/models.py:48
+msgid "code"
+msgstr ""
+
+#: assets/models.py:56
+msgid "National"
+msgstr ""
+
+#: assets/models.py:57
+msgid "Highway"
+msgstr ""
+
+#: assets/models.py:58
+msgid "Municipal"
+msgstr ""
+
+#: assets/models.py:59
+msgid "Urban"
+msgstr ""
+
+#: assets/models.py:60
+msgid "Rural"
+msgstr ""
+
+#: assets/models.py:62
+msgid "Low"
+msgstr ""
+
+#: assets/models.py:62
+msgid "Medium"
+msgstr ""
+
+#: assets/models.py:62
+msgid "High"
+msgstr ""
+
+#: assets/models.py:64
+msgid "Good"
+msgstr ""
+
+#: assets/models.py:65
+msgid "Fair"
+msgstr ""
+
+#: assets/models.py:66
+msgid "Bad"
+msgstr ""
+
+#: assets/models.py:67
+msgid "Poor"
+msgstr ""
+
+#: assets/models.py:77
+msgid "date created"
+msgstr ""
+
+#: assets/models.py:79
+msgid "last modified"
+msgstr ""
+
+#: assets/models.py:82
+msgid "road code"
+msgstr ""
+
+#: assets/models.py:90
+msgid "road name"
+msgstr ""
+
+#: assets/models.py:93
+msgid "administrative area"
+msgstr ""
+
+#: assets/models.py:96
+msgid "funding source"
+msgstr ""
+
+#: assets/models.py:99
+msgid "link code"
+msgstr ""
+
+#: assets/models.py:107
+msgid "link start name"
+msgstr ""
+
+#: assets/models.py:110
+msgid "link end name"
+msgstr ""
+
+#: assets/models.py:113
+msgid "link end chainage"
+msgstr ""
+
+#: assets/models.py:120
+msgid "link start chainage"
+msgstr ""
+
+#: assets/models.py:127
+msgid "link length"
+msgstr ""
+
+#: assets/models.py:135
+msgid "surface type"
+msgstr ""
+
+#: assets/models.py:142
+msgid "pavement class"
+msgstr ""
+
+#: assets/models.py:149
+msgid "carriageway width"
+msgstr ""
+
+#: assets/models.py:157
+msgid "road type"
+msgstr ""
+
+#: assets/models.py:165
+msgid "road status"
+msgstr ""
+
+#: assets/models.py:171
+msgid "project"
+msgstr ""
+
+#: assets/models.py:177
+msgid "surface condition"
+msgstr ""
+
+#: assets/models.py:185
+msgid "maintenance need"
+msgstr ""
+
+#: assets/models.py:192
+msgid "technical class"
+msgstr ""

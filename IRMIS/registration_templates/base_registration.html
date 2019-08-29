@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block body_class %}registration{% endblock %}
+
+{% block base_content %}
+<div class="align-items-center d-flex flex-column h-100 justify-content-center registration-content">
+    <span class="image app-logo"></span>
+
+    {% block registration %}{% endblock %}
+</div>
+{% endblock %}
+
+<!-- Django error messages for translations -->
+<p>{% trans "Please enter a correct username and password. Note that both fields may be case-sensitive" %}</p>
+<p>{% trans "This password is too short. It must contain at least 8 characters" %}</p>
+<p>{% trans "Your old password was entered incorrectly. Please enter it again" %}</p>
+<p>{% trans "The two password fields didn't match" %}</p>
+<p>{% trans "This password is entirely numeric" %}</p>
+<p>{% trans "This password is too common" %}</p>

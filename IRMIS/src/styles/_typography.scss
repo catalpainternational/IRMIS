@@ -1,0 +1,133 @@
+@font-face {
+    font-family: "DIN";
+    src: url("../fonts/DIN-Light.woff2") format("woff2"),
+         url("../fonts/DIN-Light.woff") format("woff");
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: "DIN";
+    src: url("../fonts/DIN.woff2") format("woff2"),
+         url("../fonts/DIN.woff") format("woff");
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: "DIN";
+    src: url("../fonts/DIN-Medium.woff2") format("woff2"),
+         url("../fonts/DIN-Medium.woff") format("woff");
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: "DIN";
+    src: url("../fonts/DIN-Bold.woff2") format("woff2"),
+         url("../fonts/DIN-Bold.woff") format("woff");
+    font-weight: 800;
+}
+
+@font-face {
+    font-family: "DIN";
+    src: url("../fonts/DIN-Black.woff2") format("woff2"),
+         url("../fonts/DIN-Black.woff") format("woff");
+    font-weight: 900;
+}
+
+body {
+    line-height: 24px;
+    font-family: DIN;
+    font-size: 16px;
+}
+
+label {
+    color: $dark-green;
+    line-height: 17px;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+#side-menu label {
+    color: $white;
+}
+
+a {
+    color: $dark-green;
+    line-height: 11px;
+    font-weight: 700;
+    font-size: 14px;
+
+    &:hover {
+        text-decoration: none;
+        color: $dark-green;
+    }
+}
+
+.top-menu a {
+    text-transform: uppercase;
+    font-size: 16px;
+    color: $white;
+}
+
+#side-menu a {
+    line-height: 17px;
+    font-size: 14px;
+}
+
+span {
+    color: $dark-green;
+    line-height: 17px;
+    font-weight: 700;
+    font-size: 14px;
+
+    &.danger {
+        color: $white;
+    }
+}
+
+#side-menu span {
+    line-height: 24px;
+    font-weight: 400;
+    font-size: 14px;
+    color: $white;
+}
+
+p {
+    color: $dark-green;
+}
+
+input.form-control {
+    color: $dark-green;
+    line-height: 12px;
+
+    &:focus {
+        color: $dark-green;
+    }
+}
+
+ul li {
+    line-height: 24px;
+    font-size: 14px;
+}
+
+.danger ul li {
+    line-height: 17px;
+}
+
+button.btn {
+    line-height: 14px;
+    font-weight: 700;
+}
+
+h5 {
+    color: $dark-green;
+    line-height: 22px;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+h6 {
+    line-height: 19px;
+    font-weight: 700;
+    font-size: 16px;
+    color: $white;
+}

@@ -1,0 +1,22 @@
+// Vendor
+@import "~datatables.net-bs4/css/dataTables.bootstrap4.min.css";
+@import "~bootstrap/scss/bootstrap";
+@import "~leaflet/dist/leaflet.css";
+
+// Base
+@import "variables";
+@import "typography";
+@import "side_menu";
+@import "top_menu";
+@import "buttons";
+@import "images";
+@import "layout";
+@import "forms";
+
+// Pages
+@import "registration";
+
+// Components
+@import "language";
+@import "table";
+@import "map";
