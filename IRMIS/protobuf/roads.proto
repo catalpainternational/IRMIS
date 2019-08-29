@@ -23,6 +23,7 @@ message Road {
   string surface_condition = 9;
   string pavement_class = 13;
   float carriageway_width = 14;
+  string administrative_area = 15;
 }
 
 message Roads {

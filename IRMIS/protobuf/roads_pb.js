@@ -101,7 +101,8 @@ proto.assets.Road.toObject = function(includeInstance, msg) {
     surfaceType: jspb.Message.getFieldWithDefault(msg, 8, ""),
     surfaceCondition: jspb.Message.getFieldWithDefault(msg, 9, ""),
     pavementClass: jspb.Message.getFieldWithDefault(msg, 13, ""),
-    carriagewayWidth: jspb.Message.getFloatingPointFieldWithDefault(msg, 14, 0.0)
+    carriagewayWidth: jspb.Message.getFloatingPointFieldWithDefault(msg, 14, 0.0),
+    administrativeArea: jspb.Message.getFieldWithDefault(msg, 15, "")
   };
 
   if (includeInstance) {
@@ -193,6 +194,10 @@ proto.assets.Road.deserializeBinaryFromReader = function(msg, reader) {
     case 14:
       var value = /** @type {number} */ (reader.readFloat());
       msg.setCarriagewayWidth(value);
+      break;
+    case 15:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setAdministrativeArea(value);
       break;
     default:
       reader.skipField();
@@ -318,6 +323,13 @@ proto.assets.Road.serializeBinaryToWriter = function(message, writer) {
   if (f !== 0.0) {
     writer.writeFloat(
       14,
+      f
+    );
+  }
+  f = message.getAdministrativeArea();
+  if (f.length > 0) {
+    writer.writeString(
+      15,
       f
     );
   }
@@ -531,6 +543,21 @@ proto.assets.Road.prototype.getCarriagewayWidth = function() {
 /** @param {number} value */
 proto.assets.Road.prototype.setCarriagewayWidth = function(value) {
   jspb.Message.setProto3FloatField(this, 14, value);
+};
+
+
+/**
+ * optional string administrative_area = 15;
+ * @return {string}
+ */
+proto.assets.Road.prototype.getAdministrativeArea = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 15, ""));
+};
+
+
+/** @param {string} value */
+proto.assets.Road.prototype.setAdministrativeArea = function(value) {
+  jspb.Message.setProto3StringField(this, 15, value);
 };
 
 

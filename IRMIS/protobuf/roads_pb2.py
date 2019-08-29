@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='assets',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x0broads.proto\x12\x06\x61ssets\"\xb6\x02\n\x04Road\x12\n\n\x02id\x18\x01 \x01(\r\x12\x12\n\ngeojson_id\x18\x02 \x01(\r\x12\x11\n\troad_code\x18\x03 \x01(\t\x12\x11\n\troad_name\x18\x04 \x01(\t\x12\x11\n\troad_type\x18\n \x01(\t\x12\x11\n\tlink_code\x18\x05 \x01(\t\x12\x11\n\tlink_name\x18\x06 \x01(\t\x12\x1b\n\x13link_start_chainage\x18\x0b \x01(\x02\x12\x19\n\x11link_end_chainage\x18\x0c \x01(\x02\x12\x13\n\x0blink_length\x18\x07 \x01(\x02\x12\x14\n\x0csurface_type\x18\x08 \x01(\t\x12\x19\n\x11surface_condition\x18\t \x01(\t\x12\x16\n\x0epavement_class\x18\r \x01(\t\x12\x19\n\x11\x63\x61rriageway_width\x18\x0e \x01(\x02\"$\n\x05Roads\x12\x1b\n\x05roads\x18\x01 \x03(\x0b\x32\x0c.assets.Roadb\x06proto3')
+  serialized_pb=_b('\n\x0broads.proto\x12\x06\x61ssets\"\xd3\x02\n\x04Road\x12\n\n\x02id\x18\x01 \x01(\r\x12\x12\n\ngeojson_id\x18\x02 \x01(\r\x12\x11\n\troad_code\x18\x03 \x01(\t\x12\x11\n\troad_name\x18\x04 \x01(\t\x12\x11\n\troad_type\x18\n \x01(\t\x12\x11\n\tlink_code\x18\x05 \x01(\t\x12\x11\n\tlink_name\x18\x06 \x01(\t\x12\x1b\n\x13link_start_chainage\x18\x0b \x01(\x02\x12\x19\n\x11link_end_chainage\x18\x0c \x01(\x02\x12\x13\n\x0blink_length\x18\x07 \x01(\x02\x12\x14\n\x0csurface_type\x18\x08 \x01(\t\x12\x19\n\x11surface_condition\x18\t \x01(\t\x12\x16\n\x0epavement_class\x18\r \x01(\t\x12\x19\n\x11\x63\x61rriageway_width\x18\x0e \x01(\x02\x12\x1b\n\x13\x61\x64ministrative_area\x18\x0f \x01(\t\"$\n\x05Roads\x12\x1b\n\x05roads\x18\x01 \x03(\x0b\x32\x0c.assets.Roadb\x06proto3')
 )
 
 
@@ -131,6 +131,13 @@ _ROAD = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='administrative_area', full_name='assets.Road.administrative_area', index=14,
+      number=15, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -144,7 +151,7 @@ _ROAD = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=24,
-  serialized_end=334,
+  serialized_end=363,
 )
 
 
@@ -174,8 +181,8 @@ _ROADS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=336,
-  serialized_end=372,
+  serialized_start=365,
+  serialized_end=401,
 )
 
 _ROADS.fields_by_name['roads'].message_type = _ROAD

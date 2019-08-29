@@ -73,6 +73,7 @@ class RoadQuerySet(models.QuerySet):
             surface_condition="surface_condition",
             pavement_class="pavement_class",
             carriageway_width="carriageway_width",
+            administrative_area="administrative_area",
         )
 
         for road in Road.objects.order_by("id").values("id", *fields.values()):
