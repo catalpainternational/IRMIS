@@ -72,6 +72,29 @@
                     </div>
                     {% endwith %}
 
+                    {% comment %} ROAD CODE {% endcomment %}
+                    {% with slug=road_schema.road_code.slug %}
+                    <div id="{{ slug }}" class="filter">
+                        <div class="d-flex header justify-content-between">
+                            <div class="align-items-center d-flex">
+                                <label>{{ road_schema.road_code.display }}</label>
+                            </div>
+                            <div class="align-items-center d-flex">
+                                <span class="clear-filter" onclick="roads.clear_filter('{{ slug }}')" hidden>{% trans "Clear" %}</span>
+                                <span class="plus image" onclick="roads.toggleFilterOpen(this, '{{ slug }}')"></span>
+                            </div>
+                        </div>
+                        <div class="options" hidden>
+                            <select id="{{ slug }}_select" multiple="true">
+                                {% for option in road_schema.road_code.options %}
+                                <option value="{{ option.road_code }}">{{ option.road_code }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% endwith %}
+
+
                     {% comment %} ROAD STATUS {% endcomment %}
                     {% with slug=road_schema.road_status.slug %}
                     <div id="{{ slug }}" class="filter">
@@ -197,4 +220,3 @@
         <div id="collapsed-side-menu" class="d-none justify-content-center" onclick="roads.expand_side_menu()">
             <span class="arrow image"></span>
         </div>
-

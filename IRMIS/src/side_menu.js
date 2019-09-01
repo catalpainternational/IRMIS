@@ -1,6 +1,9 @@
 import { toggleFilter, isFilterApplied, clearFilter, clearAllFilters } from './filter';
+import $ from "jquery";
+import "select2";
 
-const filters = ["road_type", "surface_type", "surface_condition", "road_status" ,"administrative_area"]; //  "road-code",
+const filters = ["road_code", "road_type", "surface_type", "surface_condition", "road_status" ,"administrative_area"]; //  "road-code",
+const select2_filters = ["road_code"];
 
 let filterUIState = {};
 
@@ -52,17 +55,22 @@ export function toggleFilterOption(element, elementId, value) {
     const filterBlock = document.getElementById(elementId);
     const clear = filterBlock.getElementsByClassName("clear-filter").item(0);
     const header = filterBlock.getElementsByClassName("header").item(0);
-    const checkbox = element.getElementsByTagName("span").item(0);
+    const select2 = select2_filters.includes(elementId);
 
-    checkbox.classList.toggle("selected");
-    if (filterBlock.getElementsByClassName("selected").length) {
+    if (!select2) {
+        const checkbox = element.getElementsByTagName("span").item(0);
+        checkbox.classList.toggle("selected");
+    }
+
+    if (select2 && value != -1 || filterBlock.getElementsByClassName("selected").length > 0) {
         header.classList.add("active");
         clear.hidden = false;
     } else {
         header.classList.remove("active");
+        clear.hidden = true;
     }
+
     toggleFilter(elementId, value);
-    clear.hidden = !isFilterApplied(elementId, value);
 }
 
 export function toggleFilterOpen(element, elementId) {
@@ -94,9 +102,16 @@ function toggleFilterUIState(elementId) {
 
 export function clear_filter(elementId) {
     const filter = document.getElementById(elementId);
-    const checkboxes = filter.getElementsByClassName("selected");
-    while (checkboxes.length) {
-        checkboxes[0].classList.remove("selected");
+    const select2 = select2_filters.includes(elementId);
+
+    if (!select2) {
+        const checkboxes = filter.getElementsByClassName("selected");
+        while (checkboxes.length) {
+            checkboxes[0].classList.remove("selected");
+        }
+    } else {
+        // trigger clearing of select2
+        $("#" + elementId + "_select").val([]).trigger('change');
     }
     filter.getElementsByClassName("header").item(0).classList.remove("active");
     filter.getElementsByClassName("clear-filter").item(0).hidden = true;
@@ -107,3 +122,18 @@ export function clear_all_filters() {
     filters.forEach(filter => clear_filter(filter));
     clearAllFilters();
 }
+
+
+$(document).ready(function(){
+    // setup rode_code filter with select2
+    $('#road_code_select').select2();
+    // event listeners to trigger filters on changes in select2 options
+    $('#road_code_select').on('select2:select', function (e) {
+        var data = e.params.data;
+        roads.toggleFilterOption(this, 'road_code', data.id);
+    });
+    $('#road_code_select').on('select2:unselect', function (e) {
+        var data = e.params.data;
+        roads.toggleFilterOption(this, 'road_code', data.id);
+    });
+});

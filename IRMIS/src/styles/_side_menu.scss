@@ -103,3 +103,51 @@
     width: 30px;
 }
 
+// Override Select2 styles
+$select2-radius: 18px;
+
+.select2 {
+    width: 100% !important;
+
+    .select2-selection {
+        background-color: $darker-gray;
+        border-radius: $select2-radius;
+        border: none !important;
+        padding-right: 15px;
+        padding-left: 15px;
+
+        .select2-selection__rendered {
+            padding-right: 0;
+
+            .select2-selection__choice {
+                background-color: $gray;
+                margin-top: 7px;
+                border: none;
+            }
+
+            .select2-search__field {
+                margin-top: 7px;
+                color: $white;
+            }
+        }
+    }
+}
+
+.select2-dropdown {
+    background-color: $darker-gray;
+    border-radius: $select2-radius;
+    padding: 5px 10px;
+    border: none;
+
+    .select2-results__option {
+        color: $white;
+
+        &[aria-selected=true] {
+            background-color: $gray;
+        }
+
+        &.select2-results__option--highlighted {
+            background-color: $gray;
+        }
+    }
+}

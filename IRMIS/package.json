@@ -50,6 +50,7 @@
 		"google-protobuf": "^3.9.1",
 		"jquery": "^3.4.1",
 		"leaflet": "^1.5.1",
+		"select2": "^4.0.9",
 		"ua-parser-js": "^0.7.20"
 	}
 }

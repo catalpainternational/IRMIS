@@ -9,7 +9,6 @@ export { geoFeatureGroups } from "./map/utilities/displayGeoJSON";
 
 export * from "./table";
 export * from "./side_menu";
-
 export let map;
 
 
@@ -27,19 +26,18 @@ window.onload = () => {
 
         // now we have our metadata we can intialize the data table
         initializeDataTable(Object.values(roadsLookup).map(r => r.toObject()));
-        
+
         // retrieve each geojson file
-        return Promise.all(geoJsonDetails.map(geoJsonDetail => { 
+        return Promise.all(geoJsonDetails.map(geoJsonDetail => {
             return getGeoJson(
                 geoJsonDetail
             ).then(geoJson => {
                 // add in road metadata
                 populateGeoJsonProperties(geoJson, roadsLookup);
-                
+
                 // add to map
                 map.addMapData(geoJson);
             })
         }));
     }, err => console.log(err));
-
 };

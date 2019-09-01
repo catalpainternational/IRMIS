@@ -10,6 +10,7 @@ let filterState = {};
 
 // we'll need to add more in here as we add more filters
 const slugToPropertyName = {
+    road_code: 'roadCode',
     road_type: 'roadType',
     surface_type: 'surfaceType',
     surface_condition: 'surfaceCondition',

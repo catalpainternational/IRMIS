@@ -36,7 +36,9 @@ def get_schema_data():
     road_schema = {
         x.name: {"display": x.verbose_name, "slug": x.name} for x in road_fields
     }
-
+    road_schema["road_code"].update(
+        {"options": list(Road.objects.all().distinct("road_code").values("road_code"))}
+    )
     road_schema["road_type"].update({"options": Road.ROAD_TYPE_CHOICES})
     road_schema["surface_condition"].update({"options": Road.SURFACE_CONDITION_CHOICES})
     road_schema["surface_type"].update(
