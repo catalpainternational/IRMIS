@@ -263,7 +263,13 @@ class Road(models.Model):
         return self.link_start_name + " - " + self.link_end_name
 
     def __str__(self,):
-        return "%s - %s" % (self.properties_content_type, self.properties_object_id)
+        return "%s(%s) %s (%s - %s)" % (
+            self.road_code,
+            self.link_code,
+            self.road_name,
+            self.properties_content_type,
+            self.properties_object_id,
+        )
 
 
 class CollatedGeoJsonFile(models.Model):
