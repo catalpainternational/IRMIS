@@ -71,7 +71,7 @@ class RoadQuerySet(models.QuerySet):
             link_length="link_length",
             surface_type="surface_type__code",
             surface_condition="surface_condition",
-            pavement_class="pavement_class",
+            pavement_class="pavement_class__code",
             carriageway_width="carriageway_width",
             administrative_area="administrative_area",
         )
