@@ -13,8 +13,11 @@
 }
 
 .content .language-selector button {
-    margin-left: 15px;
     padding: 0;
+
+    span.radio {
+        margin-right: 15px;
+    }
 }
 
 .language-selector button {
