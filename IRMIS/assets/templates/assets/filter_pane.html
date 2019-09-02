@@ -31,14 +31,11 @@
                             </div>
                         </div>
                         <div class="options" hidden>
-                            <ul>
+                            <select id="{{ slug }}_select" multiple="true">
                                 {% for option in road_schema.administrative_area.options %}
-                                <li onclick="roads.toggleFilterOption(this, '{{ slug }}', '{{ option.0 }}')">
-                                    <span class="checkbox image"></span>
-                                    {{ option.1 }}
-                                </li>
+                                <option value="{{ option.id }}">{{ option.name }}</option>
                                 {% endfor %}
-                            </ul>
+                            </select>
                         </div>
                     </div>
                     {% endwith %}

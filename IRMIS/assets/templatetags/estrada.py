@@ -1,5 +1,5 @@
 from django import template
-
+from basemap.models import Municipality
 from ..models import (
     Road,
     RoadStatus,
@@ -49,6 +49,9 @@ def get_schema_data():
     )
     road_schema["pavement_class"].update(
         {"options": list(PavementClass.objects.all().values())}
+    )
+    road_schema["administrative_area"].update(
+        {"options": list(Municipality.objects.all().values("id", "name"))}
     )
     # whoops - note that spelling mistake in the field name
     road_schema["maintanance_need"].update(

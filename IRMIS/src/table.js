@@ -24,6 +24,7 @@ const ROAD_TYPE = humanize(window.road_schema, 'road_type');
 const SURFACE_CONDITION_CHOICES = humanize(window.road_schema, 'surface_condition');
 const SURFACE_TYPE_CHOICES = humanize(window.road_schema, 'surface_type', 'code', 'name');
 const PAVEMENT_CLASS_CHOICES = humanize(window.road_schema, 'pavement_class', 'code', 'name');
+const ADMINISTRATIVE_AREA_CHOICES = humanize(window.road_schema, 'administrative_area', 'id', 'name');
 // const MAINTENANCE_NEED_CHOICES = humanize(window.road_schema, 'maintenance_need', 'code', 'name');
 // const TECHNICAL_CLASS_CHOICES = humanize(window.road_schema, 'technical_class', 'code', 'name');
 
@@ -58,7 +59,7 @@ export function initializeDataTable(roadList) {
             defineColumn("surfaceCondition", "Surface Condition", SURFACE_CONDITION_CHOICES),
             defineColumn("pavementClass", "Pavement Class", PAVEMENT_CLASS_CHOICES),
 
-            defineColumn("administrativeArea", "Administrative Area"),
+            defineColumn("administrativeArea", "Administrative Area", ADMINISTRATIVE_AREA_CHOICES),
             defineColumn("carriagewayWidth", "Carriageway Width"),
         ],
         data: roadList,

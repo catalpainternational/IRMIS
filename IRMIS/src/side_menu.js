@@ -2,8 +2,8 @@ import { toggleFilter, isFilterApplied, clearFilter, clearAllFilters } from './f
 import $ from "jquery";
 import "select2";
 
-const filters = ["road_code", "road_type", "surface_type", "surface_condition", "road_status" ,"administrative_area"]; //  "road-code",
-const select2_filters = ["road_code"];
+const filters = ["road_code", "road_type", "surface_type", "surface_condition", "road_status", "administrative_area"];
+const select2_filters = ["road_code", "administrative_area"];
 
 let filterUIState = {};
 
@@ -125,8 +125,9 @@ export function clear_all_filters() {
 
 
 $(document).ready(function(){
-    // setup rode_code filter with select2
+    // setup rode_code and administrative_area filters with select2
     $('#road_code_select').select2();
+    $('#administrative_area_select').select2();
     // event listeners to trigger filters on changes in select2 options
     $('#road_code_select').on('select2:select', function (e) {
         var data = e.params.data;
@@ -135,5 +136,13 @@ $(document).ready(function(){
     $('#road_code_select').on('select2:unselect', function (e) {
         var data = e.params.data;
         roads.toggleFilterOption(this, 'road_code', data.id);
+    });
+    $('#administrative_area_select').on('select2:select', function (e) {
+        var data = e.params.data;
+        roads.toggleFilterOption(this, 'administrative_area', data.id);
+    });
+    $('#administrative_area_select').on('select2:unselect', function (e) {
+        var data = e.params.data;
+        roads.toggleFilterOption(this, 'administrative_area', data.id);
     });
 });
