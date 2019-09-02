@@ -44,6 +44,12 @@ function definePopUp(layer: any) {
     // Prepare the properties for use in a simple popup
     const popUpProps = rebuildProps(layer.feature.properties as GeoJsonProperties);
 
+    // For the MVP - reduce to a minimum set
+    const popUpPropsMVP: { [name: string]: any } = {Code: popUpProps.link.Code || popUpProps.identifiers.Code};
+    if (popUpProps.identifiers.Name || popUpProps.link.Name) {
+        popUpPropsMVP.Name = popUpProps.identifiers.Name || popUpProps.link.Name;
+    }
+
     function propToHTML(props: any): string {
         return Object.keys(props).map((propKey) => {
             if (Object.prototype.toString.call(props[propKey]) === "[object Object]") {
@@ -59,7 +65,7 @@ function definePopUp(layer: any) {
     }
 
     // Put everything into the popup
-    return propToHTML(popUpProps);
+    return propToHTML(popUpPropsMVP);
 }
 
 function registerFeature(feature: Feature<Geometry, any>, layer: L.Layer) {
