@@ -13,7 +13,7 @@ export class Map {
 
     /** Call this in window.onload, or after */
     public loadMap(): L.Map {
-        this.lMap = L.map("map-irmis", { maxBounds: Config.tlBounds, zoomControl: false }).setView(Config.tlCenter, 9);
+        this.lMap = L.map("map-irmis", { maxBounds: Config.tlBounds, zoomControl: false }).setView(Config.tlCenter, 8);
 
         // Add back in the zoom control
         this.zoomControl = L.control.zoom({ position: "topright" });
