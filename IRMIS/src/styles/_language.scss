@@ -1,5 +1,11 @@
 .registration .language-selector button {
+    text-transform: uppercase;
     color: $dark-gray;
+    padding: 5px;
+
+    &.active {
+        color: $green;
+    }
 
     &:not(.active):hover {
         color: $dark-gray;
@@ -7,23 +13,17 @@
 }
 
 .content .language-selector button {
-    color: $white;
+    padding: 0;
 
-    &:not(.active):hover {
-        color: $white;
+    span.radio {
+        margin-right: 15px;
     }
 }
 
 .language-selector button {
-    text-transform: uppercase;
     box-shadow: none;
     min-width: unset;
-    padding: 5px;
     border: none;
-
-    &.active {
-        color: $green;
-    }
 
     &:focus {
         box-shadow: none;

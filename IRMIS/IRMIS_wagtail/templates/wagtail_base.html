@@ -13,15 +13,29 @@
 
 {% block top_menu %}
 <span class="app-logo-dark-bg flex-grow-1 image"></span>
-
-{{ block.super }}
-
-{% if user.is_authenticated %}
-<a href="{% url 'password_change' %}" hidden>{% trans 'Change password' %}</a>
-<a href="{% url 'logout' %}">{% trans 'Log out' %}</a>
-{% else %}
-<a href="{% url 'login' %}">{% trans 'Log in' %}</a>
-{% endif %}
+<div class="dropdown">
+    <span>{% trans "Hello" %}, {% if user.get_full_name %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}</span>
+    <span class="carrot image" onclick="roads.toggle_dropdown()"></span>
+    <div id="dropdown-menu" hidden>
+        <form class="language-selector" action="{% url 'set_language' %}" method="post">
+            {% csrf_token %}
+            {% get_current_language as LANGUAGE_CODE %}
+            {% get_available_languages as LANGUAGES %}
+            {% get_language_info_list for LANGUAGES as languages %}
+            {% for language in languages %}
+            <button class="btn" type="submit" name="language" value="{{ language.code }}">
+                <span class="{% if language.code == LANGUAGE_CODE %}active{% endif %} radio image"></span>
+                {{ language.name_local }}
+            </button>
+            <br>
+            {% endfor %}
+        </form>
+        <div class="dropdown-divider"></div>
+        <a href="{% url 'password_change' %}">{% trans 'Change password' %}</a>
+        <div class="dropdown-divider"></div>
+        <a href="{% url 'logout' %}">{% trans 'Log out' %}</a>
+    </div>
+</div>
 {% endblock %}
 
 {% block base_content %}

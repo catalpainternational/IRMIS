@@ -57,3 +57,29 @@
         cursor: pointer;
     }
 }
+
+.carrot {
+    background-image: url("../images/carrot.svg");
+    background-position: bottom;
+    height: 15px;
+    width: 12px;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.radio {
+    background-image: url("../images/radio_unactive.svg");
+    vertical-align: middle;
+    height: 17px;
+    width: 17px;
+
+    &.active {
+        background-image: url("../images/radio_active.svg");
+    }
+
+    &:hover {
+        cursor: pointer;
+    }
+}
