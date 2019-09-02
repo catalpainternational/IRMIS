@@ -11,6 +11,10 @@ export * from "./table";
 export * from "./side_menu";
 export let map;
 
+export function toggle_dropdown() {
+    var dropdown = document.getElementById('dropdown-menu');
+    dropdown.hidden = !dropdown.hidden;
+}
 
 window.onload = () => {
     map = new Map();
