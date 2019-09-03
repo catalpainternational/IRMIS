@@ -17,6 +17,14 @@ module.exports = {
     module: {
         rules: [
             {
+                'test': /\.tag.html$/,
+                'exclude': [ /node_modules/ ],
+                'use': {
+                    'loader': '@riotjs/webpack-loader',
+                    'options': { 'type': 'es6' }
+                }
+            },
+            {
                 'test': /\.js$/,
                 'exclude': [ /node_modules/ ],
                 'use': {
