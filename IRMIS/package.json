@@ -17,9 +17,11 @@
 		"protoc": "yarn protoc_py && yarn protoc_js"
 	},
 	"devDependencies": {
+		"@riotjs/compiler": "^4.3.11",
+		"@riotjs/webpack-loader": "^4.0.1",
 		"babel-core": "^6.26.3",
 		"babel-loader": "^7.1.5",
-		"babel-preset-env": "^1.7.0",
+		"babel-preset-es2015-riot": "^1.1.0",
 		"bootstrap": "^4.3.1",
 		"clean-webpack-plugin": "^3.0.0",
 		"css-loader": "^3.1.0",
@@ -50,6 +52,8 @@
 		"google-protobuf": "^3.9.1",
 		"jquery": "^3.4.1",
 		"leaflet": "^1.5.1",
+		"riot": "^4.5.0",
+		"riot-route": "^3.1.4",
 		"select2": "^4.0.9",
 		"ua-parser-js": "^0.7.20"
 	}
