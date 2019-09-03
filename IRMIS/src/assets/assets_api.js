@@ -81,9 +81,10 @@ export function populateGeoJsonProperties(geoJson, propertiesLookup) {
         if (propertySet) {
             Object.assign(feature.properties, propertySet.toObject());
         } else {
-            console.warn(`assets_api.populateGeoJsonProperties could not find property '${feature.properties.pk}'.  Is there are problem with the model used by protobuf?`);
+            console.warn(`assets_api.populateGeoJsonProperties could not find property '${feature.properties.pk}'.`
+                + "Is there are problem with the model used by protobuf?");
         }
-        
+
         // Special handling for the mandatory property `featureType`
         if (!feature.properties.featureType) {
             if (feature.properties.roadType) {
