@@ -64,9 +64,11 @@ class RoadQuerySet(models.QuerySet):
             road_code="road_code",
             road_name="road_name",
             road_type="road_type",
+            road_status="road_status__code",
             link_code="link_code",
-            # link_name gets included here in the protobuf
+            link_start_name="link_start_name",
             link_start_chainage="link_start_chainage",
+            link_end_name="link_end_name",
             link_end_chainage="link_end_chainage",
             link_length="link_length",
             surface_type="surface_type__code",
@@ -74,6 +76,9 @@ class RoadQuerySet(models.QuerySet):
             pavement_class="pavement_class__code",
             carriageway_width="carriageway_width",
             administrative_area="administrative_area",
+            technical_class="technical_class__code",
+            project="project",
+            funding_source="funding_source",
         )
 
         for road in Road.objects.order_by("id").values("id", *fields.values()):

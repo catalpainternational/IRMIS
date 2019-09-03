@@ -93,16 +93,22 @@ proto.assets.Road.toObject = function(includeInstance, msg) {
     roadCode: jspb.Message.getFieldWithDefault(msg, 3, ""),
     roadName: jspb.Message.getFieldWithDefault(msg, 4, ""),
     roadType: jspb.Message.getFieldWithDefault(msg, 10, ""),
+    roadStatus: jspb.Message.getFieldWithDefault(msg, 20, ""),
     linkCode: jspb.Message.getFieldWithDefault(msg, 5, ""),
     linkName: jspb.Message.getFieldWithDefault(msg, 6, ""),
+    linkStartName: jspb.Message.getFieldWithDefault(msg, 16, ""),
     linkStartChainage: jspb.Message.getFloatingPointFieldWithDefault(msg, 11, 0.0),
+    linkEndName: jspb.Message.getFieldWithDefault(msg, 17, ""),
     linkEndChainage: jspb.Message.getFloatingPointFieldWithDefault(msg, 12, 0.0),
     linkLength: jspb.Message.getFloatingPointFieldWithDefault(msg, 7, 0.0),
     surfaceType: jspb.Message.getFieldWithDefault(msg, 8, ""),
     surfaceCondition: jspb.Message.getFieldWithDefault(msg, 9, ""),
     pavementClass: jspb.Message.getFieldWithDefault(msg, 13, ""),
     carriagewayWidth: jspb.Message.getFloatingPointFieldWithDefault(msg, 14, 0.0),
-    administrativeArea: jspb.Message.getFieldWithDefault(msg, 15, "")
+    administrativeArea: jspb.Message.getFieldWithDefault(msg, 15, ""),
+    project: jspb.Message.getFieldWithDefault(msg, 18, ""),
+    fundingSource: jspb.Message.getFieldWithDefault(msg, 19, ""),
+    technicalClass: jspb.Message.getFieldWithDefault(msg, 21, "")
   };
 
   if (includeInstance) {
@@ -159,6 +165,10 @@ proto.assets.Road.deserializeBinaryFromReader = function(msg, reader) {
       var value = /** @type {string} */ (reader.readString());
       msg.setRoadType(value);
       break;
+    case 20:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setRoadStatus(value);
+      break;
     case 5:
       var value = /** @type {string} */ (reader.readString());
       msg.setLinkCode(value);
@@ -167,9 +177,17 @@ proto.assets.Road.deserializeBinaryFromReader = function(msg, reader) {
       var value = /** @type {string} */ (reader.readString());
       msg.setLinkName(value);
       break;
+    case 16:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setLinkStartName(value);
+      break;
     case 11:
       var value = /** @type {number} */ (reader.readFloat());
       msg.setLinkStartChainage(value);
+      break;
+    case 17:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setLinkEndName(value);
       break;
     case 12:
       var value = /** @type {number} */ (reader.readFloat());
@@ -198,6 +216,18 @@ proto.assets.Road.deserializeBinaryFromReader = function(msg, reader) {
     case 15:
       var value = /** @type {string} */ (reader.readString());
       msg.setAdministrativeArea(value);
+      break;
+    case 18:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setProject(value);
+      break;
+    case 19:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setFundingSource(value);
+      break;
+    case 21:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setTechnicalClass(value);
       break;
     default:
       reader.skipField();
@@ -263,6 +293,13 @@ proto.assets.Road.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
+  f = message.getRoadStatus();
+  if (f.length > 0) {
+    writer.writeString(
+      20,
+      f
+    );
+  }
   f = message.getLinkCode();
   if (f.length > 0) {
     writer.writeString(
@@ -277,10 +314,24 @@ proto.assets.Road.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
+  f = message.getLinkStartName();
+  if (f.length > 0) {
+    writer.writeString(
+      16,
+      f
+    );
+  }
   f = message.getLinkStartChainage();
   if (f !== 0.0) {
     writer.writeFloat(
       11,
+      f
+    );
+  }
+  f = message.getLinkEndName();
+  if (f.length > 0) {
+    writer.writeString(
+      17,
       f
     );
   }
@@ -330,6 +381,27 @@ proto.assets.Road.serializeBinaryToWriter = function(message, writer) {
   if (f.length > 0) {
     writer.writeString(
       15,
+      f
+    );
+  }
+  f = message.getProject();
+  if (f.length > 0) {
+    writer.writeString(
+      18,
+      f
+    );
+  }
+  f = message.getFundingSource();
+  if (f.length > 0) {
+    writer.writeString(
+      19,
+      f
+    );
+  }
+  f = message.getTechnicalClass();
+  if (f.length > 0) {
+    writer.writeString(
+      21,
       f
     );
   }
@@ -412,6 +484,21 @@ proto.assets.Road.prototype.setRoadType = function(value) {
 
 
 /**
+ * optional string road_status = 20;
+ * @return {string}
+ */
+proto.assets.Road.prototype.getRoadStatus = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 20, ""));
+};
+
+
+/** @param {string} value */
+proto.assets.Road.prototype.setRoadStatus = function(value) {
+  jspb.Message.setProto3StringField(this, 20, value);
+};
+
+
+/**
  * optional string link_code = 5;
  * @return {string}
  */
@@ -442,6 +529,21 @@ proto.assets.Road.prototype.setLinkName = function(value) {
 
 
 /**
+ * optional string link_start_name = 16;
+ * @return {string}
+ */
+proto.assets.Road.prototype.getLinkStartName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 16, ""));
+};
+
+
+/** @param {string} value */
+proto.assets.Road.prototype.setLinkStartName = function(value) {
+  jspb.Message.setProto3StringField(this, 16, value);
+};
+
+
+/**
  * optional float link_start_chainage = 11;
  * @return {number}
  */
@@ -453,6 +555,21 @@ proto.assets.Road.prototype.getLinkStartChainage = function() {
 /** @param {number} value */
 proto.assets.Road.prototype.setLinkStartChainage = function(value) {
   jspb.Message.setProto3FloatField(this, 11, value);
+};
+
+
+/**
+ * optional string link_end_name = 17;
+ * @return {string}
+ */
+proto.assets.Road.prototype.getLinkEndName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 17, ""));
+};
+
+
+/** @param {string} value */
+proto.assets.Road.prototype.setLinkEndName = function(value) {
+  jspb.Message.setProto3StringField(this, 17, value);
 };
 
 
@@ -558,6 +675,51 @@ proto.assets.Road.prototype.getAdministrativeArea = function() {
 /** @param {string} value */
 proto.assets.Road.prototype.setAdministrativeArea = function(value) {
   jspb.Message.setProto3StringField(this, 15, value);
+};
+
+
+/**
+ * optional string project = 18;
+ * @return {string}
+ */
+proto.assets.Road.prototype.getProject = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 18, ""));
+};
+
+
+/** @param {string} value */
+proto.assets.Road.prototype.setProject = function(value) {
+  jspb.Message.setProto3StringField(this, 18, value);
+};
+
+
+/**
+ * optional string funding_source = 19;
+ * @return {string}
+ */
+proto.assets.Road.prototype.getFundingSource = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 19, ""));
+};
+
+
+/** @param {string} value */
+proto.assets.Road.prototype.setFundingSource = function(value) {
+  jspb.Message.setProto3StringField(this, 19, value);
+};
+
+
+/**
+ * optional string technical_class = 21;
+ * @return {string}
+ */
+proto.assets.Road.prototype.getTechnicalClass = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 21, ""));
+};
+
+
+/** @param {string} value */
+proto.assets.Road.prototype.setTechnicalClass = function(value) {
+  jspb.Message.setProto3StringField(this, 21, value);
 };
 
 
