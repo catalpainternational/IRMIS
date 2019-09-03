@@ -30,6 +30,8 @@ message Road {
   string project = 18;
   string funding_source = 19;
   string technical_class = 21;
+  string maintenance_need = 22;
+  string traffic_level = 23;
 }
 
 message Roads {

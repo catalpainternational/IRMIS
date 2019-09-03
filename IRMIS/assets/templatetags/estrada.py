@@ -53,8 +53,8 @@ def get_schema_data():
     road_schema["administrative_area"].update(
         {"options": list(Municipality.objects.all().values("id", "name"))}
     )
-    # whoops - note that spelling mistake in the field name
-    road_schema["maintanance_need"].update(
+    road_schema["traffic_level"].update({"options": Road.TRAFFIC_LEVEL_CHOICES})
+    road_schema["maintenance_need"].update(
         {"options": list(MaintenanceNeed.objects.all().values())}
     )
     road_schema["technical_class"].update(
