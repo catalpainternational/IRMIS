@@ -53,7 +53,11 @@ export function getGeoJson(geoJsonDetail) {
     return fetch(
         geoJsonUrl, requestAssetInit,
     ).then(geobufResponse => {
-        return geobufResponse.arrayBuffer();
+        if (geobufResponse.ok) {
+            return geobufResponse.arrayBuffer();
+        } else {
+            throw new Error(`${geobufResponse.statusText}. Do you need to run './manage.py collate_geometries'? `);
+        }
     }).then(geobufBytes => {
         var pbf = new Pbf(geobufBytes);
         return decode(pbf);
@@ -74,8 +78,12 @@ export function getGeoJson(geoJsonDetail) {
 export function populateGeoJsonProperties(geoJson, propertiesLookup) {
     geoJson.features.forEach(feature => {
         const propertySet = propertiesLookup[feature.properties.pk];
-        Object.assign(feature.properties, propertySet.toObject());
-
+        if (propertySet) {
+            Object.assign(feature.properties, propertySet.toObject());
+        } else {
+            console.warn(`assets_api.populateGeoJsonProperties could not find property '${feature.properties.pk}'.  Is there are problem with the model used by protobuf?`);
+        }
+        
         // Special handling for the mandatory property `featureType`
         if (!feature.properties.featureType) {
             if (feature.properties.roadType) {
