@@ -8,6 +8,14 @@
     border: none;
 }
 
+.btn-lg {
+    padding-right: 0.75rem;
+    border-radius: 0.25rem;
+    padding-left: 0.75rem;
+    font-size: inherit;
+    width: 316px;
+}
+
 .btn-primary {
     background-color: $green;
 
@@ -17,11 +25,11 @@
 }
 
 .btn-inactive {
-    background-color: $light-gray;
+    background-color: $gray;
     color: $dark-gray;
 
     &:hover {
-        background-color: $light-gray;
+        background-color: $gray;
         color: $dark-gray;
     }
 }

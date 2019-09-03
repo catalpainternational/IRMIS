@@ -25,6 +25,18 @@
     min-width: unset;
     border: none;
 
+    &:first-of-type {
+        padding-left: 0;
+    }
+
+    &:last-of-type {
+        padding-right: 0;
+    }
+
+    &.active {
+        color: $green;
+    }
+
     &:focus {
         box-shadow: none;
     }
