@@ -2,6 +2,10 @@
 {% load i18n %}
 {% load static wagtailuserbar %}
 
+{% block extra_js %}
+<script type="text/javascript" src="{% static 'irmis.js' %}"></script>
+{% endblock %}
+
 {% block title %}
     {% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.title }}{% endif %}
 {% endblock %}
