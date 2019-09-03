@@ -1,6 +1,8 @@
 // General layout styles
 
 body {
+    padding-right: 15px;
+    padding-left: 15px;
     overflow: hidden;
 
     &.registration {
@@ -12,8 +14,6 @@ body {
 
     &.content {
         background-color: $darker-gray;
-        padding-right: 15px;
-        padding-left: 15px;
     }
 }
 
