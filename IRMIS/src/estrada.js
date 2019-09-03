@@ -1,3 +1,5 @@
+import "babel-polyfill";
+
 import "./styles/irmis.scss";
 
 import { Map } from "./map/map";
