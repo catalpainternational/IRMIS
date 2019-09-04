@@ -1,5 +1,8 @@
 import "datatables.net-bs4";
+import "datatables.net-select";
 import $ from "jquery";
+
+import { applyFilter, applyIdFilter } from './filter';
 
 let table;
 
@@ -77,8 +80,27 @@ export function initializeDataTable(roadList) {
         search: {
             regex: true, // Enable escaping of regular expression characters in the search term.
         },
+        select: {
+            blurable: true,
+            items: 'row',
+        }
+    });
+
+    table.on('select', function (e, dt, type, indexes) {
+        if (type === 'row') {
+            var data = table.rows( indexes ).data().pluck( 'id' );
+     
+            // Use the Id as a filter
+            applyIdFilter(data['0']);
+        }
+    });
+    
+    table.on('deselect', function (e, dt, type, indexes) {
+        // reset to the selected filters
+        applyFilter();
     });
 }
+
 export function filterRows(filter) {
     currentFilter = filter;
     table.draw();

@@ -55,7 +55,7 @@ export function clearAllFilters() {
 }
 
 // actually make the filter happen
-function applyFilter() {
+export function applyFilter() {
 
     // filter function passed to map and table
     function filter(properties) {
@@ -73,5 +73,17 @@ function applyFilter() {
 
     // communicate the filter
     filterRows(filter);
+    filterFeatures(filter);
+}
+
+// actually make the filter happen
+export function applyIdFilter(featureId) {
+
+    // filter function passed to map and table
+    function filter(properties) {
+        return properties.id === featureId;
+    }
+
+    // communicate the filter - just to the map
     filterFeatures(filter);
 }
