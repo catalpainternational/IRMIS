@@ -4,7 +4,7 @@ import { AllGeoJSON } from "@turf/helpers";
 import { FeatureCollection, GeoJsonProperties } from "geojson";
 import * as L from "leaflet";
 
-import { featureLookup, fitBounds, layerLookup } from "./displayGeoJSON";
+import { featureLookup, flyToBounds, layerLookup } from "./displayGeoJSON";
 import { FallbackLayerStyle, FixLayerStyleDefaults } from "./leaflet-style";
 
 import { KnownGeometries } from "../layers/KnownGeometries";
@@ -52,6 +52,6 @@ export function filterFeatures(filterFunc: (properties: GeoJsonProperties) => bo
     if (featureZoomSet.features.length) {
         const bounds = envelope(featureZoomSet as AllGeoJSON);
         const bb = bbox(bounds);
-        fitBounds(new L.LatLngBounds([bb[1], bb[0]], [bb[3], bb[2]]));
+        flyToBounds(new L.LatLngBounds([bb[1], bb[0]], [bb[3], bb[2]]));
     }
 }

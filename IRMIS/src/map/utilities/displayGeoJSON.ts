@@ -110,13 +110,13 @@ export function displayGeoJSON(layerControl: L.Control.Layers, json: GeoJSON): P
     if (!geoFeatureGroupExists) {
         // New feature group - add it to the map
         layerControl.addOverlay(geoFeatureGroup, CreateOverlayControlName(featureType, styleRecord));
-        geoFeatureGroup.addTo((window as any).map.lMap);
+        geoFeatureGroup.addTo(((window as any).map.lMap as L.Map));
         geoFeatureGroups[featureType] = geoFeatureGroup;
     }
 
     return Promise.resolve(true);
 }
 
-export function fitBounds(boundingBox: L.LatLngBounds) {
-    (window as any).map.lMap.fitBounds(boundingBox);
+export function flyToBounds(boundingBox: L.LatLngBounds) {
+    ((window as any).map.lMap as L.Map).flyToBounds(boundingBox);
 }
