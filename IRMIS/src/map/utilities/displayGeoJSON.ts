@@ -73,7 +73,7 @@ function registerFeature(feature: Feature<Geometry, any>, layer: L.Layer) {
     layerLookup[feature.properties.pk] = layer;
 }
 
-export function displayGeoJSON(mymap: L.Map, layerControl: L.Control.Layers, json: GeoJSON): Promise<any> {
+export function displayGeoJSON(layerControl: L.Control.Layers, json: GeoJSON): Promise<any> {
     const featureType = getFeatureType(json);
 
     if (KnownGeometries.Excluded.indexOf(featureType) !== -1) {
@@ -110,9 +110,13 @@ export function displayGeoJSON(mymap: L.Map, layerControl: L.Control.Layers, jso
     if (!geoFeatureGroupExists) {
         // New feature group - add it to the map
         layerControl.addOverlay(geoFeatureGroup, CreateOverlayControlName(featureType, styleRecord));
-        geoFeatureGroup.addTo(mymap);
+        geoFeatureGroup.addTo((window as any).map.lMap);
         geoFeatureGroups[featureType] = geoFeatureGroup;
     }
 
     return Promise.resolve(true);
+}
+
+export function fitBounds(boundingBox: L.LatLngBounds) {
+    (window as any).map.lMap.fitBounds(boundingBox);
 }

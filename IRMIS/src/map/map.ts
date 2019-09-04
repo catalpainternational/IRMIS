@@ -29,7 +29,7 @@ export class Map {
 
     public addMapData(geoJSON: GeoJSON) {
         try {
-            displayGeoJSON(this.lMap, this.layerControl, geoJSON);
+            displayGeoJSON(this.layerControl, geoJSON);
             return Promise.resolve(true);
         } catch (error) {
             return Promise.reject(error);

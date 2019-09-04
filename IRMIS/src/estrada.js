@@ -9,7 +9,6 @@ export { geoFeatureGroups } from "./map/utilities/displayGeoJSON";
 
 export * from "./table";
 export * from "./side_menu";
-export let map;
 
 export function toggle_dropdown() {
     var dropdown = document.getElementById('dropdown-menu');
@@ -17,8 +16,8 @@ export function toggle_dropdown() {
 }
 
 window.onload = () => {
-    map = new Map();
-    map.loadMap();
+    window.map = new Map();
+    window.map.loadMap();
 
     // First retrieve the road metadata, and the urls of the geojson files
     Promise.all([
