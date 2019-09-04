@@ -1,5 +1,9 @@
 import "babel-polyfill";
 
+import * as riot from "riot";
+
+import Example from "./riot/example.riot";
+
 import "./styles/irmis.scss";
 
 import { Map } from "./map/map";
@@ -46,3 +50,6 @@ window.onload = () => {
         }));
     }, err => console.log(err));
 };
+
+// riot mounting point
+riot.component(Example)(document.getElementById('riot-edit'));
