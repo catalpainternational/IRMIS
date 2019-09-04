@@ -67,7 +67,7 @@ def test_api_road_put_update(client, django_user_model):
     # create a road
     road = Road.objects.create()
     # hit the road api - detail
-    test_name_change = "Pizza The Hut"
+    test_name_change = "Pizza The Hutt"
     url = reverse("road-detail", kwargs={"pk": road.pk})
     response = client.put(
         url,

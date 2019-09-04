@@ -5,6 +5,7 @@ from datetime import datetime
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.exceptions import MethodNotAllowed, ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
@@ -51,10 +52,38 @@ class RoadViewSet(ViewSet):
 
     @condition(etag_func=get_etag, last_modified_func=get_last_modified)
     def retrieve(self, request, pk):
-        queryset = Road.objects.to_wgs()
+        # Allow metadata retrival for single road with param: `?meta`
+        if "meta" in request.query_params:
+            queryset = Road.objects.all()
+            road = get_object_or_404(queryset, pk=pk)
+            serializer = RoadMetaOnlySerializer(road)
+            return Response(serializer.data)
+        else:
+            queryset = Road.objects.to_wgs()
+            road = get_object_or_404(queryset, pk=pk)
+            serializer = RoadToWGSSerializer(road)
+            return Response(serializer.data)
+
+    def update(self, request, pk):
+        queryset = Road.objects.all()
         road = get_object_or_404(queryset, pk=pk)
-        serializer = RoadToWGSSerializer(road)
-        return Response(serializer.data)
+        for k in request.data:
+            setattr(road, k, request.data[k])
+        try:
+            RoadMetaOnlySerializer(road)
+            road.save()
+            return Response(status=204)
+        except ValidationError:
+            raise ValidationError(status=400)
+
+    def partial_update(self, request, pk):
+        raise MethodNotAllowed(request.method)
+
+    def create(self, request):
+        raise MethodNotAllowed(request.method)
+
+    def destroy(self, request, pk):
+        raise MethodNotAllowed(request.method)
 
 
 def geojson_details(request):
