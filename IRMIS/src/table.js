@@ -36,16 +36,19 @@ $.fn.dataTableExt.afnFiltering.push(
     }
 );
 
-let defineColumn = (data, title, mapObj=false, defaultVal="<i>Not set</i>") => ({
+let defineColumn = (data, title, mapObj=false, defaultVal="<i>Not set</i>", orderable=true) => ({
     data: data,
     title: title,
     defaultContent: defaultVal,
+    orderable: orderable,
     render: item => (mapObj) ? mapObj[item] : item
 });
 
 export function initializeDataTable(roadList) {
+    roadList.forEach((road) => road["edit"] = "<span class='image pencil'></span>");
     table = $("#data-table").DataTable({
         columns: [
+            defineColumn("edit", "", false, "", false),
             defineColumn("roadCode", "Code"),
             defineColumn("roadType", "Type", ROAD_TYPE_CHOICES),
             defineColumn("roadName", "Name"),
@@ -71,6 +74,7 @@ export function initializeDataTable(roadList) {
             defineColumn("maintenanceNeed", "Maintenance Need", MAINTENANCE_NEED_CHOICES),
             defineColumn("trafficLevel", "Traffic Level", TRAFFIC_LEVEL_CHOICES),
         ],
+        order: [3, 'asc'], // default order is ascending by name
         data: roadList,
         // lengthChange: false, // hide table entries filter
         // searching: false, // hide search box
