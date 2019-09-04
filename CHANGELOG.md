@@ -1,5 +1,9 @@
 # CHANGE LOG
 
+## 0.0.3 - Metadata Admin
+
+- ???
+
 ## 0.0.2 - MVP
 
 - As an authenticated user, I have access to my settings
