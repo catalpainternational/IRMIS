@@ -184,7 +184,7 @@ def copy_metadata():
                     )
             try:
                 maint_code = MAINTENANCE_NEEDS_CHOICES_RRMPIS[r.properties.workcode]
-                r.maintanance_need = MaintenanceNeed.objects.filter(
+                r.maintenance_need = MaintenanceNeed.objects.filter(
                     code=maint_code
                 ).get()
             except KeyError:

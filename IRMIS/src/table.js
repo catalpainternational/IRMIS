@@ -26,7 +26,8 @@ const SURFACE_TYPE_CHOICES = humanize(window.road_schema, 'surface_type', 'code'
 const PAVEMENT_CLASS_CHOICES = humanize(window.road_schema, 'pavement_class', 'code', 'name');
 const ADMINISTRATIVE_AREA_CHOICES = humanize(window.road_schema, 'administrative_area', 'id', 'name');
 const TECHNICAL_CLASS_CHOICES = humanize(window.road_schema, 'technical_class', 'code', 'name');
-// const MAINTENANCE_NEED_CHOICES = humanize(window.road_schema, 'maintenance_need', 'code', 'name');
+const MAINTENANCE_NEED_CHOICES = humanize(window.road_schema, 'maintenance_need', 'code', 'name');
+const TRAFFIC_LEVEL_CHOICES = humanize(window.road_schema, 'traffic_level');
 
 $.fn.dataTableExt.afnFiltering.push(
     function( oSettings, aData, iDataIndex ) {
@@ -64,10 +65,11 @@ export function initializeDataTable(roadList) {
 
             defineColumn("administrativeArea", "Administrative Area", ADMINISTRATIVE_AREA_CHOICES),
             defineColumn("carriagewayWidth", "Carriageway Width"),
-
             defineColumn("project", "Project"),
             defineColumn("fundingSource", "Funding Source"),
             defineColumn("technicalClass", "Technical Class", TECHNICAL_CLASS_CHOICES),
+            defineColumn("maintenanceNeed", "Maintenance Need", MAINTENANCE_NEED_CHOICES),
+            defineColumn("trafficLevel", "Traffic Level", TRAFFIC_LEVEL_CHOICES),
         ],
         data: roadList,
         // lengthChange: false, // hide table entries filter

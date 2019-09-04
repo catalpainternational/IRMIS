@@ -79,6 +79,8 @@ class RoadQuerySet(models.QuerySet):
             technical_class="technical_class__code",
             project="project",
             funding_source="funding_source",
+            maintenance_need="maintenance_need__code",
+            traffic_level="traffic_level",
         )
 
         for road in Road.objects.order_by("id").values("id", *fields.values()):
@@ -243,7 +245,7 @@ class Road(models.Model):
         blank=True,
         null=True,
     )
-    maintanance_need = models.ForeignKey(
+    maintenance_need = models.ForeignKey(
         "MaintenanceNeed",
         verbose_name=_("maintenance need"),
         on_delete=models.SET_NULL,

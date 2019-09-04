@@ -108,7 +108,9 @@ proto.assets.Road.toObject = function(includeInstance, msg) {
     administrativeArea: jspb.Message.getFieldWithDefault(msg, 15, ""),
     project: jspb.Message.getFieldWithDefault(msg, 18, ""),
     fundingSource: jspb.Message.getFieldWithDefault(msg, 19, ""),
-    technicalClass: jspb.Message.getFieldWithDefault(msg, 21, "")
+    technicalClass: jspb.Message.getFieldWithDefault(msg, 21, ""),
+    maintenanceNeed: jspb.Message.getFieldWithDefault(msg, 22, ""),
+    trafficLevel: jspb.Message.getFieldWithDefault(msg, 23, "")
   };
 
   if (includeInstance) {
@@ -228,6 +230,14 @@ proto.assets.Road.deserializeBinaryFromReader = function(msg, reader) {
     case 21:
       var value = /** @type {string} */ (reader.readString());
       msg.setTechnicalClass(value);
+      break;
+    case 22:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setMaintenanceNeed(value);
+      break;
+    case 23:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setTrafficLevel(value);
       break;
     default:
       reader.skipField();
@@ -402,6 +412,20 @@ proto.assets.Road.serializeBinaryToWriter = function(message, writer) {
   if (f.length > 0) {
     writer.writeString(
       21,
+      f
+    );
+  }
+  f = message.getMaintenanceNeed();
+  if (f.length > 0) {
+    writer.writeString(
+      22,
+      f
+    );
+  }
+  f = message.getTrafficLevel();
+  if (f.length > 0) {
+    writer.writeString(
+      23,
       f
     );
   }
@@ -720,6 +744,36 @@ proto.assets.Road.prototype.getTechnicalClass = function() {
 /** @param {string} value */
 proto.assets.Road.prototype.setTechnicalClass = function(value) {
   jspb.Message.setProto3StringField(this, 21, value);
+};
+
+
+/**
+ * optional string maintenance_need = 22;
+ * @return {string}
+ */
+proto.assets.Road.prototype.getMaintenanceNeed = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 22, ""));
+};
+
+
+/** @param {string} value */
+proto.assets.Road.prototype.setMaintenanceNeed = function(value) {
+  jspb.Message.setProto3StringField(this, 22, value);
+};
+
+
+/**
+ * optional string traffic_level = 23;
+ * @return {string}
+ */
+proto.assets.Road.prototype.getTrafficLevel = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 23, ""));
+};
+
+
+/** @param {string} value */
+proto.assets.Road.prototype.setTrafficLevel = function(value) {
+  jspb.Message.setProto3StringField(this, 23, value);
 };
 
 
