@@ -9,12 +9,11 @@ import { initializeDataTable } from "./table";
 export { filterFeatures } from "./map/utilities/filterGeoJSON";
 export { geoFeatureGroups } from "./map/utilities/displayGeoJSON";
 
-export * from "./table";
 export * from "./side_menu";
 export let map;
 
 export function toggle_dropdown() {
-    var dropdown = document.getElementById('dropdown-menu');
+    var dropdown = document.getElementById("dropdown-menu");
     dropdown.hidden = !dropdown.hidden;
 }
 
