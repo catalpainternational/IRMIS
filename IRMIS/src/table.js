@@ -74,9 +74,6 @@ export function initializeDataTable(roadList) {
         data: roadList,
         // lengthChange: false, // hide table entries filter
         // searching: false, // hide search box
-        search: {
-            regex: true, // Enable escaping of regular expression characters in the search term.
-        },
     });
 }
 export function filterRows(filter) {
