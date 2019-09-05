@@ -1,5 +1,12 @@
+import jsZip from "jszip";
 import "datatables.net-bs4";
+import "datatables.net-buttons-bs4";
+import "datatables.net-buttons/js/buttons.html5";
+import "datatables.net-buttons/js/buttons.flash";
+
 import $ from "jquery";
+
+window.JSZip = jsZip;
 
 let table;
 
@@ -77,8 +84,15 @@ export function initializeDataTable(roadList) {
         search: {
             regex: true, // Enable escaping of regular expression characters in the search term.
         },
+        dom: "Bfrtip",
+        buttons: [{
+            extend: "excel",
+            sheetName: "Estrada",
+            text: "Export table data",
+        }]
     });
 }
+
 export function filterRows(filter) {
     currentFilter = filter;
     table.draw();
