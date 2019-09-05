@@ -2,7 +2,7 @@ import "babel-polyfill";
 
 import * as riot from "riot";
 
-import Example from "./riot/example.riot";
+import Edit_Base from "./riot/edit_base.riot";
 
 import "./styles/irmis.scss";
 
@@ -53,4 +53,4 @@ window.onload = () => {
 };
 
 // riot mounting point
-riot.component(Example)(document.getElementById('edit-content'));
+riot.component(Edit_Base)(document.getElementById('edit-content'));
