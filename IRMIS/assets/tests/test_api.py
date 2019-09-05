@@ -99,6 +99,23 @@ def test_api_road_put_handles_bad_data(client, django_user_model):
 
 
 @pytest.mark.django_db
+def test_api_road_put_of_previously_updated_data(client, django_user_model):
+    """ This test will fail if the road api does not throw a 409 Conflict when
+    passed data to update which already exists on server. Header should contain
+    'Location' to point to the updated data."""
+    # create a user
+    user = django_user_model.objects.create_user(username="user1", password="bar")
+    client.force_login(user)
+    # create a road
+    road = Road.objects.create()
+    # hit the road api - detail
+    url = reverse("road-detail", kwargs={"pk": road.pk})
+    response = client.put(url, data=json.dumps({}), content_type="application/json")
+    assert response.status_code == 409
+    assert response["Location"] == url + "?meta"
+
+
+@pytest.mark.django_db
 def test_api_lastmod_and_etag_present(client, django_user_model):
     """ check the road api etag and last-modified are present on requests """
 

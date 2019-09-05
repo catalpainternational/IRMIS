@@ -13,6 +13,7 @@ from rest_framework_condition import condition
 
 from .models import CollatedGeoJsonFile, Road
 from .serializers import RoadSerializer, RoadMetaOnlySerializer, RoadToWGSSerializer
+from .signals import pre_save_road
 
 
 def get_etag(request, pk=None):
@@ -71,8 +72,13 @@ class RoadViewSet(ViewSet):
             setattr(road, k, request.data[k])
         serializer = RoadMetaOnlySerializer(data=road.__dict__)
         if serializer.is_valid():
-            road.save()
-            return Response(status=204)
+            try:
+                road.save()
+                return Response(status=204)
+            except Exception:
+                return Response(
+                    status=409, headers={"Location": request.path + "?meta"}
+                )
         else:
             raise ValidationError()
 
