@@ -45,7 +45,7 @@ let defineColumn = (data, title, mapObj=false, defaultVal="<i>Not set</i>", orde
 });
 
 export function initializeDataTable(roadList) {
-    roadList.forEach((road) => road["edit"] = "<span class='image pencil'></span>");
+    roadList.forEach((road) => road["edit"] = "<span class='image pencil' onclick='roads.edit_road()'></span>");
     table = $("#data-table").DataTable({
         columns: [
             defineColumn("edit", "", false, "", false),
@@ -83,4 +83,9 @@ export function initializeDataTable(roadList) {
 export function filterRows(filter) {
     currentFilter = filter;
     table.draw();
+}
+
+export function edit_road() {
+    document.getElementById('edit-content').hidden = false;
+    document.getElementById('view-content').hidden = true;
 }
