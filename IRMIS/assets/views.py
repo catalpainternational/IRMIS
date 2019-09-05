@@ -69,12 +69,12 @@ class RoadViewSet(ViewSet):
         road = get_object_or_404(queryset, pk=pk)
         for k in request.data:
             setattr(road, k, request.data[k])
-        try:
-            RoadMetaOnlySerializer(road)
+        serializer = RoadMetaOnlySerializer(data=road.__dict__)
+        if serializer.is_valid():
             road.save()
             return Response(status=204)
-        except ValidationError:
-            raise ValidationError(status=400)
+        else:
+            raise ValidationError()
 
     def partial_update(self, request, pk):
         raise MethodNotAllowed(request.method)
