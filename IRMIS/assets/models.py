@@ -5,6 +5,7 @@ from django.utils.translation import get_language, ugettext, ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 
+import reversion
 from protobuf.roads_pb2 import Roads as ProtoRoads
 
 
@@ -113,6 +114,7 @@ class RoadManager(models.Manager):
         )
 
 
+@reversion.register()
 class Road(models.Model):
 
     objects = RoadManager()
