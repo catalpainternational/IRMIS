@@ -13,10 +13,24 @@
             </ul>
         </div>
         <div class="col-9">
-            <span>This is a Riot tag!</span>
+            <edit_location_type></edit_location_type>
+            <edit_asset_details></edit_asset_details>
+            <edit_pavement></edit_pavement>
+            <edit_project></edit_project>
+            <edit_condition></edit_condition>
         </div>
     </div>
     <script>
-        export default {};
+        import Edit_Location_Type from './edit_location_type.riot';
+        import Edit_Asset_Details from './edit_asset_details.riot';
+        import Edit_Pavement from './edit_pavement.riot';
+        import Edit_Project from './edit_project.riot';
+        import Edit_Condition from './edit_condition.riot';
+
+        export default {
+            components: {
+                Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Project, Edit_Condition
+            }
+        };
     </script>
 </edit_base>
