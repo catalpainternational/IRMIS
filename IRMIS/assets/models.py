@@ -158,7 +158,11 @@ class Road(models.Model):
         verbose_name=_("administrative area"), max_length=50, default=None, null=True
     )  # need to link to admin area model
     funding_source = models.CharField(
-        verbose_name=_("funding source"), max_length=50, default=None, null=True
+        verbose_name=_("funding source"),
+        max_length=50,
+        default=None,
+        null=True,
+        blank=True,
     )  # need to link to funding model
     link_code = models.CharField(
         verbose_name=_("link code"),
