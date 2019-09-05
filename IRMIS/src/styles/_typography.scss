@@ -116,6 +116,25 @@ ul li {
     line-height: 17px;
 }
 
+ul.navigation {
+    li {
+        line-height: 19px;
+        font-weight: 700;
+        font-size: 16px;
+        color: $white;
+    }
+
+    ul li {
+        line-height: 38px;
+        font-size: 18px;
+        color: $gray;
+
+        &.active {
+            color: $white;
+        }
+    }
+}
+
 button.btn {
     line-height: 14px;
     font-weight: 700;
