@@ -19,14 +19,15 @@ function humanize(schema, model, keyArg=false, nameArg=false) {
     return values;
 }
 
-const ROAD_STATUS_CHOICES = humanize(window.road_schema, 'road_status');
-const ROAD_TYPE = humanize(window.road_schema, 'road_type');
+const ROAD_STATUS_CHOICES = humanize(window.road_schema, 'road_status', 'code', 'name');
+const ROAD_TYPE_CHOICES = humanize(window.road_schema, 'road_type');
 const SURFACE_CONDITION_CHOICES = humanize(window.road_schema, 'surface_condition');
 const SURFACE_TYPE_CHOICES = humanize(window.road_schema, 'surface_type', 'code', 'name');
 const PAVEMENT_CLASS_CHOICES = humanize(window.road_schema, 'pavement_class', 'code', 'name');
 const ADMINISTRATIVE_AREA_CHOICES = humanize(window.road_schema, 'administrative_area', 'id', 'name');
-// const MAINTENANCE_NEED_CHOICES = humanize(window.road_schema, 'maintenance_need', 'code', 'name');
-// const TECHNICAL_CLASS_CHOICES = humanize(window.road_schema, 'technical_class', 'code', 'name');
+const TECHNICAL_CLASS_CHOICES = humanize(window.road_schema, 'technical_class', 'code', 'name');
+const MAINTENANCE_NEED_CHOICES = humanize(window.road_schema, 'maintenance_need', 'code', 'name');
+const TRAFFIC_LEVEL_CHOICES = humanize(window.road_schema, 'traffic_level');
 
 $.fn.dataTableExt.afnFiltering.push(
     function( oSettings, aData, iDataIndex ) {
@@ -46,13 +47,16 @@ export function initializeDataTable(roadList) {
     table = $("#data-table").DataTable({
         columns: [
             defineColumn("roadCode", "Code"),
-            defineColumn("roadType", "Type", ROAD_TYPE),
+            defineColumn("roadType", "Type", ROAD_TYPE_CHOICES),
             defineColumn("roadName", "Name"),
+            defineColumn("roadStatus", "Status", ROAD_STATUS_CHOICES),
 
             defineColumn("linkCode", "Link Code"),
             defineColumn("linkName", "Link Name"),
-            defineColumn("linkStartChainage", "Chainage Start"),
-            defineColumn("linkEndChainage", "Chainage End"),
+            defineColumn("linkStartName", "Link Start Name"),
+            defineColumn("linkStartChainage", "Link Start Chainage"),
+            defineColumn("linkEndName", "Link End Name"),
+            defineColumn("linkEndChainage", "Link End Chainage"),
             defineColumn("linkLength", "Link Length"),
 
             defineColumn("surfaceType", "Surface Type", SURFACE_TYPE_CHOICES),
@@ -61,6 +65,11 @@ export function initializeDataTable(roadList) {
 
             defineColumn("administrativeArea", "Administrative Area", ADMINISTRATIVE_AREA_CHOICES),
             defineColumn("carriagewayWidth", "Carriageway Width"),
+            defineColumn("project", "Project"),
+            defineColumn("fundingSource", "Funding Source"),
+            defineColumn("technicalClass", "Technical Class", TECHNICAL_CLASS_CHOICES),
+            defineColumn("maintenanceNeed", "Maintenance Need", MAINTENANCE_NEED_CHOICES),
+            defineColumn("trafficLevel", "Traffic Level", TRAFFIC_LEVEL_CHOICES),
         ],
         data: roadList,
         // lengthChange: false, // hide table entries filter
@@ -74,38 +83,3 @@ export function filterRows(filter) {
     currentFilter = filter;
     table.draw();
 }
-
-// params: (settings, data, dataIndex, row, counter)
-/*
-function length_search(settings, data) {
-    const minLength = parseInt(document.getElementById("min-length-filter").value, 10);
-    const maxLength = parseInt(document.getElementById("max-length-filter").value, 10);
-    const currLength = parseInt(data[3], 10);
-
-    if (Number.isNaN(minLength) && Number.isNaN(maxLength)) { return true; }
-    if (Number.isNaN(minLength) && currLength <= maxLength) { return true; }
-    if (Number.isNaN(maxLength) && currLength >= minLength) { return true; }
-    if (currLength <= maxLength && currLength >= minLength) { return true; }
-    return false;
-}
-
-function condition_search(settings, data) {
-    const condition = document.getElementById("condition-filter").value;
-    const currCondition = data[2];
-
-    if (condition === "" || condition === currCondition) { return true; }
-    return false;
-}
-
-function code_search(settings, data) {
-    const code = document.getElementById("code-filter").value;
-    const currCode = data[1];
-
-    if (code === "" || code === currCode) { return true; }
-    return false;
-}
-
-$.fn.dataTable.ext.search.push(condition_search);
-$.fn.dataTable.ext.search.push(length_search);
-$.fn.dataTable.ext.search.push(code_search);
-*/

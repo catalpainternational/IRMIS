@@ -2,6 +2,10 @@
 {% load i18n %}
 {% load static wagtailuserbar %}
 
+{% block extra_js %}
+<script type="text/javascript" src="{% static 'irmis.js' %}"></script>
+{% endblock %}
+
 {% block title %}
     {% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.title }}{% endif %}
 {% endblock %}
@@ -15,7 +19,7 @@
 <span class="app-logo-dark-bg flex-grow-1 image"></span>
 <div class="dropdown">
     <span>{% trans "Hello" %}, {% if user.get_full_name %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}</span>
-    <span class="carrot image" onclick="roads.toggle_dropdown()"></span>
+    <span class="caret image" onclick="roads.toggle_dropdown()"></span>
     <div id="dropdown-menu" hidden>
         <form class="language-selector" action="{% url 'set_language' %}" method="post">
             {% csrf_token %}
