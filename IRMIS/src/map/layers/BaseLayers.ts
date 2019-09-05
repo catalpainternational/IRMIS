@@ -84,6 +84,6 @@ export class BaseLayers {
             "Satellite Mapbox": mapbox,
             "Satellite Esri": esriWorldImagery,
             "Watercolor": stamenWatercolor,
-        };
+        } as {[key: string]: any};
     }
 }
