@@ -78,7 +78,10 @@ export function initializeDataTable(roadList) {
             regex: true, // Enable escaping of regular expression characters in the search term.
         },
     });
+
+    return table;
 }
+
 export function filterRows(filter) {
     currentFilter = filter;
     table.draw();
