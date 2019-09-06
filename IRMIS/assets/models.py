@@ -58,7 +58,11 @@ class RoadQuerySet(models.QuerySet):
     def to_chunks(self):
         """ returns an object defining the available chunks from the roads queryset """
 
-        return Road.objects.order_by("road_type").values("road_type").annotate(Count("road_type"))
+        return (
+            Road.objects.order_by("road_type")
+            .values("road_type")
+            .annotate(Count("road_type"))
+        )
 
     def to_protobuf(self, chunk_name=None):
         """ returns a roads protobuf object from the queryset """
@@ -88,18 +92,22 @@ class RoadQuerySet(models.QuerySet):
             maintenance_need="maintenance_need__code",
             traffic_level="traffic_level",
         )
-   
+
         if chunk_name is None:
             road_chunk = Road.objects.order_by("id").values("id", *fields.values())
         else:
-            road_chunk = Road.objects.filter(road_type=chunk_name).order_by("id").values("id", *fields.values())
+            road_chunk = (
+                Road.objects.filter(road_type=chunk_name)
+                .order_by("id")
+                .values("id", *fields.values())
+            )
 
         for road in road_chunk:
             road_protobuf = roads_protobuf.roads.add()
             road_protobuf.id = road["id"]
             for protobuf_key, query_key in fields.items():
                 if road[query_key]:
-                    setattr(road_protobuf, protobuf_key, road[query_key])             
+                    setattr(road_protobuf, protobuf_key, road[query_key])
 
         return roads_protobuf
 
