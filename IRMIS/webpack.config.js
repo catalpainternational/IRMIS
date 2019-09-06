@@ -17,25 +17,33 @@ module.exports = {
     module: {
         rules: [
             {
+                'test': /\.riot$/,
+                'exclude': /node_modules/,
+                'use': {
+                    'loader': '@riotjs/webpack-loader',
+                    'options': { 'type': 'es6' }
+                }
+            },
+            {
                 'test': /\.js$/,
-                'exclude': [ /node_modules/ ],
+                'exclude': /node_modules/,
                 'use': {
                     'loader': 'babel-loader',
                     'options': {
-                        'presets': [ 'env' ]
+                        'presets': [ '@babel/preset-env' ]
                     }
                 }
             },
             {
                 test: /\.ts$/,
-                exclude: [/node_modules/],
+                exclude: /node_modules/,
                 use: [
                     { loader: 'ts-loader' },
                 ],
             },
             {
                 test: /\.scss$/,
-                exclude: [/node_modules/],
+                exclude: /node_modules/,
                 use: [
                     {
                         loader: 'file-loader',
@@ -50,7 +58,7 @@ module.exports = {
             },
             {
                 test: /\.svg$/,
-                exclude: [/node_modules/],
+                exclude: /node_modules/,
                 use: {
                     loader: 'svg-url-loader',
                     options: {
@@ -60,7 +68,7 @@ module.exports = {
             },
             {
                 test: /\.(woff|woff2)$/,
-                exclude: [/node_modules/],
+                exclude: /node_modules/,
                 use: {
                     loader: 'file-loader',
                     options: {
