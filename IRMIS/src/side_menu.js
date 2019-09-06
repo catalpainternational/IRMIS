@@ -75,6 +75,7 @@ export function toggleFilterOption(element, elementId, value) {
 
 export function toggleFilterOpen(element, elementId) {
     const filter = document.getElementById(elementId);
+    const header = filter.getElementsByClassName("header").item(0);
     const options = filter.getElementsByClassName("options").item(0);
 
     toggleFilterUIState(elementId);
@@ -83,6 +84,7 @@ export function toggleFilterOpen(element, elementId) {
     } else {
         element.classList.replace("minus", "plus");
     }
+    header.classList.toggle('open');
     options.hidden = !isFilterOpen(elementId);
 }
 
