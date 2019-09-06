@@ -7,7 +7,7 @@ import Example from "./riot/example.riot";
 import "./styles/irmis.scss";
 
 import { Map } from "./map/map";
-import { getRoadsMetadata, getGeoJsonDetails, getGeoJson, populateGeoJsonProperties } from "./assets/assets_api.js";
+import { getRoadsMetadata, getRoadsMetadataChunks, getGeoJsonDetails, getGeoJson, populateGeoJsonProperties } from "./assets/assets_api.js";
 import { initializeDataTable } from "./table";
 
 export { filterFeatures } from "./map/utilities/filterGeoJSON";
@@ -25,30 +25,38 @@ window.onload = () => {
     map = new Map();
     map.loadMap();
 
-    // First retrieve the road metadata, and the urls of the geojson files
-    Promise.all([
-        getRoadsMetadata(),
-        getGeoJsonDetails(),
-    ]).then(values => {
-        let roadsLookup = values[0];
-        let geoJsonDetails = values[1];
+    // First retrieve the road 'chunks'
+    getRoadsMetadataChunks()
+        .then(chunks => {
+            // Get smaller chunks first
+            chunks = chunks.sort((chunkA, chunkB) => { return chunkA.road_type__count - chunkB.road_type__count; });
+            const geoDataPromises = chunks.map(chunk => (getRoadsMetadata(chunk.road_type)));
+            geoDataPromises.push(getGeoJsonDetails());
 
-        // now we have our metadata we can intialize the data table
-        initializeDataTable(Object.values(roadsLookup).map(r => r.toObject()));
+            Promise.all(geoDataPromises).then(values => {
+                let geoJsonDetails = values.pop();
+                let roadsLookup = values;
+        
+                // now we have our metadata we can intialize the data table
+                initializeDataTable(Object.values(roadsLookup[0]).map(r => r.toObject()));
+        
+                // retrieve each geojson file
+                return Promise.all(geoJsonDetails.map(geoJsonDetail => {
+                    return getGeoJson(
+                        geoJsonDetail
+                    ).then(geoJson => {
+                        // add in road metadata
+                        roadsLookup.forEach(roadsMetadata => {
+                            populateGeoJsonProperties(geoJson, roadsMetadata);
+                        });
+        
+                        // add to map
+                        map.addMapData(geoJson);
+                    })
+                }));
+            }, err => console.log(err));
 
-        // retrieve each geojson file
-        return Promise.all(geoJsonDetails.map(geoJsonDetail => {
-            return getGeoJson(
-                geoJsonDetail
-            ).then(geoJson => {
-                // add in road metadata
-                populateGeoJsonProperties(geoJson, roadsLookup);
-
-                // add to map
-                map.addMapData(geoJson);
-            })
-        }));
-    }, err => console.log(err));
+        });
 };
 
 // riot mounting point

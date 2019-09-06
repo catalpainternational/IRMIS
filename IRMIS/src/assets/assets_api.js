@@ -12,15 +12,31 @@ const requestAssetInit = {
 };
 const requestMediaUrl = `${window.location.origin}/media`;
 
+/** getRoadsMetadataChunks
+ *
+ * Retrieves the details for the road metadata chunks from the server
+ *
+ * @returns a map {id: road_object}
+ */
+export function getRoadsMetadataChunks() {
+    const assetTypeUrlFragment = "road_chunks";
+    const metadataUrl = `${requestAssetUrl}/${assetTypeUrlFragment}`;
+
+    return fetch(metadataUrl, requestAssetInit).then(jsonResponse => {
+        return jsonResponse.json();
+    });
+}
+
 /** getRoadsMetadata
  *
  * Retrieves the road metadata from the server
  *
  * @returns a map {id: road_object}
  */
-export function getRoadsMetadata() {
+export function getRoadsMetadata(chunk_name) {
     const assetTypeUrlFragment = "protobuf_roads";
-    const metadataUrl = `${requestAssetUrl}/${assetTypeUrlFragment}`;
+    chunk_name = chunk_name || "";
+    const metadataUrl = `${requestAssetUrl}/${assetTypeUrlFragment}/${chunk_name}`;
 
     return fetch(metadataUrl, requestAssetInit).then(metadataResponse => {
         return metadataResponse.arrayBuffer();
@@ -74,6 +90,10 @@ export function getGeoJson(geoJsonDetail) {
 export function populateGeoJsonProperties(geoJson, propertiesLookup) {
     geoJson.features.forEach(feature => {
         const propertySet = propertiesLookup[feature.properties.pk];
+        if (!propertySet) {
+            return;
+        }
+
         Object.assign(feature.properties, propertySet.toObject());
 
         // Special handling for the mandatory property `featureType`
