@@ -12,5 +12,6 @@ urlpatterns = [
     path("geojson_details", geojson_details, name="geojson_details"),
     path("road_chunks", road_chunks_set, name="road_chunks"),
     path("protobuf_roads", protobuf_road_set, name="protobuf_roads"),
+    path("protobuf_roads/<slug:chunk_name>/", protobuf_road_set, name="protobuf_roads"),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
 ]

@@ -79,13 +79,13 @@ def road_chunks_set(request):
     return JsonResponse(list(road_chunks), safe=False)
 
 
-def protobuf_road_set(request):
+def protobuf_road_set(request, chunk_name=None):
     """ returns a protobuf object with the set of all Roads """
 
     if not request.user.is_authenticated:
         return HttpResponseForbidden()
 
-    roads_protobuf = Road.objects.to_protobuf()
+    roads_protobuf = Road.objects.to_protobuf(chunk_name)
 
     return HttpResponse(
         roads_protobuf.SerializeToString(), content_type="application/octet-stream"
