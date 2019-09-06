@@ -83,7 +83,7 @@ class RoadQuerySet(models.QuerySet):
             traffic_level="traffic_level",
         )
 
-        for road in Road.objects.order_by("id").values("id", *fields.values()):
+        for road in self.order_by("id").values("id", *fields.values()):
             road_protobuf = roads_protobuf.roads.add()
             road_protobuf.id = road["id"]
             for protobuf_key, query_key in fields.items():
