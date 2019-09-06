@@ -9,7 +9,7 @@ import { displayGeoJSON } from "./utilities/displayGeoJSON";
 export class Map {
     private lMap = {} as L.Map;
     private zoomControl = {} as L.Control.Zoom;
-    private layerControl = {} as L.Control.Layers;
+    private currentLayer = {} as L.TileLayer;
 
     /** Call this in window.onload, or after */
     public loadMap(): L.Map {
@@ -19,17 +19,17 @@ export class Map {
         this.zoomControl = L.control.zoom({ position: "topright" });
         this.zoomControl.addTo(this.lMap);
 
-        // Set up the baseLayers and the layer control
+        // Set up the baseLayers and add the selected one to the map
         const bl = BaseLayers.baseLayers;
-        bl["Street OSM HOT"].addTo(this.lMap);
-        this.layerControl = L.control.layers(bl, {});
+        this.currentLayer = bl[Config.preferredBaseLayerName];
+        this.currentLayer.addTo(this.lMap);
 
         return this.lMap;
     }
 
     public addMapData(geoJSON: GeoJSON) {
         try {
-            displayGeoJSON(this.lMap, this.layerControl, geoJSON);
+            displayGeoJSON(this.lMap, geoJSON);
             return Promise.resolve(true);
         } catch (error) {
             return Promise.reject(error);
