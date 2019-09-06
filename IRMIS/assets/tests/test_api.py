@@ -1,5 +1,6 @@
 from django.urls import reverse
 from ..models import Road
+from protobuf import roads_pb2
 import pytest
 import json
 
@@ -64,38 +65,19 @@ def test_api_road_put_update(client, django_user_model):
     # create a user
     user = django_user_model.objects.create_user(username="user1", password="bar")
     client.force_login(user)
-    # create a road
+    # create a road & protobuf to send
     road = Road.objects.create()
+    pb = roads_pb2.Road()
+    pb.id = road.id
+    pb.road_name = "Pizza The Hutt"
     # hit the road api - detail
-    test_name_change = "Pizza The Hutt"
-    url = reverse("road-detail", kwargs={"pk": road.pk})
+    url = reverse("road-detail", kwargs={"pk": pb.id})
     response = client.put(
-        url,
-        data=json.dumps({"road_name": test_name_change}),
-        content_type="application/json",
+        url, body=pb.SerializeToString(), content_type="application/octet-stream"
     )
     assert response.status_code == 204
     response = client.get(url + "?meta")  # add metadata parameter
     assert test_name_change == response.json()["road_name"]
-
-
-@pytest.mark.django_db
-def test_api_road_put_handles_bad_data(client, django_user_model):
-    """ This test will fail if the road api does not throw
-    a 400 when passed bad data to update a Road's fields"""
-    # create a user
-    user = django_user_model.objects.create_user(username="user1", password="bar")
-    client.force_login(user)
-    # create a road
-    road = Road.objects.create()
-    # hit the road api - detail
-    url = reverse("road-detail", kwargs={"pk": road.pk})
-    response = client.put(
-        url,
-        data=json.dumps({"link_start_chainage": "Should be a decimal"}),
-        content_type="application/json",
-    )
-    assert response.status_code == 400
 
 
 @pytest.mark.django_db
@@ -106,11 +88,15 @@ def test_api_road_put_of_previously_updated_data(client, django_user_model):
     # create a user
     user = django_user_model.objects.create_user(username="user1", password="bar")
     client.force_login(user)
-    # create a road
+    # create a road & protobuf to send
     road = Road.objects.create()
+    # make Protobuf identical to existing Road
+    pb = Road.objects.filter(id=road.id).to_protobuf().roads[0]
     # hit the road api - detail
     url = reverse("road-detail", kwargs={"pk": road.pk})
-    response = client.put(url, data=json.dumps({}), content_type="application/json")
+    response = client.put(
+        url, body=pb.SerializeToString(), content_type="application/octet-stream"
+    )
     assert response.status_code == 409
     assert response["Location"] == url + "?meta"
 
