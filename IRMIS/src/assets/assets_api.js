@@ -33,10 +33,10 @@ export function getRoadsMetadataChunks() {
  *
  * @returns a map {id: road_object}
  */
-export function getRoadsMetadata(chunk_name) {
+export function getRoadsMetadata(chunkName) {
     const assetTypeUrlFragment = "protobuf_roads";
-    chunk_name = chunk_name || "";
-    const metadataUrl = `${requestAssetUrl}/${assetTypeUrlFragment}/${chunk_name}`;
+    chunkName = chunkName || "";
+    const metadataUrl = `${requestAssetUrl}/${assetTypeUrlFragment}/${chunkName}`;
 
     return fetch(metadataUrl, requestAssetInit).then(metadataResponse => {
         return metadataResponse.arrayBuffer();
