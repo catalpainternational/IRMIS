@@ -82,7 +82,6 @@ export function populateGeoJsonProperties(geoJson, propertiesLookup) {
             Object.assign(feature.properties, propertySet.toObject());
         } else {
             throw new Error(`assets_api.populateGeoJsonProperties could not find property '${feature.properties.pk}'.`);
-                + "Is there are problem with the model used by protobuf?");
         }
 
         // Special handling for the mandatory property `featureType`
