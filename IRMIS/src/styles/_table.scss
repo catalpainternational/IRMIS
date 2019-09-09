@@ -4,11 +4,11 @@
     }
 
     &.table:not(.map) #data-table {
-        max-height: calc(100vh - 60px - 6px - 37px - 15px);
+        max-height: calc(100vh - 60px - 37px - 15px);
     }
 
     &.table.map #data-table {
-        max-height: calc(60vh - 60px - 10px - 6px - 37px - 15px);
+        max-height: calc(60vh - 60px - 10px - 37px - 15px);
     }
 
     #data-table {
@@ -20,30 +20,49 @@
 
 // Override DataTables.net styles
 
-.dataTables_filter {
-    display: none;
-}
-
-table.dataTable td.dataTables_empty {
-    text-align: left;
-}
-
-li.paginate_button.page-item {
-    &:focus {
-        outline: none;
-    }
-
-    &.active a.page-link {
+div.dataTables_wrapper {
+    .dt-buttons {
+        justify-content: flex-end;
         background-color: $white;
-        border-radius: $radius;
-        color: $dark-gray;
+        padding: 3px 15px;
+        display: flex;
+
+        .buttons-excel {
+            flex: inherit;
+        }
     }
 
-    a.page-link {
-        background-color: inherit;
-        box-shadow: none;
-        color: $white;
-        border: 0;
+    table.dataTable td.dataTables_empty {
+        text-align: left;
+    }
+
+    .dataTables_info {
+        padding-top: 8px;
+    }
+
+    div.dataTables_paginate {
+        ul.pagination {
+            margin: 0;
+
+            li.paginate_button.page-item {
+                &:focus {
+                    outline: none;
+                }
+
+                &.active a.page-link {
+                    background-color: $white;
+                    border-radius: $radius;
+                    color: $dark-gray;
+                }
+
+                a.page-link {
+                    background-color: inherit;
+                    box-shadow: none;
+                    color: $white;
+                    border: 0;
+                }
+            }
+        }
     }
 }
 

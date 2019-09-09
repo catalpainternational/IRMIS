@@ -83,11 +83,12 @@ export function initializeDataTable(roadList) {
         ],
         order: [3, 'asc'], // default order is ascending by name
         data: roadList,
-        dom: "Bfrtip",
+        dom: `<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>`, // https://datatables.net/reference/option/dom#Styling
         buttons: [{
             extend: "excel",
+            className: "btn-sm",
             sheetName: "Estrada",
-            text: "Export table data",
+            text: "Export table",
         }]
     });
 }
