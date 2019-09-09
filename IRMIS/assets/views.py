@@ -24,8 +24,6 @@ from .models import (
 )
 from .serializers import RoadSerializer, RoadMetaOnlySerializer, RoadToWGSSerializer
 
-# from .signals import pre_save_road
-
 
 def get_etag(request, pk=None):
     if pk:
