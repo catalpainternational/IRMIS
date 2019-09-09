@@ -83,4 +83,8 @@
     background-image: url("../images/pencil.svg");
     height: 16px;
     width: 15px;
+    
+    &:hover {
+        background-image: url("../images/pencil_hover.svg");
+    }
 }

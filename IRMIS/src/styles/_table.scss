@@ -47,8 +47,9 @@ li.paginate_button.page-item {
     }
 }
 
-// Override Bootstrap table styles
+$table-hover: $alt-green;
 
+// Override Bootstrap table styles
 table.table {
     thead th, tbody td {
         white-space: nowrap;
@@ -75,8 +76,17 @@ table.table {
 
     &.table-hover {
         tbody tr:hover {
-            background-color: $lighter-gray;
+            background-color: $table-hover;
             cursor: pointer;
+
+            td {
+                color: $white;
+
+                // This presently screws up and converts the svg to 'undefined'
+                // .pencil {
+                //     background-image: url("../images/pencil_hover.svg");
+                // }
+            }
         }
     }
 }
