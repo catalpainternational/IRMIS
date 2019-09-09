@@ -23,7 +23,8 @@ from .models import (
     PavementClass,
 )
 from .serializers import RoadSerializer, RoadMetaOnlySerializer, RoadToWGSSerializer
-from .signals import pre_save_road
+
+# from .signals import pre_save_road
 
 
 def get_etag(request, pk=None):
@@ -113,16 +114,25 @@ def edit_road(request):
             road.project = req_pb.project
             road.funding_source = req_pb.funding_source
             road.traffic_level = req_pb.traffic_level
-            # road.maintenance_need = req_pb.maintenance_need__id
-            # road.technical_class = req_pb.technical_class__code
-            # road.road_status = req_pb.road_status__code
-            # road.surface_type = req_pb.surface_type__code
-            # road.pavement_class = req_pb.pavement_class__code
-
+            # Foreign Key attributes
+            fks = [
+                (MaintenanceNeed, "maintenance_need"),
+                (TechnicalClass, "technical_class"),
+                (RoadStatus, "road_status"),
+                (SurfaceType, "surface_type"),
+                (PavementClass, "pavement_class"),
+            ]
+            for fk in fks:
+                pb_code = getattr(req_pb, fk[1], None)
+                if pb_code:
+                    fk_obj = fk[0].objects.filter(code=pb_code).get()
+                else:
+                    fk_obj = None
+                setattr(road, fk[1], fk_obj)
             road.save()
             return HttpResponse(status=204)
-        except ValueError:
-            return Response(status=409, headers={"Location": request.path + "?meta"})
+        # except ValueError:
+        #     return Response(status=409, headers={"Location": request.path + "?meta"})
         except Exception as err:
             raise Response(
                 status=400, headers={"Error Message": "Error saving data - %s" % err}

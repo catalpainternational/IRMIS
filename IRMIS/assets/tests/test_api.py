@@ -78,8 +78,6 @@ def test_edit_road_put_update(client, django_user_model):
         url, data=pb.SerializeToString(), content_type="application/octet-stream"
     )
     assert response.status_code == 204
-    # response = client.get(reverse("road-detail", kwargs={"pk": road.pk}) + "?meta")
-    # assert pb.road_name == response.json()["road_name"]
 
 
 @pytest.mark.django_db
