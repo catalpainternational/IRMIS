@@ -36,7 +36,7 @@ $.fn.dataTableExt.afnFiltering.push(
     }
 );
 
-let defineColumn = (data, title, mapObj=false, fixedPointDigits=false, defaultVal="<i>Not set</i>") => ({
+let defineColumn = (data, title, mapObj=false, fixedPointDigits=false, defaultVal="") => ({
     data: data,
     title: title,
     defaultContent: defaultVal,
