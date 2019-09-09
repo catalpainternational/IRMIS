@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package assets;
+
+/* Remember to run `yarn protoc` after making any changes
+ * to regenerate the javascript and python protobuf implementations */
+
+message Road {
+  /* Note that field Id numbers once used, are fixed.
+   * The ordering shown here lines up with the model and groups the fields better.
+   * But the numbering preserves the original declaration */
+  uint32 id = 1;
+  uint32 geojson_id = 2;
+  string road_code = 3;
+  string road_name = 4;
+  string road_type = 10;
+  string road_status = 20;
+  string link_code = 5;
+  string link_name = 6;
+  string link_start_name = 16;
+  float link_start_chainage = 11;
+  string link_end_name = 17;
+  float link_end_chainage = 12;
+  float link_length = 7;
+  string surface_type = 8;
+  string surface_condition = 9;
+  string pavement_class = 13;
+  float carriageway_width = 14;
+  string administrative_area = 15;
+  string project = 18;
+  string funding_source = 19;
+  string technical_class = 21;
+  string maintenance_need = 22;
+  string traffic_level = 23;
+}
+
+message Roads {
+  repeated Road roads = 1;
+}

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-19 04:24+0000\n"
+"POT-Creation-Date: 2019-09-03 02:49+0000\n"
 "PO-Revision-Date: 2019-08-15 08:25+0000\n"
 "Last-Translator: b'  <juliana@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,24 +19,25 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Translated-Using: django-rosetta 0.9.3\n"
 
-#: IRMIS/settings.py:180
+#: IRMIS/settings.py:181
 msgid "IRMIS"
 msgstr "IRMIS"
 
-#: project_templates/base.html:58
+#: IRMIS_wagtail/templates/wagtail_base.html:21
+#, fuzzy
+#| msgid "Hello there"
+msgid "Hello"
+msgstr "Viva"
+
+#: IRMIS_wagtail/templates/wagtail_base.html:38
 msgid "Change password"
 msgstr "Alterar palavra-passe"
 
-#: project_templates/base.html:60
+#: IRMIS_wagtail/templates/wagtail_base.html:40
 msgid "Log out"
 msgstr "Sair"
 
-#: project_templates/base.html:62
-#: registration_templates/registration/login.html:23
-msgid "Log in"
-msgstr "Entrar"
-
-#: registration_templates/base_registration.html:29
+#: registration_templates/base_registration.html:27
 msgid ""
 "Please enter a correct username and password. Note that both fields may be "
 "case-sensitive"
@@ -44,23 +45,23 @@ msgstr ""
 "O nome de utilizar ou palavra-passe estão incorrectos. Confirme se está a "
 "usar correctamente as maiúsculas e minúsculas"
 
-#: registration_templates/base_registration.html:30
+#: registration_templates/base_registration.html:28
 msgid "This password is too short. It must contain at least 8 characters"
 msgstr "A sua palavra-passe deve conter pelo menos 8 caracteres"
 
-#: registration_templates/base_registration.html:31
+#: registration_templates/base_registration.html:29
 msgid "Your old password was entered incorrectly. Please enter it again"
 msgstr "A palavra-passe introduzida está incorrecta. Por favor volte a tentar."
 
-#: registration_templates/base_registration.html:32
+#: registration_templates/base_registration.html:30
 msgid "The two password fields didn't match"
 msgstr "Os dois campos da nova palavra-passe não coincidem"
 
-#: registration_templates/base_registration.html:33
+#: registration_templates/base_registration.html:31
 msgid "This password is entirely numeric"
 msgstr "A palavra-passe não pode conter apenas números"
 
-#: registration_templates/base_registration.html:34
+#: registration_templates/base_registration.html:32
 msgid "This password is too common"
 msgstr "A palavra-passa é demasiado comum"
 
@@ -78,6 +79,10 @@ msgstr "Palavra-passe"
 #: registration_templates/registration/password_reset_form.html:5
 msgid "Forgot your password?"
 msgstr "Esqueceu-se da sua palavra-passe?"
+
+#: registration_templates/registration/login.html:23
+msgid "Log in"
+msgstr "Entrar"
 
 #: registration_templates/registration/logout.html:5
 msgid "Logged out"

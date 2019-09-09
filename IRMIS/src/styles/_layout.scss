@@ -13,13 +13,15 @@ body {
     }
 
     &.content {
-        background-color: #3D4758;
+        background-color: $darker-gray;
     }
 }
 
 #map-table-irmis {
     height: calc(100% - 60px);
+    padding-bottom: 15px;
     margin-bottom: 0;
+    padding-left: 0;
 }
 
 ul {

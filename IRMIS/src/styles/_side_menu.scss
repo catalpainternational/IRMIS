@@ -1,5 +1,5 @@
 %filter-shared {
-    background-color: #5F6775;
+    background-color: $dark-gray;
     border-radius: $radius;
     color: $white;
 }
@@ -9,7 +9,9 @@
 }
 
 #side-menu {
-    background-color: #3D4758;
+    background-color: $darker-gray;
+    padding-bottom: 15px;
+    padding-right: 10px;
 
     #view {
         margin-bottom: 40px;
@@ -18,7 +20,7 @@
             @extend %filter-shared;
             margin-right: 2.5px;
             margin-left: 2.5px;
-            padding: 15px;
+            padding: 10px;
             flex: 1;
 
             &:hover {
@@ -51,17 +53,22 @@
             }
 
             .header {
+                border-radius: $radius;
                 margin-bottom: 0;
                 min-height: 45px;
                 padding: 10px;
 
+                &.open {
+                    border-radius: $radius $radius 0 0;
+                }
+
                 &.active {
                     @extend %filter-active-shared;
-                    border-radius: $radius;
                 }
 
                 label {
                     margin-bottom: 0;
+                    text-transform: capitalize;
                 }
 
                 .clear-filter {
@@ -92,8 +99,74 @@
             cursor: pointer;
         }
     }
+
+    .filters-section {
+        padding-bottom: 20px;
+
+        &:last-of-type {
+            padding-bottom: 0;
+        }
+    }
 }
 
 #collapsed-side-menu {
     width: 30px;
+}
+
+// Override Select2 styles
+$select2-radius: 18px;
+
+.select2 {
+    width: 100% !important;
+
+    .select2-selection {
+        background-color: $darker-gray;
+        border-radius: $select2-radius;
+        border: none !important;
+        padding-right: 35px;
+        padding-left: 15px;
+
+        &::after {
+            content: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxNyIgc3Ryb2tlPSIjZmZmIiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjEuNDIyIj48ZWxsaXBzZSBjeD0iNi44MTgiIGN5PSI2LjcxNCIgcng9IjUuODE4IiByeT0iNS43MTQiLz48cGF0aCBkPSJNMTEuMTgyIDEwLjI4NkwxNyAxNiIvPjwvc3ZnPg==');
+            transform: translate(-50%,-50%);
+            position: absolute;
+            height: 16px;
+            right: 0;
+            top: 50%;
+        }
+
+        .select2-selection__rendered {
+            padding-right: 0;
+
+            .select2-selection__choice {
+                background-color: $gray;
+                margin-top: 7px;
+                border: none;
+            }
+
+            .select2-search__field {
+                margin-top: 7px;
+                color: $white;
+            }
+        }
+    }
+}
+
+.select2-dropdown {
+    background-color: $darker-gray;
+    border-radius: $select2-radius;
+    padding: 5px 10px;
+    border: none;
+
+    .select2-results__option {
+        color: $white;
+
+        &[aria-selected=true] {
+            background-color: $gray;
+        }
+
+        &.select2-results__option--highlighted {
+            background-color: $gray;
+        }
+    }
 }

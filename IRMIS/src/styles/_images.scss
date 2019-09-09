@@ -28,7 +28,7 @@
 .checkbox {
     background-image: url("../images/checkbox.svg");
     vertical-align: middle;
-    height: 15px;
+    height: 14px;
     width: 15px;
 
     &.selected {
@@ -52,6 +52,27 @@
     background-image: url("../images/arrow.svg");
     height: 14px;
     width: 15px;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.caret {
+    background-image: url("../images/caret.svg");
+    height: 7px;
+    width: 12px;
+}
+
+.radio {
+    background-image: url("../images/radio_unactive.svg");
+    vertical-align: middle;
+    height: 17px;
+    width: 17px;
+
+    &.active {
+        background-image: url("../images/radio_active.svg");
+    }
 
     &:hover {
         cursor: pointer;

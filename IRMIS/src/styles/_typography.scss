@@ -62,12 +62,6 @@ a {
     }
 }
 
-.top-menu a {
-    text-transform: uppercase;
-    font-size: 16px;
-    color: $white;
-}
-
 #side-menu a {
     line-height: 17px;
     font-size: 14px;
@@ -88,6 +82,15 @@ span {
     line-height: 24px;
     font-weight: 400;
     font-size: 14px;
+    color: $white;
+
+    &.subtitle {
+        text-transform: uppercase;
+        font-size: 11px;
+    }
+}
+
+.top-menu span {
     color: $white;
 }
 
@@ -130,4 +133,32 @@ h6 {
     font-weight: 700;
     font-size: 16px;
     color: $white;
+}
+
+table {
+    th, td {
+        color: $darker-gray;
+        line-height: 17px;
+        font-size: 14px;
+    }
+}
+
+// Override DataTables.net styles
+
+.dataTables_info, .page-link {
+    line-height: 17px;
+    font-weight: 700;
+    font-size: 14px;
+    color: $white;
+}
+
+// Override Bootstrap styles
+
+#dropdown-menu {
+    button, a {
+        color: $darker-gray;
+        line-height: 30px;
+        font-weight: 500;
+        font-size: 16px;
+    }
 }

@@ -1,21 +1,17 @@
 # CHANGE LOG
 
+## 0.0.2 - MVP
+
+- As an authenticated user, I have access to my settings
+- As an authenticated User, I can see a tabular data set of all of Timor’s roads
+- As an authenticated User, I can see a map of all of Timor’s roads
+- As an authenticated User, I can filter the roads tabular data by a set of criteria
+- As an authenticated User, I can filter the roads map by a set of criteria
+
 ## 0.0.1 - Project Framework
 
-- Django
-- GeoDjango
-- Authentication
-- Yarn/Webpack/Bootstrap
-- Jenkins
-- (ES/TS)Lint
-- Pytest
-- Login page
-- Change password pages
-- Forgot password pages
-- Language selector
-- Add favicon
-- HTML template email
-- Tabular data view implementation using DataTables.net.
-- Leaflet map
-- Change layout view
-- Toggle table columns
+- As a User, I can reset my forgotten password
+- As an authenticated User, I can log out of the Roads Inventory
+- As a User, I can log into the Roads Inventory
+- As an Admin, I can translate the UI
+- As a User, I can select a language for the UI

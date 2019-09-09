@@ -1,5 +1,5 @@
 from django import template
-
+from basemap.models import Municipality
 from ..models import (
     Road,
     RoadStatus,
@@ -12,9 +12,18 @@ from ..models import (
 register = template.Library()
 
 
-@register.inclusion_tag("assets/road_schema_data_tag.html")
-def assets_road_schema_data_tag():
+@register.inclusion_tag("assets/estrada_main.html")
+def estrada_main():
+    return {}
+
+
+@register.inclusion_tag("assets/filter_pane.html")
+def filter_pane():
     """ Returns script tags that contain translations of Road Schema data. """
+    return {"road_schema": get_schema_data()}
+
+
+def get_schema_data():
     road_fields = list(
         filter(
             lambda x: (
@@ -24,8 +33,14 @@ def assets_road_schema_data_tag():
             Road._meta.fields,
         )
     )
-    road_schema = {x.name: {"display": x.verbose_name} for x in road_fields}
-
+    road_schema = {
+        x.name: {"display": x.verbose_name, "slug": x.name} for x in road_fields
+    }
+    road_schema["road_code"].update(
+        {"options": list(Road.objects.all().distinct("road_code").values("road_code"))}
+    )
+    road_schema["road_type"].update({"options": Road.ROAD_TYPE_CHOICES})
+    road_schema["surface_condition"].update({"options": Road.SURFACE_CONDITION_CHOICES})
     road_schema["surface_type"].update(
         {"options": list(SurfaceType.objects.all().values())}
     )
@@ -35,12 +50,15 @@ def assets_road_schema_data_tag():
     road_schema["pavement_class"].update(
         {"options": list(PavementClass.objects.all().values())}
     )
-    # whoops - note that spelling mistake in the field name
-    road_schema["maintanance_need"].update(
+    road_schema["administrative_area"].update(
+        {"options": list(Municipality.objects.all().values("id", "name"))}
+    )
+    road_schema["traffic_level"].update({"options": Road.TRAFFIC_LEVEL_CHOICES})
+    road_schema["maintenance_need"].update(
         {"options": list(MaintenanceNeed.objects.all().values())}
     )
     road_schema["technical_class"].update(
         {"options": list(TechnicalClass.objects.all().values())}
     )
 
-    return dict(data={"road_fields": road_schema})
+    return road_schema

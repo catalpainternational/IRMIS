@@ -56,7 +56,6 @@ export class BaseLayers {
     private static osmHOTUrlTemplate = "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png";
     private static osmHOTLayerOptions = {
         attribution: "&copy; " + BaseLayers.mapDataAttribution + ", " +
-            'Tiles style by <a href="https://www.hotosm.org/" target="_blank">Humanitarian OpenStreetMap Team</a> ' +
             'hosted by <a href="https://openstreetmap.fr/" target="_blank">OpenStreetMap France</a>',
         maxZoom: 19,
     };

@@ -5,6 +5,8 @@ from django.utils.translation import get_language, ugettext, ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 
+from protobuf.roads_pb2 import Roads as ProtoRoads
+
 
 def no_spaces(value):
     if " " in value:
@@ -51,7 +53,54 @@ class TechnicalClass(models.Model):
         return self.name
 
 
+class RoadQuerySet(models.QuerySet):
+    def to_protobuf(self):
+        """ returns a roads protobuf object from the queryset """
+        # See roads.proto
+
+        roads_protobuf = ProtoRoads()
+        fields = dict(
+            geojson_id="geojson_file_id",
+            road_code="road_code",
+            road_name="road_name",
+            road_type="road_type",
+            road_status="road_status__code",
+            link_code="link_code",
+            link_start_name="link_start_name",
+            link_start_chainage="link_start_chainage",
+            link_end_name="link_end_name",
+            link_end_chainage="link_end_chainage",
+            link_length="link_length",
+            surface_type="surface_type__code",
+            surface_condition="surface_condition",
+            pavement_class="pavement_class__code",
+            carriageway_width="carriageway_width",
+            administrative_area="administrative_area",
+            technical_class="technical_class__code",
+            project="project",
+            funding_source="funding_source",
+            maintenance_need="maintenance_need__code",
+            traffic_level="traffic_level",
+        )
+
+        for road in Road.objects.order_by("id").values("id", *fields.values()):
+            road_protobuf = roads_protobuf.roads.add()
+            road_protobuf.id = road["id"]
+            for protobuf_key, query_key in fields.items():
+                if road[query_key]:
+                    setattr(road_protobuf, protobuf_key, road[query_key])
+
+        return roads_protobuf
+
+
 class RoadManager(models.Manager):
+    def get_queryset(self):
+        return RoadQuerySet(self.model, using=self._db)
+
+    def to_protobuf(self):
+        """ returns a roads protobuf object from the manager """
+        return self.get_queryset().to_protobuf()
+
     def to_wgs(self):
         """
         "To World Geodetic System"
@@ -196,7 +245,7 @@ class Road(models.Model):
         blank=True,
         null=True,
     )
-    maintanance_need = models.ForeignKey(
+    maintenance_need = models.ForeignKey(
         "MaintenanceNeed",
         verbose_name=_("maintenance need"),
         on_delete=models.SET_NULL,
@@ -211,12 +260,30 @@ class Road(models.Model):
         null=True,
     )
 
+    # a reference to the collated geojson file this road's geometry is in
+    geojson_file = models.ForeignKey(
+        "CollatedGeoJsonFile", on_delete=models.DO_NOTHING, blank=True, null=True
+    )
+
     @property
     def link_name(self):
         return self.link_start_name + " - " + self.link_end_name
 
     def __str__(self,):
-        return "%s - %s" % (self.properties_content_type, self.properties_object_id)
+        return "%s(%s) %s (%s - %s)" % (
+            self.road_code,
+            self.link_code,
+            self.road_name,
+            self.properties_content_type,
+            self.properties_object_id,
+        )
+
+
+class CollatedGeoJsonFile(models.Model):
+    """ FeatureCollection GeoJson(srid=4326) files made up of collated geometries """
+
+    key = models.SlugField(unique=True)
+    geobuf_file = models.FileField(upload_to="geojson/geobuf/")
 
 
 class SourceNationalRoad(models.Model):
