@@ -24,8 +24,8 @@ export function expand_side_menu() {
     const mapTable = document.getElementById("map-table-irmis");
     const sideMenu = document.getElementById("side-menu");
 
-    mapTable.style.maxWidth = "75%";
-    mapTable.style.flex = "0 0 75%";
+    mapTable.style.removeProperty('max-width');
+    mapTable.style.removeProperty('flex');
     sideMenu.hidden = false;
     collapsedSideMenu.classList.remove("d-flex");
     roads.map.lMap.invalidateSize();
@@ -36,11 +36,13 @@ export function change_view(element, view) {
     const siblings = document.getElementById("view").children;
 
     if (view === 0) {
-        mapTable.className = "col-9 map table";
+        mapTable.className = "col-8 col-lg-9 col-xl-10 map table";
+        roads.table.page.len(10).draw('page');
     } else if (view === 1) {
-        mapTable.className = "col-9 map";
+        mapTable.className = "col-8 col-lg-9 col-xl-10 map";
     } else {
-        mapTable.className = "col-9 table";
+        mapTable.className = "col-8 col-lg-9 col-xl-10 table";
+        roads.table.page.len(20).draw('page');
     }
 
     for (let index = 0; index < siblings.length; index += 1) {

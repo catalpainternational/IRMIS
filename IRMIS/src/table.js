@@ -1,7 +1,7 @@
 import "datatables.net-bs4";
 import $ from "jquery";
 
-let table;
+export let table;
 
 let currentFilter = (p) => (true);
 
