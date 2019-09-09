@@ -1,7 +1,7 @@
 import "datatables.net-bs4";
 import $ from "jquery";
 
-let table;
+export let table;
 
 let currentFilter = (p) => (true);
 
@@ -36,19 +36,19 @@ $.fn.dataTableExt.afnFiltering.push(
     }
 );
 
-let defineColumn = (data, title, mapObj=false, defaultVal="<i>Not set</i>", orderable=true) => ({
+let defineColumn = (data, title, mapObj=false, fixedPointDigits=false, orderable=true, defaultVal="") => ({
     data: data,
     title: title,
     defaultContent: defaultVal,
     orderable: orderable,
-    render: item => (mapObj) ? mapObj[item] : item
+    render: item => (mapObj) ? mapObj[item] : fixedPointDigits ? parseFloat(item).toFixed(fixedPointDigits) : item
 });
 
 export function initializeDataTable(roadList) {
     roadList.forEach((road) => road["edit"] = "<span class='image pencil' onclick='roads.edit_road()'></span>");
     table = $("#data-table").DataTable({
         columns: [
-            defineColumn("edit", "", false, "", false),
+            defineColumn("edit", "", false, false, false),
             defineColumn("roadCode", "Code"),
             defineColumn("roadType", "Type", ROAD_TYPE_CHOICES),
             defineColumn("roadName", "Name"),
@@ -57,17 +57,17 @@ export function initializeDataTable(roadList) {
             defineColumn("linkCode", "Link Code"),
             defineColumn("linkName", "Link Name"),
             defineColumn("linkStartName", "Link Start Name"),
-            defineColumn("linkStartChainage", "Link Start Chainage"),
+            defineColumn("linkStartChainage", "Link Start Chainage (Km)", false, 2),
             defineColumn("linkEndName", "Link End Name"),
-            defineColumn("linkEndChainage", "Link End Chainage"),
-            defineColumn("linkLength", "Link Length"),
+            defineColumn("linkEndChainage", "Link End Chainage (Km)", false, 2),
+            defineColumn("linkLength", "Link Length (Km)", false, 2),
 
             defineColumn("surfaceType", "Surface Type", SURFACE_TYPE_CHOICES),
             defineColumn("surfaceCondition", "Surface Condition", SURFACE_CONDITION_CHOICES),
             defineColumn("pavementClass", "Pavement Class", PAVEMENT_CLASS_CHOICES),
 
             defineColumn("administrativeArea", "Administrative Area", ADMINISTRATIVE_AREA_CHOICES),
-            defineColumn("carriagewayWidth", "Carriageway Width"),
+            defineColumn("carriagewayWidth", "Carriageway Width (m)", false, 2),
             defineColumn("project", "Project"),
             defineColumn("fundingSource", "Funding Source"),
             defineColumn("technicalClass", "Technical Class", TECHNICAL_CLASS_CHOICES),
