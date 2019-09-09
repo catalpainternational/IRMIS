@@ -18,7 +18,7 @@
     padding-left: 10px;
 
     &.inactive {
-        border: 1px solid $dark-gray;
+        border: 1px solid $light-gray;
     }
 
     &.danger {
@@ -29,8 +29,8 @@
         outline: 0;
     }
 
-    &::-webkit-input-placeholder { color: $dark-gray; } /* Chrome/Opera/Safari */
-    &:-ms-input-placeholder { color: $dark-gray; } /* IE 10+ */
-    &::-moz-placeholder { color: $dark-gray; } /* Firefox 19+ */
-    &:-moz-placeholder { color: $dark-gray; } /* Firefox 18- */
+    &::-webkit-input-placeholder { color: $gray; } /* Chrome/Opera/Safari */
+    &:-ms-input-placeholder { color: $gray; } /* IE 10+ */
+    &::-moz-placeholder { color: $gray; } /* Firefox 19+ */
+    &:-moz-placeholder { color: $gray; } /* Firefox 18- */
 }
