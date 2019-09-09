@@ -40,7 +40,7 @@ def test_api_road_detail_does_not_error(client, django_user_model):
 
 
 @pytest.mark.django_db
-def test_api_road_all_but_GET_should_fail(client, django_user_model):
+def test_api_road_all_but_GET_PUT_should_fail(client, django_user_model):
     """ This test will fail if the road api allows POST, PATCH, or DELETE methods
     through (non 405 status)"""
     # create a user
@@ -51,8 +51,6 @@ def test_api_road_all_but_GET_should_fail(client, django_user_model):
     # hit the road api - detail
     url = reverse("road-detail", kwargs={"pk": road.pk})
     response = client.post(url, data=json.dumps({}), content_type="application/json")
-    assert response.status_code == 405
-    response = client.put(url, data=json.dumps({}), content_type="application/json")
     assert response.status_code == 405
     response = client.patch(url, data=json.dumps({}), content_type="application/json")
     assert response.status_code == 405
