@@ -84,7 +84,7 @@ class RoadViewSet(ViewSet):
 
 @csrf_exempt
 def edit_road(request):
-    if request.user.is_authenticated:
+    if not request.user.is_authenticated:
         return HttpResponseForbidden()
 
     if not request.method == "PUT":

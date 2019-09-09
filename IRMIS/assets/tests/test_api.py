@@ -61,7 +61,7 @@ def test_api_road_all_but_GET_should_fail(client, django_user_model):
 
 
 @pytest.mark.django_db
-def test_api_road_put_update(client, django_user_model):
+def test_edit_road_put_update(client, django_user_model):
     """ This test will fail if the road api throws an error with update of
     road asset or fails to change the road_name field """
     # create a user
@@ -83,7 +83,7 @@ def test_api_road_put_update(client, django_user_model):
 
 
 @pytest.mark.django_db
-def test_api_road_put_of_previously_updated_data(client, django_user_model):
+def test_edit_road_put_of_previously_updated_data(client, django_user_model):
     """ This test will fail if the road api does not throw a 409 Conflict when
     passed data to update which already exists on server. Header should contain
     'Location' to point to the updated data."""
