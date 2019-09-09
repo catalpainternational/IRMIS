@@ -77,47 +77,30 @@ class RoadViewSet(ViewSet):
     def update(self, request, pk):
         queryset = Road.objects.all()
         road = get_object_or_404(queryset, pk=pk)
-        # parse protobuf Road from request data
+        # parse Road from protobuf in request body
         req_pb = roads_pb2.Road()
         req_pb.ParseFromString(request.body)
-        print(request.body)
-        print(req_pb)
-        try:
-            road.road_code = req_pb.road_code
-            road.road_name = req_pb.road_name
-            # road.road_type = req_pb.road_type
-            road.link_code = req_pb.link_code
-            road.link_start_name = req_pb.link_start_name
-            road.link_end_name = req_pb.link_end_name
-            road.link_length = req_pb.link_length
-            road.surface_condition = req_pb.surface_condition
-            road.carriageway_width = req_pb.carriageway_width
-            road.administrative_area = req_pb.administrative_area
-            road.project = req_pb.project
-            road.funding_source = req_pb.funding_source
-            road.traffic_level = req_pb.traffic_level
-            # foreign relations
-            # road.pavement_class = PavementClass.objects.get(code=req_pb.pavement_class)
-            # road.technical_class = TechnicalClass.objects.get(code=req_pb.technical_class)
-            # road.surface_type = SurfaceType.objects.filter(code=req_pb.surface_type).get()
-            # road.road_status__code = req_pb.road_status
-            # road.maintenance_need__code = req_pb.maintenance_need
-        except AttributeError:
-            raise Response(
-                status=400, headers={"Error Message": "attibute error setting data"}
-            )
+        print(req_pb.id)
+        print(req_pb.road_name)
 
-        serializer = RoadMetaOnlySerializer(data=road.__dict__)
-        if serializer.is_valid():
-            try:
-                road.save()
-                return Response(status=204)
-            except Exception:
-                return Response(
-                    status=409, headers={"Location": request.path + "?meta"}
-                )
-        else:
-            raise ValidationError("serializer error")
+        # try:
+        return Response(status=204)
+        # except Exception as err:
+        #     raise Response(
+        #         status=400, headers={"Error Message": "Error saving data - %s" % err}
+        #     )
+
+        # serializer = RoadMetaOnlySerializer(data=road.__dict__)
+        # if serializer.is_valid():
+        #     try:
+        #         road.save()
+        #         return Response(status=204)
+        #     except Exception:
+        #         return Response(
+        #             status=409, headers={"Location": request.path + "?meta"}
+        #         )
+        # else:
+        #     raise ValidationError("serializer error")
 
     def partial_update(self, request, pk):
         raise MethodNotAllowed(request.method)
