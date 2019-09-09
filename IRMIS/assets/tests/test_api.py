@@ -40,7 +40,7 @@ def test_api_road_detail_does_not_error(client, django_user_model):
 
 
 @pytest.mark.django_db
-def test_api_road_all_but_GET_PUT_should_fail(client, django_user_model):
+def test_api_road_all_but_GET_should_fail(client, django_user_model):
     """ This test will fail if the road api allows POST, PATCH, or DELETE methods
     through (non 405 status)"""
     # create a user
@@ -51,6 +51,8 @@ def test_api_road_all_but_GET_PUT_should_fail(client, django_user_model):
     # hit the road api - detail
     url = reverse("road-detail", kwargs={"pk": road.pk})
     response = client.post(url, data=json.dumps({}), content_type="application/json")
+    assert response.status_code == 405
+    response = client.put(url, data=json.dumps({}), content_type="application/json")
     assert response.status_code == 405
     response = client.patch(url, data=json.dumps({}), content_type="application/json")
     assert response.status_code == 405
@@ -71,7 +73,7 @@ def test_api_road_put_update(client, django_user_model):
     pb.id = road.id
     pb.road_name = "Pizza The Hutt"
     # hit the road api - detail
-    url = reverse("road-detail", kwargs={"pk": pb.id})
+    url = reverse("edit_road")
     response = client.put(
         url, body=pb.SerializeToString(), content_type="application/octet-stream"
     )
@@ -93,7 +95,7 @@ def test_api_road_put_of_previously_updated_data(client, django_user_model):
     # make Protobuf identical to existing Road
     pb = Road.objects.filter(id=road.id).to_protobuf().roads[0]
     # hit the road api - detail
-    url = reverse("road-detail", kwargs={"pk": road.pk})
+    url = reverse("edit_road")
     response = client.put(
         url, body=pb.SerializeToString(), content_type="application/octet-stream"
     )
