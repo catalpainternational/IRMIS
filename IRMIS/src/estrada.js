@@ -1,3 +1,9 @@
+import "babel-polyfill";
+
+import * as riot from "riot";
+
+import Example from "./riot/example.riot";
+
 import "./styles/irmis.scss";
 
 import { Map } from "./map/map";
@@ -6,12 +12,12 @@ import { initializeDataTable } from "./table";
 
 export { filterFeatures } from "./map/utilities/filterGeoJSON";
 export { geoFeatureGroups } from "./map/utilities/displayGeoJSON";
+export { edit_road } from "./table";
 
-export * from "./table";
 export * from "./side_menu";
 
 export function toggle_dropdown() {
-    var dropdown = document.getElementById('dropdown-menu');
+    var dropdown = document.getElementById("dropdown-menu");
     dropdown.hidden = !dropdown.hidden;
 }
 
@@ -44,3 +50,6 @@ window.onload = () => {
         }));
     }, err => console.log(err));
 };
+
+// riot mounting point
+riot.component(Example)(document.getElementById('edit-content'));
