@@ -65,6 +65,12 @@ export function getGeoJson(geoJsonDetail) {
     const geoJsonUrl = `${requestMediaUrl}/${geoJsonDetail.geobuf_file}`;
 
     return fetch(geoJsonUrl, requestAssetInit)
-        .then(geobufResponse => (geobufResponse.arrayBuffer()))
+        .then(geobufResponse => {
+            if (geobufResponse.ok) {
+                return geobufResponse.arrayBuffer();
+            } else {
+                throw new Error(`${geobufResponse.statusText}. Geobuf response status not OK`);
+            }
+        })
         .then(geobufBytes => (decode(new Pbf(geobufBytes))));
 }

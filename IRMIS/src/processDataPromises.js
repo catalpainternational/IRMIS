@@ -16,7 +16,7 @@ function populateGeoJsonProperties(geoJson, propertiesLookup) {
     geoJson.features.forEach(feature => {
         const propertySet = propertiesLookup[feature.properties.pk];
         if (!propertySet) {
-            return;
+            throw new Error(`assets_api.populateGeoJsonProperties could not find property '${feature.properties.pk}'.`);
         }
 
         Object.assign(feature.properties, propertySet.toObject());
@@ -71,3 +71,4 @@ export function processAllDataPromises(roadsMetadataPromises, estradaTable, estr
             }));
         }, err => console.log(err));
 }
+
