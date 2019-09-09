@@ -35,13 +35,13 @@ Use `pip-compile --upgrade` to upgrade versions of libraries, then test the resu
   1. run `shp2pgsql -d -n path/to/your/.dbf source_table_name` and check the outputted SQL
   2. read the help https://helpmanual.io/help/shp2pgsql/ if you need to make changes
   3. run that sql against your database using `psql` or `manage.py dbshell`: eg `shp2pgsql -d -n ../../ngis/National_Road.dbf source_national_road | ./manage.py dbshell`
-  
+
 2. Create unmanaged model code by using inspectdb
   1. `./manage.py inspectdb source_table_name` this will output some django model code, drop it into models.py
   2. you may have to edit these files to make them managed so that other developers and deployments create the tables
   3. `./manage.py makemigrations`
   4. `./manage.py migrate` - you may have to fake this locally ( as you will have already created the table )
-  
+
 3. Adapt and run the import code in the Importimport.py
   1. Here be dragons, unexpected geometry types, wierd metadata, duplications.
 
@@ -71,3 +71,11 @@ We use google protobuf to compress road metadata for transfer down the wire.
 https://developers.google.com/protocol-buffers/docs/pythontutorial is the best resource I have found for learning about it.
 To make any message schema changes go here https://github.com/protocolbuffers/protobuf/releases/tag/v3.9.1 to find a suitable package for your OS and follow the instructions in the README. Make sure the protoc binary is available on your PATH.
 run `yarn protoc` to update the generated python and javascript code.
+
+
+## Django Reversion
+
+We use the package `django-reversion` to allow us the ability to maintain a historic record of Road model changes, revert to previous states of records, and recovering deleted records.
+You can read more on it here: https://django-reversion.readthedocs.io/en/stable/index.html
+
+If you're setting up from a new DB (ie. not copied from staging / production DB), after pip installing django-reversion and running migrations, you should run `./manage.py createinitialrevisions` to create the initial revision for registered models in the project.
