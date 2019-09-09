@@ -96,26 +96,41 @@ def edit_road(request):
     if req_pb.id:
         queryset = Road.objects.all()
         road = get_object_or_404(queryset, pk=req_pb.id)
-        print(request.body)
-        print(req_pb.road_name)
-        return HttpResponse(status=204)
-        # try:
-        # except Exception as err:
-        #     raise Response(
-        #         status=400, headers={"Error Message": "Error saving data - %s" % err}
-        #     )
+        try:
+            road.road_name = req_pb.road_name
+            road.road_code = req_pb.road_code
+            road.road_name = req_pb.road_name
+            road.road_type = req_pb.road_type
+            road.link_code = req_pb.link_code
+            road.link_start_name = req_pb.link_start_name
+            road.link_start_chainage = req_pb.link_start_chainage
+            road.link_end_name = req_pb.link_end_name
+            road.link_end_chainage = req_pb.link_end_chainage
+            road.link_length = req_pb.link_length
+            road.surface_condition = req_pb.surface_condition
+            road.carriageway_width = req_pb.carriageway_width
+            road.administrative_area = req_pb.administrative_area
+            road.project = req_pb.project
+            road.funding_source = req_pb.funding_source
+            road.traffic_level = req_pb.traffic_level
+            # road.maintenance_need = req_pb.maintenance_need__id
+            # road.technical_class = req_pb.technical_class__code
+            # road.road_status = req_pb.road_status__code
+            # road.surface_type = req_pb.surface_type__code
+            # road.pavement_class = req_pb.pavement_class__code
 
-        # serializer = RoadMetaOnlySerializer(data=road.__dict__)
-        # if serializer.is_valid():
-        #     try:
-        #         road.save()
-        #         return Response(status=204)
-        #     except Exception:
-        #         return Response(
-        #             status=409, headers={"Location": request.path + "?meta"}
-        #         )
+            road.save()
+            return HttpResponse(status=204)
+        except ValueError:
+            return Response(status=409, headers={"Location": request.path + "?meta"})
+        except Exception as err:
+            raise Response(
+                status=400, headers={"Error Message": "Error saving data - %s" % err}
+            )
     else:
-        return HttpResponse(status=400)
+        return HttpResponse(
+            status=400, headers={"Error Message": "Error parsing protobuf - %s" % err}
+        )
 
 
 def geojson_details(request):

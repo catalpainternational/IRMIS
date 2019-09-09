@@ -9,4 +9,4 @@ def pre_save_road(sender, instance, **kwargs):
     if not instance._state.adding:
         old_instance = Road.objects.get(id=instance.id)
         if old_instance == instance:
-            raise Exception("Nothing to save")
+            raise ValueError("Nothing to save")
