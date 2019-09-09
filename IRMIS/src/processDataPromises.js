@@ -1,4 +1,5 @@
 import { getGeoJson } from "./assets/assets_api.js";
+import { prepareRoadEdit } from "./table.js";
 
 /** populateGeoJsonProperties
  *
@@ -50,6 +51,7 @@ export function processAllDataPromises(roadsMetadataPromises, estradaTable, estr
             // Add in the additional roads to the table
             values.forEach(roadValues => {
                 const roadObjects = Object.values(roadValues).map(r => r.toObject());
+                prepareRoadEdit(roadObjects);
                 estradaTable.rows.add(roadObjects).draw();
             });
 
