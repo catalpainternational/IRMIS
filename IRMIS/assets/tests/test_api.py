@@ -73,7 +73,7 @@ def test_edit_road_put_update(client, django_user_model):
     pb.id = road.id
     pb.road_name = "Pizza The Hutt"
     # hit the road api - detail
-    url = reverse("edit_road")
+    url = reverse("road-detail", kwargs={"pk": road.pk})
     response = client.put(
         url, data=pb.SerializeToString(), content_type="application/octet-stream"
     )
@@ -93,7 +93,7 @@ def test_edit_road_put_of_previously_updated_data(client, django_user_model):
     # make Protobuf identical to existing Road
     pb = Road.objects.filter(id=road.id).to_protobuf().roads[0]
     # hit the road api - detail
-    url = reverse("edit_road")
+    url = reverse("road-detail", kwargs={"pk": road.pk})
     response = client.put(
         url, data=pb.SerializeToString(), content_type="application/octet-stream"
     )
