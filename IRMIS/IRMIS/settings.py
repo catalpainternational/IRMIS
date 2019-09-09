@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     "basemap",
     "rest_framework",
     "rest_framework_gis",
+    "reversion",
     # CATALPA UTILS
     "catalpa_django_apps.google_analytics",
 ]
