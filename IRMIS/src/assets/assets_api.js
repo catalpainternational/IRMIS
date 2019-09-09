@@ -56,7 +56,7 @@ export function getGeoJson(geoJsonDetail) {
         if (geobufResponse.ok) {
             return geobufResponse.arrayBuffer();
         } else {
-            throw new Error(`${geobufResponse.statusText}. Do you need to run './manage.py collate_geometries'? `);
+            throw new Error(`${geobufResponse.statusText}. Geobuf response status not OK`);
         }
     }).then(geobufBytes => {
         var pbf = new Pbf(geobufBytes);
