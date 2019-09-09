@@ -93,16 +93,15 @@ class RoadQuerySet(models.QuerySet):
             traffic_level="traffic_level",
         )
 
-        roads = Road.objects.order_by("id").values("id", *fields.values())
-        if chunk_name:
-            roads = roads.filter(road_type=chunk_name)
-            road_chunk = Road.objects.order_by("id").values("id", *fields.values())
-        else:
-            road_chunk = (
+        road_chunk = (
+            (
                 Road.objects.filter(road_type=chunk_name)
                 .order_by("id")
                 .values("id", *fields.values())
             )
+            if chunk_name
+            else Road.objects.order_by("id").values("id", *fields.values())
+        )
 
         for road in road_chunk:
             road_protobuf = roads_protobuf.roads.add()
