@@ -4,6 +4,7 @@ from datetime import datetime
 
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.exceptions import MethodNotAllowed, ValidationError
 from rest_framework.permissions import IsAuthenticated
@@ -74,17 +75,31 @@ class RoadViewSet(ViewSet):
             serializer = RoadToWGSSerializer(road)
             return Response(serializer.data)
 
-    def update(self, request, pk):
-        queryset = Road.objects.all()
-        road = get_object_or_404(queryset, pk=pk)
-        # parse Road from protobuf in request body
-        req_pb = roads_pb2.Road()
-        req_pb.ParseFromString(request.body)
-        print(req_pb.id)
-        print(req_pb.road_name)
+    def create(self, request):
+        raise MethodNotAllowed(request.method)
 
+    def destroy(self, request, pk):
+        raise MethodNotAllowed(request.method)
+
+
+@csrf_exempt
+def edit_road(request):
+    if request.user.is_authenticated:
+        return HttpResponseForbidden()
+
+    if not request.method == "PUT":
+        raise MethodNotAllowed(request.method)
+
+    # parse Road from protobuf in request body
+    req_pb = roads_pb2.Road()
+    req_pb.ParseFromString(request.body)
+    if req_pb.id:
+        queryset = Road.objects.all()
+        road = get_object_or_404(queryset, pk=req_pb.id)
+        print(request.body)
+        print(req_pb.road_name)
+        return HttpResponse(status=204)
         # try:
-        return Response(status=204)
         # except Exception as err:
         #     raise Response(
         #         status=400, headers={"Error Message": "Error saving data - %s" % err}
@@ -99,17 +114,8 @@ class RoadViewSet(ViewSet):
         #         return Response(
         #             status=409, headers={"Location": request.path + "?meta"}
         #         )
-        # else:
-        #     raise ValidationError("serializer error")
-
-    def partial_update(self, request, pk):
-        raise MethodNotAllowed(request.method)
-
-    def create(self, request):
-        raise MethodNotAllowed(request.method)
-
-    def destroy(self, request, pk):
-        raise MethodNotAllowed(request.method)
+    else:
+        return HttpResponse(status=400)
 
 
 def geojson_details(request):
