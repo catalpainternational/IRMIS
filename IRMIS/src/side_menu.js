@@ -37,10 +37,12 @@ export function change_view(element, view) {
 
     if (view === 0) {
         mapTable.className = "col-9 map table";
+        roads.table.page.len(10).draw();
     } else if (view === 1) {
         mapTable.className = "col-9 map";
     } else {
         mapTable.className = "col-9 table";
+        roads.table.page.len(20).draw();
     }
 
     for (let index = 0; index < siblings.length; index += 1) {
