@@ -93,7 +93,9 @@ class RoadQuerySet(models.QuerySet):
             traffic_level="traffic_level",
         )
 
-        if chunk_name is None:
+        roads = Road.objects.order_by("id").values("id", *fields.values())
+        if chunk_name:
+            roads = roads.filter(road_type=chunk_name)
             road_chunk = Road.objects.order_by("id").values("id", *fields.values())
         else:
             road_chunk = (
