@@ -37,12 +37,12 @@ export function change_view(element, view) {
 
     if (view === 0) {
         mapTable.className = "col-8 col-lg-9 col-xl-10 map table";
-        roads.table.page.len(10).draw();
+        roads.table.page.len(10).draw('page');
     } else if (view === 1) {
         mapTable.className = "col-8 col-lg-9 col-xl-10 map";
     } else {
         mapTable.className = "col-8 col-lg-9 col-xl-10 table";
-        roads.table.page.len(20).draw();
+        roads.table.page.len(20).draw('page');
     }
 
     for (let index = 0; index < siblings.length; index += 1) {
