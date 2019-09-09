@@ -60,13 +60,8 @@
 
 .caret {
     background-image: url("../images/caret.svg");
-    background-position: bottom;
-    height: 15px;
+    height: 7px;
     width: 12px;
-
-    &:hover {
-        cursor: pointer;
-    }
 }
 
 .radio {

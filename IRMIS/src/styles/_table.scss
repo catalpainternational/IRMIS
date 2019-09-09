@@ -1,18 +1,20 @@
 #map-table-irmis {
-    overflow: hidden auto;
-
     &.map:not(.table) #table-irmis {
         display: none;
     }
 
-    &.table:not(.map) #table-irmis {
-        height: calc(100vh - 60px - 15px);
+    &.table:not(.map) #data-table {
+        max-height: calc(100vh - 60px - 6px - 37px - 15px);
+    }
+
+    &.table.map #data-table {
+        max-height: calc(60vh - 60px - 10px - 6px - 37px - 15px);
     }
 
     #data-table {
         background-color: $white;
         margin-top: 0 !important;
-        overflow-x: auto;
+        overflow: auto;
     }
 }
 
@@ -20,6 +22,10 @@
 
 .dataTables_filter {
     display: none;
+}
+
+table.dataTable td.dataTables_empty {
+    text-align: left;
 }
 
 li.paginate_button.page-item {
@@ -43,11 +49,34 @@ li.paginate_button.page-item {
 
 // Override Bootstrap table styles
 
-table.table.table-bordered {
-    border: none;
-
+table.table {
     thead th, tbody td {
-        border: 1px solid $light-gray;
+        white-space: nowrap;
         width: 1%;
+    }
+
+    thead th {
+        position: sticky !important;
+        background-color: $white;
+        top: 0;
+    }
+
+    tbody td {
+        padding: 6px 20px !important;
+    }
+
+    &.table-bordered {
+        border: none;
+
+        thead th, tbody td {
+            border: 1px solid $light-gray;
+        }
+    }
+
+    &.table-hover {
+        tbody tr:hover {
+            background-color: $lighter-gray;
+            cursor: pointer;
+        }
     }
 }
