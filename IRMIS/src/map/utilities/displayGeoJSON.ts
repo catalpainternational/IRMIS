@@ -53,11 +53,11 @@ function definePopUp(layer: any) {
     function propToHTML(props: any): string {
         return Object.keys(props).map((propKey) => {
             if (Object.prototype.toString.call(props[propKey]) === "[object Object]") {
-                const propLabel = `<span class="popup heading">${propKey}:</span>`;
+                const propLabel = `<span class="popup heading">${propKey}: </span>`;
                 const propGroup = propToHTML(props[propKey]);
                 return (`<br/>${propLabel}<br/>${propGroup}<br/>`);
             } else {
-                const propLabel = `<span class="popup label">${propKey}:</span>`;
+                const propLabel = `<span class="popup label">${propKey}: </span>`;
                 const propValue = `<span class="popup value">${props[propKey]}</span>`;
                 return (`<span class="popup">${propLabel}${propValue}</span> `);
             }

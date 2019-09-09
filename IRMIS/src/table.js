@@ -1,7 +1,7 @@
 import "datatables.net-bs4";
 import $ from "jquery";
 
-let table;
+export let table;
 
 let currentFilter = (p) => (true);
 
@@ -36,16 +36,19 @@ $.fn.dataTableExt.afnFiltering.push(
     }
 );
 
-let defineColumn = (data, title, mapObj=false, defaultVal="<i>Not set</i>") => ({
+let defineColumn = (data, title, mapObj=false, fixedPointDigits=false, orderable=true, defaultVal="") => ({
     data: data,
     title: title,
     defaultContent: defaultVal,
-    render: item => (mapObj) ? mapObj[item] : item
+    orderable: orderable,
+    render: item => (mapObj) ? mapObj[item] : fixedPointDigits ? parseFloat(item).toFixed(fixedPointDigits) : item
 });
 
 export function initializeDataTable(roadList) {
+    roadList.forEach((road) => road["edit"] = "<span class='image pencil' onclick='roads.edit_road()'></span>");
     table = $("#data-table").DataTable({
         columns: [
+            defineColumn("edit", "", false, false, false),
             defineColumn("roadCode", "Code"),
             defineColumn("roadType", "Type", ROAD_TYPE_CHOICES),
             defineColumn("roadName", "Name"),
@@ -54,32 +57,35 @@ export function initializeDataTable(roadList) {
             defineColumn("linkCode", "Link Code"),
             defineColumn("linkName", "Link Name"),
             defineColumn("linkStartName", "Link Start Name"),
-            defineColumn("linkStartChainage", "Link Start Chainage"),
+            defineColumn("linkStartChainage", "Link Start Chainage (Km)", false, 2),
             defineColumn("linkEndName", "Link End Name"),
-            defineColumn("linkEndChainage", "Link End Chainage"),
-            defineColumn("linkLength", "Link Length"),
+            defineColumn("linkEndChainage", "Link End Chainage (Km)", false, 2),
+            defineColumn("linkLength", "Link Length (Km)", false, 2),
 
             defineColumn("surfaceType", "Surface Type", SURFACE_TYPE_CHOICES),
             defineColumn("surfaceCondition", "Surface Condition", SURFACE_CONDITION_CHOICES),
             defineColumn("pavementClass", "Pavement Class", PAVEMENT_CLASS_CHOICES),
 
             defineColumn("administrativeArea", "Administrative Area", ADMINISTRATIVE_AREA_CHOICES),
-            defineColumn("carriagewayWidth", "Carriageway Width"),
+            defineColumn("carriagewayWidth", "Carriageway Width (m)", false, 2),
             defineColumn("project", "Project"),
             defineColumn("fundingSource", "Funding Source"),
             defineColumn("technicalClass", "Technical Class", TECHNICAL_CLASS_CHOICES),
             defineColumn("maintenanceNeed", "Maintenance Need", MAINTENANCE_NEED_CHOICES),
             defineColumn("trafficLevel", "Traffic Level", TRAFFIC_LEVEL_CHOICES),
         ],
+        order: [3, 'asc'], // default order is ascending by name
         data: roadList,
         // lengthChange: false, // hide table entries filter
         // searching: false, // hide search box
-        search: {
-            regex: true, // Enable escaping of regular expression characters in the search term.
-        },
     });
 }
 export function filterRows(filter) {
     currentFilter = filter;
     table.draw();
+}
+
+export function edit_road() {
+    document.getElementById('edit-content').hidden = false;
+    document.getElementById('view-content').hidden = true;
 }

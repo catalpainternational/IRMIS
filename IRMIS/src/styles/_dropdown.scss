@@ -4,13 +4,17 @@
     border-radius: $radius;
     position: absolute;
     padding: 10px 20px;
-    min-width: 166px;
+    min-width: 196px;
     z-index: 1001; // override Leaflet zoom controls
     top: 30px;
     right: 0;
 }
 
 // Override Bootstrap dropdown styles
+
+.dropdown:hover {
+    cursor: pointer;
+}
 
 .dropdown-divider {
     border-color: $light-gray;
