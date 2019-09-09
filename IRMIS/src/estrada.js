@@ -12,6 +12,7 @@ import { initializeDataTable } from "./table";
 
 export { filterFeatures } from "./map/utilities/filterGeoJSON";
 export { geoFeatureGroups } from "./map/utilities/displayGeoJSON";
+export { edit_road } from "./table";
 
 export * from "./side_menu";
 export let map;
@@ -52,4 +53,4 @@ window.onload = () => {
 };
 
 // riot mounting point
-riot.component(Example)(document.getElementById('riot-edit'));
+riot.component(Example)(document.getElementById('edit-content'));

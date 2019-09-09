@@ -53,11 +53,11 @@ function definePopUp(layer: any) {
     function propToHTML(props: any): string {
         return Object.keys(props).map((propKey) => {
             if (Object.prototype.toString.call(props[propKey]) === "[object Object]") {
-                const propLabel = `<span class="popup heading">${propKey}:</span>`;
+                const propLabel = `<span class="popup heading">${propKey}: </span>`;
                 const propGroup = propToHTML(props[propKey]);
                 return (`<br/>${propLabel}<br/>${propGroup}<br/>`);
             } else {
-                const propLabel = `<span class="popup label">${propKey}:</span>`;
+                const propLabel = `<span class="popup label">${propKey}: </span>`;
                 const propValue = `<span class="popup value">${props[propKey]}</span>`;
                 return (`<span class="popup">${propLabel}${propValue}</span> `);
             }
@@ -73,7 +73,7 @@ function registerFeature(feature: Feature<Geometry, any>, layer: L.Layer) {
     layerLookup[feature.properties.pk] = layer;
 }
 
-export function displayGeoJSON(mymap: L.Map, layerControl: L.Control.Layers, json: GeoJSON): Promise<any> {
+export function displayGeoJSON(mymap: L.Map, json: GeoJSON): Promise<any> {
     const featureType = getFeatureType(json);
 
     if (KnownGeometries.Excluded.indexOf(featureType) !== -1) {
@@ -109,7 +109,6 @@ export function displayGeoJSON(mymap: L.Map, layerControl: L.Control.Layers, jso
 
     if (!geoFeatureGroupExists) {
         // New feature group - add it to the map
-        layerControl.addOverlay(geoFeatureGroup, CreateOverlayControlName(featureType, styleRecord));
         geoFeatureGroup.addTo(mymap);
         geoFeatureGroups[featureType] = geoFeatureGroup;
     }

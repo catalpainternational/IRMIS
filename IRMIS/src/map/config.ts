@@ -10,4 +10,7 @@ export class Config {
 
     /** Timor Leste Geographic Bounds */
     public static tlBounds = L.latLngBounds([[Config.tlBBox[1], Config.tlBBox[0]], [Config.tlBBox[3], Config.tlBBox[2]]]);
+
+    /** The preferred base layer name - as defined in BaseLayers.ts */
+    public static preferredBaseLayerName: string = "Street OSM HOT";
 }
