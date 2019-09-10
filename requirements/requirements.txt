@@ -11,10 +11,11 @@ click==7.0                # via geobuf
 django-modelcluster==4.4  # via wagtail
 django-modeltranslation==0.13.3  # via wagtail-modeltranslation
 django-rest-framework-condition==0.1.1
+django-reversion==3.0.4
 django-rosetta==0.9.3
 django-taggit==0.24.0     # via wagtail
 django-treebeard==4.3     # via wagtail
-django==2.2.4             # via django-rest-framework-condition, django-rosetta, django-taggit, django-treebeard, wagtail
+django==2.2.4             # via django-rest-framework-condition, django-reversion, django-rosetta, django-taggit, django-treebeard, wagtail
 djangorestframework-gis==0.14
 djangorestframework==3.10.2  # via djangorestframework-gis, wagtail
 draftjs-exporter==2.1.6   # via wagtail
