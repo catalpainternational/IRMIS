@@ -100,7 +100,6 @@ def test_road_edit_update_bad_fk_code(client, django_user_model):
         url, data=pb.SerializeToString(), content_type="application/octet-stream"
     )
     assert response.status_code == 400
-    assert response["Error"] == "Error saving data"
 
 
 @pytest.mark.django_db
@@ -121,7 +120,6 @@ def test_road_edit_update_404_pk(client, django_user_model):
         url, data=pb.SerializeToString(), content_type="application/octet-stream"
     )
     assert response.status_code == 404
-    assert response["Error"] == "Road not found"
 
 
 @pytest.mark.django_db
@@ -146,7 +144,6 @@ def test_road_edit_erroneous_protobuf(client, django_user_model):
         url, data=bad_pb_string, content_type="application/octet-stream"
     )
     assert response.status_code == 400
-    assert response["Error"] == "Error parsing protobuf"
 
 
 @pytest.mark.django_db
@@ -167,7 +164,6 @@ def test_road_edit_identical_data(client, django_user_model):
         url, data=pb.SerializeToString(), content_type="application/octet-stream"
     )
     assert response.status_code == 204
-    assert response["Location"] == url + "?meta"
 
 
 @pytest.mark.django_db
