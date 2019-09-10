@@ -10,8 +10,18 @@ import json
 @pytest.mark.django_db
 def test_api_requires_auth(client):
     """ This test will fail if an unauthenticated request can access the roads api """
+    # LIST roads endpoint
     url = reverse("road-list")
     response = client.get(url)
+    assert response.status_code == 403
+    # RETRIEVE single road endpoint
+    road = Road.objects.create()
+    url = reverse("road-detail", kwargs={"pk": road.pk})
+    response = client.get(url)
+    assert response.status_code == 403
+    # UPDATE single road endpoint
+    url = reverse("road_update", kwargs={"pk": road.pk})
+
     assert response.status_code == 403
 
 
@@ -48,15 +58,16 @@ def test_road_api_all_but_GET_PUT_should_fail(client, django_user_model):
     # create a user
     user = django_user_model.objects.create_user(username="user1", password="bar")
     client.force_login(user)
-    # create a road for testing the endpoints
-    road = Road.objects.create()
+    # create an empty pb for testing the endpoints
+    pb = roads_pb2.Road()
+    pb_str = pb.SerializeToString()
     # hit the road api - detail endpoints
-    url = reverse("road-detail", kwargs={"pk": road.pk})
-    response = client.post(url, data=json.dumps({}), content_type="application/json")
+    url = reverse("road-detail", kwargs={"pk": pb.id})
+    response = client.post(url, data=pb_str, content_type="application/octet-stream")
     assert response.status_code == 405
-    response = client.patch(url, data=json.dumps({}), content_type="application/json")
+    response = client.patch(url, data=pb_str, content_type="application/octet-stream")
     assert response.status_code == 405
-    response = client.delete(url, data=json.dumps({}), content_type="application/json")
+    response = client.delete(url, data=pb_str, content_type="application/octet-stream")
     assert response.status_code == 405
 
 
@@ -148,12 +159,9 @@ def test_road_edit_erroneous_protobuf(client, django_user_model):
     pb.id = road.id
     pb.road_name = "Pizza The Hutt"
     # try to pass a bad Protobuf string
-    pb_string = pb.SerializeToString()
-    bad_pb_string = b""
+    bad_pb_str = roads_pb2.Road().SerializeToString()
     url = reverse("road_update")
-    response = client.put(
-        url, data=bad_pb_string, content_type="application/octet-stream"
-    )
+    response = client.put(url, data=bad_pb_str, content_type="application/octet-stream")
     assert response.status_code == 400
 
 
@@ -169,11 +177,10 @@ def test_road_edit_identical_data(client, django_user_model):
     road = Road.objects.create()
     # make Protobuf identical to existing Road
     pb = Road.objects.filter(id=road.id).to_protobuf().roads[0]
+    pb_str = pb.SerializeToString()
     # hit the road api - detail
     url = reverse("road_update")
-    response = client.put(
-        url, data=pb.SerializeToString(), content_type="application/octet-stream"
-    )
+    response = client.put(url, data=pb_str, content_type="application/octet-stream")
     assert response.status_code == 204
 
 
