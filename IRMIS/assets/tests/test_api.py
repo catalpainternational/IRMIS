@@ -1,6 +1,8 @@
 from django.urls import reverse
 from ..models import Road
 from protobuf import roads_pb2
+from reversion.models import Version
+import reversion
 import pytest
 import json
 
@@ -66,7 +68,8 @@ def test_road_edit_update(client, django_user_model):
     user = django_user_model.objects.create_user(username="user1", password="bar")
     client.force_login(user)
     # create a road
-    road = Road.objects.create()
+    with reversion.create_revision():
+        road = Road.objects.create()
     # build protobuf to send with road modifications
     pb = roads_pb2.Road()
     pb.id = road.id
@@ -77,8 +80,12 @@ def test_road_edit_update(client, django_user_model):
         url, data=pb.SerializeToString(), content_type="application/octet-stream"
     )
     assert response.status_code == 204
+    # check that DB was updated correctly
     mod_road = Road.objects.get(id=road.id)
     assert mod_road.road_name == pb.road_name
+    # check that a reversion exists
+    versions = Version.objects.get_for_object(mod_road)
+    assert len(versions) == 2
 
 
 @pytest.mark.django_db
