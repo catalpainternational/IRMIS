@@ -23,6 +23,7 @@ django-extensions==2.2.1
 django-modelcluster==4.4
 django-modeltranslation==0.13.3
 django-rest-framework-condition==0.1.1
+django-reversion==3.0.4
 django-rosetta==0.9.3
 django-taggit==0.24.0
 django-treebeard==4.3
