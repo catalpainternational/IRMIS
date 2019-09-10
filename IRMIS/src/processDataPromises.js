@@ -16,7 +16,7 @@ function populateGeoJsonProperties(geoJson, propertiesLookup) {
     geoJson.features.forEach(feature => {
         const propertySet = propertiesLookup[feature.properties.pk];
         if (!propertySet) {
-            throw new Error(`assets_api.populateGeoJsonProperties could not find property '${feature.properties.pk}'.`);
+            return;
         }
 
         Object.assign(feature.properties, propertySet.toObject());
