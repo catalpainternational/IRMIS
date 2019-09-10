@@ -84,15 +84,21 @@ class RoadViewSet(ViewSet):
         # parse Road from protobuf in request body
         req_pb = roads_pb2.Road()
         req_pb.ParseFromString(request.body)
+
+        # check that Protobuf parsed and it's ID == PK in request
         if not req_pb.id:
             return Response(status=400, headers={"Error": "Error parsing protobuf"})
         if req_pb.id != int(pk):
             return Response(status=400, headers={"Error": "Incorrect Road ID given"})
 
+        # assert Road ID given exists in the DB & there are PB changes to make
         road_q = Road.objects.filter(pk=pk)
-        if len(road_q) > 0 and road_q.to_protobuf().roads[0] == req_pb:
+        if len(road_q) == 0:
+            return Response(status=404, headers={"Error": "Road not found"})
+        elif road_q.to_protobuf().roads[0] == req_pb:
             return Response(status=409, headers={"Location": request.path + "?meta"})
 
+        # update the Road instance from PB fields
         road = road_q.get()
         try:
             road.road_name = req_pb.road_name
