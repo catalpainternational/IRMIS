@@ -1,5 +1,6 @@
 import hashlib
 import json
+import reversion
 from datetime import datetime
 
 from django.shortcuts import get_object_or_404
@@ -26,18 +27,21 @@ from .serializers import RoadSerializer, RoadMetaOnlySerializer, RoadToWGSSerial
 
 
 def get_etag(request, pk=None):
-    if pk:
-        return hashlib.md5(
-            json.dumps(RoadSerializer(Road.objects.filter(id=pk).get()).data).encode(
-                "utf-8"
-            )
-        ).hexdigest()
-    else:
-        return hashlib.md5(
-            json.dumps(RoadSerializer(Road.objects.all(), many=True).data).encode(
-                "utf-8"
-            )
-        ).hexdigest()
+    try:
+        if pk:
+            return hashlib.md5(
+                json.dumps(
+                    RoadSerializer(Road.objects.filter(id=pk).get()).data
+                ).encode("utf-8")
+            ).hexdigest()
+        else:
+            return hashlib.md5(
+                json.dumps(RoadSerializer(Road.objects.all(), many=True).data).encode(
+                    "utf-8"
+                )
+            ).hexdigest()
+    except Road.DoesNotExist:
+        return hashlib.md5(json.dumps({}).encode("utf-8")).hexdigest()
 
 
 def get_last_modified(request, pk=None):
@@ -74,13 +78,8 @@ class RoadViewSet(ViewSet):
             serializer = RoadToWGSSerializer(road)
             return Response(serializer.data)
 
+    @condition(etag_func=get_etag, last_modified_func=get_last_modified)
     def update(self, request, pk):
-        if not request.user.is_authenticated:
-            return HttpResponseForbidden()
-
-        if not request.method == "PUT":
-            raise MethodNotAllowed(request.method)
-
         # parse Road from protobuf in request body
         req_pb = roads_pb2.Road()
         req_pb.ParseFromString(request.body)
@@ -132,7 +131,8 @@ class RoadViewSet(ViewSet):
                 else:
                     fk_obj = None
                 setattr(road, fk[1], fk_obj)
-            road.save()
+            with reversion.create_revision():
+                road.save()
             return HttpResponse(status=204)
         except Exception as err:
             return Response(
