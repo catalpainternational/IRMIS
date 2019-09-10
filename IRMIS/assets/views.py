@@ -84,13 +84,10 @@ class RoadViewSet(ViewSet):
         # parse Road from protobuf in request body
         req_pb = roads_pb2.Road()
         req_pb.ParseFromString(request.body)
-        if not req_pb.id or req_pb.id != int(pk):
-            return Response(
-                status=400,
-                headers={
-                    "Error Message": "Error parsing protobuf payload or incorrect Road ID given"
-                },
-            )
+        if not req_pb.id:
+            return Response(status=400, headers={"Error": "Error parsing protobuf"})
+        if req_pb.id != int(pk):
+            return Response(status=400, headers={"Error": "Incorrect Road ID given"})
 
         road_q = Road.objects.filter(pk=pk)
         if len(road_q) > 0 and road_q.to_protobuf().roads[0] == req_pb:
@@ -133,7 +130,7 @@ class RoadViewSet(ViewSet):
             return HttpResponse(status=204)
         except Exception as err:
             raise Response(
-                status=400, headers={"Error Message": "Error saving data - %s" % err}
+                status=400, headers={"Error": "Error saving data", "Detail": str(err)}
             )
 
     def create(self, request):
