@@ -159,13 +159,24 @@ def geojson_details(request):
     return JsonResponse(list(geojson_files), safe=False)
 
 
-def protobuf_road_set(request):
+def road_chunks_set(request):
+    """ returns an object with the set of all chunks that can be requested via protobuf_roads """
+
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+
+    road_chunks = Road.objects.to_chunks()
+
+    return JsonResponse(list(road_chunks), safe=False)
+
+
+def protobuf_road_set(request, chunk_name=None):
     """ returns a protobuf object with the set of all Roads """
 
     if not request.user.is_authenticated:
         return HttpResponseForbidden()
 
-    roads_protobuf = Road.objects.to_protobuf()
+    roads_protobuf = Road.objects.to_protobuf(chunk_name)
 
     return HttpResponse(
         roads_protobuf.SerializeToString(), content_type="application/octet-stream"

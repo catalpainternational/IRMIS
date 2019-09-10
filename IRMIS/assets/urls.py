@@ -1,6 +1,12 @@
 from django.urls import include, path
 from rest_framework import routers
-from .views import RoadViewSet, geojson_details, protobuf_road_set, road_update
+from .views import (
+    RoadViewSet,
+    geojson_details,
+    road_chunks_set,
+    protobuf_road_set,
+    road_update,
+)
 
 router = routers.DefaultRouter()
 router.register(r"roads", RoadViewSet, basename="road")
@@ -11,6 +17,8 @@ urlpatterns = [
     path("", include(router.urls)),
     path("road_update", road_update, name="road_update"),
     path("geojson_details", geojson_details, name="geojson_details"),
+    path("road_chunks", road_chunks_set, name="road_chunks"),
     path("protobuf_roads", protobuf_road_set, name="protobuf_roads"),
+    path("protobuf_roads/<slug:chunk_name>/", protobuf_road_set, name="protobuf_roads"),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
 ]

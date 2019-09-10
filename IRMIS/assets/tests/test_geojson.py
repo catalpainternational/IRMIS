@@ -1,4 +1,6 @@
+from django.core.files.base import ContentFile
 from django.urls import reverse
+from ..models import CollatedGeoJsonFile
 import pytest
 
 
@@ -16,7 +18,9 @@ def test_geojson_details_does_not_error(client, django_user_model):
     # create a user
     user = django_user_model.objects.create_user(username="user1", password="bar")
     client.force_login(user)
-    # hit the road api
+    # create a GeoJSON file
+    road = CollatedGeoJsonFile.objects.create(key="test", geobuf_file=ContentFile(b""))
+    # hit the GeoJSON api
     url = reverse("geojson_details")
     response = client.get(url)
     assert response.status_code == 200
