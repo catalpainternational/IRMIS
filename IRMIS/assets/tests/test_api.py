@@ -14,7 +14,7 @@ def test_api_requires_auth(client):
 
 
 @pytest.mark.django_db
-def test_api_road_list_does_not_error(client, django_user_model):
+def test_road_api_list_does_not_error(client, django_user_model):
     """ This test will fail if the road list api throws an error """
     # create a user
     user = django_user_model.objects.create_user(username="user1", password="bar")
@@ -26,7 +26,7 @@ def test_api_road_list_does_not_error(client, django_user_model):
 
 
 @pytest.mark.django_db
-def test_api_road_detail_does_not_error(client, django_user_model):
+def test_road_api_detail_does_not_error(client, django_user_model):
     """ This test will fail if the road list api throws an error """
     # create a user
     user = django_user_model.objects.create_user(username="user1", password="bar")
@@ -40,7 +40,7 @@ def test_api_road_detail_does_not_error(client, django_user_model):
 
 
 @pytest.mark.django_db
-def test_api_road_all_but_GET_PUT_should_fail(client, django_user_model):
+def test_road_api_all_but_GET_PUT_should_fail(client, django_user_model):
     """ This test will fail if the road api allows POST, PATCH, or DELETE methods
     through (non 405 status)"""
     # create a user
@@ -59,7 +59,7 @@ def test_api_road_all_but_GET_PUT_should_fail(client, django_user_model):
 
 
 @pytest.mark.django_db
-def test_edit_road_put_update(client, django_user_model):
+def test_road_edit_update(client, django_user_model):
     """ This test will fail if the road api throws an error with update of
     road asset or fails to change the road_name field """
     # create a user
@@ -82,7 +82,39 @@ def test_edit_road_put_update(client, django_user_model):
 
 
 @pytest.mark.django_db
-def test_edit_road_put_of_previously_updated_data(client, django_user_model):
+def test_road_edit_erroneous_protobuf(client, django_user_model):
+    """ This test will fail if the road api does NOT throw an error when given
+    a protobuf payload that is 1) not deserializable or 2) doesn't point to an
+    existing Road in the DB (CREATE attempt, not proper PUT) """
+    # create a user
+    user = django_user_model.objects.create_user(username="user1", password="bar")
+    client.force_login(user)
+    # create a road
+    road = Road.objects.create()
+    # build protobuf to send with road modifications
+    pb = roads_pb2.Road()
+    pb.id = road.id
+    pb.road_name = "Pizza The Hutt"
+    # try to pass a bad Protobuf string
+    pb_string = pb.SerializeToString()
+    bad_pb_string = b""
+    url = reverse("road-detail", kwargs={"pk": road.pk})
+    response = client.put(
+        url, data=bad_pb_string, content_type="application/octet-stream"
+    )
+    assert response.status_code == 400
+    # try to pass a Protobuf with a Road ID that doesn't exist
+    pb.id = 9999999
+    bad_pb_string = pb.SerializeToString()
+    url = reverse("road-detail", kwargs={"pk": road.pk})
+    response = client.put(
+        url, data=bad_pb_string, content_type="application/octet-stream"
+    )
+    assert response.status_code == 400
+
+
+@pytest.mark.django_db
+def test_road_edit_previously_updated_data(client, django_user_model):
     """ This test will fail if the road api does not throw a 409 Conflict when
     passed data to update which already exists on server. Header should contain
     'Location' to point to the updated data."""
