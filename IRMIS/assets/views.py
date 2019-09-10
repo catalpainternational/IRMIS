@@ -141,6 +141,8 @@ def road_update(request):
             setattr(road, fk[1], fk_obj)
         with reversion.create_revision():
             road.save()
+            # store the user who made the changes
+            reversion.set_user(request.user)
         return HttpResponse(status=204)
     except Exception as err:
         return HttpResponse(status=400)

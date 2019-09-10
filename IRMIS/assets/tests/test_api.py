@@ -67,9 +67,11 @@ def test_road_edit_update(client, django_user_model):
     # create a user
     user = django_user_model.objects.create_user(username="user1", password="bar")
     client.force_login(user)
-    # create a road
     with reversion.create_revision():
+        # create a road
         road = Road.objects.create()
+        # store the user who made the changes
+        reversion.set_user(user)
     # build protobuf to send with road modifications
     pb = roads_pb2.Road()
     pb.id = road.id
@@ -83,9 +85,11 @@ def test_road_edit_update(client, django_user_model):
     # check that DB was updated correctly
     mod_road = Road.objects.get(id=road.id)
     assert mod_road.road_name == pb.road_name
-    # check that a reversion exists
+    # check that a new revision exists
     versions = Version.objects.get_for_object(mod_road)
     assert len(versions) == 2
+    # check that the user is noted in the latest revision record
+    assert versions[1].revision.user == user
 
 
 @pytest.mark.django_db
