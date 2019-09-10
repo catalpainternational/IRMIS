@@ -90,7 +90,7 @@ export function initializeDataTable(roadList) {
             className: "btn-sm",
             sheetName: "Estrada",
             text: "Export table",
-            title: "Estrada-" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate(),
+            title: "Estrada_" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate(),
         }]
     });
 }
