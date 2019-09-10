@@ -129,7 +129,7 @@ class RoadViewSet(ViewSet):
             road.save()
             return HttpResponse(status=204)
         except Exception as err:
-            raise Response(
+            return Response(
                 status=400, headers={"Error": "Error saving data", "Detail": str(err)}
             )
 
