@@ -72,7 +72,7 @@ def test_road_edit_update(client, django_user_model):
     pb.id = road.id
     pb.road_name = "Pizza The Hutt"
     # hit the road api - detail
-    url = reverse("road-detail", kwargs={"pk": road.pk})
+    url = reverse("road_update")
     response = client.put(
         url, data=pb.SerializeToString(), content_type="application/octet-stream"
     )
@@ -95,7 +95,7 @@ def test_road_edit_update_bad_fk_code(client, django_user_model):
     pb.id = road.id
     pb.road_status = "2"
     # hit the road api - detail
-    url = reverse("road-detail", kwargs={"pk": road.pk})
+    url = reverse("road_update")
     response = client.put(
         url, data=pb.SerializeToString(), content_type="application/octet-stream"
     )
@@ -116,7 +116,7 @@ def test_road_edit_update_404_pk(client, django_user_model):
     pb = roads_pb2.Road()
     pb.id = 99999
     # hit the road api - detail
-    url = reverse("road-detail", kwargs={"pk": str(pb.id)})
+    url = reverse("road_update")
     response = client.put(
         url, data=pb.SerializeToString(), content_type="application/octet-stream"
     )
@@ -141,27 +141,18 @@ def test_road_edit_erroneous_protobuf(client, django_user_model):
     # try to pass a bad Protobuf string
     pb_string = pb.SerializeToString()
     bad_pb_string = b""
-    url = reverse("road-detail", kwargs={"pk": road.pk})
+    url = reverse("road_update")
     response = client.put(
         url, data=bad_pb_string, content_type="application/octet-stream"
     )
     assert response.status_code == 400
     assert response["Error"] == "Error parsing protobuf"
-    # try to pass a Protobuf with a Road ID that doesn't match PK in request
-    pb.id = 9999999
-    bad_pb_string = pb.SerializeToString()
-    url = reverse("road-detail", kwargs={"pk": road.pk})
-    response = client.put(
-        url, data=bad_pb_string, content_type="application/octet-stream"
-    )
-    assert response.status_code == 400
-    assert response["Error"] == "Mismatch in Road IDs given"
 
 
 @pytest.mark.django_db
-def test_road_edit_previously_updated_data(client, django_user_model):
-    """ This test will fail if the road api does not throw a 409 Conflict when
-    passed data to update which already exists on server. Header should contain
+def test_road_edit_identical_data(client, django_user_model):
+    """ This test will fail if the road api does not throw a 204 response when
+    passed data identical to that which already exists on server. Header should contain
     'Location' to point to the updated data."""
     # create a user
     user = django_user_model.objects.create_user(username="user1", password="bar")
@@ -171,11 +162,11 @@ def test_road_edit_previously_updated_data(client, django_user_model):
     # make Protobuf identical to existing Road
     pb = Road.objects.filter(id=road.id).to_protobuf().roads[0]
     # hit the road api - detail
-    url = reverse("road-detail", kwargs={"pk": road.pk})
+    url = reverse("road_update")
     response = client.put(
         url, data=pb.SerializeToString(), content_type="application/octet-stream"
     )
-    assert response.status_code == 409
+    assert response.status_code == 204
     assert response["Location"] == url + "?meta"
 
 
