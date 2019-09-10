@@ -36,9 +36,9 @@
 }
 
 .btn-secondary {
-    box-shadow: 0 0 4px 0 rgba(61, 71, 88, 0.3);
-    border: 1px solid $light-gray;
-    background-color: $white;
+    box-shadow: 0 0 4px 0 rgba(61, 71, 88, 0.3) !important;
+    border: 1px solid $light-gray !important;
+    background-color: $white !important;
 
     &:hover {
         border: 1px solid $light-gray;
