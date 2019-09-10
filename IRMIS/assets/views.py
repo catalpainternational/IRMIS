@@ -89,7 +89,7 @@ class RoadViewSet(ViewSet):
         if not req_pb.id:
             return Response(status=400, headers={"Error": "Error parsing protobuf"})
         if req_pb.id != int(pk):
-            return Response(status=400, headers={"Error": "Incorrect Road ID given"})
+            return Response(status=400, headers={"Error": "Mismatch in Road IDs given"})
 
         # assert Road ID given exists in the DB & there are PB changes to make
         road_q = Road.objects.filter(pk=pk)

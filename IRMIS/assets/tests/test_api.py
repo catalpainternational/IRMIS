@@ -104,6 +104,27 @@ def test_road_edit_update_bad_fk_code(client, django_user_model):
 
 
 @pytest.mark.django_db
+def test_road_edit_update_404_pk(client, django_user_model):
+    """ This test will fail if the road api does NOT throw a 404 error when attempting
+    to update a road asset when passed PK code does not exist in the DB """
+    # create a user
+    user = django_user_model.objects.create_user(username="user1", password="bar")
+    client.force_login(user)
+    # create a road
+    road = Road.objects.create()
+    # build protobuf to send with road modifications
+    pb = roads_pb2.Road()
+    pb.id = 99999
+    # hit the road api - detail
+    url = reverse("road-detail", kwargs={"pk": str(pb.id)})
+    response = client.put(
+        url, data=pb.SerializeToString(), content_type="application/octet-stream"
+    )
+    assert response.status_code == 404
+    assert response["Error"] == "Road not found"
+
+
+@pytest.mark.django_db
 def test_road_edit_erroneous_protobuf(client, django_user_model):
     """ This test will fail if the road api does NOT throw an error when given
     a protobuf payload that is 1) not deserializable or 2) doesn't point to an
@@ -125,7 +146,8 @@ def test_road_edit_erroneous_protobuf(client, django_user_model):
         url, data=bad_pb_string, content_type="application/octet-stream"
     )
     assert response.status_code == 400
-    # try to pass a Protobuf with a Road ID that doesn't exist
+    assert response["Error"] == "Error parsing protobuf"
+    # try to pass a Protobuf with a Road ID that doesn't match PK in request
     pb.id = 9999999
     bad_pb_string = pb.SerializeToString()
     url = reverse("road-detail", kwargs={"pk": road.pk})
@@ -133,6 +155,7 @@ def test_road_edit_erroneous_protobuf(client, django_user_model):
         url, data=bad_pb_string, content_type="application/octet-stream"
     )
     assert response.status_code == 400
+    assert response["Error"] == "Mismatch in Road IDs given"
 
 
 @pytest.mark.django_db
