@@ -52,6 +52,7 @@ let defineColumn = (data, title, mapObj=false, fixedPointDigits=false, orderable
 });
 
 export function initializeDataTable(roadList) {
+    const date = new Date();
     roadList.forEach((road) => road["edit"] = "<span class='image pencil' onclick='roads.edit_road()'></span>");
     table = $("#data-table").DataTable({
         columns: [
@@ -89,6 +90,7 @@ export function initializeDataTable(roadList) {
             className: "btn-sm",
             sheetName: "Estrada",
             text: "Export table",
+            title: "Estrada-" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate(),
         }]
     });
 }
