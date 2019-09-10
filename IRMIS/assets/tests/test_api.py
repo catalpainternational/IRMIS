@@ -46,9 +46,9 @@ def test_api_road_all_but_GET_PUT_should_fail(client, django_user_model):
     # create a user
     user = django_user_model.objects.create_user(username="user1", password="bar")
     client.force_login(user)
-    # create a road
+    # create a road for testing the endpoints
     road = Road.objects.create()
-    # hit the road api - detail
+    # hit the road api - detail endpoints
     url = reverse("road-detail", kwargs={"pk": road.pk})
     response = client.post(url, data=json.dumps({}), content_type="application/json")
     assert response.status_code == 405
@@ -65,8 +65,9 @@ def test_edit_road_put_update(client, django_user_model):
     # create a user
     user = django_user_model.objects.create_user(username="user1", password="bar")
     client.force_login(user)
-    # create a road & protobuf to send
+    # create a road
     road = Road.objects.create()
+    # build protobuf to send with road modifications
     pb = roads_pb2.Road()
     pb.id = road.id
     pb.road_name = "Pizza The Hutt"
@@ -76,6 +77,8 @@ def test_edit_road_put_update(client, django_user_model):
         url, data=pb.SerializeToString(), content_type="application/octet-stream"
     )
     assert response.status_code == 204
+    mod_road = Road.objects.get(id=road.id)
+    assert mod_road.road_name == pb.road_name
 
 
 @pytest.mark.django_db
