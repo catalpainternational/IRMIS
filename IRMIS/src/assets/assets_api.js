@@ -1,16 +1,7 @@
-import { decode } from "geobuf";
-import Pbf from "pbf";
+import { ConfigAPI } from "./configAPI";
 
 // protobuf does not support es6 imports, commonjs works
 const roadMessages = require("../../protobuf/roads_pb");
-
-const requestAssetUrl = `${window.location.origin}/assets`;
-const requestAssetInit = {
-    headers: { "Content-Type": "application/json" },
-    method: "GET",
-    mode: "no-cors",
-};
-const requestMediaUrl = `${window.location.origin}/media`;
 
 /** getRoadsMetadata
  *
@@ -20,48 +11,47 @@ const requestMediaUrl = `${window.location.origin}/media`;
  */
 export function getRoadsMetadata() {
     const assetTypeUrlFragment = "protobuf_roads";
-    const metadataUrl = `${requestAssetUrl}/${assetTypeUrlFragment}`;
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}`;
 
-    return fetch(metadataUrl, requestAssetInit).then(metadataResponse => {
-        return metadataResponse.arrayBuffer();
-    }).then(protobufBytes => {
-        // build a map to access roads by id
-        var list = roadMessages.Roads.deserializeBinary(protobufBytes).getRoadsList();
-        return list.reduce(
-            (roadsLookup, roadMetadata) => {
-                roadsLookup[roadMetadata.getId()] = roadMetadata;
-                return roadsLookup;
-            },
-            {},
-        );
-    });
+    return fetch(metadataUrl, ConfigAPI.requestAssetInit)
+        .then(metadataResponse => (metadataResponse.arrayBuffer()))
+        .then(protobufBytes => {
+            // build a map to access roads by id
+            var list = roadMessages.Roads.deserializeBinary(protobufBytes).getRoadsList();
+            return list.reduce(
+                (roadsLookup, roadMetadata) => {
+                    roadsLookup[roadMetadata.getId()] = roadMetadata;
+                    return roadsLookup;
+                },
+                {},
+            );
+        });
 }
 
-export function getGeoJsonDetails() {
-    // get the details for the collated geojson files
 
-    const geojsonDetailsUrl = `${requestAssetUrl}/geojson_details`;
-    return fetch(geojsonDetailsUrl, requestAssetInit).then(geojsonDetailsResponse => {
-        return geojsonDetailsResponse.json();
-    });
+export function getRoadMetadata() {
+    const assetTypeUrlFragment = "road_update";
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}`;
+
+    return fetch(metadataUrl, ConfigAPI.requestAssetInit)
+        .then(metadataResponse => (metadataResponse.arrayBuffer()))
+        .then(protobufBytes => (roadMessages.Road.deserializeBinary(protobufBytes)));
 }
 
-export function getGeoJson(geoJsonDetail) {
-    // gets geojson from a collated geometry file
 
-    const geoJsonUrl = `${requestMediaUrl}/${geoJsonDetail.geobuf_file}`;
-    return fetch(
-        geoJsonUrl, requestAssetInit,
-    ).then(geobufResponse => {
-        if (geobufResponse.ok) {
-            return geobufResponse.arrayBuffer();
-        } else {
-            throw new Error(`${geobufResponse.statusText}. Geobuf response status not OK`);
-        }
-    }).then(geobufBytes => {
-        var pbf = new Pbf(geobufBytes);
-        return decode(pbf);
-    });
+export function setRoadMetadata() {
+    const assetTypeUrlFragment = "road_update";
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}`;
+    const postAssetInit = ConfigAPI.requestAssetInit;
+    postAssetInit.method = "POST";
+    postAssetInit.headers["Content-Type"] = "application/octet-stream";
+
+    body: JSON.stringify(data), // data can be `string` or {object}!
+
+
+    return fetch(metadataUrl, requestAssetInit)
+        .then(metadataResponse => (metadataResponse.arrayBuffer()))
+        .then(protobufBytes => (roadMessages.Road.deserializeBinary(protobufBytes)));
 }
 
 /** populateGeoJsonProperties
