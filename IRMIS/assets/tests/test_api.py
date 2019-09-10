@@ -20,8 +20,8 @@ def test_api_requires_auth(client):
     response = client.get(url)
     assert response.status_code == 403
     # UPDATE single road endpoint
-    url = reverse("road_update", kwargs={"pk": road.pk})
-
+    url = reverse("road_update")
+    response = client.get(url)
     assert response.status_code == 403
 
 
