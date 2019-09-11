@@ -64,6 +64,16 @@
     width: 12px;
 }
 
+.caret-dark {
+    background-image: url("../images/caret_dark.svg");
+    height: 10px;
+    width: 16px;
+
+    &.left {
+        transform: rotate(90deg);
+    }
+}
+
 .radio {
     background-image: url("../images/radio_unactive.svg");
     vertical-align: middle;

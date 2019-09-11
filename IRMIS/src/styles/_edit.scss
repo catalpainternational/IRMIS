@@ -1,15 +1,29 @@
 $max-width: 400px;
 
 #edit-base {
-    height: calc(100vh - 60px);
     padding-bottom: 15px;
-    overflow-y: auto;
+    padding-left: 0;
+
+    header {
+        border-bottom: 1px solid $light-gray;
+        background-color: $white;
+        padding-right: 25px;
+        padding-left: 25px;
+        height: 70px;
+
+        h1 {
+            margin-left: 20px;
+            margin-bottom: 0;
+        }
+    }
 }
 
 edit_asset_details {
+    height: calc(100vh - 60px - 70px - 15px);
     background-color: $white;
+    padding: 30px 60px 60px;
+    overflow-y: auto;
     display: block;
-    padding: 40px;
 
     h5 {
         max-width: $max-width;
@@ -26,6 +40,7 @@ edit_asset_details {
 
         h6 {
             border-bottom: 1px solid $lighter-gray;
+            padding-bottom: 5px;
             margin-bottom: 15px;
         }
     }
