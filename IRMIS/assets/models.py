@@ -113,7 +113,11 @@ class RoadQuerySet(models.QuerySet):
                     if query_key not in ["last_modified", "date_created"]:
                         setattr(road_protobuf, protobuf_key, road[query_key])
                     else:
-                        setattr(road_protobuf, protobuf_key, road[query_key].strftime("%Y-%m-%d %H:%M:%S"))
+                        setattr(
+                            road_protobuf,
+                            protobuf_key,
+                            road[query_key].strftime("%Y-%m-%d %H:%M:%S"),
+                        )
 
         return roads_protobuf
 
