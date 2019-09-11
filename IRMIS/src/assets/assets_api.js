@@ -1,6 +1,8 @@
 import { ConfigAPI } from "./configAPI";
 
 // protobuf does not support es6 imports, commonjs works
+// ... well it does, if you pass the correct protoc options
+// But we should probably replace it with https://github.com/protobufjs/protobuf.js
 const roadMessages = require("../../protobuf/roads_pb");
 
 /** getRoadsMetadataChunks
