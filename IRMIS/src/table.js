@@ -45,13 +45,10 @@ let defineColumn = (data, title, mapObj=false, fixedPointDigits=false, orderable
 });
 
 export function prepareRoadEdit(roadList) {
-    if (roadList && roadList.length) {
-        roadList.forEach((road) => road["edit"] = "<span class='image pencil' onclick=roads.edit_road('" + road.roadCode + "')></span>");
-    }
+    roadList.forEach((road) => road["edit"] = "<span class='image pencil' onclick=roads.edit_road('" + road.roadCode + "')></span>");
 }
 
-export function initializeDataTable(roadList) {
-    prepareRoadEdit(roadList);
+export function initializeDataTable() {
     table = $("#data-table").DataTable({
         columns: [
             defineColumn("edit", "", false, false, false),
@@ -81,9 +78,6 @@ export function initializeDataTable(roadList) {
             defineColumn("trafficLevel", "Traffic Level", TRAFFIC_LEVEL_CHOICES),
         ],
         order: [3, 'asc'], // default order is ascending by name
-        data: roadList,
-        // lengthChange: false, // hide table entries filter
-        // searching: false, // hide search box
     });
 
     return table;
