@@ -14,7 +14,7 @@
         </div>
         <div id="edit-base" class="col-8 col-lg-9 col-xl-10">
             <header class="align-items-center d-flex">
-                <span class="caret-dark left image"></span>
+                <span class="caret-dark left image" onclick="{ goBack }"></span>
                 <h1>A01-1 Dili to Manatuto</h1>
             </header>
             <!-- <edit_location_type></edit_location_type> -->
@@ -35,6 +35,10 @@
         export default {
             components: {
                 Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Project, Edit_Condition
+            },
+            goBack(e) {
+                this.unmount(true);
+                location.hash = '';
             }
         };
     </script>
