@@ -5,8 +5,10 @@ import Edit_Base from "./riot/edit_base.riot";
 
 import "./styles/irmis.scss";
 
+import { getRoadsMetadata, getRoadsMetadataChunks, getGeoJsonDetails } from "./assets/assets_api.js";
+import { processAllDataPromises } from "./processDataPromises";
+
 import { Map } from "./map/map";
-import { getRoadsMetadata, getGeoJsonDetails, getGeoJson, populateGeoJsonProperties } from "./assets/assets_api.js";
 import { initializeDataTable } from "./table";
 
 export { filterFeatures } from "./map/utilities/filterGeoJSON";
@@ -14,7 +16,6 @@ export { geoFeatureGroups } from "./map/utilities/displayGeoJSON";
 export { edit_road } from "./table";
 
 export * from "./side_menu";
-export let map;
 
 export function toggle_dropdown() {
     var dropdown = document.getElementById("dropdown-menu");
@@ -22,37 +23,30 @@ export function toggle_dropdown() {
 }
 
 window.onload = () => {
+    // Set up the map and table - but without any data for either
+    const estradaMap = new Map();
+    estradaMap.loadMap();
+    const estradaTable = initializeDataTable();
+
+    // Get the road metadata in 'chunks' as an array of promises
+    getRoadsMetadataChunks()
+        .then(chunks => {
+            // Get smaller chunks first
+            // The smallest chunk should be National (NAT) roads
+            chunks = chunks.sort((chunkA, chunkB) => (chunkA.road_type__count - chunkB.road_type__count));
+            const roadsMetadataPromises = chunks.map(chunk => (getRoadsMetadata(chunk.road_type)));
+
+            // And then add in the promise for all of the geoData (GeoJSON) as well
+            roadsMetadataPromises.push(getGeoJsonDetails());
+
+            processAllDataPromises(roadsMetadataPromises, estradaTable, estradaMap)
+                .then(() => {
+                    /* Map and Road data loading completed, leaflet and datatable may still be rendering though */
+                });
+        });
+
     riot.register('edit_base', Edit_Base);
-
     hash_check();
-
-    map = new Map();
-    map.loadMap();
-
-    // First retrieve the road metadata, and the urls of the geojson files
-    Promise.all([
-        getRoadsMetadata(),
-        getGeoJsonDetails(),
-    ]).then(values => {
-        let roadsLookup = values[0];
-        let geoJsonDetails = values[1];
-
-        // now we have our metadata we can intialize the data table
-        initializeDataTable(Object.values(roadsLookup).map(r => r.toObject()));
-
-        // retrieve each geojson file
-        return Promise.all(geoJsonDetails.map(geoJsonDetail => {
-            return getGeoJson(
-                geoJsonDetail
-            ).then(geoJson => {
-                // add in road metadata
-                populateGeoJsonProperties(geoJson, roadsLookup);
-
-                // add to map
-                map.addMapData(geoJson);
-            })
-        }));
-    }, err => console.log(err));
 };
 
 window.onhashchange = () => {

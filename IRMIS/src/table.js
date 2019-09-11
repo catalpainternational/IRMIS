@@ -44,8 +44,14 @@ let defineColumn = (data, title, mapObj=false, fixedPointDigits=false, orderable
     render: item => (mapObj) ? mapObj[item] : fixedPointDigits ? parseFloat(item).toFixed(fixedPointDigits) : item
 });
 
+export function prepareRoadEdit(roadList) {
+    if (roadList && roadList.length) {
+        roadList.forEach((road) => road["edit"] = "<span class='image pencil' onclick='roads.edit_road()'></span>");
+    }
+}
+
 export function initializeDataTable(roadList) {
-    roadList.forEach((road) => road["edit"] = "<span class='image pencil' onclick='roads.edit_road()'></span>");
+    prepareRoadEdit(roadList);
     table = $("#data-table").DataTable({
         columns: [
             defineColumn("edit", "", false, false, false),
@@ -79,7 +85,10 @@ export function initializeDataTable(roadList) {
         // lengthChange: false, // hide table entries filter
         // searching: false, // hide search box
     });
+
+    return table;
 }
+
 export function filterRows(filter) {
     currentFilter = filter;
     table.draw();
