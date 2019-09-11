@@ -29,9 +29,11 @@ export function getRoadsMetadata() {
 }
 
 
-export function getRoadMetadata() {
-    const assetTypeUrlFragment = "road_update";
-    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}`;
+export function getRoadMetadata(roadId) {
+    const assetTypeUrlFragment = "road";
+    const assetTypeDataRequirement = "meta";
+
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${roadId}?${assetTypeDataRequirement}`;
 
     return fetch(metadataUrl, ConfigAPI.requestAssetInit)
         .then(metadataResponse => (metadataResponse.arrayBuffer()))
@@ -45,9 +47,7 @@ export function setRoadMetadata() {
     const postAssetInit = ConfigAPI.requestAssetInit;
     postAssetInit.method = "POST";
     postAssetInit.headers["Content-Type"] = "application/octet-stream";
-
-    body: JSON.stringify(data), // data can be `string` or {object}!
-
+    // postAssetInit.body = JSON.stringify(data); // data can be `string` or {object}!
 
     return fetch(metadataUrl, requestAssetInit)
         .then(metadataResponse => (metadataResponse.arrayBuffer()))
