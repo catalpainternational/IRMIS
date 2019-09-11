@@ -57,7 +57,7 @@ export function initializeDataTable(roadList) {
     table = $("#data-table").DataTable({
         columns: [
             defineColumn("edit", "", false, false, false),
-            defineColumn("roadCode", "Code"),
+            defineColumn("roadCode", "Road Code"),
             defineColumn("roadType", "Type", ROAD_TYPE_CHOICES),
             defineColumn("roadName", "Name"),
             defineColumn("roadStatus", "Status", ROAD_STATUS_CHOICES),
@@ -79,8 +79,8 @@ export function initializeDataTable(roadList) {
             defineColumn("project", "Project"),
             defineColumn("fundingSource", "Funding Source"),
             defineColumn("technicalClass", "Technical Class", TECHNICAL_CLASS_CHOICES),
-            defineColumn("maintenanceNeed", "Maintenance Need", MAINTENANCE_NEED_CHOICES),
-            defineColumn("trafficLevel", "Traffic Level", TRAFFIC_LEVEL_CHOICES),
+            defineColumn("maintenanceNeed", "Maintenance needs", MAINTENANCE_NEED_CHOICES),
+            defineColumn("trafficLevel", "Traffic Data", TRAFFIC_LEVEL_CHOICES),
         ],
         order: [3, 'asc'], // default order is ascending by name
         data: roadList,
