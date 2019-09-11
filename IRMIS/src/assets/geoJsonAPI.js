@@ -3,25 +3,25 @@ import Pbf from "pbf";
 
 import { ConfigAPI } from "./configAPI";
 
+/** Get the details for the collated GeoJSON files */
 export function getGeoJsonDetails() {
-    // get the details for the collated geojson files
-
     const geojsonDetailsUrl = `${ConfigAPI.requestAssetUrl}/geojson_details`;
+
     return fetch(geojsonDetailsUrl, ConfigAPI.requestAssetInit)
         .then((geojsonDetailsResponse) => geojsonDetailsResponse.json());
 }
 
-export function getGeoJson(geoJsonDetail) {
-    // gets geojson from a collated geometry file
-
+/** Gets GeoJSON from a collated geometry file */
+export function getGeoJsonDetail(geoJsonDetail) {
     const geoJsonUrl = `${ConfigAPI.requestMediaUrl}/${geoJsonDetail.geobuf_file}`;
+
     return fetch(geoJsonUrl, ConfigAPI.requestAssetInit)
-        .then((geobufResponse) => {
+        .then(geobufResponse => {
             if (geobufResponse.ok) {
                 return geobufResponse.arrayBuffer();
             } else {
                 throw new Error(`${geobufResponse.statusText}. Geobuf response status not OK`);
             }
         })
-        .then((geobufBytes) => decode(new Pbf(geobufBytes)));
+        .then(geobufBytes => (decode(new Pbf(geobufBytes))));
 }
