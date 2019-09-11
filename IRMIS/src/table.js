@@ -45,7 +45,7 @@ let defineColumn = (data, title, mapObj=false, fixedPointDigits=false, orderable
 });
 
 export function prepareRoadEdit(roadList) {
-    roadList.forEach((road) => road["edit"] = "<span class='image pencil' onclick=roads.edit_road('" + road.roadCode + "')></span>");
+    roadList.forEach((road) => road["edit"] = "<span class='image pencil' onclick=roads.editRoad('" + road.roadCode + "')></span>");
 }
 
 export function initializeDataTable() {
@@ -86,8 +86,4 @@ export function initializeDataTable() {
 export function filterRows(filter) {
     currentFilter = filter;
     table.draw();
-}
-
-export function edit_road(roadCode) {
-    window.location.hash = "edit/" + roadCode + "/assetdetails";
 }

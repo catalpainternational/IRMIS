@@ -13,7 +13,6 @@ import { initializeDataTable } from "./table";
 
 export { filterFeatures } from "./map/utilities/filterGeoJSON";
 export { geoFeatureGroups } from "./map/utilities/displayGeoJSON";
-export { edit_road } from "./table";
 
 export * from "./side_menu";
 
@@ -22,6 +21,10 @@ export let estradaMap;
 export function toggle_dropdown() {
     var dropdown = document.getElementById("dropdown-menu");
     dropdown.hidden = !dropdown.hidden;
+}
+
+export function editRoad(roadCode) {
+    window.location.hash = "edit/" + roadCode + "/assetdetails";
 }
 
 window.onload = () => {
@@ -44,22 +47,21 @@ window.onload = () => {
             processAllDataPromises(roadsMetadataPromises, estradaTable, estradaMap)
                 .then(() => {
                     /* Map and Road data loading completed, leaflet and datatable may still be rendering though */
+                    hashCheck();
                 });
         });
 
     riot.register('edit_base', Edit_Base);
-    hash_check();
 };
 
 window.onhashchange = () => {
-    hash_check();
+    hashCheck();
 };
 
-function hash_check() {
-    var hash = location.hash;
-
-    if (hash.startsWith("#edit")) {
-        riot.mount('edit_base');
+function hashCheck() {
+    if (location.hash.startsWith("#edit")) {
+        const roadCode = location.hash.split('/')[1];
+        riot.mount('edit_base', { roadCode: roadCode });
         document.getElementById('view-content').hidden = true;
     } else {
         riot.unmount('edit_base', true);
