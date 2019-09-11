@@ -17,6 +17,8 @@ export { edit_road } from "./table";
 
 export * from "./side_menu";
 
+export let estradaMap;
+
 export function toggle_dropdown() {
     var dropdown = document.getElementById("dropdown-menu");
     dropdown.hidden = !dropdown.hidden;
@@ -24,7 +26,7 @@ export function toggle_dropdown() {
 
 window.onload = () => {
     // Set up the map and table - but without any data for either
-    const estradaMap = new Map();
+    estradaMap = new Map();
     estradaMap.loadMap();
     const estradaTable = initializeDataTable();
 
