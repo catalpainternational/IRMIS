@@ -58,7 +58,7 @@ window.onhashchange = () => {
 function hash_check() {
     var hash = location.hash;
 
-    if (hash === "#asset_details") {
+    if (hash.startsWith("#edit")) {
         riot.mount('edit_base');
         document.getElementById('view-content').hidden = true;
     } else {
