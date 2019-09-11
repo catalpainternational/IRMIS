@@ -1,4 +1,7 @@
 import "babel-polyfill";
+import * as riot from "riot";
+
+import Edit_Base from "./riot/edit_base.riot";
 
 import "./styles/irmis.scss";
 
@@ -19,6 +22,10 @@ export function toggle_dropdown() {
 }
 
 window.onload = () => {
+    riot.register('edit_base', Edit_Base);
+
+    hash_check();
+
     map = new Map();
     map.loadMap();
 
@@ -47,3 +54,19 @@ window.onload = () => {
         }));
     }, err => console.log(err));
 };
+
+window.onhashchange = () => {
+    hash_check();
+};
+
+function hash_check() {
+    var hash = location.hash;
+
+    if (hash === "#asset_details") {
+        riot.mount('edit_base');
+        document.getElementById('view-content').hidden = true;
+    } else {
+        riot.unmount('edit_base', true);
+        document.getElementById('view-content').hidden = false;
+    }
+}

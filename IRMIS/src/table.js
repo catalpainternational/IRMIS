@@ -1,8 +1,5 @@
 import "datatables.net-bs4";
 import $ from "jquery";
-import * as riot from "riot";
-
-import Edit_Base from "./riot/edit_base.riot";
 
 export let table;
 
@@ -89,9 +86,5 @@ export function filterRows(filter) {
 }
 
 export function edit_road() {
-    // riot mounting point
-    riot.component(Edit_Base)(document.getElementById('edit-content'));
-
-    document.getElementById('edit-content').hidden = false;
-    document.getElementById('view-content').hidden = true;
+    window.location.hash = "asset_details";
 }
