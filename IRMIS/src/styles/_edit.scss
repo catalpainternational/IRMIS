@@ -1,0 +1,36 @@
+$max-width: 400px;
+
+#edit-base {
+    height: calc(100vh - 60px);
+    padding-bottom: 15px;
+    overflow-y: auto;
+}
+
+edit_asset_details {
+    background-color: $white;
+    display: block;
+    padding: 40px;
+
+    h5 {
+        max-width: $max-width;
+        margin-bottom: 20px;
+    }
+
+    section {
+        max-width: $max-width;
+        margin-bottom: 40px;
+
+        &:last-of-type {
+            margin-bottom: 20px;
+        }
+
+        h6 {
+            border-bottom: 1px solid $lighter-gray;
+            margin-bottom: 15px;
+        }
+    }
+
+    .button-wrapper {
+        max-width: $max-width;
+    }
+}
