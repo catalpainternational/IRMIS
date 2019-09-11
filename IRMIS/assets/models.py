@@ -92,6 +92,7 @@ class RoadQuerySet(models.QuerySet):
             funding_source="funding_source",
             maintenance_need="maintenance_need__code",
             traffic_level="traffic_level",
+            last_modified="last_modified",
         )
 
         road_chunk = (
@@ -109,7 +110,10 @@ class RoadQuerySet(models.QuerySet):
             road_protobuf.id = road["id"]
             for protobuf_key, query_key in fields.items():
                 if road[query_key]:
-                    setattr(road_protobuf, protobuf_key, road[query_key])
+                    if query_key not in ["last_modified", "date_created"]:
+                        setattr(road_protobuf, protobuf_key, road[query_key])
+                    else:
+                        setattr(road_protobuf, protobuf_key, road[query_key].strftime("%Y-%m-%d %H:%M:%S"))
 
         return roads_protobuf
 
