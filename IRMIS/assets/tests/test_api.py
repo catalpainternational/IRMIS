@@ -2,6 +2,7 @@ from django.urls import reverse
 from ..models import Road
 from protobuf import roads_pb2
 from reversion.models import Version
+
 import reversion
 import pytest
 import json

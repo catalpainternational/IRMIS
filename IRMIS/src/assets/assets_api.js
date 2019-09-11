@@ -3,15 +3,30 @@ import { ConfigAPI } from "./configAPI";
 // protobuf does not support es6 imports, commonjs works
 const roadMessages = require("../../protobuf/roads_pb");
 
+/** getRoadsMetadataChunks
+ *
+ * Retrieves the details for the road metadata chunks from the server
+ *
+ * @returns a map {id: road_object}
+ */
+export function getRoadsMetadataChunks() {
+    const assetTypeUrlFragment = "road_chunks";
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}`;
+
+    return fetch(metadataUrl, ConfigAPI.requestAssetInit)
+        .then(jsonResponse => (jsonResponse.json()));
+}
+
 /** getRoadsMetadata
  *
  * Retrieves the road metadata from the server
  *
  * @returns a map {id: road_object}
  */
-export function getRoadsMetadata() {
+export function getRoadsMetadata(chunkName) {
     const assetTypeUrlFragment = "protobuf_roads";
-    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}`;
+    chunkName = chunkName || "";
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${chunkName}`;
 
     return fetch(metadataUrl, ConfigAPI.requestAssetInit)
         .then(metadataResponse => (metadataResponse.arrayBuffer()))
@@ -52,33 +67,4 @@ export function setRoadMetadata() {
     return fetch(metadataUrl, requestAssetInit)
         .then(metadataResponse => (metadataResponse.arrayBuffer()))
         .then(protobufBytes => (roadMessages.Road.deserializeBinary(protobufBytes)));
-}
-
-/** populateGeoJsonProperties
- *
- * for each feature in a geojson FeatureCollection,
- * use the property `pk` to access the relevant metadata from the propertiesLookup
- * and add it to the feature properties.
- *
- * also ensure that each feature.properties has a validly set `featureType`
- *
- * @param geoJson - the GeoJSON that needs its feature.properties populated
- * @param propertiesLookup - the source of the properties data referenced by properties.pk
- */
-export function populateGeoJsonProperties(geoJson, propertiesLookup) {
-    geoJson.features.forEach(feature => {
-        const propertySet = propertiesLookup[feature.properties.pk];
-        if (propertySet) {
-            Object.assign(feature.properties, propertySet.toObject());
-        } else {
-            throw new Error(`assets_api.populateGeoJsonProperties could not find property '${feature.properties.pk}'.`);
-        }
-
-        // Special handling for the mandatory property `featureType`
-        if (!feature.properties.featureType) {
-            if (feature.properties.roadType) {
-                feature.properties.featureType = "Road";
-            }
-        }
-    });
 }
