@@ -7,6 +7,7 @@ from django.core.validators import MinValueValidator
 from django.db.models import Count
 
 import reversion
+from reversion.models import Version
 from protobuf.roads_pb2 import Roads as ProtoRoads
 
 
@@ -98,19 +99,29 @@ class RoadQuerySet(models.QuerySet):
             (
                 Road.objects.filter(road_type=chunk_name)
                 .order_by("id")
-                .values("id", *fields.values())
+                .defer(
+                    "geom",
+                    "properties_content_type",
+                    "properties_object_id",
+                    "properties",
+                )
             )
             if chunk_name
-            else Road.objects.order_by("id").values("id", *fields.values())
+            else Road.objects.order_by("id").defer(
+                "geom", "properties_content_type", "properties_object_id", "properties"
+            )
         )
 
         for road in road_chunk:
             road_protobuf = roads_protobuf.roads.add()
-            road_protobuf.id = road["id"]
+            road_protobuf.id = road.id
             for protobuf_key, query_key in fields.items():
-                if road[query_key]:
-                    setattr(road_protobuf, protobuf_key, road[query_key])
-
+                if getattr(road, query_key, None):
+                    setattr(road_protobuf, protobuf_key, getattr(road, query_key))
+            # get and add last revison ID to protobuf
+            version = Version.objects.get_for_object(road).first()
+            if version:
+                setattr(road_protobuf, "last_revision_id", version.revision.id)
         return roads_protobuf
 
 
