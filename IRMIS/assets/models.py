@@ -105,13 +105,13 @@ class RoadQuerySet(models.QuerySet):
             else Road.objects.order_by("id").values("id", *fields.values())
         )
 
-        revisions_q = (
-            Version.objects.get_queryset()
+        last_revisions = {
+            i["object_id"]: i["revision_id__max"]
+            for i in Version.objects.get_queryset()
             .values("object_id")
             .annotate(Max("revision_id"))
             .distinct()
-        )
-        last_revisions = {i["object_id"]: i["revision_id__max"] for i in revisions_q}
+        }
 
         for road in road_chunk:
             road_protobuf = roads_protobuf.roads.add()
