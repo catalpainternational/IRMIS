@@ -69,7 +69,6 @@ export function prepareRoadEdit(roadList) {
 
 export function initializeDataTable(roadList) {
     prepareRoadEdit(roadList);
-    debugger;
     table = $("#data-table").DataTable({
         columns: [
             defineColumn("edit", "", false, false, false),
