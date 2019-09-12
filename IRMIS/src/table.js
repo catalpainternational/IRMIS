@@ -97,7 +97,7 @@ export function initializeDataTable(roadList) {
             defineColumn("maintenanceNeed", "Maintenance needs", MAINTENANCE_NEED_CHOICES),
             defineColumn("trafficLevel", "Traffic Data", TRAFFIC_LEVEL_CHOICES),
         ],
-        order: [[1, 'asc']], // default order is ascending by name
+        order: [[1, 'asc']], // default order is ascending by road code
         data: roadList,
         // lengthChange: false, // hide table entries filter
         // searching: false, // hide search box
