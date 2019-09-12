@@ -1,6 +1,8 @@
 import "datatables.net-bs4";
 import $ from "jquery";
 
+import { getRoadMetadata, setRoadMetadata } from "./assets/assets_api.js";
+
 export let table;
 
 let currentFilter = (p) => (true);
@@ -62,7 +64,7 @@ let defineColumn = (data, title, mapObj=false, fixedPointDigits=false, orderable
 
 export function prepareRoadEdit(roadList) {
     if (roadList && roadList.length) {
-        roadList.forEach((road) => road["edit"] = "<span class='image pencil' onclick='roads.edit_road()'></span>");
+        roadList.forEach((road) => road["edit"] = `<span class='image pencil' onclick='roads.edit_road(${road.id})'></span>`);
     }
 }
 
@@ -110,7 +112,13 @@ export function filterRows(filter) {
     table.draw();
 }
 
-export function edit_road() {
+export function edit_road(roadId) {
+    // Uncomment the following for a quick test of getting and setting road metadata
+    // getRoadMetadata(roadId)
+    //     .then(roadData => {
+    //         console.log(JSON.stringify(roadData));
+    //         setRoadMetadata(roadData);
+    //     });
     document.getElementById('edit-content').hidden = false;
     document.getElementById('view-content').hidden = true;
 }

@@ -6,7 +6,8 @@ import Example from "./riot/example.riot";
 
 import "./styles/irmis.scss";
 
-import { getRoadsMetadata, getRoadsMetadataChunks, getGeoJsonDetails } from "./assets/assets_api.js";
+import { getRoadsMetadata, getRoadsMetadataChunks } from "./assets/assets_api.js";
+import { getGeoJsonDetails } from "./assets/geoJsonAPI.js";
 import { processAllDataPromises } from "./processDataPromises";
 
 import { Map } from "./map/map";
