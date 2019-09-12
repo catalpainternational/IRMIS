@@ -45,7 +45,6 @@ export function getRoadsMetadata(chunkName) {
         });
 }
 
-
 export function getRoadMetadata(roadId) {
     const assetTypeUrlFragment = "roads";
     const assetTypeDataRequirement = "meta";
@@ -55,7 +54,6 @@ export function getRoadMetadata(roadId) {
     return fetch(metadataUrl, ConfigAPI.requestAssetInit())
         .then(jsonResponse => (jsonResponse.json()));
 }
-
 
 export function setRoadMetadata(roadData) {
     const assetTypeUrlFragment = "road_update";
