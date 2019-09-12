@@ -5,6 +5,8 @@ from django.utils.translation import get_language, ugettext, ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db.models import Count
+from django.db import connection
+
 
 import reversion
 from protobuf.roads_pb2 import Roads as ProtoRoads
@@ -92,7 +94,6 @@ class RoadQuerySet(models.QuerySet):
             funding_source="funding_source",
             maintenance_need="maintenance_need__code",
             traffic_level="traffic_level",
-            last_modified="last_modified",
         )
 
         road_chunk = (
@@ -105,19 +106,28 @@ class RoadQuerySet(models.QuerySet):
             else Road.objects.order_by("id").values("id", *fields.values())
         )
 
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT DISTINCT r.id, MAX(v.revision_id) as last_revision_id
+                FROM assets_road as r
+                LEFT JOIN reversion_version as v
+                ON r.id = CAST (v.object_id AS INTEGER)
+                GROUP BY r.id;
+            """
+            )
+            last_revisions = {row[0]: row[1] for row in cursor.fetchall()}
+
         for road in road_chunk:
             road_protobuf = roads_protobuf.roads.add()
             road_protobuf.id = road["id"]
             for protobuf_key, query_key in fields.items():
                 if road[query_key]:
-                    if query_key not in ["last_modified", "date_created"]:
-                        setattr(road_protobuf, protobuf_key, road[query_key])
-                    else:
-                        setattr(
-                            road_protobuf,
-                            protobuf_key,
-                            road[query_key].strftime("%Y-%m-%d %H:%M:%S"),
-                        )
+                    setattr(road_protobuf, protobuf_key, road[query_key])
+            if last_revisions[road["id"]]:
+                # set last revision id
+                setattr(road_protobuf, "last_revision_id", last_revisions[road["id"]])
+
         return roads_protobuf
 
 

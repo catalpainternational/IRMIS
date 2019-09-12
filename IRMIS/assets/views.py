@@ -113,12 +113,7 @@ def road_update(request):
     # edits would be overwriting someone's changes
     version = Version.objects.get_for_object(road).first()
     if version:
-        req_dt = pytz.utc.localize(
-            datetime.strptime(req_pb.last_modified, "%Y-%m-%d %H:%M:%S")
-        )
-        rev_dt = version.revision.date_created.replace(microsecond=0)
-
-        if req_dt < rev_dt and request.user != version.revision.user:
+        if req_pb.last_revision_id != version.revision.id:
             return HttpResponse(status=409)
 
     # update the Road instance from PB fields
