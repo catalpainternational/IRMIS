@@ -23,8 +23,8 @@ export function toggle_dropdown() {
     dropdown.hidden = !dropdown.hidden;
 }
 
-export function editRoad(roadCode) {
-    window.location.hash = "edit/" + roadCode + "/assetdetails";
+export function editRoad(roadId) {
+    window.location.hash = "edit/" + roadId + "/assetdetails";
 }
 
 window.onload = () => {
@@ -60,8 +60,7 @@ window.onhashchange = () => {
 
 function hashCheck() {
     if (location.hash.startsWith("#edit")) {
-        const roadCode = location.hash.split('/')[1];
-        riot.mount('edit_base', { roadCode: roadCode });
+        riot.mount('edit_base', { roadCode: 'A1-01' });
         document.getElementById('view-content').hidden = true;
     } else {
         riot.unmount('edit_base', true);
