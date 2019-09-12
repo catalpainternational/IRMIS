@@ -2,6 +2,7 @@
 
 .form-group {
     margin-bottom: 10px;
+    position: relative;
 
     label {
         margin-bottom: 5px;
@@ -33,4 +34,26 @@
     &:-ms-input-placeholder { color: $gray; } /* IE 10+ */
     &::-moz-placeholder { color: $gray; } /* Firefox 19+ */
     &:-moz-placeholder { color: $gray; } /* Firefox 18- */
+}
+
+.invalid-tooltip {
+    border-radius: 0 $radius $radius;
+    background-color: $red;
+    padding-right: 10px;
+    padding-left: 10px;
+    max-width: 225px;
+    display: block;
+    left: 10px;
+    top: 65px;
+
+    &::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        border: 10px solid transparent;
+        border-bottom-color: $red;
+        margin-top: -10px;
+        transform: rotate(90deg);
+    }
 }
