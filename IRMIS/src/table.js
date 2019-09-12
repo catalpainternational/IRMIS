@@ -57,7 +57,6 @@ let defineColumn = (data, title, mapObj=false, fixedPointDigits=false, orderable
     defaultContent: defaultVal,
     orderable: orderable,
     type: (data == "roadCode") ? "roadCode" : "natural",
-    targets: 0,
     render: item => (mapObj) ? mapObj[item] : fixedPointDigits ? parseFloat(item).toFixed(fixedPointDigits) : item
 });
 
