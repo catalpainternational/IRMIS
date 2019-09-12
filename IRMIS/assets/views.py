@@ -1,6 +1,8 @@
 import hashlib
 import json
+import pytz
 import reversion
+from reversion.models import Version
 from datetime import datetime
 
 from django.shortcuts import get_object_or_404
@@ -106,6 +108,17 @@ def road_update(request):
     road = get_object_or_404(Road.objects.filter(pk=req_pb.id))
     if Road.objects.filter(pk=req_pb.id).to_protobuf().roads[0] == req_pb:
         return HttpResponse(status=204)
+
+    # check if the Road has revision history, then check if Road
+    # edits would be overwriting someone's changes
+    version = Version.objects.get_for_object(road).first()
+    if version:
+        if (
+            req_pb.last_revision_id != version.revision.id
+            and request.user != version.revision.user
+        ):
+            return HttpResponse(status=409)
+
     # update the Road instance from PB fields
     try:
         road.road_name = req_pb.road_name

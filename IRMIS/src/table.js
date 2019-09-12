@@ -38,11 +38,27 @@ $.fn.dataTableExt.afnFiltering.push(
     }
 );
 
+$.extend($.fn.dataTableExt.oSort, {
+    "roadCode-asc": function (str1, str2) {
+        if(str1 == "") return 1;
+        if(str2 == "") return -1;
+        return ((str1 < str2) ? -1 : ((str1 > str2) ? 1 : 0));
+    },
+
+    "roadCode-desc": function (str1, str2) {
+        if(str1 == "") return -1;
+        if(str2 == "") return 1;
+        return ((str1 < str2) ? 1 : ((str1 > str2) ? -1 : 0));
+    }
+});
+
+
 let defineColumn = (data, title, mapObj=false, fixedPointDigits=false, orderable=true, defaultVal="") => ({
     data: data,
     title: title,
     defaultContent: defaultVal,
     orderable: orderable,
+    type: (data == "roadCode") ? "roadCode" : "natural",
     render: item => (mapObj) ? mapObj[item] : fixedPointDigits ? parseFloat(item).toFixed(fixedPointDigits) : item
 });
 
@@ -82,7 +98,7 @@ export function initializeDataTable(roadList) {
             defineColumn("maintenanceNeed", "Maintenance needs", MAINTENANCE_NEED_CHOICES),
             defineColumn("trafficLevel", "Traffic Data", TRAFFIC_LEVEL_CHOICES),
         ],
-        order: [3, 'asc'], // default order is ascending by name
+        order: [[1, 'asc']], // default order is ascending by road code
         data: roadList,
         // lengthChange: false, // hide table entries filter
         // searching: false, // hide search box

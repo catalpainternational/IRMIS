@@ -6,6 +6,7 @@ from reversion.models import Version
 import reversion
 import pytest
 import json
+import time
 
 
 @pytest.mark.django_db
@@ -85,8 +86,7 @@ def test_road_edit_update(client, django_user_model):
         # store the user who made the changes
         reversion.set_user(user)
     # build protobuf to send with road modifications
-    pb = roads_pb2.Road()
-    pb.id = road.id
+    pb = Road.objects.filter(id=road.id).to_protobuf().roads[0]
     pb.road_name = "Pizza The Hutt"
     # hit the road api - detail
     url = reverse("road_update")
@@ -111,11 +111,13 @@ def test_road_edit_update_bad_fk_code(client, django_user_model):
     # create a user
     user = django_user_model.objects.create_user(username="user1", password="bar")
     client.force_login(user)
-    # create a road
-    road = Road.objects.create()
+    with reversion.create_revision():
+        # create a road
+        road = Road.objects.create()
+        # store the user who made the changes
+        reversion.set_user(user)
     # build protobuf to send with road modifications
-    pb = roads_pb2.Road()
-    pb.id = road.id
+    pb = Road.objects.filter(id=road.id).to_protobuf().roads[0]
     pb.road_status = "2"
     # hit the road api - detail
     url = reverse("road_update")
@@ -128,12 +130,10 @@ def test_road_edit_update_bad_fk_code(client, django_user_model):
 @pytest.mark.django_db
 def test_road_edit_update_404_pk(client, django_user_model):
     """ This test will fail if the road api does NOT throw a 404 error when attempting
-    to update a road asset when passed PK code does not exist in the DB """
+    to update a road asset when passed Road ID does not exist in the DB """
     # create a user
     user = django_user_model.objects.create_user(username="user1", password="bar")
     client.force_login(user)
-    # create a road
-    road = Road.objects.create()
     # build protobuf to send with road modifications
     pb = roads_pb2.Road()
     pb.id = 99999
@@ -153,16 +153,8 @@ def test_road_edit_erroneous_protobuf(client, django_user_model):
     # create a user
     user = django_user_model.objects.create_user(username="user1", password="bar")
     client.force_login(user)
-    # create a road
-    road = Road.objects.create()
-    # build protobuf to send with road modifications
-    pb = roads_pb2.Road()
-    pb.id = road.id
-    pb.road_name = "Pizza The Hutt"
-    # try to pass a bad Protobuf string
-    bad_pb_str = roads_pb2.Road().SerializeToString()
     url = reverse("road_update")
-    response = client.put(url, data=bad_pb_str, content_type="application/octet-stream")
+    response = client.put(url, data=b"", content_type="application/octet-stream")
     assert response.status_code == 400
 
 
@@ -174,8 +166,11 @@ def test_road_edit_identical_data(client, django_user_model):
     # create a user
     user = django_user_model.objects.create_user(username="user1", password="bar")
     client.force_login(user)
-    # create a road & protobuf to send
-    road = Road.objects.create()
+    with reversion.create_revision():
+        # create a road
+        road = Road.objects.create()
+        # store the user who made the changes
+        reversion.set_user(user)
     # make Protobuf identical to existing Road
     pb = Road.objects.filter(id=road.id).to_protobuf().roads[0]
     pb_str = pb.SerializeToString()
@@ -186,14 +181,45 @@ def test_road_edit_identical_data(client, django_user_model):
 
 
 @pytest.mark.django_db
+def test_road_edit_detect_another_users_previous_changes(client, django_user_model):
+    """ This test will fail if the road api does not throw a 409 response when
+    passed which has been updated/edited by another user since the client recieved thier
+    data from the server. Header should contain 'Location' to point to the updated data."""
+    # create two users
+    user1 = django_user_model.objects.create_user(username="user1", password="bar")
+    user2 = django_user_model.objects.create_user(username="user2", password="bar")
+    # login with user1
+    client.force_login(user1)
+    with reversion.create_revision():
+        # create a road
+        road = Road.objects.create()
+        # store the user who made the changes
+        reversion.set_user(user1)
+    # make Protobuf identical to existing Road, but change one detail
+    pb = Road.objects.filter(id=road.id).to_protobuf().roads[0]
+    pb.road_name = "Pizza the Hutt Rd"
+    pb_str = pb.SerializeToString()
+    time.sleep(1)
+    # User2 updates Road on the server
+    with reversion.create_revision():
+        road.road_name = "Sir Anders Blvd"
+        road.save()
+        # store the user who made the changes
+        reversion.set_user(user2)
+    # hit the road api - detail
+    url = reverse("road_update")
+    response = client.put(url, data=pb_str, content_type="application/octet-stream")
+    assert response.status_code == 409
+
+
+@pytest.mark.django_db
 def test_api_lastmod_and_etag_present(client, django_user_model):
     """ check the road api etag and last-modified are present on requests """
-
-    # create a road
-    road = Road.objects.create()
     # create a user
     user = django_user_model.objects.create_user(username="user1", password="bar")
     client.force_login(user)
+    # create a road
+    road = Road.objects.create()
     # hit the road api
     url = reverse("road-detail", kwargs={"pk": road.pk})
     response = client.get(url)
@@ -204,12 +230,11 @@ def test_api_lastmod_and_etag_present(client, django_user_model):
 @pytest.mark.django_db
 def test_api_etag_caches(client, django_user_model):
     """ check the road api etag integration """
-
-    # create a road
-    road = Road.objects.create()
     # create a user
     user = django_user_model.objects.create_user(username="user1", password="bar")
     client.force_login(user)
+    # create a road
+    road = Road.objects.create()
     # hit the road api
     url = reverse("road-detail", kwargs={"pk": road.pk})
     response = client.get(url)
