@@ -4,11 +4,10 @@ from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import get_language, ugettext, ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
-from django.db.models import Count
-from django.db import connection
-
+from django.db.models import Count, Max
 
 import reversion
+from reversion.models import Version
 from protobuf.roads_pb2 import Roads as ProtoRoads
 
 
@@ -106,17 +105,13 @@ class RoadQuerySet(models.QuerySet):
             else Road.objects.order_by("id").values("id", *fields.values())
         )
 
-        with connection.cursor() as cursor:
-            cursor.execute(
-                """
-                SELECT DISTINCT r.id, MAX(v.revision_id) as last_revision_id
-                FROM assets_road as r
-                LEFT JOIN reversion_version as v
-                ON r.id = CAST (v.object_id AS INTEGER)
-                GROUP BY r.id;
-            """
-            )
-            last_revisions = {row[0]: row[1] for row in cursor.fetchall()}
+        revisions_q = (
+            Version.objects.get_queryset()
+            .values("object_id")
+            .annotate(Max("revision_id"))
+            .distinct()
+        )
+        last_revisions = {i["object_id"]: i["revision_id__max"] for i in revisions_q}
 
         for road in road_chunk:
             road_protobuf = roads_protobuf.roads.add()
@@ -124,10 +119,12 @@ class RoadQuerySet(models.QuerySet):
             for protobuf_key, query_key in fields.items():
                 if road[query_key]:
                     setattr(road_protobuf, protobuf_key, road[query_key])
-            if last_revisions[road["id"]]:
-                # set last revision id
-                setattr(road_protobuf, "last_revision_id", last_revisions[road["id"]])
-
+            try:
+                setattr(
+                    road_protobuf, "last_revision_id", last_revisions[str(road["id"])]
+                )
+            except:
+                pass
         return roads_protobuf
 
 
