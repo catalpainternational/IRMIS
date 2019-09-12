@@ -21,7 +21,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
     syntax="proto3",
     serialized_options=None,
     serialized_pb=_b(
-        '\n\x0broads.proto\x12\x06\x61ssets"\xa5\x04\n\x04Road\x12\n\n\x02id\x18\x01 \x01(\r\x12\x12\n\ngeojson_id\x18\x02 \x01(\r\x12\x11\n\troad_code\x18\x03 \x01(\t\x12\x11\n\troad_name\x18\x04 \x01(\t\x12\x11\n\troad_type\x18\n \x01(\t\x12\x13\n\x0broad_status\x18\x14 \x01(\t\x12\x11\n\tlink_code\x18\x05 \x01(\t\x12\x11\n\tlink_name\x18\x06 \x01(\t\x12\x17\n\x0flink_start_name\x18\x10 \x01(\t\x12\x1b\n\x13link_start_chainage\x18\x0b \x01(\x02\x12\x15\n\rlink_end_name\x18\x11 \x01(\t\x12\x19\n\x11link_end_chainage\x18\x0c \x01(\x02\x12\x13\n\x0blink_length\x18\x07 \x01(\x02\x12\x14\n\x0csurface_type\x18\x08 \x01(\t\x12\x19\n\x11surface_condition\x18\t \x01(\t\x12\x16\n\x0epavement_class\x18\r \x01(\t\x12\x19\n\x11\x63\x61rriageway_width\x18\x0e \x01(\x02\x12\x1b\n\x13\x61\x64ministrative_area\x18\x0f \x01(\t\x12\x0f\n\x07project\x18\x12 \x01(\t\x12\x16\n\x0e\x66unding_source\x18\x13 \x01(\t\x12\x17\n\x0ftechnical_class\x18\x15 \x01(\t\x12\x18\n\x10maintenance_need\x18\x16 \x01(\t\x12\x15\n\rtraffic_level\x18\x17 \x01(\t\x12\x18\n\x10last_revision_id\x18\x18 \x01(\r"$\n\x05Roads\x12\x1b\n\x05roads\x18\x01 \x03(\x0b\x32\x0c.assets.Roadb\x06proto3'
+        '\n\x0broads.proto\x12\x06\x61ssets"\xa2\x04\n\x04Road\x12\n\n\x02id\x18\x01 \x01(\r\x12\x12\n\ngeojson_id\x18\x02 \x01(\r\x12\x11\n\troad_code\x18\x03 \x01(\t\x12\x11\n\troad_name\x18\x04 \x01(\t\x12\x11\n\troad_type\x18\n \x01(\t\x12\x13\n\x0broad_status\x18\x14 \x01(\t\x12\x11\n\tlink_code\x18\x05 \x01(\t\x12\x11\n\tlink_name\x18\x06 \x01(\t\x12\x17\n\x0flink_start_name\x18\x10 \x01(\t\x12\x1b\n\x13link_start_chainage\x18\x0b \x01(\x02\x12\x15\n\rlink_end_name\x18\x11 \x01(\t\x12\x19\n\x11link_end_chainage\x18\x0c \x01(\x02\x12\x13\n\x0blink_length\x18\x07 \x01(\x02\x12\x14\n\x0csurface_type\x18\x08 \x01(\t\x12\x19\n\x11surface_condition\x18\t \x01(\t\x12\x16\n\x0epavement_class\x18\r \x01(\t\x12\x19\n\x11\x63\x61rriageway_width\x18\x0e \x01(\x02\x12\x1b\n\x13\x61\x64ministrative_area\x18\x0f \x01(\t\x12\x0f\n\x07project\x18\x12 \x01(\t\x12\x16\n\x0e\x66unding_source\x18\x13 \x01(\t\x12\x17\n\x0ftechnical_class\x18\x15 \x01(\t\x12\x18\n\x10maintenance_need\x18\x16 \x01(\t\x12\x15\n\rtraffic_level\x18\x17 \x01(\t\x12\x15\n\rlast_modified\x18\x18 \x01(\t"$\n\x05Roads\x12\x1b\n\x05roads\x18\x01 \x03(\x0b\x32\x0c.assets.Roadb\x06proto3'
     ),
 )
 
@@ -448,15 +448,15 @@ _ROAD = _descriptor.Descriptor(
             file=DESCRIPTOR,
         ),
         _descriptor.FieldDescriptor(
-            name="last_revision_id",
-            full_name="assets.Road.last_revision_id",
+            name="last_modified",
+            full_name="assets.Road.last_modified",
             index=23,
             number=24,
-            type=13,
-            cpp_type=3,
+            type=9,
+            cpp_type=9,
             label=1,
             has_default_value=False,
-            default_value=0,
+            default_value=_b("").decode("utf-8"),
             message_type=None,
             enum_type=None,
             containing_type=None,
@@ -475,7 +475,7 @@ _ROAD = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[],
     serialized_start=24,
-    serialized_end=573,
+    serialized_end=570,
 )
 
 
@@ -513,8 +513,8 @@ _ROADS = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=575,
-    serialized_end=611,
+    serialized_start=572,
+    serialized_end=608,
 )
 
 _ROADS.fields_by_name["roads"].message_type = _ROAD

@@ -7,7 +7,6 @@ from django.core.validators import MinValueValidator
 from django.db.models import Count
 
 import reversion
-from reversion.models import Version
 from protobuf.roads_pb2 import Roads as ProtoRoads
 
 
@@ -93,35 +92,32 @@ class RoadQuerySet(models.QuerySet):
             funding_source="funding_source",
             maintenance_need="maintenance_need__code",
             traffic_level="traffic_level",
+            last_modified="last_modified",
         )
 
         road_chunk = (
             (
                 Road.objects.filter(road_type=chunk_name)
                 .order_by("id")
-                .defer(
-                    "geom",
-                    "properties_content_type",
-                    "properties_object_id",
-                    "properties",
-                )
+                .values("id", *fields.values())
             )
             if chunk_name
-            else Road.objects.order_by("id").defer(
-                "geom", "properties_content_type", "properties_object_id", "properties"
-            )
+            else Road.objects.order_by("id").values("id", *fields.values())
         )
 
         for road in road_chunk:
             road_protobuf = roads_protobuf.roads.add()
-            road_protobuf.id = road.id
+            road_protobuf.id = road["id"]
             for protobuf_key, query_key in fields.items():
-                if getattr(road, query_key, None):
-                    setattr(road_protobuf, protobuf_key, getattr(road, query_key))
-            # get and add last revison ID to protobuf
-            version = Version.objects.get_for_object(road).first()
-            if version:
-                setattr(road_protobuf, "last_revision_id", version.revision.id)
+                if road[query_key]:
+                    if query_key not in ["last_modified", "date_created"]:
+                        setattr(road_protobuf, protobuf_key, road[query_key])
+                    else:
+                        setattr(
+                            road_protobuf,
+                            protobuf_key,
+                            road[query_key].strftime("%Y-%m-%d %H:%M:%S"),
+                        )
         return roads_protobuf
 
 

@@ -32,7 +32,7 @@ message Road {
   string technical_class = 21;
   string maintenance_need = 22;
   string traffic_level = 23;
-  uint32 last_revision_id = 24;
+  string last_modified = 24;
 }
 
 message Roads {
