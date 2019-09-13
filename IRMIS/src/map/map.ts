@@ -35,4 +35,8 @@ export class Map {
             return Promise.reject(error);
         }
     }
+
+    public invalidateSize() {
+        this.lMap.invalidateSize();
+    }
 }
