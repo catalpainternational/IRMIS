@@ -1,3 +1,25 @@
 <edit_condition>
-    <h3>Condition</h3>
+    <h3>{ conditions.display }</h3>
+
+    <section>
+        <div class="form-group">
+            <label>{ conditions.display }</label>
+            <select class="form-control">
+                <option each={ c in conditions.options } value={ c[0] }>
+                    { c[1] }
+                </option>
+            </select>
+            <small class="form-text text-muted">Choose the condition of the road</small>
+        </div>
+    </section>
+
+    <div class="button-wrapper d-flex justify-content-end">
+        <button class="btn btn-primary" onclick="{ save }">Save and continue</button>
+    </div>
+
+    <script>
+        export default {
+            conditions: window.road_schema.surface_condition
+        }
+    </script>
 </edit_condition>

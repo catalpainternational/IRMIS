@@ -25,6 +25,25 @@ export function toggle_dropdown() {
 }
 
 export function editRoad(roadId) {
+    // debugger;
+    window.edit_road_data = {
+        roadId: roadId,
+        roadCode: "CODE THIS 007",
+        roadName: "ROAD NAME AUGHTHGH!",
+        roadType: "NAT",
+        roadName: "AMERICA\'S BEST ROAD...EVER",
+        roadStatus: "Ongoing",
+        linkCode: "A01-01",
+        linkName: "null",
+        linkStartName: "Dili (Junction A3A2)",
+        linkStartChainage: "0.00",
+        linkEndName: "Manatuto (Juction A09)",
+        linkEndChainage: "0.00",
+        linkLength: "62.41",
+        surfaceType: "Bitumen",
+        surfaceCondition: "Good",
+        pavementClass: "Sealed",
+    }
     window.location.hash = "edit/" + roadId + "/assetdetails";
 }
 
@@ -61,7 +80,7 @@ window.onhashchange = () => {
 
 function hashCheck() {
     if (location.hash.startsWith("#edit")) {
-        riot.mount('edit_base', { roadCode: 'A1-01' });
+        riot.mount('edit_base', { road: edit_road_data });
         document.getElementById('view-content').hidden = true;
     } else {
         riot.unmount('edit_base', true);

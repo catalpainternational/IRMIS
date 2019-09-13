@@ -5,18 +5,18 @@
         <h6>Link code and name</h6>
         <div class="form-group">
             <label>Link Code</label>
-            <input class="{ invalidLinkCode ? 'danger' : null } form-control inactive" type="text" placeholder="E.g. A01-01" oninput="{ checkLinkCode }">
+            <input class="{ invalidLinkCode ? 'danger' : null } form-control inactive" type="text" placeholder="E.g. A01-01" value={ linkCode } oninput="{ checkLinkCode }">
             <small class="form-text text-muted">Enter link code according to DRBFC standard</small>
             <div if="{ invalidLinkCode }" class="invalid-tooltip">{ invalidLinkCode }</div>
         </div>
         <div class="form-group">
             <label>Link Start Name</label>
-            <input class="form-control inactive" type="text" placeholder="E.g. Dili" oninput="{ checkStartName }">
+            <input class="form-control inactive" type="text" placeholder="E.g. Dili" value={ linkStartName } oninput="{ checkStartName }">
             <small class="form-text text-muted">Enter the name of the link start location (municipal center, administrative post or nearest suco)</small>
         </div>
         <div class="form-group">
             <label>Link End Name</label>
-            <input class="form-control inactive" type="text" placeholder="E.g. Manatuto" oninput="{ checkEndName }">
+            <input class="form-control inactive" type="text" placeholder="E.g. Manatuto" value={ linkEndName } oninput="{ checkEndName }">
             <small class="form-text text-muted">Enter the name of the link end location (municipal center, administrative post or nearest suco)</small>
         </div>
     </section>
@@ -25,12 +25,12 @@
         <h6>Link width and length</h6>
         <div class="form-group">
             <label>Link Length</label>
-            <input class="form-control inactive" type="number" placeholder="E.g. 58.7" oninput="{ checkLinkLength }">
+            <input class="form-control inactive" type="number" placeholder="E.g. 58.7" value={ linkLength } oninput="{ checkLinkLength }">
             <small class="form-text text-muted">Enter road link length (in Km)</small>
         </div>
         <div class="form-group">
             <label>Carriageway Width</label>
-            <input class="form-control inactive" type="number" placeholder="E.g. 5.0" oninput="{ checkCarriagewayWidth }">
+            <input class="form-control inactive" type="number" placeholder="E.g. 5.0" value={ carriagewayWidth } oninput="{ checkCarriagewayWidth }">
             <small class="form-text text-muted">Enter the width (in meters) of the link carriageway</small>
         </div>
     </section>
@@ -39,12 +39,12 @@
         <h6>Link chainage</h6>
         <div class="form-group">
             <label>Link Start Chainage</label>
-            <input class="form-control inactive" type="number" placeholder="E.g. 0+000" oninput="{ checkStartChainage }">
+            <input class="form-control inactive" type="number" placeholder="E.g. 0+000" value={ linkStartChainage } oninput="{ checkStartChainage }">
             <small class="form-text text-muted">Enter chainage for link starting point</small>
         </div>
         <div class="form-group">
             <label>Link End Chainage</label>
-            <input class="form-control inactive" type="number" placeholder="E.g. 62+410" oninput="{ checkEndChainage }">
+            <input class="form-control inactive" type="number" placeholder="E.g. 62+410" value={ linkEndChainage } oninput="{ checkEndChainage }">
             <small class="form-text text-muted">Enter chainage for link ending point</small>
         </div>
     </section>
@@ -55,6 +55,16 @@
 
     <script>
         export default {
+            onBeforeMount() {
+                this.linkCode = window.edit_road_data['linkCode'];
+                this.linkName = window.edit_road_data['linkName'];
+                this.linkStartName = window.edit_road_data['linkStartName'];
+                this.linkStartChainage = window.edit_road_data['linkStartChainage'];
+                this.linkEndName = window.edit_road_data['linkEndName'];
+                this.linkEndChainage = window.edit_road_data['linkEndChainage'];
+                this.linkLength = window.edit_road_data['linkLength'];
+                this.carriagewayWidth = window.edit_road_data['carriagewayWidth'];
+            },
             checkLinkCode(e) {
                 this.linkCode = e.currentTarget.value.trim();
                 this.invalidLinkCode = containsWhiteSpaces(this.linkCode) ? "Link code can't contain white spaces" : null;

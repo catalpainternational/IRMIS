@@ -1,3 +1,24 @@
 <edit_pavement>
     <h3>Pavement</h3>
+
+    <section>
+        <div class="form-group">
+            <label>{ pavements.display }</label>
+            <select class="form-control">
+                <option class="form-control" each={ p in pavements.options } value={ p.code }>
+                    { p.name }
+                </option>
+            <small class="form-text text-muted">Choose the pavement of the road</small>
+        </div>
+    </section>
+
+    <div class="button-wrapper d-flex justify-content-end">
+        <button class="btn btn-primary" onclick="{ save }">Save and continue</button>
+    </div>
+
+    <script>
+        export default {
+            pavements: window.road_schema.pavement_class
+        }
+    </script>
 </edit_pavement>
