@@ -70,14 +70,11 @@ let defineColumn = (data, title, mapObj=false, fixedPointDigits=false, orderable
 });
 
 export function prepareRoadEdit(roadList) {
-    if (roadList && roadList.length) {
-        roadList.forEach((road) => road["edit"] = `<span class='image pencil' onclick='roads.edit_road(${road.id})'></span>`);
-    }
+    roadList.forEach((road) => road["edit"] = `<span class='image pencil' onclick='roads.edit_road(${road.id})'></span>`);
 }
 
-export function initializeDataTable(roadList) {
+export function initializeDataTable() {
     const date = new Date();
-    prepareRoadEdit(roadList);
     table = $("#data-table").DataTable({
         columns: [
             defineColumn("edit", "", false, false, false),
@@ -107,7 +104,6 @@ export function initializeDataTable(roadList) {
             defineColumn("trafficLevel", "Traffic Data", TRAFFIC_LEVEL_CHOICES),
         ],
         order: [[1, 'asc']], // default order is ascending by road code
-        data: roadList,
         dom: `<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>`, // https://datatables.net/reference/option/dom#Styling
         buttons: [{
             extend: "excel",
@@ -124,15 +120,4 @@ export function initializeDataTable(roadList) {
 export function filterRows(filter) {
     currentFilter = filter;
     table.draw();
-}
-
-export function edit_road(roadId) {
-    // Uncomment the following for a quick test of getting and setting road metadata
-    // getRoadMetadata(roadId)
-    //     .then(roadData => {
-    //         console.log(JSON.stringify(roadData));
-    //         setRoadMetadata(roadData);
-    //     });
-    document.getElementById('edit-content').hidden = false;
-    document.getElementById('view-content').hidden = true;
 }

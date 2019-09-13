@@ -107,6 +107,34 @@
             padding-bottom: 0;
         }
     }
+
+    .navigation {
+        padding-right: 50px;
+        margin-left: -15px;
+        margin-bottom: 0;
+        margin-top: 20px;
+        padding-left: 0;
+
+        li {
+            margin-bottom: 10px;
+            padding-left: 40px;
+        }
+
+        ul {
+            padding-left: 0;
+
+            li {
+                padding-left: 60px;
+                margin-bottom: 0;
+
+                &.active {
+                    border-bottom-right-radius: $radius;
+                    border-top-right-radius: $radius;
+                    background-color: $blue;
+                }
+            }
+        }
+    }
 }
 
 #collapsed-side-menu {
