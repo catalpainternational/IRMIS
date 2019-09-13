@@ -28,10 +28,9 @@ export function editRoad(roadId) {
     // debugger;
     window.edit_road_data = {
         roadId: roadId,
-        roadCode: "CODE THIS 007",
-        roadName: "ROAD NAME AUGHTHGH!",
+        roadCode: "007",
         roadType: "NAT",
-        roadName: "AMERICA\'S BEST ROAD...EVER",
+        roadName: "Dili - Como",
         roadStatus: "Ongoing",
         linkCode: "A01-01",
         linkName: "null",
