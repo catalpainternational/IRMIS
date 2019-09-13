@@ -5,22 +5,22 @@
         <h6>Link code and name</h6>
         <div class="form-group">
             <label>Link Code</label>
-            <input class="{ invalidLinkCode && invalidLinkCode.length ? 'danger' : null } form-control inactive" type="text" placeholder="E.g. A01-01" oninput="{ checkLinkCode }">
+            <input class="{ invalidLinkCode && invalidLinkCode.length ? 'danger' : null } form-control inactive" type="text" maxlength="25" placeholder="E.g. A01-01" oninput="{ checkLinkCode }">
             <small class="form-text text-muted">Enter link code according to DRBFC standard</small>
             <div if="{ invalidLinkCode && invalidLinkCode.length }" class="invalid-tooltip">
                 <ul>
                     <li each="{ message in invalidLinkCode }">{ message }.</li>
                 </ul>
-        </div>
+            </div>
         </div>
         <div class="form-group">
             <label>Link Start Name</label>
-            <input class="form-control inactive" type="text" placeholder="E.g. Dili" oninput="{ checkStartName }">
+            <input class="form-control inactive" type="text" maxlength="150" placeholder="E.g. Dili" oninput="{ checkStartName }">
             <small class="form-text text-muted">Enter the name of the link start location (municipal center, administrative post or nearest suco)</small>
         </div>
         <div class="form-group">
             <label>Link End Name</label>
-            <input class="form-control inactive" type="text" placeholder="E.g. Manatuto" oninput="{ checkEndName }">
+            <input class="form-control inactive" type="text" maxlength="150" placeholder="E.g. Manatuto" oninput="{ checkEndName }">
             <small class="form-text text-muted">Enter the name of the link end location (municipal center, administrative post or nearest suco)</small>
         </div>
     </section>
@@ -29,12 +29,12 @@
         <h6>Link width and length</h6>
         <div class="form-group">
             <label>Link Length</label>
-            <input class="form-control inactive" type="number" placeholder="E.g. 58.7" oninput="{ checkLinkLength }">
+            <input class="form-control inactive" type="number" maxlength="8" placeholder="E.g. 58.7" oninput="{ checkLinkLength }">
             <small class="form-text text-muted">Enter road link length (in Km)</small>
         </div>
         <div class="form-group">
             <label>Carriageway Width</label>
-            <input class="form-control inactive" type="number" placeholder="E.g. 5.0" oninput="{ checkCarriagewayWidth }">
+            <input class="form-control inactive" type="number" maxlength="5" placeholder="E.g. 5.0" oninput="{ checkCarriagewayWidth }">
             <small class="form-text text-muted">Enter the width (in meters) of the link carriageway</small>
         </div>
     </section>
@@ -43,12 +43,12 @@
         <h6>Link chainage</h6>
         <div class="form-group">
             <label>Link Start Chainage</label>
-            <input class="form-control inactive" type="number" placeholder="E.g. 0+000" oninput="{ checkStartChainage }">
+            <input class="form-control inactive" type="number" maxlength="12" placeholder="E.g. 0+000" oninput="{ checkStartChainage }">
             <small class="form-text text-muted">Enter chainage for link starting point</small>
         </div>
         <div class="form-group">
             <label>Link End Chainage</label>
-            <input class="form-control inactive" type="number" placeholder="E.g. 62+410" oninput="{ checkEndChainage }">
+            <input class="form-control inactive" type="number" maxlength="12" placeholder="E.g. 62+410" oninput="{ checkEndChainage }">
             <small class="form-text text-muted">Enter chainage for link ending point</small>
         </div>
     </section>
