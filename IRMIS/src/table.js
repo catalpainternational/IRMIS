@@ -1,4 +1,9 @@
+import jsZip from "jszip";
 import "datatables.net-bs4";
+import "datatables.net-buttons-bs4";
+import "datatables.net-buttons/js/buttons.html5";
+import "datatables.net-buttons/js/buttons.flash";
+
 import $ from "jquery";
 
 import { getRoadMetadata, setRoadMetadata } from "./assets/assets_api.js";
@@ -6,6 +11,8 @@ import { getRoadMetadata, setRoadMetadata } from "./assets/assets_api.js";
 export let table;
 
 let currentFilter = (p) => (true);
+
+window.JSZip = jsZip;
 
 function humanize(schema, model, keyArg=false, nameArg=false) {
     let values = {};
@@ -69,6 +76,7 @@ export function prepareRoadEdit(roadList) {
 }
 
 export function initializeDataTable(roadList) {
+    const date = new Date();
     prepareRoadEdit(roadList);
     table = $("#data-table").DataTable({
         columns: [
@@ -100,8 +108,14 @@ export function initializeDataTable(roadList) {
         ],
         order: [[1, 'asc']], // default order is ascending by road code
         data: roadList,
-        // lengthChange: false, // hide table entries filter
-        // searching: false, // hide search box
+        dom: `<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>`, // https://datatables.net/reference/option/dom#Styling
+        buttons: [{
+            extend: "excel",
+            className: "btn-sm",
+            sheetName: "Estrada",
+            text: "Export table",
+            title: "Estrada_" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate(),
+        }]
     });
 
     return table;

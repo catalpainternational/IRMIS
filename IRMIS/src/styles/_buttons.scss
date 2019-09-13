@@ -1,11 +1,21 @@
 // Override Bootstrap button styles
 
-.btn {
+%primary-shared {
     box-shadow: 0 2px 4px 0 rgba(0, 52, 62, 0.3);
     padding-bottom: 7px;
     padding-top: 10px;
     min-width: 135px;
     border: none;
+}
+
+.btn-sm {
+    border-radius: calc(#{$radius} / 2);
+    padding-bottom: 0.15rem;
+    padding-right: 0.75rem;
+    padding-left: 0.75rem;
+    padding-top: 0.25rem;
+    font-size: inherit;
+    width: 108px;
 }
 
 .btn-lg {
@@ -17,6 +27,7 @@
 }
 
 .btn-primary {
+    @extend %primary-shared;
     background-color: $green;
 
     &:hover {
@@ -24,7 +35,19 @@
     }
 }
 
+.btn-secondary {
+    box-shadow: 0 0 4px 0 rgba(61, 71, 88, 0.3) !important;
+    border: 1px solid $light-gray !important;
+    background-color: $white !important;
+
+    &:hover {
+        border: 1px solid $light-gray;
+        background-color: $white;
+    }
+}
+
 .btn-inactive {
+    @extend %primary-shared;
     background-color: $lighter-gray;
     color: $dark-gray;
 
