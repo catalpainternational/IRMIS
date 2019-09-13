@@ -111,7 +111,7 @@ proto.assets.Road.toObject = function(includeInstance, msg) {
     technicalClass: jspb.Message.getFieldWithDefault(msg, 21, ""),
     maintenanceNeed: jspb.Message.getFieldWithDefault(msg, 22, ""),
     trafficLevel: jspb.Message.getFieldWithDefault(msg, 23, ""),
-    lastModified: jspb.Message.getFieldWithDefault(msg, 24, "")
+    lastRevisionId: jspb.Message.getFieldWithDefault(msg, 24, 0)
   };
 
   if (includeInstance) {
@@ -241,8 +241,8 @@ proto.assets.Road.deserializeBinaryFromReader = function(msg, reader) {
       msg.setTrafficLevel(value);
       break;
     case 24:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setLastModified(value);
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setLastRevisionId(value);
       break;
     default:
       reader.skipField();
@@ -434,9 +434,9 @@ proto.assets.Road.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
-  f = message.getLastModified();
-  if (f.length > 0) {
-    writer.writeString(
+  f = message.getLastRevisionId();
+  if (f !== 0) {
+    writer.writeUint32(
       24,
       f
     );
@@ -790,17 +790,17 @@ proto.assets.Road.prototype.setTrafficLevel = function(value) {
 
 
 /**
- * optional string last_modified = 24;
- * @return {string}
+ * optional uint32 last_revision_id = 24;
+ * @return {number}
  */
-proto.assets.Road.prototype.getLastModified = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 24, ""));
+proto.assets.Road.prototype.getLastRevisionId = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 24, 0));
 };
 
 
-/** @param {string} value */
-proto.assets.Road.prototype.setLastModified = function(value) {
-  jspb.Message.setProto3StringField(this, 24, value);
+/** @param {number} value */
+proto.assets.Road.prototype.setLastRevisionId = function(value) {
+  jspb.Message.setProto3IntField(this, 24, value);
 };
 
 
