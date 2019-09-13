@@ -6,6 +6,8 @@ import "datatables.net-buttons/js/buttons.flash";
 
 import $ from "jquery";
 
+import { getRoadMetadata, setRoadMetadata } from "./assets/assets_api.js";
+
 export let table;
 
 let currentFilter = (p) => (true);
@@ -43,21 +45,43 @@ $.fn.dataTableExt.afnFiltering.push(
     }
 );
 
+$.extend($.fn.dataTableExt.oSort, {
+    "roadCode-asc": function (str1, str2) {
+        if(str1 == "") return 1;
+        if(str2 == "") return -1;
+        return ((str1 < str2) ? -1 : ((str1 > str2) ? 1 : 0));
+    },
+
+    "roadCode-desc": function (str1, str2) {
+        if(str1 == "") return -1;
+        if(str2 == "") return 1;
+        return ((str1 < str2) ? 1 : ((str1 > str2) ? -1 : 0));
+    }
+});
+
+
 let defineColumn = (data, title, mapObj=false, fixedPointDigits=false, orderable=true, defaultVal="") => ({
     data: data,
     title: title,
     defaultContent: defaultVal,
     orderable: orderable,
+    type: (data == "roadCode") ? "roadCode" : "natural",
     render: item => (mapObj) ? mapObj[item] : fixedPointDigits ? parseFloat(item).toFixed(fixedPointDigits) : item
 });
 
+export function prepareRoadEdit(roadList) {
+    if (roadList && roadList.length) {
+        roadList.forEach((road) => road["edit"] = `<span class='image pencil' onclick='roads.edit_road(${road.id})'></span>`);
+    }
+}
+
 export function initializeDataTable(roadList) {
     const date = new Date();
-    roadList.forEach((road) => road["edit"] = "<span class='image pencil' onclick='roads.edit_road()'></span>");
+    prepareRoadEdit(roadList);
     table = $("#data-table").DataTable({
         columns: [
             defineColumn("edit", "", false, false, false),
-            defineColumn("roadCode", "Code"),
+            defineColumn("roadCode", "Road Code"),
             defineColumn("roadType", "Type", ROAD_TYPE_CHOICES),
             defineColumn("roadName", "Name"),
             defineColumn("roadStatus", "Status", ROAD_STATUS_CHOICES),
@@ -79,10 +103,10 @@ export function initializeDataTable(roadList) {
             defineColumn("project", "Project"),
             defineColumn("fundingSource", "Funding Source"),
             defineColumn("technicalClass", "Technical Class", TECHNICAL_CLASS_CHOICES),
-            defineColumn("maintenanceNeed", "Maintenance Need", MAINTENANCE_NEED_CHOICES),
-            defineColumn("trafficLevel", "Traffic Level", TRAFFIC_LEVEL_CHOICES),
+            defineColumn("maintenanceNeed", "Maintenance needs", MAINTENANCE_NEED_CHOICES),
+            defineColumn("trafficLevel", "Traffic Data", TRAFFIC_LEVEL_CHOICES),
         ],
-        order: [3, 'asc'], // default order is ascending by name
+        order: [[1, 'asc']], // default order is ascending by road code
         data: roadList,
         dom: `<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>`, // https://datatables.net/reference/option/dom#Styling
         buttons: [{
@@ -93,6 +117,8 @@ export function initializeDataTable(roadList) {
             title: "Estrada_" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate(),
         }]
     });
+
+    return table;
 }
 
 export function filterRows(filter) {
@@ -100,7 +126,13 @@ export function filterRows(filter) {
     table.draw();
 }
 
-export function edit_road() {
+export function edit_road(roadId) {
+    // Uncomment the following for a quick test of getting and setting road metadata
+    // getRoadMetadata(roadId)
+    //     .then(roadData => {
+    //         console.log(JSON.stringify(roadData));
+    //         setRoadMetadata(roadData);
+    //     });
     document.getElementById('edit-content').hidden = false;
     document.getElementById('view-content').hidden = true;
 }

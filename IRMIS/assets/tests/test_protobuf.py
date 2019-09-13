@@ -1,4 +1,5 @@
 from django.urls import reverse
+from ..models import Road
 import pytest
 
 
@@ -16,6 +17,8 @@ def test_protobuf_road_list_does_not_error(client, django_user_model):
     # create a user
     user = django_user_model.objects.create_user(username="user1", password="bar")
     client.force_login(user)
+    # create a road
+    road = Road.objects.create()
     # hit the road api
     url = reverse("protobuf_roads")
     response = client.get(url)

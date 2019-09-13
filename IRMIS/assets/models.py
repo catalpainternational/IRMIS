@@ -4,6 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import get_language, ugettext, ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
+from django.db.models import Count
 
 import reversion
 from protobuf.roads_pb2 import Roads as ProtoRoads
@@ -55,7 +56,16 @@ class TechnicalClass(models.Model):
 
 
 class RoadQuerySet(models.QuerySet):
-    def to_protobuf(self):
+    def to_chunks(self):
+        """ returns an object defining the available chunks from the roads queryset """
+
+        return (
+            Road.objects.order_by("road_type")
+            .values("road_type")
+            .annotate(Count("road_type"))
+        )
+
+    def to_protobuf(self, chunk_name=None):
         """ returns a roads protobuf object from the queryset """
         # See roads.proto
 
@@ -82,15 +92,32 @@ class RoadQuerySet(models.QuerySet):
             funding_source="funding_source",
             maintenance_need="maintenance_need__code",
             traffic_level="traffic_level",
+            last_modified="last_modified",
         )
 
-        for road in self.order_by("id").values("id", *fields.values()):
+        road_chunk = (
+            (
+                Road.objects.filter(road_type=chunk_name)
+                .order_by("id")
+                .values("id", *fields.values())
+            )
+            if chunk_name
+            else Road.objects.order_by("id").values("id", *fields.values())
+        )
+
+        for road in road_chunk:
             road_protobuf = roads_protobuf.roads.add()
             road_protobuf.id = road["id"]
             for protobuf_key, query_key in fields.items():
                 if road[query_key]:
-                    setattr(road_protobuf, protobuf_key, road[query_key])
-
+                    if query_key not in ["last_modified", "date_created"]:
+                        setattr(road_protobuf, protobuf_key, road[query_key])
+                    else:
+                        setattr(
+                            road_protobuf,
+                            protobuf_key,
+                            road[query_key].strftime("%Y-%m-%d %H:%M:%S"),
+                        )
         return roads_protobuf
 
 
@@ -98,9 +125,13 @@ class RoadManager(models.Manager):
     def get_queryset(self):
         return RoadQuerySet(self.model, using=self._db)
 
-    def to_protobuf(self):
+    def to_chunks(self):
+        """ returns a list of 'chunks' from the manager """
+        return self.get_queryset().to_chunks()
+
+    def to_protobuf(self, chunk_name=None):
         """ returns a roads protobuf object from the manager """
-        return self.get_queryset().to_protobuf()
+        return self.get_queryset().to_protobuf(chunk_name)
 
     def to_wgs(self):
         """
