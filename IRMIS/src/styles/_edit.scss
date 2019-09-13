@@ -1,7 +1,9 @@
 $max-width: 400px;
 
 #edit-base {
+    width: calc(100% - #{$side-menu-width});
     padding-bottom: 15px;
+    padding-right: 15px;
     padding-left: 0;
 
     header {
