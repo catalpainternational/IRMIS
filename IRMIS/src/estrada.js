@@ -1,8 +1,7 @@
 import "babel-polyfill";
-
 import * as riot from "riot";
 
-import Example from "./riot/example.riot";
+import Edit_Base from "./riot/edit_base.riot";
 
 import "./styles/irmis.scss";
 
@@ -15,18 +14,23 @@ import { initializeDataTable } from "./table";
 
 export { filterFeatures } from "./map/utilities/filterGeoJSON";
 export { geoFeatureGroups } from "./map/utilities/displayGeoJSON";
-export { edit_road } from "./table";
 
 export * from "./side_menu";
+
+export let estradaMap;
 
 export function toggle_dropdown() {
     var dropdown = document.getElementById("dropdown-menu");
     dropdown.hidden = !dropdown.hidden;
 }
 
+export function editRoad(roadId) {
+    window.location.hash = "edit/" + roadId + "/assetdetails";
+}
+
 window.onload = () => {
     // Set up the map and table - but without any data for either
-    const estradaMap = new Map();
+    estradaMap = new Map();
     estradaMap.loadMap();
     const estradaTable = initializeDataTable();
 
@@ -44,9 +48,23 @@ window.onload = () => {
             processAllDataPromises(roadsMetadataPromises, estradaTable, estradaMap)
                 .then(() => {
                     /* Map and Road data loading completed, leaflet and datatable may still be rendering though */
+                    hashCheck();
                 });
         });
+
+    riot.register('edit_base', Edit_Base);
 };
 
-// riot mounting point
-riot.component(Example)(document.getElementById('edit-content'));
+window.onhashchange = () => {
+    hashCheck();
+};
+
+function hashCheck() {
+    if (location.hash.startsWith("#edit")) {
+        riot.mount('edit_base', { roadCode: 'A1-01' });
+        document.getElementById('view-content').hidden = true;
+    } else {
+        riot.unmount('edit_base', true);
+        document.getElementById('view-content').hidden = false;
+    }
+}

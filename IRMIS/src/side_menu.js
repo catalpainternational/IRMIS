@@ -1,7 +1,8 @@
-import { toggleFilter, isFilterApplied, clearFilter, clearAllFilters } from './filter';
-import { table } from './table';
 import $ from "jquery";
 import "select2";
+
+import { toggleFilter, clearFilter, clearAllFilters } from './filter';
+import { table } from './table';
 
 const filters = ["road_code", "road_type", "surface_type", "surface_condition", "road_status", "administrative_area"];
 const select2_filters = ["road_code", "administrative_area"];
@@ -17,7 +18,7 @@ export function collapse_side_menu() {
     mapTable.style.flex = "0 0 100%";
     sideMenu.hidden = true;
     collapsedSideMenu.classList.add("d-flex");
-    roads.map.lMap.invalidateSize();
+    roads.estradaMap.invalidateSize();
 }
 
 export function expand_side_menu() {
@@ -29,7 +30,7 @@ export function expand_side_menu() {
     mapTable.style.removeProperty('flex');
     sideMenu.hidden = false;
     collapsedSideMenu.classList.remove("d-flex");
-    roads.map.lMap.invalidateSize();
+    roads.estradaMap.invalidateSize();
 }
 
 export function change_view(element, view) {
@@ -51,7 +52,7 @@ export function change_view(element, view) {
         if (sibling !== element) { sibling.classList.remove("active"); }
     }
     element.classList.add("active");
-    roads.map.lMap.invalidateSize();
+    roads.estradaMap.invalidateSize();
 }
 
 export function toggleFilterOption(element, elementId, value) {

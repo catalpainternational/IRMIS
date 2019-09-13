@@ -1,0 +1,45 @@
+<edit_base>
+    <div class="row">
+        <div id="side-menu" class="col-4 col-lg-3 col-xl-2">
+            <ul class="navigation">
+                <li class="text-uppercase">Edit asset</li>
+                <ul>
+                    <li>Location & Type</li>
+                    <li class="active">Asset Details</li>
+                    <li>Pavement</li>
+                    <li>Project</li>
+                    <li>Condition</li>
+                </ul>
+            </ul>
+        </div>
+        <div id="edit-base" class="col-8 col-lg-9 col-xl-10">
+            <header class="align-items-center d-flex">
+                <span class="caret-dark left image" onclick="{ goBack }"></span>
+                <h1>{ props.roadCode }</h1>
+            </header>
+            <!-- <edit_location_type></edit_location_type> -->
+            <edit_asset_details></edit_asset_details>
+            <!-- <edit_pavement></edit_pavement> -->
+            <!-- <edit_project></edit_project> -->
+            <!-- <edit_condition></edit_condition> -->
+        </div>
+    </div>
+
+    <script>
+        import Edit_Location_Type from './edit_location_type.riot';
+        import Edit_Asset_Details from './edit_asset_details.riot';
+        import Edit_Pavement from './edit_pavement.riot';
+        import Edit_Project from './edit_project.riot';
+        import Edit_Condition from './edit_condition.riot';
+
+        export default {
+            components: {
+                Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Project, Edit_Condition
+            },
+            goBack(e) {
+                this.unmount(true);
+                location.hash = '';
+            }
+        };
+    </script>
+</edit_base>
