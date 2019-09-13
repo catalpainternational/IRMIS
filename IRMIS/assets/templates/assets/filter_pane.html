@@ -58,7 +58,7 @@
                 <div class="options" hidden>
                     <ul>
                         {% for option in road_schema.road_type.options %}
-                        <li onclick="roads.toggleFilterOption(this, '{{ slug }}', '{{ option.0 }}')">
+                        <li class="align-items-center d-flex" onclick="roads.toggleFilterOption(this, '{{ slug }}', '{{ option.0 }}')">
                             <span class="checkbox image"></span>
                             {{ option.1 }}
                         </li>
@@ -105,7 +105,7 @@
                 <div class="options" hidden>
                     <ul>
                         {% for option in road_schema.road_status.options %}
-                        <li onclick="roads.toggleFilterOption(this, '{{ slug }}', '{{ option.code }}')">
+                        <li class="align-items-center d-flex" onclick="roads.toggleFilterOption(this, '{{ slug }}', '{{ option.code }}')">
                             <span class="checkbox image"></span>
                             {{ option.name }}
                         </li>
@@ -130,7 +130,7 @@
                 <div class="options" hidden>
                     <ul>
                         {% for option in road_schema.surface_type.options %}
-                        <li onclick="roads.toggleFilterOption(this, '{{ slug }}', '{{ option.code }}')">
+                        <li class="align-items-center d-flex" onclick="roads.toggleFilterOption(this, '{{ slug }}', '{{ option.code }}')">
                             <span class="checkbox image"></span>
                             {{ option.name }}
                         </li>
@@ -159,7 +159,7 @@
                 <div class="options" hidden>
                     <ul>
                         {% for option in road_schema.surface_condition.options %}
-                        <li onclick="roads.toggleFilterOption(this, '{{ slug }}', '{{ option.0 }}')">
+                        <li class="align-items-center d-flex" onclick="roads.toggleFilterOption(this, '{{ slug }}', '{{ option.0 }}')">
                             <span class="checkbox image"></span>
                             {{ option.1 }}
                         </li>
