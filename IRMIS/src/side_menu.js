@@ -37,12 +37,12 @@ export function change_view(element, view) {
     const siblings = document.getElementById("view").children;
 
     if (view === 0) {
-        mapTable.className = "col-8 col-lg-9 col-xl-10 map table";
+        mapTable.className = "map table";
         table.page.len(10).draw('page');
     } else if (view === 1) {
-        mapTable.className = "col-8 col-lg-9 col-xl-10 map";
+        mapTable.className = "map";
     } else {
-        mapTable.className = "col-8 col-lg-9 col-xl-10 table";
+        mapTable.className = "table";
         table.page.len(20).draw('page');
     }
 
