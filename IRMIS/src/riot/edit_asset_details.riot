@@ -5,9 +5,13 @@
         <h6>Link code and name</h6>
         <div class="form-group">
             <label>Link Code</label>
-            <input class="{ invalidLinkCode ? 'danger' : null } form-control inactive" type="text" placeholder="E.g. A01-01" oninput="{ checkLinkCode }">
+            <input class="{ invalidLinkCode && invalidLinkCode.length ? 'danger' : null } form-control inactive" type="text" placeholder="E.g. A01-01" oninput="{ checkLinkCode }">
             <small class="form-text text-muted">Enter link code according to DRBFC standard</small>
-            <div if="{ invalidLinkCode }" class="invalid-tooltip">{ invalidLinkCode }</div>
+            <div if="{ invalidLinkCode && invalidLinkCode.length }" class="invalid-tooltip">
+                <ul>
+                    <li each="{ message in invalidLinkCode }">{ message }.</li>
+                </ul>
+        </div>
         </div>
         <div class="form-group">
             <label>Link Start Name</label>
@@ -57,7 +61,8 @@
         export default {
             checkLinkCode(e) {
                 this.linkCode = e.currentTarget.value.trim();
-                this.invalidLinkCode = containsWhiteSpaces(this.linkCode) ? "Link code can't contain white spaces" : null;
+                this.invalidLinkCode = [];
+                if (containsWhiteSpaces(this.linkCode)) this.invalidLinkCode.push("Link code can't contain white spaces");
                 this.update();
             },
             checkStartName(e) {
