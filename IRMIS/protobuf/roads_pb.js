@@ -110,7 +110,8 @@ proto.assets.Road.toObject = function(includeInstance, msg) {
     fundingSource: jspb.Message.getFieldWithDefault(msg, 19, ""),
     technicalClass: jspb.Message.getFieldWithDefault(msg, 21, ""),
     maintenanceNeed: jspb.Message.getFieldWithDefault(msg, 22, ""),
-    trafficLevel: jspb.Message.getFieldWithDefault(msg, 23, "")
+    trafficLevel: jspb.Message.getFieldWithDefault(msg, 23, ""),
+    lastModified: jspb.Message.getFieldWithDefault(msg, 24, "")
   };
 
   if (includeInstance) {
@@ -238,6 +239,10 @@ proto.assets.Road.deserializeBinaryFromReader = function(msg, reader) {
     case 23:
       var value = /** @type {string} */ (reader.readString());
       msg.setTrafficLevel(value);
+      break;
+    case 24:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setLastModified(value);
       break;
     default:
       reader.skipField();
@@ -426,6 +431,13 @@ proto.assets.Road.serializeBinaryToWriter = function(message, writer) {
   if (f.length > 0) {
     writer.writeString(
       23,
+      f
+    );
+  }
+  f = message.getLastModified();
+  if (f.length > 0) {
+    writer.writeString(
+      24,
       f
     );
   }
@@ -774,6 +786,21 @@ proto.assets.Road.prototype.getTrafficLevel = function() {
 /** @param {string} value */
 proto.assets.Road.prototype.setTrafficLevel = function(value) {
   jspb.Message.setProto3StringField(this, 23, value);
+};
+
+
+/**
+ * optional string last_modified = 24;
+ * @return {string}
+ */
+proto.assets.Road.prototype.getLastModified = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 24, ""));
+};
+
+
+/** @param {string} value */
+proto.assets.Road.prototype.setLastModified = function(value) {
+  jspb.Message.setProto3StringField(this, 24, value);
 };
 
 

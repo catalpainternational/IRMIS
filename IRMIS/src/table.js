@@ -1,9 +1,18 @@
+import jsZip from "jszip";
 import "datatables.net-bs4";
+import "datatables.net-buttons-bs4";
+import "datatables.net-buttons/js/buttons.html5";
+import "datatables.net-buttons/js/buttons.flash";
+
 import $ from "jquery";
+
+import { getRoadMetadata, setRoadMetadata } from "./assets/assets_api.js";
 
 export let table;
 
 let currentFilter = (p) => (true);
+
+window.JSZip = jsZip;
 
 function humanize(schema, model, keyArg=false, nameArg=false) {
     let values = {};
@@ -61,10 +70,11 @@ let defineColumn = (data, title, mapObj=false, fixedPointDigits=false, orderable
 });
 
 export function prepareRoadEdit(roadList) {
-    roadList.forEach((road) => road["edit"] = "<span class='image pencil' onclick=roads.editRoad('" + road.id + "')></span>");
+    roadList.forEach((road) => road["edit"] = `<span class='image pencil' onclick='roads.editRoad(${road.id})'></span>`);
 }
 
 export function initializeDataTable() {
+    const date = new Date();
     table = $("#data-table").DataTable({
         columns: [
             defineColumn("edit", "", false, false, false),
@@ -94,6 +104,14 @@ export function initializeDataTable() {
             defineColumn("trafficLevel", "Traffic Data", TRAFFIC_LEVEL_CHOICES),
         ],
         order: [[1, 'asc']], // default order is ascending by road code
+        dom: `<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>`, // https://datatables.net/reference/option/dom#Styling
+        buttons: [{
+            extend: "excel",
+            className: "btn-sm",
+            sheetName: "Estrada",
+            text: "Export table",
+            title: "Estrada_" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate(),
+        }]
     });
 
     return table;

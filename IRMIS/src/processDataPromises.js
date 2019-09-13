@@ -1,4 +1,4 @@
-import { getGeoJson } from "./assets/assets_api.js";
+import { getGeoJsonDetail } from "./assets/geoJsonAPI";
 import { prepareRoadEdit } from "./table.js";
 
 /** populateGeoJsonProperties
@@ -57,7 +57,7 @@ export function processAllDataPromises(roadsMetadataPromises, estradaTable, estr
 
             // retrieve each GeoJSON file
             return Promise.all(geoJsonDetails.map(geoJsonDetail => {
-                return getGeoJson(geoJsonDetail)
+                return getGeoJsonDetail(geoJsonDetail)
                     .then(geoJson => {
                         // add in road metadata to the GeoJSON
                         roadsLookup.forEach(roadsMetadata => {
