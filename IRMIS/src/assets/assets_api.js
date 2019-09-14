@@ -33,15 +33,7 @@ export function getRoadsMetadata(chunkName) {
     return fetch(metadataUrl, ConfigAPI.requestAssetInit())
         .then(metadataResponse => (metadataResponse.arrayBuffer()))
         .then(protobufBytes => {
-            // build a map to access roads by id
-            var list = roadMessages.Roads.deserializeBinary(protobufBytes).getRoadsList();
-            return list.reduce(
-                (roadsLookup, roadMetadata) => {
-                    roadsLookup[roadMetadata.getId()] = roadMetadata;
-                    return roadsLookup;
-                },
-                {},
-            );
+            return roadMessages.Roads.deserializeBinary(protobufBytes).getRoadsList();
         });
 }
 
