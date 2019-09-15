@@ -14,8 +14,8 @@
         </div>
         <div id="edit-base">
             <header class="align-items-center d-flex">
-                <span class="caret-dark left image" onclick="{ goBack }"></span>
-                <h1>{ props.roadCode }</h1>
+                <a class="caret-dark left image" href="#"></a>
+                <h1>{ props.road.getRoadCode() }</h1>
             </header>
             <!-- <edit_location_type></edit_location_type> -->
             <edit_asset_details></edit_asset_details>
@@ -36,10 +36,6 @@
             components: {
                 Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Project, Edit_Condition
             },
-            goBack(e) {
-                this.unmount(true);
-                location.hash = '';
-            }
         };
     </script>
 </edit_base>

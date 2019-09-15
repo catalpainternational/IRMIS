@@ -1,73 +1,85 @@
-import { filterRows } from "./table.js";
-import { filterFeatures } from "./map/utilities/filterGeoJSON";
+import { getRoadsMetadata, getRoadsMetadataChunks } from "./assets/assets_api.js";
 
-export class RoadManager {
-    
-    constructor() {
-        this.roads = {}
-        this.filteredRoads = {}
-    }
+let roads = {}
+let filteredRoads = {}
 
-    add(roadList) {
-        roadList.reduce(
-            (roadsLookup, roadMetadata) => {
-                roadsLookup[roadMetadata.getId()] = roadMetadata;
-                return roadsLookup;
-            },
-            this.roads,
-        );
-    }
-
-    getRoads() {
-        return Object.values(this.roads);
-    }
-
-    getRoad(id) {
-        return this.roads[id];
-    }
-
-    filterRoads(filterState) {
-        this.filteredRoads = Object.values(this.roads).filter( road => {
-            // every filter state must match
-            return Object.entries(filterState).every(([slug, values]) => {
-                // empty array means all match
-                if (values.length === 0) return true;
-                // or some values of one state must match
-                return values.some(value => {
-                    let propertyGetter = slugToPropertyGetter[slug];
-                    return road[propertyGetter]() === value;
+// Get the road metadata chunk details
+getRoadsMetadataChunks()
+    .then(chunks => {
+        // for each chunk, download the roads
+        chunks.forEach(chunk => {
+            getRoadsMetadata(chunk.road_type)
+                .then(roadList => {
+                    // add the roads to the road manager
+                    addRoadMetadata(roadList);
                 });
+        });
+    });
+
+// when a filter is applied filter the roads
+document.addEventListener('estrada.filter.apply', (data) => {
+    const filterState = data.detail.filterState;
+    filterRoads(filterState);
+});
+
+export function getRoad(id) {
+    let road = roads[id];
+    if(road) return road;
+    // TODO else return a road promise!
+}
+
+function addRoadMetadata(roadList) {
+    roadList.reduce(
+        (roadsLookup, roadMetadata) => {
+            roadsLookup[roadMetadata.getId()] = roadMetadata;
+            return roadsLookup;
+        },
+        roads,
+    );
+    document.dispatchEvent(new CustomEvent("estrada.roadManager.roadMetaDataAdded", {"detail": { roadList }}));
+}
+
+function filterRoads(filterState) {
+    filteredRoads = Object.values(roads).filter( road => {
+        // every filter state must match
+        return Object.entries(filterState).every(([slug, values]) => {
+            // empty array means all match
+            if (values.length === 0) return true;
+            // or some values of one state must match
+            return values.some(value => {
+                let propertyGetter = slugToPropertyGetter[slug];
+                return road[propertyGetter]() === value;
             });
         });
+    });
 
-        // communicate the filter
-        let idMap = {};
+    // communicate the filter
+    let idMap = filteredRoads.reduce((idMap, road) => {
+        idMap[road.getId().toString()] = true;
+        return idMap;
+    }, {});
+    document.dispatchEvent(new CustomEvent("estrada.filter.applied", {"detail": { idMap }}));
+}
 
-        this.filteredRoads.forEach(r => idMap[r.getId().toString()] = true);
-        filterRows(idMap);
-        filterFeatures(idMap);
+export function roadPopup(id) {
+    const road = roads[id];
+    var code, name;
+    let html = '';
+    if (code = road.getRoadCode()) {
+        html += `
+        <span class="popup">
+            <span class="popup label">Code: </span>
+            <span class="popup value">${code}</span>
+        </span>`;
     }
-
-    roadPopup(id) {
-        const road = this.getRoad(id);
-        var code, name;
-        let html = '';
-        if (code = road.getRoadCode()) {
-            html += `
-            <span class="popup">
-                <span class="popup label">Code: </span>
-                <span class="popup value">${code}</span>
-            </span>`;
-        }
-        if (name = road.getRoadName()) {
-            html += `
-            <span class="popup">
-                <span class="popup label">Name: </span>
-                <span class="popup value">${name}</span>
-            </span>`;
-        }
-        return html;
+    if (name = road.getRoadName()) {
+        html += `
+        <span class="popup">
+            <span class="popup label">Name: </span>
+            <span class="popup value">${name}</span>
+        </span>`;
     }
+    return html;
 }
 
 // we'll need to add more in here as we add more filters

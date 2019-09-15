@@ -5,11 +5,6 @@
 
 
 let filterState = {};
-let roadManager;
-
-export function initializeFilter(manager) {
-    roadManager = manager; 
-}
 
 
 // applies or unapplies the value to the slug filter
@@ -50,5 +45,5 @@ export function clearAllFilters() {
 
 // actually make the filter happen
 function applyFilter() {
-    roadManager.filterRoads(filterState);
+    document.dispatchEvent(new CustomEvent("estrada.filter.apply", {"detail": { filterState }}));
 }
