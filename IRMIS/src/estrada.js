@@ -43,8 +43,8 @@ window.onhashchange = () => {
 function hashCheck() {
     let m;
     if ((m = /#edit\/(\d*)/.exec(location.hash)) !== null) {
-        var road = getRoad(m[1]);
-        riot.mount('edit_base', { road });
+        var roadPromise = getRoad(m[1]);
+        riot.mount('edit_base', { roadPromise });
         document.getElementById('view-content').hidden = true;
     } else {
         riot.unmount('edit_base', true);

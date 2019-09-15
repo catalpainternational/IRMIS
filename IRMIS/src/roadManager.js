@@ -1,4 +1,4 @@
-import { getRoadsMetadata, getRoadsMetadataChunks } from "./assets/assets_api.js";
+import { getRoadMetadata, getRoadsMetadata, getRoadsMetadataChunks } from "./assets/assets_api.js";
 
 let roads = {}
 let filteredRoads = {}
@@ -24,8 +24,8 @@ document.addEventListener('estrada.filter.apply', (data) => {
 
 export function getRoad(id) {
     let road = roads[id];
-    if(road) return road;
-    // TODO else return a road promise!
+    if(road) return Promise.resolve(road);
+    return getRoadMetadata(id);
 }
 
 function addRoadMetadata(roadList) {

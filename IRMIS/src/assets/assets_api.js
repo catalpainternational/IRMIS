@@ -38,13 +38,15 @@ export function getRoadsMetadata(chunkName) {
 }
 
 export function getRoadMetadata(roadId) {
-    const assetTypeUrlFragment = "roads";
-    const assetTypeDataRequirement = "meta";
+    const assetTypeUrlFragment = "protobuf_road";
 
-    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${roadId}?${assetTypeDataRequirement}`;
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${roadId}`;
 
     return fetch(metadataUrl, ConfigAPI.requestAssetInit())
-        .then(jsonResponse => (jsonResponse.json()));
+        .then(metadataResponse => (metadataResponse.arrayBuffer()))
+        .then(protobufBytes => {
+            return roadMessages.Road.deserializeBinary(protobufBytes);
+        });
 }
 
 export function setRoadMetadata(roadData) {
