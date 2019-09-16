@@ -80,11 +80,13 @@ You can read more on it here: https://django-reversion.readthedocs.io/en/stable/
 
 If you're setting up from a new DB (ie. not copied from staging / production DB), after pip installing django-reversion and running migrations, you should run `./manage.py createinitialrevisions` to create the initial revision for registered models in the project.
 
-## Javascript/Riot translations
+## Translations
 
-See the package.json file for two useful commands to makemessages for javascript and riot
+See the package.json file for useful commands to makemessages
 - `yarn collect_gettext` runs a python tool that looks for all places in riot tags where you have used gettext, and puts them in a generated collation file
 - `yarn jsmessages` runs the above command AND runs django makemessages with the correct parameters to make po files under the djangojs domain
+- `yarn djangomessages` runs django makemessages
+- `yarn makemessages` runs javascript and django messages
 
 djangojs messages are delivered to the browser using https://docs.djangoproject.com/en/2.2/topics/i18n/translation#django.views.i18n.JavaScriptCatalog
 riot4 tags should use window.gettext('') to access translations
