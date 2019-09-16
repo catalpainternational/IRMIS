@@ -3,20 +3,9 @@
  * communicate the filter function to the map and table
  * */
 
-import { filterFeatures } from "./map/utilities/filterGeoJSON";
-import { filterRows } from "./table.js";
 
 let filterState = {};
 
-// we'll need to add more in here as we add more filters
-const slugToPropertyName = {
-    road_code: 'roadCode',
-    road_type: 'roadType',
-    surface_type: 'surfaceType',
-    surface_condition: 'surfaceCondition',
-    road_status: 'roadStatus',
-    administrative_area: 'administrativeArea',
-};
 
 // applies or unapplies the value to the slug filter
 export function toggleFilter(slug, value) {
@@ -56,22 +45,5 @@ export function clearAllFilters() {
 
 // actually make the filter happen
 function applyFilter() {
-
-    // filter function passed to map and table
-    function filter(properties) {
-        // every filter state must match
-        return Object.entries(filterState).every(([slug, values]) => {
-            // empty array means all match
-            if (values.length === 0) return true;
-            // or some values of one state must match
-            return values.some(value => {
-                let propertyName = slugToPropertyName[slug];
-                return properties[propertyName] === value;
-            });
-        });
-    }
-
-    // communicate the filter
-    filterRows(filter);
-    filterFeatures(filter);
+    document.dispatchEvent(new CustomEvent("estrada.filter.apply", {"detail": { filterState }}));
 }

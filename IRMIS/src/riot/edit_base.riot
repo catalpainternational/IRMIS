@@ -12,9 +12,15 @@
                 </ul>
             </ul>
         </div>
-        <div id="edit-base">
+        <div if={ state.err }>
+            { state.err }
+        </div>
+        <div if={ state.loading }>
+            Loading
+        </div>
+        <div if={ !state.loading } id="edit-base">
             <header class="align-items-center d-flex">
-                <span class="caret-dark left image" onclick="{ goBack }"></span>
+                <span class="caret-dark left image" onclick="{ goBack }" href="#"></span>
                 <h1>{ state.road.getroadCode() } { state.road.getroadName() }</h1>
             </header>
             <!-- <edit_location_type road={ state.road }></edit_location_type> -->
@@ -33,10 +39,10 @@
         import Edit_Condition from './edit_condition.riot';
 
         export default {
-            onBeforeMount(props, state) {
-                this.state = {
-                    road: props.road,
-                }
+            state: {
+                loading: true,
+                road: null,
+                err: false
             },
             components: {
                 Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Project, Edit_Condition
@@ -49,7 +55,7 @@
                 }).catch(err => {
                     state.err = err;
                 }).finally(() => {
-                    this.update();
+                    this.update()
                 });;
             }
         };

@@ -6,7 +6,12 @@ from reversion.models import Version
 from datetime import datetime
 
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
+from django.http import (
+    HttpResponse,
+    HttpResponseForbidden,
+    JsonResponse,
+    HttpResponseNotFound,
+)
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.exceptions import MethodNotAllowed, ValidationError
@@ -166,6 +171,24 @@ def geojson_details(request):
     geojson_files = CollatedGeoJsonFile.objects.values("id", "geobuf_file")
 
     return JsonResponse(list(geojson_files), safe=False)
+
+
+def protobuf_road(request, pk):
+    """ returns an protobug serialized bytestring with the set of all chunks that can be requested via protobuf_roads """
+
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+
+    roads = Road.objects.filter(pk=pk)
+    if not roads.exists():
+        return HttpResponseNotFound()
+
+    roads_protobuf = Road.objects.to_protobuf()
+
+    return HttpResponse(
+        roads_protobuf.roads[0].SerializeToString(),
+        content_type="application/octet-stream",
+    )
 
 
 def road_chunks_set(request):

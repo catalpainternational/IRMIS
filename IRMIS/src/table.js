@@ -3,15 +3,11 @@ import "datatables.net-bs4";
 import "datatables.net-buttons-bs4";
 import "datatables.net-buttons/js/buttons.html5";
 import "datatables.net-buttons/js/buttons.flash";
-
 import $ from "jquery";
 
-import { getRoadMetadata, setRoadMetadata } from "./assets/assets_api.js";
+let table;
 
-export let table;
-
-let currentFilter = (p) => (true);
-
+// needed for export to excel
 window.JSZip = jsZip;
 
 function humanize(schema, model, keyArg=false, nameArg=false) {
@@ -38,13 +34,151 @@ const TECHNICAL_CLASS_CHOICES = humanize(window.road_schema, 'technical_class', 
 const MAINTENANCE_NEED_CHOICES = humanize(window.road_schema, 'maintenance_need', 'code', 'name');
 const TRAFFIC_LEVEL_CHOICES = humanize(window.road_schema, 'traffic_level');
 
+// when the roadManager has new roads, add them to the table
+document.addEventListener('estrada.roadManager.roadMetaDataAdded', (data) => {
+    // add the roads to the table
+    table.rows.add(data.detail.roadList).draw();
+});
+
+// when a filter is applied, update the filter id whitelist
+document.addEventListener('estrada.filter.applied', (data) => {
+    idWhitelistMap = data.detail.idMap;
+    table.draw();
+});
+
+// when the view changes adjust the table rows
+document.addEventListener('estrada.sideMenu.viewChanged', (data) => {
+    const viewName = data.detail ? data.detail.viewName : null;
+    if (viewName === 'map table') {
+        table.page.len(10).draw('page');
+    } else if (viewName === 'table') {
+        table.page.len(20).draw('page');
+    }
+});
+
+window.addEventListener('load', () => {
+    initializeDataTable();
+});
+
+function initializeDataTable() {
+    const date = new Date();
+    table = $("#data-table").DataTable({
+        columns: [{
+            title: 'Edit', data: null,
+            render: r => `<a class='image pencil' href='#edit/${r.getId()}'></a>`,
+            orderable: false
+        },
+        { 
+            title: 'Road Code', data: null,
+            render: 'getRoadCode',
+            type: "roadCode"
+        },
+        { 
+            title: 'Type', data: null,
+            render: r => choice_or_empty(r.getRoadType(), ROAD_TYPE_CHOICES)
+        },
+        { 
+            title: 'Name', data: null,
+            render: 'getRoadName'
+        },
+        { 
+            title: 'Status', data: null,
+            render: r => choice_or_empty(r.getRoadStatus(), ROAD_STATUS_CHOICES)
+        },
+        { 
+            title: 'Link Code', data: null,
+            render: 'getLinkCode'
+        },
+        { 
+            title: 'Link Name', data: null,
+            render: 'getLinkName'
+        },
+        { 
+            title: 'Link Start Name', data: null,
+            render: 'getLinkStartName'
+        },
+        { 
+            title: 'Link Start Chainage (Km)', data: null,
+            render: r => parseFloat(r.getLinkStartChainage()).toFixed(2)
+        },
+        { 
+            title: 'Link End Name', data: null,
+            render: 'getLinkEndName'
+        },
+        { 
+            title: 'Link End Chainage (Km)', data: null,
+            render: r => parseFloat(r.getLinkEndChainage()).toFixed(2)
+        },
+        { 
+            title: 'Link Length (Km)', data: null,
+            render: r => parseFloat(r.getLinkLength()).toFixed(2)
+        },
+        { 
+            title: 'Surface Type', data: null,
+            render: r => choice_or_empty(r.getSurfaceType(), SURFACE_TYPE_CHOICES)
+        },
+        { 
+            title: 'Surface Condition', data: null,
+            render: r => choice_or_empty(r.getSurfaceCondition(), SURFACE_CONDITION_CHOICES)
+        },
+        { 
+            title: 'Pavement Class', data: null,
+            render: r => choice_or_empty(r.getPavementClass(), PAVEMENT_CLASS_CHOICES)
+        },
+        { 
+            title: 'Administrative Area', data: null,
+            render: r => choice_or_empty(parseInt(r.getAdministrativeArea()), ADMINISTRATIVE_AREA_CHOICES)
+        },
+        { 
+            title: 'Carriageway Width (m)', data: null,
+            render: r => parseFloat(r.getCarriagewayWidth()).toFixed(2)
+        },
+        { 
+            title: 'Project', data: null,
+            render: 'getProject'
+        },
+        { 
+            title: 'Funding Source', data: null,
+            render: 'getFundingSource'
+        },
+        { 
+            title: 'Technical Class', data: null,
+            render: r => choice_or_empty(r.getTechnicalClass(), TECHNICAL_CLASS_CHOICES)
+        },
+        { 
+            title: 'Maintenance needs', data: null,
+            render: r => choice_or_empty(r.getMaintenanceNeed(), MAINTENANCE_NEED_CHOICES)
+        },
+        { 
+            title: 'Traffic Data', data: null,
+            render: r => choice_or_empty(r.getTrafficLevel(), TRAFFIC_LEVEL_CHOICES)
+        }],
+        order: [[1, 'asc']], // default order is ascending by road code
+        dom: `<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>`, // https://datatables.net/reference/option/dom#Styling
+        buttons: [{
+            extend: "excel",
+            className: "btn-sm",
+            sheetName: "Estrada",
+            text: "Export table",
+            title: "Estrada_" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate(),
+        }]
+    });
+}
+
+// Filter functionality
+let idWhitelistMap = null;
+let currentFilter = (p) => {
+    return idWhitelistMap === null || idWhitelistMap[p.getId().toString()];
+}
+
 $.fn.dataTableExt.afnFiltering.push(
     function( oSettings, aData, iDataIndex ) {
-        let properties = oSettings.aoData[iDataIndex]._aData;
-        return currentFilter(properties);
+        let road = oSettings.aoData[iDataIndex]._aData;
+        return currentFilter(road);
     }
 );
 
+// change the sorting of the road code column to place empty values last
 $.extend($.fn.dataTableExt.oSort, {
     "roadCode-asc": function (str1, str2) {
         if(str1 == "") return 1;
@@ -59,65 +193,7 @@ $.extend($.fn.dataTableExt.oSort, {
     }
 });
 
-
-let defineColumn = (data, title, mapObj=false, fixedPointDigits=false, orderable=true, defaultVal="") => ({
-    data: data,
-    title: title,
-    defaultContent: defaultVal,
-    orderable: orderable,
-    type: (data == "roadCode") ? "roadCode" : "natural",
-    render: item => (mapObj) ? mapObj[item] : fixedPointDigits ? parseFloat(item).toFixed(fixedPointDigits) : item
-});
-
-export function prepareRoadEdit(roadList) {
-    roadList.forEach((road) => road["edit"] = `<span class='image pencil' onclick='roads.editRoad(${road.id})'></span>`);
-}
-
-export function initializeDataTable() {
-    const date = new Date();
-    table = $("#data-table").DataTable({
-        columns: [
-            defineColumn("edit", "", false, false, false),
-            defineColumn("roadCode", "Road Code"),
-            defineColumn("roadType", "Type", ROAD_TYPE_CHOICES),
-            defineColumn("roadName", "Name"),
-            defineColumn("roadStatus", "Status", ROAD_STATUS_CHOICES),
-
-            defineColumn("linkCode", "Link Code"),
-            defineColumn("linkName", "Link Name"),
-            defineColumn("linkStartName", "Link Start Name"),
-            defineColumn("linkStartChainage", "Link Start Chainage (Km)", false, 2),
-            defineColumn("linkEndName", "Link End Name"),
-            defineColumn("linkEndChainage", "Link End Chainage (Km)", false, 2),
-            defineColumn("linkLength", "Link Length (Km)", false, 2),
-
-            defineColumn("surfaceType", "Surface Type", SURFACE_TYPE_CHOICES),
-            defineColumn("surfaceCondition", "Surface Condition", SURFACE_CONDITION_CHOICES),
-            defineColumn("pavementClass", "Pavement Class", PAVEMENT_CLASS_CHOICES),
-
-            defineColumn("administrativeArea", "Administrative Area", ADMINISTRATIVE_AREA_CHOICES),
-            defineColumn("carriagewayWidth", "Carriageway Width (m)", false, 2),
-            defineColumn("project", "Project"),
-            defineColumn("fundingSource", "Funding Source"),
-            defineColumn("technicalClass", "Technical Class", TECHNICAL_CLASS_CHOICES),
-            defineColumn("maintenanceNeed", "Maintenance needs", MAINTENANCE_NEED_CHOICES),
-            defineColumn("trafficLevel", "Traffic Data", TRAFFIC_LEVEL_CHOICES),
-        ],
-        order: [[1, 'asc']], // default order is ascending by road code
-        dom: `<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>`, // https://datatables.net/reference/option/dom#Styling
-        buttons: [{
-            extend: "excel",
-            className: "btn-sm",
-            sheetName: "Estrada",
-            text: "Export table",
-            title: "Estrada_" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate(),
-        }]
-    });
-
-    return table;
-}
-
-export function filterRows(filter) {
-    currentFilter = filter;
-    table.draw();
+// utility function to pick from choices if value is truthy, or return empty string
+function choice_or_empty(value, choices) {
+    return value ? choices[value] : '';
 }
