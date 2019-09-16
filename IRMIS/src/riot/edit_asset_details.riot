@@ -1,54 +1,156 @@
 <edit_asset_details>
-    <h5>Asset</h5>
+    <h5>gettext('Asset')</h5>
 
     <section>
-        <h6>Link code and name</h6>
+        <h6>gettext('Link code and name')</h6>
         <div class="form-group">
-            <label>Link Code</label>
-            <input class="form-control inactive" type="text" placeholder="E.g. A01-01">
-            <small class="form-text text-muted">Enter link code according to DRBFC standard</small>
+            <label>gettext('Link Code')</label>
+            <input class="{ invalidLinkCode && invalidLinkCode.length ? 'danger' : null } form-control inactive" 
+                type="text" maxlength="25" placeholder="{ gettext('E.g. A01-01') }" oninput="{ checkLinkCode }">
+            <small class="form-text text-muted">gettext('Enter link code according to DRBFC standard')</small>
+            <div if="{ invalidLinkCode && invalidLinkCode.length }" class="invalid-tooltip">
+                <ul>
+                    <li each="{ message in invalidLinkCode }">{ message }.</li>
+                </ul>
+            </div>
         </div>
         <div class="form-group">
-            <label>Link Start Name</label>
-            <input class="form-control inactive" type="text" placeholder="E.g. Dili">
-            <small class="form-text text-muted">Enter the name of the link start location (municipal center, administrative post or nearest suco)</small>
+            <label>gettext('Link Start Name')</label>
+            <input class="form-control inactive" type="text" maxlength="150" 
+                placeholder="{ gettext('E.g. Dili') }" oninput="{ checkStartName }">
+            <small class="form-text text-muted">gettext('Enter the name of the link start location (municipal center, administrative post or nearest suco)')</small>
         </div>
         <div class="form-group">
-            <label>Link End Name</label>
-            <input class="form-control inactive" type="text" placeholder="E.g. Manatuto">
-            <small class="form-text text-muted">Enter the name of the link end location (municipal center, administrative post or nearest suco)</small>
+            <label>gettext('Link End Name')</label>
+            <input class="form-control inactive" type="text" maxlength="150" 
+                placeholder="{ gettext('E.g. Manatuto') }" oninput="{ checkEndName }">
+            <small class="form-text text-muted">gettext('Enter the name of the link end location (municipal center, administrative post or nearest suco)')</small>
         </div>
     </section>
 
     <section>
-        <h6>Link width and length</h6>
+        <h6>gettext('Link width and length')</h6>
         <div class="form-group">
-            <label>Link Length</label>
-            <input class="form-control inactive" type="text" placeholder="E.g. 58.7">
-            <small class="form-text text-muted">Enter road link length (in Km)</small>
+            <label>gettext('Link Length')</label>
+            <input class="{ invalidLinkLength && invalidLinkLength.length ? 'danger' : null } form-control inactive" 
+                type="number" placeholder="{ gettext('E.g. 58.7') }" oninput="{ checkLinkLength }">
+            <small class="form-text text-muted">gettext('Enter road link length (in Km)')</small>
+            <div if="{ invalidLinkLength && invalidLinkLength.length }" class="invalid-tooltip">
+                <ul>
+                    <li each="{ message in invalidLinkLength }">{ message }.</li>
+                </ul>
+            </div>
         </div>
         <div class="form-group">
-            <label>Carriageway Width</label>
-            <input class="form-control inactive" type="text" placeholder="E.g. 5.0">
-            <small class="form-text text-muted">Enter the width (in meters) of the link carriageway</small>
+            <label>gettext('Carriageway Width')</label>
+            <input class="{ invalidCarriageWidth && invalidCarriageWidth.length ? 'danger' : null } form-control inactive" 
+                type="number" placeholder="{ gettext('E.g. 5.0') }" oninput="{ checkCarriagewayWidth }">
+            <small class="form-text text-muted">gettext('Enter the width (in meters) of the link carriageway')</small>
+            <div if="{ invalidCarriageWidth && invalidCarriageWidth.length }" class="invalid-tooltip">
+                <ul>
+                    <li each="{ message in invalidCarriageWidth }">{ message }.</li>
+                </ul>
+            </div>
         </div>
     </section>
 
     <section>
-        <h6>Link chainage</h6>
+        <h6>gettext('Link chainage')</h6>
         <div class="form-group">
-            <label>Link Start Chainage</label>
-            <input class="form-control inactive" type="text" placeholder="E.g. 0+000">
-            <small class="form-text text-muted">Enter chainage for link starting point</small>
+            <label>gettext('Link Start Chainage')</label>
+            <input class="{ invalidStartChainage && invalidStartChainage.length ? 'danger' : null } form-control inactive" 
+                type="number" placeholder="{ gettext('E.g. 0+000') " oninput="{ checkStartChainage }">
+            <small class="form-text text-muted">gettext('Enter chainage for link starting point')</small>
+            <div if="{ invalidStartChainage && invalidStartChainage.length }" class="invalid-tooltip">
+                <ul>
+                    <li each="{ message in invalidStartChainage }">{ message }.</li>
+                </ul>
+            </div>
         </div>
         <div class="form-group">
-            <label>Link End Chainage</label>
-            <input class="form-control inactive" type="text" placeholder="E.g. 62+410">
-            <small class="form-text text-muted">Enter chainage for link ending point</small>
+            <label>gettext('Link End Chainage')</label>
+            <input class="{ invalidEndChainage && invalidEndChainage.length ? 'danger' : null } form-control inactive" 
+                type="number" placeholder="{ gettext('E.g. 62+410') }" oninput="{ checkEndChainage }">
+            <small class="form-text text-muted">gettext('Enter chainage for link ending point')</small>
+            <div if="{ invalidEndChainage && invalidEndChainage.length }" class="invalid-tooltip">
+                <ul>
+                    <li each="{ message in invalidEndChainage }">{ message }.</li>
+                </ul>
+            </div>
         </div>
     </section>
 
     <div class="button-wrapper d-flex justify-content-end">
-        <button class="btn btn-primary">Save and continue</button>
+        <button class="btn btn-primary" onclick="{ save }">gettext('Save and continue')</button>
     </div>
+
+    <script>
+        export default {
+            onBeforeMount() {
+                this.linkLengthDecimals = 3;
+                this.linkLengthDigits = 8;
+
+                this.carriagewayWidthDecimals = 3;
+                this.carriagewayWidthDigits = 5;
+
+                this.linkChainageDecimals = 5;
+                this.linkChainageDigits = 12;
+            },
+            checkLinkCode(e) {
+                this.linkCode = e.currentTarget.value.trim();
+                this.invalidLinkCode = [];
+                if (containsWhiteSpaces(this.linkCode)) this.invalidLinkCode.push("Link code can't contain white spaces");
+                this.update();
+            },
+            checkStartName(e) {
+                this.startName = e.currentTarget.value;
+            },
+            checkEndName(e) {
+                this.endName = e.currentTarget.value;
+            },
+            checkLinkLength(e) {
+                this.linkLength = e.currentTarget.value;
+                this.invalidLinkLength = [];
+                if (exceedsMaxDigits(this.linkLength, this.linkLengthDigits, this.linkLengthDecimals)) this.invalidLinkLength.push("Link length can't contain more than " + this.linkLengthDigits + " digits, of which " + this.linkLengthDecimals + " are decimals");
+                this.update();
+            },
+            checkCarriagewayWidth(e) {
+                this.carriagewayWidth = e.currentTarget.value;
+                this.invalidCarriageWidth = [];
+                if (exceedsMaxDigits(this.carriagewayWidth, this.carriagewayWidthDigits, this.carriagewayWidthDecimals)) this.invalidCarriageWidth.push("Carriage width can't contain more than " + this.carriagewayWidthDigits + " digits, of which " + this.carriagewayWidthDecimals + " are decimals");
+                this.update();
+            },
+            checkStartChainage(e) {
+                this.startChainage = e.currentTarget.value;
+                this.invalidStartChainage = [];
+                if (exceedsMaxDigits(this.startChainage, this.linkChainageDigits, this.linkChainageDecimals)) this.invalidStartChainage.push("Link start chainage can't contain more than " + this.linkChainageDigits + " digits, of which " + this.linkChainageDecimals + " are decimals");
+                this.update();
+            },
+            checkEndChainage(e) {
+                this.endChainage = e.currentTarget.value;
+                this.invalidEndChainage = [];
+                if (exceedsMaxDigits(this.endChainage, this.linkChainageDigits, this.linkChainageDecimals)) this.invalidEndChainage.push("Link end chainage can't contain more than " + this.linkChainageDigits + " digits, of which " + this.linkChainageDecimals + " are decimals");
+                this.update();
+            },
+            save(e) {
+                const road = {
+                    linkCode: this.linkCode,
+                    startName: this.startName,
+                    endName: this.endName,
+                    linkLength: this.linkLength,
+                    carriagewayWidth: this.carriagewayWidth,
+                    startChainage: this.startChainage,
+                    endChainage: this.endChainage,
+                };
+            }
+        };
+
+        function containsWhiteSpaces(text) {
+            return /\s/.test(text);
+        }
+
+        function exceedsMaxDigits(text, limit, decimals) {
+            return !(new RegExp("^\\d{0," + (limit - decimals) + "}(\\.\\d{1," + decimals + "})?$").test(text));
+        }
+    </script>
 </edit_asset_details>
