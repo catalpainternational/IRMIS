@@ -1,4 +1,4 @@
-import { getRoadMetadata, getRoadsMetadata, getRoadsMetadataChunks } from "./assets/assets_api.js";
+import { getRoadMetadata, getRoadsMetadata, getRoadsMetadataChunks, putRoadMetadata } from "./assets/assets_api.js";
 
 let roads = {}
 let filteredRoads = {}
@@ -40,7 +40,7 @@ function addRoadMetadata(roadList) {
 }
 
 export function saveRoad(road) {
-    return Promise.resolve(road);
+    return Promise.resolve(putRoadMetadata(road));
     // return Promise.resolve(false);
 }
 
