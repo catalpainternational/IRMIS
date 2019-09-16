@@ -66,7 +66,6 @@ export function putRoadMetadata(road_data) {
 
     let request = ConfigAPI.requestAssetInit('PUT');
     request.body = road_data;
-    debugger;
     return fetch(metadataUrl, request)
         .then(metadataResponse => metadataResponse.status);
 }

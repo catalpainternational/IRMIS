@@ -41,7 +41,6 @@ function addRoadMetadata(roadList) {
 
 export function saveRoad(road) {
     return Promise.resolve(putRoadMetadata(road));
-    // return Promise.resolve(false);
 }
 
 function filterRoads(filterState) {
