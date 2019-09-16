@@ -16,7 +16,9 @@
         "protoc_js": "protoc -I=./protobuf --js_out=import_style=commonjs,binary:./protobuf ./protobuf/roads.proto",
         "protoc": "yarn protoc_py && yarn protoc_js",
         "collect_gettext": "python riot_gettext.py src/riot/* > gettext_collected.js",
-        "jsmessages": "yarn collect_gettext && python manage.py makemessages -d djangojs -i node_modules"
+        "jsmessages": "yarn collect_gettext && python manage.py makemessages -d djangojs -i node_modules",
+        "djangomessages": "python manage.py makemessages --all",
+        "makemessages": "yarn djangomessages && yarn jsmessages"
     },
     "devDependencies": {
         "@babel/core": "^7.5.5",
