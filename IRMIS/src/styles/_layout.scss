@@ -19,7 +19,7 @@ body {
 
 #map-table-irmis {
     width: calc(100% - #{$side-menu-width});
-    height: calc(100% - 60px);
+    height: calc(100% - #{$top-menu-height});
     padding-bottom: 15px;
     padding-right: 15px;
     margin-bottom: 0;

@@ -4,11 +4,11 @@
     }
 
     &.table:not(.map) #data-table {
-        max-height: calc(100vh - 60px - 37px - 15px);
+        max-height: calc(100vh - #{$top-menu-height} - 31px - 6px - 32px - 15px);
     }
 
     &.table.map #data-table {
-        max-height: calc(60vh - 60px - 10px - 37px - 15px);
+        max-height: calc(60vh - #{$top-menu-height} - 10px - 31px - 6px - 32px - 15px);
     }
 
     #data-table {
@@ -81,7 +81,14 @@ table.table {
     }
 
     tbody td {
-        padding: 6px 20px !important;
+        padding: 0 20px !important;
+        vertical-align: middle;
+        height: 30px;
+    }
+
+    thead th:first-child, tbody td:first-child {
+        padding-right: 7px !important;
+        padding-left: 7px !important;
     }
 
     &.table-bordered {
