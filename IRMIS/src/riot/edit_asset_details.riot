@@ -133,6 +133,10 @@
                 this.update();
             },
             save(e) {
+                var save_button = e.currentTarget;
+                save_button.disabled = true;
+                setTimeout(() => save_button.disabled = false, 1000); // An example of what to call when the (unimplemented) Promise is resolved
+
                 const road = {
                     linkCode: this.linkCode,
                     startName: this.startName,
