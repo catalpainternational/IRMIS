@@ -1,10 +1,11 @@
 <edit_location_type>
-    <h3>Location</h3>
+    <h5>Location</h5>
+
     <section>
         <div class="form-group">
             <label>{ administrative_areas.display }</label>
             <select class="form-control">
-                <option each={ a in administrative_areas.options } value={ a.id }>
+                <option each={ a in administrative_areas.options } value={ a.id } selected={ a.name == this.administrative_area }>
                     { a.name }
                 </option>
             <small class="form-text text-muted">Choose the administrative area of the road</small>
@@ -13,7 +14,7 @@
         <div class="form-group">
             <label>{ road_types.display }</label>
             <select  class="form-control">
-                <option each={ r in road_types.options } value={ r[0] }>
+                <option each={ r in road_types.options } value={ r[0] } selected={ r[0] == this.road_type }>
                     { r[1] }
                 </option>
             </select>
@@ -27,6 +28,11 @@
 
     <script>
         export default {
+            onMounted(props, state) {
+                this.administrative_area = props.road.getAdministrativeArea();
+                this.road_type = props.road.getRoadType();
+                this.update();
+            },
             administrative_areas: window.road_schema.administrative_area,
             road_types: window.road_schema.road_type
         }

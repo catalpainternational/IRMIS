@@ -5,7 +5,7 @@
                 <li class="text-uppercase">Edit asset</li>
                 <ul>
                     <li>Location & Type</li>
-                    <li class="active">Asset Details</li>
+                    <li class="{ active }">Asset Details</li>
                     <li>Pavement</li>
                     <li>Project</li>
                     <li>Condition</li>
@@ -20,11 +20,11 @@
                     <span if={ state.road.roadName }> { state.road.roadName }</span>
                 </h1>
             </header>
-            <!-- <edit_location_type></edit_location_type> -->
-            <edit_asset_details></edit_asset_details>
-            <!-- <edit_pavement></edit_pavement> -->
-            <!-- <edit_project></edit_project> -->
-            <!-- <edit_condition></edit_condition> -->
+            <edit_location_type road={ state.road }></edit_location_type>
+            <edit_asset_details road={ state.road }></edit_asset_details>
+            <edit_pavement road={ state.road }></edit_pavement>
+            <edit_project road={ state.road }></edit_project>
+            <edit_condition road={ state.road }></edit_condition>
         </div>
     </div>
 
@@ -44,9 +44,16 @@
             components: {
                 Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Project, Edit_Condition
             },
-            goBack(e) {
-                this.unmount(true);
-                location.hash = '';
+            onMounted(props, state) {
+                state.loading = true;
+                props.roadPromise.then(road => {
+                    state.loading = false;
+                    state.road = road;
+                }).catch(err => {
+                    state.err = err;
+                }).finally(() => {
+                    this.update();
+                });;
             }
         };
     </script>

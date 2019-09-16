@@ -19,7 +19,7 @@ $max-width: 400px;
     }
 }
 
-edit_asset_details {
+edit_asset_details, edit_pavement, edit_project, edit_condition, edit_location_type {
     height: calc(100vh - 60px - 70px - 15px);
     background-color: $white;
     padding: 30px 60px 60px;

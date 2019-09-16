@@ -55,15 +55,15 @@
 
     <script>
         export default {
-            onBeforeMount() {
-                this.linkCode = window.edit_road_data['linkCode'];
-                this.linkName = window.edit_road_data['linkName'];
-                this.linkStartName = window.edit_road_data['linkStartName'];
-                this.linkStartChainage = window.edit_road_data['linkStartChainage'];
-                this.linkEndName = window.edit_road_data['linkEndName'];
-                this.linkEndChainage = window.edit_road_data['linkEndChainage'];
-                this.linkLength = window.edit_road_data['linkLength'];
-                this.carriagewayWidth = window.edit_road_data['carriagewayWidth'];
+            onMounted(props, state) {
+                this.linkCode = props.road.getLinkCode();
+                this.linkStartName = props.road.getLinkStartName();
+                this.linkEndName = props.road.getLinkEndName();
+                this.linkLength = props.road.getLinkLength();
+                this.carriagewayWidth = props.road.getCarriagewayWidth();
+                this.linkStartChainage = props.road.getLinkStartChainage();
+                this.linkEndChainage = props.road.getLinkEndChainage();
+                this.update();
             },
             checkLinkCode(e) {
                 this.linkCode = e.currentTarget.value.trim();

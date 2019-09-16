@@ -1,10 +1,10 @@
 <edit_project>
-    <h3>Project</h3>
+    <h5>Project</h5>
 
     <section>
         <div class="form-group">
             <label>Project Name</label>
-            <input class="form-control inactive" type="text" placeholder="E.g. National Road PRoject DA043">
+            <input class="form-control inactive" type="text" placeholder="E.g. National Road PRoject DA043" value={ project }>
             <small class="form-text text-muted">Enter the project for this road</small>
         </div>
     </section>
@@ -12,5 +12,14 @@
     <div class="button-wrapper d-flex justify-content-end">
         <button class="btn btn-primary" onclick="{ save }">Save and continue</button>
     </div>
+
+    <script>
+        export default {
+            onMounted(props, state) {
+                this.project = props.road.getProject();
+                this.update();
+            }
+        }
+    </script>
 
 </edit_project>
