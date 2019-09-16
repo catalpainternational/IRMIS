@@ -5,7 +5,7 @@ import Edit_Base from "./riot/edit_base.riot";
 
 import "./styles/irmis.scss";
 
-import { getRoadsMetadata, getRoadsMetadataChunks } from "./assets/assets_api.js";
+import { getRoadsMetadata, getRoadsMetadataChunks } from "./assets/assets_api";
 import { getGeoJsonDetails, getGeoJsonDetail } from "./assets/geoJsonAPI.js";
 
 import { Map } from "./map/map";
@@ -25,7 +25,7 @@ export function toggle_dropdown() {
 }
 
 export function editRoad(roadId) {
-    window.location.hash = "edit/" + roadId + "/assetdetails";
+    window.location.hash = `edit/${roadId}/assetdetails`;
 }
 
 window.onload = () => {
@@ -37,6 +37,10 @@ window.onload = () => {
     // Get the road metadata chunk details
     getRoadsMetadataChunks()
         .then(chunks => {
+            // Get smaller chunks first
+            // The smaller chunks are more likely to be for road types that we want first
+            chunks = chunks.sort((chunkA, chunkB) => (chunkA.road_type__count - chunkB.road_type__count));
+
             // for each chunk, download the roads
             chunks.forEach(chunk => {
                 getRoadsMetadata(chunk.road_type)
