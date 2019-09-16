@@ -46,13 +46,13 @@
     }
 }
 
-.btn-inactive {
+.btn-primary:disabled, .btn-inactive {
     @extend %primary-shared;
     background-color: $lighter-gray;
     color: $dark-gray;
 
     &:hover {
-        background-color: $gray;
+        background-color: $lighter-gray;
         color: $dark-gray;
     }
 }
