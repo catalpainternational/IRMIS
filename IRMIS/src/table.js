@@ -64,7 +64,7 @@ function initializeDataTable() {
     const date = new Date();
     table = $("#data-table").DataTable({
         columns: [{
-            title: 'Edit', data: null,
+            title: '', data: null,
             render: r => `<a class='image pencil' href='#edit/${r.getId()}'></a>`,
             orderable: false
         },
