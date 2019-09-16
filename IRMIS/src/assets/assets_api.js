@@ -1,4 +1,4 @@
-import { Roads } from "../../protobuf/roads_pb";
+import { Road, Roads } from "../../protobuf/roads_pb";
 import { ConfigAPI } from "./configAPI";
 
 /** getRoadsMetadataChunks
@@ -31,5 +31,24 @@ export function getRoadsMetadata(chunkName) {
         .then((protobufBytes) => {
             const uintArray = new Uint8Array(protobufBytes);
             return Roads.deserializeBinary(uintArray).getRoadsList();
+        });
+}
+
+/** getRoadMetadata
+ *
+ * Retrieves the metadata for a single road from the server
+ *
+ * @returns a road_object
+ */
+export function getRoadMetadata(roadId) {
+    const assetTypeUrlFragment = "protobuf_road";
+
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${roadId}`;
+
+    return fetch(metadataUrl, ConfigAPI.requestAssetInit())
+        .then((metadataResponse) => (metadataResponse.arrayBuffer()))
+        .then((protobufBytes) => {
+            const uintArray = new Uint8Array(protobufBytes);
+            return Road.deserializeBinary(uintArray);
         });
 }
