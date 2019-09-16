@@ -1,12 +1,13 @@
 <edit_asset_details>
-    <h5>Asset</h5>
+    <h5>gettext('Asset')</h5>
 
     <section>
-        <h6>Link code and name</h6>
+        <h6>gettext('Link code and name')</h6>
         <div class="form-group">
-            <label>Link Code</label>
-            <input class="{ invalidLinkCode && invalidLinkCode.length ? 'danger' : null } form-control inactive" type="text" maxlength="25" placeholder="E.g. A01-01" oninput="{ checkLinkCode }">
-            <small class="form-text text-muted">Enter link code according to DRBFC standard</small>
+            <label>gettext('Link Code')</label>
+            <input class="{ invalidLinkCode && invalidLinkCode.length ? 'danger' : null } form-control inactive" 
+                type="text" maxlength="25" placeholder="{ gettext('E.g. A01-01') }" oninput="{ checkLinkCode }">
+            <small class="form-text text-muted">gettext('Enter link code according to DRBFC standard')</small>
             <div if="{ invalidLinkCode && invalidLinkCode.length }" class="invalid-tooltip">
                 <ul>
                     <li each="{ message in invalidLinkCode }">{ message }.</li>
@@ -14,23 +15,26 @@
             </div>
         </div>
         <div class="form-group">
-            <label>Link Start Name</label>
-            <input class="form-control inactive" type="text" maxlength="150" placeholder="E.g. Dili" oninput="{ checkStartName }">
-            <small class="form-text text-muted">Enter the name of the link start location (municipal center, administrative post or nearest suco)</small>
+            <label>gettext('Link Start Name')</label>
+            <input class="form-control inactive" type="text" maxlength="150" 
+                placeholder="{ gettext('E.g. Dili') }" oninput="{ checkStartName }">
+            <small class="form-text text-muted">gettext('Enter the name of the link start location (municipal center, administrative post or nearest suco)')</small>
         </div>
         <div class="form-group">
-            <label>Link End Name</label>
-            <input class="form-control inactive" type="text" maxlength="150" placeholder="E.g. Manatuto" oninput="{ checkEndName }">
-            <small class="form-text text-muted">Enter the name of the link end location (municipal center, administrative post or nearest suco)</small>
+            <label>gettext('Link End Name')</label>
+            <input class="form-control inactive" type="text" maxlength="150" 
+                placeholder="{ gettext('E.g. Manatuto') }" oninput="{ checkEndName }">
+            <small class="form-text text-muted">gettext('Enter the name of the link end location (municipal center, administrative post or nearest suco)')</small>
         </div>
     </section>
 
     <section>
-        <h6>Link width and length</h6>
+        <h6>gettext('Link width and length')</h6>
         <div class="form-group">
-            <label>Link Length</label>
-            <input class="{ invalidLinkLength && invalidLinkLength.length ? 'danger' : null } form-control inactive" type="number" placeholder="E.g. 58.7" oninput="{ checkLinkLength }">
-            <small class="form-text text-muted">Enter road link length (in Km)</small>
+            <label>gettext('Link Length')</label>
+            <input class="{ invalidLinkLength && invalidLinkLength.length ? 'danger' : null } form-control inactive" 
+                type="number" placeholder="{ gettext('E.g. 58.7') }" oninput="{ checkLinkLength }">
+            <small class="form-text text-muted">gettext('Enter road link length (in Km)')</small>
             <div if="{ invalidLinkLength && invalidLinkLength.length }" class="invalid-tooltip">
                 <ul>
                     <li each="{ message in invalidLinkLength }">{ message }.</li>
@@ -38,9 +42,10 @@
             </div>
         </div>
         <div class="form-group">
-            <label>Carriageway Width</label>
-            <input class="{ invalidCarriageWidth && invalidCarriageWidth.length ? 'danger' : null } form-control inactive" type="number" placeholder="E.g. 5.0" oninput="{ checkCarriagewayWidth }">
-            <small class="form-text text-muted">Enter the width (in meters) of the link carriageway</small>
+            <label>gettext('Carriageway Width')</label>
+            <input class="{ invalidCarriageWidth && invalidCarriageWidth.length ? 'danger' : null } form-control inactive" 
+                type="number" placeholder="{ gettext('E.g. 5.0') }" oninput="{ checkCarriagewayWidth }">
+            <small class="form-text text-muted">gettext('Enter the width (in meters) of the link carriageway')</small>
             <div if="{ invalidCarriageWidth && invalidCarriageWidth.length }" class="invalid-tooltip">
                 <ul>
                     <li each="{ message in invalidCarriageWidth }">{ message }.</li>
@@ -50,11 +55,12 @@
     </section>
 
     <section>
-        <h6>Link chainage</h6>
+        <h6>gettext('Link chainage')</h6>
         <div class="form-group">
-            <label>Link Start Chainage</label>
-            <input class="{ invalidStartChainage && invalidStartChainage.length ? 'danger' : null } form-control inactive" type="number" placeholder="E.g. 7.6" oninput="{ checkStartChainage }">
-            <small class="form-text text-muted">Enter chainage for link starting point</small>
+            <label>gettext('Link Start Chainage')</label>
+            <input class="{ invalidStartChainage && invalidStartChainage.length ? 'danger' : null } form-control inactive" 
+                type="number" placeholder="{ gettext('E.g. 0+000') " oninput="{ checkStartChainage }">
+            <small class="form-text text-muted">gettext('Enter chainage for link starting point')</small>
             <div if="{ invalidStartChainage && invalidStartChainage.length }" class="invalid-tooltip">
                 <ul>
                     <li each="{ message in invalidStartChainage }">{ message }.</li>
@@ -62,9 +68,10 @@
             </div>
         </div>
         <div class="form-group">
-            <label>Link End Chainage</label>
-            <input class="{ invalidEndChainage && invalidEndChainage.length ? 'danger' : null } form-control inactive" type="number" placeholder="E.g. 40.58" oninput="{ checkEndChainage }">
-            <small class="form-text text-muted">Enter chainage for link ending point</small>
+            <label>gettext('Link End Chainage')</label>
+            <input class="{ invalidEndChainage && invalidEndChainage.length ? 'danger' : null } form-control inactive" 
+                type="number" placeholder="{ gettext('E.g. 62+410') }" oninput="{ checkEndChainage }">
+            <small class="form-text text-muted">gettext('Enter chainage for link ending point')</small>
             <div if="{ invalidEndChainage && invalidEndChainage.length }" class="invalid-tooltip">
                 <ul>
                     <li each="{ message in invalidEndChainage }">{ message }.</li>
@@ -74,7 +81,7 @@
     </section>
 
     <div class="button-wrapper d-flex justify-content-end">
-        <button class="btn btn-primary" onclick="{ save }">Save and continue</button>
+        <button class="btn btn-primary" onclick="{ save }">gettext('Save and continue')</button>
     </div>
 
     <script>
