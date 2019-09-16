@@ -108,9 +108,12 @@
                 this.update();
             },
             checkLinkCode(e) {
-                this.linkCode = e.currentTarget.value.trim();
+                var input = e.currentTarget.value.trim();
                 this.invalidLinkCode = [];
-                if (containsWhiteSpaces(this.linkCode)) this.invalidLinkCode.push("Link code can't contain white spaces");
+                if (containsWhiteSpaces(input)) {
+                    this.invalidLinkCode.push("Link code can't contain white spaces");
+                }
+                this.linkCode = input;
                 this.update();
             },
             checkStartName(e) {
@@ -120,27 +123,43 @@
                 this.endName = e.currentTarget.value;
             },
             checkLinkLength(e) {
-                this.linkLength = e.currentTarget.value;
+                var input = e.currentTarget.value;
                 this.invalidLinkLength = [];
-                if (exceedsMaxDigits(this.linkLength, this.linkLengthDigits, this.linkLengthDecimals)) this.invalidLinkLength.push("Link length can't contain more than " + this.linkLengthDigits + " digits, of which " + this.linkLengthDecimals + " are decimals");
+                if (exceedsMaxDigits(input, this.linkLengthDigits, this.linkLengthDecimals)) {
+                    this.invalidLinkLength.push("Link length can't contain more than " + this.linkLengthDigits + " digits, of which " + this.linkLengthDecimals + " are decimals");
+                } else {
+                    this.linkLength = input;
+                }
                 this.update();
             },
             checkCarriagewayWidth(e) {
-                this.carriagewayWidth = e.currentTarget.value;
+                var input = e.currentTarget.value;
                 this.invalidCarriageWidth = [];
-                if (exceedsMaxDigits(this.carriagewayWidth, this.carriagewayWidthDigits, this.carriagewayWidthDecimals)) this.invalidCarriageWidth.push("Carriage width can't contain more than " + this.carriagewayWidthDigits + " digits, of which " + this.carriagewayWidthDecimals + " are decimals");
+                if (exceedsMaxDigits(this.carriagewayWidth, this.carriagewayWidthDigits, this.carriagewayWidthDecimals)) {
+                    this.invalidCarriageWidth.push("Carriage width can't contain more than " + this.carriagewayWidthDigits + " digits, of which " + this.carriagewayWidthDecimals + " are decimals");
+                } else {
+                    this.carriagewayWidth = input;
+                }
                 this.update();
             },
             checkLinkStartChainage(e) {
-                this.linkStartChainage = e.currentTarget.value;
+                var input = e.currentTarget.value;
                 this.invalidLinkStartChainage = [];
-                if (exceedsMaxDigits(this.linkStartChainage, this.linkChainageDigits, this.linkChainageDecimals)) this.invalidLinkStartChainage.push("Link start chainage can't contain more than " + this.linkChainageDigits + " digits, of which " + this.linkChainageDecimals + " are decimals");
+                if (exceedsMaxDigits(this.linkStartChainage, this.linkChainageDigits, this.linkChainageDecimals)) {
+                    this.invalidLinkStartChainage.push("Link start chainage can't contain more than " + this.linkChainageDigits + " digits, of which " + this.linkChainageDecimals + " are decimals");
+                } else {
+                    this.linkStartChainage = input;
+                }
                 this.update();
             },
             checkLinkEndChainage(e) {
-                this.linkEndChainage = e.currentTarget.value;
+                var input = e.currentTarget.value;
                 this.invalidEndChainage = [];
-                if (exceedsMaxDigits(this.linkEndChainage, this.linkChainageDigits, this.linkChainageDecimals)) this.invalidLinkEndChainage.push("Link end chainage can't contain more than " + this.linkChainageDigits + " digits, of which " + this.linkChainageDecimals + " are decimals");
+                if (exceedsMaxDigits(this.linkEndChainage, this.linkChainageDigits, this.linkChainageDecimals)) {
+                    this.invalidLinkEndChainage.push("Link end chainage can't contain more than " + this.linkChainageDigits + " digits, of which " + this.linkChainageDecimals + " are decimals");
+                } else {
+                    this.linkEndChainage = input;
+                }
                 this.update();
             },
             save(e) {
