@@ -85,6 +85,8 @@
     </div>
 
     <script>
+        import { saveRoad } from '../roadManager';
+
         export default {
             beforeMount() {
                 this.linkLengthDecimals = 3;
@@ -128,28 +130,35 @@
                 if (exceedsMaxDigits(this.carriagewayWidth, this.carriagewayWidthDigits, this.carriagewayWidthDecimals)) this.invalidCarriageWidth.push("Carriage width can't contain more than " + this.carriagewayWidthDigits + " digits, of which " + this.carriagewayWidthDecimals + " are decimals");
                 this.update();
             },
-            checkStartChainage(e) {
-                this.startChainage = e.currentTarget.value;
-                this.invalidStartChainage = [];
-                if (exceedsMaxDigits(this.startChainage, this.linkChainageDigits, this.linkChainageDecimals)) this.invalidStartChainage.push("Link start chainage can't contain more than " + this.linkChainageDigits + " digits, of which " + this.linkChainageDecimals + " are decimals");
+            checkLinkStartChainage(e) {
+                this.linkStartChainage = e.currentTarget.value;
+                this.invalidLinkStartChainage = [];
+                if (exceedsMaxDigits(this.linkStartChainage, this.linkChainageDigits, this.linkChainageDecimals)) this.invalidLinkStartChainage.push("Link start chainage can't contain more than " + this.linkChainageDigits + " digits, of which " + this.linkChainageDecimals + " are decimals");
                 this.update();
             },
-            checkEndChainage(e) {
-                this.endChainage = e.currentTarget.value;
+            checkLinkEndChainage(e) {
+                this.linkEndChainage = e.currentTarget.value;
                 this.invalidEndChainage = [];
-                if (exceedsMaxDigits(this.endChainage, this.linkChainageDigits, this.linkChainageDecimals)) this.invalidEndChainage.push("Link end chainage can't contain more than " + this.linkChainageDigits + " digits, of which " + this.linkChainageDecimals + " are decimals");
+                if (exceedsMaxDigits(this.linkEndChainage, this.linkChainageDigits, this.linkChainageDecimals)) this.invalidLinkEndChainage.push("Link end chainage can't contain more than " + this.linkChainageDigits + " digits, of which " + this.linkChainageDecimals + " are decimals");
                 this.update();
             },
             save(e) {
                 const road = {
                     linkCode: this.linkCode,
-                    startName: this.startName,
-                    endName: this.endName,
+                    linkStartName: this.linkStartName,
+                    linkEndName: this.linkEndName,
                     linkLength: this.linkLength,
                     carriagewayWidth: this.carriagewayWidth,
-                    startChainage: this.startChainage,
-                    endChainage: this.endChainage,
+                    linkStartChainage: this.linkStartChainage,
+                    linkEndChainage: this.linkEndChainage,
                 };
+                saveRoad(road).then( () => {
+                    alert('road saved');
+                }).catch(err => {
+                    alert('road save failed');
+                }).finally(() => {
+                    this.update()
+                });
             }
         };
 

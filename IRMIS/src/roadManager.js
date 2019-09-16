@@ -39,6 +39,11 @@ function addRoadMetadata(roadList) {
     document.dispatchEvent(new CustomEvent("estrada.roadManager.roadMetaDataAdded", {"detail": { roadList }}));
 }
 
+export function saveRoad(road) {
+    return Promise.resolve(road);
+    // return Promise.resolve(false);
+}
+
 function filterRoads(filterState) {
     filteredRoads = Object.values(roads).filter( road => {
         // every filter state must match
