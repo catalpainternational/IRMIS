@@ -38,7 +38,7 @@ window.onload = () => {
     getRoadsMetadataChunks()
         .then(chunks => {
             // Get smaller chunks first
-            // The smallest chunk should be National (NAT) roads
+            // The smaller chunks are more likely to be for road types that we want first
             chunks = chunks.sort((chunkA, chunkB) => (chunkA.road_type__count - chunkB.road_type__count));
 
             // for each chunk, download the roads

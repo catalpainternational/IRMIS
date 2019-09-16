@@ -1,4 +1,4 @@
-import { Road, Roads } from "../../protobuf/roads_pb";
+import { Roads } from "../../protobuf/roads_pb";
 import { ConfigAPI } from "./configAPI";
 
 /** getRoadsMetadataChunks
@@ -21,7 +21,7 @@ export function getRoadsMetadataChunks() {
  *
  * @returns a map {id: road_object}
  */
-export function getRoadsMetadata(chunkName: string): Promise<Road[]> {
+export function getRoadsMetadata(chunkName) {
     const assetTypeUrlFragment = "protobuf_roads";
     chunkName = chunkName || "";
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${chunkName}`;
