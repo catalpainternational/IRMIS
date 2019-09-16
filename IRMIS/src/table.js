@@ -6,8 +6,6 @@ import "datatables.net-buttons/js/buttons.flash";
 
 import $ from "jquery";
 
-import { getRoadMetadata, setRoadMetadata } from "./assets/assets_api.js";
-
 export let table;
 
 let idWhitelistMap = 'all';
