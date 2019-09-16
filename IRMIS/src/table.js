@@ -42,8 +42,7 @@ document.addEventListener('estrada.roadManager.roadMetaDataAdded', (data) => {
 
 // when a filter is applied, update the filter id whitelist
 document.addEventListener('estrada.filter.applied', (data) => {
-    const idMap = data.detail.idMap;
-    idWhitelistMap = Object.entries(idMap).length === 0 ? 'all' : idMap;
+    idWhitelistMap = data.detail.idMap;
     table.draw();
 });
 
@@ -165,10 +164,10 @@ function initializeDataTable() {
     });
 }
 
-// Filter functinoality
-let idWhitelistMap = 'all';
+// Filter functionality
+let idWhitelistMap = null;
 let currentFilter = (p) => {
-    return idWhitelistMap === 'all' || idWhitelistMap[p.getId().toString()];
+    return idWhitelistMap === null || idWhitelistMap[p.getId().toString()];
 }
 
 $.fn.dataTableExt.afnFiltering.push(
