@@ -7,7 +7,7 @@
 
 #map-table-irmis.map:not(.table) {
     #map-irmis {
-        height: calc(100vh - 60px - 15px);
+        height: calc(100vh - #{$top-menu-height} - 15px);
     }
 }
 
