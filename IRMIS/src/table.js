@@ -178,7 +178,6 @@ $.fn.dataTableExt.afnFiltering.push(
     }
 );
 
-
 // change the sorting of the road code column to place empty values last
 $.extend($.fn.dataTableExt.oSort, {
     "roadCode-asc": function (str1, str2) {
