@@ -9,10 +9,13 @@ import { KnownGeometries } from "./layers/KnownGeometries";
 import { getFeatureType } from "./utilities/displayGeoJSON";
 import { getFilterStyles } from "./utilities/filterGeoJSON";
 
-// tslint:disable-next-line: max-line-length
-import { CreateOverlayControlName, FallbackLayerStyle, FixLayerStyleDefaults, styleGeometry, stylePoint } from "./utilities/leaflet-style";
+import { FallbackLayerStyle, FixLayerStyleDefaults, styleGeometry, stylePoint } from "./utilities/leaflet-style";
 
+/** The collection of all GeoJSON elements currently added to the map,
+ * organised by their featureType
+ */
 export let geoFeatureGroups: { [name: string]: L.FeatureGroup } = {};
+
 export let featureLookup: { [name: string]: Feature<Geometry, any> } = {};
 export let layerLookup: { [name: string]: L.Layer } = {};
 
@@ -66,6 +69,11 @@ export class Map {
         this.lMap.invalidateSize();
     }
 
+    private registerFeature(feature: Feature<Geometry, any>, layer: L.Layer) {
+        featureLookup[feature.properties.pk] = feature;
+        layerLookup[feature.properties.pk] = layer;
+    }
+
     private displayGeoJSON(json: GeoJSON): Promise<any> {
         const featureType = getFeatureType(json);
 
@@ -85,7 +93,7 @@ export class Map {
 
         // Assemble the presentation options & styling
         const geoJsonOptions: L.GeoJSONOptions = {
-            onEachFeature: registerFeature,
+            onEachFeature: this.registerFeature,
             pane: mapPane === "undefined" ? undefined : mapPane,
             pointToLayer: (feature: GeoJSON.Feature<GeoJSON.Point>, latlng: L.LatLng) =>
                 stylePoint(feature, latlng, styleRecord.pointToLayer),
@@ -112,9 +120,4 @@ export class Map {
         const id = parseInt(layer.feature.properties.pk, 10);
         return roadPopup(id);
     }
-}
-
-function registerFeature(feature: Feature<Geometry, any>, layer: L.Layer) {
-    featureLookup[feature.properties.pk] = feature;
-    layerLookup[feature.properties.pk] = layer;
 }

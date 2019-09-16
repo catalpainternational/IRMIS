@@ -18,7 +18,7 @@ const estradaMap = new Map();
 window.onload = () => {
     // Set up the map and table - but without any data for either
     estradaMap.loadMap();
-
+    
     // Get the geometry details
     getGeoJsonDetails()
         .then(geoJsonDetails => {
@@ -41,7 +41,7 @@ window.onhashchange = () => {
 };
 
 function hashCheck() {
-    let m =  /#edit\/(\d*)/.exec(location.hash);
+    let m = /#edit\/(\d*)/.exec(location.hash);
     if (m !== null) {
         var roadPromise = getRoad(m[1]);
         riot.mount('edit_base', { roadPromise });
