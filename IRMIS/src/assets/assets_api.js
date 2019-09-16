@@ -59,16 +59,16 @@ export function getRoadMetadata(roadId) {
  *
  * @returns 204 (success) or 400 (failure)
  */
-export function putRoadMetadata(road_data) {
+export function putRoadMetadata(roadData) {
     const assetTypeUrlFragment = "road_update";
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/`;
 
     let request = ConfigAPI.requestAssetInit("PUT");
-    request.body = road_data;
+    request.body = roadData;
     return fetch(metadataUrl, request)
         .then(metadataResponse => {
-            let status_code = metadataResponse.status
-            if (status_code == 204) return true;
-            else return false;
+            let status_code = metadataResponse.status;
+            if (status_code === 204) { return true; }
+            else { return false; }
         });
 }
