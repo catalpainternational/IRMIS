@@ -6,7 +6,12 @@ from reversion.models import Version
 from datetime import datetime
 
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse, HttpResponseForbidden, JsonResponse, HttpResponseNotFound
+from django.http import (
+    HttpResponse,
+    HttpResponseForbidden,
+    JsonResponse,
+    HttpResponseNotFound,
+)
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.exceptions import MethodNotAllowed, ValidationError
@@ -181,7 +186,8 @@ def protobuf_road(request, pk):
     roads_protobuf = Road.objects.to_protobuf()
 
     return HttpResponse(
-        roads_protobuf.roads[0].SerializeToString(), content_type="application/octet-stream"
+        roads_protobuf.roads[0].SerializeToString(),
+        content_type="application/octet-stream",
     )
 
 
