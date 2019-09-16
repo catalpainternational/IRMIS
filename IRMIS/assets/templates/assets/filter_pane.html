@@ -159,7 +159,7 @@
                 <div class="options" hidden>
                     <ul>
                         {% for option in road_schema.surface_condition.options %}
-                        <li class="align-items-center d-flex optionToggle" data-option="{{ option.code }}">
+                        <li class="align-items-center d-flex optionToggle" data-option="{{ option.0 }}">
                             <span class="checkbox image"></span>
                             {{ option.1 }}
                         </li>
