@@ -45,8 +45,11 @@ def test_road_api_detail_does_not_error(client, django_user_model):
     # create a user
     user = django_user_model.objects.create_user(username="user1", password="bar")
     client.force_login(user)
-    # create a road
-    road = Road.objects.create()
+    with reversion.create_revision():
+        # create a road
+        road = Road.objects.create()
+        # store the user who made the changes
+        reversion.set_user(user)
     # hit the road api - detail
     url = reverse("road-detail", kwargs={"pk": road.pk})
     response = client.get(url)

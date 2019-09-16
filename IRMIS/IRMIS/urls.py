@@ -20,6 +20,7 @@ from django.conf import settings
 from django.conf.urls import i18n as i18n_urls
 from django.conf.urls.static import static
 from django.urls import path, re_path, include, reverse_lazy
+from django.views.i18n import JavaScriptCatalog
 
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.documents import urls as wagtaildocs_urls
@@ -31,6 +32,7 @@ def trigger_error(request):
 
 
 urlpatterns = [
+    path("jsi18n/", JavaScriptCatalog.as_view(), name="javascript-catalog"),
     path("assets/", include("assets.urls")),
     path("admin/", admin.site.urls),
     path("sentry-debug/", trigger_error),
