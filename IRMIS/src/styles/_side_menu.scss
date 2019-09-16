@@ -5,7 +5,7 @@
 }
 
 %filter-active-shared {
-    background-color: #818893;
+    background-color: $gray;
 }
 
 #side-menu {
@@ -66,6 +66,17 @@
 
                 &.active {
                     @extend %filter-active-shared;
+                    border-bottom: 1px solid $gray;
+                    padding-right: 10px;
+                    padding-left: 10px;
+                }
+
+                &.open:not(.active) {
+                    border-bottom: 1px solid $darker-gray;
+                    margin-right: 10px;
+                    margin-left: 10px;
+                    padding-right: 0;
+                    padding-left: 0;
                 }
 
                 label {
