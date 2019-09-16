@@ -41,6 +41,10 @@
 
         {# Global javascript #}
 
+        {% if perms.assets.change_road %}
+        <script>window.canEdit = true;</script>
+        {% endif %}
+
         {% block extra_js %}
             {# Override this in templates to add extra javascript #}
         {% endblock %}
