@@ -79,7 +79,8 @@ export function initializeDataTable() {
         },
         { 
             title: 'Road Code', data: null,
-            render: 'getRoadCode'
+            render: 'getRoadCode',
+            type: "roadCode"
         },
         { 
             title: 'Type', data: null,
