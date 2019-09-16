@@ -67,8 +67,11 @@ export function putRoadMetadata(roadData) {
     request.body = roadData;
     return fetch(metadataUrl, request)
         .then(metadataResponse => {
-            let status_code = metadataResponse.status;
-            if (status_code === 204) { return true; }
-            else { return false; }
+            let statusCode = metadataResponse.status;
+            if (statusCode === 204) {
+                return true;
+            } else {
+                return false;
+            }
         });
 }
