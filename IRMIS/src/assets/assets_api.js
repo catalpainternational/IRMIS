@@ -53,7 +53,6 @@ export function getRoadMetadata(roadId) {
         });
 }
 
-
 /** putRoadMetadata
  *
  * Post metadata for a single road to the server
@@ -64,8 +63,12 @@ export function putRoadMetadata(road_data) {
     const assetTypeUrlFragment = "road_update";
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/`;
 
-    let request = ConfigAPI.requestAssetInit('PUT');
+    let request = ConfigAPI.requestAssetInit("PUT");
     request.body = road_data;
     return fetch(metadataUrl, request)
-        .then(metadataResponse => metadataResponse.status);
+        .then(metadataResponse => {
+            let status_code = metadataResponse.status
+            if (status_code == 204) return true;
+            else return false;
+        });
 }
