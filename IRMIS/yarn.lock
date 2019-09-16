@@ -700,6 +700,11 @@
     "@types/minimatch" "*"
     "@types/node" "*"
 
+"@types/google-protobuf@^3.7.1":
+  version "3.7.1"
+  resolved "https://registry.yarnpkg.com/@types/google-protobuf/-/google-protobuf-3.7.1.tgz#69503856e717a4ed2fd0216d4aa3f0bebf5df5df"
+  integrity sha512-kiLxbqoi2C7NmkGj1ZpkSDyIqj4vqDEIjx7wX+O0GXV6bLX6u/oLz49CwefD0c0vzaKeBdOqmUtI8bC0bBRr0w==
+
 "@types/leaflet@^1.5.0":
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/@types/leaflet/-/leaflet-1.5.1.tgz#cc502e77a27542696372ddd3b88fc5a9038f0f93"
@@ -3088,7 +3093,7 @@ globule@^1.0.0:
     lodash "~4.17.10"
     minimatch "~3.0.2"
 
-google-protobuf@^3.9.1:
+google-protobuf@^3.6.1, google-protobuf@^3.9.1:
   version "3.9.1"
   resolved "https://registry.yarnpkg.com/google-protobuf/-/google-protobuf-3.9.1.tgz#87e6a16b7fb16405b515a6c6622d5ace45578d86"
   integrity sha512-tkz7SVwBktFbqFK3teXFUY/VM57+mbUgV9bSD+sZH1ocHJ7uk7BfEWMRdU24dd0ciUDokreA7ghH2fYFIczQdw==
@@ -6542,6 +6547,13 @@ ts-loader@^6.0.4:
     loader-utils "^1.0.2"
     micromatch "^4.0.0"
     semver "^6.0.0"
+
+ts-protoc-gen@^0.11.0:
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/ts-protoc-gen/-/ts-protoc-gen-0.11.0.tgz#6a31755321c0d0f4563ce7bcdb8b72a2c9a7c458"
+  integrity sha512-A/TbXf7JpHGj+bfQaR8H7qfoYC8jS8OQoWBRUVSFvJspg2UFHDkuAtLne3fxXzAAQL/qUofINjZpLAOhVkKMtg==
+  dependencies:
+    google-protobuf "^3.6.1"
 
 tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.0:
   version "1.10.0"

@@ -5,6 +5,7 @@ from .views import (
     geojson_details,
     road_chunks_set,
     protobuf_road_set,
+    protobuf_road,
     road_update,
 )
 
@@ -18,6 +19,7 @@ urlpatterns = [
     path("road_update", road_update, name="road_update"),
     path("geojson_details", geojson_details, name="geojson_details"),
     path("road_chunks", road_chunks_set, name="road_chunks"),
+    path("protobuf_road/<int:pk>", protobuf_road, name="protobuf_road"),
     path("protobuf_roads", protobuf_road_set, name="protobuf_roads"),
     path("protobuf_roads/<slug:chunk_name>/", protobuf_road_set, name="protobuf_roads"),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),

@@ -1,9 +1,5 @@
+import { Road, Roads } from "../../protobuf/roads_pb";
 import { ConfigAPI } from "./configAPI";
-
-// protobuf does not support es6 imports, commonjs works
-// ... well it does, if you pass the correct protoc options
-// But we should probably replace it with https://github.com/protobufjs/protobuf.js
-const roadMessages = require("../../protobuf/roads_pb");
 
 /** getRoadsMetadataChunks
  *
@@ -16,7 +12,7 @@ export function getRoadsMetadataChunks() {
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}`;
 
     return fetch(metadataUrl, ConfigAPI.requestAssetInit())
-        .then(jsonResponse => (jsonResponse.json()));
+        .then((jsonResponse) => (jsonResponse.json()));
 }
 
 /** getRoadsMetadata
@@ -31,67 +27,28 @@ export function getRoadsMetadata(chunkName) {
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${chunkName}`;
 
     return fetch(metadataUrl, ConfigAPI.requestAssetInit())
-        .then(metadataResponse => (metadataResponse.arrayBuffer()))
-        .then(protobufBytes => {
-            // build a map to access roads by id
-            var list = roadMessages.Roads.deserializeBinary(protobufBytes).getRoadsList();
-            return list.reduce(
-                (roadsLookup, roadMetadata) => {
-                    roadsLookup[roadMetadata.getId()] = roadMetadata;
-                    return roadsLookup;
-                },
-                {},
-            );
+        .then((metadataResponse) => (metadataResponse.arrayBuffer()))
+        .then((protobufBytes) => {
+            const uintArray = new Uint8Array(protobufBytes);
+            return Roads.deserializeBinary(uintArray).getRoadsList();
         });
 }
 
+/** getRoadMetadata
+ *
+ * Retrieves the metadata for a single road from the server
+ *
+ * @returns a road_object
+ */
 export function getRoadMetadata(roadId) {
-    const assetTypeUrlFragment = "roads";
-    const assetTypeDataRequirement = "meta";
+    const assetTypeUrlFragment = "protobuf_road";
 
-    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${roadId}?${assetTypeDataRequirement}`;
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${roadId}`;
 
     return fetch(metadataUrl, ConfigAPI.requestAssetInit())
-        .then(jsonResponse => (jsonResponse.json()));
-}
-
-export function setRoadMetadata(roadData) {
-    const assetTypeUrlFragment = "road_update";
-    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}`;
-
-    // Convert the roadData object into an array we can use to set up the protobuf
-    // I think this means we should use https://github.com/protobufjs/protobuf.js
-    // instead of protoc for the JS protobuf interface
-    let roadProtoArray = [];
-    roadProtoArray.push(roadData.id);
-    roadProtoArray.push(roadData.geojson_file); // geojsonId
-    roadProtoArray.push(roadData.road_code); // roadCode
-    roadProtoArray.push(roadData.road_name); // roadName
-    roadProtoArray.push(roadData.link_code); // linkCode
-    roadProtoArray.push(null); // linkName
-    roadProtoArray.push(roadData.link_length); // linkLength
-    roadProtoArray.push(roadData.surface_type); // surfaceType
-    roadProtoArray.push(roadData.surface_condition); // surfaceCondition
-    roadProtoArray.push(roadData.road_type); // roadType
-    roadProtoArray.push(roadData.link_start_chainage); // linkStartChainage
-    roadProtoArray.push(roadData.link_end_chainage); // linkEndChainage
-    roadProtoArray.push(roadData.pavement_class); // pavementClass
-    roadProtoArray.push(roadData.carriageway_width); // carriagewayWidth
-    roadProtoArray.push(roadData.administrative_area); // administrativeArea
-    roadProtoArray.push(roadData.link_start_name); // linkStartName
-    roadProtoArray.push(roadData.link_end_name); // linkEndName
-    roadProtoArray.push(roadData.project); // project
-    roadProtoArray.push(roadData.funding_source); // fundingSource
-    roadProtoArray.push(roadData.road_status); // roadStatus
-    roadProtoArray.push(roadData.technical_class); // technicalClass
-    roadProtoArray.push(roadData.maintenance_need); // maintenanceNeed
-    roadProtoArray.push(roadData.traffic_level); // trafficLevel
-
-    let road = new roadMessages.Road(roadProtoArray);
-
-    const postAssetInit = ConfigAPI.requestAssetInit("PUT");
-    postAssetInit.body = road.serializeBinary();
-
-    return fetch(metadataUrl, postAssetInit)
-        .then(postResponse => (postResponse));
+        .then((metadataResponse) => (metadataResponse.arrayBuffer()))
+        .then((protobufBytes) => {
+            const uintArray = new Uint8Array(protobufBytes);
+            return Road.deserializeBinary(uintArray);
+        });
 }
