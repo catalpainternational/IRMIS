@@ -62,12 +62,7 @@ window.addEventListener('load', () => {
 
 function initializeDataTable() {
     const date = new Date();
-    table = $("#data-table").DataTable({
-        columns: [{
-            title: '', data: null,
-            render: r => `<a class='image pencil' href='#edit/${r.getId()}'></a>`,
-            orderable: false
-        },
+    const columns = [
         { 
             title: 'Road Code', data: null,
             render: 'getRoadCode',
@@ -152,8 +147,21 @@ function initializeDataTable() {
         { 
             title: 'Traffic Data', data: null,
             render: r => choice_or_empty(r.getTrafficLevel(), TRAFFIC_LEVEL_CHOICES)
-        }],
-        order: [[1, 'asc']], // default order is ascending by road code
+        }
+    ];
+
+    if (window.canEdit) {
+        columns.unshift({
+            title: '', data: null,
+            render: r => `<a class='image pencil' href='#edit/${r.getId()}'></a>`,
+            orderable: false,
+            className: "edit-col"
+        });
+    }
+
+    table = $("#data-table").DataTable({
+        columns: columns,
+        order: [[window.canEdit ? 1 : 0, 'asc']], // default order is ascending by road code
         dom: `<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>`, // https://datatables.net/reference/option/dom#Styling
         buttons: [{
             extend: "excel",
