@@ -86,6 +86,14 @@
 
     <script>
         export default {
+            beforeMount() {
+                this.linkLengthDecimals = 3;
+                this.linkLengthDigits = 8;
+                this.carriagewayWidthDecimals = 3;
+                this.carriagewayWidthDigits = 5;
+                this.linkChainageDecimals = 5;
+                this.linkChainageDigits = 12;
+            },
             onMounted(props, state) {
                 this.linkCode = props.road.getLinkCode();
                 this.linkStartName = props.road.getLinkStartName();
