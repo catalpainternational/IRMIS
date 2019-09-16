@@ -135,7 +135,7 @@
             checkCarriagewayWidth(e) {
                 var input = e.currentTarget.value;
                 this.invalidCarriageWidth = [];
-                if (exceedsMaxDigits(this.carriagewayWidth, this.carriagewayWidthDigits, this.carriagewayWidthDecimals)) {
+                if (exceedsMaxDigits(input, this.carriagewayWidthDigits, this.carriagewayWidthDecimals)) {
                     this.invalidCarriageWidth.push("Carriage width can't contain more than " + this.carriagewayWidthDigits + " digits, of which " + this.carriagewayWidthDecimals + " are decimals");
                 } else {
                     this.carriagewayWidth = input;
@@ -145,7 +145,7 @@
             checkLinkStartChainage(e) {
                 var input = e.currentTarget.value;
                 this.invalidLinkStartChainage = [];
-                if (exceedsMaxDigits(this.linkStartChainage, this.linkChainageDigits, this.linkChainageDecimals)) {
+                if (exceedsMaxDigits(input, this.linkChainageDigits, this.linkChainageDecimals)) {
                     this.invalidLinkStartChainage.push("Link start chainage can't contain more than " + this.linkChainageDigits + " digits, of which " + this.linkChainageDecimals + " are decimals");
                 } else {
                     this.linkStartChainage = input;
@@ -155,7 +155,7 @@
             checkLinkEndChainage(e) {
                 var input = e.currentTarget.value;
                 this.invalidEndChainage = [];
-                if (exceedsMaxDigits(this.linkEndChainage, this.linkChainageDigits, this.linkChainageDecimals)) {
+                if (exceedsMaxDigits(input, this.linkChainageDigits, this.linkChainageDecimals)) {
                     this.invalidLinkEndChainage.push("Link end chainage can't contain more than " + this.linkChainageDigits + " digits, of which " + this.linkChainageDecimals + " are decimals");
                 } else {
                     this.linkEndChainage = input;
