@@ -6,7 +6,7 @@ import { FallbackLayerStyle, FixLayerStyleDefaults } from "./leaflet-style";
 
 import { KnownGeometries } from "../layers/KnownGeometries";
 
-function getFilterStyles(layerName: string): { [name: string]: L.PathOptions | L.StyleFunction<any> } {
+export function getFilterStyles(layerName: string): { [name: string]: L.PathOptions | L.StyleFunction<any> } {
     const layerNameOn = `${layerName}.on`;
     const layerNameOff = `${layerName}.off`;
 

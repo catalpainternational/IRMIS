@@ -1,43 +1,37 @@
 import $ from "jquery";
 import "select2";
 
-import { toggleFilter, clearFilter, clearAllFilters, initializeFilter } from './filter';
-import { table } from './table';
-
-const filters = ["road_code", "road_type", "surface_type", "surface_condition", "road_status", "administrative_area"];
-const select2_filters = ["road_code", "administrative_area"];
+import { toggleFilter, clearFilter, clearAllFilters} from './filter';
 
 let filterUIState = {};
-let roadManager = null;
 
-export function initializeSideMenu(manager) {
-    initializeFilter(manager);
+$(document).ready(function(){
+    // setup rode_code and administrative_area filters with select2
+    $('.filter_select2').select2();
+    // event listeners to trigger filters on changes in select2 options
+    $('.filter_select2').on('select2:select', toggleFilterSelect2);
+    $('.filter_select2').on('select2:unselect', toggleFilterSelect2);
 
-    $(document).ready(function(){
-        // setup rode_code and administrative_area filters with select2
-        $('#road_code_select').select2();
-        $('#administrative_area_select').select2();
-        // event listeners to trigger filters on changes in select2 options
-        $('#road_code_select').on('select2:select', function (e) {
-            var data = e.params.data;
-            roads.toggleFilterOption(this, 'road_code', data.id);
-        });
-        $('#road_code_select').on('select2:unselect', function (e) {
-            var data = e.params.data;
-            roads.toggleFilterOption(this, 'road_code', data.id);
-        });
-        $('#administrative_area_select').on('select2:select', function (e) {
-            var data = e.params.data;
-            roads.toggleFilterOption(this, 'administrative_area', data.id);
-        });
-        $('#administrative_area_select').on('select2:unselect', function (e) {
-            var data = e.params.data;
-            roads.toggleFilterOption(this, 'administrative_area', data.id);
-        });
-    });
-}
+    // hide and show the side menu
+    $('#side-menu-collapse').click(collapse_side_menu);
+    $('#collapsed-side-menu').click(expand_side_menu);
 
-export function collapse_side_menu() {
+    // switch map and table views
+    $('#view a').click(change_view);
+
+    // toggle filter open/close
+    $('.filterToggle').click(toggleFilterOpen);
+
+    // clear filters
+    $('.clear-all-filters').click(clear_all_filters);
+    $('.clear-filter').click(clear_filter);
+    $('.clear-select2').click(clear_select2);
+
+    // select options
+    $('.optionToggle').click(toggleFilterOption);
+});
+
+function collapse_side_menu() {
     const collapsedSideMenu = document.getElementById("collapsed-side-menu");
     const mapTable = document.getElementById("map-table-irmis");
     const sideMenu = document.getElementById("side-menu");
@@ -46,10 +40,10 @@ export function collapse_side_menu() {
     mapTable.style.flex = "0 0 100%";
     sideMenu.hidden = true;
     collapsedSideMenu.classList.add("d-flex");
-    roads.estradaMap.invalidateSize();
+    document.dispatchEvent(new CustomEvent("estrada.sideMenu.viewChanged"));
 }
 
-export function expand_side_menu() {
+function expand_side_menu() {
     const collapsedSideMenu = document.getElementById("collapsed-side-menu");
     const mapTable = document.getElementById("map-table-irmis");
     const sideMenu = document.getElementById("side-menu");
@@ -58,43 +52,35 @@ export function expand_side_menu() {
     mapTable.style.removeProperty('flex');
     sideMenu.hidden = false;
     collapsedSideMenu.classList.remove("d-flex");
-    roads.estradaMap.invalidateSize();
+    document.dispatchEvent(new CustomEvent("estrada.sideMenu.viewChanged"));
 }
 
-export function change_view(element, view) {
+function change_view(e) {
+    const viewName = e.currentTarget.attributes['data-viewname'].value;
     const mapTable = document.getElementById("map-table-irmis");
     const siblings = document.getElementById("view").children;
 
-    if (view === 0) {
-        mapTable.className = "map table";
-        table.page.len(10).draw('page');
-    } else if (view === 1) {
-        mapTable.className = "map";
-    } else {
-        mapTable.className = "table";
-        table.page.len(20).draw('page');
-    }
+    mapTable.className = viewName;
 
     for (let index = 0; index < siblings.length; index += 1) {
         const sibling = siblings[index];
-        if (sibling !== element) { sibling.classList.remove("active"); }
+        if (sibling !== e.currentTarget) { sibling.classList.remove("active"); }
     }
-    element.classList.add("active");
-    roads.estradaMap.invalidateSize();
+    e.currentTarget.classList.add("active");
+
+    document.dispatchEvent(new CustomEvent("estrada.sideMenu.viewChanged", {"detail": { viewName }}));
+
 }
 
-export function toggleFilterOption(element, elementId, value) {
-    const filterBlock = document.getElementById(elementId);
-    const clear = filterBlock.getElementsByClassName("clear-filter").item(0);
-    const header = filterBlock.getElementsByClassName("header").item(0);
-    const select2 = select2_filters.includes(elementId);
+function toggleFilterSelect2(e) {
+    const element = e.currentTarget;
+    const value = e.params.data.id;
+    const filter = element.closest('.filter');
+    const slug = filter.attributes['data-slug'].value;
+    const header = filter.querySelector('.header');
+    const clear = filter.querySelector(".clear-select2");
 
-    if (!select2) {
-        const checkbox = element.getElementsByTagName("span").item(0);
-        checkbox.classList.toggle("selected");
-    }
-
-    if (select2 && value != -1 || filterBlock.getElementsByClassName("selected").length > 0) {
+    if (value != -1) {
         header.classList.add("active");
         clear.hidden = false;
     } else {
@@ -102,22 +88,83 @@ export function toggleFilterOption(element, elementId, value) {
         clear.hidden = true;
     }
 
-    toggleFilter(elementId, value);
+    toggleFilter(slug, value);
 }
 
-export function toggleFilterOpen(element, elementId) {
-    const filter = document.getElementById(elementId);
-    const header = filter.getElementsByClassName("header").item(0);
-    const options = filter.getElementsByClassName("options").item(0);
+function toggleFilterOption(e) {
+    const element = e.currentTarget;
+    const value = element.attributes['data-option'].value;
 
-    toggleFilterUIState(elementId);
+    const filter = element.closest('.filter');
+    const slug = filter.attributes['data-slug'].value;
+    const clear = filter.querySelector(".clear-filter");
+    const header = filter.querySelector('.header');
+
+    const checkbox = element.querySelector("span");
+    checkbox.classList.toggle("selected");
+
+    if (filter.getElementsByClassName("selected").length > 0) {
+        header.classList.add("active");
+        clear.hidden = false;
+    } else {
+        header.classList.remove("active");
+        clear.hidden = true;
+    }
+
+    toggleFilter(slug, value);
+}
+
+function toggleFilterOpen(e) {
+    const element = e.currentTarget;
+    const filter = element.closest('.filter');
+    const header = filter.querySelector('.header');
+    const options = filter.querySelector('.options');
+    const slug = filter.attributes['data-slug'].value;
+
+    toggleFilterUIState(slug);
     if (element.classList.contains("plus")) {
         element.classList.replace("plus", "minus");
     } else {
         element.classList.replace("minus", "plus");
     }
     header.classList.toggle('open');
-    options.hidden = !isFilterOpen(elementId);
+    options.hidden = !isFilterOpen(slug);
+}
+
+function clear_filter(e) {
+    const element = e.currentTarget;
+    const filter = element.closest('.filter');
+    const slug = filter.attributes['data-slug'].value;
+    const header = filter.querySelector('.header');
+    const checkboxes = filter.getElementsByClassName("selected");
+    while (checkboxes.length) {
+        checkboxes[0].classList.remove("selected");
+    }
+    header.classList.remove("active");
+    filter.getElementsByClassName("clear-filter").item(0).hidden = true;
+    clearFilter(slug);
+}
+
+function clear_select2(e) {
+    const element = e.currentTarget;
+    const filter = element.closest('.filter');
+    const slug = filter.attributes['data-slug'].value;
+    // trigger clearing of select2
+    $(".filter_select2", filter).val([]).trigger('change');
+
+    filter.querySelector(".header").classList.remove("active");
+    filter.querySelector(".clear-select2").hidden = true;
+    clearFilter(slug);
+}
+
+function clear_all_filters() {
+    $(".filters .header").removeClass("active");
+    $(".filters .clear-filter").attr("hidden", true);
+    $(".filters .filter_select2").val([]).trigger('change');
+    $(".filters .clear-select2").attr("hidden", true);
+    $(".filters .optionToggle span").removeClass("selected");
+
+    clearAllFilters();
 }
 
 function isFilterOpen(elementId) {
@@ -129,32 +176,9 @@ function initFilterUIState(elementId) {
     if( !filterUIState.hasOwnProperty(elementId) ) filterUIState[elementId] = false;
 }
 
-function toggleFilterUIState(elementId) {
-    initFilterUIState(elementId);
-    filterUIState[elementId] = !filterUIState[elementId];
-}
-
-export function clear_filter(elementId) {
-    const filter = document.getElementById(elementId);
-    const select2 = select2_filters.includes(elementId);
-
-    if (!select2) {
-        const checkboxes = filter.getElementsByClassName("selected");
-        while (checkboxes.length) {
-            checkboxes[0].classList.remove("selected");
-        }
-    } else {
-        // trigger clearing of select2
-        $("#" + elementId + "_select").val([]).trigger('change');
-    }
-    filter.getElementsByClassName("header").item(0).classList.remove("active");
-    filter.getElementsByClassName("clear-filter").item(0).hidden = true;
-    clearFilter(elementId);
-}
-
-export function clear_all_filters() {
-    filters.forEach(filter => clear_filter(filter));
-    clearAllFilters();
+function toggleFilterUIState(slug) {
+    initFilterUIState(slug);
+    filterUIState[slug] = !filterUIState[slug];
 }
 
 

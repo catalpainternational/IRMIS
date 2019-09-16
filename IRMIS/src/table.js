@@ -3,30 +3,11 @@ import "datatables.net-bs4";
 import "datatables.net-buttons-bs4";
 import "datatables.net-buttons/js/buttons.html5";
 import "datatables.net-buttons/js/buttons.flash";
-
 import $ from "jquery";
 
-import { getRoadMetadata } from "./assets/assets_api.js";
+let table;
 
-export let table;
-
-let idWhitelistMap = 'all';
-let currentFilter = (p) => {
-    return idWhitelistMap === 'all' || idWhitelistMap[p.getId().toString()];
-}
-
-$.fn.dataTableExt.afnFiltering.push(
-    function( oSettings, aData, iDataIndex ) {
-        let road = oSettings.aoData[iDataIndex]._aData;
-        return currentFilter(road);
-    }
-);
-
-export function filterRows(idMap) {
-    idWhitelistMap = Object.entries(idMap).length === 0 ? 'all' : idMap;
-    table.draw();
-}
-
+// needed for export to excel
 window.JSZip = jsZip;
 
 function humanize(schema, model, keyArg=false, nameArg=false) {
@@ -53,30 +34,38 @@ const TECHNICAL_CLASS_CHOICES = humanize(window.road_schema, 'technical_class', 
 const MAINTENANCE_NEED_CHOICES = humanize(window.road_schema, 'maintenance_need', 'code', 'name');
 const TRAFFIC_LEVEL_CHOICES = humanize(window.road_schema, 'traffic_level');
 
+// when the roadManager has new roads, add them to the table
+document.addEventListener('estrada.roadManager.roadMetaDataAdded', (data) => {
+    // add the roads to the table
+    table.rows.add(data.detail.roadList).draw();
+});
 
-$.extend($.fn.dataTableExt.oSort, {
-    "roadCode-asc": function (str1, str2) {
-        if(str1 == "") return 1;
-        if(str2 == "") return -1;
-        return ((str1 < str2) ? -1 : ((str1 > str2) ? 1 : 0));
-    },
+// when a filter is applied, update the filter id whitelist
+document.addEventListener('estrada.filter.applied', (data) => {
+    idWhitelistMap = data.detail.idMap;
+    table.draw();
+});
 
-    "roadCode-desc": function (str1, str2) {
-        if(str1 == "") return -1;
-        if(str2 == "") return 1;
-        return ((str1 < str2) ? 1 : ((str1 > str2) ? -1 : 0));
+// when the view changes adjust the table rows
+document.addEventListener('estrada.sideMenu.viewChanged', (data) => {
+    const viewName = data.detail ? data.detail.viewName : null;
+    if (viewName === 'map table') {
+        table.page.len(10).draw('page');
+    } else if (viewName === 'table') {
+        table.page.len(20).draw('page');
     }
 });
 
-function choice_or_empty(value, choices) {
-    return value ? choices[value] : '';
-}
-export function initializeDataTable() {
+window.addEventListener('load', () => {
+    initializeDataTable();
+});
+
+function initializeDataTable() {
     const date = new Date();
     table = $("#data-table").DataTable({
         columns: [{
             title: 'Edit', data: null,
-            render: r => `<span class='image pencil' onclick='roads.editRoad(${r.id})'></span>`,
+            render: r => `<a class='image pencil' href='#edit/${r.getId()}'></a>`,
             orderable: false
         },
         { 
@@ -174,6 +163,37 @@ export function initializeDataTable() {
             title: "Estrada_" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate(),
         }]
     });
+}
 
-    return table;
+// Filter functionality
+let idWhitelistMap = null;
+let currentFilter = (p) => {
+    return idWhitelistMap === null || idWhitelistMap[p.getId().toString()];
+}
+
+$.fn.dataTableExt.afnFiltering.push(
+    function( oSettings, aData, iDataIndex ) {
+        let road = oSettings.aoData[iDataIndex]._aData;
+        return currentFilter(road);
+    }
+);
+
+// change the sorting of the road code column to place empty values last
+$.extend($.fn.dataTableExt.oSort, {
+    "roadCode-asc": function (str1, str2) {
+        if(str1 == "") return 1;
+        if(str2 == "") return -1;
+        return ((str1 < str2) ? -1 : ((str1 > str2) ? 1 : 0));
+    },
+
+    "roadCode-desc": function (str1, str2) {
+        if(str1 == "") return -1;
+        if(str2 == "") return 1;
+        return ((str1 < str2) ? 1 : ((str1 > str2) ? -1 : 0));
+    }
+});
+
+// utility function to pick from choices if value is truthy, or return empty string
+function choice_or_empty(value, choices) {
+    return value ? choices[value] : '';
 }

@@ -2,11 +2,13 @@
 import { Feature, GeoJSON, Geometry } from "geojson";
 import * as L from "leaflet";
 
+import { roadPopup } from "../roadManager.js";
 import { Config } from "./config";
 import { BaseLayers } from "./layers/BaseLayers";
 import { KnownGeometries } from "./layers/KnownGeometries";
 import { getFeatureType } from "./utilities/displayGeoJSON";
-// tslint:disable-next-line: max-line-length
+import { getFilterStyles } from "./utilities/filterGeoJSON";
+
 import { FallbackLayerStyle, FixLayerStyleDefaults, styleGeometry, stylePoint } from "./utilities/leaflet-style";
 
 /** The collection of all GeoJSON elements currently added to the map,
@@ -17,15 +19,22 @@ export let geoFeatureGroups: { [name: string]: L.FeatureGroup } = {};
 export let featureLookup: { [name: string]: Feature<Geometry, any> } = {};
 export let layerLookup: { [name: string]: L.Layer } = {};
 
+document.addEventListener("estrada.filter.applied", (data: any) => {
+
+    const layerFilterStyles = getFilterStyles("Road");
+
+    Object.values(featureLookup).forEach((feature: any) => {
+        const featureId: string = feature.properties.pk.toString();
+        const geoLayer = layerLookup[featureId] as L.GeoJSON;
+
+        geoLayer.setStyle(data.detail.idMap[featureId] ? layerFilterStyles.styleOn : layerFilterStyles.styleOff);
+    });
+});
+
 export class Map {
     private lMap = {} as L.Map;
     private zoomControl = {} as L.Control.Zoom;
     private currentLayer = {} as L.TileLayer;
-    private roadManager = {} as any;
-
-    constructor(options: any) {
-        this.roadManager = options.roadManager;
-    }
 
     /** Call this in window.onload, or after */
     public loadMap(): L.Map {
@@ -39,6 +48,10 @@ export class Map {
         const bl = BaseLayers.baseLayers;
         this.currentLayer = bl[Config.preferredBaseLayerName];
         this.currentLayer.addTo(this.lMap);
+
+        document.addEventListener("estrada.sideMenu.viewChanged", (data) => {
+            this.lMap.invalidateSize();
+        });
 
         return this.lMap;
     }
@@ -89,7 +102,7 @@ export class Map {
         };
 
         // Actually build the GeoJSON layer
-        const geoLayer = L.geoJSON(json, geoJsonOptions).bindPopup(this.getPopupMethod());
+        const geoLayer = L.geoJSON(json, geoJsonOptions).bindPopup(this.getPopupMethod);
 
         // Add it to the feature group
         geoFeatureGroup.addLayer(geoLayer);
@@ -103,11 +116,8 @@ export class Map {
         return Promise.resolve(true);
     }
 
-    private getPopupMethod() {
-        const roadManager = this.roadManager;
-        return function(this: Map, layer: any): string {
-            const id = parseInt(layer.feature.properties.pk, 10);
-            return roadManager.roadPopup(id);
-        };
+    private getPopupMethod(layer: any): string {
+        const id = parseInt(layer.feature.properties.pk, 10);
+        return roadPopup(id);
     }
 }
