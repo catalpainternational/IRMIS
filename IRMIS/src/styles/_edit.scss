@@ -22,7 +22,7 @@ $max-width: 400px;
 }
 
 edit_asset_details {
-    height: calc(100vh - 60px - 70px - 15px);
+    height: calc(100vh - #{$top-menu-height} - 70px - 15px);
     background-color: $white;
     padding: 30px 60px 60px;
     overflow-y: auto;

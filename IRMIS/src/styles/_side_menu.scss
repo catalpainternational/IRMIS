@@ -44,7 +44,7 @@
     }
 
     .filters {
-        height: calc(100% - 60px - 108px - 40px);
+        height: calc(100% - #{$top-menu-height} - 71px - 40px);
 
         .filter {
             @extend %filter-shared;

@@ -4,11 +4,11 @@
     }
 
     &.table:not(.map) #data-table {
-        max-height: calc(100vh - 60px - 37px - 15px);
+        max-height: calc(100vh - #{$top-menu-height} - 31px - 6px - 32px - 15px);
     }
 
     &.table.map #data-table {
-        max-height: calc(60vh - 60px - 10px - 37px - 15px);
+        max-height: calc(60vh - #{$top-menu-height} - 10px - 31px - 6px - 32px - 15px);
     }
 
     #data-table {
