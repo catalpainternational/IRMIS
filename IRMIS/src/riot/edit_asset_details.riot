@@ -97,6 +97,7 @@
                 this.linkChainageDigits = 12;
             },
             onMounted(props, state) {
+                this.roadId = props.road.getId();
                 this.linkCode = props.road.getLinkCode();
                 this.linkStartName = props.road.getLinkStartName();
                 this.linkEndName = props.road.getLinkEndName();
@@ -144,6 +145,7 @@
             },
             save(e) {
                 const road = {
+                    id: this.roadId,
                     linkCode: this.linkCode,
                     linkStartName: this.linkStartName,
                     linkEndName: this.linkEndName,

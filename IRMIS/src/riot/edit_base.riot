@@ -12,9 +12,6 @@
                 </ul>
             </ul>
         </div>
-        <div if={ state.save }>
-            { window.gettext(state.save) }
-        </div>
         <div if={ state.err }>
             { state.err }
         </div>
@@ -46,7 +43,6 @@
                 loading: true,
                 road: null,
                 err: false,
-                save: false,
             },
             components: {
                 Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Project, Edit_Condition
