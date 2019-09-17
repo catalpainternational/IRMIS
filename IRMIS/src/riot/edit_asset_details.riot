@@ -108,10 +108,10 @@
                 this.update();
             },
             checkLinkCode(e) {
-                var input = e.currentTarget.value.trim();
+                let input = e.currentTarget.value.trim();
                 this.invalidLinkCode = [];
                 if (containsWhiteSpaces(input)) {
-                    this.invalidLinkCode.push("Link code can't contain white spaces");
+                    this.invalidLinkCode.push("Link code cannot contain white spaces");
                 }
                 this.linkCode = input;
                 this.update();
@@ -123,41 +123,40 @@
                 this.endName = e.currentTarget.value;
             },
             checkLinkLength(e) {
-                var input = e.currentTarget.value;
+                let input = e.currentTarget.value;
                 this.invalidLinkLength = [];
                 if (exceedsMaxDigits(input, linkLengthDigits, linkLengthDecimals)) {
-                    this.invalidLinkLength.push("Link length can't contain more than " + linkLengthDigits + " digits, of which " + linkLengthDecimals + " are decimals");
+                    this.invalidLinkLength.push("Link length cannot contain more than ${linkLengthDigits} digits, of which ${linkLengthDecimals} are decimals");
                 } else {
                     this.linkLength = input;
                 }
                 this.update();
             },
             checkCarriagewayWidth(e) {
-                debugger;
-                var input = e.currentTarget.value;
+                let input = e.currentTarget.value;
                 this.invalidCarriageWidth = [];
                 if (exceedsMaxDigits(input, carriagewayWidthDigits, carriagewayWidthDecimals)) {
-                    this.invalidCarriageWidth.push("Carriage width can't contain more than " + carriagewayWidthDigits + " digits, of which " + carriagewayWidthDecimals + " are decimals");
+                    this.invalidCarriageWidth.push("Carriage width cannot contain more than ${carriagewayWidthDigits} digits, of which ${carriagewayWidthDecimals} are decimals");
                 } else {
                     this.carriagewayWidth = input;
                 }
                 this.update();
             },
             checkLinkStartChainage(e) {
-                var input = e.currentTarget.value;
+                let input = e.currentTarget.value;
                 this.invalidLinkStartChainage = [];
                 if (exceedsMaxDigits(input, linkChainageDigits, linkChainageDecimals)) {
-                    this.invalidLinkStartChainage.push("Link start chainage can't contain more than " + linkChainageDigits + " digits, of which " + linkChainageDecimals + " are decimals");
+                    this.invalidLinkStartChainage.push("Link start chainage cannot contain more than ${linkChainageDigits} digits, of which ${linkChainageDecimals} are decimals");
                 } else {
                     this.linkStartChainage = input;
                 }
                 this.update();
             },
             checkLinkEndChainage(e) {
-                var input = e.currentTarget.value;
+                let input = e.currentTarget.value;
                 this.invalidEndChainage = [];
                 if (exceedsMaxDigits(input, linkChainageDigits, linkChainageDecimals)) {
-                    this.invalidLinkEndChainage.push("Link end chainage can't contain more than " + linkChainageDigits + " digits, of which " + linkChainageDecimals + " are decimals");
+                    this.invalidLinkEndChainage.push("Link end chainage cannot contain more than ${linkChainageDigits} digits, of which ${linkChainageDecimals} are decimals");
                 } else {
                     this.linkEndChainage = input;
                 }
@@ -174,10 +173,10 @@
                     linkStartChainage: this.linkStartChainage,
                     linkEndChainage: this.linkEndChainage,
                 };
-                saveRoad(road).then( () => {
-                    alert('road saved');
+                saveRoad(road).then(() => {
+                    alert("road saved");
                 }).catch(err => {
-                    alert('road save failed');
+                    alert("road save failed");
                 }).finally(() => {
                     this.update()
                 });
