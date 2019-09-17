@@ -84,8 +84,19 @@
         <button class="btn btn-primary" onclick="{ save }">{ window.gettext('Save and continue') }</button>
     </div>
 
+    <edit_feedback if="{ state.show_feedback }" error="{ state.error }"></edit_feedback>
+
     <script>
+        import Edit_Feedback from './edit_feedback.riot';
+
         export default {
+            components: {
+                Edit_Feedback
+            },
+            state: {
+                show_feedback: false,
+                error: null,
+            },
             onBeforeMount() {
                 this.linkLengthDecimals = 3;
                 this.linkLengthDigits = 8;
@@ -136,6 +147,9 @@
                 var save_button = e.currentTarget;
                 save_button.disabled = true;
                 setTimeout(() => save_button.disabled = false, 1000); // An example of what to call when the (unimplemented) Promise is resolved
+                this.state.error = false;
+                this.state.show_feedback = true; // An example on how to display the feedback banner when the (unimplemented) Promise is resolved
+                this.update();
 
                 const road = {
                     linkCode: this.linkCode,
