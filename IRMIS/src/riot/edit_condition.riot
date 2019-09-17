@@ -5,7 +5,7 @@
         <div class="form-group">
             <label>{ conditions.display }</label>
             <select class="form-control">
-                <option each={ c in conditions.options } value={ c[0] } selected={ c[0] == road.surfaceCondition }>
+                <option each={ c in conditions.options } value="{ c[0] }"" selected={ c[0] == road.surfaceCondition }>
                     { c[1] }
                 </option>
             </select>
