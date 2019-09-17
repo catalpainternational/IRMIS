@@ -1,0 +1,22 @@
+<edit_feedback>
+    <template if="{ !props.error }">
+        <div class="align-items-center d-flex success">
+            <span class="tick image"></span>
+            <div class="d-flex flex-column flex-grow-1">
+                <span>{ window.gettext('Success') }</span>
+                <small class="text-muted">{ window.gettext('You have successfully saved') }</small>
+            </div>
+            <span class="close image"></span>
+        </div>
+    </template>
+    <template if="{ props.error }">
+        <div class="align-items-center d-flex unsuccess">
+            <span class="error image"></span>
+            <div class="d-flex flex-column flex-grow-1">
+                <span>{ window.gettext('Error') }</span>
+                <small class="text-muted">{ window.gettext('Something went wrong') }</small>
+            </div>
+            <span class="close image"></span>
+        </div>
+    </template>
+</edit_feedback>
