@@ -66,14 +66,10 @@
                 setTimeout(() => save_button.disabled = false, 1000); // An example of what to call when the (unimplemented) Promise is resolved
 
                 saveRoad(this.road).then((response) => {
-                    if (response) {
-                        this.state.error = false;
-                    }
-                    else {
-                        this.state.error = true;
-                    }
+                    if (response) { this.state.error = false; }
+                    else { this.state.error = true; }
                 }).catch(err => {
-                    alert("road save failed");
+                    this.state.error = true;
                 }).finally(() => {
                     this.state.show_feedback = true;
                     this.update()
