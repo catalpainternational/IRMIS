@@ -64,7 +64,7 @@ export function putRoadMetadata(roadData) {
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}`;
 
     let roadProtoArray = [];
-    roadProtoArray.push(roadData.id);
+    roadProtoArray.push(roadData.id); // Id
     roadProtoArray.push(roadData.geojsonId); // geojsonId
     roadProtoArray.push(roadData.roadCode); // roadCode
     roadProtoArray.push(roadData.roadName); // roadName
@@ -87,7 +87,7 @@ export function putRoadMetadata(roadData) {
     roadProtoArray.push(roadData.technicalClass); // technicalClass
     roadProtoArray.push(roadData.maintenanceNeed); // maintenanceNeed
     roadProtoArray.push(roadData.trafficLevel); // trafficLevel
-    roadProtoArray.push(null); // lastRevisionId
+    roadProtoArray.push(roadData.lastRevisionId); // lastRevisionId
 
     let road = new Road(roadProtoArray);
     const postAssetInit = ConfigAPI.requestAssetInit("PUT");
