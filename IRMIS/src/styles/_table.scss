@@ -86,7 +86,7 @@ table.table {
         height: 30px;
     }
 
-    thead th:first-child, tbody td:first-child {
+    thead th.edit-col, tbody td.edit-col {
         padding-right: 7px !important;
         padding-left: 7px !important;
     }
