@@ -1,6 +1,8 @@
 <edit_location_type>
     <h5>Location</h5>
 
+    <edit_feedback if="{ state.show_feedback }" error="{ state.error }"></edit_feedback>
+
     <section>
         <div class="form-group">
             <label>{ administrative_areas.display }</label>
@@ -59,12 +61,21 @@
                 this.update();
             },
             save(e) {
+                var save_button = e.currentTarget;
+                save_button.disabled = true;
+                setTimeout(() => save_button.disabled = false, 1000); // An example of what to call when the (unimplemented) Promise is resolved
+
                 saveRoad(this.road).then((response) => {
-                    if (response) { alert("road saved"); }
-                    else { alert("road save failed"); }
+                    if (response) {
+                        this.state.error = false;
+                    }
+                    else {
+                        this.state.error = true;
+                    }
                 }).catch(err => {
                     alert("road save failed");
                 }).finally(() => {
+                    this.state.show_feedback = true;
                     this.update()
                 });
             },
