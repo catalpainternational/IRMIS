@@ -58,23 +58,23 @@
         <h6>{ window.gettext("Link chainage") }</h6>
         <div class="form-group">
             <label>{ window.gettext("Link Start Chainage") }</label>
-            <input class="{ invalidStartChainage && invalidStartChainage.length ? 'danger' : null } form-control inactive"
+            <input class="{ invalidLinkStartChainage && invalidLinkStartChainage.length ? 'danger' : null } form-control inactive"
                 type="number" placeholder="{ window.gettext("E.g. 0+000") }" value="{ road.linkStartChainage }" oninput="{ checkLinkStartChainage }">
             <small class="form-text text-muted">{ window.gettext("Enter chainage for link starting point") }</small>
-            <div if="{ invalidStartChainage && invalidStartChainage.length }" class="invalid-tooltip">
+            <div if="{ invalidLinkStartChainage && invalidLinkStartChainage.length }" class="invalid-tooltip">
                 <ul>
-                    <li each="{ message in invalidStartChainage }">{ message }.</li>
+                    <li each="{ message in invalidLinkStartChainage }">{ message }.</li>
                 </ul>
             </div>
         </div>
         <div class="form-group">
             <label>{ window.gettext("Link End Chainage") }</label>
-            <input class="{ invalidEndChainage && invalidEndChainage.length ? 'danger' : null } form-control inactive"
+            <input class="{ invalidLinkEndChainage && invalidLinkEndChainage.length ? 'danger' : null } form-control inactive"
                 type="number" placeholder="{ window.gettext("E.g. 62+410") }" value="{ road.linkEndChainage }" oninput="{ checkLinkEndChainage }">
             <small class="form-text text-muted">{ window.gettext("Enter chainage for link ending point") }</small>
-            <div if="{ invalidEndChainage && invalidEndChainage.length }" class="invalid-tooltip">
+            <div if="{ invalidLinkEndChainage && invalidLinkEndChainage.length }" class="invalid-tooltip">
                 <ul>
-                    <li each="{ message in invalidEndChainage }">{ message }.</li>
+                    <li each="{ message in invalidLinkEndChainage }">{ message }.</li>
                 </ul>
             </div>
         </div>
@@ -183,7 +183,7 @@
                 const linkChainageDecimals = 5;
                 const linkChainageDigits = 12;
                 let input = e.currentTarget.value;
-                this.invalidEndChainage = [];
+                this.invalidLinkEndChainage = [];
                 if (exceedsMaxDigits(input, linkChainageDigits, linkChainageDecimals)) {
                     this.invalidLinkEndChainage.push(`Link end chainage cannot contain more than ${linkChainageDigits} digits, of which ${linkChainageDecimals} are decimals`);
                 } else {
