@@ -1,13 +1,13 @@
 <edit_asset_details>
-    <h5>{ window.gettext('Asset') }</h5>
+    <h5>{ window.gettext("Asset") }</h5>
 
     <section>
-        <h6>{ window.gettext('Link code and name') }</h6>
+        <h6>{ window.gettext("Link code and name") }</h6>
         <div class="form-group">
-            <label>{ window.gettext('Link Code') }</label>
+            <label>{ window.gettext("Link Code") }</label>
             <input class="{ invalidLinkCode && invalidLinkCode.length ? 'danger' : null } form-control inactive"
-                type="text" maxlength="25" placeholder="{ window.gettext('E.g. A01-01') }" value={ linkCode } oninput="{ checkLinkCode }">
-            <small class="form-text text-muted">{ window.gettext('Enter link code according to DRBFC standard') }</small>
+                type="text" maxlength="25" placeholder="{ window.gettext("E.g. A01-01") }" value={ road.linkCode } oninput="{ checkLinkCode }">
+            <small class="form-text text-muted">{ window.gettext("Enter link code according to DRBFC standard") }</small>
             <div if="{ invalidLinkCode && invalidLinkCode.length }" class="invalid-tooltip">
                 <ul>
                     <li each="{ message in invalidLinkCode }">{ message }.</li>
@@ -15,26 +15,26 @@
             </div>
         </div>
         <div class="form-group">
-            <label>{ window.gettext('Link Start Name') }</label>
+            <label>{ window.gettext("Link Start Name") }</label>
             <input class="form-control inactive" type="text" maxlength="150"
-                placeholder="{ window.gettext('E.g. Dili') }" value={ linkStartName } oninput="{ checkStartName }">
-            <small class="form-text text-muted">{ window.gettext('Enter the name of the link start location (municipal center, administrative post or nearest suco)') }</small>
+                placeholder="{ window.gettext("E.g. Dili") }" value={ road.linkStartName } oninput="{ checkLinkStartName }">
+            <small class="form-text text-muted">{ window.gettext("Enter the name of the link start location (municipal center, administrative post or nearest suco)") }</small>
         </div>
         <div class="form-group">
-            <label>{ window.gettext('Link End Name') }</label>
+            <label>{ window.gettext("Link End Name") }</label>
             <input class="form-control inactive" type="text" maxlength="150"
-                placeholder="{ window.gettext('E.g. Manatuto') }" value={ linkEndName } oninput="{ checkEndName }">
-            <small class="form-text text-muted">{ window.gettext('Enter the name of the link end location (municipal center, administrative post or nearest suco)') }</small>
+                placeholder="{ window.gettext("E.g. Manatuto") }" value={ road.linkEndName } oninput="{ checkLinkEndName }">
+            <small class="form-text text-muted">{ window.gettext("Enter the name of the link end location (municipal center, administrative post or nearest suco)") }</small>
         </div>
     </section>
 
     <section>
-        <h6>{ window.gettext('Link width and length') }</h6>
+        <h6>{ window.gettext("Link width and length") }</h6>
         <div class="form-group">
-            <label>{ window.gettext('Link Length') }</label>
+            <label>{ window.gettext("Link Length") }</label>
             <input class="{ invalidLinkLength && invalidLinkLength.length ? 'danger' : null } form-control inactive"
-                type="number" placeholder="{ window.gettext('E.g. 58.7') }" value={ linkLength } oninput="{ checkLinkLength }">
-            <small class="form-text text-muted">{ window.gettext('Enter road link length (in Km)') }</small>
+                type="number" placeholder="{ window.gettext("E.g. 58.7") }" value={ road.linkLength } oninput="{ checkLinkLength }">
+            <small class="form-text text-muted">{ window.gettext("Enter road link length (in Km)") }</small>
             <div if="{ invalidLinkLength && invalidLinkLength.length }" class="invalid-tooltip">
                 <ul>
                     <li each="{ message in invalidLinkLength }">{ message }.</li>
@@ -42,10 +42,10 @@
             </div>
         </div>
         <div class="form-group">
-            <label>{ window.gettext('Carriageway Width') }</label>
+            <label>{ window.gettext("Carriageway Width") }</label>
             <input class="{ invalidCarriageWidth && invalidCarriageWidth.length ? 'danger' : null } form-control inactive"
-                type="number" placeholder="{ window.gettext('E.g. 5.0') }" value={ carriagewayWidth } oninput="{ checkCarriagewayWidth }">
-            <small class="form-text text-muted">{ window.gettext('Enter the width (in meters) of the link carriageway') }</small>
+                type="number" placeholder="{ window.gettext("E.g. 5.0") }" value={ road.carriagewayWidth } oninput="{ checkCarriagewayWidth }">
+            <small class="form-text text-muted">{ window.gettext("Enter the width (in meters) of the link carriageway") }</small>
             <div if="{ invalidCarriageWidth && invalidCarriageWidth.length }" class="invalid-tooltip">
                 <ul>
                     <li each="{ message in invalidCarriageWidth }">{ message }.</li>
@@ -55,12 +55,12 @@
     </section>
 
     <section>
-        <h6>{ window.gettext('Link chainage') }</h6>
+        <h6>{ window.gettext("Link chainage") }</h6>
         <div class="form-group">
-            <label>{ window.gettext('Link Start Chainage') }</label>
+            <label>{ window.gettext("Link Start Chainage") }</label>
             <input class="{ invalidStartChainage && invalidStartChainage.length ? 'danger' : null } form-control inactive"
-                type="number" placeholder="{ window.gettext('E.g. 0+000') }" value={ linkStartChainage } oninput="{ checkStartChainage }">
-            <small class="form-text text-muted">{ window.gettext('Enter chainage for link starting point') }</small>
+                type="number" placeholder="{ window.gettext("E.g. 0+000") }" value={ road.linkStartChainage } oninput="{ checkLinkStartChainage }">
+            <small class="form-text text-muted">{ window.gettext("Enter chainage for link starting point") }</small>
             <div if="{ invalidStartChainage && invalidStartChainage.length }" class="invalid-tooltip">
                 <ul>
                     <li each="{ message in invalidStartChainage }">{ message }.</li>
@@ -68,10 +68,10 @@
             </div>
         </div>
         <div class="form-group">
-            <label>{ window.gettext('Link End Chainage') }</label>
+            <label>{ window.gettext("Link End Chainage") }</label>
             <input class="{ invalidEndChainage && invalidEndChainage.length ? 'danger' : null } form-control inactive"
-                type="number" placeholder="{ window.gettext('E.g. 62+410') }" value={ linkEndChainage } oninput="{ checkEndChainage }">
-            <small class="form-text text-muted">{ window.gettext('Enter chainage for link ending point') }</small>
+                type="number" placeholder="{ window.gettext("E.g. 62+410") }" value={ road.linkEndChainage } oninput="{ checkLinkEndChainage }">
+            <small class="form-text text-muted">{ window.gettext("Enter chainage for link ending point") }</small>
             <div if="{ invalidEndChainage && invalidEndChainage.length }" class="invalid-tooltip">
                 <ul>
                     <li each="{ message in invalidEndChainage }">{ message }.</li>
@@ -81,106 +81,115 @@
     </section>
 
     <div class="button-wrapper d-flex justify-content-end">
-        <button class="btn btn-primary" onclick="{ save }">{ window.gettext('Save and continue') }</button>
+        <button class="btn btn-primary" onclick="{ save }">{ window.gettext("Save and continue") }</button>
     </div>
 
     <script>
-        import { saveRoad } from '../roadManager';
+        import { saveRoad } from "../roadManager";
 
         export default {
-            beforeMount() {
-                const linkLengthDecimals = 3;
-                const linkLengthDigits = 8;
-                const carriagewayWidthDecimals = 3;
-                const carriagewayWidthDigits = 5;
-                const linkChainageDecimals = 5;
-                const linkChainageDigits = 12;
+            onBeforeMount() {
+                this.road = {};
             },
             onMounted(props, state) {
-                this.roadId = props.road.getId();
-                this.linkCode = props.road.getLinkCode();
-                this.linkStartName = props.road.getLinkStartName();
-                this.linkEndName = props.road.getLinkEndName();
-                this.linkLength = props.road.getLinkLength();
-                this.carriagewayWidth = props.road.getCarriagewayWidth();
-                this.linkStartChainage = props.road.getLinkStartChainage();
-                this.linkEndChainage = props.road.getLinkEndChainage();
-                this.update();
-            },
-            checkLinkCode(e) {
-                let input = e.currentTarget.value.trim();
-                this.invalidLinkCode = [];
-                if (containsWhiteSpaces(input)) {
-                    this.invalidLinkCode.push("Link code cannot contain white spaces");
-                }
-                this.linkCode = input;
-                this.update();
-            },
-            checkStartName(e) {
-                this.startName = e.currentTarget.value;
-            },
-            checkEndName(e) {
-                this.endName = e.currentTarget.value;
-            },
-            checkLinkLength(e) {
-                let input = e.currentTarget.value;
-                this.invalidLinkLength = [];
-                if (exceedsMaxDigits(input, linkLengthDigits, linkLengthDecimals)) {
-                    this.invalidLinkLength.push("Link length cannot contain more than ${linkLengthDigits} digits, of which ${linkLengthDecimals} are decimals");
-                } else {
-                    this.linkLength = input;
-                }
-                this.update();
-            },
-            checkCarriagewayWidth(e) {
-                let input = e.currentTarget.value;
-                this.invalidCarriageWidth = [];
-                if (exceedsMaxDigits(input, carriagewayWidthDigits, carriagewayWidthDecimals)) {
-                    this.invalidCarriageWidth.push("Carriage width cannot contain more than ${carriagewayWidthDigits} digits, of which ${carriagewayWidthDecimals} are decimals");
-                } else {
-                    this.carriagewayWidth = input;
-                }
-                this.update();
-            },
-            checkLinkStartChainage(e) {
-                let input = e.currentTarget.value;
-                this.invalidLinkStartChainage = [];
-                if (exceedsMaxDigits(input, linkChainageDigits, linkChainageDecimals)) {
-                    this.invalidLinkStartChainage.push("Link start chainage cannot contain more than ${linkChainageDigits} digits, of which ${linkChainageDecimals} are decimals");
-                } else {
-                    this.linkStartChainage = input;
-                }
-                this.update();
-            },
-            checkLinkEndChainage(e) {
-                let input = e.currentTarget.value;
-                this.invalidEndChainage = [];
-                if (exceedsMaxDigits(input, linkChainageDigits, linkChainageDecimals)) {
-                    this.invalidLinkEndChainage.push("Link end chainage cannot contain more than ${linkChainageDigits} digits, of which ${linkChainageDecimals} are decimals");
-                } else {
-                    this.linkEndChainage = input;
-                }
+                // ROAD DATA
+                this.road.id = props.road.getId();
+                this.road.geojsonId = props.road.getGeojsonId();
+                this.road.roadCode = props.road.getRoadCode();
+                this.road.roadName = props.road.getRoadName();
+                this.road.linkCode = props.road.getLinkCode();
+                this.road.linkLength = props.road.getLinkLength();
+                this.road.surfaceType = props.road.getSurfaceType();
+                this.road.surfaceCondition = props.road.getSurfaceCondition();
+                this.road.roadType = props.road.getRoadType();
+                this.road.linkStartChainage = props.road.getLinkStartChainage();
+                this.road.linkEndChainage = props.road.getLinkEndChainage();
+                this.road.pavementClass = props.road.getPavementClass();
+                this.road.carriagewayWidth = props.road.getCarriagewayWidth();
+                this.road.administrativeArea = props.road.getAdministrativeArea();
+                this.road.linkStartName = props.road.getLinkStartName();
+                this.road.linkEndName = props.road.getLinkEndName();
+                this.road.project = props.road.getProject();
+                this.road.fundingSource = props.road.getFundingSource();
+                this.road.roadStatus = props.road.getRoadStatus();
+                this.road.technicalClass = props.road.getTechnicalClass();
+                this.road.maintenanceNeed = props.road.getMaintenanceNeed();
+                this.road.trafficLevel = props.road.getTrafficLevel();
                 this.update();
             },
             save(e) {
-                const road = {
-                    id: this.roadId,
-                    linkCode: this.linkCode,
-                    linkStartName: this.linkStartName,
-                    linkEndName: this.linkEndName,
-                    linkLength: this.linkLength,
-                    carriagewayWidth: this.carriagewayWidth,
-                    linkStartChainage: this.linkStartChainage,
-                    linkEndChainage: this.linkEndChainage,
-                };
-                saveRoad(road).then(() => {
-                    alert("road saved");
+                saveRoad(this.road).then((response) => {
+                    if (response) { alert("road saved"); }
+                    else { alert("road save failed"); }
                 }).catch(err => {
                     alert("road save failed");
                 }).finally(() => {
                     this.update()
                 });
-            }
+            },
+            checkLinkCode(e) {
+                let input = e.currentTarget.value.trim();
+                this.invalidLinkCode = [];
+                if (containsWhiteSpaces(input)) {
+                    this.invalidLinkCode.push(`Link code cannot contain white spaces`);
+                }
+                this.road.linkCode = input;
+                this.update();
+            },
+            checkLinkStartName(e) {
+                this.road.linkStartName = e.currentTarget.value;
+            },
+            checkLinkEndName(e) {
+                this.road.linkEndName = e.currentTarget.value;
+            },
+            checkLinkLength(e) {
+                const linkLengthDecimals = 3;
+                const linkLengthDigits = 8;
+                let input = e.currentTarget.value;
+                this.invalidLinkLength = [];
+                if (exceedsMaxDigits(input, linkLengthDigits, linkLengthDecimals)) {
+                    this.invalidLinkLength.push(`Link length cannot contain more than ${linkLengthDigits} digits, of which ${linkLengthDecimals} are decimals`);
+                } else {
+                    this.road.linkLength = input;
+                }
+                this.update();
+            },
+            checkCarriagewayWidth(e) {
+                const carriagewayWidthDecimals = 3;
+                const carriagewayWidthDigits = 5;
+                let input = e.currentTarget.value;
+                this.invalidCarriageWidth = [];
+                if (exceedsMaxDigits(input, carriagewayWidthDigits, carriagewayWidthDecimals)) {
+                    this.invalidCarriageWidth.push(`Carriage width cannot contain more than ${carriagewayWidthDigits} digits, of which ${carriagewayWidthDecimals} are decimals`);
+                } else {
+                    this.road.carriagewayWidth = input;
+                }
+                this.update();
+            },
+            checkLinkStartChainage(e) {
+                const linkChainageDecimals = 5;
+                const linkChainageDigits = 12;
+                let input = e.currentTarget.value;
+                this.invalidLinkStartChainage = [];
+                if (exceedsMaxDigits(input, linkChainageDigits, linkChainageDecimals)) {
+                    this.invalidLinkStartChainage.push(`Link start chainage cannot contain more than ${linkChainageDigits} digits, of which ${linkChainageDecimals} are decimals`);
+                } else {
+                    this.road.linkStartChainage = input;
+                }
+                this.update();
+            },
+            checkLinkEndChainage(e) {
+                const linkChainageDecimals = 5;
+                const linkChainageDigits = 12;
+                let input = e.currentTarget.value;
+                this.invalidEndChainage = [];
+                if (exceedsMaxDigits(input, linkChainageDigits, linkChainageDecimals)) {
+                    this.invalidLinkEndChainage.push(`Link end chainage cannot contain more than ${linkChainageDigits} digits, of which ${linkChainageDecimals} are decimals`);
+                } else {
+                    this.road.linkEndChainage = input;
+                }
+                this.update();
+            },
         };
 
         function containsWhiteSpaces(text) {
