@@ -1,22 +1,30 @@
 <edit_feedback>
     <template if="{ !props.error }">
-        <div class="align-items-center d-flex success">
+        <div class="align-items-center d-flex success slide-in">
             <span class="tick image"></span>
             <div class="d-flex flex-column flex-grow-1">
                 <span>{ window.gettext('Success') }</span>
                 <small class="text-muted">{ window.gettext('You have successfully saved') }</small>
             </div>
-            <span class="close image"></span>
+            <span class="close image" onclick="{ close_feedback }"></span>
         </div>
     </template>
     <template if="{ props.error }">
-        <div class="align-items-center d-flex unsuccess">
+        <div class="align-items-center d-flex unsuccess slide-in">
             <span class="error image"></span>
             <div class="d-flex flex-column flex-grow-1">
                 <span>{ window.gettext('Error') }</span>
                 <small class="text-muted">{ window.gettext('Something went wrong') }</small>
             </div>
-            <span class="close image"></span>
+            <span class="close image" onclick="{ close_feedback }"></span>
         </div>
     </template>
+
+    <script>
+        export default {
+            close_feedback() {
+                document.getElementsByClassName('slide-in').item(0).classList.add('slide-out');
+            }
+        }
+    </script>
 </edit_feedback>
