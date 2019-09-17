@@ -174,7 +174,7 @@ def geojson_details(request):
 
 
 def protobuf_road(request, pk):
-    """ returns an protobug serialized bytestring with the set of all chunks that can be requested via protobuf_roads """
+    """ returns an protobuf serialized bytestring with the set of all chunks that can be requested via protobuf_roads """
 
     if not request.user.is_authenticated:
         return HttpResponseForbidden()
