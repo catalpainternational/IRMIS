@@ -1,6 +1,8 @@
 <edit_asset_details>
     <h5>{ window.gettext("Asset") }</h5>
 
+    <edit_feedback if="{ state.show_feedback }" error="{ state.error }"></edit_feedback>
+
     <section>
         <h6>{ window.gettext("Link code and name") }</h6>
         <div class="form-group">
@@ -86,8 +88,16 @@
 
     <script>
         import { saveRoad } from "../roadManager";
+        import Edit_Feedback from './edit_feedback.riot';
 
         export default {
+            components: {
+                Edit_Feedback
+            },
+            state: {
+                show_feedback: false,
+                error: null,
+            },
             onBeforeMount() {
                 this.road = {};
             },
@@ -119,12 +129,21 @@
                 this.update();
             },
             save(e) {
+                var save_button = e.currentTarget;
+                save_button.disabled = true;
+                setTimeout(() => save_button.disabled = false, 1000); // An example of what to call when the (unimplemented) Promise is resolved
+
                 saveRoad(this.road).then((response) => {
-                    if (response) { alert("road saved"); }
-                    else { alert("road save failed"); }
+                    if (response) {
+                        this.state.error = false;
+                    }
+                    else {
+                        this.state.error = true;
+                    }
                 }).catch(err => {
                     alert("road save failed");
                 }).finally(() => {
+                    this.state.show_feedback = true;
                     this.update()
                 });
             },

@@ -98,6 +98,12 @@ p {
     color: $dark-green;
 }
 
+small {
+    line-height: 14px;
+	font-weight: 500;
+	font-size: 11px;
+}
+
 input.form-control {
     color: $dark-green;
     line-height: 12px;
@@ -196,11 +202,8 @@ table {
     }
 }
 
-.form-text {
-	line-height: 14px;
-	color: $dark-gray;
-	font-weight: 500;
-	font-size: 11px;
+.text-muted {
+	color: $dark-gray !important;
 }
 
 .invalid-tooltip li {

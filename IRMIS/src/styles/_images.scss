@@ -8,6 +8,13 @@
     }
 }
 
+%tick-error-shared {
+    background-position: left;
+    background-size: 23px;
+    height: 43px;
+    width: 43px;
+}
+
 .image {
     background-repeat: no-repeat;
     display: inline-block;
@@ -99,4 +106,20 @@
     vertical-align: middle;
     height: 16px;
     width: 15px;
+}
+
+.close {
+    background-image: url("../images/close.svg");
+    height: 15px;
+    width: 15px;
+}
+
+.tick {
+    @extend %tick-error-shared;
+    background-image: url("../images/tick.svg");
+}
+
+.error {
+    @extend %tick-error-shared;
+    background-image: url("../images/error.svg");
 }
