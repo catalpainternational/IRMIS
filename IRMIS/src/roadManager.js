@@ -40,7 +40,24 @@ function addRoadMetadata(roadList) {
 }
 
 export function saveRoad(road) {
-    return Promise.resolve(putRoadMetadata(road));
+    return Promise.resolve(putRoadMetadata(road))
+        .then((response) => {
+            let result;
+            debugger;
+            switch (response.status) {
+                case 204:
+                    result = true;
+                    break;
+                case 400:
+                case 409:
+                    result = false;
+                    break;
+                default:
+                    result = false;
+                    break;
+            };
+             return result;
+        });
 }
 
 function filterRoads(filterState) {

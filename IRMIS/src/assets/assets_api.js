@@ -61,17 +61,38 @@ export function getRoadMetadata(roadId) {
  */
 export function putRoadMetadata(roadData) {
     const assetTypeUrlFragment = "road_update";
-    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/`;
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}`;
 
-    let request = ConfigAPI.requestAssetInit("PUT");
-    request.body = roadData;
-    return fetch(metadataUrl, request)
-        .then(metadataResponse => {
-            let statusCode = metadataResponse.status;
-            if (statusCode === 204) {
-                return true;
-            } else {
-                return false;
-            }
-        });
+    let roadProtoArray = [];
+    roadProtoArray.push(roadData.id);
+    roadProtoArray.push(roadData.geojsonId); // geojsonId
+    roadProtoArray.push(roadData.roadCode); // roadCode
+    roadProtoArray.push(roadData.roadName); // roadName
+    roadProtoArray.push(roadData.linkCode); // linkCode
+    roadProtoArray.push(null); // linkName
+    roadProtoArray.push(roadData.linkLength); // linkLength
+    roadProtoArray.push(roadData.surfaceType); // surfaceType
+    roadProtoArray.push(roadData.surfaceCondition); // surfaceCondition
+    roadProtoArray.push(roadData.roadType); // roadType
+    roadProtoArray.push(roadData.linkStartChainage); // linkStartChainage
+    roadProtoArray.push(roadData.linkEndChainage); // linkEndChainage
+    roadProtoArray.push(roadData.pavementClass); // pavementClass
+    roadProtoArray.push(roadData.carriagewayWidth); // carriagewayWidth
+    roadProtoArray.push(roadData.administrativeArea); // administrativeArea
+    roadProtoArray.push(roadData.linkStartName); // linkStartName
+    roadProtoArray.push(roadData.linkEndName); // linkEndName
+    roadProtoArray.push(roadData.project); // project
+    roadProtoArray.push(roadData.fundingSource); // fundingSource
+    roadProtoArray.push(roadData.roadStatus); // roadStatus
+    roadProtoArray.push(roadData.technicalClass); // technicalClass
+    roadProtoArray.push(roadData.maintenanceNeed); // maintenanceNeed
+    roadProtoArray.push(roadData.trafficLevel); // trafficLevel
+    roadProtoArray.push(null); // lastRevisionId
+
+    let road = new Road(roadProtoArray);
+    const postAssetInit = ConfigAPI.requestAssetInit("PUT");
+    postAssetInit.body = road.serializeBinary();
+
+    return fetch(metadataUrl, postAssetInit)
+        .then(postResponse => (postResponse));
 }
