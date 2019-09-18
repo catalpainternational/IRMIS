@@ -6,8 +6,9 @@
     <section>
         <div class="form-group">
             <label>{ administrative_areas.display }</label>
-            <select class="form-control">
-                <option each={ a in administrative_areas.options } value="{ a.id }" selected={ a.name == road.administrativeArea }>
+            <select class="form-control" onchange="{checkAdministrativeArea}">
+                <option value="">{window.gettext("Select an Administrative Area")}</option>
+                <option each={ a in administrative_areas.options } value="{ a.id }" selected={ a.name == state.editingRoad.getAdministrativeArea() }>
                     { a.name }
                 </option>
             <small class="form-text text-muted">Choose the administrative area of the road</small>
@@ -15,12 +16,13 @@
 
         <div class="form-group">
             <label>{ road_types.display }</label>
-            <select  class="form-control">
-                <option each={ r in road_types.options } value="{ r[0] }" selected={ r[0] == road.roadType }>
+            <select  class="form-control" onchange="{checkRoadType}">
+                <option value="">{window.gettext("Select a Road Type")}</option>
+                <option each={ r in road_types.options } value="{ r[0] }" selected={ r[0] == state.editingRoad.getRoadType() }>
                     { r[1] }
                 </option>
             </select>
-            <small class="form-text text-muted">Choose the administrative class of the road</small>
+            <small class="form-text text-muted">Choose the class of the road</small>
         </div>
     </section>
 
@@ -29,43 +31,20 @@
     </div>
 
     <script>
+        import { saveRoad } from "../roadManager";
+        import Edit_Feedback from './edit_feedback.riot';
+        import { Road } from "../../protobuf/roads_pb";
+
         export default {
-            onBeforeMount() {
-                this.road = {};
-            },
-            onMounted(props, state) {
-                // ROAD DATA
-                this.road.id = props.road.getId();
-                this.road.geojsonId = props.road.getGeojsonId();
-                this.road.roadCode = props.road.getRoadCode();
-                this.road.roadName = props.road.getRoadName();
-                this.road.linkCode = props.road.getLinkCode();
-                this.road.linkLength = props.road.getLinkLength();
-                this.road.surfaceType = props.road.getSurfaceType();
-                this.road.surfaceCondition = props.road.getSurfaceCondition();
-                this.road.roadType = props.road.getRoadType();
-                this.road.linkStartChainage = props.road.getLinkStartChainage();
-                this.road.linkEndChainage = props.road.getLinkEndChainage();
-                this.road.pavementClass = props.road.getPavementClass();
-                this.road.carriagewayWidth = props.road.getCarriagewayWidth();
-                this.road.administrativeArea = props.road.getAdministrativeArea();
-                this.road.linkStartName = props.road.getLinkStartName();
-                this.road.linkEndName = props.road.getLinkEndName();
-                this.road.project = props.road.getProject();
-                this.road.fundingSource = props.road.getFundingSource();
-                this.road.roadStatus = props.road.getRoadStatus();
-                this.road.technicalClass = props.road.getTechnicalClass();
-                this.road.maintenanceNeed = props.road.getMaintenanceNeed();
-                this.road.trafficLevel = props.road.getTrafficLevel();
-                this.road.lastRevisionId = props.road.getLastRevisionId();
-                this.update();
+            onBeforeMount(props, state) {
+                state.editingRoad = Road.deserializeBinary(props.road.serializeBinary());
             },
             save(e) {
                 var save_button = e.currentTarget;
                 save_button.disabled = true;
                 setTimeout(() => save_button.disabled = false, 1000); // An example of what to call when the (unimplemented) Promise is resolved
 
-                saveRoad(this.road).then((response) => {
+                saveRoad(this.state.editingRoad).then((response) => {
                     if (response) { this.state.error = false; }
                     else { this.state.error = true; }
                 }).catch(err => {
@@ -74,6 +53,12 @@
                     this.state.show_feedback = true;
                     this.update()
                 });
+            },
+            checkAdministrativeArea(e) {
+                this.state.editingRoad.setAdministrativeArea(e.currentTarget.value);
+            },
+            checkRoadType(e) {
+                this.state.editingRoad.setRoadType(e.currentTarget.value);
             },
             administrative_areas: window.road_schema.administrative_area,
             road_types: window.road_schema.road_type
