@@ -46,8 +46,8 @@ export function saveRoad(road) {
             switch (response.status) {
                 case 204:
                     result = true;
-                    roads[road.id] = response.road_pb;
-                    document.dispatchEvent(new CustomEvent("estrada.table.roadMetaDataUpdated", {"detail": response.road_pb}));
+                    roads[road.id] = road;
+                    document.dispatchEvent(new CustomEvent("estrada.table.roadMetaDataUpdated", {"detail": road}));
                     break;
                 case 400:
                 case 409:
