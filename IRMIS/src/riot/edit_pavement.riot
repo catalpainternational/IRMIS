@@ -1,21 +1,33 @@
 <edit_pavement>
-    <h5>Pavement</h5>
+    <h5>{ window.gettext("Pavement") }</h5>
 
     <edit_feedback if="{ state.show_feedback }" error="{ state.error }"></edit_feedback>
 
     <section>
         <div class="form-group">
-            <label>{ pavements.display }</label>
+            <label>{ surfaces.display }</label>
             <select class="form-control">
-                <option class="form-control" each={ p in pavements.options } value="{ p.code }" selected={ p.code == road.pavementClass }>
-                    { p.name }
-                </option>
-            <small class="form-text text-muted">Choose the pavement of the road</small>
+                <template each="{ surface in surfaces.options }">
+                    <option if="{ surface.id == road.surfaceType }" value="{ surface.id }" selected>{ surface.name }</option>
+                    <option if="{ surface.id != road.surfaceType }" value="{ surface.id }">{ surface.name }</option>
+                </template>
+            </select>
+            <small class="form-text text-muted">{ window.gettext("Choose the type of surface of the road link carriageway") }</small>
+        </div>
+        <div class="form-group">
+            <label>{ pavements.display }</label>
+            <small class="form-text text-muted">{ window.gettext("Choose the pavement class of the road") }</small>
+            <ul class="pavement-classes">
+                <li each="{ pavement in pavements.options }" onclick="{ selectPavement }">
+                    <span class="{ pavement.code == road.pavementClass ? 'active' : ''  } radio image"></span>
+                    { pavement.name }
+                </li>
+            </ul>
         </div>
     </section>
 
     <div class="button-wrapper d-flex justify-content-end">
-        <button class="btn btn-primary" onclick="{ save }">Save and continue</button>
+        <button class="btn btn-primary" onclick="{ save }">{ window.gettext("Save and continue") }</button>
     </div>
 
     <script>
@@ -50,6 +62,12 @@
                 this.road.lastRevisionId = props.road.getLastRevisionId();
                 this.update();
             },
+            selectPavement(e) {
+                var radio = e.currentTarget.firstElementChild;
+                var currentSelected = document.getElementsByClassName("pavement-classes").item(0).getElementsByClassName("active");
+                if (currentSelected.length) currentSelected.item(0).classList.remove("active");
+                radio.classList.add("active");
+            },
             save(e) {
                 var save_button = e.currentTarget;
                 save_button.disabled = true;
@@ -65,7 +83,8 @@
                     this.update()
                 });
             },
-            pavements: window.road_schema.pavement_class
+            pavements: window.road_schema.pavement_class,
+            surfaces: window.road_schema.surface_type,
         }
     </script>
 </edit_pavement>
