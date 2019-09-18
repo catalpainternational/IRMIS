@@ -6,9 +6,9 @@
     <section>
         <h6>{ window.gettext("Link code and name") }</h6>
         <div class="form-group">
-            <label>{ window.gettext("Link Code") }</label>
-            <input class="{ invalidLinkCode && invalidLinkCode.length ? 'danger' : null } form-control inactive"
-                type="text" maxlength="25" placeholder="{ window.gettext("E.g. A01-01") }" value="{ road.linkCode }" oninput="{ checkLinkCode }">
+            <label>{ link_code.display }</label>
+            <input class="{ invalidLinkCode && invalidLinkCode.length ? 'danger' : null, road.linkCode ? '' : 'inactive' } form-control"
+                type="text" maxlength="25" placeholder="{ window.gettext('E.g. A01-01') }" value="{ road.linkCode }" oninput="{ checkLinkCode }">
             <small class="form-text text-muted">{ window.gettext("Enter link code according to DRBFC standard") }</small>
             <div if="{ invalidLinkCode && invalidLinkCode.length }" class="invalid-tooltip">
                 <ul>
@@ -17,15 +17,15 @@
             </div>
         </div>
         <div class="form-group">
-            <label>{ window.gettext("Link Start Name") }</label>
-            <input class="form-control inactive" type="text" maxlength="150"
-                placeholder="{ window.gettext("E.g. Dili") }" value="{ road.linkStartName }" oninput="{ checkLinkStartName }">
+            <label>{ link_start_name.display }</label>
+            <input class="{ road.linkStartName ? '' : 'inactive' } form-control" type="text" maxlength="150"
+                placeholder="{ window.gettext('E.g. Dili') }" value="{ road.linkStartName }" oninput="{ checkLinkStartName }">
             <small class="form-text text-muted">{ window.gettext("Enter the name of the link start location (municipal center, administrative post or nearest suco)") }</small>
         </div>
         <div class="form-group">
-            <label>{ window.gettext("Link End Name") }</label>
-            <input class="form-control inactive" type="text" maxlength="150"
-                placeholder="{ window.gettext("E.g. Manatuto") }" value="{ road.linkEndName }" oninput="{ checkLinkEndName }">
+            <label>{ link_end_name.display }</label>
+            <input class="{ road.linkStartName ? '' : 'inactive' } form-control" type="text" maxlength="150"
+                placeholder="{ window.gettext('E.g. Manatuto') }" value="{ road.linkEndName }" oninput="{ checkLinkEndName }">
             <small class="form-text text-muted">{ window.gettext("Enter the name of the link end location (municipal center, administrative post or nearest suco)") }</small>
         </div>
     </section>
@@ -33,9 +33,9 @@
     <section>
         <h6>{ window.gettext("Link width and length") }</h6>
         <div class="form-group">
-            <label>{ window.gettext("Link Length") }</label>
-            <input class="{ invalidLinkLength && invalidLinkLength.length ? 'danger' : null } form-control inactive"
-                type="number" placeholder="{ window.gettext("E.g. 58.7") }" value="{ road.linkLength }" oninput="{ checkLinkLength }">
+            <label>{ link_length.display }</label>
+            <input class="{ invalidLinkLength && invalidLinkLength.length ? 'danger' : null, road.linkLength ? '' : 'inactive' } form-control"
+                type="number" placeholder="{ window.gettext('E.g. 58.7') }" value="{ road.linkLength }" oninput="{ checkLinkLength }">
             <small class="form-text text-muted">{ window.gettext("Enter road link length (in Km)") }</small>
             <div if="{ invalidLinkLength && invalidLinkLength.length }" class="invalid-tooltip">
                 <ul>
@@ -44,9 +44,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label>{ window.gettext("Carriageway Width") }</label>
-            <input class="{ invalidCarriageWidth && invalidCarriageWidth.length ? 'danger' : null } form-control inactive"
-                type="number" placeholder="{ window.gettext("E.g. 5.0") }" value="{ road.carriagewayWidth }" oninput="{ checkCarriagewayWidth }">
+            <label>{ carriageway_width.display }</label>
+            <input class="{ invalidCarriageWidth && invalidCarriageWidth.length ? 'danger' : null, road.carriagewayWidth ? '' : 'inactive' } form-control"
+                type="number" placeholder="{ window.gettext('E.g. 5.0') }" value="{ road.carriagewayWidth }" oninput="{ checkCarriagewayWidth }">
             <small class="form-text text-muted">{ window.gettext("Enter the width (in meters) of the link carriageway") }</small>
             <div if="{ invalidCarriageWidth && invalidCarriageWidth.length }" class="invalid-tooltip">
                 <ul>
@@ -59,9 +59,9 @@
     <section>
         <h6>{ window.gettext("Link chainage") }</h6>
         <div class="form-group">
-            <label>{ window.gettext("Link Start Chainage") }</label>
-            <input class="{ invalidLinkStartChainage && invalidLinkStartChainage.length ? 'danger' : null } form-control inactive"
-                type="number" placeholder="{ window.gettext("E.g. 0+000") }" value="{ road.linkStartChainage }" oninput="{ checkLinkStartChainage }">
+            <label>{ link_start_chainage.display }</label>
+            <input class="{ invalidLinkStartChainage && invalidLinkStartChainage.length ? 'danger' : null, road.linkStartChainage ? '' : 'inactive' } form-control"
+                type="number" placeholder="{ window.gettext('E.g. 0+000') }" value="{ road.linkStartChainage }" oninput="{ checkLinkStartChainage }">
             <small class="form-text text-muted">{ window.gettext("Enter chainage for link starting point") }</small>
             <div if="{ invalidLinkStartChainage && invalidLinkStartChainage.length }" class="invalid-tooltip">
                 <ul>
@@ -70,9 +70,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label>{ window.gettext("Link End Chainage") }</label>
-            <input class="{ invalidLinkEndChainage && invalidLinkEndChainage.length ? 'danger' : null } form-control inactive"
-                type="number" placeholder="{ window.gettext("E.g. 62+410") }" value="{ road.linkEndChainage }" oninput="{ checkLinkEndChainage }">
+            <label>{ link_end_chainage.display }</label>
+            <input class="{ invalidLinkEndChainage && invalidLinkEndChainage.length ? 'danger' : null, road.linkEndChainage ? '' : 'inactive' } form-control"
+                type="number" placeholder="{ window.gettext('E.g. 62+410') }" value="{ road.linkEndChainage }" oninput="{ checkLinkEndChainage }">
             <small class="form-text text-muted">{ window.gettext("Enter chainage for link ending point") }</small>
             <div if="{ invalidLinkEndChainage && invalidLinkEndChainage.length }" class="invalid-tooltip">
                 <ul>
@@ -98,6 +98,13 @@
                 show_feedback: false,
                 error: null,
             },
+            link_code: window.road_schema.link_code,
+            link_start_name: window.road_schema.link_start_name,
+            link_end_name: window.road_schema.link_end_name,
+            link_length: window.road_schema.link_length,
+            carriageway_width: window.road_schema.carriageway_width,
+            link_start_chainage: window.road_schema.link_start_chainage,
+            link_end_chainage: window.road_schema.link_end_chainage,
             onBeforeMount() {
                 this.road = {};
             },
