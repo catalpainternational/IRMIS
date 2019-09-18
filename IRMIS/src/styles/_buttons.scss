@@ -33,6 +33,16 @@
     &:hover {
         background-color: $green;
     }
+
+    &:disabled {
+        background-color: $lighter-gray;
+        color: $dark-gray;
+    
+        &:hover {
+            background-color: $lighter-gray;
+            color: $dark-gray;
+        }
+    }
 }
 
 .btn-secondary {
@@ -43,16 +53,5 @@
     &:hover {
         border: 1px solid $light-gray;
         background-color: $white;
-    }
-}
-
-.btn-inactive {
-    @extend %primary-shared;
-    background-color: $lighter-gray;
-    color: $dark-gray;
-
-    &:hover {
-        background-color: $gray;
-        color: $dark-gray;
     }
 }

@@ -52,3 +52,20 @@ export function getRoadMetadata(roadId) {
             return Road.deserializeBinary(uintArray);
         });
 }
+
+/** putRoadMetadata
+ *
+ * Post metadata for a single road to the server
+ *
+ * @returns 204 (success) or 400 (failure)
+ */
+export function putRoadMetadata(road) {
+    const assetTypeUrlFragment = "road_update";
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}`;
+
+    const postAssetInit = ConfigAPI.requestAssetInit("PUT");
+    postAssetInit.body = road.serializeBinary();
+
+    return fetch(metadataUrl, postAssetInit)
+        .then((postResponse) => (postResponse));
+}

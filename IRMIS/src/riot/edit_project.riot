@@ -1,3 +1,48 @@
 <edit_project>
-    <h3>Project</h3>
+    <h5>Project</h5>
+
+    <edit_feedback if="{ state.show_feedback }" error="{ state.error }"></edit_feedback>
+
+    <section>
+        <div class="form-group">
+            <label>Project Name</label>
+            <input class="form-control inactive" type="text" placeholder="E.g. National Road PRoject DA043" value="{ state.editingRoad.getProject() }" oninput="{checkProject}">
+            <small class="form-text text-muted">Enter the project for this road</small>
+        </div>
+    </section>
+
+    <div class="button-wrapper d-flex justify-content-end">
+        <button class="btn btn-primary" onclick="{ save }">Save and continue</button>
+    </div>
+
+    <script>
+        import { saveRoad } from "../roadManager";
+        import Edit_Feedback from './edit_feedback.riot';
+        import { Road } from "../../protobuf/roads_pb";
+
+        export default {
+            onBeforeMount(props, state) {
+                state.editingRoad = Road.deserializeBinary(props.road.serializeBinary());
+            },
+            save(e) {
+                var save_button = e.currentTarget;
+                save_button.disabled = true;
+                setTimeout(() => save_button.disabled = false, 1000); // An example of what to call when the (unimplemented) Promise is resolved
+
+                saveRoad(this.state.editingRoad).then((response) => {
+                    if (response) { this.state.error = false; }
+                    else { this.state.error = true; }
+                }).catch(err => {
+                    this.state.error = true;
+                }).finally(() => {
+                    this.state.show_feedback = true;
+                    this.update()
+                });
+            },
+            checkProject(e) {
+                this.state.editingRoad.setProject(e.currentTarget.value);
+            },
+        }
+    </script>
+
 </edit_project>

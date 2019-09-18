@@ -21,13 +21,13 @@
         <div if={ !state.loading } id="edit-base">
             <header class="align-items-center d-flex">
                 <a class="caret-dark left image" href="#"></a>
-                <h1>{ state.road.getRoadCode() }</h1>
+                <h1>{ state.road.getRoadCode() } { state.road.getRoadName() }</h1>
             </header>
-            <!-- <edit_location_type></edit_location_type> -->
-            <edit_asset_details></edit_asset_details>
-            <!-- <edit_pavement></edit_pavement> -->
-            <!-- <edit_project></edit_project> -->
-            <!-- <edit_condition></edit_condition> -->
+            <!-- <edit_location_type road={ state.road }></edit_location_type> -->
+            <edit_asset_details road={ state.road }></edit_asset_details>
+            <!-- <edit_pavement road={ state.road }></edit_pavement> -->
+            <!-- <edit_project road={ state.road }></edit_project> -->
+            <!-- <edit_condition road={ state.road }></edit_condition> -->
         </div>
     </div>
 
@@ -42,7 +42,7 @@
             state: {
                 loading: true,
                 road: null,
-                err: false
+                err: false,
             },
             components: {
                 Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Project, Edit_Condition
@@ -53,11 +53,11 @@
                     state.loading = false;
                     state.road = road;
                 }).catch(err => {
-                    state.err = err;  
+                    state.err = err;
                 }).finally(() => {
                     this.update()
-                });;
-            }
+                });
+            },
         };
     </script>
 </edit_base>

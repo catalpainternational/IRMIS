@@ -18,7 +18,7 @@ const estradaMap = new Map();
 window.onload = () => {
     // Set up the map and table - but without any data for either
     estradaMap.loadMap();
-    
+
     // Get the geometry details
     getGeoJsonDetails()
         .then(geoJsonDetails => {

@@ -1,4 +1,4 @@
-import { getRoadMetadata, getRoadsMetadata, getRoadsMetadataChunks } from "./assets/assets_api.js";
+import { getRoadMetadata, getRoadsMetadata, getRoadsMetadataChunks, putRoadMetadata } from "./assets/assets_api";
 
 let roads = {}
 let filteredRoads = {}
@@ -37,6 +37,28 @@ function addRoadMetadata(roadList) {
         roads,
     );
     document.dispatchEvent(new CustomEvent("estrada.roadManager.roadMetaDataAdded", {"detail": { roadList }}));
+}
+
+export function saveRoad(road) {
+    return Promise.resolve(putRoadMetadata(road))
+        .then((response) => {
+            let result;
+            switch (response.status) {
+                case 204:
+                    result = true;
+                    roads[road.getId()] = road;
+                    document.dispatchEvent(new CustomEvent("estrada.table.roadMetaDataUpdated", {"detail": road}));
+                    break;
+                case 400:
+                case 409:
+                    result = false;
+                    break;
+                default:
+                    result = false;
+                    break;
+            };
+             return result;
+        });
 }
 
 function filterRoads(filterState) {

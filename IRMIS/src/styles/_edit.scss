@@ -21,7 +21,7 @@ $max-width: 400px;
     }
 }
 
-edit_asset_details {
+edit_asset_details, edit_pavement, edit_project, edit_condition, edit_location_type {
     height: calc(100vh - #{$top-menu-height} - 70px - 15px);
     background-color: $white;
     padding: 30px 60px 60px;
@@ -50,5 +50,33 @@ edit_asset_details {
 
     .button-wrapper {
         max-width: $max-width;
+    }
+}
+
+edit_feedback {
+    & > div {
+        box-shadow: 0 0 10px 0 rgba(61, 71, 88, 0.5);
+        border-bottom-right-radius: $radius;
+        border-bottom-left-radius: $radius;
+        background-color: $white;
+        border-top-style: solid;
+        border-top-width: 10px;
+        padding-right: 30px;
+        padding-left: 30px;
+        position: absolute;
+        height: 71px;
+        margin: auto;
+        width: 376px;
+        right: 0;
+        left: 0;
+        top: 0;
+
+        &.success {
+            border-top-color: $green;
+        }
+
+        &.unsuccess {
+            border-top-color: $red;
+        }
     }
 }
