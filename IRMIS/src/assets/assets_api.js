@@ -67,7 +67,5 @@ export function putRoadMetadata(road) {
     postAssetInit.body = road.serializeBinary();
 
     return fetch(metadataUrl, postAssetInit)
-        .then((postResponse) => {
-            return postResponse;
-        });
+        .then((postResponse) => (postResponse));
 }
