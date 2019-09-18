@@ -6,7 +6,7 @@
     <section>
         <div class="form-group">
             <label>Project Name</label>
-            <input class="form-control inactive" type="text" placeholder="E.g. National Road PRoject DA043" value="{ state.editingRoad.getProject() }">
+            <input class="form-control inactive" type="text" placeholder="E.g. National Road PRoject DA043" value="{ state.editingRoad.getProject() }" oninput="{checkProject}">
             <small class="form-text text-muted">Enter the project for this road</small>
         </div>
     </section>
@@ -38,6 +38,9 @@
                     this.state.show_feedback = true;
                     this.update()
                 });
+            },
+            checkProject(e) {
+                this.state.editingRoad.setProject(e.currentTarget.value);
             },
         }
     </script>

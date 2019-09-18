@@ -6,7 +6,8 @@
     <section>
         <div class="form-group">
             <label>{ conditions.display }</label>
-            <select class="form-control">
+            <select class="form-control" onchange="{checkSurfaceCondition}">
+                <option value="">{window.gettext("Select a Surface Condition")}</option>
                 <option each={ c in conditions.options } value="{ c[0] }"" selected={ c[0] == state.editingRoad.getSurfaceCondition() }>
                     { c[1] }
                 </option>
@@ -42,6 +43,9 @@
                     this.state.show_feedback = true;
                     this.update()
                 });
+            },
+            checkSurfaceCondition(e) {
+                this.state.editingRoad.setSurfaceCondition(e.currentTarget.value);
             },
             conditions: window.road_schema.surface_condition
         }

@@ -127,10 +127,10 @@
                 this.update();
             },
             checkLinkStartName(e) {
-                this.state.editingRoad.linkStartName = e.currentTarget.value;
+                this.state.editingRoad.setLinkStartName(e.currentTarget.value);
             },
             checkLinkEndName(e) {
-                this.state.editingRoad.linkEndName = e.currentTarget.value;
+                this.state.editingRoad.setLinkEndName(e.currentTarget.value);
             },
             checkLinkLength(e) {
                 const linkLengthDecimals = 3;
