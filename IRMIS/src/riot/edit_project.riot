@@ -1,18 +1,33 @@
 <edit_project>
-    <h5>Project</h5>
+    <h5>{ window.gettext ("Project") }</h5>
 
     <edit_feedback if="{ state.show_feedback }" error="{ state.error }"></edit_feedback>
 
     <section>
         <div class="form-group">
-            <label>Project Name</label>
-            <input class="form-control inactive" type="text" placeholder="E.g. National Road PRoject DA043" value="{ road.project }">
-            <small class="form-text text-muted">Enter the project for this road</small>
+            <label>{ funding_source.display }</label>
+            <input class="{ road.fundingSource ? '' : 'inactive' } form-control" type="text" maxlength="50" placeholder="{ window.gettext ('E.g. IF') }" value="{ road.fundingSource }">
+            <small class="form-text text-muted">{ window.gettext ("Enter the source funding for the road link") }</small>
+        </div>
+        <div class="form-group">
+            <label>{ road_status.display }</label>
+            <small class="form-text text-muted">{ window.gettext("Enter road link current status") }</small>
+            <ul class="status">
+                <li each="{ roadStatus in road_status.options }" onclick="{ selectRoadStatus }">
+                    <span class="{ roadStatus.code === road.roadStatus ? 'active' : ''  } radio image"></span>
+                    { roadStatus.name }
+                </li>
+            </ul>
+        </div>
+        <div class="form-group">
+            <label>{ project.display }</label>
+            <input class="{ road.project ? '' : 'inactive' } form-control" type="text" maxlength="150" placeholder="{ window.gettext ('E.g. DBHP 2016-2022') }" value="{ road.project }">
+            <small class="form-text text-muted">{ window.gettext ("Enter road link project name") }</small>
         </div>
     </section>
 
     <div class="button-wrapper d-flex justify-content-end">
-        <button class="btn btn-primary" onclick="{ save }">Save and continue</button>
+        <button class="btn btn-primary" onclick="{ save }">{ window.gettext ("Save and continue") }</button>
     </div>
 
     <script>
@@ -47,6 +62,12 @@
                 this.road.lastRevisionId = props.road.getLastRevisionId();
                 this.update();
             },
+            selectRoadStatus(e) {
+                var radio = e.currentTarget.firstElementChild;
+                var currentSelected = document.getElementsByClassName("status").item(0).getElementsByClassName("active");
+                if (currentSelected.length) currentSelected.item(0).classList.remove("active");
+                radio.classList.add("active");
+            },
             save(e) {
                 var save_button = e.currentTarget;
                 save_button.disabled = true;
@@ -62,7 +83,9 @@
                     this.update()
                 });
             },
+            funding_source: window.road_schema.funding_source,
+            road_status: window.road_schema.road_status,
+            project: window.road_schema.project,
         }
     </script>
-
 </edit_project>
