@@ -6,7 +6,7 @@
     <section>
         <div class="form-group">
             <label>Project Name</label>
-            <input class="form-control inactive" type="text" placeholder="E.g. National Road PRoject DA043" value="{ road.project }">
+            <input class="form-control inactive" type="text" placeholder="E.g. National Road PRoject DA043" value="{ state.editingRoad.getProject() }">
             <small class="form-text text-muted">Enter the project for this road</small>
         </div>
     </section>
@@ -16,43 +16,20 @@
     </div>
 
     <script>
+        import { saveRoad } from "../roadManager";
+        import Edit_Feedback from './edit_feedback.riot';
+        import { Road } from "../../protobuf/roads_pb";
+
         export default {
-            onBeforeMount() {
-                this.road = {};
-            },
-            onMounted(props, state) {
-                // ROAD DATA
-                this.road.id = props.road.getId();
-                this.road.geojsonId = props.road.getGeojsonId();
-                this.road.roadCode = props.road.getRoadCode();
-                this.road.roadName = props.road.getRoadName();
-                this.road.linkCode = props.road.getLinkCode();
-                this.road.linkLength = props.road.getLinkLength();
-                this.road.surfaceType = props.road.getSurfaceType();
-                this.road.surfaceCondition = props.road.getSurfaceCondition();
-                this.road.roadType = props.road.getRoadType();
-                this.road.linkStartChainage = props.road.getLinkStartChainage();
-                this.road.linkEndChainage = props.road.getLinkEndChainage();
-                this.road.pavementClass = props.road.getPavementClass();
-                this.road.carriagewayWidth = props.road.getCarriagewayWidth();
-                this.road.administrativeArea = props.road.getAdministrativeArea();
-                this.road.linkStartName = props.road.getLinkStartName();
-                this.road.linkEndName = props.road.getLinkEndName();
-                this.road.project = props.road.getProject();
-                this.road.fundingSource = props.road.getFundingSource();
-                this.road.roadStatus = props.road.getRoadStatus();
-                this.road.technicalClass = props.road.getTechnicalClass();
-                this.road.maintenanceNeed = props.road.getMaintenanceNeed();
-                this.road.trafficLevel = props.road.getTrafficLevel();
-                this.road.lastRevisionId = props.road.getLastRevisionId();
-                this.update();
+            onBeforeMount(props, state) {
+                state.editingRoad = Road.deserializeBinary(props.road.serializeBinary());
             },
             save(e) {
                 var save_button = e.currentTarget;
                 save_button.disabled = true;
                 setTimeout(() => save_button.disabled = false, 1000); // An example of what to call when the (unimplemented) Promise is resolved
 
-                saveRoad(this.road).then((response) => {
+                saveRoad(this.state.editingRoad).then((response) => {
                     if (response) { this.state.error = false; }
                     else { this.state.error = true; }
                 }).catch(err => {
