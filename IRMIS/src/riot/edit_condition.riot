@@ -8,8 +8,8 @@
             <label>{ conditions.display }</label>
             <small class="form-text text-muted">{ window.gettext("Choose road link surface condition according to the Surface Distress Index (SDI): Good (SDI≤2), fair (2<SDI≤3), poor (3<SDI≤4) or bad (SDI>4)") }</small>
             <ul class="surface-condition">
-                <li each="{ condition in conditions.options }" onclick="{ selectSurfaceCondition }">
-                    <span class="{ condition[0] === road.surfaceCondition ? 'active' : ''  } radio image"></span>
+                <li each="{ condition in conditions.options }" data-condition="{ condition[1] }" onclick="{ checkSurfaceCondition }">
+                    <span class="{ condition[0] == state.editingRoad.getSurfaceCondition() ? 'active' : ''  } radio image"></span>
                     { condition[1] }
                 </li>
             </ul>
@@ -18,8 +18,8 @@
             <label>{ maintenance_needs.display }</label>
             <small class="form-text text-muted">{ window.gettext("Choose the type of maintenace needs for the road link") }</small>
             <ul class="maintenance-need">
-                <li each="{ maintenance_need in maintenance_needs.options }" onclick="{ selectMaintenanceNeeds }">
-                    <span class="{ maintenance_need.id === road.maintenanceNeed ? 'active' : ''  } radio image"></span>
+                <li each="{ maintenance_need in maintenance_needs.options }" data-maintenance="{ maintenance_need.name }" onclick="{ checkMaintenanceNeeds }">
+                    <span class="{ maintenance_need.id === state.editingRoad.getMaintenanceNeed() ? 'active' : ''  } radio image"></span>
                     { maintenance_need.name }
                 </li>
             </ul>
@@ -28,8 +28,8 @@
             <label>{ technical_classes.display }</label>
             <small class="form-text text-muted">{ window.gettext("Choose road link technical class according to the 2010 Road Geometric Design Standards, DRBFC standards") }</small>
             <ul class="technical-class">
-                <li each="{ technical_class in technical_classes.options }" onclick="{ selectTechnicalClass }">
-                    <span class="{ technical_class.code == road.technicalClass ? 'active' : ''  } radio image"></span>
+                <li each="{ technical_class in technical_classes.options }" data-technical="{ technical_class.name }" onclick="{ checkTechnicalClass }">
+                    <span class="{ technical_class.code == state.editingRoad.getTechnicalClass() ? 'active' : ''  } radio image"></span>
                     { technical_class.name }
                 </li>
             </ul>
@@ -38,8 +38,8 @@
             <label>{ traffic_data.display }</label>
             <small class="form-text text-muted">{ window.gettext("Choose the traffic volume for the road link") }</small>
             <ul class="traffic-data">
-                <li each="{ traffic in traffic_data.options }" onclick="{ selectTrafficData }">
-                    <span class="{ traffic[0] === road.trafficLevel ? 'active' : ''  } radio image"></span>
+                <li each="{ traffic in traffic_data.options }" data-traffic="{ traffic[1] }" onclick="{ checkTrafficData }">
+                    <span class="{ traffic[0] === state.editingRoad.getTrafficLevel() ? 'active' : ''  } radio image"></span>
                     { traffic[1] }
                 </li>
             </ul>
@@ -51,60 +51,41 @@
     </div>
 
     <script>
+        import { saveRoad } from "../roadManager";
+        import Edit_Feedback from './edit_feedback.riot';
+        import { Road } from "../../protobuf/roads_pb";
+
         export default {
-            onBeforeMount() {
-                this.road = {};
+            onBeforeMount(props, state) {
+                state.editingRoad = Road.deserializeBinary(props.road.serializeBinary());
             },
-            onMounted(props, state) {
-                // ROAD DATA
-                this.road.id = props.road.getId();
-                this.road.geojsonId = props.road.getGeojsonId();
-                this.road.roadCode = props.road.getRoadCode();
-                this.road.roadName = props.road.getRoadName();
-                this.road.linkCode = props.road.getLinkCode();
-                this.road.linkLength = props.road.getLinkLength();
-                this.road.surfaceType = props.road.getSurfaceType();
-                this.road.surfaceCondition = props.road.getSurfaceCondition();
-                this.road.roadType = props.road.getRoadType();
-                this.road.linkStartChainage = props.road.getLinkStartChainage();
-                this.road.linkEndChainage = props.road.getLinkEndChainage();
-                this.road.pavementClass = props.road.getPavementClass();
-                this.road.carriagewayWidth = props.road.getCarriagewayWidth();
-                this.road.administrativeArea = props.road.getAdministrativeArea();
-                this.road.linkStartName = props.road.getLinkStartName();
-                this.road.linkEndName = props.road.getLinkEndName();
-                this.road.project = props.road.getProject();
-                this.road.fundingSource = props.road.getFundingSource();
-                this.road.roadStatus = props.road.getRoadStatus();
-                this.road.technicalClass = props.road.getTechnicalClass();
-                this.road.maintenanceNeed = props.road.getMaintenanceNeed();
-                this.road.trafficLevel = props.road.getTrafficLevel();
-                this.road.lastRevisionId = props.road.getLastRevisionId();
-                this.update();
-            },
-            selectSurfaceCondition(e) {
+            checkSurfaceCondition(e) {
+                this.state.editingRoad.setSurfaceCondition(e.currentTarget.dataset.condition);
                 selectRadio(e, "surface-condition");
             },
-            selectMaintenanceNeeds(e) {
+            checkMaintenanceNeeds(e) {
+                this.state.editingRoad.setMaintenanceNeeds(e.currentTarget.dataset.maintenance);
                 selectRadio(e, "maintenance-need");
             },
-            selectTechnicalClass(e) {
+            checkTechnicalClass(e) {
+                this.state.editingRoad.setTechnicalClass(e.currentTarget.dataset.technical);
                 selectRadio(e, "technical-class");
             },
-            selectTrafficData(e) {
+            checkTrafficData(e) {
+                this.state.editingRoad.setTrafficData(e.currentTarget.dataset.traffic);
                 selectRadio(e, "traffic-data");
             },
             save(e) {
                 var save_button = e.currentTarget;
                 save_button.disabled = true;
-                setTimeout(() => save_button.disabled = false, 1000); // An example of what to call when the (unimplemented) Promise is resolved
 
-                saveRoad(this.road).then((response) => {
+                saveRoad(this.state.editingRoad).then((response) => {
                     if (response) { this.state.error = false; }
                     else { this.state.error = true; }
                 }).catch(err => {
                     this.state.error = true;
                 }).finally(() => {
+                    save_button.disabled = false
                     this.state.show_feedback = true;
                     this.update()
                 });
