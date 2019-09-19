@@ -40,6 +40,10 @@ document.addEventListener('estrada.roadManager.roadMetaDataAdded', (data) => {
     table.rows.add(data.detail.roadList).draw();
 });
 
+document.addEventListener('estrada.table.roadMetaDataUpdated', (data) => {
+    table.row(`#${data.detail.getId()}`).data(data.detail).draw();
+});
+
 // when a filter is applied, update the filter id whitelist
 document.addEventListener('estrada.filter.applied', (data) => {
     idWhitelistMap = data.detail.idMap;
@@ -63,88 +67,88 @@ window.addEventListener('load', () => {
 function initializeDataTable() {
     const date = new Date();
     const columns = [
-        { 
+        {
             title: 'Road Code', data: null,
             render: 'getRoadCode',
             type: "roadCode"
         },
-        { 
+        {
             title: 'Type', data: null,
             render: r => choice_or_empty(r.getRoadType(), ROAD_TYPE_CHOICES)
         },
-        { 
+        {
             title: 'Name', data: null,
             render: 'getRoadName'
         },
-        { 
+        {
             title: 'Status', data: null,
             render: r => choice_or_empty(r.getRoadStatus(), ROAD_STATUS_CHOICES)
         },
-        { 
+        {
             title: 'Link Code', data: null,
             render: 'getLinkCode'
         },
-        { 
+        {
             title: 'Link Name', data: null,
             render: 'getLinkName'
         },
-        { 
+        {
             title: 'Link Start Name', data: null,
             render: 'getLinkStartName'
         },
-        { 
+        {
             title: 'Link Start Chainage (Km)', data: null,
             render: r => parseFloat(r.getLinkStartChainage()).toFixed(2)
         },
-        { 
+        {
             title: 'Link End Name', data: null,
             render: 'getLinkEndName'
         },
-        { 
+        {
             title: 'Link End Chainage (Km)', data: null,
             render: r => parseFloat(r.getLinkEndChainage()).toFixed(2)
         },
-        { 
+        {
             title: 'Link Length (Km)', data: null,
             render: r => parseFloat(r.getLinkLength()).toFixed(2)
         },
-        { 
+        {
             title: 'Surface Type', data: null,
             render: r => choice_or_empty(r.getSurfaceType(), SURFACE_TYPE_CHOICES)
         },
-        { 
+        {
             title: 'Surface Condition', data: null,
             render: r => choice_or_empty(r.getSurfaceCondition(), SURFACE_CONDITION_CHOICES)
         },
-        { 
+        {
             title: 'Pavement Class', data: null,
             render: r => choice_or_empty(r.getPavementClass(), PAVEMENT_CLASS_CHOICES)
         },
-        { 
+        {
             title: 'Administrative Area', data: null,
             render: r => choice_or_empty(parseInt(r.getAdministrativeArea()), ADMINISTRATIVE_AREA_CHOICES)
         },
-        { 
+        {
             title: 'Carriageway Width (m)', data: null,
             render: r => parseFloat(r.getCarriagewayWidth()).toFixed(2)
         },
-        { 
+        {
             title: 'Project', data: null,
             render: 'getProject'
         },
-        { 
+        {
             title: 'Funding Source', data: null,
             render: 'getFundingSource'
         },
-        { 
+        {
             title: 'Technical Class', data: null,
             render: r => choice_or_empty(r.getTechnicalClass(), TECHNICAL_CLASS_CHOICES)
         },
-        { 
+        {
             title: 'Maintenance needs', data: null,
             render: r => choice_or_empty(r.getMaintenanceNeed(), MAINTENANCE_NEED_CHOICES)
         },
-        { 
+        {
             title: 'Traffic Data', data: null,
             render: r => choice_or_empty(r.getTrafficLevel(), TRAFFIC_LEVEL_CHOICES)
         }
@@ -161,6 +165,7 @@ function initializeDataTable() {
 
     table = $("#data-table").DataTable({
         columns: columns,
+        rowId: '.getId()',
         order: [[window.canEdit ? 1 : 0, 'asc']], // default order is ascending by road code
         dom: `<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>`, // https://datatables.net/reference/option/dom#Styling
         buttons: [{

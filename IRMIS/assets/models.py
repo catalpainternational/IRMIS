@@ -107,13 +107,13 @@ class RoadQuerySet(models.QuerySet):
             else Road.objects.order_by("id").values("id", *fields.values())
         )
 
-        last_revisions = {
-            i["object_id"]: i["revision_id__max"]
-            for i in Version.objects.get_queryset()
-            .values("object_id")
-            .annotate(Max("revision_id"))
-            .distinct()
-        }
+        # last_revisions = {
+        #     i["object_id"]: i["revision_id__max"]
+        #     for i in Version.objects.get_queryset()
+        #     .values("object_id")
+        #     .annotate(Max("revision_id"))
+        #     .distinct()
+        # }
 
         for road in road_chunk:
             road_protobuf = roads_protobuf.roads.add()
@@ -121,12 +121,12 @@ class RoadQuerySet(models.QuerySet):
             for protobuf_key, query_key in fields.items():
                 if road[query_key]:
                     setattr(road_protobuf, protobuf_key, road[query_key])
-            try:
-                setattr(
-                    road_protobuf, "last_revision_id", last_revisions[str(road["id"])]
-                )
-            except:
-                pass
+            # try:
+            #     setattr(
+            #         road_protobuf, "last_revision_id", last_revisions[str(road["id"])]
+            #     )
+            # except:
+            #     pass
         return roads_protobuf
 
 
