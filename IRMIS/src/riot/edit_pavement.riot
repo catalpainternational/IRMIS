@@ -6,11 +6,11 @@
     <section>
         <div class="form-group">
             <label>{ surfaces.display }</label>
-            <select class="form-control" onchange="{ checkSurfaceType }">
+            <select class="{ state.surfaceType ? '' : 'inactive' } form-control" onchange="{ checkSurfaceType }">
                 <option value="">{ window.gettext("Select a Surface Type") }</option>
                 <template each="{ surface in surfaces.options }">
-                    <option if="{ surface.code == state.editingRoad.getSurfaceType() }" value="{ surface.code }" selected>{ surface.name }</option>
-                    <option if="{ surface.code != state.editingRoad.getSurfaceType() }" value="{ surface.code }">{ surface.name }</option>
+                    <option if="{ surface.code == state.surfaceType }" value="{ surface.code }" selected>{ surface.name }</option>
+                    <option if="{ surface.code != state.surfaceType }" value="{ surface.code }">{ surface.name }</option>
                 </template>
             </select>
             <small class="form-text text-muted">{ window.gettext("Choose the type of surface of the road link carriageway") }</small>
@@ -39,6 +39,7 @@
         export default {
             onBeforeMount(props, state) {
                 state.editingRoad = Road.deserializeBinary(props.road.serializeBinary());
+                state.surfaceType = state.editingRoad.getSurfaceType();
             },
             save(e) {
                 var save_button = e.currentTarget;
@@ -56,7 +57,9 @@
                 });
             },
             checkSurfaceType(e) {
-                this.state.editingRoad.setSurfaceType(e.currentTarget.value);
+                this.state.surfaceType = e.currentTarget.value;
+                this.state.editingRoad.setSurfaceType(this.state.surfaceType);
+                this.update();
             },
             checkPavementClass(e) {
                 this.state.editingRoad.setPavementClass(e.currentTarget.dataset.pavement);
