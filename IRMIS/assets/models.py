@@ -16,6 +16,16 @@ def no_spaces(value):
         raise ValidationError(_("%(value)s contains spaces"), params={"value": value})
 
 
+def deg2dms(dd):
+    is_positive = dd >= 0
+    dd = abs(dd)
+    mnt, sec = divmod(dd * 3600, 60)
+    deg, mnt = divmod(mnt, 60)
+    if not is_positive:
+        deg = -deg
+    return "%s°%s'%s\"" % (deg, mnt, sec)
+
+
 class RoadStatus(models.Model):
     code = models.CharField(max_length=3, unique=True, verbose_name=_("code"))
     name = models.CharField(max_length=50, verbose_name=_("name"))
@@ -119,12 +129,11 @@ class RoadQuerySet(models.QuerySet):
             for protobuf_key, query_key in fields.items():
                 if road[query_key]:
                     setattr(road_protobuf, protobuf_key, road[query_key])
-            # try:
-            #     setattr(
-            #         road_protobuf, "last_revision_id", last_revisions[str(road["id"])]
-            #     )
-            # except:
-            #     pass
+            setattr(road_protobuf, "last_revision_id", last_revisions[str(road["id"])])
+            # set Protobuf with converted decimal lat/long to DMS
+            # setattr(road_protobuf, "start_coordinate", deg2dms(start_latlong))
+            # setattr(road_protobuf, "end_coordinate", deg2dms(end_latlong))
+
         return roads_protobuf
 
 
