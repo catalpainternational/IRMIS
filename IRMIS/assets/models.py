@@ -118,12 +118,7 @@ class RoadQuerySet(models.QuerySet):
             for protobuf_key, query_key in fields.items():
                 if road[query_key]:
                     setattr(road_protobuf, protobuf_key, road[query_key])
-            try:
-                setattr(
-                    road_protobuf, "last_revision_id", last_revisions[str(road["id"])]
-                )
-            except:
-                pass
+            setattr(road_protobuf, "last_revision_id", last_revisions[str(road["id"])])
         return roads_protobuf
 
 
