@@ -17,9 +17,7 @@ document.addEventListener('estrada.roadManager.roadMetaDataAdded', (data) => {
 });
 
 document.addEventListener('estrada.table.roadMetaDataUpdated', (data) => {
-    table.row({
-        page: 'current', focused: true,
-    }).data(data.detail).draw();
+    table.row(`#${data.detail.getId()}`).data(data.detail).draw();
 });
 
 // when a filter is applied, update the filter id whitelist
@@ -143,6 +141,7 @@ function initializeDataTable() {
 
     table = $("#data-table").DataTable({
         columns: columns,
+        rowId: '.getId()',
         order: [[window.canEdit ? 1 : 0, 'asc']], // default order is ascending by road code
         dom: `<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>`, // https://datatables.net/reference/option/dom#Styling
         buttons: [{

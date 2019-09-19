@@ -32,7 +32,6 @@
             save(e) {
                 var save_button = e.currentTarget;
                 save_button.disabled = true;
-                setTimeout(() => save_button.disabled = false, 1000); // An example of what to call when the (unimplemented) Promise is resolved
 
                 saveRoad(this.state.editingRoad).then((response) => {
                     if (response) { this.state.error = false; }
@@ -40,6 +39,7 @@
                 }).catch(err => {
                     this.state.error = true;
                 }).finally(() => {
+                    save_button.disabled = false
                     this.state.show_feedback = true;
                     this.update()
                 });
