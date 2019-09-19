@@ -31,6 +31,12 @@ Use `pip-compile --upgrade` to upgrade versions of libraries, then test the resu
 
 ## How to Import New Features from a Shapefile (.shp)
 
+**Important**
+This entire sequence must be performed to completion before users are allowed to edit the imported features (roads).
+
+- Identify all of your sources of data, i.e. shapefiles AND Excel spreadsheets etc. and make sure you have access to them.
+- If the auxiliary sources of data (i.e. Excel spreadsheets) are more than trivial you'll want to do some preparatory work for step 4.2 before beginning the overall sequence.
+
 1. Import the shapefile schema and data - NOTE: This does not import geometries
   1. run `shp2pgsql -d -n path/to/your/.dbf source_table_name` and check the outputted SQL
   2. read the help https://helpmanual.io/help/shp2pgsql/ if you need to make changes
@@ -44,6 +50,15 @@ Use `pip-compile --upgrade` to upgrade versions of libraries, then test the resu
 
 3. Adapt and run the import code in the Importimport.py
   1. Here be dragons, unexpected geometry types, wierd metadata, duplications.
+
+4. If there's any other metadata (e.g. in Excel) for the roads just added
+  1. get the Ids for the newly added roads, and enter that against each row in your data source (Excel file)
+     (note that you'll probably find that these don't line up properly)
+  2. follow the pattern you'll find in `update_roads_from_excel.sql` to update each record with the data from your data source
+
+5. Initialise the Reversion Audit History for the newly added roads
+  1. run the command `./manage.py createinitialrevisions assets.road --comment="Import from Shapefile"`
+
 
 ## Pre-Commit (Black formatter)
 
@@ -78,7 +93,10 @@ run `yarn protoc` to update the generated python and javascript code.
 We use the package `django-reversion` to allow us the ability to maintain a historic record of Road model changes, revert to previous states of records, and recovering deleted records.
 You can read more on it here: https://django-reversion.readthedocs.io/en/stable/index.html
 
-If you're setting up from a new DB (ie. not copied from staging / production DB), after pip installing django-reversion and running migrations, you should run `./manage.py createinitialrevisions` to create the initial revision for registered models in the project.
+If you're setting up from a new DB (ie. not copied from staging / production DB), after pip installing django-reversion and running migrations, you need to create the initial revision, for registered models in the project, with the following two commands:
+
+`./manage.py createinitialrevisions assets.road --comment="Import from Shapefile"`
+`./manage.py createinitialrevisions`
 
 ## Translations
 
