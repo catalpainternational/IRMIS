@@ -69,7 +69,7 @@ export function putRoadMetadata(road) {
 
     return fetch(metadataUrl, postAssetInit)
         .then(metadataResponse => {
-            if(metadataResponse.ok) return metadataResponse.arrayBuffer();
+            if (metadataResponse.ok) { return metadataResponse.arrayBuffer(); }
             throw new Error(`Road update failed: ${metadataResponse.statusText}`);
         })
         .then(protobufBytes => {
@@ -79,7 +79,7 @@ export function putRoadMetadata(road) {
 }
 
 function makeEstradaRoad(pbroad) {
-    var estrada_road = Object.create(EstradaRoad.prototype);
-    Object.assign(estrada_road, pbroad);
-    return estrada_road;
+    var estradaRoad = Object.create(EstradaRoad.prototype);
+    Object.assign(estradaRoad, pbroad);
+    return estradaRoad;
 }
