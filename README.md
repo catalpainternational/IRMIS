@@ -38,26 +38,26 @@ This entire sequence must be performed to completion before users are allowed to
 - If the auxiliary sources of data (i.e. Excel spreadsheets) are more than trivial you'll want to do some preparatory work for step 4.2 before beginning the overall sequence.
 
 1. Import the shapefile schema and data - NOTE: This does not import geometries
-  1. run `shp2pgsql -d -n path/to/your/.dbf source_table_name` and check the outputted SQL
-  2. read the help https://helpmanual.io/help/shp2pgsql/ if you need to make changes
-  3. run that sql against your database using `psql` or `manage.py dbshell`: eg `shp2pgsql -d -n ../../ngis/National_Road.dbf source_national_road | ./manage.py dbshell`
+    1. run `shp2pgsql -d -n path/to/your/.dbf source_table_name` and check the outputted SQL
+    2. read the help https://helpmanual.io/help/shp2pgsql/ if you need to make changes
+    3. run that sql against your database using `psql` or `manage.py dbshell`: eg `shp2pgsql -d -n ../../ngis/National_Road.dbf source_national_road | ./manage.py dbshell`
 
 2. Create unmanaged model code by using inspectdb
-  1. `./manage.py inspectdb source_table_name` this will output some django model code, drop it into models.py
-  2. you may have to edit these files to make them managed so that other developers and deployments create the tables
-  3. `./manage.py makemigrations`
-  4. `./manage.py migrate` - you may have to fake this locally ( as you will have already created the table )
+    1. `./manage.py inspectdb source_table_name` this will output some django model code, drop it into models.py
+    2. you may have to edit these files to make them managed so that other developers and deployments create the tables
+    3. `./manage.py makemigrations`
+    4. `./manage.py migrate` - you may have to fake this locally ( as you will have already created the table )
 
 3. Adapt and run the import code in the Importimport.py
-  1. Here be dragons, unexpected geometry types, wierd metadata, duplications.
+    1. Here be dragons, unexpected geometry types, wierd metadata, duplications.
 
 4. If there's any other metadata (e.g. in Excel) for the roads just added
-  1. get the Ids for the newly added roads, and enter that against each row in your data source (Excel file)
+    1. get the Ids for the newly added roads, and enter that against each row in your data source (Excel file)
      (note that you'll probably find that these don't line up properly)
-  2. follow the pattern you'll find in `update_roads_from_excel.sql` to update each record with the data from your data source
+    2. follow the pattern you'll find in `update_roads_from_excel.sql` to update each record with the data from your data source
 
 5. Initialise the Reversion Audit History for the newly added roads
-  1. run the command `./manage.py createinitialrevisions assets.road --comment="Import from Shapefile"`
+    1. run the command `./manage.py createinitialrevisions assets.road --comment="Import from Shapefile"`
 
 
 ## Pre-Commit (Black formatter)
