@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db.models import Count, Max
 
+import math
 import reversion
 from reversion.models import Version
 from protobuf.roads_pb2 import Roads as ProtoRoads
@@ -16,14 +17,31 @@ def no_spaces(value):
         raise ValidationError(_("%(value)s contains spaces"), params={"value": value})
 
 
-def deg2dms(dd):
-    is_positive = dd >= 0
-    dd = abs(dd)
-    mnt, sec = divmod(dd * 3600, 60)
-    deg, mnt = divmod(mnt, 60)
-    if not is_positive:
-        deg = -deg
-    return "%s°%s'%s\"" % (deg, mnt, sec)
+def split_out_dms(coord):
+    split_deg = math.modf(coord)
+    degrees = int(split_deg[1])
+    minutes = abs(int(math.modf(split_deg[0] * 60)[1]))
+    seconds = abs(round(math.modf(split_deg[0] * 60)[0] * 60, 2))
+    return degrees, minutes, seconds
+
+
+def deg2dms(lat, long):
+    deg_x, mnt_x, sec_x = split_out_dms(lat)
+    deg_y, mnt_y, sec_y = split_out_dms(long)
+
+    # calculate E/W & N/S
+    EorW = "E"
+    if deg_y < 0:
+        EorW = "W"
+
+    NorS = "N"
+    if deg_y < 0:
+        NorS = "S"
+
+    return (
+        "%s\u00b0 %s\" %s' %s" % (abs(deg_x), mnt_x, sec_x, EorW),
+        "%s\u00b0 %s\" %s' %s" % (abs(deg_y), mnt_y, sec_y, NorS),
+    )
 
 
 class RoadStatus(models.Model):
