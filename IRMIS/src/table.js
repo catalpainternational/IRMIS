@@ -199,6 +199,9 @@ function initializeDataTable() {
             sheetName: "Estrada",
             text: "Export table",
             title: "Estrada_" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate(),
+            exportOptions: {
+                columns: ":visible",
+            },
         }]
     });
 }
