@@ -11,9 +11,108 @@
             <button id="select-data" class="align-items-center btn btn-secondary btn-sm d-flex dropdown justify-content-between">
                 <span>{% trans "Select data" %}</span>
                 <span class="caret-dark image"></span>
-                <div id="columns-list" class="dropdown-menu" hidden></div>
+                <div id="columns-list" class="dropdown-menu flex-row" hidden>
+                    <div class="road-inventory-data">
+                        <h6>{% trans "Road Inventory Data" %}</h6>
+                        <div class="d-flex">
+                            <div class="left-pane">
+                                <div class="align-items-center d-flex" data-column="0">
+                                    <span class="checkbox image selected"></span>
+                                    {% trans "Road code" %}
+                                </div>
+                                <div class="align-items-center d-flex" data-column="1">
+                                    <span class="checkbox image"></span>
+                                    {% trans "Road name" %}
+                                </div>
+                                <div class="align-items-center d-flex" data-column="2">
+                                    <span class="checkbox image selected"></span>
+                                    {% trans "Link code" %}
+                                </div>
+                                <div class="align-items-center d-flex" data-column="3">
+                                    <span class="checkbox image"></span>
+                                    {% trans "Link name" %}
+                                </div>
+                                <div class="align-items-center d-flex" data-column="4">
+                                    <span class="checkbox image selected"></span>
+                                    {% trans "Link Length" %}
+                                </div>
+                                <div class="align-items-center d-flex" data-column="5">
+                                    <span class="checkbox image selected"></span>
+                                    {% trans "Link start name" %}
+                                </div>
+                                <div class="align-items-center d-flex" data-column="6">
+                                    <span class="checkbox image selected"></span>
+                                    {% trans "Link start chainage" %}
+                                </div>
+                                <div class="align-items-center d-flex" data-column="7">
+                                    <span class="checkbox image selected"></span>
+                                    {% trans "Link end name" %}
+                                </div>
+                                <div class="align-items-center d-flex" data-column="8">
+                                    <span class="checkbox image selected"></span>
+                                    {% trans "Link end chainage" %}
+                                </div>
+                                <div class="align-items-center d-flex" data-column="9">
+                                    <span class="checkbox image selected"></span>
+                                    {% trans "Surface type" %}
+                                </div>
+                            </div>
+                            <div class="right-pane">
+                                <div class="align-items-center d-flex" data-column="10">
+                                    <span class="checkbox image selected"></span>
+                                    {% trans "Pavement class" %}
+                                </div>
+                                <div class="align-items-center d-flex" data-column="11">
+                                    <span class="checkbox image selected"></span>
+                                    {% trans "Carriageway width" %}
+                                </div>
+                                <div class="align-items-center d-flex" data-column="12">
+                                    <span class="checkbox image selected"></span>
+                                    {% trans "Administrative area" %}
+                                </div>
+                                <div class="align-items-center d-flex" data-column="13">
+                                    <span class="checkbox image"></span>
+                                    {% trans "Road type" %}
+                                </div>
+                                <div class="align-items-center d-flex" data-column="14">
+                                    <span class="checkbox image"></span>
+                                    {% trans "Technical class" %}
+                                </div>
+                                <div class="align-items-center d-flex" data-column="15">
+                                    <span class="checkbox image"></span>
+                                    {% trans "Funding source" %}
+                                </div>
+                                <div class="align-items-center d-flex" data-column="16">
+                                    <span class="checkbox image"></span>
+                                    {% trans "Road status" %}
+                                </div>
+                                <div class="align-items-center d-flex" data-column="17">
+                                    <span class="checkbox image"></span>
+                                    {% trans "Project" %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="road-condition-data">
+                        <h6>{% trans "Road Condition Data" %}</h6>
+                        <div>
+                            <div class="align-items-center d-flex" data-column="18">
+                                <span class="checkbox image selected"></span>
+                                {% trans "Surface condition" %}
+                            </div>
+                            <div class="align-items-center d-flex" data-column="19">
+                                <span class="checkbox image"></span>
+                                {% trans "Maintenance needs" %}
+                            </div>
+                            <div class="align-items-center d-flex" data-column="20">
+                                <span class="checkbox image"></span>
+                                {% trans "Traffic data" %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </button>
-            <!-- DataTable -->
+            <!-- DataTable wrapper -->
             <table id="data-table" class="d-block table table-bordered table-hover w-100"></table>
         </div>
     </div>

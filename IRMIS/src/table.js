@@ -61,10 +61,22 @@ document.addEventListener('estrada.sideMenu.viewChanged', (data) => {
 });
 
 window.addEventListener("load", () => {
+    const columnsList = document.getElementById("columns-list");
+
     document.getElementById("select-data").addEventListener("click", () => {
-        var columnsList = document.getElementById("columns-list");
         columnsList.hidden = !columnsList.hidden;
     });
+
+    columnsList.querySelectorAll("[data-column]").forEach((item) => {
+        item.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const element = e.currentTarget;
+            const column = table.column(window.canEdit ? parseInt(element.dataset.column) + 1 : element.dataset.column);
+            column.visible(!column.visible());
+            element.getElementsByClassName("checkbox").item(0).classList.toggle("selected");
+        });
+    });
+
     initializeDataTable();
 });
 
