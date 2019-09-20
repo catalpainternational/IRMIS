@@ -141,11 +141,6 @@ ul.navigation {
     }
 }
 
-button.btn {
-    line-height: 14px;
-    font-weight: 700;
-}
-
 h1 {
     color: $darker-gray;
     line-height: 27px;
@@ -192,6 +187,22 @@ table {
 }
 
 // Override Bootstrap styles
+
+button {
+    &.btn {
+        line-height: 14px;
+        font-weight: 700;
+    }
+
+    &.btn-sm, &.btn-sm span {
+        line-height: 14px;
+        font-size: 12px;
+    }
+
+    &.btn-lg {
+        font-size: inherit;
+    }
+}
 
 #dropdown-menu {
     button, a {

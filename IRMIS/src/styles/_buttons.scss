@@ -10,11 +10,10 @@
 
 .btn-sm {
     border-radius: calc(#{$radius} / 2);
-    padding-bottom: 0.15rem;
+    padding-bottom: 0.30rem;
     padding-right: 0.75rem;
     padding-left: 0.75rem;
-    padding-top: 0.25rem;
-    font-size: inherit;
+    padding-top: 0.30rem;
     width: 108px;
 }
 
@@ -22,7 +21,6 @@
     padding-right: 0.75rem;
     border-radius: 0.25rem;
     padding-left: 0.75rem;
-    font-size: inherit;
     width: 316px;
 }
 

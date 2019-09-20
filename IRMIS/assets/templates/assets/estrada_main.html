@@ -3,8 +3,16 @@
 <div id="view-content" class="h-100 row">
     {% filter_pane %}
     <div id="map-table-irmis" class="map table">
+        <!-- Map -->
         <div id="map-irmis"></div>
+        <!-- Table -->
         <div id="table-irmis">
+            <!-- Toggle table columns button -->
+            <button id="select-data" class="align-items-center btn btn-secondary btn-sm d-flex dropdown justify-content-between">
+                <span>{% trans "Select data" %}</span>
+                <span class="caret-dark image"></span>
+            </button>
+            <!-- DataTable -->
             <table id="data-table" class="d-block table table-bordered table-hover w-100"></table>
         </div>
     </div>

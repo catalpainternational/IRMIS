@@ -27,8 +27,12 @@ div.dataTables_wrapper {
         padding: 3px 15px;
         display: flex;
 
-        .buttons-excel {
+        button {
             flex: inherit;
+        }
+
+        button:not(:first-child) {
+            margin-left: 10px;
         }
     }
 
