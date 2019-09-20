@@ -60,7 +60,11 @@ document.addEventListener('estrada.sideMenu.viewChanged', (data) => {
     }
 });
 
-window.addEventListener('load', () => {
+window.addEventListener("load", () => {
+    document.getElementById("select-data").addEventListener("click", () => {
+        var columnsList = document.getElementById("columns-list");
+        columnsList.hidden = !columnsList.hidden;
+    });
     initializeDataTable();
 });
 

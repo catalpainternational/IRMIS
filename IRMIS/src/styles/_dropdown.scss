@@ -1,16 +1,18 @@
-#dropdown-menu {
+// Override Bootstrap dropdown styles
+
+.dropdown-menu {
     box-shadow: 0 0 10px 0 rgba(61, 71, 88, 0.5);
     background-color: $white;
     border-radius: $radius;
     position: absolute;
     padding: 10px 20px;
     min-width: 196px;
+    display: flex;
     z-index: 1001; // override Leaflet zoom controls
+    left: unset;
     top: 30px;
     right: 0;
 }
-
-// Override Bootstrap dropdown styles
 
 .dropdown:hover {
     cursor: pointer;
