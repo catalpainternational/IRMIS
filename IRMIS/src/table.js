@@ -78,7 +78,8 @@ function initializeDataTable() {
         },
         {
             title: 'Road Name', data: null,
-            render: 'getRoadName'
+            render: 'getRoadName',
+            visible: false,
         },
         {
             title: 'Link Code', data: null,
@@ -86,7 +87,8 @@ function initializeDataTable() {
         },
         {
             title: 'Link Name', data: null,
-            render: 'getLinkName'
+            render: 'getLinkName',
+            visible: false,
         },
         {
             title: 'Link Length (Km)', data: null,
@@ -126,23 +128,28 @@ function initializeDataTable() {
         },
         {
             title: 'Road Type', data: null,
-            render: r => choice_or_empty(r.getRoadType(), ROAD_TYPE_CHOICES)
+            render: r => choice_or_empty(r.getRoadType(), ROAD_TYPE_CHOICES),
+            visible: false,
         },
         {
             title: 'Technical Class', data: null,
-            render: r => choice_or_empty(r.getTechnicalClass(), TECHNICAL_CLASS_CHOICES)
+            render: r => choice_or_empty(r.getTechnicalClass(), TECHNICAL_CLASS_CHOICES),
+            visible: false,
         },
         {
             title: 'Funding Source', data: null,
-            render: 'getFundingSource'
+            render: 'getFundingSource',
+            visible: false,
         },
         {
             title: 'Road Status', data: null,
-            render: r => choice_or_empty(r.getRoadStatus(), ROAD_STATUS_CHOICES)
+            render: r => choice_or_empty(r.getRoadStatus(), ROAD_STATUS_CHOICES),
+            visible: false,
         },
         {
             title: 'Project', data: null,
-            render: 'getProject'
+            render: 'getProject',
+            visible: false,
         },
         {
             title: 'Surface Condition', data: null,
@@ -150,11 +157,13 @@ function initializeDataTable() {
         },
         {
             title: 'Maintenance needs', data: null,
-            render: r => choice_or_empty(r.getMaintenanceNeed(), MAINTENANCE_NEED_CHOICES)
+            render: r => choice_or_empty(r.getMaintenanceNeed(), MAINTENANCE_NEED_CHOICES),
+            visible: false,
         },
         {
             title: 'Traffic Data', data: null,
-            render: r => choice_or_empty(r.getTrafficLevel(), TRAFFIC_LEVEL_CHOICES)
+            render: r => choice_or_empty(r.getTrafficLevel(), TRAFFIC_LEVEL_CHOICES),
+            visible: false,
         }
     ];
 
