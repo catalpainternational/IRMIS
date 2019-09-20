@@ -1,18 +1,48 @@
 <edit_condition>
-    <h5>{ conditions.display }</h5>
+    <h5>{ window.gettext ("Condition") }</h5>
 
     <edit_feedback if="{ state.show_feedback }" error="{ state.error }"></edit_feedback>
 
     <section>
         <div class="form-group">
             <label>{ conditions.display }</label>
-            <select class="form-control" onchange="{checkSurfaceCondition}">
-                <option value="">{window.gettext("Select a Surface Condition")}</option>
-                <option each={ c in conditions.options } value="{ c[0] }"" selected={ c[0] == state.editingRoad.getSurfaceCondition() }>
-                    { c[1] }
-                </option>
-            </select>
-            <small class="form-text text-muted">Choose the condition of the road</small>
+            <small class="form-text text-muted">{ window.gettext("Choose road link surface condition according to the Surface Distress Index (SDI): Good (SDI≤2), fair (2<SDI≤3), poor (3<SDI≤4) or bad (SDI>4)") }</small>
+            <ul class="surface-condition">
+                <li each="{ condition in conditions.options }" data-condition="{ condition[1] }" onclick="{ checkSurfaceCondition }">
+                    <span class="{ condition[0] == state.editingRoad.getSurfaceCondition() ? 'active' : ''  } radio image"></span>
+                    { condition[1] }
+                </li>
+            </ul>
+        </div>
+        <div class="form-group">
+            <label>{ maintenance_needs.display }</label>
+            <small class="form-text text-muted">{ window.gettext("Choose the type of maintenace needs for the road link") }</small>
+            <ul class="maintenance-need">
+                <li each="{ maintenance_need in maintenance_needs.options }" data-maintenance="{ maintenance_need.name }" onclick="{ checkMaintenanceNeeds }">
+                    <span class="{ maintenance_need.id === state.editingRoad.getMaintenanceNeed() ? 'active' : ''  } radio image"></span>
+                    { maintenance_need.name }
+                </li>
+            </ul>
+        </div>
+        <div class="form-group">
+            <label>{ technical_classes.display }</label>
+            <small class="form-text text-muted">{ window.gettext("Choose road link technical class according to the 2010 Road Geometric Design Standards, DRBFC standards") }</small>
+            <ul class="technical-class">
+                <li each="{ technical_class in technical_classes.options }" data-technical="{ technical_class.name }" onclick="{ checkTechnicalClass }">
+                    <span class="{ technical_class.code == state.editingRoad.getTechnicalClass() ? 'active' : ''  } radio image"></span>
+                    { technical_class.name }
+                </li>
+            </ul>
+        </div>
+        <div class="form-group">
+            <label>{ traffic_data.display }</label>
+            <small class="form-text text-muted">{ window.gettext("Choose the traffic volume for the road link") }</small>
+            <ul class="traffic-data">
+                <li each="{ traffic in traffic_data.options }" data-traffic="{ traffic[1] }" onclick="{ checkTrafficData }">
+                    <span class="{ traffic[0] === state.editingRoad.getTrafficLevel() ? 'active' : ''  } radio image"></span>
+                    { traffic[1] }
+                </li>
+            </ul>
         </div>
     </section>
 
@@ -29,6 +59,22 @@
             onBeforeMount(props, state) {
                 state.editingRoad = Road.deserializeBinary(props.road.serializeBinary());
             },
+            checkSurfaceCondition(e) {
+                this.state.editingRoad.setSurfaceCondition(e.currentTarget.dataset.condition);
+                selectRadio(e, "surface-condition");
+            },
+            checkMaintenanceNeeds(e) {
+                this.state.editingRoad.setMaintenanceNeeds(e.currentTarget.dataset.maintenance);
+                selectRadio(e, "maintenance-need");
+            },
+            checkTechnicalClass(e) {
+                this.state.editingRoad.setTechnicalClass(e.currentTarget.dataset.technical);
+                selectRadio(e, "technical-class");
+            },
+            checkTrafficData(e) {
+                this.state.editingRoad.setTrafficData(e.currentTarget.dataset.traffic);
+                selectRadio(e, "traffic-data");
+            },
             save(e) {
                 var save_button = e.currentTarget;
                 save_button.disabled = true;
@@ -44,10 +90,17 @@
                     this.update()
                 });
             },
-            checkSurfaceCondition(e) {
-                this.state.editingRoad.setSurfaceCondition(e.currentTarget.value);
-            },
-            conditions: window.road_schema.surface_condition
+            conditions: window.road_schema.surface_condition,
+            maintenance_needs: window.road_schema.maintenance_need,
+            technical_classes: window.road_schema.technical_class,
+            traffic_data: window.road_schema.traffic_level,
+        }
+
+        function selectRadio(e, className) {
+            var radio = e.currentTarget.firstElementChild;
+            var currentSelected = document.getElementsByClassName(className).item(0).getElementsByClassName("active");
+            if (currentSelected.length) currentSelected.item(0).classList.remove("active");
+            radio.classList.add("active");
         }
     </script>
 </edit_condition>

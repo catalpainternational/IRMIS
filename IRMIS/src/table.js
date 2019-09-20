@@ -133,7 +133,7 @@ function initializeDataTable() {
     if (window.canEdit) {
         columns.unshift({
             title: '', data: null,
-            render: r => `<a class='image pencil' href='#edit/${r.getId()}'></a>`,
+            render: r => `<a class='image pencil' href='#edit/${r.getId()}/location_type'></a>`,
             orderable: false,
             className: "edit-col"
         });

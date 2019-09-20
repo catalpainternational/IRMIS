@@ -2,62 +2,68 @@
     <div class="row">
         <div id="side-menu">
             <ul class="navigation">
-                <li class="text-uppercase">{ window.gettext('Edit asset') }</li>
+                <li class="text-uppercase">{ window.gettext("Edit asset") }</li>
                 <ul>
-                    <li>{ window.gettext('Location & Type') }</li>
-                    <li class="active">{ window.gettext('Asset Details') }</li>
-                    <li>{ window.gettext('Pavement') }</li>
-                    <li>{ window.gettext('Project') }</li>
-                    <li>{ window.gettext('Condition') }</li>
+                    <li class="{ state.page === 'location_type' ? 'active' : '' }" data-page="location_type" onclick="{ selectPage }">{ window.gettext("Location & Type") }</li>
+                    <li class="{ state.page === 'asset_details' ? 'active' : '' }" data-page="asset_details" onclick="{ selectPage }">{ window.gettext("Asset Details") }</li>
+                    <li class="{ state.page === 'pavement' ? 'active' : '' }" data-page="pavement" onclick="{ selectPage }">{ window.gettext("Pavement") }</li>
+                    <li class="{ state.page === 'project' ? 'active' : '' }" data-page="project" onclick="{ selectPage }">{ window.gettext("Project") }</li>
+                    <li class="{ state.page === 'condition' ? 'active' : '' }" data-page="condition" onclick="{ selectPage }">{ window.gettext("Condition") }</li>
                 </ul>
             </ul>
         </div>
-        <div if={ state.err }>
+        <div if="{ state.err }">
             { state.err }
         </div>
-        <div if={ state.loading }>
-            Loading
+        <div if="{ state.loading }">
+            { window.gettext("Loading") }
         </div>
-        <div if={ !state.loading } id="edit-base">
+        <div if="{ !state.loading }" id="edit-base">
             <header class="align-items-center d-flex">
                 <a class="caret-dark left image" href="#"></a>
                 <h1>{ state.road.getRoadCode() } { state.road.getRoadName() }</h1>
             </header>
-            <!-- <edit_location_type road={ state.road }></edit_location_type> -->
-            <edit_asset_details road={ state.road }></edit_asset_details>
-            <!-- <edit_pavement road={ state.road }></edit_pavement> -->
-            <!-- <edit_project road={ state.road }></edit_project> -->
-            <!-- <edit_condition road={ state.road }></edit_condition> -->
+            <edit_location_type road="{ state.road }" if="{ state.page === 'location_type' }"></edit_location_type>
+            <edit_asset_details road="{ state.road }" if="{ state.page === 'asset_details' }"></edit_asset_details>
+            <edit_pavement road="{ state.road }" if="{ state.page === 'pavement' }"></edit_pavement>
+            <edit_project road="{ state.road }" if="{ state.page === 'project' }"></edit_project>
+            <edit_condition road="{ state.road }" if="{ state.page === 'condition' }"></edit_condition>
         </div>
     </div>
 
     <script>
-        import Edit_Location_Type from './edit_location_type.riot';
-        import Edit_Asset_Details from './edit_asset_details.riot';
-        import Edit_Pavement from './edit_pavement.riot';
-        import Edit_Project from './edit_project.riot';
-        import Edit_Condition from './edit_condition.riot';
+        import Edit_Location_Type from "./edit_location_type.riot";
+        import Edit_Asset_Details from "./edit_asset_details.riot";
+        import Edit_Pavement from "./edit_pavement.riot";
+        import Edit_Project from "./edit_project.riot";
+        import Edit_Condition from "./edit_condition.riot";
 
         export default {
             state: {
                 loading: true,
                 road: null,
                 err: false,
+                page: "location_type",
             },
             components: {
                 Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Project, Edit_Condition
             },
             onMounted(props, state) {
                 state.loading = true;
+                state.page = props.page;
                 props.roadPromise.then(road => {
                     state.loading = false;
                     state.road = road;
                 }).catch(err => {
                     state.err = err;
                 }).finally(() => {
-                    this.update()
+                    this.update();
                 });
             },
+            selectPage(e) {
+                window.location.hash = `#edit/${this.state.road.getId()}/${e.currentTarget.dataset.page}`;
+                this.update({ page: e.currentTarget.dataset.page });
+            }
         };
     </script>
 </edit_base>

@@ -1,31 +1,34 @@
 <edit_pavement>
-    <h5>Pavement</h5>
+    <h5>{ window.gettext("Pavement") }</h5>
 
     <edit_feedback if="{ state.show_feedback }" error="{ state.error }"></edit_feedback>
 
     <section>
         <div class="form-group">
-            <label>{ pavements.display }</label>
-            <select class="form-control" onchange="{checkPavementClass}">
-                <option value="">{window.gettext("Select a Pavement Class")}</option>
-                <option class="form-control" each={ p in pavements.options } value="{ p.code }" selected={ p.code == state.editingRoad.getPavementClass() }>
-                    { p.name }
-                </option>
-            <small class="form-text text-muted">Choose the pavement of the road</small>
+            <label>{ surfaces.display }</label>
+            <select class="{ state.surfaceType ? '' : 'inactive' } form-control" onchange="{ checkSurfaceType }">
+                <option value="">{ window.gettext("Select a Surface Type") }</option>
+                <template each="{ surface in surfaces.options }">
+                    <option if="{ surface.code == state.surfaceType }" value="{ surface.code }" selected>{ surface.name }</option>
+                    <option if="{ surface.code != state.surfaceType }" value="{ surface.code }">{ surface.name }</option>
+                </template>
+            </select>
+            <small class="form-text text-muted">{ window.gettext("Choose the type of surface of the road link carriageway") }</small>
         </div>
         <div class="form-group">
-            <label>{ surface_types.display }</label>
-            <select class="form-control" onchange="{checkSurfaceType}">
-                <option value="">{window.gettext("Select a Surface Type")}</option>
-                <option class="form-control" each={ st in surface_types.options } value="{ st.code }" selected={ st.code == state.editingRoad.getSurfaceType() }>
-                    { st.name }
-                </option>
-            <small class="form-text text-muted">Choose the surface type of the road</small>
+            <label>{ pavements.display }</label>
+            <small class="form-text text-muted">{ window.gettext("Choose the pavement class of the road") }</small>
+            <ul class="pavement-classes">
+                <li each="{ pavement in pavements.options }" data-pavement="{ pavement.name }" onclick="{ checkPavementClass }">
+                    <span class="{ pavement.code == state.editingRoad.getPavementClass() ? 'active' : ''  } radio image"></span>
+                    { pavement.name }
+                </li>
+            </ul>
         </div>
     </section>
 
     <div class="button-wrapper d-flex justify-content-end">
-        <button class="btn btn-primary" onclick="{ save }">Save and continue</button>
+        <button class="btn btn-primary" onclick="{ save }">{ window.gettext("Save and continue") }</button>
     </div>
 
     <script>
@@ -36,6 +39,7 @@
         export default {
             onBeforeMount(props, state) {
                 state.editingRoad = Road.deserializeBinary(props.road.serializeBinary());
+                state.surfaceType = state.editingRoad.getSurfaceType();
             },
             save(e) {
                 var save_button = e.currentTarget;
@@ -53,13 +57,19 @@
                 });
             },
             checkSurfaceType(e) {
-                this.state.editingRoad.setSurfaceType(e.currentTarget.value);
+                this.state.surfaceType = e.currentTarget.value;
+                this.state.editingRoad.setSurfaceType(this.state.surfaceType);
+                this.update();
             },
             checkPavementClass(e) {
-                this.state.editingRoad.setPavementClass(e.currentTarget.value);
+                this.state.editingRoad.setPavementClass(e.currentTarget.dataset.pavement);
+                var radio = e.currentTarget.firstElementChild;
+                var currentSelected = document.getElementsByClassName("pavement-classes").item(0).getElementsByClassName("active");
+                if (currentSelected.length) currentSelected.item(0).classList.remove("active");
+                radio.classList.add("active");
             },
             pavements: window.road_schema.pavement_class,
-            surface_types: window.road_schema.surface_type
+            surfaces: window.road_schema.surface_type,
         }
     </script>
 </edit_pavement>
