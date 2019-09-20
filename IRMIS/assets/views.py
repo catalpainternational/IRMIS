@@ -112,7 +112,7 @@ def road_update(request):
     # assert Road ID given exists in the DB & there are changes to make
     road = get_object_or_404(Road.objects.filter(pk=req_pb.id))
     if Road.objects.filter(pk=req_pb.id).to_protobuf().roads[0] == req_pb:
-        response =  HttpResponse(
+        response = HttpResponse(
             req_pb.SerializeToString(),
             status=200,
             content_type="application/octet-stream",
@@ -167,7 +167,7 @@ def road_update(request):
         versions = Version.objects.get_for_object(road)
         req_pb.last_revision_id = versions[0].id
 
-        response =  HttpResponse(
+        response = HttpResponse(
             req_pb.SerializeToString(),
             status=200,
             content_type="application/octet-stream",
