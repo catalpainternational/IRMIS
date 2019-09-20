@@ -17,7 +17,7 @@ document.addEventListener('estrada.roadManager.roadMetaDataAdded', (data) => {
 });
 
 document.addEventListener('estrada.table.roadMetaDataUpdated', (data) => {
-    table.row(`#${data.detail.getId()}`).data(data.detail).draw();
+    table.row(`#${data.detail.road.id}`).data(data.detail.road).draw();
 });
 
 // when a filter is applied, update the filter id whitelist

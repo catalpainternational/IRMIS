@@ -1,4 +1,3 @@
-import { EstradaRoad } from "./road";
 import { getRoadMetadata, getRoadsMetadata, getRoadsMetadataChunks, putRoadMetadata } from "./assets/assets_api";
 
 let roads = {}
@@ -12,7 +11,7 @@ getRoadsMetadataChunks()
             getRoadsMetadata(chunk.road_type)
                 .then(roadList => {
                     // add the roads to the road manager
-                    addRoadMetadata(roadList.map(makeEstradaRoad));
+                    addRoadMetadata(roadList);
                 });
         });
     });
@@ -26,13 +25,7 @@ document.addEventListener('estrada.filter.apply', (data) => {
 export function getRoad(id) {
     let road = roads[id];
     if(road) return Promise.resolve(road);
-    return getRoadMetadata(id).then(r => makeEstradaRoad);
-}
-
-function makeEstradaRoad(pbroad) {
-    var estrada_road = Object.create(EstradaRoad.prototype);
-    Object.assign(estrada_road, pbroad);
-    return estrada_road;
+    return getRoadMetadata(id);
 }
 
 function addRoadMetadata(roadList) {
@@ -48,23 +41,10 @@ function addRoadMetadata(roadList) {
 
 export function saveRoad(road) {
     return Promise.resolve(putRoadMetadata(road))
-        .then((response) => {
-            let result;
-            switch (response.status) {
-                case 204:
-                    result = true;
-                    roads[road.getId()] = road;
-                    document.dispatchEvent(new CustomEvent("estrada.table.roadMetaDataUpdated", {"detail": road}));
-                    break;
-                case 400:
-                case 409:
-                    result = false;
-                    break;
-                default:
-                    result = false;
-                    break;
-            };
-             return result;
+        .then(road => {
+            roads[road.getId()] = road;
+            document.dispatchEvent(new CustomEvent("estrada.table.roadMetaDataUpdated", {detail: {road}}));
+            return true;
         });
 }
 

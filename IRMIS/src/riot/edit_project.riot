@@ -33,11 +33,10 @@
     <script>
         import { saveRoad } from "../roadManager";
         import Edit_Feedback from './edit_feedback.riot';
-        import { Road } from "../../protobuf/roads_pb";
 
         export default {
             onBeforeMount(props, state) {
-                state.editingRoad = Road.deserializeBinary(props.road.serializeBinary());
+                state.editingRoad = props.road.cloneMessage();
             },
             save(e) {
                 var save_button = e.currentTarget;

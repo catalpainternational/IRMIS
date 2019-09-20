@@ -1,4 +1,5 @@
 import { Road, Roads } from "../../protobuf/roads_pb";
+import { EstradaRoad } from "../road";
 import { ConfigAPI } from "./configAPI";
 
 /** getRoadsMetadataChunks
@@ -30,7 +31,7 @@ export function getRoadsMetadata(chunkName) {
         .then((metadataResponse) => (metadataResponse.arrayBuffer()))
         .then((protobufBytes) => {
             const uintArray = new Uint8Array(protobufBytes);
-            return Roads.deserializeBinary(uintArray).getRoadsList();
+            return Roads.deserializeBinary(uintArray).getRoadsList().map(makeEstradaRoad);
         });
 }
 
@@ -49,7 +50,7 @@ export function getRoadMetadata(roadId) {
         .then((metadataResponse) => (metadataResponse.arrayBuffer()))
         .then((protobufBytes) => {
             const uintArray = new Uint8Array(protobufBytes);
-            return Road.deserializeBinary(uintArray);
+            return makeEstradaRoad(Road.deserializeBinary(uintArray));
         });
 }
 
@@ -67,5 +68,18 @@ export function putRoadMetadata(road) {
     postAssetInit.body = road.serializeBinary();
 
     return fetch(metadataUrl, postAssetInit)
-        .then((postResponse) => (postResponse));
+        .then(metadataResponse => {
+            if(metadataResponse.ok) return metadataResponse.arrayBuffer();
+            throw new Error(`Road update failed: ${metadataResponse.statusText}`);
+        })
+        .then(protobufBytes => {
+            const uintArray = new Uint8Array(protobufBytes);
+            return makeEstradaRoad(Road.deserializeBinary(uintArray));
+        });
+}
+
+function makeEstradaRoad(pbroad) {
+    var estrada_road = Object.create(EstradaRoad.prototype);
+    Object.assign(estrada_road, pbroad);
+    return estrada_road;
 }

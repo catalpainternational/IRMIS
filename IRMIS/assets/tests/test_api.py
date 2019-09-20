@@ -96,7 +96,7 @@ def test_road_edit_update(client, django_user_model):
     response = client.put(
         url, data=pb.SerializeToString(), content_type="application/octet-stream"
     )
-    assert response.status_code == 204
+    assert response.status_code == 200
     # check that DB was updated correctly
     mod_road = Road.objects.get(id=road.id)
     assert mod_road.road_name == pb.road_name
@@ -163,7 +163,7 @@ def test_road_edit_erroneous_protobuf(client, django_user_model):
 
 @pytest.mark.django_db
 def test_road_edit_identical_data(client, django_user_model):
-    """ This test will fail if the road api does not throw a 204 response when
+    """ This test will fail if the road api does not throw a 200 response when
     passed data identical to that which already exists on server. Header should contain
     'Location' to point to the updated data."""
     # create a user
@@ -180,7 +180,7 @@ def test_road_edit_identical_data(client, django_user_model):
     # hit the road api - detail
     url = reverse("road_update")
     response = client.put(url, data=pb_str, content_type="application/octet-stream")
-    assert response.status_code == 204
+    assert response.status_code == 200
 
 
 @pytest.mark.django_db
