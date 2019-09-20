@@ -77,16 +77,8 @@ function initializeDataTable() {
             type: "roadCode"
         },
         {
-            title: 'Type', data: null,
-            render: r => choice_or_empty(r.getRoadType(), ROAD_TYPE_CHOICES)
-        },
-        {
-            title: 'Name', data: null,
+            title: 'Road Name', data: null,
             render: 'getRoadName'
-        },
-        {
-            title: 'Status', data: null,
-            render: r => choice_or_empty(r.getRoadStatus(), ROAD_STATUS_CHOICES)
         },
         {
             title: 'Link Code', data: null,
@@ -95,6 +87,10 @@ function initializeDataTable() {
         {
             title: 'Link Name', data: null,
             render: 'getLinkName'
+        },
+        {
+            title: 'Link Length (Km)', data: null,
+            render: r => parseFloat(r.getLinkLength()).toFixed(2)
         },
         {
             title: 'Link Start Name', data: null,
@@ -113,40 +109,44 @@ function initializeDataTable() {
             render: r => parseFloat(r.getLinkEndChainage()).toFixed(2)
         },
         {
-            title: 'Link Length (Km)', data: null,
-            render: r => parseFloat(r.getLinkLength()).toFixed(2)
-        },
-        {
             title: 'Surface Type', data: null,
             render: r => choice_or_empty(r.getSurfaceType(), SURFACE_TYPE_CHOICES)
-        },
-        {
-            title: 'Surface Condition', data: null,
-            render: r => choice_or_empty(r.getSurfaceCondition(), SURFACE_CONDITION_CHOICES)
         },
         {
             title: 'Pavement Class', data: null,
             render: r => choice_or_empty(r.getPavementClass(), PAVEMENT_CLASS_CHOICES)
         },
         {
-            title: 'Administrative Area', data: null,
-            render: r => choice_or_empty(parseInt(r.getAdministrativeArea()), ADMINISTRATIVE_AREA_CHOICES)
-        },
-        {
             title: 'Carriageway Width (m)', data: null,
             render: r => parseFloat(r.getCarriagewayWidth()).toFixed(2)
         },
         {
-            title: 'Project', data: null,
-            render: 'getProject'
+            title: 'Administrative Area', data: null,
+            render: r => choice_or_empty(parseInt(r.getAdministrativeArea()), ADMINISTRATIVE_AREA_CHOICES)
+        },
+        {
+            title: 'Road Type', data: null,
+            render: r => choice_or_empty(r.getRoadType(), ROAD_TYPE_CHOICES)
+        },
+        {
+            title: 'Technical Class', data: null,
+            render: r => choice_or_empty(r.getTechnicalClass(), TECHNICAL_CLASS_CHOICES)
         },
         {
             title: 'Funding Source', data: null,
             render: 'getFundingSource'
         },
         {
-            title: 'Technical Class', data: null,
-            render: r => choice_or_empty(r.getTechnicalClass(), TECHNICAL_CLASS_CHOICES)
+            title: 'Road Status', data: null,
+            render: r => choice_or_empty(r.getRoadStatus(), ROAD_STATUS_CHOICES)
+        },
+        {
+            title: 'Project', data: null,
+            render: 'getProject'
+        },
+        {
+            title: 'Surface Condition', data: null,
+            render: r => choice_or_empty(r.getSurfaceCondition(), SURFACE_CONDITION_CHOICES)
         },
         {
             title: 'Maintenance needs', data: null,
