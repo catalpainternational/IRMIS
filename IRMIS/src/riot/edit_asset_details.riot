@@ -100,6 +100,10 @@
             },
             onBeforeMount(props, state) {
                 state.editingRoad = props.road.cloneMessage();
+                document.addEventListener('estrada.table.roadMetaDataUpdated', (data) => {
+                    this.state.editingRoad = data.detail.road;
+                    this.update();
+                });
             },
             save(e) {
                 var save_button = e.currentTarget;
