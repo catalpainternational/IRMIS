@@ -23,8 +23,8 @@
             <select class="{ state.roadType != '' ? '' : 'inactive' } form-control" onchange="{ checkRoadType }">
                 <option value="">{ window.gettext("Select a Road Type") }</option>
                 <template each="{ type in road_types.options }">
-                    <option if="{ type[0] === state.editingRoadType() }" value="{ type[0] }" selected>{ type[1] }</option>
-                    <option if="{ type[0] !== state.editingRoadType() }" value="{ type[0] }">{ type[1] }</option>
+                    <option if="{ type[0] === state.editingRoad.getRoadType() }" value="{ type[0] }" selected>{ type[1] }</option>
+                    <option if="{ type[0] !== state.editingRoad.getRoadType() }" value="{ type[0] }">{ type[1] }</option>
                 </template>
             </select>
             <small class="form-text text-muted">{ window.gettext("Choose the administrative class of the road") }</small>
