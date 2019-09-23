@@ -32,7 +32,7 @@
     </section>
 
     <div class="button-wrapper d-flex justify-content-end">
-        <button class="btn btn-primary" onclick="{ save }">{ window.gettext("Save and continue") }</button>
+        <button class="btn btn-primary" onclick="{ save }" disabled="{ !state.hasChanges }">{ window.gettext("Save and continue") }</button>
     </div>
 
     <script>
@@ -46,6 +46,7 @@
             state: {
                 show_feedback: false,
                 error: null,
+                hasChanges: false,
             },
             onBeforeMount(props, state) {
                 state.editingRoad = props.road.cloneMessage();
@@ -53,6 +54,14 @@
                     this.state.editingRoad = data.detail.road;
                     this.update();
                 });
+            },
+            checkChanges() {
+                const hasChanges = this.state.editingRoad.toString() !== this.props.road.toString();
+                if (hasChanges !== this.state.hasChanges) {
+                    this.state.hasChanges = hasChanges;
+                    this.props.onChange(hasChanges);
+                }
+                return hasChanges;
             },
             save(e) {
                 var save_button = e.currentTarget;
@@ -64,19 +73,21 @@
                 }).catch(err => {
                     this.state.error = true;
                 }).finally(() => {
-                    save_button.disabled = false
+                    save_button.disabled = false;
                     this.state.show_feedback = true;
-                    this.update()
+                    this.update();
                 });
             },
             checkAdministrativeArea(e) {
                 this.state.administrativeArea = e.currentTarget.value;
                 this.state.editingRoad.setAdministrativeArea(this.state.administrativeArea);
+                this.checkChanges();
                 this.update();
             },
             checkRoadType(e) {
                 this.state.roadType = e.currentTarget.value;
                 this.state.editingRoad.setRoadType(this.state.roadType);
+                this.checkChanges();
                 this.update();
             },
             administrative_areas: window.road_schema.administrative_area,

@@ -19,7 +19,7 @@
             <label>{ pavements.display }</label>
             <small class="form-text text-muted">{ window.gettext("Choose the pavement class of the road") }</small>
             <ul class="pavement-classes">
-                <li each="{ pavement in pavements.options }" data-pavement="{ pavement.name }" onclick="{ checkPavementClass }">
+                <li each="{ pavement in pavements.options }" data-pavement="{ pavement.code }" onclick="{ checkPavementClass }">
                     <span class="{ pavement.code == state.editingRoad.getPavementClass() ? 'active' : ''  } radio image"></span>
                     { pavement.name }
                 </li>
@@ -28,7 +28,7 @@
     </section>
 
     <div class="button-wrapper d-flex justify-content-end">
-        <button class="btn btn-primary" onclick="{ save }">{ window.gettext("Save and continue") }</button>
+        <button class="btn btn-primary" onclick="{ save }" disabled="{ !state.hasChanges }">{ window.gettext("Save and continue") }</button>
     </div>
 
     <script>
@@ -42,6 +42,7 @@
             state: {
                 show_feedback: false,
                 error: null,
+                hasChanges: false,
             },
             onBeforeMount(props, state) {
                 state.editingRoad = props.road.cloneMessage();
@@ -49,6 +50,14 @@
                     this.state.editingRoad = data.detail.road;
                     this.update();
                 });
+            },
+            checkChanges() {
+                const hasChanges = this.state.editingRoad.toString() !== this.props.road.toString();
+                if (hasChanges !== this.state.hasChanges) {
+                    this.state.hasChanges = hasChanges;
+                    this.props.onChange(hasChanges);
+                }
+                return hasChanges;
             },
             save(e) {
                 var save_button = e.currentTarget;
@@ -60,14 +69,15 @@
                 }).catch(err => {
                     this.state.error = true;
                 }).finally(() => {
-                    save_button.disabled = false
+                    save_button.disabled = false;
                     this.state.show_feedback = true;
-                    this.update()
+                    this.update();
                 });
             },
             checkSurfaceType(e) {
                 this.state.surfaceType = e.currentTarget.value;
                 this.state.editingRoad.setSurfaceType(this.state.surfaceType);
+                this.checkChanges();
                 this.update();
             },
             checkPavementClass(e) {
@@ -76,6 +86,7 @@
                 var currentSelected = document.getElementsByClassName("pavement-classes").item(0).getElementsByClassName("active");
                 if (currentSelected.length) currentSelected.item(0).classList.remove("active");
                 radio.classList.add("active");
+                this.checkChanges();
                 this.update();
             },
             pavements: window.road_schema.pavement_class,

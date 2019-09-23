@@ -13,7 +13,7 @@
             <label>{ road_status.display }</label>
             <small class="form-text text-muted">{ window.gettext("Enter road link current status") }</small>
             <ul class="status">
-                <li each="{ roadStatus in road_status.options }" data-status="{ roadStatus.name }" onclick="{ checkRoadStatus }">
+                <li each="{ roadStatus in road_status.options }" data-status="{ roadStatus.code }" onclick="{ checkRoadStatus }">
                     <span class="{ roadStatus.code === state.editingRoad.getRoadStatus() ? 'active' : ''  } radio image"></span>
                     { roadStatus.name }
                 </li>
@@ -27,7 +27,7 @@
     </section>
 
     <div class="button-wrapper d-flex justify-content-end">
-        <button class="btn btn-primary" onclick="{ save }">{ window.gettext ("Save and continue") }</button>
+        <button class="btn btn-primary" onclick="{ save }" disabled="{ !state.hasChanges }">{ window.gettext ("Save and continue") }</button>
     </div>
 
     <script>
@@ -41,6 +41,7 @@
             state: {
                 show_feedback: false,
                 error: null,
+                hasChanges: false,
             },
             onBeforeMount(props, state) {
                 state.editingRoad = props.road.cloneMessage();
@@ -48,6 +49,14 @@
                     this.state.editingRoad = data.detail.road;
                     this.update();
                 });
+            },
+            checkChanges() {
+                const hasChanges = this.state.editingRoad.toString() !== this.props.road.toString();
+                if (hasChanges !== this.state.hasChanges) {
+                    this.state.hasChanges = hasChanges;
+                    this.props.onChange(hasChanges);
+                }
+                return hasChanges;
             },
             save(e) {
                 var save_button = e.currentTarget;
@@ -59,10 +68,15 @@
                 }).catch(err => {
                     this.state.error = true;
                 }).finally(() => {
-                    save_button.disabled = false
+                    save_button.disabled = false;
                     this.state.show_feedback = true;
-                    this.update()
+                    this.update();
                 });
+            },
+            checkFundingSource(e) {
+                this.state.editingRoad.setFundingSource(e.currentTarget.value);
+                this.checkChanges();
+                this.update();
             },
             checkRoadStatus(e) {
                 this.state.editingRoad.setRoadStatus(e.currentTarget.dataset.status);
@@ -70,14 +84,12 @@
                 var currentSelected = document.getElementsByClassName("status").item(0).getElementsByClassName("active");
                 if (currentSelected.length) currentSelected.item(0).classList.remove("active");
                 radio.classList.add("active");
-                this.update();
-            },
-            checkProject(e) {
-                this.state.editingRoad.setFundingSource(e.currentTarget.value);
+                this.checkChanges();
                 this.update();
             },
             checkProject(e) {
                 this.state.editingRoad.setProject(e.currentTarget.value);
+                this.checkChanges();
                 this.update();
             },
             funding_source: window.road_schema.funding_source,

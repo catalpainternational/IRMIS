@@ -47,7 +47,7 @@
     </section>
 
     <div class="button-wrapper d-flex justify-content-end">
-        <button class="btn btn-primary" onclick="{ save }" disabled={ !hasChanges() }>Save and continue</button>
+        <button class="btn btn-primary" onclick="{ save }" disabled="{ !state.hasChanges }">Save and continue</button>
     </div>
 
     <script>
@@ -80,18 +80,22 @@
             },
             checkSurfaceCondition(e) {
                 this.state.editingRoad.setSurfaceCondition(e.currentTarget.dataset.condition);
+                this.checkChanges();
                 this.update();
             },
             checkMaintenanceNeed(e) {
                 this.state.editingRoad.setMaintenanceNeed(e.currentTarget.dataset.maintenance);
+                this.checkChanges();
                 this.update();
             },
             checkTechnicalClass(e) {
                 this.state.editingRoad.setTechnicalClass(e.currentTarget.dataset.technical);
+                this.checkChanges();
                 this.update();
             },
             checkTrafficData(e) {
                 this.state.editingRoad.setTrafficLevel(e.currentTarget.dataset.traffic);
+                this.checkChanges();
                 this.update();
             },
             save(e) {
