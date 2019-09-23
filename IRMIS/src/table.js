@@ -42,6 +42,15 @@ window.addEventListener("load", () => {
     const columns = columnsDropdown.querySelectorAll("[data-column]");
 
     document.getElementById("select-data").addEventListener("click", () => {
+        function clickOutside(e) {
+            if (!document.getElementById("select-data").contains(e.target)) {
+                columnsDropdown.hidden = true;
+            }
+        }
+
+        if (columnsDropdown.hidden) document.addEventListener("click", clickOutside);
+        else document.removeEventListener("click", clickOutside);
+
         columnsDropdown.hidden = !columnsDropdown.hidden;
     });
 
