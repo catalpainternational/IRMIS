@@ -58,7 +58,7 @@ export function getRoadMetadata(roadId) {
  *
  * Post metadata for a single road to the server
  *
- * @returns 204 (success) or 400 (failure)
+ * @returns 200 (success) or 400 (failure)
  */
 export function putRoadMetadata(road) {
     const assetTypeUrlFragment = "road_update";
