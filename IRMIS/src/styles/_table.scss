@@ -27,11 +27,11 @@ div.dataTables_wrapper {
         padding: 3px 15px;
         display: flex;
 
-        button {
+        button, div.btn {
             flex: inherit;
         }
 
-        button:not(:first-child) {
+        div.btn {
             margin-left: 10px;
         }
     }

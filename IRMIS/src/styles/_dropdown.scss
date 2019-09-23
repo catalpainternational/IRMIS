@@ -1,4 +1,4 @@
-#settings, #columns-list {
+#settings, #columns-dropdown {
     span.image {
         margin-right: 5px;
     }
@@ -10,9 +10,8 @@
     top: 30px;
 }
 
-#columns-list {
+#columns-dropdown {
     padding: 20px 30px;
-    min-width: 609px;
     top: 25px;
 
     .road-inventory-data {

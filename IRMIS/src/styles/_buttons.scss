@@ -14,7 +14,8 @@
     padding-right: 0.75rem;
     padding-left: 0.75rem;
     padding-top: 0.35rem;
-    width: 108px;
+    min-width: 108px;
+    height: 25px;
 }
 
 .btn-lg {
@@ -47,9 +48,11 @@
     box-shadow: 0 0 4px 0 rgba(61, 71, 88, 0.3) !important;
     border: 1px solid $light-gray !important;
     background-color: $white !important;
+    color: $darker-gray;
 
-    &:hover {
-        border: 1px solid $light-gray;
-        background-color: $white;
+    &:active, &:hover {
+        border: 1px solid $light-gray !important;
+        background-color: $white !important;
+        color: $darker-gray !important;
     }
 }

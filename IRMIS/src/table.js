@@ -61,19 +61,37 @@ document.addEventListener('estrada.sideMenu.viewChanged', (data) => {
 });
 
 window.addEventListener("load", () => {
-    const columnsList = document.getElementById("columns-list");
+    const restoreDefaults = document.getElementsByClassName("restore").item(0);
+    const columnsDropdown = document.getElementById("columns-dropdown");
+    const columns = columnsDropdown.querySelectorAll("[data-column]");
 
     document.getElementById("select-data").addEventListener("click", () => {
-        columnsList.hidden = !columnsList.hidden;
+        columnsDropdown.hidden = !columnsDropdown.hidden;
     });
 
-    columnsList.querySelectorAll("[data-column]").forEach((item) => {
+    columns.forEach((item) => {
         item.addEventListener("click", (e) => {
             e.stopPropagation();
             const element = e.currentTarget;
             const column = table.column(window.canEdit ? parseInt(element.dataset.column) + 1 : element.dataset.column);
             column.visible(!column.visible());
             element.getElementsByClassName("checkbox").item(0).classList.toggle("selected");
+        });
+    });
+
+    restoreDefaults.addEventListener("click", (e) => {
+        e.stopPropagation();
+        columns.forEach((item) => {
+            const column = table.column(window.canEdit ? parseInt(item.dataset.column) + 1 : item.dataset.column);
+            const checkbox = item.getElementsByClassName("checkbox").item(0);
+
+            if (item.dataset.default && !checkbox.classList.contains("selected")) {
+                column.visible(true);
+                checkbox.classList.add("selected");
+            } else if (!item.dataset.default) {
+                column.visible(false);
+                checkbox.classList.remove("selected");
+            }
         });
     });
 
