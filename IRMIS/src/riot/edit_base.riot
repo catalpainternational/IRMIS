@@ -52,6 +52,12 @@
             components: {
                 Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Project, Edit_Condition
             },
+            onBeforeMount(props, state) {
+                document.addEventListener('estrada.table.roadMetaDataUpdated', (data) => {
+                    this.state.road = data.detail.road;
+                    this.update();
+                });
+            },
             onMounted(props, state) {
                 state.loading = true;
                 state.page = props.page;

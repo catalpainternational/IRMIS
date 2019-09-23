@@ -45,10 +45,6 @@
             },
             onBeforeMount(props, state) {
                 state.editingRoad = props.road.cloneMessage();
-                document.addEventListener('estrada.table.roadMetaDataUpdated', (data) => {
-                    this.state.editingRoad = data.detail.road;
-                    this.update();
-                });
             },
             checkChanges() {
                 const hasChanges = this.state.editingRoad.toString() !== this.props.road.toString();
