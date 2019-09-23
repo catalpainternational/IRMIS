@@ -19,7 +19,7 @@
             <label>{ pavements.display }</label>
             <small class="form-text text-muted">{ window.gettext("Choose the pavement class of the road") }</small>
             <ul class="pavement-classes">
-                <li each="{ pavement in pavements.options }" data-pavement="{ pavement.name }" onclick="{ checkPavementClass }">
+                <li each="{ pavement in pavements.options }" data-pavement="{ pavement.code }" onclick="{ checkPavementClass }">
                     <span class="{ pavement.code == state.editingRoad.getPavementClass() ? 'active' : ''  } radio image"></span>
                     { pavement.name }
                 </li>
