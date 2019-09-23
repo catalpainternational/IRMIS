@@ -23,11 +23,14 @@
                 <a class="caret-dark left image" href="#"></a>
                 <h1>{ state.road.getRoadCode() } { state.road.getRoadName() }</h1>
             </header>
-            <edit_location_type road="{ state.road }" if="{ state.page === 'location_type' }" on-change={ onChildChanges }></edit_location_type>
-            <edit_asset_details road="{ state.road }" if="{ state.page === 'asset_details' }"></edit_asset_details>
-            <edit_pavement road="{ state.road }" if="{ state.page === 'pavement' }"></edit_pavement>
-            <edit_project road="{ state.road }" if="{ state.page === 'project' }"></edit_project>
-            <edit_condition road="{ state.road }" if="{ state.page === 'condition' }" on-change={ onChildChanges }></edit_condition>
+            <edit_location_type road="{ state.road }" if="{ state.page === 'location_type' }" on-change="{ onChildChanges }"></edit_location_type>
+            <edit_asset_details road="{ state.road }" if="{ state.page === 'asset_details' }" on-change="{ onChildChanges }"></edit_asset_details>
+            <edit_pavement road="{ state.road }" if="{ state.page === 'pavement' }" on-change="{ onChildChanges }"></edit_pavement>
+            <edit_project road="{ state.road }" if="{ state.page === 'project' }" on-change="{ onChildChanges }"></edit_project>
+            <edit_condition road="{ state.road }" if="{ state.page === 'condition' }" on-change="{ onChildChanges }"></edit_condition>
+        </div>
+        <div if="{ state.hasChanges }">
+            { alert("CHANGES!!!!") }
         </div>
     </div>
 

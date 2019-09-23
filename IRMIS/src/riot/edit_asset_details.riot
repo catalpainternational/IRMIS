@@ -83,7 +83,7 @@
     </section>
 
     <div class="button-wrapper d-flex justify-content-end">
-        <button class="btn btn-primary" onclick="{ save }">{ window.gettext("Save and continue") }</button>
+        <button class="btn btn-primary" onclick="{ save }" disabled="{ !state.hasChanges }">{ window.gettext("Save and continue") }</button>
     </div>
 
     <script>
@@ -97,9 +97,18 @@
             state: {
                 show_feedback: false,
                 error: null,
+                hasChanges: false,
             },
             onBeforeMount(props, state) {
                 state.editingRoad = props.road.cloneMessage();
+            },
+            checkChanges() {
+                const hasChanges = this.state.editingRoad.toString() !== this.props.road.toString();
+                if (hasChanges !== this.state.hasChanges) {
+                    this.state.hasChanges = hasChanges;
+                    this.props.onChange(hasChanges);
+                }
+                return hasChanges;
             },
             save(e) {
                 var save_button = e.currentTarget;
@@ -111,9 +120,9 @@
                 }).catch(err => {
                     this.state.error = true;
                 }).finally(() => {
-                    save_button.disabled = false
+                    save_button.disabled = false;
                     this.state.show_feedback = true;
-                    this.update()
+                    this.update();
                 });
             },
             checkLinkCode(e) {
@@ -123,13 +132,16 @@
                     this.invalidLinkCode.push(`Link code cannot contain white spaces`);
                 }
                 this.state.editingRoad.setLinkCode(input);
+                this.checkChanges();
                 this.update();
             },
             checkLinkStartName(e) {
                 this.state.editingRoad.setLinkStartName(e.currentTarget.value);
+                this.checkChanges();
             },
             checkLinkEndName(e) {
                 this.state.editingRoad.setLinkEndName(e.currentTarget.value);
+                this.checkChanges();
             },
             checkLinkLength(e) {
                 const linkLengthDecimals = 3;
@@ -141,6 +153,7 @@
                 } else {
                     this.state.editingRoad.setLinkLength(input);
                 }
+                this.checkChanges();
                 this.update();
             },
             checkCarriagewayWidth(e) {
@@ -153,6 +166,7 @@
                 } else {
                     this.state.editingRoad.setCarriagewayWidth(input);
                 }
+                this.checkChanges();
                 this.update();
             },
             checkLinkStartChainage(e) {
@@ -165,6 +179,7 @@
                 } else {
                     this.state.editingRoad.setLinkStartChainage(input);
                 }
+                this.checkChanges();
                 this.update();
             },
             checkLinkEndChainage(e) {
@@ -177,6 +192,7 @@
                 } else {
                     this.state.editingRoad.setLinkEndChainage(input);
                 }
+                this.checkChanges();
                 this.update();
             },
             link_code: window.road_schema.link_code,
