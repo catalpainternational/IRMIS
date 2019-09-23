@@ -69,17 +69,17 @@
                     this.update();
                 });
             },
+            checkFundingSource(e) {
+                this.state.editingRoad.setFundingSource(e.currentTarget.value);
+                this.checkChanges();
+                this.update();
+            },
             checkRoadStatus(e) {
                 this.state.editingRoad.setRoadStatus(e.currentTarget.dataset.status);
                 var radio = e.currentTarget.firstElementChild;
                 var currentSelected = document.getElementsByClassName("status").item(0).getElementsByClassName("active");
                 if (currentSelected.length) currentSelected.item(0).classList.remove("active");
                 radio.classList.add("active");
-                this.checkChanges();
-                this.update();
-            },
-            checkProject(e) {
-                this.state.editingRoad.setFundingSource(e.currentTarget.value);
                 this.checkChanges();
                 this.update();
             },
