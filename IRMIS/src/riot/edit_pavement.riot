@@ -9,8 +9,8 @@
             <select class="{ state.surfaceType ? '' : 'inactive' } form-control" onchange="{ checkSurfaceType }">
                 <option value="">{ window.gettext("Select a Surface Type") }</option>
                 <template each="{ surface in surfaces.options }">
-                    <option if="{ surface.code == state.surfaceType }" value="{ surface.code }" selected>{ surface.name }</option>
-                    <option if="{ surface.code != state.surfaceType }" value="{ surface.code }">{ surface.name }</option>
+                    <option if="{ surface.code == state.editingRoad.getSurfaceType() }" value="{ surface.code }" selected>{ surface.name }</option>
+                    <option if="{ surface.code != state.editingRoad.getSurfaceType() }" value="{ surface.code }">{ surface.name }</option>
                 </template>
             </select>
             <small class="form-text text-muted">{ window.gettext("Choose the type of surface of the road link carriageway") }</small>
@@ -46,7 +46,6 @@
             },
             onBeforeMount(props, state) {
                 state.editingRoad = props.road.cloneMessage();
-                state.surfaceType = state.editingRoad.getSurfaceType();
             },
             checkChanges() {
                 const hasChanges = this.state.editingRoad.toString() !== this.props.road.toString();
@@ -84,6 +83,7 @@
                 if (currentSelected.length) currentSelected.item(0).classList.remove("active");
                 radio.classList.add("active");
                 this.checkChanges();
+                this.update();
             },
             pavements: window.road_schema.pavement_class,
             surfaces: window.road_schema.surface_type,

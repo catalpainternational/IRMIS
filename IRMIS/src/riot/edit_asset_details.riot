@@ -138,10 +138,12 @@
             checkLinkStartName(e) {
                 this.state.editingRoad.setLinkStartName(e.currentTarget.value);
                 this.checkChanges();
+                this.update();
             },
             checkLinkEndName(e) {
                 this.state.editingRoad.setLinkEndName(e.currentTarget.value);
                 this.checkChanges();
+                this.update();
             },
             checkLinkLength(e) {
                 const linkLengthDecimals = 3;
