@@ -112,7 +112,12 @@ def road_update(request):
     # assert Road ID given exists in the DB & there are changes to make
     road = get_object_or_404(Road.objects.filter(pk=req_pb.id))
     if Road.objects.filter(pk=req_pb.id).to_protobuf().roads[0] == req_pb:
-        return HttpResponse(status=204)
+        response = HttpResponse(
+            req_pb.SerializeToString(),
+            status=200,
+            content_type="application/octet-stream",
+        )
+        return response
 
     # check if the Road has revision history, then check if Road
     # edits would be overwriting someone's changes
@@ -153,11 +158,21 @@ def road_update(request):
             else:
                 fk_obj = None
             setattr(road, fk[1], fk_obj)
+
         with reversion.create_revision():
             road.save()
             # store the user who made the changes
             reversion.set_user(request.user)
-        return HttpResponse(status=204)
+
+        versions = Version.objects.get_for_object(road)
+        req_pb.last_revision_id = versions[0].id
+
+        response = HttpResponse(
+            req_pb.SerializeToString(),
+            status=200,
+            content_type="application/octet-stream",
+        )
+        return response
     except Exception as err:
         return HttpResponse(status=400)
 

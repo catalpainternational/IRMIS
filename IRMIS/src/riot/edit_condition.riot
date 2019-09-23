@@ -53,11 +53,17 @@
     <script>
         import { saveRoad } from "../roadManager";
         import Edit_Feedback from './edit_feedback.riot';
-        import { Road } from "../../protobuf/roads_pb";
 
         export default {
+            components: {
+                Edit_Feedback
+            },
+            state: {
+                show_feedback: false,
+                error: null,
+            },
             onBeforeMount(props, state) {
-                state.editingRoad = Road.deserializeBinary(props.road.serializeBinary());
+                state.editingRoad = props.road.cloneMessage();
             },
             checkSurfaceCondition(e) {
                 this.state.editingRoad.setSurfaceCondition(e.currentTarget.dataset.condition);
