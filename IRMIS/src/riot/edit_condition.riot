@@ -20,7 +20,7 @@
             <ul class="maintenance-need">
                 <li each="{ maintenance_need in maintenance_needs.options }" data-maintenance="{ maintenance_need.code }" onclick="{ checkMaintenanceNeed }">
                     <span class="{ maintenance_need.code === state.editingRoad.getMaintenanceNeed() ? 'active' : ''  } radio image"></span>
-                    { maintenance_need.name } - { maintenance_need.code } - { state.editingRoad.getMaintenanceNeed() }
+                    { maintenance_need.name }
                 </li>
             </ul>
         </div>
