@@ -13,7 +13,7 @@
             <label>{ road_status.display }</label>
             <small class="form-text text-muted">{ window.gettext("Enter road link current status") }</small>
             <ul class="status">
-                <li each="{ roadStatus in road_status.options }" data-status="{ roadStatus.name }" onclick="{ checkRoadStatus }">
+                <li each="{ roadStatus in road_status.options }" data-status="{ roadStatus.code }" onclick="{ checkRoadStatus }">
                     <span class="{ roadStatus.code === state.editingRoad.getRoadStatus() ? 'active' : ''  } radio image"></span>
                     { roadStatus.name }
                 </li>
