@@ -78,6 +78,9 @@ window.addEventListener("load", () => {
     });
 
     initializeDataTable();
+
+    // Append toggle columns button onto DataTable generated layout
+    document.getElementsByClassName("dt-buttons").item(0).append(document.getElementById("select-data"));
 });
 
 function initializeDataTable() {

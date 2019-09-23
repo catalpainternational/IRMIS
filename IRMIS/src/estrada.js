@@ -16,9 +16,6 @@ import { Map } from "./map/map";
 const estradaMap = new Map();
 
 window.addEventListener("load", () => {
-    // Append toggle columns button onto DataTable generated layout
-    document.getElementsByClassName("dt-buttons").item(0).append(document.getElementById("select-data"));
-
     // Set up the map and table - but without any data for either
     estradaMap.loadMap();
 
