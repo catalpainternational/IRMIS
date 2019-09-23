@@ -10,30 +10,6 @@ let table;
 // needed for export to excel
 window.JSZip = jsZip;
 
-function humanize(schema, model, keyArg=false, nameArg=false) {
-    let values = {};
-    if (keyArg && nameArg) {
-        schema[model].options.forEach(function(o){
-            values[o[keyArg]] = o[nameArg]
-        });
-    } else {
-        schema[model].options.forEach(function(o){
-            values[o[0]] = o[1]
-        });
-    }
-    return values;
-}
-
-const ROAD_STATUS_CHOICES = humanize(window.road_schema, 'road_status', 'code', 'name');
-const ROAD_TYPE_CHOICES = humanize(window.road_schema, 'road_type');
-const SURFACE_CONDITION_CHOICES = humanize(window.road_schema, 'surface_condition');
-const SURFACE_TYPE_CHOICES = humanize(window.road_schema, 'surface_type', 'code', 'name');
-const PAVEMENT_CLASS_CHOICES = humanize(window.road_schema, 'pavement_class', 'code', 'name');
-const ADMINISTRATIVE_AREA_CHOICES = humanize(window.road_schema, 'administrative_area', 'id', 'name');
-const TECHNICAL_CLASS_CHOICES = humanize(window.road_schema, 'technical_class', 'code', 'name');
-const MAINTENANCE_NEED_CHOICES = humanize(window.road_schema, 'maintenance_need', 'code', 'name');
-const TRAFFIC_LEVEL_CHOICES = humanize(window.road_schema, 'traffic_level');
-
 // when the roadManager has new roads, add them to the table
 document.addEventListener('estrada.roadManager.roadMetaDataAdded', (data) => {
     // add the roads to the table
@@ -41,7 +17,7 @@ document.addEventListener('estrada.roadManager.roadMetaDataAdded', (data) => {
 });
 
 document.addEventListener('estrada.table.roadMetaDataUpdated', (data) => {
-    table.row(`#${data.detail.getId()}`).data(data.detail).draw();
+    table.row(`#${data.detail.road.id}`).data(data.detail.road).draw();
 });
 
 // when a filter is applied, update the filter id whitelist
@@ -110,96 +86,96 @@ function initializeDataTable() {
     const columns = [
         {
             title: 'Road Code', data: null,
-            render: 'getRoadCode',
+            render: 'code',
             type: "roadCode"
         },
         {
             title: 'Road Name', data: null,
-            render: 'getRoadName',
+            render: 'name',
             visible: false,
         },
         {
             title: 'Link Code', data: null,
-            render: 'getLinkCode'
+            render: 'linkCode'
         },
         {
             title: 'Link Name', data: null,
-            render: 'getLinkName',
+            render: 'linkName',
             visible: false,
         },
         {
             title: 'Link Length (Km)', data: null,
-            render: r => parseFloat(r.getLinkLength()).toFixed(2)
+            render: r => parseFloat(r.linkLength).toFixed(2)
         },
         {
             title: 'Link Start Name', data: null,
-            render: 'getLinkStartName'
+            render: 'linkStartName'
         },
         {
             title: 'Link Start Chainage (Km)', data: null,
-            render: r => parseFloat(r.getLinkStartChainage()).toFixed(2)
+            render: r => parseFloat(r.linkStartChainage).toFixed(2)
         },
         {
             title: 'Link End Name', data: null,
-            render: 'getLinkEndName'
+            render: 'linkEndName'
         },
         {
             title: 'Link End Chainage (Km)', data: null,
-            render: r => parseFloat(r.getLinkEndChainage()).toFixed(2)
+            render: r => parseFloat(r.linkEndChainage).toFixed(2)
         },
         {
             title: 'Surface Type', data: null,
-            render: r => choice_or_empty(r.getSurfaceType(), SURFACE_TYPE_CHOICES)
+            render: 'surfaceType'
         },
         {
             title: 'Pavement Class', data: null,
-            render: r => choice_or_empty(r.getPavementClass(), PAVEMENT_CLASS_CHOICES)
+            render: 'pavementClass'
         },
         {
             title: 'Carriageway Width (m)', data: null,
-            render: r => parseFloat(r.getCarriagewayWidth()).toFixed(2)
+            render: r => parseFloat(r.carriagewayWidth).toFixed(2)
         },
         {
             title: 'Administrative Area', data: null,
-            render: r => choice_or_empty(parseInt(r.getAdministrativeArea()), ADMINISTRATIVE_AREA_CHOICES)
+            render: 'administrativeArea'
         },
         {
             title: 'Road Type', data: null,
-            render: r => choice_or_empty(r.getRoadType(), ROAD_TYPE_CHOICES),
+            render: 'type',
             visible: false,
         },
         {
             title: 'Technical Class', data: null,
-            render: r => choice_or_empty(r.getTechnicalClass(), TECHNICAL_CLASS_CHOICES),
+            render: 'technicalClass',
             visible: false,
         },
         {
             title: 'Funding Source', data: null,
-            render: 'getFundingSource',
+            render: 'fundingSource',
             visible: false,
         },
         {
             title: 'Road Status', data: null,
-            render: r => choice_or_empty(r.getRoadStatus(), ROAD_STATUS_CHOICES),
+            render: 'status',
             visible: false,
         },
         {
             title: 'Project', data: null,
-            render: 'getProject',
+            render: 'project',
             visible: false,
         },
         {
             title: 'Surface Condition', data: null,
-            render: r => choice_or_empty(r.getSurfaceCondition(), SURFACE_CONDITION_CHOICES)
+            render: 'surfaceCondition'
         },
         {
             title: 'Maintenance needs', data: null,
-            render: r => choice_or_empty(r.getMaintenanceNeed(), MAINTENANCE_NEED_CHOICES),
+            render: 'maintenanceNeed',
             visible: false,
         },
         {
             title: 'Traffic Data', data: null,
-            render: r => choice_or_empty(r.getTrafficLevel(), TRAFFIC_LEVEL_CHOICES),
+            render: 'trafficLevel',
             visible: false,
         }
     ];
@@ -258,8 +234,3 @@ $.extend($.fn.dataTableExt.oSort, {
         return ((str1 < str2) ? 1 : ((str1 > str2) ? -1 : 0));
     }
 });
-
-// utility function to pick from choices if value is truthy, or return empty string
-function choice_or_empty(value, choices) {
-    return value ? choices[value] : '';
-}
