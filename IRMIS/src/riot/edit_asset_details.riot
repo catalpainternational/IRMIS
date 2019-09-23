@@ -106,6 +106,12 @@
                     this.update();
                 });
             },
+            onUpdated(props, state) {
+                // only update the EditingRoad if the incoming Base Road data is newer
+                if (props.road.getLastRevisionId() > this.state.editingRoad.getLastRevisionId()) {
+                    this.state.editingRoad = props.road;
+                }
+            },
             checkChanges() {
                 const hasChanges = this.state.editingRoad.toString() !== this.props.road.toString();
                 if (hasChanges !== this.state.hasChanges) {
