@@ -20,7 +20,7 @@
             <ul class="maintenance-need">
                 <li each="{ maintenance_need in maintenance_needs.options }" data-maintenance="{ maintenance_need.code }" onclick="{ checkMaintenanceNeed }">
                     <span class="{ maintenance_need.code === state.editingRoad.getMaintenanceNeed() ? 'active' : ''  } radio image"></span>
-                    { maintenance_need.name } - { maintenance_need.code } - { state.editingRoad.getMaintenanceNeed() }
+                    { maintenance_need.name }
                 </li>
             </ul>
         </div>
@@ -38,7 +38,7 @@
             <label>{ traffic_data.display }</label>
             <small class="form-text text-muted">{ window.gettext("Choose the traffic volume for the road link") }</small>
             <ul class="traffic-data">
-                <li each="{ traffic in traffic_data.options }" data-traffic="{ traffic[1] }" onclick="{ checkTrafficData }">
+                <li each="{ traffic in traffic_data.options }" data-traffic="{ traffic[0] }" onclick="{ checkTrafficData }">
                     <span class="{ traffic[0] === state.editingRoad.getTrafficLevel() ? 'active' : ''  } radio image"></span>
                     { traffic[1] }
                 </li>

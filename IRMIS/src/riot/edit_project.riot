@@ -66,12 +66,15 @@
                 var currentSelected = document.getElementsByClassName("status").item(0).getElementsByClassName("active");
                 if (currentSelected.length) currentSelected.item(0).classList.remove("active");
                 radio.classList.add("active");
+                this.update();
             },
             checkProject(e) {
                 this.state.editingRoad.setFundingSource(e.currentTarget.value);
+                this.update();
             },
             checkProject(e) {
                 this.state.editingRoad.setProject(e.currentTarget.value);
+                this.update();
             },
             funding_source: window.road_schema.funding_source,
             road_status: window.road_schema.road_status,
