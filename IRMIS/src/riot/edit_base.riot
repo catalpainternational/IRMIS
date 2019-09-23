@@ -23,11 +23,11 @@
                 <a class="caret-dark left image" href="#"></a>
                 <h1>{ state.road.getRoadCode() } { state.road.getRoadName() }</h1>
             </header>
-            <edit_location_type road="{ state.road }" if="{ state.page === 'location_type' }"></edit_location_type>
+            <edit_location_type road="{ state.road }" if="{ state.page === 'location_type' }" on-change={ onChildChanges }></edit_location_type>
             <edit_asset_details road="{ state.road }" if="{ state.page === 'asset_details' }"></edit_asset_details>
             <edit_pavement road="{ state.road }" if="{ state.page === 'pavement' }"></edit_pavement>
             <edit_project road="{ state.road }" if="{ state.page === 'project' }"></edit_project>
-            <edit_condition road="{ state.road }" if="{ state.page === 'condition' }"></edit_condition>
+            <edit_condition road="{ state.road }" if="{ state.page === 'condition' }" on-change={ onChildChanges }></edit_condition>
         </div>
     </div>
 
@@ -44,6 +44,7 @@
                 road: null,
                 err: false,
                 page: "location_type",
+                hasChanges: false,
             },
             components: {
                 Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Project, Edit_Condition
@@ -59,6 +60,9 @@
                 }).finally(() => {
                     this.update();
                 });
+            },
+            onChildChanges(hasChanges) {
+                this.state.hasChanged = hasChanges;
             },
             selectPage(e) {
                 window.location.hash = `#edit/${this.state.road.getId()}/${e.currentTarget.dataset.page}`;
