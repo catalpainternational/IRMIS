@@ -69,6 +69,10 @@ window.addEventListener("load", () => {
         columnsDropdown.hidden = !columnsDropdown.hidden;
     });
 
+    columnsDropdown.addEventListener("click", (e) => {
+        e.stopPropagation();
+    });
+
     columns.forEach((item) => {
         item.addEventListener("click", (e) => {
             e.stopPropagation();
