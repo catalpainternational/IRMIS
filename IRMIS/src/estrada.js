@@ -42,11 +42,11 @@ window.addEventListener("hashchange", () => {
 
 function hashCheck() {
     let m = /#edit\/(\d*)\/(\w+)/.exec(location.hash);
-    if (m !== null) {
+    if (m !== null && !document.getElementById("edit-base")) {
         var roadPromise = getRoad(m[1]);
         riot.mount("edit_base", { roadPromise: roadPromise, page: m[2] });
         document.getElementById("view-content").hidden = true;
-    } else {
+    } else if (m === null) {
         riot.unmount("edit_base", true);
         document.getElementById("view-content").hidden = false;
     }

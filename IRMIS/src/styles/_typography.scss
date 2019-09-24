@@ -236,6 +236,21 @@ button {
     }
 }
 
+.modal {
+    h6 {
+        color: $darker-gray;
+        line-height: 19px;
+        font-weight: 800;
+        font-size: 16px;
+    }
+
+    p {
+        color: $darker-gray;
+        line-height: 19px;
+        font-size: 16px;
+    }
+}
+
 .text-muted {
 	color: $dark-gray !important;
 }

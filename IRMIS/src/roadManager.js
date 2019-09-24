@@ -44,7 +44,7 @@ export function saveRoad(road) {
         .then(road => {
             roads[road.getId()] = road;
             document.dispatchEvent(new CustomEvent("estrada.table.roadMetaDataUpdated", {detail: {road}}));
-            return true;
+            return road;
         });
 }
 

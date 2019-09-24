@@ -8,6 +8,16 @@
     border: none;
 }
 
+%disabled-light-shared {
+    background-color: $lighter-gray;
+    color: $dark-gray;
+
+    &:hover {
+        background-color: $lighter-gray;
+        color: $dark-gray;
+    }
+}
+
 .btn-sm {
     border-radius: calc(#{$radius} / 2);
     padding-bottom: 0.25rem;
@@ -34,13 +44,7 @@
     }
 
     &:disabled {
-        background-color: $lighter-gray;
-        color: $dark-gray;
-    
-        &:hover {
-            background-color: $lighter-gray;
-            color: $dark-gray;
-        }
+        @extend %disabled-light-shared;
     }
 }
 
@@ -54,5 +58,23 @@
         border: 1px solid $light-gray !important;
         background-color: $white !important;
         color: $darker-gray !important;
+    }
+}
+
+.btn-danger {
+    @extend %primary-shared;
+    background-color: $red;
+
+    &:hover {
+        background-color: $red;
+    }
+}
+
+.btn-light {
+    @extend %disabled-light-shared;
+    @extend %primary-shared;
+
+    &:hover {
+        border: none;
     }
 }
