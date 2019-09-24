@@ -30,15 +30,13 @@
             <edit_condition road="{ state.editingRoad }" saving="{ state.saving }" if="{ state.page === 'condition' }" on-save="{ save }"></edit_condition>
         </div>
         <div id="stop-alert" class="modal" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
+            <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                <div class="align-items-center modal-content">
                     <div class="modal-header">
                         <span class="alert stop image"></span>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span class="close image" aria-hidden="true"></span>
-                        </button>
+                        <span class="close image" data-dismiss="modal" aria-label="Close" aria-hidden="true"></span>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body text-center">
                         <h6>{ window.gettext("Unsaved Changes") }</h6>
                         <p>{ window.gettext("You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?") }</p>
                     </div>

@@ -112,6 +112,10 @@
     background-image: url("../images/close.svg");
     height: 15px;
     width: 15px;
+
+    &:hover {
+        cursor: pointer;
+    }
 }
 
 .tick {
