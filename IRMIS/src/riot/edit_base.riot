@@ -23,11 +23,11 @@
 
             <edit_feedback if="{ state.show_feedback }" error="{ state.error }"></edit_feedback>
 
-            <edit_location_type road="{ state.editingRoad }" saving={ state.saving } if="{ state.page === 'location_type' }" on-save={ save }></edit_location_type>
-            <edit_asset_details road="{ state.editingRoad }" saving={ state.saving } if="{ state.page === 'asset_details' }" on-save={ save }></edit_asset_details>
-            <edit_pavement road="{ state.editingRoad }" saving={ state.saving } if="{ state.page === 'pavement' }" on-save={ save }></edit_pavement>
-            <edit_project road="{ state.editingRoad }" saving={ state.saving } if="{ state.page === 'project' }" on-save={ save }></edit_project>
-            <edit_condition road="{ state.editingRoad }" saving={ state.saving } if="{ state.page === 'condition' }" on-save={ save }></edit_condition>
+            <edit_location_type road="{ state.editingRoad }" saving="{ state.saving }" if="{ state.page === 'location_type' }" on-save="{ save }"></edit_location_type>
+            <edit_asset_details road="{ state.editingRoad }" saving="{ state.saving }" if="{ state.page === 'asset_details' }" on-save="{ save }"></edit_asset_details>
+            <edit_pavement road="{ state.editingRoad }" saving="{ state.saving }" if="{ state.page === 'pavement' }" on-save="{ save }"></edit_pavement>
+            <edit_project road="{ state.editingRoad }" saving="{ state.saving }" if="{ state.page === 'project' }" on-save="{ save }"></edit_project>
+            <edit_condition road="{ state.editingRoad }" saving="{ state.saving }" if="{ state.page === 'condition' }" on-save="{ save }"></edit_condition>
         </div>
     </div>
 
@@ -56,7 +56,7 @@
             },
             onBeforeMount() {
                 window.onbeforeunload = () => {
-                    return this.hasChanges() ? 'You have changes' : null;
+                    return this.hasChanges() ? "You have changes" : null;
                 }
             },
             onBeforeUnmount() {
@@ -83,7 +83,7 @@
                 saveRoad(this.state.editingRoad).then((road) => {
                     if (road) {
                         this.state.error = false;
-                        this.initRoad(road)
+                        this.initRoad(road);
                     }
                     else { this.state.error = true; }
                 }).catch(err => {
@@ -97,7 +97,7 @@
                 return this.state.baseRoad.toString() !== this.state.editingRoad.toString();
             },
             selectPage(e) {
-                if( this.hasChanges() ) {
+                if (this.hasChanges()) {
                     alert('changes');
                 }
                 window.location.hash = `#edit/${this.state.editingRoad.getId()}/${e.currentTarget.dataset.page}`;
