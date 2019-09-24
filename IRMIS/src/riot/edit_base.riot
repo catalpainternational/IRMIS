@@ -21,7 +21,7 @@
                 <h1>{ state.editingRoad.getRoadCode() } { state.editingRoad.getRoadName() }</h1>
             </header>
 
-            <edit_feedback if="{ state.show_feedback }" error="{ state.error }"></edit_feedback>
+            <edit_feedback if="{ state.show_feedback }" close="{ closeFeedback }" error="{ state.error }"></edit_feedback>
 
             <edit_location_type road="{ state.editingRoad }" saving="{ state.saving }" if="{ state.page === 'location_type' }" on-save="{ save }"></edit_location_type>
             <edit_asset_details road="{ state.editingRoad }" saving="{ state.saving }" if="{ state.page === 'asset_details' }" on-save="{ save }"></edit_asset_details>
@@ -113,7 +113,6 @@
                     this.state.error = true;
                 }).finally((r) => {
                     this.update({ saving: false, show_feedback: true });
-                    document.getElementsByClassName('slide-in').item(0).classList.remove('slide-out');
                 });
             },
             hasChanges() {
@@ -135,6 +134,14 @@
                 window.location.hash = this.state.nextPage;
                 this.update();
             },
+            closeFeedback() {
+                const feedback = document.getElementsByClassName("slide-in").item(0);
+                feedback.classList.add("slide-out");
+                setTimeout(() => {
+                    feedback.classList.remove("slide-out");
+                    this.update({ show_feedback: false });
+                }, 300);
+            }
         };
     </script>
 </edit_base>

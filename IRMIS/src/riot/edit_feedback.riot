@@ -6,7 +6,7 @@
                 <span>{ window.gettext('Success') }</span>
                 <small class="text-muted">{ window.gettext('You have successfully saved') }</small>
             </div>
-            <span class="close image" onclick="{ close_feedback }"></span>
+            <span class="close image" onclick="{ closeFeedback }"></span>
         </div>
     </template>
     <template if="{ props.error }">
@@ -16,14 +16,14 @@
                 <span>{ window.gettext('Error') }</span>
                 <small class="text-muted">{ window.gettext('Something went wrong') }</small>
             </div>
-            <span class="close image" onclick="{ close_feedback }"></span>
+            <span class="close image" onclick="{ closeFeedback }"></span>
         </div>
     </template>
 
     <script>
         export default {
-            close_feedback() {
-                document.getElementsByClassName('slide-in').item(0).classList.add('slide-out');
+            closeFeedback() {
+                this.props.close();
             }
         }
     </script>
