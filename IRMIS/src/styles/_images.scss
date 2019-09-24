@@ -123,3 +123,9 @@
     @extend %tick-error-shared;
     background-image: url("../images/error.svg");
 }
+
+.alert.stop {
+    background-image: url("../images/stop_alert.svg");
+    height: 117px;
+    width: 124px;
+}
