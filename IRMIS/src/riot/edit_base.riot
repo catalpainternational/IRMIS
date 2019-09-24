@@ -17,17 +17,35 @@
         </div>
         <div if="{ !state.loading }" id="edit-base">
             <header class="align-items-center d-flex">
-                <a class="caret-dark left image" href="#"></a>
+                <a class="caret-dark left image" onclick="{ goBack }"></a>
                 <h1>{ state.editingRoad.getRoadCode() } { state.editingRoad.getRoadName() }</h1>
             </header>
 
             <edit_feedback if="{ state.show_feedback }" error="{ state.error }"></edit_feedback>
 
-            <edit_location_type road="{ state.editingRoad }" saving={ state.saving } if="{ state.page === 'location_type' }" on-save={ save }></edit_location_type>
-            <edit_asset_details road="{ state.editingRoad }" saving={ state.saving } if="{ state.page === 'asset_details' }" on-save={ save }></edit_asset_details>
-            <edit_pavement road="{ state.editingRoad }" saving={ state.saving } if="{ state.page === 'pavement' }" on-save={ save }></edit_pavement>
-            <edit_project road="{ state.editingRoad }" saving={ state.saving } if="{ state.page === 'project' }" on-save={ save }></edit_project>
-            <edit_condition road="{ state.editingRoad }" saving={ state.saving } if="{ state.page === 'condition' }" on-save={ save }></edit_condition>
+            <edit_location_type road="{ state.editingRoad }" saving="{ state.saving }" if="{ state.page === 'location_type' }" on-save="{ save }"></edit_location_type>
+            <edit_asset_details road="{ state.editingRoad }" saving="{ state.saving }" if="{ state.page === 'asset_details' }" on-save="{ save }"></edit_asset_details>
+            <edit_pavement road="{ state.editingRoad }" saving="{ state.saving }" if="{ state.page === 'pavement' }" on-save="{ save }"></edit_pavement>
+            <edit_project road="{ state.editingRoad }" saving="{ state.saving }" if="{ state.page === 'project' }" on-save="{ save }"></edit_project>
+            <edit_condition road="{ state.editingRoad }" saving="{ state.saving }" if="{ state.page === 'condition' }" on-save="{ save }"></edit_condition>
+        </div>
+        <div id="stop-alert" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                <div class="align-items-center modal-content">
+                    <div class="modal-header">
+                        <span class="alert stop image"></span>
+                        <span class="close image" data-dismiss="modal" aria-label="{ window.gettext('Close') }" aria-hidden="true"></span>
+                    </div>
+                    <div class="modal-body text-center">
+                        <h6>{ window.gettext("Unsaved Changes") }</h6>
+                        <p>{ window.gettext("You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?") }</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="{ discardChanges }">{ window.gettext("Discard") }</button>
+                        <button type="button" class="btn btn-light" data-dismiss="modal">{ window.gettext("Continue editing") }</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -40,6 +58,9 @@
         import Edit_Condition from "./edit_condition.riot";
         import Edit_Feedback from './edit_feedback.riot';
 
+        import "Bootstrap/js/dist/modal";
+        import $ from "jquery";
+
         export default {
             state: {
                 loading: true,
@@ -48,6 +69,7 @@
                 baseRoad: null,
                 error: false,
                 page: "location_type",
+                nextPage: null,
                 hasChanges: false,
                 showFeedback: false,
             },
@@ -56,7 +78,7 @@
             },
             onBeforeMount() {
                 window.onbeforeunload = () => {
-                    return this.hasChanges() ? 'You have changes' : null;
+                    return this.hasChanges() ? "You have changes" : null;
                 }
             },
             onBeforeUnmount() {
@@ -83,7 +105,7 @@
                 saveRoad(this.state.editingRoad).then((road) => {
                     if (road) {
                         this.state.error = false;
-                        this.initRoad(road)
+                        this.initRoad(road);
                     }
                     else { this.state.error = true; }
                 }).catch(err => {
@@ -96,13 +118,21 @@
             hasChanges() {
                 return this.state.baseRoad.toString() !== this.state.editingRoad.toString();
             },
+            goBack(e) {
+                this.state.nextPage = "#";
+                if (this.hasChanges()) $('#stop-alert').modal('show');
+                else window.location.hash = this.state.nextPage;
+            },
             selectPage(e) {
-                if( this.hasChanges() ) {
-                    alert('changes');
-                }
-                window.location.hash = `#edit/${this.state.editingRoad.getId()}/${e.currentTarget.dataset.page}`;
-                this.update({ page: e.currentTarget.dataset.page });
-            }
+                this.state.page = e.currentTarget.dataset.page;
+                this.state.nextPage = `#edit/${this.state.editingRoad.getId()}/${this.state.page}`;
+                if (this.hasChanges()) $('#stop-alert').modal('show');
+                else this.discardChanges();
+            },
+            discardChanges() {
+                window.location.hash = this.state.nextPage;
+                this.update();
+            },
         };
     </script>
 </edit_base>
