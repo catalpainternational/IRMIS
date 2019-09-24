@@ -127,7 +127,15 @@ function initializeDataTable() {
         {
             title: 'Traffic Data', data: null,
             render: 'trafficLevel'
-        }
+        },
+        {
+            title: 'Start Coordinates', data: null,
+            render: 'dmsCoordinateStart'
+        },
+        {
+            title: 'End Coordinates', data: null,
+            render: 'dmsCoordinateEnd'
+        },
     ];
 
     if (window.canEdit) {

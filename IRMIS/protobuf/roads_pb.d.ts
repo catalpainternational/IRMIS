@@ -76,6 +76,12 @@ export class Road extends jspb.Message {
   getLastRevisionId(): number;
   setLastRevisionId(value: number): void;
 
+  getDmsCoordinateStart(): string;
+  setDmsCoordinateStart(value: string): void;
+
+  getDmsCoordinateEnd(): string;
+  setDmsCoordinateEnd(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Road.AsObject;
   static toObject(includeInstance: boolean, msg: Road): Road.AsObject;
@@ -112,6 +118,8 @@ export namespace Road {
     maintenanceNeed: string,
     trafficLevel: string,
     lastRevisionId: number,
+    dmsCoordinateStart: string,
+    dmsCoordinateEnd: string,
   }
 }
 

@@ -27,23 +27,32 @@ def split_out_dms(coord):
     return degrees, minutes, seconds
 
 
-def deg2dms(lat, long):
-    deg_x, mnt_x, sec_x = split_out_dms(lat)
-    deg_y, mnt_y, sec_y = split_out_dms(long)
+def deg2dms(lat_long: tuple):
+    try:
+        deg_x, mnt_x, sec_x = split_out_dms(lat_long[0])
+        deg_y, mnt_y, sec_y = split_out_dms(lat_long[1])
 
-    # calculate E/W & N/S
-    EorW = "E"
-    if deg_y < 0:
-        EorW = "W"
+        # calculate E/W & N/S
+        EorW = "E"
+        if deg_y < 0:
+            EorW = "W"
 
-    NorS = "N"
-    if deg_y < 0:
-        NorS = "S"
+        NorS = "N"
+        if deg_y < 0:
+            NorS = "S"
 
-    return (
-        "%s\u00b0 %s\" %s' %s" % (abs(deg_x), mnt_x, sec_x, EorW),
-        "%s\u00b0 %s\" %s' %s" % (abs(deg_y), mnt_y, sec_y, NorS),
-    )
+        return "%s\u00b0 %s\" %s' %s; %s\u00b0 %s\" %s' %s;" % (
+            abs(deg_y),
+            mnt_y,
+            sec_y,
+            NorS,
+            abs(deg_x),
+            mnt_x,
+            sec_x,
+            EorW,
+        )
+    except TypeError:
+        return ""
 
 
 class RoadStatus(models.Model):
@@ -129,10 +138,10 @@ class RoadQuerySet(models.QuerySet):
             (
                 Road.objects.filter(road_type=chunk_name)
                 .order_by("id")
-                .values("id", *fields.values())
+                .values("id", *fields.values(), "geom")
             )
             if chunk_name
-            else Road.objects.order_by("id").values("id", *fields.values())
+            else Road.objects.order_by("id").values("id", *fields.values(), "geom")
         )
 
         last_revisions = {
@@ -149,9 +158,10 @@ class RoadQuerySet(models.QuerySet):
                 if road[query_key]:
                     setattr(road_protobuf, protobuf_key, road[query_key])
             setattr(road_protobuf, "last_revision_id", last_revisions[str(road["id"])])
-            # set Protobuf with converted decimal lat/long to DMS
-            # setattr(road_protobuf, "start_coordinate", deg2dms(start_latlong))
-            # setattr(road_protobuf, "end_coordinate", deg2dms(end_latlong))
+            # set Protobuf with DMS converted from decimal lat/long
+            ls = road["geom"].simplify()  # convert MultiLineString into LineString
+            setattr(road_protobuf, "dms_coordinate_start", deg2dms(ls.tuple[0]))
+            setattr(road_protobuf, "dms_coordinate_end", deg2dms(ls.tuple[-1]))
 
         return roads_protobuf
 

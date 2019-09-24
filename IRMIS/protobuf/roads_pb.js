@@ -111,7 +111,9 @@ proto.assets.Road.toObject = function(includeInstance, msg) {
     technicalClass: jspb.Message.getFieldWithDefault(msg, 21, ""),
     maintenanceNeed: jspb.Message.getFieldWithDefault(msg, 22, ""),
     trafficLevel: jspb.Message.getFieldWithDefault(msg, 23, ""),
-    lastRevisionId: jspb.Message.getFieldWithDefault(msg, 24, 0)
+    lastRevisionId: jspb.Message.getFieldWithDefault(msg, 24, 0),
+    dmsCoordinateStart: jspb.Message.getFieldWithDefault(msg, 25, ""),
+    dmsCoordinateEnd: jspb.Message.getFieldWithDefault(msg, 26, "")
   };
 
   if (includeInstance) {
@@ -243,6 +245,14 @@ proto.assets.Road.deserializeBinaryFromReader = function(msg, reader) {
     case 24:
       var value = /** @type {number} */ (reader.readUint32());
       msg.setLastRevisionId(value);
+      break;
+    case 25:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setDmsCoordinateStart(value);
+      break;
+    case 26:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setDmsCoordinateEnd(value);
       break;
     default:
       reader.skipField();
@@ -438,6 +448,20 @@ proto.assets.Road.serializeBinaryToWriter = function(message, writer) {
   if (f !== 0) {
     writer.writeUint32(
       24,
+      f
+    );
+  }
+  f = message.getDmsCoordinateStart();
+  if (f.length > 0) {
+    writer.writeString(
+      25,
+      f
+    );
+  }
+  f = message.getDmsCoordinateEnd();
+  if (f.length > 0) {
+    writer.writeString(
+      26,
       f
     );
   }
@@ -801,6 +825,36 @@ proto.assets.Road.prototype.getLastRevisionId = function() {
 /** @param {number} value */
 proto.assets.Road.prototype.setLastRevisionId = function(value) {
   jspb.Message.setProto3IntField(this, 24, value);
+};
+
+
+/**
+ * optional string dms_coordinate_start = 25;
+ * @return {string}
+ */
+proto.assets.Road.prototype.getDmsCoordinateStart = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 25, ""));
+};
+
+
+/** @param {string} value */
+proto.assets.Road.prototype.setDmsCoordinateStart = function(value) {
+  jspb.Message.setProto3StringField(this, 25, value);
+};
+
+
+/**
+ * optional string dms_coordinate_end = 26;
+ * @return {string}
+ */
+proto.assets.Road.prototype.getDmsCoordinateEnd = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 26, ""));
+};
+
+
+/** @param {string} value */
+proto.assets.Road.prototype.setDmsCoordinateEnd = function(value) {
+  jspb.Message.setProto3StringField(this, 26, value);
 };
 
 
