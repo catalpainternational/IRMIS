@@ -41,10 +41,6 @@
             },
             checkRoadStatus(e) {
                 this.props.road.setRoadStatus(e.currentTarget.dataset.status);
-                var radio = e.currentTarget.firstElementChild;
-                var currentSelected = document.getElementsByClassName("status").item(0).getElementsByClassName("active");
-                if (currentSelected.length) currentSelected.item(0).classList.remove("active");
-                radio.classList.add("active");
                 this.update();
             },
             checkProject(e) {
