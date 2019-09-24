@@ -1,5 +1,6 @@
 from django.urls import reverse
 from ..models import Road
+import reversion
 import json
 import pytest
 
@@ -18,8 +19,11 @@ def test_road_chunks_does_not_error(client, django_user_model):
     # create a user
     user = django_user_model.objects.create_user(username="user1", password="bar")
     client.force_login(user)
-    # create a road
-    road = Road.objects.create()
+    with reversion.create_revision():
+        # create a road
+        road = Road.objects.create()
+        # store the user who made the changes
+        reversion.set_user(user)
     # hit the road chunks api
     url = reverse("road_chunks")
     response = client.get(url)

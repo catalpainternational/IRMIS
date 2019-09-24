@@ -36,6 +36,11 @@
     &:-moz-placeholder { color: $gray; } /* Firefox 18- */
 }
 
+.form-text {
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
 .invalid-tooltip {
     border-radius: 0 $radius $radius;
     background-color: $red;

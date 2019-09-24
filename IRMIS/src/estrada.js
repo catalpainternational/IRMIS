@@ -32,7 +32,7 @@ window.onload = () => {
             });
         });
 
-    riot.register('edit_base', Edit_Base);
+    riot.register("edit_base", Edit_Base);
     hashCheck();
 };
 
@@ -41,13 +41,13 @@ window.onhashchange = () => {
 };
 
 function hashCheck() {
-    let m = /#edit\/(\d*)/.exec(location.hash);
-    if (m !== null) {
+    let m = /#edit\/(\d*)\/(\w+)/.exec(location.hash);
+    if (m !== null && !document.getElementById("edit-base")) {
         var roadPromise = getRoad(m[1]);
-        riot.mount('edit_base', { roadPromise });
-        document.getElementById('view-content').hidden = true;
-    } else {
-        riot.unmount('edit_base', true);
-        document.getElementById('view-content').hidden = false;
+        riot.mount("edit_base", { roadPromise: roadPromise, page: m[2] });
+        document.getElementById("view-content").hidden = true;
+    } else if (m === null) {
+        riot.unmount("edit_base", true);
+        document.getElementById("view-content").hidden = false;
     }
 }
