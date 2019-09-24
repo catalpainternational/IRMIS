@@ -35,16 +35,11 @@
                 this.props.onSave();
             },
             checkSurfaceType(e) {
-                this.state.surfaceType = e.currentTarget.value;
-                this.props.road.setSurfaceType(this.state.surfaceType);
+                this.props.road.setSurfaceType(e.currentTarget.value);
                 this.update();
             },
             checkPavementClass(e) {
                 this.props.road.setPavementClass(e.currentTarget.dataset.pavement);
-                var radio = e.currentTarget.firstElementChild;
-                var currentSelected = document.getElementsByClassName("pavement-classes").item(0).getElementsByClassName("active");
-                if (currentSelected.length) currentSelected.item(0).classList.remove("active");
-                radio.classList.add("active");
                 this.update();
             },
             pavements: window.road_schema.pavement_class,
