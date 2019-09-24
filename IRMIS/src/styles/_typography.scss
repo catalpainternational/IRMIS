@@ -141,11 +141,6 @@ ul.navigation {
     }
 }
 
-button.btn {
-    line-height: 14px;
-    font-weight: 700;
-}
-
 h1 {
     color: $darker-gray;
     line-height: 27px;
@@ -191,14 +186,53 @@ table {
     color: $white;
 }
 
+.dt-buttons {
+    button span {
+        color: $darker-gray;
+    }
+
+    div.btn {
+        line-height: 14px;
+        font-weight: 700;
+        font-size: 12px;
+    }
+}
+
 // Override Bootstrap styles
 
-#dropdown-menu {
-    button, a {
+button {
+    &.btn {
+        line-height: 14px;
+        font-weight: 700;
+    }
+
+    &.btn-sm, &.btn-sm span {
+        line-height: 14px;
+        font-size: 12px;
+    }
+
+    &.btn-lg {
+        font-size: inherit;
+    }
+}
+
+.dropdown-menu {
+    line-height: 24px;
+    font-weight: 400;
+    font-size: 14px;
+
+    form button, a {
         color: $darker-gray;
         line-height: 30px;
         font-weight: 500;
         font-size: 16px;
+    }
+
+    h6 {
+        color: $darker-gray;
+        line-height: 17px;
+        font-weight: 700;
+        font-size: 14px;
     }
 }
 

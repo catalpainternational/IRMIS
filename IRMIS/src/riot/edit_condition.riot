@@ -78,7 +78,7 @@
                 selectRadio(e, "technical-class");
             },
             checkTrafficData(e) {
-                this.state.editingRoad.setTrafficData(e.currentTarget.dataset.traffic);
+                this.state.editingRoad.setTrafficLevel(e.currentTarget.dataset.traffic);
                 selectRadio(e, "traffic-data");
             },
             save(e) {
