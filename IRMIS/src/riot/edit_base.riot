@@ -130,6 +130,7 @@
                 else this.discardChanges();
             },
             discardChanges() {
+                this.state.editingRoad = this.state.baseRoad.cloneMessage();
                 window.location.hash = this.state.nextPage;
                 this.update();
             },
