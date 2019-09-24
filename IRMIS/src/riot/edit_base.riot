@@ -113,6 +113,7 @@
                 }).finally((r) => {
                     this.state.show_feedback = true;
                     this.update({saving: false});
+                    document.getElementsByClassName('slide-in').item(0).classList.remove('slide-out');
                 });
             },
             hasChanges() {
