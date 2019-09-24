@@ -1,0 +1,41 @@
+// Override Bootstrap modal styles
+
+.modal-content {
+    border: none;
+}
+
+.modal-sm {
+    max-width: 431px;
+}
+
+.modal-header {
+    padding-top: 60px;
+    border-bottom: 0;
+
+    .close {
+        position: absolute;
+        right: 30px;
+        padding: 0;
+        margin: 0;
+        top: 30px;
+    }
+
+    .alert {
+        margin-bottom: 0;
+    }
+}
+
+.modal-body {
+    padding-right: 60px;
+    padding-left: 60px;
+}
+
+.modal-footer {
+    padding-bottom: 40px;
+    border-top: 0;
+}
+
+.modal-backdrop {
+    background-color: rgba(61, 71, 88, 0.5);
+    opacity: 1;
+}

@@ -1,16 +1,14 @@
 <edit_pavement>
     <h5>{ window.gettext("Pavement") }</h5>
 
-    <edit_feedback if="{ state.show_feedback }" error="{ state.error }"></edit_feedback>
-
     <section>
         <div class="form-group">
             <label>{ surfaces.display }</label>
             <select class="{ state.surfaceType ? '' : 'inactive' } form-control" onchange="{ checkSurfaceType }">
                 <option value="">{ window.gettext("Select a Surface Type") }</option>
                 <template each="{ surface in surfaces.options }">
-                    <option if="{ surface.code == state.surfaceType }" value="{ surface.code }" selected>{ surface.name }</option>
-                    <option if="{ surface.code != state.surfaceType }" value="{ surface.code }">{ surface.name }</option>
+                    <option if="{ surface.code == props.road.getSurfaceType() }" value="{ surface.code }" selected>{ surface.name }</option>
+                    <option if="{ surface.code != props.road.getSurfaceType() }" value="{ surface.code }">{ surface.name }</option>
                 </template>
             </select>
             <small class="form-text text-muted">{ window.gettext("Choose the type of surface of the road link carriageway") }</small>
@@ -19,8 +17,8 @@
             <label>{ pavements.display }</label>
             <small class="form-text text-muted">{ window.gettext("Choose the pavement class of the road") }</small>
             <ul class="pavement-classes">
-                <li each="{ pavement in pavements.options }" data-pavement="{ pavement.name }" onclick="{ checkPavementClass }">
-                    <span class="{ pavement.code == state.editingRoad.getPavementClass() ? 'active' : ''  } radio image"></span>
+                <li each="{ pavement in pavements.options }" data-pavement="{ pavement.code }" onclick="{ checkPavementClass }">
+                    <span class="{ pavement.code == props.road.getPavementClass() ? 'active' : ''  } radio image"></span>
                     { pavement.name }
                 </li>
             </ul>
@@ -28,51 +26,21 @@
     </section>
 
     <div class="button-wrapper d-flex justify-content-end">
-        <button class="btn btn-primary" onclick="{ save }">{ window.gettext("Save and continue") }</button>
+        <button class="btn btn-primary" onclick="{ save }" disabled="{ props.saving }">{ window.gettext("Save and continue") }</button>
     </div>
 
     <script>
-        import { saveRoad } from "../roadManager";
-        import Edit_Feedback from './edit_feedback.riot';
-
         export default {
-            components: {
-                Edit_Feedback
-            },
-            state: {
-                show_feedback: false,
-                error: null,
-            },
-            onBeforeMount(props, state) {
-                state.editingRoad = props.road.cloneMessage();
-                state.surfaceType = state.editingRoad.getSurfaceType();
-            },
             save(e) {
-                var save_button = e.currentTarget;
-                save_button.disabled = true;
-
-                saveRoad(this.state.editingRoad).then((response) => {
-                    if (response) { this.state.error = false; }
-                    else { this.state.error = true; }
-                }).catch(err => {
-                    this.state.error = true;
-                }).finally(() => {
-                    save_button.disabled = false
-                    this.state.show_feedback = true;
-                    this.update()
-                });
+                this.props.onSave();
             },
             checkSurfaceType(e) {
-                this.state.surfaceType = e.currentTarget.value;
-                this.state.editingRoad.setSurfaceType(this.state.surfaceType);
+                this.props.road.setSurfaceType(e.currentTarget.value);
                 this.update();
             },
             checkPavementClass(e) {
-                this.state.editingRoad.setPavementClass(e.currentTarget.dataset.pavement);
-                var radio = e.currentTarget.firstElementChild;
-                var currentSelected = document.getElementsByClassName("pavement-classes").item(0).getElementsByClassName("active");
-                if (currentSelected.length) currentSelected.item(0).classList.remove("active");
-                radio.classList.add("active");
+                this.props.road.setPavementClass(e.currentTarget.dataset.pavement);
+                this.update();
             },
             pavements: window.road_schema.pavement_class,
             surfaces: window.road_schema.surface_type,

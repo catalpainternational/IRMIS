@@ -193,6 +193,21 @@ table {
 
 // Override Bootstrap styles
 
+.modal {
+    h6 {
+        color: $darker-gray;
+        line-height: 19px;
+        font-weight: 800;
+        font-size: 16px;
+    }
+
+    p {
+        color: $darker-gray;
+        line-height: 19px;
+        font-size: 16px;
+    }
+}
+
 #dropdown-menu {
     button, a {
         color: $darker-gray;
