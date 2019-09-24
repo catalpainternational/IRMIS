@@ -6,7 +6,7 @@
     <section>
         <div class="form-group">
             <label>{ funding_source.display }</label>
-            <input class="{ state.editingRoad.getFundingSource() ? '' : 'inactive' } form-control" type="text" maxlength="50" placeholder="{ window.gettext ('E.g. IF') }" value="{ state.editingRoad.getFundingSource() }" oninput="{ checkFundingSource }">
+            <input class="{ props.road.getFundingSource() ? '' : 'inactive' } form-control" type="text" maxlength="50" placeholder="{ window.gettext ('E.g. IF') }" value="{ props.road.getFundingSource() }" oninput="{ checkFundingSource }">
             <small class="form-text text-muted">{ window.gettext ("Enter the source funding for the road link") }</small>
         </div>
         <div class="form-group">
@@ -14,84 +14,41 @@
             <small class="form-text text-muted">{ window.gettext("Enter road link current status") }</small>
             <ul class="status">
                 <li each="{ roadStatus in road_status.options }" data-status="{ roadStatus.code }" onclick="{ checkRoadStatus }">
-                    <span class="{ roadStatus.code === state.editingRoad.getRoadStatus() ? 'active' : ''  } radio image"></span>
+                    <span class="{ roadStatus.code === props.road.getRoadStatus() ? 'active' : ''  } radio image"></span>
                     { roadStatus.name }
                 </li>
             </ul>
         </div>
         <div class="form-group">
             <label>{ project.display }</label>
-            <input class="{ state.editingRoad.getProject() ? '' : 'inactive' } form-control" type="text" maxlength="150" placeholder="{ window.gettext ('E.g. DBHP 2016-2022') }" value="{ state.editingRoad.getProject() }" oninput="{ checkProject }">
+            <input class="{ props.road.getProject() ? '' : 'inactive' } form-control" type="text" maxlength="150" placeholder="{ window.gettext ('E.g. DBHP 2016-2022') }" value="{ props.road.getProject() }" oninput="{ checkProject }">
             <small class="form-text text-muted">{ window.gettext ("Enter road link project name") }</small>
         </div>
     </section>
 
     <div class="button-wrapper d-flex justify-content-end">
-        <button class="btn btn-primary" onclick="{ save }" disabled="{ !state.hasChanges }">{ window.gettext ("Save and continue") }</button>
+        <button class="btn btn-primary" onclick="{ save }" disabled="{ props.saving }">{ window.gettext ("Save and continue") }</button>
     </div>
 
     <script>
-        import { saveRoad } from "../roadManager";
-        import Edit_Feedback from './edit_feedback.riot';
-
         export default {
-            components: {
-                Edit_Feedback
-            },
-            state: {
-                show_feedback: false,
-                error: null,
-                hasChanges: false,
-            },
-            onBeforeMount(props, state) {
-                state.editingRoad = props.road.cloneMessage();
-            },
-            onUpdated(props, state) {
-                // only update the EditingRoad if the incoming Base Road data is newer
-                if (props.road.getLastRevisionId() > this.state.editingRoad.getLastRevisionId()) {
-                    this.state.editingRoad = props.road;
-                }
-            },
-            checkChanges() {
-                const hasChanges = this.state.editingRoad.toString() !== this.props.road.toString();
-                if (hasChanges !== this.state.hasChanges) {
-                    this.state.hasChanges = hasChanges;
-                    this.props.onChange(hasChanges);
-                }
-                return hasChanges;
-            },
             save(e) {
-                var save_button = e.currentTarget;
-                save_button.disabled = true;
-
-                saveRoad(this.state.editingRoad).then((response) => {
-                    if (response) { this.state.error = false; }
-                    else { this.state.error = true; }
-                }).catch(err => {
-                    this.state.error = true;
-                }).finally(() => {
-                    save_button.disabled = false;
-                    this.state.show_feedback = true;
-                    this.update();
-                });
+                this.props.onSave();
             },
             checkFundingSource(e) {
-                this.state.editingRoad.setFundingSource(e.currentTarget.value);
-                this.checkChanges();
+                this.props.road.setFundingSource(e.currentTarget.value);
                 this.update();
             },
             checkRoadStatus(e) {
-                this.state.editingRoad.setRoadStatus(e.currentTarget.dataset.status);
+                this.props.road.setRoadStatus(e.currentTarget.dataset.status);
                 var radio = e.currentTarget.firstElementChild;
                 var currentSelected = document.getElementsByClassName("status").item(0).getElementsByClassName("active");
                 if (currentSelected.length) currentSelected.item(0).classList.remove("active");
                 radio.classList.add("active");
-                this.checkChanges();
                 this.update();
             },
             checkProject(e) {
-                this.state.editingRoad.setProject(e.currentTarget.value);
-                this.checkChanges();
+                this.props.road.setProject(e.currentTarget.value);
                 this.update();
             },
             funding_source: window.road_schema.funding_source,
