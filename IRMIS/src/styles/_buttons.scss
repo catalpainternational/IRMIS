@@ -8,6 +8,16 @@
     border: none;
 }
 
+%disabled-light-shared {
+    background-color: $lighter-gray;
+    color: $dark-gray;
+
+    &:hover {
+        background-color: $lighter-gray;
+        color: $dark-gray;
+    }
+}
+
 .btn-sm {
     border-radius: calc(#{$radius} / 2);
     padding-bottom: 0.15rem;
@@ -35,13 +45,7 @@
     }
 
     &:disabled {
-        background-color: $lighter-gray;
-        color: $dark-gray;
-    
-        &:hover {
-            background-color: $lighter-gray;
-            color: $dark-gray;
-        }
+        @extend %disabled-light-shared;
     }
 }
 
@@ -53,5 +57,23 @@
     &:hover {
         border: 1px solid $light-gray;
         background-color: $white;
+    }
+}
+
+.btn-danger {
+    @extend %primary-shared;
+    background-color: $red;
+
+    &:hover {
+        background-color: $red;
+    }
+}
+
+.btn-light {
+    @extend %disabled-light-shared;
+    @extend %primary-shared;
+
+    &:hover {
+        border: none;
     }
 }
