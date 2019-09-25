@@ -16,7 +16,7 @@
         <span class="clear-all-filters position-absolute">{% trans "Clear all filters" %}</span>
         {% comment %} SECTION - LOCATION {% endcomment %}
         <div class="filters-section">
-            <span class="subtitle">Location</span>
+            <span class="subtitle">{% trans "Location" %}</span>
             {% comment %} ADMINISTRATIVE AREA {% endcomment %}
             {% with slug=road_schema.administrative_area.slug %}
             <div data-slug="{{ slug }}" class="filter">
@@ -42,7 +42,7 @@
 
         {% comment %} SECTION - ASSET {% endcomment %}
         <div class="filters-section">
-            <span class="subtitle">Asset</span>
+            <span class="subtitle">{% trans "Asset" %}</span>
             {% comment %} ROAD TYPE {% endcomment %}
             {% with slug=road_schema.road_type.slug %}
             <div data-slug="{{ slug }}" class="filter">
@@ -143,7 +143,7 @@
 
         {% comment %} SECTION - ASSET CONDITION {% endcomment %}
         <div class="filters-section">
-            <span class="subtitle">Asset condition</span>
+            <span class="subtitle">{% trans "Asset condition" %}</span>
             {% comment %} SURFACE CONDITION {% endcomment %}
             {% with slug=road_schema.surface_condition.slug %}
             <div data-slug="{{ slug }}" class="filter">
