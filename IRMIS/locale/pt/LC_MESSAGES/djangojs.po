@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-16 03:02+0000\n"
+"POT-Creation-Date: 2019-09-25 03:15+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,134 +18,146 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: gettext_collected.js:4
 msgid "Asset"
 msgstr ""
 
-#: gettext_collected.js:5
 msgid "Link code and name"
 msgstr ""
 
-#: gettext_collected.js:6
-msgid "Link Code"
-msgstr ""
-
-#: gettext_collected.js:7
 msgid "E.g. A01-01"
 msgstr ""
 
-#: gettext_collected.js:8
 msgid "Enter link code according to DRBFC standard"
 msgstr ""
 
-#: gettext_collected.js:9
-msgid "Link Start Name"
-msgstr ""
-
-#: gettext_collected.js:10
 msgid "E.g. Dili"
 msgstr ""
 
-#: gettext_collected.js:11
-msgid ""
-"Enter the name of the link start location (municipal center, administrative "
-"post or nearest suco)"
+msgid "Enter the name of the link start location (municipal center, administrative post or nearest suco)"
 msgstr ""
 
-#: gettext_collected.js:12
-msgid "Link End Name"
-msgstr ""
-
-#: gettext_collected.js:13
 msgid "E.g. Manatuto"
 msgstr ""
 
-#: gettext_collected.js:14
-msgid ""
-"Enter the name of the link end location (municipal center, administrative "
-"post or nearest suco)"
+msgid "Enter the name of the link end location (municipal center, administrative post or nearest suco)"
 msgstr ""
 
-#: gettext_collected.js:15
 msgid "Link width and length"
 msgstr ""
 
-#: gettext_collected.js:16
-msgid "Link Length"
-msgstr ""
-
-#: gettext_collected.js:17
 msgid "E.g. 58.7"
 msgstr ""
 
-#: gettext_collected.js:18
 msgid "Enter road link length (in Km)"
 msgstr ""
 
-#: gettext_collected.js:19
-msgid "Carriageway Width"
-msgstr ""
-
-#: gettext_collected.js:20
 msgid "E.g. 5.0"
 msgstr ""
 
-#: gettext_collected.js:21
 msgid "Enter the width (in meters) of the link carriageway"
 msgstr ""
 
-#: gettext_collected.js:22
 msgid "Link chainage"
 msgstr ""
 
-#: gettext_collected.js:23
-msgid "Link Start Chainage"
-msgstr ""
-
-#: gettext_collected.js:24
 msgid "E.g. 0+000"
 msgstr ""
 
-#: gettext_collected.js:25
 msgid "Enter chainage for link starting point"
 msgstr ""
 
-#: gettext_collected.js:26
-msgid "Link End Chainage"
-msgstr ""
-
-#: gettext_collected.js:27
 msgid "E.g. 62+410"
 msgstr ""
 
-#: gettext_collected.js:28
 msgid "Enter chainage for link ending point"
 msgstr ""
 
-#: gettext_collected.js:29
 msgid "Save and continue"
 msgstr ""
 
-#: gettext_collected.js:30
 msgid "Edit asset"
 msgstr ""
 
-#: gettext_collected.js:31
 msgid "Location & Type"
 msgstr ""
 
-#: gettext_collected.js:32
 msgid "Asset Details"
 msgstr ""
 
-#: gettext_collected.js:33
 msgid "Pavement"
 msgstr ""
 
-#: gettext_collected.js:34
 msgid "Project"
 msgstr ""
 
-#: gettext_collected.js:35
 msgid "Condition"
+msgstr ""
+
+msgid "Loading"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "Unsaved Changes"
+msgstr ""
+
+msgid "You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?"
+msgstr ""
+
+msgid "Discard"
+msgstr ""
+
+msgid "Continue editing"
+msgstr ""
+
+msgid "Choose road link surface condition according to the Surface Distress Index (SDI): Good (SDI≤2), fair (2<SDI≤3), poor (3<SDI≤4) or bad (SDI>4)"
+msgstr ""
+
+msgid "Choose the type of maintenace needs for the road link"
+msgstr ""
+
+msgid "Choose road link technical class according to the 2010 Road Geometric Design Standards, DRBFC standards"
+msgstr ""
+
+msgid "Choose the traffic volume for the road link"
+msgstr ""
+
+msgid "Success"
+msgstr ""
+
+msgid "You have successfully saved"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "Something went wrong"
+msgstr ""
+
+msgid "Location"
+msgstr ""
+
+msgid "Select an Administrative Area"
+msgstr ""
+
+msgid "Choose the administrative area of the road"
+msgstr ""
+
+msgid "Select a Road Type"
+msgstr ""
+
+msgid "Choose the administrative class of the road"
+msgstr ""
+
+msgid "Select a Surface Type"
+msgstr ""
+
+msgid "Choose the type of surface of the road link carriageway"
+msgstr ""
+
+msgid "Choose the pavement class of the road"
+msgstr ""
+
+msgid "Enter road link current status"
 msgstr ""
