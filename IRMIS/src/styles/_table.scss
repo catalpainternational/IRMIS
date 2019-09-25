@@ -24,11 +24,17 @@ div.dataTables_wrapper {
     .dt-buttons {
         justify-content: flex-end;
         background-color: $white;
+        align-items: center;
         padding: 3px 15px;
         display: flex;
 
         .buttons-excel {
             flex: inherit;
+        }
+
+        h6 {
+            margin-bottom: 0;
+            padding-top: 2px;
         }
     }
 
