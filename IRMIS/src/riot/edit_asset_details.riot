@@ -5,12 +5,12 @@
         <h6>{ window.gettext("Link code and name") }</h6>
         <div class="form-group">
             <label>{ link_code.display }</label>
-            <input class="{ state.errors.invalidLinkCode && state.errors.invalidLinkCode.length ? 'danger' : null, props.road.getLinkCode() ? '' : 'inactive' } form-control"
+            <input class="{ state.errors.invalidLinkCode ? 'danger' : null, props.road.getLinkCode() ? '' : 'inactive' } form-control"
                 type="text" maxlength="25" placeholder="{ window.gettext('E.g. A01-01') }" value="{ props.road.getLinkCode() }" oninput="{ checkLinkCode }">
             <small class="form-text text-muted">{ window.gettext("Enter link code according to DRBFC standard") }</small>
-            <div if="{ state.errors.invalidLinkCode && state.errors.invalidLinkCode.length }" class="invalid-tooltip">
+            <div if="{ state.errors.invalidLinkCode }" class="invalid-tooltip">
                 <ul>
-                    <li each="{ message in state.errors.invalidLinkCode }">{ message }.</li>
+                    <li>{ state.errors.invalidLinkCode }.</li>
                 </ul>
             </div>
         </div>
@@ -32,23 +32,23 @@
         <h6>{ window.gettext("Link width and length") }</h6>
         <div class="form-group">
             <label>{ link_length.display }</label>
-            <input class="{ state.errors.invalidLinkLength && state.errors.invalidLinkLength.length ? 'danger' : null, props.road.getLinkLength() ? '' : 'inactive' } form-control"
+            <input class="{ state.errors.invalidLinkLength ? 'danger' : null, props.road.getLinkLength() ? '' : 'inactive' } form-control"
                 type="number" placeholder="{ window.gettext('E.g. 58.7') }" value="{ props.road.getLinkLength() }" oninput="{ checkLinkLength }">
             <small class="form-text text-muted">{ window.gettext("Enter road link length (in Km)") }</small>
-            <div if="{ state.errors.invalidLinkLength && state.errors.invalidLinkLength.length }" class="invalid-tooltip">
+            <div if="{ state.errors.invalidLinkLength }" class="invalid-tooltip">
                 <ul>
-                    <li each="{ message in state.errors.invalidLinkLength }">{ message }.</li>
+                    <li>{ state.errors.invalidLinkLength }.</li>
                 </ul>
             </div>
         </div>
         <div class="form-group">
             <label>{ carriageway_width.display }</label>
-            <input class="{ state.errors.invalidCarriageWidth && state.errors.invalidCarriageWidth.length ? 'danger' : null, props.road.getCarriagewayWidth() ? '' : 'inactive' } form-control"
+            <input class="{ state.errors.invalidCarriageWidth ? 'danger' : null, props.road.getCarriagewayWidth() ? '' : 'inactive' } form-control"
                 type="number" placeholder="{ window.gettext('E.g. 5.0') }" value="{ props.road.getCarriagewayWidth() }" oninput="{ checkCarriagewayWidth }">
             <small class="form-text text-muted">{ window.gettext("Enter the width (in meters) of the link carriageway") }</small>
-            <div if="{ state.errors.invalidCarriageWidth && state.errors.invalidCarriageWidth.length }" class="invalid-tooltip">
+            <div if="{ state.errors.invalidCarriageWidth }" class="invalid-tooltip">
                 <ul>
-                    <li each="{ message in state.errors.invalidCarriageWidth }">{ message }.</li>
+                    <li>{ state.errors.invalidCarriageWidth }.</li>
                 </ul>
             </div>
         </div>
@@ -58,30 +58,30 @@
         <h6>{ window.gettext("Link chainage") }</h6>
         <div class="form-group">
             <label>{ link_start_chainage.display }</label>
-            <input class="{ state.errors.invalidLinkStartChainage && state.errors.invalidLinkStartChainage.length ? 'danger' : null, props.road.getLinkStartChainage() ? '' : 'inactive' } form-control"
+            <input class="{ state.errors.invalidLinkStartChainage ? 'danger' : null, props.road.getLinkStartChainage() ? '' : 'inactive' } form-control"
                 type="number" placeholder="{ window.gettext('E.g. 0+000') }" value="{ props.road.getLinkStartChainage() }" oninput="{ checkLinkStartChainage }">
             <small class="form-text text-muted">{ window.gettext("Enter chainage for link starting point") }</small>
-            <div if="{ state.errors.invalidLinkStartChainage && state.errors.invalidLinkStartChainage.length }" class="invalid-tooltip">
+            <div if="{ state.errors.invalidLinkStartChainage }" class="invalid-tooltip">
                 <ul>
-                    <li each="{ message in state.errors.invalidLinkStartChainage }">{ message }.</li>
+                    <li>{ state.errors.invalidLinkStartChainage }.</li>
                 </ul>
             </div>
         </div>
         <div class="form-group">
             <label>{ link_end_chainage.display }</label>
-            <input class="{ state.errors.invalidLinkEndChainage && state.errors.invalidLinkEndChainage.length ? 'danger' : null, props.road.getLinkEndChainage() ? '' : 'inactive' } form-control"
+            <input class="{ state.errors.invalidLinkEndChainage ? 'danger' : null, props.road.getLinkEndChainage() ? '' : 'inactive' } form-control"
                 type="number" placeholder="{ window.gettext('E.g. 62+410') }" value="{ props.road.getLinkEndChainage() }" oninput="{ checkLinkEndChainage }">
             <small class="form-text text-muted">{ window.gettext("Enter chainage for link ending point") }</small>
-            <div if="{ state.errors.invalidLinkEndChainage && state.errors.invalidLinkEndChainage.length }" class="invalid-tooltip">
+            <div if="{ state.errors.invalidLinkEndChainage }" class="invalid-tooltip">
                 <ul>
-                    <li each="{ message in state.errors.invalidLinkEndChainage }">{ message }.</li>
+                    <li>{ state.errors.invalidLinkEndChainage }.</li>
                 </ul>
             </div>
         </div>
     </section>
 
     <div class="button-wrapper d-flex justify-content-end">
-        <button class="btn btn-primary" onclick="{ save }" disabled="{ props.saving }">{ window.gettext("Save and continue") }</button>
+        <button class="btn btn-primary" onclick="{ save }" disabled="{ props.saving || Object.entries(state.errors).length }">{ window.gettext("Save and continue") }</button>
     </div>
 
     <script>
@@ -94,28 +94,19 @@
                 this.state.linkLengthDigits = 8;
                 this.state.carriagewayWidthDecimals = 3;
                 this.state.carriagewayWidthDigits = 5;
-                this.state.errors = {
-                    invalidLinkCode: [],
-                    invalidLinkLength: [],
-                    invalidCarriageWidth: [],
-                    invalidLinkStartChainage: [],
-                    invalidLinkEndChainage: [],
-                };
+                this.state.errors = {};
             },
             save(e) {
-                if (state.errors.invalidLinkCode.length == 0) {
+                if (Object.entries(this.state.errors).length) {
                     this.props.onSave();
                 }
-            },
-            toggleSave(state) {
-
             },
             checkLinkCode(e) {
                 let input = e.currentTarget.value.trim();
                 if (containsWhiteSpaces(input)) {
-                    if (!this.state.errors.invalidLinkCode.length) { this.state.errors.invalidLinkCode.push(`Link code cannot contain white spaces`); }
+                    this.state.errors.invalidLinkCode = window.gettext('Link code cannot contain white spaces');
                 } else {
-                    this.state.error.invalidLinkCode.pop();
+                    delete this.state.error.invalidLinkCode;
                     this.props.road.setLinkCode(input);
                 }
                 this.update();
@@ -131,9 +122,9 @@
             checkLinkLength(e) {
                 let input = e.currentTarget.value;
                 if (exceedsMaxDigits(input, this.state.linkLengthDigits, this.state.linkLengthDecimals)) {
-                    if (!this.state.errors.invalidLinkLength.length) { this.state.errors.invalidLinkLength.push(`Link length cannot contain more than ${linkLengthDigits} digits, of which ${linkLengthDecimals} are decimals`); }
+                    this.state.errors.invalidLinkLength = window.interpolate(window.gettext('Link length cannot contain more than %s digits, of which %s are decimals'), this.state.linkLengthDigits, this.state.linkLengthDecimals);
                 } else {
-                    this.state.errors.invalidLinkLength.pop();
+                    delete this.state.errors.invalidLinkLength;
                     this.props.road.setLinkLength(input);
                 }
                 this.update();
@@ -141,9 +132,9 @@
             checkCarriagewayWidth(e) {
                 let input = e.currentTarget.value;
                 if (exceedsMaxDigits(input, this.state.carriagewayWidthDigits, this.state.carriagewayWidthDecimals)) {
-                    if (!this.state.errors.invalidCarriageWidth.length) { this.state.errors.invalidCarriageWidth.push(`Carriage width cannot contain more than ${carriagewayWidthDigits} digits, of which ${carriagewayWidthDecimals} are decimals`); }
+                    this.state.errors.invalidCarriageWidth = window.interpolate(window.gettext('Carriage width cannot contain more than %s digits, of which %s are decimals'), this.state.carriagewayWidthDigits, this.state.carriagewayWidthDecimals);
                 } else {
-                    this.state.errors.invalidCarriageWidth.pop();
+                    delete this.state.errors.invalidCarriageWidth;
                     this.props.road.setCarriagewayWidth(input);
                 }
                 this.update();
@@ -151,9 +142,9 @@
             checkLinkStartChainage(e) {
                 let input = e.currentTarget.value;
                 if (exceedsMaxDigits(input, this.state.linkChainageDigits, this.state.linkChainageDecimals)) {
-                    if (!this.state.errors.invalidLinkStartChainage.length) { this.state.errors.invalidLinkStartChainage.push(`Link start chainage cannot contain more than ${linkChainageDigits} digits, of which ${linkChainageDecimals} are decimals`); }
+                    this.state.errors.invalidLinkStartChainage = window.interpolate(window.gettext('Link start chainage cannot contain more than %s digits, of which %s are decimals'), this.state.linkChainageDigits, this.state.linkChainageDecimals);
                 } else {
-                    this.state.errors.invalidLinkStartChainage.pop();
+                    delete this.state.errors.invalidLinkStartChainage;
                     this.props.road.setLinkStartChainage(input);
                 }
                 this.update();
@@ -161,9 +152,9 @@
             checkLinkEndChainage(e) {
                 let input = e.currentTarget.value;
                 if (exceedsMaxDigits(input, this.state.linkChainageDigits, this.state.linkChainageDecimals)) {
-                    if (!this.state.errors.invalidLinkEndChainage.length) { this.state.errors.invalidLinkEndChainage.push(`Link end chainage cannot contain more than ${linkChainageDigits} digits, of which ${linkChainageDecimals} are decimals`); }
+                    this.state.errors.invalidLinkEndChainage = window.interpolate(window.gettext('Link end chainage cannot contain more than %s digits, of which %s are decimals'), this.state.linkChainageDigits, this.state.linkChainageDecimals);
                 } else {
-                    this.state.errors.invalidLinkEndChainage.pop();
+                    delete this.state.errors.invalidLinkEndChainage;
                     this.props.road.setLinkEndChainage(input);
                 }
                 this.update();
