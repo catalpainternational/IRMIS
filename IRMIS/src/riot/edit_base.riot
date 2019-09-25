@@ -61,6 +61,8 @@
         import "bootstrap/js/dist/modal";
         import $ from "jquery";
 
+        let timeoutId = null;
+
         export default {
             state: {
                 loading: true,
@@ -113,6 +115,7 @@
                     this.state.error = true;
                 }).finally((r) => {
                     this.update({ saving: false, show_feedback: true });
+                    timeoutId = setTimeout(() => this.closeFeedback(), 5000);
                 });
             },
             hasChanges() {
@@ -136,6 +139,7 @@
             },
             closeFeedback() {
                 const feedback = document.getElementsByClassName("slide-in").item(0);
+                clearTimeout(timeoutId);
                 feedback.classList.add("slide-out");
                 setTimeout(() => {
                     feedback.classList.remove("slide-out");
