@@ -24,6 +24,7 @@ div.dataTables_wrapper {
     .dt-buttons {
         justify-content: flex-end;
         background-color: $white;
+        align-items: center;
         padding: 3px 15px;
         display: flex;
 
@@ -31,8 +32,9 @@ div.dataTables_wrapper {
             flex: inherit;
         }
 
-        div.btn {
-            margin-left: 10px;
+        h6 {
+            margin-bottom: 0;
+            padding-top: 2px;
         }
     }
 
