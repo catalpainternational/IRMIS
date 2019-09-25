@@ -5,7 +5,7 @@ import fileinput
 # TODO: improve this regexp - will only catch gettext('String') at the moment
 # Should maybe be tolerant towards other string notations
 # also investigate multiline translations
-prog = re.compile(r"""gettext\('[^']+'\)""")
+prog = re.compile(r"""gettext\('[^']+'\)|gettext\("[^']+"\)""")
 
 
 def mine_gettext(line):
