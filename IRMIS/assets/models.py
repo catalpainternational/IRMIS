@@ -41,7 +41,7 @@ def deg2dms(lat_long: tuple):
         if deg_y < 0:
             NorS = "S"
 
-        return "%s\u00b0 %s\" %s' %s; %s\u00b0 %s\" %s' %s;" % (
+        return "%s\u00b0 %s' %s\" %s; %s\u00b0 %s' %s\" %s;" % (
             abs(deg_y),
             mnt_y,
             sec_y,
@@ -53,6 +53,10 @@ def deg2dms(lat_long: tuple):
         )
     except TypeError:
         return ""
+
+
+def deg2utm(lat_long: tuple):
+    return 42
 
 
 class RoadStatus(models.Model):
