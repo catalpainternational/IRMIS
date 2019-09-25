@@ -2,7 +2,7 @@ import re
 import sys
 import fileinput
 
-# TODO: improve this regexp - will only catch gettext('String') at the moment
+# TODO: improve this regexp - will only catch gettext('String') or gettext("String") at the moment
 # Should maybe be tolerant towards other string notations
 # also investigate multiline translations
 prog = re.compile(r"""gettext\('[^']+'\)|gettext\("[^"]+"\)""")
