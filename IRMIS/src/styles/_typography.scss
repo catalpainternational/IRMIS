@@ -184,6 +184,13 @@ table {
 
 // Override DataTables.net styles
 
+.dt-buttons h6 {
+    color: $darker-gray;
+    line-height: 17px;
+    font-weight: 800;
+    font-size: 14px;
+}
+
 .dataTables_info, .page-link {
     line-height: 17px;
     font-weight: 700;
