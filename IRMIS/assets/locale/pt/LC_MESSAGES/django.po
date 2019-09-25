@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-25 03:15+0000\n"
+"POT-Creation-Date: 2019-09-25 06:32+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -139,19 +139,19 @@ msgstr ""
 msgid "Enter the width (in meters) of the link carriageway"
 msgstr ""
 
-msgid "Type"
+msgid "Road Type"
 msgstr ""
 
 msgid "Choose the administrative class of the road"
 msgstr ""
 
-msgid "Status"
+msgid "Road Status"
 msgstr ""
 
 msgid "Enter road link current status"
 msgstr ""
 
-msgid "Project"
+msgid "Project Name"
 msgstr ""
 
 msgid "Enter road link project name"
@@ -163,13 +163,13 @@ msgstr ""
 msgid "Choose the traffic volume for the road link"
 msgstr ""
 
-msgid "Surface Condition"
+msgid "Surface Condition (SDI)"
 msgstr ""
 
 msgid "Choose road link surface condition according to the Surface Distress Index (SDI): Good (SDI≤2), fair (2<SDI≤3), poor (3<SDI≤4) or bad (SDI>4)"
 msgstr ""
 
-msgid "Maintenance Need"
+msgid "Maintenance Needs"
 msgstr ""
 
 msgid "Choose the type of maintenace needs for the road link"
