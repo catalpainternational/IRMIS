@@ -104,7 +104,7 @@
             checkLinkCode(e) {
                 let input = e.currentTarget.value;
                 if (containsWhiteSpaces(input)) {
-                    this.state.errors.linkCode = window.gettext(`Link code cannot contain white spaces`);
+                    this.state.errors.linkCode = window.gettext('Link code cannot contain white spaces');
                 } else {
                     delete this.state.error.linkCode;
                     this.props.road.setLinkCode(input);
@@ -122,7 +122,10 @@
             checkLinkLength(e) {
                 let input = e.currentTarget.value;
                 if (exceedsMaxDigits(input, this.state.linkLengthDigits, this.state.linkLengthDecimals)) {
-                    this.state.errors.linkLength = window.gettext(`Link length cannot contain more than ${this.state.linkLengthDigits} digits, of which ${this.state.linkLengthDecimals} are decimals`);
+                    this.state.errors.linkLength = window.interpolate(
+                        window.gettext('Link length cannot contain more than %s digits, of which %s are decimals'),
+                        [this.state.linkLengthDigits, this.state.linkLengthDecimals]
+                    );
                 } else {
                     delete this.state.errors.linkLength;
                     this.props.road.setLinkLength(input);
@@ -132,7 +135,10 @@
             checkCarriagewayWidth(e) {
                 let input = e.currentTarget.value;
                 if (exceedsMaxDigits(input, this.state.carriagewayWidthDigits, this.state.carriagewayWidthDecimals)) {
-                    this.state.errors.carriageWidth = window.gettext(`Carriage width cannot contain more than ${this.state.carriagewayWidthDigits} digits, of which ${this.state.carriagewayWidthDecimals} are decimals`);
+                    this.state.errors.carriageWidth = window.interpolate(
+                        window.gettext('Carriage width cannot contain more than %s digits, of which %s are decimals'),
+                        [this.state.carriagewayWidthDigits, this.state.carriagewayWidthDecimals]
+                    );
                 } else {
                     delete this.state.errors.carriageWidth;
                     this.props.road.setCarriagewayWidth(input);
@@ -142,7 +148,10 @@
             checkLinkStartChainage(e) {
                 let input = e.currentTarget.value;
                 if (exceedsMaxDigits(input, this.state.linkChainageDigits, this.state.linkChainageDecimals)) {
-                    this.state.errors.linkStartChainage = window.gettext(`Link start chainage cannot contain more than ${this.state.linkChainageDigits} digits, of which ${this.state.linkChainageDecimals} are decimals`);
+                    this.state.errors.linkStartChainage = window.interpolate(
+                        window.gettext('Link start chainage cannot contain more than %s digits, of which %s are decimals'),
+                        [this.state.linkChainageDigits, this.state.linkChainageDecimals]
+                    );
                 } else {
                     delete this.state.errors.linkStartChainage;
                     this.props.road.setLinkStartChainage(input);
@@ -152,7 +161,10 @@
             checkLinkEndChainage(e) {
                 let input = e.currentTarget.value;
                 if (exceedsMaxDigits(input, this.state.linkChainageDigits, this.state.linkChainageDecimals)) {
-                    this.state.errors.linkEndChainage = window.gettext(`Link end chainage cannot contain more than ${this.state.linkChainageDigits} digits, of which ${this.state.linkChainageDecimals} are decimals`);
+                    this.state.errors.linkEndChainage = window.interpolate(
+                        window.gettext('Link end chainage cannot contain more than %s digits, of which %s are decimals'),
+                        [this.state.linkChainageDigits, this.state.linkChainageDecimals]
+                    );
                 } else {
                     delete this.state.errors.linkEndChainage;
                     this.props.road.setLinkEndChainage(input);

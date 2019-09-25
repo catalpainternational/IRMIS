@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-25 03:15+0000\n"
+"POT-Creation-Date: 2019-09-25 08:29+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -73,6 +73,25 @@ msgid "Enter chainage for link ending point"
 msgstr ""
 
 msgid "Save and continue"
+msgstr ""
+
+msgid "Link code cannot contain white spaces"
+msgstr ""
+
+#, javascript-format
+msgid "Link length cannot contain more than %s digits, of which %s are decimals"
+msgstr ""
+
+#, javascript-format
+msgid "Carriage width cannot contain more than %s digits, of which %s are decimals"
+msgstr ""
+
+#, javascript-format
+msgid "Link start chainage cannot contain more than %s digits, of which %s are decimals"
+msgstr ""
+
+#, javascript-format
+msgid "Link end chainage cannot contain more than %s digits, of which %s are decimals"
 msgstr ""
 
 msgid "Edit asset"
