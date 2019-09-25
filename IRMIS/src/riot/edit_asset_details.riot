@@ -46,7 +46,7 @@
             <input class="{ state.errors.invalidCarriageWidth && state.errors.invalidCarriageWidth.length ? 'danger' : null, props.road.getCarriagewayWidth() ? '' : 'inactive' } form-control"
                 type="number" placeholder="{ window.gettext('E.g. 5.0') }" value="{ props.road.getCarriagewayWidth() }" oninput="{ checkCarriagewayWidth }">
             <small class="form-text text-muted">{ window.gettext("Enter the width (in meters) of the link carriageway") }</small>
-            <div if="{ state.errors.invalidCarriageWidth && state.invalidCarriageWidth.length }" class="invalid-tooltip">
+            <div if="{ state.errors.invalidCarriageWidth && state.errors.invalidCarriageWidth.length }" class="invalid-tooltip">
                 <ul>
                     <li each="{ message in state.errors.invalidCarriageWidth }">{ message }.</li>
                 </ul>
@@ -61,14 +61,14 @@
             <input class="{ state.errors.invalidLinkStartChainage && state.errors.invalidLinkStartChainage.length ? 'danger' : null, props.road.getLinkStartChainage() ? '' : 'inactive' } form-control"
                 type="number" placeholder="{ window.gettext('E.g. 0+000') }" value="{ props.road.getLinkStartChainage() }" oninput="{ checkLinkStartChainage }">
             <small class="form-text text-muted">{ window.gettext("Enter chainage for link starting point") }</small>
-            <div if="{ state.errors.invalidLinkStartChainage && state.invalidLinkStartChainage.length }" class="invalid-tooltip">
+            <div if="{ state.errors.invalidLinkStartChainage && state.errors.invalidLinkStartChainage.length }" class="invalid-tooltip">
                 <ul>
                     <li each="{ message in state.errors.invalidLinkStartChainage }">{ message }.</li>
                 </ul>
             </div>
         </div>
         <div class="form-group">
-            <label>{ state.link_end_chainage.display }</label>
+            <label>{ link_end_chainage.display }</label>
             <input class="{ state.errors.invalidLinkEndChainage && state.errors.invalidLinkEndChainage.length ? 'danger' : null, props.road.getLinkEndChainage() ? '' : 'inactive' } form-control"
                 type="number" placeholder="{ window.gettext('E.g. 62+410') }" value="{ props.road.getLinkEndChainage() }" oninput="{ checkLinkEndChainage }">
             <small class="form-text text-muted">{ window.gettext("Enter chainage for link ending point") }</small>
@@ -87,7 +87,7 @@
     <script>
 
         export default {
-            onMounted(props, state) {
+            onBeforeMount(props, state) {
                 this.state.linkChainageDecimals = 5;
                 this.state.linkChainageDigits = 12;
                 this.state.linkLengthDecimals = 3;
