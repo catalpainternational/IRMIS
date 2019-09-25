@@ -102,11 +102,11 @@
                 }
             },
             checkLinkCode(e) {
-                let input = e.currentTarget.value;
+                let input = e.currentTarget.value.trim();
                 if (containsWhiteSpaces(input)) {
                     this.state.errors.linkCode = window.gettext('Link code cannot contain white spaces');
                 } else {
-                    delete this.state.error.linkCode;
+                    delete this.state.errors.linkCode;
                     this.props.road.setLinkCode(input);
                 }
                 this.update();
