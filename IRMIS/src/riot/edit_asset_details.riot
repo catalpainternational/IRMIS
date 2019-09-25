@@ -122,7 +122,7 @@
             checkLinkLength(e) {
                 let input = e.currentTarget.value;
                 if (exceedsMaxDigits(input, this.state.linkLengthDigits, this.state.linkLengthDecimals)) {
-                    this.state.errors.invalidLinkLength = window.interpolate(window.gettext('Link length cannot contain more than %s digits, of which %s are decimals'), this.state.linkLengthDigits, this.state.linkLengthDecimals);
+                    this.state.errors.invalidLinkLength = window.gettext(`Link length cannot contain more than ${this.state.linkLengthDigits} digits, of which ${this.state.linkLengthDecimals} are decimals`);
                 } else {
                     delete this.state.errors.invalidLinkLength;
                     this.props.road.setLinkLength(input);
@@ -132,7 +132,7 @@
             checkCarriagewayWidth(e) {
                 let input = e.currentTarget.value;
                 if (exceedsMaxDigits(input, this.state.carriagewayWidthDigits, this.state.carriagewayWidthDecimals)) {
-                    this.state.errors.invalidCarriageWidth = window.interpolate(window.gettext('Carriage width cannot contain more than %s digits, of which %s are decimals'), this.state.carriagewayWidthDigits, this.state.carriagewayWidthDecimals);
+                    this.state.errors.invalidCarriageWidth = window.gettext(`Carriage width cannot contain more than ${this.state.carriagewayWidthDigits} digits, of which ${this.state.carriagewayWidthDecimals} are decimals`);
                 } else {
                     delete this.state.errors.invalidCarriageWidth;
                     this.props.road.setCarriagewayWidth(input);
@@ -142,7 +142,7 @@
             checkLinkStartChainage(e) {
                 let input = e.currentTarget.value;
                 if (exceedsMaxDigits(input, this.state.linkChainageDigits, this.state.linkChainageDecimals)) {
-                    this.state.errors.invalidLinkStartChainage = window.interpolate(window.gettext('Link start chainage cannot contain more than %s digits, of which %s are decimals'), this.state.linkChainageDigits, this.state.linkChainageDecimals);
+                    this.state.errors.invalidLinkStartChainage = window.gettext(`Link start chainage cannot contain more than ${this.state.linkChainageDigits} digits, of which ${this.state.linkChainageDecimals} are decimals`);
                 } else {
                     delete this.state.errors.invalidLinkStartChainage;
                     this.props.road.setLinkStartChainage(input);
@@ -152,7 +152,7 @@
             checkLinkEndChainage(e) {
                 let input = e.currentTarget.value;
                 if (exceedsMaxDigits(input, this.state.linkChainageDigits, this.state.linkChainageDecimals)) {
-                    this.state.errors.invalidLinkEndChainage = window.interpolate(window.gettext('Link end chainage cannot contain more than %s digits, of which %s are decimals'), this.state.linkChainageDigits, this.state.linkChainageDecimals);
+                    this.state.errors.invalidLinkEndChainage = window.gettext(`Link end chainage cannot contain more than ${this.state.linkChainageDigits} digits, of which ${this.state.linkChainageDecimals} are decimals`);
                 } else {
                     delete this.state.errors.invalidLinkEndChainage;
                     this.props.road.setLinkEndChainage(input);
