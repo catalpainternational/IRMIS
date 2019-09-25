@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-25 01:37+0000\n"
+"POT-Creation-Date: 2019-09-25 02:05+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,51 +17,39 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gettext_collected.js:4
 msgid "E.g. A01-01"
 msgstr "ezemplu..."
 
-#: gettext_collected.js:5
 msgid "E.g. Dili"
 msgstr "ezemplu..."
 
-#: gettext_collected.js:6
 msgid "E.g. Manatuto"
 msgstr "ezemplu..."
 
-#: gettext_collected.js:7
 msgid "E.g. 58.7"
 msgstr "ezemplu..."
 
-#: gettext_collected.js:8
 msgid "E.g. 5.0"
 msgstr "ezemplu..."
 
-#: gettext_collected.js:9
 msgid "E.g. 0+000"
 msgstr "ezemplu..."
 
-#: gettext_collected.js:10
 msgid "E.g. 62+410"
 msgstr "ezemplu..."
 
-#: gettext_collected.js:11
 msgid "Close"
 msgstr ""
 
-#: gettext_collected.js:12
 msgid "Success"
 msgstr ""
 
-#: gettext_collected.js:13
 msgid "You have successfully saved"
 msgstr ""
 
-#: gettext_collected.js:14
 msgid "Error"
 msgstr ""
 
-#: gettext_collected.js:15
 msgid "Something went wrong"
 msgstr ""
 

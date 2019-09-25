@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-25 01:37+0000\n"
+"POT-Creation-Date: 2019-09-25 02:05+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,270 +18,192 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: assets/models.py:17
 #, python-format
 msgid "%(value)s should not contain spaces"
 msgstr ""
 
-#: assets/models.py:22 assets/models.py:30 assets/models.py:38
-#: assets/models.py:46 assets/models.py:54
 msgid "Code"
 msgstr ""
 
-#: assets/models.py:23 assets/models.py:31 assets/models.py:39
-#: assets/models.py:47 assets/models.py:55 assets/models.py:191
 msgid "Name"
 msgstr ""
 
-#: assets/models.py:157
 msgid "National"
 msgstr ""
 
-#: assets/models.py:158
 msgid "Highway"
 msgstr ""
 
-#: assets/models.py:159
 msgid "Municipal"
 msgstr ""
 
-#: assets/models.py:160
 msgid "Urban"
 msgstr ""
 
-#: assets/models.py:161
 msgid "Rural"
 msgstr ""
 
-#: assets/models.py:163
 msgid "Low"
 msgstr ""
 
-#: assets/models.py:163
 msgid "Medium"
 msgstr ""
 
-#: assets/models.py:163
 msgid "High"
 msgstr ""
 
-#: assets/models.py:165
 msgid "Good"
 msgstr ""
 
-#: assets/models.py:166
 msgid "Fair"
 msgstr ""
 
-#: assets/models.py:167
 msgid "Poor"
 msgstr ""
 
-#: assets/models.py:168
 msgid "Bad"
 msgstr ""
 
-#: assets/models.py:178
 msgid "Date Created"
 msgstr ""
 
-#: assets/models.py:180
 msgid "last modified"
 msgstr ""
 
-#: assets/models.py:183
 msgid "Road Code"
 msgstr ""
 
-#: assets/models.py:194
 msgid "Administrative Area"
 msgstr ""
 
-#: assets/models.py:198
 msgid "Choose the administrative area of the road"
 msgstr ""
 
-#: assets/models.py:201
 msgid "Funding Source"
 msgstr ""
 
-#: assets/models.py:206
 msgid "Enter the source funding for the road link"
 msgstr ""
 
-#: assets/models.py:209
 msgid "Link Code"
 msgstr ""
 
-#: assets/models.py:215
 msgid "Enter link code according to DRBFC standard"
 msgstr ""
 
-#: assets/models.py:218
 msgid "Link Start Name"
 msgstr ""
 
-#: assets/models.py:223
-msgid ""
-"Enter the name of the link start location (municipal center, administrative "
-"post or nearest suco)"
+msgid "Enter the name of the link start location (municipal center, administrative post or nearest suco)"
 msgstr ""
 
-#: assets/models.py:227
 msgid "Link End Name"
 msgstr ""
 
-#: assets/models.py:232
-msgid ""
-"Enter the name of the link end location (municipal center, administrative "
-"post or nearest suco)"
+msgid "Enter the name of the link end location (municipal center, administrative post or nearest suco)"
 msgstr ""
 
-#: assets/models.py:236
 msgid "Link End Chainage (Km)"
 msgstr ""
 
-#: assets/models.py:241
 msgid "Enter chainage for link ending point"
 msgstr ""
 
-#: assets/models.py:244
 msgid "Link Start Chainage (Km)"
 msgstr ""
 
-#: assets/models.py:249
 msgid "Enter chainage for link starting point"
 msgstr ""
 
-#: assets/models.py:252
 msgid "Link Length"
 msgstr ""
 
-#: assets/models.py:257
 msgid "Enter road link length (in Km)"
 msgstr ""
 
-#: assets/models.py:261
 msgid "Surface Type"
 msgstr ""
 
-#: assets/models.py:265
 msgid "Choose the type of surface of the road link carriageway"
 msgstr ""
 
-#: assets/models.py:269
 msgid "Pavement Class"
 msgstr ""
 
-#: assets/models.py:274
 msgid "Choose the pavement class of the road"
 msgstr ""
 
-#: assets/models.py:277
 msgid "Carriageway Width"
 msgstr ""
 
-#: assets/models.py:283
 msgid "Enter the width (in meters) of the link carriageway"
 msgstr ""
 
-#: assets/models.py:286
 msgid "Type"
 msgstr ""
 
-#: assets/models.py:291
 msgid "Choose the administrative class of the road"
 msgstr ""
 
-#: assets/models.py:295
 msgid "Status"
 msgstr ""
 
-#: assets/models.py:299
 msgid "Enter road link current status"
 msgstr ""
 
-#: assets/models.py:302
 msgid "Project"
 msgstr ""
 
-#: assets/models.py:306
 msgid "Enter road link project name"
 msgstr ""
 
-#: assets/models.py:309
 msgid "Traffic Level"
 msgstr ""
 
-#: assets/models.py:314
 msgid "Choose the traffic volume for the road link"
 msgstr ""
 
-#: assets/models.py:317
 msgid "Surface Condition"
 msgstr ""
 
-#: assets/models.py:323
-msgid ""
-"Choose road link surface condition according to the Surface Distress Index "
-"(SDI): Good (SDI≤2), fair (2<SDI≤3), poor (3<SDI≤4) or bad (SDI>4)"
+msgid "Choose road link surface condition according to the Surface Distress Index (SDI): Good (SDI≤2), fair (2<SDI≤3), poor (3<SDI≤4) or bad (SDI>4)"
 msgstr ""
 
-#: assets/models.py:328
 msgid "Maintenance Need"
 msgstr ""
 
-#: assets/models.py:332
 msgid "Choose the type of maintenace needs for the road link"
 msgstr ""
 
-#: assets/models.py:336
 msgid "Technical Class"
 msgstr ""
 
-#: assets/models.py:341
-msgid ""
-"Choose road link technical class according to the 2010 Road Geometric Design "
-"Standards, DRBFC standards"
+msgid "Choose road link technical class according to the 2010 Road Geometric Design Standards, DRBFC standards"
 msgstr ""
 
-#: assets/templates/assets/estrada_main.html:7
 msgid "Road Inventory"
 msgstr ""
 
-#: assets/templates/assets/filter_pane.html:5
 msgid "View"
 msgstr ""
 
-#: assets/templates/assets/filter_pane.html:6
 msgid "Fullscreen view"
 msgstr ""
 
-#: assets/templates/assets/filter_pane.html:8
 msgid "Map & Table"
 msgstr ""
 
-#: assets/templates/assets/filter_pane.html:9
 msgid "Map"
 msgstr ""
 
-#: assets/templates/assets/filter_pane.html:10
 msgid "Table"
 msgstr ""
 
-#: assets/templates/assets/filter_pane.html:15
 msgid "Filters"
 msgstr ""
 
-#: assets/templates/assets/filter_pane.html:16
 msgid "Clear all filters"
 msgstr ""
 
-#: assets/templates/assets/filter_pane.html:30
-#: assets/templates/assets/filter_pane.html:58
-#: assets/templates/assets/filter_pane.html:84
-#: assets/templates/assets/filter_pane.html:107
-#: assets/templates/assets/filter_pane.html:133
-#: assets/templates/assets/filter_pane.html:164
 msgid "Clear"
 msgstr ""
