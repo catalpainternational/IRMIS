@@ -1,5 +1,7 @@
 # CHANGE LOG
 
+## 0.0.4 - More Admin and miscellaneous
+
 ## 0.0.3 - Metadata Admin
 
 - As an Admin, I can edit assets’s metadata in the inventory

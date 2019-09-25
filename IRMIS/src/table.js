@@ -36,11 +36,58 @@ document.addEventListener('estrada.sideMenu.viewChanged', (data) => {
     }
 });
 
-window.addEventListener('load', () => {
+window.addEventListener("load", () => {
+    const restoreDefaults = document.getElementsByClassName("restore").item(0);
+    const columnsDropdown = document.getElementById("columns-dropdown");
+    const columns = columnsDropdown.querySelectorAll("[data-column]");
+
+    document.getElementById("select-data").addEventListener("click", () => {
+        function clickOutside(e) {
+            if (!document.getElementById("select-data").contains(e.target)) {
+                columnsDropdown.hidden = true;
+            }
+        }
+
+        if (columnsDropdown.hidden) document.addEventListener("click", clickOutside);
+        else document.removeEventListener("click", clickOutside);
+
+        columnsDropdown.hidden = !columnsDropdown.hidden;
+    });
+
+    columnsDropdown.addEventListener("click", (e) => {
+        e.stopPropagation();
+    });
+
+    columns.forEach((item) => {
+        item.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const element = e.currentTarget;
+            const column = table.column(window.canEdit ? parseInt(element.dataset.column) + 1 : element.dataset.column);
+            column.visible(!column.visible());
+            element.getElementsByClassName("checkbox").item(0).classList.toggle("selected");
+        });
+    });
+
+    restoreDefaults.addEventListener("click", (e) => {
+        e.stopPropagation();
+        columns.forEach((item) => {
+            const column = table.column(window.canEdit ? parseInt(item.dataset.column) + 1 : item.dataset.column);
+            const checkbox = item.getElementsByClassName("checkbox").item(0);
+
+            if (item.dataset.default && !checkbox.classList.contains("selected")) {
+                column.visible(true);
+                checkbox.classList.add("selected");
+            } else if (!item.dataset.default) {
+                column.visible(false);
+                checkbox.classList.remove("selected");
+            }
+        });
+    });
+
     initializeDataTable();
 
-    // Append table name onto DataTable generated layout
-    document.getElementsByClassName("dt-buttons").item(0).prepend(document.getElementById("table-name"));
+    // Append toggle columns button onto DataTable generated layout
+    document.getElementsByClassName("dt-buttons").item(0).append(document.getElementById("select-data"));
 });
 
 function initializeDataTable() {
@@ -52,16 +99,9 @@ function initializeDataTable() {
             type: "roadCode"
         },
         {
-            title: 'Type', data: null,
-            render: 'type'
-        },
-        {
-            title: 'Name', data: null,
-            render: 'name'
-        },
-        {
-            title: 'Status', data: null,
-            render: 'status'
+            title: 'Road Name', data: null,
+            render: 'name',
+            visible: false,
         },
         {
             title: 'Link Code', data: null,
@@ -69,7 +109,12 @@ function initializeDataTable() {
         },
         {
             title: 'Link Name', data: null,
-            render: 'linkName'
+            render: 'linkName',
+            visible: false,
+        },
+        {
+            title: 'Link Length (Km)', data: null,
+            render: r => parseFloat(r.linkLength).toFixed(2)
         },
         {
             title: 'Link Start Name', data: null,
@@ -88,57 +133,60 @@ function initializeDataTable() {
             render: r => parseFloat(r.linkEndChainage).toFixed(2)
         },
         {
-            title: 'Link Length (Km)', data: null,
-            render: r => parseFloat(r.linkLength).toFixed(2)
-        },
-        {
             title: 'Surface Type', data: null,
             render: 'surfaceType'
-        },
-        {
-            title: 'Surface Condition', data: null,
-            render: 'surfaceCondition'
         },
         {
             title: 'Pavement Class', data: null,
             render: 'pavementClass'
         },
         {
-            title: 'Administrative Area', data: null,
-            render: 'administrativeArea'
-        },
-        {
             title: 'Carriageway Width (m)', data: null,
             render: r => parseFloat(r.carriagewayWidth).toFixed(2)
         },
         {
-            title: 'Project', data: null,
-            render: 'project'
+            title: 'Administrative Area', data: null,
+            render: 'administrativeArea'
         },
         {
-            title: 'Funding Source', data: null,
-            render: 'fundingSource'
+            title: 'Road Type', data: null,
+            render: 'type',
+            visible: false,
         },
         {
             title: 'Technical Class', data: null,
-            render: 'technicalClass'
+            render: 'technicalClass',
+            visible: false,
+        },
+        {
+            title: 'Funding Source', data: null,
+            render: 'fundingSource',
+            visible: false,
+        },
+        {
+            title: 'Road Status', data: null,
+            render: 'status',
+            visible: false,
+        },
+        {
+            title: 'Project', data: null,
+            render: 'project',
+            visible: false,
+        },
+        {
+            title: 'Surface Condition', data: null,
+            render: 'surfaceCondition'
         },
         {
             title: 'Maintenance needs', data: null,
-            render: 'maintenanceNeed'
+            render: 'maintenanceNeed',
+            visible: false,
         },
         {
             title: 'Traffic Data', data: null,
-            render: 'trafficLevel'
-        },
-        {
-            title: 'Start Coordinates', data: null,
-            render: 'dmsCoordinateStart'
-        },
-        {
-            title: 'End Coordinates', data: null,
-            render: 'dmsCoordinateEnd'
-        },
+            render: 'trafficLevel',
+            visible: false,
+        }
     ];
 
     if (window.canEdit) {
@@ -161,6 +209,9 @@ function initializeDataTable() {
             sheetName: "Estrada",
             text: "Export table",
             title: "Estrada_" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate(),
+            exportOptions: {
+                columns: ":visible",
+            },
         }]
     });
 }

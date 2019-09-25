@@ -1,16 +1,49 @@
-#dropdown-menu {
+#settings, #columns-dropdown {
+    span.image {
+        margin-right: 5px;
+    }
+}
+
+#settings {
+    padding: 10px 20px;
+    min-width: 196px;
+    top: 30px;
+}
+
+#columns-dropdown {
+    padding: 20px 30px;
+    top: 25px;
+
+    .road-inventory-data {
+        .left-pane {
+            padding-right: 30px;
+        }
+
+        .right-pane {
+            border-right: 1px solid $light-gray;
+            padding-right: 15px;
+        }
+    }
+
+    .road-condition-data {
+        padding-left: 15px;
+    }
+}
+
+// Override Bootstrap dropdown styles
+
+.dropdown-menu {
     box-shadow: 0 0 10px 0 rgba(61, 71, 88, 0.5);
     background-color: $white;
     border-radius: $radius;
     position: absolute;
-    padding: 10px 20px;
-    min-width: 196px;
+    display: flex;
     z-index: 1001; // override Leaflet zoom controls
+    border: none;
+    left: unset;
     top: 30px;
     right: 0;
 }
-
-// Override Bootstrap dropdown styles
 
 .dropdown:hover {
     cursor: pointer;
