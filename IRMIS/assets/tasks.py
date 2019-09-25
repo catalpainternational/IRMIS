@@ -42,7 +42,6 @@ def make_geojson(*args, **kwargs):
     Groups geometry models into sets, builds GeoJson
     """
 
-
     geometries = Road.objects.filter(**kwargs)
     geojson = serialize(
         "geojson", geometries, geometry_field="geom", srid=4326, fields=("pk",)
