@@ -13,14 +13,12 @@ window.JSZip = jsZip;
 
 // when the roadManager has new roads, add them to the table
 document.addEventListener('estrada.roadManager.roadMetaDataAdded', (data) => {
-    // add the roads to the table
+    // add the roads to a pending array ( in case the table is not initialised early enough )
     pendingRows =  pendingRows.concat(data.detail.roadList);
     if( table ) {
-        // console.log(`received ${data.detail.roadList.length} roads after table is ready, adding ${pendingRows.length} pending rows`);
+        // if the table is ready add all the pending rows
         table.rows.add(pendingRows).draw();
         pendingRows = [];
-    } else {
-        // console.log(`received ${data.detail.roadList.length}  roads before table is ready`);
     }
 });
 
@@ -161,7 +159,7 @@ function initializeDataTable() {
         }]
     });
     if (pendingRows.length) {
-        // console.log(`adding ${pendingRows.length} roads now table is ready`);
+        // add any rows the road manager has delivered before initialization
         table.rows.add(pendingRows).draw();
         pendingRows = [];
     }
