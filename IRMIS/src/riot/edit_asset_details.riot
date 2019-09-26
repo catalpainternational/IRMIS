@@ -87,14 +87,14 @@
     <script>
 
         export default {
-            onBeforeMount(props, state) {
-                this.state.linkChainageDecimals = 5;
-                this.state.linkChainageDigits = 12;
-                this.state.linkLengthDecimals = 3;
-                this.state.linkLengthDigits = 8;
-                this.state.carriagewayWidthDecimals = 3;
-                this.state.carriagewayWidthDigits = 5;
-                this.state.errors = {};
+            state: {
+                linkChainageDecimals: 5,
+                linkChainageDigits : 2,
+                linkLengthDecimals: 3,
+                linkLengthDigits: 8,
+                carriagewayWidthDecimals: 3,
+                carriagewayWidthDigits: 5,
+                errors: {},
             },
             save(e) {
                 if (Object.entries(this.state.errors).length) {
