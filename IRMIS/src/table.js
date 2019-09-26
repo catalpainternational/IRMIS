@@ -6,6 +6,7 @@ import "datatables.net-buttons/js/buttons.flash";
 import $ from "jquery";
 
 let table;
+let pendingRows = [];
 
 // needed for export to excel
 window.JSZip = jsZip;
@@ -13,7 +14,13 @@ window.JSZip = jsZip;
 // when the roadManager has new roads, add them to the table
 document.addEventListener('estrada.roadManager.roadMetaDataAdded', (data) => {
     // add the roads to the table
-    table.rows.add(data.detail.roadList).draw();
+    pendingRows =  pendingRows.concat(data.detail.roadList);
+    if( table ) {
+        table.rows.add(pendingRows).draw();
+        pendingRows = [];
+    } else {
+        console.log('received new roads before table is ready');
+    }
 });
 
 document.addEventListener('estrada.table.roadMetaDataUpdated', (data) => {
@@ -155,6 +162,12 @@ function initializeDataTable() {
             title: "Estrada_" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate(),
         }]
     });
+    if (pendingRows.length) {
+        console.log('adding roads now table is ready');
+        table.rows.add(pendingRows).draw();
+        pendingRows = [];
+    }
+
 }
 
 // Filter functionality
