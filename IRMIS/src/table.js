@@ -19,7 +19,7 @@ let modf = (number) => {
     // both returned items have same sign as original number
     let integer = Math.trunc(number);
     let remainder = (number/integer) - 1.0;
-    return remainder, integer;
+    return (remainder, integer);
 }
 
 let split_out_dms = (coord) => {
@@ -28,21 +28,21 @@ let split_out_dms = (coord) => {
     let interm = modf(split_deg[0] * 60);
     let minutes = Math.abs(Math.trunc(interm[1]));
     let seconds = Math.abs(Math.round((interm[0] * 60 + 0.00001) * 100) / 100);
-    return degrees, minutes, seconds
+    return (degrees, minutes, seconds);
 }
 
 let to_dms = (lat_long) => {
     debugger;
     // try {
-        let deg_x, mnt_x, sec_x = split_out_dms(lat_long[0]);
-        let deg_y, mnt_y, sec_y = split_out_dms(lat_long[1]);
-        // calculate E/W & N/S
-        let EorW = "E";
-        if (deg_y < 0) { EorW = "W"; }
+        let x_dms = split_out_dms(lat_long[0]);
+        let y_dms = split_out_dms(lat_long[1]);
+        // calculate N/S (lat) & E/W (long)
         let NorS = "N";
-        if (deg_y < 0) { NorS = "S"; }
-
-        return `${Math.abs(deg_y)}\u00b0 ${mnt_y}' ${sec_y}" ${NorS}; ${Math.abs(deg_x)}\u00b0 ${mnt_x}' ${sec_x}" ${EorW};`;
+        if (x_dms[0] < 0) { NorS = "S"; }
+        let EorW = "E";
+        if (y_dms[0] < 0) { EorW = "W"; }
+        // return formatted DMS string
+        return `${Math.abs(x_dms[0])}\u00b0 ${x_dms[1]}' ${x_dms[2]}" ${NorS}; ${Math.abs(y_dms[0])}\u00b0 ${y_dms[1]}' ${y_dms[2]}" ${EorW};`;
     // } catch {
     //     return "";
     // }
