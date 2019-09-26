@@ -89,7 +89,7 @@
         export default {
             state: {
                 linkChainageDecimals: 5,
-                linkChainageDigits : 2,
+                linkChainageDigits : 12,
                 linkLengthDecimals: 3,
                 linkLengthDigits: 8,
                 carriagewayWidthDecimals: 3,
@@ -97,7 +97,7 @@
                 errors: {},
             },
             save(e) {
-                if (Object.entries(this.state.errors).length) {
+                if (Object.entries(this.state.errors).length == 0) {
                     this.props.onSave();
                 }
             },
