@@ -20,7 +20,7 @@ let modf = (number) => {
     return [number%1, Math.trunc(number)];
 }
 
-let split_out_dms = (coord) => {
+let splitOutDms = (coord) => {
     let split_deg = modf(coord);
     let degrees = Math.trunc(split_deg[1]);
     let interm = modf(split_deg[0] * 60);
@@ -29,20 +29,24 @@ let split_out_dms = (coord) => {
     return [degrees, minutes, seconds];
 }
 
-let to_dms = (lat_long) => {
+let toDms = (lat_long) => {
     try {
-        let x_dms = split_out_dms(lat_long[0]);
-        let y_dms = split_out_dms(lat_long[1]);
+        let x_dms = splitOutDms(lat_long[0]);
+        let y_dms = splitOutDms(lat_long[1]);
         // calculate N/S (lat) & E/W (long)
         let NorS = "N";
         if (y_dms[0] < 0) { NorS = "S"; }
         let EorW = "E";
         if (x_dms[0] < 0) { EorW = "W"; }
         // return formatted DMS string
-        return `${Math.abs(y_dms[0])}\u00b0${y_dms[1]}'${y_dms[2]}"${NorS}; ${Math.abs(x_dms[0])}\u00b0${x_dms[1]}'${x_dms[2]}"${EorW};`;
+        return `${Math.abs(y_dms[0])}\u00b0${y_dms[1]}'${y_dms[2]}"${NorS} ${Math.abs(x_dms[0])}\u00b0${x_dms[1]}'${x_dms[2]}"${EorW}`;
     } catch {
         return "";
     }
+}
+
+let toUtm = (lat_long) => {
+    return `${lat_long[0].toFixed(5)}, ${lat_long[1].toFixed(5)}`;
 }
 
 // needed for export to excel
@@ -227,22 +231,22 @@ function initializeDataTable() {
         },
         {
             title: 'Start Point (DMS)', data: null,
-            render: r => to_dms(proj4(projection_source, projection_dest, r.projectionStart.array)),
+            render: r => toDms(proj4(projection_source, projection_dest, r.projectionStart.array)),
             // visible: false,
         },
         {
             title: 'End Point (DMS)', data: null,
-            render: r => to_dms(proj4(projection_source, projection_dest, r.projectionEnd.array)),
+            render: r => toDms(proj4(projection_source, projection_dest, r.projectionEnd.array)),
             // visible: false,
         },
         {
             title: 'Start Point (UTM)', data: null,
-            render: r => proj4(projection_source, projection_dest, r.projectionStart.array),
+            render: r => toUtm(proj4(projection_source, projection_dest, r.projectionStart.array)),
             // visible: false,
         },
         {
             title: 'End Point (UTM)', data: null,
-            render: r => proj4(projection_source, projection_dest, r.projectionEnd.array),
+            render: r => toUtm(proj4(projection_source, projection_dest, r.projectionEnd.array)),
             // visible: false,
         },
     ];
