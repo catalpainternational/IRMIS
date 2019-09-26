@@ -10,6 +10,7 @@ import math
 import reversion
 from reversion.models import Version
 from protobuf.roads_pb2 import Roads as ProtoRoads
+from protobuf.roads_pb2 import Projection
 
 
 def no_spaces(value):
@@ -17,46 +18,6 @@ def no_spaces(value):
         raise ValidationError(
             _("%(value)s should not contain spaces"), params={"value": value}
         )
-
-
-def split_out_dms(coord):
-    split_deg = math.modf(coord)
-    degrees = int(split_deg[1])
-    minutes = abs(int(math.modf(split_deg[0] * 60)[1]))
-    seconds = abs(round(math.modf(split_deg[0] * 60)[0] * 60, 2))
-    return degrees, minutes, seconds
-
-
-def deg2dms(lat_long: tuple):
-    try:
-        deg_x, mnt_x, sec_x = split_out_dms(lat_long[0])
-        deg_y, mnt_y, sec_y = split_out_dms(lat_long[1])
-
-        # calculate E/W & N/S
-        EorW = "E"
-        if deg_y < 0:
-            EorW = "W"
-
-        NorS = "N"
-        if deg_y < 0:
-            NorS = "S"
-
-        return "%s\u00b0 %s' %s\" %s; %s\u00b0 %s' %s\" %s;" % (
-            abs(deg_y),
-            mnt_y,
-            sec_y,
-            NorS,
-            abs(deg_x),
-            mnt_x,
-            sec_x,
-            EorW,
-        )
-    except TypeError:
-        return ""
-
-
-def deg2utm(lat_long: tuple):
-    return 42
 
 
 class RoadStatus(models.Model):
@@ -162,10 +123,15 @@ class RoadQuerySet(models.QuerySet):
                 if road[query_key]:
                     setattr(road_protobuf, protobuf_key, road[query_key])
             setattr(road_protobuf, "last_revision_id", last_revisions[str(road["id"])])
-            # set Protobuf with DMS converted from decimal lat/long
-            ls = road["geom"].simplify()  # convert MultiLineString into LineString
-            setattr(road_protobuf, "dms_coordinate_start", deg2dms(ls.tuple[0]))
-            setattr(road_protobuf, "dms_coordinate_end", deg2dms(ls.tuple[-1]))
+
+            # set Protobuf with with start/end projection points
+            g = road["geom"].tuple[0]
+            start_p = Projection()
+            start_p.x, start_p.y = g[0][0], g[0][1]
+            end_p = Projection()
+            end_p.x, end_p.y = g[-1][0], g[-1][1]
+            road_protobuf.projection_start.CopyFrom(start_p)
+            road_protobuf.projection_end.CopyFrom(end_p)
 
         return roads_protobuf
 

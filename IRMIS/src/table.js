@@ -186,7 +186,27 @@ function initializeDataTable() {
             title: 'Traffic Data', data: null,
             render: 'trafficLevel',
             visible: false,
-        }
+        },
+        {
+            title: 'Start Point (DMS)', data: null,
+            render: r =>r.projectionStart,
+            // visible: false,
+        },
+        {
+            title: 'End Point (DMS)', data: null,
+            render: r =>r.projectionEnd,
+            // visible: false,
+        },
+        {
+            title: 'Start Point (UTM)', data: null,
+            render: r => r.projectionStart,
+            visible: false,
+        },
+        {
+            title: 'End Point (UTM)', data: null,
+            render: r =>r.projectionEnd,
+            visible: false,
+        },
     ];
 
     if (window.canEdit) {

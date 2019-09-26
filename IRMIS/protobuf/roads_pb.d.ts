@@ -3,6 +3,30 @@
 
 import * as jspb from "google-protobuf";
 
+export class Projection extends jspb.Message {
+  getX(): number;
+  setX(value: number): void;
+
+  getY(): number;
+  setY(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): Projection.AsObject;
+  static toObject(includeInstance: boolean, msg: Projection): Projection.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: Projection, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Projection;
+  static deserializeBinaryFromReader(message: Projection, reader: jspb.BinaryReader): Projection;
+}
+
+export namespace Projection {
+  export type AsObject = {
+    x: number,
+    y: number,
+  }
+}
+
 export class Road extends jspb.Message {
   getId(): number;
   setId(value: number): void;
@@ -76,11 +100,15 @@ export class Road extends jspb.Message {
   getLastRevisionId(): number;
   setLastRevisionId(value: number): void;
 
-  getDmsCoordinateStart(): string;
-  setDmsCoordinateStart(value: string): void;
+  hasProjectionStart(): boolean;
+  clearProjectionStart(): void;
+  getProjectionStart(): Projection | undefined;
+  setProjectionStart(value?: Projection): void;
 
-  getDmsCoordinateEnd(): string;
-  setDmsCoordinateEnd(value: string): void;
+  hasProjectionEnd(): boolean;
+  clearProjectionEnd(): void;
+  getProjectionEnd(): Projection | undefined;
+  setProjectionEnd(value?: Projection): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Road.AsObject;
@@ -118,8 +146,8 @@ export namespace Road {
     maintenanceNeed: string,
     trafficLevel: string,
     lastRevisionId: number,
-    dmsCoordinateStart: string,
-    dmsCoordinateEnd: string,
+    projectionStart?: Projection.AsObject,
+    projectionEnd?: Projection.AsObject,
   }
 }
 

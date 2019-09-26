@@ -5,6 +5,11 @@ package assets;
 /* Remember to run `yarn protoc` after making any changes
  * to regenerate the javascript and python protobuf implementations */
 
+message Projection {
+  float x = 1;
+  float y = 2;
+}
+
 message Road {
   /* Note that field Id numbers once used, are fixed.
    * The ordering shown here lines up with the model and groups the fields better.
@@ -33,8 +38,8 @@ message Road {
   string maintenance_need = 22;
   string traffic_level = 23;
   uint32 last_revision_id = 24;
-  string dms_coordinate_start = 25;
-  string dms_coordinate_end = 26;
+  Projection projection_start = 25;
+  Projection projection_end = 26;
 }
 
 message Roads {
