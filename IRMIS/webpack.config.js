@@ -7,7 +7,7 @@ module.exports = {
         app: './estrada.js',
     },
     output: {
-        filename: 'irmis.js',
+        filename: 'estrada.js',
         library: 'roads',
         libraryTarget: 'window',
     },
