@@ -75,6 +75,25 @@ msgstr ""
 msgid "Save and continue"
 msgstr ""
 
+msgid "Link code cannot contain white spaces"
+msgstr ""
+
+#, javascript-format
+msgid "Link length cannot contain more than %s digits, of which %s are decimals"
+msgstr ""
+
+#, javascript-format
+msgid "Carriage width cannot contain more than %s digits, of which %s are decimals"
+msgstr ""
+
+#, javascript-format
+msgid "Link start chainage cannot contain more than %s digits, of which %s are decimals"
+msgstr ""
+
+#, javascript-format
+msgid "Link end chainage cannot contain more than %s digits, of which %s are decimals"
+msgstr ""
+
 msgid "Edit asset"
 msgstr ""
 
