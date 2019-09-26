@@ -16,10 +16,11 @@ document.addEventListener('estrada.roadManager.roadMetaDataAdded', (data) => {
     // add the roads to the table
     pendingRows =  pendingRows.concat(data.detail.roadList);
     if( table ) {
+        console.log(`received ${data.detail.roadList.length} roads after table is ready, adding ${pendingRows.length} pending rows`);
         table.rows.add(pendingRows).draw();
         pendingRows = [];
     } else {
-        console.log('received new roads before table is ready');
+        console.log(`received ${data.detail.roadList.length}  roads before table is ready`);
     }
 });
 
@@ -44,13 +45,13 @@ document.addEventListener('estrada.sideMenu.viewChanged', (data) => {
 });
 
 window.addEventListener('load', () => {
-    initializeDataTable();
+    console.log('delaying table initialization');
+    setTimeout(initializeDataTable, 2000);
 
-    // Append table name onto DataTable generated layout
-    document.getElementsByClassName("dt-buttons").item(0).prepend(document.getElementById("table-name"));
 });
 
 function initializeDataTable() {
+    console.log('executing table initialization');
     const date = new Date();
     const columns = [
         {
@@ -163,11 +164,13 @@ function initializeDataTable() {
         }]
     });
     if (pendingRows.length) {
-        console.log('adding roads now table is ready');
+        console.log(`adding ${pendingRows.length} roads now table is ready`);
         table.rows.add(pendingRows).draw();
         pendingRows = [];
     }
 
+    // Append table name onto DataTable generated layout
+    document.getElementsByClassName("dt-buttons").item(0).prepend(document.getElementById("table-name"));
 }
 
 // Filter functionality
