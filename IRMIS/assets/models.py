@@ -283,7 +283,7 @@ class Road(models.Model):
         help_text=_("Enter the width (in meters) of the link carriageway"),
     )
     road_type = models.CharField(
-        verbose_name=_("Type"),
+        verbose_name=_("Road Type"),
         max_length=4,
         choices=ROAD_TYPE_CHOICES,
         blank=True,
@@ -292,14 +292,14 @@ class Road(models.Model):
     )
     road_status = models.ForeignKey(
         "RoadStatus",
-        verbose_name=_("Status"),
+        verbose_name=_("Road Status"),
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
         help_text=_("Enter road link current status"),
     )
     project = models.CharField(
-        verbose_name=_("Project"),
+        verbose_name=_("Project Name"),
         max_length=150,
         blank=True,
         null=True,
@@ -314,7 +314,7 @@ class Road(models.Model):
         help_text=_("Choose the traffic volume for the road link"),
     )
     surface_condition = models.CharField(
-        verbose_name=_("Surface Condition"),
+        verbose_name=_("Surface Condition (SDI)"),
         max_length=1,
         choices=SURFACE_CONDITION_CHOICES,
         blank=True,
@@ -325,7 +325,7 @@ class Road(models.Model):
     )
     maintenance_need = models.ForeignKey(
         "MaintenanceNeed",
-        verbose_name=_("Maintenance Need"),
+        verbose_name=_("Maintenance Needs"),
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
