@@ -108,3 +108,9 @@ See the package.json file for useful commands to makemessages
 
 djangojs messages are delivered to the browser using https://docs.djangoproject.com/en/2.2/topics/i18n/translation#django.views.i18n.JavaScriptCatalog
 riot4 tags should use window.gettext('') to access translations
+
+## Export Geojson
+
+We've been asked for a simple geojson exports, the `make_geojson` management command is here to help
+It currently accepts a mandatory municipality name and outputs geojson on the standard out
+usage : `./manage.py make_geojson ainaro > ainaro.json`

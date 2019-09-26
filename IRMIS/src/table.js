@@ -8,6 +8,8 @@ import proj4 from "proj4";
 
 
 let table;
+let pendingRows = [];
+
 // INPUT FORMAT: EPSG:32751 WGS 84 / UTM zone 51S
 let projection_source = '+proj=utm +zone=51 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs';
 // OUTPUT FORMAT: EPSG:4326 WGS 84
@@ -54,8 +56,13 @@ window.JSZip = jsZip;
 
 // when the roadManager has new roads, add them to the table
 document.addEventListener('estrada.roadManager.roadMetaDataAdded', (data) => {
-    // add the roads to the table
-    table.rows.add(data.detail.roadList).draw();
+    // add the roads to a pending array ( in case the table is not initialised early enough )
+    pendingRows =  pendingRows.concat(data.detail.roadList);
+    if( table ) {
+        // if the table is ready add all the pending rows
+        table.rows.add(pendingRows).draw();
+        pendingRows = [];
+    }
 });
 
 document.addEventListener('estrada.table.roadMetaDataUpdated', (data) => {
@@ -127,9 +134,12 @@ window.addEventListener("load", () => {
     });
 
     initializeDataTable();
+<<<<<<< HEAD
 
     // Append toggle columns button onto DataTable generated layout
     document.getElementsByClassName("dt-buttons").item(0).append(document.getElementById("select-data"));
+=======
+>>>>>>> RC-0.0.3
 });
 
 function initializeDataTable() {
@@ -276,6 +286,14 @@ function initializeDataTable() {
             },
         }]
     });
+    if (pendingRows.length) {
+        // add any rows the road manager has delivered before initialization
+        table.rows.add(pendingRows).draw();
+        pendingRows = [];
+    }
+
+    // Append table name onto DataTable generated layout
+    document.getElementsByClassName("dt-buttons").item(0).prepend(document.getElementById("table-name"));
 }
 
 // Filter functionality
