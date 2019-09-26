@@ -134,12 +134,9 @@ window.addEventListener("load", () => {
     });
 
     initializeDataTable();
-<<<<<<< HEAD
 
-    // Append toggle columns button onto DataTable generated layout
-    document.getElementsByClassName("dt-buttons").item(0).append(document.getElementById("select-data"));
-=======
->>>>>>> RC-0.0.3
+    // Append table name onto DataTable generated layout
+    document.getElementsByClassName("dt-buttons").item(0).prepend(document.getElementById("table-name"));
 });
 
 function initializeDataTable() {
