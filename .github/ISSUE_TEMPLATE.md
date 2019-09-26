@@ -1,5 +1,8 @@
+Contributes to #user_story_issue
+
 ## Overview
-[**Note**: Write a brief description of the issue]
+
+- [**Note**: Write a brief description of the issue]
 
 ## Conditions of Satisfaction
 

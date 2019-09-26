@@ -1,85 +1,197 @@
+import jsZip from "jszip";
 import "datatables.net-bs4";
+import "datatables.net-buttons-bs4";
+import "datatables.net-buttons/js/buttons.html5";
+import "datatables.net-buttons/js/buttons.flash";
 import $ from "jquery";
 
-export let table;
+let table;
+let pendingRows = [];
 
-let currentFilter = (p) => (true);
+// needed for export to excel
+window.JSZip = jsZip;
 
-function humanize(schema, model, keyArg=false, nameArg=false) {
-    let values = {};
-    if (keyArg && nameArg) {
-        schema[model].options.forEach(function(o){
-            values[o[keyArg]] = o[nameArg]
-        });
-    } else {
-        schema[model].options.forEach(function(o){
-            values[o[0]] = o[1]
+// when the roadManager has new roads, add them to the table
+document.addEventListener('estrada.roadManager.roadMetaDataAdded', (data) => {
+    // add the roads to a pending array ( in case the table is not initialised early enough )
+    pendingRows =  pendingRows.concat(data.detail.roadList);
+    if( table ) {
+        // if the table is ready add all the pending rows
+        table.rows.add(pendingRows).draw();
+        pendingRows = [];
+    }
+});
+
+document.addEventListener('estrada.table.roadMetaDataUpdated', (data) => {
+    table.row(`#${data.detail.road.id}`).data(data.detail.road).draw();
+});
+
+// when a filter is applied, update the filter id whitelist
+document.addEventListener('estrada.filter.applied', (data) => {
+    idWhitelistMap = data.detail.idMap;
+    table.draw();
+});
+
+// when the view changes adjust the table rows
+document.addEventListener('estrada.sideMenu.viewChanged', (data) => {
+    const viewName = data.detail ? data.detail.viewName : null;
+    if (viewName === 'map table') {
+        table.page.len(10).draw('page');
+    } else if (viewName === 'table') {
+        table.page.len(20).draw('page');
+    }
+});
+
+window.addEventListener('load', () => {
+    initializeDataTable();
+});
+
+function initializeDataTable() {
+    const date = new Date();
+    const columns = [
+        {
+            title: 'Road Code', data: null,
+            render: 'code',
+            type: "roadCode"
+        },
+        {
+            title: 'Type', data: null,
+            render: 'type'
+        },
+        {
+            title: 'Name', data: null,
+            render: 'name'
+        },
+        {
+            title: 'Status', data: null,
+            render: 'status'
+        },
+        {
+            title: 'Link Code', data: null,
+            render: 'linkCode'
+        },
+        {
+            title: 'Link Name', data: null,
+            render: 'linkName'
+        },
+        {
+            title: 'Link Start Name', data: null,
+            render: 'linkStartName'
+        },
+        {
+            title: 'Link Start Chainage (Km)', data: null,
+            render: r => parseFloat(r.linkStartChainage).toFixed(2)
+        },
+        {
+            title: 'Link End Name', data: null,
+            render: 'linkEndName'
+        },
+        {
+            title: 'Link End Chainage (Km)', data: null,
+            render: r => parseFloat(r.linkEndChainage).toFixed(2)
+        },
+        {
+            title: 'Link Length (Km)', data: null,
+            render: r => parseFloat(r.linkLength).toFixed(2)
+        },
+        {
+            title: 'Surface Type', data: null,
+            render: 'surfaceType'
+        },
+        {
+            title: 'Surface Condition', data: null,
+            render: 'surfaceCondition'
+        },
+        {
+            title: 'Pavement Class', data: null,
+            render: 'pavementClass'
+        },
+        {
+            title: 'Administrative Area', data: null,
+            render: 'administrativeArea'
+        },
+        {
+            title: 'Carriageway Width (m)', data: null,
+            render: r => parseFloat(r.carriagewayWidth).toFixed(2)
+        },
+        {
+            title: 'Project', data: null,
+            render: 'project'
+        },
+        {
+            title: 'Funding Source', data: null,
+            render: 'fundingSource'
+        },
+        {
+            title: 'Technical Class', data: null,
+            render: 'technicalClass'
+        },
+        {
+            title: 'Maintenance needs', data: null,
+            render: 'maintenanceNeed'
+        },
+        {
+            title: 'Traffic Data', data: null,
+            render: 'trafficLevel'
+        }
+    ];
+
+    if (window.canEdit) {
+        columns.unshift({
+            title: '', data: null,
+            render: r => `<a class='image pencil' href='#edit/${r.getId()}/location_type'></a>`,
+            orderable: false,
+            className: "edit-col"
         });
     }
-    return values;
+
+    table = $("#data-table").DataTable({
+        columns: columns,
+        rowId: '.getId()',
+        order: [[window.canEdit ? 1 : 0, 'asc']], // default order is ascending by road code
+        dom: `<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>`, // https://datatables.net/reference/option/dom#Styling
+        buttons: [{
+            extend: "excel",
+            className: "btn-sm",
+            sheetName: "Estrada",
+            text: "Export table",
+            title: "Estrada_" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate(),
+        }]
+    });
+    if (pendingRows.length) {
+        // add any rows the road manager has delivered before initialization
+        table.rows.add(pendingRows).draw();
+        pendingRows = [];
+    }
+
+    // Append table name onto DataTable generated layout
+    document.getElementsByClassName("dt-buttons").item(0).prepend(document.getElementById("table-name"));
 }
 
-const ROAD_STATUS_CHOICES = humanize(window.road_schema, 'road_status', 'code', 'name');
-const ROAD_TYPE_CHOICES = humanize(window.road_schema, 'road_type');
-const SURFACE_CONDITION_CHOICES = humanize(window.road_schema, 'surface_condition');
-const SURFACE_TYPE_CHOICES = humanize(window.road_schema, 'surface_type', 'code', 'name');
-const PAVEMENT_CLASS_CHOICES = humanize(window.road_schema, 'pavement_class', 'code', 'name');
-const ADMINISTRATIVE_AREA_CHOICES = humanize(window.road_schema, 'administrative_area', 'id', 'name');
-const TECHNICAL_CLASS_CHOICES = humanize(window.road_schema, 'technical_class', 'code', 'name');
-const MAINTENANCE_NEED_CHOICES = humanize(window.road_schema, 'maintenance_need', 'code', 'name');
-const TRAFFIC_LEVEL_CHOICES = humanize(window.road_schema, 'traffic_level');
+// Filter functionality
+let idWhitelistMap = null;
+let currentFilter = (p) => {
+    return idWhitelistMap === null || idWhitelistMap[p.getId().toString()];
+}
 
 $.fn.dataTableExt.afnFiltering.push(
     function( oSettings, aData, iDataIndex ) {
-        let properties = oSettings.aoData[iDataIndex]._aData;
-        return currentFilter(properties);
+        let road = oSettings.aoData[iDataIndex]._aData;
+        return currentFilter(road);
     }
 );
 
-let defineColumn = (data, title, mapObj=false, fixedPointDigits=false, defaultVal="") => ({
-    data: data,
-    title: title,
-    defaultContent: defaultVal,
-    render: item => (mapObj) ? mapObj[item] : fixedPointDigits ? parseFloat(item).toFixed(fixedPointDigits) : item
+// change the sorting of the road code column to place empty values last
+$.extend($.fn.dataTableExt.oSort, {
+    "roadCode-asc": function (str1, str2) {
+        if(str1 == "") return 1;
+        if(str2 == "") return -1;
+        return ((str1 < str2) ? -1 : ((str1 > str2) ? 1 : 0));
+    },
+
+    "roadCode-desc": function (str1, str2) {
+        if(str1 == "") return -1;
+        if(str2 == "") return 1;
+        return ((str1 < str2) ? 1 : ((str1 > str2) ? -1 : 0));
+    }
 });
-
-export function initializeDataTable(roadList) {
-    table = $("#data-table").DataTable({
-        columns: [
-            defineColumn("roadCode", "Code"),
-            defineColumn("roadType", "Type", ROAD_TYPE_CHOICES),
-            defineColumn("roadName", "Name"),
-            defineColumn("roadStatus", "Status", ROAD_STATUS_CHOICES),
-
-            defineColumn("linkCode", "Link Code"),
-            defineColumn("linkName", "Link Name"),
-            defineColumn("linkStartName", "Link Start Name"),
-            defineColumn("linkStartChainage", "Link Start Chainage (Km)", false, 2),
-            defineColumn("linkEndName", "Link End Name"),
-            defineColumn("linkEndChainage", "Link End Chainage (Km)", false, 2),
-            defineColumn("linkLength", "Link Length (Km)", false, 2),
-
-            defineColumn("surfaceType", "Surface Type", SURFACE_TYPE_CHOICES),
-            defineColumn("surfaceCondition", "Surface Condition", SURFACE_CONDITION_CHOICES),
-            defineColumn("pavementClass", "Pavement Class", PAVEMENT_CLASS_CHOICES),
-
-            defineColumn("administrativeArea", "Administrative Area", ADMINISTRATIVE_AREA_CHOICES),
-            defineColumn("carriagewayWidth", "Carriageway Width (m)", false, 2),
-            defineColumn("project", "Project"),
-            defineColumn("fundingSource", "Funding Source"),
-            defineColumn("technicalClass", "Technical Class", TECHNICAL_CLASS_CHOICES),
-            defineColumn("maintenanceNeed", "Maintenance Need", MAINTENANCE_NEED_CHOICES),
-            defineColumn("trafficLevel", "Traffic Level", TRAFFIC_LEVEL_CHOICES),
-        ],
-        data: roadList,
-        // lengthChange: false, // hide table entries filter
-        // searching: false, // hide search box
-        search: {
-            regex: true, // Enable escaping of regular expression characters in the search term.
-        },
-    });
-}
-export function filterRows(filter) {
-    currentFilter = filter;
-    table.draw();
-}

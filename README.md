@@ -31,19 +31,34 @@ Use `pip-compile --upgrade` to upgrade versions of libraries, then test the resu
 
 ## How to Import New Features from a Shapefile (.shp)
 
+**Important**
+This entire sequence must be performed to completion before users are allowed to edit the imported features (roads).
+
+- Identify all of your sources of data, i.e. shapefiles AND Excel spreadsheets etc. and make sure you have access to them.
+- If the auxiliary sources of data (i.e. Excel spreadsheets) are more than trivial you'll want to do some preparatory work for step 4.2 before beginning the overall sequence.
+
 1. Import the shapefile schema and data - NOTE: This does not import geometries
-  1. run `shp2pgsql -d -n path/to/your/.dbf source_table_name` and check the outputted SQL
-  2. read the help https://helpmanual.io/help/shp2pgsql/ if you need to make changes
-  3. run that sql against your database using `psql` or `manage.py dbshell`: eg `shp2pgsql -d -n ../../ngis/National_Road.dbf source_national_road | ./manage.py dbshell`
-  
+    1. run `shp2pgsql -d -n path/to/your/.dbf source_table_name` and check the outputted SQL
+    2. read the help https://helpmanual.io/help/shp2pgsql/ if you need to make changes
+    3. run that sql against your database using `psql` or `manage.py dbshell`: eg `shp2pgsql -d -n ../../ngis/National_Road.dbf source_national_road | ./manage.py dbshell`
+
 2. Create unmanaged model code by using inspectdb
-  1. `./manage.py inspectdb source_table_name` this will output some django model code, drop it into models.py
-  2. you may have to edit these files to make them managed so that other developers and deployments create the tables
-  3. `./manage.py makemigrations`
-  4. `./manage.py migrate` - you may have to fake this locally ( as you will have already created the table )
-  
+    1. `./manage.py inspectdb source_table_name` this will output some django model code, drop it into models.py
+    2. you may have to edit these files to make them managed so that other developers and deployments create the tables
+    3. `./manage.py makemigrations`
+    4. `./manage.py migrate` - you may have to fake this locally ( as you will have already created the table )
+
 3. Adapt and run the import code in the Importimport.py
-  1. Here be dragons, unexpected geometry types, wierd metadata, duplications.
+    1. Here be dragons, unexpected geometry types, wierd metadata, duplications.
+
+4. If there's any other metadata (e.g. in Excel) for the roads just added
+    1. get the Ids for the newly added roads, and enter that against each row in your data source (Excel file)
+     (note that you'll probably find that these don't line up properly)
+    2. follow the pattern you'll find in `update_roads_from_excel.sql` to update each record with the data from your data source
+
+5. Initialise the Reversion Audit History for the newly added roads
+    1. run the command `./manage.py createinitialrevisions assets.road --comment="Import from Shapefile"`
+
 
 ## Pre-Commit (Black formatter)
 
@@ -71,3 +86,31 @@ We use google protobuf to compress road metadata for transfer down the wire.
 https://developers.google.com/protocol-buffers/docs/pythontutorial is the best resource I have found for learning about it.
 To make any message schema changes go here https://github.com/protocolbuffers/protobuf/releases/tag/v3.9.1 to find a suitable package for your OS and follow the instructions in the README. Make sure the protoc binary is available on your PATH.
 run `yarn protoc` to update the generated python and javascript code.
+
+
+## Django Reversion
+
+We use the package `django-reversion` to allow us the ability to maintain a historic record of Road model changes, revert to previous states of records, and recovering deleted records.
+You can read more on it here: https://django-reversion.readthedocs.io/en/stable/index.html
+
+If you're setting up from a new DB (ie. not copied from staging / production DB), after pip installing django-reversion and running migrations, you need to create the initial revision, for registered models in the project, with the following two commands:
+
+`./manage.py createinitialrevisions assets.road --comment="Import from Shapefile"`
+`./manage.py createinitialrevisions`
+
+## Translations
+
+See the package.json file for useful commands to makemessages
+- `yarn collect_gettext` runs a python tool that looks for all places in riot tags where you have used gettext, and puts them in a generated collation file
+- `yarn jsmessages` runs the above command AND runs django makemessages with the correct parameters to make po files under the djangojs domain
+- `yarn djangomessages` runs django makemessages
+- `yarn makemessages` runs javascript and django messages
+
+djangojs messages are delivered to the browser using https://docs.djangoproject.com/en/2.2/topics/i18n/translation#django.views.i18n.JavaScriptCatalog
+riot4 tags should use window.gettext('') to access translations
+
+## Export Geojson
+
+We've been asked for a simple geojson exports, the `make_geojson` management command is here to help
+It currently accepts a mandatory municipality name and outputs geojson on the standard out
+usage : `./manage.py make_geojson ainaro > ainaro.json`

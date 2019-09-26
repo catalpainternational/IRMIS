@@ -1,0 +1,191 @@
+<edit_asset_details>
+    <h5>{ window.gettext("Asset") }</h5>
+
+    <section>
+        <h6>{ window.gettext("Link code and name") }</h6>
+        <div class="form-group">
+            <label>{ link_code.display }</label>
+            <input class="{ state.errors.linkCode ? 'danger' : null } { props.road.getLinkCode() ? '' : 'inactive' } form-control"
+                type="text" maxlength="25" placeholder="{ window.gettext('E.g. A01-01') }" value="{ props.road.getLinkCode() }" oninput="{ checkLinkCode }">
+            <small class="form-text text-muted">{ window.gettext("Enter link code according to DRBFC standard") }</small>
+            <div if="{ state.errors.linkCode }" class="invalid-tooltip">
+                <ul>
+                    <li>{ state.errors.linkCode }.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>{ link_start_name.display }</label>
+            <input class="{ props.road.getLinkStartName() ? '' : 'inactive' } form-control" type="text" maxlength="150"
+                placeholder="{ window.gettext('E.g. Dili') }" value="{ props.road.getLinkStartName() }" oninput="{ checkLinkStartName }">
+            <small class="form-text text-muted">{ window.gettext("Enter the name of the link start location (municipal center, administrative post or nearest suco)") }</small>
+        </div>
+        <div class="form-group">
+            <label>{ link_end_name.display }</label>
+            <input class="{ props.road.getLinkEndName() ? '' : 'inactive' } form-control" type="text" maxlength="150"
+                placeholder="{ window.gettext('E.g. Manatuto') }" value="{ props.road.getLinkEndName() }" oninput="{ checkLinkEndName }">
+            <small class="form-text text-muted">{ window.gettext("Enter the name of the link end location (municipal center, administrative post or nearest suco)") }</small>
+        </div>
+    </section>
+
+    <section>
+        <h6>{ window.gettext("Link width and length") }</h6>
+        <div class="form-group">
+            <label>{ link_length.display }</label>
+            <input class="{ state.errors.linkLength ? 'danger' : null } { props.road.getLinkLength() ? '' : 'inactive' } form-control"
+                type="number" placeholder="{ window.gettext('E.g. 58.7') }" value="{ props.road.getLinkLength() }" oninput="{ checkLinkLength }">
+            <small class="form-text text-muted">{ window.gettext("Enter road link length (in Km)") }</small>
+            <div if="{ state.errors.linkLength }" class="invalid-tooltip">
+                <ul>
+                    <li>{ state.errors.linkLength }.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>{ carriageway_width.display }</label>
+            <input class="{ state.errors.carriageWidth ? 'danger' : null } { props.road.getCarriagewayWidth() ? '' : 'inactive' } form-control"
+                type="number" placeholder="{ window.gettext('E.g. 5.0') }" value="{ props.road.getCarriagewayWidth() }" oninput="{ checkCarriagewayWidth }">
+            <small class="form-text text-muted">{ window.gettext("Enter the width (in meters) of the link carriageway") }</small>
+            <div if="{ state.errors.carriageWidth }" class="invalid-tooltip">
+                <ul>
+                    <li>{ state.errors.carriageWidth }.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h6>{ window.gettext("Link chainage") }</h6>
+        <div class="form-group">
+            <label>{ link_start_chainage.display }</label>
+            <input class="{ state.errors.linkStartChainage ? 'danger' : null } { props.road.getLinkStartChainage() ? '' : 'inactive' } form-control"
+                type="number" placeholder="{ window.gettext('E.g. 0+000') }" value="{ props.road.getLinkStartChainage() }" oninput="{ checkLinkStartChainage }">
+            <small class="form-text text-muted">{ window.gettext("Enter chainage for link starting point") }</small>
+            <div if="{ state.errors.linkStartChainage }" class="invalid-tooltip">
+                <ul>
+                    <li>{ state.errors.linkStartChainage }.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>{ link_end_chainage.display }</label>
+            <input class="{ state.errors.linkEndChainage ? 'danger' : null } { props.road.getLinkEndChainage() ? '' : 'inactive' } form-control"
+                type="number" placeholder="{ window.gettext('E.g. 62+410') }" value="{ props.road.getLinkEndChainage() }" oninput="{ checkLinkEndChainage }">
+            <small class="form-text text-muted">{ window.gettext("Enter chainage for link ending point") }</small>
+            <div if="{ state.errors.linkEndChainage }" class="invalid-tooltip">
+                <ul>
+                    <li>{ state.errors.linkEndChainage }.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <div class="button-wrapper d-flex justify-content-end">
+        <button class="btn btn-primary" onclick="{ save }" disabled="{ props.saving || Object.entries(state.errors).length > 0 }">{ window.gettext("Save and continue") }</button>
+    </div>
+
+    <script>
+
+        export default {
+            state: {
+                linkChainageDecimals: 5,
+                linkChainageDigits : 12,
+                linkLengthDecimals: 3,
+                linkLengthDigits: 8,
+                carriagewayWidthDecimals: 3,
+                carriagewayWidthDigits: 5,
+                errors: {},
+            },
+            save(e) {
+                if (Object.entries(this.state.errors).length == 0) {
+                    this.props.onSave();
+                }
+            },
+            checkLinkCode(e) {
+                let input = e.currentTarget.value.trim();
+                if (containsWhiteSpaces(input)) {
+                    this.state.errors.linkCode = window.gettext('Link code cannot contain white spaces');
+                } else {
+                    delete this.state.errors.linkCode;
+                    this.props.road.setLinkCode(input);
+                }
+                this.update();
+            },
+            checkLinkStartName(e) {
+                this.props.road.setLinkStartName(e.currentTarget.value);
+                this.update();
+            },
+            checkLinkEndName(e) {
+                this.props.road.setLinkEndName(e.currentTarget.value);
+                this.update();
+            },
+            checkLinkLength(e) {
+                let input = e.currentTarget.value;
+                if (exceedsMaxDigits(input, this.state.linkLengthDigits, this.state.linkLengthDecimals)) {
+                    this.state.errors.linkLength = window.interpolate(
+                        window.gettext('Link length cannot contain more than %s digits, of which %s are decimals'),
+                        [this.state.linkLengthDigits, this.state.linkLengthDecimals]
+                    );
+                } else {
+                    delete this.state.errors.linkLength;
+                    this.props.road.setLinkLength(input);
+                }
+                this.update();
+            },
+            checkCarriagewayWidth(e) {
+                let input = e.currentTarget.value;
+                if (exceedsMaxDigits(input, this.state.carriagewayWidthDigits, this.state.carriagewayWidthDecimals)) {
+                    this.state.errors.carriageWidth = window.interpolate(
+                        window.gettext('Carriage width cannot contain more than %s digits, of which %s are decimals'),
+                        [this.state.carriagewayWidthDigits, this.state.carriagewayWidthDecimals]
+                    );
+                } else {
+                    delete this.state.errors.carriageWidth;
+                    this.props.road.setCarriagewayWidth(input);
+                }
+                this.update();
+            },
+            checkLinkStartChainage(e) {
+                let input = e.currentTarget.value;
+                if (exceedsMaxDigits(input, this.state.linkChainageDigits, this.state.linkChainageDecimals)) {
+                    this.state.errors.linkStartChainage = window.interpolate(
+                        window.gettext('Link start chainage cannot contain more than %s digits, of which %s are decimals'),
+                        [this.state.linkChainageDigits, this.state.linkChainageDecimals]
+                    );
+                } else {
+                    delete this.state.errors.linkStartChainage;
+                    this.props.road.setLinkStartChainage(input);
+                }
+                this.update();
+            },
+            checkLinkEndChainage(e) {
+                let input = e.currentTarget.value;
+                if (exceedsMaxDigits(input, this.state.linkChainageDigits, this.state.linkChainageDecimals)) {
+                    this.state.errors.linkEndChainage = window.interpolate(
+                        window.gettext('Link end chainage cannot contain more than %s digits, of which %s are decimals'),
+                        [this.state.linkChainageDigits, this.state.linkChainageDecimals]
+                    );
+                } else {
+                    delete this.state.errors.linkEndChainage;
+                    this.props.road.setLinkEndChainage(input);
+                }
+                this.update();
+            },
+            link_code: window.road_schema.link_code,
+            link_start_name: window.road_schema.link_start_name,
+            link_end_name: window.road_schema.link_end_name,
+            link_length: window.road_schema.link_length,
+            carriageway_width: window.road_schema.carriageway_width,
+            link_start_chainage: window.road_schema.link_start_chainage,
+            link_end_chainage: window.road_schema.link_end_chainage,
+        };
+
+        function containsWhiteSpaces(text) {
+            return /\s/.test(text);
+        }
+
+        function exceedsMaxDigits(text, limit, decimals) {
+            return !(new RegExp("^\\d{0," + (limit - decimals) + "}(\\.\\d{1," + decimals + "})?$").test(text));
+        }
+    </script>
+</edit_asset_details>

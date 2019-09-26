@@ -8,6 +8,13 @@
     }
 }
 
+%tick-error-shared {
+    background-position: left;
+    background-size: 23px;
+    height: 43px;
+    width: 43px;
+}
+
 .image {
     background-repeat: no-repeat;
     display: inline-block;
@@ -27,7 +34,6 @@
 
 .checkbox {
     background-image: url("../images/checkbox.svg");
-    vertical-align: middle;
     height: 14px;
     width: 15px;
 
@@ -64,6 +70,22 @@
     width: 12px;
 }
 
+.caret-dark {
+    background-image: url("../images/caret_dark.svg");
+    background-position: center;
+    background-size: 16px 10px;
+    height: 25px;
+    width: 25px;
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    &.left {
+        transform: rotate(90deg);
+    }
+}
+
 .radio {
     background-image: url("../images/radio_unactive.svg");
     vertical-align: middle;
@@ -77,4 +99,37 @@
     &:hover {
         cursor: pointer;
     }
+}
+
+.pencil {
+    background-image: url("../images/pencil.svg");
+    vertical-align: middle;
+    height: 16px;
+    width: 15px;
+}
+
+.close {
+    background-image: url("../images/close.svg");
+    height: 15px;
+    width: 15px;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.tick {
+    @extend %tick-error-shared;
+    background-image: url("../images/tick.svg");
+}
+
+.error {
+    @extend %tick-error-shared;
+    background-image: url("../images/error.svg");
+}
+
+.alert.stop {
+    background-image: url("../images/stop_alert.svg");
+    height: 117px;
+    width: 124px;
 }

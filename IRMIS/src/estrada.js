@@ -1,47 +1,53 @@
+import "babel-polyfill";
+import * as riot from "riot";
+
+import Edit_Base from "./riot/edit_base.riot";
+
 import "./styles/irmis.scss";
 
+import { getGeoJsonDetails, getGeoJsonDetail } from "./assets/geoJsonAPI.js";
+
+import { getRoad } from "./roadManager";
+import "./table";
+import "./side_menu";
+import "./top_menu";
 import { Map } from "./map/map";
-import { getRoadsMetadata, getGeoJsonDetails, getGeoJson, populateGeoJsonProperties } from "./assets/assets_api.js";
-import { initializeDataTable } from "./table";
 
-export { filterFeatures } from "./map/utilities/filterGeoJSON";
-export { geoFeatureGroups } from "./map/utilities/displayGeoJSON";
-
-export * from "./table";
-export * from "./side_menu";
-export let map;
-
-export function toggle_dropdown() {
-    var dropdown = document.getElementById('dropdown-menu');
-    dropdown.hidden = !dropdown.hidden;
-}
+const estradaMap = new Map();
 
 window.onload = () => {
-    map = new Map();
-    map.loadMap();
+    // Set up the map and table - but without any data for either
+    estradaMap.loadMap();
 
-    // First retrieve the road metadata, and the urls of the geojson files
-    Promise.all([
-        getRoadsMetadata(),
-        getGeoJsonDetails(),
-    ]).then(values => {
-        let roadsLookup = values[0];
-        let geoJsonDetails = values[1];
+    // Get the geometry details
+    getGeoJsonDetails()
+        .then(geoJsonDetails => {
+            // for each chunk, download the geojson
+            geoJsonDetails.forEach(geoJsonDetail => {
+                getGeoJsonDetail(geoJsonDetail)
+                    .then(geoJson => {
+                        // add to map
+                        estradaMap.addMapData(geoJson);
+                    });
+            });
+        });
 
-        // now we have our metadata we can intialize the data table
-        initializeDataTable(Object.values(roadsLookup).map(r => r.toObject()));
-
-        // retrieve each geojson file
-        return Promise.all(geoJsonDetails.map(geoJsonDetail => {
-            return getGeoJson(
-                geoJsonDetail
-            ).then(geoJson => {
-                // add in road metadata
-                populateGeoJsonProperties(geoJson, roadsLookup);
-
-                // add to map
-                map.addMapData(geoJson);
-            })
-        }));
-    }, err => console.log(err));
+    riot.register("edit_base", Edit_Base);
+    hashCheck();
 };
+
+window.onhashchange = () => {
+    hashCheck();
+};
+
+function hashCheck() {
+    let m = /#edit\/(\d*)\/(\w+)/.exec(location.hash);
+    if (m !== null && !document.getElementById("edit-base")) {
+        var roadPromise = getRoad(m[1]);
+        riot.mount("edit_base", { roadPromise: roadPromise, page: m[2] });
+        document.getElementById("view-content").hidden = true;
+    } else if (m === null) {
+        riot.unmount("edit_base", true);
+        document.getElementById("view-content").hidden = false;
+    }
+}

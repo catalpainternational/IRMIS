@@ -6,17 +6,14 @@
 {% endblock %}
 
 {% block title %}
-    {% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.title }}{% endif %}
-{% endblock %}
-{% block title_suffix %}
     {% with self.get_site.site_name as site_name %}
-        {% if site_name %}- {{ site_name }}{% endif %}
+        {% if site_name %}{{ site_name }}{% endif %}
     {% endwith %}
 {% endblock %}
 
 {% block top_menu %}
 <span class="app-logo-dark-bg flex-grow-1 image"></span>
-<div class="dropdown" onclick="roads.toggle_dropdown()">
+<div class="dropdown" id="topmenu_toggle">
     <span>{% trans "Hello" %}, {% if user.get_full_name %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}</span>
     <span class="caret image"></span>
     <div id="dropdown-menu" hidden>

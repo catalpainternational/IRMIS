@@ -1,0 +1,181 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-09-25 06:32+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Asset"
+msgstr ""
+
+msgid "Link code and name"
+msgstr ""
+
+msgid "E.g. A01-01"
+msgstr "ezemplu..."
+
+msgid "Enter link code according to DRBFC standard"
+msgstr "Hatama..."
+
+msgid "E.g. Dili"
+msgstr "ezemplu..."
+
+msgid "Enter the name of the link start location (municipal center, administrative post or nearest suco)"
+msgstr ""
+
+msgid "E.g. Manatuto"
+msgstr "ezemplu..."
+
+msgid "Enter the name of the link end location (municipal center, administrative post or nearest suco)"
+msgstr ""
+
+msgid "Link width and length"
+msgstr ""
+
+msgid "E.g. 58.7"
+msgstr "ezemplu..."
+
+msgid "Enter road link length (in Km)"
+msgstr ""
+
+msgid "E.g. 5.0"
+msgstr "ezemplu..."
+
+msgid "Enter the width (in meters) of the link carriageway"
+msgstr ""
+
+msgid "Link chainage"
+msgstr ""
+
+msgid "E.g. 0+000"
+msgstr "ezemplu..."
+
+msgid "Enter chainage for link starting point"
+msgstr ""
+
+msgid "E.g. 62+410"
+msgstr "ezemplu..."
+
+msgid "Enter chainage for link ending point"
+msgstr ""
+
+msgid "Save and continue"
+msgstr "Kontinua"
+
+msgid "Link code cannot contain white spaces"
+msgstr ""
+
+#, javascript-format
+msgid "Link length cannot contain more than %s digits, of which %s are decimals"
+msgstr ""
+
+#, javascript-format
+msgid "Carriage width cannot contain more than %s digits, of which %s are decimals"
+msgstr ""
+
+#, javascript-format
+msgid "Link start chainage cannot contain more than %s digits, of which %s are decimals"
+msgstr ""
+
+#, javascript-format
+msgid "Link end chainage cannot contain more than %s digits, of which %s are decimals"
+msgstr ""
+
+msgid "Edit asset"
+msgstr ""
+
+msgid "Location & Type"
+msgstr ""
+
+msgid "Asset Details"
+msgstr ""
+
+msgid "Pavement"
+msgstr ""
+
+msgid "Project"
+msgstr ""
+
+msgid "Condition"
+msgstr ""
+
+msgid "Loading"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "Unsaved Changes"
+msgstr ""
+
+msgid "You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?"
+msgstr ""
+
+msgid "Discard"
+msgstr ""
+
+msgid "Continue editing"
+msgstr ""
+
+msgid "Choose road link surface condition according to the Surface Distress Index (SDI): Good (SDI≤2), fair (2<SDI≤3), poor (3<SDI≤4) or bad (SDI>4)"
+msgstr ""
+
+msgid "Choose the type of maintenace needs for the road link"
+msgstr ""
+
+msgid "Choose road link technical class according to the 2010 Road Geometric Design Standards, DRBFC standards"
+msgstr ""
+
+msgid "Choose the traffic volume for the road link"
+msgstr ""
+
+msgid "Success"
+msgstr ""
+
+msgid "You have successfully saved"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "Something went wrong"
+msgstr ""
+
+msgid "Location"
+msgstr ""
+
+msgid "Select an Administrative Area"
+msgstr ""
+
+msgid "Choose the administrative area of the road"
+msgstr ""
+
+msgid "Select a Road Type"
+msgstr ""
+
+msgid "Choose the administrative class of the road"
+msgstr ""
+
+msgid "Select a Surface Type"
+msgstr ""
+
+msgid "Choose the type of surface of the road link carriageway"
+msgstr ""
+
+msgid "Choose the pavement class of the road"
+msgstr ""
+
+msgid "Enter road link current status"
+msgstr ""

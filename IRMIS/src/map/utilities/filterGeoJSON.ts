@@ -1,12 +1,12 @@
 import { GeoJsonProperties } from "geojson";
 import * as L from "leaflet";
 
-import { featureLookup, layerLookup } from "./displayGeoJSON";
+import { featureLookup, layerLookup } from "../map";
 import { FallbackLayerStyle, FixLayerStyleDefaults } from "./leaflet-style";
 
 import { KnownGeometries } from "../layers/KnownGeometries";
 
-function getFilterStyles(layerName: string): { [name: string]: L.PathOptions | L.StyleFunction<any> } {
+export function getFilterStyles(layerName: string): { [name: string]: L.PathOptions | L.StyleFunction<any> } {
     const layerNameOn = `${layerName}.on`;
     const layerNameOff = `${layerName}.off`;
 
@@ -26,14 +26,15 @@ function getFilterStyles(layerName: string): { [name: string]: L.PathOptions | L
 /** Applies the relevant '.on' or '.off' style for this layer as defined in KnownGeometries
  * based upon the returned value from the supplied filter function
  */
-export function filterFeatures(filterFunc: (properties: GeoJsonProperties) => boolean, featureType: string) {
+export let geoFeatureGroups: { [name: string]: L.FeatureGroup } = {};
+export function filterFeatures(idMap: { [ jname: string]: boolean }, featureType: string) {
     const layerName = featureType || "Road";
     const layerFilterStyles = getFilterStyles(layerName);
 
     Object.values(featureLookup).forEach((feature: any) => {
-        const geoProperties = feature.properties;
-        const geoLayer = layerLookup[geoProperties.pk] as L.GeoJSON;
+        const featureId: string = feature.properties.pk.toString();
+        const geoLayer = layerLookup[featureId] as L.GeoJSON;
 
-        geoLayer.setStyle(filterFunc(geoProperties) ? layerFilterStyles.styleOn : layerFilterStyles.styleOff);
+        geoLayer.setStyle(idMap[featureId] ? layerFilterStyles.styleOn : layerFilterStyles.styleOff);
     });
 }

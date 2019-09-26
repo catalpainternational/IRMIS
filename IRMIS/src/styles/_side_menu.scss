@@ -5,13 +5,15 @@
 }
 
 %filter-active-shared {
-    background-color: #818893;
+    background-color: $gray;
 }
 
 #side-menu {
     background-color: $darker-gray;
+    width: $side-menu-width;
     padding-bottom: 15px;
     padding-right: 10px;
+    padding-left: 15px;
 
     #view {
         margin-bottom: 40px;
@@ -20,7 +22,7 @@
             @extend %filter-shared;
             margin-right: 2.5px;
             margin-left: 2.5px;
-            padding: 10px;
+            height: 45px;
             flex: 1;
 
             &:hover {
@@ -42,7 +44,7 @@
     }
 
     .filters {
-        height: calc(100% - 60px - 108px - 40px);
+        height: calc(100% - #{$top-menu-height} - 71px - 40px);
 
         .filter {
             @extend %filter-shared;
@@ -64,6 +66,17 @@
 
                 &.active {
                     @extend %filter-active-shared;
+                    border-bottom: 1px solid $gray;
+                    padding-right: 10px;
+                    padding-left: 10px;
+                }
+
+                &.open:not(.active) {
+                    border-bottom: 1px solid $darker-gray;
+                    margin-right: 10px;
+                    margin-left: 10px;
+                    padding-right: 0;
+                    padding-left: 0;
                 }
 
                 label {
@@ -71,7 +84,7 @@
                     text-transform: capitalize;
                 }
 
-                .clear-filter {
+                .clear-filter, .clear-select2 {
                     margin-right: 20px;
 
                     &:hover {
@@ -86,6 +99,10 @@
                 ul {
                     margin-bottom: 0;
                     padding-left: 0;
+
+                    .checkbox {
+                        margin-right: 5px;
+                    }
                 }
             }
         }
@@ -105,6 +122,34 @@
 
         &:last-of-type {
             padding-bottom: 0;
+        }
+    }
+
+    .navigation {
+        padding-right: 50px;
+        margin-left: -15px;
+        margin-bottom: 0;
+        margin-top: 20px;
+        padding-left: 0;
+
+        li {
+            margin-bottom: 10px;
+            padding-left: 40px;
+        }
+
+        ul {
+            padding-left: 0;
+
+            li {
+                padding-left: 60px;
+                margin-bottom: 0;
+
+                &.active {
+                    border-bottom-right-radius: $radius;
+                    border-top-right-radius: $radius;
+                    background-color: $blue;
+                }
+            }
         }
     }
 }

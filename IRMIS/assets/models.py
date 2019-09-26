@@ -4,57 +4,71 @@ from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import get_language, ugettext, ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
+from django.db.models import Count, Max
 
+import reversion
+from reversion.models import Version
 from protobuf.roads_pb2 import Roads as ProtoRoads
 
 
 def no_spaces(value):
     if " " in value:
-        raise ValidationError(_("%(value)s contains spaces"), params={"value": value})
+        raise ValidationError(
+            _("%(value)s should not contain spaces"), params={"value": value}
+        )
 
 
 class RoadStatus(models.Model):
-    code = models.CharField(max_length=3, unique=True, verbose_name=_("code"))
-    name = models.CharField(max_length=50, verbose_name=_("name"))
+    code = models.CharField(max_length=3, unique=True, verbose_name=_("Code"))
+    name = models.CharField(max_length=50, verbose_name=_("Name"))
 
     def __str__(self):
         return self.name
 
 
 class SurfaceType(models.Model):
-    code = models.CharField(max_length=3, unique=True, verbose_name=_("code"))
-    name = models.CharField(max_length=50, verbose_name=_("name"))
+    code = models.CharField(max_length=3, unique=True, verbose_name=_("Code"))
+    name = models.CharField(max_length=50, verbose_name=_("Name"))
 
     def __str__(self):
         return self.name
 
 
 class PavementClass(models.Model):
-    code = models.CharField(max_length=3, unique=True, verbose_name=_("code"))
-    name = models.CharField(max_length=50, verbose_name=_("name"))
+    code = models.CharField(max_length=3, unique=True, verbose_name=_("Code"))
+    name = models.CharField(max_length=50, verbose_name=_("Name"))
 
     def __str__(self):
         return self.name
 
 
 class MaintenanceNeed(models.Model):
-    code = models.CharField(max_length=3, unique=True, verbose_name=_("code"))
-    name = models.CharField(max_length=50, verbose_name=_("name"))
+    code = models.CharField(max_length=3, unique=True, verbose_name=_("Code"))
+    name = models.CharField(max_length=50, verbose_name=_("Name"))
 
     def __str__(self):
         return self.name
 
 
 class TechnicalClass(models.Model):
-    code = models.CharField(max_length=3, unique=True, verbose_name=_("code"))
-    name = models.CharField(max_length=50, verbose_name=_("name"))
+    code = models.CharField(max_length=3, unique=True, verbose_name=_("Code"))
+    name = models.CharField(max_length=50, verbose_name=_("Name"))
 
     def __str__(self):
         return self.name
 
 
 class RoadQuerySet(models.QuerySet):
-    def to_protobuf(self):
+    def to_chunks(self):
+        """ returns an object defining the available chunks from the roads queryset """
+
+        return (
+            Road.objects.order_by("road_type")
+            .values("road_type")
+            .annotate(Count("road_type"))
+        )
+
+    def to_protobuf(self, chunk_name=None):
         """ returns a roads protobuf object from the queryset """
         # See roads.proto
 
@@ -83,13 +97,30 @@ class RoadQuerySet(models.QuerySet):
             traffic_level="traffic_level",
         )
 
-        for road in Road.objects.order_by("id").values("id", *fields.values()):
+        road_chunk = (
+            (
+                Road.objects.filter(road_type=chunk_name)
+                .order_by("id")
+                .values("id", *fields.values())
+            )
+            if chunk_name
+            else Road.objects.order_by("id").values("id", *fields.values())
+        )
+
+        last_revisions = {
+            i["object_id"]: i["revision_id"]
+            for i in Version.objects.get_queryset()
+            .order_by("object_id", "revision_id")
+            .values("object_id", "revision_id")
+        }
+
+        for road in road_chunk:
             road_protobuf = roads_protobuf.roads.add()
             road_protobuf.id = road["id"]
             for protobuf_key, query_key in fields.items():
                 if road[query_key]:
                     setattr(road_protobuf, protobuf_key, road[query_key])
-
+            setattr(road_protobuf, "last_revision_id", last_revisions[str(road["id"])])
         return roads_protobuf
 
 
@@ -97,9 +128,13 @@ class RoadManager(models.Manager):
     def get_queryset(self):
         return RoadQuerySet(self.model, using=self._db)
 
-    def to_protobuf(self):
+    def to_chunks(self):
+        """ returns a list of 'chunks' from the manager """
+        return self.get_queryset().to_chunks()
+
+    def to_protobuf(self, chunk_name=None):
         """ returns a roads protobuf object from the manager """
-        return self.get_queryset().to_protobuf()
+        return self.get_queryset().to_protobuf(chunk_name)
 
     def to_wgs(self):
         """
@@ -113,6 +148,7 @@ class RoadManager(models.Manager):
         )
 
 
+@reversion.register()
 class Road(models.Model):
 
     objects = RoadManager()
@@ -139,12 +175,12 @@ class Road(models.Model):
     properties_object_id = models.PositiveIntegerField(null=True)
     properties = GenericForeignKey("properties_content_type", "properties_object_id")
     date_created = models.DateTimeField(
-        verbose_name=_("date created"), auto_now_add=True, null=True
+        verbose_name=_("Date Created"), auto_now_add=True, null=True
     )
     last_modified = models.DateTimeField(verbose_name=_("last modified"), auto_now=True)
     # ROAD INVENTORY META DATA
     road_code = models.CharField(
-        verbose_name=_("road code"),
+        verbose_name=_("Road Code"),
         validators=[no_spaces],
         max_length=25,
         # unique=True,
@@ -152,112 +188,158 @@ class Road(models.Model):
         null=True,
     )
     road_name = models.CharField(
-        verbose_name=_("road name"), max_length=100, blank=True, null=True
+        verbose_name=_("Name"), max_length=100, blank=True, null=True
     )
     administrative_area = models.CharField(
-        verbose_name=_("administrative area"), max_length=50, default=None, null=True
+        verbose_name=_("Administrative Area"),
+        max_length=50,
+        default=None,
+        null=True,
+        help_text=_("Choose the administrative area of the road"),
     )  # need to link to admin area model
     funding_source = models.CharField(
-        verbose_name=_("funding source"), max_length=50, default=None, null=True
+        verbose_name=_("Funding Source"),
+        max_length=50,
+        default=None,
+        null=True,
+        blank=True,
+        help_text=_("Enter the source funding for the road link"),
     )  # need to link to funding model
     link_code = models.CharField(
-        verbose_name=_("link code"),
+        verbose_name=_("Link Code"),
         validators=[no_spaces],
         max_length=25,
         # unique=True,
         blank=True,
         null=True,
+        help_text=_("Enter link code according to DRBFC standard"),
     )
     link_start_name = models.CharField(
-        verbose_name=_("link start name"), max_length=150, blank=True, null=True
+        verbose_name=_("Link Start Name"),
+        max_length=150,
+        blank=True,
+        null=True,
+        help_text=_(
+            "Enter the name of the link start location (municipal center, administrative post or nearest suco)"
+        ),
     )  # need to link to suco/admin area models
     link_end_name = models.CharField(
-        verbose_name=_("link end name"), max_length=150, blank=True, null=True
+        verbose_name=_("Link End Name"),
+        max_length=150,
+        blank=True,
+        null=True,
+        help_text=_(
+            "Enter the name of the link end location (municipal center, administrative post or nearest suco)"
+        ),
     )  # need to link to suco/admin area models
     link_end_chainage = models.DecimalField(
-        verbose_name=_("link end chainage"),
+        verbose_name=_("Link End Chainage (Km)"),
         max_digits=12,
         decimal_places=5,
         blank=True,
         null=True,
+        help_text=_("Enter chainage for link ending point"),
     )
     link_start_chainage = models.DecimalField(
-        verbose_name=_("link start chainage"),
+        verbose_name=_("Link Start Chainage (Km)"),
         max_digits=12,
         decimal_places=5,
         blank=True,
         null=True,
+        help_text=_("Enter chainage for link starting point"),
     )
     link_length = models.DecimalField(
-        verbose_name=_("link length"),
+        verbose_name=_("Link Length"),
         max_digits=8,
         decimal_places=3,
         blank=True,
         null=True,
+        help_text=_("Enter road link length (in Km)"),
     )
     surface_type = models.ForeignKey(
         "SurfaceType",
-        verbose_name=_("surface type"),
+        verbose_name=_("Surface Type"),
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
+        help_text=_("Choose the type of surface of the road link carriageway"),
     )
     pavement_class = models.ForeignKey(
         "PavementClass",
-        verbose_name=_("pavement class"),
+        verbose_name=_("Pavement Class"),
         validators=[MinValueValidator(0)],
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
+        help_text=_("Choose the pavement class of the road"),
     )
     carriageway_width = models.DecimalField(
-        verbose_name=_("carriageway width"),
+        verbose_name=_("Carriageway Width"),
         validators=[MinValueValidator(0)],
         max_digits=5,
         decimal_places=3,
         blank=True,
         null=True,
+        help_text=_("Enter the width (in meters) of the link carriageway"),
     )
     road_type = models.CharField(
-        verbose_name=_("road type"),
+        verbose_name=_("Road Type"),
         max_length=4,
         choices=ROAD_TYPE_CHOICES,
         blank=True,
         null=True,
+        help_text=_("Choose the administrative class of the road"),
     )
     road_status = models.ForeignKey(
         "RoadStatus",
-        verbose_name=_("road status"),
+        verbose_name=_("Road Status"),
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
+        help_text=_("Enter road link current status"),
     )
     project = models.CharField(
-        verbose_name=_("project"), max_length=150, blank=True, null=True
+        verbose_name=_("Project Name"),
+        max_length=150,
+        blank=True,
+        null=True,
+        help_text=_("Enter road link project name"),
     )
     traffic_level = models.CharField(
-        max_length=1, choices=TRAFFIC_LEVEL_CHOICES, blank=True, null=True
+        verbose_name=_("Traffic Level"),
+        max_length=1,
+        choices=TRAFFIC_LEVEL_CHOICES,
+        blank=True,
+        null=True,
+        help_text=_("Choose the traffic volume for the road link"),
     )
     surface_condition = models.CharField(
-        verbose_name=_("surface condition"),
+        verbose_name=_("Surface Condition (SDI)"),
         max_length=1,
         choices=SURFACE_CONDITION_CHOICES,
         blank=True,
         null=True,
+        help_text=_(
+            "Choose road link surface condition according to the Surface Distress Index (SDI): Good (SDI≤2), fair (2<SDI≤3), poor (3<SDI≤4) or bad (SDI>4)"
+        ),
     )
     maintenance_need = models.ForeignKey(
         "MaintenanceNeed",
-        verbose_name=_("maintenance need"),
+        verbose_name=_("Maintenance Needs"),
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
+        help_text=_("Choose the type of maintenace needs for the road link"),
     )
     technical_class = models.ForeignKey(
         "TechnicalClass",
-        verbose_name=_("technical class"),
+        verbose_name=_("Technical Class"),
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
+        help_text=_(
+            "Choose road link technical class according to the 2010 Road Geometric Design Standards, DRBFC standards"
+        ),
     )
 
     # a reference to the collated geojson file this road's geometry is in

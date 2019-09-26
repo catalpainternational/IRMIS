@@ -1,0 +1,91 @@
+$max-width: 400px;
+
+#edit-base {
+    width: calc(100% - #{$side-menu-width});
+    padding-bottom: 15px;
+    padding-right: 15px;
+    padding-left: 0;
+
+    header {
+        border-bottom: 1px solid $light-gray;
+        background-color: $white;
+        padding-right: 20px;
+        padding-left: 20px;
+        height: 70px;
+
+        h1 {
+            margin-left: 15px;
+            margin-bottom: 0;
+            margin-top: 5px;
+        }
+    }
+}
+
+edit_asset_details, edit_pavement, edit_project, edit_condition, edit_location_type {
+    height: calc(100vh - #{$top-menu-height} - 70px - 15px);
+    background-color: $white;
+    padding: 30px 60px 60px;
+    overflow-y: auto;
+    display: block;
+
+    h5 {
+        max-width: $max-width;
+        margin-bottom: 20px;
+    }
+
+    section {
+        max-width: $max-width;
+        margin-bottom: 40px;
+
+        &:last-of-type {
+            margin-bottom: 20px;
+        }
+
+        h6 {
+            border-bottom: 1px solid $lighter-gray;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+        }
+
+        ul {
+            margin-bottom: 0;
+            padding-left: 0;
+
+            span.image {
+                margin-right: 15px;
+            }
+        }
+    }
+
+    .button-wrapper {
+        max-width: $max-width;
+    }
+}
+
+edit_feedback {
+    & > div {
+        box-shadow: 0 0 10px 0 rgba(61, 71, 88, 0.5);
+        border-bottom-right-radius: $radius;
+        border-bottom-left-radius: $radius;
+        background-color: $white;
+        border-top-style: solid;
+        border-top-width: 10px;
+        padding-right: 30px;
+        padding-left: 30px;
+        position: absolute;
+        height: 71px;
+        margin: auto;
+        width: 376px;
+        right: 0;
+        left: 0;
+        top: 0;
+
+        &.success {
+            border-top-color: $green;
+        }
+
+        &.unsuccess {
+            border-top-color: $red;
+        }
+    }
+}
