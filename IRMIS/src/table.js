@@ -4,8 +4,49 @@ import "datatables.net-buttons-bs4";
 import "datatables.net-buttons/js/buttons.html5";
 import "datatables.net-buttons/js/buttons.flash";
 import $ from "jquery";
+import proj4 from "proj4";
+
 
 let table;
+// INPUT FORMAT: EPSG:32751 WGS 84 / UTM zone 51S
+let projection_source = '+proj=utm +zone=51 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs';
+// OUTPUT FORMAT: EPSG:4326 WGS 84
+let projection_dest = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
+
+let modf = (number) => {
+    // JS implementation of Python math -> modf() function
+    // split a number into interger and remainder values
+    // both returned items have same sign as original number
+    let integer = Math.trunc(number);
+    let remainder = (number/integer) - 1.0;
+    return remainder, integer;
+}
+
+let split_out_dms = (coord) => {
+    let split_deg = modf(coord);
+    let degrees = Math.trunc(split_deg[1]);
+    let interm = modf(split_deg[0] * 60);
+    let minutes = Math.abs(Math.trunc(interm[1]));
+    let seconds = Math.abs(Math.round((interm[0] * 60 + 0.00001) * 100) / 100);
+    return degrees, minutes, seconds
+}
+
+let to_dms = (lat_long) => {
+    debugger;
+    // try {
+        let deg_x, mnt_x, sec_x = split_out_dms(lat_long[0]);
+        let deg_y, mnt_y, sec_y = split_out_dms(lat_long[1]);
+        // calculate E/W & N/S
+        let EorW = "E";
+        if (deg_y < 0) { EorW = "W"; }
+        let NorS = "N";
+        if (deg_y < 0) { NorS = "S"; }
+
+        return `${Math.abs(deg_y)}\u00b0 ${mnt_y}' ${sec_y}" ${NorS}; ${Math.abs(deg_x)}\u00b0 ${mnt_x}' ${sec_x}" ${EorW};`;
+    // } catch {
+    //     return "";
+    // }
+}
 
 // needed for export to excel
 window.JSZip = jsZip;
@@ -189,23 +230,23 @@ function initializeDataTable() {
         },
         {
             title: 'Start Point (DMS)', data: null,
-            render: r =>r.projectionStart,
+            render: r => to_dms(proj4(projection_source, projection_dest, r.projectionStart.array)),
             // visible: false,
         },
         {
             title: 'End Point (DMS)', data: null,
-            render: r =>r.projectionEnd,
+            render: r => to_dms(proj4(projection_source, projection_dest, r.projectionEnd.array)),
             // visible: false,
         },
         {
             title: 'Start Point (UTM)', data: null,
-            render: r => r.projectionStart,
-            visible: false,
+            render: r => proj4(projection_source, projection_dest, r.projectionStart.array),
+            // visible: false,
         },
         {
             title: 'End Point (UTM)', data: null,
-            render: r =>r.projectionEnd,
-            visible: false,
+            render: r => proj4(projection_source, projection_dest, r.projectionEnd.array),
+            // visible: false,
         },
     ];
 
