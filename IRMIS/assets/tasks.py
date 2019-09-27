@@ -34,3 +34,16 @@ def collate_geometries():
         content = ContentFile(geobuf_bytes)
         collated_geojson.geobuf_file.save("geom.pbf", content)
         geometry_set.update(geojson_file_id=collated_geojson.id)
+
+
+def make_geojson(*args, **kwargs):
+    """ Collate geometry models into geojson files
+
+    Groups geometry models into sets, builds GeoJson
+    """
+
+    geometries = Road.objects.filter(**kwargs)
+    geojson = serialize(
+        "geojson", geometries, geometry_field="geom", srid=4326, fields=("pk",)
+    )
+    return geojson
