@@ -67,7 +67,7 @@ def import_shapefiles(shape_file_folder):
         ("National_Road.shp", "NAT", populate_road_national),
         ("Municipal_Road.shp", "MUN", populate_road_municipal),
         ("RRMPIS_2014.shp", "RUR", populate_road_rrpmis),
-        ("Highway_Suai.shp", "RUR", populate_road_highway),
+        ("Highway_Suai.shp", "HIGH", populate_road_highway),
     )
 
     for file_name, road_type, populate in sources:
