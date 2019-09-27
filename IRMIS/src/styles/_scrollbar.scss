@@ -1,32 +1,28 @@
 %scrollbar-shared {
     &::-webkit-scrollbar {
-        background-color: $light-gray;
-        border-radius: 3px;
+        width: 6px;
     }
 
     &::-webkit-scrollbar-thumb {
-        background-color: $darker-gray;
-        border: 1px solid $gray;
+        background-color: $light-gray;
         border-radius: 3px;
     }
 }
 
 edit_location_type, edit_asset_details, edit_pavement, edit_project, edit_condition, .filters {
     @extend %scrollbar-shared;
-
-    &::-webkit-scrollbar {
-        width: 6px;
-    }
 }
 
 #data-table {
     @extend %scrollbar-shared;
 
-    &::-webkit-scrollbar:horizontal {
-        height: 6px;
-    }
+    &::-webkit-scrollbar {
+        &:horizontal {
+            height: 6px;
+        }
 
-    &::-webkit-scrollbar:vertical {
-        width: 6px;
+        &:vertical {
+            width: 6px;
+        }
     }
 }
