@@ -1,11 +1,14 @@
 import json
 import csv
 from pathlib import Path
+from io import StringIO
 
 from django.core.files.base import ContentFile
 from django.core.serializers import serialize
 from django.contrib.gis.geos import GEOSGeometry, LineString, MultiLineString
 from django.contrib.gis.gdal import DataSource, GDALException, OGRGeometry
+from django.core.management import call_command
+from django.db import connection
 
 import geobuf
 import reversion
@@ -48,6 +51,14 @@ def import_shapefiles(shape_file_folder):
     # delete all exisiting roads and revisions
     Road.objects.all().delete()
     Revision.objects.all().delete()
+    CollatedGeoJsonFile.objects.all().delete()
+
+    # reset sequence values
+    reset_out = StringIO()
+    call_command('sqlsequencereset', 'assets', stdout=reset_out, no_color=True)
+    reset_sql = reset_out.getvalue()
+    with connection.cursor() as cursor:
+        cursor.execute(reset_sql)
 
     database_srid = Road._meta.fields[1].srid
 
