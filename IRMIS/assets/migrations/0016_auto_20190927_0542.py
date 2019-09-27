@@ -6,34 +6,20 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('assets', '0015_update_fields_displayed_value'),
-    ]
+    dependencies = [("assets", "0015_update_fields_displayed_value")]
 
     operations = [
-        migrations.DeleteModel(
-            name='SourceMunicipalRoad',
-        ),
-        migrations.DeleteModel(
-            name='SourceNationalRoad',
-        ),
-        migrations.DeleteModel(
-            name='SourceR4D',
-        ),
-        migrations.DeleteModel(
-            name='SourceRrmpis',
-        ),
-        migrations.RemoveField(
-            model_name='road',
-            name='properties_content_type',
-        ),
-        migrations.RemoveField(
-            model_name='road',
-            name='properties_object_id',
-        ),
+        migrations.DeleteModel(name="SourceMunicipalRoad"),
+        migrations.DeleteModel(name="SourceNationalRoad"),
+        migrations.DeleteModel(name="SourceR4D"),
+        migrations.DeleteModel(name="SourceRrmpis"),
+        migrations.RemoveField(model_name="road", name="properties_content_type"),
+        migrations.RemoveField(model_name="road", name="properties_object_id"),
         migrations.AlterField(
-            model_name='road',
-            name='geom',
-            field=django.contrib.gis.db.models.fields.MultiLineStringField(blank=True, null=True, srid=32751),
+            model_name="road",
+            name="geom",
+            field=django.contrib.gis.db.models.fields.MultiLineStringField(
+                blank=True, null=True, srid=32751
+            ),
         ),
     ]

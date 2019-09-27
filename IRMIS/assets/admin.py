@@ -15,12 +15,10 @@ from .models import (
 
 @admin.register(Road)
 class RoadAdmin(VersionAdmin, admin.OSMGeoAdmin):
-    list_display = ["road_code", "road_name", "road_type", 'link_code']
-    list_filter = ('road_type',)
+    list_display = ["road_code", "road_name", "road_type", "link_code"]
+    list_filter = ("road_type",)
     search_fields = ["road_name", "road_code"]
-    exclude = [
-        "geojson_file",
-    ]
+    exclude = ["geojson_file"]
 
     def reversion_register(self, model, **options):
         options["exclude"] = self.exclude

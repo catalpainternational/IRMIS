@@ -9,4 +9,4 @@ class Command(BaseCommand):
         parser.add_argument("folder")
 
     def handle(self, *args, **options):
-        import_shapefiles(options['folder'])
+        import_shapefiles(options["folder"])
