@@ -50,6 +50,10 @@ label {
     color: $white;
 }
 
+edit_base label {
+    color: $darker-gray;
+}
+
 a {
     color: $dark-green;
     line-height: 11px;
@@ -153,6 +157,10 @@ h5 {
     line-height: 22px;
     font-weight: 700;
     font-size: 18px;
+}
+
+edit_base h5 {
+    color: $darker-gray;
 }
 
 h6 {
