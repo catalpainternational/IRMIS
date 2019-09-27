@@ -123,8 +123,12 @@
             },
             goBack(e) {
                 this.state.nextPage = "#";
-                if (this.hasChanges()) $('#stop-alert').modal('show');
-                else window.location.hash = this.state.nextPage;
+                if (this.hasChanges()) {
+                    $('#stop-alert').modal('show');
+                } else {
+                    clearTimeout(timeoutId);
+                    window.location.hash = this.state.nextPage;
+                }
             },
             selectPage(e) {
                 this.state.page = e.currentTarget.dataset.page;
