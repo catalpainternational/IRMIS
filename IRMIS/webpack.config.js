@@ -4,10 +4,11 @@ const path = require('path');
 module.exports = {
     context: path.resolve(__dirname, './src'),
     entry: {
-        app: './estrada.js',
+        estrada: './estrada.js',
+        vendor: './vendor.js',
     },
     output: {
-        filename: 'estrada.js',
+        filename: '[name].js',
         library: 'roads',
         libraryTarget: 'window',
     },
