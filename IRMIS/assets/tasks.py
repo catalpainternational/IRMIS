@@ -55,7 +55,7 @@ def import_shapefiles(shape_file_folder):
 
     # reset sequence values
     reset_out = StringIO()
-    call_command('sqlsequencereset', 'assets', stdout=reset_out, no_color=True)
+    call_command("sqlsequencereset", "assets", stdout=reset_out, no_color=True)
     reset_sql = reset_out.getvalue()
     with connection.cursor() as cursor:
         cursor.execute(reset_sql)
