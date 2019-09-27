@@ -4,6 +4,7 @@ import * as riot from "riot";
 import Edit_Base from "./riot/edit_base.riot";
 
 import "./styles/estrada.scss";
+import "./styles/vendor.scss";
 
 import { getGeoJsonDetails, getGeoJsonDetail } from "./assets/geoJsonAPI.js";
 

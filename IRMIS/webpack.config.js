@@ -5,7 +5,6 @@ module.exports = {
     context: path.resolve(__dirname, './src'),
     entry: {
         estrada: './estrada.js',
-        vendor: './vendor.js',
     },
     output: {
         filename: '[name].js',
@@ -84,6 +83,11 @@ module.exports = {
                 },
             },
         ],
+    },
+    optimization: {
+        splitChunks: {
+            chunks: 'all', // include all types of chunks
+        }
     },
     plugins: [
         new CleanWebpackPlugin(),
