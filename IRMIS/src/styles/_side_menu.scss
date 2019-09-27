@@ -12,11 +12,12 @@
     background-color: $darker-gray;
     width: $side-menu-width;
     padding-bottom: 15px;
-    padding-right: 10px;
+    padding-right: 3px;
     padding-left: 15px;
 
     #view {
         margin-bottom: 40px;
+        padding-right: 7px;
 
         a {
             @extend %filter-shared;
@@ -45,6 +46,8 @@
 
     .filters {
         height: calc(100% - #{$top-menu-height} - 71px - 40px);
+        overflow-y: overlay;
+        padding-right: 8px;
 
         .filter {
             @extend %filter-shared;
@@ -109,8 +112,8 @@
     }
 
     .clear-all-filters, .full-screen {
+        right: 8px;
         top: -5px;
-        right: 0;
 
         &:hover {
             cursor: pointer;
