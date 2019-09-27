@@ -5,5 +5,8 @@ from assets.tasks import import_shapefiles
 class Command(BaseCommand):
     help = "imports data from source csvs"
 
+    def add_arguments(self, parser):
+        parser.add_argument("folder")
+
     def handle(self, *args, **options):
-        import_shapefiles()
+        import_shapefiles(options['folder'])

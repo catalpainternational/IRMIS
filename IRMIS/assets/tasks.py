@@ -58,7 +58,7 @@ TRAFFIC_LEVEL_MAPPING_EXCEL = {"Low": "L", "Medium":"M", "High": "H"}
 
 # IMPORT FROM SHAPEFILES
 
-def import_shapefiles():
+def import_shapefiles(shape_file_folder):
     ''' creates Road models from source shapefiles '''
 
     # delete all exisiting roads and revisions
@@ -67,16 +67,16 @@ def import_shapefiles():
 
     database_srid = Road._meta.fields[1].srid
 
-    source_dir = Path(__file__).parent / ".." / ".." / "sources" / "shapefiles"
     sources = (
         ('Rural_Road_R4D_Timor_Leste.shp', 'RUR', populate_road_r4d),
         ('National_Road.shp', 'NAT', populate_road_national),
         ('Municipal_Road.shp', 'MUN', populate_road_municipal),
         ('RRMPIS_2014.shp', 'RUR', populate_road_rrpmis),
+        ('Highway_Suai.shp', 'RUR', populate_road_highway),
     )
 
     for file_name, road_type, populate in sources:
-        shp_path = str(source_dir / file_name)
+        shp_path = str(Path(shape_file_folder) / file_name)
         shp_file = DataSource(shp_path)
 
         # iterate over the shape file features
@@ -130,6 +130,11 @@ def populate_road_municipal(road, feature):
     road.link_length = feature.get('lenkm')
     road.surface_condition = SURFACE_COND_MAPPING_MUNI[feature.get('condi')]
 
+def populate_road_highway(road, feature):
+    ''' populates a road from the highway_suai shapefile '''
+    road.road_name = feature.get('Road')
+    road.link_length = feature.get('Lenght_Km_')
+
 def populate_road_r4d(road, feature):
     ''' populates a road from the r4d shapefile '''
     road.road_name = feature.get('road_lin_1')
@@ -166,7 +171,7 @@ def populate_road_rrpmis(road, feature):
 
 # CSV IMPORT
 
-def import_csv():
+def import_csv(csv_folder):
     ''' updates existing roads with data from csv files '''
 
     # special fixups
@@ -186,7 +191,7 @@ def import_csv():
             same_betano.save()
             reversion.set_comment("Fixup - link code changed from A05-02 to A05-03")
 
-    source_dir = Path(__file__).parent / ".." / ".." / "sources" / "csv"
+    source_dir = Path(csv_folder)
     sources = (
         ('Estrada-DB-NationalRural.xlsx - National roads.csv', {'link_code': 'Section'}),
         ('Estrada-DB-NationalRural.xlsx - Municipal roads.csv', {'road_code': 'Code'}),
