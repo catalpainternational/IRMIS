@@ -4,6 +4,7 @@ import "datatables.net-buttons-bs4";
 import "datatables.net-buttons/js/buttons.html5";
 import "datatables.net-buttons/js/buttons.flash";
 import $ from "jquery";
+import { getFieldName } from "./road";
 
 let table;
 let pendingRows = [];
@@ -97,17 +98,17 @@ function initializeDataTable() {
     const date = new Date();
     const columns = [
         {
-            title: window.road_schema.road_code.display, data: null,
+            title: getFieldName('road_code'), data: null,
             render: 'code',
             type: "roadCode"
         },
         {
-            title: window.road_schema.road_name.display, data: null,
+            title: getFieldName('road_name'), data: null,
             render: 'name',
             visible: false,
         },
         {
-            title: window.road_schema.link_code.display, data: null,
+            title: getFieldName('link_code'), data: null,
             render: 'linkCode'
         },
         {
@@ -116,77 +117,77 @@ function initializeDataTable() {
             visible: false,
         },
         {
-            title: window.road_schema.link_length.display, data: null,
+            title: getFieldName('link_length'), data: null,
             render: r => parseFloat(r.linkLength).toFixed(2)
         },
         {
-            title: window.road_schema.link_start_name.display, data: null,
+            title: getFieldName('link_start_name'), data: null,
             render: 'linkStartName'
         },
         {
-            title: window.road_schema.link_start_chainage.display, data: null,
+            title: getFieldName('link_start_chainage'), data: null,
             render: r => parseFloat(r.linkStartChainage).toFixed(2)
         },
         {
-            title: window.road_schema.link_end_name.display, data: null,
+            title: getFieldName('link_end_name'), data: null,
             render: 'linkEndName'
         },
         {
-            title: window.road_schema.link_end_chainage.display, data: null,
+            title: getFieldName('link_end_chainage'), data: null,
             render: r => parseFloat(r.linkEndChainage).toFixed(2)
         },
         {
-            title: window.road_schema.surface_type.display, data: null,
+            title: getFieldName('surface_type'), data: null,
             render: 'surfaceType'
         },
         {
-            title: window.road_schema.pavement_class.display, data: null,
+            title: getFieldName('pavement_class'), data: null,
             render: 'pavementClass'
         },
         {
-            title: window.road_schema.carriageway_width.display, data: null,
+            title: getFieldName('carriageway_width'), data: null,
             render: r => parseFloat(r.carriagewayWidth).toFixed(2)
         },
         {
-            title: window.road_schema.administrative_area.display, data: null,
+            title: getFieldName('administrative_area'), data: null,
             render: 'administrativeArea'
         },
         {
-            title: window.road_schema.road_type.display, data: null,
+            title: getFieldName('road_type'), data: null,
             render: 'type',
             visible: false,
         },
         {
-            title: window.road_schema.technical_class.display, data: null,
+            title: getFieldName('technical_class'), data: null,
             render: 'technicalClass',
             visible: false,
         },
         {
-            title: window.road_schema.funding_source.display, data: null,
+            title: getFieldName('funding_source'), data: null,
             render: 'fundingSource',
             visible: false,
         },
         {
-            title: window.road_schema.road_status.display, data: null,
+            title: getFieldName('road_status'), data: null,
             render: 'status',
             visible: false,
         },
         {
-            title: window.road_schema.project.display, data: null,
+            title: getFieldName('project'), data: null,
             render: 'project',
             visible: false,
         },
         {
-            title: window.road_schema.surface_condition.display, data: null,
+            title: getFieldName('surface_condition'), data: null,
             render: 'surfaceCondition'
         },
         {
-            title: window.road_schema.maintenance_need.display, data: null,
+            title: getFieldName('maintenance_need'), data: null,
             render: 'maintenanceNeed',
             visible: false,
         },
         {
-            title: window.road_schema.traffic_level.display, data: null,
+            title: getFieldName('traffic_level'), data: null,
             render: 'trafficLevel',
             visible: false,
         }
