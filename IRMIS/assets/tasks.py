@@ -239,10 +239,12 @@ def populate_from_csv(road, row):
         road_name="Road name",
         carriageway_width="Carriageway width",
         funding_source="Funding source",
-        project_name="Project name",
+        project="Project name",
     )
     for attr, key in simple_assignments.items():
         if row[key]:
+            if not hasattr(road, attr):
+                raise Exception('road has not attribute {}'.format(attr))
             setattr(road, attr, row[key])
 
     mapping_assignments = [
@@ -255,6 +257,8 @@ def populate_from_csv(road, row):
     ]
     for attr, key, mapping in mapping_assignments:
         if row[key]:
+            if not hasattr(road, attr):
+                raise Exception('road has not attribute {}'.format(attr))
             setattr(road, attr, mapping[row[key]])
 
     if row["Road link name"]:
