@@ -43,10 +43,10 @@ This entire sequence must be performed to completion before users are allowed to
 2. `./manage.py import_csv ../../path/to/the/data-sources/repo/csv`
   - copies road attributes from the csv ( from program excel files )
 
-3. `./manage.py set_road_municipalities
+3. `./manage.py set_road_municipalities`
   - sets road administrative areas from the road centroids
 
-4. `./manage.py collate_road_geometries
+4. `./manage.py collate_geometries`
   - you have edited roads so re-collate
 
 ## Pre-Commit (Black formatter)
