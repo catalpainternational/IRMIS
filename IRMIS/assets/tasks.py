@@ -204,6 +204,7 @@ def import_csv(csv_folder):
             {"link_code": "Section"},
         ),
         ("Estrada-DB-NationalRural.xlsx - Municipal roads.csv", {"road_code": "Code"}),
+        ("Suai Highway Data from Highways department - Suai.csv", {"road_name": "Road name"})
     )
 
     for file_name, identifying_filters in sources:
