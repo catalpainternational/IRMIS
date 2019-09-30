@@ -32,7 +32,7 @@ let splitOutDms = (coord) => {
 }
 
 let toDms = (lat_long) => {
-    try {
+    if (lat_long) {
         let x_dms = splitOutDms(lat_long[0]);
         let y_dms = splitOutDms(lat_long[1]);
         // calculate N/S (lat) & E/W (long)
@@ -42,13 +42,14 @@ let toDms = (lat_long) => {
         if (x_dms[0] < 0) { EorW = "W"; }
         // return formatted DMS string
         return `${Math.abs(y_dms[0])}\u00b0${y_dms[1]}'${y_dms[2]}"${NorS} ${Math.abs(x_dms[0])}\u00b0${x_dms[1]}'${x_dms[2]}"${EorW}`;
-    } catch {
+    } else {
         return "";
     }
 }
 
 let toUtm = (lat_long) => {
-    return `${lat_long[0].toFixed(5)}, ${lat_long[1].toFixed(5)}`;
+    if (lat_long) { return `${lat_long[0].toFixed(5)}, ${lat_long[1].toFixed(5)}`; }
+    else { return ""; }
 }
 
 // needed for export to excel
