@@ -97,17 +97,17 @@ function initializeDataTable() {
     const date = new Date();
     const columns = [
         {
-            title: 'Road Code', data: null,
+            title: window.road_schema.road_code.display, data: null,
             render: 'code',
             type: "roadCode"
         },
         {
-            title: 'Road Name', data: null,
+            title: window.road_schema.road_name.display, data: null,
             render: 'name',
             visible: false,
         },
         {
-            title: 'Link Code', data: null,
+            title: window.road_schema.link_code.display, data: null,
             render: 'linkCode'
         },
         {
@@ -116,77 +116,77 @@ function initializeDataTable() {
             visible: false,
         },
         {
-            title: 'Link Length (Km)', data: null,
+            title: window.road_schema.link_length.display, data: null,
             render: r => parseFloat(r.linkLength).toFixed(2)
         },
         {
-            title: 'Link Start Name', data: null,
+            title: window.road_schema.link_start_name.display, data: null,
             render: 'linkStartName'
         },
         {
-            title: 'Link Start Chainage (Km)', data: null,
+            title: window.road_schema.link_start_chainage.display, data: null,
             render: r => parseFloat(r.linkStartChainage).toFixed(2)
         },
         {
-            title: 'Link End Name', data: null,
+            title: window.road_schema.link_end_name.display, data: null,
             render: 'linkEndName'
         },
         {
-            title: 'Link End Chainage (Km)', data: null,
+            title: window.road_schema.link_end_chainage.display, data: null,
             render: r => parseFloat(r.linkEndChainage).toFixed(2)
         },
         {
-            title: 'Surface Type', data: null,
+            title: window.road_schema.surface_type.display, data: null,
             render: 'surfaceType'
         },
         {
-            title: 'Pavement Class', data: null,
+            title: window.road_schema.pavement_class.display, data: null,
             render: 'pavementClass'
         },
         {
-            title: 'Carriageway Width (m)', data: null,
+            title: window.road_schema.carriageway_width.display, data: null,
             render: r => parseFloat(r.carriagewayWidth).toFixed(2)
         },
         {
-            title: 'Administrative Area', data: null,
+            title: window.road_schema.administrative_area.display, data: null,
             render: 'administrativeArea'
         },
         {
-            title: 'Road Type', data: null,
+            title: window.road_schema.road_type.display, data: null,
             render: 'type',
             visible: false,
         },
         {
-            title: 'Technical Class', data: null,
+            title: window.road_schema.technical_class.display, data: null,
             render: 'technicalClass',
             visible: false,
         },
         {
-            title: 'Funding Source', data: null,
+            title: window.road_schema.funding_source.display, data: null,
             render: 'fundingSource',
             visible: false,
         },
         {
-            title: 'Road Status', data: null,
+            title: window.road_schema.road_status.display, data: null,
             render: 'status',
             visible: false,
         },
         {
-            title: 'Project', data: null,
+            title: window.road_schema.project.display, data: null,
             render: 'project',
             visible: false,
         },
         {
-            title: 'Surface Condition', data: null,
+            title: window.road_schema.surface_condition.display, data: null,
             render: 'surfaceCondition'
         },
         {
-            title: 'Maintenance needs', data: null,
+            title: window.road_schema.maintenance_need.display, data: null,
             render: 'maintenanceNeed',
             visible: false,
         },
         {
-            title: 'Traffic Data', data: null,
+            title: window.road_schema.traffic_level.display, data: null,
             render: 'trafficLevel',
             visible: false,
         }
