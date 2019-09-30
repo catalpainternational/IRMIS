@@ -6,7 +6,6 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db.models import Count, Max
 
-import math
 import reversion
 from reversion.models import Version
 from protobuf.roads_pb2 import Roads as ProtoRoads
