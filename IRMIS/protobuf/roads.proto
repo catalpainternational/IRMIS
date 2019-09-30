@@ -21,7 +21,7 @@ message Road {
   string road_type = 10;
   string road_status = 20;
   string link_code = 5;
-  string link_name = 6;
+  /* string link_name = 6; */
   string link_start_name = 16;
   float link_start_chainage = 11;
   string link_end_name = 17;

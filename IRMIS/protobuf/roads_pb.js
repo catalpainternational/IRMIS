@@ -271,7 +271,6 @@ proto.assets.Road.toObject = function(includeInstance, msg) {
     roadType: jspb.Message.getFieldWithDefault(msg, 10, ""),
     roadStatus: jspb.Message.getFieldWithDefault(msg, 20, ""),
     linkCode: jspb.Message.getFieldWithDefault(msg, 5, ""),
-    linkName: jspb.Message.getFieldWithDefault(msg, 6, ""),
     linkStartName: jspb.Message.getFieldWithDefault(msg, 16, ""),
     linkStartChainage: jspb.Message.getFloatingPointFieldWithDefault(msg, 11, 0.0),
     linkEndName: jspb.Message.getFieldWithDefault(msg, 17, ""),
@@ -353,10 +352,6 @@ proto.assets.Road.deserializeBinaryFromReader = function(msg, reader) {
     case 5:
       var value = /** @type {string} */ (reader.readString());
       msg.setLinkCode(value);
-      break;
-    case 6:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setLinkName(value);
       break;
     case 16:
       var value = /** @type {string} */ (reader.readString());
@@ -507,13 +502,6 @@ proto.assets.Road.serializeBinaryToWriter = function(message, writer) {
   if (f.length > 0) {
     writer.writeString(
       5,
-      f
-    );
-  }
-  f = message.getLinkName();
-  if (f.length > 0) {
-    writer.writeString(
-      6,
       f
     );
   }
@@ -750,21 +738,6 @@ proto.assets.Road.prototype.getLinkCode = function() {
 /** @param {string} value */
 proto.assets.Road.prototype.setLinkCode = function(value) {
   jspb.Message.setProto3StringField(this, 5, value);
-};
-
-
-/**
- * optional string link_name = 6;
- * @return {string}
- */
-proto.assets.Road.prototype.getLinkName = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 6, ""));
-};
-
-
-/** @param {string} value */
-proto.assets.Road.prototype.setLinkName = function(value) {
-  jspb.Message.setProto3StringField(this, 6, value);
 };
 
 

@@ -49,9 +49,6 @@ export class Road extends jspb.Message {
   getLinkCode(): string;
   setLinkCode(value: string): void;
 
-  getLinkName(): string;
-  setLinkName(value: string): void;
-
   getLinkStartName(): string;
   setLinkStartName(value: string): void;
 
@@ -129,7 +126,6 @@ export namespace Road {
     roadType: string,
     roadStatus: string,
     linkCode: string,
-    linkName: string,
     linkStartName: string,
     linkStartChainage: number,
     linkEndName: string,
