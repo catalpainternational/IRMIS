@@ -113,6 +113,7 @@ function initializeDataTable() {
         {
             title: 'Link Name', data: null,
             render: 'linkName',
+            render: r => `${r.linkStartName ? r.linkStartName : ""} - ${r.linkEndName ? r.linkEndName : ""}`,
             visible: false,
         },
         {
