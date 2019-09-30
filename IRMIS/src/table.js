@@ -5,9 +5,53 @@ import "datatables.net-buttons/js/buttons.html5";
 import "datatables.net-buttons/js/buttons.flash";
 import $ from "jquery";
 import { getFieldName } from "./road";
+import proj4 from "proj4";
+
 
 let table;
 let pendingRows = [];
+
+// INPUT FORMAT: EPSG:32751 WGS 84 / UTM zone 51S
+let projection_source = '+proj=utm +zone=51 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs';
+// OUTPUT FORMAT: EPSG:4326 WGS 84
+let projection_dest = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
+
+let modf = (number) => {
+    // JS implementation of Python math -> modf() function
+    // split a number into interger and remainder values
+    // returned items have same sign as original number
+    return [number%1, Math.trunc(number)];
+}
+
+let splitOutDms = (coord) => {
+    let split_deg = modf(coord);
+    let degrees = Math.trunc(split_deg[1]);
+    let interm = modf(split_deg[0] * 60);
+    let minutes = Math.abs(Math.trunc(interm[1]));
+    let seconds = Math.abs(Math.round((interm[0] * 60 + 0.00001) * 100) / 100);
+    return [degrees, minutes, seconds];
+}
+
+let toDms = (lat_long) => {
+    if (lat_long) {
+        let x_dms = splitOutDms(lat_long[0]);
+        let y_dms = splitOutDms(lat_long[1]);
+        // calculate N/S (lat) & E/W (long)
+        let NorS = "N";
+        if (y_dms[0] < 0) { NorS = "S"; }
+        let EorW = "E";
+        if (x_dms[0] < 0) { EorW = "W"; }
+        // return formatted DMS string
+        return `${Math.abs(y_dms[0])}\u00b0${y_dms[1]}'${y_dms[2]}"${NorS} ${Math.abs(x_dms[0])}\u00b0${x_dms[1]}'${x_dms[2]}"${EorW}`;
+    } else {
+        return "";
+    }
+}
+
+let toUtm = (lat_long) => {
+    if (lat_long) { return `${lat_long[0].toFixed(5)}, ${lat_long[1].toFixed(5)}`; }
+    else { return ""; }
+}
 
 // needed for export to excel
 window.JSZip = jsZip;
@@ -92,6 +136,9 @@ window.addEventListener("load", () => {
     });
 
     initializeDataTable();
+
+    // Append table name onto DataTable generated layout
+    document.getElementsByClassName("dt-buttons").item(0).prepend(document.getElementById("table-name"));
 });
 
 function initializeDataTable() {
@@ -190,7 +237,27 @@ function initializeDataTable() {
             title: getFieldName('traffic_level'), data: null,
             render: 'trafficLevel',
             visible: false,
-        }
+        },
+        {
+            title: 'Start Point (DMS)', data: null,
+            render: r => toDms(proj4(projection_source, projection_dest, r.projectionStart.array)),
+            visible: false,
+        },
+        {
+            title: 'End Point (DMS)', data: null,
+            render: r => toDms(proj4(projection_source, projection_dest, r.projectionEnd.array)),
+            visible: false,
+        },
+        {
+            title: 'Start Point (UTM)', data: null,
+            render: r => toUtm(proj4(projection_source, projection_dest, r.projectionStart.array)),
+            visible: false,
+        },
+        {
+            title: 'End Point (UTM)', data: null,
+            render: r => toUtm(proj4(projection_source, projection_dest, r.projectionEnd.array)),
+            visible: false,
+        },
     ];
 
     if (window.canEdit) {

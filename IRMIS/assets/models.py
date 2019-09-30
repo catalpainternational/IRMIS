@@ -9,6 +9,7 @@ from django.db.models import Count, Max
 import reversion
 from reversion.models import Version
 from protobuf.roads_pb2 import Roads as ProtoRoads
+from protobuf.roads_pb2 import Projection
 
 
 def no_spaces(value):
@@ -101,10 +102,10 @@ class RoadQuerySet(models.QuerySet):
             (
                 Road.objects.filter(road_type=chunk_name)
                 .order_by("id")
-                .values("id", *fields.values())
+                .values("id", *fields.values(), "geom")
             )
             if chunk_name
-            else Road.objects.order_by("id").values("id", *fields.values())
+            else Road.objects.order_by("id").values("id", *fields.values(), "geom")
         )
 
         last_revisions = {
@@ -121,6 +122,17 @@ class RoadQuerySet(models.QuerySet):
                 if road[query_key]:
                     setattr(road_protobuf, protobuf_key, road[query_key])
             setattr(road_protobuf, "last_revision_id", last_revisions[str(road["id"])])
+
+            # set Protobuf with with start/end projection points
+            if road["geom"]:
+                g = road["geom"].tuple[0]
+                start_p = Projection()
+                start_p.x, start_p.y = g[0][0], g[0][1]
+                end_p = Projection()
+                end_p.x, end_p.y = g[-1][0], g[-1][1]
+                road_protobuf.projection_start.CopyFrom(start_p)
+                road_protobuf.projection_end.CopyFrom(end_p)
+
         return roads_protobuf
 
 
