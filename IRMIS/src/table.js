@@ -239,22 +239,22 @@ function initializeDataTable() {
         {
             title: 'Start Point (DMS)', data: null,
             render: r => toDms(proj4(projection_source, projection_dest, r.projectionStart.array)),
-            // visible: false,
+            visible: false,
         },
         {
             title: 'End Point (DMS)', data: null,
             render: r => toDms(proj4(projection_source, projection_dest, r.projectionEnd.array)),
-            // visible: false,
+            visible: false,
         },
         {
             title: 'Start Point (UTM)', data: null,
             render: r => toUtm(proj4(projection_source, projection_dest, r.projectionStart.array)),
-            // visible: false,
+            visible: false,
         },
         {
             title: 'End Point (UTM)', data: null,
             render: r => toUtm(proj4(projection_source, projection_dest, r.projectionEnd.array)),
-            // visible: false,
+            visible: false,
         },
     ];
 
