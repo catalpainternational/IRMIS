@@ -43,7 +43,7 @@ export class EstradaRoad extends Road {
     }
 
     get linkName() {
-        return this.getLinkName();
+        return `${this.getLinkStartName()} - ${this.getLinkEndName()}`;
     }
 
     get linkStartName() {
