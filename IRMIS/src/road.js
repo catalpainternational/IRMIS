@@ -117,4 +117,12 @@ export class EstradaRoad extends Road {
     get trafficLevel() {
         return choice_or_empty(this.getTrafficLevel(), TRAFFIC_LEVEL_CHOICES);
     }
+
+    get projectionStart() {
+        return this.getProjectionStart();
+    }
+
+    get projectionEnd() {
+        return this.getProjectionEnd();
+    }
 }
