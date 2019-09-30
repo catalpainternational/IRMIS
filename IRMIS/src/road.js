@@ -122,3 +122,8 @@ export function getFieldName(field) {
     if (roadSchema[field]) { return roadSchema[field].display; }
     else { return ""; }
 }
+
+ export function getHelpText(field) {
+     if (roadSchema[field]) { return roadSchema[field].help_text; }
+    else { return ""; }
+ }
