@@ -257,8 +257,6 @@ def populate_from_csv(road, row):
     ]
     for attr, key, mapping in mapping_assignments:
         if row[key]:
-            if not hasattr(road, attr):
-                raise Exception("road has not attribute {}".format(attr))
             setattr(road, attr, mapping[row[key]])
 
     if row["Road link name"]:
