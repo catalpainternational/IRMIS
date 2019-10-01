@@ -131,7 +131,7 @@ export function getFieldName(field) {
     else { return ""; }
 }
 
-window.getHelpText = (field) => {
+export function getHelpText(field) {
     if (roadSchema[field]) { return roadSchema[field].help_text; }
     else { return ""; }
 }

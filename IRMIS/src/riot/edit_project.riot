@@ -5,11 +5,11 @@
         <div class="form-group">
             <label>{ funding_source.display }</label>
             <input class="{ props.road.getFundingSource() ? '' : 'inactive' } form-control" type="text" maxlength="50" placeholder="{ window.gettext ('E.g. IF') }" value="{ props.road.getFundingSource() }" oninput="{ checkFundingSource }">
-            <small class="form-text text-muted">{ window.getHelpText("funding_source") }</small>
+            <small class="form-text text-muted">{ props.getHelpText("funding_source") }</small>
         </div>
         <div class="form-group">
             <label>{ road_status.display }</label>
-            <small class="form-text text-muted">{ window.getHelpText("road_status") }</small>
+            <small class="form-text text-muted">{ props.getHelpText("road_status") }</small>
             <ul class="status">
                 <li each="{ roadStatus in road_status.options }" data-status="{ roadStatus.code }" onclick="{ checkRoadStatus }">
                     <span class="{ roadStatus.code === props.road.getRoadStatus() ? 'active' : ''  } radio image"></span>
@@ -20,7 +20,7 @@
         <div class="form-group">
             <label>{ project.display }</label>
             <input class="{ props.road.getProject() ? '' : 'inactive' } form-control" type="text" maxlength="150" placeholder="{ window.gettext ('E.g. DBHP 2016-2022') }" value="{ props.road.getProject() }" oninput="{ checkProject }">
-            <small class="form-text text-muted">{ window.getHelpText("project") }</small>
+            <small class="form-text text-muted">{ props.getHelpText("project") }</small>
         </div>
     </section>
 

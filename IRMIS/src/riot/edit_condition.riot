@@ -4,7 +4,7 @@
     <section>
         <div class="form-group">
             <label>{ conditions.display }</label>
-            <small class="form-text text-muted">{ window.getHelpText("surface_condition") }</small>
+            <small class="form-text text-muted">{ props.getHelpText("surface_condition") }</small>
             <ul class="surface-condition">
                 <li each="{ condition in conditions.options }" data-condition="{ condition[0] }" onclick="{ checkSurfaceCondition }">
                     <span class="{ condition[0] == props.road.getSurfaceCondition() ? 'active' : ''  } radio image"></span>
@@ -14,7 +14,7 @@
         </div>
         <div class="form-group">
             <label>{ maintenance_needs.display }</label>
-            <small class="form-text text-muted">{ window.getHelpText("maintenance_need") }</small>
+            <small class="form-text text-muted">{ props.getHelpText("maintenance_need") }</small>
             <ul class="maintenance-need">
                 <li each="{ maintenance_need in maintenance_needs.options }" data-maintenance="{ maintenance_need.code }" onclick="{ checkMaintenanceNeed }">
                     <span class="{ maintenance_need.code === props.road.getMaintenanceNeed() ? 'active' : ''  } radio image"></span>
@@ -24,7 +24,7 @@
         </div>
         <div class="form-group">
             <label>{ technical_classes.display }</label>
-            <small class="form-text text-muted">{ window.getHelpText("technical_class") }</small>
+            <small class="form-text text-muted">{ props.getHelpText("technical_class") }</small>
             <ul class="technical-class">
                 <li each="{ technical_class in technical_classes.options }" data-technical="{ technical_class.code }" onclick="{ checkTechnicalClass }">
                     <span class="{ technical_class.code == props.road.getTechnicalClass() ? 'active' : ''  } radio image"></span>
@@ -34,7 +34,7 @@
         </div>
         <div class="form-group">
             <label>{ traffic_data.display }</label>
-            <small class="form-text text-muted">{ window.getHelpText("traffic_level") }</small>
+            <small class="form-text text-muted">{ props.getHelpText("traffic_level") }</small>
             <ul class="traffic-data">
                 <li each="{ traffic in traffic_data.options }" data-traffic="{ traffic[0] }" onclick="{ checkTrafficData }">
                     <span class="{ traffic[0] === props.road.getTrafficLevel() ? 'active' : ''  } radio image"></span>
@@ -49,7 +49,6 @@
     </div>
 
     <script>
-
         export default {
             save(e) {
                 this.props.onSave();
