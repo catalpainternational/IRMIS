@@ -271,7 +271,8 @@ function initializeDataTable() {
     table = $("#data-table").DataTable({
         columns: columns,
         rowId: '.getId()',
-        order: [[window.canEdit ? 1 : 0, 'asc']], // default order is ascending by road code
+        // default order is ascending by: road code, link code, & link start chainage
+        order: [[window.canEdit ? 1 : 0, 'asc'], [window.canEdit ? 3 : 2, 'asc'], [window.canEdit ? 7 : 6, 'asc']],
         dom: `<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>`, // https://datatables.net/reference/option/dom#Styling
         buttons: [{
             extend: "excel",
