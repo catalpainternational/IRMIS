@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-02 04:19+0000\n"
+"POT-Creation-Date: 2019-10-02 07:35+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -109,6 +109,21 @@ msgid "Select a Road Type"
 msgstr ""
 
 msgid "Select a Surface Type"
+msgstr ""
+
+msgid "Link Name"
+msgstr ""
+
+msgid "Start Point (DMS)"
+msgstr ""
+
+msgid "End Point (DMS)"
+msgstr ""
+
+msgid "Start Point (UTM)"
+msgstr ""
+
+msgid "End Point (UTM)"
 msgstr ""
 
 #~ msgid "E.g. A01-01"
