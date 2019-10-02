@@ -50,6 +50,10 @@ label {
     color: $white;
 }
 
+edit_base label {
+    color: $darker-gray;
+}
+
 a {
     color: $dark-green;
     line-height: 11px;
@@ -98,6 +102,12 @@ p {
     color: $dark-green;
 }
 
+small {
+    line-height: 14px;
+	font-weight: 500;
+	font-size: 11px;
+}
+
 input.form-control {
     color: $dark-green;
     line-height: 12px;
@@ -116,9 +126,30 @@ ul li {
     line-height: 17px;
 }
 
-button.btn {
-    line-height: 14px;
+ul.navigation {
+    li {
+        line-height: 19px;
+        font-weight: 700;
+        font-size: 16px;
+        color: $white;
+    }
+
+    ul li {
+        line-height: 38px;
+        font-size: 18px;
+        color: $gray;
+
+        &.active {
+            color: $white;
+        }
+    }
+}
+
+h1 {
+    color: $darker-gray;
+    line-height: 27px;
     font-weight: 700;
+    font-size: 22px;
 }
 
 h5 {
@@ -128,11 +159,22 @@ h5 {
     font-size: 18px;
 }
 
+edit_base h5 {
+    color: $darker-gray;
+}
+
 h6 {
     line-height: 19px;
     font-weight: 700;
     font-size: 16px;
     color: $white;
+}
+
+section h6 {
+    line-height: 17px;
+    font-weight: 700;
+    font-size: 14px;
+    color: $green;
 }
 
 table {
@@ -145,6 +187,13 @@ table {
 
 // Override DataTables.net styles
 
+.dt-buttons h6 {
+    color: $darker-gray;
+    line-height: 17px;
+    font-weight: 800;
+    font-size: 14px;
+}
+
 .dataTables_info, .page-link {
     line-height: 17px;
     font-weight: 700;
@@ -152,13 +201,78 @@ table {
     color: $white;
 }
 
+.dt-buttons {
+    button span {
+        color: $darker-gray;
+    }
+
+    div.btn {
+        line-height: 14px;
+        font-weight: 700;
+        font-size: 12px;
+    }
+}
+
 // Override Bootstrap styles
 
-#dropdown-menu {
-    button, a {
+button {
+    &.btn {
+        line-height: 14px;
+        font-weight: 700;
+    }
+
+    &.btn-sm, &.btn-sm span {
+        line-height: 14px;
+        font-size: 12px;
+    }
+
+    &.btn-lg {
+        font-size: inherit;
+    }
+}
+
+.dropdown-menu {
+    line-height: 24px;
+    font-weight: 400;
+    font-size: 14px;
+
+    form button, a {
         color: $darker-gray;
         line-height: 30px;
         font-weight: 500;
         font-size: 16px;
     }
+
+    h6 {
+        color: $darker-gray;
+        line-height: 17px;
+        font-weight: 700;
+        font-size: 14px;
+    }
+}
+
+.modal {
+    h6 {
+        color: $darker-gray;
+        line-height: 19px;
+        font-weight: 800;
+        font-size: 16px;
+    }
+
+    p {
+        color: $darker-gray;
+        line-height: 19px;
+        font-size: 16px;
+    }
+}
+
+.text-muted {
+	color: $dark-gray !important;
+}
+
+.invalid-tooltip li {
+    line-height: 14px;
+    font-weight: 500;
+    font-size: 12px;
+    color: $white;
 }

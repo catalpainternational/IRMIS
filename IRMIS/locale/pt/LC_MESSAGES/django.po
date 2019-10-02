@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-03 02:49+0000\n"
+"POT-Creation-Date: 2019-09-25 06:32+0000\n"
 "PO-Revision-Date: 2019-08-15 08:25+0000\n"
 "Last-Translator: b'  <juliana@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,202 +19,122 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Translated-Using: django-rosetta 0.9.3\n"
 
-#: IRMIS/settings.py:181
 msgid "IRMIS"
 msgstr "IRMIS"
 
-#: IRMIS_wagtail/templates/wagtail_base.html:21
 #, fuzzy
 #| msgid "Hello there"
 msgid "Hello"
 msgstr "Viva"
 
-#: IRMIS_wagtail/templates/wagtail_base.html:38
 msgid "Change password"
 msgstr "Alterar palavra-passe"
 
-#: IRMIS_wagtail/templates/wagtail_base.html:40
 msgid "Log out"
 msgstr "Sair"
 
-#: registration_templates/base_registration.html:27
-msgid ""
-"Please enter a correct username and password. Note that both fields may be "
-"case-sensitive"
-msgstr ""
-"O nome de utilizar ou palavra-passe estão incorrectos. Confirme se está a "
-"usar correctamente as maiúsculas e minúsculas"
+msgid "Please enter a correct username and password. Note that both fields may be case-sensitive"
+msgstr "O nome de utilizar ou palavra-passe estão incorrectos. Confirme se está a usar correctamente as maiúsculas e minúsculas"
 
-#: registration_templates/base_registration.html:28
 msgid "This password is too short. It must contain at least 8 characters"
 msgstr "A sua palavra-passe deve conter pelo menos 8 caracteres"
 
-#: registration_templates/base_registration.html:29
 msgid "Your old password was entered incorrectly. Please enter it again"
 msgstr "A palavra-passe introduzida está incorrecta. Por favor volte a tentar."
 
-#: registration_templates/base_registration.html:30
 msgid "The two password fields didn't match"
 msgstr "Os dois campos da nova palavra-passe não coincidem"
 
-#: registration_templates/base_registration.html:31
 msgid "This password is entirely numeric"
 msgstr "A palavra-passe não pode conter apenas números"
 
-#: registration_templates/base_registration.html:32
 msgid "This password is too common"
 msgstr "A palavra-passa é demasiado comum"
 
-#: registration_templates/registration/login.html:13
-#: registration_templates/registration/login.html:14
 msgid "Username"
 msgstr "Nome de utilizador"
 
-#: registration_templates/registration/login.html:17
-#: registration_templates/registration/login.html:18
 msgid "Password"
 msgstr "Palavra-passe"
 
-#: registration_templates/registration/login.html:22
-#: registration_templates/registration/password_reset_form.html:5
 msgid "Forgot your password?"
 msgstr "Esqueceu-se da sua palavra-passe?"
 
-#: registration_templates/registration/login.html:23
 msgid "Log in"
 msgstr "Entrar"
 
-#: registration_templates/registration/logout.html:5
 msgid "Logged out"
 msgstr "Não autenticado"
 
-#: registration_templates/registration/password_change_done.html:5
-#: registration_templates/registration/password_reset_complete.html:5
 msgid "Well done!"
 msgstr "Sucesso"
 
-#: registration_templates/registration/password_change_done.html:6
-#: registration_templates/registration/password_reset_complete.html:6
 msgid "Your password has been reset successfully"
 msgstr "A sua palavra-passe foi alterada com sucesso"
 
-#: registration_templates/registration/password_change_done.html:7
-#: registration_templates/registration/password_reset_complete.html:7
 msgid "Continue"
 msgstr "Continuar"
 
-#: registration_templates/registration/password_change_form.html:5
-#: registration_templates/registration/password_reset_confirm.html:7
 msgid "Create a new password"
 msgstr "Alterar palavra-passe"
 
-#: registration_templates/registration/password_change_form.html:8
-#: registration_templates/registration/password_reset_confirm.html:10
 msgid "Your password can't be too similar to your other personal information"
 msgstr "A sua palavra-passe não pode ser semelhante à sua informação pessoal"
 
-#: registration_templates/registration/password_change_form.html:9
-#: registration_templates/registration/password_reset_confirm.html:11
 msgid "Your password must contain at least 8 characters"
 msgstr "A sua palavra-passe deve conter pelo menos 8 caracteres"
 
-#: registration_templates/registration/password_change_form.html:10
-#: registration_templates/registration/password_reset_confirm.html:12
 msgid "Your password can't be a commonly used password"
 msgstr "A sua palavra-passe não pode ser uma palavra-passe comum"
 
-#: registration_templates/registration/password_change_form.html:11
-#: registration_templates/registration/password_reset_confirm.html:13
 msgid "Your password can't be entirely numeric"
 msgstr "A sua palavra-passe não pode conter apenas números"
 
-#: registration_templates/registration/password_change_form.html:25
-#: registration_templates/registration/password_change_form.html:26
 msgid "Old password"
 msgstr "Palavra-passe antiga"
 
-#: registration_templates/registration/password_change_form.html:32
-#: registration_templates/registration/password_change_form.html:33
-#: registration_templates/registration/password_reset_confirm.html:27
-#: registration_templates/registration/password_reset_confirm.html:28
 msgid "New password"
 msgstr "Nova palavra-passe"
 
-#: registration_templates/registration/password_change_form.html:36
-#: registration_templates/registration/password_change_form.html:37
-#: registration_templates/registration/password_reset_confirm.html:31
-#: registration_templates/registration/password_reset_confirm.html:32
 msgid "New password confirmation"
 msgstr "Confirme a nova palavra-passe"
 
-#: registration_templates/registration/password_change_form.html:41
-#: registration_templates/registration/password_reset_confirm.html:36
-#: registration_templates/registration/password_reset_form.html:17
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: registration_templates/registration/password_change_form.html:42
-#: registration_templates/registration/password_reset_confirm.html:37
 msgid "Save changes"
 msgstr "Guardar alterações"
 
-#: registration_templates/registration/password_reset_confirm.html:41
 msgid "The link to reset your password is not valid anymore."
 msgstr "O link para redefinir a sua palavra-passe expirou."
 
-#: registration_templates/registration/password_reset_confirm.html:42
 msgid "Go back to the login page"
 msgstr "Regressar à página de entrada"
 
-#: registration_templates/registration/password_reset_done.html:5
 msgid "Reset your password"
 msgstr "Redefinir a sua palavra-passe"
 
-#: registration_templates/registration/password_reset_done.html:6
-msgid ""
-"We have sent a reset password link to your email. Please, click on the link "
-"to set your new password. Thanks."
-msgstr ""
-"Enviamos um link para o seu email. Por favor, clique no link para redefinir "
-"a sua nova palavra-passe. Obrigado."
+msgid "We have sent a reset password link to your email. Please, click on the link to set your new password. Thanks."
+msgstr "Enviamos um link para o seu email. Por favor, clique no link para redefinir a sua nova palavra-passe. Obrigado."
 
-#: registration_templates/registration/password_reset_email.html:6
 msgid "Hello there"
 msgstr "Viva"
 
-#: registration_templates/registration/password_reset_email.html:7
-msgid ""
-"We received a request to change your Estrada password. Click the button "
-"below to create a new password"
-msgstr ""
-"Recebemos um pedido para redefinir a sua palavra-passe no Estrada. Clique no "
-"botão abaixo para criar uma nova palavra-passe"
+msgid "We received a request to change your Estrada password. Click the button below to create a new password"
+msgstr "Recebemos um pedido para redefinir a sua palavra-passe no Estrada. Clique no botão abaixo para criar uma nova palavra-passe"
 
-#: registration_templates/registration/password_reset_email.html:9
 msgid "Reset my password"
 msgstr "Redefinir a sua palavra-passe"
 
-#: registration_templates/registration/password_reset_email.html:11
-msgid ""
-"If you didn't mean to reset your password, then you can just ignore this "
-"email. Your password will not change"
-msgstr ""
-"Se não pretende alterar a sua palavra-passe, por favor ignore este email. A "
-"sua palavra-passe não será alterada"
+msgid "If you didn't mean to reset your password, then you can just ignore this email. Your password will not change"
+msgstr "Se não pretende alterar a sua palavra-passe, por favor ignore este email. A sua palavra-passe não será alterada"
 
-#: registration_templates/registration/password_reset_form.html:10
-msgid ""
-"Don’t worry. Resetting your password is easy, just tell us the email address "
-"you registered with Estrada."
-msgstr ""
-"Não se preocupe! Redefinir a sua palavra-passe é simples, indique-nos apenas "
-"o endereço de email com que se registou no Estrada."
+msgid "Don’t worry. Resetting your password is easy, just tell us the email address you registered with Estrada."
+msgstr "Não se preocupe! Redefinir a sua palavra-passe é simples, indique-nos apenas o endereço de email com que se registou no Estrada."
 
-#: registration_templates/registration/password_reset_form.html:13
 msgid "Email address"
 msgstr "Endereço de email"
 
-#: registration_templates/registration/password_reset_form.html:18
 msgid "Send"
 msgstr "Enviar"
 

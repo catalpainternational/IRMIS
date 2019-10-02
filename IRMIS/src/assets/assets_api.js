@@ -1,16 +1,20 @@
-import { decode } from "geobuf";
-import Pbf from "pbf";
+import { Road, Roads } from "../../protobuf/roads_pb";
+import { EstradaRoad } from "../road";
+import { ConfigAPI } from "./configAPI";
 
-// protobuf does not support es6 imports, commonjs works
-const roadMessages = require("../../protobuf/roads_pb");
+/** getRoadsMetadataChunks
+ *
+ * Retrieves the details for the road metadata chunks from the server
+ *
+ * @returns a map {id: road_object}
+ */
+export function getRoadsMetadataChunks() {
+    const assetTypeUrlFragment = "road_chunks";
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}`;
 
-const requestAssetUrl = `${window.location.origin}/assets`;
-const requestAssetInit = {
-    headers: { "Content-Type": "application/json" },
-    method: "GET",
-    mode: "no-cors",
-};
-const requestMediaUrl = `${window.location.origin}/media`;
+    return fetch(metadataUrl, ConfigAPI.requestAssetInit())
+        .then((jsonResponse) => (jsonResponse.json()));
+}
 
 /** getRoadsMetadata
  *
@@ -18,77 +22,64 @@ const requestMediaUrl = `${window.location.origin}/media`;
  *
  * @returns a map {id: road_object}
  */
-export function getRoadsMetadata() {
+export function getRoadsMetadata(chunkName) {
     const assetTypeUrlFragment = "protobuf_roads";
-    const metadataUrl = `${requestAssetUrl}/${assetTypeUrlFragment}`;
+    chunkName = chunkName || "";
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${chunkName}`;
 
-    return fetch(metadataUrl, requestAssetInit).then(metadataResponse => {
-        return metadataResponse.arrayBuffer();
-    }).then(protobufBytes => {
-        // build a map to access roads by id
-        var list = roadMessages.Roads.deserializeBinary(protobufBytes).getRoadsList();
-        return list.reduce(
-            (roadsLookup, roadMetadata) => {
-                roadsLookup[roadMetadata.getId()] = roadMetadata;
-                return roadsLookup;
-            },
-            {},
-        );
-    });
+    return fetch(metadataUrl, ConfigAPI.requestAssetInit())
+        .then((metadataResponse) => (metadataResponse.arrayBuffer()))
+        .then((protobufBytes) => {
+            const uintArray = new Uint8Array(protobufBytes);
+            return Roads.deserializeBinary(uintArray).getRoadsList().map(makeEstradaRoad);
+        });
 }
 
-export function getGeoJsonDetails() {
-    // get the details for the collated geojson files
-
-    const geojsonDetailsUrl = `${requestAssetUrl}/geojson_details`;
-    return fetch(geojsonDetailsUrl, requestAssetInit).then(geojsonDetailsResponse => {
-        return geojsonDetailsResponse.json();
-    });
-}
-
-export function getGeoJson(geoJsonDetail) {
-    // gets geojson from a collated geometry file
-
-    const geoJsonUrl = `${requestMediaUrl}/${geoJsonDetail.geobuf_file}`;
-    return fetch(
-        geoJsonUrl, requestAssetInit,
-    ).then(geobufResponse => {
-        if (geobufResponse.ok) {
-            return geobufResponse.arrayBuffer();
-        } else {
-            throw new Error(`${geobufResponse.statusText}. Geobuf response status not OK`);
-        }
-    }).then(geobufBytes => {
-        var pbf = new Pbf(geobufBytes);
-        return decode(pbf);
-    });
-}
-
-/** populateGeoJsonProperties
+/** getRoadMetadata
  *
- * for each feature in a geojson FeatureCollection,
- * use the property `pk` to access the relevant metadata from the propertiesLookup
- * and add it to the feature properties.
+ * Retrieves the metadata for a single road from the server
  *
- * also ensure that each feature.properties has a validly set `featureType`
- *
- * @param geoJson - the GeoJSON that needs its feature.properties populated
- * @param propertiesLookup - the source of the properties data referenced by properties.pk
+ * @returns a road_object
  */
-export function populateGeoJsonProperties(geoJson, propertiesLookup) {
-    geoJson.features.forEach(feature => {
-        const propertySet = propertiesLookup[feature.properties.pk];
-        if (propertySet) {
-            Object.assign(feature.properties, propertySet.toObject());
-        } else {
-            throw new Error(`assets_api.populateGeoJsonProperties could not find property '${feature.properties.pk}'.`);
-        }
+export function getRoadMetadata(roadId) {
+    const assetTypeUrlFragment = "protobuf_road";
 
-        // Special handling for the mandatory property `featureType`
-        if (!feature.properties.featureType) {
-            if (feature.properties.roadType) {
-                feature.properties.featureType = "Road";
-            }
-        }
-    });
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${roadId}`;
+
+    return fetch(metadataUrl, ConfigAPI.requestAssetInit())
+        .then((metadataResponse) => (metadataResponse.arrayBuffer()))
+        .then((protobufBytes) => {
+            const uintArray = new Uint8Array(protobufBytes);
+            return makeEstradaRoad(Road.deserializeBinary(uintArray));
+        });
+}
+
+/** putRoadMetadata
+ *
+ * Post metadata for a single road to the server
+ *
+ * @returns 200 (success) or 400 (failure)
+ */
+export function putRoadMetadata(road) {
+    const assetTypeUrlFragment = "road_update";
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}`;
+
+    const postAssetInit = ConfigAPI.requestAssetInit("PUT");
+    postAssetInit.body = road.serializeBinary();
+
+    return fetch(metadataUrl, postAssetInit)
+        .then(metadataResponse => {
+            if (metadataResponse.ok) { return metadataResponse.arrayBuffer(); }
+            throw new Error(`Road update failed: ${metadataResponse.statusText}`);
+        })
+        .then(protobufBytes => {
+            const uintArray = new Uint8Array(protobufBytes);
+            return makeEstradaRoad(Road.deserializeBinary(uintArray));
+        });
+}
+
+function makeEstradaRoad(pbroad) {
+    var estradaRoad = Object.create(EstradaRoad.prototype);
+    Object.assign(estradaRoad, pbroad);
+    return estradaRoad;
 }

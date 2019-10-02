@@ -4,11 +4,11 @@
     }
 
     &.table:not(.map) #data-table {
-        max-height: calc(100vh - 60px - 6px - 37px - 15px);
+        max-height: calc(100vh - #{$top-menu-height} - 31px - 6px - 32px - 15px);
     }
 
     &.table.map #data-table {
-        max-height: calc(60vh - 60px - 10px - 6px - 37px - 15px);
+        max-height: calc(60vh - #{$top-menu-height} - 10px - 31px - 6px - 32px - 15px);
     }
 
     #data-table {
@@ -20,30 +20,59 @@
 
 // Override DataTables.net styles
 
-.dataTables_wrapper .row:first-of-type {
-    display: none;
-}
-
-table.dataTable td.dataTables_empty {
-    text-align: left;
-}
-
-li.paginate_button.page-item {
-    &:focus {
-        outline: none;
-    }
-
-    &.active a.page-link {
+div.dataTables_wrapper {
+    .dt-buttons {
+        justify-content: flex-end;
         background-color: $white;
-        border-radius: $radius;
-        color: $dark-gray;
+        align-items: center;
+        padding: 3px 15px;
+        display: flex;
+
+        button, div.btn {
+            flex: inherit;
+        }
+
+        div.btn {
+            margin-left: 5px;
+        }
+
+        h6 {
+            margin-bottom: 0;
+            padding-top: 2px;
+        }
     }
 
-    a.page-link {
-        background-color: inherit;
-        box-shadow: none;
-        color: $white;
-        border: 0;
+    table.dataTable td.dataTables_empty {
+        text-align: left;
+    }
+
+    .dataTables_info {
+        padding-top: 8px;
+    }
+
+    div.dataTables_paginate {
+        ul.pagination {
+            margin: 0;
+
+            li.paginate_button.page-item {
+                &:focus {
+                    outline: none;
+                }
+
+                &.active a.page-link {
+                    background-color: $white;
+                    border-radius: $radius;
+                    color: $dark-gray;
+                }
+
+                a.page-link {
+                    background-color: inherit;
+                    box-shadow: none;
+                    color: $white;
+                    border: 0;
+                }
+            }
+        }
     }
 }
 
@@ -63,14 +92,29 @@ table.table {
     }
 
     tbody td {
-        padding: 6px 20px !important;
+        padding: 0 20px !important;
+        vertical-align: middle;
+        height: 30px;
+    }
+
+    thead th.edit-col, tbody td.edit-col {
+        padding-right: 7px !important;
+        padding-left: 7px !important;
     }
 
     &.table-bordered {
         border: none;
 
         thead th, tbody td {
-            border: 1px solid $light-gray;
+            border-color: $light-gray;
+        }
+
+        thead th {
+            border-bottom-width: 1px;
+        }
+
+        tbody tr:first-child td {
+            border-top: 0;
         }
     }
 

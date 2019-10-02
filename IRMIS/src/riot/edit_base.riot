@@ -1,0 +1,155 @@
+<edit_base>
+    <div class="row">
+        <div id="side-menu">
+            <ul class="navigation">
+                <li class="text-uppercase">{ window.gettext("Edit asset") }</li>
+                <ul>
+                    <li class="{ state.page === 'location_type' ? 'active' : '' }" data-page="location_type" onclick="{ selectPage }">{ window.gettext("Location & Type") }</li>
+                    <li class="{ state.page === 'asset_details' ? 'active' : '' }" data-page="asset_details" onclick="{ selectPage }">{ window.gettext("Asset Details") }</li>
+                    <li class="{ state.page === 'pavement' ? 'active' : '' }" data-page="pavement" onclick="{ selectPage }">{ window.gettext("Pavement") }</li>
+                    <li class="{ state.page === 'project' ? 'active' : '' }" data-page="project" onclick="{ selectPage }">{ window.gettext("Project") }</li>
+                    <li class="{ state.page === 'condition' ? 'active' : '' }" data-page="condition" onclick="{ selectPage }">{ window.gettext("Condition") }</li>
+                </ul>
+            </ul>
+        </div>
+        <div if="{ state.loading }">
+            { window.gettext("Loading") }
+        </div>
+        <div if="{ !state.loading }" id="edit-base">
+            <header class="align-items-center d-flex">
+                <a class="caret-dark left image" onclick="{ goBack }"></a>
+                <h1>{ state.editingRoad.getRoadCode() } { state.editingRoad.getRoadName() }</h1>
+            </header>
+
+            <edit_feedback if="{ state.show_feedback }" close="{ closeFeedback }" error="{ state.error }"></edit_feedback>
+
+            <edit_location_type road="{ state.editingRoad }" saving="{ state.saving }" if="{ state.page === 'location_type' }" on-save="{ save }"></edit_location_type>
+            <edit_asset_details road="{ state.editingRoad }" saving="{ state.saving }" if="{ state.page === 'asset_details' }" on-save="{ save }"></edit_asset_details>
+            <edit_pavement road="{ state.editingRoad }" saving="{ state.saving }" if="{ state.page === 'pavement' }" on-save="{ save }"></edit_pavement>
+            <edit_project road="{ state.editingRoad }" saving="{ state.saving }" if="{ state.page === 'project' }" on-save="{ save }"></edit_project>
+            <edit_condition road="{ state.editingRoad }" saving="{ state.saving }" if="{ state.page === 'condition' }" on-save="{ save }"></edit_condition>
+        </div>
+        <div id="stop-alert" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                <div class="align-items-center modal-content">
+                    <div class="modal-header">
+                        <span class="alert stop image"></span>
+                        <span class="close image" data-dismiss="modal" aria-label="{ window.gettext('Close') }" aria-hidden="true"></span>
+                    </div>
+                    <div class="modal-body text-center">
+                        <h6>{ window.gettext("Unsaved Changes") }</h6>
+                        <p>{ window.gettext("You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?") }</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="{ discardChanges }">{ window.gettext("Discard") }</button>
+                        <button type="button" class="btn btn-light" data-dismiss="modal">{ window.gettext("Continue editing") }</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        import { saveRoad } from "../roadManager";
+        import Edit_Location_Type from "./edit_location_type.riot";
+        import Edit_Asset_Details from "./edit_asset_details.riot";
+        import Edit_Pavement from "./edit_pavement.riot";
+        import Edit_Project from "./edit_project.riot";
+        import Edit_Condition from "./edit_condition.riot";
+        import Edit_Feedback from './edit_feedback.riot';
+
+        import "bootstrap/js/dist/modal";
+        import $ from "jquery";
+
+        let timeoutId = null;
+
+        export default {
+            state: {
+                loading: true,
+                saving: false,
+                editingRoad: null,
+                baseRoad: null,
+                error: false,
+                page: "location_type",
+                nextPage: null,
+                hasChanges: false,
+                showFeedback: false,
+            },
+            components: {
+                Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Project, Edit_Condition, Edit_Feedback
+            },
+            onBeforeMount() {
+                window.onbeforeunload = () => {
+                    return this.hasChanges() ? "You have changes" : null;
+                }
+            },
+            onBeforeUnmount() {
+                window.onbeforeunload = null;
+            },
+            onMounted(props, state) {
+                state.loading = true;
+                state.page = props.page;
+                props.roadPromise.then(road => {
+                    state.loading = false;
+                    this.initRoad(road)
+                }).catch(err => {
+                    state.error = err;
+                }).finally((r) => {
+                    this.update();
+                });
+            },
+            initRoad(road) {
+                this.state.baseRoad = road;
+                this.state.editingRoad = this.state.baseRoad.cloneMessage();
+            },
+            save() {
+                this.update({saving: true});
+                saveRoad(this.state.editingRoad).then((road) => {
+                    if (road) {
+                        this.state.error = false;
+                        this.initRoad(road);
+                    } else {
+                        this.state.error = true;
+                    }
+                }).catch(err => {
+                    this.state.error = true;
+                }).finally((r) => {
+                    this.update({ saving: false, show_feedback: true });
+                    timeoutId = setTimeout(() => this.closeFeedback(), 5000);
+                });
+            },
+            hasChanges() {
+                return this.state.baseRoad.toString() !== this.state.editingRoad.toString();
+            },
+            goBack(e) {
+                this.state.nextPage = "#";
+                if (this.hasChanges()) {
+                    $('#stop-alert').modal('show');
+                } else {
+                    clearTimeout(timeoutId);
+                    window.location.hash = this.state.nextPage;
+                }
+            },
+            selectPage(e) {
+                this.state.page = e.currentTarget.dataset.page;
+                this.state.nextPage = `#edit/${this.state.editingRoad.getId()}/${this.state.page}`;
+                if (this.hasChanges()) $('#stop-alert').modal('show');
+                else this.discardChanges();
+            },
+            discardChanges() {
+                this.state.editingRoad = this.state.baseRoad.cloneMessage();
+                window.location.hash = this.state.nextPage;
+                this.update();
+            },
+            closeFeedback() {
+                const feedback = document.getElementsByClassName("slide-in").item(0);
+                clearTimeout(timeoutId);
+                feedback.classList.add("slide-out");
+                setTimeout(() => {
+                    feedback.classList.remove("slide-out");
+                    this.update({ show_feedback: false });
+                }, 300);
+            }
+        };
+    </script>
+</edit_base>

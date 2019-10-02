@@ -29,6 +29,7 @@
         {% block extra_css %}
             {# Override this in templates to add extra stylesheets #}
         {% endblock %}
+        <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
     </head>
 
     <body class="h-100 {% block body_class %}{% endblock %}">
@@ -39,6 +40,10 @@
         {% block base_content %}{% endblock %}
 
         {# Global javascript #}
+
+        {% if perms.assets.change_road %}
+        <script>window.canEdit = true;</script>
+        {% endif %}
 
         {% block extra_js %}
             {# Override this in templates to add extra javascript #}

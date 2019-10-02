@@ -1,6 +1,6 @@
 // Override Bootstrap button styles
 
-.btn {
+%primary-shared {
     box-shadow: 0 2px 4px 0 rgba(0, 52, 62, 0.3);
     padding-bottom: 7px;
     padding-top: 10px;
@@ -8,28 +8,73 @@
     border: none;
 }
 
+%disabled-light-shared {
+    background-color: $lighter-gray;
+    color: $dark-gray;
+
+    &:hover {
+        background-color: $lighter-gray;
+        color: $dark-gray;
+    }
+}
+
+.btn-sm {
+    border-radius: calc(#{$radius} / 2);
+    padding-bottom: 0.25rem;
+    padding-right: 0.75rem;
+    padding-left: 0.75rem;
+    padding-top: 0.35rem;
+    min-width: 108px;
+    height: 25px;
+}
+
 .btn-lg {
     padding-right: 0.75rem;
     border-radius: 0.25rem;
     padding-left: 0.75rem;
-    font-size: inherit;
     width: 316px;
 }
 
 .btn-primary {
+    @extend %primary-shared;
     background-color: $green;
 
     &:hover {
         background-color: $green;
     }
+
+    &:disabled {
+        @extend %disabled-light-shared;
+    }
 }
 
-.btn-inactive {
-    background-color: $lighter-gray;
-    color: $dark-gray;
+.btn-secondary {
+    box-shadow: 0 0 4px 0 rgba(61, 71, 88, 0.3) !important;
+    border: 1px solid $light-gray !important;
+    background-color: $white !important;
+    color: $darker-gray;
+
+    &:active, &:hover {
+        border: 1px solid $light-gray !important;
+        background-color: $white !important;
+        color: $darker-gray !important;
+    }
+}
+
+.btn-danger {
+    @extend %primary-shared;
+    background-color: $red;
 
     &:hover {
-        background-color: $gray;
-        color: $dark-gray;
+        background-color: $red;
+    }
+}
+
+.btn-light {
+    @extend %disabled-light-shared;
+    @extend %primary-shared;
+
+    &:hover {
+        border: none;
     }
 }

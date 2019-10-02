@@ -20,7 +20,7 @@
 
     <div class="align-items-center d-flex justify-content-between">
         <a href="{% url 'password_reset' %}">{% trans "Forgot your password?" %}</a>
-        <button id="submit" class="btn btn-inactive" type="submit">{% trans "Log in" %}</button>
+        <button id="submit" class="btn btn-primary" type="submit" disabled>{% trans "Log in" %}</button>
     </div>
 </form>
 
@@ -36,13 +36,8 @@
         if (password.value) password.classList.remove('danger', 'inactive');
         else password.classList.add('inactive');
 
-        if (username.value && password.value) {
-            submit.classList.remove('btn-inactive');
-            submit.classList.add('btn-primary');
-        } else {
-            submit.classList.remove('btn-primary');
-            submit.classList.add('btn-inactive');
-        }
+        if (username.value && password.value) submit.disabled = false;
+        else submit.disabled = true;
     }
 </script>
 {% endblock %}

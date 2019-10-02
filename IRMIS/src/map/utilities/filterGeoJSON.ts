@@ -4,12 +4,12 @@ import { AllGeoJSON } from "@turf/helpers";
 import { FeatureCollection, GeoJsonProperties } from "geojson";
 import * as L from "leaflet";
 
-import { featureLookup, flyToBounds, layerLookup } from "./displayGeoJSON";
+import { featureLookup, flyToBounds, layerLookup } from "../map";
 import { FallbackLayerStyle, FixLayerStyleDefaults } from "./leaflet-style";
 
 import { KnownGeometries } from "../layers/KnownGeometries";
 
-function getFilterStyles(layerName: string): { [name: string]: L.PathOptions | L.StyleFunction<any> } {
+export function getFilterStyles(layerName: string): { [name: string]: L.PathOptions | L.StyleFunction<any> } {
     const layerNameOn = `${layerName}.on`;
     const layerNameOff = `${layerName}.off`;
 
@@ -29,24 +29,26 @@ function getFilterStyles(layerName: string): { [name: string]: L.PathOptions | L
 /** Applies the relevant '.on' or '.off' style for this layer as defined in KnownGeometries
  * based upon the returned value from the supplied filter function
  */
-export function filterFeatures(filterFunc: (properties: GeoJsonProperties) => boolean, featureType: string) {
+export let geoFeatureGroups: { [name: string]: L.FeatureGroup } = {};
+export function filterFeatures(idMap: { [ jname: string]: boolean }, featureType: string) {
     const layerName = featureType || "Road";
     const layerFilterStyles = getFilterStyles(layerName);
 
     const featureZoomSet: FeatureCollection = {type: "FeatureCollection", features: []};
 
     Object.values(featureLookup).forEach((feature: any) => {
-        const geoProperties = feature.properties;
-        const geoLayer = layerLookup[geoProperties.pk] as L.GeoJSON;
+        const featureId: string = feature.properties.pk.toString();
+        const geoLayer = layerLookup[featureId] as L.GeoJSON;
 
-        const styleSwitch = filterFunc(geoProperties);
-        const styleToSet = styleSwitch ? layerFilterStyles.styleOn : layerFilterStyles.styleOff;
+        // const styleSwitch = filterFunc(geoProperties);
+        // const styleToSet = styleSwitch ? layerFilterStyles.styleOn : layerFilterStyles.styleOff;
 
-        if (styleSwitch) {
-            featureZoomSet.features.push(feature);
-        }
+        // if (styleSwitch) {
+        //     featureZoomSet.features.push(feature);
+        // }
 
-        geoLayer.setStyle(styleToSet);
+        // geoLayer.setStyle(styleToSet);
+        geoLayer.setStyle(idMap[featureId] ? layerFilterStyles.styleOn : layerFilterStyles.styleOff);
     });
 
     if (featureZoomSet.features.length) {
