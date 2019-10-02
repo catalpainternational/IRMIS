@@ -4,6 +4,7 @@ import "datatables.net-buttons-bs4";
 import "datatables.net-buttons/js/buttons.html5";
 import "datatables.net-buttons/js/buttons.flash";
 import $ from "jquery";
+import { getFieldName } from "./road";
 import proj4 from "proj4";
 
 
@@ -144,17 +145,17 @@ function initializeDataTable() {
     const date = new Date();
     const columns = [
         {
-            title: 'Road Code', data: null,
+            title: getFieldName('road_code'), data: null,
             render: 'code',
             type: "roadCode"
         },
         {
-            title: 'Road Name', data: null,
+            title: getFieldName('road_name'), data: null,
             render: 'name',
             visible: false,
         },
         {
-            title: 'Link Code', data: null,
+            title: getFieldName('link_code'), data: null,
             render: 'linkCode'
         },
         {
@@ -163,77 +164,77 @@ function initializeDataTable() {
             visible: false,
         },
         {
-            title: 'Link Length (Km)', data: null,
+            title: getFieldName('link_length'), data: null,
             render: r => parseFloat(r.linkLength).toFixed(2)
         },
         {
-            title: 'Link Start Name', data: null,
+            title: getFieldName('link_start_name'), data: null,
             render: 'linkStartName'
         },
         {
-            title: 'Link Start Chainage (Km)', data: null,
+            title: getFieldName('link_start_chainage'), data: null,
             render: r => parseFloat(r.linkStartChainage).toFixed(2)
         },
         {
-            title: 'Link End Name', data: null,
+            title: getFieldName('link_end_name'), data: null,
             render: 'linkEndName'
         },
         {
-            title: 'Link End Chainage (Km)', data: null,
+            title: getFieldName('link_end_chainage'), data: null,
             render: r => parseFloat(r.linkEndChainage).toFixed(2)
         },
         {
-            title: 'Surface Type', data: null,
+            title: getFieldName('surface_type'), data: null,
             render: 'surfaceType'
         },
         {
-            title: 'Pavement Class', data: null,
+            title: getFieldName('pavement_class'), data: null,
             render: 'pavementClass'
         },
         {
-            title: 'Carriageway Width (m)', data: null,
+            title: getFieldName('carriageway_width'), data: null,
             render: r => parseFloat(r.carriagewayWidth).toFixed(2)
         },
         {
-            title: 'Administrative Area', data: null,
+            title: getFieldName('administrative_area'), data: null,
             render: 'administrativeArea'
         },
         {
-            title: 'Road Type', data: null,
+            title: getFieldName('road_type'), data: null,
             render: 'type',
             visible: false,
         },
         {
-            title: 'Technical Class', data: null,
+            title: getFieldName('technical_class'), data: null,
             render: 'technicalClass',
             visible: false,
         },
         {
-            title: 'Funding Source', data: null,
+            title: getFieldName('funding_source'), data: null,
             render: 'fundingSource',
             visible: false,
         },
         {
-            title: 'Road Status', data: null,
+            title: getFieldName('road_status'), data: null,
             render: 'status',
             visible: false,
         },
         {
-            title: 'Project', data: null,
+            title: getFieldName('project'), data: null,
             render: 'project',
             visible: false,
         },
         {
-            title: 'Surface Condition', data: null,
+            title: getFieldName('surface_condition'), data: null,
             render: 'surfaceCondition'
         },
         {
-            title: 'Maintenance needs', data: null,
+            title: getFieldName('maintenance_need'), data: null,
             render: 'maintenanceNeed',
             visible: false,
         },
         {
-            title: 'Traffic Data', data: null,
+            title: getFieldName('traffic_level'), data: null,
             render: 'trafficLevel',
             visible: false,
         },

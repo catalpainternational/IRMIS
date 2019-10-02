@@ -27,7 +27,6 @@ const TECHNICAL_CLASS_CHOICES = humanizeChoices('technical_class', 'code', 'name
 const MAINTENANCE_NEED_CHOICES = humanizeChoices('maintenance_need', 'code', 'name');
 const TRAFFIC_LEVEL_CHOICES = humanizeChoices('traffic_level');
 
-
 export class EstradaRoad extends Road {
 
     get id() {
@@ -125,4 +124,14 @@ export class EstradaRoad extends Road {
     get projectionEnd() {
         return this.getProjectionEnd();
     }
+}
+
+export function getFieldName(field) {
+    if (roadSchema[field]) { return roadSchema[field].display; }
+    else { return ""; }
+}
+
+export function getHelpText(field) {
+    if (roadSchema[field]) { return roadSchema[field].help_text; }
+    else { return ""; }
 }
