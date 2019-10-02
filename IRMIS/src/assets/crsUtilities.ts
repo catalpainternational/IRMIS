@@ -1,0 +1,48 @@
+// INPUT FORMAT: EPSG:32751 WGS 84 / UTM zone 51S
+export const projectionSource = "+proj=utm +zone=51 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
+// OUTPUT FORMAT: EPSG:4326 WGS 84
+export const projectionDest = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
+
+/**
+ * JS implementation of Python math -> modf() function
+ *
+ * Split a number into interger and remainder values.
+ * Returned items have same sign as original number.
+ *
+ * @param value - numeric value to be split
+ */
+function modf(value: number): [number, number] {
+    return [value % 1, Math.trunc(value)];
+}
+
+function splitOutDms(coord: number) {
+    const splitDeg = modf(coord);
+    const degrees = Math.trunc(splitDeg[1]);
+    const interm = modf(splitDeg[0] * 60);
+    const minutes = Math.abs(Math.trunc(interm[1]));
+    const seconds = Math.abs(Math.round((interm[0] * 60 + 0.00001) * 100) / 100);
+
+    return [degrees, minutes, seconds];
+}
+
+export function toDms(latLon: [number, number]): string {
+    if (!latLon) {
+        return "";
+    }
+
+    const xDms = splitOutDms(latLon[0]);
+    const yDms = splitOutDms(latLon[1]);
+
+    // calculate N/S (lat) & E/W (long)
+    const NorS = (xDms[0] < 0) ? "S" : "N";
+    const EorW = (yDms[0] < 0) ? "W" : "E";
+
+    // return formatted DMS string
+    return `${Math.abs(yDms[0])}\u00b0${yDms[1]}'${yDms[2]}"${NorS} ${Math.abs(xDms[0])}\u00b0${xDms[1]}'${xDms[2]}"${EorW}`;
+}
+
+export function toUtm(latLon: [number, number]): string {
+    return latLon
+        ? `${latLon[0].toFixed(5)}, ${latLon[1].toFixed(5)}`
+        : "";
+}
