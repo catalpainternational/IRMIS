@@ -29,36 +29,25 @@ Use `pip-compile --upgrade` to upgrade versions of libraries, then test the resu
 3. You can compile SASS and JavaScript assets with `yarn run dev`.
 4. Yarn can detect changes in these assets and rebuild them automatically. Use `yarn run watch`.
 
-## How to Import New Features from a Shapefile (.shp)
+## How to Import Initial data from sources
+
+The initial data for the estrada system  is commited to the repository here https://github.com/catalpainternational/estrada-data-sources
+Clone this repository before performing import. It's README contains information about the source of that data and the processes used to create it
 
 **Important**
 This entire sequence must be performed to completion before users are allowed to edit the imported features (roads).
 
-- Identify all of your sources of data, i.e. shapefiles AND Excel spreadsheets etc. and make sure you have access to them.
-- If the auxiliary sources of data (i.e. Excel spreadsheets) are more than trivial you'll want to do some preparatory work for step 4.2 before beginning the overall sequence.
+1. `./manage.py import_shapefiles ../../path/to/the/data-sources/repo/shapefiles`
+  - imports the shapefile geometries and copies properties across where useful
 
-1. Import the shapefile schema and data - NOTE: This does not import geometries
-    1. run `shp2pgsql -d -n path/to/your/.dbf source_table_name` and check the outputted SQL
-    2. read the help https://helpmanual.io/help/shp2pgsql/ if you need to make changes
-    3. run that sql against your database using `psql` or `manage.py dbshell`: eg `shp2pgsql -d -n ../../ngis/National_Road.dbf source_national_road | ./manage.py dbshell`
+2. `./manage.py import_csv ../../path/to/the/data-sources/repo/csv`
+  - copies road attributes from the csv ( from program excel files )
 
-2. Create unmanaged model code by using inspectdb
-    1. `./manage.py inspectdb source_table_name` this will output some django model code, drop it into models.py
-    2. you may have to edit these files to make them managed so that other developers and deployments create the tables
-    3. `./manage.py makemigrations`
-    4. `./manage.py migrate` - you may have to fake this locally ( as you will have already created the table )
+3. `./manage.py set_road_municipalities`
+  - sets road administrative areas from the road centroids
 
-3. Adapt and run the import code in the Importimport.py
-    1. Here be dragons, unexpected geometry types, wierd metadata, duplications.
-
-4. If there's any other metadata (e.g. in Excel) for the roads just added
-    1. get the Ids for the newly added roads, and enter that against each row in your data source (Excel file)
-     (note that you'll probably find that these don't line up properly)
-    2. follow the pattern you'll find in `update_roads_from_excel.sql` to update each record with the data from your data source
-
-5. Initialise the Reversion Audit History for the newly added roads
-    1. run the command `./manage.py createinitialrevisions assets.road --comment="Import from Shapefile"`
-
+4. `./manage.py collate_geometries`
+  - you have edited roads so re-collate
 
 ## Pre-Commit (Black formatter)
 
