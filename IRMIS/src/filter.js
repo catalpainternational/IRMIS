@@ -2,7 +2,7 @@
  * expose methods that change or query the global filter
  * communicate the filter function to the map and table
  * */
-
+import { filterFeatures } from "./map/utilities/filterGeoJSON";
 
 let filterState = {};
 

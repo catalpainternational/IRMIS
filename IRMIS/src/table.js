@@ -1,8 +1,4 @@
-import jsZip from "jszip";
 import "datatables.net-bs4";
-import "datatables.net-buttons-bs4";
-import "datatables.net-buttons/js/buttons.html5";
-import "datatables.net-buttons/js/buttons.flash";
 import $ from "jquery";
 import proj4 from "proj4";
 
@@ -50,9 +46,6 @@ let toUtm = (lat_long) => {
     if (lat_long) { return `${lat_long[0].toFixed(5)}, ${lat_long[1].toFixed(5)}`; }
     else { return ""; }
 }
-
-// needed for export to excel
-window.JSZip = jsZip;
 
 // when the roadManager has new roads, add them to the table
 document.addEventListener('estrada.roadManager.roadMetaDataAdded', (data) => {
@@ -134,9 +127,6 @@ window.addEventListener("load", () => {
     });
 
     initializeDataTable();
-
-    // Append table name onto DataTable generated layout
-    document.getElementsByClassName("dt-buttons").item(0).prepend(document.getElementById("table-name"));
 });
 
 function initializeDataTable() {
@@ -307,12 +297,6 @@ function initializeDataTable() {
         table.rows.add(pendingRows).draw();
         pendingRows = [];
     }
-
-    // Append toggle columns button onto DataTable generated layout
-    document.getElementsByClassName("dt-buttons").item(0).append(document.getElementById("select-data"));
-
-    // Append table name onto DataTable generated layout
-    document.getElementsByClassName("dt-buttons").item(0).prepend(document.getElementById("table-name"));
 }
 
 // Filter functionality

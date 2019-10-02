@@ -60,7 +60,6 @@
 		"geobuf": "^3.0.1",
 		"google-protobuf": "^3.9.1",
 		"jquery": "^3.4.1",
-		"jszip": "^3.2.2",
 		"leaflet": "^1.5.1",
 		"proj4": "^2.5.0",
 		"riot": "^4.5.0",
