@@ -1,6 +1,9 @@
 import "datatables.net-bs4";
+import "datatables.net-select";
 import $ from "jquery";
 import proj4 from "proj4";
+
+import { applyFilter, applyIdFilter } from './filter';
 
 let table;
 let pendingRows = [];
@@ -272,6 +275,9 @@ function initializeDataTable() {
                 columns: ":visible",
             },
         }],
+        search: {
+            regex: true, // Enable escaping of regular expression characters in the search term.
+        },
         select: {
             blurable: true,
             items: 'row',
@@ -279,6 +285,7 @@ function initializeDataTable() {
     });
 
     table.on('select', function (e, dt, type, indexes) {
+        alert('clicky');
         if (type === 'row') {
             var data = table.rows( indexes ).data().pluck( 'id' );
     

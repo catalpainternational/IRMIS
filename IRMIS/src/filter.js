@@ -44,7 +44,7 @@ export function clearAllFilters() {
 }
 
 // actually make the filter happen
-function applyFilter() {
+export function applyFilter() {
     document.dispatchEvent(new CustomEvent("estrada.filter.apply", {"detail": { filterState }}));
 }
 
