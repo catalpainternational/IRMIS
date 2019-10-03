@@ -2,8 +2,6 @@
  * expose methods that change or query the global filter
  * communicate the filter function to the map and table
  * */
-import { filterFeatures } from "./map/utilities/filterGeoJSON";
-
 let filterState = {};
 
 
@@ -58,16 +56,4 @@ export function clearAllFilters() {
 /** actually make the filter happen */
 export function applyFilter() {
     document.dispatchEvent(new CustomEvent("estrada.filter.apply", { "detail": { filterState } }));
-}
-
-/** actually make the filter by roadId happen */
-export function applyIdFilter(featureId) {
-
-    // filter function passed to map and table
-    function filter(properties) {
-        return properties.id === featureId;
-    }
-
-    // communicate the filter - just to the map
-    filterFeatures(filter);
 }

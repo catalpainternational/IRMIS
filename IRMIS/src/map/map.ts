@@ -1,4 +1,9 @@
 // tslint:disable-next-line: max-line-length
+import bbox from "@turf/bbox";
+import envelope from "@turf/envelope";
+import { AllGeoJSON } from "@turf/helpers";
+import { FeatureCollection } from "geojson";
+
 import { Feature, GeoJSON, Geometry } from "geojson";
 import * as L from "leaflet";
 
@@ -7,9 +12,9 @@ import { Config } from "./config";
 import { BaseLayers } from "./layers/BaseLayers";
 import { KnownGeometries } from "./layers/KnownGeometries";
 
-import { getFeatureType } from "./utilities/displayGeoJSON";
 import { getFilterStyles } from "./utilities/filterGeoJSON";
 import { FallbackLayerStyle, FixLayerStyleDefaults, styleGeometry, stylePoint } from "./utilities/leaflet-style";
+import { getFeatureType } from "./utilities/metaGeoJSON";
 
 import { getRoadPopupData } from "../roadManager.js";
 
@@ -21,19 +26,8 @@ export let geoFeatureGroups: { [name: string]: L.FeatureGroup } = {};
 export let featureLookup: { [name: string]: Feature<Geometry, any> } = {};
 export let layerLookup: { [name: string]: L.Layer } = {};
 
-document.addEventListener("estrada.filter.applied", (data: any) => {
-
-    const layerFilterStyles = getFilterStyles("Road");
-
-    Object.values(featureLookup).forEach((feature: any) => {
-        const featureId: string = feature.properties.pk.toString();
-        const geoLayer = layerLookup[featureId] as L.GeoJSON;
-
-        geoLayer.setStyle(data.detail.idMap[featureId] ? layerFilterStyles.styleOn : layerFilterStyles.styleOff);
-    });
-});
-
 export class Map {
+    /** Accepts a simple object and generates a span for each key value pair */
     private static buildPopup(popupData: {[name: string]: any}): string {
         let html = "";
 
@@ -65,8 +59,32 @@ export class Map {
         this.currentLayer = bl[Config.preferredBaseLayerName];
         this.currentLayer.addTo(this.lMap);
 
-        document.addEventListener("estrada.sideMenu.viewChanged", (data) => {
+        document.addEventListener("estrada.sideMenu.viewChanged", (data: Event) => {
             this.lMap.invalidateSize();
+        });
+
+        document.addEventListener("estrada.filter.applied", (data: Event) => {
+            const layerFilterStyles = getFilterStyles("Road");
+
+            const featureZoomSet: FeatureCollection = { type: "FeatureCollection", features: [] };
+            Object.values(featureLookup).forEach((feature: any) => {
+                const featureId: string = feature.properties.pk.toString();
+                const geoLayer = layerLookup[featureId] as L.GeoJSON;
+
+                const switchStyle = !!(data as CustomEvent).detail.idMap[featureId];
+                if (switchStyle) {
+                    featureZoomSet.features.push(feature);
+                }
+
+                geoLayer.setStyle(switchStyle ? layerFilterStyles.styleOn : layerFilterStyles.styleOff);
+            });
+
+            const bounds = (featureZoomSet.features.length) ? envelope(featureZoomSet as AllGeoJSON) : Config.tlBounds;
+            const bb = bbox(bounds);
+
+            // Don't use flyToBounds
+            // - it sounds nice, but screws up tile and geoJSON alignment when the zoom level remains the ame
+            this.lMap.fitBounds(new L.LatLngBounds([bb[1], bb[0]], [bb[3], bb[2]]));
         });
 
         return this.lMap;
@@ -83,10 +101,6 @@ export class Map {
 
     public invalidateSize() {
         this.lMap.invalidateSize();
-    }
-
-    public flyToBounds(boundingBox: L.LatLngBounds) {
-        this.lMap.flyToBounds(boundingBox);
     }
 
     private registerFeature(feature: Feature<Geometry, any>, layer: L.Layer) {
@@ -122,7 +136,7 @@ export class Map {
         };
 
         // Actually build the GeoJSON layer, and bind the popup behaviour
-        const geoLayer = L.geoJSON(json, geoJsonOptions).bindPopup(this.getPopupMethod);
+        const geoLayer = L.geoJSON(json, geoJsonOptions).bindPopup(this.getPopup);
 
         // Add it to the feature group
         geoFeatureGroup.addLayer(geoLayer);
@@ -136,7 +150,7 @@ export class Map {
         return Promise.resolve(true);
     }
 
-    private getPopupMethod(layer: any): string {
+    private getPopup(layer: any): string {
         const id = parseInt(layer.feature.properties.pk, 10);
         const roadPopupData = getRoadPopupData(id) as {[name: string]: any};
 

@@ -2,7 +2,7 @@ import "datatables.net-bs4";
 import "datatables.net-select";
 import $ from "jquery";
 
-import { applyFilter, applyIdFilter } from './filter';
+import { applyFilter } from './filter';
 import { getFieldName } from "./road";
 import { exportCsv } from "./exportCsv";
 
@@ -263,23 +263,24 @@ function initializeDataTable() {
         },
         select: {
             blurable: true,
-            items: 'row',
+            items: "row",
         }
     });
 
-    table.on('select', function (e, dt, type, indexes) {
-        if (type === 'row') {
+    table.on("select", function (e, dt, type, indexes) {
+        if (type === "row") {
             const data = table.rows(indexes).data().pluck("id");
             
-            const roadId = data["0"];
-    
-            // Use the Id as a filter
-            applyIdFilter(roadId);
+            const idMap = {}
+            idMap[data["0"]] = true;
+
+            // communicate the filter
+            document.dispatchEvent(new CustomEvent("estrada.filter.applied", {"detail": { idMap }}));
         }
     });
 
-    table.on('deselect', function (e, dt, type, indexes) {
-        // reset to the selected filters
+    table.on("deselect", function (e, dt, type, indexes) {
+        // reset to the previously selected filters
         applyFilter();
     });
 

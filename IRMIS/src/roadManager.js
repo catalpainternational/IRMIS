@@ -54,7 +54,10 @@ function filterRoads(filterState) {
         // every filter state must match
         return Object.entries(filterState).every(([slug, values]) => {
             // empty array means all match
-            if (values.length === 0) return true;
+            if (!values.length) {
+                return true;
+            }
+            
             // or some values of one state must match
             return values.some(value => {
                 let propertyGetter = slugToPropertyGetter[slug];

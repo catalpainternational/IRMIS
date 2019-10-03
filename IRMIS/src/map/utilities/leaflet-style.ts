@@ -3,7 +3,7 @@ import { CircleMarkerOptions } from "leaflet";
 
 import { GeoDataStyle, IPointToLayerBaseStyle, IPointToLayerHtmlStyle } from "../models/geo-data-style";
 
-import { getFeatureType } from "./displayGeoJSON";
+import { getFeatureType } from "./metaGeoJSON";
 import { hashFeatureTypeName } from "./text";
 
 /** Generate a fall-back colour based on the featureType name */
@@ -37,33 +37,27 @@ export function FixLayerStyleDefaults(styleRecord: GeoDataStyle) {
   }
 }
 
-/** Creates a name to use in the overlay control from the supplied name and stylerecord
- *
- * Note: If we are not showing a leaflet layer control then this function and all references to it should be deleted.
+/** Creates a symbology + name to use in the filter control
+ * from the supplied name and stylerecord
  */
 export function CreateOverlayControlName(layerName: string, styleRecord: GeoDataStyle): string {
   if (!styleRecord.style) {
     styleRecord.style = { color: "BLACK"};
   }
 
+  function addSvgAttribute(value: any, attributeName: string): string {
+    return (!!value) ? ` ${attributeName}=${value}` : "";
+  }
+
   const lineStyle = styleRecord.style;
   let lineStyleSvg = '<svg width="12" height="12"><g>';
-  lineStyleSvg += `<path viewBox="0 0 12 12" fill-rule="evenodd" d="M0 0 L12 12" stroke="${lineStyle.color}"`;
-  if (!!lineStyle.opacity) {
-    lineStyleSvg += ` stroke-opacity=${lineStyle.opacity}`;
-  }
-  if (!!lineStyle.weight) {
-    lineStyleSvg += ` stroke-width=${lineStyle.weight}`;
-  }
-  if (!!lineStyle.fillColor) {
-    lineStyleSvg += ` fill=${lineStyle.fillColor}`;
-  }
-  if (!!lineStyle.fillOpacity) {
-    lineStyleSvg += ` fill-opacity=${lineStyle.fillOpacity}`;
-  }
-  if (!!lineStyle.dashArray) {
-    lineStyleSvg += ` stroke-dasharray=${lineStyle.dashArray}`;
-  }
+  lineStyleSvg += '<path viewBox="0 0 12 12" fill-rule="evenodd" d="M0 0 L12 12"';
+  lineStyleSvg += addSvgAttribute(lineStyle.color, "stroke");
+  lineStyleSvg += addSvgAttribute(lineStyle.opacity, "stroke-opacity");
+  lineStyleSvg += addSvgAttribute(lineStyle.weight, "stroke-width");
+  lineStyleSvg += addSvgAttribute(lineStyle.fillColor, "fill");
+  lineStyleSvg += addSvgAttribute(lineStyle.fillOpacity, "fill-opacity");
+  lineStyleSvg += addSvgAttribute(lineStyle.dashArray, "stroke-dasharray");
   lineStyleSvg += "</path></g></svg>";
 
   return `${layerName} ${lineStyleSvg}`;
