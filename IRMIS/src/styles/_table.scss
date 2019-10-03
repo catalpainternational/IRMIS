@@ -117,7 +117,7 @@ table.table {
 
     &.table-hover {
         tbody tr:hover {
-            background-color: $table-hover;
+            background-color: $alt-green;
             cursor: pointer;
 
             td {
