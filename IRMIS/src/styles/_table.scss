@@ -74,7 +74,6 @@ div.dataTables_wrapper {
     }
 }
 
-$table-hover: $alt-green;
 
 // Override Bootstrap table styles
 table.table {
@@ -118,7 +117,7 @@ table.table {
 
     &.table-hover {
         tbody tr:hover {
-            background-color: $table-hover;
+            background-color: $alt-green;
             cursor: pointer;
 
             td {
