@@ -14,7 +14,7 @@ import "./side_menu";
 import "./top_menu";
 import { Map } from "./map/map";
 
-const estradaMap = new Map();
+export const estradaMap = new Map();
 
 window.addEventListener("load", () => {
     // Set up the map and table - but without any data for either
@@ -27,6 +27,13 @@ window.addEventListener("load", () => {
             geoJsonDetails.forEach(geoJsonDetail => {
                 getGeoJsonDetail(geoJsonDetail)
                     .then(geoJson => {
+                        // add in road metadata to the GeoJSON that we'll need
+                        // for filtering and for styling
+                        geoJson.features.forEach((feature) => {
+                            feature.properties.id = Number(feature.properties.pk) || 0;
+                            feature.properties.featureType = "Road";
+                        });
+                        
                         // add to map
                         estradaMap.addMapData(geoJson);
                     });

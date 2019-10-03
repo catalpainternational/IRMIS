@@ -1,4 +1,5 @@
 import { getRoadMetadata, getRoadsMetadata, getRoadsMetadataChunks, putRoadMetadata } from "./assets/assets_api";
+import { slugToPropertyGetter } from "./filter";
 
 let roads = {}
 let filteredRoads = {}
@@ -67,36 +68,29 @@ function filterRoads(filterState) {
         idMap[road.getId().toString()] = true;
         return idMap;
     }, {});
+
     document.dispatchEvent(new CustomEvent("estrada.filter.applied", {"detail": { idMap }}));
 }
 
-export function roadPopup(id) {
+/** Get a subset of information (code and name) for use in building a popup on the map */
+export function getRoadPopupData(id) {
     const road = roads[id];
-    var code, name;
-    let html = '';
+    const roadPopupData = {};
+    if (!road) {
+        // If the user clicks on the road in the map before the data is in protoBuf
+        // we may not have the matching info to show them.
+        // So just exit politely.
+        roadPopupData[window.gettext("Data")] = window.gettext("Loading");
+        return roadPopupData;
+    }
+
+    let code, name;
     if (code = road.getRoadCode()) {
-        html += `
-        <span class="popup">
-            <span class="popup label">Code: </span>
-            <span class="popup value">${code}</span>
-        </span>`;
+        roadPopupData.Code = code;
     }
     if (name = road.getRoadName()) {
-        html += `
-        <span class="popup">
-            <span class="popup label">Name: </span>
-            <span class="popup value">${name}</span>
-        </span>`;
-    }
-    return html;
+        roadPopupData.Name = name;
+    };
+    
+    return roadPopupData;
 }
-
-// we'll need to add more in here as we add more filters
-const slugToPropertyGetter = {
-    road_code: 'getRoadCode',
-    road_type: 'getRoadType',
-    surface_type: 'getSurfaceType',
-    surface_condition: 'getSurfaceCondition',
-    road_status: 'getRoadStatus',
-    administrative_area: 'getAdministrativeArea',
-};

@@ -2,14 +2,16 @@
 import { Feature, GeoJSON, Geometry } from "geojson";
 import * as L from "leaflet";
 
-import { roadPopup } from "../roadManager.js";
 import { Config } from "./config";
+
 import { BaseLayers } from "./layers/BaseLayers";
 import { KnownGeometries } from "./layers/KnownGeometries";
+
 import { getFeatureType } from "./utilities/displayGeoJSON";
 import { getFilterStyles } from "./utilities/filterGeoJSON";
-
 import { FallbackLayerStyle, FixLayerStyleDefaults, styleGeometry, stylePoint } from "./utilities/leaflet-style";
+
+import { getRoadPopupData } from "../roadManager.js";
 
 /** The collection of all GeoJSON elements currently added to the map,
  * organised by their featureType
@@ -32,6 +34,20 @@ document.addEventListener("estrada.filter.applied", (data: any) => {
 });
 
 export class Map {
+    private static buildPopup(popupData: {[name: string]: any}): string {
+        let html = "";
+
+        Object.keys(popupData).forEach((key) => {
+            html += `
+            <span class="popup">
+                <span class="popup label">${key}: </span>
+                <span class="popup value">${popupData[key]}</span>
+            </span>`;
+        });
+
+        return html;
+    }
+
     private lMap = {} as L.Map;
     private zoomControl = {} as L.Control.Zoom;
     private currentLayer = {} as L.TileLayer;
@@ -69,6 +85,10 @@ export class Map {
         this.lMap.invalidateSize();
     }
 
+    public flyToBounds(boundingBox: L.LatLngBounds) {
+        this.lMap.flyToBounds(boundingBox);
+    }
+
     private registerFeature(feature: Feature<Geometry, any>, layer: L.Layer) {
         featureLookup[feature.properties.pk] = feature;
         layerLookup[feature.properties.pk] = layer;
@@ -101,7 +121,7 @@ export class Map {
                 styleGeometry(feature, styleRecord),
         };
 
-        // Actually build the GeoJSON layer
+        // Actually build the GeoJSON layer, and bind the popup behaviour
         const geoLayer = L.geoJSON(json, geoJsonOptions).bindPopup(this.getPopupMethod);
 
         // Add it to the feature group
@@ -118,10 +138,8 @@ export class Map {
 
     private getPopupMethod(layer: any): string {
         const id = parseInt(layer.feature.properties.pk, 10);
-        return roadPopup(id);
-    }
-}
+        const roadPopupData = getRoadPopupData(id) as {[name: string]: any};
 
-export function flyToBounds(boundingBox: L.LatLngBounds) {
-    ((window as any).map.lMap as L.Map).flyToBounds(boundingBox);
+        return Map.buildPopup(roadPopupData);
+    }
 }

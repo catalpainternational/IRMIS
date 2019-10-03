@@ -268,12 +268,13 @@ function initializeDataTable() {
     });
 
     table.on('select', function (e, dt, type, indexes) {
-        alert('clicky');
         if (type === 'row') {
-            var data = table.rows( indexes ).data().pluck( 'id' );
+            const data = table.rows(indexes).data().pluck("id");
+            
+            const roadId = data["0"];
     
             // Use the Id as a filter
-            applyIdFilter(data['0']);
+            applyIdFilter(roadId);
         }
     });
 
