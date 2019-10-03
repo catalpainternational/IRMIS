@@ -68,7 +68,7 @@ function change_view(e) {
     }
     e.currentTarget.classList.add("active");
 
-    document.dispatchEvent(new CustomEvent("estrada.sideMenu.viewChanged", {"detail": { viewName }}));
+    document.dispatchEvent(new CustomEvent("estrada.sideMenu.viewChanged", { "detail": { viewName } }));
 
 }
 
@@ -180,5 +180,4 @@ function toggleFilterUIState(slug) {
     initFilterUIState(slug);
     filterUIState[slug] = !filterUIState[slug];
 }
-
 
