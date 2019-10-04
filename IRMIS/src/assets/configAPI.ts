@@ -1,13 +1,14 @@
 export class ConfigAPI {
     public static requestAssetUrl = `${window.location.origin}/assets`;
+    public static requestSurveyUrl = `${window.location.origin}/surveys`;
 
     public static requestMediaUrl = `${window.location.origin}/media`;
 
-    /** Build the fetch RequestInit structure
+    /** Build the fetch RequestInit structure for all requests
      *
      * @param method - HTTP method required, defaults to "GET"
      */
-    public static requestAssetInit(method: any = "GET"): RequestInit {
+    public static requestInit(method: any = "GET"): RequestInit {
         const noCSRF = ["GET", "HEAD", "OPTIONS", "TRACE"].indexOf(method) > -1;
 
         if (noCSRF) {
