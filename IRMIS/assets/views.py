@@ -30,7 +30,12 @@ from .models import (
     SurfaceType,
     PavementClass,
 )
-from .serializers import RoadSerializer, RoadMetaOnlySerializer, RoadToWGSSerializer
+from .serializers import (
+    RoadSerializer,
+    RoadMetaOnlySerializer,
+    RoadToWGSSerializer,
+    SurveySerializer,
+)
 
 
 def get_etag(request, pk=None):
@@ -230,10 +235,12 @@ def protobuf_road_set(request, chunk_name=None):
     )
 
 
-def road_surveys(road_code):
-    surveys = (
-        Survey.objects.filter(road=road_code)
-        .order_by("chainage_start", "-date_updated")
-        .all()
+def road_surveys(request, road_code):
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+
+    queryset = Survey.objects.filter(road=road_code).order_by(
+        "chainage_start", "-date_updated"
     )
-    return JsonResponse(list(surveys), safe=False)
+    serializer = SurveySerializer(queryset, many=True)
+    return JsonResponse(list(serializer.data))

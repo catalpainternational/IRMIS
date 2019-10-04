@@ -24,5 +24,5 @@ urlpatterns = [
     path("protobuf_roads", protobuf_road_set, name="protobuf_roads"),
     path("protobuf_roads/<slug:chunk_name>/", protobuf_road_set, name="protobuf_roads"),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
-    path("road_surveys", road_surveys, name="road_surveys"),
+    path("road_surveys/<slug:road_code>", road_surveys, name="road_surveys"),
 ]
