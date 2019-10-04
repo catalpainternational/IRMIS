@@ -5,6 +5,7 @@ import django.contrib.postgres.fields.hstore
 from django.contrib.postgres.operations import HStoreExtension
 from django.db import migrations, models
 import django.db.models.deletion
+import assets.models
 
 
 class Migration(migrations.Migration):
