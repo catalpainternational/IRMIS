@@ -12,7 +12,7 @@ export const projToWGS84 = proj4("EPSG:32751", "WGS84");
  *
  * @param value - numeric value to be split
  */
-function modf(value){
+function modf(value) {
     return [value % 1, Math.trunc(value)];
 }
 
