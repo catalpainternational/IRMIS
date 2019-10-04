@@ -239,8 +239,13 @@ def road_surveys(request, road_code):
     if not request.user.is_authenticated:
         return HttpResponseForbidden()
 
-    queryset = Survey.objects.filter(road=road_code).order_by(
-        "chainage_start", "-date_updated"
+    queryset = (
+        Survey.objects.filter(road="A01")
+        .order_by("road", "chainage_start", "chainage_end", "-date_updated")
+        .values(
+            "road", "user", "chainage_start", "chainage_end", "date_updated", "values"
+        )
+        .distinct("road", "chainage_start", "chainage_end")
     )
     serializer = SurveySerializer(queryset, many=True)
     return JsonResponse(serializer.data, safe=False)
