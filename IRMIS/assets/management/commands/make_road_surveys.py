@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-
+from django.db import IntegrityError
 import reversion
 from assets.models import Road, Survey
 
@@ -11,18 +11,13 @@ class Command(BaseCommand):
         roads = Road.objects.all()
         created = 0
         for road in roads:
-            if not road.link_start_chainage or not road.link_end_chainage:
-                print(
-                    "Road (%s) - %s missing Start/End Chainage. Survey was not created."
-                    % (road.road_code, road.link_code)
-                )
-            else:
+            try:
                 with reversion.create_revision():
                     s = Survey.objects.create(
                         **{
-                            "road": str(road.road_code),
-                            "chainage_start": str(road.link_start_chainage),
-                            "chainage_end": str(road.link_end_chainage),
+                            "road": road.road_code,
+                            "chainage_start": road.link_start_chainage,
+                            "chainage_end": road.link_end_chainage,
                             "values": {
                                 "surface_condition": str(road.surface_condition),
                                 "traffic_level": str(road.traffic_level),
@@ -34,6 +29,16 @@ class Command(BaseCommand):
                         "Survey created programmatically from RoadLink"
                     )
                     created += 1
+            except IntegrityError:
+                print(
+                    "Survey Skipped: Road(%s) missing Road Code(%s) OR Chainage Start(%s)/End(%s)"
+                    % (
+                        road.pk,
+                        road.road_code,
+                        road.link_start_chainage,
+                        road.link_end_chainage,
+                    )
+                )
         print(
             "~~~ COMPLETE: Created %s Surveys from initial Road Link data ~~~ "
             % created
