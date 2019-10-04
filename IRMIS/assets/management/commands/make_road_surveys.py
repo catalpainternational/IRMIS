@@ -9,16 +9,33 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         roads = Road.objects.all()
-
+        created = 0
         for road in roads:
-            with reversion.create_revision():
-                s = Survey()
-                s.road = road.road_code
-                s.chainage_start = road.link_start_chainage
-                s.chainage_end = road.link_end_chainage
-                s.values = {
-                    "surface_condition": road.surface_condition,
-                    "traffic_level": road.traffic_level,
-                }
-                s.save()
-                reversion.set_comment("Survey created progrmmatically from RoadLink")
+            if not road.link_start_chainage or not road.link_end_chainage:
+                print(
+                    "Road (%s) - %s missing Start/End Chainage. Survey was not created."
+                    % (road.road_code, road.link_code)
+                )
+            else:
+                with reversion.create_revision():
+                    s = Survey.objects.create(
+                        **{
+                            "road": str(road.road_code),
+                            "chainage_start": str(road.link_start_chainage),
+                            "chainage_end": str(road.link_end_chainage),
+                            "values": {
+                                "surface_condition": str(road.surface_condition),
+                                "traffic_level": str(road.traffic_level),
+                            },
+                        }
+                    )
+                    s.save()
+                    reversion.set_comment(
+                        "Survey created programmatically from RoadLink"
+                    )
+                    created += 1
+        print(
+            "~~~ COMPLETE: Created %s Surveys from initial Road Link data ~~~ "
+            % created
+        )
+
