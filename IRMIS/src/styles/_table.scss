@@ -18,30 +18,28 @@
     }
 }
 
+// Style the dataTable heading
+.dt-buttons {
+    justify-content: flex-end;
+    background-color: $white;
+    align-items: center;
+    padding: 3px 15px;
+    display: flex;
+
+    div.btn {
+        margin-left: 5px;
+        flex: inherit;
+    }
+
+    h6 {
+        margin-bottom: 0;
+        padding-top: 2px;
+    }
+}
+
 // Override DataTables.net styles
 
 div.dataTables_wrapper {
-    .dt-buttons {
-        justify-content: flex-end;
-        background-color: $white;
-        align-items: center;
-        padding: 3px 15px;
-        display: flex;
-
-        button, div.btn {
-            flex: inherit;
-        }
-
-        div.btn {
-            margin-left: 5px;
-        }
-
-        h6 {
-            margin-bottom: 0;
-            padding-top: 2px;
-        }
-    }
-
     table.dataTable td.dataTables_empty {
         text-align: left;
     }

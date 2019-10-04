@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-25 06:32+0000\n"
+"POT-Creation-Date: 2019-10-02 07:35+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -181,6 +181,93 @@ msgid "Choose road link technical class according to the 2010 Road Geometric Des
 msgstr ""
 
 msgid "Road Inventory"
+msgstr ""
+
+msgid "Export all"
+msgstr ""
+
+msgid "Select data"
+msgstr ""
+
+msgid "Road Inventory Data"
+msgstr ""
+
+msgid "Road code"
+msgstr ""
+
+msgid "Road name"
+msgstr ""
+
+msgid "Link code"
+msgstr ""
+
+msgid "Link name"
+msgstr ""
+
+msgid "Link start name"
+msgstr ""
+
+msgid "Link start chainage"
+msgstr ""
+
+msgid "Link end name"
+msgstr ""
+
+msgid "Link end chainage"
+msgstr ""
+
+msgid "Surface type"
+msgstr ""
+
+msgid "Pavement class"
+msgstr ""
+
+msgid "Carriageway width"
+msgstr ""
+
+msgid "Administrative area"
+msgstr ""
+
+msgid "Road type"
+msgstr ""
+
+msgid "Technical class"
+msgstr ""
+
+msgid "Funding source"
+msgstr ""
+
+msgid "Road status"
+msgstr ""
+
+msgid "Project"
+msgstr ""
+
+msgid "Start Point - DMS"
+msgstr ""
+
+msgid "End Point - DMS"
+msgstr ""
+
+msgid "Start Point - UTM"
+msgstr ""
+
+msgid "End Point - UTM"
+msgstr ""
+
+msgid "Road Condition Data"
+msgstr ""
+
+msgid "Surface condition"
+msgstr ""
+
+msgid "Maintenance needs"
+msgstr ""
+
+msgid "Traffic data"
+msgstr ""
+
+msgid "Return to default selection"
 msgstr ""
 
 msgid "View"

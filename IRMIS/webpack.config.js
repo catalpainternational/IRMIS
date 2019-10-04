@@ -4,10 +4,10 @@ const path = require('path');
 module.exports = {
     context: path.resolve(__dirname, './src'),
     entry: {
-        app: './estrada.js',
+        estrada: './estrada.js',
     },
     output: {
-        filename: 'irmis.js',
+        filename: '[name].js',
         library: 'roads',
         libraryTarget: 'window',
     },
@@ -83,6 +83,11 @@ module.exports = {
                 },
             },
         ],
+    },
+    optimization: {
+        splitChunks: {
+            chunks: 'all', // include all types of chunks
+        }
     },
     plugins: [
         new CleanWebpackPlugin(),

@@ -11,7 +11,7 @@
                     <option if="{ area.id != props.road.getAdministrativeArea() }" value="{ area.id }">{ area.name }</option>
                 </template>
             </select>
-            <small class="form-text text-muted">{ window.gettext("Choose the administrative area of the road") }</small>
+            <small class="form-text text-muted">{ props.getHelpText("administrative_area") }</small>
         </div>
     </section>
 
@@ -25,7 +25,7 @@
                     <option if="{ type[0] !== props.road.getRoadType() }" value="{ type[0] }">{ type[1] }</option>
                 </template>
             </select>
-            <small class="form-text text-muted">{ window.gettext("Choose the administrative class of the road") }</small>
+            <small class="form-text text-muted">{ props.getHelpText("road_type") }</small>
         </div>
     </section>
 
