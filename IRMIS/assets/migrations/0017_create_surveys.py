@@ -63,11 +63,10 @@ class Migration(migrations.Migration):
                 ("values", django.contrib.postgres.fields.hstore.HStoreField()),
                 (
                     "road",
-                    models.ForeignKey(
-                        null=True,
-                        on_delete=django.db.models.deletion.SET_NULL,
-                        to="assets.Road",
-                        verbose_name="Road",
+                    models.CharField(
+                        max_length=25,
+                        validators=[assets.models.no_spaces],
+                        verbose_name="road code",
                     ),
                 ),
                 (

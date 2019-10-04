@@ -62,8 +62,8 @@ class TechnicalClass(models.Model):
 
 
 class Survey(models.Model):
-    road = models.ForeignKey(
-        "Road", verbose_name=_("Road"), null=True, on_delete=models.SET_NULL
+    road = models.CharField(
+        verbose_name=_("Road Code"), validators=[no_spaces], max_length=25
     )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
