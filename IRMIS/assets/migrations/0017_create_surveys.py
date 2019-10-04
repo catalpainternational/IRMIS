@@ -2,6 +2,7 @@
 
 from django.conf import settings
 import django.contrib.postgres.fields.hstore
+from django.contrib.postgres.operations import HStoreExtension
 from django.db import migrations, models
 import django.db.models.deletion
 
@@ -10,21 +11,74 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('assets', '0016_auto_20190927_0542'),
+        ("assets", "0016_auto_20190927_0542"),
     ]
 
     operations = [
+        HStoreExtension(),
         migrations.CreateModel(
-            name='Survey',
+            name="Survey",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date_created', models.DateTimeField(auto_now_add=True, verbose_name='Date Created')),
-                ('date_updated', models.DateTimeField(auto_now=True, verbose_name='Date Updated')),
-                ('chainage_start', models.DecimalField(blank=True, decimal_places=5, help_text='Enter chainage for survey starting point', max_digits=12, null=True, verbose_name='Start Chainage (Km)')),
-                ('chainage_end', models.DecimalField(blank=True, decimal_places=5, help_text='Enter chainage for survey ending point', max_digits=12, null=True, verbose_name='End Chainage (Km)')),
-                ('values', django.contrib.postgres.fields.hstore.HStoreField()),
-                ('road', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='assets.Road', verbose_name='Road')),
-                ('user', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL, verbose_name='User')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "date_created",
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name="Date Created"
+                    ),
+                ),
+                (
+                    "date_updated",
+                    models.DateTimeField(auto_now=True, verbose_name="Date Updated"),
+                ),
+                (
+                    "chainage_start",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=5,
+                        help_text="Enter chainage for survey starting point",
+                        max_digits=12,
+                        null=True,
+                        verbose_name="Start Chainage (Km)",
+                    ),
+                ),
+                (
+                    "chainage_end",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=5,
+                        help_text="Enter chainage for survey ending point",
+                        max_digits=12,
+                        null=True,
+                        verbose_name="End Chainage (Km)",
+                    ),
+                ),
+                ("values", django.contrib.postgres.fields.hstore.HStoreField()),
+                (
+                    "road",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="assets.Road",
+                        verbose_name="Road",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="User",
+                    ),
+                ),
             ],
         ),
     ]
