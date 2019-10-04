@@ -45,4 +45,4 @@ class RoadMetaOnlySerializer(serializers.ModelSerializer):
 class SurveySerializer(serializers.ModelSerializer):
     class Meta:
         model = Survey
-        exclude = []
+        exclude = ["date_created"]

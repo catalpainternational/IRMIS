@@ -29,6 +29,7 @@ from .models import (
     RoadStatus,
     SurfaceType,
     PavementClass,
+    Survey
 )
 from .serializers import (
     RoadSerializer,
@@ -241,7 +242,7 @@ def all_surveys(request):
 
     queryset = Survey.objects.order_by(
         "road", "chainage_start", "chainage_end", "-date_updated"
-    ).values("road", "user", "chainage_start", "chainage_end", "date_updated", "values")
+    )
     serializer = SurveySerializer(queryset, many=True)
     return JsonResponse(serializer.data, safe=False)
 
@@ -253,9 +254,6 @@ def road_surveys(request, road_code):
     queryset = (
         Survey.objects.filter(road=road_code)
         .order_by("road", "chainage_start", "chainage_end", "-date_updated")
-        .values(
-            "road", "user", "chainage_start", "chainage_end", "date_updated", "values"
-        )
         .distinct("road", "chainage_start", "chainage_end")
     )
     serializer = SurveySerializer(queryset, many=True)
