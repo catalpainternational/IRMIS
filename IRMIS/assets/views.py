@@ -228,3 +228,9 @@ def protobuf_road_set(request, chunk_name=None):
     return HttpResponse(
         roads_protobuf.SerializeToString(), content_type="application/octet-stream"
     )
+
+
+def road_surveys(road_pk):
+    road = get_object_or_404(Road.objects.all(), pk=road_pk)
+    surveys = Survey.objects.filter(road=road).all()
+    return JsonResponse(list(surveys), safe=False)
