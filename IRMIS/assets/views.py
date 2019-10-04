@@ -235,6 +235,17 @@ def protobuf_road_set(request, chunk_name=None):
     )
 
 
+def all_surveys(request):
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+
+    queryset = Survey.objects.order_by(
+        "road", "chainage_start", "chainage_end", "-date_updated"
+    ).values("road", "user", "chainage_start", "chainage_end", "date_updated", "values")
+    serializer = SurveySerializer(queryset, many=True)
+    return JsonResponse(serializer.data, safe=False)
+
+
 def road_surveys(request, road_code):
     if not request.user.is_authenticated:
         return HttpResponseForbidden()

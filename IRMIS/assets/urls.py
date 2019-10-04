@@ -8,6 +8,7 @@ from .views import (
     protobuf_road,
     road_update,
     road_surveys,
+    all_surveys,
 )
 
 router = routers.DefaultRouter()
@@ -24,5 +25,6 @@ urlpatterns = [
     path("protobuf_roads", protobuf_road_set, name="protobuf_roads"),
     path("protobuf_roads/<slug:chunk_name>/", protobuf_road_set, name="protobuf_roads"),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
+    path("all_surveys", all_surveys, name="all_surveys"),
     path("road_surveys/<slug:road_code>", road_surveys, name="road_surveys"),
 ]
