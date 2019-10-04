@@ -243,4 +243,4 @@ def road_surveys(request, road_code):
         "chainage_start", "-date_updated"
     )
     serializer = SurveySerializer(queryset, many=True)
-    return JsonResponse(list(serializer.data))
+    return JsonResponse(serializer.data, safe=False)
