@@ -240,7 +240,7 @@ def road_surveys(request, road_code):
         return HttpResponseForbidden()
 
     queryset = (
-        Survey.objects.filter(road="A01")
+        Survey.objects.filter(road=road_code)
         .order_by("road", "chainage_start", "chainage_end", "-date_updated")
         .values(
             "road", "user", "chainage_start", "chainage_end", "date_updated", "values"
