@@ -1,7 +1,8 @@
-// INPUT FORMAT: EPSG:32751 WGS 84 / UTM zone 51S
-export const projectionSource = "+proj=utm +zone=51 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
-// OUTPUT FORMAT: EPSG:4326 WGS 84
-export const projectionDest = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
+import proj4 from "proj4";
+
+// INPUT FORMAT: EPSG:32751 WGS 84 / UTM zone 51S - OUTPUT FORMAT: EPSG:4326 WGS 84
+proj4.defs("EPSG:32751", "+proj=utm +zone=51 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs");
+export const projToWGS84 = proj4("EPSG:32751", "WGS84");
 
 /**
  * JS implementation of Python math -> modf() function
@@ -15,7 +16,7 @@ function modf(value: number): [number, number] {
     return [value % 1, Math.trunc(value)];
 }
 
-function splitOutDms(coord: number) {
+function splitOutDms(coord: number): number[] {
     const splitDeg = modf(coord);
     const degrees = Math.trunc(splitDeg[1]);
     const interm = modf(splitDeg[0] * 60);
