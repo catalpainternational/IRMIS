@@ -230,7 +230,10 @@ def protobuf_road_set(request, chunk_name=None):
     )
 
 
-def road_surveys(road_pk):
-    road = get_object_or_404(Road.objects.all(), pk=road_pk)
-    surveys = Survey.objects.filter(road=road).all()
+def road_surveys(road_code):
+    surveys = (
+        Survey.objects.filter(road=road_code)
+        .order_by("chainage_start", "-date_updated")
+        .all()
+    )
     return JsonResponse(list(surveys), safe=False)
