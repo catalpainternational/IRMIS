@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 
 import reversion
-from assets.models import Road
+from assets.models import Road, Survey
 
 
 class Command(BaseCommand):
@@ -21,4 +21,4 @@ class Command(BaseCommand):
                     "traffic_level": road.traffic_level,
                 }
                 s.save()
-                reversion.set_comment("Survey created from RoadLink")
+                reversion.set_comment("Survey created progrmmatically from RoadLink")
