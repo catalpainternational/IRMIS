@@ -12,11 +12,11 @@ export const projToWGS84 = proj4("EPSG:32751", "WGS84");
  *
  * @param value - numeric value to be split
  */
-function modf(value: number): [number, number] {
+function modf(value){
     return [value % 1, Math.trunc(value)];
 }
 
-function splitOutDms(coord: number): number[] {
+function splitOutDms(coord) {
     const splitDeg = modf(coord);
     const degrees = Math.trunc(splitDeg[1]);
     const interm = modf(splitDeg[0] * 60);
@@ -26,7 +26,7 @@ function splitOutDms(coord: number): number[] {
     return [degrees, minutes, seconds];
 }
 
-export function toDms(latLon: [number, number]): string {
+export function toDms(latLon) {
     if (!latLon) {
         return "";
     }
@@ -42,7 +42,7 @@ export function toDms(latLon: [number, number]): string {
     return `${Math.abs(yDms[0])}\u00b0${yDms[1]}'${yDms[2]}"${NorS} ${Math.abs(xDms[0])}\u00b0${xDms[1]}'${xDms[2]}"${EorW}`;
 }
 
-export function toUtm(latLon: [number, number]): string {
+export function toUtm(latLon) {
     return latLon
         ? `${latLon[0].toFixed(5)}, ${latLon[1].toFixed(5)}`
         : "";
