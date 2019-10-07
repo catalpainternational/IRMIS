@@ -25,8 +25,9 @@ export class Survey extends jspb.Message {
   getChainageEnd(): number;
   setChainageEnd(value: number): void;
 
-  getValuesMap(): jspb.Map<string, string>;
-  clearValuesMap(): void;
+  getValues(): string;
+  setValues(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Survey.AsObject;
   static toObject(includeInstance: boolean, msg: Survey): Survey.AsObject;
@@ -45,7 +46,7 @@ export namespace Survey {
     dateUpdated?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     chainageStart: number,
     chainageEnd: number,
-    valuesMap: Array<[string, string]>,
+    values: string,
   }
 }
 

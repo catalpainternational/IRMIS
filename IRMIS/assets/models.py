@@ -10,8 +10,12 @@ from django.db.models import Count, Max
 
 import reversion
 from reversion.models import Version
+
+
 from protobuf.roads_pb2 import Roads as ProtoRoads
 from protobuf.roads_pb2 import Projection
+
+import json
 from google.protobuf.timestamp_pb2 import Timestamp
 from protobuf.survey_pb2 import Surveys as ProtoSurveys
 
@@ -82,6 +86,7 @@ class SurveyQuerySet(models.QuerySet):
             date_updated="date_updated",
             chainage_start="chainage_start",
             chainage_end="chainage_end",
+            values="values"
         )
 
         survey_chunk = (
@@ -101,15 +106,18 @@ class SurveyQuerySet(models.QuerySet):
             print(survey)
             survey_protobuf = surveys_protobuf.surveys.add()
             for protobuf_key, query_key in fields.items():
-                if survey[query_key] and query_key != "date_updated":
+                if survey[query_key] and query_key != "date_updated" and query_key != "values":
                     setattr(survey_protobuf, protobuf_key, survey[query_key])
 
             if survey["date_updated"]:
                 ts = self.timestamp_from_datetime(survey["date_updated"])
                 survey_protobuf.date_updated.CopyFrom(ts)
 
-            #if road_survey.values:
-                # treat each member of values as a key value pair and assign them to the values map
+            if survey["values"]:
+                # Dump the survey values as a json string
+                # Because these are not likely to get large,
+                # zipping them will probably not be optimal
+                survey_protobuf.values = json.dumps(survey["values"], separators=(",", ":"))
 
         return survey_protobuf
 
