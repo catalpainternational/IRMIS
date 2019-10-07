@@ -67,7 +67,7 @@ class Migration(migrations.Migration):
                     models.CharField(
                         max_length=25,
                         validators=[assets.models.no_spaces],
-                        verbose_name="road code",
+                        verbose_name="Road Code",
                     ),
                 ),
                 (
