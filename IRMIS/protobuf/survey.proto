@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package assets;
+
+/* Remember to run `yarn protoc` after making any changes
+ * to regenerate the javascript and python protobuf implementations */
+
+message Survey {
+  /* Note that field Id numbers once used, are fixed. */
+  uint32 id = 1;
+  string road = 2;
+  unit32 user = 3;
+  timestamp date_updated = 4;
+  float chainage_start = 5;
+  float chainage_end = 6;
+  json values = 7;
+}
+
+message Surveys {
+  repeated Survey surveys = 1;
+}

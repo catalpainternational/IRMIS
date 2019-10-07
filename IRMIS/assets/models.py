@@ -91,6 +91,8 @@ class Survey(models.Model):
     )
     values = HStoreField()
 
+    def __str__(self,):
+        return "%s(%s - %s) %s" % (self.road, self.chainage_start, self.chainage_end, self.date_updated)
 
 class RoadQuerySet(models.QuerySet):
     def to_chunks(self):
