@@ -29,7 +29,7 @@ from .models import (
     RoadStatus,
     SurfaceType,
     PavementClass,
-    Survey
+    Survey,
 )
 from .serializers import (
     RoadSerializer,

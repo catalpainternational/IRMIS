@@ -43,4 +43,3 @@ class Command(BaseCommand):
             "~~~ COMPLETE: Created %s Surveys from initial Road Link data ~~~ "
             % created
         )
-
