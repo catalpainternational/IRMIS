@@ -258,3 +258,16 @@ def road_surveys(request, road_code):
     )
     serializer = SurveySerializer(queryset, many=True)
     return JsonResponse(serializer.data, safe=False)
+
+
+def protobuf_road_surveys_set(request, road=None):
+    """ returns a protobuf object with the set of surveys for a particular road """
+
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+
+    road_surveys_protobuf = Survey.objects.to_protobuf(road)
+
+    return HttpResponse(
+        road_surveys_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )

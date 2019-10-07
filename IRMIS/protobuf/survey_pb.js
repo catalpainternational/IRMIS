@@ -14,8 +14,6 @@ var global = Function('return this')();
 
 var google_protobuf_timestamp_pb = require('google-protobuf/google/protobuf/timestamp_pb.js');
 goog.object.extend(proto, google_protobuf_timestamp_pb);
-var google_protobuf_any_pb = require('google-protobuf/google/protobuf/any_pb.js');
-goog.object.extend(proto, google_protobuf_any_pb);
 goog.exportSymbol('proto.assets.Survey', null, global);
 goog.exportSymbol('proto.assets.Surveys', null, global);
 /**
@@ -98,7 +96,7 @@ proto.assets.Survey.toObject = function(includeInstance, msg) {
     dateUpdated: (f = msg.getDateUpdated()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
     chainageStart: jspb.Message.getFloatingPointFieldWithDefault(msg, 5, 0.0),
     chainageEnd: jspb.Message.getFloatingPointFieldWithDefault(msg, 6, 0.0),
-    values: (f = msg.getValues()) && google_protobuf_any_pb.Any.toObject(includeInstance, f)
+    valuesMap: (f = msg.getValuesMap()) ? f.toObject(includeInstance, undefined) : []
   };
 
   if (includeInstance) {
@@ -161,9 +159,10 @@ proto.assets.Survey.deserializeBinaryFromReader = function(msg, reader) {
       msg.setChainageEnd(value);
       break;
     case 7:
-      var value = new google_protobuf_any_pb.Any;
-      reader.readMessage(value,google_protobuf_any_pb.Any.deserializeBinaryFromReader);
-      msg.setValues(value);
+      var value = msg.getValuesMap();
+      reader.readMessage(value, function(message, reader) {
+        jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readString, null, "");
+         });
       break;
     default:
       reader.skipField();
@@ -237,13 +236,9 @@ proto.assets.Survey.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
-  f = message.getValues();
-  if (f != null) {
-    writer.writeMessage(
-      7,
-      f,
-      google_protobuf_any_pb.Any.serializeBinaryToWriter
-    );
+  f = message.getValuesMap(true);
+  if (f && f.getLength() > 0) {
+    f.serializeBinary(7, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeString);
   }
 };
 
@@ -357,35 +352,23 @@ proto.assets.Survey.prototype.setChainageEnd = function(value) {
 
 
 /**
- * optional google.protobuf.Any values = 7;
- * @return {?proto.google.protobuf.Any}
+ * map<string, string> values = 7;
+ * @param {boolean=} opt_noLazyCreate Do not create the map if
+ * empty, instead returning `undefined`
+ * @return {!jspb.Map<string,string>}
  */
-proto.assets.Survey.prototype.getValues = function() {
-  return /** @type{?proto.google.protobuf.Any} */ (
-    jspb.Message.getWrapperField(this, google_protobuf_any_pb.Any, 7));
-};
-
-
-/** @param {?proto.google.protobuf.Any|undefined} value */
-proto.assets.Survey.prototype.setValues = function(value) {
-  jspb.Message.setWrapperField(this, 7, value);
-};
-
-
-/**
- * Clears the message field making it undefined.
- */
-proto.assets.Survey.prototype.clearValues = function() {
-  this.setValues(undefined);
+proto.assets.Survey.prototype.getValuesMap = function(opt_noLazyCreate) {
+  return /** @type {!jspb.Map<string,string>} */ (
+      jspb.Message.getMapField(this, 7, opt_noLazyCreate,
+      null));
 };
 
 
 /**
- * Returns whether this field is set.
- * @return {boolean}
+ * Clears values from the map. The map will be non-null.
  */
-proto.assets.Survey.prototype.hasValues = function() {
-  return jspb.Message.getField(this, 7) != null;
+proto.assets.Survey.prototype.clearValuesMap = function() {
+  this.getValuesMap().clear();
 };
 
 

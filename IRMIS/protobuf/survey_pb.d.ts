@@ -3,7 +3,6 @@
 
 import * as jspb from "google-protobuf";
 import * as google_protobuf_timestamp_pb from "google-protobuf/google/protobuf/timestamp_pb";
-import * as google_protobuf_any_pb from "google-protobuf/google/protobuf/any_pb";
 
 export class Survey extends jspb.Message {
   getId(): number;
@@ -26,11 +25,8 @@ export class Survey extends jspb.Message {
   getChainageEnd(): number;
   setChainageEnd(value: number): void;
 
-  hasValues(): boolean;
-  clearValues(): void;
-  getValues(): google_protobuf_any_pb.Any | undefined;
-  setValues(value?: google_protobuf_any_pb.Any): void;
-
+  getValuesMap(): jspb.Map<string, string>;
+  clearValuesMap(): void;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Survey.AsObject;
   static toObject(includeInstance: boolean, msg: Survey): Survey.AsObject;
@@ -49,7 +45,7 @@ export namespace Survey {
     dateUpdated?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     chainageStart: number,
     chainageEnd: number,
-    values?: google_protobuf_any_pb.Any.AsObject,
+    valuesMap: Array<[string, string]>,
   }
 }
 

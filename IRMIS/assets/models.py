@@ -12,6 +12,8 @@ import reversion
 from reversion.models import Version
 from protobuf.roads_pb2 import Roads as ProtoRoads
 from protobuf.roads_pb2 import Projection
+from google.protobuf.timestamp_pb2 import Timestamp
+from protobuf.survey_pb2 import Surveys as ProtoSurveys
 
 
 def no_spaces(value):
@@ -61,7 +63,70 @@ class TechnicalClass(models.Model):
         return self.name
 
 
+class SurveyQuerySet(models.QuerySet):
+    def timestamp_from_datetime(self, dt):
+        ts = Timestamp()
+        ts.FromDatetime(dt)
+        return ts
+
+    def to_protobuf(self, road=None):
+        """ returns a roads survey protobuf object from the queryset """
+        # See survey.proto
+
+        surveys_protobuf = ProtoSurveys()
+
+        fields = dict(
+            id="id",
+            road="road",
+            user="user__id",
+            date_updated="date_updated",
+            chainage_start="chainage_start",
+            chainage_end="chainage_end",
+        )
+
+        survey_chunk = (
+            (
+                Survey.objects.filter(road=road)
+                .order_by("road", "chainage_start", "chainage_end", "-date_updated")
+                .distinct("road", "chainage_start", "chainage_end")
+                .values("id", *fields.values())
+            )
+            if road
+            else Survey.objects
+                .order_by("road", "chainage_start", "chainage_end", "-date_updated")
+                .values("id", *fields.values())
+        )
+
+        for survey in survey_chunk:
+            print(survey)
+            survey_protobuf = surveys_protobuf.surveys.add()
+            for protobuf_key, query_key in fields.items():
+                if survey[query_key] and query_key != "date_updated":
+                    setattr(survey_protobuf, protobuf_key, survey[query_key])
+
+            if survey["date_updated"]:
+                ts = self.timestamp_from_datetime(survey["date_updated"])
+                survey_protobuf.date_updated.CopyFrom(ts)
+
+            #if road_survey.values:
+                # treat each member of values as a key value pair and assign them to the values map
+
+        return survey_protobuf
+
+
+class SurveyManager(models.Manager):
+    def get_queryset(self):
+        return SurveyQuerySet(self.model, using=self._db)
+
+    def to_protobuf(self, road=None):
+        """ returns a roads survey protobuf object from the manager """
+        return self.get_queryset().to_protobuf(road)
+
+
 class Survey(models.Model):
+    
+    objects = SurveyManager()
+
     road = models.CharField(
         verbose_name=_("Road Code"), validators=[no_spaces], max_length=25
     )
@@ -93,6 +158,7 @@ class Survey(models.Model):
 
     def __str__(self,):
         return "%s(%s - %s) %s" % (self.road, self.chainage_start, self.chainage_end, self.date_updated)
+
 
 class RoadQuerySet(models.QuerySet):
     def to_chunks(self):
@@ -146,8 +212,8 @@ class RoadQuerySet(models.QuerySet):
         last_revisions = {
             i["object_id"]: i["revision_id"]
             for i in Version.objects.get_queryset()
-            .order_by("object_id", "revision_id")
-            .values("object_id", "revision_id")
+                .order_by("object_id", "revision_id")
+                .values("object_id", "revision_id")
         }
 
         for road in road_chunk:

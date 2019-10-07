@@ -14,7 +14,6 @@ _sym_db = _symbol_database.Default()
 
 
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
-from google.protobuf import any_pb2 as google_dot_protobuf_dot_any__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
@@ -22,12 +21,49 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='assets',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x0csurvey.proto\x12\x06\x61ssets\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x19google/protobuf/any.proto\"\xb6\x01\n\x06Survey\x12\n\n\x02id\x18\x01 \x01(\r\x12\x0c\n\x04road\x18\x02 \x01(\t\x12\x0c\n\x04user\x18\x03 \x01(\r\x12\x30\n\x0c\x64\x61te_updated\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x16\n\x0e\x63hainage_start\x18\x05 \x01(\x02\x12\x14\n\x0c\x63hainage_end\x18\x06 \x01(\x02\x12$\n\x06values\x18\x07 \x01(\x0b\x32\x14.google.protobuf.Any\"*\n\x07Surveys\x12\x1f\n\x07surveys\x18\x01 \x03(\x0b\x32\x0e.assets.Surveyb\x06proto3')
+  serialized_pb=_b('\n\x0csurvey.proto\x12\x06\x61ssets\x1a\x1fgoogle/protobuf/timestamp.proto\"\xeb\x01\n\x06Survey\x12\n\n\x02id\x18\x01 \x01(\r\x12\x0c\n\x04road\x18\x02 \x01(\t\x12\x0c\n\x04user\x18\x03 \x01(\r\x12\x30\n\x0c\x64\x61te_updated\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x16\n\x0e\x63hainage_start\x18\x05 \x01(\x02\x12\x14\n\x0c\x63hainage_end\x18\x06 \x01(\x02\x12*\n\x06values\x18\x07 \x03(\x0b\x32\x1a.assets.Survey.ValuesEntry\x1a-\n\x0bValuesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"*\n\x07Surveys\x12\x1f\n\x07surveys\x18\x01 \x03(\x0b\x32\x0e.assets.Surveyb\x06proto3')
   ,
-  dependencies=[google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,google_dot_protobuf_dot_any__pb2.DESCRIPTOR,])
+  dependencies=[google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,])
 
 
 
+
+_SURVEY_VALUESENTRY = _descriptor.Descriptor(
+  name='ValuesEntry',
+  full_name='assets.Survey.ValuesEntry',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='key', full_name='assets.Survey.ValuesEntry.key', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='value', full_name='assets.Survey.ValuesEntry.value', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=_b('8\001'),
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=248,
+  serialized_end=293,
+)
 
 _SURVEY = _descriptor.Descriptor(
   name='Survey',
@@ -80,15 +116,15 @@ _SURVEY = _descriptor.Descriptor(
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='values', full_name='assets.Survey.values', index=6,
-      number=7, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
+      number=7, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
-  nested_types=[],
+  nested_types=[_SURVEY_VALUESENTRY, ],
   enum_types=[
   ],
   serialized_options=None,
@@ -97,8 +133,8 @@ _SURVEY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=85,
-  serialized_end=267,
+  serialized_start=58,
+  serialized_end=293,
 )
 
 
@@ -128,23 +164,32 @@ _SURVEYS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=269,
-  serialized_end=311,
+  serialized_start=295,
+  serialized_end=337,
 )
 
+_SURVEY_VALUESENTRY.containing_type = _SURVEY
 _SURVEY.fields_by_name['date_updated'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
-_SURVEY.fields_by_name['values'].message_type = google_dot_protobuf_dot_any__pb2._ANY
+_SURVEY.fields_by_name['values'].message_type = _SURVEY_VALUESENTRY
 _SURVEYS.fields_by_name['surveys'].message_type = _SURVEY
 DESCRIPTOR.message_types_by_name['Survey'] = _SURVEY
 DESCRIPTOR.message_types_by_name['Surveys'] = _SURVEYS
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 Survey = _reflection.GeneratedProtocolMessageType('Survey', (_message.Message,), {
+
+  'ValuesEntry' : _reflection.GeneratedProtocolMessageType('ValuesEntry', (_message.Message,), {
+    'DESCRIPTOR' : _SURVEY_VALUESENTRY,
+    '__module__' : 'survey_pb2'
+    # @@protoc_insertion_point(class_scope:assets.Survey.ValuesEntry)
+    })
+  ,
   'DESCRIPTOR' : _SURVEY,
   '__module__' : 'survey_pb2'
   # @@protoc_insertion_point(class_scope:assets.Survey)
   })
 _sym_db.RegisterMessage(Survey)
+_sym_db.RegisterMessage(Survey.ValuesEntry)
 
 Surveys = _reflection.GeneratedProtocolMessageType('Surveys', (_message.Message,), {
   'DESCRIPTOR' : _SURVEYS,
@@ -154,4 +199,5 @@ Surveys = _reflection.GeneratedProtocolMessageType('Surveys', (_message.Message,
 _sym_db.RegisterMessage(Surveys)
 
 
+_SURVEY_VALUESENTRY._options = None
 # @@protoc_insertion_point(module_scope)

@@ -1,6 +1,5 @@
 syntax = "proto3";
 import "google/protobuf/timestamp.proto";
-import "google/protobuf/any.proto";
 
 package assets;
 
@@ -15,7 +14,7 @@ message Survey {
   google.protobuf.Timestamp date_updated = 4;
   float chainage_start = 5;
   float chainage_end = 6;
-  google.protobuf.Any values = 7;
+  map<string, string> values = 7;
 }
 
 message Surveys {
