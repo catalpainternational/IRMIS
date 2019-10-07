@@ -1,5 +1,7 @@
 # CHANGE LOG
 
+## 1.2 - Road Segment Survey data
+
 ## 0.0.4 - More Admin and miscellaneous
 
 ## 0.0.3 - Metadata Admin
