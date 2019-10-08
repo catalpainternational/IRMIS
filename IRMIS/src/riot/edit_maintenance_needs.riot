@@ -1,0 +1,33 @@
+<edit_maintenance_needs>
+    <h5>{ window.gettext ("Maintenance Needs") }</h5>
+
+    <section>
+        <div class="form-group">
+            <label>{ maintenance_needs.display }</label>
+            <small class="form-text text-muted">{ props.getHelpText("maintenance_need") }</small>
+            <ul class="maintenance-need">
+                <li each="{ maintenance_need in maintenance_needs.options }" data-maintenance="{ maintenance_need.code }" onclick="{ checkMaintenanceNeed }">
+                    <span class="{ maintenance_need.code === props.road.getMaintenanceNeed() ? 'active' : ''  } radio image"></span>
+                    { maintenance_need.name }
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <div class="button-wrapper d-flex justify-content-end">
+        <button class="btn btn-primary" onclick="{ save }" disabled="{ props.saving }">{ window.gettext("Save and continue") }</button>
+    </div>
+
+    <script>
+        export default {
+            save(e) {
+                this.props.onSave();
+            },
+            checkMaintenanceNeed(e) {
+                this.props.road.setMaintenanceNeed(e.currentTarget.dataset.maintenance);
+                this.update();
+            },
+            maintenance_needs: window.road_schema.maintenance_need,
+        }
+    </script>
+</edit_maintenance_needs>

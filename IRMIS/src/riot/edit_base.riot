@@ -9,6 +9,7 @@
                     <li class="{ state.page === 'pavement' ? 'active' : '' }" data-page="pavement" onclick="{ selectPage }">{ window.gettext("Pavement") }</li>
                     <li class="{ state.page === 'project' ? 'active' : '' }" data-page="project" onclick="{ selectPage }">{ window.gettext("Project") }</li>
                     <li class="{ state.page === 'condition' ? 'active' : '' }" data-page="condition" onclick="{ selectPage }">{ window.gettext("Condition") }</li>
+                    <li class="{ state.page === 'maintenance_needs' ? 'active' : '' }" data-page="maintenance_needs" onclick="{ selectPage }">{ window.gettext("Maintenance Needs") }</li>
                 </ul>
             </ul>
         </div>
@@ -28,6 +29,7 @@
             <edit_pavement road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'pavement' }" on-save="{ save }"></edit_pavement>
             <edit_project road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'project' }" on-save="{ save }"></edit_project>
             <edit_condition road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'condition' }" on-save="{ save }"></edit_condition>
+            <edit_maintenance_needs road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'maintenance_needs' }" on-save="{ save }"></edit_condition>
         </div>
         <div id="stop-alert" class="modal" tabindex="-1" role="dialog">
             <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
@@ -57,6 +59,7 @@
         import Edit_Pavement from "./edit_pavement.riot";
         import Edit_Project from "./edit_project.riot";
         import Edit_Condition from "./edit_condition.riot";
+        import Edit_Maintenance_Needs from "./edit_maintenance_needs.riot";
         import Edit_Feedback from './edit_feedback.riot';
 
         import "bootstrap/js/dist/modal";
@@ -77,7 +80,7 @@
                 showFeedback: false,
             },
             components: {
-                Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Project, Edit_Condition, Edit_Feedback
+                Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Project, Edit_Condition, Edit_Maintenance_Needs, Edit_Feedback
             },
             onBeforeMount() {
                 window.onbeforeunload = () => {

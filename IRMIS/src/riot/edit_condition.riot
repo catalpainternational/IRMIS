@@ -13,16 +13,6 @@
             </ul>
         </div>
         <div class="form-group">
-            <label>{ maintenance_needs.display }</label>
-            <small class="form-text text-muted">{ props.getHelpText("maintenance_need") }</small>
-            <ul class="maintenance-need">
-                <li each="{ maintenance_need in maintenance_needs.options }" data-maintenance="{ maintenance_need.code }" onclick="{ checkMaintenanceNeed }">
-                    <span class="{ maintenance_need.code === props.road.getMaintenanceNeed() ? 'active' : ''  } radio image"></span>
-                    { maintenance_need.name }
-                </li>
-            </ul>
-        </div>
-        <div class="form-group">
             <label>{ technical_classes.display }</label>
             <small class="form-text text-muted">{ props.getHelpText("technical_class") }</small>
             <ul class="technical-class">
