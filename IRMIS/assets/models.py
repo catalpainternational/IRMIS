@@ -8,6 +8,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db.models import Count, Max
 
+import datetime
 import reversion
 from reversion.models import Version
 from protobuf.roads_pb2 import Roads as ProtoRoads
@@ -71,6 +72,7 @@ class Survey(models.Model):
         null=True,
         on_delete=models.SET_NULL,
     )
+    date_surveyed = models.DateField(_("Date Surveyed"), default=datetime.date.today)
     date_created = models.DateTimeField(_("Date Created"), auto_now_add=True)
     date_updated = models.DateTimeField(_("Date Updated"), auto_now=True)
     chainage_start = models.DecimalField(
