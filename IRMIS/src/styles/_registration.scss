@@ -1,4 +1,5 @@
 $larger-form: 492px;
+$form: 316px;
 
 .registration-content {
     .app-logo {
@@ -24,7 +25,7 @@ $larger-form: 492px;
     }
 
     form {
-        width: 316px;
+        width: $form;
 
         .errorlist {
             margin-bottom: 0;
@@ -46,6 +47,21 @@ $larger-form: 492px;
 
         &.larger {
             width: $larger-form;
+        }
+    }
+
+    .ownership {
+        border-top: 1px solid $light-gray;
+        padding-top: 20px;
+        margin-top: 40px;
+        width: $form;
+
+        & > div {
+            margin-bottom: 40px;
+
+            & > div {
+                margin-left: 20px;
+            }
         }
     }
 }
