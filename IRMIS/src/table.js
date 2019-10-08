@@ -263,6 +263,7 @@ function initializeDataTable() {
         },
         select: {
             blurable: true,
+            style: "os",
             items: "row",
         }
     });
@@ -270,12 +271,12 @@ function initializeDataTable() {
     table.on("select", function (e, dt, type, indexes) {
         if (type === "row") {
             const data = table.rows(indexes).data().pluck("id");
-            
+
             const idMap = {}
             idMap[data["0"]] = true;
 
             // communicate the filter
-            document.dispatchEvent(new CustomEvent("estrada.filter.applied", {"detail": { idMap }}));
+            document.dispatchEvent(new CustomEvent("estrada.idFilter.applied", { "detail": { idMap } }));
         }
     });
 

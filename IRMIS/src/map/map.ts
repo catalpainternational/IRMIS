@@ -59,32 +59,16 @@ export class Map {
         this.currentLayer = bl[Config.preferredBaseLayerName];
         this.currentLayer.addTo(this.lMap);
 
-        document.addEventListener("estrada.sideMenu.viewChanged", (data: Event) => {
+        document.addEventListener("estrada.sideMenu.viewChanged", () => {
             this.lMap.invalidateSize();
         });
 
         document.addEventListener("estrada.filter.applied", (data: Event) => {
-            const layerFilterStyles = getFilterStyles("Road");
+            this.handleFilter(data);
+        });
 
-            const featureZoomSet: FeatureCollection = { type: "FeatureCollection", features: [] };
-            Object.values(featureLookup).forEach((feature: any) => {
-                const featureId: string = feature.properties.pk.toString();
-                const geoLayer = layerLookup[featureId] as L.GeoJSON;
-
-                const switchStyle = !!(data as CustomEvent).detail.idMap[featureId];
-                if (switchStyle) {
-                    featureZoomSet.features.push(feature);
-                }
-
-                geoLayer.setStyle(switchStyle ? layerFilterStyles.styleOn : layerFilterStyles.styleOff);
-            });
-
-            const bounds = (featureZoomSet.features.length) ? envelope(featureZoomSet as AllGeoJSON) : Config.tlBounds;
-            const bb = bbox(bounds);
-
-            // Don't use flyToBounds
-            // - it sounds nice, but screws up tile and geoJSON alignment when the zoom level remains the ame
-            this.lMap.fitBounds(new L.LatLngBounds([bb[1], bb[0]], [bb[3], bb[2]]));
+        document.addEventListener("estrada.idFilter.applied", (data: Event) => {
+            this.handleFilter(data);
         });
 
         return this.lMap;
@@ -101,6 +85,30 @@ export class Map {
 
     public invalidateSize() {
         this.lMap.invalidateSize();
+    }
+
+    private handleFilter(data: Event) {
+        const layerFilterStyles = getFilterStyles("Road");
+
+        const featureZoomSet: FeatureCollection = { type: "FeatureCollection", features: [] };
+        Object.values(featureLookup).forEach((feature: any) => {
+            const featureId: string = feature.properties.pk.toString();
+            const geoLayer = layerLookup[featureId] as L.GeoJSON;
+
+            const switchStyle = !!(data as CustomEvent).detail.idMap[featureId];
+            if (switchStyle) {
+                featureZoomSet.features.push(feature);
+            }
+
+            geoLayer.setStyle(switchStyle ? layerFilterStyles.styleOn : layerFilterStyles.styleOff);
+        });
+
+        const bounds = (featureZoomSet.features.length) ? envelope(featureZoomSet as AllGeoJSON) : Config.tlBounds;
+        const bb = bbox(bounds);
+
+        // Don't use flyToBounds
+        // - it sounds nice, but screws up tile and geoJSON alignment when the zoom level remains the ame
+        this.lMap.fitBounds(new L.LatLngBounds([bb[1], bb[0]], [bb[3], bb[2]]));
     }
 
     private registerFeature(feature: Feature<Geometry, any>, layer: L.Layer) {
