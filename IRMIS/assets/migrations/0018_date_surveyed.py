@@ -6,14 +6,14 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('assets', '0017_create_surveys'),
-    ]
+    dependencies = [("assets", "0017_create_surveys")]
 
     operations = [
         migrations.AddField(
-            model_name='survey',
-            name='date_surveyed',
-            field=models.DateField(default=datetime.date.today, verbose_name='Date Surveyed'),
-        ),
+            model_name="survey",
+            name="date_surveyed",
+            field=models.DateField(
+                default=datetime.date.today, verbose_name="Date Surveyed"
+            ),
+        )
     ]
