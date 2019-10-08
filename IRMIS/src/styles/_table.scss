@@ -130,4 +130,12 @@ table.table {
             }
         }
     }
+
+    tbody tr.selected {
+        background-color: $alt-green;
+
+        td {
+            color: $white;
+        }
+    }
 }

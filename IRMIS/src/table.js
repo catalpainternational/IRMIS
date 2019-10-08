@@ -1,5 +1,4 @@
 import "datatables.net-bs4";
-import "datatables.net-select";
 import $ from "jquery";
 
 import { applyFilter } from './filter';
@@ -30,6 +29,9 @@ document.addEventListener('estrada.table.roadMetaDataUpdated', (data) => {
 document.addEventListener('estrada.filter.applied', (data) => {
     idWhitelistMap = data.detail.idMap;
     table.draw();
+
+    // Handle any table row selection change
+    applyTableSelection(table.selectionProcessing);
 });
 
 // when the view changes adjust the table rows
@@ -262,27 +264,29 @@ function initializeDataTable() {
             regex: true, // Enable escaping of regular expression characters in the search term.
         },
         select: {
-            blurable: true,
             style: "os",
             items: "row",
         }
     });
 
-    table.on("select", function (e, dt, type, indexes) {
-        if (type === "row") {
-            const data = table.rows(indexes).data().pluck("id");
+    table.on('click', 'tbody tr', (e) => {
+        const clickedRowId = e.currentTarget.id;
+        const clickedRow = $(`tr#${clickedRowId}`);
+        
+        if (clickedRow.hasClass("selected")) {
+            clickedRow.removeClass("selected");
 
-            const idMap = {}
-            idMap[data["0"]] = true;
+            table.selectionProcessing = undefined;
+            // reset to the previously selected filters
+            applyFilter();            
+        } else {
+            table.$('tr.selected').removeClass('selected');
+            clickedRow.addClass("selected");
 
-            // communicate the filter
-            document.dispatchEvent(new CustomEvent("estrada.idFilter.applied", { "detail": { idMap } }));
+            table.selectionProcessing = clickedRowId;
+
+            applyTableSelection(table.selectionProcessing);
         }
-    });
-
-    table.on("deselect", function (e, dt, type, indexes) {
-        // reset to the previously selected filters
-        applyFilter();
     });
 
     if (pendingRows.length) {
@@ -290,6 +294,18 @@ function initializeDataTable() {
         table.rows.add(pendingRows).draw();
         pendingRows = [];
     }
+}
+
+function applyTableSelection(rowId) {
+    if (!rowId) {
+        return;
+    }
+
+    const idMap = {}
+    idMap[rowId] = true;
+
+    // communicate the filter
+    document.dispatchEvent(new CustomEvent("estrada.idFilter.applied", { "detail": { idMap } }));
 }
 
 function getTableData() {
