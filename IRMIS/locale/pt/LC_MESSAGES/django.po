@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-08 01:28+0000\n"
+"POT-Creation-Date: 2019-10-08 03:56+0000\n"
 "PO-Revision-Date: 2019-08-15 08:25+0000\n"
 "Last-Translator: b'  <juliana@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,6 +32,292 @@ msgstr "Alterar palavra-passe"
 
 msgid "Log out"
 msgstr "Sair"
+
+#, python-format
+msgid "%(value)s should not contain spaces"
+msgstr ""
+
+msgid "Code"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "National"
+msgstr ""
+
+msgid "Highway"
+msgstr ""
+
+msgid "Municipal"
+msgstr ""
+
+msgid "Urban"
+msgstr ""
+
+msgid "Rural"
+msgstr ""
+
+msgid "Low"
+msgstr ""
+
+msgid "Medium"
+msgstr ""
+
+msgid "High"
+msgstr ""
+
+msgid "Good"
+msgstr ""
+
+msgid "Fair"
+msgstr ""
+
+msgid "Poor"
+msgstr ""
+
+msgid "Bad"
+msgstr ""
+
+msgid "Date Created"
+msgstr ""
+
+msgid "last modified"
+msgstr ""
+
+msgid "Road Code"
+msgstr ""
+
+msgid "Administrative Area"
+msgstr ""
+
+msgid "Choose the administrative area of the road"
+msgstr ""
+
+msgid "Funding Source"
+msgstr ""
+
+msgid "Enter the source funding for the road link"
+msgstr ""
+
+msgid "Link Code"
+msgstr ""
+
+msgid "Enter link code according to DRBFC standard"
+msgstr ""
+
+msgid "Link Start Name"
+msgstr ""
+
+msgid "Enter the name of the link start location (municipal center, administrative post or nearest suco)"
+msgstr ""
+
+msgid "Link End Name"
+msgstr ""
+
+msgid "Enter the name of the link end location (municipal center, administrative post or nearest suco)"
+msgstr ""
+
+msgid "Link End Chainage (Km)"
+msgstr ""
+
+msgid "Enter chainage for link ending point"
+msgstr ""
+
+msgid "Link Start Chainage (Km)"
+msgstr ""
+
+msgid "Enter chainage for link starting point"
+msgstr ""
+
+msgid "Link Length"
+msgstr ""
+
+msgid "Enter road link length (in Km)"
+msgstr ""
+
+msgid "Surface Type"
+msgstr ""
+
+msgid "Choose the type of surface of the road link carriageway"
+msgstr ""
+
+msgid "Pavement Class"
+msgstr ""
+
+msgid "Choose the pavement class of the road"
+msgstr ""
+
+msgid "Carriageway Width"
+msgstr ""
+
+msgid "Enter the width (in meters) of the link carriageway"
+msgstr ""
+
+msgid "Road Type"
+msgstr ""
+
+msgid "Choose the administrative class of the road"
+msgstr ""
+
+msgid "Road Status"
+msgstr ""
+
+msgid "Enter road link current status"
+msgstr ""
+
+msgid "Project Name"
+msgstr ""
+
+msgid "Enter road link project name"
+msgstr ""
+
+msgid "Traffic Level"
+msgstr ""
+
+msgid "Choose the traffic volume for the road link"
+msgstr ""
+
+msgid "Surface Condition (SDI)"
+msgstr ""
+
+msgid "Choose road link surface condition according to the Surface Distress Index (SDI): Good (SDI≤2), fair (2<SDI≤3), poor (3<SDI≤4) or bad (SDI>4)"
+msgstr ""
+
+msgid "Maintenance Needs"
+msgstr ""
+
+msgid "Choose the type of maintenace needs for the road link"
+msgstr ""
+
+msgid "Technical Class"
+msgstr ""
+
+msgid "Choose road link technical class according to the 2010 Road Geometric Design Standards, DRBFC standards"
+msgstr ""
+
+msgid "Road Inventory"
+msgstr ""
+
+msgid "Export all"
+msgstr ""
+
+msgid "Select data"
+msgstr ""
+
+msgid "Road Inventory Data"
+msgstr ""
+
+msgid "Road code"
+msgstr ""
+
+msgid "Road name"
+msgstr ""
+
+msgid "Link code"
+msgstr ""
+
+msgid "Link name"
+msgstr ""
+
+msgid "Link start name"
+msgstr ""
+
+msgid "Link start chainage"
+msgstr ""
+
+msgid "Link end name"
+msgstr ""
+
+msgid "Link end chainage"
+msgstr ""
+
+msgid "Surface type"
+msgstr ""
+
+msgid "Pavement class"
+msgstr ""
+
+msgid "Carriageway width"
+msgstr ""
+
+msgid "Administrative area"
+msgstr ""
+
+msgid "Road type"
+msgstr ""
+
+msgid "Technical class"
+msgstr ""
+
+msgid "Funding source"
+msgstr ""
+
+msgid "Road status"
+msgstr ""
+
+msgid "Project"
+msgstr ""
+
+msgid "Start Point - DMS"
+msgstr ""
+
+msgid "End Point - DMS"
+msgstr ""
+
+msgid "Start Point - UTM"
+msgstr ""
+
+msgid "End Point - UTM"
+msgstr ""
+
+msgid "Road Condition Data"
+msgstr ""
+
+msgid "Surface condition"
+msgstr ""
+
+msgid "Maintenance needs"
+msgstr ""
+
+msgid "Traffic data"
+msgstr ""
+
+msgid "Return to default selection"
+msgstr ""
+
+msgid "View"
+msgstr ""
+
+msgid "Fullscreen view"
+msgstr ""
+
+msgid "Map & Table"
+msgstr ""
+
+msgid "Map"
+msgstr ""
+
+msgid "Table"
+msgstr ""
+
+msgid "Filters"
+msgstr ""
+
+msgid "Clear all filters"
+msgstr ""
+
+msgid "Location"
+msgstr ""
+
+msgid "Clear"
+msgstr ""
+
+msgid "Asset"
+msgstr ""
+
+msgid "Asset condition"
+msgstr ""
 
 msgid "Please enter a correct username and password. Note that both fields may be case-sensitive"
 msgstr "O nome de utilizar ou palavra-passe estão incorrectos. Confirme se está a usar correctamente as maiúsculas e minúsculas"
