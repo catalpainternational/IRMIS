@@ -12,6 +12,7 @@
                 </li>
             </ul>
         </div>
+        <data_table table_id={this.table_id} columns={this.table_columns} getHelpText={props.getHelpText} pendingRows={this.pendingRows}></data_table>
     </section>
 
     <div class="button-wrapper d-flex justify-content-end">
@@ -19,6 +20,9 @@
     </div>
 
     <script>
+        import Data_Table from "./data_table.riot";
+        import { getFieldName } from "../road";
+
         export default {
             save(e) {
                 this.props.onSave();
@@ -28,6 +32,48 @@
                 this.update();
             },
             conditions: window.road_schema.surface_condition,
+            table_id: "surface-condition-table",
+            table_columns: [
+                {
+                    title: "Chainage start", // getFieldName("segment_start_chainage"),
+                    data: "segmentStartChainage",
+                    defaultContent: "",
+                },
+                {
+                    title: "Chainage end", // getFieldName("segment_end_chainage"),
+                    data: "segmentEndChainage",
+                    defaultContent: "",
+                },
+                {
+                    title: "Surface condition", // getFieldName("surface_condition"),
+                    data: "surfaceCondition",
+                    defaultContent: "",
+                },
+                {
+                    title: "Survey date", // getFieldName("survey_date"),
+                    data: "surveyDate",
+                    defaultContent: "",
+                },
+                {
+                    title: "Added by", // getFieldName("survey_added_by"),
+                    data: "surveyAddedBy",
+                    defaultContent: "",
+                },
+                {
+                    title: "Source", // getFieldName("survey_source"),
+                    data: "surveySource",
+                    defaultContent: "",
+                },
+            ],
+            pendingRows: [{
+                getId: () => { return 1; },
+                segmentStartChainage: "0+000",
+                segmentEndChainage: "5+300",
+                surfaceCondition: "Poor",
+                surveyDate: Date.now(),
+                surveyAddedBy: "Jose Soares",
+                surveySource: "Excel",
+            }]
         }
     </script>
 </edit_condition>
