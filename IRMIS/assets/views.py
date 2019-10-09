@@ -289,13 +289,14 @@ class Report:
             # check survey does not overlap with current aggregate alignment
             a = self.alignment[int(s.chainage_start)]
             if not a["date_surveyed"] or s.date_surveyed > a["date_surveyed"]:
-                # update the alignment
+                # update the alignment & resolve overlapping survey segments
                 for d in range(int(s.chainage_start), int(s.chainage_end)):
-                    self.alignment[d]["surf_cond"] = s.values["surface_condition"]
-                    self.alignment[d]["date_surveyed"] = s.date_surveyed
-            else:
-                # find and resolve overlapping alignment segments
-                pass
+                    if (
+                        not self.alignment[d]["date_surveyed"]
+                        or s.date_surveyed > self.alignment[d]["date_surveyed"]
+                    ):
+                        self.alignment[d]["surf_cond"] = s.values["surface_condition"]
+                        self.alignment[d]["date_surveyed"] = s.date_surveyed
 
     def build_summary_stats(self):
         l = len(self.alignment)
