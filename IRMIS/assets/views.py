@@ -270,16 +270,16 @@ class Report:
                 .order_by("-link_end_chainage")[0]
                 .link_end_chainage
             )
+            self.surveys = (
+                Survey.objects.filter(road=road_code)
+                .order_by("road", "chainage_start", "chainage_end", "-date_updated")
+                .distinct("road", "chainage_start", "chainage_end")
+            )
+            self.surveys_chainage_start = self.surveys[0].chainage_start
+            self.surveys_chainage_end = self.surveys[len(self.surveys) - 1].chainage_end
         except IndexError as err:
             raise IndexError("Road Code given did not return any records")
 
-        self.surveys = (
-            Survey.objects.filter(road=road_code)
-            .order_by("road", "chainage_start", "chainage_end", "-date_updated")
-            .distinct("road", "chainage_start", "chainage_end")
-        )
-        self.surveys_chainage_start = self.surveys[0].chainage_start
-        self.surveys_chainage_end = self.surveys[len(self.surveys) - 1].chainage_end
         self.alignment = {
             i: {"chainage": float(i), "surf_cond": None, "date_surveyed": None}
             for i in range(0, int(self.road_end_chainage))
