@@ -4,6 +4,7 @@ import pytz
 import reversion
 from reversion.models import Version
 from datetime import datetime
+from collections import Counter
 
 from django.shortcuts import get_object_or_404
 from django.http import (
@@ -258,3 +259,58 @@ def road_surveys(request, road_code):
     )
     serializer = SurveySerializer(queryset, many=True)
     return JsonResponse(serializer.data, safe=False)
+
+
+class Report:
+    def __init__(self, road_code):
+        self.road_code = road_code
+        try:
+            self.road_end_chainage = (
+                Road.objects.filter(road_code=road_code)
+                .order_by("-link_end_chainage")[0]
+                .link_end_chainage
+            )
+        except IndexError as err:
+            raise IndexError("Road Code given did not return any records")
+
+        self.surveys = (
+            Survey.objects.filter(road=road_code)
+            .order_by("road", "chainage_start", "chainage_end", "-date_updated")
+            .distinct("road", "chainage_start", "chainage_end")
+        )
+        self.surveys_chainage_start = self.surveys[0].chainage_start
+        self.surveys_chainage_end = self.surveys[len(self.surveys) - 1].chainage_end
+        self.alignment = {
+            i: {"chainage": float(i), "surf_cond": None, "date_surveyed": None}
+            for i in range(0, int(self.road_end_chainage))
+        }
+
+        for s in self.surveys:
+            # check survey does not overlap with current aggregate alignment
+            a = self.alignment[int(s.chainage_start)]
+            if not a["date_surveyed"] or s.date_surveyed > a["date_surveyed"]:
+                # update the alignment
+                for d in range(int(s.chainage_start), int(s.chainage_end)):
+                    self.alignment[d]["surf_cond"] = s.values["surface_condition"]
+                    self.alignment[d]["date_surveyed"] = s.date_surveyed
+            else:
+                # find and resolve overlapping alignment segments
+                pass
+
+    def build_summary_stats(self):
+        l = len(self.alignment)
+        counts = Counter([self.alignment[s]["surf_cond"] for s in self.alignment])
+        percentages = {condition: (counts[condition] / l * 100) for condition in counts}
+        return {"counts": counts, "percentages": percentages}
+
+    def generate_report(self):
+        report = []
+        prev_cond, prev_date = None, None
+
+        for segment in self.alignment:
+            s = self.alignment[segment]
+            if s["surf_cond"] != prev_cond and s["date_surveyed"] != prev_date:
+                report.append((s["chainage"], s["surf_cond"], s["date_surveyed"]))
+                prev_cond, prev_date = (s["surf_cond"], s["date_surveyed"])
+
+        return report
