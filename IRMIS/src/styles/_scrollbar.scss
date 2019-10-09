@@ -9,7 +9,7 @@
     }
 }
 
-edit_location_type, edit_asset_details, edit_pavement, edit_project, edit_condition, edit_maintenance_needs, .filters {
+edit_location_type, edit_asset_details, edit_pavement, edit_project, edit_condition, edit_maintenance, .filters {
     @extend %scrollbar-shared;
 }
 
