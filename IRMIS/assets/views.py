@@ -236,18 +236,21 @@ def protobuf_road_audit(request, pk):
     if not request.user.is_authenticated:
         return HttpResponseForbidden()
 
-    road = Road.objects.get(pk)
+    road = Road.objects.get(pk=pk)
     versions = Version.objects.get_for_object(road)
-    versions_protobuf = roads_pb2.ProtoVersions()
-    fields = []
+    versions_protobuf = roads_pb2.Versions()
 
     for version in versions:
         version_pb = versions_protobuf.versions.add()
-        for field in fields:
-            setattr(version_pb, field, getattr(road, field))
-
-    return versions_protobuf
+        setattr(version_pb, "pk", version.pk)  # Version PK
+        setattr(version_pb, "user", str(getattr(version.revision, "user")))  # User
+        setattr(version_pb, "comment", getattr(version.revision, "comment"))  # Comment
+        date_created = getattr(version.revision, "date_created")
+        if date_created:
+            setattr(version_pb, "date_created", date_created.strftime("%Y-%m-%d"))
+        else:
+            setattr(version_pb, "date_created", "")
 
     return HttpResponse(
-        versions.SerializeToString(), content_type="application/octet-stream"
+        versions_protobuf.SerializeToString(), content_type="application/octet-stream"
     )
