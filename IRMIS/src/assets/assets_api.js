@@ -1,4 +1,4 @@
-import { Road, Roads } from "../../protobuf/roads_pb";
+import { Road, Roads, Versions } from "../../protobuf/roads_pb";
 import { EstradaRoad } from "../road";
 import { ConfigAPI } from "./configAPI";
 
@@ -82,4 +82,24 @@ function makeEstradaRoad(pbroad) {
     var estradaRoad = Object.create(EstradaRoad.prototype);
     Object.assign(estradaRoad, pbroad);
     return estradaRoad;
+}
+
+/** getRoadAuditData
+ *
+ * Retrieves the Audit changes data for a single road from the server
+ *
+ * @returns a list of version objects
+ */
+export function getRoadAuditData(roadId) {
+    const assetTypeUrlFragment = "protobuf_road_audit";
+
+    const auditDataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${roadId}`;
+
+    return fetch(auditDataUrl, ConfigAPI.requestAssetInit())
+        .then((auditDataResponse) => (auditDataResponse.arrayBuffer()))
+        .then((protobufBytes) => {
+            debugger;
+            const uintArray = new Uint8Array(protobufBytes);
+            return Versions.deserializeBinary(uintArray).getVersionsList();
+        });
 }
