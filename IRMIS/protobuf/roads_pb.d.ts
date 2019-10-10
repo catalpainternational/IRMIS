@@ -3,6 +3,60 @@
 
 import * as jspb from "google-protobuf";
 
+export class Version extends jspb.Message {
+  getPk(): number;
+  setPk(value: number): void;
+
+  getDateCreated(): string;
+  setDateCreated(value: string): void;
+
+  getUser(): string;
+  setUser(value: string): void;
+
+  getComment(): string;
+  setComment(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): Version.AsObject;
+  static toObject(includeInstance: boolean, msg: Version): Version.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: Version, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Version;
+  static deserializeBinaryFromReader(message: Version, reader: jspb.BinaryReader): Version;
+}
+
+export namespace Version {
+  export type AsObject = {
+    pk: number,
+    dateCreated: string,
+    user: string,
+    comment: string,
+  }
+}
+
+export class Versions extends jspb.Message {
+  clearVersionsList(): void;
+  getVersionsList(): Array<Version>;
+  setVersionsList(value: Array<Version>): void;
+  addVersions(value?: Version, index?: number): Version;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): Versions.AsObject;
+  static toObject(includeInstance: boolean, msg: Versions): Versions.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: Versions, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Versions;
+  static deserializeBinaryFromReader(message: Versions, reader: jspb.BinaryReader): Versions;
+}
+
+export namespace Versions {
+  export type AsObject = {
+    versionsList: Array<Version.AsObject>,
+  }
+}
+
 export class Projection extends jspb.Message {
   getX(): number;
   setX(value: number): void;
