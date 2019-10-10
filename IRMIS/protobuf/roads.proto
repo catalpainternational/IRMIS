@@ -10,7 +10,7 @@ message Version {
   string date_created = 2;
   string user = 3;
   string comment = 4;
-  string source = 5;
+  /* string source = 5; */
 }
 
 message Versions {
