@@ -98,7 +98,6 @@ export function getRoadAuditData(roadId) {
     return fetch(auditDataUrl, ConfigAPI.requestAssetInit())
         .then((auditDataResponse) => (auditDataResponse.arrayBuffer()))
         .then((protobufBytes) => {
-            debugger;
             const uintArray = new Uint8Array(protobufBytes);
             return Versions.deserializeBinary(uintArray).getVersionsList();
         });

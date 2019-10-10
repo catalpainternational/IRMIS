@@ -51,7 +51,7 @@ export function saveRoad(road) {
 export function getRoadAudit(roadId) {
     return Promise.resolve(getRoadAuditData(roadId))
         .then(auditList => {
-            document.dispatchEvent(new CustomEvent("estrada.changesTable.roadAuditDataAdded", {detail: {auditList}}));
+            // document.dispatchEvent(new CustomEvent("estrada.auditTable.roadAuditDataAdded", {detail: {auditList}}));
             return auditList;
         });
 }
