@@ -1,11 +1,14 @@
+from django.conf import settings
 from django.contrib.gis.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.postgres.fields import HStoreField
 from django.utils.translation import get_language, ugettext, ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db.models import Count, Max
 
+import datetime
 import reversion
 from reversion.models import Version
 from protobuf.roads_pb2 import Roads as ProtoRoads
@@ -57,6 +60,38 @@ class TechnicalClass(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Survey(models.Model):
+    road = models.CharField(
+        verbose_name=_("Road Code"), validators=[no_spaces], max_length=25
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        verbose_name=_("User"),
+        null=True,
+        on_delete=models.SET_NULL,
+    )
+    date_surveyed = models.DateField(_("Date Surveyed"), default=datetime.date.today)
+    date_created = models.DateTimeField(_("Date Created"), auto_now_add=True)
+    date_updated = models.DateTimeField(_("Date Updated"), auto_now=True)
+    chainage_start = models.DecimalField(
+        verbose_name=_("Start Chainage (Km)"),
+        max_digits=12,
+        decimal_places=5,
+        blank=True,
+        null=True,
+        help_text=_("Enter chainage for survey starting point"),
+    )
+    chainage_end = models.DecimalField(
+        verbose_name=_("End Chainage (Km)"),
+        max_digits=12,
+        decimal_places=5,
+        blank=True,
+        null=True,
+        help_text=_("Enter chainage for survey ending point"),
+    )
+    values = HStoreField()
 
 
 class RoadQuerySet(models.QuerySet):

@@ -13,16 +13,6 @@
             </ul>
         </div>
         <div class="form-group">
-            <label>{ technical_classes.display }</label>
-            <small class="form-text text-muted">{ props.getHelpText("technical_class") }</small>
-            <ul class="technical-class">
-                <li each="{ technical_class in technical_classes.options }" data-technical="{ technical_class.code }" onclick="{ checkTechnicalClass }">
-                    <span class="{ technical_class.code == props.road.getTechnicalClass() ? 'active' : ''  } radio image"></span>
-                    { technical_class.name }
-                </li>
-            </ul>
-        </div>
-        <div class="form-group">
             <label>{ traffic_data.display }</label>
             <small class="form-text text-muted">{ props.getHelpText("traffic_level") }</small>
             <ul class="traffic-data">
@@ -47,16 +37,11 @@
                 this.props.road.setMaintenanceNeed(e.currentTarget.dataset.maintenance);
                 this.update();
             },
-            checkTechnicalClass(e) {
-                this.props.road.setTechnicalClass(e.currentTarget.dataset.technical);
-                this.update();
-            },
             checkTrafficData(e) {
                 this.props.road.setTrafficLevel(e.currentTarget.dataset.traffic);
                 this.update();
             },
             maintenance_needs: window.road_schema.maintenance_need,
-            technical_classes: window.road_schema.technical_class,
             traffic_data: window.road_schema.traffic_level,
         }
     </script>
