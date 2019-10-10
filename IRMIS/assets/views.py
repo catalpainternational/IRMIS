@@ -242,7 +242,7 @@ def all_surveys(request):
         return HttpResponseForbidden()
 
     queryset = Survey.objects.order_by(
-        "road", "chainage_start", "chainage_end", "-date_updated"
+        "road", "chainage_start", "chainage_end", "-date_surveyed", "-date_updated"
     )
     serializer = SurveySerializer(queryset, many=True)
     return JsonResponse(serializer.data, safe=False)
@@ -254,7 +254,7 @@ def road_surveys(request, road_code):
 
     queryset = (
         Survey.objects.filter(road=road_code)
-        .order_by("road", "chainage_start", "chainage_end", "-date_updated")
+        .order_by("road", "chainage_start", "chainage_end", "-date_surveyed")
         .distinct("road", "chainage_start", "chainage_end")
     )
     serializer = SurveySerializer(queryset, many=True)
@@ -280,7 +280,7 @@ class Report:
             )
             self.surveys = (
                 Survey.objects.filter(road=road_code)
-                .order_by("road", "chainage_start", "chainage_end", "-date_updated")
+                .order_by("road", "chainage_start", "chainage_end", "-date_surveyed")
                 .distinct("road", "chainage_start", "chainage_end")
             )
             self.surveys_chainage_start = self.surveys[0].chainage_start
