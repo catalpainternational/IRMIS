@@ -266,7 +266,7 @@ def road_report(request, road_code):
         return HttpResponseForbidden()
 
     report = Report(road_code)
-    return JsonResponse(report.export(), safe=False)
+    return JsonResponse(report.export_report(), safe=False)
 
 
 class Report:
@@ -312,7 +312,7 @@ class Report:
         percentages = {condition: (counts[condition] / l * 100) for condition in counts}
         return {"counts": counts, "percentages": percentages}
 
-    def generate_report(self):
+    def build_chainage_table(self):
         report = []
         prev_cond, prev_date = None, None
 
@@ -324,7 +324,7 @@ class Report:
 
         return report
 
-    def export(self):
+    def export_report(self):
         report = self.build_summary_stats()
-        report["table"] = self.generate_report()
+        report["table"] = self.build_chainage_table()
         return report
