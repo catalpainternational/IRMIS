@@ -319,7 +319,13 @@ class Report:
         for segment in self.alignment:
             s = self.alignment[segment]
             if s["surf_cond"] != prev_cond and s["date_surveyed"] != prev_date:
-                report.append((s["chainage"], s["surf_cond"], s["date_surveyed"]))
+                report.append(
+                    {
+                        "chainage": s["chainage"],
+                        "surface_condition": s["surf_cond"],
+                        "date_surveyed": s["date_surveyed"],
+                    }
+                )
                 prev_cond, prev_date = (s["surf_cond"], s["date_surveyed"])
 
         return report
