@@ -227,7 +227,7 @@ def protobuf_road_set(request, chunk_name=None):
     if chunk_name:
         roads = roads.filter(road_type=chunk_name)
 
-    roads_protobuf = roads.objects.to_protobuf()
+    roads_protobuf = roads.to_protobuf()
 
     return HttpResponse(
         roads_protobuf.SerializeToString(), content_type="application/octet-stream"
