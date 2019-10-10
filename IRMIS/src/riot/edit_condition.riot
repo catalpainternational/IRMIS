@@ -1,16 +1,28 @@
 <edit_condition>
+    <edit_modal>
+        <span slot="modal_title">Add Surface Condition Information</span>
+        <form slot="modal_body">
+            <section>
+                <div class="form-group">
+                    <label>{conditions.display}</label>
+                    <small class="form-text text-muted">{props.getHelpText("surface_condition")}</small>
+                    <ul class="surface-condition">
+                        <li each="{ condition in conditions.options }" data-condition="{ condition[0] }" onclick="{ checkSurfaceCondition }">
+                            <span class="{ condition[0] == props.road.getSurfaceCondition() ? 'active' : ''  } radio image"></span>
+                            { condition[1] }
+                        </li>
+                    </ul>
+                </div>
+            </section>
+        </form>
+    </edit_modal>
     <h5>{ window.gettext ("Condition") }</h5>
 
     <section>
         <div class="form-group">
-            <label>{ conditions.display }</label>
-            <small class="form-text text-muted">{ props.getHelpText("surface_condition") }</small>
-            <ul class="surface-condition">
-                <li each="{ condition in conditions.options }" data-condition="{ condition[0] }" onclick="{ checkSurfaceCondition }">
-                    <span class="{ condition[0] == props.road.getSurfaceCondition() ? 'active' : ''  } radio image"></span>
-                    { condition[1] }
-                </li>
-            </ul>
+            <div class="button-wrapper d-flex justify-content-end">
+                <button class="btn btn-primary" onclick="{ edit }" disabled="{ props.editing }">{ window.gettext("Edit") }</button>
+            </div>
         </div>
         <data_table table_id={this.table_id} columns={this.table_columns} getHelpText={props.getHelpText} pendingRows={this.pendingRows}></data_table>
     </section>
@@ -21,9 +33,16 @@
 
     <script>
         import Data_Table from "./data_table.riot";
+        import Edit_Modal from "./edit_modal.riot";
+
         import { getFieldName } from "../road";
 
+        import $ from "jquery";
+
         export default {
+            edit(e) {
+                $('#editModal').modal('show')
+            },
             save(e) {
                 this.props.onSave();
             },
