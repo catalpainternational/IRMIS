@@ -1,14 +1,56 @@
 <edit_condition>
     <edit_modal>
         <span slot="modal_title">Add Surface Condition Information</span>
+
         <form slot="modal_body">
             <section>
+                <div class="form-group">
+                    <label>{ window.gettext("Survey Date") }</label>
+                    <small class="form-text text-muted">{props.getHelpText("survey_date")}</small>
+                    <input class="{ state.errors.surveyDate ? 'danger' : null } { state.survey.surveyDate ? '' : 'inactive' } form-control"
+                        type="date" name="surveyDate" placeholder="Date" value="{ state.survey.surveyDate }" oninput="{ checkSurveyDate }">
+                    <div if="{ state.errors.surveyDate }" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.surveyDate }.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h6>{ window.gettext("Chainage") }</h6>
+                <div class="form-group">
+                    <label>{ window.gettext("Chainage start") }</label>
+                    <input class="{ state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
+                        type="number" name="startChainage" placeholder="0+000" value="{ state.survey.startChainage }" oninput="{ checkChainage }">
+                    <small class="form-text text-muted">{ props.getHelpText("start_chainage") }</small>
+                    <div if="{ state.errors.startChainage }" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.startChainage }.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>{ window.gettext("Chainage end") }</label>
+                    <input class="{ state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
+                        type="number" name="endChainage" placeholder="62+410" value="{ state.survey.endChainage }" oninput="{ checkChainage }">
+                    <small class="form-text text-muted">{ props.getHelpText("end_chainage") }</small>
+                    <div if="{ state.errors.endChainage }" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.endChainage }.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h6>{ window.gettext("Condition") }</h6>
                 <div class="form-group">
                     <label>{conditions.display}</label>
                     <small class="form-text text-muted">{props.getHelpText("surface_condition")}</small>
                     <ul class="surface-condition">
                         <li each="{ condition in conditions.options }" data-condition="{ condition[0] }" onclick="{ checkSurfaceCondition }">
-                            <span class="{ condition[0] == props.road.getSurfaceCondition() ? 'active' : ''  } radio image"></span>
+                            <span class="{ condition[0] == state.survey.surfaceCondition ? 'active' : ''  } radio image"></span>
                             { condition[1] }
                         </li>
                     </ul>
@@ -16,8 +58,8 @@
             </section>
         </form>
     </edit_modal>
-    <h5>{ window.gettext ("Condition") }</h5>
 
+    <h5>{ window.gettext ("Condition") }</h5>
     <section>
         <div class="form-group">
             <div class="button-wrapper d-flex justify-content-end">
@@ -27,10 +69,6 @@
         <data_table table_id={this.table_id} columns={this.table_columns} getHelpText={props.getHelpText} pendingRows={this.pendingRows}></data_table>
     </section>
 
-    <div class="button-wrapper d-flex justify-content-end">
-        <button class="btn btn-primary" onclick="{ save }" disabled="{ props.saving }">{ window.gettext("Save and continue") }</button>
-    </div>
-
     <script>
         import Data_Table from "./data_table.riot";
         import Edit_Modal from "./edit_modal.riot";
@@ -39,15 +77,43 @@
 
         import $ from "jquery";
 
+        function exceedsMaxDigits(text, limit, decimals) {
+            return !(new RegExp(`^\\d{0,${(limit - decimals)}}(\\.\\d{1,${decimals}})?$`).test(text));
+        }
+
         export default {
+            state: {
+                chainageDecimals: 3,
+                chainageDigits : 7,
+                survey: {},
+                errors: {},
+            },
             edit(e) {
-                $('#editModal').modal('show')
+                $("#editModal").modal("show")
             },
             save(e) {
                 this.props.onSave();
             },
+            checkSurveyDate(e) {
+                this.state.survey.surveyDate = e.currentTarget.value;
+                this.update();
+            },
+            checkChainage(e) {
+                const fieldName = e.currentTarget.name;
+                const input = e.currentTarget.value;
+                if (exceedsMaxDigits(input, this.state.chainageDigits, this.state.chainageDecimals)) {
+                    this.state.errors[fieldName] = window.interpolate(
+                        window.gettext('Chainage cannot contain more than %s digits, of which %s are decimals'),
+                        [this.state.chainageDigits, this.state.chainageDecimals]
+                    );
+                } else {
+                    delete this.state.errors[fieldName];
+                    this.state.survey[fieldName] = input;
+                }
+                this.update();
+            },
             checkSurfaceCondition(e) {
-                this.props.road.setSurfaceCondition(e.currentTarget.dataset.condition);
+                this.state.survey.surfaceCondition = e.currentTarget.dataset.condition;
                 this.update();
             },
             conditions: window.road_schema.surface_condition,
