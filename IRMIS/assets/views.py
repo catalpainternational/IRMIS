@@ -261,6 +261,14 @@ def road_surveys(request, road_code):
     return JsonResponse(serializer.data, safe=False)
 
 
+def road_report(request, road_code):
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+
+    report = Report(road_code)
+    return JsonResponse(report.export(), safe=False)
+
+
 class Report:
     def __init__(self, road_code):
         self.road_code = road_code
@@ -314,4 +322,9 @@ class Report:
                 report.append((s["chainage"], s["surf_cond"], s["date_surveyed"]))
                 prev_cond, prev_date = (s["surf_cond"], s["date_surveyed"])
 
+        return report
+
+    def export(self):
+        report = self.build_summary_stats()
+        report["table"] = self.generate_report()
         return report

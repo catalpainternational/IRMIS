@@ -9,6 +9,7 @@ from .views import (
     road_update,
     road_surveys,
     all_surveys,
+    road_report,
 )
 
 router = routers.DefaultRouter()
@@ -27,4 +28,5 @@ urlpatterns = [
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     path("all_surveys", all_surveys, name="all_surveys"),
     path("road_surveys/<slug:road_code>", road_surveys, name="road_surveys"),
+    path("road_report/<slug:road_code>", road_report, name="road_report"),
 ]
