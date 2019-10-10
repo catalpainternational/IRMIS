@@ -9,122 +9,135 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-10-08 01:28+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2019-10-09 05:39+0000\n"
+"Last-Translator: b'  <januario@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Translated-Using: django-rosetta 0.9.3\n"
 
 msgid "Asset"
-msgstr ""
+msgstr "Sasan (aset)"
 
 msgid "Link code and name"
-msgstr ""
+msgstr "Kodigu linha no naran "
 
 msgid "Link width and length"
-msgstr ""
+msgstr "Linha nia luan no naruk"
 
 msgid "Link chainage"
-msgstr ""
+msgstr "Linha estasaun"
 
 msgid "Save and continue"
-msgstr "Kontinua"
+msgstr "Salva no kontinua"
 
 msgid "Link code cannot contain white spaces"
-msgstr ""
+msgstr "Kodigu linha labele inklui espasu mamuk"
 
 #, javascript-format
-msgid "Link length cannot contain more than %s digits, of which %s are decimals"
-msgstr ""
+msgid ""
+"Link length cannot contain more than %s digits, of which %s are decimals"
+msgstr "Linha nia naruk labele inklui liu %s numeru, nebe %s  mak decimais "
 
 #, javascript-format
-msgid "Carriage width cannot contain more than %s digits, of which %s are decimals"
-msgstr ""
+msgid ""
+"Carriage width cannot contain more than %s digits, of which %s are decimals"
+msgstr "Carriage nia luan labele inklui liu%s numeru,nebe %s  mak decimais "
 
 #, javascript-format
-msgid "Link start chainage cannot contain more than %s digits, of which %s are decimals"
+msgid ""
+"Link start chainage cannot contain more than %s digits, of which %s are "
+"decimals"
 msgstr ""
+"Linha estasaun komesa labele inklui liu %s numeru,nebe %s  mak decimais "
 
 #, javascript-format
-msgid "Link end chainage cannot contain more than %s digits, of which %s are decimals"
+msgid ""
+"Link end chainage cannot contain more than %s digits, of which %s are "
+"decimals"
 msgstr ""
+"Linha estasaun ikus labele inklui liu %s numeru, nebe %s  mak decimais "
 
 msgid "Edit asset"
-msgstr ""
+msgstr "Hadia sasan/aset"
 
 msgid "Location & Type"
-msgstr ""
+msgstr "Fatin & Tipu"
 
 msgid "Asset Details"
-msgstr ""
+msgstr "Detalhu Sasan/Aset"
 
 msgid "Pavement"
-msgstr ""
+msgstr "Pavimentu "
 
 msgid "Project"
-msgstr ""
+msgstr "Projeitu "
 
 msgid "Condition"
-msgstr ""
+msgstr "Kondisaun "
 
 msgid "Loading"
-msgstr ""
+msgstr "Karegamentu "
 
 msgid "Close"
-msgstr ""
+msgstr "Taka "
 
 msgid "Unsaved Changes"
-msgstr ""
+msgstr "Alterasaun Sedauk Salva "
 
-msgid "You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?"
+msgid ""
+"You have unsaved changes made to this page which will be lost if you "
+"navigate away. Would you like to continue editing?"
 msgstr ""
+"Ita bot sedauk salva ba mudansa nebe halo iha pagina ne no sei lakon kuandu "
+"ita taka. Ita bot sei hakarak kontinua atu edita? "
 
 msgid "Discard"
-msgstr ""
+msgstr "Soe tiha "
 
 msgid "Continue editing"
-msgstr ""
+msgstr "Kontinua edita"
 
 msgid "Success"
-msgstr ""
+msgstr "Susesu"
 
 msgid "You have successfully saved"
-msgstr ""
+msgstr "Ita bot salva ho susesu "
 
 msgid "Error"
-msgstr ""
+msgstr "Erru"
 
 msgid "Something went wrong"
-msgstr ""
+msgstr "Buat ruma laloos"
 
 msgid "Location"
-msgstr ""
+msgstr "Fatin "
 
 msgid "Select an Administrative Area"
-msgstr ""
+msgstr "Hili Area Administrativa"
 
 msgid "Select a Road Type"
-msgstr ""
+msgstr "Hili Tipu Estrada"
 
 msgid "Select a Surface Type"
-msgstr ""
+msgstr "Hili Tipu Superfície"
 
 msgid "Link Name"
-msgstr ""
+msgstr "Naran Linha"
 
 msgid "Start Point (DMS)"
-msgstr ""
+msgstr "Pontu Komesa (DMS)"
 
 msgid "End Point (DMS)"
-msgstr ""
+msgstr "Pontu Ikus (DMS)"
 
 msgid "Start Point (UTM)"
-msgstr ""
+msgstr "Pontu Komesa (UTM)"
 
 msgid "End Point (UTM)"
-msgstr ""
+msgstr "Pontu Ikus (UTM)"
 
 #~ msgid "E.g. A01-01"
 #~ msgstr "ezemplu..."

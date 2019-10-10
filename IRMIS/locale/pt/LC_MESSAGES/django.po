@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-10-08 03:56+0000\n"
-"PO-Revision-Date: 2019-08-15 08:25+0000\n"
+"PO-Revision-Date: 2019-10-09 01:05+0000\n"
 "Last-Translator: b'  <juliana@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -35,88 +35,96 @@ msgstr "Sair"
 
 #, python-format
 msgid "%(value)s should not contain spaces"
-msgstr ""
+msgstr "%(value)s não deve conter espaços"
 
 msgid "Code"
-msgstr ""
+msgstr "Código"
 
 msgid "Name"
-msgstr ""
+msgstr "Nome"
 
 msgid "National"
-msgstr ""
+msgstr "Nacional"
 
 msgid "Highway"
-msgstr ""
+msgstr "Via rápida"
 
 msgid "Municipal"
-msgstr ""
+msgstr "Municipal"
 
 msgid "Urban"
-msgstr ""
+msgstr "Urbana"
 
 msgid "Rural"
-msgstr ""
+msgstr "Rural"
 
 msgid "Low"
-msgstr ""
+msgstr "Baixo"
 
 msgid "Medium"
-msgstr ""
+msgstr "Médio"
 
 msgid "High"
-msgstr ""
+msgstr "Alto"
 
 msgid "Good"
-msgstr ""
+msgstr "Bom"
 
 msgid "Fair"
-msgstr ""
+msgstr "Razoável"
 
 msgid "Poor"
-msgstr ""
+msgstr "Fraco"
 
 msgid "Bad"
-msgstr ""
+msgstr "Mau"
 
 msgid "Date Created"
-msgstr ""
+msgstr "Data de criação"
 
 msgid "last modified"
-msgstr ""
+msgstr "última alteração"
 
 msgid "Road Code"
-msgstr ""
+msgstr "Código de estrada"
 
 msgid "Administrative Area"
-msgstr ""
+msgstr "Área administrativa"
 
 msgid "Choose the administrative area of the road"
-msgstr ""
+msgstr "Escolha a área administrativa da estrada"
 
 msgid "Funding Source"
-msgstr ""
+msgstr "Fonte de financiamento"
 
 msgid "Enter the source funding for the road link"
-msgstr ""
+msgstr "Adicione a fonte de financiamento para a secção da estrada"
 
 msgid "Link Code"
-msgstr ""
+msgstr "Código da secção da estrada"
 
 msgid "Enter link code according to DRBFC standard"
-msgstr ""
+msgstr "Introduza o código "
 
 msgid "Link Start Name"
-msgstr ""
+msgstr "Nome do início da secção"
 
-msgid "Enter the name of the link start location (municipal center, administrative post or nearest suco)"
+msgid ""
+"Enter the name of the link start location (municipal center, administrative "
+"post or nearest suco)"
 msgstr ""
+"Introduza o nome da localidade de início da secção da estrada (centro "
+"municipal, posto administrativo ou suco mais próximo)"
 
 msgid "Link End Name"
-msgstr ""
+msgstr "Nome do fim da secção"
 
-msgid "Enter the name of the link end location (municipal center, administrative post or nearest suco)"
+msgid ""
+"Enter the name of the link end location (municipal center, administrative "
+"post or nearest suco)"
 msgstr ""
+"Introduza o nome da localidade do fim da secção da estrada (centro "
+"municipal, posto administrativo ou suco mais próximo)"
 
 msgid "Link End Chainage (Km)"
 msgstr ""
@@ -131,187 +139,197 @@ msgid "Enter chainage for link starting point"
 msgstr ""
 
 msgid "Link Length"
-msgstr ""
+msgstr "Extensão da secção"
 
 msgid "Enter road link length (in Km)"
-msgstr ""
+msgstr "Introduza a extensão da secção da estrada (em Km)"
 
 msgid "Surface Type"
-msgstr ""
+msgstr "Tipo de pavimento"
 
 msgid "Choose the type of surface of the road link carriageway"
-msgstr ""
+msgstr "Escolha o tipo de pavimento da faixa de rodagem da secção da estrada"
 
 msgid "Pavement Class"
-msgstr ""
+msgstr "Classe de Pavimento"
 
 msgid "Choose the pavement class of the road"
-msgstr ""
+msgstr "Escolha a classe de pavimento da estrada"
 
 msgid "Carriageway Width"
-msgstr ""
+msgstr "Largura da faixa de rodagem"
 
 msgid "Enter the width (in meters) of the link carriageway"
 msgstr ""
+"Introduza a largura (em metros) da faixa de rodagem da secção da estrada"
 
 msgid "Road Type"
-msgstr ""
+msgstr "Tipo de Estrada"
 
 msgid "Choose the administrative class of the road"
-msgstr ""
+msgstr "Escolha a classe administrativa da secção da estrada"
 
 msgid "Road Status"
-msgstr ""
+msgstr "Estrado da Estrada"
 
 msgid "Enter road link current status"
-msgstr ""
+msgstr "Introduza o actual estado da secção da estrada"
 
 msgid "Project Name"
-msgstr ""
+msgstr "Nome do Projecto"
 
 msgid "Enter road link project name"
-msgstr ""
+msgstr "Introduza o nome do projecto da secção da estrada"
 
 msgid "Traffic Level"
-msgstr ""
+msgstr "Volume de trânsito"
 
 msgid "Choose the traffic volume for the road link"
-msgstr ""
+msgstr "Escolha o volume de trânsito para a secção da estrada"
 
 msgid "Surface Condition (SDI)"
-msgstr ""
+msgstr "Condição do pavimento (SDI)"
 
-msgid "Choose road link surface condition according to the Surface Distress Index (SDI): Good (SDI≤2), fair (2<SDI≤3), poor (3<SDI≤4) or bad (SDI>4)"
+msgid ""
+"Choose road link surface condition according to the Surface Distress Index "
+"(SDI): Good (SDI≤2), fair (2<SDI≤3), poor (3<SDI≤4) or bad (SDI>4)"
 msgstr ""
+"Escolha a condição do pavimento para a secção da estrada de acordo com o "
+"Surface Distress Index:  Bom (SDI≤2), Razoável (2<SDI≤3), Fraco (3<SDI≤4) or"
+" Mau (SDI>4"
 
 msgid "Maintenance Needs"
-msgstr ""
+msgstr "Tipo de Manutenção"
 
 msgid "Choose the type of maintenace needs for the road link"
-msgstr ""
+msgstr "Escolha o tipo de manutenção necessária para a secção da estrada"
 
 msgid "Technical Class"
-msgstr ""
+msgstr "Classe Técnica"
 
-msgid "Choose road link technical class according to the 2010 Road Geometric Design Standards, DRBFC standards"
+msgid ""
+"Choose road link technical class according to the 2010 Road Geometric Design"
+" Standards, DRBFC standards"
 msgstr ""
+"Escolha o tipo de classe técnica de acordo com o \"2010 Road Geometric "
+"Design standards\" e os standards da DNEPCC"
 
 msgid "Road Inventory"
-msgstr ""
+msgstr "Inventário de Estradas"
 
 msgid "Export all"
-msgstr ""
+msgstr "Exportar tudo"
 
 msgid "Select data"
-msgstr ""
+msgstr "Selecção de dados"
 
 msgid "Road Inventory Data"
-msgstr ""
+msgstr "Dados do Inventário de Estradas"
 
 msgid "Road code"
-msgstr ""
+msgstr "Código da estrada"
 
 msgid "Road name"
-msgstr ""
+msgstr "Nome da estrada"
 
 msgid "Link code"
-msgstr ""
+msgstr "Código da secção da estrada"
 
 msgid "Link name"
-msgstr ""
+msgstr "Nome da secção da estrada"
 
 msgid "Link start name"
-msgstr ""
+msgstr "Nome do início da secção da estrada"
 
 msgid "Link start chainage"
 msgstr ""
 
 msgid "Link end name"
-msgstr ""
+msgstr "Nome do fim da secção da estrada"
 
 msgid "Link end chainage"
 msgstr ""
 
 msgid "Surface type"
-msgstr ""
+msgstr "Tipo de pavimento"
 
 msgid "Pavement class"
-msgstr ""
+msgstr "Classe do pavimento"
 
 msgid "Carriageway width"
-msgstr ""
+msgstr "Largura da faixa de rodagem"
 
 msgid "Administrative area"
-msgstr ""
+msgstr "Área administrativa"
 
 msgid "Road type"
-msgstr ""
+msgstr "Tipo de estrada"
 
 msgid "Technical class"
-msgstr ""
+msgstr "Classe técnica"
 
 msgid "Funding source"
-msgstr ""
+msgstr "Fontes de financiamento"
 
 msgid "Road status"
-msgstr ""
+msgstr "Estado da estrada"
 
 msgid "Project"
-msgstr ""
+msgstr "Projecto"
 
 msgid "Start Point - DMS"
-msgstr ""
+msgstr "Ponto inicial - DMS"
 
 msgid "End Point - DMS"
-msgstr ""
+msgstr "Ponto final - DMS"
 
 msgid "Start Point - UTM"
-msgstr ""
+msgstr "Ponto inicial - UTM"
 
 msgid "End Point - UTM"
-msgstr ""
+msgstr "Ponto final - UTM"
 
 msgid "Road Condition Data"
-msgstr ""
+msgstr "Dados de Condição de Estrada"
 
 msgid "Surface condition"
-msgstr ""
+msgstr "Condição do pavimento"
 
 msgid "Maintenance needs"
-msgstr ""
+msgstr "Tipo de manutenção"
 
 msgid "Traffic data"
-msgstr ""
+msgstr "Volume de trânsito"
 
 msgid "Return to default selection"
-msgstr ""
+msgstr "Voltar à selecção inicial"
 
 msgid "View"
-msgstr ""
+msgstr "Ver"
 
 msgid "Fullscreen view"
-msgstr ""
+msgstr "Ver ecrã inteiro"
 
 msgid "Map & Table"
-msgstr ""
+msgstr "Mapa & Tabela"
 
 msgid "Map"
-msgstr ""
+msgstr "Mapa"
 
 msgid "Table"
-msgstr ""
+msgstr "Tabela"
 
 msgid "Filters"
-msgstr ""
+msgstr "Filtros"
 
 msgid "Clear all filters"
-msgstr ""
+msgstr "Limpar todos os filtros"
 
 msgid "Location"
-msgstr ""
+msgstr "Localização"
 
 msgid "Clear"
-msgstr ""
+msgstr "Limpar"
 
 msgid "Asset"
 msgstr ""
@@ -319,14 +337,19 @@ msgstr ""
 msgid "Asset condition"
 msgstr ""
 
-msgid "Please enter a correct username and password. Note that both fields may be case-sensitive"
-msgstr "O nome de utilizar ou palavra-passe estão incorrectos. Confirme se está a usar correctamente as maiúsculas e minúsculas"
+msgid ""
+"Please enter a correct username and password. Note that both fields may be "
+"case-sensitive"
+msgstr ""
+"O nome de utilizar ou palavra-passe estão incorrectos. Confirme se está a "
+"usar correctamente as maiúsculas e minúsculas"
 
 msgid "This password is too short. It must contain at least 8 characters"
 msgstr "A sua palavra-passe deve conter pelo menos 8 caracteres"
 
 msgid "Your old password was entered incorrectly. Please enter it again"
-msgstr "A palavra-passe introduzida está incorrecta. Por favor volte a tentar."
+msgstr ""
+"A palavra-passe introduzida está incorrecta. Por favor volte a tentar."
 
 msgid "The two password fields didn't match"
 msgstr "Os dois campos da nova palavra-passe não coincidem"
@@ -350,13 +373,13 @@ msgid "Log in"
 msgstr "Entrar"
 
 msgid "Democratic Republic of Timor-Leste"
-msgstr ""
+msgstr "República Democrática de Timor-Leste"
 
 msgid "Ministry of Public Works"
-msgstr ""
+msgstr "Ministério das Obras Públicas"
 
 msgid "Designed & developed by Catalpa International"
-msgstr ""
+msgstr "Desenhado & desenvolvido por Catalpa International"
 
 msgid "Logged out"
 msgstr "Não autenticado"
@@ -409,23 +432,39 @@ msgstr "Regressar à página de entrada"
 msgid "Reset your password"
 msgstr "Redefinir a sua palavra-passe"
 
-msgid "We have sent a reset password link to your email. Please, click on the link to set your new password. Thanks."
-msgstr "Enviamos um link para o seu email. Por favor, clique no link para redefinir a sua nova palavra-passe. Obrigado."
+msgid ""
+"We have sent a reset password link to your email. Please, click on the link "
+"to set your new password. Thanks."
+msgstr ""
+"Enviamos um link para o seu email. Por favor, clique no link para redefinir "
+"a sua nova palavra-passe. Obrigado."
 
 msgid "Hello there"
 msgstr "Viva"
 
-msgid "We received a request to change your Estrada password. Click the button below to create a new password"
-msgstr "Recebemos um pedido para redefinir a sua palavra-passe no Estrada. Clique no botão abaixo para criar uma nova palavra-passe"
+msgid ""
+"We received a request to change your Estrada password. Click the button "
+"below to create a new password"
+msgstr ""
+"Recebemos um pedido para redefinir a sua palavra-passe no Estrada. Clique no"
+" botão abaixo para criar uma nova palavra-passe"
 
 msgid "Reset my password"
 msgstr "Redefinir a sua palavra-passe"
 
-msgid "If you didn't mean to reset your password, then you can just ignore this email. Your password will not change"
-msgstr "Se não pretende alterar a sua palavra-passe, por favor ignore este email. A sua palavra-passe não será alterada"
+msgid ""
+"If you didn't mean to reset your password, then you can just ignore this "
+"email. Your password will not change"
+msgstr ""
+"Se não pretende alterar a sua palavra-passe, por favor ignore este email. A "
+"sua palavra-passe não será alterada"
 
-msgid "Don’t worry. Resetting your password is easy, just tell us the email address you registered with Estrada."
-msgstr "Não se preocupe! Redefinir a sua palavra-passe é simples, indique-nos apenas o endereço de email com que se registou no Estrada."
+msgid ""
+"Don’t worry. Resetting your password is easy, just tell us the email address"
+" you registered with Estrada."
+msgstr ""
+"Não se preocupe! Redefinir a sua palavra-passe é simples, indique-nos apenas"
+" o endereço de email com que se registou no Estrada."
 
 msgid "Email address"
 msgstr "Endereço de email"
