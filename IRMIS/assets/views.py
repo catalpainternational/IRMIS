@@ -223,7 +223,11 @@ def protobuf_road_set(request, chunk_name=None):
     if not request.user.is_authenticated:
         return HttpResponseForbidden()
 
-    roads_protobuf = Road.objects.to_protobuf(chunk_name)
+    roads = Road.objects.all()
+    if chunk_name:
+        roads = roads.filter(road_type=chunk_name)
+
+    roads_protobuf = roads.objects.to_protobuf()
 
     return HttpResponse(
         roads_protobuf.SerializeToString(), content_type="application/octet-stream"
