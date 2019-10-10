@@ -80,6 +80,20 @@
         </div>
     </section>
 
+    <section>
+        <h6>{ window.gettext("Road class") }</h6>
+            <div class="form-group">
+            <label>{ technical_classes.display }</label>
+            <small class="form-text text-muted">{ props.getHelpText("technical_class") }</small>
+            <ul class="technical-class">
+                <li each="{ technical_class in technical_classes.options }" data-technical="{ technical_class.code }" onclick="{ checkTechnicalClass }">
+                    <span class="{ technical_class.code == props.road.getTechnicalClass() ? 'active' : ''  } radio image"></span>
+                    { technical_class.name }
+                </li>
+            </ul>
+        </div>
+    </section>
+
     <div class="button-wrapper d-flex justify-content-end">
         <button class="btn btn-primary" onclick="{ save }" disabled="{ props.saving || Object.entries(state.errors).length > 0 }">{ window.gettext("Save and continue") }</button>
     </div>
@@ -170,6 +184,10 @@
                 }
                 this.update();
             },
+            checkTechnicalClass(e) {
+                this.props.road.setTechnicalClass(e.currentTarget.dataset.technical);
+                this.update();
+            },
             link_code: window.road_schema.link_code,
             link_start_name: window.road_schema.link_start_name,
             link_end_name: window.road_schema.link_end_name,
@@ -177,6 +195,7 @@
             carriageway_width: window.road_schema.carriageway_width,
             link_start_chainage: window.road_schema.link_start_chainage,
             link_end_chainage: window.road_schema.link_end_chainage,
+            technical_classes: window.road_schema.technical_class,
         };
 
         function containsWhiteSpaces(text) {
