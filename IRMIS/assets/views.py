@@ -228,3 +228,26 @@ def protobuf_road_set(request, chunk_name=None):
     return HttpResponse(
         roads_protobuf.SerializeToString(), content_type="application/octet-stream"
     )
+
+
+def protobuf_road_audit(request, pk):
+    """ returns a protobuf object with the set of all audit history items for a Road """
+
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+
+    road = Road.objects.get(pk)
+    versions = Version.objects.get_for_object(road)
+    versions_protobuf = roads_pb2.ProtoVersions()
+    fields = []
+
+    for version in versions:
+        version_pb = versions_protobuf.versions.add()
+        for field in fields:
+            setattr(version_pb, field, getattr(road, field))
+
+    return versions_protobuf
+
+    return HttpResponse(
+        versions.SerializeToString(), content_type="application/octet-stream"
+    )
