@@ -157,7 +157,8 @@ proto.assets.Version.toObject = function(includeInstance, msg) {
     pk: jspb.Message.getFieldWithDefault(msg, 1, 0),
     dateCreated: jspb.Message.getFieldWithDefault(msg, 2, ""),
     user: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    comment: jspb.Message.getFieldWithDefault(msg, 4, "")
+    comment: jspb.Message.getFieldWithDefault(msg, 4, ""),
+    source: jspb.Message.getFieldWithDefault(msg, 5, "")
   };
 
   if (includeInstance) {
@@ -209,6 +210,10 @@ proto.assets.Version.deserializeBinaryFromReader = function(msg, reader) {
     case 4:
       var value = /** @type {string} */ (reader.readString());
       msg.setComment(value);
+      break;
+    case 5:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setSource(value);
       break;
     default:
       reader.skipField();
@@ -264,6 +269,13 @@ proto.assets.Version.serializeBinaryToWriter = function(message, writer) {
   if (f.length > 0) {
     writer.writeString(
       4,
+      f
+    );
+  }
+  f = message.getSource();
+  if (f.length > 0) {
+    writer.writeString(
+      5,
       f
     );
   }
@@ -327,6 +339,21 @@ proto.assets.Version.prototype.getComment = function() {
 /** @param {string} value */
 proto.assets.Version.prototype.setComment = function(value) {
   jspb.Message.setProto3StringField(this, 4, value);
+};
+
+
+/**
+ * optional string source = 5;
+ * @return {string}
+ */
+proto.assets.Version.prototype.getSource = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
+};
+
+
+/** @param {string} value */
+proto.assets.Version.prototype.setSource = function(value) {
+  jspb.Message.setProto3StringField(this, 5, value);
 };
 
 

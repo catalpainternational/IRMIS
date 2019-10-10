@@ -242,15 +242,24 @@ def protobuf_road_audit(request, pk):
 
     for version in versions:
         version_pb = versions_protobuf.versions.add()
-        setattr(version_pb, "pk", version.pk)  # Version PK
-        setattr(version_pb, "user", str(getattr(version.revision, "user")))  # User
-        setattr(version_pb, "comment", getattr(version.revision, "comment"))  # Comment
-        date_created = getattr(version.revision, "date_created")
-        if date_created:
-            setattr(version_pb, "date_created", date_created.strftime("%Y-%m-%d"))
-        else:
-            setattr(version_pb, "date_created", "")
+        user = getattr(version.revision, "user")
+        date_created = getattr(version.revision, "date_created", "")
+        if date_created is not "":
+            date_created = date_created.strftime("%Y-%m-%d")
+        comment = getattr(version.revision, "comment")
+        source = ""
+        if ".shp" in comment:
+            source = "ShapeFile"
+        elif ".xlsx" in comment:
+            source = "Excel"
+        elif "set from geometry" in comment:
+            source = "Automation"
 
+        setattr(version_pb, "pk", version.pk)  # Version PK
+        setattr(version_pb, "user", str(user))  # User made change
+        setattr(version_pb, "comment", comment)  # Comment with change
+        setattr(version_pb, "date_created", str(date_created))  # Date changed
+        setattr(version_pb, "source", source)  # Source of change
     return HttpResponse(
         versions_protobuf.SerializeToString(), content_type="application/octet-stream"
     )

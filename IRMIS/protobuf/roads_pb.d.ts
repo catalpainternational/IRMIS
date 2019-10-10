@@ -16,6 +16,9 @@ export class Version extends jspb.Message {
   getComment(): string;
   setComment(value: string): void;
 
+  getSource(): string;
+  setSource(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Version.AsObject;
   static toObject(includeInstance: boolean, msg: Version): Version.AsObject;
@@ -32,6 +35,7 @@ export namespace Version {
     dateCreated: string,
     user: string,
     comment: string,
+    source: string,
   }
 }
 
