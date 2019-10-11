@@ -12,8 +12,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="survey",
             name="date_surveyed",
-            field=models.DateField(
-                default=datetime.date.today, verbose_name="Date Surveyed"
-            ),
+            field=models.DateField(blank=True, null=True, verbose_name="Date Surveyed"),
         )
     ]
