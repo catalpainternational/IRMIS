@@ -20,6 +20,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 from rest_framework_condition import condition
 
+from google.protobuf.timestamp_pb2 import Timestamp
 from protobuf import roads_pb2
 from .models import (
     CollatedGeoJsonFile,
@@ -235,19 +236,19 @@ def protobuf_road_audit(request, pk):
 
     if not request.user.is_authenticated:
         return HttpResponseForbidden()
-
-    road = Road.objects.get(pk=pk)
+    queryset = Road.objects.all()
+    road = get_object_or_404(queryset, pk=pk)
     versions = Version.objects.get_for_object(road)
     versions_protobuf = roads_pb2.Versions()
 
     for version in versions:
         version_pb = versions_protobuf.versions.add()
         setattr(version_pb, "pk", version.pk)
-        setattr(version_pb, "user", str(getattr(version.revision, "user")))
-        setattr(version_pb, "comment", getattr(version.revision, "comment"))
+        setattr(version_pb, "user", str(version.revision.user))
+        setattr(version_pb, "comment", version.revision.comment)
         # set datetime field
-        date_created = getattr(version.revision, "date_created")
-        ts = Timestamp().FromDatetime(date_created)
+        ts = Timestamp()
+        ts.FromDatetime(version.revision.date_created)
         version_pb.date_created.CopyFrom(ts)
     return HttpResponse(
         versions_protobuf.SerializeToString(), content_type="application/octet-stream"
