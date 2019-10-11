@@ -1,4 +1,4 @@
-import { getRoadMetadata, getRoadsMetadata, getRoadsMetadataChunks, putRoadMetadata } from "./assets/assets_api";
+import { getRoadMetadata, getRoadsMetadata, getRoadsMetadataChunks, putRoadMetadata, getRoadAuditData } from "./assets/assets_api";
 
 let roads = {}
 let filteredRoads = {}
@@ -45,6 +45,14 @@ export function saveRoad(road) {
             roads[road.getId()] = road;
             document.dispatchEvent(new CustomEvent("estrada.table.roadMetaDataUpdated", {detail: {road}}));
             return road;
+        });
+}
+
+export function getRoadAudit(roadId) {
+    return Promise.resolve(getRoadAuditData(roadId))
+        .then(auditList => {
+            // document.dispatchEvent(new CustomEvent("estrada.auditTable.roadAuditDataAdded", {detail: {auditList}}));
+            return auditList;
         });
 }
 
