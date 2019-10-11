@@ -18,6 +18,7 @@ class Command(BaseCommand):
                             "road": road.road_code,
                             "chainage_start": road.link_start_chainage,
                             "chainage_end": road.link_end_chainage,
+                            "source": "programmatic",
                             "values": {
                                 "surface_condition": str(road.surface_condition),
                                 "traffic_level": str(road.traffic_level),
