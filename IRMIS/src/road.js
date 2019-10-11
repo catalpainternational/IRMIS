@@ -1,6 +1,8 @@
-import { Road, Roads } from "../protobuf/roads_pb";
+import { Road } from "../protobuf/roads_pb";
 
-var roadSchema = JSON.parse(document.getElementById('road_schema').textContent);
+import { projToWGS84, toDms, toUtm } from "./assets/crsUtilities";
+
+const roadSchema = JSON.parse(document.getElementById('road_schema').textContent);
 
 function humanizeChoices(choiceField, valueKey=false, displayKey=false) {
     let values = {};
@@ -12,9 +14,9 @@ function humanizeChoices(choiceField, valueKey=false, displayKey=false) {
     return values;
 }
 
-// utility function to pick from choices if value is truthy, or return empty string
+/** utility function to pick from choices if value is truthy, or return empty string */ 
 function choice_or_empty(value, choices) {
-    return value ? choices[value] : '';
+    return value ? choices[value] : "";
 }
 
 const ROAD_STATUS_CHOICES = humanizeChoices('road_status', 'code', 'name');
@@ -27,6 +29,13 @@ const TECHNICAL_CLASS_CHOICES = humanizeChoices('technical_class', 'code', 'name
 const MAINTENANCE_NEED_CHOICES = humanizeChoices('maintenance_need', 'code', 'name');
 const TRAFFIC_LEVEL_CHOICES = humanizeChoices('traffic_level');
 
+function toChainageFormat(value) {
+    const distance = parseFloat(value).toFixed(0);
+    const meters = `000${distance.substr(-3)}`.substr(-3);
+    const kilometers = `${distance.substr(0, distance.length - 3)}` || 0;
+
+    return `${kilometers}+${meters}`;
+}
 
 export class EstradaRoad extends Road {
 
@@ -43,7 +52,7 @@ export class EstradaRoad extends Road {
     }
 
     get linkName() {
-        return this.getLinkName();
+        return `${this.getLinkStartName()} - ${this.getLinkEndName()}`;
     }
 
     get linkStartName() {
@@ -51,7 +60,7 @@ export class EstradaRoad extends Road {
     }
 
     get linkStartChainage() {
-        return this.getLinkStartChainage();
+        return toChainageFormat(this.getLinkStartChainage());
     }
 
     get linkEndName() {
@@ -59,7 +68,7 @@ export class EstradaRoad extends Road {
     }
 
     get linkEndChainage() {
-        return this.getLinkEndChainage();
+        return toChainageFormat(this.getLinkEndChainage());
     }
 
     get linkCode() {
@@ -67,7 +76,7 @@ export class EstradaRoad extends Road {
     }
 
     get linkLength() {
-        return this.getLinkLength();
+        return parseFloat(this.getLinkLength()).toFixed(2);
     }
 
     get status() {
@@ -95,7 +104,7 @@ export class EstradaRoad extends Road {
     }
 
     get carriagewayWidth() {
-        return this.getCarriagewayWidth();
+        return parseFloat(this.getCarriagewayWidth()).toFixed(1);
     }
 
     get project() {
@@ -117,4 +126,37 @@ export class EstradaRoad extends Road {
     get trafficLevel() {
         return choice_or_empty(this.getTrafficLevel(), TRAFFIC_LEVEL_CHOICES);
     }
+
+    get projectionStart() {
+        return this.getProjectionStart();
+    }
+
+    get projectionEnd() {
+        return this.getProjectionEnd();
+    }
+
+    get startDMS() {
+        return toDms(projToWGS84.forward(this.getProjectionStart().array));
+    }
+
+    get endDMS() {
+        return toDms(projToWGS84.forward(this.getProjectionEnd().array));
+    }
+
+    get startUTM() {
+        return toUtm(projToWGS84.forward(this.getProjectionStart().array));
+    }
+
+    get endUTM() {
+        return toUtm(projToWGS84.forward(this.getProjectionEnd().array));
+    }
+
+}
+
+export function getFieldName(field) {
+    return (roadSchema[field]) ? roadSchema[field].display : "";
+}
+
+export function getHelpText(field) {
+    return (roadSchema[field]) ? roadSchema[field].help_text : "";
 }

@@ -20,19 +20,18 @@
 
 .btn-sm {
     border-radius: calc(#{$radius} / 2);
-    padding-bottom: 0.15rem;
+    padding-bottom: 0.25rem;
     padding-right: 0.75rem;
     padding-left: 0.75rem;
-    padding-top: 0.25rem;
-    font-size: inherit;
-    width: 108px;
+    padding-top: 0.35rem;
+    min-width: 108px;
+    height: 25px;
 }
 
 .btn-lg {
     padding-right: 0.75rem;
     border-radius: 0.25rem;
     padding-left: 0.75rem;
-    font-size: inherit;
     width: 316px;
 }
 
@@ -53,10 +52,13 @@
     box-shadow: 0 0 4px 0 rgba(61, 71, 88, 0.3) !important;
     border: 1px solid $light-gray !important;
     background-color: $white !important;
+    color: $darker-gray;
 
-    &:hover {
-        border: 1px solid $light-gray;
-        background-color: $white;
+    &:active, &:hover {
+        border: 1px solid $light-gray !important;
+        background-color: $white !important;
+        color: $darker-gray !important;
+        cursor: pointer;
     }
 }
 

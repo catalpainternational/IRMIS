@@ -1,29 +1,27 @@
-import jsZip from "jszip";
 import "datatables.net-bs4";
-import "datatables.net-buttons-bs4";
-import "datatables.net-buttons/js/buttons.html5";
-import "datatables.net-buttons/js/buttons.flash";
 import $ from "jquery";
+
+import { getFieldName } from "./road";
+import { exportCsv } from "./exportCsv";
 
 let table;
 let pendingRows = [];
 
-// needed for export to excel
-window.JSZip = jsZip;
-
 // when the roadManager has new roads, add them to the table
 document.addEventListener('estrada.roadManager.roadMetaDataAdded', (data) => {
+    const roadList = data.detail.roadList;
+
     // add the roads to a pending array ( in case the table is not initialised early enough )
-    pendingRows =  pendingRows.concat(data.detail.roadList);
-    if( table ) {
-        // if the table is ready add all the pending rows
+    pendingRows = pendingRows.concat(roadList);
+    if (table) {
         table.rows.add(pendingRows).draw();
         pendingRows = [];
     }
 });
 
 document.addEventListener('estrada.table.roadMetaDataUpdated', (data) => {
-    table.row(`#${data.detail.road.id}`).data(data.detail.road).draw();
+    const road = data.detail.road;
+    table.row(`#${road.id}`).data(road).draw();
 });
 
 // when a filter is applied, update the filter id whitelist
@@ -35,111 +33,218 @@ document.addEventListener('estrada.filter.applied', (data) => {
 // when the view changes adjust the table rows
 document.addEventListener('estrada.sideMenu.viewChanged', (data) => {
     const viewName = data.detail ? data.detail.viewName : null;
-    if (viewName === 'map table') {
-        table.page.len(10).draw('page');
-    } else if (viewName === 'table') {
-        table.page.len(20).draw('page');
+    if (viewName && viewName.indexOf('table') !== -1) {
+        const tableRows = (viewName === 'table') ? 20 : 10;
+        table.page.len(tableRows).draw('page');
     }
 });
 
-window.addEventListener('load', () => {
+window.addEventListener("load", () => {
+    // Export All - to CSV
+    document.getElementById("export").addEventListener("click", exportTable);
+
+    // Select - data columns
+    const restoreDefaults = document.getElementsByClassName("restore").item(0);
+    const columnsDropdown = document.getElementById("columns-dropdown");
+    const columns = columnsDropdown.querySelectorAll("[data-column]");
+
+    document.getElementById("select-data").addEventListener("click", () => {
+        function clickOutside(e) {
+            if (!document.getElementById("select-data").contains(e.target)) {
+                columnsDropdown.hidden = true;
+            }
+        }
+
+        if (columnsDropdown.hidden) {
+            document.addEventListener("click", clickOutside);
+        } else {
+            document.removeEventListener("click", clickOutside);
+        }
+
+        columnsDropdown.hidden = !columnsDropdown.hidden;
+    });
+
+    columnsDropdown.addEventListener("click", (e) => {
+        e.stopPropagation();
+    });
+
+    columns.forEach((item) => {
+        item.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const element = e.currentTarget;
+            const column = table.column(window.canEdit ? parseInt(element.dataset.column) + 1 : element.dataset.column);
+            column.visible(!column.visible());
+            element.getElementsByClassName("checkbox").item(0).classList.toggle("selected");
+        });
+    });
+
+    restoreDefaults.addEventListener("click", (e) => {
+        e.stopPropagation();
+        columns.forEach((item) => {
+            const column = table.column(window.canEdit ? parseInt(item.dataset.column) + 1 : item.dataset.column);
+            const checkbox = item.getElementsByClassName("checkbox").item(0);
+
+            if (item.dataset.default && !checkbox.classList.contains("selected")) {
+                column.visible(true);
+                checkbox.classList.add("selected");
+            } else if (!item.dataset.default) {
+                column.visible(false);
+                checkbox.classList.remove("selected");
+            }
+        });
+    });
+
     initializeDataTable();
 });
 
-function initializeDataTable() {
-    const date = new Date();
-    const columns = [
-        {
-            title: 'Road Code', data: null,
-            render: 'code',
-            type: "roadCode"
-        },
-        {
-            title: 'Type', data: null,
-            render: 'type'
-        },
-        {
-            title: 'Name', data: null,
-            render: 'name'
-        },
-        {
-            title: 'Status', data: null,
-            render: 'status'
-        },
-        {
-            title: 'Link Code', data: null,
-            render: 'linkCode'
-        },
-        {
-            title: 'Link Name', data: null,
-            render: 'linkName'
-        },
-        {
-            title: 'Link Start Name', data: null,
-            render: 'linkStartName'
-        },
-        {
-            title: 'Link Start Chainage (Km)', data: null,
-            render: r => parseFloat(r.linkStartChainage).toFixed(2)
-        },
-        {
-            title: 'Link End Name', data: null,
-            render: 'linkEndName'
-        },
-        {
-            title: 'Link End Chainage (Km)', data: null,
-            render: r => parseFloat(r.linkEndChainage).toFixed(2)
-        },
-        {
-            title: 'Link Length (Km)', data: null,
-            render: r => parseFloat(r.linkLength).toFixed(2)
-        },
-        {
-            title: 'Surface Type', data: null,
-            render: 'surfaceType'
-        },
-        {
-            title: 'Surface Condition', data: null,
-            render: 'surfaceCondition'
-        },
-        {
-            title: 'Pavement Class', data: null,
-            render: 'pavementClass'
-        },
-        {
-            title: 'Administrative Area', data: null,
-            render: 'administrativeArea'
-        },
-        {
-            title: 'Carriageway Width (m)', data: null,
-            render: r => parseFloat(r.carriagewayWidth).toFixed(2)
-        },
-        {
-            title: 'Project', data: null,
-            render: 'project'
-        },
-        {
-            title: 'Funding Source', data: null,
-            render: 'fundingSource'
-        },
-        {
-            title: 'Technical Class', data: null,
-            render: 'technicalClass'
-        },
-        {
-            title: 'Maintenance needs', data: null,
-            render: 'maintenanceNeed'
-        },
-        {
-            title: 'Traffic Data', data: null,
-            render: 'trafficLevel'
-        }
-    ];
+export const columns = [
+    {
+        title: getFieldName("road_code"),
+        data: "code",
+        defaultContent: "",
+        type: "roadCode"
+    },
+    {
+        title: getFieldName("road_name"),
+        data: "name",
+        defaultContent: "",
+        visible: false
+    },
+    {
+        title: getFieldName("link_code"),
+        data: "linkCode",
+        defaultContent: "",
+    },
+    {
+        title: window.gettext("Link Name"),
+        data: "linkName",
+        defaultContent: "",
+        visible: false
+    },
+    {
+        title: getFieldName("link_length"),
+        data: "linkLength",
+        defaultContent: "",
+    },
+    {
+        title: getFieldName("link_start_name"),
+        data: "linkStartName",
+        defaultContent: "",
+    },
+    {
+        title: getFieldName("link_start_chainage"),
+        data: "linkStartChainage",
+        defaultContent: "",
+    },
+    {
+        title: getFieldName("link_end_name"),
+        data: "linkEndName",
+        defaultContent: "",
+    },
+    {
+        title: getFieldName("link_end_chainage"),
+        data: "linkEndChainage",
+        defaultContent: "",
+    },
+    {
+        title: getFieldName("surface_type"),
+        data: "surfaceType",
+        defaultContent: "",
+    },
+    {
+        title: getFieldName("pavement_class"),
+        data: "pavementClass",
+        defaultContent: "",
+    },
+    {
+        title: getFieldName("carriageway_width"),
+        data: "carriagewayWidth",
+        defaultContent: "",
+    },
+    {
+        title: getFieldName("administrative_area"),
+        data: "administrativeArea",
+        defaultContent: "",
+    },
+    {
+        title: getFieldName("road_type"),
+        data: "type",
+        defaultContent: "",
+        visible: false
+    },
+    {
+        title: getFieldName("technical_class"),
+        data: "technicalClass",
+        defaultContent: "",
+        visible: false
+    },
+    {
+        title: getFieldName("funding_source"),
+        data: "fundingSource",
+        defaultContent: "",
+        visible: false
+    },
+    {
+        title: getFieldName("road_status"),
+        data: "status",
+        defaultContent: "",
+        visible: false,
+    },
+    {
+        title: getFieldName("project"),
+        data: "project",
+        defaultContent: "",
+        visible: false,
+    },
+    {
+        title: getFieldName("surface_condition"),
+        data: "surfaceCondition",
+        defaultContent: "",
+    },
+    {
+        title: getFieldName("maintenance_need"),
+        data: "maintenanceNeed",
+        defaultContent: "",
+        visible: false,
+    },
+    {
+        title: getFieldName("traffic_level"),
+        data: "trafficLevel",
+        defaultContent: "",
+        visible: false,
+    },
+    {
+        title: window.gettext("Start Point (DMS)"),
+        data: "startDMS",
+        defaultContent: "",
+        visible: false
+    },
+    {
+        title: window.gettext("End Point (DMS)"),
+        data: "endDMS",
+        defaultContent: "",
+        visible: false
+    },
+    {
+        title: window.gettext("Start Point (UTM)"),
+        data: "startUTM",
+        defaultContent: "",
+        visible: false
+    },
+    {
+        title: window.gettext("End Point (UTM)"),
+        data: "endUTM",
+        defaultContent: "",
+        visible: false
+    },
+];
 
+function initializeDataTable() {
     if (window.canEdit) {
         columns.unshift({
-            title: '', data: null,
-            render: r => `<a class='image pencil' href='#edit/${r.getId()}/location_type'></a>`,
+            title: "",
+            data: null,
+            render: r => `<a class="image pencil" href="#edit/${r.getId()}/location_type"></a>`,
             orderable: false,
             className: "edit-col"
         });
@@ -147,25 +252,45 @@ function initializeDataTable() {
 
     table = $("#data-table").DataTable({
         columns: columns,
-        rowId: '.getId()',
-        order: [[window.canEdit ? 1 : 0, 'asc']], // default order is ascending by road code
+        rowId: ".getId()",
+        // default order is ascending by: road code, link code, & link start chainage
+        order: window.canEdit ? [[1, 'asc'], [3, 'asc'], [7, 'asc']] : [[0, 'asc'], [2, 'asc'], [6, 'asc']],
         dom: `<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>`, // https://datatables.net/reference/option/dom#Styling
-        buttons: [{
-            extend: "excel",
-            className: "btn-sm",
-            sheetName: "Estrada",
-            text: "Export table",
-            title: "Estrada_" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate(),
-        }]
     });
+
     if (pendingRows.length) {
         // add any rows the road manager has delivered before initialization
         table.rows.add(pendingRows).draw();
         pendingRows = [];
     }
+}
 
-    // Append table name onto DataTable generated layout
-    document.getElementsByClassName("dt-buttons").item(0).prepend(document.getElementById("table-name"));
+function getTableData() {
+    const headers = columns
+        .filter((c) => c.title !== "")
+        .map((c) => ({ title: c.title, data: c.data }));
+
+    const rowsData = table.rows().data();
+    const rows = Object.keys(rowsData).map((rowKey) => {
+        const rowFields = [];
+        headers.forEach((h) => {
+            let data = rowsData[rowKey][h.data];
+            // Check if data is null, or implicitly, undefined
+            if (data == null) {
+                data = "";
+            }
+            rowFields.push(data);
+        })
+        return rowFields;
+    });
+
+    return { headers: headers.map((h) => h.title), rows: rows };
+}
+
+
+function exportTable() {
+    const tableData = getTableData();
+    exportCsv(tableData.headers, tableData.rows);
 }
 
 // Filter functionality
@@ -175,7 +300,7 @@ let currentFilter = (p) => {
 }
 
 $.fn.dataTableExt.afnFiltering.push(
-    function( oSettings, aData, iDataIndex ) {
+    function (oSettings, aData, iDataIndex) {
         let road = oSettings.aoData[iDataIndex]._aData;
         return currentFilter(road);
     }
@@ -184,14 +309,14 @@ $.fn.dataTableExt.afnFiltering.push(
 // change the sorting of the road code column to place empty values last
 $.extend($.fn.dataTableExt.oSort, {
     "roadCode-asc": function (str1, str2) {
-        if(str1 == "") return 1;
-        if(str2 == "") return -1;
+        if (str1 === "") return 1;
+        if (str2 === "") return -1;
         return ((str1 < str2) ? -1 : ((str1 > str2) ? 1 : 0));
     },
 
     "roadCode-desc": function (str1, str2) {
-        if(str1 == "") return -1;
-        if(str2 == "") return 1;
+        if (str1 === "") return -1;
+        if (str2 === "") return 1;
         return ((str1 < str2) ? 1 : ((str1 > str2) ? -1 : 0));
     }
 });

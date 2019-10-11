@@ -3,7 +3,8 @@ import * as riot from "riot";
 
 import Edit_Base from "./riot/edit_base.riot";
 
-import "./styles/irmis.scss";
+import "./styles/estrada.scss";
+import "./styles/vendor.scss";
 
 import { getGeoJsonDetails, getGeoJsonDetail } from "./assets/geoJsonAPI.js";
 
@@ -15,7 +16,7 @@ import { Map } from "./map/map";
 
 const estradaMap = new Map();
 
-window.onload = () => {
+window.addEventListener("load", () => {
     // Set up the map and table - but without any data for either
     estradaMap.loadMap();
 
@@ -34,11 +35,11 @@ window.onload = () => {
 
     riot.register("edit_base", Edit_Base);
     hashCheck();
-};
+});
 
-window.onhashchange = () => {
+window.addEventListener("hashchange", () => {
     hashCheck();
-};
+});
 
 function hashCheck() {
     let m = /#edit\/(\d*)\/(\w+)/.exec(location.hash);

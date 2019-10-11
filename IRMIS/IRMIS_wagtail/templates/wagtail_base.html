@@ -2,7 +2,8 @@
 {% load static i18n %}
 
 {% block extra_js %}
-<script type="text/javascript" src="{% static 'irmis.js' %}"></script>
+<script type="text/javascript" src="{% static 'vendors~estrada.js' %}"></script>
+<script type="text/javascript" src="{% static 'estrada.js' %}"></script>
 {% endblock %}
 
 {% block title %}
@@ -16,7 +17,7 @@
 <div class="dropdown" id="topmenu_toggle">
     <span>{% trans "Hello" %}, {% if user.get_full_name %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}</span>
     <span class="caret image"></span>
-    <div id="dropdown-menu" hidden>
+    <div id="settings" class="dropdown-menu flex-column" hidden>
         <form class="language-selector" action="{% url 'set_language' %}" method="post">
             {% csrf_token %}
             {% get_current_language as LANGUAGE_CODE %}

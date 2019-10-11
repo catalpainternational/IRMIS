@@ -73,9 +73,9 @@
 .caret-dark {
     background-image: url("../images/caret_dark.svg");
     background-position: center;
-    background-size: 16px 10px;
-    height: 25px;
-    width: 25px;
+    background-size: contain;
+    height: 11px;
+    width: 12px;
 
     &:hover {
         cursor: pointer;
@@ -132,4 +132,11 @@
     background-image: url("../images/stop_alert.svg");
     height: 117px;
     width: 124px;
+}
+
+.rdtl {
+    background-image: url("../images/RDTL.png");
+    background-size: contain;
+    height: 77px;
+    width: 80px;
 }
