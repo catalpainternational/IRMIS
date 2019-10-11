@@ -14,6 +14,8 @@ from reversion.models import Version
 from protobuf.roads_pb2 import Roads as ProtoRoads
 from protobuf.roads_pb2 import Projection
 
+from .geodjango_utils import start_end_point_annos
+
 
 def no_spaces(value):
     if " " in value:
@@ -104,7 +106,7 @@ class RoadQuerySet(models.QuerySet):
             .annotate(Count("road_type"))
         )
 
-    def to_protobuf(self, chunk_name=None):
+    def to_protobuf(self):
         """ returns a roads protobuf object from the queryset """
         # See roads.proto
 
@@ -133,14 +135,11 @@ class RoadQuerySet(models.QuerySet):
             traffic_level="traffic_level",
         )
 
-        road_chunk = (
-            (
-                Road.objects.filter(road_type=chunk_name)
-                .order_by("id")
-                .values("id", *fields.values(), "geom")
-            )
-            if chunk_name
-            else Road.objects.order_by("id").values("id", *fields.values(), "geom")
+        annotations = start_end_point_annos("geom")
+        roads = (
+            self.order_by("id")
+            .annotate(**annotations)
+            .values("id", *fields.values(), *annotations)
         )
 
         last_revisions = {
@@ -150,7 +149,7 @@ class RoadQuerySet(models.QuerySet):
             .values("object_id", "revision_id")
         }
 
-        for road in road_chunk:
+        for road in roads:
             road_protobuf = roads_protobuf.roads.add()
             road_protobuf.id = road["id"]
             for protobuf_key, query_key in fields.items():
@@ -159,14 +158,10 @@ class RoadQuerySet(models.QuerySet):
             setattr(road_protobuf, "last_revision_id", last_revisions[str(road["id"])])
 
             # set Protobuf with with start/end projection points
-            if road["geom"]:
-                g = road["geom"].tuple[0]
-                start_p = Projection()
-                start_p.x, start_p.y = g[0][0], g[0][1]
-                end_p = Projection()
-                end_p.x, end_p.y = g[-1][0], g[-1][1]
-                road_protobuf.projection_start.CopyFrom(start_p)
-                road_protobuf.projection_end.CopyFrom(end_p)
+            start = Projection(x=road["start_x"], y=road["start_y"])
+            end = Projection(x=road["end_x"], y=road["end_y"])
+            road_protobuf.projection_start.CopyFrom(start)
+            road_protobuf.projection_end.CopyFrom(end)
 
         return roads_protobuf
 

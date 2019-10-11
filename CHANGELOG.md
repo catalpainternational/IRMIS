@@ -4,6 +4,12 @@
 
 ## 0.0.4 - More Admin and miscellaneous
 
+## 1.1.0 - More Admin and miscellaneous
+ - As an authenticated user, I understand that the export of the table is being prepared
+ - As an Authenticated User, I can see the start and end coordinates of a given Road asset on the table
+ - As an Authenticated User, I can choose the fields I want to be displayed on the road inventory table
+ - As a User, I understand that Estrada is an application that belongs to the GOTL/MOP/DNEPCC
+
 ## 0.0.3 - Metadata Admin
 
 - As an Admin, I can edit assets’s metadata in the inventory
