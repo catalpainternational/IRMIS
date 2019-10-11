@@ -242,17 +242,13 @@ def protobuf_road_audit(request, pk):
 
     for version in versions:
         version_pb = versions_protobuf.versions.add()
-        user = getattr(version.revision, "user")
-        date_created = getattr(version.revision, "date_created", "")
-        if date_created is not "":
-            date_created = date_created.strftime("%Y-%m-%d")
-        comment = getattr(version.revision, "comment")
-
-        setattr(version_pb, "pk", version.pk)  # Version PK
-        setattr(version_pb, "user", str(user))  # User made change
-        setattr(version_pb, "comment", comment)  # Comment with change
-        setattr(version_pb, "date_created", str(date_created))  # Date changed
-        # setattr(version_pb, "source", source)  # Source of change
+        setattr(version_pb, "pk", version.pk)
+        setattr(version_pb, "user", str(getattr(version.revision, "user")))
+        setattr(version_pb, "comment", getattr(version.revision, "comment"))
+        # set datetime field
+        date_created = getattr(version.revision, "date_created")
+        ts = Timestamp().FromDatetime(date_created)
+        version_pb.date_created.CopyFrom(ts)
     return HttpResponse(
         versions_protobuf.SerializeToString(), content_type="application/octet-stream"
     )
