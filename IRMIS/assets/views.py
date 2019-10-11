@@ -261,18 +261,28 @@ def road_surveys(request, road_code):
     return JsonResponse(serializer.data, safe=False)
 
 
-def road_report(request, road_code):
+def road_report(request, road_code, rpt_chainage_start=0.0, rpt_chainage_end=None):
     if not request.user.is_authenticated:
         return HttpResponseForbidden()
 
-    report = Report(road_code)
+    surveys = (
+        Survey.objects.filter(road=road_code)
+        .order_by("road", "chainage_start", "chainage_end", "-date_surveyed")
+        .distinct("road", "chainage_start", "chainage_end")
+    )
+    report = Report(road_code, surveys, rpt_chainage_start, rpt_chainage_end)
     return JsonResponse(report.export_report(), safe=False)
 
 
 class Report:
-    def __init__(self, road_code):
+    def __init__(self, road_code, surveys, rpt_chainage_start, rpt_chainage_end):
         self.road_code = road_code
         try:
+            self.road_start_chainage = (
+                Road.objects.filter(road_code=road_code)
+                .order_by("link_start_chainage")[0]
+                .link_start_chainage
+            )
             self.road_end_chainage = (
                 Road.objects.filter(road_code=road_code)
                 .order_by("-link_end_chainage")[0]
@@ -281,50 +291,74 @@ class Report:
         except IndexError as err:
             raise IndexError("Road Code given did not return any records")
 
-        self.surveys = (
-            Survey.objects.filter(road=road_code)
-            .order_by("road", "chainage_start", "chainage_end", "-date_surveyed")
-            .distinct("road", "chainage_start", "chainage_end")
-        )
+        if len(surveys) > 0:
+            self.surveys = surveys
+        else:
+            raise ValueError("At least one Survey must be provided to build the Report")
 
-        self.segmentations = {}
-        if len(self.surveys) > 0:
-            self.surveys_chainage_start = self.surveys[0].chainage_start
-            self.surveys_chainage_end = self.surveys[len(self.surveys) - 1].chainage_end
+        # perform various checks to ensure all start/end chainages are valid
+        # and fall within a given Road's chainage range
+        self.rpt_chainage_start = (
+            self.road_start_chainage
+        )  # set to Road start chainage initially
+        if rpt_chainage_start >= self.road_end_chainage:
+            raise ValueError(
+                "Report Start Chainage given is greater than Road's ending chainage"
+            )
+        elif rpt_chainage_start >= self.road_start_chainage:
+            self.rpt_chainage_start = rpt_chainage_start
 
-            self.segmentations = {
-                item: {
-                    "chainage": float(item),
-                    "surf_cond": None,
-                    "date_surveyed": None,
-                }
-                for item in range(0, int(self.road_end_chainage))
-            }
+        self.rpt_chainage_end = (
+            self.road_end_chainage
+        )  # set to Road end chainage initially
+        if rpt_chainage_end:
+            if rpt_chainage_end > self.road_end_chainage:
+                raise ValueError(
+                    "Report End Chainage given is greater than Road's ending chainage"
+                )
+            elif rpt_chainage_end <= self.road_start_chainage:
+                raise ValueError(
+                    "Report End Chainage given is less than Road's starting chainage"
+                )
+            else:
+                self.rpt_chainage_end = rpt_chainage_end
 
-            for survey in self.surveys:
-                # check survey does not overlap with current aggregate segmentations
-                segment = self.segmentations[int(survey.chainage_start)]
-                if (
-                    not segment["date_surveyed"]
-                    or survey.date_surveyed > segment["date_surveyed"]
+        self.build_sementations()
+
+    def build_sementations(self):
+        """ Create all of the segments based on report chainage start/end paramenters """
+        self.segmentations = {
+            item: {"chainage": float(item), "surf_cond": None, "date_surveyed": None}
+            for item in range(int(self.rpt_chainage_start), int(self.rpt_chainage_end))
+        }
+
+    def assign_survey_results(self):
+        """ For all the Surveys, assign only the most up-to-date results to any given segment """
+        for survey in self.surveys:
+            # check survey does not overlap with current aggregate segmentations
+            segment = self.segmentations[int(survey.chainage_start)]
+            if (
+                not segment["date_surveyed"]
+                or survey.date_surveyed > segment["date_surveyed"]
+            ):
+                # update the segmentations & resolve overlapping survey segments
+                for chainage in range(
+                    int(survey.chainage_start), int(survey.chainage_end)
                 ):
-                    # update the segmentations & resolve overlapping survey segments
-                    for chainage in range(
-                        int(survey.chainage_start), int(survey.chainage_end)
+                    if (
+                        not self.segmentations[chainage]["date_surveyed"]
+                        or survey.date_surveyed
+                        > self.segmentations[chainage]["date_surveyed"]
                     ):
-                        if (
-                            not self.segmentations[chainage]["date_surveyed"]
-                            or survey.date_surveyed
-                            > self.segmentations[chainage]["date_surveyed"]
-                        ):
-                            self.segmentations[chainage]["surf_cond"] = survey.values[
-                                "surface_condition"
-                            ]
-                            self.segmentations[chainage][
-                                "date_surveyed"
-                            ] = survey.date_surveyed
+                        self.segmentations[chainage]["surf_cond"] = survey.values[
+                            "surface_condition"
+                        ]
+                        self.segmentations[chainage][
+                            "date_surveyed"
+                        ] = survey.date_surveyed
 
     def build_summary_stats(self):
+        """ Generate the high-level counts & percentage statistics for the report """
         segments_length = len(self.segmentations)
         counts = Counter(
             [self.segmentations[segment]["surf_cond"] for segment in self.segmentations]
@@ -336,6 +370,7 @@ class Report:
         return {"counts": counts, "percentages": percentages}
 
     def build_chainage_table(self):
+        """ Generate the table of chainages the report """
         report = []
         prev_cond, prev_date = None, None
 
@@ -356,6 +391,8 @@ class Report:
         return report
 
     def export_report(self):
+        """ Package up the various statistics and tables for export """
+        self.assign_survey_results()
         report = self.build_summary_stats()
         report["table"] = self.build_chainage_table()
         return report
