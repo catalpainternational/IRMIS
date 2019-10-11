@@ -2,13 +2,16 @@
 // file: roads.proto
 
 import * as jspb from "google-protobuf";
+import * as google_protobuf_timestamp_pb from "google-protobuf/google/protobuf/timestamp_pb";
 
 export class Version extends jspb.Message {
   getPk(): number;
   setPk(value: number): void;
 
-  getDateCreated(): string;
-  setDateCreated(value: string): void;
+  hasDateCreated(): boolean;
+  clearDateCreated(): void;
+  getDateCreated(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setDateCreated(value?: google_protobuf_timestamp_pb.Timestamp): void;
 
   getUser(): string;
   setUser(value: string): void;
@@ -29,7 +32,7 @@ export class Version extends jspb.Message {
 export namespace Version {
   export type AsObject = {
     pk: number,
-    dateCreated: string,
+    dateCreated?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     user: string,
     comment: string,
   }

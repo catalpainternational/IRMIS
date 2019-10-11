@@ -12,6 +12,8 @@ var jspb = require('google-protobuf');
 var goog = jspb;
 var global = Function('return this')();
 
+var google_protobuf_timestamp_pb = require('google-protobuf/google/protobuf/timestamp_pb.js');
+goog.object.extend(proto, google_protobuf_timestamp_pb);
 goog.exportSymbol('proto.assets.Projection', null, global);
 goog.exportSymbol('proto.assets.Road', null, global);
 goog.exportSymbol('proto.assets.Roads', null, global);
@@ -155,7 +157,7 @@ proto.assets.Version.prototype.toObject = function(opt_includeInstance) {
 proto.assets.Version.toObject = function(includeInstance, msg) {
   var f, obj = {
     pk: jspb.Message.getFieldWithDefault(msg, 1, 0),
-    dateCreated: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    dateCreated: (f = msg.getDateCreated()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
     user: jspb.Message.getFieldWithDefault(msg, 3, ""),
     comment: jspb.Message.getFieldWithDefault(msg, 4, "")
   };
@@ -199,7 +201,8 @@ proto.assets.Version.deserializeBinaryFromReader = function(msg, reader) {
       msg.setPk(value);
       break;
     case 2:
-      var value = /** @type {string} */ (reader.readString());
+      var value = new google_protobuf_timestamp_pb.Timestamp;
+      reader.readMessage(value,google_protobuf_timestamp_pb.Timestamp.deserializeBinaryFromReader);
       msg.setDateCreated(value);
       break;
     case 3:
@@ -247,10 +250,11 @@ proto.assets.Version.serializeBinaryToWriter = function(message, writer) {
     );
   }
   f = message.getDateCreated();
-  if (f.length > 0) {
-    writer.writeString(
+  if (f != null) {
+    writer.writeMessage(
       2,
-      f
+      f,
+      google_protobuf_timestamp_pb.Timestamp.serializeBinaryToWriter
     );
   }
   f = message.getUser();
@@ -286,17 +290,35 @@ proto.assets.Version.prototype.setPk = function(value) {
 
 
 /**
- * optional string date_created = 2;
- * @return {string}
+ * optional google.protobuf.Timestamp date_created = 2;
+ * @return {?proto.google.protobuf.Timestamp}
  */
 proto.assets.Version.prototype.getDateCreated = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+  return /** @type{?proto.google.protobuf.Timestamp} */ (
+    jspb.Message.getWrapperField(this, google_protobuf_timestamp_pb.Timestamp, 2));
 };
 
 
-/** @param {string} value */
+/** @param {?proto.google.protobuf.Timestamp|undefined} value */
 proto.assets.Version.prototype.setDateCreated = function(value) {
-  jspb.Message.setProto3StringField(this, 2, value);
+  jspb.Message.setWrapperField(this, 2, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ */
+proto.assets.Version.prototype.clearDateCreated = function() {
+  this.setDateCreated(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.assets.Version.prototype.hasDateCreated = function() {
+  return jspb.Message.getField(this, 2) != null;
 };
 
 

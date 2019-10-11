@@ -1,4 +1,5 @@
 syntax = "proto3";
+import "google/protobuf/timestamp.proto";
 
 package assets;
 
@@ -7,7 +8,7 @@ package assets;
 
 message Version {
   uint32 pk = 1;
-  string date_created = 2;
+  google.protobuf.Timestamp date_created = 2;
   string user = 3;
   string comment = 4;
   /* string source = 5; */
