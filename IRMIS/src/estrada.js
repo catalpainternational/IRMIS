@@ -34,7 +34,7 @@ window.addEventListener("load", () => {
         });
 
     riot.register("edit_base", Edit_Base);
-    window.goBack = () => { };
+    window.goBack = () => {};
     hashCheck();
 });
 
