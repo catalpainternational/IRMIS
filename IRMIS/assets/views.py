@@ -278,56 +278,81 @@ class Report:
                 .order_by("-link_end_chainage")[0]
                 .link_end_chainage
             )
-            self.surveys = (
-                Survey.objects.filter(road=road_code)
-                .order_by("road", "chainage_start", "chainage_end", "-date_surveyed")
-                .distinct("road", "chainage_start", "chainage_end")
-            )
-            self.surveys_chainage_start = self.surveys[0].chainage_start
-            self.surveys_chainage_end = self.surveys[len(self.surveys) - 1].chainage_end
         except IndexError as err:
             raise IndexError("Road Code given did not return any records")
 
-        self.alignment = {
-            i: {"chainage": float(i), "surf_cond": None, "date_surveyed": None}
-            for i in range(0, int(self.road_end_chainage))
-        }
+        self.surveys = (
+            Survey.objects.filter(road=road_code)
+            .order_by("road", "chainage_start", "chainage_end", "-date_surveyed")
+            .distinct("road", "chainage_start", "chainage_end")
+        )
 
-        for s in self.surveys:
-            # check survey does not overlap with current aggregate alignment
-            a = self.alignment[int(s.chainage_start)]
-            if not a["date_surveyed"] or s.date_surveyed > a["date_surveyed"]:
-                # update the alignment & resolve overlapping survey segments
-                for d in range(int(s.chainage_start), int(s.chainage_end)):
-                    if (
-                        not self.alignment[d]["date_surveyed"]
-                        or s.date_surveyed > self.alignment[d]["date_surveyed"]
+        self.segmentations = {}
+        if len(self.surveys) > 0:
+            self.surveys_chainage_start = self.surveys[0].chainage_start
+            self.surveys_chainage_end = self.surveys[len(self.surveys) - 1].chainage_end
+
+            self.segmentations = {
+                item: {
+                    "chainage": float(item),
+                    "surf_cond": None,
+                    "date_surveyed": None,
+                }
+                for item in range(0, int(self.road_end_chainage))
+            }
+
+            for survey in self.surveys:
+                # check survey does not overlap with current aggregate segmentations
+                segment = self.segmentations[int(survey.chainage_start)]
+                if (
+                    not segment["date_surveyed"]
+                    or survey.date_surveyed > segment["date_surveyed"]
+                ):
+                    # update the segmentations & resolve overlapping survey segments
+                    for chainage in range(
+                        int(survey.chainage_start), int(survey.chainage_end)
                     ):
-                        self.alignment[d]["surf_cond"] = s.values["surface_condition"]
-                        self.alignment[d]["date_surveyed"] = s.date_surveyed
+                        if (
+                            not self.segmentations[chainage]["date_surveyed"]
+                            or survey.date_surveyed
+                            > self.segmentations[chainage]["date_surveyed"]
+                        ):
+                            self.segmentations[chainage]["surf_cond"] = survey.values[
+                                "surface_condition"
+                            ]
+                            self.segmentations[chainage][
+                                "date_surveyed"
+                            ] = survey.date_surveyed
 
     def build_summary_stats(self):
-        l = len(self.alignment)
-        counts = Counter([self.alignment[s]["surf_cond"] for s in self.alignment])
-        percentages = {condition: (counts[condition] / l * 100) for condition in counts}
+        segments_length = len(self.segmentations)
+        counts = Counter(
+            [self.segmentations[segment]["surf_cond"] for segment in self.segmentations]
+        )
+        percentages = {
+            condition: (counts[condition] / segments_length * 100)
+            for condition in counts
+        }
         return {"counts": counts, "percentages": percentages}
 
     def build_chainage_table(self):
         report = []
         prev_cond, prev_date = None, None
 
-        for segment in self.alignment:
-            s = self.alignment[segment]
-            if s["surf_cond"] != prev_cond and s["date_surveyed"] != prev_date:
+        for segment in self.segmentations:
+            segment = self.segmentations[segment]
+            if (
+                segment["surf_cond"] != prev_cond
+                and segment["date_surveyed"] != prev_date
+            ):
                 report.append(
                     {
-                        "chainage": s["chainage"],
-                        "surface_condition": s["surf_cond"],
-                        "date_surveyed": s["date_surveyed"],
+                        "chainage": segment["chainage"],
+                        "surface_condition": segment["surf_cond"],
+                        "date_surveyed": segment["date_surveyed"],
                     }
                 )
-                prev_cond, prev_date = (s["surf_cond"], s["date_surveyed"])
-
+                prev_cond, prev_date = (segment["surf_cond"], segment["date_surveyed"])
         return report
 
     def export_report(self):

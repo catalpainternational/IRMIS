@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from django.db import IntegrityError
 import reversion
 from assets.models import Road, Survey
+from datetime import datetime
 
 
 class Command(BaseCommand):
@@ -18,6 +19,7 @@ class Command(BaseCommand):
                             "road": road.road_code,
                             "chainage_start": road.link_start_chainage,
                             "chainage_end": road.link_end_chainage,
+                            "date_surveyed": datetime.now(),
                             "source": "programmatic",
                             "values": {
                                 "surface_condition": str(road.surface_condition),
