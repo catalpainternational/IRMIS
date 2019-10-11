@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block top_menu %}
-<span class="app-logo-dark-bg flex-grow-1 image"></span>
+<span class="app-logo-dark-bg flex-grow-1 image" onclick="goBack()"></span>
 <div class="dropdown" id="topmenu_toggle">
     <span>{% trans "Hello" %}, {% if user.get_full_name %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}</span>
     <span class="caret image"></span>
