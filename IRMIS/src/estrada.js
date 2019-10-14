@@ -1,6 +1,7 @@
 import "babel-polyfill";
 import * as riot from "riot";
 
+import Button_Reports from "./riot/button_reports.riot";
 import Edit_Base from "./riot/edit_base.riot";
 
 import "./styles/estrada.scss";
@@ -33,6 +34,7 @@ window.addEventListener("load", () => {
             });
         });
 
+    riot.register("button_reports", Button_Reports);
     riot.register("edit_base", Edit_Base);
     hashCheck();
 });
@@ -45,9 +47,11 @@ function hashCheck() {
     let m = /#edit\/(\d*)\/(\w+)/.exec(location.hash);
     if (m !== null && !document.getElementById("edit-base")) {
         var roadPromise = getRoad(m[1]);
+        riot.mount("button_reports", { roadPromise: roadPromise });
         riot.mount("edit_base", { roadPromise: roadPromise, page: m[2] });
         document.getElementById("view-content").hidden = true;
     } else if (m === null) {
+        riot.unmount("button_reports", true);
         riot.unmount("edit_base", true);
         document.getElementById("view-content").hidden = false;
     }
