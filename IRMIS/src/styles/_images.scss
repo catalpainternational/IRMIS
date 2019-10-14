@@ -30,6 +30,10 @@
     background-image: url("../images/app_logo_dark_bg.svg");
     height: 34px;
     width: 131px;
+
+    &:hover {
+        cursor: pointer;
+    }
 }
 
 .checkbox {
