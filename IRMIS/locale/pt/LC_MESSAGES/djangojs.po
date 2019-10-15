@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-02 07:35+0000\n"
+"POT-Creation-Date: 2019-10-10 07:40+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,112 +17,133 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Translated-Using: django-rosetta 0.9.3\n"
 
 msgid "Asset"
 msgstr ""
 
 msgid "Link code and name"
-msgstr ""
+msgstr "Código e nome da secção"
 
 msgid "Link width and length"
-msgstr ""
+msgstr "Extensão e largura da secção"
 
 msgid "Link chainage"
 msgstr ""
 
-msgid "Save and continue"
+msgid "Road class"
 msgstr ""
+
+msgid "Save and continue"
+msgstr "Guardar e continuar"
 
 msgid "Link code cannot contain white spaces"
+msgstr "O código da secção não pode contar espaços em branco"
+
+#, javascript-format
+msgid ""
+"Link length cannot contain more than %s digits, of which %s are decimals"
+msgstr ""
+"A extensão da secção não pode conter mais do que %s dígitos, dos quais %s "
+"são decimais"
+
+#, javascript-format
+msgid ""
+"Carriage width cannot contain more than %s digits, of which %s are decimals"
+msgstr ""
+"A largura da faixa de rodagem não pode conter mais do que %s dígitos, dos "
+"quais %s são decimais"
+
+#, javascript-format
+msgid ""
+"Link start chainage cannot contain more than %s digits, of which %s are "
+"decimals"
 msgstr ""
 
 #, javascript-format
-msgid "Link length cannot contain more than %s digits, of which %s are decimals"
-msgstr ""
-
-#, javascript-format
-msgid "Carriage width cannot contain more than %s digits, of which %s are decimals"
-msgstr ""
-
-#, javascript-format
-msgid "Link start chainage cannot contain more than %s digits, of which %s are decimals"
-msgstr ""
-
-#, javascript-format
-msgid "Link end chainage cannot contain more than %s digits, of which %s are decimals"
+msgid ""
+"Link end chainage cannot contain more than %s digits, of which %s are "
+"decimals"
 msgstr ""
 
 msgid "Edit asset"
 msgstr ""
 
 msgid "Location & Type"
-msgstr ""
+msgstr "Localização & Tipo"
 
 msgid "Asset Details"
 msgstr ""
 
 msgid "Pavement"
-msgstr ""
+msgstr "Pavimento"
 
 msgid "Project"
-msgstr ""
+msgstr "Projecto"
 
 msgid "Condition"
+msgstr "Condição"
+
+msgid "Maintenance"
 msgstr ""
 
 msgid "Loading"
-msgstr ""
+msgstr "A carregar"
 
 msgid "Close"
-msgstr ""
+msgstr "Fechar"
 
 msgid "Unsaved Changes"
-msgstr ""
+msgstr "Alterações não gravadas"
 
-msgid "You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?"
+msgid ""
+"You have unsaved changes made to this page which will be lost if you "
+"navigate away. Would you like to continue editing?"
 msgstr ""
+"Existem alterações por guardar que serão perdidas caso saia desta página. "
+"Deseja continuar a editar?"
 
 msgid "Discard"
-msgstr ""
+msgstr "Descartar"
 
 msgid "Continue editing"
-msgstr ""
+msgstr "Continuar a editar"
 
 msgid "Success"
-msgstr ""
+msgstr "Sucesso"
 
 msgid "You have successfully saved"
-msgstr ""
+msgstr "As suas alterações foram gravadas com sucesso"
 
 msgid "Error"
-msgstr ""
+msgstr "Erro"
 
 msgid "Something went wrong"
-msgstr ""
+msgstr "Ocorreu um erro"
 
 msgid "Location"
-msgstr ""
+msgstr "Localização"
 
 msgid "Select an Administrative Area"
-msgstr ""
+msgstr "Seleccione a Área Administrativa"
 
 msgid "Select a Road Type"
-msgstr ""
+msgstr "Seleccione o Tipo de Estrada"
 
 msgid "Select a Surface Type"
-msgstr ""
+msgstr "Seleccione o Tipo de Pavimento"
 
 msgid "Link Name"
-msgstr ""
+msgstr "Nome da secção"
 
 msgid "Start Point (DMS)"
-msgstr ""
+msgstr "Ponto Inicial (DMS)"
 
 msgid "End Point (DMS)"
-msgstr ""
+msgstr "Ponto final (DMS)"
 
 msgid "Start Point (UTM)"
-msgstr ""
+msgstr "Ponto Inicial (UTM)"
 
 msgid "End Point (UTM)"
-msgstr ""
+msgstr "Ponto final (UTM)"

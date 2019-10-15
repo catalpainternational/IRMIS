@@ -27,7 +27,34 @@ $max-width: 400px;
     }
 }
 
-edit_asset_details, edit_pavement, edit_project, edit_condition, edit_location_type {
+// Because we have to use container elements like <span> for slot substitution
+// then we need to override their default styling and make them more like the slot container 
+#editModal {
+    .modal-header {
+        padding-top: 2rem;
+            
+        h1, h1 span, .close {
+            margin-left: 1rem;
+            margin-bottom: 0;
+            margin-top: 0.5rem;
+            
+            color: #3D4758;
+            line-height: 27px;
+            font-weight: 700;
+            font-size: 22px;
+        }
+
+        .close {
+            top: 2.4rem;
+
+            span[aria-hidden="true"] {
+                visibility: hidden;
+            }
+        }
+    }
+}
+
+edit_asset_details, edit_pavement, edit_project, edit_condition, edit_maintenance, edit_location_type {
     height: calc(100vh - #{$top-menu-height} - 70px - 15px);
     background-color: $white;
     padding: 30px 60px 60px;
