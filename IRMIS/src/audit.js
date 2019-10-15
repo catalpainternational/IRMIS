@@ -17,7 +17,7 @@ export class EstradaAudit extends Version {
     }
 
     get dateCreated() {
-        return this.hasDateCreated() ? this.getDateCreated() : undefined;
+        return this.hasDateCreated() ? new Date(this.getDateCreated().getSeconds() * 1000) : undefined;
     }
 
     get user() {

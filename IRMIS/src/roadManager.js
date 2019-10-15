@@ -2,14 +2,14 @@ import { getRoadAuditData, getRoadMetadata, getRoadsMetadata, getRoadsMetadataCh
 
 import { Road, Version } from "../protobuf/roads_pb";
 
-const roads: { [name: string]: Road } = {};
-let filteredRoads: { [name: string]: Road } = {};
+const roads = {};
+let filteredRoads = {};
 
 // Get the road metadata chunk details
 getRoadsMetadataChunks()
     .then((chunks) => {
         // for each chunk, download the roads
-        chunks.forEach((chunk: any) => {
+        chunks.forEach((chunk) => {
             getRoadsMetadata(chunk.road_type)
                 .then((roadList) => {
                     // add the roads to the road manager
@@ -20,11 +20,11 @@ getRoadsMetadataChunks()
 
 // when a filter is applied filter the roads
 document.addEventListener("estrada.filter.apply", (data) => {
-    const filterState = (data as CustomEvent).detail.filterState;
+    const filterState = data.detail.filterState;
     filterRoads(filterState);
 });
 
-export function getRoad(id: string | number) {
+export function getRoad(id) {
     const road = roads[id];
     if (road) {
         return Promise.resolve(road);
@@ -32,9 +32,9 @@ export function getRoad(id: string | number) {
     return getRoadMetadata(id);
 }
 
-function addRoadMetadata(roadList: any) {
+function addRoadMetadata(roadList) {
     roadList.reduce(
-        (roadsLookup: any, roadMetadata: any) => {
+        (roadsLookup, roadMetadata) => {
             roadsLookup[roadMetadata.getId()] = roadMetadata;
             return roadsLookup;
         },
@@ -43,16 +43,16 @@ function addRoadMetadata(roadList: any) {
     document.dispatchEvent(new CustomEvent("estrada.roadManager.roadMetaDataAdded", {detail: { roadList }}));
 }
 
-export function saveRoad(sourceRoad: Road): Promise<Road> {
+export function saveRoad(sourceRoad) {
     return Promise.resolve(putRoadMetadata(sourceRoad))
-        .then((road: Road) => {
+        .then((road) => {
             roads[road.getId()] = road;
             document.dispatchEvent(new CustomEvent("estrada.table.roadMetaDataUpdated", {detail: {road}}));
             return road;
         });
 }
 
-export function getRoadAudit(roadId: string | number): Promise<Version[]> {
+export function getRoadAudit(roadId) {
     return Promise.resolve(getRoadAuditData(roadId))
         .then((auditList) => {
             // document.dispatchEvent(new CustomEvent("estrada.auditTable.roadAuditDataAdded", {detail: {auditList}}));
@@ -60,8 +60,8 @@ export function getRoadAudit(roadId: string | number): Promise<Version[]> {
         });
 }
 
-function filterRoads(filterState: { [name: string]: any }) {
-    const idMap: { [name: string]: boolean } = {};
+function filterRoads(filterState) {
+    const idMap = {};
     filteredRoads = {};
 
     Object.values(roads).forEach((road) => {
@@ -72,9 +72,9 @@ function filterRoads(filterState: { [name: string]: any }) {
                 return true;
             }
             // or some values of one state must match
-            return values.some((value: any) => {
+            return values.some((value) => {
                 const propertyGetter = slugToPropertyGetter[slug];
-                return (road as any)[propertyGetter]() === value;
+                return (road)[propertyGetter]() === value;
             });
         });
 
@@ -88,7 +88,7 @@ function filterRoads(filterState: { [name: string]: any }) {
     document.dispatchEvent(new CustomEvent("estrada.filter.applied", {detail: { idMap }}));
 }
 
-export function roadPopup(id: string | number) {
+export function roadPopup(id) {
     const road = roads[id];
     const code = road.getRoadCode();
     const name = road.getRoadName();
@@ -115,7 +115,7 @@ export function roadPopup(id: string | number) {
 }
 
 // we'll need to add more in here as we add more filters
-const slugToPropertyGetter: { [name: string]: string } = {
+const slugToPropertyGetter = {
     road_code: "getRoadCode",
     road_type: "getRoadType",
     surface_type: "getSurfaceType",

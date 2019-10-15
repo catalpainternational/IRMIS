@@ -13,6 +13,7 @@
 
         // import { Versions } from "../../protobuf/roads_pb";
 
+        import * as moment from "moment";
         import $ from "jquery";
 
         export default {
@@ -28,6 +29,11 @@
                     title: "Date", // getFieldName("dateCreated"),
                     data: "dateCreated",
                     defaultContent: "",
+                    render: function ( data, type, row, meta ) {
+                        return type === "display" && data 
+                            ? moment(data).format("D MMMM YYYY hh:mm:ss")
+                            : data;
+                    }
                 },
                 {
                     title: "User", // getFieldName("user"),
