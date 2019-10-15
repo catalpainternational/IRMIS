@@ -261,7 +261,7 @@ def road_surveys(request, road_code):
     return JsonResponse(serializer.data, safe=False)
 
 
-def road_report(request, road_code, rpt_chainage_start=0.0, rpt_chainage_end=None):
+def road_report(request, road_code, rpt_start=0.0, rpt_end=None):
     if not request.user.is_authenticated:
         return HttpResponseForbidden()
 
@@ -270,12 +270,12 @@ def road_report(request, road_code, rpt_chainage_start=0.0, rpt_chainage_end=Non
         .order_by("road", "chainage_start", "chainage_end", "-date_surveyed")
         .distinct("road", "chainage_start", "chainage_end")
     )
-    report = Report(road_code, surveys, rpt_chainage_start, rpt_chainage_end)
+    report = Report(road_code, surveys, rpt_start, rpt_end)
     return JsonResponse(report.export_report(), safe=False)
 
 
 class Report:
-    def __init__(self, road_code, surveys, rpt_chainage_start, rpt_chainage_end):
+    def __init__(self, road_code, surveys, rpt_start, rpt_end):
         self.road_code = road_code
         try:
             self.road_start_chainage = (
@@ -298,30 +298,28 @@ class Report:
 
         # perform various checks to ensure all start/end chainages are valid
         # and fall within a given Road's chainage range
-        self.rpt_chainage_start = (
+        self.rpt_start = (
             self.road_start_chainage
         )  # set to Road start chainage initially
-        if rpt_chainage_start >= self.road_end_chainage:
+        if rpt_start >= self.road_end_chainage:
             raise ValueError(
                 "Report Start Chainage given is greater than Road's ending chainage"
             )
-        elif rpt_chainage_start >= self.road_start_chainage:
-            self.rpt_chainage_start = rpt_chainage_start
+        elif rpt_start >= self.road_start_chainage:
+            self.rpt_start = rpt_start
 
-        self.rpt_chainage_end = (
-            self.road_end_chainage
-        )  # set to Road end chainage initially
-        if rpt_chainage_end:
-            if rpt_chainage_end > self.road_end_chainage:
+        self.rpt_end = self.road_end_chainage  # set to Road end chainage initially
+        if rpt_end:
+            if rpt_end > self.road_end_chainage:
                 raise ValueError(
                     "Report End Chainage given is greater than Road's ending chainage"
                 )
-            elif rpt_chainage_end <= self.road_start_chainage:
+            elif rpt_end <= self.road_start_chainage:
                 raise ValueError(
                     "Report End Chainage given is less than Road's starting chainage"
                 )
             else:
-                self.rpt_chainage_end = rpt_chainage_end
+                self.rpt_end = rpt_end
 
         self.build_sementations()
 
@@ -329,7 +327,7 @@ class Report:
         """ Create all of the segments based on report chainage start/end paramenters """
         self.segmentations = {
             item: {"chainage": float(item), "surf_cond": None, "date_surveyed": None}
-            for item in range(int(self.rpt_chainage_start), int(self.rpt_chainage_end))
+            for item in range(int(self.rpt_start), int(self.rpt_end))
         }
 
     def assign_survey_results(self):
@@ -341,6 +339,10 @@ class Report:
                 not segment["date_surveyed"]
                 or survey.date_surveyed > segment["date_surveyed"]
             ):
+
+                ### TO DO: REPORT START/END COULD BE SHORTER THAN SURVEY START/END
+                ### NEED TO ADJUST THE RANGE TO ACCOMODATE THIS!!!
+
                 # update the segmentations & resolve overlapping survey segments
                 for chainage in range(
                     int(survey.chainage_start), int(survey.chainage_end)
