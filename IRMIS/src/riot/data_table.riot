@@ -41,7 +41,7 @@
         }
 
         const addEventListener = function(state) {
-            document.addEventListener(`${state.id}.dataAdded`, (data) => {
+            state.dataAddedEventHandler = document.addEventListener(`${state.id}.dataAdded`, (data) => {
                 const pendingRows = data.detail.pendingRows;
 
                 state.pendingRows = state.pendingRows.concat(pendingRows);
@@ -75,6 +75,11 @@
 
                 initialiseDataTable(state);
                 addEventListener(state);
+            },
+            onBeforeUnmount(props, state) {
+                if (state.dataAddedEventHandler) {
+                    document.removeEventListener(`${state.id}.dataAdded`, state.dataAddedEventHandler);
+                }
             },
             getHelpText(field) {
                 return getHelpText(field);
