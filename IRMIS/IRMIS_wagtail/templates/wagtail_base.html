@@ -14,7 +14,6 @@
 
 {% block top_menu %}
 <span class="app-logo-dark-bg"></span>
-<button_reports></button_reports>
 <div class="dropdown" id="topmenu_toggle">
     <span>{% trans "Hello" %}, {% if user.get_full_name %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}</span>
     <span class="caret image"></span>

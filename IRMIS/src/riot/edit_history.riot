@@ -1,0 +1,67 @@
+<edit_history>
+    <h5>{ window.gettext ("History") }</h5>
+
+    <section>
+        <data_table table_id={this.table_id} columns={this.table_columns} getHelpText={props.getHelpText} pendingRows={state.pendingRows}></data_table>
+    </section>
+
+    <script>
+        import Data_Table from "./data_table.riot";
+
+        import { getFieldName } from "../road";
+        import { getRoadAudit } from "../roadManager";
+
+        // import { Versions } from "../../protobuf/roads_pb";
+
+        import $ from "jquery";
+
+        export default {
+            state: {
+                loading: true,
+                road: null,
+                error: false,
+                pendingRows: [],
+            },
+            table_id: "history-table",
+            table_columns: [
+                {
+                    title: "Audit Date", // getFieldName("dateCreated"),
+                    data: "dateCreated",
+                    defaultContent: "",
+                },
+                {
+                    title: "User", // getFieldName("user"),
+                    data: "user",
+                    defaultContent: "",
+                },
+                {
+                    title: "Comment", // getFieldName("comment"),
+                    data: "comment",
+                    defaultContent: "",
+                },
+            ],
+            onMounted(props, state) {
+                state.loading = true;
+                state.road = props.road;
+                this.getRoadAudit();
+            },
+            getRoadAudit() {
+                const roadId = this.state.road.id;
+                getRoadAudit(roadId)
+                    .then((auditData) => {
+                        if (auditData) {
+                            this.state.pendingRows = auditData;
+                            this.state.error = false;
+                        } else {
+                            this.state.error = true;
+                        }
+                    }).catch(err => {
+                        this.state.error = true;
+                    }).finally((r) => {
+                        this.state.loading = false;
+                        this.update();
+                    });
+            }
+        }
+    </script>
+</edit_history>
