@@ -88,7 +88,7 @@ class SurveyQuerySet(models.QuerySet):
             date_updated="date_updated",
             chainage_start="chainage_start",
             chainage_end="chainage_end",
-            values="values"
+            values="values",
         )
 
         survey_chunk = (
@@ -99,16 +99,20 @@ class SurveyQuerySet(models.QuerySet):
                 .values("id", *fields.values())
             )
             if road
-            else Survey.objects
-                .order_by("road", "chainage_start", "chainage_end", "-date_updated")
-                .values("id", *fields.values())
+            else Survey.objects.order_by(
+                "road", "chainage_start", "chainage_end", "-date_updated"
+            ).values("id", *fields.values())
         )
 
         for survey in survey_chunk:
             print(survey)
             survey_protobuf = surveys_protobuf.surveys.add()
             for protobuf_key, query_key in fields.items():
-                if survey[query_key] and query_key != "date_updated" and query_key != "values":
+                if (
+                    survey[query_key]
+                    and query_key != "date_updated"
+                    and query_key != "values"
+                ):
                     setattr(survey_protobuf, protobuf_key, survey[query_key])
 
             if survey["date_updated"]:
@@ -119,7 +123,9 @@ class SurveyQuerySet(models.QuerySet):
                 # Dump the survey values as a json string
                 # Because these are not likely to get large,
                 # zipping them will probably not be optimal
-                survey_protobuf.values = json.dumps(survey["values"], separators=(",", ":"))
+                survey_protobuf.values = json.dumps(
+                    survey["values"], separators=(",", ":")
+                )
 
         return survey_protobuf
 
@@ -134,7 +140,7 @@ class SurveyManager(models.Manager):
 
 
 class Survey(models.Model):
-    
+
     objects = SurveyManager()
 
     road = models.CharField(
@@ -168,7 +174,12 @@ class Survey(models.Model):
     values = HStoreField()
 
     def __str__(self,):
-        return "%s(%s - %s) %s" % (self.road, self.chainage_start, self.chainage_end, self.date_updated)
+        return "%s(%s - %s) %s" % (
+            self.road,
+            self.chainage_start,
+            self.chainage_end,
+            self.date_updated,
+        )
 
 
 class RoadQuerySet(models.QuerySet):
@@ -220,8 +231,8 @@ class RoadQuerySet(models.QuerySet):
         last_revisions = {
             i["object_id"]: i["revision_id"]
             for i in Version.objects.get_queryset()
-                .order_by("object_id", "revision_id")
-                .values("object_id", "revision_id")
+            .order_by("object_id", "revision_id")
+            .values("object_id", "revision_id")
         }
 
         for road in roads:

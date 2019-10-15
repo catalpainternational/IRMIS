@@ -28,6 +28,12 @@ urlpatterns = [
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     path("all_surveys", all_surveys, name="all_surveys"),
     path("road_surveys/<slug:road_code>", road_surveys, name="road_surveys"),
-    path("protobuf_road_surveys", protobuf_road_surveys_set, name="protobuf_road_surveys"),
-    path("protobuf_road_surveys/<slug:road>/", protobuf_road_surveys_set, name="protobuf_road_surveys"),
+    path(
+        "protobuf_road_surveys", protobuf_road_surveys_set, name="protobuf_road_surveys"
+    ),
+    path(
+        "protobuf_road_surveys/<slug:road>/",
+        protobuf_road_surveys_set,
+        name="protobuf_road_surveys",
+    ),
 ]

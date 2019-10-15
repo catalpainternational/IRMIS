@@ -273,5 +273,6 @@ def protobuf_road_surveys_set(request, road=None):
     road_surveys_protobuf = Survey.objects.to_protobuf(road)
 
     return HttpResponse(
-        road_surveys_protobuf.SerializeToString(), content_type="application/octet-stream"
+        road_surveys_protobuf.SerializeToString(),
+        content_type="application/octet-stream",
     )
