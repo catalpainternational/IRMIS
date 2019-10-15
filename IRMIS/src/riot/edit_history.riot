@@ -2,7 +2,7 @@
     <h5>{ window.gettext ("History") }</h5>
 
     <section>
-        <data_table table_id={this.table_id} columns={this.table_columns} getHelpText={props.getHelpText} pendingRows={state.pendingRows}></data_table>
+        <data_table table_id={this.table_id} columns={this.table_columns} getHelpText={props.getHelpText}></data_table>
     </section>
 
     <script>
@@ -25,7 +25,7 @@
             table_id: "history-table",
             table_columns: [
                 {
-                    title: "Audit Date", // getFieldName("dateCreated"),
+                    title: "Date", // getFieldName("dateCreated"),
                     data: "dateCreated",
                     defaultContent: "",
                 },
@@ -51,6 +51,10 @@
                     .then((auditData) => {
                         if (auditData) {
                             this.state.pendingRows = auditData;
+                            const pendingRows = this.state.pendingRows;
+
+                            document.dispatchEvent(new CustomEvent(`${this.table_id}.dataAdded`, {detail: { pendingRows }}));
+
                             this.state.error = false;
                         } else {
                             this.state.error = true;

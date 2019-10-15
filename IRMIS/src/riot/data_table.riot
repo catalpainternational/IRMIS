@@ -40,6 +40,15 @@
             }            
         }
 
+        const addEventListener = function(state) {
+            document.addEventListener(`${state.id}.dataAdded`, (data) => {
+                const pendingRows = data.detail.pendingRows;
+
+                state.pendingRows = state.pendingRows.concat(pendingRows);
+                updateDataTable(state);
+            });
+        }
+
         const initialiseDataTable = function (state) {
             state.table = $(`#${state.id}`).DataTable({
                 columns: state.columns,
@@ -62,14 +71,10 @@
         export default {
             onMounted(props, state) {
                 initialiseStateFromProps(props, state);
-
                 this.update();
+
                 initialiseDataTable(state);
-            },
-            onBeforeUpdate(props, state) {
-                state.table = state.table || $(`#${state.id}`).DataTable();
-                state.pendingRows = props.pendingRows || [];
-                updateDataTable(state);
+                addEventListener(state);
             },
             getHelpText(field) {
                 return getHelpText(field);
