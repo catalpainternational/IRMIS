@@ -1,9 +1,7 @@
 <edit_history>
     <h5>{ window.gettext ("History") }</h5>
 
-    <section>
-        <data_table table_id={this.table_id} columns={this.table_columns} getHelpText={props.getHelpText}></data_table>
-    </section>
+    <data_table table_id={this.table_id} columns={this.table_columns} getHelpText={props.getHelpText}></data_table>
 
     <script>
         import Data_Table from "./data_table.riot";
