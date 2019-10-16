@@ -37,7 +37,16 @@
                     orderable: false,
                     className: "edit-col"
                 });
-            }            
+            }
+        }
+
+        const addEventListener = function(state) {
+            state.dataAddedEventHandler = document.addEventListener(`${state.id}.dataAdded`, (data) => {
+                const pendingRows = data.detail.pendingRows;
+
+                state.pendingRows = state.pendingRows.concat(pendingRows);
+                updateDataTable(state);
+            });
         }
 
         const initialiseDataTable = function (state) {
@@ -48,19 +57,29 @@
                 dom: `<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>`, // https://datatables.net/reference/option/dom#Styling
             });
 
+            // add any rows the caller has delivered before initialization
+            updateDataTable(state);
+        }
+
+        const updateDataTable = function (state) {
             if (state.pendingRows.length) {
-                // add any rows the road manager has delivered before initialization
                 state.table.rows.add(state.pendingRows).draw();
                 state.pendingRows = [];
-            }            
+            }
         }
 
         export default {
             onMounted(props, state) {
                 initialiseStateFromProps(props, state);
-
                 this.update();
+
                 initialiseDataTable(state);
+                addEventListener(state);
+            },
+            onBeforeUnmount(props, state) {
+                if (state.dataAddedEventHandler) {
+                    document.removeEventListener(`${state.id}.dataAdded`, state.dataAddedEventHandler);
+                }
             },
             getHelpText(field) {
                 return getHelpText(field);

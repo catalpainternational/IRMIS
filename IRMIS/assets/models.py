@@ -8,17 +8,15 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db.models import Count, Max
 
-import datetime
 import reversion
 from reversion.models import Version
 
-
 from protobuf.roads_pb2 import Roads as ProtoRoads
 from protobuf.roads_pb2 import Projection
+from protobuf.survey_pb2 import Surveys as ProtoSurveys
 
 import json
 from google.protobuf.timestamp_pb2 import Timestamp
-from protobuf.survey_pb2 import Surveys as ProtoSurveys
 from .geodjango_utils import start_end_point_annos
 
 
@@ -75,7 +73,7 @@ class SurveyQuerySet(models.QuerySet):
         ts.FromDatetime(dt)
         return ts
 
-    def to_protobuf(self, road=None):
+    def to_protobuf(self):
         """ returns a roads survey protobuf object from the queryset """
         # See survey.proto
 
@@ -86,31 +84,18 @@ class SurveyQuerySet(models.QuerySet):
             road="road",
             user="user__id",
             date_updated="date_updated",
+            date_surveyed="date_surveyed",
             chainage_start="chainage_start",
             chainage_end="chainage_end",
             values="values",
         )
 
-        survey_chunk = (
-            (
-                Survey.objects.filter(road=road)
-                .order_by("road", "chainage_start", "chainage_end", "-date_updated")
-                .distinct("road", "chainage_start", "chainage_end")
-                .values("id", *fields.values())
-            )
-            if road
-            else Survey.objects.order_by(
-                "road", "chainage_start", "chainage_end", "-date_updated"
-            ).values("id", *fields.values())
-        )
-
-        for survey in survey_chunk:
-            print(survey)
+        for survey in self.values("id", *fields.values()):
             survey_protobuf = surveys_protobuf.surveys.add()
             for protobuf_key, query_key in fields.items():
                 if (
                     survey[query_key]
-                    and query_key != "date_updated"
+                    and query_key not in ["date_updated", "date_surveyed"]
                     and query_key != "values"
                 ):
                     setattr(survey_protobuf, protobuf_key, survey[query_key])
@@ -118,6 +103,10 @@ class SurveyQuerySet(models.QuerySet):
             if survey["date_updated"]:
                 ts = self.timestamp_from_datetime(survey["date_updated"])
                 survey_protobuf.date_updated.CopyFrom(ts)
+
+            if survey["date_surveyed"]:
+                ts = self.timestamp_from_datetime(survey["date_surveyed"])
+                survey_protobuf.date_surveyed.CopyFrom(ts)
 
             if survey["values"]:
                 # Dump the survey values as a json string
@@ -127,7 +116,7 @@ class SurveyQuerySet(models.QuerySet):
                     survey["values"], separators=(",", ":")
                 )
 
-        return survey_protobuf
+        return surveys_protobuf
 
 
 class SurveyManager(models.Manager):
@@ -136,7 +125,7 @@ class SurveyManager(models.Manager):
 
     def to_protobuf(self, road=None):
         """ returns a roads survey protobuf object from the manager """
-        return self.get_queryset().to_protobuf(road)
+        return self.get_queryset().to_protobuf()
 
 
 class Survey(models.Model):
@@ -152,7 +141,7 @@ class Survey(models.Model):
         null=True,
         on_delete=models.SET_NULL,
     )
-    date_surveyed = models.DateField(_("Date Surveyed"), default=datetime.date.today)
+    date_surveyed = models.DateTimeField(_("Date Surveyed"), null=True)
     date_created = models.DateTimeField(_("Date Created"), auto_now_add=True)
     date_updated = models.DateTimeField(_("Date Updated"), auto_now=True)
     chainage_start = models.DecimalField(

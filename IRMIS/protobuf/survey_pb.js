@@ -93,7 +93,9 @@ proto.assets.Survey.toObject = function(includeInstance, msg) {
     id: jspb.Message.getFieldWithDefault(msg, 1, 0),
     road: jspb.Message.getFieldWithDefault(msg, 2, ""),
     user: jspb.Message.getFieldWithDefault(msg, 3, 0),
+    source: jspb.Message.getFieldWithDefault(msg, 9, ""),
     dateUpdated: (f = msg.getDateUpdated()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
+    dateSurveyed: (f = msg.getDateSurveyed()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
     chainageStart: jspb.Message.getFloatingPointFieldWithDefault(msg, 5, 0.0),
     chainageEnd: jspb.Message.getFloatingPointFieldWithDefault(msg, 6, 0.0),
     values: jspb.Message.getFieldWithDefault(msg, 7, "")
@@ -145,10 +147,19 @@ proto.assets.Survey.deserializeBinaryFromReader = function(msg, reader) {
       var value = /** @type {number} */ (reader.readUint32());
       msg.setUser(value);
       break;
+    case 9:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setSource(value);
+      break;
     case 4:
       var value = new google_protobuf_timestamp_pb.Timestamp;
       reader.readMessage(value,google_protobuf_timestamp_pb.Timestamp.deserializeBinaryFromReader);
       msg.setDateUpdated(value);
+      break;
+    case 8:
+      var value = new google_protobuf_timestamp_pb.Timestamp;
+      reader.readMessage(value,google_protobuf_timestamp_pb.Timestamp.deserializeBinaryFromReader);
+      msg.setDateSurveyed(value);
       break;
     case 5:
       var value = /** @type {number} */ (reader.readFloat());
@@ -212,10 +223,25 @@ proto.assets.Survey.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
+  f = message.getSource();
+  if (f.length > 0) {
+    writer.writeString(
+      9,
+      f
+    );
+  }
   f = message.getDateUpdated();
   if (f != null) {
     writer.writeMessage(
       4,
+      f,
+      google_protobuf_timestamp_pb.Timestamp.serializeBinaryToWriter
+    );
+  }
+  f = message.getDateSurveyed();
+  if (f != null) {
+    writer.writeMessage(
+      8,
       f,
       google_protobuf_timestamp_pb.Timestamp.serializeBinaryToWriter
     );
@@ -290,6 +316,21 @@ proto.assets.Survey.prototype.setUser = function(value) {
 
 
 /**
+ * optional string source = 9;
+ * @return {string}
+ */
+proto.assets.Survey.prototype.getSource = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 9, ""));
+};
+
+
+/** @param {string} value */
+proto.assets.Survey.prototype.setSource = function(value) {
+  jspb.Message.setProto3StringField(this, 9, value);
+};
+
+
+/**
  * optional google.protobuf.Timestamp date_updated = 4;
  * @return {?proto.google.protobuf.Timestamp}
  */
@@ -319,6 +360,39 @@ proto.assets.Survey.prototype.clearDateUpdated = function() {
  */
 proto.assets.Survey.prototype.hasDateUpdated = function() {
   return jspb.Message.getField(this, 4) != null;
+};
+
+
+/**
+ * optional google.protobuf.Timestamp date_surveyed = 8;
+ * @return {?proto.google.protobuf.Timestamp}
+ */
+proto.assets.Survey.prototype.getDateSurveyed = function() {
+  return /** @type{?proto.google.protobuf.Timestamp} */ (
+    jspb.Message.getWrapperField(this, google_protobuf_timestamp_pb.Timestamp, 8));
+};
+
+
+/** @param {?proto.google.protobuf.Timestamp|undefined} value */
+proto.assets.Survey.prototype.setDateSurveyed = function(value) {
+  jspb.Message.setWrapperField(this, 8, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ */
+proto.assets.Survey.prototype.clearDateSurveyed = function() {
+  this.setDateSurveyed(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.assets.Survey.prototype.hasDateSurveyed = function() {
+  return jspb.Message.getField(this, 8) != null;
 };
 
 

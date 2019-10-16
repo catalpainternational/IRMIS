@@ -14,10 +14,18 @@ export class Survey extends jspb.Message {
   getUser(): number;
   setUser(value: number): void;
 
+  getSource(): string;
+  setSource(value: string): void;
+
   hasDateUpdated(): boolean;
   clearDateUpdated(): void;
   getDateUpdated(): google_protobuf_timestamp_pb.Timestamp | undefined;
   setDateUpdated(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  hasDateSurveyed(): boolean;
+  clearDateSurveyed(): void;
+  getDateSurveyed(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setDateSurveyed(value?: google_protobuf_timestamp_pb.Timestamp): void;
 
   getChainageStart(): number;
   setChainageStart(value: number): void;
@@ -43,7 +51,9 @@ export namespace Survey {
     id: number,
     road: string,
     user: number,
+    source: string,
     dateUpdated?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    dateSurveyed?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     chainageStart: number,
     chainageEnd: number,
     values: string,

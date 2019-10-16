@@ -1,12 +1,14 @@
-// We'll have a protobuf import going in here
-// import { Survey } from "../protobuf/surveys_pb";
+import * as moment from 'moment';
+import { Survey } from "../protobuf/survey_pb";
+import { SURFACE_CONDITION_CHOICES, TRAFFIC_LEVEL_CHOICES } from './road'
 
 // We may need a survey schema - primarily for formatted field names
-// const surveySchema = JSON.parse(document.getElementById('survey_schema').textContent);
+// JSON.parse(document.getElementById('survey_schema').textContent);
+const surveySchema = {};
 
-// utility function to pick from choices if value is truthy, or return empty string
+/** utility function to pick from choices if value is truthy, or return empty string */
 function choice_or_empty(value, choices) {
-    return value ? choices[value] : '';
+    return value ? choices[value] : "";
 }
 
 function toChainageFormat(value) {
@@ -23,120 +25,44 @@ export class EstradaSurvey extends Survey {
         return this.getId();
     }
 
-    get name() {
-        return this.getRoadName();
+    get road() {
+        return this.getRoad();
     }
 
-    get code() {
-        return this.getRoadCode();
+    get user() {
+        return this.getUser() || "";
     }
 
-    get linkName() {
-        return `${this.getLinkStartName()} - ${this.getLinkEndName()}`;
+    get chainageStart() {
+        return toChainageFormat(this.getChainageStart());
     }
 
-    get linkStartName() {
-        return this.getLinkStartName();
+    get chainageEnd() {
+        return toChainageFormat(this.getChainageEnd());
     }
 
-    get linkStartChainage() {
-        return toChainageFormat(this.getLinkStartChainage());
+    get dateSurveyed() {
+        let date = moment(new Date(this.getDateSurveyed() * 1000));
+        return date.isValid() ? date.format('YYYY-MM-DD HH:mm') : "";
     }
 
-    get linkEndName() {
-        return this.getLinkEndName();
-    }
-
-    get linkEndChainage() {
-        return toChainageFormat(this.getLinkEndChainage());
-    }
-
-    get linkCode() {
-        return this.getLinkCode();
-    }
-
-    get linkLength() {
-        return parseFloat(this.getLinkLength()).toFixed(2);
-    }
-
-    get status() {
-        return choice_or_empty(this.getRoadStatus(), ROAD_STATUS_CHOICES);
-    }
-
-    get type() {
-        return choice_or_empty(this.getRoadType(), ROAD_TYPE_CHOICES);
-    }
-
-    get surfaceType() {
-        return choice_or_empty(this.getSurfaceType(), SURFACE_TYPE_CHOICES);
+    get source() {
+        return this.getSource();
     }
 
     get surfaceCondition() {
-        return choice_or_empty(this.getSurfaceCondition(), SURFACE_CONDITION_CHOICES);
-    }
-
-    get pavementClass() {
-        return choice_or_empty(this.getPavementClass(), PAVEMENT_CLASS_CHOICES);
-    }
-
-    get administrativeArea() {
-        return choice_or_empty(parseInt(this.getAdministrativeArea()), ADMINISTRATIVE_AREA_CHOICES);
-    }
-
-    get carriagewayWidth() {
-        return parseFloat(this.getCarriagewayWidth()).toFixed(1);
-    }
-
-    get project() {
-        return this.getProject();
-    }
-
-    get fundingSource() {
-        return this.getFundingSource();
-    }
-
-    get technicalClass() {
-        return choice_or_empty(this.getTechnicalClass(), TECHNICAL_CLASS_CHOICES);
-    }
-
-    get maintenanceNeed() {
-        return choice_or_empty(this.getMaintenanceNeed(), MAINTENANCE_NEED_CHOICES);
+        return  choice_or_empty(JSON.parse(this.getValues())['surface_condition'], SURFACE_CONDITION_CHOICES);
     }
 
     get trafficLevel() {
-        return choice_or_empty(this.getTrafficLevel(), TRAFFIC_LEVEL_CHOICES);
+        return choice_or_empty(JSON.parse(this.getValues())['traffic_level'], TRAFFIC_LEVEL_CHOICES);
     }
-
-    get projectionStart() {
-        return this.getProjectionStart();
-    }
-
-    get projectionEnd() {
-        return this.getProjectionEnd();
-    }
-
-    get startDMS() {
-        return toDms(projToWGS84.forward(this.getProjectionStart().array));
-    }
-
-    get endDMS() {
-        return toDms(projToWGS84.forward(this.getProjectionEnd().array));
-    }
-
-    get startUTM() {
-        return toUtm(projToWGS84.forward(this.getProjectionStart().array));
-    }
-
-    get endUTM() {
-        return toUtm(projToWGS84.forward(this.getProjectionEnd().array));
-    }
-
 }
 
-// export function getFieldName(field) {
-//     return (surveySchema[field]) ? surveySchema[field].display : "";
-// }
+export function getFieldName(field) {
+    return (surveySchema[field]) ? surveySchema[field].display : "";
+}
 
-// export function getHelpText(field) {
-//     return (surveySchema[field]) ? surveySchema[field].help_text : "";
-// }
+export function getHelpText(field) {
+    return (surveySchema[field]) ? surveySchema[field].help_text : "";
+}

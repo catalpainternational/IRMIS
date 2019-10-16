@@ -28,7 +28,7 @@
             <edit_asset_details road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'asset_details' }" on-save="{ save }"></edit_asset_details>
             <edit_pavement road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'pavement' }" on-save="{ save }"></edit_pavement>
             <edit_project road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'project' }" on-save="{ save }"></edit_project>
-            <edit_condition road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'condition' }" on-save="{ save }"></edit_condition>
+            <edit_condition road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'condition' }" on-save="{ save }" on-save-survey="{ saveSurvey }"></edit_condition>
             <edit_maintenance road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'maintenance' }" on-save="{ save }"></edit_maintenance>
         </div>
         <div id="stop-alert" class="modal" tabindex="-1" role="dialog">
@@ -54,6 +54,7 @@
     <script>
         import { saveRoad } from "../roadManager";
         import { getHelpText } from "../road";
+        import { saveSurvey, getRoadSurveys } from "../surveyManager";
 
         import Edit_Location_Type from "./edit_location_type.riot";
         import Edit_Asset_Details from "./edit_asset_details.riot";
@@ -122,6 +123,10 @@
                     this.update({ saving: false, show_feedback: true });
                     timeoutId = setTimeout(() => this.closeFeedback(), 5000);
                 });
+            },
+            saveSurvey() {
+                // placeholder code
+                alert("Holy moly, Batman! It worked!");
             },
             hasChanges() {
                 return this.state.baseRoad.toString() !== this.state.editingRoad.toString();

@@ -14,7 +14,7 @@ function humanizeChoices(choiceField, valueKey=false, displayKey=false) {
     return values;
 }
 
-/** utility function to pick from choices if value is truthy, or return empty string */ 
+/** utility function to pick from choices if value is truthy, or return empty string */
 function choice_or_empty(value, choices) {
     return value ? choices[value] : "";
 }
@@ -22,12 +22,12 @@ function choice_or_empty(value, choices) {
 const ROAD_STATUS_CHOICES = humanizeChoices('road_status', 'code', 'name');
 const ROAD_TYPE_CHOICES = humanizeChoices('road_type');
 const SURFACE_TYPE_CHOICES = humanizeChoices('surface_type', 'code', 'name');
-const SURFACE_CONDITION_CHOICES = humanizeChoices('surface_condition');
+export const SURFACE_CONDITION_CHOICES = humanizeChoices('surface_condition');
 const PAVEMENT_CLASS_CHOICES = humanizeChoices('pavement_class', 'code', 'name');
 const ADMINISTRATIVE_AREA_CHOICES = humanizeChoices('administrative_area', 'id', 'name');
 const TECHNICAL_CLASS_CHOICES = humanizeChoices('technical_class', 'code', 'name');
 const MAINTENANCE_NEED_CHOICES = humanizeChoices('maintenance_need', 'code', 'name');
-const TRAFFIC_LEVEL_CHOICES = humanizeChoices('traffic_level');
+export const TRAFFIC_LEVEL_CHOICES = humanizeChoices('traffic_level');
 
 function toChainageFormat(value) {
     const distance = parseFloat(value).toFixed(0);

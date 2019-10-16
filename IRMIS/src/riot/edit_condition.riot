@@ -1,5 +1,5 @@
 <edit_condition>
-    <edit_modal>
+    <edit_modal on-save="{ props.onSaveSurvey }">
         <span slot="modal_title">Add Surface Condition Information</span>
 
         <form slot="modal_body">
@@ -63,7 +63,7 @@
     <section>
         <div class="form-group">
             <div class="button-wrapper d-flex justify-content-end">
-                <button class="btn btn-primary" onclick="{ edit }" disabled="{ props.editing }">{ window.gettext("Edit") }</button>
+                <button class="btn btn-primary" onclick="{ edit }" disabled="{ props.editing }">{ window.gettext("Add") }</button>
             </div>
         </div>
         <data_table table_id={this.table_id} columns={this.table_columns} getHelpText={props.getHelpText} pendingRows={this.pendingRows}></data_table>
@@ -73,6 +73,7 @@
         import Data_Table from "./data_table.riot";
         import Edit_Modal from "./edit_modal.riot";
 
+        import { getRoadSurveys } from "../surveyManager"
         import { getFieldName } from "../road";
 
         import $ from "jquery";
@@ -87,6 +88,7 @@
                 chainageDigits : 7,
                 survey: {},
                 errors: {},
+                pendingRows: [],
             },
             edit(e) {
                 $("#editModal").modal("show")
@@ -120,45 +122,54 @@
             table_id: "surface-condition-table",
             table_columns: [
                 {
-                    title: "Chainage start", // getFieldName("segment_start_chainage"),
-                    data: "segmentStartChainage",
+                    title: "Chainage start", data: "chainageStart",
                     defaultContent: "",
                 },
                 {
-                    title: "Chainage end", // getFieldName("segment_end_chainage"),
-                    data: "segmentEndChainage",
+                    title: "Chainage end", data: "chainageEnd",
                     defaultContent: "",
                 },
                 {
-                    title: "Surface condition", // getFieldName("surface_condition"),
-                    data: "surfaceCondition",
+                    title: "Surface condition", data: "surfaceCondition",
                     defaultContent: "",
                 },
                 {
-                    title: "Survey date", // getFieldName("survey_date"),
-                    data: "surveyDate",
+                    title: "Survey date", data: "dateSurveyed",
                     defaultContent: "",
                 },
                 {
-                    title: "Added by", // getFieldName("survey_added_by"),
-                    data: "surveyAddedBy",
+                    title: "Added by", data: "user",
                     defaultContent: "",
                 },
                 {
-                    title: "Source", // getFieldName("survey_source"),
-                    data: "surveySource",
+                    title: "Source", data: "source",
                     defaultContent: "",
                 },
             ],
-            pendingRows: [{
-                getId: () => { return 1; },
-                segmentStartChainage: "0+000",
-                segmentEndChainage: "5+300",
-                surfaceCondition: "Poor",
-                surveyDate: Date.now(),
-                surveyAddedBy: "Jose Soares",
-                surveySource: "Excel",
-            }]
+            onMounted(props, state) {
+                state.loading = true;
+                state.road = props.road;
+                this.getRoadSurveys();
+            },
+            getRoadSurveys() {
+                const roadCode = this.state.road.getId();
+                getRoadSurveys(roadCode)
+                    .then((surveyData) => {
+                        if (surveyData) {
+                            this.state.pendingRows = surveyData;
+                            const pendingRows = this.state.pendingRows;
+                            document.dispatchEvent(new CustomEvent(`${this.table_id}.dataAdded`, {detail: { pendingRows }}));
+                            this.state.error = false;
+                        } else {
+                            this.state.error = true;
+                        }
+                    }).catch(err => {
+                        this.state.error = true;
+                    }).finally((r) => {
+                        this.state.loading = false;
+                        this.update();
+                    });
+            }
         }
     </script>
 </edit_condition>

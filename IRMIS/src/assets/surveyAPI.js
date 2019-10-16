@@ -1,4 +1,4 @@
-import { Survey } from "../../protobuf/surveys_pb";
+import { Survey, Surveys } from "../../protobuf/survey_pb";
 import { EstradaSurvey } from "../survey";
 import { ConfigAPI } from "./configAPI";
 
@@ -9,8 +9,8 @@ import { ConfigAPI } from "./configAPI";
  * @returns a map {id: survey_object}
  */
 export function getSurveysMetadataChunks() {
-    const surveyTypeUrlFragment = "survey_chunks";
-    const metadataUrl = `${ConfigAPI.requestSurveyUrl}/${surveyTypeUrlFragment}`;
+    const surveyTypeUrlFragment = "protobuf_surveys";
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${surveyTypeUrlFragment}`;
 
     return fetch(metadataUrl, ConfigAPI.requestInit())
         .then((jsonResponse) => (jsonResponse.json()));
@@ -22,10 +22,10 @@ export function getSurveysMetadataChunks() {
  *
  * @returns a map {id: survey_object}
  */
-export function getSurveysMetadata(chunkName) {
-    const surveyTypeUrlFragment = "protobuf_surveys";
-    chunkName = chunkName || "";
-    const metadataUrl = `${ConfigAPI.requestSurveyUrl}/${surveyTypeUrlFragment}/${chunkName}`;
+export function getSurveysMetadata(roadCode) {
+    const surveyTypeUrlFragment = "protobuf_road_surveys";
+    roadCode = roadCode || "";
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${surveyTypeUrlFragment}/${roadCode}`;
 
     return fetch(metadataUrl, ConfigAPI.requestInit())
         .then((metadataResponse) => (metadataResponse.arrayBuffer()))
@@ -44,7 +44,7 @@ export function getSurveysMetadata(chunkName) {
 export function getSurveyMetadata(surveyId) {
     const surveyTypeUrlFragment = "protobuf_survey";
 
-    const metadataUrl = `${ConfigAPI.requestSurveyUrl}/${surveyTypeUrlFragment}/${surveyId}`;
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${surveyTypeUrlFragment}/${surveyId}`;
 
     return fetch(metadataUrl, ConfigAPI.requestInit())
         .then((metadataResponse) => (metadataResponse.arrayBuffer()))
@@ -58,4 +58,28 @@ function makeEstradaSurvey(pbsurvey) {
     var estradaSurvey = Object.create(EstradaSurvey.prototype);
     Object.assign(estradaSurvey, pbsurvey);
     return estradaSurvey;
+}
+
+/** putSurveydata
+ *
+ * Post data for a single Survey to the server
+ *
+ * @returns 200 (success) or 400 (failure)
+ */
+export function postSurveyData(survey) {
+    const assetTypeUrlFragment = "survey_create";
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}`;
+
+    const postAssetInit = ConfigAPI.requestInit("POST");
+    postAssetInit.body = survey.serializeBinary();
+
+    return fetch(metadataUrl, postAssetInit)
+        .then(metadataResponse => {
+            if (metadataResponse.ok) { return metadataResponse.arrayBuffer(); }
+            throw new Error(`Survey creation failed: ${metadataResponse.statusText}`);
+        })
+        .then(protobufBytes => {
+            const uintArray = new Uint8Array(protobufBytes);
+            return makeEstradaSurvey(Survey.deserializeBinary(uintArray));
+        });
 }

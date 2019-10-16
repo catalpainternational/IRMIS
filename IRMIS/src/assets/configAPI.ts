@@ -1,7 +1,5 @@
 export class ConfigAPI {
     public static requestAssetUrl = `${window.location.origin}/assets`;
-    public static requestSurveyUrl = `${window.location.origin}/surveys`;
-
     public static requestMediaUrl = `${window.location.origin}/media`;
 
     /** Build the fetch RequestInit structure for all requests

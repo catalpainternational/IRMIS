@@ -20,7 +20,8 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 from rest_framework_condition import condition
 
-from protobuf import roads_pb2
+from protobuf import roads_pb2, survey_pb2
+
 from .models import (
     CollatedGeoJsonFile,
     Road,
@@ -264,15 +265,60 @@ def road_surveys(request, road_code):
     return JsonResponse(serializer.data, safe=False)
 
 
-def protobuf_road_surveys_set(request, road=None):
-    """ returns a protobuf object with the set of surveys for a particular road """
+def protobuf_surveys(request, chunk_name=None):
+    """ returns a protobuf object with the set of all surveys or only of specific type"""
 
     if not request.user.is_authenticated:
         return HttpResponseForbidden()
 
-    road_surveys_protobuf = Survey.objects.to_protobuf(road)
+    queryset = Survey.objects.all()
+    if chunk_name:
+        chunk_codes = Road.objects.filter(road_type=chunk_name).values("road_code")
+        queryset = queryset.filter(road__in=chunk_codes)
+
+    queryset.order_by("road", "chainage_start", "chainage_end", "-date_updated")
+    surveys_protobuf = queryset.to_protobuf()
 
     return HttpResponse(
-        road_surveys_protobuf.SerializeToString(),
-        content_type="application/octet-stream",
+        surveys_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )
+
+
+def protobuf_road_surveys(request, pk):
+    """ returns a protobuf object with the set of surveys for a particular road pk"""
+
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+
+    road = get_object_or_404(Road.objects.all(), pk=pk)
+    queryset = Survey.objects.filter(road=road.road_code)
+    queryset.order_by("road", "chainage_start", "chainage_end", "-date_updated")
+    surveys_protobuf = queryset.to_protobuf()
+
+    return HttpResponse(
+        surveys_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )
+
+
+def survey_create(request):
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+
+    if request.method != "POST":
+        raise MethodNotAllowed(request.method)
+    elif request.content_type != "application/octet-stream":
+        return HttpResponse(status=400)
+
+    # parse Survey from protobuf in request body
+    req_pb = survey_pb2.Survey()
+    req_pb.ParseFromString(request.body)
+
+    # check that Protobuf parsed
+    if not req_pb.id:
+        return HttpResponse(status=400)
+
+    survey = Survey.objects.create(**req_pb)
+
+    return HttpResponse(
+        req_pb.SerializeToString(), status=200, content_type="application/octet-stream"
     )
