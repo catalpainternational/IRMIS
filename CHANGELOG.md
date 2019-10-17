@@ -1,5 +1,9 @@
 # CHANGE LOG
 
+## 1.2.1 Display Audit Log
+
+- As an Admin, I can access information on data source and date of edit/import
+
 ## 1.1.0 - More Admin and miscellaneous
  - As an authenticated user, I understand that the export of the table is being prepared
  - As an Authenticated User, I can see the start and end coordinates of a given Road asset on the table
