@@ -19,21 +19,6 @@
 
     <script>
         export default {
-            state: {
-                error: false,
-                showFeedback: false,
-            },
-            onBeforeMount() {
-                window.onbeforemodalunload = () => {
-                    return this.hasChanges() ? "You have changes" : null;
-                }
-            },
-            onBeforeUnmount() {
-                window.onbeforemodalunload = null;
-            },
-            hasChanges() {
-                return this.state.baseData.toString() !== this.state.editingData.toString();
-            },
             save(e) {
                 this.props.onSave();
             },
