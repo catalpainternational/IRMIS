@@ -80,6 +80,7 @@
                 nextPage: null,
                 hasChanges: false,
                 showFeedback: false,
+                stopAlertResult: "",
             },
             components: {
                 Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Project, Edit_Condition, Edit_Maintenance, Edit_Feedback
@@ -131,10 +132,24 @@
             hasChanges() {
                 return this.state.baseRoad.toString() !== this.state.editingRoad.toString();
             },
+            modalHandler() {
+                const stopAlertModal = $('#stop-alert');
+
+                this.modalHideHandler = this.modalHideHandler || stopAlertModal.on("hide.bs.modal", this, function (e) {
+                    this.state = e.data.state;
+                    this.hasChanges = e.data.hasChanges;
+                    this.state.nextPage = this.state.page;
+                    if (this.hasChanges()) {
+                        $('#stop-alert').modal('show');
+                    }
+                });
+
+                stopAlertModal.modal('show');
+            },
             goBack(e) {
                 this.state.nextPage = "#";
                 if (this.hasChanges()) {
-                    $('#stop-alert').modal('show');
+                    this.modalHandler();
                 } else {
                     clearTimeout(timeoutId);
                     window.location.hash = this.state.nextPage;
@@ -143,8 +158,11 @@
             selectPage(e) {
                 this.state.page = e.currentTarget.dataset.page;
                 this.state.nextPage = `#edit/${this.state.editingRoad.getId()}/${this.state.page}`;
-                if (this.hasChanges()) $('#stop-alert').modal('show');
-                else this.discardChanges();
+                if (this.hasChanges()) {
+                    this.modalHandler();
+                } else {
+                    this.discardChanges();
+                }
             },
             discardChanges() {
                 this.state.editingRoad = this.state.baseRoad.cloneMessage();

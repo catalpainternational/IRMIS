@@ -148,10 +148,22 @@
                     });
             },
             addEdit(e) {
-                // TODO: for 'add' state.survey will be 'empty', 
-                // for 'edit' state.survey will be set to the existing segment survey 
+                // TODO:
+                // baseSurvey must be set to 'empty' for add.
+                // and the selected segment survey for edit.
                 this.state.survey = cloneData(this.state.baseSurvey);
-                $(`#${this.modal_id}`).modal("show")
+
+                this.modalHideHandler = this.modalHideHandler || $(`#${this.modal_id}`).on("hide.bs.modal", this, function (e) {
+                    this.state = e.data.state;
+                    this.hasChanges = e.data.hasChanges;
+                    this.state.page = window.location.href;
+                    this.state.nextPage = this.state.page;
+                    if (this.hasChanges()) {
+                        $('#stop-alert').modal('show');
+                    }
+                });
+
+                $(`#${this.modal_id}`).modal("show");
             },
             conditions: window.road_schema.surface_condition,
             table_id: "surface-condition-table",
@@ -198,8 +210,19 @@
                     // Cannot save if there are validation errors
                     this.canSave();
                 } else {
-                    this.props.onSave();
-                }
+                    if (this.hasChanges()) {
+                        // Complete the survey
+                        this.state.survey.user = $("#user_welcome").data( "userName" ) || "Unknown";
+                        this.state.survey.source = this.modal_id;
+                        
+                        this.props.onSave();
+                    }
+
+                    // Reset baseSurvey now that we're done.
+                    this.baseSurvey = {};
+
+                    $(`#${this.modal_id}`).modal("hide");
+                } 
             },
             canSave() {
                 if (Object.keys(this.state.errors).length) {
@@ -211,6 +234,16 @@
                 }
                 
                 this.update();
+            },
+            /** Compare the selected fields between baseSurvey and survey
+             * `source` and `user` are deliberately not compared
+             */
+            hasChanges() {
+                const compareFieldNames = ["surveyDate", "startChainage", "endChainage", "surfaceCondition"];
+                const surveyBase = compareFieldNames.map((fieldName) => { return this.state.baseSurvey[fieldName] || ""; }).join("|||");
+                const surveyResult = compareFieldNames.map((fieldName) => { return this.state.survey[fieldName] || ""; }).join("|||");
+
+                return (surveyBase !== surveyResult);
             },
             validate(fieldName, input, testResult, errorText) {
                 if (!testResult) {
