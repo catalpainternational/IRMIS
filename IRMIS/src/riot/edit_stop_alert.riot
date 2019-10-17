@@ -4,22 +4,17 @@
             <div class="align-items-center modal-content">
                 <div class="modal-header">
                     <span class="alert stop image"></span>
-                    <span class="close image" data-dismiss="modal" aria-label="{ window.gettext('Close') }" aria-hidden="true"></span>
+                    <span class="close image" data-dismiss="modal" aria-label="{ window.gettext("Close") }" aria-hidden="true"></span>
                 </div>
                 <div class="modal-body text-center">
                     <h6>{ window.gettext("Unsaved Changes") }</h6>
                     <p>{ window.gettext("You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?") }</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="{ discardChanges }">{ window.gettext("Discard") }</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="{ props.discard }">{ window.gettext("Discard") }</button>
                     <button type="button" class="btn btn-light" data-dismiss="modal">{ window.gettext("Continue editing") }</button>
                 </div>
             </div>
         </div>
     </div>
-
-    <script>
-        import "bootstrap/js/dist/modal";
-        import $ from "jquery";
-    </script>
-</edit_base>
+</edit_stop_alert>

@@ -153,17 +153,9 @@
                 // and the selected segment survey for edit.
                 this.state.survey = cloneData(this.state.baseSurvey);
 
-                this.modalHideHandler = this.modalHideHandler || $(`#${this.modal_id}`).on("hide.bs.modal", this, function (e) {
-                    this.state = e.data.state;
-                    this.hasChanges = e.data.hasChanges;
-                    this.state.page = window.location.href;
-                    this.state.nextPage = this.state.page;
-                    if (this.hasChanges()) {
-                        $('#stop-alert').modal('show');
-                    }
-                });
+                this.initialiseStopAlert();
 
-                $(`#${this.modal_id}`).modal("show");
+                this.showEditModal();
             },
             conditions: window.road_schema.surface_condition,
             table_id: "surface-condition-table",
@@ -202,6 +194,39 @@
 
             // Survey Modal 
 
+            initialiseStopAlert() {
+                const continueEdit = this.continueEdit;
+                const discard = this.discard;
+                document.dispatchEvent(new CustomEvent("edit.stop_alert.initialisation", {detail: { continueEdit, discard }}));
+            },
+            showEditModal() {
+                this.modalHideHandler = this.modalHideHandler || $(`#${this.modal_id}`).on("hide.bs.modal", this, function (e) {
+                    this.state = e.data.state;
+                    this.hasChanges = e.data.hasChanges;
+                    if (this.hasChanges()) {
+                        $('#stop-alert').modal('show');
+                    }
+                });
+
+                $(`#${this.modal_id}`).modal("show");                
+            },
+            continueEdit() {
+                this.stopAlertResult = this.reopenEdit;
+                $('#stop-alert').modal("hide");
+            },
+            reopenEdit() {
+                this.initialiseStopAlert();
+
+                this.showEditModal();                
+            },
+            discard() {
+                this.stopAlertResult = this.discardChanges;
+                $('#stop-alert').modal("hide");
+            },
+            discardChanges() {
+                this.state.survey = cloneData(this.state.baseSurvey);
+                this.update();
+            },
             save(e) {
                 const fieldNames = ["surveyDate", "startChainage", "endChainage", "surfaceCondition"];
                 checkRequiredFields(fieldNames, this.state.survey, this.state.errors);
