@@ -11,7 +11,7 @@
                 <div class="modal-body"><slot name="modal_body"/></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" onclick="{ save }" disabled="{ props.saving }">{ window.gettext("Save") }</button>
+                    <button type="button" class="btn btn-primary" onclick="{ save }" disabled="{ props.disableSave }">{ window.gettext("Save") }</button>
                 </div>
             </div>
         </div>
@@ -19,6 +19,21 @@
 
     <script>
         export default {
+            state: {
+                error: false,
+                showFeedback: false,
+            },
+            onBeforeMount() {
+                window.onbeforemodalunload = () => {
+                    return this.hasChanges() ? "You have changes" : null;
+                }
+            },
+            onBeforeUnmount() {
+                window.onbeforemodalunload = null;
+            },
+            hasChanges() {
+                return this.state.baseData.toString() !== this.state.editingData.toString();
+            },
             save(e) {
                 this.props.onSave();
             },

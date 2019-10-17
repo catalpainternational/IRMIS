@@ -1,5 +1,5 @@
 <edit_condition>
-    <edit_modal on-save="{ props.onSaveSurvey }">
+    <edit_modal disableSave="{ !state.canSave }" onSave="{ props.onSaveSurvey }">
         <span slot="modal_title">Add Surface Condition Information</span>
 
         <form slot="modal_body">
@@ -78,77 +78,45 @@
 
         import $ from "jquery";
 
-        function exceedsMaxDigits(text, limit, decimals) {
-            return !(new RegExp(`^\\d{0,${(limit - decimals)}}(\\.\\d{1,${decimals}})?$`).test(text));
+        function checkRequiredFields(fieldNames, data, errors) {
+            fieldNames.forEach((fieldName) => {
+                if (!data[fieldName]) {
+                    errors[fieldName] = window.gettext("This field is required");
+                }
+            });
+        }
+
+        function withinMaxDigits(text, limit, decimals) {
+            return (new RegExp(`^\\d{0,${(limit - decimals)}}(\\.\\d{1,${decimals}})?$`).test(text));
+        }
+
+        /** Deep copy the supplied data to a new object
+         *  Prefers to use protobuf .cloneMessage
+         */
+        function cloneData(data) {
+            if (data.cloneMessage) {
+                return data.cloneMessage();
+            }
+
+            return JSON.parse(JSON.stringify(this.state.baseSurvey));
         }
 
         export default {
             state: {
                 chainageDecimals: 3,
                 chainageDigits : 7,
+                baseSurvey: {},
                 survey: {},
+                canSave: false,
                 errors: {},
                 pendingRows: [],
             },
-            edit(e) {
-                $("#editModal").modal("show")
-            },
-            save(e) {
-                this.props.onSave();
-            },
-            checkSurveyDate(e) {
-                this.state.survey.surveyDate = e.currentTarget.value;
-                this.update();
-            },
-            checkChainage(e) {
-                const fieldName = e.currentTarget.name;
-                const input = e.currentTarget.value;
-                if (exceedsMaxDigits(input, this.state.chainageDigits, this.state.chainageDecimals)) {
-                    this.state.errors[fieldName] = window.interpolate(
-                        window.gettext('Chainage cannot contain more than %s digits, of which %s are decimals'),
-                        [this.state.chainageDigits, this.state.chainageDecimals]
-                    );
-                } else {
-                    delete this.state.errors[fieldName];
-                    this.state.survey[fieldName] = input;
-                }
-                this.update();
-            },
-            checkSurfaceCondition(e) {
-                this.state.survey.surfaceCondition = e.currentTarget.dataset.condition;
-                this.update();
-            },
-            conditions: window.road_schema.surface_condition,
-            table_id: "surface-condition-table",
-            table_columns: [
-                {
-                    title: "Chainage start", data: "chainageStart",
-                    defaultContent: "",
-                },
-                {
-                    title: "Chainage end", data: "chainageEnd",
-                    defaultContent: "",
-                },
-                {
-                    title: "Surface condition", data: "surfaceCondition",
-                    defaultContent: "",
-                },
-                {
-                    title: "Survey date", data: "dateSurveyed",
-                    defaultContent: "",
-                },
-                {
-                    title: "Added by", data: "user",
-                    defaultContent: "",
-                },
-                {
-                    title: "Source", data: "source",
-                    defaultContent: "",
-                },
-            ],
+
+            // Condition Survey
+
             onMounted(props, state) {
                 state.loading = true;
-                state.road = props.road;
+                state.road = cloneMessage(props.road);
                 this.getRoadSurveys();
             },
             getRoadSurveys() {
@@ -169,7 +137,104 @@
                         this.state.loading = false;
                         this.update();
                     });
-            }
+            },
+            edit(e) {
+                this.state.survey = cloneData(this.state.baseSurvey);
+                $("#editModal").modal("show")
+            },
+            conditions: window.road_schema.surface_condition,
+            table_id: "surface-condition-table",
+            table_columns: [
+                {
+                    title: "Chainage start", 
+                    data: "chainageStart",
+                    defaultContent: "",
+                },
+                {
+                    title: "Chainage end", 
+                    data: "chainageEnd",
+                    defaultContent: "",
+                },
+                {
+                    title: "Surface condition", 
+                    data: "surfaceCondition",
+                    defaultContent: "",
+                },
+                {
+                    title: "Survey date",
+                    data: "dateSurveyed",
+                    defaultContent: "",
+                },
+                {
+                    title: "Added by", 
+                    data: "user",
+                    defaultContent: "",
+                },
+                {
+                    title: "Source", 
+                    data: "source",
+                    defaultContent: "",
+                },
+            ],
+
+            // Survey Modal 
+
+            save(e) {
+                const fieldNames = ["surveyDate", "startChainage", "endChainage", "surfaceCondition"];
+                checkRequiredFields(fieldNames, this.state.survey, this.state.errors);
+
+                if (Object.keys(this.state.errors).length) {
+                    // Cannot save if there are validation errors
+                    this.canSave();
+                } else {
+                    this.props.onSave();
+                }
+            },
+            canSave() {
+                if (Object.keys(this.state.errors).length) {
+                    // Cannot save if there are validation errors
+                    this.state.canSave = false;
+                } else {
+                    // Can save if something has changed
+                    this.state.canSave = JSON.stringify(this.state.baseSurvey) !== JSON.stringify(this.state.survey);
+                }
+                
+                this.update();
+            },
+            validate(fieldName, input, testResult, errorText) {
+                if (!testResult) {
+                    this.state.errors[fieldName] = errorText;                    
+                } else {
+                    delete this.state.errors[fieldName];
+                    this.state.survey[fieldName] = input;
+                }
+
+                this.canSave();
+            },
+            checkSurveyDate(e) {
+                const fieldName = e.currentTarget.name;
+                const input = e.currentTarget.value;
+                const testResult = input > Date.now;
+                const errorText = window.gettext("Survey date cannot be in the future");
+
+                this.validate(fieldName, input, test, errorText );
+            },
+            checkChainage(e) {
+                const fieldName = e.currentTarget.name;
+                const input = e.currentTarget.value;
+                const chainageDigits = this.state.chainageDigits;
+                const chainageDecimals = this.state.chainageDecimals;
+                const testResult = withinMaxDigits(input, chainageDigits, chainageDecimals);
+                const errorText = window.interpolate(
+                    window.gettext("Chainage cannot contain more than %s digits, of which %s are decimals"),
+                    [chainageDigits, chainageDecimals]);
+
+                this.validate(fieldName, input, testResult, errorText);
+            },
+            checkSurfaceCondition(e) {
+                this.state.survey.surfaceCondition = e.currentTarget.dataset.condition;
+                this.update();
+            },
         }
     </script>
 </edit_condition>
