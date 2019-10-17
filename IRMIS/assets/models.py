@@ -249,9 +249,9 @@ class RoadManager(models.Manager):
         """ returns a list of 'chunks' from the manager """
         return self.get_queryset().to_chunks()
 
-    def to_protobuf(self, chunk_name=None):
+    def to_protobuf(self):
         """ returns a roads protobuf object from the manager """
-        return self.get_queryset().to_protobuf(chunk_name)
+        return self.get_queryset().to_protobuf()
 
     def to_wgs(self):
         """
