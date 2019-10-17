@@ -1,5 +1,5 @@
 <edit_condition>
-    <edit_modal disableSave="{ !state.canSave }" onSave="{ props.onSaveSurvey }">
+    <edit_modal modal_id="{ modal_id }" disableSave="{ !state.canSave }" onSave="{ save }">
         <span slot="modal_title">Add Surface Condition Information</span>
 
         <form slot="modal_body">
@@ -7,8 +7,10 @@
                 <div class="form-group">
                     <label>{ window.gettext("Survey Date") }</label>
                     <small class="form-text text-muted">{props.getHelpText("survey_date")}</small>
+                    <!-- It would be preferable to use the 'datetime-local' input type, however Firefox currently does not support it -->
                     <input class="{ state.errors.surveyDate ? 'danger' : null } { state.survey.surveyDate ? '' : 'inactive' } form-control"
-                        type="date" name="surveyDate" placeholder="Date" value="{ state.survey.surveyDate }" oninput="{ checkSurveyDate }">
+                        type="date" name="surveyDate" placeholder="Date" value="{ state.survey.surveyDate }" oninput="{ checkSurveyDate }"
+                        required pattern="\d{4}-\d{2}-\d{2}" max="{ max_date() }" >
                     <div if="{ state.errors.surveyDate }" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.surveyDate }.</li>
@@ -22,7 +24,8 @@
                 <div class="form-group">
                     <label>{ window.gettext("Chainage start") }</label>
                     <input class="{ state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
-                        type="number" name="startChainage" placeholder="0+000" value="{ state.survey.startChainage }" oninput="{ checkChainage }">
+                        type="number" name="startChainage" placeholder="0+000" value="{ state.survey.startChainage }" oninput="{ checkChainage }"
+                        required>
                     <small class="form-text text-muted">{ props.getHelpText("start_chainage") }</small>
                     <div if="{ state.errors.startChainage }" class="invalid-tooltip">
                         <ul>
@@ -33,7 +36,8 @@
                 <div class="form-group">
                     <label>{ window.gettext("Chainage end") }</label>
                     <input class="{ state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
-                        type="number" name="endChainage" placeholder="62+410" value="{ state.survey.endChainage }" oninput="{ checkChainage }">
+                        type="number" name="endChainage" placeholder="62+410" value="{ state.survey.endChainage }" oninput="{ checkChainage }"
+                        required>
                     <small class="form-text text-muted">{ props.getHelpText("end_chainage") }</small>
                     <div if="{ state.errors.endChainage }" class="invalid-tooltip">
                         <ul>
@@ -48,6 +52,11 @@
                 <div class="form-group">
                     <label>{conditions.display}</label>
                     <small class="form-text text-muted">{props.getHelpText("surface_condition")}</small>
+                    <div if="{ state.errors.surfaceCondition }" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.surfaceCondition }.</li>
+                        </ul>
+                    </div>
                     <ul class="surface-condition">
                         <li each="{ condition in conditions.options }" data-condition="{ condition[0] }" onclick="{ checkSurfaceCondition }">
                             <span class="{ condition[0] == state.survey.surfaceCondition ? 'active' : ''  } radio image"></span>
@@ -63,10 +72,10 @@
     <section>
         <div class="form-group">
             <div class="button-wrapper d-flex justify-content-end">
-                <button class="btn btn-primary" onclick="{ edit }" disabled="{ props.editing }">{ window.gettext("Add") }</button>
+                <button class="btn btn-primary" onclick="{ addEdit }" disabled="{ props.editing }">{ window.gettext("Add") }</button>
             </div>
         </div>
-        <data_table table_id={this.table_id} columns={this.table_columns} getHelpText={props.getHelpText} pendingRows={this.pendingRows}></data_table>
+        <data_table table_id="{this.table_id}" columns="{this.table_columns}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}"></data_table>
     </section>
 
     <script>
@@ -98,7 +107,7 @@
                 return data.cloneMessage();
             }
 
-            return JSON.parse(JSON.stringify(this.state.baseSurvey));
+            return JSON.parse(JSON.stringify(data));
         }
 
         export default {
@@ -116,7 +125,7 @@
 
             onMounted(props, state) {
                 state.loading = true;
-                state.road = cloneMessage(props.road);
+                state.road = cloneData(props.road);
                 this.getRoadSurveys();
             },
             getRoadSurveys() {
@@ -138,9 +147,11 @@
                         this.update();
                     });
             },
-            edit(e) {
+            addEdit(e) {
+                // TODO: for 'add' state.survey will be 'empty', 
+                // for 'edit' state.survey will be set to the existing segment survey 
                 this.state.survey = cloneData(this.state.baseSurvey);
-                $("#editModal").modal("show")
+                $(`#${this.modal_id}`).modal("show")
             },
             conditions: window.road_schema.surface_condition,
             table_id: "surface-condition-table",
@@ -214,10 +225,10 @@
             checkSurveyDate(e) {
                 const fieldName = e.currentTarget.name;
                 const input = e.currentTarget.value;
-                const testResult = input > Date.now;
+                const testResult = input < this.max_date();
                 const errorText = window.gettext("Survey date cannot be in the future");
 
-                this.validate(fieldName, input, test, errorText );
+                this.validate(fieldName, input, testResult, errorText );
             },
             checkChainage(e) {
                 const fieldName = e.currentTarget.name;
@@ -235,6 +246,8 @@
                 this.state.survey.surfaceCondition = e.currentTarget.dataset.condition;
                 this.update();
             },
+            modal_id: "surface-condition-modal",
+            max_date: () => { return (new Date()).toISOString().substring(0, 10); }
         }
     </script>
 </edit_condition>

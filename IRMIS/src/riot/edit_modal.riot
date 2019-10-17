@@ -1,14 +1,18 @@
 <edit_modal>
-    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div if="{ state.id }" id="{ state.id }" class="modal editModal fade" tabindex="-1" role="dialog" aria-labelledby="{ state.modalLabel }" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title" id="editModalLabel"><slot name="modal_title"/></h1>
+                    <h1 class="modal-title" id="{ state.modalLabel }">
+                        <slot name="modal_title"/>
+                    </h1>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body"><slot name="modal_body"/></div>
+                <div class="modal-body">
+                    <slot name="modal_body"/>
+                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-primary" onclick="{ save }" disabled="{ props.disableSave }">{ window.gettext("Save") }</button>
@@ -18,7 +22,17 @@
     </div>
 
     <script>
+        const initialiseStateFromProps = function(props, state) {
+            state = state || {};
+
+            state.id = props.modal_id || "editModal";
+            state.modalLabel = `${state.id}Label`;
+        }
+
         export default {
+            onMounted(props, state) {
+                initialiseStateFromProps(props, state);
+            },
             save(e) {
                 this.props.onSave();
             },
