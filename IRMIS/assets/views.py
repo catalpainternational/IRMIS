@@ -248,7 +248,7 @@ def protobuf_road_audit(request, pk):
     for version in versions:
         version_pb = versions_protobuf.versions.add()
         setattr(version_pb, "pk", version.pk)
-        setattr(version_pb, "user", str(version.revision.user))
+        setattr(version_pb, "user", _display_user(version.revision.user))
         setattr(version_pb, "comment", version.revision.comment)
         # set datetime field
         ts = Timestamp()
@@ -257,3 +257,11 @@ def protobuf_road_audit(request, pk):
     return HttpResponse(
         versions_protobuf.SerializeToString(), content_type="application/octet-stream"
     )
+
+
+def _display_user(user):
+    """ returns the full username if populated, or the username, or "" """
+    if not user:
+        return ""
+    user_display = user.get_full_name()
+    return user_display or user.username
