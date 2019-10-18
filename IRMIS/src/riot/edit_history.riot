@@ -11,7 +11,7 @@
 
         // import { Versions } from "../../protobuf/roads_pb";
 
-        import * as moment from "moment";
+        import dayjs from 'dayjs'
         import $ from "jquery";
 
         export default {
@@ -30,7 +30,7 @@
                     orderable: false,
                     render: function ( data, type, row, meta ) {
                         return type === "display" && data 
-                            ? moment(data).format("D MMMM YYYY hh:mm:ss")
+                            ? dayjs(data).format("D MMMM YYYY hh:mm:ss")
                             : data;
                     }
                 },

@@ -15,6 +15,9 @@ import "./side_menu";
 import "./top_menu";
 import { Map } from "./map/map";
 
+import './dateLocale'
+
+
 const estradaMap = new Map();
 
 window.addEventListener("load", () => {
