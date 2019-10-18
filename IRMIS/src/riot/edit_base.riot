@@ -31,7 +31,7 @@
             <edit_condition road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'condition' }" on-save="{ save }" on-save-survey="{ saveSurvey }"></edit_condition>
             <edit_maintenance road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'maintenance' }" on-save="{ save }"></edit_maintenance>
         </div>
-        <edit_stop_alert discard="{ state.discard }" continueEdit="{ state.continueEdit }"></edit_stop_alert>
+        <edit_stop_alert></edit_stop_alert>
     </div>
 
     <script>
@@ -53,15 +53,6 @@
         import $ from "jquery";
 
         let timeoutId = null;
-
-        const addEventListeners = function(tag) {
-            tag.state.stopAlertInitialisationEventHandler = document.addEventListener("edit.stop_alert.initialisation", (data) => {
-                tag.state.discard = data.detail.discard || null;
-                tag.state.continueEdit = data.detail.continueEdit || null;
-
-                tag.update();
-            });
-        }
 
         export default {
             state: {
@@ -91,10 +82,6 @@
             onMounted(props, state) {
                 state.loading = true;
                 state.page = props.page;
-                state.discard = this.discard;
-                state.continueEdit = this.continueEdit;
-
-                addEventListeners(this);
 
                 props.roadPromise.then(road => {
                     state.loading = false;
@@ -135,8 +122,6 @@
             goBack(e) {
                 this.state.nextPage = "#";
                 if (this.hasChanges()) {
-                    this.state.discard = this.discard;
-                    this.state.continueEdit = this.continueEdit;
                     this.modalHandler();
                 } else {
                     clearTimeout(timeoutId);
@@ -147,35 +132,21 @@
                 this.state.page = e.currentTarget.dataset.page;
                 this.state.nextPage = `#edit/${this.state.editingRoad.getId()}/${this.state.page}`;
                 if (this.hasChanges()) {
-                    this.state.discard = this.discard;
-                    this.state.continueEdit = this.continueEdit;
                     this.modalHandler();
                 } else {
                     this.discardChanges();
                 }
             },
             modalHandler() {
-                const stopAlertModal = $("#stop-alert");
-                // Default 'return' from stop-alert.  It means 'do nothing, close the modal'
-                // Otherwise it must be set to a function to be carried out on return
-                this.stopAlertResult = null;
+                document.addEventListener("edit.stop_alert.result", (data) => {
+                    const stopAlertResult = data.detail.result;
 
-                this.stopAlertHideHandler = this.stopAlertHideHandler || stopAlertModal.on("hide.bs.modal", this, function (e) {
-                    delete this.stopAlertHideHandler;
-                    if (e.data.stopAlertResult) {
-                        e.data.stopAlertResult();
+                    if (stopAlertResult === "discard") {
+                        this.discardChanges();
                     }
-                });
+                }, { once: true });
 
-                stopAlertModal.modal("show");
-            },
-            continueEdit() {
-                this.stopAlertResult = null;
-                $('#stop-alert').modal("hide");
-            },
-            discard() {
-                this.stopAlertResult = this.discardChanges;
-                $('#stop-alert').modal("hide");
+                $("#stop-alert").modal("show");
             },
             discardChanges() {
                 this.state.editingRoad = this.state.baseRoad.cloneMessage();

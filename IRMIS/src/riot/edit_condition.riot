@@ -153,8 +153,6 @@
                 // and the selected segment survey for edit.
                 this.state.survey = cloneData(this.state.baseSurvey);
 
-                this.initialiseStopAlert();
-
                 this.showEditModal();
             },
             conditions: window.road_schema.surface_condition,
@@ -194,37 +192,35 @@
 
             // Survey Modal 
 
-            initialiseStopAlert() {
-                const continueEdit = this.continueEdit;
-                const discard = this.discard;
-                document.dispatchEvent(new CustomEvent("edit.stop_alert.initialisation", {detail: { continueEdit, discard }}));
-            },
             showEditModal() {
                 this.modalHideHandler = this.modalHideHandler || $(`#${this.modal_id}`).on("hide.bs.modal", this, function (e) {
                     this.state = e.data.state;
-                    this.hasChanges = e.data.hasChanges;
-                    if (this.hasChanges()) {
-                        $('#stop-alert').modal('show');
+                    if (e.data.hasChanges()) {
+                        e.data.stopAlertModalHandler();
                     }
                 });
 
                 $(`#${this.modal_id}`).modal("show");                
             },
-            continueEdit() {
-                this.stopAlertResult = this.reopenEdit;
-                $('#stop-alert').modal("hide");
+            stopAlertModalHandler() {
+                document.addEventListener("edit.stop_alert.result", (data) => {
+                    const stopAlertResult = data.detail.result;
+
+                    if (stopAlertResult === "continueEdit") {
+                        this.reopenEdit();
+                    } else {
+                        this.discardChanges();
+                    }
+                }, { once: true });
+
+                $("#stop-alert").modal("show");
             },
             reopenEdit() {
-                this.initialiseStopAlert();
-
                 this.showEditModal();                
-            },
-            discard() {
-                this.stopAlertResult = this.discardChanges;
-                $('#stop-alert').modal("hide");
             },
             discardChanges() {
                 this.state.survey = cloneData(this.state.baseSurvey);
+                this.state.errors = {};
                 this.update();
             },
             save(e) {
