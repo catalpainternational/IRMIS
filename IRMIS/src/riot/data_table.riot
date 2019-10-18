@@ -3,6 +3,7 @@
 
     <script>
         import { getHelpText } from "../road";
+        import { datatableTranslations } from "../datatableTranslations";
 
         import "bootstrap/js/dist/modal";
         import $ from "jquery";
@@ -57,6 +58,7 @@
                 order: state.columnSortOrder,
                 pageLength: state.pageLength,
                 dom: `<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>`, // https://datatables.net/reference/option/dom#Styling
+                language: datatableTranslations,
             });
 
             // add any rows the caller has delivered before initialization
