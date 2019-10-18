@@ -1,7 +1,7 @@
 <edit_history>
     <h5>{ window.gettext ("History") }</h5>
 
-    <data_table table_id={this.table_id} columns={this.table_columns} getHelpText={props.getHelpText}></data_table>
+    <data_table table_id="{this.table_id}" columns="{this.table_columns}" columnSortOrder="{this.columnSortOrder}" pageLength="{this.pageLength}" getHelpText="{props.getHelpText}"></data_table>
 
     <script>
         import Data_Table from "./data_table.riot";
@@ -27,6 +27,7 @@
                     title: "Date", // getFieldName("dateCreated"),
                     data: "dateCreated",
                     defaultContent: "",
+                    orderable: false,
                     render: function ( data, type, row, meta ) {
                         return type === "display" && data 
                             ? moment(data).format("D MMMM YYYY hh:mm:ss")
@@ -37,13 +38,17 @@
                     title: "User", // getFieldName("user"),
                     data: "user",
                     defaultContent: "",
+                    orderable: false,
                 },
                 {
                     title: "Comment", // getFieldName("comment"),
                     data: "comment",
                     defaultContent: "",
+                    orderable: false,
                 },
             ],
+            columnSortOrder: [],
+            pageLength: 15,
             onMounted(props, state) {
                 state.loading = true;
                 state.road = props.road;

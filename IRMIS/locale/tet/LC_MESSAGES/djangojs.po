@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-08 01:28+0000\n"
+"POT-Creation-Date: 2019-10-18 00:56+0000\n"
 "PO-Revision-Date: 2019-10-09 05:39+0000\n"
 "Last-Translator: b'  <januario@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,28 +37,20 @@ msgid "Link code cannot contain white spaces"
 msgstr "Kodigu linha labele inklui espasu mamuk"
 
 #, javascript-format
-msgid ""
-"Link length cannot contain more than %s digits, of which %s are decimals"
+msgid "Link length cannot contain more than %s digits, of which %s are decimals"
 msgstr "Linha nia naruk labele inklui liu %s numeru, nebe %s  mak decimais "
 
 #, javascript-format
-msgid ""
-"Carriage width cannot contain more than %s digits, of which %s are decimals"
+msgid "Carriage width cannot contain more than %s digits, of which %s are decimals"
 msgstr "Carriage nia luan labele inklui liu%s numeru,nebe %s  mak decimais "
 
 #, javascript-format
-msgid ""
-"Link start chainage cannot contain more than %s digits, of which %s are "
-"decimals"
-msgstr ""
-"Linha estasaun komesa labele inklui liu %s numeru,nebe %s  mak decimais "
+msgid "Link start chainage cannot contain more than %s digits, of which %s are decimals"
+msgstr "Linha estasaun komesa labele inklui liu %s numeru,nebe %s  mak decimais "
 
 #, javascript-format
-msgid ""
-"Link end chainage cannot contain more than %s digits, of which %s are "
-"decimals"
-msgstr ""
-"Linha estasaun ikus labele inklui liu %s numeru, nebe %s  mak decimais "
+msgid "Link end chainage cannot contain more than %s digits, of which %s are decimals"
+msgstr "Linha estasaun ikus labele inklui liu %s numeru, nebe %s  mak decimais "
 
 msgid "Edit asset"
 msgstr "Hadia sasan/aset"
@@ -78,6 +70,9 @@ msgstr "Projeitu "
 msgid "Condition"
 msgstr "Kondisaun "
 
+msgid "History"
+msgstr ""
+
 msgid "Loading"
 msgstr "Karegamentu "
 
@@ -87,12 +82,8 @@ msgstr "Taka "
 msgid "Unsaved Changes"
 msgstr "Alterasaun Sedauk Salva "
 
-msgid ""
-"You have unsaved changes made to this page which will be lost if you "
-"navigate away. Would you like to continue editing?"
-msgstr ""
-"Ita bot sedauk salva ba mudansa nebe halo iha pagina ne no sei lakon kuandu "
-"ita taka. Ita bot sei hakarak kontinua atu edita? "
+msgid "You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?"
+msgstr "Ita bot sedauk salva ba mudansa nebe halo iha pagina ne no sei lakon kuandu ita taka. Ita bot sei hakarak kontinua atu edita? "
 
 msgid "Discard"
 msgstr "Soe tiha "

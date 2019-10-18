@@ -11,9 +11,11 @@
 #side-menu {
     background-color: $darker-gray;
     width: $side-menu-width;
+    flex-direction: column;
     padding-bottom: 15px;
     padding-right: 3px;
     padding-left: 15px;
+    display: flex;
 
     #view {
         margin-bottom: 40px;
@@ -130,10 +132,26 @@
 
     .navigation {
         padding-right: 50px;
+        margin-bottom: 60px;
         margin-left: -15px;
-        margin-bottom: 0;
         margin-top: 20px;
         padding-left: 0;
+
+        &:first-of-type {
+            flex: 1;
+        }
+
+        &:last-of-type {
+            ul li {
+                border-bottom: 1px solid $gray;
+                border-top: 1px solid $gray;
+
+                &.active {
+                    border-bottom: none;
+                    border-top: none;
+                }
+            }
+        }
 
         li {
             margin-bottom: 10px;
@@ -150,7 +168,7 @@
                 &.active {
                     border-bottom-right-radius: $radius;
                     border-top-right-radius: $radius;
-                    background-color: $blue;
+                    background-color: $green;
                 }
             }
         }

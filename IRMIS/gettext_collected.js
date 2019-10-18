@@ -17,6 +17,7 @@ gettext("Asset Details");
 gettext("Pavement");
 gettext("Project");
 gettext("Condition");
+gettext("History");
 gettext("Loading");
 gettext('Close');
 gettext("Unsaved Changes");
