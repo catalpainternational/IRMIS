@@ -198,7 +198,7 @@ def protobuf_road(request, pk):
     if not roads.exists():
         return HttpResponseNotFound()
 
-    roads_protobuf = roads.objects.to_protobuf()
+    roads_protobuf = roads.to_protobuf()
 
     return HttpResponse(
         roads_protobuf.roads[0].SerializeToString(),
