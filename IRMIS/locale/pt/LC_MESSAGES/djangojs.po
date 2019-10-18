@@ -20,7 +20,7 @@ msgstr ""
 "X-Translated-Using: django-rosetta 0.9.3\n"
 
 msgid "Asset"
-msgstr ""
+msgstr "Infra-estrutura"
 
 msgid "Link code and name"
 msgstr "Código e nome da secção"
@@ -29,7 +29,7 @@ msgid "Link width and length"
 msgstr "Extensão e largura da secção"
 
 msgid "Link chainage"
-msgstr ""
+msgstr "Chainage da secção"
 
 msgid "Save and continue"
 msgstr "Guardar e continuar"
@@ -48,19 +48,23 @@ msgstr "A largura da faixa de rodagem não pode conter mais do que %s dígitos, 
 #, javascript-format
 msgid "Link start chainage cannot contain more than %s digits, of which %s are decimals"
 msgstr ""
+"O valor da chainage não pode conter mais de %s dígitos, dos quais %s saã0 "
+"decimais"
 
 #, javascript-format
 msgid "Link end chainage cannot contain more than %s digits, of which %s are decimals"
 msgstr ""
+"O valor da chainage não pode conter mais de %s dígitos, dos quais %s saã0 "
+"decimais"
 
 msgid "Edit asset"
-msgstr ""
+msgstr "Editar infra-estrutura"
 
 msgid "Location & Type"
 msgstr "Localização & Tipo"
 
 msgid "Asset Details"
-msgstr ""
+msgstr "Detalhes da infra-estrutura"
 
 msgid "Pavement"
 msgstr "Pavimento"

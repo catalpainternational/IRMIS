@@ -36,6 +36,7 @@ window.addEventListener("load", () => {
 
     riot.register("data_table", Data_Table);
     riot.register("edit_base", Edit_Base);
+    window.goBack = () => {};
     hashCheck();
 });
 
