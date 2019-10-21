@@ -126,28 +126,28 @@ msgid "Description"
 msgstr "Descrição"
 
 msgid "No matching records found"
-msgstr ""
+msgstr "Não foram encontradas entradas"
 
 msgid "No data available in table"
-msgstr ""
+msgstr "Não há dados disponíveis na tabela"
 
 msgid "Showing _START_ to _END_ of _TOTAL_ entries"
-msgstr ""
+msgstr "Mostrando _START_ a _END_ de _TOTAL_ entradas"
 
 msgid "Showing 0 to 0 of 0 entries"
-msgstr ""
+msgstr "Mostrando 0 a 0 de 0 entradas"
 
 msgid "First"
-msgstr ""
+msgstr "Primeiro"
 
 msgid "Previous"
-msgstr ""
+msgstr "Anterior"
 
 msgid "Next"
-msgstr ""
+msgstr "Próximo"
 
 msgid "Last"
-msgstr ""
+msgstr "Último"
 
 msgid "Link Name"
 msgstr "Nome da secção"
