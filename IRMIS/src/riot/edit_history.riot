@@ -48,6 +48,19 @@
                     data: "comment",
                     defaultContent: "",
                     orderable: false,
+                    render: function ( data, type, row, meta ) {
+                        if (type !== "display") {
+                            return data;
+                        }
+                        try {
+                            const json = JSON.parse(data);
+                            const fields = json[0].changed.fields;
+                            const fieldDisplay = fields.map(getFieldName).join(", ");
+                            return `${window.gettext('Changed')}: ${fieldDisplay}`;
+                        } catch(error) {
+                            return data;
+                        }
+                    }
                 },
             ],
             columnSortOrder: [],
