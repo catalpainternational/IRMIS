@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-18 00:56+0000\n"
+"POT-Creation-Date: 2019-10-18 04:55+0000\n"
 "PO-Revision-Date: 2019-10-09 02:56+0000\n"
 "Last-Translator: b'  <juliana@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -47,15 +47,11 @@ msgstr "A largura da faixa de rodagem não pode conter mais do que %s dígitos, 
 
 #, javascript-format
 msgid "Link start chainage cannot contain more than %s digits, of which %s are decimals"
-msgstr ""
-"O valor da chainage não pode conter mais de %s dígitos, dos quais %s saã0 "
-"decimais"
+msgstr "O valor da chainage não pode conter mais de %s dígitos, dos quais %s saã0 decimais"
 
 #, javascript-format
 msgid "Link end chainage cannot contain more than %s digits, of which %s are decimals"
-msgstr ""
-"O valor da chainage não pode conter mais de %s dígitos, dos quais %s saã0 "
-"decimais"
+msgstr "O valor da chainage não pode conter mais de %s dígitos, dos quais %s saã0 decimais"
 
 msgid "Edit asset"
 msgstr "Editar infra-estrutura"
@@ -76,7 +72,7 @@ msgid "Condition"
 msgstr "Condição"
 
 msgid "History"
-msgstr ""
+msgstr "Histórico"
 
 msgid "Loading"
 msgstr "A carregar"
@@ -119,6 +115,15 @@ msgstr "Seleccione o Tipo de Estrada"
 
 msgid "Select a Surface Type"
 msgstr "Seleccione o Tipo de Pavimento"
+
+msgid "Date"
+msgstr "Data"
+
+msgid "User"
+msgstr "Utilizador"
+
+msgid "Description"
+msgstr "Descrição"
 
 msgid "Link Name"
 msgstr "Nome da secção"
