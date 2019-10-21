@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-18 00:56+0000\n"
+"POT-Creation-Date: 2019-10-18 04:55+0000\n"
 "PO-Revision-Date: 2019-10-09 05:39+0000\n"
 "Last-Translator: b'  <januario@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -71,7 +71,7 @@ msgid "Condition"
 msgstr "Kondisaun "
 
 msgid "History"
-msgstr ""
+msgstr "Istóriku"
 
 msgid "Loading"
 msgstr "Karegamentu "
@@ -114,6 +114,15 @@ msgstr "Hili Tipu Estrada"
 
 msgid "Select a Surface Type"
 msgstr "Hili Tipu Superfície"
+
+msgid "Date"
+msgstr "Data"
+
+msgid "User"
+msgstr "Utilisador"
+
+msgid "Description"
+msgstr "Deskrisaun"
 
 msgid "Link Name"
 msgstr "Naran Linha"

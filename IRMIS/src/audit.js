@@ -2,9 +2,9 @@ import { Version } from "../protobuf/roads_pb";
 
 const auditSchema = {
     id: { display: "Id" },
-    dateCreated: { display: "Date" },
-    user: { display: "User" },
-    comment: { display: "Description" },
+    dateCreated: { display: gettext("Date") },
+    user: { display: gettext("User") },
+    comment: { display: gettext("Description") },
 };
 
 export class EstradaAudit extends Version {

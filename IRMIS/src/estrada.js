@@ -14,7 +14,7 @@ import "./side_menu";
 import "./top_menu";
 import { Map } from "./map/map";
 
-import './dateLocale'
+import "./dayjs/dayjs";
 
 
 const estradaMap = new Map();
