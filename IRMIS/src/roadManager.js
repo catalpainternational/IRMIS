@@ -96,11 +96,11 @@ export function roadPopup(id) {
     let html = "";
 
     if (code) {
-        html += '<span class="popup"><span class="popup label">Code: </span><span class="popup value">' + code +'</span></span>';
+        html += '<span class="popup"><span class="popup label">Code: </span><span class="popup value">' + code + '</span></span>';
     }
 
     if (name) {
-        html += '<span class="popup"><span class="popup label">Name: </span><span class="popup value">' + name '</span> </span>';
+        html += '<span class="popup"><span class="popup label">Name: </span><span class="popup value">' + name + '</span> </span>';
     }
 
     return html;
