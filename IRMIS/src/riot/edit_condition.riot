@@ -220,7 +220,9 @@
                 document.addEventListener("edit.stop_alert.result", (data) => {
                     const stopAlertResult = data.detail.result;
 
-                    if (stopAlertResult === "continueEdit") {
+                    console.log(`Received 'Stop Alert' result: ${stopAlertResult}`);
+                    
+                    if (stopAlertResult === "save") {
                         this.reopenEdit();
                     } else {
                         this.discardChanges();

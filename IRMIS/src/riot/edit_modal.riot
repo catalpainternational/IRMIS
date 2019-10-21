@@ -31,7 +31,7 @@
             state.modalLabel = `${state.id}Label`;
             state.selector = `#${state.id}`;
             state.resultEventName = `${state.id}.result`;
-        }
+        };
 
         export default {
             state: {
@@ -56,10 +56,11 @@
                 this.dispatchResult(this.state.result, this.state.resultEventName);
             },
             save() {
-                this.state.result = "continueEdit";
+                this.state.result = "save";
                 this.dispatchResult(this.state.result, this.state.resultEventName);
             },
             dispatchResult(result, resultEventName) {
+                console.log(`Dispatching '${resultEventName}': '${result}'`);
                 result = result || "";
                 document.dispatchEvent(new CustomEvent(resultEventName, { detail: { result }}));
             }

@@ -21,39 +21,46 @@
     <script>
         import $ from "jquery";
 
+        const initialiseStateFromProps = function(props, state) {
+            state = state || {};
+
+            state.id = props.modal_id || "stop_alert";
+            state.modalLabel = `${state.id}Label`;
+            state.selector = `#${state.id}`;
+            state.resultEventName = `edit.${state.id}.result`;
+        };
+
         export default {
-            selector: "#stop-alert",
             state: {
                 result: null,
-                selfAsModal: null,
             },
             onMounted(props, state) {
-                state.selfAsModal = state.selfAsModal || $(this.selector);
+                initialiseStateFromProps(props, state);
 
-                this.handleHide();
+                $(state.selector).on("hide.bs.modal", state.selector, this, function (e) {
+                    e.data.dispatchResult(e.data.state.result, e.data.state.resultEventName);
+                });
             },
             onUnmounted(props, state) {
-                this.state.selfAsModal = this.state.selfAsModal || $(this.selector);
-                this.state.selfAsModal.off("hide.bs.modal", this.selector);
-            },
-            handleHide() {
-                this.state.selfAsModal.on("hide.bs.modal", this.selector, this, function (e) {
-                    const result = e.data.state.result || "";
-                    document.dispatchEvent(new CustomEvent("edit.stop_alert.result", { detail: { result }}));
-                });
+                $(state.selector).off("hide.bs.modal");
             },
             close() {
                 this.state.result = "close";
-                this.state.selfAsModal.modal("hide");
+                this.dispatchResult(this.state.result, this.state.resultEventName);
             },
             discard() {
                 this.state.result = "discard";
-                this.state.selfAsModal.modal("hide");
+                this.dispatchResult(this.state.result, this.state.resultEventName);
             },
             continueEdit() {
                 this.state.result = "continueEdit";
-                this.state.selfAsModal.modal("hide");
+                this.dispatchResult(this.state.result, this.state.resultEventName);
             },
+            dispatchResult(result, resultEventName) {
+                result = result || "";
+                console.log(`Stop Alert returned ${result}`);
+                document.dispatchEvent(new CustomEvent(resultEventName, { detail: { result }}));
+            }
         }
     </script>
 </edit_stop_alert>

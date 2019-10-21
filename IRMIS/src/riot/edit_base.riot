@@ -141,6 +141,8 @@
                 document.addEventListener("edit.stop_alert.result", (data) => {
                     const stopAlertResult = data.detail.result;
 
+                    console.log(`Received 'Stop Alert' result: ${stopAlertResult}`);
+
                     if (stopAlertResult === "discard") {
                         this.discardChanges();
                     }
