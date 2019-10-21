@@ -20,6 +20,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 from rest_framework_condition import condition
 
+from google.protobuf.timestamp_pb2 import Timestamp
 from protobuf import roads_pb2
 from .models import (
     CollatedGeoJsonFile,
@@ -198,7 +199,7 @@ def protobuf_road(request, pk):
     if not roads.exists():
         return HttpResponseNotFound()
 
-    roads_protobuf = Road.objects.to_protobuf()
+    roads_protobuf = roads.to_protobuf()
 
     return HttpResponse(
         roads_protobuf.roads[0].SerializeToString(),
@@ -232,3 +233,35 @@ def protobuf_road_set(request, chunk_name=None):
     return HttpResponse(
         roads_protobuf.SerializeToString(), content_type="application/octet-stream"
     )
+
+
+def protobuf_road_audit(request, pk):
+    """ returns a protobuf object with the set of all audit history items for a Road """
+
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+    queryset = Road.objects.all()
+    road = get_object_or_404(queryset, pk=pk)
+    versions = Version.objects.get_for_object(road)
+    versions_protobuf = roads_pb2.Versions()
+
+    for version in versions:
+        version_pb = versions_protobuf.versions.add()
+        setattr(version_pb, "pk", version.pk)
+        setattr(version_pb, "user", _display_user(version.revision.user))
+        setattr(version_pb, "comment", version.revision.comment)
+        # set datetime field
+        ts = Timestamp()
+        ts.FromDatetime(version.revision.date_created)
+        version_pb.date_created.CopyFrom(ts)
+    return HttpResponse(
+        versions_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )
+
+
+def _display_user(user):
+    """ returns the full username if populated, or the username, or "" """
+    if not user:
+        return ""
+    user_display = user.get_full_name()
+    return user_display or user.username

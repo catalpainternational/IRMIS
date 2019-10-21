@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-08 01:28+0000\n"
-"PO-Revision-Date: 2019-10-11 00:57+0000\n"
+"POT-Creation-Date: 2019-10-18 04:55+0000\n"
+"PO-Revision-Date: 2019-10-09 02:56+0000\n"
 "Last-Translator: b'  <juliana@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -38,34 +38,20 @@ msgid "Link code cannot contain white spaces"
 msgstr "O código da secção não pode contar espaços em branco"
 
 #, javascript-format
-msgid ""
-"Link length cannot contain more than %s digits, of which %s are decimals"
-msgstr ""
-"A extensão da secção não pode conter mais do que %s dígitos, dos quais %s "
-"são decimais"
+msgid "Link length cannot contain more than %s digits, of which %s are decimals"
+msgstr "A extensão da secção não pode conter mais do que %s dígitos, dos quais %s são decimais"
 
 #, javascript-format
-msgid ""
-"Carriage width cannot contain more than %s digits, of which %s are decimals"
-msgstr ""
-"A largura da faixa de rodagem não pode conter mais do que %s dígitos, dos "
-"quais %s são decimais"
+msgid "Carriage width cannot contain more than %s digits, of which %s are decimals"
+msgstr "A largura da faixa de rodagem não pode conter mais do que %s dígitos, dos quais %s são decimais"
 
 #, javascript-format
-msgid ""
-"Link start chainage cannot contain more than %s digits, of which %s are "
-"decimals"
-msgstr ""
-"O valor da chainage não pode conter mais de %s dígitos, dos quais %s saã0 "
-"decimais"
+msgid "Link start chainage cannot contain more than %s digits, of which %s are decimals"
+msgstr "O valor da chainage não pode conter mais de %s dígitos, dos quais %s saã0 decimais"
 
 #, javascript-format
-msgid ""
-"Link end chainage cannot contain more than %s digits, of which %s are "
-"decimals"
-msgstr ""
-"O valor da chainage não pode conter mais de %s dígitos, dos quais %s saã0 "
-"decimais"
+msgid "Link end chainage cannot contain more than %s digits, of which %s are decimals"
+msgstr "O valor da chainage não pode conter mais de %s dígitos, dos quais %s saã0 decimais"
 
 msgid "Edit asset"
 msgstr "Editar infra-estrutura"
@@ -85,6 +71,9 @@ msgstr "Projecto"
 msgid "Condition"
 msgstr "Condição"
 
+msgid "History"
+msgstr "Histórico"
+
 msgid "Loading"
 msgstr "A carregar"
 
@@ -94,12 +83,8 @@ msgstr "Fechar"
 msgid "Unsaved Changes"
 msgstr "Alterações não gravadas"
 
-msgid ""
-"You have unsaved changes made to this page which will be lost if you "
-"navigate away. Would you like to continue editing?"
-msgstr ""
-"Existem alterações por guardar que serão perdidas caso saia desta página. "
-"Deseja continuar a editar?"
+msgid "You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?"
+msgstr "Existem alterações por guardar que serão perdidas caso saia desta página. Deseja continuar a editar?"
 
 msgid "Discard"
 msgstr "Descartar"
@@ -130,6 +115,15 @@ msgstr "Seleccione o Tipo de Estrada"
 
 msgid "Select a Surface Type"
 msgstr "Seleccione o Tipo de Pavimento"
+
+msgid "Date"
+msgstr "Data"
+
+msgid "User"
+msgstr "Utilizador"
+
+msgid "Description"
+msgstr "Descrição"
 
 msgid "Link Name"
 msgstr "Nome da secção"

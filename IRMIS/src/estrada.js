@@ -14,6 +14,9 @@ import "./side_menu";
 import "./top_menu";
 import { Map } from "./map/map";
 
+import "./dayjs/dayjs";
+
+
 const estradaMap = new Map();
 
 window.addEventListener("load", () => {
