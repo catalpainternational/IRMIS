@@ -4,7 +4,7 @@
             <div class="align-items-center modal-content">
                 <div class="modal-header">
                     <span class="alert stop image"></span>
-                    <span class="close image" data-dismiss="modal" onclick="{ close }" aria-label="{ window.gettext("Close") }" aria-hidden="true"></span>
+                    <span class="close image" data-dismiss="modal" aria-label="{ window.gettext("Close") }" aria-hidden="true"></span>
                 </div>
                 <div class="modal-body text-center">
                     <h6>{ window.gettext("Unsaved Changes") }</h6>
@@ -19,7 +19,13 @@
     </div>
 
     <script>
+        // To respond to bootstrap modal you events you MUST include:
+        // jQuery (as $) first, 
+        // followed by the main bootstrap js library, and 
+        // then the specific bootstrap modal library
         import $ from "jquery";
+        import "bootstrap";
+        import "bootstrap/js/dist/modal";
 
         const initialiseStateFromProps = function(props, state) {
             state = state || {};
@@ -37,29 +43,30 @@
             onMounted(props, state) {
                 initialiseStateFromProps(props, state);
 
-                $(state.selector).on("hide.bs.modal", state.selector, this, function (e) {
-                    e.data.dispatchResult(e.data.state.result, e.data.state.resultEventName);
+                // To respond to bootstrap modal events properly you must use the full
+                // jQuery `.on` event handler syntax
+                // and attach the event handler initially to `$(document)`
+                // and define the modal itself using the `[selector]` parameter in the `.on` method
+                $(document).on("hide.bs.modal", state.selector, this, function (e) {
+                    const self = e.data;
+                    self.dispatchResult(self.state.result, self.state.resultEventName);
                 });
             },
             onUnmounted(props, state) {
-                $(state.selector).off("hide.bs.modal");
-            },
-            close() {
-                this.state.result = "close";
-                this.dispatchResult(this.state.result, this.state.resultEventName);
+                $(document).off("hide.bs.modal", state.selector);
             },
             discard() {
                 this.state.result = "discard";
-                this.dispatchResult(this.state.result, this.state.resultEventName);
             },
             continueEdit() {
                 this.state.result = "continueEdit";
-                this.dispatchResult(this.state.result, this.state.resultEventName);
             },
             dispatchResult(result, resultEventName) {
-                result = result || "";
-                console.log(`Stop Alert returned ${result}`);
+                result = result || "close";
                 document.dispatchEvent(new CustomEvent(resultEventName, { detail: { result }}));
+                
+                // Reset for any future call (unless unmounted first)
+                this.state.result = null;
             }
         }
     </script>
