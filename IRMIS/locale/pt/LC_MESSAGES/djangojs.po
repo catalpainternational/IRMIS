@@ -105,7 +105,7 @@ msgid "Something went wrong"
 msgstr "Ocorreu um erro"
 
 msgid "Changed"
-msgstr ""
+msgstr "Alterações"
 
 msgid "Location"
 msgstr "Localização"
