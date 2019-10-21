@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-18 04:55+0000\n"
+"POT-Creation-Date: 2019-10-21 04:52+0000\n"
 "PO-Revision-Date: 2019-10-09 02:56+0000\n"
 "Last-Translator: b'  <juliana@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -74,9 +74,6 @@ msgstr "Condição"
 msgid "History"
 msgstr "Histórico"
 
-msgid "Loading"
-msgstr "A carregar"
-
 msgid "Close"
 msgstr "Fechar"
 
@@ -91,6 +88,9 @@ msgstr "Descartar"
 
 msgid "Continue editing"
 msgstr "Continuar a editar"
+
+msgid "Loading"
+msgstr "A carregar"
 
 msgid "Success"
 msgstr "Sucesso"
@@ -124,6 +124,30 @@ msgstr "Utilizador"
 
 msgid "Description"
 msgstr "Descrição"
+
+msgid "No matching records found"
+msgstr ""
+
+msgid "No data available in table"
+msgstr ""
+
+msgid "Showing _START_ to _END_ of _TOTAL_ entries"
+msgstr ""
+
+msgid "Showing 0 to 0 of 0 entries"
+msgstr ""
+
+msgid "First"
+msgstr ""
+
+msgid "Previous"
+msgstr ""
+
+msgid "Next"
+msgstr ""
+
+msgid "Last"
+msgstr ""
 
 msgid "Link Name"
 msgstr "Nome da secção"

@@ -39,11 +39,11 @@ export function toDms(latLon) {
     const EorW = (yDms[0] < 0) ? "W" : "E";
 
     // return formatted DMS string
-    return `${Math.abs(yDms[0])}\u00b0${yDms[1]}'${yDms[2]}"${NorS} ${Math.abs(xDms[0])}\u00b0${xDms[1]}'${xDms[2]}"${EorW}`;
+    return Math.abs(yDms[0]) + '\u00b0' + yDms[1] +"'" + yDms[2] + '"' + NorS + ' ' + Math.abs(xDms[0]) + '\u00b0' + xDms[1] +"'" + xDms[2] +'"' + EorW;
 }
 
 export function toUtm(latLon) {
     return latLon
-        ? `${latLon[0].toFixed(5)}, ${latLon[1].toFixed(5)}`
+        ? latLon[0].toFixed(5) + ', ' + latLon[1].toFixed(5)
         : "";
 }

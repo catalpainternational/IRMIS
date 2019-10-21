@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-18 04:55+0000\n"
+"POT-Creation-Date: 2019-10-21 04:52+0000\n"
 "PO-Revision-Date: 2019-10-09 05:39+0000\n"
 "Last-Translator: b'  <januario@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -73,9 +73,6 @@ msgstr "Kondisaun "
 msgid "History"
 msgstr "Istóriku"
 
-msgid "Loading"
-msgstr "Karegamentu "
-
 msgid "Close"
 msgstr "Taka "
 
@@ -90,6 +87,9 @@ msgstr "Soe tiha "
 
 msgid "Continue editing"
 msgstr "Kontinua edita"
+
+msgid "Loading"
+msgstr "Karegamentu "
 
 msgid "Success"
 msgstr "Susesu"
@@ -123,6 +123,30 @@ msgstr "Utilisador"
 
 msgid "Description"
 msgstr "Deskrisaun"
+
+msgid "No matching records found"
+msgstr ""
+
+msgid "No data available in table"
+msgstr ""
+
+msgid "Showing _START_ to _END_ of _TOTAL_ entries"
+msgstr ""
+
+msgid "Showing 0 to 0 of 0 entries"
+msgstr ""
+
+msgid "First"
+msgstr ""
+
+msgid "Previous"
+msgstr ""
+
+msgid "Next"
+msgstr ""
+
+msgid "Last"
+msgstr ""
 
 msgid "Link Name"
 msgstr "Naran Linha"
