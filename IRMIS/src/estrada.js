@@ -1,7 +1,6 @@
 import "babel-polyfill";
 import * as riot from "riot";
 
-import Edit_Modal from "./riot/edit_modal.riot";
 import Data_Table from "./riot/data_table.riot";
 import Edit_Base from "./riot/edit_base.riot";
 
@@ -35,7 +34,6 @@ window.addEventListener("load", () => {
             });
         });
 
-    riot.register("edit_modal", Edit_Modal);
     riot.register("data_table", Data_Table);
     riot.register("edit_base", Edit_Base);
     hashCheck();

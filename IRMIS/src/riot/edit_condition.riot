@@ -88,11 +88,7 @@
         import $ from "jquery";
 
         function checkRequiredFields(fieldNames, data, errors) {
-            fieldNames.forEach((fieldName) => {
-                if (!data[fieldName]) {
-                    errors[fieldName] = window.gettext("This field is required");
-                }
-            });
+             return fieldNames.filter((fieldName) => { return !data[fieldName]; });
         }
 
         function withinMaxDigits(text, limit, decimals) {
@@ -119,6 +115,9 @@
                 canSave: false,
                 errors: {},
                 pendingRows: [],
+            },
+            components: {
+                Edit_Modal
             },
 
             // Condition Survey
@@ -193,46 +192,53 @@
 
             // Survey Modal 
 
+            requiredFieldNames: ["surveyDate", "startChainage", "endChainage", "surfaceCondition"],
             showEditModal() {
-                $(`#${this.modal_id}`).one(`${this.modal_id}.result`, this, function (e) {
-                    const modalResult = e.data.detail.result;
-                    this.state = e.data.state;
+                document.addEventListener(`${this.modal_id}.result`, (data) => {
+                    const modalResult = data.detail.result;
+
+                    console.log(`Received '${this.modal_id}' result: ${modalResult}`);
+
+                    // Ensure that the dialog gets hidden
+                    $(`#${this.modal_id}`).modal("hide");
+
                     switch (modalResult) {
                         case "save":
-                            if (e.data.hasChanges()) {
-                                e.data.save();
+                            if (this.hasChanges()) {
+                                this.save();
                             }
                             break;
                         case "cancel":
-                            e.data.discardChanges();
+                            this.discardChanges();
                             break;
                         default:
-                            if (e.data.hasChanges()) {
-                                e.data.stopAlertModalHandler();
+                            if (this.hasChanges()) {
+                                this.showStopAlertModal();
                             }
                             break;
                     }
-                });
+                }, { once: true });
 
                 $(`#${this.modal_id}`).modal("show");                
             },
-            stopAlertModalHandler() {
+            showStopAlertModal() {
                 document.addEventListener("edit.stop_alert.result", (data) => {
                     const stopAlertResult = data.detail.result;
 
                     console.log(`Received 'Stop Alert' result: ${stopAlertResult}`);
+
+                    // Ensure that the dialog gets hidden
+                    $("#stop-alert").modal("hide");
                     
-                    if (stopAlertResult === "save") {
-                        this.reopenEdit();
-                    } else {
+                    if (stopAlertResult === "discard") {
                         this.discardChanges();
+                    } else {
+                        // continueEdit and close
+                        this.showEditModal();
                     }
                 }, { once: true });
 
                 $("#stop-alert").modal("show");
-            },
-            reopenEdit() {
-                this.showEditModal();                
             },
             discardChanges() {
                 this.state.survey = cloneData(this.state.baseSurvey);
@@ -240,12 +246,20 @@
                 this.update();
             },
             save(e) {
-                const fieldNames = ["surveyDate", "startChainage", "endChainage", "surfaceCondition"];
-                checkRequiredFields(fieldNames, this.state.survey, this.state.errors);
+                const missingFieldNames = checkRequiredFields(this.requiredFieldNames, this.state.survey);
 
                 if (Object.keys(this.state.errors).length) {
                     // Cannot save if there are validation errors
                     this.canSave();
+
+                    if (!this.state.canSave) {
+                        missingFieldNames.forEach((fieldName) => {
+                            if (!data[fieldName]) {
+                                errors[fieldName] = window.gettext("This field is required");
+                            }
+                        });
+                        this.showEditModal();
+                    }
                 } else {
                     if (this.hasChanges()) {
                         // Complete the survey
@@ -262,17 +276,19 @@
                 } 
             },
             canSave() {
-                if (Object.keys(this.state.errors).length) {
+                const missingFieldNames = checkRequiredFields(this.requiredFieldNames, this.state.survey);
+
+                if (missingFieldNames.length || Object.keys(this.state.errors).length) {
                     // Cannot save if there are validation errors
                     this.state.canSave = false;
                 } else {
                     // Can save if something has changed
                     this.state.canSave = JSON.stringify(this.state.baseSurvey) !== JSON.stringify(this.state.survey);
                 }
-                
+
                 this.update();
             },
-            /** Compare the selected fields between baseSurvey and survey
+            /** Compare the selected fields between baseSurvey and survey.
              * `source` and `user` are deliberately not compared
              */
             hasChanges() {
@@ -314,7 +330,7 @@
             },
             checkSurfaceCondition(e) {
                 this.state.survey.surfaceCondition = e.currentTarget.dataset.condition;
-                this.update();
+                this.canSave();
             },
             modal_id: "surface-condition-modal",
             max_date: () => { return (new Date()).toISOString().substring(0, 10); }
