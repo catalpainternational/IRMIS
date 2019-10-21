@@ -6,7 +6,7 @@
                     <h1 class="modal-title" id="{ state.modalLabel }">
                         <slot name="modal_title"/>
                     </h1>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" onclick="{ close }" aria-label="{ window.gettext('Close') }">
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -14,28 +14,55 @@
                     <slot name="modal_body"/>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" onclick="{ save }" disabled="{ props.disableSave }">{ window.gettext("Save") }</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="{ cancel }">{ window.gettext("Cancel") }</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="{ save }" disabled="{ props.disableSave }">{ window.gettext("Save") }</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        import $ from "jquery";
+
         const initialiseStateFromProps = function(props, state) {
             state = state || {};
 
             state.id = props.modal_id || "editModal";
             state.modalLabel = `${state.id}Label`;
+            state.selector = `#${state.id}`;
+            state.resultEventName = `${state.id}.result`;
         }
 
         export default {
+            state: {
+                result: null,
+            },
             onMounted(props, state) {
                 initialiseStateFromProps(props, state);
+
+                $(state.selector).on("hide.bs.modal", state.selector, this, function (e) {
+                    e.data.dispatchResult(e.data.state.result, e.data.state.resultEventName);
+                });
             },
-            save(e) {
-                this.props.onSave();
+            onUnmounted(props, state) {
+                $(state.selector).off("hide.bs.modal");
             },
+            close() {
+                this.state.result = "close";
+                this.dispatchResult(this.state.result, this.state.resultEventName);
+            },
+            cancel() {
+                this.state.result = "cancel";
+                this.dispatchResult(this.state.result, this.state.resultEventName);
+            },
+            save() {
+                this.state.result = "continueEdit";
+                this.dispatchResult(this.state.result, this.state.resultEventName);
+            },
+            dispatchResult(result, resultEventName) {
+                result = result || "";
+                document.dispatchEvent(new CustomEvent(resultEventName, { detail: { result }}));
+            }
         }
     </script>
 </edit_modal>

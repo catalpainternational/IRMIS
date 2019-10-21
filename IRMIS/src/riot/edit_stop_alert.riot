@@ -34,13 +34,10 @@
             },
             onUnmounted(props, state) {
                 this.state.selfAsModal = this.state.selfAsModal || $(this.selector);
-                this.state.selfAsModal.off("hide.bs.modal");
-            },
-            getResult() {
-                return state.result || null;
+                this.state.selfAsModal.off("hide.bs.modal", this.selector);
             },
             handleHide() {
-                this.state.selfAsModal.on("hide.bs.modal", this, function (e) {
+                this.state.selfAsModal.on("hide.bs.modal", this.selector, this, function (e) {
                     const result = e.data.state.result || "";
                     document.dispatchEvent(new CustomEvent("edit.stop_alert.result", { detail: { result }}));
                 });

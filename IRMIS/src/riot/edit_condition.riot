@@ -1,5 +1,5 @@
 <edit_condition>
-    <edit_modal modal_id="{ modal_id }" disableSave="{ !state.canSave }" onSave="{ save }">
+    <edit_modal modal_id="{ modal_id }" disableSave="{ !state.canSave }">
         <span slot="modal_title">Add Surface Condition Information</span>
 
         <form slot="modal_body">
@@ -152,6 +152,7 @@
                 // baseSurvey must be set to 'empty' for add.
                 // and the selected segment survey for edit.
                 this.state.survey = cloneData(this.state.baseSurvey);
+                this.state.errors = {};
 
                 this.showEditModal();
             },
@@ -193,10 +194,23 @@
             // Survey Modal 
 
             showEditModal() {
-                this.modalHideHandler = this.modalHideHandler || $(`#${this.modal_id}`).on("hide.bs.modal", this, function (e) {
+                $(`#${this.modal_id}`).one(`${this.modal_id}.result`, this, function (e) {
+                    const modalResult = e.data.detail.result;
                     this.state = e.data.state;
-                    if (e.data.hasChanges()) {
-                        e.data.stopAlertModalHandler();
+                    switch (modalResult) {
+                        case "save":
+                            if (e.data.hasChanges()) {
+                                e.data.save();
+                            }
+                            break;
+                        case "cancel":
+                            e.data.discardChanges();
+                            break;
+                        default:
+                            if (e.data.hasChanges()) {
+                                e.data.stopAlertModalHandler();
+                            }
+                            break;
                     }
                 });
 
