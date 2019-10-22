@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-08 01:28+0000\n"
-"PO-Revision-Date: 2019-10-11 00:57+0000\n"
+"POT-Creation-Date: 2019-10-22 02:34+0000\n"
+"PO-Revision-Date: 2019-10-09 02:56+0000\n"
 "Last-Translator: b'  <juliana@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -38,34 +38,20 @@ msgid "Link code cannot contain white spaces"
 msgstr "O código da secção não pode contar espaços em branco"
 
 #, javascript-format
-msgid ""
-"Link length cannot contain more than %s digits, of which %s are decimals"
-msgstr ""
-"A extensão da secção não pode conter mais do que %s dígitos, dos quais %s "
-"são decimais"
+msgid "Link length cannot contain more than %s digits, of which %s are decimals"
+msgstr "A extensão da secção não pode conter mais do que %s dígitos, dos quais %s são decimais"
 
 #, javascript-format
-msgid ""
-"Carriage width cannot contain more than %s digits, of which %s are decimals"
-msgstr ""
-"A largura da faixa de rodagem não pode conter mais do que %s dígitos, dos "
-"quais %s são decimais"
+msgid "Carriage width cannot contain more than %s digits, of which %s are decimals"
+msgstr "A largura da faixa de rodagem não pode conter mais do que %s dígitos, dos quais %s são decimais"
 
 #, javascript-format
-msgid ""
-"Link start chainage cannot contain more than %s digits, of which %s are "
-"decimals"
-msgstr ""
-"O valor da chainage não pode conter mais de %s dígitos, dos quais %s saã0 "
-"decimais"
+msgid "Link start chainage cannot contain more than %s digits, of which %s are decimals"
+msgstr "O valor da chainage não pode conter mais de %s dígitos, dos quais %s saã0 decimais"
 
 #, javascript-format
-msgid ""
-"Link end chainage cannot contain more than %s digits, of which %s are "
-"decimals"
-msgstr ""
-"O valor da chainage não pode conter mais de %s dígitos, dos quais %s saã0 "
-"decimais"
+msgid "Link end chainage cannot contain more than %s digits, of which %s are decimals"
+msgstr "O valor da chainage não pode conter mais de %s dígitos, dos quais %s saã0 decimais"
 
 msgid "Edit asset"
 msgstr "Editar infra-estrutura"
@@ -85,8 +71,11 @@ msgstr "Projecto"
 msgid "Condition"
 msgstr "Condição"
 
-msgid "Loading"
-msgstr "A carregar"
+msgid "History"
+msgstr "Histórico"
+
+msgid "Change log"
+msgstr "Registro de alterações"
 
 msgid "Close"
 msgstr "Fechar"
@@ -94,18 +83,17 @@ msgstr "Fechar"
 msgid "Unsaved Changes"
 msgstr "Alterações não gravadas"
 
-msgid ""
-"You have unsaved changes made to this page which will be lost if you "
-"navigate away. Would you like to continue editing?"
-msgstr ""
-"Existem alterações por guardar que serão perdidas caso saia desta página. "
-"Deseja continuar a editar?"
+msgid "You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?"
+msgstr "Existem alterações por guardar que serão perdidas caso saia desta página. Deseja continuar a editar?"
 
 msgid "Discard"
 msgstr "Descartar"
 
 msgid "Continue editing"
 msgstr "Continuar a editar"
+
+msgid "Loading"
+msgstr "A carregar"
 
 msgid "Success"
 msgstr "Sucesso"
@@ -119,6 +107,9 @@ msgstr "Erro"
 msgid "Something went wrong"
 msgstr "Ocorreu um erro"
 
+msgid "Changed"
+msgstr "Alterações"
+
 msgid "Location"
 msgstr "Localização"
 
@@ -130,6 +121,39 @@ msgstr "Seleccione o Tipo de Estrada"
 
 msgid "Select a Surface Type"
 msgstr "Seleccione o Tipo de Pavimento"
+
+msgid "Date"
+msgstr "Data"
+
+msgid "User"
+msgstr "Utilizador"
+
+msgid "Description"
+msgstr "Descrição"
+
+msgid "No matching records found"
+msgstr "Não foram encontradas entradas"
+
+msgid "No data available in table"
+msgstr "Não há dados disponíveis na tabela"
+
+msgid "Showing _START_ to _END_ of _TOTAL_ entries"
+msgstr "Mostrando _START_ a _END_ de _TOTAL_ entradas"
+
+msgid "Showing 0 to 0 of 0 entries"
+msgstr "Mostrando 0 a 0 de 0 entradas"
+
+msgid "First"
+msgstr "Primeiro"
+
+msgid "Previous"
+msgstr "Anterior"
+
+msgid "Next"
+msgstr "Próximo"
+
+msgid "Last"
+msgstr "Último"
 
 msgid "Link Name"
 msgstr "Nome da secção"

@@ -2,7 +2,7 @@
 import { Feature, GeoJSON, Geometry } from "geojson";
 import * as L from "leaflet";
 
-import { roadPopup } from "../roadManager.js";
+import { roadPopup } from "../roadManager";
 import { Config } from "./config";
 import { BaseLayers } from "./layers/BaseLayers";
 import { KnownGeometries } from "./layers/KnownGeometries";
