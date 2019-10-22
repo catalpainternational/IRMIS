@@ -29,6 +29,7 @@ gettext('Success');
 gettext('You have successfully saved');
 gettext('Error');
 gettext('Something went wrong');
+gettext('Changed');
 gettext("Location");
 gettext("Select an Administrative Area");
 gettext("Select a Road Type");

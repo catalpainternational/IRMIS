@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-21 04:52+0000\n"
+"POT-Creation-Date: 2019-10-21 08:54+0000\n"
 "PO-Revision-Date: 2019-10-09 02:56+0000\n"
 "Last-Translator: b'  <juliana@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -103,6 +103,9 @@ msgstr "Erro"
 
 msgid "Something went wrong"
 msgstr "Ocorreu um erro"
+
+msgid "Changed"
+msgstr "Alterações"
 
 msgid "Location"
 msgstr "Localização"
