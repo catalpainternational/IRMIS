@@ -29,7 +29,7 @@ $max-width: 400px;
 
 // Because we have to use container elements like <span> for slot substitution
 // then we need to override their default styling and make them more like the slot container 
-#editModal {
+.editModal {
     .modal-header {
         padding-top: 2rem;
             

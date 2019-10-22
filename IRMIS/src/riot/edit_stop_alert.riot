@@ -1,21 +1,18 @@
-<edit_modal>
-    <div if="{ state.id }" id="{ state.id }" class="modal editModal fade" tabindex="-1" role="dialog" aria-labelledby="{ state.modalLabel }" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
+<edit_stop_alert>
+    <div id="stop-alert" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+            <div class="align-items-center modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title" id="{ state.modalLabel }">
-                        <slot name="modal_title"/>
-                    </h1>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="{ window.gettext('Close') }">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
+                    <span class="alert stop image"></span>
+                    <span class="close image" data-dismiss="modal" aria-label="{ window.gettext("Close") }" aria-hidden="true"></span>
                 </div>
-                <div class="modal-body">
-                    <slot name="modal_body"/>
+                <div class="modal-body text-center">
+                    <h6>{ window.gettext("Unsaved Changes") }</h6>
+                    <p>{ window.gettext("You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?") }</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="{ cancel }">{ window.gettext("Cancel") }</button>
-                    <button type="button" class="btn btn-primary" onclick="{ save }" disabled="{ props.disableSave }">{ window.gettext("Save") }</button>
+                    <button type="button" class="btn btn-danger" onclick="{ discard }">{ window.gettext("Discard") }</button>
+                    <button type="button" class="btn btn-light" onclick="{ continueEdit }">{ window.gettext("Continue editing") }</button>
                 </div>
             </div>
         </div>
@@ -24,17 +21,19 @@
     <script>
         // To respond to bootstrap modal you events you MUST include:
         // jQuery (as $) first, 
+        // followed by the main bootstrap js library, and 
         // then the specific bootstrap modal library
         import $ from "jquery";
+        // import "bootstrap";
         import "bootstrap/js/dist/modal";
 
         const initialiseStateFromProps = function(props, state) {
             state = state || {};
 
-            state.id = props.modal_id || "editModal";
+            state.id = props.modal_id || "stop_alert";
             state.modalLabel = `${state.id}Label`;
             state.selector = `#${state.id}`;
-            state.resultEventName = `${state.id}.result`;
+            state.resultEventName = `edit.${state.id}.result`;
         };
 
         export default {
@@ -46,9 +45,9 @@
 
                 // To respond to bootstrap modal events properly you must use the full
                 // jQuery `.on` event handler syntax
-                // and attach the event handler to `$(document)`
+                // and attach the event handler initially to `$(document)`
                 // and specify your modal's div with its selector 
-                $(document).on("show.bs.modal", state.selector, this, function (e) {
+                $(document).on("show.bs.modal", state.selector, this, (e) => {
                     const self = e.data;
                     self.state.result = null;
                 }); 
@@ -62,13 +61,13 @@
             onUnmounted(props, state) {
                 $(document).off("hide.bs.modal", state.selector);
             },
-            cancel() {
-                this.state.result = "cancel";
+            discard() {
+                this.state.result = "discard";
                 // Go directly out of the dialog, the caller's handler will hide the dialog
                 this.dispatchResult(this.state.result, this.state.resultEventName);
             },
-            save() {
-                this.state.result = "save";
+            continueEdit() {
+                this.state.result = "continueEdit";
                 // Go directly out of the dialog, the caller's handler will hide the dialog
                 this.dispatchResult(this.state.result, this.state.resultEventName);
             },
@@ -80,4 +79,4 @@
             }
         }
     </script>
-</edit_modal>
+</edit_stop_alert>
