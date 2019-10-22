@@ -170,7 +170,10 @@ def road_update(request):
         request_value = getattr(req_pb, field, None)
         if getattr(old_road_pb, field) != request_value:
             if request_value:
-                fk_obj = model.objects.filter(code=request_value).get()
+                try:
+                    fk_obj = model.objects.filter(code=request_value).get()
+                except model.DoesNotExist:
+                    return HttpResponse(status=400)
             else:
                 fk_obj = None
             setattr(road, field, fk_obj)
