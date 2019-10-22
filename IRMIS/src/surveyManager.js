@@ -1,19 +1,6 @@
-import { getSurveyMetadata, getSurveysMetadata, getSurveysMetadataChunks, postSurveyData } from "./assets/surveyAPI";
+import { getSurveyMetadata, getSurveysMetadata, postSurveyData, putSurveyData } from "./assets/surveyAPI";
 
 let surveys = {}
-
-// Get the survey metadata chunk details
-// getSurveysMetadataChunks()
-//     .then(chunks => {
-//         // for each chunk, download the surveys
-//         chunks.forEach(chunk => {
-//             getSurveysMetadata(chunk.survey_type)
-//             .then(surveyList => {
-//                 // add the surveys to the survey manager
-//                 addSurveyMetadata(surveyList);
-//             });
-//         });
-//     });
 
 export function getSurvey(id) {
     let survey = surveys[id];
@@ -29,8 +16,17 @@ export function getRoadSurveys(roadId) {
         });
 }
 
-export function saveSurvey(survey) {
+export function createSurvey(survey) {
     return Promise.resolve(postSurveyData(survey))
+        .then(survey => {
+            surveys[survey.getId()] = survey;
+            // document.dispatchEvent(new CustomEvent("estrada.table.surveyMetaDataUpdated", {detail: {survey}}));
+            return survey;
+        });
+}
+
+export function updateSurvey(survey) {
+    return Promise.resolve(putSurveyData(survey))
         .then(survey => {
             surveys[survey.getId()] = survey;
             // document.dispatchEvent(new CustomEvent("estrada.table.surveyMetaDataUpdated", {detail: {survey}}));

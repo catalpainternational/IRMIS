@@ -36,6 +36,9 @@ export class Survey extends jspb.Message {
   getValues(): string;
   setValues(value: string): void;
 
+  getLastRevisionId(): number;
+  setLastRevisionId(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Survey.AsObject;
   static toObject(includeInstance: boolean, msg: Survey): Survey.AsObject;
@@ -57,6 +60,7 @@ export namespace Survey {
     chainageStart: number,
     chainageEnd: number,
     values: string,
+    lastRevisionId: number,
   }
 }
 

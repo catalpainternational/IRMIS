@@ -90,6 +90,13 @@ class SurveyQuerySet(models.QuerySet):
             values="values",
         )
 
+        last_revisions = {
+            i["object_id"]: i["revision_id"]
+            for i in Version.objects.get_queryset()
+            .order_by("object_id", "revision_id")
+            .values("object_id", "revision_id")
+        }
+
         for survey in self.values("id", *fields.values()):
             survey_protobuf = surveys_protobuf.surveys.add()
             for protobuf_key, query_key in fields.items():
@@ -115,6 +122,9 @@ class SurveyQuerySet(models.QuerySet):
                 survey_protobuf.values = json.dumps(
                     survey["values"], separators=(",", ":")
                 )
+            setattr(
+                survey_protobuf, "last_revision_id", last_revisions[str(survey["id"])]
+            )
 
         return surveys_protobuf
 
@@ -128,6 +138,7 @@ class SurveyManager(models.Manager):
         return self.get_queryset().to_protobuf()
 
 
+@reversion.register()
 class Survey(models.Model):
 
     objects = SurveyManager()

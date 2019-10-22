@@ -17,6 +17,7 @@ message Survey {
   float chainage_start = 5;
   float chainage_end = 6;
   string values = 7;
+  uint32 last_revision_id = 10;
 }
 
 message Surveys {

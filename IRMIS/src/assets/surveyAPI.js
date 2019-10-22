@@ -60,7 +60,7 @@ function makeEstradaSurvey(pbsurvey) {
     return estradaSurvey;
 }
 
-/** putSurveydata
+/** postSurveydata
  *
  * Post data for a single Survey to the server
  *
@@ -71,6 +71,30 @@ export function postSurveyData(survey) {
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}`;
 
     const postAssetInit = ConfigAPI.requestInit("POST");
+    postAssetInit.body = survey.serializeBinary();
+
+    return fetch(metadataUrl, postAssetInit)
+        .then(metadataResponse => {
+            if (metadataResponse.ok) { return metadataResponse.arrayBuffer(); }
+            throw new Error(`Survey creation failed: ${metadataResponse.statusText}`);
+        })
+        .then(protobufBytes => {
+            const uintArray = new Uint8Array(protobufBytes);
+            return makeEstradaSurvey(Survey.deserializeBinary(uintArray));
+        });
+}
+
+/** putSurveydata
+ *
+ * Put data for a single Survey to the server
+ *
+ * @returns 200 (success) or 400 (failure)
+ */
+export function putSurveyData(survey) {
+    const assetTypeUrlFragment = "survey_update";
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}`;
+
+    const postAssetInit = ConfigAPI.requestInit("PUT");
     postAssetInit.body = survey.serializeBinary();
 
     return fetch(metadataUrl, postAssetInit)
