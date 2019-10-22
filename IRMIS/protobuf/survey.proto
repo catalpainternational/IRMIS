@@ -1,0 +1,25 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+package assets;
+
+/* Remember to run `yarn protoc` after making any changes
+ * to regenerate the javascript and python protobuf implementations */
+
+message Survey {
+  /* Note that field Id numbers once used, are fixed. */
+  uint32 id = 1;
+  string road = 2;
+  uint32 user = 3;
+  string source = 9;
+  google.protobuf.Timestamp date_updated = 4;
+  google.protobuf.Timestamp date_surveyed = 8;
+  float chainage_start = 5;
+  float chainage_end = 6;
+  string values = 7;
+  uint32 last_revision_id = 10;
+}
+
+message Surveys {
+  repeated Survey surveys = 1;
+}

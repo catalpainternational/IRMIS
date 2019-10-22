@@ -5,7 +5,9 @@ import reversion
 from reversion.models import Version
 from datetime import datetime
 from collections import Counter
+import pytz
 
+from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django.http import (
     HttpResponse,
@@ -21,7 +23,8 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 from rest_framework_condition import condition
 
-from protobuf import roads_pb2
+from protobuf import roads_pb2, survey_pb2
+
 from .models import (
     CollatedGeoJsonFile,
     Road,
@@ -230,7 +233,11 @@ def protobuf_road_set(request, chunk_name=None):
     if not request.user.is_authenticated:
         return HttpResponseForbidden()
 
-    roads_protobuf = Road.objects.to_protobuf(chunk_name)
+    roads = Road.objects.all()
+    if chunk_name:
+        roads = roads.filter(road_type=chunk_name)
+
+    roads_protobuf = roads.to_protobuf()
 
     return HttpResponse(
         roads_protobuf.SerializeToString(), content_type="application/octet-stream"
@@ -398,3 +405,146 @@ class Report:
         report = self.build_summary_stats()
         report["table"] = self.build_chainage_table()
         return report
+
+        
+def protobuf_surveys(request, chunk_name=None):
+    """ returns a protobuf object with the set of all surveys or only of specific type"""
+
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+
+    queryset = Survey.objects.all()
+    if chunk_name:
+        chunk_codes = Road.objects.filter(road_type=chunk_name).values("road_code")
+        queryset = queryset.filter(road__in=chunk_codes)
+
+    queryset.order_by("road", "chainage_start", "chainage_end", "-date_updated")
+    surveys_protobuf = queryset.to_protobuf()
+
+    return HttpResponse(
+        surveys_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )
+
+
+def protobuf_road_surveys(request, pk):
+    """ returns a protobuf object with the set of surveys for a particular road pk"""
+
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+
+    road = get_object_or_404(Road.objects.all(), pk=pk)
+    queryset = Survey.objects.filter(road=road.road_code)
+    queryset.order_by("road", "chainage_start", "chainage_end", "-date_updated")
+    surveys_protobuf = queryset.to_protobuf()
+
+    return HttpResponse(
+        surveys_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )
+
+
+def survey_create(request):
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+
+    if request.method != "POST":
+        raise MethodNotAllowed(request.method)
+    elif request.content_type != "application/octet-stream":
+        return HttpResponse(status=400)
+
+    # parse Survey from protobuf in request body
+    req_pb = survey_pb2.Survey()
+    req_pb.ParseFromString(request.body)
+
+    # check that Protobuf parsed
+    if not req_pb.road:
+        return HttpResponse(status=400)
+
+    try:
+        with reversion.create_revision():
+            survey = Survey.objects.create(
+                **{
+                    "road": req_pb.road,
+                    "user": get_user_model().objects.get(pk=req_pb.user),
+                    "chainage_start": req_pb.chainage_start,
+                    "chainage_end": req_pb.chainage_end,
+                    "date_surveyed": pytz.utc.localize(
+                        datetime.strptime(
+                            req_pb.date_surveyed.ToJsonString(), "%Y-%m-%dT%H:%M:%S.%fZ"
+                        )
+                    ),
+                    "values": json.loads(req_pb.values),
+                }
+            )
+
+            response = HttpResponse(
+                req_pb.SerializeToString(),
+                status=200,
+                content_type="application/octet-stream",
+            )
+        return response
+    except Exception as err:
+        return HttpResponse(status=400)
+
+
+def survey_update(request):
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+
+    if request.method != "PUT":
+        raise MethodNotAllowed(request.method)
+    elif request.content_type != "application/octet-stream":
+        return HttpResponse(status=400)
+
+    # parse Survey from protobuf in request body
+    req_pb = survey_pb2.Survey()
+    req_pb.ParseFromString(request.body)
+
+    # check that Protobuf parsed
+    if not req_pb.id:
+        return HttpResponse(status=400)
+
+    # assert Survey ID given exists in the DB & there are changes to make
+    survey = get_object_or_404(Survey.objects.filter(pk=req_pb.id))
+    if Survey.objects.filter(pk=req_pb.id).to_protobuf().surveys[0] == req_pb:
+        response = HttpResponse(
+            req_pb.SerializeToString(),
+            status=200,
+            content_type="application/octet-stream",
+        )
+        return response
+
+    # check if the survey has revision history, then check if survey
+    # edits would be overwriting someone's changes
+    version = Version.objects.get_for_object(survey).first()
+    if version and req_pb.last_revision_id != version.revision.id:
+        return HttpResponse(status=409)
+
+    # update the Survey instance from PB fields
+    try:
+        survey.road = req_pb.road
+        survey.user = get_user_model().objects.get(pk=req_pb.user)
+        survey.chainage_start = req_pb.chainage_start
+        survey.chainage_end = req_pb.chainage_end
+        survey.date_surveyed = pytz.utc.localize(
+            datetime.strptime(
+                req_pb.date_surveyed.ToJsonString(), "%Y-%m-%dT%H:%M:%S.%fZ"
+            )
+        )
+        survey.values = json.loads(req_pb.values)
+
+        with reversion.create_revision():
+            survey.save()
+            # store the user who made the changes
+            reversion.set_user(request.user)
+
+        versions = Version.objects.get_for_object(survey)
+        req_pb.last_revision_id = versions[0].id
+
+        response = HttpResponse(
+            req_pb.SerializeToString(),
+            status=200,
+            content_type="application/octet-stream",
+        )
+        return response
+    except Exception as err:
+        return HttpResponse(status=400)

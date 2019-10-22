@@ -12,7 +12,7 @@ export function getRoadsMetadataChunks() {
     const assetTypeUrlFragment = "road_chunks";
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}`;
 
-    return fetch(metadataUrl, ConfigAPI.requestAssetInit())
+    return fetch(metadataUrl, ConfigAPI.requestInit())
         .then((jsonResponse) => (jsonResponse.json()));
 }
 
@@ -27,7 +27,7 @@ export function getRoadsMetadata(chunkName) {
     chunkName = chunkName || "";
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${chunkName}`;
 
-    return fetch(metadataUrl, ConfigAPI.requestAssetInit())
+    return fetch(metadataUrl, ConfigAPI.requestInit())
         .then((metadataResponse) => (metadataResponse.arrayBuffer()))
         .then((protobufBytes) => {
             const uintArray = new Uint8Array(protobufBytes);
@@ -46,7 +46,7 @@ export function getRoadMetadata(roadId) {
 
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${roadId}`;
 
-    return fetch(metadataUrl, ConfigAPI.requestAssetInit())
+    return fetch(metadataUrl, ConfigAPI.requestInit())
         .then((metadataResponse) => (metadataResponse.arrayBuffer()))
         .then((protobufBytes) => {
             const uintArray = new Uint8Array(protobufBytes);
@@ -64,7 +64,7 @@ export function putRoadMetadata(road) {
     const assetTypeUrlFragment = "road_update";
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}`;
 
-    const postAssetInit = ConfigAPI.requestAssetInit("PUT");
+    const postAssetInit = ConfigAPI.requestInit("PUT");
     postAssetInit.body = road.serializeBinary();
 
     return fetch(metadataUrl, postAssetInit)

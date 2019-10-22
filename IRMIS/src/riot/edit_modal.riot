@@ -1,0 +1,83 @@
+<edit_modal>
+    <div if="{ state.id }" id="{ state.id }" class="modal editModal fade" tabindex="-1" role="dialog" aria-labelledby="{ state.modalLabel }" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title" id="{ state.modalLabel }">
+                        <slot name="modal_title"/>
+                    </h1>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="{ window.gettext('Close') }">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <slot name="modal_body"/>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="{ cancel }">{ window.gettext("Cancel") }</button>
+                    <button type="button" class="btn btn-primary" onclick="{ save }" disabled="{ props.disableSave }">{ window.gettext("Save") }</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // To respond to bootstrap modal you events you MUST include:
+        // jQuery (as $) first, 
+        // then the specific bootstrap modal library
+        import $ from "jquery";
+        import "bootstrap/js/dist/modal";
+
+        const initialiseStateFromProps = function(props, state) {
+            state = state || {};
+
+            state.id = props.modal_id || "editModal";
+            state.modalLabel = `${state.id}Label`;
+            state.selector = `#${state.id}`;
+            state.resultEventName = `${state.id}.result`;
+        };
+
+        export default {
+            state: {
+                result: null,
+            },
+            onMounted(props, state) {
+                initialiseStateFromProps(props, state);
+
+                // To respond to bootstrap modal events properly you must use the full
+                // jQuery `.on` event handler syntax
+                // and attach the event handler to `$(document)`
+                // and specify your modal's div with its selector 
+                $(document).on("show.bs.modal", state.selector, this, function (e) {
+                    const self = e.data;
+                    self.state.result = null;
+                }); 
+                $(document).on("hide.bs.modal", state.selector, this, (e) => {
+                    // This only occurs for the `data-dismiss="modal"` elements
+                    const self = e.data;
+                    self.state.result = self.state.result || "close";
+                    self.dispatchResult(self.state.result, self.state.resultEventName);
+                });
+            },
+            onUnmounted(props, state) {
+                $(document).off("hide.bs.modal", state.selector);
+            },
+            cancel() {
+                this.state.result = "cancel";
+                // Go directly out of the dialog, the caller's handler will hide the dialog
+                this.dispatchResult(this.state.result, this.state.resultEventName);
+            },
+            save() {
+                this.state.result = "save";
+                // Go directly out of the dialog, the caller's handler will hide the dialog
+                this.dispatchResult(this.state.result, this.state.resultEventName);
+            },
+            dispatchResult(result, resultEventName) {
+                console.log(`Dispatching '${resultEventName}': '${result}'`);
+                // The caller's handler must respond to this event once only
+                // this allows us to deal with Bootstrap 4's event handling problems.
+                document.dispatchEvent(new CustomEvent(resultEventName, { detail: { result }}));
+            }
+        }
+    </script>
+</edit_modal>

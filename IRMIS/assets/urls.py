@@ -10,6 +10,10 @@ from .views import (
     road_surveys,
     all_surveys,
     road_report,
+    survey_create,
+    survey_update,
+    protobuf_surveys,
+    protobuf_road_surveys,
 )
 
 router = routers.DefaultRouter()
@@ -22,11 +26,23 @@ urlpatterns = [
     path("road_update", road_update, name="road_update"),
     path("geojson_details", geojson_details, name="geojson_details"),
     path("road_chunks", road_chunks_set, name="road_chunks"),
-    path("protobuf_road/<int:pk>", protobuf_road, name="protobuf_road"),
-    path("protobuf_roads", protobuf_road_set, name="protobuf_roads"),
-    path("protobuf_roads/<slug:chunk_name>/", protobuf_road_set, name="protobuf_roads"),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     path("all_surveys", all_surveys, name="all_surveys"),
     path("road_surveys/<slug:road_code>", road_surveys, name="road_surveys"),
     path("road_report/<slug:road_code>", road_report, name="road_report"),
+    path("survey_create", survey_create, name="survey_create"),
+    path("survey_update", survey_update, name="survey_update"),
+    path("protobuf_road/<int:pk>", protobuf_road, name="protobuf_road"),
+    path("protobuf_roads", protobuf_road_set, name="protobuf_roads"),
+    path("protobuf_roads/<slug:chunk_name>/", protobuf_road_set, name="protobuf_roads"),
+    # path("protobuf_survey/<int:pk>", protobuf_survey, name="protobuf_survey"),
+    path("protobuf_surveys", protobuf_surveys, name="protobuf_surveys"),
+    path(
+        "protobuf_surveys/<slug:chunk_name>/", protobuf_surveys, name="protobuf_surveys"
+    ),
+    path(
+        "protobuf_road_surveys/<int:pk>",
+        protobuf_road_surveys,
+        name="protobuf_road_surveys",
+    ),
 ]

@@ -20,7 +20,7 @@ document.addEventListener('estrada.roadManager.roadMetaDataAdded', (data) => {
 });
 
 document.addEventListener('estrada.table.roadMetaDataUpdated', (data) => {
-    const road = data.detail.road.id;
+    const road = data.detail.road;
     table.row(`#${road.id}`).data(road).draw();
 });
 
