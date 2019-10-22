@@ -204,7 +204,26 @@ table {
     line-height: 17px;
     font-weight: 700;
     font-size: 14px;
-    color: $white;
+}
+
+.dt-buttons {
+    button span {
+        color: $darker-gray;
+    }
+
+    div.btn {
+        line-height: 14px;
+        font-weight: 700;
+        font-size: 12px;
+    }
+}
+
+// Override DataTable.net styles for the main table
+
+#table-irmis {
+    .dataTables_info {
+        color: $white;
+    }
 }
 
 .dt-buttons {

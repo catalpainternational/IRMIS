@@ -6,6 +6,7 @@ from .views import (
     road_chunks_set,
     protobuf_road_set,
     protobuf_road,
+    protobuf_road_audit,
     road_update,
     road_surveys,
     all_surveys,
@@ -33,7 +34,6 @@ urlpatterns = [
     path("protobuf_road/<int:pk>", protobuf_road, name="protobuf_road"),
     path("protobuf_roads", protobuf_road_set, name="protobuf_roads"),
     path("protobuf_roads/<slug:chunk_name>/", protobuf_road_set, name="protobuf_roads"),
-    # path("protobuf_survey/<int:pk>", protobuf_survey, name="protobuf_survey"),
     path("protobuf_surveys", protobuf_surveys, name="protobuf_surveys"),
     path(
         "protobuf_surveys/<slug:chunk_name>/", protobuf_surveys, name="protobuf_surveys"
@@ -43,4 +43,8 @@ urlpatterns = [
         protobuf_road_surveys,
         name="protobuf_road_surveys",
     ),
+    path(
+        "protobuf_road_audit/<int:pk>", protobuf_road_audit, name="protobuf_road_audit"
+    ),
+    path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
 ]

@@ -3,6 +3,7 @@ import $ from "jquery";
 
 import { getFieldName } from "./road";
 import { exportCsv } from "./exportCsv";
+import { datatableTranslations } from "./datatableTranslations";
 
 let table;
 let pendingRows = [];
@@ -21,7 +22,7 @@ document.addEventListener('estrada.roadManager.roadMetaDataAdded', (data) => {
 
 document.addEventListener('estrada.table.roadMetaDataUpdated', (data) => {
     const road = data.detail.road;
-    table.row(`#${road.id}`).data(road).draw();
+    table.row('#' + road.id).data(road).draw();
 });
 
 // when a filter is applied, update the filter id whitelist
@@ -214,25 +215,25 @@ export const columns = [
         visible: false,
     },
     {
-        title: window.gettext("Start Point (DMS)"),
+        title: gettext("Start Point (DMS)"),
         data: "startDMS",
         defaultContent: "",
         visible: false
     },
     {
-        title: window.gettext("End Point (DMS)"),
+        title: gettext("End Point (DMS)"),
         data: "endDMS",
         defaultContent: "",
         visible: false
     },
     {
-        title: window.gettext("Start Point (UTM)"),
+        title: gettext("Start Point (UTM)"),
         data: "startUTM",
         defaultContent: "",
         visible: false
     },
     {
-        title: window.gettext("End Point (UTM)"),
+        title: gettext("End Point (UTM)"),
         data: "endUTM",
         defaultContent: "",
         visible: false
@@ -244,7 +245,7 @@ function initializeDataTable() {
         columns.unshift({
             title: "",
             data: null,
-            render: r => `<a class="image pencil" href="#edit/${r.getId()}/location_type"></a>`,
+            render: r => '<a class="image pencil" href="#edit/' + r.getId() + '/location_type"></a>',
             orderable: false,
             className: "edit-col"
         });
@@ -255,7 +256,8 @@ function initializeDataTable() {
         rowId: ".getId()",
         // default order is ascending by: road code, link code, & link start chainage
         order: window.canEdit ? [[1, 'asc'], [3, 'asc'], [7, 'asc']] : [[0, 'asc'], [2, 'asc'], [6, 'asc']],
-        dom: `<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>`, // https://datatables.net/reference/option/dom#Styling
+        dom: "<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>", // https://datatables.net/reference/option/dom#Styling
+        language: datatableTranslations,
     });
 
     if (pendingRows.length) {

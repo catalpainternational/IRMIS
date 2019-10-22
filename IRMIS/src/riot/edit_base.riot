@@ -12,6 +12,12 @@
                     <li class="{ state.page === 'maintenance' ? 'active' : '' }" data-page="maintenance" onclick="{ selectPage }">{ window.gettext("Maintenance") }</li>
                 </ul>
             </ul>
+            <ul class="navigation">
+                <li class="text-uppercase">{ window.gettext("History") }</li>
+                <ul>
+                    <li class="{ state.page === 'history' ? 'active' : '' }" data-page="history" onclick="{ selectPage }">{ window.gettext("Change log") }</li>
+                </ul>
+            </ul>
         </div>
         <div if="{ state.loading }">
             { window.gettext("Loading") }
@@ -31,6 +37,20 @@
             <edit_project road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'project' }" on-save="{ save }"></edit_project>
             <edit_condition road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'condition' }" on-save="{ save }" on-save-survey="{ saveSurvey }"></edit_condition>
             <edit_maintenance road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'maintenance' }" on-save="{ save }"></edit_maintenance>
+
+            <edit_history road="{ state.baseRoad }" getHelpText="{getHelpText}" if="{ state.page === 'history' }"></edit_history>
+        </div>
+
+        <div id="loading" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                <div class="align-items-center modal-content">
+                    <div class="modal-header"></div>
+                    <div class="modal-body text-center">
+                        <h6>{ window.gettext("Loading") }...</h6>
+                    </div>
+                    <div class="modal-footer"></div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -42,6 +62,9 @@
         import { getHelpText } from "../road";
         import { createSurvey, updateSurvey, getRoadSurveys } from "../surveyManager";
 
+        import Edit_Feedback from './edit_feedback.riot';
+        import Edit_Stop_Alert from "./edit_stop_alert.riot";
+
         import Edit_Location_Type from "./edit_location_type.riot";
         import Edit_Asset_Details from "./edit_asset_details.riot";
         import Edit_Pavement from "./edit_pavement.riot";
@@ -49,8 +72,7 @@
         import Edit_Condition from "./edit_condition.riot";
         import Edit_Maintenance from "./edit_maintenance.riot";
 
-        import Edit_Feedback from "./edit_feedback.riot";
-        import Edit_Stop_Alert from "./edit_stop_alert.riot";
+        import Edit_History from "./edit_history.riot";
 
         let timeoutId = null;
 
@@ -68,22 +90,26 @@
                 stopAlertResult: null,
             },
             components: {
-                Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Project, Edit_Condition, Edit_Maintenance, 
+                Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Project, Edit_Condition, Edit_Maintenance,
+                Edit_History,
                 Edit_Feedback, Edit_Stop_Alert
             },
             onBeforeMount() {
                 window.onbeforeunload = () => {
                     return this.hasChanges() ? "You have changes" : null;
                 }
+                window.goBack = this.goBack;
             },
             onBeforeUnmount() {
                 window.onbeforeunload = null;
+                window.goBack = () => {};
             },
             onMounted(props, state) {
-                state.loading = true;
+                $('#loading').modal('show');
                 state.page = props.page;
 
                 props.roadPromise.then(road => {
+                    $('#loading').modal('hide');
                     state.loading = false;
                     this.initRoad(road)
                 }).catch(err => {
@@ -129,10 +155,11 @@
                 }
             },
             selectPage(e) {
+                const roadId = this.state.editingRoad.getId();
                 this.state.page = e.currentTarget.dataset.page;
-                this.state.nextPage = `#edit/${this.state.editingRoad.getId()}/${this.state.page}`;
+                this.state.nextPage = `#edit/${roadId}/${this.state.page}`;
                 if (this.hasChanges()) {
-                    this.modalHandler();
+                    $('#stop-alert').modal('show');
                 } else {
                     this.discardChanges();
                 }

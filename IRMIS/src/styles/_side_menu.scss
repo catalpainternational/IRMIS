@@ -130,8 +130,8 @@
 
     .navigation {
         padding-right: 50px;
+        margin-bottom: 40px;
         margin-left: -15px;
-        margin-bottom: 0;
         margin-top: 20px;
         padding-left: 0;
 
@@ -150,7 +150,7 @@
                 &.active {
                     border-bottom-right-radius: $radius;
                     border-top-right-radius: $radius;
-                    background-color: $blue;
+                    background-color: $green;
                 }
             }
         }
