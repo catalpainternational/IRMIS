@@ -442,7 +442,7 @@ def survey_update(request):
     except Exception as err:
         return HttpResponse(status=400)
 
-        
+
 def protobuf_road_audit(request, pk):
     """ returns a protobuf object with the set of all audit history items for a Road """
 
