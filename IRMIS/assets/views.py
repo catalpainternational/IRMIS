@@ -335,6 +335,14 @@ def protobuf_road_surveys(request, pk):
     )
 
 
+def pbtimestamp_to_pydatetime(pb_stamp):
+    """ Take a Protobuf Timestamp as single input and outputs a 
+    time zone aware, Python Datetime object (UTC) """
+    return pytz.utc.localize(
+        datetime.strptime(pb_stamp.ToJsonString(), "%Y-%m-%dT%H:%M:%S.%fZ")
+    )
+
+
 def survey_create(request):
     if not request.user.is_authenticated:
         return HttpResponseForbidden()
@@ -360,11 +368,7 @@ def survey_create(request):
                     "user": get_user_model().objects.get(pk=req_pb.user),
                     "chainage_start": req_pb.chainage_start,
                     "chainage_end": req_pb.chainage_end,
-                    "date_surveyed": pytz.utc.localize(
-                        datetime.strptime(
-                            req_pb.date_surveyed.ToJsonString(), "%Y-%m-%dT%H:%M:%S.%fZ"
-                        )
-                    ),
+                    "date_surveyed": pbtimestamp_to_pydatetime(req_pb.date_surveyed),
                     "values": json.loads(req_pb.values),
                 }
             )
@@ -418,11 +422,7 @@ def survey_update(request):
         survey.user = get_user_model().objects.get(pk=req_pb.user)
         survey.chainage_start = req_pb.chainage_start
         survey.chainage_end = req_pb.chainage_end
-        survey.date_surveyed = pytz.utc.localize(
-            datetime.strptime(
-                req_pb.date_surveyed.ToJsonString(), "%Y-%m-%dT%H:%M:%S.%fZ"
-            )
-        )
+        survey.date_surveyed = pbtimestamp_to_pydatetime(req_pb.date_surveyed)
         survey.values = json.loads(req_pb.values)
 
         with reversion.create_revision():
