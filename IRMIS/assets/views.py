@@ -155,55 +155,56 @@ def road_update(request):
         (PavementClass, "pavement_class"),
     ]
     changed_fields = []
-    try:
-        for field in fields:
-            request_value = getattr(req_pb, field)
-            if getattr(old_road_pb, field) != request_value:
-                # set attribute on road
-                setattr(road, field, request_value)
-                # add field to list of changes fields
-                changed_fields.append(field)
+    for field in fields:
+        request_value = getattr(req_pb, field)
+        if getattr(old_road_pb, field) != request_value:
+            # set attribute on road
+            setattr(road, field, request_value)
+            # add field to list of changes fields
+            changed_fields.append(field)
 
-        # Foreign Key attributes
-        for fk in fks:
-            field = fk[1]
-            model = fk[0]
-            request_value = getattr(req_pb, field, None)
-            if getattr(old_road_pb, field) != request_value:
-                if request_value:
-                    fk_obj = model.objects.filter(code=request_value).get()
-                else:
-                    fk_obj = None
-                setattr(road, field, fk_obj)
-                # add field to list of changes fields
-                changed_fields.append(field)
+    # Foreign Key attributes
+    for fk in fks:
+        field = fk[1]
+        model = fk[0]
+        request_value = getattr(req_pb, field, None)
+        if getattr(old_road_pb, field) != request_value:
+            if request_value:
+                fk_obj = model.objects.filter(code=request_value).get()
+            else:
+                fk_obj = None
+            setattr(road, field, fk_obj)
+            # add field to list of changes fields
+            changed_fields.append(field)
 
-        with reversion.create_revision():
-            road.save()
-            # store the user who made the changes
-            reversion.set_user(request.user)
-            change_message = [dict(changed=dict(fields=changed_fields))]
-            reversion.set_comment(json.dumps(change_message))
-            LogEntry.objects.log_action(
-                request.user.id,
-                ContentType.objects.get_for_model(Road).pk,
-                road.pk,
-                str(road),
-                CHANGE,
-                change_message,
-            )
+    with reversion.create_revision():
+        road.save()
 
-        versions = Version.objects.get_for_object(road)
-        req_pb.last_revision_id = versions[0].id
+        # store the user who made the changes
+        reversion.set_user(request.user)
 
-        response = HttpResponse(
-            req_pb.SerializeToString(),
-            status=200,
-            content_type="application/octet-stream",
+        # construct a django admin log style change message and use that
+        # to create a revision comment and an admin log entry
+        change_message = [dict(changed=dict(fields=changed_fields))]
+        reversion.set_comment(json.dumps(change_message))
+        LogEntry.objects.log_action(
+            request.user.id,
+            ContentType.objects.get_for_model(Road).pk,
+            road.pk,
+            str(road),
+            CHANGE,
+            change_message,
         )
-        return response
-    except Exception as err:
-        return HttpResponse(status=400)
+
+    versions = Version.objects.get_for_object(road)
+    req_pb.last_revision_id = versions[0].id
+
+    response = HttpResponse(
+        req_pb.SerializeToString(),
+        status=200,
+        content_type="application/octet-stream",
+    )
+    return response
 
 
 def geojson_details(request):
