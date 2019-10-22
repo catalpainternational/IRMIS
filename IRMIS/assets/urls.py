@@ -26,5 +26,4 @@ urlpatterns = [
     path(
         "protobuf_road_audit/<int:pk>", protobuf_road_audit, name="protobuf_road_audit"
     ),
-    path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
 ]
