@@ -1,9 +1,14 @@
 .content .top-menu {
     background-color: $darker-gray;
+    justify-content: space-between;
 
     span:not(.image) {
         margin-right: 10px;
     }
+}
+
+.registration .top-menu {
+    justify-content: flex-end;
 }
 
 .top-menu {
