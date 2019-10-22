@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-21 08:54+0000\n"
+"POT-Creation-Date: 2019-10-22 02:34+0000\n"
 "PO-Revision-Date: 2019-10-09 05:39+0000\n"
 "Last-Translator: b'  <januario@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -72,6 +72,9 @@ msgstr "Kondisaun "
 
 msgid "History"
 msgstr "Istóriku"
+
+msgid "Change log"
+msgstr ""
 
 msgid "Close"
 msgstr "Taka "
