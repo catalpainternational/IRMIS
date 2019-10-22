@@ -18,6 +18,7 @@ gettext("Pavement");
 gettext("Project");
 gettext("Condition");
 gettext("History");
+gettext("Change log");
 gettext('Close');
 gettext("Unsaved Changes");
 gettext("You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?");
