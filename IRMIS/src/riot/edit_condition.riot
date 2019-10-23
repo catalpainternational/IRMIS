@@ -275,6 +275,13 @@
                     $(`#${this.modal_id}`).modal("hide");
                 } 
             },
+            saveSurvey(mode) {
+                if (mode == 'create') {
+                    this.props.onCreateSurvey();
+                } else {
+                    this.props.onUpdateSurvey();
+                }
+            },
             canSave() {
                 const missingFieldNames = checkRequiredFields(this.requiredFieldNames, this.state.survey);
 

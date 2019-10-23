@@ -276,30 +276,6 @@ def protobuf_road_set(request, chunk_name=None):
     )
 
 
-def all_surveys(request):
-    if not request.user.is_authenticated:
-        return HttpResponseForbidden()
-
-    queryset = Survey.objects.order_by(
-        "road", "chainage_start", "chainage_end", "-date_updated"
-    )
-    serializer = SurveySerializer(queryset, many=True)
-    return JsonResponse(serializer.data, safe=False)
-
-
-def road_surveys(request, road_code):
-    if not request.user.is_authenticated:
-        return HttpResponseForbidden()
-
-    queryset = (
-        Survey.objects.filter(road=road_code)
-        .order_by("road", "chainage_start", "chainage_end", "-date_updated")
-        .distinct("road", "chainage_start", "chainage_end")
-    )
-    serializer = SurveySerializer(queryset, many=True)
-    return JsonResponse(serializer.data, safe=False)
-
-
 def protobuf_surveys(request, chunk_name=None):
     """ returns a protobuf object with the set of all surveys or only of specific type"""
 
