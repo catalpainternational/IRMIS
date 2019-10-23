@@ -54,10 +54,17 @@ $max-width: 400px;
     }
 }
 
-edit_asset_details, edit_pavement, edit_project, edit_condition, edit_maintenance, edit_location_type, edit_history {
+edit_location_type,
+edit_asset_details,
+edit_pavement,
+edit_project,
+edit_condition,
+edit_maintenance,
+edit_history {
     height: calc(100vh - #{$top-menu-height} - 70px - 15px);
     background-color: $white;
     padding: 30px 60px 60px;
+    overflow-x: hidden;
     overflow-y: auto;
     display: block;
 

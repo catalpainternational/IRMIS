@@ -9,11 +9,18 @@
     }
 }
 
-edit_location_type, edit_asset_details, edit_pavement, edit_project, edit_condition, edit_maintenance, .filters {
+edit_location_type,
+edit_asset_details,
+edit_pavement,
+edit_project,
+edit_condition,
+edit_maintenance,
+edit_history,
+.filters {
     @extend %scrollbar-shared;
 }
 
-#data-table, edit_history {
+#data-table, #history-table, #surface-condition-table {
     @extend %scrollbar-shared;
 
     &::-webkit-scrollbar {
@@ -24,5 +31,17 @@ edit_location_type, edit_asset_details, edit_pavement, edit_project, edit_condit
         &:vertical {
             width: 6px;
         }
+    }
+}
+
+#data-table {
+    &::-webkit-scrollbar:vertical {
+        border-left: 1px solid $light-gray;
+    }
+}
+
+#history-table, #surface-condition-table {
+    &::-webkit-scrollbar:horizontal {
+        border-bottom: 1px solid $light-gray;
     }
 }

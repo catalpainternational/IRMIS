@@ -33,6 +33,7 @@ table.dataTable {
 
     #history-table, #surface-condition-table {
         margin-top: 0 !important;
+        overflow-x: auto;
     }
 }
 
