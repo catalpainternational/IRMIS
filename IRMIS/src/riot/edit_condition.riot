@@ -83,6 +83,7 @@
         import Edit_Modal from "./edit_modal.riot";
 
         import { createSurvey, updateSurvey, getRoadSurveys } from "../surveyManager";
+        import { Survey } from "../../protobuf/survey_pb";
         import { getFieldName } from "../road";
 
         import $ from "jquery";
@@ -110,7 +111,7 @@
             state: {
                 chainageDecimals: 3,
                 chainageDigits : 7,
-                baseSurvey: {},
+                baseSurvey: new Survey({}),
                 survey: {},
                 canSave: false,
                 errors: {},
@@ -258,16 +259,21 @@
                     }
                 } else {
                     if (this.hasChanges()) {
+                        debugger;
                         // Complete the survey
-                        this.state.survey.user = $("#user_welcome").data( "userName" ) || "Unknown";
-                        this.state.survey.source = this.modal_id;
+                        this.state.survey.setUser($("#user_welcome").data( "userName" ) || "Unknown");
+                        this.state.survey.setSource(this.modal_id);
+                        // this.state.survey.setChainageStart
+                        // this.state.survey.setChainageEnd
+                        // this.state.survey.setSurveyedDate
+                        
                         // set Survey road from state Road road_code
-                        this.state.survey.road = this.state.road.getRoadCode();
+                        this.state.survey.setRoad(this.state.road.getRoadCode());
                         this.saveSurvey();
                     }
 
                     // Reset baseSurvey now that we're done.
-                    this.baseSurvey = {};
+                    this.baseSurvey = new Survey({});
 
                     $(`#${this.modal_id}`).modal("hide");
                 } 
