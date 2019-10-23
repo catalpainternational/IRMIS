@@ -155,7 +155,7 @@
                 this.state.page = e.currentTarget.dataset.page;
                 this.state.nextPage = `#edit/${roadId}/${this.state.page}`;
                 if (this.hasChanges()) {
-                    $('#stop-alert').modal('show');
+                    this.modalHandler();
                 } else {
                     this.discardChanges();
                 }
@@ -163,8 +163,6 @@
             modalHandler() {
                 document.addEventListener("edit.stop_alert.result", (data) => {
                     const stopAlertResult = data.detail.result;
-
-                    console.log(`Received 'Stop Alert' result: ${stopAlertResult}`);
 
                     // Ensure that the dialog gets hidden
                     $("#stop-alert").modal("hide");

@@ -197,8 +197,6 @@
                 document.addEventListener(`${this.modal_id}.result`, (data) => {
                     const modalResult = data.detail.result;
 
-                    console.log(`Received '${this.modal_id}' result: ${modalResult}`);
-
                     // Ensure that the dialog gets hidden
                     $(`#${this.modal_id}`).modal("hide");
 
@@ -224,8 +222,6 @@
             showStopAlertModal() {
                 document.addEventListener("edit.stop_alert.result", (data) => {
                     const stopAlertResult = data.detail.result;
-
-                    console.log(`Received 'Stop Alert' result: ${stopAlertResult}`);
 
                     // Ensure that the dialog gets hidden
                     $("#stop-alert").modal("hide");

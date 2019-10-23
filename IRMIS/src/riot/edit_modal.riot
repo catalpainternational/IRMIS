@@ -73,7 +73,6 @@
                 this.dispatchResult(this.state.result, this.state.resultEventName);
             },
             dispatchResult(result, resultEventName) {
-                console.log(`Dispatching '${resultEventName}': '${result}'`);
                 // The caller's handler must respond to this event once only
                 // this allows us to deal with Bootstrap 4's event handling problems.
                 document.dispatchEvent(new CustomEvent(resultEventName, { detail: { result }}));
