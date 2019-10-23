@@ -315,7 +315,7 @@ def pbtimestamp_to_pydatetime(pb_stamp):
     """ Take a Protobuf Timestamp as single input and outputs a 
     time zone aware, Python Datetime object (UTC) """
     return pytz.utc.localize(
-        datetime.strptime(pb_stamp.ToJsonString(), "%Y-%m-%dT%H:%M:%S.%fZ")
+        datetime.strptime(pb_stamp.ToJsonString(), "%Y-%m-%dT%H:%M:%SZ")
     )
 
 
@@ -345,6 +345,7 @@ def survey_create(request):
                     "chainage_start": req_pb.chainage_start,
                     "chainage_end": req_pb.chainage_end,
                     "date_surveyed": pbtimestamp_to_pydatetime(req_pb.date_surveyed),
+                    "source": req_pb.source,
                     "values": json.loads(req_pb.values),
                 }
             )
@@ -404,6 +405,7 @@ def survey_update(request):
         survey.chainage_start = req_pb.chainage_start
         survey.chainage_end = req_pb.chainage_end
         survey.date_surveyed = pbtimestamp_to_pydatetime(req_pb.date_surveyed)
+        survey.source = req_pb.source
         survey.values = json.loads(req_pb.values)
 
         with reversion.create_revision():
