@@ -11,8 +11,8 @@ import { Config } from "./config";
 
 import { BaseLayers } from "./layers/BaseLayers";
 import { KnownGeometries } from "./layers/KnownGeometries";
-
 import { getFilterStyles } from "./utilities/filterGeoJSON";
+
 import { FallbackLayerStyle, FixLayerStyleDefaults, styleGeometry, stylePoint } from "./utilities/leaflet-style";
 import { getFeatureType } from "./utilities/metaGeoJSON";
 
