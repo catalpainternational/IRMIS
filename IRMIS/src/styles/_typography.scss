@@ -66,6 +66,10 @@ a {
     }
 }
 
+a.active {
+    color: $green !important;
+}
+
 #side-menu a {
     line-height: 17px;
     font-size: 14px;

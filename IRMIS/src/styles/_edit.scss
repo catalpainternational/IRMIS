@@ -98,13 +98,21 @@ edit_history {
 }
 
 edit_condition {
-    div.content-wrapper {
+    .content-wrapper {
         background-color: $white;
         padding: 30px 60px 60px;
 
         &:not(:first-of-type) {
             margin-top: 15px;
         }
+    }
+
+    h5 {
+        margin-bottom: 0;
+    }
+
+    .all-data-view {
+        margin-right: 20px;
     }
 }
 

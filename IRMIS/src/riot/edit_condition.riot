@@ -74,7 +74,11 @@
 
     <div class="content-wrapper">
         <div class="align-items-center d-flex justify-content-between">
-            <h5>{ window.gettext("Surface Condition Data (SDI)") }</h5>
+            <div>
+                <h5>{ window.gettext("Surface Condition Data (SDI)") }</h5>
+                <a class="{ false ? 'active' : '' } all-data-view">{ window.gettext("View all data entries") }</a>
+                <a class="{ true ? 'active' : '' }">{ window.gettext("Current condition") }</a>
+            </div>
             <button class="btn btn-primary" onclick="{ addEdit }" disabled="{ props.editing }">{ window.gettext("Add") }</button>
         </div>
         <data_table table_id="{this.table_id}" columns="{this.table_columns}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}"></data_table>
