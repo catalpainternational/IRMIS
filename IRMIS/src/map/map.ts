@@ -6,8 +6,8 @@ import { roadPopup } from "../roadManager";
 import { Config } from "./config";
 import { BaseLayers } from "./layers/BaseLayers";
 import { KnownGeometries } from "./layers/KnownGeometries";
-import { getFeatureType } from "./utilities/displayGeoJSON";
 import { getFilterStyles } from "./utilities/filterGeoJSON";
+import { getFeatureType } from "./utilities/propertiesGeoJSON";
 
 import { FallbackLayerStyle, FixLayerStyleDefaults, styleGeometry, stylePoint } from "./utilities/leaflet-style";
 
