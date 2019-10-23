@@ -59,7 +59,6 @@
 		"google-protobuf": "^3.9.1",
 		"jquery": "^3.4.1",
 		"leaflet": "^1.5.1",
-		"moment": "^2.24.0",
 		"proj4": "^2.5.0",
 		"riot": "^4.5.0",
 		"riot-route": "^3.1.4",

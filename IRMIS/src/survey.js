@@ -1,6 +1,7 @@
-import * as moment from 'moment';
+import dayjs from "dayjs";
+
 import { Survey } from "../protobuf/survey_pb";
-import { SURFACE_CONDITION_CHOICES, TRAFFIC_LEVEL_CHOICES } from './road'
+import { SURFACE_CONDITION_CHOICES, TRAFFIC_LEVEL_CHOICES } from "./road";
 
 // We may need a survey schema - primarily for formatted field names
 // JSON.parse(document.getElementById('survey_schema').textContent);
@@ -42,7 +43,7 @@ export class EstradaSurvey extends Survey {
     }
 
     get dateSurveyed() {
-        let date = moment(new Date(this.getDateSurveyed() * 1000));
+        let date = dayjs(new Date(this.getDateSurveyed() * 1000));
         return date.isValid() ? date.format('YYYY-MM-DD HH:mm') : "";
     }
 
@@ -51,7 +52,7 @@ export class EstradaSurvey extends Survey {
     }
 
     get surfaceCondition() {
-        return  choice_or_empty(JSON.parse(this.getValues())['surface_condition'], SURFACE_CONDITION_CHOICES);
+        return choice_or_empty(JSON.parse(this.getValues())['surface_condition'], SURFACE_CONDITION_CHOICES);
     }
 
     get trafficLevel() {
