@@ -1,9 +1,22 @@
 syntax = "proto3";
+import "google/protobuf/timestamp.proto";
 
 package assets;
 
 /* Remember to run `yarn protoc` after making any changes
  * to regenerate the javascript and python protobuf implementations */
+
+message Version {
+  uint32 pk = 1;
+  google.protobuf.Timestamp date_created = 2;
+  string user = 3;
+  string comment = 4;
+  /* string source = 5; */
+}
+
+message Versions {
+  repeated Version versions = 1;
+}
 
 message Projection {
   float x = 1;

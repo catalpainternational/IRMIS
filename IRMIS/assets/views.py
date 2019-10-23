@@ -16,6 +16,8 @@ from django.http import (
     HttpResponseNotFound,
 )
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.admin.models import LogEntry, CHANGE
+from django.contrib.contenttypes.models import ContentType
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.exceptions import MethodNotAllowed, ValidationError
 from rest_framework.permissions import IsAuthenticated
@@ -23,7 +25,10 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 from rest_framework_condition import condition
 
+from google.protobuf.timestamp_pb2 import Timestamp
+
 from protobuf import roads_pb2, survey_pb2
+
 
 from .models import (
     CollatedGeoJsonFile,
@@ -121,7 +126,8 @@ def road_update(request):
 
     # assert Road ID given exists in the DB & there are changes to make
     road = get_object_or_404(Road.objects.filter(pk=req_pb.id))
-    if Road.objects.filter(pk=req_pb.id).to_protobuf().roads[0] == req_pb:
+    old_road_pb = Road.objects.filter(pk=req_pb.id).to_protobuf().roads[0]
+    if old_road_pb == req_pb:
         response = HttpResponse(
             req_pb.SerializeToString(),
             status=200,
@@ -136,55 +142,82 @@ def road_update(request):
         return HttpResponse(status=409)
 
     # update the Road instance from PB fields
-    try:
-        road.road_name = req_pb.road_name
-        road.road_code = req_pb.road_code
-        road.road_name = req_pb.road_name
-        road.road_type = req_pb.road_type
-        road.link_code = req_pb.link_code
-        road.link_start_name = req_pb.link_start_name
-        road.link_start_chainage = req_pb.link_start_chainage
-        road.link_end_name = req_pb.link_end_name
-        road.link_end_chainage = req_pb.link_end_chainage
-        road.link_length = req_pb.link_length
-        road.surface_condition = req_pb.surface_condition
-        road.carriageway_width = req_pb.carriageway_width
-        road.administrative_area = req_pb.administrative_area
-        road.project = req_pb.project
-        road.funding_source = req_pb.funding_source
-        road.traffic_level = req_pb.traffic_level
-        # Foreign Key attributes
-        fks = [
-            (MaintenanceNeed, "maintenance_need"),
-            (TechnicalClass, "technical_class"),
-            (RoadStatus, "road_status"),
-            (SurfaceType, "surface_type"),
-            (PavementClass, "pavement_class"),
-        ]
-        for fk in fks:
-            pb_code = getattr(req_pb, fk[1], None)
-            if pb_code:
-                fk_obj = fk[0].objects.filter(code=pb_code).get()
+    fields = [
+        "road_name",
+        "road_code",
+        "road_type",
+        "link_code",
+        "link_start_name",
+        "link_start_chainage",
+        "link_end_name",
+        "link_end_chainage",
+        "link_length",
+        "surface_condition",
+        "carriageway_width",
+        "administrative_area",
+        "project",
+        "funding_source",
+        "traffic_level",
+    ]
+    fks = [
+        (MaintenanceNeed, "maintenance_need"),
+        (TechnicalClass, "technical_class"),
+        (RoadStatus, "road_status"),
+        (SurfaceType, "surface_type"),
+        (PavementClass, "pavement_class"),
+    ]
+    changed_fields = []
+    for field in fields:
+        request_value = getattr(req_pb, field)
+        if getattr(old_road_pb, field) != request_value:
+            # set attribute on road
+            setattr(road, field, request_value)
+            # add field to list of changes fields
+            changed_fields.append(field)
+
+    # Foreign Key attributes
+    for fk in fks:
+        field = fk[1]
+        model = fk[0]
+        request_value = getattr(req_pb, field, None)
+        if getattr(old_road_pb, field) != request_value:
+            if request_value:
+                try:
+                    fk_obj = model.objects.filter(code=request_value).get()
+                except model.DoesNotExist:
+                    return HttpResponse(status=400)
             else:
                 fk_obj = None
-            setattr(road, fk[1], fk_obj)
+            setattr(road, field, fk_obj)
+            # add field to list of changes fields
+            changed_fields.append(field)
 
-        with reversion.create_revision():
-            road.save()
-            # store the user who made the changes
-            reversion.set_user(request.user)
+    with reversion.create_revision():
+        road.save()
 
-        versions = Version.objects.get_for_object(road)
-        req_pb.last_revision_id = versions[0].id
+        # store the user who made the changes
+        reversion.set_user(request.user)
 
-        response = HttpResponse(
-            req_pb.SerializeToString(),
-            status=200,
-            content_type="application/octet-stream",
+        # construct a django admin log style change message and use that
+        # to create a revision comment and an admin log entry
+        change_message = [dict(changed=dict(fields=changed_fields))]
+        reversion.set_comment(json.dumps(change_message))
+        LogEntry.objects.log_action(
+            request.user.id,
+            ContentType.objects.get_for_model(Road).pk,
+            road.pk,
+            str(road),
+            CHANGE,
+            change_message,
         )
-        return response
-    except Exception as err:
-        return HttpResponse(status=400)
+
+    versions = Version.objects.get_for_object(road)
+    req_pb.last_revision_id = versions[0].id
+
+    response = HttpResponse(
+        req_pb.SerializeToString(), status=200, content_type="application/octet-stream"
+    )
+    return response
 
 
 def geojson_details(request):
@@ -208,7 +241,7 @@ def protobuf_road(request, pk):
     if not roads.exists():
         return HttpResponseNotFound()
 
-    roads_protobuf = Road.objects.to_protobuf()
+    roads_protobuf = roads.to_protobuf()
 
     return HttpResponse(
         roads_protobuf.roads[0].SerializeToString(),
@@ -242,30 +275,6 @@ def protobuf_road_set(request, chunk_name=None):
     return HttpResponse(
         roads_protobuf.SerializeToString(), content_type="application/octet-stream"
     )
-
-
-def all_surveys(request):
-    if not request.user.is_authenticated:
-        return HttpResponseForbidden()
-
-    queryset = Survey.objects.order_by(
-        "road", "chainage_start", "chainage_end", "-date_surveyed", "-date_updated"
-    )
-    serializer = SurveySerializer(queryset, many=True)
-    return JsonResponse(serializer.data, safe=False)
-
-
-def road_surveys(request, road_code):
-    if not request.user.is_authenticated:
-        return HttpResponseForbidden()
-
-    queryset = (
-        Survey.objects.filter(road=road_code)
-        .order_by("road", "chainage_start", "chainage_end", "-date_surveyed")
-        .distinct("road", "chainage_start", "chainage_end")
-    )
-    serializer = SurveySerializer(queryset, many=True)
-    return JsonResponse(serializer.data, safe=False)
 
 
 def road_report(request, road_code, rpt_start=0.0, rpt_end=None):
@@ -442,6 +451,14 @@ def protobuf_road_surveys(request, pk):
     )
 
 
+def pbtimestamp_to_pydatetime(pb_stamp):
+    """ Take a Protobuf Timestamp as single input and outputs a 
+    time zone aware, Python Datetime object (UTC) """
+    return pytz.utc.localize(
+        datetime.strptime(pb_stamp.ToJsonString(), "%Y-%m-%dT%H:%M:%S.%fZ")
+    )
+
+
 def survey_create(request):
     if not request.user.is_authenticated:
         return HttpResponseForbidden()
@@ -467,11 +484,7 @@ def survey_create(request):
                     "user": get_user_model().objects.get(pk=req_pb.user),
                     "chainage_start": req_pb.chainage_start,
                     "chainage_end": req_pb.chainage_end,
-                    "date_surveyed": pytz.utc.localize(
-                        datetime.strptime(
-                            req_pb.date_surveyed.ToJsonString(), "%Y-%m-%dT%H:%M:%S.%fZ"
-                        )
-                    ),
+                    "date_surveyed": pbtimestamp_to_pydatetime(req_pb.date_surveyed),
                     "values": json.loads(req_pb.values),
                 }
             )
@@ -525,11 +538,7 @@ def survey_update(request):
         survey.user = get_user_model().objects.get(pk=req_pb.user)
         survey.chainage_start = req_pb.chainage_start
         survey.chainage_end = req_pb.chainage_end
-        survey.date_surveyed = pytz.utc.localize(
-            datetime.strptime(
-                req_pb.date_surveyed.ToJsonString(), "%Y-%m-%dT%H:%M:%S.%fZ"
-            )
-        )
+        survey.date_surveyed = pbtimestamp_to_pydatetime(req_pb.date_surveyed)
         survey.values = json.loads(req_pb.values)
 
         with reversion.create_revision():
@@ -548,3 +557,35 @@ def survey_update(request):
         return response
     except Exception as err:
         return HttpResponse(status=400)
+
+
+def protobuf_road_audit(request, pk):
+    """ returns a protobuf object with the set of all audit history items for a Road """
+
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+    queryset = Road.objects.all()
+    road = get_object_or_404(queryset, pk=pk)
+    versions = Version.objects.get_for_object(road)
+    versions_protobuf = roads_pb2.Versions()
+
+    for version in versions:
+        version_pb = versions_protobuf.versions.add()
+        setattr(version_pb, "pk", version.pk)
+        setattr(version_pb, "user", _display_user(version.revision.user))
+        setattr(version_pb, "comment", version.revision.comment)
+        # set datetime field
+        ts = Timestamp()
+        ts.FromDatetime(version.revision.date_created)
+        version_pb.date_created.CopyFrom(ts)
+    return HttpResponse(
+        versions_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )
+
+
+def _display_user(user):
+    """ returns the full username if populated, or the username, or "" """
+    if not user:
+        return ""
+    user_display = user.get_full_name()
+    return user_display or user.username

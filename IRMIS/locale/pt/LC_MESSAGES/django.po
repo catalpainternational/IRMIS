@@ -127,16 +127,16 @@ msgstr ""
 "municipal, posto administrativo ou suco mais próximo)"
 
 msgid "Link End Chainage (Km)"
-msgstr ""
+msgstr "Chainage do final da secção (Km)"
 
 msgid "Enter chainage for link ending point"
-msgstr ""
+msgstr "Introduza a chainage do ponto final da secção"
 
 msgid "Link Start Chainage (Km)"
-msgstr ""
+msgstr "Chainage do início da secção (Km)"
 
 msgid "Enter chainage for link starting point"
-msgstr ""
+msgstr "Introduza a chainage do ponto inicial da secção"
 
 msgid "Link Length"
 msgstr "Extensão da secção"
@@ -242,13 +242,13 @@ msgid "Link start name"
 msgstr "Nome do início da secção da estrada"
 
 msgid "Link start chainage"
-msgstr ""
+msgstr "Chinage do início da secção"
 
 msgid "Link end name"
 msgstr "Nome do fim da secção da estrada"
 
 msgid "Link end chainage"
-msgstr ""
+msgstr "Chainage do final da secção"
 
 msgid "Surface type"
 msgstr "Tipo de pavimento"
@@ -332,10 +332,10 @@ msgid "Clear"
 msgstr "Limpar"
 
 msgid "Asset"
-msgstr ""
+msgstr "Infra-estrutura"
 
 msgid "Asset condition"
-msgstr ""
+msgstr "Condição da infra-estrutura"
 
 msgid ""
 "Please enter a correct username and password. Note that both fields may be "

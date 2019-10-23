@@ -1,5 +1,6 @@
-import { Road, Roads } from "../../protobuf/roads_pb";
+import { Road, Roads, Versions } from "../../protobuf/roads_pb";
 import { EstradaRoad } from "../road";
+import { EstradaAudit } from "../audit";
 import { ConfigAPI } from "./configAPI";
 
 /** getRoadsMetadataChunks
@@ -78,8 +79,36 @@ export function putRoadMetadata(road) {
         });
 }
 
+function makeEstradaObject(estradaObjectType, protoBufSource) {
+    let estradaObject = Object.create(estradaObjectType.prototype);
+    Object.assign(estradaObject, protoBufSource);
+
+    return estradaObject;
+}
+
 function makeEstradaRoad(pbroad) {
-    var estradaRoad = Object.create(EstradaRoad.prototype);
-    Object.assign(estradaRoad, pbroad);
-    return estradaRoad;
+    return makeEstradaObject(EstradaRoad, pbroad);
+}
+
+function makeEstradaAudit(pbversion) {
+    return makeEstradaObject(EstradaAudit, pbversion);
+}
+
+/** getRoadAuditData
+ *
+ * Retrieves the Audit changes data for a single road from the server
+ *
+ * @returns a list of version objects
+ */
+export function getRoadAuditData(roadId) {
+    const assetTypeUrlFragment = "protobuf_road_audit";
+
+    const auditDataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${roadId}`;
+
+    return fetch(auditDataUrl, ConfigAPI.requestInit())
+        .then((auditDataResponse) => (auditDataResponse.arrayBuffer()))
+        .then((protobufBytes) => {
+            const uintArray = new Uint8Array(protobufBytes);
+            return Versions.deserializeBinary(uintArray).getVersionsList().map(makeEstradaAudit);
+        });
 }

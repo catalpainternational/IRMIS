@@ -7,7 +7,7 @@ import { ConfigAPI } from "./configAPI";
 export function getGeoJsonDetails() {
     const geojsonDetailsUrl = `${ConfigAPI.requestAssetUrl}/geojson_details`;
 
-    return fetch(geojsonDetailsUrl, ConfigAPI.requestAssetInit)
+    return fetch(geojsonDetailsUrl, ConfigAPI.requestInit)
         .then((geojsonDetailsResponse) => geojsonDetailsResponse.json());
 }
 
@@ -15,7 +15,7 @@ export function getGeoJsonDetails() {
 export function getGeoJsonDetail(geoJsonDetail) {
     const geoJsonUrl = `${ConfigAPI.requestMediaUrl}/${geoJsonDetail.geobuf_file}`;
 
-    return fetch(geoJsonUrl, ConfigAPI.requestAssetInit)
+    return fetch(geoJsonUrl, ConfigAPI.requestInit)
         .then(geobufResponse => {
             if (geobufResponse.ok) {
                 return geobufResponse.arrayBuffer();

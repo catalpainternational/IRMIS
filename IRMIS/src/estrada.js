@@ -15,6 +15,9 @@ import "./side_menu";
 import "./top_menu";
 import { Map } from "./map/map";
 
+import "./dayjs/dayjs";
+
+
 const estradaMap = new Map();
 
 window.addEventListener("load", () => {
@@ -36,6 +39,7 @@ window.addEventListener("load", () => {
 
     riot.register("data_table", Data_Table);
     riot.register("edit_base", Edit_Base);
+    window.goBack = () => {};
     hashCheck();
 });
 

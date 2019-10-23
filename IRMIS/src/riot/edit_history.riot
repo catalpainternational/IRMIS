@@ -1,0 +1,96 @@
+<edit_history>
+    <h5>{ window.gettext ("History") }</h5>
+
+    <data_table table_id="{this.table_id}" columns="{this.table_columns}" columnSortOrder="{this.columnSortOrder}" pageLength="{this.pageLength}" getHelpText="{props.getHelpText}"></data_table>
+
+    <script>
+        import Data_Table from "./data_table.riot";
+
+        import { getFieldName } from "../road";
+        import { getRoadAudit } from "../roadManager";
+
+        // import { Versions } from "../../protobuf/roads_pb";
+
+        import dayjs from "dayjs";
+        import $ from "jquery";
+
+        export default {
+            state: {
+                loading: true,
+                road: null,
+                error: false,
+                pendingRows: [],
+            },
+            components: {
+                Data_Table,
+            },
+            table_id: "history-table",
+            table_columns: [
+                {
+                    title: "Date", // getFieldName("dateCreated"),
+                    data: "dateCreated",
+                    defaultContent: "",
+                    orderable: false,
+                    render: function ( data, type, row, meta ) {
+                        return type === "display" && data 
+                            ? dayjs(data).format("D MMMM YYYY hh:mm:ss")
+                            : data;
+                    }
+                },
+                {
+                    title: "User", // getFieldName("user"),
+                    data: "user",
+                    defaultContent: "",
+                    orderable: false,
+                },
+                {
+                    title: "Comment", // getFieldName("comment"),
+                    data: "comment",
+                    defaultContent: "",
+                    orderable: false,
+                    render: function ( data, type, row, meta ) {
+                        if (type !== "display") {
+                            return data;
+                        }
+                        try {
+                            const json = JSON.parse(data);
+                            const fields = json[0].changed.fields;
+                            const fieldDisplay = fields.map(getFieldName).join(", ");
+                            return `${window.gettext('Changed')}: ${fieldDisplay}`;
+                        } catch(error) {
+                            return data;
+                        }
+                    }
+                },
+            ],
+            columnSortOrder: [],
+            pageLength: 15,
+            onMounted(props, state) {
+                state.loading = true;
+                state.road = props.road;
+                this.getRoadAudit();
+            },
+            getRoadAudit() {
+                const roadId = this.state.road.id;
+                getRoadAudit(roadId)
+                    .then((auditData) => {
+                        if (auditData) {
+                            this.state.pendingRows = auditData;
+                            const pendingRows = this.state.pendingRows;
+
+                            document.dispatchEvent(new CustomEvent(`${this.table_id}.dataAdded`, {detail: { pendingRows }}));
+
+                            this.state.error = false;
+                        } else {
+                            this.state.error = true;
+                        }
+                    }).catch(err => {
+                        this.state.error = true;
+                    }).finally((r) => {
+                        this.state.loading = false;
+                        this.update();
+                    });
+            }
+        }
+    </script>
+</edit_history>
