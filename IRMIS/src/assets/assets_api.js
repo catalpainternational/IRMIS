@@ -105,7 +105,7 @@ export function getRoadAuditData(roadId) {
 
     const auditDataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${roadId}`;
 
-    return fetch(auditDataUrl, ConfigAPI.requestAssetInit())
+    return fetch(auditDataUrl, ConfigAPI.requestInit())
         .then((auditDataResponse) => (auditDataResponse.arrayBuffer()))
         .then((protobufBytes) => {
             const uintArray = new Uint8Array(protobufBytes);
