@@ -261,8 +261,8 @@
                     if (this.hasChanges()) {
                         debugger;
                         // Complete the survey
-                        this.state.survey.setUser($("#user_welcome").data( "userName" ) || "Unknown");
-                        this.state.survey.setSource(this.modal_id);
+                        this.state.survey.setUser($("#user_welcome").data( "userId" ) || 0);
+                        this.state.survey.setSource("Estrada");
                         // this.state.survey.setChainageStart
                         // this.state.survey.setChainageEnd
                         // this.state.survey.setSurveyedDate
