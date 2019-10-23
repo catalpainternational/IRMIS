@@ -259,13 +259,12 @@
                     }
                 } else {
                     if (this.hasChanges()) {
-                        debugger;
                         // Complete the survey
                         this.state.survey.setUser($("#user_welcome").data( "userId" ) || 0);
                         this.state.survey.setSource("Estrada");
                         
-                        // this.state.survey.setChainageStart()
-                        // this.state.survey.setChainageEnd()
+                        this.state.survey.setChainageStart(this.state.survey.startChainage)
+                        this.state.survey.setChainageEnd(this.state.survey.endChainage)
 
                         // If we're here we will have a user entered surveyDate, even so Date.now() is still used as a fall back
                         const dateSurveyed = new proto.google.protobuf.Timestamp();
