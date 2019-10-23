@@ -97,7 +97,7 @@ class SurveyQuerySet(models.QuerySet):
             .values("object_id", "revision_id")
         }
 
-        for survey in self.values("id", *fields.values()):
+        for survey in self.values(*fields.values()):
             survey_protobuf = surveys_protobuf.surveys.add()
             for protobuf_key, query_key in fields.items():
                 if (
