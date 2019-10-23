@@ -287,7 +287,10 @@ def road_report(request, road_code, rpt_start=0.0, rpt_end=None):
         .distinct("road", "chainage_start", "chainage_end")
     )
     report = Report(road_code, surveys, rpt_start, rpt_end)
-    return JsonResponse(report.export_report(), safe=False)
+    return JsonResponse(report.to_protobuf(), safe=False)    
+    # return HttpResponse(
+    #     report_protobuf.SerializeToString(), content_type="application/octet-stream"
+    # )
 
 
 class Report:
@@ -415,7 +418,14 @@ class Report:
         report["table"] = self.build_chainage_table()
         return report
 
-        
+    def to_protobuf(self):
+        rpt = self.export_report()
+        # Placeholder code ... need to build out Protobuf schema first
+        # report_protobuf = ProtoReport()
+        # report_protobuf.table = 
+        return rpt
+
+
 def protobuf_surveys(request, chunk_name=None):
     """ returns a protobuf object with the set of all surveys or only of specific type"""
 
