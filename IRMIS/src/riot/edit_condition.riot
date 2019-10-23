@@ -68,15 +68,17 @@
         </form>
     </edit_modal>
 
-    <h5>{ window.gettext ("Condition") }</h5>
-    <section>
-        <div class="form-group">
-            <div class="button-wrapper d-flex justify-content-end">
-                <button class="btn btn-primary" onclick="{ addEdit }" disabled="{ props.editing }">{ window.gettext("Add") }</button>
-            </div>
+    <div class="content-wrapper">
+        <h5>{ window.gettext("Surface Condition") }</h5>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="align-items-center d-flex justify-content-between">
+            <h5>{ window.gettext("Surface Condition Data (SDI)") }</h5>
+            <button class="btn btn-primary" onclick="{ addEdit }" disabled="{ props.editing }">{ window.gettext("Add") }</button>
         </div>
         <data_table table_id="{this.table_id}" columns="{this.table_columns}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}"></data_table>
-    </section>
+    </div>
 
     <script>
         import Data_Table from "./data_table.riot";

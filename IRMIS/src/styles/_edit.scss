@@ -58,7 +58,6 @@ edit_location_type,
 edit_asset_details,
 edit_pavement,
 edit_project,
-edit_condition,
 edit_maintenance,
 edit_history {
     height: calc(100vh - #{$top-menu-height} - 70px - 15px);
@@ -96,9 +95,16 @@ edit_history {
             }
         }
     }
+}
 
-    .button-wrapper {
-        max-width: $max-width;
+edit_condition {
+    div.content-wrapper {
+        background-color: $white;
+        padding: 30px 60px 60px;
+
+        &:not(:first-of-type) {
+            margin-top: 15px;
+        }
     }
 }
 
