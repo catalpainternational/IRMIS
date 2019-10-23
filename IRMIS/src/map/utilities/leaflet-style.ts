@@ -3,7 +3,7 @@ import { CircleMarkerOptions } from "leaflet";
 
 import { GeoDataStyle, IPointToLayerBaseStyle, IPointToLayerHtmlStyle } from "../models/geo-data-style";
 
-import { getFeatureType } from "./displayGeoJSON";
+import { getFeatureType } from "./propertiesGeoJSON";
 import { hashFeatureTypeName } from "./text";
 
 /** Generate a fall-back colour based on the featureType name */
