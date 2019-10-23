@@ -1,46 +1,19 @@
 import "datatables.net-bs4";
 import $ from "jquery";
 
-import { getFieldName } from "./road";
 import { exportCsv } from "./exportCsv";
+import { estradaTableColumns, estradaTableEventListeners } from "./mainTableDefinition";
 import { datatableTranslations } from "./datatableTranslations";
 
-let table;
+let table = null;
 let pendingRows = [];
 
-// when the roadManager has new roads, add them to the table
-document.addEventListener('estrada.roadManager.roadMetaDataAdded', (data) => {
-    const roadList = data.detail.roadList;
-
-    // add the roads to a pending array ( in case the table is not initialised early enough )
-    pendingRows = pendingRows.concat(roadList);
-    if (table) {
-        table.rows.add(pendingRows).draw();
-        pendingRows = [];
-    }
-});
-
-document.addEventListener('estrada.table.roadMetaDataUpdated', (data) => {
-    const road = data.detail.road;
-    table.row('#' + road.id).data(road).draw();
-});
-
-// when a filter is applied, update the filter id whitelist
-document.addEventListener('estrada.filter.applied', (data) => {
-    idWhitelistMap = data.detail.idMap;
-    table.draw();
-});
-
-// when the view changes adjust the table rows
-document.addEventListener('estrada.sideMenu.viewChanged', (data) => {
-    const viewName = data.detail ? data.detail.viewName : null;
-    if (viewName && viewName.indexOf('table') !== -1) {
-        const tableRows = (viewName === 'table') ? 20 : 10;
-        table.page.len(tableRows).draw('page');
-    }
-});
-
 window.addEventListener("load", () => {
+    // Event listeners for the table, that are NOT attached to specific elements
+    Object.keys(estradaTableEventListeners).forEach((eventKey) => {
+        document.addEventListener(eventKey, (event) => estradaTableEventListeners[eventKey](event, table, pendingRows, idWhitelistMap));
+    });
+
     // Export All - to CSV
     document.getElementById("export").addEventListener("click", exportTable);
 
@@ -98,151 +71,9 @@ window.addEventListener("load", () => {
     initializeDataTable();
 });
 
-export const columns = [
-    {
-        title: getFieldName("road_code"),
-        data: "code",
-        defaultContent: "",
-        type: "roadCode"
-    },
-    {
-        title: getFieldName("road_name"),
-        data: "name",
-        defaultContent: "",
-        visible: false
-    },
-    {
-        title: getFieldName("link_code"),
-        data: "linkCode",
-        defaultContent: "",
-    },
-    {
-        title: window.gettext("Link Name"),
-        data: "linkName",
-        defaultContent: "",
-        visible: false
-    },
-    {
-        title: getFieldName("link_length"),
-        data: "linkLength",
-        defaultContent: "",
-    },
-    {
-        title: getFieldName("link_start_name"),
-        data: "linkStartName",
-        defaultContent: "",
-    },
-    {
-        title: getFieldName("link_start_chainage"),
-        data: "linkStartChainage",
-        defaultContent: "",
-    },
-    {
-        title: getFieldName("link_end_name"),
-        data: "linkEndName",
-        defaultContent: "",
-    },
-    {
-        title: getFieldName("link_end_chainage"),
-        data: "linkEndChainage",
-        defaultContent: "",
-    },
-    {
-        title: getFieldName("surface_type"),
-        data: "surfaceType",
-        defaultContent: "",
-    },
-    {
-        title: getFieldName("pavement_class"),
-        data: "pavementClass",
-        defaultContent: "",
-    },
-    {
-        title: getFieldName("carriageway_width"),
-        data: "carriagewayWidth",
-        defaultContent: "",
-    },
-    {
-        title: getFieldName("administrative_area"),
-        data: "administrativeArea",
-        defaultContent: "",
-    },
-    {
-        title: getFieldName("road_type"),
-        data: "type",
-        defaultContent: "",
-        visible: false
-    },
-    {
-        title: getFieldName("technical_class"),
-        data: "technicalClass",
-        defaultContent: "",
-        visible: false
-    },
-    {
-        title: getFieldName("funding_source"),
-        data: "fundingSource",
-        defaultContent: "",
-        visible: false
-    },
-    {
-        title: getFieldName("road_status"),
-        data: "status",
-        defaultContent: "",
-        visible: false,
-    },
-    {
-        title: getFieldName("project"),
-        data: "project",
-        defaultContent: "",
-        visible: false,
-    },
-    {
-        title: getFieldName("surface_condition"),
-        data: "surfaceCondition",
-        defaultContent: "",
-    },
-    {
-        title: getFieldName("maintenance_need"),
-        data: "maintenanceNeed",
-        defaultContent: "",
-        visible: false,
-    },
-    {
-        title: getFieldName("traffic_level"),
-        data: "trafficLevel",
-        defaultContent: "",
-        visible: false,
-    },
-    {
-        title: gettext("Start Point (DMS)"),
-        data: "startDMS",
-        defaultContent: "",
-        visible: false
-    },
-    {
-        title: gettext("End Point (DMS)"),
-        data: "endDMS",
-        defaultContent: "",
-        visible: false
-    },
-    {
-        title: gettext("Start Point (UTM)"),
-        data: "startUTM",
-        defaultContent: "",
-        visible: false
-    },
-    {
-        title: gettext("End Point (UTM)"),
-        data: "endUTM",
-        defaultContent: "",
-        visible: false
-    },
-];
-
 function initializeDataTable() {
     if (window.canEdit) {
-        columns.unshift({
+        estradaTableColumns.unshift({
             title: "",
             data: null,
             render: r => '<a class="image pencil" href="#edit/' + r.getId() + '/location_type"></a>',
@@ -252,7 +83,7 @@ function initializeDataTable() {
     }
 
     table = $("#data-table").DataTable({
-        columns: columns,
+        columns: estradaTableColumns,
         rowId: ".getId()",
         // default order is ascending by: road code, link code, & link start chainage
         order: window.canEdit ? [[1, 'asc'], [3, 'asc'], [7, 'asc']] : [[0, 'asc'], [2, 'asc'], [6, 'asc']],
@@ -268,7 +99,7 @@ function initializeDataTable() {
 }
 
 function getTableData() {
-    const headers = columns
+    const headers = estradaTableColumns
         .filter((c) => c.title !== "")
         .map((c) => ({ title: c.title, data: c.data }));
 
@@ -289,16 +120,15 @@ function getTableData() {
     return { headers: headers.map((h) => h.title), rows: rows };
 }
 
-
 function exportTable() {
     const tableData = getTableData();
     exportCsv(tableData.headers, tableData.rows);
 }
 
 // Filter functionality
-let idWhitelistMap = null;
+let idWhitelistMap = {};
 let currentFilter = (p) => {
-    return idWhitelistMap === null || idWhitelistMap[p.getId().toString()];
+    return Object.keys(idWhitelistMap).length === 0 || idWhitelistMap[p.getId().toString()];
 }
 
 $.fn.dataTableExt.afnFiltering.push(
