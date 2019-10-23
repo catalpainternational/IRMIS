@@ -20,7 +20,7 @@ edit_history,
     @extend %scrollbar-shared;
 }
 
-#data-table, #history-table, #surface-condition-table {
+#all-data-table, #history-table, #surface-condition-table {
     @extend %scrollbar-shared;
 
     &::-webkit-scrollbar {
@@ -34,7 +34,7 @@ edit_history,
     }
 }
 
-#data-table {
+#all-data-table {
     &::-webkit-scrollbar:vertical {
         border-left: 1px solid $light-gray;
     }

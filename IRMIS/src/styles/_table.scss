@@ -8,15 +8,15 @@ table.dataTable {
         display: none;
     }
 
-    &.table:not(.map) #data-table {
+    &.table:not(.map) #all-data-table {
         max-height: calc(100vh - #{$top-menu-height} - 31px - 6px - 32px - 15px);
     }
 
-    &.table.map #data-table {
+    &.table.map #all-data-table {
         max-height: calc(60vh - #{$top-menu-height} - 10px - 31px - 6px - 32px - 15px);
     }
 
-    #data-table {
+    #all-data-table {
         margin-top: 0 !important;
         overflow: auto;
     }
