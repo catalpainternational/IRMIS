@@ -88,6 +88,7 @@ class SurveyQuerySet(models.QuerySet):
             chainage_start="chainage_start",
             chainage_end="chainage_end",
             values="values",
+            source="source",
         )
 
         last_revisions = {
@@ -172,6 +173,12 @@ class Survey(models.Model):
         help_text=_("Enter chainage for survey ending point"),
     )
     values = HStoreField()
+    source = models.CharField(
+        verbose_name=_("Source"),
+        max_length=155,
+        blank=True,
+        null=True,
+    )
 
     def __str__(self,):
         return "%s(%s - %s) %s" % (
