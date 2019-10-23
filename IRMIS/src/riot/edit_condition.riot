@@ -263,12 +263,20 @@
                         // Complete the survey
                         this.state.survey.setUser($("#user_welcome").data( "userId" ) || 0);
                         this.state.survey.setSource("Estrada");
-                        // this.state.survey.setChainageStart
-                        // this.state.survey.setChainageEnd
-                        // this.state.survey.setSurveyedDate
                         
+                        // this.state.survey.setChainageStart()
+                        // this.state.survey.setChainageEnd()
+
+                        // If we're here we will have a user entered surveyDate, even so Date.now() is still used as a fall back
+                        const dateSurveyed = new proto.google.protobuf.Timestamp();
+                        const surveyDate = new Date(this.state.survey.surveyDate || Date.now().toISOString());
+                        dateSurveyed.fromDate(surveyDate);
+
+                        this.state.survey.setDateSurveyed(dateSurveyed);
+
                         // set Survey road from state Road road_code
                         this.state.survey.setRoad(this.state.road.getRoadCode());
+
                         this.saveSurvey();
                     }
 
