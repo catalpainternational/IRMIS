@@ -82,7 +82,7 @@ function initializeDataTable() {
         });
     }
 
-    table = $("#data-table").DataTable({
+    table = $("#all-data-table").DataTable({
         columns: estradaTableColumns,
         rowId: ".getId()",
         // default order is ascending by: road code, link code, & link start chainage

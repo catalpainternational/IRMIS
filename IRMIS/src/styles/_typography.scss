@@ -63,7 +63,12 @@ a {
     &:hover {
         text-decoration: none;
         color: $dark-green;
+        cursor: pointer;
     }
+}
+
+a.active {
+    color: $green !important;
 }
 
 #side-menu a {

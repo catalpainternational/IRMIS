@@ -68,15 +68,22 @@
         </form>
     </edit_modal>
 
-    <h5>{ window.gettext ("Condition") }</h5>
-    <section>
-        <div class="form-group">
-            <div class="button-wrapper d-flex justify-content-end">
-                <button class="btn btn-primary" onclick="{ addEdit }" disabled="{ props.editing }">{ window.gettext("Add") }</button>
+    <div class="content-wrapper">
+        <h5>{ window.gettext("Surface Condition") }</h5>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="align-items-center d-flex justify-content-between">
+            <div>
+                <h5>{ window.gettext("Surface Condition Data (SDI)") }</h5>
+                <a class="{ state.viewAll ? 'active' : '' } all-data-view" onclick="{ viewAll }">{ window.gettext("View all data entries") }</a>
+                <a class="{ !state.viewAll ? 'active' : '' }" onclick="{ viewCurrent }">{ window.gettext("Current condition") }</a>
             </div>
+            <button class="btn btn-primary" onclick="{ addEdit }" disabled="{ props.editing }">{ window.gettext("Add") }</button>
         </div>
-        <data_table table_id="{this.table_id}" columns="{this.table_columns}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}"></data_table>
-    </section>
+        <data_table if="{ state.viewAll }" table_id="{this.all_data_table_id}" columns="{this.all_data_table_columns}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}"></data_table>
+        <data_table if="{ !state.viewAll }" table_id="{this.current_data_table_id}" columns="{this.current_data_table_columns}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}"></data_table>
+    </div>
 
     <script>
         import Data_Table from "./data_table.riot";
@@ -116,6 +123,7 @@
                 canSave: false,
                 errors: {},
                 pendingRows: [],
+                viewAll: false,
             },
             components: {
                 Edit_Modal
@@ -135,7 +143,7 @@
                         if (surveyData) {
                             this.state.pendingRows = surveyData;
                             const pendingRows = this.state.pendingRows;
-                            document.dispatchEvent(new CustomEvent(`${this.table_id}.dataAdded`, {detail: { pendingRows }}));
+                            document.dispatchEvent(new CustomEvent(`${this.current_data_table_id}.dataAdded`, {detail: { pendingRows }}));
                             this.state.error = false;
                         } else {
                             this.state.error = true;
@@ -147,6 +155,16 @@
                         this.update();
                     });
             },
+            viewAll(e) {
+                this.update({
+                    viewAll: true
+                });
+            },
+            viewCurrent(e) {
+                this.update({
+                    viewAll: false
+                });
+            },
             addEdit(e) {
                 // TODO:
                 // baseSurvey must be set to 'empty' for add.
@@ -157,8 +175,36 @@
                 this.showEditModal();
             },
             conditions: window.road_schema.surface_condition,
-            table_id: "surface-condition-table",
-            table_columns: [
+            current_data_table_id: "surface-condition-table",
+            current_data_table_columns: [
+                {
+                    title: window.gettext("Chainage start"), 
+                    data: "chainageStart",
+                    defaultContent: "",
+                },
+                {
+                    title: window.gettext("Chainage end"), 
+                    data: "chainageEnd",
+                    defaultContent: "",
+                },
+                {
+                    title: window.gettext("Surface condition"), 
+                    data: "surfaceCondition",
+                    defaultContent: "",
+                },
+                {
+                    title: window.gettext("Survey date"),
+                    data: "dateSurveyed",
+                    defaultContent: "",
+                },
+                {
+                    title: window.gettext("Added by"), 
+                    data: "user",
+                    defaultContent: "",
+                },
+            ],
+            all_data_table_id: "surface-condition-table",
+            all_data_table_columns: [
                 {
                     title: window.gettext("Chainage start"), 
                     data: "chainageStart",
@@ -189,8 +235,7 @@
                     defaultContent: "",
                 },
                 {
-                    title: window.gettext("Source"), 
-                    data: "source",
+                    title: window.gettext("Option"), 
                     defaultContent: "",
                 },
             ],
