@@ -124,6 +124,7 @@
                 errors: {},
                 pendingRows: [],
                 viewAll: false,
+                editMode: false,
             },
             components: {
                 Edit_Modal
@@ -137,8 +138,8 @@
                 this.getRoadSurveys();
             },
             getRoadSurveys() {
-                const roadCode = this.state.road.getId();
-                getRoadSurveys(roadCode)
+                const roadId = this.state.road.getId();
+                getRoadSurveys(roadId)
                     .then((surveyData) => {
                         if (surveyData) {
                             this.state.pendingRows = surveyData;
@@ -199,7 +200,7 @@
                 },
                 {
                     title: window.gettext("Added by"), 
-                    data: "user",
+                    data: "addedBy",
                     defaultContent: "",
                 },
             ],
@@ -336,19 +337,20 @@
                 } 
             },
             saveSurvey() {
-                // if (this.state.mode == 'create') {
+                if (!this.state.editMode) {
                     createSurvey(this.state.survey)
                         .then((surveyData) => {
                             const pendingRows = [ surveyData ];
-                            document.dispatchEvent(new CustomEvent(`${this.table_id}.dataAdded`, {detail: { pendingRows }}));
-                        }).catch((err) => {
-                            this.props.error = true;
-                        }).finally(() => {
-                            this.update();
-                        });
-                // } else {
-                //     updateSurvey(this.state.survey);
-                // }
+                            document.dispatchEvent(new CustomEvent(`${this.all_data_table_id}.dataAdded`, {detail: { pendingRows }}));
+                        }).catch((err) => { this.props.error = true; });
+                } else {
+                    updateSurvey(this.state.survey)
+                        .then((surveyData) => {
+                            const pendingRows = [ surveyData ];
+                            document.dispatchEvent(new CustomEvent(`${this.all_data_table_id}.dataAdded`, {detail: { pendingRows }}));
+                        }).catch((err) => { this.props.error = true; });
+                }
+                this.update();
             },
             canSave() {
                 const missingFieldNames = checkRequiredFields(this.requiredFieldNames, this.state.survey);
