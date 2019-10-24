@@ -24,7 +24,7 @@ export function getSurveysMetadataChunks() {
  */
 export function getSurveysMetadata(roadId) {
     const surveyTypeUrlFragment = "protobuf_road_surveys";
-    roadCode = roadCode || "";
+    roadId = roadId || "";
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${surveyTypeUrlFragment}/${roadId}`;
 
     return fetch(metadataUrl, ConfigAPI.requestInit())
