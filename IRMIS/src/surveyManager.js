@@ -20,7 +20,6 @@ export function createSurvey(survey) {
     return Promise.resolve(postSurveyData(survey))
         .then(survey => {
             surveys[survey.getId()] = survey;
-            // document.dispatchEvent(new CustomEvent("estrada.table.surveyMetaDataUpdated", {detail: {survey}}));
             return survey;
         });
 }
@@ -29,7 +28,6 @@ export function updateSurvey(survey) {
     return Promise.resolve(putSurveyData(survey))
         .then(survey => {
             surveys[survey.getId()] = survey;
-            // document.dispatchEvent(new CustomEvent("estrada.table.surveyMetaDataUpdated", {detail: {survey}}));
             return survey;
         });
 }
