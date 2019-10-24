@@ -127,9 +127,9 @@ class SurveyQuerySet(models.QuerySet):
                 survey_protobuf, "last_revision_id", last_revisions[str(survey["id"])]
             )
             setattr(
-                survey_protobuf, "added_by", getattr(survey, 'user__username', "None")
+                survey_protobuf, "added_by", getattr(survey, "user__username", "None")
             )
-            
+
         return surveys_protobuf
 
 
@@ -177,10 +177,7 @@ class Survey(models.Model):
     )
     values = HStoreField()
     source = models.CharField(
-        verbose_name=_("Source"),
-        max_length=155,
-        blank=True,
-        null=True,
+        verbose_name=_("Source"), max_length=155, blank=True, null=True
     )
 
     def __str__(self,):
