@@ -353,13 +353,13 @@ def survey_create(request):
         # set new last_reversion_id on the protobuf to be returned
         versions = Version.objects.get_for_object(survey)
         req_pb.last_revision_id = versions[0].id
-        
+
         response = HttpResponse(
             req_pb.SerializeToString(),
             status=200,
             content_type="application/octet-stream",
         )
-        
+
         return response
     except Exception as err:
         return HttpResponse(status=400)

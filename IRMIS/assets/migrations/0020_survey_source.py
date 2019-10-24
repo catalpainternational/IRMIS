@@ -5,14 +5,14 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('assets', '0019_surveyed_datetime'),
-    ]
+    dependencies = [("assets", "0019_surveyed_datetime")]
 
     operations = [
         migrations.AddField(
-            model_name='survey',
-            name='source',
-            field=models.CharField(blank=True, max_length=155, null=True, verbose_name='Source'),
-        ),
+            model_name="survey",
+            name="source",
+            field=models.CharField(
+                blank=True, max_length=155, null=True, verbose_name="Source"
+            ),
+        )
     ]

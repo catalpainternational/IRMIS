@@ -89,6 +89,7 @@ class SurveyQuerySet(models.QuerySet):
             chainage_end="chainage_end",
             values="values",
             source="source",
+            added_by="user__username",
         )
 
         last_revisions = {
@@ -174,10 +175,7 @@ class Survey(models.Model):
     )
     values = HStoreField()
     source = models.CharField(
-        verbose_name=_("Source"),
-        max_length=155,
-        blank=True,
-        null=True,
+        verbose_name=_("Source"), max_length=155, blank=True, null=True
     )
 
     def __str__(self,):
