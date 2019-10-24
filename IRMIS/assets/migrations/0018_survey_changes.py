@@ -11,19 +11,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="survey",
             name="date_surveyed",
-            field=models.DateTimeField(
-                blank=True, null=True, verbose_name="Date Surveyed"
-            ),
+            field=models.DateTimeField(null=True, verbose_name="Date Surveyed"),
         ),
         migrations.AddField(
             model_name="survey",
             name="source",
-            field=models.CharField(
-                default=None,
-                help_text="Choose the source of the survey",
-                max_length=150,
-                null=True,
-                verbose_name="Source",
-            ),
+            field=models.CharField(blank=True, max_length=155, null=True, verbose_name='Source')
         ),
     ]
