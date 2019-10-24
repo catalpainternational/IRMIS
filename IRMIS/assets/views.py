@@ -301,8 +301,14 @@ def protobuf_road_surveys(request, pk):
     if not request.user.is_authenticated:
         return HttpResponseForbidden()
 
+    # get the Road link requested 
     road = get_object_or_404(Road.objects.all(), pk=pk)
-    queryset = Survey.objects.filter(road=road.road_code)
+    # pull any Surveys that cover some/all of the Road above
+    queryset = (
+        Survey.objects.filter(road=road.road_code)
+        .filter(chainage_end__gte=road.link_start_chainage)
+        .filter(chainage_start__lte=road.link_end_chainage)
+    )
     queryset.order_by("road", "chainage_start", "chainage_end", "-date_updated")
     surveys_protobuf = queryset.to_protobuf()
 
