@@ -163,21 +163,25 @@
                     title: window.gettext("Chainage start"), 
                     data: "chainageStart",
                     defaultContent: "",
+                    className: "text-right",
                 },
                 {
                     title: window.gettext("Chainage end"), 
                     data: "chainageEnd",
                     defaultContent: "",
+                    className: "text-right",
                 },
                 {
                     title: window.gettext("Surface condition"), 
                     data: "surfaceCondition",
                     defaultContent: "",
+                    className: "text-center",
                 },
                 {
                     title: window.gettext("Survey date"),
                     data: "dateSurveyed",
                     defaultContent: "",
+                    className: "text-center",
                 },
                 {
                     title: window.gettext("Added by"), 
@@ -265,7 +269,7 @@
                         this.state.survey.setChainageStart(this.state.survey.startChainage);
                         this.state.survey.setChainageEnd(this.state.survey.endChainage);
                         this.state.survey.setValues(JSON.stringify({
-                            'surface_condition': this.state.survey.surfaceCondition
+                            surface_condition: this.state.survey.surfaceCondition
                         }));
                         // If we're here we will have a user entered surveyDate, even so Date.now() is still used as a fall back
                         const dateSurveyed = new proto.google.protobuf.Timestamp();
