@@ -463,10 +463,14 @@ def protobuf_road_surveys(request, pk):
 
 def pbtimestamp_to_pydatetime(pb_stamp):
     """ Take a Protobuf Timestamp as single input and outputs a 
-    time zone aware, Python Datetime object (UTC) """
-    return pytz.utc.localize(
-        datetime.strptime(pb_stamp.ToJsonString(), "%Y-%m-%dT%H:%M:%S.%fZ")
-    )
+    time zone aware, Python Datetime object (UTC). Attempts to parse
+    both with and without nanoseconds. """
+
+    try:
+        pb_date = datetime.strptime(pb_stamp.ToJsonString(), "%Y-%m-%dT%H:%M:%SZ")
+    except ValueError:
+        pb_date = datetime.strptime(pb_stamp.ToJsonString(), "%Y-%m-%dT%H:%M:%S.%fZ")
+    return pytz.utc.localize(pb_date)
 
 
 def survey_create(request):
@@ -495,15 +499,21 @@ def survey_create(request):
                     "chainage_start": req_pb.chainage_start,
                     "chainage_end": req_pb.chainage_end,
                     "date_surveyed": pbtimestamp_to_pydatetime(req_pb.date_surveyed),
+                    "source": req_pb.source,
                     "values": json.loads(req_pb.values),
                 }
             )
 
-            response = HttpResponse(
-                req_pb.SerializeToString(),
-                status=200,
-                content_type="application/octet-stream",
-            )
+        # set new last_reversion_id on the protobuf to be returned
+        versions = Version.objects.get_for_object(survey)
+        req_pb.last_revision_id = versions[0].id
+
+        response = HttpResponse(
+            req_pb.SerializeToString(),
+            status=200,
+            content_type="application/octet-stream",
+        )
+
         return response
     except Exception as err:
         return HttpResponse(status=400)
@@ -549,6 +559,7 @@ def survey_update(request):
         survey.chainage_start = req_pb.chainage_start
         survey.chainage_end = req_pb.chainage_end
         survey.date_surveyed = pbtimestamp_to_pydatetime(req_pb.date_surveyed)
+        survey.source = req_pb.source
         survey.values = json.loads(req_pb.values)
 
         with reversion.create_revision():

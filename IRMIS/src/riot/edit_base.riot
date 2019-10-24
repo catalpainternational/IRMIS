@@ -35,7 +35,7 @@
             <edit_asset_details road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'asset_details' }" on-save="{ save }"></edit_asset_details>
             <edit_pavement road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'pavement' }" on-save="{ save }"></edit_pavement>
             <edit_project road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'project' }" on-save="{ save }"></edit_project>
-            <edit_condition road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'condition' }" on-save="{ save }" on-create-survey="{ createSurvey }" on-update-survey="{ updateSurvey }"></edit_condition>
+            <edit_condition road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'condition' }" on-save="{ save }"></edit_condition>
             <edit_maintenance road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'maintenance' }" on-save="{ save }"></edit_maintenance>
 
             <edit_history road="{ state.baseRoad }" getHelpText="{getHelpText}" if="{ state.page === 'history' }"></edit_history>
@@ -60,7 +60,6 @@
 
         import { saveRoad } from "../roadManager";
         import { getHelpText } from "../road";
-        import { createSurvey, updateSurvey, getRoadSurveys } from "../surveyManager";
 
         import Edit_Feedback from './edit_feedback.riot';
         import Edit_Stop_Alert from "./edit_stop_alert.riot";

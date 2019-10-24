@@ -34,6 +34,10 @@ export class EstradaSurvey extends Survey {
         return this.getUser() || "";
     }
 
+    get addedBy() {
+        return this.getAddedBy() || "";
+    }
+
     get chainageStart() {
         return toChainageFormat(this.getChainageStart());
     }
