@@ -1,42 +1,4 @@
-// All dataTables
-table.dataTable {
-    background-color: $white;
-}
-
-#map-table-irmis {
-    &.map:not(.table) #table-irmis {
-        display: none;
-    }
-
-    &.table:not(.map) #data-table {
-        max-height: calc(100vh - #{$top-menu-height} - 31px - 6px - 32px - 15px);
-    }
-
-    &.table.map #data-table {
-        max-height: calc(60vh - #{$top-menu-height} - 10px - 31px - 6px - 32px - 15px);
-    }
-
-    #data-table {
-        margin-top: 0 !important;
-        overflow: auto;
-    }
-}
-
-#history-table_wrapper, #surface-condition-table_wrapper {
-    margin-right: -45px;
-    margin-left: -45px;
-
-    // data table's row parent
-    & > .row:nth-child(2) .col-sm-12 {
-        padding: 0;
-    }
-
-    #history-table, #surface-condition-table {
-        margin-top: 0 !important;
-    }
-}
-
-// Style the dataTable heading
+// DataTables general styling
 .dt-buttons {
     justify-content: flex-end;
     background-color: $white;
@@ -55,61 +17,117 @@ table.dataTable {
     }
 }
 
+#map-table-irmis {
+    &.map:not(.table) #table-irmis {
+        display: none;
+    }
+
+    &.table:not(.map) #all-data-table {
+        max-height: calc(100vh - #{$top-menu-height} - 31px - 6px - 32px - 15px);
+    }
+
+    &.table.map #all-data-table {
+        max-height: calc(60vh - #{$top-menu-height} - 10px - 31px - 6px - 32px - 15px);
+    }
+
+    #all-data-table {
+        margin-top: 0 !important;
+        overflow: auto;
+    }
+}
+
+#history-table_wrapper {
+    margin-right: -45px;
+    margin-left: -45px;
+
+    // data table's row parent
+    & > .row:nth-child(2) .col-sm-12 {
+        padding: 0;
+    }
+
+    & > .row:nth-child(3) {
+        padding-left: 45px;
+    }
+
+    #history-table {
+        margin-top: 0 !important;
+        overflow-x: auto;
+
+        thead th {
+            position: relative !important;
+        }
+
+        thead th:first-child, tbody td:first-child {
+            padding-right: 40px;
+            padding-left: 60px;
+        }
+
+        thead th:not(:first-child), tbody td:not(:first-child) {
+            padding-right: 40px;
+            padding-left: 40px;
+        }
+    }
+}
+
+#surface-condition-table {
+    border-right: 1px solid $light-gray;
+    border-left: 1px solid $light-gray;
+    margin-top: 25px !important;
+    overflow-x: auto;
+}
+
+
 // Override DataTables.net styles
 div.dataTables_wrapper {
-    table.dataTable td.dataTables_empty {
-        text-align: left;
+    table.dataTable {
+        background-color: $white;
+        
+        td.dataTables_empty {
+            text-align: left;
+        }
     }
 
     .dataTables_info {
         padding-top: 8px;
     }
+}
 
-    div.dataTables_paginate {
-        ul.pagination {
-            margin: 0;
+.dataTables_wrapper ul.pagination {
+    margin: 0;
 
-            li.paginate_button.page-item {
-                &:focus {
-                    outline: none;
-                }
+    li.paginate_button.page-item {
+        &:focus {
+            outline: none;
+        }
 
-                &.active a.page-link {
-                    background-color: $white;
-                    border-radius: $radius;
-                    color: $darker-gray;
-                }
+        &.active a.page-link {
+            background-color: $white;
+            border-radius: $radius;
+            color: $darker-gray;
+        }
 
-                a.page-link {
-                    background-color: inherit;
-                    box-shadow: none;
-                    color: $white;
-                    border: 0;
-                }
-            }
+        a.page-link {
+            background-color: inherit;
+            box-shadow: none;
+            color: $white;
+            border: 0;
         }
     }
 }
 
-#history-table_wrapper.dataTables_wrapper, #surface-condition-table_wrapper.dataTables_wrapper {
-    // table pagination's row parent
-    & > .row:nth-child(3) {
-        padding-left: 45px;
-    }
+#history-table_wrapper ul.pagination, #surface-condition-table ul.pagination {
+    li.paginate_button.page-item {
+        &.active a.page-link {
+            background-color: $darker-gray;
+            color: $white;
+        }
 
-    ul.pagination {
-        li.paginate_button.page-item {
-            &.active a.page-link {
-                background-color: $darker-gray;
-                color: $white;
-            }
-
-            a.page-link {
-                color: $darker-gray;
-            }
+        a.page-link {
+            color: $darker-gray;
         }
     }
 }
+
 
 // Override Bootstrap table styles
 table.table {
@@ -160,21 +178,5 @@ table.table {
             background-color: $lighter-gray;
             cursor: pointer;
         }
-    }
-}
-
-table#history-table, table#surface-condition-table {
-    thead th {
-        position: relative !important;
-    }
-
-    thead th:first-child, tbody td:first-child {
-        padding-right: 40px;
-        padding-left: 60px;
-    }
-
-    thead th:not(:first-child), tbody td:not(:first-child) {
-        padding-right: 40px;
-        padding-left: 40px;
     }
 }

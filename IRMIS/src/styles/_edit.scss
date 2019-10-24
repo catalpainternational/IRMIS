@@ -54,10 +54,16 @@ $max-width: 400px;
     }
 }
 
-edit_asset_details, edit_pavement, edit_project, edit_condition, edit_maintenance, edit_location_type, edit_history {
+edit_location_type,
+edit_asset_details,
+edit_pavement,
+edit_project,
+edit_maintenance,
+edit_history {
     height: calc(100vh - #{$top-menu-height} - 70px - 15px);
     background-color: $white;
     padding: 30px 60px 60px;
+    overflow-x: hidden;
     overflow-y: auto;
     display: block;
 
@@ -89,9 +95,24 @@ edit_asset_details, edit_pavement, edit_project, edit_condition, edit_maintenanc
             }
         }
     }
+}
 
-    .button-wrapper {
-        max-width: $max-width;
+edit_condition {
+    .content-wrapper {
+        background-color: $white;
+        padding: 30px 60px 60px;
+
+        &:not(:first-of-type) {
+            margin-top: 15px;
+        }
+    }
+
+    h5 {
+        margin-bottom: 0;
+    }
+
+    .all-data-view {
+        margin-right: 20px;
     }
 }
 
