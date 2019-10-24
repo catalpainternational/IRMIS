@@ -340,7 +340,7 @@
                     createSurvey(this.state.survey)
                         .then((surveyData) => {
                             const pendingRows = [ surveyData ];
-                            document.dispatchEvent(new CustomEvent(`${this.table_id}.dataAdded`, {detail: { pendingRows }}));
+                            document.dispatchEvent(new CustomEvent(`${this.all_data_table_id}.dataAdded`, {detail: { pendingRows }}));
                         }).catch((err) => {
                             this.props.error = true;
                         }).finally(() => {
