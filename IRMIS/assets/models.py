@@ -126,7 +126,10 @@ class SurveyQuerySet(models.QuerySet):
             setattr(
                 survey_protobuf, "last_revision_id", last_revisions[str(survey["id"])]
             )
-
+            setattr(
+                survey_protobuf, "added_by", getattr(survey, 'user__username', "None")
+            )
+            
         return surveys_protobuf
 
 
