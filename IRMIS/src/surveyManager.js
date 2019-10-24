@@ -11,7 +11,6 @@ export function getSurvey(id) {
 export function getRoadSurveys(roadId) {
     return Promise.resolve(getSurveysMetadata(roadId))
         .then(surveys => {
-            // document.dispatchEvent(new CustomEvent("estrada.table.surveyMetaDataUpdated", {detail: {survey}}));
             return surveys;
         });
 }
