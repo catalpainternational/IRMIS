@@ -315,7 +315,7 @@ def pbtimestamp_to_pydatetime(pb_stamp):
     """ Take a Protobuf Timestamp as single input and outputs a 
     time zone aware, Python Datetime object (UTC). Attempts to parse
     both with and without nanoseconds. """
-    
+
     try:
         pb_date = datetime.strptime(pb_stamp.ToJsonString(), "%Y-%m-%dT%H:%M:%SZ")
     except ValueError:
