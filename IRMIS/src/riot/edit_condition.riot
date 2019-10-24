@@ -124,6 +124,7 @@
                 errors: {},
                 pendingRows: [],
                 viewAll: false,
+                editMode: false,
             },
             components: {
                 Edit_Modal
@@ -336,19 +337,19 @@
                 } 
             },
             saveSurvey() {
-                // if (!this.state.editMode) {
+                if (!this.state.editMode) {
                     createSurvey(this.state.survey)
                         .then((surveyData) => {
                             const pendingRows = [ surveyData ];
                             document.dispatchEvent(new CustomEvent(`${this.all_data_table_id}.dataAdded`, {detail: { pendingRows }}));
                         }).catch((err) => { this.props.error = true; });
-                // } else {
-                    // updateSurvey(this.state.survey)
-                    //     .then((surveyData) => {
-                    //         const pendingRows = [ surveyData ];
-                    //         document.dispatchEvent(new CustomEvent(`${this.all_data_table_id}.dataAdded`, {detail: { pendingRows }}));
-                    //     }).catch((err) => { this.props.error = true; });
-                // }
+                } else {
+                    updateSurvey(this.state.survey)
+                        .then((surveyData) => {
+                            const pendingRows = [ surveyData ];
+                            document.dispatchEvent(new CustomEvent(`${this.all_data_table_id}.dataAdded`, {detail: { pendingRows }}));
+                        }).catch((err) => { this.props.error = true; });
+                }
                 this.update();
             },
             canSave() {
