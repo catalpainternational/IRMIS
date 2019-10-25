@@ -367,7 +367,7 @@
             checkSurveyDate(e) {
                 const fieldName = e.currentTarget.name;
                 const input = e.currentTarget.value;
-                const testResult = input < this.max_date();
+                const testResult = input <= this.max_date();
                 const errorText = window.gettext("Survey date cannot be in the future");
 
                 this.validate(fieldName, input, testResult, errorText );
@@ -389,7 +389,7 @@
                 this.canSave();
             },
             modal_id: "surface-condition-modal",
-            max_date: () => { return (new Date()).toISOString().substring(0, 10); }
+            max_date: () => new Date().toISOString().substring(0, 10),
         }
     </script>
 </edit_condition>
