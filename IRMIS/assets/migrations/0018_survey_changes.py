@@ -16,6 +16,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="survey",
             name="source",
-            field=models.CharField(blank=True, max_length=155, null=True, verbose_name='Source')
+            field=models.CharField(
+                blank=True, max_length=155, null=True, verbose_name="Source"
+            ),
         ),
     ]
