@@ -1,16 +1,18 @@
-import { getRoadMetadata, getRoadsMetadata, getRoadsMetadataChunks, putRoadMetadata } from "./assets/assets_api";
 import { slugToPropertyGetter } from "./filter";
+import { getRoadAuditData, getRoadMetadata, getRoadsMetadata, getRoadsMetadataChunks, putRoadMetadata } from "./assets/assets_api";
 
-let roads = {}
-let filteredRoads = {}
+import { Road, Version } from "../protobuf/roads_pb";
+
+const roads = {};
+let filteredRoads = {};
 
 // Get the road metadata chunk details
 getRoadsMetadataChunks()
-    .then(chunks => {
+    .then((chunks) => {
         // for each chunk, download the roads
-        chunks.forEach(chunk => {
+        chunks.forEach((chunk) => {
             getRoadsMetadata(chunk.road_type)
-                .then(roadList => {
+                .then((roadList) => {
                     // add the roads to the road manager
                     addRoadMetadata(roadList);
                 });
@@ -18,14 +20,16 @@ getRoadsMetadataChunks()
     });
 
 // when a filter is applied filter the roads
-document.addEventListener('estrada.filter.apply', (data) => {
+document.addEventListener("estrada.filter.apply", (data) => {
     const filterState = data.detail.filterState;
     filterRoads(filterState);
 });
 
 export function getRoad(id) {
-    let road = roads[id];
-    if(road) return Promise.resolve(road);
+    const road = roads[id];
+    if (road) {
+        return Promise.resolve(road);
+    }
     return getRoadMetadata(id);
 }
 
@@ -37,15 +41,23 @@ function addRoadMetadata(roadList) {
         },
         roads,
     );
-    document.dispatchEvent(new CustomEvent("estrada.roadManager.roadMetaDataAdded", {"detail": { roadList }}));
+    document.dispatchEvent(new CustomEvent("estrada.roadManager.roadMetaDataAdded", {detail: { roadList }}));
 }
 
-export function saveRoad(road) {
-    return Promise.resolve(putRoadMetadata(road))
-        .then(road => {
+export function saveRoad(sourceRoad) {
+    return Promise.resolve(putRoadMetadata(sourceRoad))
+        .then((road) => {
             roads[road.getId()] = road;
             document.dispatchEvent(new CustomEvent("estrada.table.roadMetaDataUpdated", {detail: {road}}));
             return road;
+        });
+}
+
+export function getRoadAudit(roadId) {
+    return Promise.resolve(getRoadAuditData(roadId))
+        .then((auditList) => {
+            // document.dispatchEvent(new CustomEvent("estrada.auditTable.roadAuditDataAdded", {detail: {auditList}}));
+            return auditList;
         });
 }
 
@@ -75,25 +87,24 @@ function filterRoads(filterState) {
     document.dispatchEvent(new CustomEvent("estrada.filter.applied", {"detail": { idMap }}));
 }
 
-/** Get a subset of information (code and name) for use in building a popup on the map */
-export function getRoadPopupData(id) {
+export function roadPopup(id) {
     const road = roads[id];
-    const roadPopupData = {};
     if (!road) {
         // If the user clicks on the road in the map before the data is in protoBuf
-        // we may not have the matching info to show them.
-        // So just exit politely.
-        roadPopupData[window.gettext("Data")] = window.gettext("Loading");
-        return roadPopupData;
+        return '<span class="popup"><span class="popup label">' + gettext('Loading')  + '</span></span>';
+    }
+    const code = road.getRoadCode();
+    const name = road.getRoadName();
+
+    let html = "";
+
+    if (code) {
+        html += '<span class="popup"><span class="popup label">Code: </span><span class="popup value">' + code + '</span></span>';
     }
 
-    let code, name;
-    if (code = road.getRoadCode()) {
-        roadPopupData.Code = code;
+    if (name) {
+        html += '<span class="popup"><span class="popup label">Name: </span><span class="popup value">' + name + '</span> </span>';
     }
-    if (name = road.getRoadName()) {
-        roadPopupData.Name = name;
-    };
-    
-    return roadPopupData;
+
+    return html;
 }

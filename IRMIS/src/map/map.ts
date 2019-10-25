@@ -16,7 +16,7 @@ import { getFilterStyles } from "./utilities/filterGeoJSON";
 import { FallbackLayerStyle, FixLayerStyleDefaults, styleGeometry, stylePoint } from "./utilities/leaflet-style";
 import { getFeatureType } from "./utilities/metaGeoJSON";
 
-import { getRoadPopupData } from "../roadManager.js";
+import { roadPopup } from "../roadManager.js";
 
 /** The collection of all GeoJSON elements currently added to the map,
  * organised by their featureType
@@ -27,20 +27,6 @@ export let featureLookup: { [name: string]: Feature<Geometry, any> } = {};
 export let layerLookup: { [name: string]: L.Layer } = {};
 
 export class Map {
-    /** Accepts a simple object and generates a span for each key value pair */
-    private static buildPopup(popupData: {[name: string]: any}): string {
-        let html = "";
-
-        Object.keys(popupData).forEach((key) => {
-            html += `
-            <span class="popup">
-                <span class="popup label">${key}: </span>
-                <span class="popup value">${popupData[key]}</span>
-            </span>`;
-        });
-
-        return html;
-    }
 
     private lMap = {} as L.Map;
     private zoomControl = {} as L.Control.Zoom;
@@ -160,8 +146,6 @@ export class Map {
 
     private getPopup(layer: any): string {
         const id = parseInt(layer.feature.properties.pk, 10);
-        const roadPopupData = getRoadPopupData(id) as {[name: string]: any};
-
-        return Map.buildPopup(roadPopupData);
+        return roadPopup(id);
     }
 }

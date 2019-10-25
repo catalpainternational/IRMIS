@@ -3,7 +3,13 @@
     "extends": [
         "tslint:recommended"
     ],
-    "jsRules": {},
-    "rules": {},
+    "jsRules": {
+        "object-literal-sort-keys": false
+    },
+    "rules": {
+        "max-line-length": {
+            "options": [120]
+        }
+    },
     "rulesDirectory": []
 }

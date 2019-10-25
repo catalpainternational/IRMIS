@@ -1,0 +1,93 @@
+<data_table>
+    <table if={ state.id } id={ state.id } class="d-block table table-bordered table-hover w-100"></table>
+
+    <script>
+        import { getHelpText } from "../road";
+        import { datatableTranslations } from "../datatableTranslations";
+
+        import "bootstrap/js/dist/modal";
+        import $ from "jquery";
+
+        let timeoutId = null;
+
+        const initialiseStateFromProps = function(props, state) {
+            state = state || {};
+
+            state.loading = true;
+            state.saving = false;
+            state.error = false;
+            state.hasChanges = false;
+            state.showFeedback = false;
+
+            state.canEdit = false;
+
+            state.id = props.table_id || "data-table";
+            state.columns = props.columns || [];
+            state.columnSortOrder = props.columnSortOrder || [[0, "asc"]];
+            state.pendingRows = props.pendingRows || [];
+            state.pageLength = props.pageLength || 10;
+
+            if (state.canEdit) {
+                state.columnSortOrder.forEach((columnOrder) => {
+                    columnOrder[0]++;
+                })
+
+                state.columns.unshift({
+                    title: "",
+                    data: null,
+                    render: r => `<a class="image pencil" href="#edit/${r.getId()}/location_type"></a>`,
+                    orderable: false,
+                    className: "edit-col"
+                });
+            }            
+        }
+
+        const addEventListener = function(state) {
+            state.dataAddedEventHandler = document.addEventListener(`${state.id}.dataAdded`, (data) => {
+                const pendingRows = data.detail.pendingRows;
+
+                state.pendingRows = state.pendingRows.concat(pendingRows);
+                updateDataTable(state);
+            });
+        }
+
+        const initialiseDataTable = function (state) {
+            state.table = $(`#${state.id}`).DataTable({
+                columns: state.columns,
+                rowId: ".getId()",
+                order: state.columnSortOrder,
+                pageLength: state.pageLength,
+                dom: `<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>`, // https://datatables.net/reference/option/dom#Styling
+                language: datatableTranslations,
+            });
+
+            // add any rows the caller has delivered before initialization
+            updateDataTable(state);
+        }
+
+        const updateDataTable = function (state) {
+            if (state.pendingRows.length) {
+                state.table.rows.add(state.pendingRows).draw();
+                state.pendingRows = [];
+            }    
+        }
+
+        export default {
+            onMounted(props, state) {
+                initialiseStateFromProps(props, state);
+                this.update();
+
+                initialiseDataTable(state);
+                addEventListener(state);
+            },
+            onBeforeUnmount(props, state) {
+                if (state.dataAddedEventHandler) {
+                    document.removeEventListener(`${state.id}.dataAdded`, state.dataAddedEventHandler);
+                }
+            },
+            getHelpText(field) {
+                return getHelpText(field);
+            }
+        };
+    </script>
+</data_table> 

@@ -42,9 +42,13 @@
 
         {# Global javascript #}
 
-        {% if perms.assets.change_road %}
-        <script>window.canEdit = true;</script>
-        {% endif %}
+        <script>
+            {% if perms.assets.change_road %}
+            window.canEdit = true;
+            {% endif %}
+            {% get_current_language as LANGUAGE_CODE %}
+            window.language_code = '{{ LANGUAGE_CODE }}';
+        </script>
 
         {% block extra_js %}
             {# Override this in templates to add extra javascript #}

@@ -1,8 +1,10 @@
 # CHANGE LOG
 
-## 1.2 - Road Segment Survey data
+## 1.2.1 Display Audit Log
 
-## 1.1.0 (0.0.4) - More Admin and miscellaneous
+- As an Admin, I can access information on data source and date of edit/import
+
+## 1.1.0 - More Admin and miscellaneous
  - As an authenticated user, I understand that the export of the table is being prepared
  - As an Authenticated User, I can see the start and end coordinates of a given Road asset on the table
  - As an Authenticated User, I can choose the fields I want to be displayed on the road inventory table

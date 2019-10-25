@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-08 01:28+0000\n"
+"POT-Creation-Date: 2019-10-02 07:35+0000\n"
 "PO-Revision-Date: 2019-10-09 05:39+0000\n"
 "Last-Translator: b'  <januario@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,28 +37,20 @@ msgid "Link code cannot contain white spaces"
 msgstr "Kodigu linha labele inklui espasu mamuk"
 
 #, javascript-format
-msgid ""
-"Link length cannot contain more than %s digits, of which %s are decimals"
+msgid "Link length cannot contain more than %s digits, of which %s are decimals"
 msgstr "Linha nia naruk labele inklui liu %s numeru, nebe %s  mak decimais "
 
 #, javascript-format
-msgid ""
-"Carriage width cannot contain more than %s digits, of which %s are decimals"
+msgid "Carriage width cannot contain more than %s digits, of which %s are decimals"
 msgstr "Carriage nia luan labele inklui liu%s numeru,nebe %s  mak decimais "
 
 #, javascript-format
-msgid ""
-"Link start chainage cannot contain more than %s digits, of which %s are "
-"decimals"
-msgstr ""
-"Linha estasaun komesa labele inklui liu %s numeru,nebe %s  mak decimais "
+msgid "Link start chainage cannot contain more than %s digits, of which %s are decimals"
+msgstr "Linha estasaun komesa labele inklui liu %s numeru,nebe %s  mak decimais "
 
 #, javascript-format
-msgid ""
-"Link end chainage cannot contain more than %s digits, of which %s are "
-"decimals"
-msgstr ""
-"Linha estasaun ikus labele inklui liu %s numeru, nebe %s  mak decimais "
+msgid "Link end chainage cannot contain more than %s digits, of which %s are decimals"
+msgstr "Linha estasaun ikus labele inklui liu %s numeru, nebe %s  mak decimais "
 
 msgid "Edit asset"
 msgstr "Hadia sasan/aset"
@@ -78,8 +70,11 @@ msgstr "Projeitu "
 msgid "Condition"
 msgstr "Kondisaun "
 
-msgid "Loading"
-msgstr "Karegamentu "
+msgid "History"
+msgstr "Istóriku"
+
+msgid "Change log"
+msgstr ""
 
 msgid "Close"
 msgstr "Taka "
@@ -87,12 +82,8 @@ msgstr "Taka "
 msgid "Unsaved Changes"
 msgstr "Alterasaun Sedauk Salva "
 
-msgid ""
-"You have unsaved changes made to this page which will be lost if you "
-"navigate away. Would you like to continue editing?"
-msgstr ""
-"Ita bot sedauk salva ba mudansa nebe halo iha pagina ne no sei lakon kuandu "
-"ita taka. Ita bot sei hakarak kontinua atu edita? "
+msgid "You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?"
+msgstr "Ita bot sedauk salva ba mudansa nebe halo iha pagina ne no sei lakon kuandu ita taka. Ita bot sei hakarak kontinua atu edita? "
 
 msgid "Discard"
 msgstr "Soe tiha "
@@ -100,6 +91,14 @@ msgstr "Soe tiha "
 msgid "Continue editing"
 msgstr "Kontinua edita"
 
+<<<<<<< HEAD
+||||||| merged common ancestors
+>>>>>>>>> Temporary merge branch 2
+=======
+msgid "Loading"
+msgstr "Karegamentu "
+
+>>>>>>> origin/master
 msgid "Success"
 msgstr "Susesu"
 
@@ -112,10 +111,40 @@ msgstr "Erru"
 msgid "Something went wrong"
 msgstr "Buat ruma laloos"
 
+msgid "Changed"
+msgstr ""
+
 msgid "Location"
 msgstr "Fatin "
 
 msgid "Select an Administrative Area"
+<<<<<<< HEAD
+msgstr "Hili Area Administrativa"
+||||||| merged common ancestors
+<<<<<<<<< Temporary merge branch 1
+msgstr ""
+
+msgid "Select a Road Type"
+msgstr ""
+||||||||| merged common ancestors
+msgstr ""
+
+msgid "Choose the administrative area of the road"
+msgstr ""
+=========
+msgstr "Hili Area Administrativa"
+>>>>>>>>> Temporary merge branch 2
+
+<<<<<<<<< Temporary merge branch 1
+msgid "Select a Surface Type"
+msgstr ""
+
+msgid "Link Name"
+msgstr ""
+||||||||| merged common ancestors
+msgid "Select a Road Type"
+msgstr ""
+=======
 msgstr "Hili Area Administrativa"
 
 msgid "Select a Road Type"
@@ -124,12 +153,123 @@ msgstr "Hili Tipu Estrada"
 msgid "Select a Surface Type"
 msgstr "Hili Tipu Superfície"
 
+msgid "Date"
+msgstr "Data"
+
+msgid "User"
+msgstr "Utilisador"
+
+msgid "Description"
+msgstr "Deskrisaun"
+
+msgid "No matching records found"
+msgstr ""
+
+msgid "No data available in table"
+msgstr ""
+
+msgid "Showing _START_ to _END_ of _TOTAL_ entries"
+msgstr ""
+>>>>>>> origin/master
+
+<<<<<<< HEAD
+msgid "Select a Road Type"
+msgstr "Hili Tipu Estrada"
+||||||| merged common ancestors
+msgid "Choose the administrative class of the road"
+msgstr ""
+=========
+msgid "Select a Road Type"
+msgstr "Hili Tipu Estrada"
+>>>>>>>>> Temporary merge branch 2
+=======
+msgid "Showing 0 to 0 of 0 entries"
+msgstr ""
+>>>>>>> origin/master
+
+<<<<<<< HEAD
+msgid "Select a Surface Type"
+msgstr "Hili Tipu Superfície"
+||||||| merged common ancestors
+<<<<<<<<< Temporary merge branch 1
+msgid "Start Point (DMS)"
+msgstr ""
+||||||||| merged common ancestors
+msgid "Select a Surface Type"
+msgstr ""
+=========
+msgid "Select a Surface Type"
+msgstr "Hili Tipu Superfície"
+>>>>>>>>> Temporary merge branch 2
+=======
+msgid "First"
+msgstr ""
+
+msgid "Previous"
+msgstr ""
+>>>>>>> origin/master
+
+<<<<<<< HEAD
+||||||| merged common ancestors
+<<<<<<<<< Temporary merge branch 1
+msgid "End Point (DMS)"
+msgstr ""
+||||||||| merged common ancestors
+msgid "Choose the type of surface of the road link carriageway"
+msgstr ""
+=========
+=======
+msgid "Next"
+msgstr ""
+
+msgid "Last"
+msgstr ""
+
+>>>>>>> origin/master
 msgid "Link Name"
 msgstr "Naran Linha"
 
 msgid "Start Point (DMS)"
 msgstr "Pontu Komesa (DMS)"
+<<<<<<< HEAD
 
+||||||| merged common ancestors
+>>>>>>>>> Temporary merge branch 2
+
+<<<<<<<<< Temporary merge branch 1
+msgid "End Point (UTM)"
+msgstr ""
+
+#~ msgid "E.g. A01-01"
+#~ msgstr "ezemplu..."
+
+#~ msgid "Enter link code according to DRBFC standard"
+#~ msgstr "Hatama..."
+
+#~ msgid "E.g. Dili"
+#~ msgstr "ezemplu..."
+
+#~ msgid "E.g. Manatuto"
+#~ msgstr "ezemplu..."
+
+#~ msgid "E.g. 58.7"
+#~ msgstr "ezemplu..."
+
+#~ msgid "E.g. 5.0"
+#~ msgstr "ezemplu..."
+
+#~ msgid "E.g. 0+000"
+#~ msgstr "ezemplu..."
+
+#~ msgid "E.g. 62+410"
+#~ msgstr "ezemplu..."
+||||||||| merged common ancestors
+msgid "Enter road link current status"
+msgstr ""
+=========
+=======
+
+>>>>>>> origin/master
 msgid "End Point (DMS)"
 msgstr "Pontu Ikus (DMS)"
 

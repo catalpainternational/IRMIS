@@ -16,6 +16,9 @@ import { Map } from "./map/map";
 
 export const estradaMap = new Map();
 
+import "./dayjs/dayjs";
+
+
 window.addEventListener("load", () => {
     // Set up the map and table - but without any data for either
     estradaMap.loadMap();
