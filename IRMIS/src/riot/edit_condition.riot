@@ -23,6 +23,7 @@
             <section>
                 <div class="form-group">
                     <label>{ window.gettext("Survey Date") }</label>
+                    <span class="required">*</span>
                     <small class="form-text text-muted">{props.getHelpText("survey_date")}</small>
                     <!-- It would be preferable to use the 'datetime-local' input type, however Firefox currently does not support it -->
                     <input class="{ state.errors.surveyDate ? 'danger' : null } { state.survey.surveyDate ? '' : 'inactive' } form-control"
@@ -40,6 +41,7 @@
                 <h6>{ window.gettext("Chainage") }</h6>
                 <div class="form-group">
                     <label>{ window.gettext("Chainage start") }</label>
+                    <span class="required">*</span>
                     <input class="{ state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
                         type="number" name="startChainage" placeholder="0+000" value="{ state.survey.startChainage }" oninput="{ checkChainage }"
                         required>
@@ -52,6 +54,7 @@
                 </div>
                 <div class="form-group">
                     <label>{ window.gettext("Chainage end") }</label>
+                    <span class="required">*</span>
                     <input class="{ state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
                         type="number" name="endChainage" placeholder="62+410" value="{ state.survey.endChainage }" oninput="{ checkChainage }"
                         required>
@@ -68,6 +71,7 @@
                 <h6>{ window.gettext("Condition") }</h6>
                 <div class="form-group">
                     <label>{conditions.display}</label>
+                    <span class="required">*</span>
                     <small class="form-text text-muted">{props.getHelpText("surface_condition")}</small>
                     <div if="{ state.errors.surfaceCondition }" class="invalid-tooltip">
                         <ul>
@@ -82,6 +86,10 @@
                     </ul>
                 </div>
             </section>
+
+            <div class="d-flex justify-content-end">
+                <span>[</span><span class="required">*</span><span>]: Mandatory</span>
+            </div>
         </form>
     </edit_modal>
 
