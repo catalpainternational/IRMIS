@@ -303,12 +303,8 @@ def protobuf_road_surveys(request, pk):
 
     # get the Road link requested 
     road = get_object_or_404(Road.objects.all(), pk=pk)
-    # pull any Surveys that cover some/all of the Road above
-    queryset = (
-        Survey.objects.filter(road=road.road_code)
-        .filter(chainage_end__gte=road.link_start_chainage)
-        .filter(chainage_start__lte=road.link_end_chainage)
-    )
+    # pull any Surveys that cover the Road above
+    queryset = Survey.objects.filter(road=road.road_code)
     queryset.order_by("road", "chainage_start", "chainage_end", "-date_updated")
     surveys_protobuf = queryset.to_protobuf()
 
