@@ -105,14 +105,18 @@ edit_condition {
         &:not(:first-of-type) {
             margin-top: 15px;
         }
+
+        a.active, a.active:hover {
+            color: $green;
+        }
+    
+        a:first-of-type {
+            margin-right: 20px;
+        }
     }
 
     h5 {
         margin-bottom: 0;
-    }
-
-    .all-data-view {
-        margin-right: 20px;
     }
 }
 

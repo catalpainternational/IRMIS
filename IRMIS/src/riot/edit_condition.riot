@@ -76,7 +76,7 @@
         <div class="align-items-center d-flex justify-content-between">
             <div>
                 <h5>{ window.gettext("Surface Condition Data (SDI)") }</h5>
-                <a class="{ state.viewAll ? 'active' : '' } all-data-view" onclick="{ viewAll }">{ window.gettext("View all data entries") }</a>
+                <a class="{ state.viewAll ? 'active' : '' }" onclick="{ viewAll }">{ window.gettext("View all data entries") }</a>
                 <a class="{ !state.viewAll ? 'active' : '' }" onclick="{ viewCurrent }">{ window.gettext("Current condition") }</a>
             </div>
             <button class="btn btn-primary" onclick="{ addEdit }" disabled="{ props.editing }">{ window.gettext("Add") }</button>
