@@ -1,6 +1,23 @@
 <edit_condition>
+    <div class="content-wrapper">
+        <h5>{ window.gettext("Surface Condition") }</h5>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="align-items-center d-flex justify-content-between">
+            <div>
+                <h5>{ window.gettext("Surface Condition Data (SDI)") }</h5>
+                <a class="{ state.viewAll ? 'active' : '' } all-data-view" onclick="{ viewAll }">{ window.gettext("View all data entries") }</a>
+                <a class="{ !state.viewAll ? 'active' : '' }" onclick="{ viewCurrent }">{ window.gettext("Current condition") }</a>
+            </div>
+            <button class="btn btn-primary" onclick="{ addEdit }" disabled="{ props.editing }">{ window.gettext("Add") }</button>
+        </div>
+        <data_table if="{ state.viewAll }" table_id="{this.all_data_table_id}" columns="{this.all_data_table_columns}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}"></data_table>
+        <data_table if="{ !state.viewAll }" table_id="{this.current_data_table_id}" columns="{this.current_data_table_columns}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}"></data_table>
+    </div>
+
     <edit_modal modal_id="{ modal_id }" disableSave="{ !state.canSave }">
-        <span slot="modal_title">Add Surface Condition Information</span>
+        <span slot="modal_title">{window.gettext("Add Surface Condition Information")}</span>
 
         <form slot="modal_body">
             <section>
@@ -67,23 +84,6 @@
             </section>
         </form>
     </edit_modal>
-
-    <div class="content-wrapper">
-        <h5>{ window.gettext("Surface Condition") }</h5>
-    </div>
-
-    <div class="content-wrapper">
-        <div class="align-items-center d-flex justify-content-between">
-            <div>
-                <h5>{ window.gettext("Surface Condition Data (SDI)") }</h5>
-                <a class="{ state.viewAll ? 'active' : '' } all-data-view" onclick="{ viewAll }">{ window.gettext("View all data entries") }</a>
-                <a class="{ !state.viewAll ? 'active' : '' }" onclick="{ viewCurrent }">{ window.gettext("Current condition") }</a>
-            </div>
-            <button class="btn btn-primary" onclick="{ addEdit }" disabled="{ props.editing }">{ window.gettext("Add") }</button>
-        </div>
-        <data_table if="{ state.viewAll }" table_id="{this.all_data_table_id}" columns="{this.all_data_table_columns}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}"></data_table>
-        <data_table if="{ !state.viewAll }" table_id="{this.current_data_table_id}" columns="{this.current_data_table_columns}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}"></data_table>
-    </div>
 
     <script>
         import Data_Table from "./data_table.riot";

@@ -113,6 +113,12 @@ p {
     color: $dark-green;
 }
 
+.modal p {
+    color: $darker-gray;
+    line-height: 19px;
+    font-size: 16px;
+}
+
 small {
     line-height: 14px;
 	font-weight: 500;
@@ -181,7 +187,14 @@ h6 {
     color: $white;
 }
 
-section h6 {
+.modal h6 {
+    color: $darker-gray;
+    line-height: 19px;
+    font-weight: 800;
+    font-size: 16px;
+}
+
+section h6, .modal section h6 {
     line-height: 17px;
     font-weight: 700;
     font-size: 14px;
@@ -278,21 +291,6 @@ button {
         line-height: 17px;
         font-weight: 700;
         font-size: 14px;
-    }
-}
-
-.modal {
-    h6 {
-        color: $darker-gray;
-        line-height: 19px;
-        font-weight: 800;
-        font-size: 16px;
-    }
-
-    p {
-        color: $darker-gray;
-        line-height: 19px;
-        font-size: 16px;
     }
 }
 

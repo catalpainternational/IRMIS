@@ -1,6 +1,6 @@
 <edit_modal>
     <div if="{ state.id }" id="{ state.id }" class="modal editModal fade" tabindex="-1" role="dialog" aria-labelledby="{ state.modalLabel }" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title" id="{ state.modalLabel }">
@@ -14,7 +14,7 @@
                     <slot name="modal_body"/>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="{ cancel }">{ window.gettext("Cancel") }</button>
+                    <a onclick="{ cancel }">{window.gettext("Cancel")}</a>
                     <button type="button" class="btn btn-primary" onclick="{ save }" disabled="{ props.disableSave }">{ window.gettext("Save") }</button>
                 </div>
             </div>
