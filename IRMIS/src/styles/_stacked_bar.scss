@@ -37,3 +37,27 @@
 .unknown-condition {
     background-color: #E7E8EA;
 }
+
+
+%legend-shared {
+    div.values {
+        & > div {
+            margin-bottom: 5px;
+
+            & > div {
+                border-radius: $radius;
+                margin-right: 5px;
+                height: 20px;
+                width: 20px;
+            }
+        }
+
+        & > div:not(:last-of-type) {
+            margin-right: 15px;
+        }
+    }
+}
+
+.surface-condition-legend {
+    @extend %legend-shared;
+}
