@@ -1,8 +1,9 @@
 from django.core.management.base import BaseCommand
 from django.db import IntegrityError
+from django.utils import timezone
+
 import reversion
 from assets.models import Road, Survey
-from datetime import datetime
 
 
 class Command(BaseCommand):
@@ -10,6 +11,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         roads = Road.objects.all()
+        datetime_now_tz = timezone.now()
         created = 0
         for road in roads:
             try:
@@ -19,7 +21,7 @@ class Command(BaseCommand):
                             "road": road.road_code,
                             "chainage_start": road.link_start_chainage,
                             "chainage_end": road.link_end_chainage,
-                            "date_surveyed": datetime.now(),
+                            "date_surveyed": datetime_now_tz,
                             "source": "programmatic",
                             "values": {
                                 "surface_condition": str(road.surface_condition),
