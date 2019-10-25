@@ -281,16 +281,19 @@ def road_report(request, road_code, rpt_start=0.0, rpt_end=None):
     if not request.user.is_authenticated:
         return HttpResponseForbidden()
 
+    if request.method != "GET":
+        raise MethodNotAllowed(request.method)
+
     surveys = (
         Survey.objects.filter(road=road_code)
         .order_by("road", "chainage_start", "chainage_end", "-date_surveyed")
         .distinct("road", "chainage_start", "chainage_end")
     )
-    report = Report(road_code, surveys, rpt_start, rpt_end)
-    return JsonResponse(report.to_protobuf(), safe=False)    
-    # return HttpResponse(
-    #     report_protobuf.SerializeToString(), content_type="application/octet-stream"
-    # )
+    report_protobuf = Report(road_code, surveys, rpt_start, rpt_end).to_protobuf()
+
+    return HttpResponse(
+        report_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )
 
 
 class Report:
@@ -345,7 +348,13 @@ class Report:
     def build_sementations(self):
         """ Create all of the segments based on report chainage start/end paramenters """
         self.segmentations = {
-            item: {"chainage": float(item), "surf_cond": None, "date_surveyed": None}
+            item: {
+                "chainage": float(item),
+                "surf_cond": None,
+                "date_surveyed": None,
+                "survey_id": 0,
+                "added_by": "",
+            }
             for item in range(int(self.rpt_start), int(self.rpt_end))
         }
 
@@ -358,9 +367,7 @@ class Report:
                 not segment["date_surveyed"]
                 or survey.date_surveyed > segment["date_surveyed"]
             ):
-
-                ### TO DO: REPORT START/END COULD BE SHORTER THAN SURVEY START/END
-                ### NEED TO ADJUST THE RANGE TO ACCOMODATE THIS!!!
+                # TODO: Adjust Report start/end to ensure shorter than or equal to Survey start/end ??
 
                 # update the segmentations & resolve overlapping survey segments
                 for chainage in range(
@@ -377,6 +384,10 @@ class Report:
                         self.segmentations[chainage][
                             "date_surveyed"
                         ] = survey.date_surveyed
+                        self.segmentations[chainage]["survey_id"] = survey.id
+                        self.segmentations[chainage]["added_by"] = (
+                            str(survey.user.id) if survey.user else ""
+                        )
 
     def build_summary_stats(self):
         """ Generate the high-level counts & percentage statistics for the report """
@@ -388,42 +399,44 @@ class Report:
             condition: (counts[condition] / segments_length * 100)
             for condition in counts
         }
-        return {"counts": counts, "percentages": percentages}
+        setattr(self.report_protobuf, "counts", json.dumps(counts))
+        setattr(self.report_protobuf, "percentages", json.dumps(percentages))
 
     def build_chainage_table(self):
         """ Generate the table of chainages the report """
-        report = []
         prev_cond, prev_date = None, None
-
         for segment in self.segmentations:
             segment = self.segmentations[segment]
             if (
                 segment["surf_cond"] != prev_cond
                 and segment["date_surveyed"] != prev_date
             ):
-                report.append(
-                    {
-                        "chainage": segment["chainage"],
-                        "surface_condition": segment["surf_cond"],
-                        "date_surveyed": segment["date_surveyed"],
-                    }
-                )
+                entry = self.report_protobuf.table.add()
+                setattr(entry, "chainage_start", segment["chainage"])
+                setattr(entry, "surface_condition", str(segment["surf_cond"]))
+                setattr(entry, "survey_id", segment["survey_id"])
+                setattr(entry, "added_by", segment["added_by"])
+                if segment["date_surveyed"]:
+                    ts = Timestamp()
+                    ts.FromDatetime(segment["date_surveyed"])
+                    entry.date_surveyed.CopyFrom(ts)
                 prev_cond, prev_date = (segment["surf_cond"], segment["date_surveyed"])
-        return report
-
-    def export_report(self):
-        """ Package up the various statistics and tables for export """
-        self.assign_survey_results()
-        report = self.build_summary_stats()
-        report["table"] = self.build_chainage_table()
-        return report
 
     def to_protobuf(self):
-        rpt = self.export_report()
-        # Placeholder code ... need to build out Protobuf schema first
-        # report_protobuf = ProtoReport()
-        # report_protobuf.table = 
-        return rpt
+        """ Package up the various statistics and tables for export as Protobuf """
+        self.report_protobuf = survey_pb2.Report()
+
+        # set basic report attributes
+        setattr(self.report_protobuf, "road_code", self.road_code)
+        setattr(self.report_protobuf, "report_chainage_start", self.rpt_start)
+        setattr(self.report_protobuf, "report_chainage_end", self.rpt_end)
+
+        # build and set report statistical data & table
+        self.assign_survey_results()
+        self.build_summary_stats()
+        self.build_chainage_table()
+
+        return self.report_protobuf
 
 
 def protobuf_surveys(request, chunk_name=None):
@@ -451,7 +464,7 @@ def protobuf_road_surveys(request, pk):
     if not request.user.is_authenticated:
         return HttpResponseForbidden()
 
-    # get the Road link requested 
+    # get the Road link requested
     road = get_object_or_404(Road.objects.all(), pk=pk)
     # pull any Surveys that cover some/all of the Road above
     queryset = (
