@@ -50,30 +50,3 @@
     background-color: rgba(61, 71, 88, 0.5);
     opacity: 1;
 }
-
-// Because we have to use container elements like <span> for slot substitution
-// then we need to override their default styling and make them more like the slot container 
-.editModal {
-    .modal-header {
-        padding-top: 2rem;
-            
-        h1, h1 span, .close {
-            margin-left: 1rem;
-            margin-bottom: 0;
-            margin-top: 0.5rem;
-            
-            color: #3D4758;
-            line-height: 27px;
-            font-weight: 700;
-            font-size: 22px;
-        }
-
-        .close {
-            top: 2.4rem;
-
-            span[aria-hidden="true"] {
-                visibility: hidden;
-            }
-        }
-    }
-}
