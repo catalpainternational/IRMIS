@@ -1,0 +1,39 @@
+%bar-shared {
+    margin-bottom: 20px;
+    margin-top: 20px;
+    height: 20px;
+
+    & > div:first-child {
+        border-bottom-left-radius: $radius;
+        border-top-left-radius: $radius;
+    }
+
+    & > div:last-child {
+        border-bottom-right-radius: $radius;
+        border-top-right-radius: $radius;
+    }
+}
+
+.surface-condition-bar {
+    @extend %bar-shared;
+}
+
+.good-condition {
+    background-color: #03A59A;
+}
+
+.fair-condition {
+    background-color: #81D2CC;
+}
+
+.poor-condition {
+    background-color: #FFACAF;
+}
+
+.bad-condition {
+    background-color: #FF5A5F;
+}
+
+.unknown-condition {
+    background-color: #E7E8EA;
+}
