@@ -1,4 +1,4 @@
-import { Survey, Surveys } from "../../protobuf/survey_pb";
+import { Report, Survey, Surveys } from "../../protobuf/survey_pb";
 import { EstradaSurvey } from "../survey";
 import { ConfigAPI } from "./configAPI";
 
@@ -106,4 +106,29 @@ export function putSurveyData(survey) {
             const uintArray = new Uint8Array(protobufBytes);
             return makeEstradaSurvey(Survey.deserializeBinary(uintArray));
         });
+}
+
+
+/** getSurveysReport
+ *
+ * Retrieves a Surveys Report for a given Road Code from the server
+ *
+ * @returns a report protobuf object
+ */
+export function getSurveysReport(roadCode) {
+    const surveyTypeUrlFragment = "road_report";
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${surveyTypeUrlFragment}/${roadCode}`;
+
+    return fetch(metadataUrl, ConfigAPI.requestInit())
+        .then((metadataResponse) => (metadataResponse.arrayBuffer()))
+        .then((protobufBytes) => {
+            const uintArray = new Uint8Array(protobufBytes);
+            return makeEstradaReport(Report.deserializeBinary(uintArray));
+        });
+}
+
+function makeEstradaReport(pbReport) {
+    var estradaReport = Object.create(EstradaReport.prototype);
+    Object.assign(estradaReprot, pbReport);
+    return estradaReport;
 }
