@@ -1,11 +1,63 @@
 <edit_condition>
+    <div class="content-wrapper">
+        <h5>{ window.gettext("Surface Condition") }</h5>
+        <div class="d-flex surface-condition-bar">
+            <div class="good-condition" style="width: 20%;"></div>
+            <div class="fair-condition" style="width: 45%;"></div>
+            <div class="poor-condition" style="width: 10%;"></div>
+            <div class="bad-condition" style="width: 8%;"></div>
+            <div class="unknown-condition" style="width: 17%;"></div>
+        </div>
+        <div class="align-items-center d-flex justify-content-between surface-condition-legend">
+            <div class="values d-flex flex-wrap">
+                <div class="align-items-center d-flex">
+                    <div class="good-condition"></div>
+                    <span>Good (25,6km/20%)</span>
+                </div>
+                <div class="align-items-center d-flex">
+                    <div class="fair-condition"></div>
+                    <span>Fair (60km/45%)</span>
+                </div>
+                <div class="align-items-center d-flex">
+                    <div class="poor-condition"></div>
+                    <span>Poor (25,3km/10%)</span>
+                </div>
+                <div class="align-items-center d-flex">
+                    <div class="bad-condition"></div>
+                    <span>Bad (30km/8%)</span>
+                </div>
+                <div class="align-items-center d-flex">
+                    <div class="unknown-condition"></div>
+                    <span>Unknown (45km/17%)</span>
+                </div>
+            </div>
+            <div class="total">
+                <span>{ window.gettext("Total road chainage") }: 165km</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="align-items-center d-flex justify-content-between">
+            <div>
+                <h5>{ window.gettext("Surface Condition Data (SDI)") }</h5>
+                <a class="{ state.viewAll ? 'active' : '' }" onclick="{ viewAll }">{ window.gettext("View all data entries") }</a>
+                <a class="{ !state.viewAll ? 'active' : '' }" onclick="{ viewCurrent }">{ window.gettext("Current condition") }</a>
+            </div>
+            <button class="btn btn-primary" onclick="{ addEdit }" disabled="{ props.editing }">{ window.gettext("Add") }</button>
+        </div>
+        <data_table if="{ state.viewAll }" table_id="{this.all_data_table_id}" columns="{this.all_data_table_columns}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}"></data_table>
+        <data_table if="{ !state.viewAll }" table_id="{this.current_data_table_id}" columns="{this.current_data_table_columns}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}"></data_table>
+    </div>
+
     <edit_modal modal_id="{ modal_id }" disableSave="{ !state.canSave }">
-        <span slot="modal_title">Add Surface Condition Information</span>
+        <span slot="modal_title">{window.gettext("Add Surface Condition Information")}</span>
 
         <form slot="modal_body">
             <section>
                 <div class="form-group">
                     <label>{ window.gettext("Survey Date") }</label>
+                    <span class="required">*</span>
                     <small class="form-text text-muted">{props.getHelpText("survey_date")}</small>
                     <!-- It would be preferable to use the 'datetime-local' input type, however Firefox currently does not support it -->
                     <input class="{ state.errors.surveyDate ? 'danger' : null } { state.survey.surveyDate ? '' : 'inactive' } form-control"
@@ -23,6 +75,7 @@
                 <h6>{ window.gettext("Chainage") }</h6>
                 <div class="form-group">
                     <label>{ window.gettext("Chainage start") }</label>
+                    <span class="required">*</span>
                     <input class="{ state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
                         type="number" name="startChainage" placeholder="0+000" value="{ state.survey.startChainage }" oninput="{ checkChainage }"
                         required>
@@ -35,6 +88,7 @@
                 </div>
                 <div class="form-group">
                     <label>{ window.gettext("Chainage end") }</label>
+                    <span class="required">*</span>
                     <input class="{ state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
                         type="number" name="endChainage" placeholder="62+410" value="{ state.survey.endChainage }" oninput="{ checkChainage }"
                         required>
@@ -51,6 +105,7 @@
                 <h6>{ window.gettext("Condition") }</h6>
                 <div class="form-group">
                     <label>{conditions.display}</label>
+                    <span class="required">*</span>
                     <small class="form-text text-muted">{props.getHelpText("surface_condition")}</small>
                     <div if="{ state.errors.surfaceCondition }" class="invalid-tooltip">
                         <ul>
@@ -65,26 +120,12 @@
                     </ul>
                 </div>
             </section>
+
+            <div class="d-flex justify-content-end">
+                <span>[</span><span class="required">*</span><span>]: Mandatory</span>
+            </div>
         </form>
     </edit_modal>
-
-    <div class="content-wrapper">
-        <h5>{ window.gettext("Surface Condition") }</h5>
-    </div>
-
-    <div class="content-wrapper">
-        <div class="align-items-center d-flex justify-content-between">
-            <div>
-                <h5>{ window.gettext("Surface Condition Data (SDI)") }</h5>
-                <a class="{ state.viewAll ? 'active' : '' }" onclick="{ viewAll }">{ window.gettext("View all data entries") }</a>
-                <a class="{ !state.viewAll ? 'active' : '' }" onclick="{ viewCurrent }">{ window.gettext("Current condition") }</a>
-            </div>
-            <button class="btn btn-primary" onclick="{ addEdit }" disabled="{ props.editing }">{ window.gettext("Add") }</button>
-        </div>
-        <data_table if="{ state.viewAll }" table_id="{this.all_data_table_id}" columns="{this.all_data_table_columns}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}"></data_table>
-        <data_table if="{ !state.viewAll }" table_id="{this.current_data_table_id}" columns="{this.current_data_table_columns}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}"></data_table>
-    </div>
-
     <script>
         import Data_Table from "./data_table.riot";
         import Edit_Modal from "./edit_modal.riot";
@@ -359,7 +400,7 @@
             checkSurveyDate(e) {
                 const fieldName = e.currentTarget.name;
                 const input = e.currentTarget.value;
-                const testResult = input < this.max_date();
+                const testResult = input <= this.max_date();
                 const errorText = window.gettext("Survey date cannot be in the future");
 
                 this.validate(fieldName, input, testResult, errorText );
@@ -381,7 +422,7 @@
                 this.canSave();
             },
             modal_id: "surface-condition-modal",
-            max_date: () => { return (new Date()).toISOString().substring(0, 10); }
+            max_date: () => new Date().toISOString().substring(0, 10),
         }
     </script>
 </edit_condition>
