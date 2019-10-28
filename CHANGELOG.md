@@ -1,5 +1,10 @@
 # CHANGE LOG
 
+## 1.2.2 Map interaction
+
+- Clicking on the row in the table zooms the map
+- Filters Zoom the map
+
 ## 1.2.1 Display Audit Log
 
 - As an Admin, I can access information on data source and date of edit/import
