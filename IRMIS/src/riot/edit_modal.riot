@@ -1,5 +1,5 @@
 <edit_modal>
-    <div if="{ state.id }" id="{ state.id }" class="modal editModal fade" tabindex="-1" role="dialog" aria-labelledby="{ state.modalLabel }" aria-hidden="true">
+    <div if="{ state.id }" id="{ state.id }" class="modal editModal" tabindex="-1" role="dialog" aria-labelledby="{ state.modalLabel }" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -21,7 +21,7 @@
 
     <script>
         // To respond to bootstrap modal you events you MUST include:
-        // jQuery (as $) first, 
+        // jQuery (as $) first,
         // then the specific bootstrap modal library
         import $ from "jquery";
         import "bootstrap/js/dist/modal";
