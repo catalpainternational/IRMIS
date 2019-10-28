@@ -277,19 +277,23 @@ def protobuf_road_set(request, chunk_name=None):
     )
 
 
-def road_report(request, road_code, rpt_start=0.0, rpt_end=None):
+def road_report(request, pk):
     if not request.user.is_authenticated:
         return HttpResponseForbidden()
 
     if request.method != "GET":
         raise MethodNotAllowed(request.method)
 
+    # get the Road link requested
+    road = get_object_or_404(Road.objects.all(), pk=pk)
+
+    # pull any Surveys that cover the Road above
     surveys = (
-        Survey.objects.filter(road=road_code)
+        Survey.objects.filter(road=road.road_code)
         .order_by("road", "chainage_start", "chainage_end", "-date_surveyed")
         .distinct("road", "chainage_start", "chainage_end")
     )
-    report_protobuf = Report(road_code, surveys, rpt_start, rpt_end).to_protobuf()
+    report_protobuf = Report(road, surveys).to_protobuf()
 
     return HttpResponse(
         report_protobuf.SerializeToString(), content_type="application/octet-stream"
@@ -297,51 +301,15 @@ def road_report(request, road_code, rpt_start=0.0, rpt_end=None):
 
 
 class Report:
-    def __init__(self, road_code, surveys, rpt_start, rpt_end):
-        self.road_code = road_code
-        try:
-            self.road_start_chainage = (
-                Road.objects.filter(road_code=road_code)
-                .order_by("link_start_chainage")[0]
-                .link_start_chainage
-            )
-            self.road_end_chainage = (
-                Road.objects.filter(road_code=road_code)
-                .order_by("-link_end_chainage")[0]
-                .link_end_chainage
-            )
-        except IndexError as err:
-            raise IndexError("Road Code given did not return any records")
+    def __init__(self, road, surveys):
+        self.road_code = road.road_code
+        self.road_start_chainage = road.link_start_chainage
+        self.road_end_chainage = road.link_end_chainage
 
         if len(surveys) > 0:
             self.surveys = surveys
         else:
             raise ValueError("At least one Survey must be provided to build the Report")
-
-        # perform various checks to ensure all start/end chainages are valid
-        # and fall within a given Road's chainage range
-        self.rpt_start = (
-            self.road_start_chainage
-        )  # set to Road start chainage initially
-        if rpt_start >= self.road_end_chainage:
-            raise ValueError(
-                "Report Start Chainage given is greater than Road's ending chainage"
-            )
-        elif rpt_start >= self.road_start_chainage:
-            self.rpt_start = rpt_start
-
-        self.rpt_end = self.road_end_chainage  # set to Road end chainage initially
-        if rpt_end:
-            if rpt_end > self.road_end_chainage:
-                raise ValueError(
-                    "Report End Chainage given is greater than Road's ending chainage"
-                )
-            elif rpt_end <= self.road_start_chainage:
-                raise ValueError(
-                    "Report End Chainage given is less than Road's starting chainage"
-                )
-            else:
-                self.rpt_end = rpt_end
 
         self.build_sementations()
 
@@ -355,7 +323,9 @@ class Report:
                 "survey_id": 0,
                 "added_by": "",
             }
-            for item in range(int(self.rpt_start), int(self.rpt_end))
+            for item in range(
+                int(self.road_start_chainage), int(self.road_end_chainage)
+            )
         }
 
     def assign_survey_results(self):
@@ -428,8 +398,8 @@ class Report:
 
         # set basic report attributes
         setattr(self.report_protobuf, "road_code", self.road_code)
-        setattr(self.report_protobuf, "report_chainage_start", self.rpt_start)
-        setattr(self.report_protobuf, "report_chainage_end", self.rpt_end)
+        setattr(self.report_protobuf, "report_chainage_start", self.road_start_chainage)
+        setattr(self.report_protobuf, "report_chainage_end", self.road_end_chainage)
 
         # build and set report statistical data & table
         self.assign_survey_results()
@@ -477,7 +447,7 @@ def protobuf_road_surveys(request, pk):
 
 
 def pbtimestamp_to_pydatetime(pb_stamp):
-    """ Take a Protobuf Timestamp as single input and outputs a 
+    """ Take a Protobuf Timestamp as single input and outputs a
     time zone aware, Python Datetime object (UTC). Attempts to parse
     both with and without nanoseconds. """
 
