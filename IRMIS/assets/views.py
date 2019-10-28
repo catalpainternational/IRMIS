@@ -410,7 +410,9 @@ class Report:
         # set basic report attributes
         setattr(self.report_protobuf, "road_code", self.road.road_code)
         if self.validate_chainages():
-            setattr(self.report_protobuf, "report_chainage_start", self.road_start_chainage)
+            setattr(
+                self.report_protobuf, "report_chainage_start", self.road_start_chainage
+            )
             setattr(self.report_protobuf, "report_chainage_end", self.road_end_chainage)
         else:
             # Road link must have start & end chainages to build a report.
