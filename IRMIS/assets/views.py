@@ -304,20 +304,16 @@ def road_report(request, pk):
 
 class Report:
     def __init__(self, road, surveys):
-        self.road_code = road.road_code
+        self.road = road
+        self.surveys = surveys
 
-        if road.link_start_chainage and road.link_end_chainage:
-            self.road_start_chainage = int(road.link_start_chainage)
-            self.road_end_chainage = int(road.link_end_chainage)
+    def validate_chainages(self):
+        if self.road.link_start_chainage and self.road.link_end_chainage:
+            self.road_start_chainage = int(self.road.link_start_chainage)
+            self.road_end_chainage = int(self.road.link_end_chainage)
+            return True
         else:
-            raise ValueError("Road link must have start & end chainages.")
-
-        if len(surveys) > 0:
-            self.surveys = surveys
-        else:
-            raise ValueError("At least one Survey must be provided to build the Report")
-
-        self.build_sementations()
+            return False
 
     def build_sementations(self):
         """ Create all of the segments based on report chainage start/end paramenters """
@@ -412,11 +408,19 @@ class Report:
         self.report_protobuf = survey_pb2.Report()
 
         # set basic report attributes
-        setattr(self.report_protobuf, "road_code", self.road_code)
-        setattr(self.report_protobuf, "report_chainage_start", self.road_start_chainage)
-        setattr(self.report_protobuf, "report_chainage_end", self.road_end_chainage)
+        setattr(self.report_protobuf, "road_code", self.road.road_code)
+        if self.validate_chainages():
+            setattr(
+                self.report_protobuf, "report_chainage_start", self.road_start_chainage
+            )
+            setattr(self.report_protobuf, "report_chainage_end", self.road_end_chainage)
+        else:
+            # Road link must have start & end chainages to build a report.
+            # Return an empty report.
+            return self.report_protobuf
 
         # build and set report statistical data & table
+        self.build_sementations()
         self.assign_survey_results()
         self.build_summary_stats()
         self.build_chainage_table()
