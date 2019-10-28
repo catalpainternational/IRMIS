@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-08 01:28+0000\n"
+"POT-Creation-Date: 2019-10-28 00:49+0000\n"
 "PO-Revision-Date: 2019-10-11 00:57+0000\n"
 "Last-Translator: b'  <juliana@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -92,14 +92,9 @@ msgstr "Descartar"
 msgid "Continue editing"
 msgstr "Continuar a editar"
 
-<<<<<<< HEAD
-||||||| merged common ancestors
->>>>>>>>> Temporary merge branch 2
-=======
 msgid "Loading"
 msgstr "A carregar"
 
->>>>>>> origin/master
 msgid "Success"
 msgstr "Sucesso"
 
@@ -127,16 +122,6 @@ msgstr "Seleccione o Tipo de Estrada"
 msgid "Select a Surface Type"
 msgstr "Seleccione o Tipo de Pavimento"
 
-<<<<<<< HEAD
-||||||| merged common ancestors
-<<<<<<<<< Temporary merge branch 1
-msgid "End Point (DMS)"
-msgstr ""
-||||||||| merged common ancestors
-msgid "Choose the type of surface of the road link carriageway"
-msgstr ""
-=========
-=======
 msgid "Date"
 msgstr "Data"
 
@@ -170,7 +155,6 @@ msgstr "Próximo"
 msgid "Last"
 msgstr "Último"
 
->>>>>>> origin/master
 msgid "Link Name"
 msgstr "Nome da secção"
 
