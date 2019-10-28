@@ -130,7 +130,8 @@
         import Data_Table from "./data_table.riot";
         import Edit_Modal from "./edit_modal.riot";
 
-        import { getRoadSurveys } from "../surveyManager"
+        import { createSurvey, updateSurvey, getRoadSurveys } from "../surveyManager";
+        import { Survey } from "../../protobuf/survey_pb";
         import { getFieldName } from "../road";
 
         import $ from "jquery";
@@ -157,13 +158,14 @@
         export default {
             state: {
                 chainageDecimals: 3,
-                chainageDigits : 7,
-                baseSurvey: {},
+                chainageDigits : 9,
+                baseSurvey: new Survey({}),
                 survey: {},
                 canSave: false,
                 errors: {},
                 pendingRows: [],
                 viewAll: false,
+                editMode: false,
             },
             components: {
                 Edit_Modal
@@ -177,8 +179,8 @@
                 this.getRoadSurveys();
             },
             getRoadSurveys() {
-                const roadCode = this.state.road.getId();
-                getRoadSurveys(roadCode)
+                const roadId = this.state.road.getId();
+                getRoadSurveys(roadId)
                     .then((surveyData) => {
                         if (surveyData) {
                             this.state.pendingRows = surveyData;
@@ -239,7 +241,7 @@
                 },
                 {
                     title: window.gettext("Added by"), 
-                    data: "user",
+                    data: "addedBy",
                     defaultContent: "",
                 },
             ],
@@ -249,25 +251,29 @@
                     title: window.gettext("Chainage start"), 
                     data: "chainageStart",
                     defaultContent: "",
+                    className: "text-right",
                 },
                 {
                     title: window.gettext("Chainage end"), 
                     data: "chainageEnd",
                     defaultContent: "",
+                    className: "text-right",
                 },
                 {
                     title: window.gettext("Surface condition"), 
                     data: "surfaceCondition",
                     defaultContent: "",
+                    className: "text-center",
                 },
                 {
                     title: window.gettext("Survey date"),
                     data: "dateSurveyed",
                     defaultContent: "",
+                    className: "text-center",
                 },
                 {
                     title: window.gettext("Added by"), 
-                    data: "user",
+                    data: "addedBy",
                     defaultContent: "",
                 },
                 {
@@ -345,24 +351,47 @@
                 } else {
                     if (this.hasChanges()) {
                         // Complete the survey
-                        this.state.survey.user = $("#user_welcome").data( "userName" ) || "Unknown";
-                        this.state.survey.source = this.modal_id;
-                        
-                        this.props.onSave();
+                        this.state.survey.setUser($("#user_welcome").data( "userId" ) || 0);
+                        this.state.survey.setSource("Estrada");
+                        this.state.survey.setChainageStart(this.state.survey.startChainage);
+                        this.state.survey.setChainageEnd(this.state.survey.endChainage);
+                        this.state.survey.setValues(JSON.stringify({
+                            surface_condition: this.state.survey.surfaceCondition
+                        }));
+                        // If we're here we will have a user entered surveyDate, even so Date.now() is still used as a fall back
+                        const dateSurveyed = new proto.google.protobuf.Timestamp();
+                        const surveyDate = new Date(this.state.survey.surveyDate || Date.now().toISOString());
+                        dateSurveyed.fromDate(surveyDate);
+
+                        this.state.survey.setDateSurveyed(dateSurveyed);
+
+                        // set Survey road from state Road road_code
+                        this.state.survey.setRoad(this.state.road.getRoadCode());
+
+                        this.saveSurvey();
                     }
 
                     // Reset baseSurvey now that we're done.
-                    this.baseSurvey = {};
+                    this.baseSurvey = new Survey({});
 
                     $(`#${this.modal_id}`).modal("hide");
                 } 
             },
-            saveSurvey(mode) {
-                if (mode == 'create') {
-                    this.props.onCreateSurvey();
+            saveSurvey() {
+                if (!this.state.editMode) {
+                    createSurvey(this.state.survey)
+                        .then((surveyData) => {
+                            const pendingRows = [ surveyData ];
+                            document.dispatchEvent(new CustomEvent(`${this.all_data_table_id}.dataAdded`, {detail: { pendingRows }}));
+                        }).catch((err) => { this.props.error = true; });
                 } else {
-                    this.props.onUpdateSurvey();
+                    updateSurvey(this.state.survey)
+                        .then((surveyData) => {
+                            const pendingRows = [ surveyData ];
+                            document.dispatchEvent(new CustomEvent(`${this.all_data_table_id}.dataAdded`, {detail: { pendingRows }}));
+                        }).catch((err) => { this.props.error = true; });
                 }
+                this.update();
             },
             canSave() {
                 const missingFieldNames = checkRequiredFields(this.requiredFieldNames, this.state.survey);

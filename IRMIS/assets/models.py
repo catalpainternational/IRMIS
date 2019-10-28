@@ -88,6 +88,8 @@ class SurveyQuerySet(models.QuerySet):
             chainage_start="chainage_start",
             chainage_end="chainage_end",
             values="values",
+            source="source",
+            added_by="user__username",
         )
 
         last_revisions = {
@@ -97,7 +99,7 @@ class SurveyQuerySet(models.QuerySet):
             .values("object_id", "revision_id")
         }
 
-        for survey in self.values("id", *fields.values()):
+        for survey in self.values(*fields.values()):
             survey_protobuf = surveys_protobuf.surveys.add()
             for protobuf_key, query_key in fields.items():
                 if (
@@ -172,6 +174,9 @@ class Survey(models.Model):
         help_text=_("Enter chainage for survey ending point"),
     )
     values = HStoreField()
+    source = models.CharField(
+        verbose_name=_("Source"), max_length=155, blank=True, null=True
+    )
 
     def __str__(self,):
         return "%s(%s - %s) %s" % (
