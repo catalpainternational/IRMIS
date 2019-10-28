@@ -1,3 +1,4 @@
+import { slugToPropertyGetter } from "./filter";
 import { getRoadAuditData, getRoadMetadata, getRoadsMetadata, getRoadsMetadataChunks, putRoadMetadata } from "./assets/assets_api";
 
 import { Road, Version } from "../protobuf/roads_pb";
@@ -61,35 +62,37 @@ export function getRoadAudit(roadId) {
 }
 
 function filterRoads(filterState) {
-    const idMap = {};
-    filteredRoads = {};
-
-    Object.values(roads).forEach((road) => {
+    filteredRoads = Object.values(roads).filter( road => {
         // every filter state must match
-        const includeRoad = Object.entries(filterState).every(([slug, values]) => {
+        return Object.entries(filterState).every(([slug, values]) => {
             // empty array means all match
-            if (values.length === 0) {
+            if (!values.length) {
                 return true;
             }
+            
             // or some values of one state must match
-            return values.some((value) => {
-                const propertyGetter = slugToPropertyGetter[slug];
-                return (road)[propertyGetter]() === value;
+            return values.some(value => {
+                let propertyGetter = slugToPropertyGetter[slug];
+                return road[propertyGetter]() === value;
             });
         });
-
-        if (includeRoad) {
-            filteredRoads[road.getId().toString()] = road;
-            idMap[road.getId().toString()] = true;
-        }
     });
 
     // communicate the filter
-    document.dispatchEvent(new CustomEvent("estrada.filter.applied", {detail: { idMap }}));
+    let idMap = filteredRoads.reduce((idMap, road) => {
+        idMap[road.getId().toString()] = true;
+        return idMap;
+    }, {});
+
+    document.dispatchEvent(new CustomEvent("estrada.filter.applied", {"detail": { idMap }}));
 }
 
 export function roadPopup(id) {
     const road = roads[id];
+    if (!road) {
+        // If the user clicks on the road in the map before the data is in protoBuf
+        return '<span class="popup"><span class="popup label">' + gettext('Loading')  + '</span></span>';
+    }
     const code = road.getRoadCode();
     const name = road.getRoadName();
 
@@ -105,14 +108,3 @@ export function roadPopup(id) {
 
     return html;
 }
-
-// we'll need to add more in here as we add more filters
-const slugToPropertyGetter = {
-    road_code: "getRoadCode",
-    road_type: "getRoadType",
-    surface_type: "getSurfaceType",
-    // tslint:disable-next-line: object-literal-sort-keys
-    surface_condition: "getSurfaceCondition",
-    road_status: "getRoadStatus",
-    administrative_area: "getAdministrativeArea",
-};

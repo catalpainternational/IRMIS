@@ -91,26 +91,6 @@ div.dataTables_wrapper {
     }
 }
 
-#history-table_wrapper.dataTables_wrapper {
-    // table pagination's row parent
-    & > .row:nth-child(3) {
-        padding-left: 45px;
-    }
-
-    ul.pagination {
-        li.paginate_button.page-item {
-            &.active a.page-link {
-                background-color: $darker-gray;
-                color: $white;
-            }
-
-            a.page-link {
-                color: $darker-gray;
-            }
-        }
-    }
-}
-
 // Override Bootstrap table styles
 table.table {
     thead th, tbody td {
@@ -157,8 +137,25 @@ table.table {
 
     &.table-hover {
         tbody tr:hover {
-            background-color: $lighter-gray;
+            background-color: $alt-green;
             cursor: pointer;
+
+            td {
+                color: $white;
+
+                // This presently screws up and converts the svg to 'undefined'
+                // .pencil {
+                //     background-image: url("../images/pencil_hover.svg");
+                // }
+            }
+        }
+    }
+
+    tbody tr.selected {
+        background-color: $alt-green;
+
+        td {
+            color: $white;
         }
     }
 }
