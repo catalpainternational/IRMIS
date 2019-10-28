@@ -1,22 +1,4 @@
 // DataTables general styling
-.dt-buttons {
-    justify-content: flex-end;
-    background-color: $white;
-    align-items: center;
-    padding: 3px 15px;
-    display: flex;
-
-    div.btn {
-        margin-left: 5px;
-        flex: inherit;
-    }
-
-    h6 {
-        margin-bottom: 0;
-        padding-top: 2px;
-    }
-}
-
 #map-table-irmis {
     &.map:not(.table) #table-irmis {
         display: none;
@@ -76,6 +58,14 @@
     overflow-x: auto;
 }
 
+#inventory-surface-condition-table {
+    border-right: 1px solid $light-gray;
+    border-left: 1px solid $light-gray;
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
+    overflow-x: auto;
+}
+
 
 // Override DataTables.net styles
 div.dataTables_wrapper {
@@ -125,6 +115,24 @@ div.dataTables_wrapper {
         a.page-link {
             color: $darker-gray;
         }
+    }
+}
+
+.dt-buttons {
+    justify-content: flex-end;
+    background-color: $white;
+    align-items: center;
+    padding: 3px 15px;
+    display: flex;
+
+    div.btn {
+        margin-left: 5px;
+        flex: inherit;
+    }
+
+    h6 {
+        margin-bottom: 0;
+        padding-top: 2px;
     }
 }
 
