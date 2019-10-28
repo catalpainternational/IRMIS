@@ -83,6 +83,18 @@ span {
     }
 }
 
+.surface-condition-legend .values span {
+    color: $darker-gray;
+    line-height: 10px;
+    font-weight: 500;
+    font-size: 12px;
+}
+
+.surface-condition-legend .total span {
+    color: $darker-gray;
+    line-height: 10px;
+}
+
 span.required {
     color: $green;
 }
