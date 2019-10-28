@@ -12,7 +12,7 @@
                 </div>
             </div>
             <div class="total">
-                <span>{ window.gettext("Total road chainage") }: {state.surveyTotalDistance}km</span>
+                <span>{ window.gettext("Total road chainage") }: {state.surveyTotalDistance / 1000}km</span>
             </div>
         </div>
     </div>
@@ -159,6 +159,14 @@
             onMounted(props, state) {
                 state.loading = true;
                 state.road = cloneData(props.road);
+
+                const emptyConditions = { 
+                    surface: "unknown", 
+                    distance: state.road.getLinkEndChainage() - state.road.getLinkStartChainage() 
+                };
+
+                this.updateSurfaceConditionsSummary([emptyConditions]);
+
                 this.getRoadSurveys();
                 this.getRoadSurveyReports();
             },
@@ -185,13 +193,15 @@
                 const roadId = this.state.road.getId();
                 const roadCode = this.state.road.code;
                 
-                this.state.conditions.length = 0;
-                this.state.conditions.push({ surface: "good", distance: 25.6 });
-                this.state.conditions.push({ surface: "fair", distance: 60 });
-                this.state.conditions.push({ surface: "poor", distance: 25.3 });
-                this.state.conditions.push({ surface: "bad", distance: 30 });
-                this.state.conditions.push({ surface: "unknown", distance: 45 });
-                this.drawSurfaceConditionsSummary();
+                // All distances are in meters, the calculated label will show them in km
+                // Here's some sample data for your listening pleasure
+                this.updateSurfaceConditionsSummary([
+                    { surface: "good", distance: 25600 },
+                    { surface: "fair", distance: 60000 },
+                    { surface: "poor", distance: 25300 },
+                    { surface: "bad", distance: 30000 },
+                    { surface: "unknown", distance: 45000 },
+                ]);
 
                 getRoadSurveyReport(roadId)
                     .then((surveyReportData) => {
@@ -210,19 +220,29 @@
                         this.update();
                     });
             },
+            updateSurfaceConditionsSummary(surfaceConditions) {
+                this.state.conditions.length = 0;
+                surfaceConditions.forEach((condition) => {
+                    this.state.conditions.push(condition);
+                });
+                this.drawSurfaceConditionsSummary();
+            },
             drawSurfaceConditionsSummary() {
                 // First just clean all the distance values and get the total
+                this.state.surveyTotalDistance = 0;
                 this.state.conditions.forEach((condition) => {
-                    condition.distance = Math.round(condition.distance * 1000) / 1000;
+                    // all distances are in meters
+                    condition.distance = Math.round(condition.distance);
                     this.state.surveyTotalDistance += condition.distance;
                 });
-                this.state.surveyTotalDistance = Math.round(this.state.surveyTotalDistance * 1000) / 1000;
+                this.state.surveyTotalDistance = Math.round(this.state.surveyTotalDistance);
 
                 // Then calculate everything else
                 this.state.conditions.forEach((condition) => {
                     condition.percent = Math.round((condition.distance / this.state.surveyTotalDistance) * 10000) / 100;
                     const surfaceTitle = window.gettext(condition.surface[0].toUpperCase() + condition.surface.substring(1));
-                    condition.label = `${surfaceTitle} (${condition.distance}km/${condition.percent}%)`;
+                    // the calculated label shows distance in km
+                    condition.label = `${surfaceTitle} (${condition.distance / 1000}km/${condition.percent}%)`;
                 });
 
                 this.update();                
@@ -253,21 +273,25 @@
                     title: window.gettext("Chainage start"), 
                     data: "chainageStart",
                     defaultContent: "",
+                    className: "text-right",
                 },
                 {
                     title: window.gettext("Chainage end"), 
                     data: "chainageEnd",
                     defaultContent: "",
+                    className: "text-right",
                 },
                 {
                     title: window.gettext("Surface condition"), 
                     data: "surfaceCondition",
                     defaultContent: "",
+                    className: "text-center",
                 },
                 {
                     title: window.gettext("Survey date"),
                     data: "dateSurveyed",
                     defaultContent: "",
+                    className: "text-center",
                 },
                 {
                     title: window.gettext("Added by"), 
