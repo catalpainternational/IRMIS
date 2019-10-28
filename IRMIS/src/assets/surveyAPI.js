@@ -108,7 +108,6 @@ export function putSurveyData(survey) {
         });
 }
 
-
 /** getSurveysReport
  *
  * Retrieves a Surveys Report for a given Road Code from the server
