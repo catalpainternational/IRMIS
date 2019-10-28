@@ -301,7 +301,7 @@ def protobuf_road_surveys(request, pk):
     if not request.user.is_authenticated:
         return HttpResponseForbidden()
 
-    # get the Road link requested 
+    # get the Road link requested
     road = get_object_or_404(Road.objects.all(), pk=pk)
     # pull any Surveys that cover the Road above
     queryset = Survey.objects.filter(road=road.road_code)
