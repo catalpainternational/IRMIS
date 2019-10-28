@@ -290,6 +290,8 @@ def road_report(request, pk):
     # pull any Surveys that cover the Road above
     surveys = (
         Survey.objects.filter(road=road.road_code)
+        .exclude(chainage_start__isnull=True)
+        .exclude(chainage_end__isnull=True)
         .order_by("road", "chainage_start", "chainage_end", "-date_surveyed")
         .distinct("road", "chainage_start", "chainage_end")
     )
@@ -303,8 +305,12 @@ def road_report(request, pk):
 class Report:
     def __init__(self, road, surveys):
         self.road_code = road.road_code
-        self.road_start_chainage = road.link_start_chainage
-        self.road_end_chainage = road.link_end_chainage
+
+        if road.link_start_chainage and road.link_end_chainage:
+            self.road_start_chainage = int(road.link_start_chainage)
+            self.road_end_chainage = int(road.link_end_chainage)
+        else:
+            raise ValueError("Road link must have start & end chainages.")
 
         if len(surveys) > 0:
             self.surveys = surveys
@@ -323,41 +329,50 @@ class Report:
                 "survey_id": 0,
                 "added_by": "",
             }
-            for item in range(
-                int(self.road_start_chainage), int(self.road_end_chainage)
-            )
+            for item in range(self.road_start_chainage, self.road_end_chainage)
         }
 
     def assign_survey_results(self):
         """ For all the Surveys, assign only the most up-to-date results to any given segment """
         for survey in self.surveys:
-            # check survey does not overlap with current aggregate segmentations
-            segment = self.segmentations[int(survey.chainage_start)]
-            if (
-                not segment["date_surveyed"]
-                or survey.date_surveyed > segment["date_surveyed"]
-            ):
-                # TODO: Adjust Report start/end to ensure shorter than or equal to Survey start/end ??
+            # ensure survey bits used covers only the road link start/end chainage portion
+            if survey.chainage_start < self.road_end_chainage:
+                if survey.chainage_start < self.road_start_chainage:
+                    survey_chain_start = int(self.road_start_chainage)
+                    if survey.chainage_end >= self.road_end_chainage:
+                        survey_chain_end = int(self.road_end_chainage)
+                    else:
+                        survey_chain_end = int(survey.chainage_end)
+                else:
+                    survey_chain_start = int(survey.chainage_start)
+                    if survey.chainage_end >= self.road_end_chainage:
+                        survey_chain_end = int(self.road_end_chainage)
+                    else:
+                        survey_chain_end = int(survey.chainage_end)
 
-                # update the segmentations & resolve overlapping survey segments
-                for chainage in range(
-                    int(survey.chainage_start), int(survey.chainage_end)
+                # check survey does not overlap with current aggregate segmentations
+                segment = self.segmentations[survey_chain_start]
+                if (
+                    not segment["date_surveyed"]
+                    or survey.date_surveyed > segment["date_surveyed"]
                 ):
-                    if (
-                        not self.segmentations[chainage]["date_surveyed"]
-                        or survey.date_surveyed
-                        > self.segmentations[chainage]["date_surveyed"]
-                    ):
-                        self.segmentations[chainage]["surf_cond"] = survey.values[
-                            "surface_condition"
-                        ]
-                        self.segmentations[chainage][
-                            "date_surveyed"
-                        ] = survey.date_surveyed
-                        self.segmentations[chainage]["survey_id"] = survey.id
-                        self.segmentations[chainage]["added_by"] = (
-                            str(survey.user.id) if survey.user else ""
-                        )
+                    # update the segmentations & resolve overlapping survey segments
+                    for chainage in range(survey_chain_start, survey_chain_end):
+                        if (
+                            not self.segmentations[chainage]["date_surveyed"]
+                            or survey.date_surveyed
+                            > self.segmentations[chainage]["date_surveyed"]
+                        ):
+                            self.segmentations[chainage]["surf_cond"] = survey.values[
+                                "surface_condition"
+                            ]
+                            self.segmentations[chainage][
+                                "date_surveyed"
+                            ] = survey.date_surveyed
+                            self.segmentations[chainage]["survey_id"] = survey.id
+                            self.segmentations[chainage]["added_by"] = (
+                                str(survey.user.id) if survey.user else ""
+                            )
 
     def build_summary_stats(self):
         """ Generate the high-level counts & percentage statistics for the report """
