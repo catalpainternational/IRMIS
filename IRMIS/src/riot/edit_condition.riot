@@ -130,8 +130,9 @@
         import Data_Table from "./data_table.riot";
         import Edit_Modal from "./edit_modal.riot";
 
-        import { createSurvey, updateSurvey, getRoadSurveys } from "../surveyManager";
-        import { Survey } from "../../protobuf/survey_pb";
+        import { createSurvey, updateSurvey, getRoadSurveys, getSurveyReports } from "../surveyManager";
+        import { Survey, Report } from "../../protobuf/survey_pb";
+
         import { getFieldName } from "../road";
 
         import $ from "jquery";
@@ -189,6 +190,25 @@
                             this.state.error = false;
                         } else {
                             this.state.error = true;
+                        }
+                    }).catch(err => {
+                        this.state.error = true;
+                    }).finally((r) => {
+                        this.state.loading = false;
+                        this.update();
+                    });
+            },
+            getRoadSurveyReports() {
+                const roadId = this.state.road.getId();
+                getSurveyReports(roadId)
+                    .then((surveyReportData) => {
+                        if (surveyReportData) {
+                        //     this.state.pendingRows = surveyData;
+                        //     const pendingRows = this.state.pendingRows;
+                        //     document.dispatchEvent(new CustomEvent(`${this.current_data_table_id}.dataAdded`, {detail: { pendingRows }}));
+                        //     this.state.error = false;
+                        // } else {
+                        //     this.state.error = true;
                         }
                     }).catch(err => {
                         this.state.error = true;

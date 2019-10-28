@@ -1,6 +1,7 @@
 import { Road, Roads, Versions } from "../../protobuf/roads_pb";
 import { EstradaRoad } from "../road";
 import { EstradaAudit } from "../audit";
+import { EstradaSurveyReport } from "../surveyReport";
 import { ConfigAPI } from "./configAPI";
 
 /** getRoadsMetadataChunks
@@ -79,21 +80,6 @@ export function putRoadMetadata(road) {
         });
 }
 
-function makeEstradaObject(estradaObjectType, protoBufSource) {
-    let estradaObject = Object.create(estradaObjectType.prototype);
-    Object.assign(estradaObject, protoBufSource);
-
-    return estradaObject;
-}
-
-function makeEstradaRoad(pbroad) {
-    return makeEstradaObject(EstradaRoad, pbroad);
-}
-
-function makeEstradaAudit(pbversion) {
-    return makeEstradaObject(EstradaAudit, pbversion);
-}
-
 /** getRoadAuditData
  *
  * Retrieves the Audit changes data for a single road from the server
@@ -111,4 +97,41 @@ export function getRoadAuditData(roadId) {
             const uintArray = new Uint8Array(protobufBytes);
             return Versions.deserializeBinary(uintArray).getVersionsList().map(makeEstradaAudit);
         });
+}
+
+/** getRoadSurveys
+ *
+ * Retrieves the road survey data from the server
+ *
+ * @returns a map {id: road_object}
+ */
+export function getRoadSurveys(roadId) {
+    const assetTypeUrlFragment = "protobuf_road_surveys";
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${roadId}`;
+
+    return fetch(metadataUrl, ConfigAPI.requestInit())
+        .then((metadataResponse) => (metadataResponse.arrayBuffer()))
+        .then((protobufBytes) => {
+            const uintArray = new Uint8Array(protobufBytes);
+            return Reports.deserializeBinary(uintArray).getReportsList().map(makeEstradaSurveyReport);
+        });
+}
+
+function makeEstradaObject(estradaObjectType, protoBufSource) {
+    let estradaObject = Object.create(estradaObjectType.prototype);
+    Object.assign(estradaObject, protoBufSource);
+
+    return estradaObject;
+}
+
+function makeEstradaRoad(pbroad) {
+    return makeEstradaObject(EstradaRoad, pbroad);
+}
+
+function makeEstradaAudit(pbversion) {
+    return makeEstradaObject(EstradaAudit, pbversion);
+}
+
+function makeEstradaSurveyReport(pbsurveyreport) {
+    return makeEstradaObject(EstradaSurveyReport, pbsurveyreport);
 }

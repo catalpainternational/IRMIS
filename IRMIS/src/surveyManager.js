@@ -30,3 +30,10 @@ export function updateSurvey(survey) {
             return survey;
         });
 }
+
+export function getSurveyReports(roadId) {
+    return Promise.resolve(getSurveysMetadata(roadId))
+        .then(surveys => {
+            return surveys;
+        });
+}
