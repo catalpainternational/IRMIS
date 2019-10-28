@@ -31,8 +31,8 @@ export function updateSurvey(survey) {
         });
 }
 
-export function getRoadSurveyReport(roadId) {
-    return Promise.resolve(getRoadSurveyReports(roadId))
+export function getRoadSurveyReport(roadCode) {
+    return Promise.resolve(getRoadSurveyReports(roadCode))
         .then((surveyReportList) => {
             // document.dispatchEvent(new CustomEvent("estrada.auditTable.roadAuditDataAdded", {detail: {auditList}}));
             return surveyReportList;

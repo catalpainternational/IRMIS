@@ -2,37 +2,17 @@
     <div class="content-wrapper">
         <h5>{ window.gettext("Surface Condition") }</h5>
         <div class="d-flex surface-condition-bar">
-            <div class="good-condition" style="width: 20%;"></div>
-            <div class="fair-condition" style="width: 45%;"></div>
-            <div class="poor-condition" style="width: 10%;"></div>
-            <div class="bad-condition" style="width: 8%;"></div>
-            <div class="unknown-condition" style="width: 17%;"></div>
+            <div each={ condition in state.conditions } class={condition.surface + "-condition"} style={"width:" + condition.percent + "%;"}></div>
         </div>
         <div class="align-items-center d-flex justify-content-between surface-condition-legend">
             <div class="values d-flex flex-wrap">
-                <div class="align-items-center d-flex">
-                    <div class="good-condition"></div>
-                    <span>Good (25,6km/20%)</span>
-                </div>
-                <div class="align-items-center d-flex">
-                    <div class="fair-condition"></div>
-                    <span>Fair (60km/45%)</span>
-                </div>
-                <div class="align-items-center d-flex">
-                    <div class="poor-condition"></div>
-                    <span>Poor (25,3km/10%)</span>
-                </div>
-                <div class="align-items-center d-flex">
-                    <div class="bad-condition"></div>
-                    <span>Bad (30km/8%)</span>
-                </div>
-                <div class="align-items-center d-flex">
-                    <div class="unknown-condition"></div>
-                    <span>Unknown (45km/17%)</span>
+                <div each={ condition in state.conditions } class="align-items-center d-flex">
+                    <div class={condition.surface + "-condition"}></div>
+                    <span>{condition.label}</span>
                 </div>
             </div>
             <div class="total">
-                <span>{ window.gettext("Total road chainage") }: 165km</span>
+                <span>{ window.gettext("Total road chainage") }: {state.surveyTotalDistance}km</span>
             </div>
         </div>
     </div>
@@ -165,6 +145,8 @@
                 canSave: false,
                 errors: {},
                 pendingRows: [],
+                conditions: [{ surface: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
+                surveyTotalDistance: 0,
                 viewAll: false,
                 editMode: false,
             },
@@ -200,8 +182,18 @@
                     });
             },
             getRoadSurveyReports() {
+                const roadId = this.state.road.getId();
                 const roadCode = this.state.road.code;
-                getRoadSurveyReport(roadCode)
+                
+                this.state.conditions.length = 0;
+                this.state.conditions.push({ surface: "good", distance: 25.6 });
+                this.state.conditions.push({ surface: "fair", distance: 60 });
+                this.state.conditions.push({ surface: "poor", distance: 25.3 });
+                this.state.conditions.push({ surface: "bad", distance: 30 });
+                this.state.conditions.push({ surface: "unknown", distance: 45 });
+                this.drawSurfaceConditionsSummary();
+
+                getRoadSurveyReport(roadId)
                     .then((surveyReportData) => {
                         if (surveyReportData) {
                         //     this.state.pendingRows = surveyData;
@@ -217,6 +209,23 @@
                         this.state.loading = false;
                         this.update();
                     });
+            },
+            drawSurfaceConditionsSummary() {
+                // First just clean all the distance values and get the total
+                this.state.conditions.forEach((condition) => {
+                    condition.distance = Math.round(condition.distance * 1000) / 1000;
+                    this.state.surveyTotalDistance += condition.distance;
+                });
+                this.state.surveyTotalDistance = Math.round(this.state.surveyTotalDistance * 1000) / 1000;
+
+                // Then calculate everything else
+                this.state.conditions.forEach((condition) => {
+                    condition.percent = Math.round((condition.distance / this.state.surveyTotalDistance) * 10000) / 100;
+                    const surfaceTitle = window.gettext(condition.surface[0].toUpperCase() + condition.surface.substring(1));
+                    condition.label = `${surfaceTitle} (${condition.distance}km/${condition.percent}%)`;
+                });
+
+                this.update();                
             },
             viewAll(e) {
                 this.update({
