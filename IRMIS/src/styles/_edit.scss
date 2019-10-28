@@ -27,51 +27,13 @@ $max-width: 400px;
     }
 }
 
-// Because we have to use container elements like <span> for slot substitution
-// then we need to override their default styling and make them more like the slot container 
-.editModal {
-    .modal-header {
-        padding-top: 2rem;
-            
-        h1, h1 span, .close {
-            margin-left: 1rem;
-            margin-bottom: 0;
-            margin-top: 0.5rem;
-            
-            color: #3D4758;
-            line-height: 27px;
-            font-weight: 700;
-            font-size: 22px;
-        }
-
-        .close {
-            top: 2.4rem;
-
-            span[aria-hidden="true"] {
-                visibility: hidden;
-            }
-        }
-    }
-}
-
 edit_location_type,
 edit_asset_details,
 edit_pavement,
 edit_project,
 edit_maintenance,
-edit_history {
-    height: calc(100vh - #{$top-menu-height} - 70px - 15px);
-    background-color: $white;
-    padding: 30px 60px 60px;
-    overflow-x: hidden;
-    overflow-y: auto;
-    display: block;
-
-    h5 {
-        max-width: $max-width;
-        margin-bottom: 20px;
-    }
-
+edit_history,
+edit_condition {
     section {
         max-width: $max-width;
         margin-bottom: 40px;
@@ -97,6 +59,25 @@ edit_history {
     }
 }
 
+edit_location_type,
+edit_asset_details,
+edit_pavement,
+edit_project,
+edit_maintenance,
+edit_history {
+    height: calc(100vh - #{$top-menu-height} - 70px - 15px);
+    background-color: $white;
+    padding: 30px 60px 60px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: block;
+
+    h5 {
+        max-width: $max-width;
+        margin-bottom: 20px;
+    }
+}
+
 edit_condition {
     .content-wrapper {
         background-color: $white;
@@ -105,14 +86,18 @@ edit_condition {
         &:not(:first-of-type) {
             margin-top: 15px;
         }
+
+        a.active, a.active:hover {
+            color: $green;
+        }
+    
+        a:first-of-type {
+            margin-right: 20px;
+        }
     }
 
     h5 {
         margin-bottom: 0;
-    }
-
-    .all-data-view {
-        margin-right: 20px;
     }
 }
 

@@ -1,8 +1,8 @@
 <edit_stop_alert>
     <div id="stop-alert" class="modal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-            <div class="align-items-center modal-content">
-                <div class="modal-header">
+            <div class="modal-content">
+                <div class="d-flex justify-content-center modal-header">
                     <span class="alert stop image"></span>
                     <span class="close image" data-dismiss="modal" aria-label="{ window.gettext("Close") }" aria-hidden="true"></span>
                 </div>
@@ -10,7 +10,7 @@
                     <h6>{ window.gettext("Unsaved Changes") }</h6>
                     <p>{ window.gettext("You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?") }</p>
                 </div>
-                <div class="modal-footer">
+                <div class="d-flex justify-content-center modal-footer">
                     <button type="button" class="btn btn-danger" onclick="{ discard }">{ window.gettext("Discard") }</button>
                     <button type="button" class="btn btn-light" onclick="{ continueEdit }">{ window.gettext("Continue editing") }</button>
                 </div>

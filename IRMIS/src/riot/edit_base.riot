@@ -19,10 +19,9 @@
                 </ul>
             </ul>
         </div>
-        <div if="{ state.loading }">
-            { window.gettext("Loading") }
-        </div>
+
         <edit_stop_alert></edit_stop_alert>
+
         <div if="{ !state.loading }" id="edit-base">
             <header class="align-items-center d-flex">
                 <a class="caret-dark left image" onclick="{ goBack }"></a>
@@ -46,7 +45,7 @@
                 <div class="align-items-center modal-content">
                     <div class="modal-header"></div>
                     <div class="modal-body text-center">
-                        <h6>{ window.gettext("Loading") }...</h6>
+                        <h5>{ window.gettext("Loading") }...</h5>
                     </div>
                     <div class="modal-footer"></div>
                 </div>

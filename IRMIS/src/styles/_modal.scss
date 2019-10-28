@@ -1,6 +1,16 @@
-// Override Bootstrap modal styles
+#surface-condition-modal {
+    .modal-header {
+        border-bottom: 1px solid $light-gray;
+    }
 
+    .modal-footer {
+        border-top: 1px solid $light-gray;
+    }
+}
+
+// Override Bootstrap modal styles
 .modal-content {
+    border-radius: 10px;
     border: none;
 }
 
@@ -8,16 +18,22 @@
     max-width: 431px;
 }
 
+.modal-lg {
+    max-width: 600px;
+}
+
 .modal-header {
-    padding-top: 60px;
+    position: relative;
     border-bottom: 0;
+    padding: 40px 0;
+    margin: 0 40px;
 
     .close {
         position: absolute;
-        right: 30px;
         padding: 0;
         margin: 0;
-        top: 30px;
+        top: 45px;
+        right: 0;
     }
 
     .alert {
@@ -26,13 +42,21 @@
 }
 
 .modal-body {
-    padding-right: 60px;
-    padding-left: 60px;
+    padding: 20px 40px;
 }
 
 .modal-footer {
-    padding-bottom: 40px;
+    padding: 40px 0;
+    margin: 0 40px;
     border-top: 0;
+
+    & > :not(:first-child) {
+        margin-left: 10px;
+    }
+
+    & > :not(:last-child) {
+        margin-right: 10px;
+    }
 }
 
 .modal-backdrop.show {
