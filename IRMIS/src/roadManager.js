@@ -1,6 +1,4 @@
-import { getRoadAuditData, getRoadMetadata, getRoadsMetadata, getRoadsMetadataChunks, getRoadSurveys, putRoadMetadata } from "./assets/assets_api";
-
-import { Road, Version } from "../protobuf/roads_pb";
+import { getRoadAuditData, getRoadMetadata, getRoadsMetadata, getRoadsMetadataChunks, putRoadMetadata } from "./assets/assets_api";
 
 const roads = {};
 let filteredRoads = {};
@@ -57,14 +55,6 @@ export function getRoadAudit(roadId) {
         .then((auditList) => {
             // document.dispatchEvent(new CustomEvent("estrada.auditTable.roadAuditDataAdded", {detail: {auditList}}));
             return auditList;
-        });
-}
-
-export function getRoadSurveyReport(roadId) {
-    return Promise.resolve(getRoadSurveyReport(roadId))
-        .then((surveyReportList) => {
-            // document.dispatchEvent(new CustomEvent("estrada.auditTable.roadAuditDataAdded", {detail: {auditList}}));
-            return surveyReportList;
         });
 }
 

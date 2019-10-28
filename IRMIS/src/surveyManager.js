@@ -1,4 +1,4 @@
-import { getSurveyMetadata, getSurveysMetadata, postSurveyData, putSurveyData } from "./assets/surveyAPI";
+import { getRoadSurveyReports, getSurveyMetadata, getSurveysMetadata, postSurveyData, putSurveyData } from "./assets/surveyAPI";
 
 let surveys = {}
 
@@ -31,9 +31,10 @@ export function updateSurvey(survey) {
         });
 }
 
-export function getSurveyReports(roadId) {
-    return Promise.resolve(getSurveysMetadata(roadId))
-        .then(surveys => {
-            return surveys;
+export function getRoadSurveyReport(roadId) {
+    return Promise.resolve(getRoadSurveyReports(roadId))
+        .then((surveyReportList) => {
+            // document.dispatchEvent(new CustomEvent("estrada.auditTable.roadAuditDataAdded", {detail: {auditList}}));
+            return surveyReportList;
         });
 }

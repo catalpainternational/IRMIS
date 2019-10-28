@@ -130,7 +130,7 @@
         import Data_Table from "./data_table.riot";
         import Edit_Modal from "./edit_modal.riot";
 
-        import { createSurvey, updateSurvey, getRoadSurveys, getSurveyReports } from "../surveyManager";
+        import { createSurvey, updateSurvey, getRoadSurveyReport, getRoadSurveys } from "../surveyManager";
         import { Survey, Report } from "../../protobuf/survey_pb";
 
         import { getFieldName } from "../road";
@@ -178,6 +178,7 @@
                 state.loading = true;
                 state.road = cloneData(props.road);
                 this.getRoadSurveys();
+                this.getRoadSurveyReports();
             },
             getRoadSurveys() {
                 const roadId = this.state.road.getId();
@@ -199,8 +200,8 @@
                     });
             },
             getRoadSurveyReports() {
-                const roadId = this.state.road.getId();
-                getSurveyReports(roadId)
+                const roadCode = this.state.road.code;
+                getRoadSurveyReport(roadCode)
                     .then((surveyReportData) => {
                         if (surveyReportData) {
                         //     this.state.pendingRows = surveyData;
@@ -237,7 +238,7 @@
                 this.showEditModal();
             },
             conditions: window.road_schema.surface_condition,
-            current_data_table_id: "surface-condition-table",
+            current_data_table_id: "surface-condition-report-table",
             current_data_table_columns: [
                 {
                     title: window.gettext("Chainage start"), 
