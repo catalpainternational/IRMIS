@@ -1,7 +1,9 @@
 import { Road, Roads, Versions } from "../../protobuf/roads_pb";
 import { EstradaRoad } from "../road";
 import { EstradaAudit } from "../audit";
+
 import { ConfigAPI } from "./configAPI";
+import { makeEstradaObject } from "./protoBufUtilities";
 
 /** getRoadsMetadataChunks
  *
@@ -96,13 +98,6 @@ export function getRoadAuditData(roadId) {
             const uintArray = new Uint8Array(protobufBytes);
             return Versions.deserializeBinary(uintArray).getVersionsList().map(makeEstradaAudit);
         });
-}
-
-function makeEstradaObject(estradaObjectType, protoBufSource) {
-    let estradaObject = Object.create(estradaObjectType.prototype);
-    Object.assign(estradaObject, protoBufSource);
-
-    return estradaObject;
 }
 
 function makeEstradaRoad(pbroad) {
