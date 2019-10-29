@@ -348,13 +348,17 @@ class Report:
                 # check survey does not conflict with current aggregate segmentations
                 # and update the segmentations when needed
                 for chainage in range(survey_chain_start, survey_chain_end):
-                    if (
-                        not self.segmentations[chainage]["date_surveyed"]
-                        or (survey.date_surveyed and survey.date_surveyed
-                        > self.segmentations[chainage]["date_surveyed"])
+                    if not self.segmentations[chainage]["date_surveyed"] or (
+                        survey.date_surveyed
+                        and survey.date_surveyed
+                        > self.segmentations[chainage]["date_surveyed"]
                     ):
-                        self.segmentations[chainage]["surf_cond"] = survey.values["surface_condition"]
-                        self.segmentations[chainage]["date_surveyed"] = survey.date_surveyed
+                        self.segmentations[chainage]["surf_cond"] = survey.values[
+                            "surface_condition"
+                        ]
+                        self.segmentations[chainage][
+                            "date_surveyed"
+                        ] = survey.date_surveyed
                         self.segmentations[chainage]["survey_id"] = survey.id
                         self.segmentations[chainage]["added_by"] = (
                             str(survey.user.id) if survey.user else ""
@@ -375,13 +379,10 @@ class Report:
 
     def build_chainage_table(self):
         """ Generate the table of chainages the report """
-        prev_cond, prev_date = None, None
+        prev_cond, prev_date = "Nada", "Nada"
         for segment in self.segmentations:
             segment = self.segmentations[segment]
-            if (
-                segment["surf_cond"] != prev_cond
-                and segment["date_surveyed"] != prev_date
-            ):
+            if segment["surf_cond"] != prev_cond:
                 entry = self.report_protobuf.table.add()
                 setattr(entry, "chainage_start", segment["chainage"])
                 setattr(entry, "surface_condition", str(segment["surf_cond"]))
