@@ -1,7 +1,9 @@
 import { Report, Survey, Surveys } from "../../protobuf/survey_pb";
 import { EstradaSurvey } from "../survey";
 import { EstradaSurveyReport } from "../surveyReport";
+
 import { ConfigAPI } from "./configAPI";
+import { makeEstradaObject } from "./protoBufUtilities";
 
 /** getSurveysMetadataChunks
  *
@@ -124,13 +126,6 @@ export function getRoadSurveyReports(roadCode) {
             const uintArray = new Uint8Array(protobufBytes);
             return makeEstradaSurveyReport(Report.deserializeBinary(uintArray));
         });
-}
-
-function makeEstradaObject(estradaObjectType, protoBufSource) {
-    let estradaObject = Object.create(estradaObjectType.prototype);
-    Object.assign(estradaObject, protoBufSource);
-
-    return estradaObject;
 }
 
 function makeEstradaSurvey(pbsurvey) {

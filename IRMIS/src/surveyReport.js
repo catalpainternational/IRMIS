@@ -1,6 +1,8 @@
+import dayjs from "dayjs";
+
 import { Report, TableEntry } from "../protobuf/survey_pb";
 
-import { choice_or_empty } from "./assets/protoBufUtilities";
+import { choice_or_empty, toChainageFormat, makeEstradaObject } from "./assets/protoBufUtilities";
 
 import { SURFACE_CONDITION_CHOICES } from "./road";
 
@@ -41,7 +43,7 @@ export class EstradaSurveyReport extends Report {
             counts = JSON.parse(this.getCounts());
         } catch {
             // Use dummy data
-            counts = JSON.parse('[["1", 25600], ["2", 60000], ["3", 25300], ["4", 30000], ["0", 45000]]');
+            counts = JSON.parse('{"1": 25600, "2": 60000, "3": 25300, "4": 30000, "None": 45000}');
             // This is the correct response on error
             // counts = [];
         }
@@ -51,13 +53,13 @@ export class EstradaSurveyReport extends Report {
 
     get conditions() {
         const conditions = [];
-        this.counts.forEach((record) => {
-            let conditionTitle = choice_or_empty(record[0], SURFACE_CONDITION_CHOICES) || record[0];
-            if (conditionTitle === "0") {
-                // What is the correct code for 'unknown'?
+        const counts = this.counts;
+        Object.keys(counts).forEach((key) => {
+            let conditionTitle = (choice_or_empty(key, SURFACE_CONDITION_CHOICES) || key).toLowerCase();
+            if (conditionTitle === "none") { 
                 conditionTitle = "unknown";
             }
-            conditions.push({ surface: conditionTitle.toLowerCase(), distance: record[1] });
+            conditions.push({ surface: conditionTitle, distance: counts[key] });
         });
 
         return conditions;
@@ -74,7 +76,46 @@ export class EstradaSurveyReport extends Report {
     }
 
     get tableList() {
-        return this.getTableList();
+        return this.getTableList().map(makeEstradaSurveyReportTableEntry);
+    }
+}
+
+export class EstradaSurveyReportTableEntry extends TableEntry {
+    getId() {
+        return this.getSurveyId();
+    }
+
+    get id() {
+        return this.getId();
+    }
+
+    get surveyId() {
+        return this.getSurveyId();
+    }
+  
+    get addedBy() {
+        return this.getAddedBy() || "";
+    }
+
+    get chainageStart() {
+        return toChainageFormat(this.getChainageStart());
+    }
+
+    get chainageEnd() {
+        return toChainageFormat(this.getChainageEnd());
+    }
+
+    get dateSurveyed() {
+        let date = dayjs(new Date(this.getDateSurveyed() * 1000));
+        return date.isValid() ? date.format('YYYY-MM-DD HH:mm') : "";
+    }
+
+    get surfaceCondition() {
+        let conditionTitle = (choice_or_empty(this.getSurfaceCondition(), SURFACE_CONDITION_CHOICES) || this.getSurfaceCondition()).toLowerCase();
+        if (conditionTitle === "none") { 
+            conditionTitle = "unknown";
+        }
+        return window.gettext(conditionTitle[0].toUpperCase() + conditionTitle.substring(1));
     }
 }
 
@@ -84,4 +125,8 @@ export function getFieldName(field) {
 
 export function getHelpText(field) {
     return (surveyReportSchema[field]) ? surveyReportSchema[field].help_text : "";
+}
+
+export function makeEstradaSurveyReportTableEntry (pbtableentry) {
+    return makeEstradaObject(EstradaSurveyReportTableEntry, pbtableentry);
 }
