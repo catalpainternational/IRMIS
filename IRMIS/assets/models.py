@@ -173,6 +173,13 @@ class Survey(models.Model):
         null=True,
         help_text=_("Enter chainage for survey ending point"),
     )
+    source = models.CharField(
+        verbose_name=_("Source"),
+        default=None,
+        null=True,
+        max_length=150,
+        help_text=_("Choose the source of the survey"),
+    )
     values = HStoreField()
     source = models.CharField(
         verbose_name=_("Source"), max_length=155, blank=True, null=True

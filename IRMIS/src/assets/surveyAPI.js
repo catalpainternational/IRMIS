@@ -1,6 +1,9 @@
-import { Survey, Surveys } from "../../protobuf/survey_pb";
+import { Report, Survey, Surveys } from "../../protobuf/survey_pb";
 import { EstradaSurvey } from "../survey";
+import { EstradaSurveyReport } from "../surveyReport";
+
 import { ConfigAPI } from "./configAPI";
+import { makeEstradaObject } from "./protoBufUtilities";
 
 /** getSurveysMetadataChunks
  *
@@ -54,12 +57,6 @@ export function getSurveyMetadata(surveyId) {
         });
 }
 
-function makeEstradaSurvey(pbsurvey) {
-    var estradaSurvey = Object.create(EstradaSurvey.prototype);
-    Object.assign(estradaSurvey, pbsurvey);
-    return estradaSurvey;
-}
-
 /** postSurveydata
  *
  * Post data for a single Survey to the server
@@ -106,4 +103,35 @@ export function putSurveyData(survey) {
             const uintArray = new Uint8Array(protobufBytes);
             return makeEstradaSurvey(Survey.deserializeBinary(uintArray));
         });
+}
+
+/** getRoadSurveyReports
+ *
+ * Retrieves the road survey data from the server
+ *
+ * @returns a map {id: road_object}
+ */
+export function getRoadSurveyReports(roadCode) {
+    const assetTypeUrlFragment = "road_report";
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${roadCode}`;
+
+    return fetch(metadataUrl, ConfigAPI.requestInit())
+        .then((metadataResponse) => {
+            if (metadataResponse.ok) {
+                return metadataResponse.arrayBuffer();
+            }
+            throw new Error(`Survey report retrieval failed: ${metadataResponse.statusText}`);
+        })
+        .then((protobufBytes) => {
+            const uintArray = new Uint8Array(protobufBytes);
+            return makeEstradaSurveyReport(Report.deserializeBinary(uintArray));
+        });
+}
+
+function makeEstradaSurvey(pbsurvey) {
+    return makeEstradaObject(EstradaSurvey, pbsurvey);
+}
+
+function makeEstradaSurveyReport(pbsurveyreport) {
+    return makeEstradaObject(EstradaSurveyReport, pbsurveyreport);
 }

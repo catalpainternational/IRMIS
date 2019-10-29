@@ -4,6 +4,7 @@ import pytz
 import reversion
 from reversion.models import Version
 from datetime import datetime
+from collections import Counter
 import pytz
 
 from django.contrib.auth import get_user_model
@@ -276,6 +277,148 @@ def protobuf_road_set(request, chunk_name=None):
     )
 
 
+def road_report(request, pk):
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+
+    if request.method != "GET":
+        raise MethodNotAllowed(request.method)
+
+    # get the Road link requested
+    road = get_object_or_404(Road.objects.all(), pk=pk)
+
+    # pull any Surveys that cover the Road above
+    surveys = (
+        Survey.objects.filter(road=road.road_code)
+        .exclude(chainage_start__isnull=True)
+        .exclude(chainage_end__isnull=True)
+        .order_by("road", "chainage_start", "chainage_end", "-date_surveyed")
+        .distinct("road", "chainage_start", "chainage_end")
+    )
+    report_protobuf = Report(road, surveys).to_protobuf()
+
+    return HttpResponse(
+        report_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )
+
+
+class Report:
+    def __init__(self, road, surveys):
+        self.road = road
+        self.surveys = surveys
+
+    def validate_chainages(self):
+        try:
+            self.road_start_chainage = int(self.road.link_start_chainage)
+            self.road_end_chainage = int(self.road.link_end_chainage)
+            return True
+        except TypeError:
+            return False
+
+    def build_sementations(self):
+        """ Create all of the segments based on report chainage start/end paramenters """
+        self.segmentations = {
+            item: {
+                "chainage": float(item),
+                "surf_cond": None,
+                "date_surveyed": None,
+                "survey_id": 0,
+                "added_by": "",
+            }
+            for item in range(self.road_start_chainage, self.road_end_chainage)
+        }
+
+    def assign_survey_results(self):
+        """ For all the Surveys, assign only the most up-to-date results to any given segment """
+        for survey in self.surveys:
+            # ensure survey bits used covers only the road link start/end chainage portion
+            if (
+                survey.chainage_start < self.road_end_chainage
+                and survey.chainage_end > self.road_start_chainage
+            ):
+                if survey.chainage_start < self.road_start_chainage:
+                    survey_chain_start = self.road_start_chainage
+                else:
+                    survey_chain_start = int(survey.chainage_start)
+                if survey.chainage_end > self.road_end_chainage:
+                    survey_chain_end = self.road_end_chainage
+                else:
+                    survey_chain_end = int(survey.chainage_end)
+
+                # check survey does not conflict with current aggregate segmentations
+                # and update the segmentations when needed
+                for chainage in range(survey_chain_start, survey_chain_end):
+                    if not self.segmentations[chainage]["date_surveyed"] or (
+                        survey.date_surveyed
+                        and survey.date_surveyed
+                        > self.segmentations[chainage]["date_surveyed"]
+                    ):
+                        self.segmentations[chainage]["surf_cond"] = survey.values[
+                            "surface_condition"
+                        ]
+                        self.segmentations[chainage][
+                            "date_surveyed"
+                        ] = survey.date_surveyed
+                        self.segmentations[chainage]["survey_id"] = survey.id
+                        self.segmentations[chainage]["added_by"] = (
+                            str(survey.user.id) if survey.user else ""
+                        )
+
+    def build_summary_stats(self):
+        """ Generate the high-level counts & percentage statistics for the report """
+        segments_length = len(self.segmentations)
+        counts = Counter(
+            [self.segmentations[segment]["surf_cond"] for segment in self.segmentations]
+        )
+        percentages = {
+            condition: (counts[condition] / segments_length * 100)
+            for condition in counts
+        }
+        setattr(self.report_protobuf, "counts", json.dumps(counts))
+        setattr(self.report_protobuf, "percentages", json.dumps(percentages))
+
+    def build_chainage_table(self):
+        """ Generate the table of chainages the report """
+        prev_cond, prev_date = "Nada", "Nada"
+        for segment in self.segmentations:
+            segment = self.segmentations[segment]
+            if segment["surf_cond"] != prev_cond:
+                entry = self.report_protobuf.table.add()
+                setattr(entry, "chainage_start", segment["chainage"])
+                setattr(entry, "surface_condition", str(segment["surf_cond"]))
+                setattr(entry, "survey_id", segment["survey_id"])
+                setattr(entry, "added_by", segment["added_by"])
+                if segment["date_surveyed"]:
+                    ts = Timestamp()
+                    ts.FromDatetime(segment["date_surveyed"])
+                    entry.date_surveyed.CopyFrom(ts)
+                prev_cond, prev_date = (segment["surf_cond"], segment["date_surveyed"])
+
+    def to_protobuf(self):
+        """ Package up the various statistics and tables for export as Protobuf """
+        self.report_protobuf = survey_pb2.Report()
+
+        # set basic report attributes
+        setattr(self.report_protobuf, "road_code", self.road.road_code)
+        if self.validate_chainages():
+            setattr(
+                self.report_protobuf, "report_chainage_start", self.road_start_chainage
+            )
+            setattr(self.report_protobuf, "report_chainage_end", self.road_end_chainage)
+        else:
+            # Road link must have start & end chainages to build a report.
+            # Return an empty report.
+            return self.report_protobuf
+
+        # build and set report statistical data & table
+        self.build_sementations()
+        self.assign_survey_results()
+        self.build_summary_stats()
+        self.build_chainage_table()
+
+        return self.report_protobuf
+
+
 def protobuf_surveys(request, chunk_name=None):
     """ returns a protobuf object with the set of all surveys or only of specific type"""
 
@@ -314,7 +457,7 @@ def protobuf_road_surveys(request, pk):
 
 
 def pbtimestamp_to_pydatetime(pb_stamp):
-    """ Take a Protobuf Timestamp as single input and outputs a 
+    """ Take a Protobuf Timestamp as single input and outputs a
     time zone aware, Python Datetime object (UTC). Attempts to parse
     both with and without nanoseconds. """
 

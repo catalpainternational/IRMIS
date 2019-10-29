@@ -1,10 +1,9 @@
 import { Road } from "../protobuf/roads_pb";
 
 import { projToWGS84, toDms, toUtm } from "./assets/crsUtilities";
+import { choice_or_empty } from "./assets/protoBufUtilities";
 
-const roadSchema = JSON.parse(document.getElementById('road_schema').textContent);
-
-function humanizeChoices(choiceField, valueKey=false, displayKey=false) {
+export function humanizeChoices(choiceField, valueKey=false, displayKey=false) {
     let values = {};
     valueKey = valueKey || 0;
     displayKey = displayKey || 1;
@@ -14,10 +13,7 @@ function humanizeChoices(choiceField, valueKey=false, displayKey=false) {
     return values;
 }
 
-/** utility function to pick from choices if value is truthy, or return empty string */
-function choice_or_empty(value, choices) {
-    return value ? choices[value] : "";
-}
+const roadSchema = JSON.parse(document.getElementById('road_schema').textContent);
 
 const ROAD_STATUS_CHOICES = humanizeChoices('road_status', 'code', 'name');
 const ROAD_TYPE_CHOICES = humanizeChoices('road_type');

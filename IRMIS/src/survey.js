@@ -3,22 +3,11 @@ import dayjs from "dayjs";
 import { Survey } from "../protobuf/survey_pb";
 import { SURFACE_CONDITION_CHOICES, TRAFFIC_LEVEL_CHOICES } from "./road";
 
+import { choice_or_empty, toChainageFormat } from "./assets/protoBufUtilities";
+
 // We may need a survey schema - primarily for formatted field names
 // JSON.parse(document.getElementById('survey_schema').textContent);
 const surveySchema = {};
-
-/** utility function to pick from choices if value is truthy, or return empty string */
-function choice_or_empty(value, choices) {
-    return value ? choices[value] : "";
-}
-
-function toChainageFormat(value) {
-    const distance = parseFloat(value).toFixed(0);
-    const meters = `000${distance.substr(-3)}`.substr(-3);
-    const kilometers = `${distance.substr(0, distance.length - 3)}` || 0;
-
-    return `${kilometers}+${meters}`;
-}
 
 export class EstradaSurvey extends Survey {
 
