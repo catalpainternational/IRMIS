@@ -21,7 +21,6 @@ class Command(BaseCommand):
                             "road": road.road_code,
                             "chainage_start": road.link_start_chainage,
                             "chainage_end": road.link_end_chainage,
-                            "date_surveyed": datetime_now_tz,
                             "source": "programmatic",
                             "values": {
                                 "surface_condition": str(road.surface_condition),
