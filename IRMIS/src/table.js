@@ -171,10 +171,11 @@ $("#inventory-surface-condition-modal").on("show.bs.modal", function (event) {
 
     modal.find(".modal-title").text(linkCode + " Surface Condition segments");
 
+    surfaceConditionTable.clear(); // remove all rows in the table
+
     getRoadSurveys(roadId).then((surveyData) => {
         if (surveyData) {
-            const pendingRows = surveyData;
-            surfaceConditionTable.rows.add(pendingRows).draw();
+            surfaceConditionTable.rows.add(surveyData).draw();
         }
     });
 });
