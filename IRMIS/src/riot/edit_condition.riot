@@ -147,6 +147,7 @@
                 pendingRows: [],
                 conditions: [{ surface: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
                 surveyTotalDistance: 0,
+                reportRows: [],
                 viewAll: false,
                 editMode: false,
             },
@@ -195,23 +196,29 @@
                 
                 // All distances are in meters, the calculated label will show them in km
                 // Here's some sample data for your listening pleasure
-                this.updateSurfaceConditionsSummary([
-                    { surface: "good", distance: 25600 },
-                    { surface: "fair", distance: 60000 },
-                    { surface: "poor", distance: 25300 },
-                    { surface: "bad", distance: 30000 },
-                    { surface: "unknown", distance: 45000 },
-                ]);
+                // this.updateSurfaceConditionsSummary([
+                //     { surface: "good", distance: 25600 },
+                //     { surface: "fair", distance: 60000 },
+                //     { surface: "poor", distance: 25300 },
+                //     { surface: "bad", distance: 30000 },
+                //     { surface: "unknown", distance: 45000 },
+                // ]);
 
                 getRoadSurveyReport(roadId)
                     .then((surveyReportData) => {
                         if (surveyReportData) {
-                        //     this.state.pendingRows = surveyData;
-                        //     const pendingRows = this.state.pendingRows;
-                        //     document.dispatchEvent(new CustomEvent(`${this.current_data_table_id}.dataAdded`, {detail: { pendingRows }}));
-                        //     this.state.error = false;
-                        // } else {
-                        //     this.state.error = true;
+                            if (surveyReportData.reportChainageEnd > 0 
+                                && surveyReportData.reportChainageStart < surveyReportData.reportChainageEnd) {
+                                
+                            }
+                            if (surveyReportData.tableList && surveyReportData.tableList.length) {
+                                this.state.reportRows = surveyReportData.tableList;
+                                const pendingRows = this.state.reportRows;
+                                document.dispatchEvent(new CustomEvent(`${this.current_data_table_id}.dataAdded`, {detail: { pendingRows }}));
+                            }
+                            this.state.error = false;
+                        } else {
+                            this.state.error = true;
                         }
                     }).catch(err => {
                         this.state.error = true;

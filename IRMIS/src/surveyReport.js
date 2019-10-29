@@ -32,11 +32,23 @@ export class EstradaSurveyReport extends Report {
     }
 
     get counts() {
-        return this.getCounts();
+        let counts = [];
+        try {
+            counts = JSON.parse(this.getCounts());
+        } catch {
+            counts = [];
+        }
+        return counts;
     }
 
     get percentages() {
-        return this.getPercentages();
+        let percentages = [];
+        try {
+            percentages = JSON.parse(this.getPercentages());
+        } catch {
+            percentages = [];
+        }
+        return percentages;
     }
 
     get tableList() {
