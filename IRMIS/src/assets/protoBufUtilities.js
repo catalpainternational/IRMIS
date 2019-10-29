@@ -17,4 +17,3 @@ export function makeEstradaObject(estradaObjectType, protoBufSource) {
 
     return estradaObject;
 }
-
