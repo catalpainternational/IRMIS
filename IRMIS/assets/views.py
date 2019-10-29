@@ -315,7 +315,7 @@ class Report:
         except TypeError:
             return False
 
-    def build_sementations(self):
+    def build_segmentations(self):
         """ Create all of the segments based on report chainage start/end paramenters """
         self.segmentations = {
             item: {
@@ -380,11 +380,13 @@ class Report:
     def build_chainage_table(self):
         """ Generate the table of chainages the report """
         prev_cond, prev_date = "Nada", "Nada"
+        prev_chainage = 0
         for segment in self.segmentations:
             segment = self.segmentations[segment]
             if segment["surf_cond"] != prev_cond:
                 entry = self.report_protobuf.table.add()
-                setattr(entry, "chainage_start", segment["chainage"])
+                setattr(entry, "chainage_start", prev_chainage)
+                setattr(entry, "chainage_end", segment["chainage"])
                 setattr(entry, "surface_condition", str(segment["surf_cond"]))
                 setattr(entry, "survey_id", segment["survey_id"])
                 setattr(entry, "added_by", segment["added_by"])
@@ -393,6 +395,7 @@ class Report:
                     ts.FromDatetime(segment["date_surveyed"])
                     entry.date_surveyed.CopyFrom(ts)
                 prev_cond, prev_date = (segment["surf_cond"], segment["date_surveyed"])
+                prev_chainage = segment["chainage"]
 
     def to_protobuf(self):
         """ Package up the various statistics and tables for export as Protobuf """
@@ -411,7 +414,7 @@ class Report:
             return self.report_protobuf
 
         # build and set report statistical data & table
-        self.build_sementations()
+        self.build_segmentations()
         self.assign_survey_results()
         self.build_summary_stats()
         self.build_chainage_table()
