@@ -34,7 +34,7 @@ export class EstradaSurveyReport extends Report {
     get reportChainageEnd() {
         return this.getReportChainageEnd();
     }
-
+ 
     get counts() {
         let counts = [];
         try {
@@ -45,9 +45,13 @@ export class EstradaSurveyReport extends Report {
             // This is the correct response on error
             // counts = [];
         }
-        
+
+        return counts;
+    }
+
+    get conditions() {
         const conditions = [];
-        counts.forEach((record) => {
+        this.counts.forEach((record) => {
             let conditionTitle = choice_or_empty(record[0], SURFACE_CONDITION_CHOICES) || record[0];
             if (conditionTitle === "0") {
                 // What is the correct code for 'unknown'?

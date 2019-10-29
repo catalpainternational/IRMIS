@@ -178,7 +178,7 @@
                         if (surveyData) {
                             this.state.pendingRows = surveyData;
                             const pendingRows = this.state.pendingRows;
-                            document.dispatchEvent(new CustomEvent(`${this.current_data_table_id}.dataAdded`, {detail: { pendingRows }}));
+                            document.dispatchEvent(new CustomEvent(`${this.all_data_table_id}.dataAdded`, {detail: { pendingRows }}));
                             this.state.error = false;
                         } else {
                             this.state.error = true;
@@ -207,8 +207,8 @@
                 getRoadSurveyReport(roadId)
                     .then((surveyReportData) => {
                         if (surveyReportData) {
-                            if (surveyReportData.counts && surveyReportData.counts.length > 0) {
-                                this.updateSurfaceConditionsSummary(surveyReportData.counts);
+                            if (surveyReportData.counts && surveyReportData.conditions.length > 0) {
+                                this.updateSurfaceConditionsSummary(surveyReportData.conditions);
                             }
                             if (surveyReportData.tableList && surveyReportData.tableList.length) {
                                 this.state.reportRows = surveyReportData.tableList;
@@ -257,11 +257,15 @@
                 this.update({
                     viewAll: true
                 });
+                const pendingRows = this.state.pendingRows;
+                document.dispatchEvent(new CustomEvent(`${this.all_data_table_id}.dataAdded`, {detail: { pendingRows }}));
             },
             viewCurrent(e) {
                 this.update({
                     viewAll: false
                 });
+                const pendingRows = this.state.reportRows;
+                document.dispatchEvent(new CustomEvent(`${this.current_data_table_id}.dataAdded`, {detail: { pendingRows }}));
             },
             addEdit(e) {
                 // TODO:
