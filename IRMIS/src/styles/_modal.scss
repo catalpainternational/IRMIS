@@ -1,3 +1,13 @@
+#stop-alert {
+    .modal-header {
+        padding-bottom: 0;
+    }
+
+    .modal-footer {
+        padding-top: 0;
+    }
+}
+
 #surface-condition-modal {
     .modal-header {
         border-bottom: 1px solid $light-gray;
