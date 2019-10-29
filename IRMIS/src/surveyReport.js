@@ -106,7 +106,8 @@ export class EstradaSurveyReportTableEntry extends TableEntry {
     }
 
     get dateSurveyed() {
-        let date = dayjs(new Date(this.getDateSurveyed() * 1000));
+        const pbufData = this.getDateSurveyed();
+        let date = dayjs(new Date(pbufData.array[0] * 1000));
         return date.isValid() ? date.format('YYYY-MM-DD HH:mm') : "";
     }
 
