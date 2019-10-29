@@ -345,3 +345,49 @@ def test_survey_edit_erroneous_protobuf(client, django_user_model):
     url = reverse("survey_update")
     response = client.put(url, data=b"", content_type="application/octet-stream")
     assert response.status_code == 400
+
+
+@pytest.mark.django_db
+def test_survey_delete(client, django_user_model):
+    """ This test will fail if the survey api throws an error with deletion of
+    survey asset """
+    # create a user
+    user = django_user_model.objects.create_user(username="user1", password="bar")
+    client.force_login(user)
+    with reversion.create_revision():
+        # create a survey
+        survey = Survey.objects.create(
+            **{
+                "road": "A01",
+                "user": user,
+                "chainage_start": 600.0,
+                "chainage_end": 700.25,
+                "date_surveyed": timezone.now(),
+                "values": {"surface_condition": "2", "traffic_level": "L"},
+            }
+        )
+        # store the user who made the changes
+        reversion.set_user(user)
+
+    # attempt to delete the survey
+    url = reverse("survey_delete", kwargs={"pk": str(survey.id)})
+    response = client.get(url)
+
+    assert response.status_code == 200
+    # check that DB not longer has the survey
+    mod_survey = Survey.objects.filter(id=survey.id).all()
+    assert len(mod_survey) == 0
+
+
+@pytest.mark.django_db
+def test_survey_delete_404_pk(client, django_user_model):
+    """ This test will fail if the survey api does NOT throw a 404 error when attempting
+    to delete a survey with an ID that does not exist in the DB """
+    # create a user
+    user = django_user_model.objects.create_user(username="user1", password="bar")
+    client.force_login(user)
+
+    # hit the survey api
+    url = reverse("survey_delete", kwargs={"pk": 999999})
+    response = client.get(url)
+    assert response.status_code == 404
