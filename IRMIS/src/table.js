@@ -5,6 +5,7 @@ import { exportCsv } from "./exportCsv";
 import { estradaTableColumns, estradaTableEventListeners } from "./mainTableDefinition";
 import { surfaceConditionColumns } from "./segmentsInventoryTableDefinition";
 import { datatableTranslations } from "./datatableTranslations";
+import { getRoadSurveys } from "./surveyManager";
 
 let surfaceConditionTable = null;
 let table = null;
@@ -163,8 +164,17 @@ $.extend($.fn.dataTableExt.oSort, {
 });
 
 $("#inventory-surface-condition-modal").on("show.bs.modal", function (event) {
-    var button = $(event.relatedTarget); // Button that triggered the modal
-    var linkCode = button.data("code"); // Extract info from data-* attributes
-    var modal = $(this);
+    const button = $(event.relatedTarget); // Button that triggered the modal
+    const linkCode = button.data("code"); // Extract info from data-* attributes
+    const roadId = button.data("id");
+    const modal = $(this);
+
     modal.find(".modal-title").text(linkCode + " Surface Condition segments");
+
+    getRoadSurveys(roadId).then((surveyData) => {
+        if (surveyData) {
+            const pendingRows = surveyData;
+            surfaceConditionTable.rows.add(pendingRows).draw();
+        }
+    });
 });
