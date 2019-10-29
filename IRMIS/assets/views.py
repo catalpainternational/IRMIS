@@ -308,11 +308,11 @@ class Report:
         self.surveys = surveys
 
     def validate_chainages(self):
-        if self.road.link_start_chainage and self.road.link_end_chainage:
+        try:
             self.road_start_chainage = int(self.road.link_start_chainage)
             self.road_end_chainage = int(self.road.link_end_chainage)
             return True
-        else:
+        except TypeError:
             return False
 
     def build_sementations(self):

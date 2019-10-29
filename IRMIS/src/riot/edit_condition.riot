@@ -2,37 +2,17 @@
     <div class="content-wrapper">
         <h5>{ window.gettext("Surface Condition") }</h5>
         <div class="d-flex surface-condition-bar">
-            <div class="good-condition" style="width: 20%;"></div>
-            <div class="fair-condition" style="width: 45%;"></div>
-            <div class="poor-condition" style="width: 10%;"></div>
-            <div class="bad-condition" style="width: 8%;"></div>
-            <div class="unknown-condition" style="width: 17%;"></div>
+            <div each={ condition in state.conditions } class={condition.surface + "-condition"} style={"width:" + condition.percent + "%;"}></div>
         </div>
         <div class="align-items-center d-flex justify-content-between surface-condition-legend">
             <div class="values d-flex flex-wrap">
-                <div class="align-items-center d-flex">
-                    <div class="good-condition"></div>
-                    <span>Good (25,6km/20%)</span>
-                </div>
-                <div class="align-items-center d-flex">
-                    <div class="fair-condition"></div>
-                    <span>Fair (60km/45%)</span>
-                </div>
-                <div class="align-items-center d-flex">
-                    <div class="poor-condition"></div>
-                    <span>Poor (25,3km/10%)</span>
-                </div>
-                <div class="align-items-center d-flex">
-                    <div class="bad-condition"></div>
-                    <span>Bad (30km/8%)</span>
-                </div>
-                <div class="align-items-center d-flex">
-                    <div class="unknown-condition"></div>
-                    <span>Unknown (45km/17%)</span>
+                <div each={ condition in state.conditions } class="align-items-center d-flex">
+                    <div class={condition.surface + "-condition"}></div>
+                    <span>{condition.label}</span>
                 </div>
             </div>
             <div class="total">
-                <span>{ window.gettext("Total road chainage") }: 165km</span>
+                <span>{ window.gettext("Total road chainage") }: {state.surveyTotalDistance / 1000}km</span>
             </div>
         </div>
     </div>
@@ -130,8 +110,9 @@
         import Data_Table from "./data_table.riot";
         import Edit_Modal from "./edit_modal.riot";
 
-        import { createSurvey, updateSurvey, getRoadSurveys } from "../surveyManager";
-        import { Survey } from "../../protobuf/survey_pb";
+        import { createSurvey, updateSurvey, getRoadSurveyReport, getRoadSurveys } from "../surveyManager";
+        import { Survey, Report } from "../../protobuf/survey_pb";
+
         import { getFieldName } from "../road";
 
         import $ from "jquery";
@@ -164,6 +145,9 @@
                 canSave: false,
                 errors: {},
                 pendingRows: [],
+                conditions: [{ surface: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
+                surveyTotalDistance: 0,
+                reportRows: [],
                 viewAll: false,
                 editMode: false,
             },
@@ -176,7 +160,16 @@
             onMounted(props, state) {
                 state.loading = true;
                 state.road = cloneData(props.road);
+
+                const emptyConditions = { 
+                    surface: "unknown", 
+                    distance: state.road.getLinkEndChainage() - state.road.getLinkStartChainage() 
+                };
+
+                this.updateSurfaceConditionsSummary([emptyConditions]);
+
                 this.getRoadSurveys();
+                this.getRoadSurveyReports();
             },
             getRoadSurveys() {
                 const roadId = this.state.road.getId();
@@ -185,7 +178,7 @@
                         if (surveyData) {
                             this.state.pendingRows = surveyData;
                             const pendingRows = this.state.pendingRows;
-                            document.dispatchEvent(new CustomEvent(`${this.current_data_table_id}.dataAdded`, {detail: { pendingRows }}));
+                            document.dispatchEvent(new CustomEvent(`${this.all_data_table_id}.dataAdded`, {detail: { pendingRows }}));
                             this.state.error = false;
                         } else {
                             this.state.error = true;
@@ -197,15 +190,82 @@
                         this.update();
                     });
             },
+            getRoadSurveyReports() {
+                const roadId = this.state.road.getId();
+                const roadCode = this.state.road.code;
+                
+                // All distances are in meters, the calculated label will show them in km
+                // Here's some sample data for your listening pleasure
+                // this.updateSurfaceConditionsSummary([
+                //     { surface: "good", distance: 25600 },
+                //     { surface: "fair", distance: 60000 },
+                //     { surface: "poor", distance: 25300 },
+                //     { surface: "bad", distance: 30000 },
+                //     { surface: "unknown", distance: 45000 },
+                // ]);
+
+                getRoadSurveyReport(roadId)
+                    .then((surveyReportData) => {
+                        if (surveyReportData) {
+                            if (surveyReportData.counts && surveyReportData.conditions.length > 0) {
+                                this.updateSurfaceConditionsSummary(surveyReportData.conditions);
+                            }
+                            if (surveyReportData.tableList && surveyReportData.tableList.length) {
+                                this.state.reportRows = surveyReportData.tableList;
+                                const pendingRows = this.state.reportRows;
+                                document.dispatchEvent(new CustomEvent(`${this.current_data_table_id}.dataAdded`, {detail: { pendingRows }}));
+                            }
+                            this.state.error = false;
+                        } else {
+                            this.state.error = true;
+                        }
+                    }).catch(err => {
+                        this.state.error = true;
+                    }).finally((r) => {
+                        this.state.loading = false;
+                        this.update();
+                    });
+            },
+            updateSurfaceConditionsSummary(surfaceConditions) {
+                this.state.conditions.length = 0;
+                surfaceConditions.forEach((condition) => {
+                    this.state.conditions.push(condition);
+                });
+                this.drawSurfaceConditionsSummary();
+            },
+            drawSurfaceConditionsSummary() {
+                // First just clean all the distance values and get the total
+                this.state.surveyTotalDistance = 0;
+                this.state.conditions.forEach((condition) => {
+                    // all distances are in meters
+                    condition.distance = Math.round(condition.distance);
+                    this.state.surveyTotalDistance += condition.distance;
+                });
+                this.state.surveyTotalDistance = Math.round(this.state.surveyTotalDistance);
+
+                // Then calculate everything else
+                this.state.conditions.forEach((condition) => {
+                    condition.percent = Math.round((condition.distance / this.state.surveyTotalDistance) * 10000) / 100;
+                    const surfaceTitle = window.gettext(condition.surface[0].toUpperCase() + condition.surface.substring(1));
+                    // the calculated label shows distance in km
+                    condition.label = `${surfaceTitle} (${condition.distance / 1000}km/${condition.percent}%)`;
+                });
+
+                this.update();                
+            },
             viewAll(e) {
                 this.update({
                     viewAll: true
                 });
+                const pendingRows = this.state.pendingRows;
+                document.dispatchEvent(new CustomEvent(`${this.all_data_table_id}.dataAdded`, {detail: { pendingRows }}));
             },
             viewCurrent(e) {
                 this.update({
                     viewAll: false
                 });
+                const pendingRows = this.state.reportRows;
+                document.dispatchEvent(new CustomEvent(`${this.current_data_table_id}.dataAdded`, {detail: { pendingRows }}));
             },
             addEdit(e) {
                 // TODO:
@@ -217,27 +277,31 @@
                 this.showEditModal();
             },
             conditions: window.road_schema.surface_condition,
-            current_data_table_id: "surface-condition-table",
+            current_data_table_id: "surface-condition-report-table",
             current_data_table_columns: [
                 {
                     title: window.gettext("Chainage start"), 
                     data: "chainageStart",
                     defaultContent: "",
+                    className: "text-right",
                 },
                 {
                     title: window.gettext("Chainage end"), 
                     data: "chainageEnd",
                     defaultContent: "",
+                    className: "text-right",
                 },
                 {
                     title: window.gettext("Surface condition"), 
                     data: "surfaceCondition",
                     defaultContent: "",
+                    className: "text-center",
                 },
                 {
                     title: window.gettext("Survey date"),
                     data: "dateSurveyed",
                     defaultContent: "",
+                    className: "text-center",
                 },
                 {
                     title: window.gettext("Added by"), 

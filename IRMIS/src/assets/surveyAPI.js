@@ -1,5 +1,6 @@
 import { Report, Survey, Surveys } from "../../protobuf/survey_pb";
 import { EstradaSurvey } from "../survey";
+import { EstradaSurveyReport } from "../surveyReport";
 import { ConfigAPI } from "./configAPI";
 
 /** getSurveysMetadataChunks
@@ -54,12 +55,6 @@ export function getSurveyMetadata(surveyId) {
         });
 }
 
-function makeEstradaSurvey(pbsurvey) {
-    var estradaSurvey = Object.create(EstradaSurvey.prototype);
-    Object.assign(estradaSurvey, pbsurvey);
-    return estradaSurvey;
-}
-
 /** postSurveydata
  *
  * Post data for a single Survey to the server
@@ -108,26 +103,40 @@ export function putSurveyData(survey) {
         });
 }
 
-/** getSurveysReport
+/** getRoadSurveyReports
  *
- * Retrieves a Surveys Report for a given Road Code from the server
+ * Retrieves the road survey data from the server
  *
- * @returns a report protobuf object
+ * @returns a map {id: road_object}
  */
-export function getSurveysReport(roadCode) {
-    const surveyTypeUrlFragment = "road_report";
-    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${surveyTypeUrlFragment}/${roadCode}`;
+export function getRoadSurveyReports(roadCode) {
+    const assetTypeUrlFragment = "road_report";
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${roadCode}`;
 
     return fetch(metadataUrl, ConfigAPI.requestInit())
-        .then((metadataResponse) => (metadataResponse.arrayBuffer()))
+        .then((metadataResponse) => {
+            if (metadataResponse.ok) {
+                return metadataResponse.arrayBuffer();
+            }
+            throw new Error(`Survey report retrieval failed: ${metadataResponse.statusText}`);
+        })
         .then((protobufBytes) => {
             const uintArray = new Uint8Array(protobufBytes);
-            return makeEstradaReport(Report.deserializeBinary(uintArray));
+            return makeEstradaSurveyReport(Report.deserializeBinary(uintArray));
         });
 }
 
-function makeEstradaReport(pbReport) {
-    var estradaReport = Object.create(EstradaReport.prototype);
-    Object.assign(estradaReprot, pbReport);
-    return estradaReport;
+function makeEstradaObject(estradaObjectType, protoBufSource) {
+    let estradaObject = Object.create(estradaObjectType.prototype);
+    Object.assign(estradaObject, protoBufSource);
+
+    return estradaObject;
+}
+
+function makeEstradaSurvey(pbsurvey) {
+    return makeEstradaObject(EstradaSurvey, pbsurvey);
+}
+
+function makeEstradaSurveyReport(pbsurveyreport) {
+    return makeEstradaObject(EstradaSurveyReport, pbsurveyreport);
 }

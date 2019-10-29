@@ -3,14 +3,11 @@ import dayjs from "dayjs";
 import { Survey } from "../protobuf/survey_pb";
 import { SURFACE_CONDITION_CHOICES, TRAFFIC_LEVEL_CHOICES } from "./road";
 
+import { choice_or_empty } from "./assets/protoBufUtilities";
+
 // We may need a survey schema - primarily for formatted field names
 // JSON.parse(document.getElementById('survey_schema').textContent);
 const surveySchema = {};
-
-/** utility function to pick from choices if value is truthy, or return empty string */
-function choice_or_empty(value, choices) {
-    return value ? choices[value] : "";
-}
 
 function toChainageFormat(value) {
     const distance = parseFloat(value).toFixed(0);

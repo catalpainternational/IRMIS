@@ -79,21 +79,6 @@ export function putRoadMetadata(road) {
         });
 }
 
-function makeEstradaObject(estradaObjectType, protoBufSource) {
-    let estradaObject = Object.create(estradaObjectType.prototype);
-    Object.assign(estradaObject, protoBufSource);
-
-    return estradaObject;
-}
-
-function makeEstradaRoad(pbroad) {
-    return makeEstradaObject(EstradaRoad, pbroad);
-}
-
-function makeEstradaAudit(pbversion) {
-    return makeEstradaObject(EstradaAudit, pbversion);
-}
-
 /** getRoadAuditData
  *
  * Retrieves the Audit changes data for a single road from the server
@@ -111,4 +96,19 @@ export function getRoadAuditData(roadId) {
             const uintArray = new Uint8Array(protobufBytes);
             return Versions.deserializeBinary(uintArray).getVersionsList().map(makeEstradaAudit);
         });
+}
+
+function makeEstradaObject(estradaObjectType, protoBufSource) {
+    let estradaObject = Object.create(estradaObjectType.prototype);
+    Object.assign(estradaObject, protoBufSource);
+
+    return estradaObject;
+}
+
+function makeEstradaRoad(pbroad) {
+    return makeEstradaObject(EstradaRoad, pbroad);
+}
+
+function makeEstradaAudit(pbversion) {
+    return makeEstradaObject(EstradaAudit, pbversion);
 }
