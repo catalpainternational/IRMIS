@@ -3,8 +3,10 @@ import $ from "jquery";
 
 import { exportCsv } from "./exportCsv";
 import { estradaTableColumns, estradaTableEventListeners } from "./mainTableDefinition";
+import { surfaceConditionColumns } from "./segmentsInventoryTableDefinition";
 import { datatableTranslations } from "./datatableTranslations";
 
+let surfaceConditionTable = null;
 let table = null;
 let pendingRows = [];
 
@@ -88,6 +90,13 @@ function initializeDataTable() {
         // default order is ascending by: road code, link code, & link start chainage
         order: window.canEdit ? [[1, 'asc'], [3, 'asc'], [7, 'asc']] : [[0, 'asc'], [2, 'asc'], [6, 'asc']],
         dom: "<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>", // https://datatables.net/reference/option/dom#Styling
+        language: datatableTranslations,
+    });
+
+    surfaceConditionTable = $("#inventory-surface-condition-table").DataTable({
+        columns: surfaceConditionColumns,
+        rowId: ".getId()",
+        dom: "<'row'<'col-sm-12'tr>>", // https://datatables.net/reference/option/dom#Styling
         language: datatableTranslations,
     });
 
