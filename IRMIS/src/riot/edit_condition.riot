@@ -207,9 +207,8 @@
                 getRoadSurveyReport(roadId)
                     .then((surveyReportData) => {
                         if (surveyReportData) {
-                            if (surveyReportData.reportChainageEnd > 0 
-                                && surveyReportData.reportChainageStart < surveyReportData.reportChainageEnd) {
-                                
+                            if (surveyReportData.counts && surveyReportData.counts.length > 0) {
+                                this.updateSurfaceConditionsSummary(surveyReportData.counts);
                             }
                             if (surveyReportData.tableList && surveyReportData.tableList.length) {
                                 this.state.reportRows = surveyReportData.tableList;

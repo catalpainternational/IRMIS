@@ -1,5 +1,9 @@
 import { Report, TableEntry } from "../protobuf/survey_pb";
 
+import { choice_or_empty } from "./assets/protoBufUtilities";
+
+import { SURFACE_CONDITION_CHOICES } from "./road";
+
 const surveyReportSchema = {
     id: { display: "Id" },
     roadCode: { display: gettext("Road Code") },
@@ -36,9 +40,23 @@ export class EstradaSurveyReport extends Report {
         try {
             counts = JSON.parse(this.getCounts());
         } catch {
-            counts = [];
+            // Use dummy data
+            counts = JSON.parse('[["1", 25600], ["2", 60000], ["3", 25300], ["4", 30000], ["0", 45000]]');
+            // This is the correct response on error
+            // counts = [];
         }
-        return counts;
+        
+        const conditions = [];
+        counts.forEach((record) => {
+            let conditionTitle = choice_or_empty(record[0], SURFACE_CONDITION_CHOICES) || record[0];
+            if (conditionTitle === "0") {
+                // What is the correct code for 'unknown'?
+                conditionTitle = "unknown";
+            }
+            conditions.push({ surface: conditionTitle.toLowerCase(), distance: record[1] });
+        });
+
+        return conditions;
     }
 
     get percentages() {
