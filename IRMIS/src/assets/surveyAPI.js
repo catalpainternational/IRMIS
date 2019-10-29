@@ -126,7 +126,6 @@ export function getRoadSurveyReports(roadCode) {
         });
 }
 
-
 function makeEstradaObject(estradaObjectType, protoBufSource) {
     let estradaObject = Object.create(estradaObjectType.prototype);
     Object.assign(estradaObject, protoBufSource);
