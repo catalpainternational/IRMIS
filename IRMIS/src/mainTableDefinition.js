@@ -159,7 +159,7 @@ export const estradaTableColumns = [
         title: getFieldName("surface_condition"),
         data: null,
         defaultContent: "",
-        render: r => '<button class="btn btn-secondary btn-sm surface-condition-segments w-100">View segments</button>',
+        render: r => '<button class="btn btn-secondary btn-sm surface-condition-segments w-100" data-toggle="modal" data-target="#inventory-surface-condition-modal" data-code="' + r.getLinkCode() + '">View</button>',
         orderable: false,
     },
     {

@@ -161,3 +161,10 @@ $.extend($.fn.dataTableExt.oSort, {
         return ((str1 < str2) ? 1 : ((str1 > str2) ? -1 : 0));
     }
 });
+
+$("#inventory-surface-condition-modal").on("show.bs.modal", function (event) {
+    var button = $(event.relatedTarget); // Button that triggered the modal
+    var linkCode = button.data("code"); // Extract info from data-* attributes
+    var modal = $(this);
+    modal.find(".modal-title").text(linkCode + " Surface Condition segments");
+});
