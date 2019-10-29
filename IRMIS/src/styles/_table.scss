@@ -18,40 +18,16 @@
     }
 }
 
-#history-table_wrapper {
-    margin-right: -45px;
-    margin-left: -45px;
-
-    // data table's row parent
-    & > .row:nth-child(2) .col-sm-12 {
-        padding: 0;
-    }
-
-    & > .row:nth-child(3) {
-        padding-left: 45px;
-    }
-
-    #history-table {
-        margin-top: 0 !important;
-        overflow-x: auto;
-
-        thead th {
-            position: relative !important;
-        }
-
-        thead th:first-child, tbody td:first-child {
-            padding-right: 40px;
-            padding-left: 60px;
-        }
-
-        thead th:not(:first-child), tbody td:not(:first-child) {
-            padding-right: 40px;
-            padding-left: 40px;
-        }
-    }
+#history-table {
+    border-bottom: 1px solid $light-gray;
+    border-right: 1px solid $light-gray;
+    border-left: 1px solid $light-gray;
+    margin-top: 0 !important;
+    overflow-x: auto;
 }
 
-#surface-condition-table {
+#surface-condition-table, #surface-condition-report-table {
+    border-bottom: 1px solid $light-gray;
     border-right: 1px solid $light-gray;
     border-left: 1px solid $light-gray;
     margin-top: 25px !important;
@@ -176,10 +152,6 @@ table.table {
 
         tbody tr:first-child td {
             border-top: 0;
-        }
-
-        tbody tr:last-child td {
-            border-bottom-width: 1px;
         }
     }
 
