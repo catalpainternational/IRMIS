@@ -45,3 +45,12 @@ edit_history,
         border-bottom: 1px solid $light-gray;
     }
 }
+
+#inventory-surface-condition-table {
+    @extend %scrollbar-shared;
+
+    &::-webkit-scrollbar:vertical {
+        border-left: 1px solid $light-gray;
+        border-top: 1px solid $light-gray;
+    }
+}

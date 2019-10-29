@@ -59,11 +59,13 @@
 }
 
 #inventory-surface-condition-table {
+    border-bottom: 1px solid $light-gray;
     border-right: 1px solid $light-gray;
     border-left: 1px solid $light-gray;
     margin-bottom: 0 !important;
     margin-top: 0 !important;
-    overflow-x: auto;
+    max-height: 353px; // table's height with 10 rows
+    overflow-y: auto;
 }
 
 
