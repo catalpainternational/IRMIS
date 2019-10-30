@@ -27,7 +27,7 @@
             <button class="btn btn-primary" onclick="{ addEdit }" disabled="{ props.editing }">{ window.gettext("Add") }</button>
         </div>
         <data_table if="{ state.viewAll }" table_id="{this.all_data_table_id}" columns="{this.all_data_table_columns}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}"></data_table>
-        <data_table if="{ !state.viewAll }" table_id="{this.current_data_table_id}" columns="{this.current_data_table_columns}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}"></data_table>
+        <data_table if="{ !state.viewAll }" table_id="{this.current_data_table_id}" columns="{this.current_data_table_columns}" getHelpText="{props.getHelpText}" pendingRows="{this.reportRows}"></data_table>
     </div>
 
     <edit_modal modal_id="{ modal_id }" disableSave="{ !state.canSave }">
@@ -156,10 +156,20 @@
             },
 
             // Condition Survey
-
             onMounted(props, state) {
                 state.loading = true;
                 state.road = cloneData(props.road);
+
+                const currentDataTable = $(`#${this.current_data_table_id}`).DataTable();
+ 
+                currentDataTable.on( "select", ( e, dt, type, indexes ) => {
+                    if ( type === 'row' ) {
+                        var data = table.rows( indexes ).data().pluck( 'id' );
+                
+                        // do something with the ID of the selected items
+                        console.log(data);
+                    }
+                } );
 
                 const emptyConditions = { 
                     surface: "unknown", 
@@ -276,7 +286,7 @@
                 this.showEditModal();
             },
             delete(e) {
-
+                console.log(e.target);
             },
             conditions: window.road_schema.surface_condition,
             current_data_table_id: "surface-condition-report-table",
@@ -345,7 +355,7 @@
                 {
                     title: window.gettext("Option"), 
                     defaultContent: "",
-                    render: r => `<button class="btn btn-secondary btn-sm delete-surface-condition-survey w-100" data-id="${r.getId()}">Delete</button>`,
+                    render: ( data, type, row ) => { return row ? `<button class="btn btn-secondary btn-sm delete-surface-condition-survey w-100" data-id="${row.getId()}">Delete</button>` : "" },
                     orderable: false,
                 },
             ],
