@@ -168,6 +168,9 @@
 
                 this.updateSurfaceConditionsSummary([emptyConditions]);
 
+                this.refreshSurveysAndReports();
+            },
+            refreshSurveysAndReports() {
                 this.getRoadSurveys();
                 this.getRoadSurveyReports();
             },
@@ -178,7 +181,8 @@
                         if (surveyData) {
                             this.state.pendingRows = surveyData;
                             const pendingRows = this.state.pendingRows;
-                            document.dispatchEvent(new CustomEvent(`${this.all_data_table_id}.dataAdded`, {detail: { pendingRows }}));
+                            const appendRows = this.state.loading;
+                            document.dispatchEvent(new CustomEvent(`${this.all_data_table_id}.dataAdded`, { detail: { pendingRows, appendRows }}));
                             this.state.error = false;
                         } else {
                             this.state.error = true;
@@ -193,16 +197,6 @@
             getRoadSurveyReports() {
                 const roadId = this.state.road.getId();
                 const roadCode = this.state.road.code;
-                
-                // All distances are in meters, the calculated label will show them in km
-                // Here's some sample data for your listening pleasure
-                // this.updateSurfaceConditionsSummary([
-                //     { surface: "good", distance: 25600 },
-                //     { surface: "fair", distance: 60000 },
-                //     { surface: "poor", distance: 25300 },
-                //     { surface: "bad", distance: 30000 },
-                //     { surface: "unknown", distance: 45000 },
-                // ]);
 
                 getRoadSurveyReport(roadId)
                     .then((surveyReportData) => {
@@ -213,7 +207,8 @@
                             if (surveyReportData.tableList && surveyReportData.tableList.length) {
                                 this.state.reportRows = surveyReportData.tableList;
                                 const pendingRows = this.state.reportRows;
-                                document.dispatchEvent(new CustomEvent(`${this.current_data_table_id}.dataAdded`, {detail: { pendingRows }}));
+                                const appendRows = this.state.loading;
+                                document.dispatchEvent(new CustomEvent(`${this.current_data_table_id}.dataAdded`, { detail: { pendingRows, appendRows }}));
                             }
                             this.state.error = false;
                         } else {
@@ -258,14 +253,18 @@
                     viewAll: true
                 });
                 const pendingRows = this.state.pendingRows;
-                document.dispatchEvent(new CustomEvent(`${this.all_data_table_id}.dataAdded`, {detail: { pendingRows }}));
+                // If we're not still loading, then we assume that we want to replace all rows
+                const appendRows = this.state.loading;
+                document.dispatchEvent(new CustomEvent(`${this.all_data_table_id}.dataAdded`, { detail: { pendingRows, appendRows }}));
             },
             viewCurrent(e) {
                 this.update({
                     viewAll: false
                 });
                 const pendingRows = this.state.reportRows;
-                document.dispatchEvent(new CustomEvent(`${this.current_data_table_id}.dataAdded`, {detail: { pendingRows }}));
+                // If we're not still loading, then we assume that we want to replace all rows
+                const appendRows = this.state.loading;
+                document.dispatchEvent(new CustomEvent(`${this.current_data_table_id}.dataAdded`, { detail: { pendingRows, appendRows }}));
             },
             addEdit(e) {
                 // TODO:
@@ -450,17 +449,20 @@
                 if (!this.state.editMode) {
                     createSurvey(this.state.survey)
                         .then((surveyData) => {
-                            const pendingRows = [ surveyData ];
-                            document.dispatchEvent(new CustomEvent(`${this.all_data_table_id}.dataAdded`, {detail: { pendingRows }}));
-                        }).catch((err) => { this.props.error = true; });
+                            // const pendingRows = [ surveyData ];
+                            // document.dispatchEvent(new CustomEvent(`${this.all_data_table_id}.dataAdded`, {detail: { pendingRows }}));
+                            this.refreshSurveysAndReports();
+                        })
+                        .catch((err) => { this.props.error = true; });
                 } else {
                     updateSurvey(this.state.survey)
                         .then((surveyData) => {
-                            const pendingRows = [ surveyData ];
-                            document.dispatchEvent(new CustomEvent(`${this.all_data_table_id}.dataAdded`, {detail: { pendingRows }}));
-                        }).catch((err) => { this.props.error = true; });
+                            // const pendingRows = [ surveyData ];
+                            // document.dispatchEvent(new CustomEvent(`${this.all_data_table_id}.dataAdded`, {detail: { pendingRows }}));
+                            this.refreshSurveysAndReports();
+                        })
+                        .catch((err) => { this.props.error = true; });
                 }
-                this.update();
             },
             canSave() {
                 const missingFieldNames = checkRequiredFields(this.requiredFieldNames, this.state.survey);
