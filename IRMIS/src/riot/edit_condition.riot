@@ -110,7 +110,7 @@
         import Data_Table from "./data_table.riot";
         import Edit_Modal from "./edit_modal.riot";
 
-        import { createSurvey, updateSurvey, getRoadSurveyReport, getRoadSurveys } from "../surveyManager";
+        import { createSurvey, deleteSurvey, updateSurvey, getRoadSurveyReport, getRoadSurveys } from "../surveyManager";
         import { Survey, Report } from "../../protobuf/survey_pb";
 
         import { getFieldName } from "../road";
@@ -276,6 +276,9 @@
 
                 this.showEditModal();
             },
+            delete(e) {
+
+            },
             conditions: window.road_schema.surface_condition,
             current_data_table_id: "surface-condition-report-table",
             current_data_table_columns: [
@@ -343,6 +346,8 @@
                 {
                     title: window.gettext("Option"), 
                     defaultContent: "",
+                    render: r => `<button class="btn btn-secondary btn-sm delete-surface-condition-survey w-100" data-id="${r.getId()}">Delete</button>`,
+                    orderable: false,
                 },
             ],
 

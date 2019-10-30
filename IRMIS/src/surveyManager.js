@@ -31,6 +31,17 @@ export function updateSurvey(survey) {
         });
 }
 
+export function deleteSurvey(surveyId) {
+    return Promise.resolve(deleteSurveyData(surveyId))
+        .then((result) => {
+            return result;
+        })
+        .catch(() => {
+            // We will assume that the delete failed
+            return false;
+        })
+}
+
 export function getRoadSurveyReport(roadCode) {
     return Promise.resolve(getRoadSurveyReports(roadCode))
         .then((surveyReportList) => {
