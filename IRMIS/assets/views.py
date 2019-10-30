@@ -319,7 +319,7 @@ class Report:
         """ Create all of the segments based on report chainage start/end paramenters """
         self.segmentations = {
             item: {
-                "chainage": float(item),
+                "chainage_point": float(item),
                 "surf_cond": None,
                 "date_surveyed": None,
                 "survey_id": 0,
@@ -347,20 +347,20 @@ class Report:
 
                 # check survey does not conflict with current aggregate segmentations
                 # and update the segmentations when needed
-                for chainage in range(survey_chain_start, survey_chain_end):
-                    if not self.segmentations[chainage]["date_surveyed"] or (
+                for chainage_point in range(survey_chain_start, survey_chain_end):
+                    if not self.segmentations[chainage_point]["date_surveyed"] or (
                         survey.date_surveyed
                         and survey.date_surveyed
-                        > self.segmentations[chainage]["date_surveyed"]
+                        > self.segmentations[chainage_point]["date_surveyed"]
                     ):
-                        self.segmentations[chainage]["surf_cond"] = survey.values[
+                        self.segmentations[chainage_point]["surf_cond"] = survey.values[
                             "surface_condition"
                         ]
-                        self.segmentations[chainage][
+                        self.segmentations[chainage_point][
                             "date_surveyed"
                         ] = survey.date_surveyed
-                        self.segmentations[chainage]["survey_id"] = survey.id
-                        self.segmentations[chainage]["added_by"] = (
+                        self.segmentations[chainage_point]["survey_id"] = survey.id
+                        self.segmentations[chainage_point]["added_by"] = (
                             str(survey.user.id) if survey.user else ""
                         )
 
@@ -380,13 +380,12 @@ class Report:
     def build_chainage_table(self):
         """ Generate the table of chainages the report """
         prev_cond, prev_date = "Nada", "Nada"
-        prev_chainage = 0
         for segment in self.segmentations:
             segment = self.segmentations[segment]
             if segment["surf_cond"] != prev_cond:
                 entry = self.report_protobuf.table.add()
-                setattr(entry, "chainage_start", prev_chainage)
-                setattr(entry, "chainage_end", segment["chainage"])
+                setattr(entry, "chainage_start", segment["chainage_point"])
+                setattr(entry, "chainage_end", segment["chainage_point"])
                 setattr(entry, "surface_condition", str(segment["surf_cond"]))
                 setattr(entry, "survey_id", segment["survey_id"])
                 setattr(entry, "added_by", segment["added_by"])
@@ -395,7 +394,8 @@ class Report:
                     ts.FromDatetime(segment["date_surveyed"])
                     entry.date_surveyed.CopyFrom(ts)
                 prev_cond, prev_date = (segment["surf_cond"], segment["date_surveyed"])
-                prev_chainage = segment["chainage"]
+            else:
+                setattr(entry, "chainage_end", segment["chainage_point"] + 1)
 
     def to_protobuf(self):
         """ Package up the various statistics and tables for export as Protobuf """
