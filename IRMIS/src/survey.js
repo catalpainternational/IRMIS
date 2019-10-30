@@ -37,6 +37,9 @@ export class EstradaSurvey extends Survey {
 
     get dateSurveyed() {
         const pbufData = this.getDateSurveyed();
+        if (!pbufData || !pbufData.array) {
+            return "";
+        }
         let date = dayjs(new Date(pbufData.array[0] * 1000));
         return date.isValid() ? date.format('YYYY-MM-DD HH:mm') : "";
     }

@@ -1,23 +1,25 @@
 <edit_base>
     <div class="row">
         <div id="side-menu">
-            <ul class="navigation">
-                <li class="text-uppercase">{ window.gettext("Edit asset") }</li>
-                <ul>
-                    <li class="{ state.page === 'location_type' ? 'active' : '' }" data-page="location_type" onclick="{ selectPage }">{ window.gettext("Location & Type") }</li>
-                    <li class="{ state.page === 'asset_details' ? 'active' : '' }" data-page="asset_details" onclick="{ selectPage }">{ window.gettext("Asset Details") }</li>
-                    <li class="{ state.page === 'pavement' ? 'active' : '' }" data-page="pavement" onclick="{ selectPage }">{ window.gettext("Pavement") }</li>
-                    <li class="{ state.page === 'project' ? 'active' : '' }" data-page="project" onclick="{ selectPage }">{ window.gettext("Project") }</li>
-                    <li class="{ state.page === 'condition' ? 'active' : '' }" data-page="condition" onclick="{ selectPage }">{ window.gettext("Condition") }</li>
-                    <li class="{ state.page === 'maintenance' ? 'active' : '' }" data-page="maintenance" onclick="{ selectPage }">{ window.gettext("Maintenance") }</li>
+            <div>
+                <ul class="navigation">
+                    <li class="text-uppercase">{ window.gettext("Edit asset") }</li>
+                    <ul>
+                        <li class="{ state.page === 'location_type' ? 'active' : '' }" data-page="location_type" onclick="{ selectPage }">{ window.gettext("Location & Type") }</li>
+                        <li class="{ state.page === 'asset_details' ? 'active' : '' }" data-page="asset_details" onclick="{ selectPage }">{ window.gettext("Asset Details") }</li>
+                        <li class="{ state.page === 'pavement' ? 'active' : '' }" data-page="pavement" onclick="{ selectPage }">{ window.gettext("Pavement") }</li>
+                        <li class="{ state.page === 'project' ? 'active' : '' }" data-page="project" onclick="{ selectPage }">{ window.gettext("Project") }</li>
+                        <li class="{ state.page === 'condition' ? 'active' : '' }" data-page="condition" onclick="{ selectPage }">{ window.gettext("Condition") }</li>
+                        <li class="{ state.page === 'maintenance' ? 'active' : '' }" data-page="maintenance" onclick="{ selectPage }">{ window.gettext("Maintenance") }</li>
+                    </ul>
                 </ul>
-            </ul>
-            <ul class="navigation">
-                <li class="text-uppercase">{ window.gettext("History") }</li>
-                <ul>
-                    <li class="{ state.page === 'history' ? 'active' : '' }" data-page="history" onclick="{ selectPage }">{ window.gettext("Change log") }</li>
+                <ul class="navigation">
+                    <li class="text-uppercase">{ window.gettext("History") }</li>
+                    <ul>
+                        <li class="{ state.page === 'history' ? 'active' : '' }" data-page="history" onclick="{ selectPage }">{ window.gettext("Change log") }</li>
+                    </ul>
                 </ul>
-            </ul>
+            </div>
         </div>
 
         <edit_stop_alert></edit_stop_alert>

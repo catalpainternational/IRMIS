@@ -157,9 +157,10 @@ export const estradaTableColumns = [
     },
     {
         title: getFieldName("surface_condition"),
-        data: "surfaceCondition",
+        data: null,
         defaultContent: "",
-        className: "text-center",
+        render: r => '<button class="btn btn-secondary btn-sm surface-condition-segments w-100" data-toggle="modal" data-target="#inventory-surface-condition-modal" data-code="' + r.getLinkCode() + '" data-id="' + r.getId() + '">View</button>',
+        orderable: false,
     },
     {
         title: getFieldName("maintenance_need"),

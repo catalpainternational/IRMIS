@@ -18,6 +18,13 @@
     }
 }
 
+.inventory-modal {
+    .modal-body {
+        padding-bottom: 40px;
+        padding-top: 0;
+    }
+}
+
 // Override Bootstrap modal styles
 .modal-content {
     border-radius: 10px;

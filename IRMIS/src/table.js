@@ -3,8 +3,11 @@ import $ from "jquery";
 
 import { exportCsv } from "./exportCsv";
 import { estradaTableColumns, estradaTableEventListeners } from "./mainTableDefinition";
+import { surfaceConditionColumns } from "./segmentsInventoryTableDefinition";
 import { datatableTranslations } from "./datatableTranslations";
+import { getRoadSurveys } from "./surveyManager";
 
+let surfaceConditionTable = null;
 let table = null;
 let pendingRows = [];
 
@@ -91,6 +94,13 @@ function initializeDataTable() {
         language: datatableTranslations,
     });
 
+    surfaceConditionTable = $("#inventory-surface-condition-table").DataTable({
+        columns: surfaceConditionColumns,
+        rowId: ".getId()",
+        dom: "<'row'<'col-sm-12'tr>>", // https://datatables.net/reference/option/dom#Styling
+        language: datatableTranslations,
+    });
+
     if (pendingRows.length) {
         // add any rows the road manager has delivered before initialization
         table.rows.add(pendingRows).draw();
@@ -151,4 +161,21 @@ $.extend($.fn.dataTableExt.oSort, {
         if (str2 === "") return 1;
         return ((str1 < str2) ? 1 : ((str1 > str2) ? -1 : 0));
     }
+});
+
+$("#inventory-surface-condition-modal").on("show.bs.modal", function (event) {
+    const button = $(event.relatedTarget); // Button that triggered the modal
+    const linkCode = button.data("code"); // Extract info from data-* attributes
+    const roadId = button.data("id");
+    const modal = $(this);
+
+    modal.find(".modal-title").text(linkCode + " Surface Condition segments");
+
+    surfaceConditionTable.clear(); // remove all rows in the table
+
+    getRoadSurveys(roadId).then((surveyData) => {
+        if (surveyData) {
+            surfaceConditionTable.rows.add(surveyData).draw();
+        }
+    });
 });
