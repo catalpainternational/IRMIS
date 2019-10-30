@@ -24,6 +24,7 @@
             state.id = props.table_id || "all-data-table";
             state.columns = props.columns || [];
             state.columnSortOrder = props.columnSortOrder || [[0, "asc"]];
+            state.appendRows = true;
             state.pendingRows = props.pendingRows || [];
             state.pageLength = props.pageLength || 10;
 
@@ -45,8 +46,13 @@
         const addEventListener = function(state) {
             state.dataAddedEventHandler = document.addEventListener(`${state.id}.dataAdded`, (data) => {
                 const pendingRows = data.detail.pendingRows;
+                const haveAppendRows = typeof (data.detail.appendRows) === "boolean";
+                const appendRows = haveAppendRows ? data.detail.appendRows : true;
 
-                state.pendingRows = state.pendingRows.concat(pendingRows);
+                state.pendingRows = appendRows 
+                    ? state.pendingRows.concat(pendingRows)
+                    : pendingRows;
+                state.appendRows = appendRows;
                 updateDataTable(state);
             });
         }
@@ -67,7 +73,12 @@
 
         const updateDataTable = function (state) {
             if (state.pendingRows.length) {
-                state.table.rows.add(state.pendingRows).draw();
+                if (!state.appendRows) {
+                    state.table.clear().rows.add(state.pendingRows).draw();
+                } else {
+                    state.table.rows.add(state.pendingRows).draw();
+                }
+                
                 state.pendingRows = [];
             }
         }
