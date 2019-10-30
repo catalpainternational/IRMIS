@@ -135,6 +135,10 @@
         margin-top: 20px;
         padding-left: 0;
 
+        &:last-of-type {
+            margin-bottom: 0;
+        }
+
         li {
             margin-bottom: 10px;
             padding-left: 40px;
@@ -155,6 +159,12 @@
             }
         }
     }
+}
+
+edit_base #side-menu > div {
+    height: calc(100vh - #{$top-menu-height} - 15px);
+    overflow-y: overlay;
+    padding-right: 8px;
 }
 
 #collapsed-side-menu {
