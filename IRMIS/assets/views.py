@@ -578,6 +578,21 @@ def survey_update(request):
         return HttpResponse(status=400)
 
 
+def survey_delete(request, pk):
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+
+    if request.method != "GET":
+        raise MethodNotAllowed(request.method)
+
+    survey = get_object_or_404(Survey.objects.all(), pk=pk)
+    try:
+        survey.delete()
+        return HttpResponse(status=200)
+    except Exception:
+        return HttpResponse(status=400)
+
+
 def protobuf_road_audit(request, pk):
     """ returns a protobuf object with the set of all audit history items for a Road """
 
