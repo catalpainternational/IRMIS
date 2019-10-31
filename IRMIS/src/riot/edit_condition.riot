@@ -137,6 +137,14 @@
             return JSON.parse(JSON.stringify(data));
         }
 
+        function button_template(buttonClass, clickAction, buttonLabel) {
+            return `<button class="btn btn-secondary btn-sm ${buttonClass} w-100" onclick="${clickAction}">${buttonLabel}</button>`;
+        }
+
+        function button_event_template(tableId, eventName, rowId) {
+            return `document.dispatchEvent(new CustomEvent('${tableId}.${eventName}',{detail:{rowId:${rowId}}}))`;
+        }
+
         export default {
             state: {
                 chainageDecimals: 3,
@@ -176,13 +184,10 @@
             },
             getRoadSurveys() {
                 const roadId = this.state.road.getId();
-
-                const allDataTable = $(`#${this.all_data_table_id}`).DataTable();
  
-                allDataTable.on('draw', () => {
-                    console.log('Redraw occurred at: '+new Date().getTime() );
-
-                    document.getElementsByClassName("delete-surface-condition-survey").onclick = () => alert("delete me");
+                this.deleteListener = this.deleteListener || document.addEventListener("surface-condition-table.deleteRow", (data) => {
+                    const rowId = data.detail.rowId;
+                    alert(rowId);
                 });
 
                 getRoadSurveys(roadId)
@@ -377,7 +382,7 @@
                 {
                     title: window.gettext("Option"), 
                     defaultContent: "",
-                    render: ( data, type, row ) => { return row ? `<button class="btn btn-secondary btn-sm delete-surface-condition-survey w-100" data-id="${row.getId()}">Delete</button>` : "" },
+                    render: ( data, type, row ) => { return row ? button_template("delete-surface-condition-survey", button_event_template("surface-condition-table", "deleteRow", row.getId()), window.gettext("Delete")) : "" },
                     orderable: false,
                 },
             ],
