@@ -83,7 +83,7 @@ div.dataTables_wrapper {
     }
 }
 
-#history-table_wrapper ul.pagination, #surface-condition-table ul.pagination {
+#history-table_wrapper ul.pagination, .content-wrapper ul.pagination {
     li.paginate_button.page-item {
         &.active a.page-link {
             background-color: $darker-gray;

@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 
 import { Report, TableEntry } from "../protobuf/survey_pb";
 
-import { choice_or_empty, toChainageFormat, makeEstradaObject } from "./assets/protoBufUtilities";
+import { choice_or_empty, makeEstradaObject } from "./assets/protoBufUtilities";
 
 import { SURFACE_CONDITION_CHOICES } from "./road";
 
@@ -98,11 +98,11 @@ export class EstradaSurveyReportTableEntry extends TableEntry {
     }
 
     get chainageStart() {
-        return toChainageFormat(this.getChainageStart());
+        return this.getChainageStart();
     }
 
     get chainageEnd() {
-        return toChainageFormat(this.getChainageEnd());
+        return this.getChainageEnd();
     }
 
     get dateSurveyed() {

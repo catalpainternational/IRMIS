@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { Survey } from "../protobuf/survey_pb";
 import { SURFACE_CONDITION_CHOICES, TRAFFIC_LEVEL_CHOICES } from "./road";
 
-import { choice_or_empty, toChainageFormat } from "./assets/protoBufUtilities";
+import { choice_or_empty } from "./assets/protoBufUtilities";
 
 // We may need a survey schema - primarily for formatted field names
 // JSON.parse(document.getElementById('survey_schema').textContent);
@@ -28,11 +28,11 @@ export class EstradaSurvey extends Survey {
     }
 
     get chainageStart() {
-        return toChainageFormat(this.getChainageStart());
+        return this.getChainageStart();
     }
 
     get chainageEnd() {
-        return toChainageFormat(this.getChainageEnd());
+        return this.getChainageEnd();
     }
 
     get dateSurveyed() {
