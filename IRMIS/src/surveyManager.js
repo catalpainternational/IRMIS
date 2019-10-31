@@ -1,4 +1,4 @@
-import { getRoadSurveyReports, getSurveyMetadata, getSurveysMetadata, postSurveyData, putSurveyData } from "./assets/surveyAPI";
+import { deleteSurveyData, getRoadSurveyReports, getSurveyMetadata, getSurveysMetadata, postSurveyData, putSurveyData } from "./assets/surveyAPI";
 
 let surveys = {}
 

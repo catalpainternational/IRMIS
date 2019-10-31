@@ -19,7 +19,8 @@
             state.hasChanges = false;
             state.showFeedback = false;
 
-            state.canEdit = false;
+            state.canEdit = !!props.canedit;
+            state.canDelete = !!props.candelete;
 
             state.id = props.table_id || "all-data-table";
             state.columns = props.columns || [];
@@ -28,10 +29,12 @@
             state.pendingRows = props.pendingRows || [];
             state.pageLength = props.pageLength || 10;
 
+            const optionColumns = state.columns.filter((column) => (column.name && column.name === "Option"));
+
             if (state.canEdit) {
                 state.columnSortOrder.forEach((columnOrder) => {
                     columnOrder[0]++;
-                })
+                });
 
                 state.columns.unshift({
                     title: "",
@@ -41,6 +44,22 @@
                     className: "edit-col"
                 });
             }
+
+            if (state.canDelete && optionColumns.length === 1) {
+                optionColumns[0].render = ( data, type, row ) => {
+                    return row 
+                        ? button_template(`delete-${state.id}`, button_event_template(state.id, "deleteRow", row.getId()), window.gettext("Delete")) 
+                        : "";
+                };
+            }
+        }
+
+        const button_template = function(buttonClass, clickAction, buttonLabel) {
+            return `<button class="btn btn-secondary btn-sm ${buttonClass} w-100" onclick="${clickAction}">${buttonLabel}</button>`;
+        }
+
+        const button_event_template = function(tableId, eventName, rowId) {
+            return `document.dispatchEvent(new CustomEvent('${tableId}.${eventName}',{detail:{rowId:${rowId}}}))`;
         }
 
         const addEventListener = function(state) {

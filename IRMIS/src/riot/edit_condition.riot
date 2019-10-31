@@ -26,7 +26,7 @@
             </div>
             <button class="btn btn-primary" onclick="{ addEdit }" disabled="{ props.editing }">{ window.gettext("Add") }</button>
         </div>
-        <data_table if="{ state.viewAll }" table_id="{this.all_data_table_id}" columns="{this.all_data_table_columns}" columnSortOrder="{this.all_data_table_columns_order}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}"></data_table>
+        <data_table if="{ state.viewAll }" table_id="{this.all_data_table_id}" columns="{this.all_data_table_columns}" columnSortOrder="{this.all_data_table_columns_order}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}" canDelete=true></data_table>
         <data_table if="{ !state.viewAll }" table_id="{this.current_data_table_id}" columns="{this.current_data_table_columns}" columnSortOrder="{this.current_data_table_columns_order}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}"></data_table>
     </div>
 
@@ -137,14 +137,6 @@
             return JSON.parse(JSON.stringify(data));
         }
 
-        function button_template(buttonClass, clickAction, buttonLabel) {
-            return `<button class="btn btn-secondary btn-sm ${buttonClass} w-100" onclick="${clickAction}">${buttonLabel}</button>`;
-        }
-
-        function button_event_template(tableId, eventName, rowId) {
-            return `document.dispatchEvent(new CustomEvent('${tableId}.${eventName}',{detail:{rowId:${rowId}}}))`;
-        }
-
         export default {
             state: {
                 chainageDecimals: 3,
@@ -185,9 +177,13 @@
             getRoadSurveys() {
                 const roadId = this.state.road.getId();
  
-                this.deleteListener = this.deleteListener || document.addEventListener("surface-condition-table.deleteRow", (data) => {
+                this.deleteListener = this.deleteListener || document.addEventListener(`${this.all_data_table_id}.deleteRow`, (data) => {
                     const rowId = data.detail.rowId;
-                    alert(rowId);
+                    deleteSurvey(rowId).then((result) => {
+                        if (result) {
+                            this.refreshSurveysAndReports();
+                        }
+                    });
                 });
 
                 getRoadSurveys(roadId)
@@ -380,9 +376,11 @@
                     orderable: false,
                 },
                 {
-                    title: window.gettext("Option"), 
+                    // To add a 'Delete' button include the attribute candelete=true
+                    // on the Riot dataTable tag as well
+                    title: window.gettext("Option"),
+                    name: "Option", // Do NOT translate this
                     defaultContent: "",
-                    render: ( data, type, row ) => { return row ? button_template("delete-surface-condition-survey", button_event_template("surface-condition-table", "deleteRow", row.getId()), window.gettext("Delete")) : "" },
                     orderable: false,
                 },
             ],
