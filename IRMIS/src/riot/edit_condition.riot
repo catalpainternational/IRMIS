@@ -26,7 +26,7 @@
             </div>
             <button class="btn btn-primary" onclick="{ addEdit }" disabled="{ props.editing }">{ window.gettext("Add") }</button>
         </div>
-        <data_table if="{ state.viewAll }" table_id="{this.all_data_table_id}" columns="{this.all_data_table_columns}" columnSortOrder="{this.all_data_table_columns_order}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}"></data_table>
+        <data_table if="{ state.viewAll }" table_id="{this.all_data_table_id}" columns="{this.all_data_table_columns}" columnSortOrder="{this.all_data_table_columns_order}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}" canDelete=true></data_table>
         <data_table if="{ !state.viewAll }" table_id="{this.current_data_table_id}" columns="{this.current_data_table_columns}" columnSortOrder="{this.current_data_table_columns_order}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}"></data_table>
     </div>
 
@@ -110,7 +110,7 @@
         import Data_Table from "./data_table.riot";
         import Edit_Modal from "./edit_modal.riot";
 
-        import { createSurvey, updateSurvey, getRoadSurveyReport, getRoadSurveys } from "../surveyManager";
+        import { createSurvey, deleteSurvey, updateSurvey, getRoadSurveyReport, getRoadSurveys } from "../surveyManager";
         import { toChainageFormat } from "../assets/protoBufUtilities";
         import { Survey, Report } from "../../protobuf/survey_pb";
 
@@ -157,7 +157,6 @@
             },
 
             // Condition Survey
-
             onMounted(props, state) {
                 state.loading = true;
                 state.road = cloneData(props.road);
@@ -177,6 +176,16 @@
             },
             getRoadSurveys() {
                 const roadId = this.state.road.getId();
+ 
+                this.deleteListener = this.deleteListener || document.addEventListener(`${this.all_data_table_id}.deleteRow`, (data) => {
+                    const rowId = data.detail.rowId;
+                    deleteSurvey(rowId).then((result) => {
+                        if (result) {
+                            this.refreshSurveysAndReports();
+                        }
+                    });
+                });
+
                 getRoadSurveys(roadId)
                     .then((surveyData) => {
                         if (surveyData) {
@@ -276,6 +285,9 @@
 
                 this.showEditModal();
             },
+            deleteSurvey(e) {
+                console.log(e.target);
+            },
             conditions: window.road_schema.surface_condition,
             current_data_table_id: "surface-condition-report-table",
             current_data_table_columns_order: [[0, 'asc']],
@@ -364,7 +376,10 @@
                     orderable: false,
                 },
                 {
-                    title: window.gettext("Option"), 
+                    // To add a 'Delete' button include the attribute candelete=true
+                    // on the Riot dataTable tag as well
+                    title: window.gettext("Option"),
+                    name: "Option", // Do NOT translate this
                     defaultContent: "",
                     orderable: false,
                 },
