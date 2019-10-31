@@ -160,17 +160,6 @@
                 state.loading = true;
                 state.road = cloneData(props.road);
 
-                const currentDataTable = $(`#${this.current_data_table_id}`).DataTable();
- 
-                currentDataTable.on( "select", ( e, dt, type, indexes ) => {
-                    if ( type === 'row' ) {
-                        var data = table.rows( indexes ).data().pluck( 'id' );
-                
-                        // do something with the ID of the selected items
-                        console.log(data);
-                    }
-                } );
-
                 const emptyConditions = { 
                     surface: "unknown", 
                     distance: state.road.getLinkEndChainage() - state.road.getLinkStartChainage() 
@@ -186,6 +175,15 @@
             },
             getRoadSurveys() {
                 const roadId = this.state.road.getId();
+
+                const allDataTable = $(`#${this.all_data_table_id}`).DataTable();
+ 
+                allDataTable.on('draw', () => {
+                    console.log('Redraw occurred at: '+new Date().getTime() );
+
+                    document.getElementsByClassName("delete-surface-condition-survey").onclick = () => alert("delete me");
+                });
+
                 getRoadSurveys(roadId)
                     .then((surveyData) => {
                         if (surveyData) {
@@ -285,7 +283,7 @@
 
                 this.showEditModal();
             },
-            delete(e) {
+            deleteSurvey(e) {
                 console.log(e.target);
             },
             conditions: window.road_schema.surface_condition,
