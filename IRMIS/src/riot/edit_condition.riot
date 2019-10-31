@@ -2,12 +2,12 @@
     <div class="content-wrapper">
         <h5>{ window.gettext("Surface Condition") }</h5>
         <div class="d-flex surface-condition-bar">
-            <div each={ condition in state.conditions } class={condition.surface + "-condition"} style={"width:" + condition.percent + "%;"}></div>
+            <div each="{condition in state.conditions}" class="{condition.surface + '-condition'}" style="{'width:' + condition.percent + '%;'}"></div>
         </div>
         <div class="align-items-center d-flex justify-content-between surface-condition-legend">
             <div class="values d-flex flex-wrap">
-                <div each={ condition in state.conditions } class="align-items-center d-flex">
-                    <div class={condition.surface + "-condition"}></div>
+                <div each="{condition in state.conditions}" class="align-items-center d-flex">
+                    <div class="{condition.surface + '-condition'}"></div>
                     <span>{condition.label}</span>
                 </div>
             </div>
@@ -21,13 +21,13 @@
         <div class="align-items-center d-flex justify-content-between">
             <div>
                 <h5>{ window.gettext("Surface Condition Data (SDI)") }</h5>
-                <a class="{ state.viewAll ? 'active' : '' }" onclick="{ viewAll }">{ window.gettext("View all data entries") }</a>
-                <a class="{ !state.viewAll ? 'active' : '' }" onclick="{ viewCurrent }">{ window.gettext("Current condition") }</a>
+                <a class="{ !state.viewAll ? 'active' : '' } table-toggle" onclick="{ viewCurrent }">{ window.gettext("Current condition") }</a>
+                <a class="{ state.viewAll ? 'active' : '' } table-toggle" onclick="{ viewAll }">{ window.gettext("View all data entries") }</a>
             </div>
             <button class="btn btn-primary" onclick="{ addEdit }" disabled="{ props.editing }">{ window.gettext("Add") }</button>
         </div>
-        <data_table if="{ state.viewAll }" table_id="{this.all_data_table_id}" columns="{this.all_data_table_columns}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}"></data_table>
-        <data_table if="{ !state.viewAll }" table_id="{this.current_data_table_id}" columns="{this.current_data_table_columns}" getHelpText="{props.getHelpText}" pendingRows="{this.reportRows}"></data_table>
+        <data_table if="{ state.viewAll }" table_id="{this.all_data_table_id}" columns="{this.all_data_table_columns}" columnSortOrder="{this.all_data_table_columns_order}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}"></data_table>
+        <data_table if="{ !state.viewAll }" table_id="{this.current_data_table_id}" columns="{this.current_data_table_columns}" columnSortOrder="{this.current_data_table_columns_order}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}"></data_table>
     </div>
 
     <edit_modal modal_id="{ modal_id }" disableSave="{ !state.canSave }">
@@ -111,6 +111,7 @@
         import Edit_Modal from "./edit_modal.riot";
 
         import { createSurvey, deleteSurvey, updateSurvey, getRoadSurveyReport, getRoadSurveys } from "../surveyManager";
+        import { toChainageFormat } from "../assets/protoBufUtilities";
         import { Survey, Report } from "../../protobuf/survey_pb";
 
         import { getFieldName } from "../road";
@@ -257,22 +258,22 @@
                 this.update();                
             },
             viewAll(e) {
-                this.update({
-                    viewAll: true
-                });
-                const pendingRows = this.state.pendingRows;
-                // If we're not still loading, then we assume that we want to replace all rows
-                const appendRows = this.state.loading;
-                document.dispatchEvent(new CustomEvent(`${this.all_data_table_id}.dataAdded`, { detail: { pendingRows, appendRows }}));
+                if (!this.state.viewAll) {
+                    this.update({viewAll: true});
+                    const pendingRows = this.state.pendingRows;
+                    // If we're not still loading, then we assume that we want to replace all rows
+                    const appendRows = this.state.loading;
+                    document.dispatchEvent(new CustomEvent(`${this.all_data_table_id}.dataAdded`, { detail: { pendingRows, appendRows }}));
+                }
             },
             viewCurrent(e) {
-                this.update({
-                    viewAll: false
-                });
-                const pendingRows = this.state.reportRows;
-                // If we're not still loading, then we assume that we want to replace all rows
-                const appendRows = this.state.loading;
-                document.dispatchEvent(new CustomEvent(`${this.current_data_table_id}.dataAdded`, { detail: { pendingRows, appendRows }}));
+                if (this.state.viewAll) {
+                    this.update({viewAll: false});
+                    const pendingRows = this.state.reportRows;
+                    // If we're not still loading, then we assume that we want to replace all rows
+                    const appendRows = this.state.loading;
+                    document.dispatchEvent(new CustomEvent(`${this.current_data_table_id}.dataAdded`, { detail: { pendingRows, appendRows }}));
+                }
             },
             addEdit(e) {
                 // TODO:
@@ -288,56 +289,78 @@
             },
             conditions: window.road_schema.surface_condition,
             current_data_table_id: "surface-condition-report-table",
+            current_data_table_columns_order: [[0, 'asc']],
             current_data_table_columns: [
                 {
                     title: window.gettext("Chainage start"), 
                     data: "chainageStart",
                     defaultContent: "",
                     className: "text-right",
+                    render: (data, type) => {
+                        if (type === 'display') return toChainageFormat(data);
+                        return data;
+                    },
                 },
                 {
                     title: window.gettext("Chainage end"), 
                     data: "chainageEnd",
                     defaultContent: "",
                     className: "text-right",
+                    orderable: false,
+                    render: (data, type) => {
+                        if (type === 'display') return toChainageFormat(data);
+                    },
                 },
                 {
                     title: window.gettext("Surface condition"), 
                     data: "surfaceCondition",
                     defaultContent: "",
                     className: "text-center",
+                    orderable: false,
                 },
                 {
                     title: window.gettext("Survey date"),
                     data: "dateSurveyed",
                     defaultContent: "",
                     className: "text-center",
+                    orderable: false,
                 },
                 {
                     title: window.gettext("Added by"), 
                     data: "addedBy",
                     defaultContent: "",
+                    orderable: false,
                 },
             ],
             all_data_table_id: "surface-condition-table",
+            all_data_table_columns_order: [[3, 'asc'], [0, 'asc']],
             all_data_table_columns: [
                 {
                     title: window.gettext("Chainage start"), 
                     data: "chainageStart",
                     defaultContent: "",
                     className: "text-right",
+                    render: (data, type) => {
+                        if (type === 'display') return toChainageFormat(data);
+                        return data;
+                    },
                 },
                 {
                     title: window.gettext("Chainage end"), 
                     data: "chainageEnd",
                     defaultContent: "",
                     className: "text-right",
+                    orderable: false,
+                    render: (data, type) => {
+                        if (type === 'display') return toChainageFormat(data);
+                    },
                 },
                 {
                     title: window.gettext("Surface condition"), 
                     data: "surfaceCondition",
                     defaultContent: "",
                     className: "text-center",
+                    orderable: false,
                 },
                 {
                     title: window.gettext("Survey date"),
@@ -349,6 +372,7 @@
                     title: window.gettext("Added by"), 
                     data: "addedBy",
                     defaultContent: "",
+                    orderable: false,
                 },
                 {
                     title: window.gettext("Option"), 

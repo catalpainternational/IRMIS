@@ -30,6 +30,23 @@ edit_base {
             }
         }
     }
+
+    .content-wrapper {
+        background-color: $white;
+        padding: 30px 60px 60px;
+
+        &:not(:first-of-type) {
+            margin-top: 15px;
+        }
+
+        a.table-toggle.active, a.table-toggle.active:hover {
+            color: $green;
+        }
+
+        a.table-toggle:first-of-type {
+            margin-right: 20px;
+        }
+    }
 }
 
 edit_location_type,
@@ -81,23 +98,6 @@ edit_history {
 }
 
 edit_condition {
-    .content-wrapper {
-        background-color: $white;
-        padding: 30px 60px 60px;
-
-        &:not(:first-of-type) {
-            margin-top: 15px;
-        }
-
-        a.active, a.active:hover {
-            color: $green;
-        }
-    
-        a:first-of-type {
-            margin-right: 20px;
-        }
-    }
-
     h5 {
         margin-bottom: 0;
     }
