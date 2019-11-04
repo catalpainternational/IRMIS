@@ -361,7 +361,7 @@ class Report:
                         ] = survey.date_surveyed
                         self.segmentations[chainage_point]["survey_id"] = survey.id
                         self.segmentations[chainage_point]["added_by"] = (
-                            str(survey.user.id) if survey.user else ""
+                            str(survey.user.username) if survey.user else ""
                         )
 
     def build_summary_stats(self):
