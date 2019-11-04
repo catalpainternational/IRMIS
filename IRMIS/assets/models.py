@@ -231,6 +231,7 @@ class RoadQuerySet(models.QuerySet):
             funding_source="funding_source",
             maintenance_need="maintenance_need__code",
             traffic_level="traffic_level",
+            number_lanes="number_lanes",
         )
 
         annotations = start_end_point_annos("geom")
@@ -476,6 +477,12 @@ class Road(models.Model):
         help_text=_(
             "Choose road link technical class according to the 2010 Road Geometric Design Standards, DRBFC standards"
         ),
+    )
+    number_lanes = models.IntegerField(
+        verbose_name=_("Number of Lanes"),
+        blank=True,
+        null=True,
+        help_text=_("Enter the number of lanes of the road"),
     )
 
     # a reference to the collated geojson file this road's geometry is in

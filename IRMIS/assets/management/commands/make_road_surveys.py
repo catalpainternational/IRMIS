@@ -65,6 +65,7 @@ class Command(BaseCommand):
                                 "surface_type": str(road.surface_type),
                                 "technical_class": str(road.technical_class),
                                 "traffic_level": str(road.traffic_level),
+                                "number_lanes": str(road.number_lanes),
                             },
                         }
                     )

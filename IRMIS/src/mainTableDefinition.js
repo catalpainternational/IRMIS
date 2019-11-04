@@ -101,9 +101,10 @@ export const estradaTableColumns = [
     },
     {
         title: getFieldName("surface_type"),
-        data: "surfaceType",
+        data: null,
         defaultContent: "",
-        className: "text-center",
+        render: r => buttonSegmentsTemplate(r, "surface_type"),
+        orderable: false,
     },
     {
         title: getFieldName("pavement_class"),
@@ -131,10 +132,11 @@ export const estradaTableColumns = [
     },
     {
         title: getFieldName("technical_class"),
-        data: "technicalClass",
+        data: null,
         defaultContent: "",
+        render: r => '<button class="btn btn-secondary btn-sm technical-class-segments w-100" data-toggle="modal" data-target="#inventory-segments-modal" data-code="' + r.getLinkCode() + '" data-id="' + r.getId() + '" data-attr="technical_class">View</button>',
         visible: false,
-        className: "text-center",
+        orderable: false,
     },
     {
         title: getFieldName("funding_source"),
@@ -159,7 +161,7 @@ export const estradaTableColumns = [
         title: getFieldName("surface_condition"),
         data: null,
         defaultContent: "",
-        render: r => '<button class="btn btn-secondary btn-sm surface-condition-segments w-100" data-toggle="modal" data-target="#inventory-surface-condition-modal" data-code="' + r.getLinkCode() + '" data-id="' + r.getId() + '">View</button>',
+        render: r => buttonSegmentsTemplate(r, "surface_condition"),
         className: "text-center",
         orderable: false,
     },
@@ -205,4 +207,20 @@ export const estradaTableColumns = [
         visible: false,
         className: "text-center",
     },
+    {
+        title: getFieldName("number_lanes"),
+        data: null,
+        defaultContent: "",
+        render: r => buttonSegmentsTemplate(r, "number_lanes"),
+        visible: false,
+    },
 ];
+
+function buttonSegmentsTemplate(road, attrib) {
+    return `<button class="btn btn-secondary btn-sm number-lanes-segments w-100"
+        data-toggle="modal"
+        data-target="#inventory-segments-modal"
+        data-code="${road.getLinkCode()}"
+        data-id="${road.getId()}"
+        data-attr="${attrib}">View</button>`;
+}

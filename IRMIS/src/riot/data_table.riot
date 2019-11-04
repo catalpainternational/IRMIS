@@ -66,7 +66,7 @@
                 const haveAppendRows = typeof (data.detail.appendRows) === "boolean";
                 const appendRows = haveAppendRows ? data.detail.appendRows : true;
 
-                state.pendingRows = appendRows 
+                state.pendingRows = appendRows
                     ? state.pendingRows.concat(pendingRows)
                     : pendingRows;
                 state.appendRows = appendRows;
@@ -95,7 +95,7 @@
                 } else {
                     state.table.rows.add(state.pendingRows).draw();
                 }
-                
+
                 state.pendingRows = [];
             }
         }

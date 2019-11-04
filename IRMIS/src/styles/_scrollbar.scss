@@ -38,7 +38,7 @@ edit_base #side-menu > div, #edit-base, .filters {
     }
 }
 
-#inventory-surface-condition-table {
+#inventory-surface-condition-table, #inventory-surface-type-table, #inventory-technical-class-table {
     @extend %scrollbar-shared;
 
     &::-webkit-scrollbar:vertical {
