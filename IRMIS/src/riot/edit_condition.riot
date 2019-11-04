@@ -173,9 +173,9 @@
                 state.loading = true;
                 state.road = cloneData(props.road);
 
-                const emptyConditions = { 
-                    surface: "unknown", 
-                    distance: state.road.getLinkEndChainage() - state.road.getLinkStartChainage() 
+                const emptyConditions = {
+                    surface: "unknown",
+                    distance: state.road.getLinkEndChainage() - state.road.getLinkStartChainage()
                 };
 
                 this.updateSurfaceConditionsSummary([emptyConditions]);
@@ -188,7 +188,7 @@
             },
             getRoadSurveys() {
                 const roadId = this.state.road.getId();
- 
+
                 this.deleteListener = this.deleteListener || document.addEventListener(`${this.all_data_table_id}.deleteRow`, (data) => {
                     const rowId = data.detail.rowId;
                     this.showStopAlertModal("delete-alert", rowId);
@@ -264,7 +264,7 @@
                     condition.label = `${surfaceTitle} (${condition.distance / 1000}km/${condition.percent}%)`;
                 });
 
-                this.update();                
+                this.update();
             },
             viewAll(e) {
                 if (!this.state.viewAll) {
@@ -298,7 +298,7 @@
             current_data_table_columns_order: [[0, 'asc']],
             current_data_table_columns: [
                 {
-                    title: window.gettext("Chainage start"), 
+                    title: window.gettext("Chainage start"),
                     data: "chainageStart",
                     defaultContent: "",
                     className: "text-right",
@@ -308,7 +308,7 @@
                     },
                 },
                 {
-                    title: window.gettext("Chainage end"), 
+                    title: window.gettext("Chainage end"),
                     data: "chainageEnd",
                     defaultContent: "",
                     className: "text-right",
@@ -318,7 +318,7 @@
                     },
                 },
                 {
-                    title: window.gettext("Surface condition"), 
+                    title: window.gettext("Surface condition"),
                     data: "surfaceCondition",
                     defaultContent: "",
                     className: "text-center",
@@ -332,7 +332,7 @@
                     orderable: false,
                 },
                 {
-                    title: window.gettext("Added by"), 
+                    title: window.gettext("Added by"),
                     data: "addedBy",
                     defaultContent: "",
                     orderable: false,
@@ -342,7 +342,7 @@
             all_data_table_columns_order: [[3, 'desc'], [0, 'asc']],
             all_data_table_columns: [
                 {
-                    title: window.gettext("Chainage start"), 
+                    title: window.gettext("Chainage start"),
                     data: "chainageStart",
                     defaultContent: "",
                     className: "text-right",
@@ -352,7 +352,7 @@
                     },
                 },
                 {
-                    title: window.gettext("Chainage end"), 
+                    title: window.gettext("Chainage end"),
                     data: "chainageEnd",
                     defaultContent: "",
                     className: "text-right",
@@ -362,7 +362,7 @@
                     },
                 },
                 {
-                    title: window.gettext("Surface condition"), 
+                    title: window.gettext("Surface condition"),
                     data: "surfaceCondition",
                     defaultContent: "",
                     className: "text-center",
@@ -375,7 +375,7 @@
                     className: "text-center",
                 },
                 {
-                    title: window.gettext("Added by"), 
+                    title: window.gettext("Added by"),
                     data: "addedBy",
                     defaultContent: "",
                     orderable: false,
@@ -391,7 +391,7 @@
                 },
             ],
 
-            // Survey Modal 
+            // Survey Modal
 
             requiredFieldNames: ["surveyDate", "startChainage", "endChainage", "surfaceCondition"],
             showEditModal() {
@@ -418,12 +418,12 @@
                     }
                 }, { once: true });
 
-                $(`#${this.modal_id}`).modal("show");                
+                $(`#${this.modal_id}`).modal("show");
             },
             showStopAlertModal(modalId, rowId) {
                 document.addEventListener(`edit.${modalId}.result`, (data) => {
                     const stopAlertResult = data.detail.result;
-                    
+
                     $(`#${modalId}`).modal("hide");
 
                     if (stopAlertResult === "discard") {
@@ -488,7 +488,7 @@
                     this.baseSurvey = new Survey({});
 
                     $(`#${this.modal_id}`).modal("hide");
-                } 
+                }
             },
             saveSurvey() {
                 if (!this.state.editMode) {
@@ -508,6 +508,9 @@
                         })
                         .catch((err) => { this.props.error = true; });
                 }
+                // clear input values
+                this.state.survey = new Survey({});
+                this.update();
             },
             canSave() {
                 const missingFieldNames = checkRequiredFields(this.requiredFieldNames, this.state.survey);
@@ -534,7 +537,7 @@
             },
             validate(fieldName, input, testResult, errorText) {
                 if (!testResult) {
-                    this.state.errors[fieldName] = errorText;                    
+                    this.state.errors[fieldName] = errorText;
                 } else {
                     delete this.state.errors[fieldName];
                     this.state.survey[fieldName] = input;
