@@ -106,7 +106,19 @@
             </div>
         </form>
     </edit_modal>
+
+    <edit_stop_alert
+        modalId="delete-alert"
+        title="{ window.gettext('Delete') }"
+        description="{ window.gettext('Are you sure you want to delete this data entry?') }"
+        proceedLabel="{ window.gettext('Delete') }"
+        proceedResult="delete"
+        stopLabel="{ window.gettext('Don\'t delete') }"
+        stopResult="keep">
+    </edit_stop_alert>
+
     <script>
+        import Edit_Stop_Alert from "./edit_stop_alert.riot";
         import Data_Table from "./data_table.riot";
         import Edit_Modal from "./edit_modal.riot";
 
@@ -153,7 +165,7 @@
                 editMode: false,
             },
             components: {
-                Edit_Modal
+                Edit_Stop_Alert, Edit_Modal
             },
 
             // Condition Survey
@@ -179,11 +191,7 @@
  
                 this.deleteListener = this.deleteListener || document.addEventListener(`${this.all_data_table_id}.deleteRow`, (data) => {
                     const rowId = data.detail.rowId;
-                    deleteSurvey(rowId).then((result) => {
-                        if (result) {
-                            this.refreshSurveysAndReports();
-                        }
-                    });
+                    this.showStopAlertModal("delete-alert", rowId);
                 });
 
                 getRoadSurveys(roadId)
@@ -285,9 +293,6 @@
 
                 this.showEditModal();
             },
-            deleteSurvey(e) {
-                console.log(e.target);
-            },
             conditions: window.road_schema.surface_condition,
             current_data_table_id: "surface-condition-report-table",
             current_data_table_columns_order: [[0, 'asc']],
@@ -334,7 +339,7 @@
                 },
             ],
             all_data_table_id: "surface-condition-table",
-            all_data_table_columns_order: [[3, 'asc'], [0, 'asc']],
+            all_data_table_columns_order: [[3, 'desc'], [0, 'asc']],
             all_data_table_columns: [
                 {
                     title: window.gettext("Chainage start"), 
@@ -381,6 +386,7 @@
                     title: window.gettext("Option"),
                     name: "Option", // Do NOT translate this
                     defaultContent: "",
+                    className: "text-center",
                     orderable: false,
                 },
             ],
@@ -406,7 +412,7 @@
                             break;
                         default:
                             if (this.hasChanges()) {
-                                this.showStopAlertModal();
+                                this.showStopAlertModal("stop-alert");
                             }
                             break;
                     }
@@ -414,22 +420,26 @@
 
                 $(`#${this.modal_id}`).modal("show");                
             },
-            showStopAlertModal() {
-                document.addEventListener("edit.stop_alert.result", (data) => {
+            showStopAlertModal(modalId, rowId) {
+                document.addEventListener(`edit.${modalId}.result`, (data) => {
                     const stopAlertResult = data.detail.result;
-
-                    // Ensure that the dialog gets hidden
-                    $("#stop-alert").modal("hide");
                     
+                    $(`#${modalId}`).modal("hide");
+
                     if (stopAlertResult === "discard") {
                         this.discardChanges();
-                    } else {
-                        // continueEdit and close
+                    } else if (stopAlertResult === "delete") {
+                        deleteSurvey(rowId).then((result) => {
+                            if (result) {
+                                this.refreshSurveysAndReports();
+                            }
+                        });
+                    } else if (stopAlertResult === "continueEdit") {
                         this.showEditModal();
                     }
                 }, { once: true });
 
-                $("#stop-alert").modal("show");
+                $(`#${modalId}`).modal("show");
             },
             discardChanges() {
                 this.state.survey = cloneData(this.state.baseSurvey);

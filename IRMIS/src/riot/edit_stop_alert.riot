@@ -1,18 +1,18 @@
 <edit_stop_alert>
-    <div id="stop-alert" class="modal" tabindex="-1" role="dialog">
+    <div id="{props.modalId}" class="modal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
             <div class="modal-content">
                 <div class="d-flex justify-content-center modal-header">
                     <span class="alert stop image"></span>
-                    <span class="close image" data-dismiss="modal" aria-label="{ window.gettext("Close") }" aria-hidden="true"></span>
+                    <span class="close image" data-dismiss="modal" aria-label="{window.gettext('Close')}" aria-hidden="true"></span>
                 </div>
                 <div class="modal-body text-center">
-                    <h6>{ window.gettext("Unsaved Changes") }</h6>
-                    <p>{ window.gettext("You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?") }</p>
+                    <h6>{props.title}</h6>
+                    <p>{props.description}</p>
                 </div>
                 <div class="d-flex justify-content-center modal-footer">
-                    <button type="button" class="btn btn-danger" onclick="{ discard }">{ window.gettext("Discard") }</button>
-                    <button type="button" class="btn btn-light" onclick="{ continueEdit }">{ window.gettext("Continue editing") }</button>
+                    <button type="button" class="btn btn-danger" onclick="{proceed}">{props.proceedLabel}</button>
+                    <button type="button" class="btn btn-light" onclick="{halt}">{props.stopLabel}</button>
                 </div>
             </div>
         </div>
@@ -28,7 +28,7 @@
         const initialiseStateFromProps = function(props, state) {
             state = state || {};
 
-            state.id = props.modal_id || "stop_alert";
+            state.id = props.modalId || "stop-alert";
             state.modalLabel = `${state.id}Label`;
             state.selector = `#${state.id}`;
             state.resultEventName = `edit.${state.id}.result`;
@@ -59,13 +59,13 @@
             onUnmounted(props, state) {
                 $(document).off("hide.bs.modal", state.selector);
             },
-            discard() {
-                this.state.result = "discard";
+            proceed() {
+                this.state.result = this.props.proceedResult;
                 // Go directly out of the dialog, the caller's handler will hide the dialog
                 this.dispatchResult(this.state.result, this.state.resultEventName);
             },
-            continueEdit() {
-                this.state.result = "continueEdit";
+            halt() {
+                this.state.result = this.props.stopResult;
                 // Go directly out of the dialog, the caller's handler will hide the dialog
                 this.dispatchResult(this.state.result, this.state.resultEventName);
             },

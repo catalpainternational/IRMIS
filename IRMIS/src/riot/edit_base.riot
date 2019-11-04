@@ -22,7 +22,15 @@
             </div>
         </div>
 
-        <edit_stop_alert></edit_stop_alert>
+        <edit_stop_alert
+            modalId="stop-alert"
+            title="{ window.gettext('Unsaved Changes') }"
+            description="{ window.gettext('You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?') }"
+            proceedLabel="{ window.gettext('Discard') }"
+            proceedResult="discard"
+            stopLabel="{ window.gettext('Continue editing') }"
+            stopResult="continueEdit">
+        </edit_stop_alert>
 
         <div if="{ !state.loading }" id="edit-base">
             <header class="align-items-center d-flex">
@@ -161,7 +169,7 @@
                 }
             },
             modalHandler() {
-                document.addEventListener("edit.stop_alert.result", (data) => {
+                document.addEventListener("edit.stop-alert.result", (data) => {
                     const stopAlertResult = data.detail.result;
 
                     // Ensure that the dialog gets hidden
