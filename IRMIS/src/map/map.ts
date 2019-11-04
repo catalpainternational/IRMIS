@@ -1,15 +1,21 @@
-// tslint:disable-next-line: max-line-length
+import bbox from "@turf/bbox";
+import envelope from "@turf/envelope";
+import { AllGeoJSON } from "@turf/helpers";
+import { FeatureCollection } from "geojson";
+
 import { Feature, GeoJSON, Geometry } from "geojson";
 import * as L from "leaflet";
 
-import { roadPopup } from "../roadManager";
 import { Config } from "./config";
+
 import { BaseLayers } from "./layers/BaseLayers";
 import { KnownGeometries } from "./layers/KnownGeometries";
 import { getFilterStyles } from "./utilities/filterGeoJSON";
 import { getFeatureType } from "./utilities/propertiesGeoJSON";
 
 import { FallbackLayerStyle, FixLayerStyleDefaults, styleGeometry, stylePoint } from "./utilities/leaflet-style";
+
+import { roadPopup } from "../roadManager.js";
 
 /** The collection of all GeoJSON elements currently added to the map,
  * organised by their featureType
@@ -19,19 +25,8 @@ export let geoFeatureGroups: { [name: string]: L.FeatureGroup } = {};
 export let featureLookup: { [name: string]: Feature<Geometry, any> } = {};
 export let layerLookup: { [name: string]: L.Layer } = {};
 
-document.addEventListener("estrada.filter.applied", (data: any) => {
-
-    const layerFilterStyles = getFilterStyles("Road");
-
-    Object.values(featureLookup).forEach((feature: any) => {
-        const featureId: string = feature.properties.pk.toString();
-        const geoLayer = layerLookup[featureId] as L.GeoJSON;
-
-        geoLayer.setStyle(data.detail.idMap[featureId] ? layerFilterStyles.styleOn : layerFilterStyles.styleOff);
-    });
-});
-
 export class Map {
+
     private lMap = {} as L.Map;
     private zoomControl = {} as L.Control.Zoom;
     private currentLayer = {} as L.TileLayer;
@@ -49,8 +44,16 @@ export class Map {
         this.currentLayer = bl[Config.preferredBaseLayerName];
         this.currentLayer.addTo(this.lMap);
 
-        document.addEventListener("estrada.sideMenu.viewChanged", (data) => {
+        document.addEventListener("estrada.sideMenu.viewChanged", () => {
             this.lMap.invalidateSize();
+        });
+
+        document.addEventListener("estrada.filter.applied", (data: Event) => {
+            this.handleFilter(data);
+        });
+
+        document.addEventListener("estrada.idFilter.applied", (data: Event) => {
+            this.handleFilter(data);
         });
 
         return this.lMap;
@@ -67,6 +70,30 @@ export class Map {
 
     public invalidateSize() {
         this.lMap.invalidateSize();
+    }
+
+    private handleFilter(data: Event) {
+        const layerFilterStyles = getFilterStyles("Road");
+
+        const featureZoomSet: FeatureCollection = { type: "FeatureCollection", features: [] };
+        Object.values(featureLookup).forEach((feature: any) => {
+            const featureId: string = feature.properties.pk.toString();
+            const geoLayer = layerLookup[featureId] as L.GeoJSON;
+
+            const switchStyle = !!(data as CustomEvent).detail.idMap[featureId];
+            if (switchStyle) {
+                featureZoomSet.features.push(feature);
+            }
+
+            geoLayer.setStyle(switchStyle ? layerFilterStyles.styleOn : layerFilterStyles.styleOff);
+        });
+
+        const bounds = (featureZoomSet.features.length) ? envelope(featureZoomSet as AllGeoJSON) : Config.tlBounds;
+        const bb = bbox(bounds);
+
+        // Don't use flyToBounds
+        // - it sounds nice, but screws up tile and geoJSON alignment when the zoom level remains the ame
+        this.lMap.fitBounds(new L.LatLngBounds([bb[1], bb[0]], [bb[3], bb[2]]));
     }
 
     private registerFeature(feature: Feature<Geometry, any>, layer: L.Layer) {
@@ -101,8 +128,8 @@ export class Map {
                 styleGeometry(feature, styleRecord),
         };
 
-        // Actually build the GeoJSON layer
-        const geoLayer = L.geoJSON(json, geoJsonOptions).bindPopup(this.getPopupMethod);
+        // Actually build the GeoJSON layer, and bind the popup behaviour
+        const geoLayer = L.geoJSON(json, geoJsonOptions).bindPopup(this.getPopup);
 
         // Add it to the feature group
         geoFeatureGroup.addLayer(geoLayer);
@@ -116,7 +143,7 @@ export class Map {
         return Promise.resolve(true);
     }
 
-    private getPopupMethod(layer: any): string {
+    private getPopup(layer: any): string {
         const id = parseInt(layer.feature.properties.pk, 10);
         return roadPopup(id);
     }

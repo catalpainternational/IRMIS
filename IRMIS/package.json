@@ -47,6 +47,8 @@
 		"webpack-merge": "^4.2.2"
 	},
 	"dependencies": {
+		"@turf/bbox": "^6.0.1",
+		"@turf/envelope": "^5.1.5",
 		"@types/google-protobuf": "^3.7.2",
 		"@types/leaflet": "^1.5.5",
 		"babel-polyfill": "^6.26.0",

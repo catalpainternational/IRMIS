@@ -114,6 +114,41 @@ div.dataTables_wrapper {
     }
 }
 
+// Override DataTables.net styles
+div.dataTables_wrapper {
+    table.dataTable td.dataTables_empty {
+        text-align: left;
+    }
+
+    .dataTables_info {
+        padding-top: 8px;
+    }
+
+    div.dataTables_paginate {
+        ul.pagination {
+            margin: 0;
+
+            li.paginate_button.page-item {
+                &:focus {
+                    outline: none;
+                }
+
+                &.active a.page-link {
+                    background-color: $white;
+                    border-radius: $radius;
+                    color: $darker-gray;
+                }
+
+                a.page-link {
+                    background-color: inherit;
+                    box-shadow: none;
+                    color: $white;
+                    border: 0;
+                }
+            }
+        }
+    }
+}
 
 // Override Bootstrap table styles
 table.table {
@@ -157,8 +192,25 @@ table.table {
 
     &.table-hover {
         tbody tr:hover {
-            background-color: $lighter-gray;
+            background-color: $alt-green;
             cursor: pointer;
+
+            td {
+                color: $white;
+
+                // This presently screws up and converts the svg to 'undefined'
+                // .pencil {
+                //     background-image: url("../images/pencil_hover.svg");
+                // }
+            }
+        }
+    }
+
+    tbody tr.selected {
+        background-color: $alt-green;
+
+        td {
+            color: $white;
         }
     }
 }
