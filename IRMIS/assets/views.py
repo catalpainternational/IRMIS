@@ -287,6 +287,7 @@ def road_report(request, pk):
         Survey.objects.filter(road=road.road_code)
         .exclude(chainage_start__isnull=True)
         .exclude(chainage_end__isnull=True)
+        .exclude(values__surface_condition__isnull=True)
         .order_by("road", "chainage_start", "chainage_end", "-date_surveyed")
         .distinct("road", "chainage_start", "chainage_end")
     )

@@ -48,27 +48,58 @@ class Command(BaseCommand):
                     #     )
 
                     with reversion.create_revision():
-                        survey = Survey.objects.create(
-                            **{
-                                "road": road.road_code,
-                                "chainage_start": start_chainage,
-                                "chainage_end": end_chainage,
-                                "source": "programmatic",
-                                "values": {
-                                    "carriageway_width": str(road.carriageway_width),
-                                    "funding_source": str(road.funding_source),
-                                    "maintenance_need": str(road.maintenance_need),
-                                    "pavement_class": str(road.pavement_class),
-                                    "project": str(road.project),
-                                    "road_status": str(road.road_status),
-                                    "surface_condition": str(road.surface_condition),
-                                    "surface_type": str(road.surface_type),
-                                    "technical_class": str(road.technical_class),
-                                    "traffic_level": str(road.traffic_level),
-                                    "number_lanes": str(road.number_lanes),
-                                },
-                            }
-                        )
+                        survey_data = {
+                            "road": road.road_code,
+                            "chainage_start": start_chainage,
+                            "chainage_end": end_chainage,
+                            "source": "programmatic",
+                            "values": {},
+                        }
+
+                        if road.carriageway_width:
+                            survey_data["values"]["carriageway_width"] = (
+                                str(road.carriageway_width),
+                            )
+                        if road.funding_source:
+                            survey_data["values"]["funding_source"] = (
+                                str(road.funding_source),
+                            )
+                        if road.maintenance_need:
+                            survey_data["values"]["maintenance_need"] = (
+                                str(road.maintenance_need),
+                            )
+                        if road.pavement_class:
+                            survey_data["values"]["pavement_class"] = (
+                                str(road.pavement_class),
+                            )
+                        if road.project:
+                            survey_data["values"]["project"] = (str(road.project),)
+                        if road.road_status:
+                            survey_data["values"]["road_status"] = (
+                                str(road.road_status),
+                            )
+                        if road.surface_condition:
+                            survey_data["values"]["surface_condition"] = (
+                                str(road.surface_condition),
+                            )
+                        if road.surface_type:
+                            survey_data["values"]["surface_type"] = (
+                                str(road.surface_type),
+                            )
+                        if road.technical_class:
+                            survey_data["values"]["technical_class"] = (
+                                str(road.technical_class),
+                            )
+                        if road.traffic_level:
+                            survey_data["values"]["traffic_level"] = (
+                                str(road.traffic_level),
+                            )
+                        if road.number_lanes:
+                            survey_data["values"]["number_lanes"] = (
+                                str(road.number_lanes),
+                            )
+
+                        survey = Survey.objects.create(**survey_data)
                         survey.save()
                         reversion.set_comment(
                             "Survey created programmatically from Road Link"
