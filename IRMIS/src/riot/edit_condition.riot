@@ -173,9 +173,14 @@
                 state.loading = true;
                 state.road = cloneData(props.road);
 
+                let roadDistance = state.road.getLinkEndChainage() - state.road.getLinkStartChainage();
+                if (!roadDistance) {
+                    roadDistance = state.road.linkLength;
+                }
+
                 const emptyConditions = {
                     surface: "unknown",
-                    distance: state.road.getLinkEndChainage() - state.road.getLinkStartChainage()
+                    distance: roadDistance
                 };
 
                 this.updateSurfaceConditionsSummary([emptyConditions]);
