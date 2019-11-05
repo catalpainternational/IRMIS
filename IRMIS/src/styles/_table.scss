@@ -190,27 +190,18 @@ table.table {
         }
     }
 
-    &.table-hover {
-        tbody tr:hover {
-            background-color: $alt-green;
+    &.table-hover tbody tr {
+        &:hover {
+            background-color: $light-green;
             cursor: pointer;
+        }
+
+        &.selected {
+            background-color: $green;
 
             td {
                 color: $white;
-
-                // This presently screws up and converts the svg to 'undefined'
-                // .pencil {
-                //     background-image: url("../images/pencil_hover.svg");
-                // }
             }
-        }
-    }
-
-    tbody tr.selected {
-        background-color: $alt-green;
-
-        td {
-            color: $white;
         }
     }
 }

@@ -110,10 +110,10 @@
     vertical-align: middle;
     height: 16px;
     width: 15px;
-    
-    &:hover {
-        background-image: url("../images/pencil_hover.svg");
-    }
+}
+
+tr.selected .pencil {
+    background-image: url("../images/pencil_white.svg");
 }
 
 .delete {
