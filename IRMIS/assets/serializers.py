@@ -40,9 +40,3 @@ class RoadMetaOnlySerializer(serializers.ModelSerializer):
     class Meta:
         model = Road
         exclude = ["geom", "properties_object_id", "properties_content_type"]
-
-
-class SurveySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Survey
-        exclude = ["date_created"]

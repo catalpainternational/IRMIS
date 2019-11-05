@@ -40,12 +40,7 @@ from .models import (
     PavementClass,
     Survey,
 )
-from .serializers import (
-    RoadSerializer,
-    RoadMetaOnlySerializer,
-    RoadToWGSSerializer,
-    SurveySerializer,
-)
+from .serializers import RoadSerializer, RoadMetaOnlySerializer, RoadToWGSSerializer
 
 
 def get_etag(request, pk=None):
