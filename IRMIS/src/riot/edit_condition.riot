@@ -174,7 +174,7 @@
                 state.road = cloneData(props.road);
 
                 let roadDistance = state.road.getLinkEndChainage() - state.road.getLinkStartChainage();
-                if (!roadDistance) {
+                if (!roadDistance || roadDistance < 0) {
                     roadDistance = state.road.linkLength;
                 }
 
