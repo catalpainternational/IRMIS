@@ -479,6 +479,9 @@ def survey_create(request):
                 }
             )
 
+            # store the user who made the changes
+            reversion.set_user(request.user)
+
         # set new last_reversion_id on the protobuf to be returned
         versions = Version.objects.get_for_object(survey)
         req_pb.last_revision_id = versions[0].id
