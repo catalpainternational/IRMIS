@@ -106,9 +106,23 @@ function initializeDataTable() {
         }
     });
 
-    table.on('click', 'tbody tr', (e) => {
-        const clickedRowId = e.currentTarget.id;
+    table.on("click", "tbody tr td", (e) => {
+        const clickedRowId = e.currentTarget.parentNode.id;
         const clickedRow = $(`tr#${clickedRowId}`);
+
+        const cellChildren = e.currentTarget.children;
+        const cellChildrenLength = cellChildren.length;
+        if (cellChildrenLength > 0) {
+            for (let ix = 0; ix < cellChildrenLength; ix++) {
+                const cellChild = cellChildren.item(ix);
+                if (cellChild.dataset && cellChild.dataset.toggle === "modal") {
+                    // Dump this event and let the modal handler
+                    // in the cell's contents do their thing instead
+                    e.preventDefault();
+                    return;
+                }
+            }
+        }
         
         if (clickedRow.hasClass("selected")) {
             clickedRow.removeClass("selected");
@@ -117,7 +131,7 @@ function initializeDataTable() {
             // reset to the previously selected filters
             applyFilter();            
         } else {
-            table.$('tr.selected').removeClass('selected');
+            table.$("tr.selected").removeClass("selected");
             clickedRow.addClass("selected");
 
             table.selectionProcessing = clickedRowId;
