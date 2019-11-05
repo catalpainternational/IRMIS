@@ -173,9 +173,14 @@
                 state.loading = true;
                 state.road = cloneData(props.road);
 
+                let roadDistance = state.road.getLinkEndChainage() - state.road.getLinkStartChainage();
+                if (!roadDistance) {
+                    roadDistance = state.road.linkLength;
+                }
+
                 const emptyConditions = {
                     surface: "unknown",
-                    distance: state.road.getLinkEndChainage() - state.road.getLinkStartChainage()
+                    distance: roadDistance
                 };
 
                 this.updateSurfaceConditionsSummary([emptyConditions]);
@@ -260,10 +265,17 @@
 
                 // Then calculate everything else
                 this.state.conditions.forEach((condition) => {
-                    condition.percent = Math.round((condition.distance / this.state.surveyTotalDistance) * 10000) / 100;
                     const surfaceTitle = window.gettext(condition.surface[0].toUpperCase() + condition.surface.substring(1));
-                    // the calculated label shows distance in km
-                    condition.label = `${surfaceTitle} (${condition.distance / 1000}km/${condition.percent}%)`;
+                    if (this.state.surveyTotalDistance > 0) {
+                        condition.percent = Math.round((condition.distance / this.state.surveyTotalDistance) * 10000) / 100;
+                        // the calculated label shows distance in km
+                        condition.label = `${surfaceTitle} (${condition.distance / 1000}km/${condition.percent}%)`;
+                    } else {
+                        // 100% of 0km - but this won't appear in the label
+                        condition.percent = 100;
+                        // the calculated label shows distance in km
+                        condition.label = `${surfaceTitle} (0km)`;
+                    }
                 });
 
                 this.update();

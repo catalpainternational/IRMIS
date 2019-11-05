@@ -42,12 +42,9 @@ export class EstradaSurveyReport extends Report {
         try {
             counts = JSON.parse(this.getCounts());
         } catch {
-            // Use dummy data
-            counts = JSON.parse('{"1": 25600, "2": 60000, "3": 25300, "4": 30000, "None": 45000}');
             // This is the correct response on error
-            // counts = [];
+            counts = {None:0};
         }
-
         return counts;
     }
 
@@ -61,7 +58,6 @@ export class EstradaSurveyReport extends Report {
             }
             conditions.push({ surface: conditionTitle, distance: counts[key] });
         });
-
         return conditions;
     }
 
@@ -76,7 +72,13 @@ export class EstradaSurveyReport extends Report {
     }
 
     get tableList() {
-        return this.getTableList().map(makeEstradaSurveyReportTableEntry);
+        const tableListRaw = this.getTableList();
+        if (tableListRaw.length === 1 && tableListRaw[0].getSurveyId() === 0) {
+            // Only a single generated survey segment
+            // Which means that there are actually no real survey segments
+            return [];
+        }
+        return tableListRaw.map(makeEstradaSurveyReportTableEntry);
     }
 }
 
