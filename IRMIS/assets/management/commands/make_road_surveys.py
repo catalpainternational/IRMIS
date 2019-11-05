@@ -82,7 +82,7 @@ class Command(BaseCommand):
                             road.link_start_chainage,
                             road.link_end_chainage,
                         )
-                        )
+                    )
 
                 # update the start chainage & created surveys counter
                 start_chainage = end_chainage
