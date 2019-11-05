@@ -42,10 +42,8 @@ export class EstradaSurveyReport extends Report {
         try {
             counts = JSON.parse(this.getCounts());
         } catch {
-            // Use dummy data
-            counts = JSON.parse('{"1": 25600, "2": 60000, "3": 25300, "4": 30000, "None": 45000}');
             // This is the correct response on error
-            // counts = [];
+            counts = [];
         }
 
         return counts;
