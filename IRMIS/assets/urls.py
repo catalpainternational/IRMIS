@@ -12,7 +12,6 @@ from .views import (
     survey_create,
     survey_delete,
     survey_update,
-    protobuf_surveys,
     protobuf_road_surveys,
 )
 
@@ -34,10 +33,6 @@ urlpatterns = [
     path("protobuf_road/<int:pk>", protobuf_road, name="protobuf_road"),
     path("protobuf_roads", protobuf_road_set, name="protobuf_roads"),
     path("protobuf_roads/<slug:chunk_name>/", protobuf_road_set, name="protobuf_roads"),
-    path("protobuf_surveys", protobuf_surveys, name="protobuf_surveys"),
-    path(
-        "protobuf_surveys/<slug:chunk_name>/", protobuf_surveys, name="protobuf_surveys"
-    ),
     path(
         "protobuf_road_surveys/<int:pk>",
         protobuf_road_surveys,

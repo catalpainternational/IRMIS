@@ -417,25 +417,6 @@ class Report:
         return self.report_protobuf
 
 
-def protobuf_surveys(request, chunk_name=None):
-    """ returns a protobuf object with the set of all surveys or only of specific type"""
-
-    if not request.user.is_authenticated:
-        return HttpResponseForbidden()
-
-    queryset = Survey.objects.all()
-    if chunk_name:
-        chunk_codes = Road.objects.filter(road_type=chunk_name).values("road_code")
-        queryset = queryset.filter(road__in=chunk_codes)
-
-    queryset.order_by("road", "chainage_start", "chainage_end", "-date_updated")
-    surveys_protobuf = queryset.to_protobuf()
-
-    return HttpResponse(
-        surveys_protobuf.SerializeToString(), content_type="application/octet-stream"
-    )
-
-
 def protobuf_road_surveys(request, pk):
     """ returns a protobuf object with the set of surveys for a particular road pk"""
 

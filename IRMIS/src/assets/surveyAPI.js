@@ -5,20 +5,6 @@ import { EstradaSurveyReport } from "../surveyReport";
 import { ConfigAPI } from "./configAPI";
 import { makeEstradaObject } from "./protoBufUtilities";
 
-/** getSurveysMetadataChunks
- *
- * Retrieves the details for the survey metadata chunks from the server
- *
- * @returns a map {id: survey_object}
- */
-export function getSurveysMetadataChunks() {
-    const surveyTypeUrlFragment = "protobuf_surveys";
-    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${surveyTypeUrlFragment}`;
-
-    return fetch(metadataUrl, ConfigAPI.requestInit())
-        .then((jsonResponse) => (jsonResponse.json()));
-}
-
 /** getSurveysMetadata
  *
  * Retrieves the survey metadata from the server
