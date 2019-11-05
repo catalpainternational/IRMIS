@@ -103,7 +103,7 @@ export const estradaTableColumns = [
         title: getFieldName("surface_type"),
         data: null,
         defaultContent: "",
-        render: r => buttonSegmentsTemplate(r, "surface_type"),
+        render: r => buttonSegmentsTemplate("surface_type", r),
         orderable: false,
     },
     {
@@ -134,7 +134,7 @@ export const estradaTableColumns = [
         title: getFieldName("technical_class"),
         data: null,
         defaultContent: "",
-        render: r => '<button class="btn btn-secondary btn-sm technical-class-segments w-100" data-toggle="modal" data-target="#inventory-segments-modal" data-code="' + r.getLinkCode() + '" data-id="' + r.getId() + '" data-attr="technical_class">View</button>',
+        render: r => buttonSegmentsTemplate("technical-class", r),
         visible: false,
         orderable: false,
     },
@@ -161,7 +161,7 @@ export const estradaTableColumns = [
         title: getFieldName("surface_condition"),
         data: null,
         defaultContent: "",
-        render: r => buttonSegmentsTemplate(r, "surface_condition"),
+        render: r => buttonSegmentsTemplate("surface_condition", r),
         className: "text-center",
         orderable: false,
     },
@@ -211,13 +211,13 @@ export const estradaTableColumns = [
         title: getFieldName("number_lanes"),
         data: null,
         defaultContent: "",
-        render: r => buttonSegmentsTemplate(r, "number_lanes"),
+        render: r => buttonSegmentsTemplate("number_lanes", r),
         visible: false,
     },
 ];
 
-function buttonSegmentsTemplate(road, attrib) {
-    return `<button class="btn btn-secondary btn-sm number-lanes-segments w-100"
+function buttonSegmentsTemplate(attrib, road) {
+    return `<button class="btn btn-secondary btn-sm ${attrib}-segments w-100"
         data-toggle="modal"
         data-target="#inventory-segments-modal"
         data-code="${road.getLinkCode()}"
