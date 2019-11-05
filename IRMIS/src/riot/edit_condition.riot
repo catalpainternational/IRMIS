@@ -179,8 +179,15 @@
                 };
 
                 this.updateSurfaceConditionsSummary([emptyConditions]);
-
                 this.refreshSurveysAndReports();
+
+                this.deleteListener = document.addEventListener(`${this.all_data_table_id}.deleteRow`, (data) => {
+                    const rowId = data.detail.rowId;
+                    this.showStopAlertModal("delete-alert", rowId);
+                });
+            },
+            onUnmount(props, state) {
+                document.removeEventListener(`${this.all_data_table_id}.deleteRow`, {});
             },
             refreshSurveysAndReports() {
                 this.getRoadSurveys();
@@ -188,11 +195,6 @@
             },
             getRoadSurveys() {
                 const roadId = this.state.road.getId();
-
-                this.deleteListener = this.deleteListener || document.addEventListener(`${this.all_data_table_id}.deleteRow`, (data) => {
-                    const rowId = data.detail.rowId;
-                    this.showStopAlertModal("delete-alert", rowId);
-                });
 
                 getRoadSurveys(roadId)
                     .then((surveyData) => {
@@ -421,9 +423,9 @@
                 $(`#${this.modal_id}`).modal("show");
             },
             showStopAlertModal(modalId, rowId) {
-                document.addEventListener(`edit.${modalId}.result`, (data) => {
+                const eventName = `edit.${modalId}.result`;
+                this[`${eventName}Listener`] = this[`${eventName}Listener`] || document.addEventListener(eventName, (data) => {
                     const stopAlertResult = data.detail.result;
-
                     $(`#${modalId}`).modal("hide");
 
                     if (stopAlertResult === "discard") {
