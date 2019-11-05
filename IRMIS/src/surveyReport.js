@@ -43,9 +43,8 @@ export class EstradaSurveyReport extends Report {
             counts = JSON.parse(this.getCounts());
         } catch {
             // This is the correct response on error
-            counts = [];
+            counts = {None:0};
         }
-
         return counts;
     }
 
@@ -59,7 +58,6 @@ export class EstradaSurveyReport extends Report {
             }
             conditions.push({ surface: conditionTitle, distance: counts[key] });
         });
-
         return conditions;
     }
 
