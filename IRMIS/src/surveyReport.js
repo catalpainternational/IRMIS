@@ -76,7 +76,13 @@ export class EstradaSurveyReport extends Report {
     }
 
     get tableList() {
-        return this.getTableList().map(makeEstradaSurveyReportTableEntry);
+        const tableListRaw = this.getTableList();
+        if (tableListRaw.length === 1 && tableListRaw[0].getSurveyId() === 0) {
+            // Only a single generated survey segment
+            // Which means that there are actually no real survey segments
+            return [];
+        }
+        return tableListRaw.map(makeEstradaSurveyReportTableEntry);
     }
 }
 

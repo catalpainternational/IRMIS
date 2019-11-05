@@ -320,7 +320,7 @@ class Report:
         self.segmentations = {
             item: {
                 "chainage_point": float(item),
-                "surf_cond": None,
+                "surf_cond": "None",
                 "date_surveyed": None,
                 "survey_id": 0,
                 "added_by": "",
