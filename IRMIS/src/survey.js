@@ -49,23 +49,28 @@ export class EstradaSurvey extends Survey {
     }
 
     get surfaceCondition() {
-        return choice_or_empty(JSON.parse(this.getValues())['surface_condition'], SURFACE_CONDITION_CHOICES);
+        return choice_or_empty(this.values.surface_condition, SURFACE_CONDITION_CHOICES);
     }
 
     get surfaceType() {
-        return choice_or_empty(JSON.parse(this.getValues())['surface_type'], SURFACE_TYPE_CHOICES);
+        return choice_or_empty(this.values.surface_type, SURFACE_TYPE_CHOICES);
     }
 
     get technicalClass() {
-        return choice_or_empty(JSON.parse(this.getValues())['technical_class'], TECHNICAL_CLASS_CHOICES);
+        return choice_or_empty(this.values.technical_class, TECHNICAL_CLASS_CHOICES);
     }
 
     get trafficLevel() {
-        return choice_or_empty(JSON.parse(this.getValues())['traffic_level'], TRAFFIC_LEVEL_CHOICES);
+        return choice_or_empty(this.values.traffic_level, TRAFFIC_LEVEL_CHOICES);
     }
 
     get numberLanes() {
-        return JSON.parse(this.getValues())['number_lanes'];
+        return this.values.number_lanes;
+    }
+
+    get values() {
+        const jsonValues = this.getValues() || "{}";
+        return JSON.parse(jsonValues);        
     }
 }
 
