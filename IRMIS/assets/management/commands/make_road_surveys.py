@@ -47,63 +47,47 @@ class Command(BaseCommand):
                     #         "Road Link start/end chainages & length updated from its geometry"
                     #     )
 
-                    with reversion.create_revision():
-                        survey_data = {
-                            "road": road.road_code,
-                            "chainage_start": start_chainage,
-                            "chainage_end": end_chainage,
-                            "source": "programmatic",
-                            "values": {},
-                        }
+                    survey_data = {
+                        "road": road.road_code,
+                        "chainage_start": start_chainage,
+                        "chainage_end": end_chainage,
+                        "source": "programmatic",
+                        "values": {},
+                    }
 
-                        if road.carriageway_width:
-                            survey_data["values"]["carriageway_width"] = (
-                                str(road.carriageway_width),
-                            )
-                        if road.funding_source:
-                            survey_data["values"]["funding_source"] = (
-                                str(road.funding_source),
-                            )
-                        if road.maintenance_need:
-                            survey_data["values"]["maintenance_need"] = (
-                                str(road.maintenance_need),
-                            )
-                        if road.pavement_class:
-                            survey_data["values"]["pavement_class"] = (
-                                str(road.pavement_class),
-                            )
-                        if road.project:
-                            survey_data["values"]["project"] = (str(road.project),)
-                        if road.road_status:
-                            survey_data["values"]["road_status"] = (
-                                str(road.road_status),
-                            )
-                        if road.surface_condition:
-                            survey_data["values"]["surface_condition"] = (
-                                str(road.surface_condition),
-                            )
-                        if road.surface_type:
-                            survey_data["values"]["surface_type"] = (
-                                str(road.surface_type),
-                            )
-                        if road.technical_class:
-                            survey_data["values"]["technical_class"] = (
-                                str(road.technical_class),
-                            )
-                        if road.traffic_level:
-                            survey_data["values"]["traffic_level"] = (
-                                str(road.traffic_level),
-                            )
-                        if road.number_lanes:
-                            survey_data["values"]["number_lanes"] = (
-                                str(road.number_lanes),
-                            )
+                    sv = survey_data["values"]
+                    if road.carriageway_width:
+                        sv["carriageway_width"] = str(road.carriageway_width)
+                    if road.funding_source:
+                        sv["funding_source"] = str(road.funding_source)
+                    if road.maintenance_need:
+                        sv["maintenance_need"] = str(road.maintenance_need)
+                    if road.pavement_class:
+                        sv["pavement_class"] = str(road.pavement_class)
+                    if road.project:
+                        sv["project"] = str(road.project)
+                    if road.road_status:
+                        sv["road_status"] = str(road.road_status)
+                    if road.surface_condition:
+                        sv["surface_condition"] = str(road.surface_condition)
+                    if road.surface_type:
+                        sv["surface_type"] = str(road.surface_type)
+                    if road.technical_class:
+                        sv["technical_class"] = str(road.technical_class)
+                    if road.traffic_level:
+                        sv["traffic_level"] = str(road.traffic_level)
+                    if road.number_lanes:
+                        sv["number_lanes"] = str(road.number_lanes)
 
-                        survey = Survey.objects.create(**survey_data)
-                        survey.save()
-                        reversion.set_comment(
-                            "Survey created programmatically from Road Link"
-                        )
+                    # check that values is not empty before saving survey
+                    if len(sv.keys()) > 0:
+                        with reversion.create_revision():
+                            Survey.objects.create(**survey_data)
+                            reversion.set_comment(
+                                "Survey created programmatically from Road Link"
+                            )
+                        # update created surveys counter
+                        created += 1
                 except IntegrityError:
                     print(
                         "Survey Skipped: Road(%s) missing Road Code(%s) OR Chainage Start(%s)/End(%s)"
@@ -115,8 +99,7 @@ class Command(BaseCommand):
                         )
                     )
 
-                # update the start chainage & created surveys counter
+                # update the start chainage
                 start_chainage = end_chainage
-                created += 1
 
         print("~~~ COMPLETE: Created %s Surveys from initial Road Links ~~~ " % created)
