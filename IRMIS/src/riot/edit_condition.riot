@@ -2,11 +2,11 @@
     <div class="content-wrapper">
         <h5>{ window.gettext("Surface Condition (SDI)") }</h5>
         <div class="d-flex surface-condition-bar">
-            <div each="{condition in state.conditions}" class="{condition.surface + '-condition'}" style="{'width:' + condition.percent + '%;'}"></div>
+            <div each="{condition in state.surfaceConditions}" class="{condition.surface + '-condition'}" style="{'width:' + condition.percent + '%;'}"></div>
         </div>
         <div class="align-items-center d-flex justify-content-between surface-condition-legend">
             <div class="values d-flex flex-wrap">
-                <div each="{condition in state.conditions}" class="align-items-center d-flex">
+                <div each="{condition in state.surfaceConditions}" class="align-items-center d-flex">
                     <div class="{condition.surface + '-condition'}"></div>
                     <span>{condition.label}</span>
                 </div>
@@ -156,7 +156,7 @@
                 canSave: false,
                 errors: {},
                 pendingRows: [],
-                conditions: [{ surface: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
+                surfaceConditions: [{ surface: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
                 surveyTotalDistance: 0,
                 reportRows: [],
                 viewAll: false,
@@ -205,9 +205,9 @@
                             this.state.pendingRows = surveyData;
 
                             const eventName = `${this.all_data_table_id}.dataAdded`;
-                            const eventDetail = { detail: { pendingRows: this.state.pendingRows, appendRows: this.state.loading }}
+                            const eventDetail = { detail: { pendingRows: this.state.pendingRows, appendRows: this.state.loading }};
                             document.dispatchEvent(new CustomEvent(eventName, eventDetail));
-                            
+
                             this.state.error = false;
                         } else {
                             this.state.error = true;
@@ -226,14 +226,16 @@
                 getRoadSurveyReport(roadId)
                     .then((surveyReportData) => {
                         if (surveyReportData) {
-                            if (surveyReportData.counts && surveyReportData.values && surveyReportData.values.surface_condition.length > 0) {
-                                this.updateSurfaceConditionsSummary(surveyReportData.values.surface_condition);
+                            const haveCounts = surveyReportData.counts;
+                            const haveSurfaceConditions = surveyReportData.surfaceConditions.length > 0;
+                            if (surveyReportData.counts && haveSurfaceConditions) {
+                                this.updateSurfaceConditionsSummary(surveyReportData.surfaceConditions);
                             }
                             if (surveyReportData.tableList && surveyReportData.tableList.length) {
                                 this.state.reportRows = surveyReportData.tableList;
 
                                 const eventName = `${this.current_data_table_id}.dataAdded`;
-                                const eventDetail = { detail: { pendingRows: this.state.reportRows, appendRows: this.state.loading }}
+                                const eventDetail = { detail: { pendingRows: this.state.reportRows, appendRows: this.state.loading }};
                                 document.dispatchEvent(new CustomEvent(eventName, eventDetail));
                             }
                             this.state.error = false;
@@ -248,16 +250,16 @@
                     });
             },
             updateSurfaceConditionsSummary(surfaceConditions) {
-                this.state.conditions.length = 0;
+                this.state.surfaceConditions.length = 0;
                 surfaceConditions.forEach((condition) => {
-                    this.state.conditions.push(condition);
+                    this.state.surfaceConditions.push(condition);
                 });
                 this.drawSurfaceConditionsSummary();
             },
             drawSurfaceConditionsSummary() {
                 // First just clean all the distance values and get the total
                 this.state.surveyTotalDistance = 0;
-                this.state.conditions.forEach((condition) => {
+                this.state.surfaceConditions.forEach((condition) => {
                     // all distances are in meters
                     condition.distance = Math.round(condition.distance);
                     this.state.surveyTotalDistance += condition.distance;
@@ -265,7 +267,7 @@
                 this.state.surveyTotalDistance = Math.round(this.state.surveyTotalDistance);
 
                 // Then calculate everything else
-                this.state.conditions.forEach((condition) => {
+                this.state.surfaceConditions.forEach((condition) => {
                     const surfaceTitle = window.gettext(condition.surface[0].toUpperCase() + condition.surface.substring(1));
                     if (this.state.surveyTotalDistance > 0) {
                         condition.percent = Math.round((condition.distance / this.state.surveyTotalDistance) * 10000) / 100;

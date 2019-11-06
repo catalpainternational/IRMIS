@@ -38,28 +38,30 @@ export class EstradaSurveyReport extends Report {
     }
 
     get counts() {
-        let counts = [];
+        let counts = {};
         try {
             counts = JSON.parse(this.getCounts());
         } catch {
             // This is the correct response on error
-            counts = {None:0};
+            counts = { surface_condition: { None: 0 } };
         }
-        console.log(counts);
 
         return counts;
     }
 
-    get conditions() {
+    get surfaceConditions() {
         const conditions = [];
         const counts = this.counts;
-        // Object.keys(counts).forEach((key) => {
-        //     let conditionTitle = (choice_or_empty(key, SURFACE_CONDITION_CHOICES) || key).toLowerCase();
-        //     if (conditionTitle === "none") {
-        //         conditionTitle = "unknown";
-        //     }
-        //     conditions.push({ surface: conditionTitle, distance: counts[key] });
-        // });
+        if (counts.surface_condition) {
+            Object.keys(counts.surface_condition).forEach((key) => {
+                let conditionTitle = (choice_or_empty(key, SURFACE_CONDITION_CHOICES) || key).toLowerCase();
+                if (conditionTitle === "none") {
+                    conditionTitle = "unknown";
+                }
+                conditions.push({ surface: conditionTitle, distance: counts.surface_condition[key] });
+            });
+        }
+
         return conditions;
     }
 
