@@ -71,6 +71,17 @@ a {
     font-size: 14px;
 }
 
+#top-navigation a {
+    line-height: 17px;
+    font-weight: 400;
+    font-size: 14px;
+    color: $white;
+
+    &.selected {
+        font-weight: 700;
+    }
+}
+
 span {
     color: $dark-green;
     line-height: 17px;
