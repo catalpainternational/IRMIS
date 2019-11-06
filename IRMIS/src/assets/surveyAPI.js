@@ -91,7 +91,6 @@ export function putSurveyData(survey) {
         });
 }
 
-
 /** getRoadSurveyReports
  *
  * Retrieves the road survey data from the server
