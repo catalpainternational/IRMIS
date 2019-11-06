@@ -1,4 +1,4 @@
-import { deleteSurveyData, getRoadSurveyReports, getSurveyMetadata, getSurveysMetadata, postSurveyData, putSurveyData } from "./assets/surveyAPI";
+import { getRoadSurveyReports, getSurveyMetadata, getSurveysMetadata, postSurveyData, putSurveyData } from "./assets/surveyAPI";
 
 let surveys = {}
 
@@ -29,17 +29,6 @@ export function updateSurvey(survey) {
             surveys[survey.getId()] = survey;
             return survey;
         });
-}
-
-export function deleteSurvey(surveyId) {
-    return Promise.resolve(deleteSurveyData(surveyId))
-        .then((result) => {
-            return result;
-        })
-        .catch(() => {
-            // We will assume that the delete failed
-            return false;
-        })
 }
 
 export function getRoadSurveyReport(roadCode) {

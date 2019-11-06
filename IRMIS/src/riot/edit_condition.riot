@@ -443,11 +443,12 @@
                     if (stopAlertResult === "discard") {
                         this.discardChanges();
                     } else if (stopAlertResult === "delete") {
-                        deleteSurvey(rowId).then((result) => {
-                            if (result) {
-                                this.refreshSurveysAndReports();
-                            }
-                        });
+                        this.state.editMode = true;
+                        // void the survey surface_condition value and save
+                        this.state.survey = this.state.pendingRows.filter((s) => { return s.id == rowId; })[0];
+                        this.state.survey.setValues(JSON.stringify({}));
+                        this.saveSurvey();
+                        this.state.editMode = false;
                     } else if (stopAlertResult === "continueEdit") {
                         this.showEditModal();
                     }

@@ -10,7 +10,6 @@ from .views import (
     road_update,
     road_report,
     survey_create,
-    survey_delete,
     survey_update,
     protobuf_road_surveys,
 )
@@ -28,7 +27,6 @@ urlpatterns = [
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     path("road_report/<int:pk>", road_report, name="road_report"),
     path("survey_create", survey_create, name="survey_create"),
-    path("survey_delete/<int:pk>", survey_delete, name="survey_delete"),
     path("survey_update", survey_update, name="survey_update"),
     path("protobuf_road/<int:pk>", protobuf_road, name="protobuf_road"),
     path("protobuf_roads", protobuf_road_set, name="protobuf_roads"),

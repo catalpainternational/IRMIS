@@ -533,46 +533,28 @@ def survey_update(request):
         return HttpResponse(status=409)
 
     # update the Survey instance from PB fields
-    try:
-        survey.road = req_pb.road
-        survey.user = get_user_model().objects.get(pk=req_pb.user)
-        survey.chainage_start = req_pb.chainage_start
-        survey.chainage_end = req_pb.chainage_end
-        survey.date_surveyed = pbtimestamp_to_pydatetime(req_pb.date_surveyed)
-        survey.source = req_pb.source
-        survey.values = json.loads(req_pb.values)
+    survey.road = req_pb.road
+    survey.user = get_user_model().objects.get(pk=req_pb.user)
+    survey.chainage_start = req_pb.chainage_start
+    survey.chainage_end = req_pb.chainage_end
+    survey.date_surveyed = pbtimestamp_to_pydatetime(req_pb.date_surveyed)
+    survey.source = req_pb.source
+    survey.values = json.loads(req_pb.values)
 
-        with reversion.create_revision():
-            survey.save()
-            # store the user who made the changes
-            reversion.set_user(request.user)
+    with reversion.create_revision():
+        survey.save()
+        # store the user who made the changes
+        reversion.set_user(request.user)
 
-        versions = Version.objects.get_for_object(survey)
-        req_pb.last_revision_id = versions[0].id
+    versions = Version.objects.get_for_object(survey)
+    req_pb.last_revision_id = versions[0].id
 
-        response = HttpResponse(
-            req_pb.SerializeToString(),
-            status=200,
-            content_type="application/octet-stream",
-        )
-        return response
-    except Exception as err:
-        return HttpResponse(status=400)
-
-
-def survey_delete(request, pk):
-    if not request.user.is_authenticated:
-        return HttpResponseForbidden()
-
-    if request.method != "GET":
-        raise MethodNotAllowed(request.method)
-
-    survey = get_object_or_404(Survey.objects.all(), pk=pk)
-    try:
-        survey.delete()
-        return HttpResponse(status=200)
-    except Exception:
-        return HttpResponse(status=400)
+    response = HttpResponse(
+        req_pb.SerializeToString(),
+        status=200,
+        content_type="application/octet-stream",
+    )
+    return response
 
 
 def protobuf_road_audit(request, pk):
