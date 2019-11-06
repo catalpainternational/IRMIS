@@ -1,29 +1,19 @@
 import { Road } from "../protobuf/roads_pb";
 
 import { projToWGS84, toDms, toUtm } from "./assets/crsUtilities";
-import { choice_or_empty, toChainageFormat } from "./assets/protoBufUtilities";
-
-export function humanizeChoices(choiceField, valueKey=false, displayKey=false) {
-    let values = {};
-    valueKey = valueKey || 0;
-    displayKey = displayKey || 1;
-    roadSchema[choiceField].options.forEach(function(o){
-        values[o[valueKey]] = o[displayKey];
-    });
-    return values;
-}
+import { choice_or_empty, getFieldName, getHelpText, humanizeChoices, toChainageFormat } from "./assets/protoBufUtilities";
 
 const roadSchema = JSON.parse(document.getElementById('road_schema').textContent);
 
-const ADMINISTRATIVE_AREA_CHOICES = humanizeChoices('administrative_area', 'id', 'name');
-const MAINTENANCE_NEED_CHOICES = humanizeChoices('maintenance_need', 'code', 'name');
-const PAVEMENT_CLASS_CHOICES = humanizeChoices('pavement_class', 'code', 'name');
-const ROAD_STATUS_CHOICES = humanizeChoices('road_status', 'code', 'name');
-const ROAD_TYPE_CHOICES = humanizeChoices('road_type');
-export const SURFACE_CONDITION_CHOICES = humanizeChoices('surface_condition');
-export const SURFACE_TYPE_CHOICES = humanizeChoices('surface_type', 'code', 'name');
-export const TECHNICAL_CLASS_CHOICES = humanizeChoices('technical_class', 'code', 'name');
-export const TRAFFIC_LEVEL_CHOICES = humanizeChoices('traffic_level');
+const ADMINISTRATIVE_AREA_CHOICES = humanizeChoices(roadSchema, 'administrative_area', 'id', 'name');
+const MAINTENANCE_NEED_CHOICES = humanizeChoices(roadSchema, 'maintenance_need', 'code', 'name');
+const PAVEMENT_CLASS_CHOICES = humanizeChoices(roadSchema, 'pavement_class', 'code', 'name');
+const ROAD_STATUS_CHOICES = humanizeChoices(roadSchema, 'road_status', 'code', 'name');
+const ROAD_TYPE_CHOICES = humanizeChoices(roadSchema, 'road_type');
+export const SURFACE_CONDITION_CHOICES = humanizeChoices(roadSchema, 'surface_condition');
+export const SURFACE_TYPE_CHOICES = humanizeChoices(roadSchema, 'surface_type', 'code', 'name');
+export const TECHNICAL_CLASS_CHOICES = humanizeChoices(roadSchema, 'technical_class', 'code', 'name');
+export const TRAFFIC_LEVEL_CHOICES = humanizeChoices(roadSchema, 'traffic_level');
 
 export class EstradaRoad extends Road {
 
@@ -143,12 +133,11 @@ export class EstradaRoad extends Road {
         return this.getNumberLanes();
     }
 
-}
-
-export function getFieldName(field) {
-    return (roadSchema[field]) ? roadSchema[field].display : "";
-}
-
-export function getHelpText(field) {
-    return (roadSchema[field]) ? roadSchema[field].help_text : "";
+    static getFieldName(field) {
+        return getFieldName(roadSchema, field);
+    }
+    
+    static getHelpText(field) {
+        return getHelpText(roadSchema, field);
+    }
 }

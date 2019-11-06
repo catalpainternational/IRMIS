@@ -1,5 +1,7 @@
 import { Version } from "../protobuf/roads_pb";
 
+import { getFieldName, getHelpText } from "./assets/protoBufUtilities";
+
 const auditSchema = {
     id: { display: "Id" },
     dateCreated: { display: gettext("Date") },
@@ -27,12 +29,12 @@ export class EstradaAudit extends Version {
     get comment() {
         return this.getComment();
     }
-}
+        
+    static getFieldName(field) {
+        return getFieldName(auditSchema, field);
+    }
 
-export function getFieldName(field) {
-    return (auditSchema[field]) ? auditSchema[field].display : "";
-}
-
-export function getHelpText(field) {
-    return (auditSchema[field]) ? auditSchema[field].help_text : "";
+    static getHelpText(field) {
+        return getHelpText(auditSchema, field);
+    }
 }

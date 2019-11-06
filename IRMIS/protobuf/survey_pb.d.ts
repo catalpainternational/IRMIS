@@ -139,8 +139,8 @@ export class TableEntry extends jspb.Message {
   getChainageEnd(): number;
   setChainageEnd(value: number): void;
 
-  getSurfaceCondition(): string;
-  setSurfaceCondition(value: string): void;
+  getValues(): string;
+  setValues(value: string): void;
 
   getSurveyId(): number;
   setSurveyId(value: number): void;
@@ -167,7 +167,7 @@ export namespace TableEntry {
   export type AsObject = {
     chainageStart: number,
     chainageEnd: number,
-    surfaceCondition: string,
+    values: string,
     surveyId: number,
     dateSurveyed?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     addedBy: string,

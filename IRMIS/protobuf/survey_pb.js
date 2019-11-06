@@ -1020,7 +1020,7 @@ proto.assets.TableEntry.toObject = function(includeInstance, msg) {
   var f, obj = {
     chainageStart: jspb.Message.getFloatingPointFieldWithDefault(msg, 1, 0.0),
     chainageEnd: jspb.Message.getFloatingPointFieldWithDefault(msg, 2, 0.0),
-    surfaceCondition: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    values: jspb.Message.getFieldWithDefault(msg, 3, ""),
     surveyId: jspb.Message.getFieldWithDefault(msg, 4, 0),
     dateSurveyed: (f = msg.getDateSurveyed()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
     addedBy: jspb.Message.getFieldWithDefault(msg, 6, "")
@@ -1070,7 +1070,7 @@ proto.assets.TableEntry.deserializeBinaryFromReader = function(msg, reader) {
       break;
     case 3:
       var value = /** @type {string} */ (reader.readString());
-      msg.setSurfaceCondition(value);
+      msg.setValues(value);
       break;
     case 4:
       var value = /** @type {number} */ (reader.readUint32());
@@ -1128,7 +1128,7 @@ proto.assets.TableEntry.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
-  f = message.getSurfaceCondition();
+  f = message.getValues();
   if (f.length > 0) {
     writer.writeString(
       3,
@@ -1191,16 +1191,16 @@ proto.assets.TableEntry.prototype.setChainageEnd = function(value) {
 
 
 /**
- * optional string surface_condition = 3;
+ * optional string values = 3;
  * @return {string}
  */
-proto.assets.TableEntry.prototype.getSurfaceCondition = function() {
+proto.assets.TableEntry.prototype.getValues = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
 
 /** @param {string} value */
-proto.assets.TableEntry.prototype.setSurfaceCondition = function(value) {
+proto.assets.TableEntry.prototype.setValues = function(value) {
   jspb.Message.setProto3StringField(this, 3, value);
 };
 

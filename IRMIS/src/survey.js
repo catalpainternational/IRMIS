@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { Survey } from "../protobuf/survey_pb";
 import { SURFACE_CONDITION_CHOICES, SURFACE_TYPE_CHOICES, TECHNICAL_CLASS_CHOICES, TRAFFIC_LEVEL_CHOICES } from "./road";
 
-import { choice_or_empty } from "./assets/protoBufUtilities";
+import { choice_or_empty, getFieldName, getHelpText } from "./assets/protoBufUtilities";
 
 // We may need a survey schema - primarily for formatted field names
 // JSON.parse(document.getElementById('survey_schema').textContent);
@@ -72,12 +72,12 @@ export class EstradaSurvey extends Survey {
         const jsonValues = this.getValues() || "{}";
         return JSON.parse(jsonValues);
     }
-}
+    
+    getFieldName(field) {
+        return getFieldName(surveySchema, field);
+    }
 
-export function getFieldName(field) {
-    return (surveySchema[field]) ? surveySchema[field].display : "";
-}
-
-export function getHelpText(field) {
-    return (surveySchema[field]) ? surveySchema[field].help_text : "";
+    getHelpText(field) {
+        return getHelpText(surveySchema, field);
+    }
 }

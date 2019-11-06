@@ -316,7 +316,7 @@ class Report:
         self.segmentations = {
             item: {
                 "chainage_point": float(item),
-                "surf_cond": "None",
+                "values": {"surface_condition": "None"},
                 "date_surveyed": None,
                 "survey_id": 0,
                 "added_by": "",
@@ -332,64 +332,83 @@ class Report:
                 survey.chainage_start < self.road_end_chainage
                 and survey.chainage_end > self.road_start_chainage
             ):
-                if survey.chainage_start < self.road_start_chainage:
-                    survey_chain_start = self.road_start_chainage
-                else:
-                    survey_chain_start = int(survey.chainage_start)
-                if survey.chainage_end > self.road_end_chainage:
-                    survey_chain_end = self.road_end_chainage
-                else:
-                    survey_chain_end = int(survey.chainage_end)
+                survey_chain_start = (
+                    self.road_start_chainage
+                    if survey.chainage_start < self.road_start_chainage
+                    else int(survey.chainage_start)
+                )
+                survey_chain_end = (
+                    self.road_end_chainage
+                    if survey.chainage_end < self.road_end_chainage
+                    else int(survey.chainage_end)
+                )
 
                 # check survey does not conflict with current aggregate segmentations
                 # and update the segmentations when needed
                 for chainage_point in range(survey_chain_start, survey_chain_end):
-                    if not self.segmentations[chainage_point]["date_surveyed"] or (
+                    seg_point = self.segmentations[chainage_point]
+                    if not seg_point["date_surveyed"] or (
                         survey.date_surveyed
-                        and survey.date_surveyed
-                        > self.segmentations[chainage_point]["date_surveyed"]
+                        and survey.date_surveyed > seg_point["date_surveyed"]
                     ):
-                        self.segmentations[chainage_point]["surf_cond"] = survey.values[
-                            "surface_condition"
-                        ]
-                        self.segmentations[chainage_point][
-                            "date_surveyed"
-                        ] = survey.date_surveyed
-                        self.segmentations[chainage_point]["survey_id"] = survey.id
-                        self.segmentations[chainage_point]["added_by"] = (
-                            str(survey.user.username) if survey.user else ""
+                        seg_point["values"] = survey.values
+                        seg_point["date_surveyed"] = survey.date_surveyed
+                        seg_point["survey_id"] = survey.id
+                        seg_point["added_by"] = (
+                            # TODO: get the user's fullname in preference to their username
+                            str(survey.user.username)
+                            if survey.user
+                            else ""
                         )
+                    self.segmentations[chainage_point] = seg_point
 
     def build_summary_stats(self):
         """ Generate the high-level counts & percentage statistics for the report """
         segments_length = len(self.segmentations)
-        counts = Counter(
-            [self.segmentations[segment]["surf_cond"] for segment in self.segmentations]
-        )
+        counts = {
+            "surface_condition": Counter(
+                [
+                    self.segmentations[segment]["values"]["surface_condition"]
+                    for segment in self.segmentations
+                ]
+            )
+        }
         percentages = {
-            condition: (counts[condition] / segments_length * 100)
-            for condition in counts
+            "surface_condition": {
+                condition: (
+                    counts["surface_condition"][condition] / segments_length * 100
+                )
+                for condition in counts["surface_condition"]
+            }
         }
         setattr(self.report_protobuf, "counts", json.dumps(counts))
         setattr(self.report_protobuf, "percentages", json.dumps(percentages))
 
     def build_chainage_table(self):
         """ Generate the table of chainages the report """
-        prev_cond, prev_date = "Nada", "Nada"
+        prev_values, prev_date, prev_added_by = "Nada", "Nada", "Nada"
         for segment in self.segmentations:
             segment = self.segmentations[segment]
-            if segment["surf_cond"] != prev_cond:
+            if (
+                str(segment["values"]) != prev_values
+                or segment["date_surveyed"] != prev_date
+                or segment["added_by"] != prev_added_by
+            ):
                 entry = self.report_protobuf.table.add()
                 setattr(entry, "chainage_start", segment["chainage_point"])
                 setattr(entry, "chainage_end", segment["chainage_point"])
-                setattr(entry, "surface_condition", str(segment["surf_cond"]))
+                setattr(entry, "values", str(segment["values"]))
                 setattr(entry, "survey_id", segment["survey_id"])
                 setattr(entry, "added_by", segment["added_by"])
                 if segment["date_surveyed"]:
                     ts = Timestamp()
                     ts.FromDatetime(segment["date_surveyed"])
                     entry.date_surveyed.CopyFrom(ts)
-                prev_cond, prev_date = (segment["surf_cond"], segment["date_surveyed"])
+                prev_values, prev_date, prev_added_by = (
+                    str(segment["values"]),
+                    segment["date_surveyed"],
+                    segment["added_by"],
+                )
             else:
                 setattr(entry, "chainage_end", segment["chainage_point"] + 1)
 

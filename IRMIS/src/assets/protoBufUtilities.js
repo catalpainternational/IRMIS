@@ -17,3 +17,20 @@ export function makeEstradaObject(estradaObjectType, protoBufSource) {
 
     return estradaObject;
 }
+
+export function getFieldName(schema, field) {
+    return (schema[field]) ? schema[field].display : "";
+}
+
+export function getHelpText(schema, field) {
+    return (schema[field]) ? schema[field].help_text : "";
+}
+
+export function humanizeChoices(schema, field, valueKey=false, displayKey=false) {
+    let values = {};
+    valueKey = valueKey || 0;
+    displayKey = displayKey || 1;
+    schema[field].options.forEach((o) => { values[o[valueKey]] = o[displayKey]; });
+
+    return values;
+}

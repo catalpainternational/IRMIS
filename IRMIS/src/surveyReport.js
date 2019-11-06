@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 
 import { Report, TableEntry } from "../protobuf/survey_pb";
 
-import { choice_or_empty, makeEstradaObject } from "./assets/protoBufUtilities";
+import { choice_or_empty, getFieldName, getHelpText, makeEstradaObject } from "./assets/protoBufUtilities";
 
 import { SURFACE_CONDITION_CHOICES } from "./road";
 
@@ -45,6 +45,8 @@ export class EstradaSurveyReport extends Report {
             // This is the correct response on error
             counts = {None:0};
         }
+        console.log(counts);
+
         return counts;
     }
 
@@ -68,6 +70,8 @@ export class EstradaSurveyReport extends Report {
         } catch {
             percentages = [];
         }
+        console.log(percentages);
+
         return percentages;
     }
 
@@ -79,6 +83,18 @@ export class EstradaSurveyReport extends Report {
             return [];
         }
         return tableListRaw.map(makeEstradaSurveyReportTableEntry);
+    }
+    
+    static getFieldName(field) {
+        return getFieldName(surveyReportSchema, field);
+    }
+    
+    static getHelpText(field) {
+        return getHelpText(surveyReportSchema, field);
+    }
+        
+    makeEstradaSurveyReportTableEntry (pbtableentry) {
+        return makeEstradaObject(EstradaSurveyReportTableEntry, pbtableentry);
     }
 }
 
@@ -123,16 +139,12 @@ export class EstradaSurveyReportTableEntry extends TableEntry {
         }
         return window.gettext(conditionTitle[0].toUpperCase() + conditionTitle.substring(1));
     }
-}
-
-export function getFieldName(field) {
-    return (surveyReportSchema[field]) ? surveyReportSchema[field].display : "";
-}
-
-export function getHelpText(field) {
-    return (surveyReportSchema[field]) ? surveyReportSchema[field].help_text : "";
-}
-
-export function makeEstradaSurveyReportTableEntry (pbtableentry) {
-    return makeEstradaObject(EstradaSurveyReportTableEntry, pbtableentry);
+    
+    get values() {
+        let conditionTitle = (choice_or_empty(this.getSurfaceCondition(), SURFACE_CONDITION_CHOICES) || this.getSurfaceCondition()).toLowerCase();
+        if (conditionTitle === "none") {
+            conditionTitle = "unknown";
+        }
+        return window.gettext(conditionTitle[0].toUpperCase() + conditionTitle.substring(1));
+    }
 }

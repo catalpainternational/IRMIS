@@ -40,7 +40,7 @@ message Report {
 message TableEntry {
   float chainage_start = 1;
   float chainage_end = 2;
-  string surface_condition = 3;
+  string values = 3;
   uint32 survey_id = 4;
   google.protobuf.Timestamp date_surveyed = 5;
   string added_by = 6;
