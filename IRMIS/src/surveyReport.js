@@ -36,7 +36,7 @@ export class EstradaSurveyReport extends Report {
     get reportChainageEnd() {
         return this.getReportChainageEnd();
     }
- 
+
     get counts() {
         let counts = [];
         try {
@@ -53,7 +53,7 @@ export class EstradaSurveyReport extends Report {
         const counts = this.counts;
         Object.keys(counts).forEach((key) => {
             let conditionTitle = (choice_or_empty(key, SURFACE_CONDITION_CHOICES) || key).toLowerCase();
-            if (conditionTitle === "none") { 
+            if (conditionTitle === "none") {
                 conditionTitle = "unknown";
             }
             conditions.push({ surface: conditionTitle, distance: counts[key] });
@@ -94,7 +94,7 @@ export class EstradaSurveyReportTableEntry extends TableEntry {
     get surveyId() {
         return this.getSurveyId();
     }
-  
+
     get addedBy() {
         return this.getAddedBy() || "";
     }
@@ -113,12 +113,12 @@ export class EstradaSurveyReportTableEntry extends TableEntry {
             return "";
         }
         let date = dayjs(new Date(pbufData.array[0] * 1000));
-        return date.isValid() ? date.format('YYYY-MM-DD HH:mm') : "";
+        return date.isValid() ? date.format('YYYY-MM-DD') : "";
     }
 
     get surfaceCondition() {
         let conditionTitle = (choice_or_empty(this.getSurfaceCondition(), SURFACE_CONDITION_CHOICES) || this.getSurfaceCondition()).toLowerCase();
-        if (conditionTitle === "none") { 
+        if (conditionTitle === "none") {
             conditionTitle = "unknown";
         }
         return window.gettext(conditionTitle[0].toUpperCase() + conditionTitle.substring(1));

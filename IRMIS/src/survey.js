@@ -41,7 +41,7 @@ export class EstradaSurvey extends Survey {
             return "";
         }
         let date = dayjs(new Date(pbufData.array[0] * 1000));
-        return date.isValid() ? date.format('YYYY-MM-DD HH:mm') : "";
+        return date.isValid() ? date.format('YYYY-MM-DD') : "";
     }
 
     get source() {
@@ -70,7 +70,7 @@ export class EstradaSurvey extends Survey {
 
     get values() {
         const jsonValues = this.getValues() || "{}";
-        return JSON.parse(jsonValues);        
+        return JSON.parse(jsonValues);
     }
 }
 
