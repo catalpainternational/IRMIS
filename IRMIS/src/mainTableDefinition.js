@@ -105,6 +105,7 @@ export const estradaTableColumns = [
         defaultContent: "",
         render: r => buttonSegmentsTemplate("surface_type", r),
         orderable: false,
+        className: "text-center",
     },
     {
         title: getFieldName("pavement_class"),
@@ -137,6 +138,7 @@ export const estradaTableColumns = [
         render: r => buttonSegmentsTemplate("technical-class", r),
         visible: false,
         orderable: false,
+        className: "text-center",
     },
     {
         title: getFieldName("funding_source"),
@@ -164,6 +166,7 @@ export const estradaTableColumns = [
         render: r => buttonSegmentsTemplate("surface_condition", r),
         className: "text-center",
         orderable: false,
+        className: "text-center",
     },
     {
         title: getFieldName("maintenance_need"),
@@ -213,6 +216,7 @@ export const estradaTableColumns = [
         defaultContent: "",
         render: r => buttonSegmentsTemplate("number_lanes", r),
         visible: false,
+        className: "text-center",
     },
 ];
 
