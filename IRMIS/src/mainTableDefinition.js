@@ -217,10 +217,10 @@ export const estradaTableColumns = [
 ];
 
 function buttonSegmentsTemplate(attrib, road) {
-    return `<button class="btn btn-secondary btn-sm ${attrib}-segments w-100"
+    return `<span class="eye image"
         data-toggle="modal"
         data-target="#inventory-segments-modal"
         data-code="${road.getLinkCode()}"
         data-id="${road.getId()}"
-        data-attr="${attrib}">View</button>`;
+        data-attr="${attrib}"></span>`;
 }

@@ -116,6 +116,17 @@ tr.selected .pencil {
     background-image: url("../images/pencil_white.svg");
 }
 
+.eye {
+    background-image: url("../images/eye.svg");
+    vertical-align: middle;
+    height: 16px;
+    width: 24px;
+}
+
+tr.selected .eye {
+    background-image: url("../images/eye_white.svg");
+}
+
 .delete {
     background-image: url("../images/delete.svg");
     vertical-align: middle;
