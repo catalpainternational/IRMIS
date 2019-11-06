@@ -349,8 +349,8 @@ def test_survey_edit_erroneous_protobuf(client, django_user_model):
 
 @pytest.mark.django_db
 def test_survey_delete(client, django_user_model):
-    """ This test will fail if the survey api throws an error with deletion of
-    survey asset """
+    """ This test will fail if the survey api throws an error with 'deletion' of
+    survey asset or fails to remove the value attribute from the survey """
     # create a user
     user = django_user_model.objects.create_user(username="user1", password="bar")
     client.force_login(user)
@@ -369,25 +369,18 @@ def test_survey_delete(client, django_user_model):
         # store the user who made the changes
         reversion.set_user(user)
 
+    # void the surface condition attribute & make Protobuf to send
+    pb = Survey.objects.filter(id=survey.id).to_protobuf().surveys[0]
+    pb.values = json.dumps({"surface_condition": None, "traffic_level": "L"})
+
     # attempt to delete the survey
-    url = reverse("survey_delete", kwargs={"pk": str(survey.id)})
-    response = client.get(url)
-
+    url = reverse("survey_update")
+    response = client.put(
+        url, data=pb.SerializeToString(), content_type="application/octet-stream"
+    )
     assert response.status_code == 200
-    # check that DB not longer has the survey
-    mod_survey = Survey.objects.filter(id=survey.id).all()
-    assert len(mod_survey) == 0
-
-
-@pytest.mark.django_db
-def test_survey_delete_404_pk(client, django_user_model):
-    """ This test will fail if the survey api does NOT throw a 404 error when attempting
-    to delete a survey with an ID that does not exist in the DB """
-    # create a user
-    user = django_user_model.objects.create_user(username="user1", password="bar")
-    client.force_login(user)
-
-    # hit the survey api
-    url = reverse("survey_delete", kwargs={"pk": 999999})
-    response = client.get(url)
-    assert response.status_code == 404
+    # check that DB not longer has the survey attribute that was deleted
+    # but does have one that should not have been touched
+    mod_survey = Survey.objects.filter(id=survey.id).get()
+    assert mod_survey.values["surface_condition"] == None
+    assert mod_survey.values["traffic_level"] == survey.values["traffic_level"]
