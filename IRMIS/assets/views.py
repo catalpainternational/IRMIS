@@ -550,9 +550,7 @@ def survey_update(request):
     req_pb.last_revision_id = versions[0].id
 
     response = HttpResponse(
-        req_pb.SerializeToString(),
-        status=200,
-        content_type="application/octet-stream",
+        req_pb.SerializeToString(), status=200, content_type="application/octet-stream"
     )
     return response
 
