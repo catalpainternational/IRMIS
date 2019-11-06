@@ -435,8 +435,6 @@ class Report:
         self.build_summary_stats()
         self.build_chainage_table()
 
-        print(self.report_protobuf)
-
         return self.report_protobuf
 
 
