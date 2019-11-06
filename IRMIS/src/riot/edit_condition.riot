@@ -203,9 +203,11 @@
                     .then((surveyData) => {
                         if (surveyData) {
                             this.state.pendingRows = surveyData;
-                            const pendingRows = this.state.pendingRows;
-                            const appendRows = this.state.loading;
-                            document.dispatchEvent(new CustomEvent(`${this.all_data_table_id}.dataAdded`, { detail: { pendingRows, appendRows }}));
+
+                            const eventName = `${this.all_data_table_id}.dataAdded`;
+                            const eventDetail = { detail: { pendingRows: this.state.pendingRows, appendRows: this.state.loading }}
+                            document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+                            
                             this.state.error = false;
                         } else {
                             this.state.error = true;
@@ -224,14 +226,15 @@
                 getRoadSurveyReport(roadId)
                     .then((surveyReportData) => {
                         if (surveyReportData) {
-                            if (surveyReportData.counts && surveyReportData.conditions.length > 0) {
-                                this.updateSurfaceConditionsSummary(surveyReportData.conditions);
+                            if (surveyReportData.counts && surveyReportData.values && surveyReportData.values.surface_condition.length > 0) {
+                                this.updateSurfaceConditionsSummary(surveyReportData.values.surface_condition);
                             }
                             if (surveyReportData.tableList && surveyReportData.tableList.length) {
                                 this.state.reportRows = surveyReportData.tableList;
-                                const pendingRows = this.state.reportRows;
-                                const appendRows = this.state.loading;
-                                document.dispatchEvent(new CustomEvent(`${this.current_data_table_id}.dataAdded`, { detail: { pendingRows, appendRows }}));
+
+                                const eventName = `${this.current_data_table_id}.dataAdded`;
+                                const eventDetail = { detail: { pendingRows: this.state.reportRows, appendRows: this.state.loading }}
+                                document.dispatchEvent(new CustomEvent(eventName, eventDetail));
                             }
                             this.state.error = false;
                         } else {

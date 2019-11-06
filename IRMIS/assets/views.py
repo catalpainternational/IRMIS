@@ -329,17 +329,17 @@ class Report:
         for survey in self.surveys:
             # ensure survey bits used covers only the road link start/end chainage portion
             if (
-                survey.chainage_start < self.road_end_chainage
-                and survey.chainage_end > self.road_start_chainage
+                survey.chainage_start <= self.road_end_chainage
+                and survey.chainage_end >= self.road_start_chainage
             ):
                 survey_chain_start = (
                     self.road_start_chainage
-                    if survey.chainage_start < self.road_start_chainage
+                    if survey.chainage_start <= self.road_start_chainage
                     else int(survey.chainage_start)
                 )
                 survey_chain_end = (
                     self.road_end_chainage
-                    if survey.chainage_end < self.road_end_chainage
+                    if survey.chainage_end >= self.road_end_chainage
                     else int(survey.chainage_end)
                 )
 
@@ -347,9 +347,11 @@ class Report:
                 # and update the segmentations when needed
                 for chainage_point in range(survey_chain_start, survey_chain_end):
                     seg_point = self.segmentations[chainage_point]
-                    if not seg_point["date_surveyed"] or (
-                        survey.date_surveyed
-                        and survey.date_surveyed > seg_point["date_surveyed"]
+                    if (
+                        not seg_point["date_surveyed"] or (
+                            survey.date_surveyed
+                            and survey.date_surveyed > seg_point["date_surveyed"]
+                        )
                     ):
                         seg_point["values"] = survey.values
                         seg_point["date_surveyed"] = survey.date_surveyed
@@ -390,25 +392,24 @@ class Report:
         for segment in self.segmentations:
             segment = self.segmentations[segment]
             if (
-                str(segment["values"]) != prev_values
+                json.dumps(segment["values"]) != prev_values
                 or segment["date_surveyed"] != prev_date
                 or segment["added_by"] != prev_added_by
             ):
                 entry = self.report_protobuf.table.add()
                 setattr(entry, "chainage_start", segment["chainage_point"])
                 setattr(entry, "chainage_end", segment["chainage_point"])
-                setattr(entry, "values", str(segment["values"]))
+                setattr(entry, "values", json.dumps(segment["values"]))
                 setattr(entry, "survey_id", segment["survey_id"])
                 setattr(entry, "added_by", segment["added_by"])
                 if segment["date_surveyed"]:
                     ts = Timestamp()
                     ts.FromDatetime(segment["date_surveyed"])
                     entry.date_surveyed.CopyFrom(ts)
-                prev_values, prev_date, prev_added_by = (
-                    str(segment["values"]),
-                    segment["date_surveyed"],
-                    segment["added_by"],
-                )
+
+                prev_values = json.dumps(segment["values"])
+                prev_date = segment["date_surveyed"]
+                prev_added_by = segment["added_by"]
             else:
                 setattr(entry, "chainage_end", segment["chainage_point"] + 1)
 
@@ -433,6 +434,8 @@ class Report:
         self.assign_survey_results()
         self.build_summary_stats()
         self.build_chainage_table()
+
+        print(self.report_protobuf)
 
         return self.report_protobuf
 

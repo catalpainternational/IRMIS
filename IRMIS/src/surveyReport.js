@@ -53,24 +53,23 @@ export class EstradaSurveyReport extends Report {
     get conditions() {
         const conditions = [];
         const counts = this.counts;
-        Object.keys(counts).forEach((key) => {
-            let conditionTitle = (choice_or_empty(key, SURFACE_CONDITION_CHOICES) || key).toLowerCase();
-            if (conditionTitle === "none") {
-                conditionTitle = "unknown";
-            }
-            conditions.push({ surface: conditionTitle, distance: counts[key] });
-        });
+        // Object.keys(counts).forEach((key) => {
+        //     let conditionTitle = (choice_or_empty(key, SURFACE_CONDITION_CHOICES) || key).toLowerCase();
+        //     if (conditionTitle === "none") {
+        //         conditionTitle = "unknown";
+        //     }
+        //     conditions.push({ surface: conditionTitle, distance: counts[key] });
+        // });
         return conditions;
     }
 
     get percentages() {
-        let percentages = [];
+        let percentages = {};
         try {
             percentages = JSON.parse(this.getPercentages());
         } catch {
-            percentages = [];
+            percentages = {};
         }
-        console.log(percentages);
 
         return percentages;
     }
@@ -82,7 +81,7 @@ export class EstradaSurveyReport extends Report {
             // Which means that there are actually no real survey segments
             return [];
         }
-        return tableListRaw.map(makeEstradaSurveyReportTableEntry);
+        return tableListRaw.map(this.makeEstradaSurveyReportTableEntry);
     }
     
     static getFieldName(field) {
@@ -133,18 +132,31 @@ export class EstradaSurveyReportTableEntry extends TableEntry {
     }
 
     get surfaceCondition() {
-        let conditionTitle = (choice_or_empty(this.getSurfaceCondition(), SURFACE_CONDITION_CHOICES) || this.getSurfaceCondition()).toLowerCase();
+        let conditionTitle = (choice_or_empty(this.values.surface_condition, SURFACE_CONDITION_CHOICES) || this.values.surface_condition).toLowerCase();
         if (conditionTitle === "none") {
             conditionTitle = "unknown";
         }
         return window.gettext(conditionTitle[0].toUpperCase() + conditionTitle.substring(1));
     }
+
+    get surfaceType() {
+        return choice_or_empty(this.values.surface_type, SURFACE_TYPE_CHOICES);
+    }
+
+    get technicalClass() {
+        return choice_or_empty(this.values.technical_class, TECHNICAL_CLASS_CHOICES);
+    }
+
+    get trafficLevel() {
+        return choice_or_empty(this.values.traffic_level, TRAFFIC_LEVEL_CHOICES);
+    }
+
+    get numberLanes() {
+        return this.values.number_lanes;
+    }
     
     get values() {
-        let conditionTitle = (choice_or_empty(this.getSurfaceCondition(), SURFACE_CONDITION_CHOICES) || this.getSurfaceCondition()).toLowerCase();
-        if (conditionTitle === "none") {
-            conditionTitle = "unknown";
-        }
-        return window.gettext(conditionTitle[0].toUpperCase() + conditionTitle.substring(1));
+        const jsonValues = this.getValues() || "{}";
+        return JSON.parse(jsonValues);
     }
 }
