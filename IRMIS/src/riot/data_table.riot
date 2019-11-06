@@ -97,6 +97,12 @@
                 }
 
                 state.pendingRows = [];
+            } else {
+                if (!state.appendRows) {
+                    // No pendingRows and we're not appending
+                    // This is interpreted as 'clear the table'
+                    state.table.clear().draw();
+                }
             }
         }
 
