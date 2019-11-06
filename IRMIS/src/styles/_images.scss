@@ -118,9 +118,11 @@ tr.selected .pencil {
 
 .eye {
     background-image: url("../images/eye.svg");
+    background-position: center;
+    background-size: 24px 16px;
     vertical-align: middle;
-    height: 16px;
-    width: 24px;
+    height: 25px;
+    width: 100%;
 }
 
 tr.selected .eye {
