@@ -347,11 +347,9 @@ class Report:
                 # and update the segmentations when needed
                 for chainage_point in range(survey_chain_start, survey_chain_end):
                     seg_point = self.segmentations[chainage_point]
-                    if (
-                        not seg_point["date_surveyed"] or (
-                            survey.date_surveyed
-                            and survey.date_surveyed > seg_point["date_surveyed"]
-                        )
+                    if not seg_point["date_surveyed"] or (
+                        survey.date_surveyed
+                        and survey.date_surveyed > seg_point["date_surveyed"]
                     ):
                         seg_point["values"] = survey.values
                         seg_point["date_surveyed"] = survey.date_surveyed
