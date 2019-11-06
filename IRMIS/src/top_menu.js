@@ -1,3 +1,4 @@
+const topMenuItems = document.getElementById("top-navigation").children;
 const menuToggle = document.getElementById("topmenu_toggle");
 const dropdown = document.getElementById("settings");
 
@@ -14,6 +15,17 @@ window.addEventListener("load", function() {
 
         dropdown.hidden = !dropdown.hidden;
     });
+
+    for (let item of topMenuItems) {
+        item.addEventListener("click", (e) => {
+            if (!item.classList.contains("selected")) {
+                for (let item of topMenuItems) {
+                    item.classList.remove("selected");
+                }
+                e.target.classList.add("selected");
+            }
+        });
+    }
 });
 
 dropdown.addEventListener("click", (e) => {
