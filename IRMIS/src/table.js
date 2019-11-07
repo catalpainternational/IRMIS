@@ -115,10 +115,7 @@ function initializeDataTable() {
         if (cellChildrenLength > 0) {
             for (let ix = 0; ix < cellChildrenLength; ix++) {
                 const cellChild = cellChildren.item(ix);
-                if (cellChild.dataset && cellChild.dataset.toggle === "modal") {
-                    // Dump this event and let the modal handler
-                    // in the cell's contents do their thing instead
-                    e.preventDefault();
+                if (cellChild.classList.contains("image")) {
                     return;
                 }
             }

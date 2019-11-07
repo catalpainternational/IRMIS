@@ -2,12 +2,12 @@
     <div class="content-wrapper">
         <h5>{ window.gettext("Surface Condition (SDI)") }</h5>
         <div class="d-flex surface-condition-bar">
-            <div each="{condition in state.surfaceConditions}" class="{condition.title + '-condition'}" style="{'width:' + condition.percent + '%;'}"></div>
+            <div each="{condition in state.surfaceConditions}" class="{'condition-' + condition.key}" style="{'width:' + condition.percent + '%;'}"></div>
         </div>
         <div class="align-items-center d-flex justify-content-between surface-condition-legend">
             <div class="values d-flex flex-wrap">
                 <div each="{condition in state.surfaceConditions}" class="align-items-center d-flex">
-                    <div class="{condition.title + '-condition'}"></div>
+                    <div class="{'condition-' + condition.key}"></div>
                     <span>{condition.label}</span>
                 </div>
             </div>
