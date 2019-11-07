@@ -1,7 +1,7 @@
 import { Road } from "../protobuf/roads_pb";
 
 import { projToWGS84, toDms, toUtm } from "./assets/crsUtilities";
-import { choice_or_empty, getFieldName, getHelpText, humanizeChoices, toChainageFormat } from "./assets/protoBufUtilities";
+import { choice_or_default, getFieldName, getHelpText, humanizeChoices, toChainageFormat } from "./assets/protoBufUtilities";
 
 const roadSchema = JSON.parse(document.getElementById('road_schema').textContent);
 
@@ -58,27 +58,27 @@ export class EstradaRoad extends Road {
     }
 
     get status() {
-        return choice_or_empty(this.getRoadStatus(), ROAD_STATUS_CHOICES);
+        return choice_or_default(this.getRoadStatus(), ROAD_STATUS_CHOICES);
     }
 
     get type() {
-        return choice_or_empty(this.getRoadType(), ROAD_TYPE_CHOICES);
+        return choice_or_default(this.getRoadType(), ROAD_TYPE_CHOICES);
     }
 
     get surfaceType() {
-        return choice_or_empty(this.getSurfaceType(), SURFACE_TYPE_CHOICES);
+        return choice_or_default(this.getSurfaceType(), SURFACE_TYPE_CHOICES);
     }
 
     get surfaceCondition() {
-        return choice_or_empty(this.getSurfaceCondition(), SURFACE_CONDITION_CHOICES);
+        return choice_or_default(this.getSurfaceCondition(), SURFACE_CONDITION_CHOICES);
     }
 
     get pavementClass() {
-        return choice_or_empty(this.getPavementClass(), PAVEMENT_CLASS_CHOICES);
+        return choice_or_default(this.getPavementClass(), PAVEMENT_CLASS_CHOICES);
     }
 
     get administrativeArea() {
-        return choice_or_empty(parseInt(this.getAdministrativeArea()), ADMINISTRATIVE_AREA_CHOICES);
+        return choice_or_default(parseInt(this.getAdministrativeArea()), ADMINISTRATIVE_AREA_CHOICES);
     }
 
     get carriagewayWidth() {
@@ -94,15 +94,15 @@ export class EstradaRoad extends Road {
     }
 
     get technicalClass() {
-        return choice_or_empty(this.getTechnicalClass(), TECHNICAL_CLASS_CHOICES);
+        return choice_or_default(this.getTechnicalClass(), TECHNICAL_CLASS_CHOICES);
     }
 
     get maintenanceNeed() {
-        return choice_or_empty(this.getMaintenanceNeed(), MAINTENANCE_NEED_CHOICES);
+        return choice_or_default(this.getMaintenanceNeed(), MAINTENANCE_NEED_CHOICES);
     }
 
     get trafficLevel() {
-        return choice_or_empty(this.getTrafficLevel(), TRAFFIC_LEVEL_CHOICES);
+        return choice_or_default(this.getTrafficLevel(), TRAFFIC_LEVEL_CHOICES);
     }
 
     get projectionStart() {

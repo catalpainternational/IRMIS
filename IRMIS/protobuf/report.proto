@@ -1,0 +1,23 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+package assets;
+
+/* Note that field Id numbers once used, are fixed.
+* The ordering shown here lines up with the model and groups the fields better.
+* But the numbering preserves the original declaration */
+
+message Report {
+    string filter = 1; // JSON string
+    string counts = 2; // JSON string
+    repeated TableEntry table = 3;
+}
+    
+message TableEntry {
+    float chainage_start = 1;
+    float chainage_end = 2;
+    string values = 3;
+    uint32 survey_id = 4;
+    google.protobuf.Timestamp date_surveyed = 5;
+    string added_by = 6;
+}

@@ -101,10 +101,11 @@ export const estradaTableColumns = [
     },
     {
         title: EstradaRoad.getFieldName("surface_type"),
-        data: null,
+        data: "surfaceType",
         defaultContent: "",
-        render: r => buttonSegmentsTemplate("surface_type", r),
+        // render: r => buttonSegmentsTemplate("surface_type", r),
         orderable: false,
+        className: "text-center",
     },
     {
         title: EstradaRoad.getFieldName("pavement_class"),
@@ -132,11 +133,12 @@ export const estradaTableColumns = [
     },
     {
         title: EstradaRoad.getFieldName("technical_class"),
-        data: null,
+        data: "technicalClass",
         defaultContent: "",
-        render: r => buttonSegmentsTemplate("technical-class", r),
+        // render: r => buttonSegmentsTemplate("technical-class", r),
         visible: false,
         orderable: false,
+        className: "text-center",
     },
     {
         title: EstradaRoad.getFieldName("funding_source"),
@@ -164,6 +166,7 @@ export const estradaTableColumns = [
         render: r => buttonSegmentsTemplate("surface_condition", r),
         className: "text-center",
         orderable: false,
+        className: "text-center",
     },
     {
         title: EstradaRoad.getFieldName("maintenance_need"),
@@ -209,18 +212,19 @@ export const estradaTableColumns = [
     },
     {
         title: EstradaRoad.getFieldName("number_lanes"),
-        data: null,
+        data: "numberLanes",
         defaultContent: "",
-        render: r => buttonSegmentsTemplate("number_lanes", r),
+        // render: r => buttonSegmentsTemplate("number_lanes", r),
         visible: false,
+        className: "text-center",
     },
 ];
 
 function buttonSegmentsTemplate(attrib, road) {
-    return `<button class="btn btn-secondary btn-sm ${attrib}-segments w-100"
+    return `<span class="eye image"
         data-toggle="modal"
         data-target="#inventory-segments-modal"
         data-code="${road.getLinkCode()}"
         data-id="${road.getId()}"
-        data-attr="${attrib}">View</button>`;
+        data-attr="${attrib}"></span>`;
 }

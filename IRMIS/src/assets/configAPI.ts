@@ -1,6 +1,7 @@
 export class ConfigAPI {
     public static requestAssetUrl = `${window.location.origin}/assets`;
     public static requestMediaUrl = `${window.location.origin}/media`;
+    public static requestReportUrl = `${window.location.origin}/assets/reports`;
 
     /** Build the fetch RequestInit structure for all requests
      *
@@ -30,5 +31,17 @@ export class ConfigAPI {
             mode: "cors",
             responseType: "arraybuffer",
         } as RequestInit;
+    }
+
+    /** Converts an object into a query string
+     * e.g. {roadcode: "A01", roadchainagestart: 12345}
+     * -> ?roadcode=A01&roadchainagestart=12345
+     */
+    public static objectToQueryString(obj: { [name: string]: any }) {
+        if (!obj || Object.keys(obj).length === 0) {
+            return "";
+        }
+
+        return "?" + Object.keys(obj).map((key) => `${key}=${obj[key]}`).join("&");
     }
 }

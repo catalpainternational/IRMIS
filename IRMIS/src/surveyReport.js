@@ -1,79 +1,104 @@
 import dayjs from "dayjs";
 
-import { Report, TableEntry } from "../protobuf/survey_pb";
+import { Report, TableEntry } from "../protobuf/report_pb";
 
-import { choice_or_empty, getFieldName, getHelpText, makeEstradaObject } from "./assets/protoBufUtilities";
+import { choice_or_default, getFieldName, getHelpText, makeEstradaObject } from "./assets/protoBufUtilities";
 
 import { SURFACE_CONDITION_CHOICES } from "./road";
 
-const surveyReportSchema = {
+const networkReportSchema = {
+    filter: { display: gettext("Filter") },
+    counts: { display: gettext("Counts") },
+};
+
+const roadReportSchema = {
     id: { display: "Id" },
     roadCode: { display: gettext("Road Code") },
     reportChainageStart: { display: gettext("Chainage Start") },
     reportChainageEnd: { display: gettext("Chainage End") },
     counts: { display: gettext("Counts") },
-    percentages: { display: gettext("Percentages") },
     tableList: { display: gettext("Table") },
 };
 
-export class EstradaSurveyReport extends Report {
+function extractCountData(countsForType, choices) {
+    const counts = [];
+    if (countsForType) {
+        Object.keys(countsForType).forEach((key) => {
+            const title = choice_or_default(key, choices, "Unknown").toLowerCase();
+            counts.push({ title, distance: countsForType[key] });
+        });
+    }
+
+    return counts;
+}
+
+export class EstradaNetworkSurveyReport extends Report {
     getId() {
-        return `${this.getRoadCode()}_${this.getReportChainageStart()}-${this.getReportChainageEnd()}`;
+        // TODO: we want to assemble something (anything) out of the filters as an ID
+        return "Network Report";
     }
 
     get id() {
         return this.getId();
     }
 
-    get roadCode() {
-        return this.getRoadCode();
-    }
-
-    get reportChainageStart() {
-        return this.getReportChainageStart();
-    }
-
-    get reportChainageEnd() {
-        return this.getReportChainageEnd();
+    get filter() {
+        const filter = this.getFilter() || "{}";
+        return JSON.parse(filter);
     }
 
     get counts() {
-        let counts = {};
-        try {
-            counts = JSON.parse(this.getCounts());
-        } catch {
-            // This is the correct response on error
-            counts = { surface_condition: { None: 0 } };
-        }
-
-        return counts;
+        const counts = this.getCounts() || { surface_condition: { None: 0 } };
+        return JSON.parse(counts);
     }
 
     get surfaceConditions() {
-        const conditions = [];
-        const counts = this.counts;
-        if (counts.surface_condition) {
-            Object.keys(counts.surface_condition).forEach((key) => {
-                let conditionTitle = (choice_or_empty(key, SURFACE_CONDITION_CHOICES) || key).toLowerCase();
-                if (conditionTitle === "none") {
-                    conditionTitle = "unknown";
-                }
-                conditions.push({ surface: conditionTitle, distance: counts.surface_condition[key] });
-            });
-        }
-
-        return conditions;
+        return extractCountData(this.counts.surface_condition, SURFACE_CONDITION_CHOICES);
     }
 
-    get percentages() {
-        let percentages = {};
-        try {
-            percentages = JSON.parse(this.getPercentages());
-        } catch {
-            percentages = {};
-        }
+    get surfaceTypes() {
+        return extractCountData(this.counts.surface_type, SURFACE_TYPE_CHOICES);
+    }
 
-        return percentages;
+    get technicalClasses() {
+        return extractCountData(this.counts.technical_class, TECHNICAL_CLASS_CHOICES);
+    }
+
+    get trafficLevels() {
+        return extractCountData(this.counts.traffic_level, TRAFFIC_LEVEL_CHOICES);
+    }
+
+    get numberLanes() {
+        if (!this.counts.number_lanes || this.counts.number_lanes.length) {
+            return [];
+        }
+        return this.counts.number_lanes;
+    }
+    
+    static getFieldName(field) {
+        return getFieldName(networkReportSchema, field);
+    }
+    
+    static getHelpText(field) {
+        return getHelpText(networkReportSchema, field);
+    }
+}
+
+export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
+    getId() {
+        return `${this.roadCode}_${this.reportChainageStart}-${this.reportChainageEnd}`;
+    }
+
+    get roadCode() {
+        return this.filter.road_code || "";
+    }
+
+    get reportChainageStart() {
+        return this.filter.report_chainage_start || 0;
+    }
+
+    get reportChainageEnd() {
+        return this.filter.report_chainage_end || 0;
     }
 
     get tableList() {
@@ -87,11 +112,11 @@ export class EstradaSurveyReport extends Report {
     }
     
     static getFieldName(field) {
-        return getFieldName(surveyReportSchema, field);
+        return getFieldName(roadReportSchema, field);
     }
     
     static getHelpText(field) {
-        return getHelpText(surveyReportSchema, field);
+        return getHelpText(roadReportSchema, field);
     }
         
     makeEstradaSurveyReportTableEntry (pbtableentry) {
@@ -134,23 +159,19 @@ export class EstradaSurveyReportTableEntry extends TableEntry {
     }
 
     get surfaceCondition() {
-        let conditionTitle = (choice_or_empty(this.values.surface_condition, SURFACE_CONDITION_CHOICES) || this.values.surface_condition).toLowerCase();
-        if (conditionTitle === "none") {
-            conditionTitle = "unknown";
-        }
-        return window.gettext(conditionTitle[0].toUpperCase() + conditionTitle.substring(1));
+        return window.gettext(choice_or_default(this.values.surface_condition, SURFACE_CONDITION_CHOICES, "Unknown"));
     }
 
     get surfaceType() {
-        return choice_or_empty(this.values.surface_type, SURFACE_TYPE_CHOICES);
+        return choice_or_default(this.values.surface_type, SURFACE_TYPE_CHOICES);
     }
 
     get technicalClass() {
-        return choice_or_empty(this.values.technical_class, TECHNICAL_CLASS_CHOICES);
+        return choice_or_default(this.values.technical_class, TECHNICAL_CLASS_CHOICES);
     }
 
     get trafficLevel() {
-        return choice_or_empty(this.values.traffic_level, TRAFFIC_LEVEL_CHOICES);
+        return choice_or_default(this.values.traffic_level, TRAFFIC_LEVEL_CHOICES);
     }
 
     get numberLanes() {

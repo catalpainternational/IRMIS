@@ -27,7 +27,7 @@ from rest_framework_condition import condition
 
 from google.protobuf.timestamp_pb2 import Timestamp
 
-from protobuf import roads_pb2, survey_pb2
+from protobuf import roads_pb2, survey_pb2, report_pb2
 
 
 from .models import (
@@ -343,6 +343,10 @@ class Report:
                     else int(survey.chainage_end)
                 )
 
+                # Ensure that any attribute to be reported on is present in the values
+                if not "surface_condition" in survey.values:
+                    survey.values["surface_condition"] = None
+
                 # check survey does not conflict with current aggregate segmentations
                 # and update the segmentations when needed
                 for chainage_point in range(survey_chain_start, survey_chain_end):
@@ -373,19 +377,10 @@ class Report:
                 ]
             )
         }
-        percentages = {
-            "surface_condition": {
-                condition: (
-                    counts["surface_condition"][condition] / segments_length * 100
-                )
-                for condition in counts["surface_condition"]
-            }
-        }
         setattr(self.report_protobuf, "counts", json.dumps(counts))
-        setattr(self.report_protobuf, "percentages", json.dumps(percentages))
 
     def build_chainage_table(self):
-        """ Generate the table of chainages the report """
+        """ Generate the table of chainages in the report """
         prev_values, prev_date, prev_added_by = "Nada", "Nada", "Nada"
         for segment in self.segmentations:
             segment = self.segmentations[segment]
@@ -413,25 +408,31 @@ class Report:
 
     def to_protobuf(self):
         """ Package up the various statistics and tables for export as Protobuf """
-        self.report_protobuf = survey_pb2.Report()
+        self.report_protobuf = report_pb2.Report()
 
         # set basic report attributes
-        setattr(self.report_protobuf, "road_code", self.road.road_code)
+        filters = { }
+        if self.road.road_code:
+            filters["road_code"] = self.road.road_code
+
         if self.validate_chainages():
-            setattr(
-                self.report_protobuf, "report_chainage_start", self.road_start_chainage
-            )
-            setattr(self.report_protobuf, "report_chainage_end", self.road_end_chainage)
+            filters["report_chainage_start"] = self.road_start_chainage
+            filters["report_chainage_end"] = self.road_end_chainage
         else:
-            # Road link must have start & end chainages to build a report.
-            # Return an empty report.
-            return self.report_protobuf
+            if self.road.road_code:
+                # Road link must have start & end chainages to build a report.
+                # Return an empty report.
+                return self.report_protobuf
+
+        self.report_protobuf.filter = json.dumps(filters)
 
         # build and set report statistical data & table
         self.build_segmentations()
         self.assign_survey_results()
         self.build_summary_stats()
-        self.build_chainage_table()
+
+        if self.road.road_code:
+            self.build_chainage_table()
 
         return self.report_protobuf
 
@@ -445,12 +446,40 @@ def protobuf_road_surveys(request, pk):
     # get the Road link requested
     road = get_object_or_404(Road.objects.all(), pk=pk)
     # pull any Surveys that cover the Road above
-    queryset = Survey.objects.filter(road=road.road_code)
+    queryset = Survey.objects.filter(road=road.road_code).exclude(
+        values__surface_condition__isnull=True
+    )
     queryset.order_by("road", "chainage_start", "chainage_end", "-date_updated")
     surveys_protobuf = queryset.to_protobuf()
 
     return HttpResponse(
         surveys_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )
+
+
+def protobuf_reports(request):
+    """ returns a protobuf object with a report determined by the filter conditions supplied """
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+
+    # get the Filters
+    road_id = request.GET.get("roadid", None)
+    road_code = request.GET.get("roadcode", "")
+
+    road = get_object_or_404(Road.objects.all(), pk=road_id)
+    # pull any Surveys that cover the Road above
+    surveys = (
+        Survey.objects.filter(road=road.road_code)
+        .exclude(chainage_start__isnull=True)
+        .exclude(chainage_end__isnull=True)
+        # .exclude(values__surface_condition__isnull=True)
+        .order_by("road", "chainage_start", "chainage_end", "-date_surveyed")
+        .distinct("road", "chainage_start", "chainage_end")
+    )
+    report_protobuf = Report(road, surveys).to_protobuf()
+
+    return HttpResponse(
+        report_protobuf.SerializeToString(), content_type="application/octet-stream"
     )
 
 
@@ -534,13 +563,22 @@ def survey_update(request):
 
     # assert Survey ID given exists in the DB & there are changes to make
     survey = get_object_or_404(Survey.objects.filter(pk=req_pb.id))
+
+    # check that the survey has a user assigned, if not, do not allow updating
+    if not survey.user:
+        return HttpResponse(
+            req_pb.SerializeToString(),
+            status=400,
+            content_type="application/octet-stream",
+        )
+
+    # if there are not changes between the DB survey and the protobuf survey return 200
     if Survey.objects.filter(pk=req_pb.id).to_protobuf().surveys[0] == req_pb:
-        response = HttpResponse(
+        return HttpResponse(
             req_pb.SerializeToString(),
             status=200,
             content_type="application/octet-stream",
         )
-        return response
 
     # check if the survey has revision history, then check if survey
     # edits would be overwriting someone's changes
@@ -548,47 +586,40 @@ def survey_update(request):
     if version and req_pb.last_revision_id != version.revision.id:
         return HttpResponse(status=409)
 
-    # update the Survey instance from PB fields
-    try:
-        survey.road = req_pb.road
-        survey.user = get_user_model().objects.get(pk=req_pb.user)
-        survey.chainage_start = req_pb.chainage_start
-        survey.chainage_end = req_pb.chainage_end
-        survey.date_surveyed = pbtimestamp_to_pydatetime(req_pb.date_surveyed)
-        survey.source = req_pb.source
-        survey.values = json.loads(req_pb.values)
-
+    # if the new values are empty delete the record and return 200
+    new_values = json.loads(req_pb.values)
+    if new_values == {}:
         with reversion.create_revision():
-            survey.save()
+            survey.delete()
             # store the user who made the changes
             reversion.set_user(request.user)
-
-        versions = Version.objects.get_for_object(survey)
-        req_pb.last_revision_id = versions[0].id
-
-        response = HttpResponse(
+        return HttpResponse(
             req_pb.SerializeToString(),
             status=200,
             content_type="application/octet-stream",
         )
-        return response
-    except Exception as err:
-        return HttpResponse(status=400)
 
+    # update the Survey instance from PB fields
+    survey.road = req_pb.road
+    survey.user = get_user_model().objects.get(pk=req_pb.user)
+    survey.chainage_start = req_pb.chainage_start
+    survey.chainage_end = req_pb.chainage_end
+    survey.date_surveyed = pbtimestamp_to_pydatetime(req_pb.date_surveyed)
+    survey.source = req_pb.source
+    survey.values = new_values
 
-def survey_delete(request, pk):
-    if not request.user.is_authenticated:
-        return HttpResponseForbidden()
+    with reversion.create_revision():
+        survey.save()
+        # store the user who made the changes
+        reversion.set_user(request.user)
 
-    if request.method != "GET":
-        raise MethodNotAllowed(request.method)
+    versions = Version.objects.get_for_object(survey)
+    req_pb.last_revision_id = versions[0].id
 
-    survey = get_object_or_404(Survey.objects.all(), pk=pk)
-    try:
-        survey.delete()
-        return HttpResponse(status=200)
-    except Exception:
-        return HttpResponse(status=400)
+    response = HttpResponse(
+        req_pb.SerializeToString(), status=200, content_type="application/octet-stream"
+    )
+    return response
 
 
 def protobuf_road_audit(request, pk):

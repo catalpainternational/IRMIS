@@ -24,24 +24,3 @@ message Survey {
 message Surveys {
   repeated Survey surveys = 1;
 }
-
-message Report {
-  /* Note that field Id numbers once used, are fixed.
-   * The ordering shown here lines up with the model and groups the fields better.
-   * But the numbering preserves the original declaration */
-  string road_code = 1;
-  float report_chainage_start = 2;  
-  float report_chainage_end = 3;
-  string counts = 4; // JSON string
-  string percentages = 5; // JSON string
-  repeated TableEntry table = 6;
-}
-  
-message TableEntry {
-  float chainage_start = 1;
-  float chainage_end = 2;
-  string values = 3;
-  uint32 survey_id = 4;
-  google.protobuf.Timestamp date_surveyed = 5;
-  string added_by = 6;
-}

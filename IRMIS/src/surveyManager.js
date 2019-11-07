@@ -1,4 +1,4 @@
-import { deleteSurveyData, getRoadSurveyReports, getSurveyMetadata, getSurveysMetadata, postSurveyData, putSurveyData } from "./assets/surveyAPI";
+import { getRoadReports, getRoadSurveyReports, getSurveyMetadata, getSurveysMetadata, postSurveyData, putSurveyData } from "./assets/surveyAPI";
 
 let surveys = {}
 
@@ -31,19 +31,16 @@ export function updateSurvey(survey) {
         });
 }
 
-export function deleteSurvey(surveyId) {
-    return Promise.resolve(deleteSurveyData(surveyId))
-        .then((result) => {
-            return result;
-        })
-        .catch(() => {
-            // We will assume that the delete failed
-            return false;
-        })
-}
-
 export function getRoadSurveyReport(roadCode) {
     return Promise.resolve(getRoadSurveyReports(roadCode))
+        .then((surveyReportList) => {
+            // document.dispatchEvent(new CustomEvent("estrada.auditTable.roadAuditDataAdded", {detail: {auditList}}));
+            return surveyReportList;
+        });
+}
+
+export function getRoadReport(filters) {
+    return Promise.resolve(getRoadReports(filters))
         .then((surveyReportList) => {
             // document.dispatchEvent(new CustomEvent("estrada.auditTable.roadAuditDataAdded", {detail: {auditList}}));
             return surveyReportList;

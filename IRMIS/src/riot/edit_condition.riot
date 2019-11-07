@@ -2,12 +2,12 @@
     <div class="content-wrapper">
         <h5>{ window.gettext("Surface Condition (SDI)") }</h5>
         <div class="d-flex surface-condition-bar">
-            <div each="{condition in state.surfaceConditions}" class="{condition.surface + '-condition'}" style="{'width:' + condition.percent + '%;'}"></div>
+            <div each="{condition in state.surfaceConditions}" class="{condition.title + '-condition'}" style="{'width:' + condition.percent + '%;'}"></div>
         </div>
         <div class="align-items-center d-flex justify-content-between surface-condition-legend">
             <div class="values d-flex flex-wrap">
                 <div each="{condition in state.surfaceConditions}" class="align-items-center d-flex">
-                    <div class="{condition.surface + '-condition'}"></div>
+                    <div class="{condition.title + '-condition'}"></div>
                     <span>{condition.label}</span>
                 </div>
             </div>
@@ -122,7 +122,7 @@
         import Data_Table from "./data_table.riot";
         import Edit_Modal from "./edit_modal.riot";
 
-        import { createSurvey, deleteSurvey, updateSurvey, getRoadSurveyReport, getRoadSurveys } from "../surveyManager";
+        import { createSurvey, deleteSurvey, updateSurvey, getRoadReport, getRoadSurveyReport, getRoadSurveys } from "../surveyManager";
         import { toChainageFormat } from "../assets/protoBufUtilities";
         import { Survey, Report } from "../../protobuf/survey_pb";
 
@@ -156,7 +156,7 @@
                 canSave: false,
                 errors: {},
                 pendingRows: [],
-                surfaceConditions: [{ surface: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
+                surfaceConditions: [{ title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
                 surveyTotalDistance: 0,
                 reportRows: [],
                 viewAll: false,
@@ -177,7 +177,7 @@
                 }
 
                 const emptyConditions = {
-                    surface: "unknown",
+                    title: "unknown",
                     distance: roadDistance
                 };
 
@@ -202,7 +202,10 @@
                 getRoadSurveys(roadId)
                     .then((surveyData) => {
                         if (surveyData) {
-                            this.state.pendingRows = surveyData;
+                            this.state.pendingRows = surveyData.map((data) => {
+                                data.title = data.surface;
+                                return data;
+                            });
 
                             const eventName = `${this.all_data_table_id}.dataAdded`;
                             const eventDetail = { detail: { pendingRows: this.state.pendingRows, appendRows: this.state.loading }};
@@ -249,6 +252,38 @@
                         this.update();
                     });
             },
+            getRoadSurveyReports() {
+                const filters = {
+                    roadid: this.state.road.getId(),
+                    roadcode: this.state.road.code,
+                };
+
+                getRoadReport(filters)
+                    .then((surveyReportData) => {
+                        if (surveyReportData) {
+                            const haveCounts = !!surveyReportData.counts;
+                            const haveSurfaceConditions = surveyReportData.surfaceConditions.length > 0;
+                            if (haveCounts && haveSurfaceConditions) {
+                                this.updateSurfaceConditionsSummary(surveyReportData.surfaceConditions);
+                            }
+                            if (surveyReportData.tableList && surveyReportData.tableList.length) {
+                                this.state.reportRows = surveyReportData.tableList;
+
+                                const eventName = `${this.current_data_table_id}.dataAdded`;
+                                const eventDetail = { detail: { pendingRows: this.state.reportRows, appendRows: this.state.loading }};
+                                document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+                            }
+                            this.state.error = false;
+                        } else {
+                            this.state.error = true;
+                        }
+                    }).catch(err => {
+                        this.state.error = true;
+                    }).finally((r) => {
+                        this.state.loading = false;
+                        this.update();
+                    });
+            },
             updateSurfaceConditionsSummary(surfaceConditions) {
                 this.state.surfaceConditions.length = 0;
                 surfaceConditions.forEach((condition) => {
@@ -268,7 +303,7 @@
 
                 // Then calculate everything else
                 this.state.surfaceConditions.forEach((condition) => {
-                    const surfaceTitle = window.gettext(condition.surface[0].toUpperCase() + condition.surface.substring(1));
+                    const surfaceTitle = window.gettext(condition.title[0].toUpperCase() + condition.title.substring(1));
                     if (this.state.surveyTotalDistance > 0) {
                         condition.percent = Math.round((condition.distance / this.state.surveyTotalDistance) * 10000) / 100;
                         // the calculated label shows distance in km
@@ -446,11 +481,14 @@
                     if (stopAlertResult === "discard") {
                         this.discardChanges();
                     } else if (stopAlertResult === "delete") {
-                        deleteSurvey(rowId).then((result) => {
-                            if (result) {
-                                this.refreshSurveysAndReports();
-                            }
-                        });
+                        this.state.editMode = true;
+                        // void the survey surface_condition value and save
+                        this.state.survey = this.state.pendingRows.find((s) => { return s.id == rowId; });
+                        if (this.state.survey) {
+                            this.state.survey.setValues(JSON.stringify({}));
+                            this.saveSurvey();
+                        }
+                        this.state.editMode = false;
                     } else if (stopAlertResult === "continueEdit") {
                         this.showEditModal();
                     }

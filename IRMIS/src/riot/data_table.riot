@@ -47,7 +47,11 @@
 
             if (state.canDelete && optionColumns.length === 1) {
                 optionColumns[0].render = (data, type, row) => {
-                    return row ? button_template("delete", button_event_template(state.id, "deleteRow", row.getId())) : "";
+                    if (row.getAddedBy()) {
+                        return row ? button_template("delete", button_event_template(state.id, "deleteRow", row.getId())) : "";
+                    } else {
+                        return "";
+                    }
                 };
             }
         }
