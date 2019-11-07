@@ -18,26 +18,25 @@
     @extend %bar-shared;
 }
 
-.good-condition {
-    background-color: #03A59A;
-}
-
-.fair-condition {
-    background-color: #81D2CC;
-}
-
-.poor-condition {
-    background-color: #FFACAF;
-}
-
-.bad-condition {
-    background-color: #FF5A5F;
-}
-
-.unknown-condition {
+.condition-0 {
     background-color: #E7E8EA;
 }
 
+.condition-1 {
+    background-color: #03A59A;
+}
+
+.condition-2 {
+    background-color: #81D2CC;
+}
+
+.condition-3 {
+    background-color: #FFACAF;
+}
+
+.condition-4 {
+    background-color: #FF5A5F;
+}
 
 %legend-shared {
     div.values {
