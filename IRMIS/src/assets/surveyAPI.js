@@ -91,24 +91,6 @@ export function putSurveyData(survey) {
         });
 }
 
-/** deleteSurveydata
- *
- * Delete a single Survey from the server
- *
- * @returns 200 (success) or 400 (failure)
- */
-export function deleteSurveyData(surveyId) {
-    const assetTypeUrlFragment = "survey_delete";
-    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${surveyId}`;
-    const postAssetInit = ConfigAPI.requestInit("GET");
-
-    return fetch(metadataUrl, postAssetInit)
-        .then(res => {
-            if (res.ok) { return true; }
-            throw new Error(`Survey deletion failed: ${res.statusText}`);
-        });
-}
-
 /** getRoadSurveyReports
  *
  * Retrieves the road survey data from the server

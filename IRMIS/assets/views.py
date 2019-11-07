@@ -518,13 +518,22 @@ def survey_update(request):
 
     # assert Survey ID given exists in the DB & there are changes to make
     survey = get_object_or_404(Survey.objects.filter(pk=req_pb.id))
+
+    # check that the survey has a user assigned, if not, do not allow updating
+    if not survey.user:
+        return HttpResponse(
+            req_pb.SerializeToString(),
+            status=400,
+            content_type="application/octet-stream",
+        )
+
+    # if there are not changes between the DB survey and the protobuf survey return 200
     if Survey.objects.filter(pk=req_pb.id).to_protobuf().surveys[0] == req_pb:
-        response = HttpResponse(
+        return HttpResponse(
             req_pb.SerializeToString(),
             status=200,
             content_type="application/octet-stream",
         )
-        return response
 
     # check if the survey has revision history, then check if survey
     # edits would be overwriting someone's changes
@@ -532,47 +541,40 @@ def survey_update(request):
     if version and req_pb.last_revision_id != version.revision.id:
         return HttpResponse(status=409)
 
-    # update the Survey instance from PB fields
-    try:
-        survey.road = req_pb.road
-        survey.user = get_user_model().objects.get(pk=req_pb.user)
-        survey.chainage_start = req_pb.chainage_start
-        survey.chainage_end = req_pb.chainage_end
-        survey.date_surveyed = pbtimestamp_to_pydatetime(req_pb.date_surveyed)
-        survey.source = req_pb.source
-        survey.values = json.loads(req_pb.values)
-
+    # if the new values are empty delete the record and return 200
+    new_values = json.loads(req_pb.values)
+    if new_values == {}:
         with reversion.create_revision():
-            survey.save()
+            survey.delete()
             # store the user who made the changes
             reversion.set_user(request.user)
-
-        versions = Version.objects.get_for_object(survey)
-        req_pb.last_revision_id = versions[0].id
-
-        response = HttpResponse(
+        return HttpResponse(
             req_pb.SerializeToString(),
             status=200,
             content_type="application/octet-stream",
         )
-        return response
-    except Exception as err:
-        return HttpResponse(status=400)
 
+    # update the Survey instance from PB fields
+    survey.road = req_pb.road
+    survey.user = get_user_model().objects.get(pk=req_pb.user)
+    survey.chainage_start = req_pb.chainage_start
+    survey.chainage_end = req_pb.chainage_end
+    survey.date_surveyed = pbtimestamp_to_pydatetime(req_pb.date_surveyed)
+    survey.source = req_pb.source
+    survey.values = new_values
 
-def survey_delete(request, pk):
-    if not request.user.is_authenticated:
-        return HttpResponseForbidden()
+    with reversion.create_revision():
+        survey.save()
+        # store the user who made the changes
+        reversion.set_user(request.user)
 
-    if request.method != "GET":
-        raise MethodNotAllowed(request.method)
+    versions = Version.objects.get_for_object(survey)
+    req_pb.last_revision_id = versions[0].id
 
-    survey = get_object_or_404(Survey.objects.all(), pk=pk)
-    try:
-        survey.delete()
-        return HttpResponse(status=200)
-    except Exception:
-        return HttpResponse(status=400)
+    response = HttpResponse(
+        req_pb.SerializeToString(), status=200, content_type="application/octet-stream"
+    )
+    return response
 
 
 def protobuf_road_audit(request, pk):
