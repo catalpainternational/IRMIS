@@ -136,7 +136,7 @@ class Report:
         self.report_protobuf = report_pb2.Report()
 
         # set basic report attributes
-        filters = { }
+        filters = {}
         if self.road.road_code:
             filters["road_code"] = self.road.road_code
 

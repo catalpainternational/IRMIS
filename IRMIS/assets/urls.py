@@ -12,9 +12,7 @@ from .views import (
     survey_update,
     protobuf_road_surveys,
 )
-from .reports import (
-    protobuf_reports,
-)
+from .reports import protobuf_reports
 
 router = routers.DefaultRouter()
 router.register(r"roads", RoadViewSet, basename="road")
