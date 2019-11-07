@@ -1,6 +1,6 @@
 /** utility function to pick from choices if value is truthy, or return default string
  * the default for defaultValue is empty string ""
-*/
+ */
 export function choice_or_default(value, choices, defaultValue = "") {
     return value ? choices[value] || defaultValue : defaultValue;
 }

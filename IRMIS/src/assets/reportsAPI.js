@@ -11,7 +11,7 @@ import { makeEstradaObject } from "./protoBufUtilities";
 export function getRoadReports(filters) {
     const filterParams = ConfigAPI.objectToQueryString(filters);
     const reportUrl = `${ConfigAPI.requestReportUrl}${filterParams}`;
-   
+
     const request = ConfigAPI.requestInit();
 
     return fetch(reportUrl, request)
