@@ -27,7 +27,8 @@
     }
 
     &:focus {
-        outline: 0;
+        box-shadow: 0 0 2px 1px rgba(16, 165, 150, 0.5);
+        border: 1px solid $green;
     }
 
     &::-webkit-input-placeholder { color: $gray; } /* Chrome/Opera/Safari */
