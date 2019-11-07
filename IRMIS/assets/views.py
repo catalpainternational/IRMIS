@@ -518,19 +518,41 @@ def survey_update(request):
 
     # assert Survey ID given exists in the DB & there are changes to make
     survey = get_object_or_404(Survey.objects.filter(pk=req_pb.id))
+
+    # check that the survey has a user assigned, if not, do not allow updating
+    if not survey.user:
+        return HttpResponse(
+            req_pb.SerializeToString(),
+            status=400,
+            content_type="application/octet-stream",
+        )
+
+    # if there are not changes between the DB survey and the protobuf survey return 200
     if Survey.objects.filter(pk=req_pb.id).to_protobuf().surveys[0] == req_pb:
-        response = HttpResponse(
+        return HttpResponse(
             req_pb.SerializeToString(),
             status=200,
             content_type="application/octet-stream",
         )
-        return response
 
     # check if the survey has revision history, then check if survey
     # edits would be overwriting someone's changes
     version = Version.objects.get_for_object(survey).first()
     if version and req_pb.last_revision_id != version.revision.id:
         return HttpResponse(status=409)
+
+    # if the new values are empty delete the record and return 200
+    new_values = json.loads(req_pb.values)
+    if new_values == {}:
+        with reversion.create_revision():
+            survey.delete()
+            # store the user who made the changes
+            reversion.set_user(request.user)
+        return HttpResponse(
+            req_pb.SerializeToString(),
+            status=200,
+            content_type="application/octet-stream",
+        )
 
     # update the Survey instance from PB fields
     survey.road = req_pb.road
@@ -539,7 +561,7 @@ def survey_update(request):
     survey.chainage_end = req_pb.chainage_end
     survey.date_surveyed = pbtimestamp_to_pydatetime(req_pb.date_surveyed)
     survey.source = req_pb.source
-    survey.values = json.loads(req_pb.values)
+    survey.values = new_values
 
     with reversion.create_revision():
         survey.save()
