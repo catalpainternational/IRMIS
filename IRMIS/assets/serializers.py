@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
 from rest_framework_gis.fields import GeometryField
-from .models import Road, Survey
+from .models import Road
 
 
 class RoadToWGSSerializer(GeoFeatureModelSerializer):
