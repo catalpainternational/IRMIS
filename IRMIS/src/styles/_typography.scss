@@ -119,6 +119,12 @@ p {
     color: $dark-green;
 }
 
+reports_base p {
+    line-height: 16px;
+    color: $dark-gray;
+    font-size: 14px;
+}
+
 small {
     line-height: 14px;
 	font-weight: 500;
