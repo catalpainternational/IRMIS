@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-28 00:49+0000\n"
+"POT-Creation-Date: 2019-11-07 06:48+0000\n"
 "PO-Revision-Date: 2019-10-11 00:57+0000\n"
 "Last-Translator: b'  <juliana@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -77,17 +77,11 @@ msgstr "Condição"
 msgid "Maintenance"
 msgstr ""
 
-msgid "Loading"
-msgstr "A carregar"
-
 msgid "History"
 msgstr "Histórico"
 
 msgid "Change log"
 msgstr "Registro de alterações"
-
-msgid "Close"
-msgstr "Fechar"
 
 msgid "Unsaved Changes"
 msgstr "Alterações não gravadas"
@@ -100,6 +94,77 @@ msgstr "Descartar"
 
 msgid "Continue editing"
 msgstr "Continuar a editar"
+
+msgid "Loading"
+msgstr "A carregar"
+
+msgid "Surface Condition (SDI)"
+msgstr ""
+
+msgid "Total road chainage"
+msgstr ""
+
+msgid "Surface Condition Data (SDI)"
+msgstr ""
+
+#, fuzzy
+#| msgid "Condition"
+msgid "Current condition"
+msgstr "Condição"
+
+msgid "View all data entries"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "Add Surface Condition Information"
+msgstr ""
+
+msgid "Survey Date"
+msgstr ""
+
+#, fuzzy
+#| msgid "Link chainage"
+msgid "Chainage"
+msgstr "Chainage da secção"
+
+msgid "Chainage start"
+msgstr ""
+
+msgid "Chainage end"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Are you sure you want to delete this data entry?"
+msgstr ""
+
+#, fuzzy
+#| msgid "Condition"
+msgid "Surface condition"
+msgstr "Condição"
+
+msgid "Survey date"
+msgstr ""
+
+msgid "Added by"
+msgstr ""
+
+msgid "Option"
+msgstr ""
+
+msgid "This field is required"
+msgstr ""
+
+msgid "Survey date cannot be in the future"
+msgstr ""
+
+#, fuzzy, javascript-format
+#| msgid "Carriage width cannot contain more than %s digits, of which %s are decimals"
+msgid "Chainage cannot contain more than %s digits, of which %s are decimals"
+msgstr "A largura da faixa de rodagem não pode conter mais do que %s dígitos, dos quais %s são decimais"
 
 msgid "Success"
 msgstr "Sucesso"
@@ -124,6 +189,15 @@ msgstr "Seleccione a Área Administrativa"
 
 msgid "Select a Road Type"
 msgstr "Seleccione o Tipo de Estrada"
+
+msgid "Close"
+msgstr "Fechar"
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Save"
+msgstr ""
 
 msgid "Select a Surface Type"
 msgstr "Seleccione o Tipo de Pavimento"
@@ -175,3 +249,44 @@ msgstr "Ponto Inicial (UTM)"
 
 msgid "End Point (UTM)"
 msgstr "Ponto final (UTM)"
+
+#, fuzzy
+#| msgid "Select a Surface Type"
+msgid "Surface Type"
+msgstr "Seleccione o Tipo de Pavimento"
+
+msgid "Technical class"
+msgstr ""
+
+msgid "Number of lanes"
+msgstr ""
+
+msgid "Road Code"
+msgstr ""
+
+msgid "Chainage Start"
+msgstr ""
+
+msgid "Chainage End"
+msgstr ""
+
+msgid "Counts"
+msgstr ""
+
+msgid "Percentages"
+msgstr ""
+
+msgid "Table"
+msgstr ""
+
+msgid "Surface Condition segments"
+msgstr ""
+
+msgid "Surface Type segments"
+msgstr ""
+
+msgid "Technical Class segments"
+msgstr ""
+
+msgid "Number of Lanes segments"
+msgstr ""

@@ -29,6 +29,9 @@
             state.pendingRows = props.pendingRows || [];
             state.pageLength = props.pageLength || 10;
 
+            // Wraps the actual processing for 'dataAdded' event, and includes this tag's state
+            state.dataAdded = (data) => processDataAdded(data, state);
+
             const optionColumns = state.columns.filter((column) => (column.name && column.name === "Option"));
 
             if (state.canEdit) {
@@ -64,18 +67,18 @@
             return `document.dispatchEvent(new CustomEvent('${tableId}.${eventName}',{detail:{rowId:${rowId}}}))`;
         }
 
-        const addEventListener = function(state) {
-            state.dataAddedEventHandler = document.addEventListener(`${state.id}.dataAdded`, (data) => {
-                const pendingRows = data.detail.pendingRows;
-                const haveAppendRows = typeof (data.detail.appendRows) === "boolean";
-                const appendRows = haveAppendRows ? data.detail.appendRows : true;
+        const processDataAdded = function(data, state) {
+            const pendingRows = data.detail.pendingRows;
+            const haveAppendRows = typeof (data.detail.appendRows) === "boolean";
+            const appendRows = haveAppendRows ? data.detail.appendRows : true;
 
-                state.pendingRows = appendRows
-                    ? state.pendingRows.concat(pendingRows)
-                    : pendingRows;
-                state.appendRows = appendRows;
-                updateDataTable(state);
-            });
+            state.pendingRows = appendRows
+                ? state.pendingRows.concat(pendingRows)
+                : pendingRows;
+            state.appendRows = appendRows;
+            updateDataTable(state);
+
+            data.stopPropagation();
         }
 
         const initialiseDataTable = function (state) {
@@ -116,12 +119,10 @@
                 this.update();
 
                 initialiseDataTable(state);
-                addEventListener(state);
+                document.addEventListener(`${state.id}.dataAdded`, state.dataAdded)
             },
             onBeforeUnmount(props, state) {
-                if (state.dataAddedEventHandler) {
-                    document.removeEventListener(`${state.id}.dataAdded`, state.dataAddedEventHandler);
-                }
+                document.removeEventListener(`${state.id}.dataAdded`, state.dataAdded);
             },
             getHelpText(field) {
                 // TODO: Fix this, because it's specific to Roads

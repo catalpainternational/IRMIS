@@ -123,13 +123,13 @@ function initializeDataTable() {
                 }
             }
         }
-        
+
         if (clickedRow.hasClass("selected")) {
             clickedRow.removeClass("selected");
 
             table.selectionProcessing = undefined;
             // reset to the previously selected filters
-            applyFilter();            
+            applyFilter();
         } else {
             table.$("tr.selected").removeClass("selected");
             clickedRow.addClass("selected");
@@ -256,7 +256,7 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
 
     switch (attr) {
         case "surface_condition":
-            modal.find(".modal-title").text(linkCode + " Surface Condition segments");
+            modal.find(".modal-title").text(linkCode + " " + gettext("Surface Condition segments"));
             surfaceConditionTable.clear(); // remove all rows in the table
             getRoadSurveys(roadId).then((surveyData) => {
                 if (surveyData) {
@@ -266,7 +266,7 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
             $("#inventory-surface-condition-table_wrapper").show();
             break;
         case "surface_type":
-            modal.find(".modal-title").text(linkCode + " Surface Type segments");
+            modal.find(".modal-title").text(linkCode + " " + gettext("Surface Type segments"));
             surfaceTypeTable.clear(); // remove all rows in the table
             getRoadSurveys(roadId).then((surveyData) => {
                 if (surveyData) {
@@ -276,7 +276,7 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
             $("#inventory-surface-type-table_wrapper").show();
             break;
         case "technical_class":
-            modal.find(".modal-title").text(linkCode + " Technical Class segments");
+            modal.find(".modal-title").text(linkCode + " " + gettext("Technical Class segments"));
             technicalClassTable.clear(); // remove all rows in the table
             getRoadSurveys(roadId).then((surveyData) => {
                 if (surveyData) {
@@ -286,7 +286,7 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
             $("#inventory-technical-class-table_wrapper").show();
             break;
         case "number_lanes":
-            modal.find(".modal-title").text(linkCode + " Number of Lanes segments");
+            modal.find(".modal-title").text(linkCode + " " + gettext("Number of Lanes segments"));
             numberLanesTable.clear(); // remove all rows in the table
             getRoadSurveys(roadId).then((surveyData) => {
                 if (surveyData) {
