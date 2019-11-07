@@ -446,8 +446,10 @@
                         this.state.editMode = true;
                         // void the survey surface_condition value and save
                         this.state.survey = this.state.pendingRows.find((s) => { return s.id == rowId; });
-                        this.state.survey.setValues(JSON.stringify({}));
-                        this.saveSurvey();
+                        if (this.state.survey) {
+                            this.state.survey.setValues(JSON.stringify({}));
+                            this.saveSurvey();
+                        }
                         this.state.editMode = false;
                     } else if (stopAlertResult === "continueEdit") {
                         this.showEditModal();
