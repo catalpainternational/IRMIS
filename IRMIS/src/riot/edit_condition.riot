@@ -122,7 +122,8 @@
         import Data_Table from "./data_table.riot";
         import Edit_Modal from "./edit_modal.riot";
 
-        import { createSurvey, deleteSurvey, updateSurvey, getRoadReport, getRoadSurveyReport, getRoadSurveys } from "../surveyManager";
+        import { createSurvey, deleteSurvey, updateSurvey, getRoadSurveys } from "../surveyManager";
+        import { getRoadReport, getRoadSurveyReport } from "../reportManager";
         import { toChainageFormat } from "../assets/protoBufUtilities";
         import { Survey, Report } from "../../protobuf/survey_pb";
 
