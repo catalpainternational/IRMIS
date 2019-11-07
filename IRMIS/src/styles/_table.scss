@@ -1,42 +1,101 @@
-// All dataTables
-table.dataTable {
-    background-color: $white;
-}
-
+// DataTables general styling
 #map-table-irmis {
     &.map:not(.table) #table-irmis {
         display: none;
     }
 
-    &.table:not(.map) #data-table {
+    &.table:not(.map) #all-data-table {
         max-height: calc(100vh - #{$top-menu-height} - 31px - 6px - 32px - 15px);
     }
 
-    &.table.map #data-table {
+    &.table.map #all-data-table {
         max-height: calc(60vh - #{$top-menu-height} - 10px - 31px - 6px - 32px - 15px);
     }
 
-    #data-table {
+    #all-data-table {
         margin-top: 0 !important;
         overflow: auto;
     }
 }
 
-#history-table_wrapper {
-    margin-right: -45px;
-    margin-left: -45px;
+#history-table {
+    border-bottom: 1px solid $light-gray;
+    border-right: 1px solid $light-gray;
+    border-left: 1px solid $light-gray;
+    margin-top: 0 !important;
+    overflow-x: auto;
+}
 
-    // data table's row parent
-    & > .row:nth-child(2) .col-sm-12 {
-        padding: 0;
+#surface-condition-table, #surface-condition-report-table {
+    border-bottom: 1px solid $light-gray;
+    border-right: 1px solid $light-gray;
+    border-left: 1px solid $light-gray;
+    margin-top: 25px !important;
+    overflow-x: auto;
+}
+
+#inventory-surface-condition-table, #inventory-surface-type-table, #inventory-technical-class-table {
+    border-bottom: 1px solid $light-gray;
+    border-right: 1px solid $light-gray;
+    border-left: 1px solid $light-gray;
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
+    max-height: 353px; // table's height with 10 rows
+    overflow-y: auto;
+}
+
+
+// Override DataTables.net styles
+div.dataTables_wrapper {
+    table.dataTable {
+        background-color: $white;
+
+        td.dataTables_empty {
+            text-align: left;
+        }
     }
 
-    #history-table {
-        margin-top: 0 !important;
+    .dataTables_info {
+        padding-top: 8px;
     }
 }
 
-// Style the dataTable heading
+.dataTables_wrapper ul.pagination {
+    margin: 0;
+
+    li.paginate_button.page-item {
+        &:focus {
+            outline: none;
+        }
+
+        &.active a.page-link {
+            background-color: $white;
+            border-radius: $radius;
+            color: $darker-gray;
+        }
+
+        a.page-link {
+            background-color: inherit;
+            box-shadow: none;
+            color: $white;
+            border: 0;
+        }
+    }
+}
+
+#history-table_wrapper ul.pagination, .content-wrapper ul.pagination {
+    li.paginate_button.page-item {
+        &.active a.page-link {
+            background-color: $darker-gray;
+            color: $white;
+        }
+
+        a.page-link {
+            color: $darker-gray;
+        }
+    }
+}
+
 .dt-buttons {
     justify-content: flex-end;
     background-color: $white;
@@ -129,49 +188,20 @@ table.table {
         tbody tr:first-child td {
             border-top: 0;
         }
-
-        tbody tr:last-child td {
-            border-bottom-width: 1px;
-        }
     }
 
-    &.table-hover {
-        tbody tr:hover {
-            background-color: $alt-green;
+    &.table-hover tbody tr {
+        &:hover {
+            background-color: $light-green;
             cursor: pointer;
+        }
+
+        &.selected {
+            background-color: $green;
 
             td {
                 color: $white;
-
-                // This presently screws up and converts the svg to 'undefined'
-                // .pencil {
-                //     background-image: url("../images/pencil_hover.svg");
-                // }
             }
         }
-    }
-
-    tbody tr.selected {
-        background-color: $alt-green;
-
-        td {
-            color: $white;
-        }
-    }
-}
-
-table#history-table {
-    thead th {
-        position: relative !important;
-    }
-
-    thead th:first-child, tbody td:first-child {
-        padding-right: 40px;
-        padding-left: 60px;
-    }
-
-    thead th:not(:first-child), tbody td:not(:first-child) {
-        padding-right: 40px;
-        padding-left: 40px;
     }
 }

@@ -103,6 +103,8 @@ export const estradaTableColumns = [
         title: getFieldName("surface_type"),
         data: "surfaceType",
         defaultContent: "",
+        // render: r => buttonSegmentsTemplate("surface_type", r),
+        orderable: false,
         className: "text-center",
     },
     {
@@ -133,7 +135,9 @@ export const estradaTableColumns = [
         title: getFieldName("technical_class"),
         data: "technicalClass",
         defaultContent: "",
+        // render: r => buttonSegmentsTemplate("technical-class", r),
         visible: false,
+        orderable: false,
         className: "text-center",
     },
     {
@@ -157,8 +161,11 @@ export const estradaTableColumns = [
     },
     {
         title: getFieldName("surface_condition"),
-        data: "surfaceCondition",
+        data: null,
         defaultContent: "",
+        render: r => buttonSegmentsTemplate("surface_condition", r),
+        className: "text-center",
+        orderable: false,
         className: "text-center",
     },
     {
@@ -203,4 +210,21 @@ export const estradaTableColumns = [
         visible: false,
         className: "text-center",
     },
+    {
+        title: getFieldName("number_lanes"),
+        data: "numberLanes",
+        defaultContent: "",
+        // render: r => buttonSegmentsTemplate("number_lanes", r),
+        visible: false,
+        className: "text-center",
+    },
 ];
+
+function buttonSegmentsTemplate(attrib, road) {
+    return `<span class="eye image"
+        data-toggle="modal"
+        data-target="#inventory-segments-modal"
+        data-code="${road.getLinkCode()}"
+        data-id="${road.getId()}"
+        data-attr="${attrib}"></span>`;
+}

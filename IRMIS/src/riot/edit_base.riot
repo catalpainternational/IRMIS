@@ -1,23 +1,36 @@
 <edit_base>
     <div class="row">
         <div id="side-menu">
-            <ul class="navigation">
-                <li class="text-uppercase">{ window.gettext("Edit asset") }</li>
-                <ul>
-                    <li class="{ state.page === 'location_type' ? 'active' : '' }" data-page="location_type" onclick="{ selectPage }">{ window.gettext("Location & Type") }</li>
-                    <li class="{ state.page === 'asset_details' ? 'active' : '' }" data-page="asset_details" onclick="{ selectPage }">{ window.gettext("Asset Details") }</li>
-                    <li class="{ state.page === 'pavement' ? 'active' : '' }" data-page="pavement" onclick="{ selectPage }">{ window.gettext("Pavement") }</li>
-                    <li class="{ state.page === 'project' ? 'active' : '' }" data-page="project" onclick="{ selectPage }">{ window.gettext("Project") }</li>
-                    <li class="{ state.page === 'condition' ? 'active' : '' }" data-page="condition" onclick="{ selectPage }">{ window.gettext("Condition") }</li>
+            <div>
+                <ul class="navigation">
+                    <li class="text-uppercase">{ window.gettext("Edit asset") }</li>
+                    <ul>
+                        <li class="{ state.page === 'location_type' ? 'active' : '' }" data-page="location_type" onclick="{ selectPage }">{ window.gettext("Location & Type") }</li>
+                        <li class="{ state.page === 'asset_details' ? 'active' : '' }" data-page="asset_details" onclick="{ selectPage }">{ window.gettext("Asset Details") }</li>
+                        <li class="{ state.page === 'pavement' ? 'active' : '' }" data-page="pavement" onclick="{ selectPage }">{ window.gettext("Pavement") }</li>
+                        <li class="{ state.page === 'project' ? 'active' : '' }" data-page="project" onclick="{ selectPage }">{ window.gettext("Project") }</li>
+                        <li class="{ state.page === 'condition' ? 'active' : '' }" data-page="condition" onclick="{ selectPage }">{ window.gettext("Condition") }</li>
+                        <li class="{ state.page === 'maintenance' ? 'active' : '' }" data-page="maintenance" onclick="{ selectPage }">{ window.gettext("Maintenance") }</li>
+                    </ul>
                 </ul>
-            </ul>
-            <ul class="navigation">
-                <li class="text-uppercase">{ window.gettext("History") }</li>
-                <ul>
-                    <li class="{ state.page === 'history' ? 'active' : '' }" data-page="history" onclick="{ selectPage }">{ window.gettext("Change log") }</li>
+                <ul class="navigation">
+                    <li class="text-uppercase">{ window.gettext("History") }</li>
+                    <ul>
+                        <li class="{ state.page === 'history' ? 'active' : '' }" data-page="history" onclick="{ selectPage }">{ window.gettext("Change log") }</li>
+                    </ul>
                 </ul>
-            </ul>
+            </div>
         </div>
+
+        <edit_stop_alert
+            modalId="stop-alert"
+            title="{ window.gettext('Unsaved Changes') }"
+            description="{ window.gettext('You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?') }"
+            proceedLabel="{ window.gettext('Discard') }"
+            proceedResult="discard"
+            stopLabel="{ window.gettext('Continue editing') }"
+            stopResult="continueEdit">
+        </edit_stop_alert>
 
         <div if="{ !state.loading }" id="edit-base">
             <header class="align-items-center d-flex">
@@ -32,27 +45,9 @@
             <edit_pavement road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'pavement' }" on-save="{ save }"></edit_pavement>
             <edit_project road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'project' }" on-save="{ save }"></edit_project>
             <edit_condition road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'condition' }" on-save="{ save }"></edit_condition>
+            <edit_maintenance road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'maintenance' }" on-save="{ save }"></edit_maintenance>
 
             <edit_history road="{ state.baseRoad }" getHelpText="{getHelpText}" if="{ state.page === 'history' }"></edit_history>
-        </div>
-
-        <div id="stop-alert" class="modal" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-                <div class="align-items-center modal-content">
-                    <div class="modal-header">
-                        <span class="alert stop image"></span>
-                        <span class="close image" data-dismiss="modal" aria-label="{ window.gettext('Close') }" aria-hidden="true"></span>
-                    </div>
-                    <div class="modal-body text-center">
-                        <h6>{ window.gettext("Unsaved Changes") }</h6>
-                        <p>{ window.gettext("You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?") }</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="{ discardChanges }">{ window.gettext("Discard") }</button>
-                        <button type="button" class="btn btn-light" data-dismiss="modal">{ window.gettext("Continue editing") }</button>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <div id="loading" class="modal" tabindex="-1" role="dialog">
@@ -60,7 +55,7 @@
                 <div class="align-items-center modal-content">
                     <div class="modal-header"></div>
                     <div class="modal-body text-center">
-                        <h6>{ window.gettext("Loading") }...</h6>
+                        <h5>{ window.gettext("Loading") }...</h5>
                     </div>
                     <div class="modal-footer"></div>
                 </div>
@@ -69,20 +64,23 @@
     </div>
 
     <script>
+        import * as riot from "riot";
+        import $ from "jquery";
+
         import { saveRoad } from "../roadManager";
         import { getHelpText } from "../road";
 
         import Edit_Feedback from './edit_feedback.riot';
+        import Edit_Stop_Alert from "./edit_stop_alert.riot";
+
         import Edit_Location_Type from "./edit_location_type.riot";
         import Edit_Asset_Details from "./edit_asset_details.riot";
         import Edit_Pavement from "./edit_pavement.riot";
         import Edit_Project from "./edit_project.riot";
         import Edit_Condition from "./edit_condition.riot";
+        import Edit_Maintenance from "./edit_maintenance.riot";
 
         import Edit_History from "./edit_history.riot";
-
-        import "bootstrap/js/dist/modal";
-        import $ from "jquery";
 
         let timeoutId = null;
 
@@ -97,10 +95,12 @@
                 nextPage: null,
                 hasChanges: false,
                 showFeedback: false,
+                stopAlertResult: null,
             },
             components: {
-                Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Project, Edit_Condition, Edit_Feedback,
-                Edit_History
+                Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Project, Edit_Condition, Edit_Maintenance,
+                Edit_History,
+                Edit_Feedback, Edit_Stop_Alert
             },
             onBeforeMount() {
                 window.onbeforeunload = () => {
@@ -115,6 +115,7 @@
             onMounted(props, state) {
                 $('#loading').modal('show');
                 state.page = props.page;
+
                 props.roadPromise.then(road => {
                     $('#loading').modal('hide');
                     state.loading = false;
@@ -151,7 +152,7 @@
             goBack(e) {
                 this.state.nextPage = "#";
                 if (this.hasChanges()) {
-                    $('#stop-alert').modal('show');
+                    this.modalHandler();
                 } else {
                     clearTimeout(timeoutId);
                     window.location.hash = this.state.nextPage;
@@ -161,11 +162,25 @@
                 const roadId = this.state.editingRoad.getId();
                 this.state.page = e.currentTarget.dataset.page;
                 this.state.nextPage = `#edit/${roadId}/${this.state.page}`;
-                if (this.hasChanges()) { 
-                    $('#stop-alert').modal('show');
+                if (this.hasChanges()) {
+                    this.modalHandler();
                 } else {
                     this.discardChanges();
                 }
+            },
+            modalHandler() {
+                document.addEventListener("edit.stop-alert.result", (data) => {
+                    const stopAlertResult = data.detail.result;
+
+                    // Ensure that the dialog gets hidden
+                    $("#stop-alert").modal("hide");
+
+                    if (stopAlertResult === "discard") {
+                        this.discardChanges();
+                    }
+                }, { once: true });
+
+                $("#stop-alert").modal("show");
             },
             discardChanges() {
                 this.state.editingRoad = this.state.baseRoad.cloneMessage();

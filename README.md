@@ -49,6 +49,9 @@ This entire sequence must be performed to completion before users are allowed to
 4. `./manage.py collate_geometries`
   - you have edited roads so re-collate
 
+5. `./manage.py make_road_surveys`
+  - create Surveys from the Road data
+
 ## Pre-Commit (Black formatter)
 
 This repo has been setup with a pre-commit hook for Black formatter. This ensures that your code meets formatting standard prior to commiting to Git. You can read more about it go here: https://pre-commit.com/

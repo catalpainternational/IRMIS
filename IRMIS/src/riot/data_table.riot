@@ -19,18 +19,25 @@
             state.hasChanges = false;
             state.showFeedback = false;
 
-            state.canEdit = false;
+            state.canEdit = !!props.canedit;
+            state.canDelete = !!props.candelete;
 
-            state.id = props.table_id || "data-table";
+            state.id = props.table_id || "all-data-table";
             state.columns = props.columns || [];
             state.columnSortOrder = props.columnSortOrder || [[0, "asc"]];
+            state.appendRows = true;
             state.pendingRows = props.pendingRows || [];
             state.pageLength = props.pageLength || 10;
+
+            // Wraps the actual processing for 'dataAdded' event, and includes this tag's state
+            state.dataAdded = (data) => processDataAdded(data, state);
+
+            const optionColumns = state.columns.filter((column) => (column.name && column.name === "Option"));
 
             if (state.canEdit) {
                 state.columnSortOrder.forEach((columnOrder) => {
                     columnOrder[0]++;
-                })
+                });
 
                 state.columns.unshift({
                     title: "",
@@ -39,16 +46,39 @@
                     orderable: false,
                     className: "edit-col"
                 });
-            }            
+            }
+
+            if (state.canDelete && optionColumns.length === 1) {
+                optionColumns[0].render = (data, type, row) => {
+                    if (row.getAddedBy()) {
+                        return row ? button_template("delete", button_event_template(state.id, "deleteRow", row.getId())) : "";
+                    } else {
+                        return "";
+                    }
+                };
+            }
         }
 
-        const addEventListener = function(state) {
-            state.dataAddedEventHandler = document.addEventListener(`${state.id}.dataAdded`, (data) => {
-                const pendingRows = data.detail.pendingRows;
+        const button_template = function(buttonClass, clickAction) {
+            return `<span class="${buttonClass} image" onclick="${clickAction}"></span>`;
+        }
 
-                state.pendingRows = state.pendingRows.concat(pendingRows);
-                updateDataTable(state);
-            });
+        const button_event_template = function(tableId, eventName, rowId) {
+            return `document.dispatchEvent(new CustomEvent('${tableId}.${eventName}',{detail:{rowId:${rowId}}}))`;
+        }
+
+        const processDataAdded = function(data, state) {
+            const pendingRows = data.detail.pendingRows;
+            const haveAppendRows = typeof (data.detail.appendRows) === "boolean";
+            const appendRows = haveAppendRows ? data.detail.appendRows : true;
+
+            state.pendingRows = appendRows
+                ? state.pendingRows.concat(pendingRows)
+                : pendingRows;
+            state.appendRows = appendRows;
+            updateDataTable(state);
+
+            data.stopPropagation();
         }
 
         const initialiseDataTable = function (state) {
@@ -67,9 +97,20 @@
 
         const updateDataTable = function (state) {
             if (state.pendingRows.length) {
-                state.table.rows.add(state.pendingRows).draw();
+                if (!state.appendRows) {
+                    state.table.clear().rows.add(state.pendingRows).draw();
+                } else {
+                    state.table.rows.add(state.pendingRows).draw();
+                }
+
                 state.pendingRows = [];
-            }    
+            } else {
+                if (!state.appendRows) {
+                    // No pendingRows and we're not appending
+                    // This is interpreted as 'clear the table'
+                    state.table.clear().draw();
+                }
+            }
         }
 
         export default {
@@ -78,16 +119,14 @@
                 this.update();
 
                 initialiseDataTable(state);
-                addEventListener(state);
+                document.addEventListener(`${state.id}.dataAdded`, state.dataAdded)
             },
             onBeforeUnmount(props, state) {
-                if (state.dataAddedEventHandler) {
-                    document.removeEventListener(`${state.id}.dataAdded`, state.dataAddedEventHandler);
-                }
+                document.removeEventListener(`${state.id}.dataAdded`, state.dataAdded);
             },
             getHelpText(field) {
                 return getHelpText(field);
             }
         };
     </script>
-</data_table> 
+</data_table>

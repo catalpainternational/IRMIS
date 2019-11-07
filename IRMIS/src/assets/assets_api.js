@@ -1,7 +1,9 @@
 import { Road, Roads, Versions } from "../../protobuf/roads_pb";
 import { EstradaRoad } from "../road";
 import { EstradaAudit } from "../audit";
+
 import { ConfigAPI } from "./configAPI";
+import { makeEstradaObject } from "./protoBufUtilities";
 
 /** getRoadsMetadataChunks
  *
@@ -13,7 +15,7 @@ export function getRoadsMetadataChunks() {
     const assetTypeUrlFragment = "road_chunks";
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}`;
 
-    return fetch(metadataUrl, ConfigAPI.requestAssetInit())
+    return fetch(metadataUrl, ConfigAPI.requestInit())
         .then((jsonResponse) => (jsonResponse.json()));
 }
 
@@ -28,7 +30,7 @@ export function getRoadsMetadata(chunkName) {
     chunkName = chunkName || "";
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${chunkName}`;
 
-    return fetch(metadataUrl, ConfigAPI.requestAssetInit())
+    return fetch(metadataUrl, ConfigAPI.requestInit())
         .then((metadataResponse) => (metadataResponse.arrayBuffer()))
         .then((protobufBytes) => {
             const uintArray = new Uint8Array(protobufBytes);
@@ -47,7 +49,7 @@ export function getRoadMetadata(roadId) {
 
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${roadId}`;
 
-    return fetch(metadataUrl, ConfigAPI.requestAssetInit())
+    return fetch(metadataUrl, ConfigAPI.requestInit())
         .then((metadataResponse) => (metadataResponse.arrayBuffer()))
         .then((protobufBytes) => {
             const uintArray = new Uint8Array(protobufBytes);
@@ -65,7 +67,7 @@ export function putRoadMetadata(road) {
     const assetTypeUrlFragment = "road_update";
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}`;
 
-    const postAssetInit = ConfigAPI.requestAssetInit("PUT");
+    const postAssetInit = ConfigAPI.requestInit("PUT");
     postAssetInit.body = road.serializeBinary();
 
     return fetch(metadataUrl, postAssetInit)
@@ -79,21 +81,6 @@ export function putRoadMetadata(road) {
         });
 }
 
-function makeEstradaObject(estradaObjectType, protoBufSource) {
-    let estradaObject = Object.create(estradaObjectType.prototype);
-    Object.assign(estradaObject, protoBufSource);
-
-    return estradaObject;
-}
-
-function makeEstradaRoad(pbroad) {
-    return makeEstradaObject(EstradaRoad, pbroad);
-}
-
-function makeEstradaAudit(pbversion) {
-    return makeEstradaObject(EstradaAudit, pbversion);
-}
-
 /** getRoadAuditData
  *
  * Retrieves the Audit changes data for a single road from the server
@@ -105,10 +92,18 @@ export function getRoadAuditData(roadId) {
 
     const auditDataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${roadId}`;
 
-    return fetch(auditDataUrl, ConfigAPI.requestAssetInit())
+    return fetch(auditDataUrl, ConfigAPI.requestInit())
         .then((auditDataResponse) => (auditDataResponse.arrayBuffer()))
         .then((protobufBytes) => {
             const uintArray = new Uint8Array(protobufBytes);
             return Versions.deserializeBinary(uintArray).getVersionsList().map(makeEstradaAudit);
         });
+}
+
+function makeEstradaRoad(pbroad) {
+    return makeEstradaObject(EstradaRoad, pbroad);
+}
+
+function makeEstradaAudit(pbversion) {
+    return makeEstradaObject(EstradaAudit, pbversion);
 }
