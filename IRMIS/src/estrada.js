@@ -1,6 +1,7 @@
 import "babel-polyfill";
 import * as riot from "riot";
 
+import Reports_Base from "./riot/reports_base.riot";
 import Edit_Base from "./riot/edit_base.riot";
 
 import "./styles/estrada.scss";
@@ -43,8 +44,11 @@ window.addEventListener("load", () => {
             });
         });
 
+    riot.register("reports_base", Reports_Base);
     riot.register("edit_base", Edit_Base);
+
     window.goBack = () => {};
+
     hashCheck();
 });
 
@@ -53,13 +57,25 @@ window.addEventListener("hashchange", () => {
 });
 
 function hashCheck() {
-    let m = /#edit\/(\d*)\/(\w+)/.exec(location.hash);
-    if (m !== null && !document.getElementById("edit-base")) {
-        var roadPromise = getRoad(m[1]);
-        riot.mount("edit_base", { roadPromise: roadPromise, page: m[2] });
-        document.getElementById("view-content").hidden = true;
-    } else if (m === null) {
+    const mainContent = document.getElementById("view-content");
+    const reportsBase = document.getElementById("reports");
+    const editBase = document.getElementById("edit-base");
+
+    let reportsHash = /#reports/.exec(location.hash);
+    let editHash = /#edit\/(\d*)\/(\w+)/.exec(location.hash);
+
+    if (editHash !== null && !editBase) {
+        var roadPromise = getRoad(editHash[1]);
+        riot.unmount("reports_base", true);
+        riot.mount("edit_base", { roadPromise: roadPromise, page: editHash[2] });
+        mainContent.hidden = true;
+    } else if (reportsHash !== null && !reportsBase) {
         riot.unmount("edit_base", true);
-        document.getElementById("view-content").hidden = false;
+        riot.mount("reports_base");
+        mainContent.hidden = true;
+    } else if (editHash === null && reportsHash === null) {
+        riot.unmount("reports_base", true);
+        riot.unmount("edit_base", true);
+        mainContent.hidden = false;
     }
 }
