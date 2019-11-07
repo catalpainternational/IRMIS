@@ -1,7 +1,7 @@
-import { Road } from "../protobuf/roads_pb";
+import { Road } from "../../../protobuf/roads_pb";
 
-import { projToWGS84, toDms, toUtm } from "./assets/crsUtilities";
-import { choice_or_default, getFieldName, getHelpText, humanizeChoices, toChainageFormat } from "./assets/protoBufUtilities";
+import { projToWGS84, toDms, toUtm } from "../crsUtilities";
+import { choice_or_default, getFieldName, getHelpText, humanizeChoices, toChainageFormat } from "../protoBufUtilities";
 
 const roadSchema = JSON.parse(document.getElementById('road_schema').textContent);
 

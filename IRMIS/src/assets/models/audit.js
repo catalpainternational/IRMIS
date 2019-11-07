@@ -1,6 +1,6 @@
-import { Version } from "../protobuf/roads_pb";
+import { Version } from "../../../protobuf/roads_pb";
 
-import { getFieldName, getHelpText } from "./assets/protoBufUtilities";
+import { getFieldName, getHelpText } from "../protoBufUtilities";
 
 const auditSchema = {
     id: { display: "Id" },

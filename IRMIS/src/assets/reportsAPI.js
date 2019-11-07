@@ -1,5 +1,5 @@
 import { Report } from "../../protobuf/report_pb";
-import { EstradaRoadSurveyReport } from "../surveyReport";
+import { EstradaRoadSurveyReport } from "./models/surveyReport";
 
 import { ConfigAPI } from "./configAPI";
 import { makeEstradaObject } from "./protoBufUtilities";

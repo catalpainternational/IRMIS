@@ -2,7 +2,8 @@
     <table if={ state.id } id={ state.id } class="d-block table table-bordered table-hover w-100"></table>
 
     <script>
-        import { EstradaRoad } from "../road";
+        // We really should NOT be importing roads here
+        import { EstradaRoad } from "../assets/models/road";
         import { datatableTranslations } from "../datatableTranslations";
 
         import "bootstrap/js/dist/modal";

@@ -1,8 +1,8 @@
 import dayjs from "dayjs";
 
-import { Report, TableEntry } from "../protobuf/report_pb";
+import { Report, TableEntry } from "../../../protobuf/report_pb";
 
-import { choice_or_default, getFieldName, getHelpText, makeEstradaObject } from "./assets/protoBufUtilities";
+import { choice_or_default, getFieldName, getHelpText, makeEstradaObject } from "../protoBufUtilities";
 
 import { SURFACE_CONDITION_CHOICES } from "./road";
 

@@ -1,4 +1,4 @@
-import { EstradaRoad } from "./road";
+import { EstradaRoad } from "./assets/models/road";
 
 /** Define the general events that the main table will respond to
  *

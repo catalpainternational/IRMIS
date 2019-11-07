@@ -1,9 +1,9 @@
 import dayjs from "dayjs";
 
-import { Survey } from "../protobuf/survey_pb";
+import { Survey } from "../../../protobuf/survey_pb";
 import { SURFACE_CONDITION_CHOICES, SURFACE_TYPE_CHOICES, TECHNICAL_CLASS_CHOICES, TRAFFIC_LEVEL_CHOICES } from "./road";
 
-import { choice_or_default, getFieldName, getHelpText } from "./assets/protoBufUtilities";
+import { choice_or_default, getFieldName, getHelpText } from "../protoBufUtilities";
 
 // We may need a survey schema - primarily for formatted field names
 // JSON.parse(document.getElementById('survey_schema').textContent);
