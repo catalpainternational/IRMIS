@@ -10,6 +10,7 @@ from .models import (
     PavementClass,
     MaintenanceNeed,
     TechnicalClass,
+    Survey,
 )
 
 
@@ -30,3 +31,4 @@ admin.site.register(SurfaceType)
 admin.site.register(PavementClass)
 admin.site.register(MaintenanceNeed)
 admin.site.register(TechnicalClass)
+admin.site.register(Survey)

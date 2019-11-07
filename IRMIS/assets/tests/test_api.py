@@ -1,7 +1,9 @@
 from django.urls import reverse
-from ..models import Road
-from protobuf import roads_pb2
+from django.utils import timezone
+from ..models import Road, Survey
+from protobuf import roads_pb2, survey_pb2
 from reversion.models import Version
+from google.protobuf.timestamp_pb2 import Timestamp
 
 import reversion
 import pytest
@@ -247,3 +249,138 @@ def test_api_etag_caches(client, django_user_model):
     response2 = client.get(url, HTTP_IF_NONE_MATCH=etag)
     # check the response2 is 304
     assert response2.status_code == 304
+
+
+@pytest.mark.django_db
+def test_survey_create(client, django_user_model):
+    """ This test will fail if the survey api throws an error with creating
+    a survey asset """
+    # create a user
+    user = django_user_model.objects.create_user(username="user1", password="bar")
+    client.force_login(user)
+    # build protobuf to send new survey
+    pb = survey_pb2.Survey()
+    pb.user = user.pk
+    pb.road = "A01"
+    pb.chainage_start = 6000.0
+    pb.chainage_end = 7000.0
+    pb.values = json.dumps({"traffic_level": "None", "surface_condition": "2"})
+    ts = Timestamp()
+    ts.FromDatetime(timezone.now())
+    pb.date_surveyed.CopyFrom(ts)
+    # hit the survey API
+    url = reverse("survey_create")
+    response = client.post(
+        url, data=pb.SerializeToString(), content_type="application/octet-stream"
+    )
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_survey_edit_update(client, django_user_model):
+    """ This test will fail if the survey api throws an error with update of
+    survey asset or fails to change the chainage start field """
+    # create a user
+    user = django_user_model.objects.create_user(username="user1", password="bar")
+    client.force_login(user)
+    with reversion.create_revision():
+        # create a survey
+        survey = Survey.objects.create(
+            **{
+                "road": "A01",
+                "user": user,
+                "chainage_start": 600.0,
+                "chainage_end": 700.25,
+                "date_surveyed": timezone.now(),
+                "values": {"surface_condition": "2", "traffic_level": "L"},
+            }
+        )
+        # store the user who made the changes
+        reversion.set_user(user)
+    # build protobuf to send with road modifications
+    pb = Survey.objects.filter(id=survey.id).to_protobuf().surveys[0]
+    pb.chainage_start = 500.0
+    # hit the survey api
+    url = reverse("survey_update")
+    response = client.put(
+        url, data=pb.SerializeToString(), content_type="application/octet-stream"
+    )
+    assert response.status_code == 200
+    # check that DB was updated correctly
+    mod_survey = Survey.objects.get(id=survey.id)
+    assert mod_survey.chainage_start == pb.chainage_start
+    # check that a new revision exists
+    versions = Version.objects.get_for_object(mod_survey)
+    assert len(versions) == 2
+    # check that the user is noted in the latest revision record
+    assert versions[1].revision.user == user
+
+
+@pytest.mark.django_db
+def test_survey_edit_update_404_pk(client, django_user_model):
+    """ This test will fail if the survey api does NOT throw a 404 error when attempting
+    to update a road asset when passed Road ID does not exist in the DB """
+    # create a user
+    user = django_user_model.objects.create_user(username="user1", password="bar")
+    client.force_login(user)
+    # build protobuf to send with survey modifications
+    pb = survey_pb2.Survey()
+    pb.id = 99999
+    # hit the survey api - detail
+    url = reverse("survey_update")
+    response = client.put(
+        url, data=pb.SerializeToString(), content_type="application/octet-stream"
+    )
+    assert response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_survey_edit_erroneous_protobuf(client, django_user_model):
+    """ This test will fail if the survey api does NOT throw an error when given
+    a protobuf payload that is 1) not deserializable or 2) doesn't point to an
+    existing Survey in the DB (CREATE attempt, not proper PUT) """
+    # create a user
+    user = django_user_model.objects.create_user(username="user1", password="bar")
+    client.force_login(user)
+    url = reverse("survey_update")
+    response = client.put(url, data=b"", content_type="application/octet-stream")
+    assert response.status_code == 400
+
+
+@pytest.mark.django_db
+def test_survey_delete(client, django_user_model):
+    """ This test will fail if the survey api throws an error with 'deletion' of
+    survey asset or fails to remove the value attribute from the survey """
+    # create a user
+    user = django_user_model.objects.create_user(username="user1", password="bar")
+    client.force_login(user)
+    with reversion.create_revision():
+        # create a survey
+        survey = Survey.objects.create(
+            **{
+                "road": "A01",
+                "user": user,
+                "chainage_start": 600.0,
+                "chainage_end": 700.25,
+                "date_surveyed": timezone.now(),
+                "values": {"surface_condition": "2", "traffic_level": "L"},
+            }
+        )
+        # store the user who made the changes
+        reversion.set_user(user)
+
+    # void the surface condition attribute & make Protobuf to send
+    pb = Survey.objects.filter(id=survey.id).to_protobuf().surveys[0]
+    pb.values = json.dumps({"surface_condition": None, "traffic_level": "L"})
+
+    # attempt to delete the survey
+    url = reverse("survey_update")
+    response = client.put(
+        url, data=pb.SerializeToString(), content_type="application/octet-stream"
+    )
+    assert response.status_code == 200
+    # check that DB not longer has the survey attribute that was deleted
+    # but does have one that should not have been touched
+    mod_survey = Survey.objects.filter(id=survey.id).get()
+    assert mod_survey.values["surface_condition"] == None
+    assert mod_survey.values["traffic_level"] == survey.values["traffic_level"]

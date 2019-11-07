@@ -1,8 +1,6 @@
 import { slugToPropertyGetter } from "./filter";
 import { getRoadAuditData, getRoadMetadata, getRoadsMetadata, getRoadsMetadataChunks, putRoadMetadata } from "./assets/assets_api";
 
-import { Road, Version } from "../protobuf/roads_pb";
-
 const roads = {};
 let filteredRoads = {};
 

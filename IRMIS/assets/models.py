@@ -1,6 +1,8 @@
+from django.conf import settings
 from django.contrib.gis.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.postgres.fields import HStoreField
 from django.utils.translation import get_language, ugettext, ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
@@ -8,9 +10,13 @@ from django.db.models import Count, Max
 
 import reversion
 from reversion.models import Version
+
 from protobuf.roads_pb2 import Roads as ProtoRoads
 from protobuf.roads_pb2 import Projection
+from protobuf.survey_pb2 import Surveys as ProtoSurveys
 
+import json
+from google.protobuf.timestamp_pb2 import Timestamp
 from .geodjango_utils import start_end_point_annos
 
 
@@ -61,6 +67,133 @@ class TechnicalClass(models.Model):
         return self.name
 
 
+class SurveyQuerySet(models.QuerySet):
+    def timestamp_from_datetime(self, dt):
+        ts = Timestamp()
+        ts.FromDatetime(dt)
+        return ts
+
+    def to_protobuf(self):
+        """ returns a roads survey protobuf object from the queryset """
+        # See survey.proto
+
+        surveys_protobuf = ProtoSurveys()
+
+        fields = dict(
+            id="id",
+            road="road",
+            user="user__id",
+            date_updated="date_updated",
+            date_surveyed="date_surveyed",
+            chainage_start="chainage_start",
+            chainage_end="chainage_end",
+            values="values",
+            source="source",
+            added_by="user__username",
+        )
+
+        last_revisions = {
+            i["object_id"]: i["revision_id"]
+            for i in Version.objects.get_queryset()
+            .order_by("object_id", "revision_id")
+            .values("object_id", "revision_id")
+        }
+
+        for survey in self.values(*fields.values()):
+            survey_protobuf = surveys_protobuf.surveys.add()
+            for protobuf_key, query_key in fields.items():
+                if (
+                    survey[query_key]
+                    and query_key not in ["date_updated", "date_surveyed"]
+                    and query_key != "values"
+                ):
+                    setattr(survey_protobuf, protobuf_key, survey[query_key])
+
+            if survey["date_updated"]:
+                ts = self.timestamp_from_datetime(survey["date_updated"])
+                survey_protobuf.date_updated.CopyFrom(ts)
+
+            if survey["date_surveyed"]:
+                ts = self.timestamp_from_datetime(survey["date_surveyed"])
+                survey_protobuf.date_surveyed.CopyFrom(ts)
+
+            if survey["values"]:
+                # Dump the survey values as a json string
+                # Because these are not likely to get large,
+                # zipping them will probably not be optimal
+                survey_protobuf.values = json.dumps(
+                    survey["values"], separators=(",", ":")
+                )
+            setattr(
+                survey_protobuf, "last_revision_id", last_revisions[str(survey["id"])]
+            )
+
+        return surveys_protobuf
+
+
+class SurveyManager(models.Manager):
+    def get_queryset(self):
+        return SurveyQuerySet(self.model, using=self._db)
+
+    def to_protobuf(self, road=None):
+        """ returns a roads survey protobuf object from the manager """
+        return self.get_queryset().to_protobuf()
+
+
+@reversion.register()
+class Survey(models.Model):
+
+    objects = SurveyManager()
+
+    road = models.CharField(
+        verbose_name=_("Road Code"), validators=[no_spaces], max_length=25
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        verbose_name=_("User"),
+        null=True,
+        on_delete=models.SET_NULL,
+    )
+    date_surveyed = models.DateTimeField(_("Date Surveyed"), null=True)
+    date_created = models.DateTimeField(_("Date Created"), auto_now_add=True)
+    date_updated = models.DateTimeField(_("Date Updated"), auto_now=True)
+    chainage_start = models.DecimalField(
+        verbose_name=_("Start Chainage (Km)"),
+        max_digits=12,
+        decimal_places=5,
+        blank=True,
+        null=True,
+        help_text=_("Enter chainage for survey starting point"),
+    )
+    chainage_end = models.DecimalField(
+        verbose_name=_("End Chainage (Km)"),
+        max_digits=12,
+        decimal_places=5,
+        blank=True,
+        null=True,
+        help_text=_("Enter chainage for survey ending point"),
+    )
+    source = models.CharField(
+        verbose_name=_("Source"),
+        default=None,
+        null=True,
+        max_length=150,
+        help_text=_("Choose the source of the survey"),
+    )
+    values = HStoreField()
+    source = models.CharField(
+        verbose_name=_("Source"), max_length=155, blank=True, null=True
+    )
+
+    def __str__(self,):
+        return "%s(%s - %s) %s" % (
+            self.road,
+            self.chainage_start,
+            self.chainage_end,
+            self.date_updated,
+        )
+
+
 class RoadQuerySet(models.QuerySet):
     def to_chunks(self):
         """ returns an object defining the available chunks from the roads queryset """
@@ -98,6 +231,7 @@ class RoadQuerySet(models.QuerySet):
             funding_source="funding_source",
             maintenance_need="maintenance_need__code",
             traffic_level="traffic_level",
+            number_lanes="number_lanes",
         )
 
         annotations = start_end_point_annos("geom")
@@ -343,6 +477,12 @@ class Road(models.Model):
         help_text=_(
             "Choose road link technical class according to the 2010 Road Geometric Design Standards, DRBFC standards"
         ),
+    )
+    number_lanes = models.IntegerField(
+        verbose_name=_("Number of Lanes"),
+        blank=True,
+        null=True,
+        help_text=_("Enter the number of lanes of the road"),
     )
 
     # a reference to the collated geojson file this road's geometry is in

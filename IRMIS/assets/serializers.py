@@ -5,7 +5,7 @@ from .models import Road
 
 
 class RoadToWGSSerializer(GeoFeatureModelSerializer):
-    """ 
+    """
     A class to serialize roads as GeoJSON compatible data
     This expects a "to_wgs" field which is a transform of the geom field to
     SRID 4326 for web mapping and valid geoJSON output
@@ -21,7 +21,7 @@ class RoadToWGSSerializer(GeoFeatureModelSerializer):
 
 
 class RoadSerializer(GeoFeatureModelSerializer):
-    """ 
+    """
     A class to serialize roads as GeoJSON compatible data
     This won't produce valid GeoJSON (which should be in WGS84 or SRID 4326),
     but avoids unnecessary transformation when calculating etags

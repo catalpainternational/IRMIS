@@ -1,44 +1,61 @@
 $max-width: 400px;
 
-#edit-base {
-    width: calc(100% - #{$side-menu-width});
-    padding-bottom: 15px;
-    padding-right: 15px;
-    padding-left: 0;
+edit_base {
+    padding-right: 5px;
+    display: block;
 
-    header {
-        border-bottom: 1px solid $light-gray;
+    #edit-base {
+        height: calc(100vh - #{$top-menu-height} - 15px);
+        width: calc(100% - #{$side-menu-width});
+        padding-right: 10px;
+        overflow-y: overlay;
+        
+        header {
+            border-bottom: 1px solid $light-gray;
+            background-color: $white;
+            padding-right: 20px;
+            padding-left: 20px;
+            height: 70px;
+
+            .caret-dark {
+                background-size: 16px 10px;
+                height: 25px;
+                width: 25px;
+            }
+
+            h1 {
+                margin-left: 15px;
+                margin-bottom: 0;
+                margin-top: 5px;
+            }
+        }
+    }
+
+    .content-wrapper {
         background-color: $white;
-        padding-right: 20px;
-        padding-left: 20px;
-        height: 70px;
+        padding: 30px 60px 60px;
 
-        .caret-dark {
-            background-size: 16px 10px;
-            height: 25px;
-            width: 25px;
+        &:not(:first-of-type) {
+            margin-top: 15px;
         }
 
-        h1 {
-            margin-left: 15px;
-            margin-bottom: 0;
-            margin-top: 5px;
+        a.table-toggle.active, a.table-toggle.active:hover {
+            color: $green;
+        }
+
+        a.table-toggle:first-of-type {
+            margin-right: 20px;
         }
     }
 }
 
-edit_asset_details, edit_pavement, edit_project, edit_condition, edit_location_type, edit_history {
-    height: calc(100vh - #{$top-menu-height} - 70px - 15px);
-    background-color: $white;
-    padding: 30px 60px 60px;
-    overflow-y: auto;
-    display: block;
-
-    h5 {
-        max-width: $max-width;
-        margin-bottom: 20px;
-    }
-
+edit_location_type,
+edit_asset_details,
+edit_pavement,
+edit_project,
+edit_maintenance,
+edit_history,
+edit_condition {
     section {
         max-width: $max-width;
         margin-bottom: 40px;
@@ -62,9 +79,27 @@ edit_asset_details, edit_pavement, edit_project, edit_condition, edit_location_t
             }
         }
     }
+}
 
-    .button-wrapper {
+edit_location_type,
+edit_asset_details,
+edit_pavement,
+edit_project,
+edit_maintenance,
+edit_history {
+    background-color: $white;
+    padding: 30px 60px 60px;
+    display: block;
+
+    h5 {
         max-width: $max-width;
+        margin-bottom: 20px;
+    }
+}
+
+edit_condition {
+    h5 {
+        margin-bottom: 0;
     }
 }
 
