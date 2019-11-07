@@ -186,13 +186,15 @@
                 this.updateSurfaceConditionsSummary([emptyConditions]);
                 this.refreshSurveysAndReports();
 
-                this.deleteListener = document.addEventListener(`${this.all_data_table_id}.deleteRow`, (data) => {
+                this.deleteListener = (data) => {
                     const rowId = data.detail.rowId;
                     this.showStopAlertModal("delete-alert", rowId);
-                });
+                };
+                
+                document.addEventListener(`${this.all_data_table_id}.deleteRow`, this.deleteListener);
             },
             onUnmount(props, state) {
-                document.removeEventListener(`${this.all_data_table_id}.deleteRow`, {});
+                document.removeEventListener(`${this.all_data_table_id}.deleteRow`, this.deleteListener);
             },
             refreshSurveysAndReports() {
                 this.getRoadSurveys();
@@ -205,9 +207,11 @@
                     .then((surveyData) => {
                         if (surveyData) {
                             this.state.pendingRows = surveyData;
-                            const pendingRows = this.state.pendingRows;
-                            const appendRows = this.state.loading;
-                            document.dispatchEvent(new CustomEvent(`${this.all_data_table_id}.dataAdded`, { detail: { pendingRows, appendRows }}));
+
+                            const eventName = `${this.all_data_table_id}.dataAdded`;
+                            const eventDetail = { detail: { pendingRows: this.state.pendingRows, appendRows: this.state.loading }}
+                            document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+
                             this.state.error = false;
                         } else {
                             this.state.error = true;
@@ -231,9 +235,10 @@
                             }
                             if (surveyReportData.tableList && surveyReportData.tableList.length) {
                                 this.state.reportRows = surveyReportData.tableList;
-                                const pendingRows = this.state.reportRows;
-                                const appendRows = this.state.loading;
-                                document.dispatchEvent(new CustomEvent(`${this.current_data_table_id}.dataAdded`, { detail: { pendingRows, appendRows }}));
+
+                                const eventName = `${this.current_data_table_id}.dataAdded`;
+                                const eventDetail = { detail: { pendingRows: this.state.reportRows, appendRows: this.state.loading }}
+                                document.dispatchEvent(new CustomEvent(eventName, eventDetail));
                             }
                             this.state.error = false;
                         } else {
@@ -283,19 +288,19 @@
             viewAll(e) {
                 if (!this.state.viewAll) {
                     this.update({viewAll: true});
-                    const pendingRows = this.state.pendingRows;
                     // If we're not still loading, then we assume that we want to replace all rows
-                    const appendRows = this.state.loading;
-                    document.dispatchEvent(new CustomEvent(`${this.all_data_table_id}.dataAdded`, { detail: { pendingRows, appendRows }}));
+                    const eventName = `${this.all_data_table_id}.dataAdded`;
+                    const eventDetail = { detail: { pendingRows: this.state.pendingRows, appendRows: this.state.loading }}
+                    document.dispatchEvent(new CustomEvent(eventName, eventDetail));
                 }
             },
             viewCurrent(e) {
                 if (this.state.viewAll) {
                     this.update({viewAll: false});
-                    const pendingRows = this.state.reportRows;
                     // If we're not still loading, then we assume that we want to replace all rows
-                    const appendRows = this.state.loading;
-                    document.dispatchEvent(new CustomEvent(`${this.current_data_table_id}.dataAdded`, { detail: { pendingRows, appendRows }}));
+                    const eventName = `${this.current_data_table_id}.dataAdded`;
+                    const eventDetail = { detail: { pendingRows: this.state.reportRows, appendRows: this.state.loading }}
+                    document.dispatchEvent(new CustomEvent(eventName, eventDetail));
                 }
             },
             addEdit(e) {
@@ -436,7 +441,8 @@
             },
             showStopAlertModal(modalId, rowId) {
                 const eventName = `edit.${modalId}.result`;
-                this[`${eventName}Listener`] = this[`${eventName}Listener`] || document.addEventListener(eventName, (data) => {
+                // this[`${eventName}Listener`] = 
+                document.addEventListener(eventName, (data) => {
                     const stopAlertResult = data.detail.result;
                     $(`#${modalId}`).modal("hide");
 
@@ -511,16 +517,12 @@
                 if (!this.state.editMode) {
                     createSurvey(this.state.survey)
                         .then((surveyData) => {
-                            // const pendingRows = [ surveyData ];
-                            // document.dispatchEvent(new CustomEvent(`${this.all_data_table_id}.dataAdded`, {detail: { pendingRows }}));
                             this.refreshSurveysAndReports();
                         })
                         .catch((err) => { this.props.error = true; });
                 } else {
                     updateSurvey(this.state.survey)
                         .then((surveyData) => {
-                            // const pendingRows = [ surveyData ];
-                            // document.dispatchEvent(new CustomEvent(`${this.all_data_table_id}.dataAdded`, {detail: { pendingRows }}));
                             this.refreshSurveysAndReports();
                         })
                         .catch((err) => { this.props.error = true; });
