@@ -1,0 +1,37 @@
+#reports {
+    height: calc(100vh - #{$top-menu-height} - 25px);
+    width: calc(100% - #{$side-menu-width});
+    padding-bottom: 15px;
+    padding-right: 15px;
+    margin-top: 25px;
+    overflow-y: auto;
+    padding-left: 0;
+
+    h1 {
+        margin-bottom: 30px;
+    }
+
+    h6 {
+        margin-bottom: 10px;
+    }
+
+    .content-wrapper {
+        padding: 25px 25px 15px 60px;
+        background-color: $white;
+        margin-bottom: 30px;
+
+        p {
+            margin-left: 10px;
+            margin-bottom: 0;
+        }
+
+        div {
+            padding-bottom: 10px;
+        }
+
+        div:not(:last-child) {
+            border-bottom: 1px solid $light-gray;
+            margin-bottom: 10px;
+        }
+    }
+}

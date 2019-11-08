@@ -72,6 +72,17 @@ a {
     font-size: 14px;
 }
 
+#top-navigation a {
+    line-height: 17px;
+    font-weight: 400;
+    font-size: 14px;
+    color: $white;
+
+    &.selected {
+        font-weight: 700;
+    }
+}
+
 span {
     color: $dark-green;
     line-height: 17px;
@@ -131,6 +142,12 @@ p {
     font-size: 16px;
 }
 
+reports_base p {
+    line-height: 16px;
+    color: $dark-gray;
+    font-size: 14px;
+}
+
 small {
     line-height: 14px;
 	font-weight: 500;
@@ -179,6 +196,10 @@ h1, h1 span {
     line-height: 27px;
     font-weight: 700;
     font-size: 22px;
+}
+
+reports_base h1 {
+    color: $white;
 }
 
 h5 {

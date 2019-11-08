@@ -13,29 +13,38 @@
 {% endblock %}
 
 {% block top_menu %}
-<span class="app-logo-dark-bg" onclick="goBack()"></span>
+<span class="app-logo-dark-bg image" onclick="goBack()"></span>
 
-<div class="dropdown" id="topmenu_toggle">
-    <span id="user_welcome" data-user-id="{{ user.pk }}" data-user-name="{% if user.get_full_name %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}">{% trans "Hello" %}, {% if user.get_full_name %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}</span>
-    <span class="caret image"></span>
-    <div id="settings" class="dropdown-menu flex-column" hidden>
-        <form class="language-selector" action="{% url 'set_language' %}" method="post">
-            {% csrf_token %}
-            {% get_current_language as LANGUAGE_CODE %}
-            {% get_available_languages as LANGUAGES %}
-            {% get_language_info_list for LANGUAGES as languages %}
-            {% for language in languages %}
-            <button class="btn" type="submit" name="language" value="{{ language.code }}">
-                <span class="{% if language.code == LANGUAGE_CODE %}active{% endif %} radio image"></span>
-                {{ language.name_local }}
-            </button>
-            <br>
-            {% endfor %}
-        </form>
-        <div class="dropdown-divider"></div>
-        <a href="{% url 'password_change' %}">{% trans 'Change password' %}</a>
-        <div class="dropdown-divider"></div>
-        <a href="{% url 'logout' %}">{% trans 'Log out' %}</a>
+<div class="align-items-center d-flex justify-content-between">
+    <div id="top-navigation">
+        <a id="asset_manager_button" href="/#">{% trans "Asset Manager" %}</a>
+        <a id="reports_button" href="/#reports">{% trans "Reports" %}</a>
+    </div>
+
+    <div class="dropdown" id="topmenu_toggle">
+        <span id="user_welcome" data-user-id="{{ user.pk }}" data-user-name="{% if user.get_full_name %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}">
+            {% trans "Hello" %}, {% if user.get_full_name %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}
+        </span>
+        <span class="caret image"></span>
+        <div id="settings" class="dropdown-menu flex-column" hidden>
+            <form class="language-selector" action="{% url 'set_language' %}" method="post">
+                {% csrf_token %}
+                {% get_current_language as LANGUAGE_CODE %}
+                {% get_available_languages as LANGUAGES %}
+                {% get_language_info_list for LANGUAGES as languages %}
+                {% for language in languages %}
+                <button class="btn" type="submit" name="language" value="{{ language.code }}">
+                    <span class="{% if language.code == LANGUAGE_CODE %}active{% endif %} radio image"></span>
+                    {{ language.name_local }}
+                </button>
+                <br>
+                {% endfor %}
+            </form>
+            <div class="dropdown-divider"></div>
+            <a href="{% url 'password_change' %}">{% trans 'Change password' %}</a>
+            <div class="dropdown-divider"></div>
+            <a href="{% url 'logout' %}">{% trans 'Log out' %}</a>
+        </div>
     </div>
 </div>
 {% endblock %}
