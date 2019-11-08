@@ -29,7 +29,7 @@ window.addEventListener("hashchange", () => {
 });
 
 function hashCheck() {
-    if (/#reports/.exec(location.hash)) {
+    if (/#reports\/(\d?)/.exec(location.hash)) {
         asset_manager.classList.remove("selected");
         reports.classList.add("selected");
     } else {
