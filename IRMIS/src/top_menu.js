@@ -21,24 +21,19 @@ window.addEventListener("load", function() {
         e.stopPropagation();
     });
 
-    asset_manager.addEventListener("click", (e) => {
-        if (!asset_manager.classList.contains("selected")) {
-            asset_manager.classList.add("selected");
-            reports.classList.remove("selected");
-        }
-    });
+    hashCheck();
+});
 
-    reports.addEventListener("click", (e) => {
-        if (!reports.classList.contains("selected")) {
-            reports.classList.add("selected");
-            asset_manager.classList.remove("selected");
-        }
-    });
-
+window.addEventListener("hashchange", () => {
     hashCheck();
 });
 
 function hashCheck() {
-    if (/#reports/.exec(location.hash)) reports.classList.add("selected");
-    else asset_manager.classList.add("selected");
+    if (/#reports/.exec(location.hash)) {
+        asset_manager.classList.remove("selected");
+        reports.classList.add("selected");
+    } else {
+        asset_manager.classList.add("selected");
+        reports.classList.remove("selected");
+    }
 }
