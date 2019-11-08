@@ -1,7 +1,7 @@
 <report>
     <header class="d-flex">
         <div>
-            <a class="caret-dark left image"></a>
+            <a class="caret-dark left image" onclick="{ backToReports }"></a>
         </div>
         <div class="d-flex flex-column">
             <div class="align-items-center d-flex">
@@ -21,4 +21,12 @@
     <div class="content-wrapper">
 
     </div>
+
+    <script>
+        export default {
+            backToReports() {
+                window.location.hash = "reports/";
+            },
+        }
+    </script>
 </report>
