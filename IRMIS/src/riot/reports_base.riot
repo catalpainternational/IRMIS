@@ -76,9 +76,11 @@
             onBeforeMount(props, state) {
                 state.page = props.page;
                 window.addEventListener("hashchange", this.hashCheck);
+                window.goBack = () => window.location.hash = "#";
             },
             onBeforeUnmount(props, state) {
                 window.removeEventListener("hashchange", this.hashCheck);
+                window.goBack = () => {};
             },
             hashCheck() {
                 const reportHash = /#reports\/(\d?)/.exec(location.hash);
