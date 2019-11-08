@@ -8,55 +8,91 @@
             </ul>
         </div>
         <div id="reports">
-            <h1>{ window.gettext("Reports") }</h1>
+            <report if="{ state.page === '0' }"></report>
+            <div if="{ !state.page }">
+                <h1>{ window.gettext("Reports") }</h1>
 
-            <h6>{ window.gettext("Road Network Report") }</h6>
-            <div class="content-wrapper">
-                <div class="align-items-center d-flex">
-                    <span class="report image"></span>
-                    <p>{ window.gettext("Road Network Length") }</p>
+                <h6>{ window.gettext("Road Network Report") }</h6>
+                <div class="content-wrapper">
+                    <div class="align-items-center d-flex" onclick="{ selectPage }" data-id="0">
+                        <span class="report image"></span>
+                        <p>{ window.gettext("Road Network Length") }</p>
+                    </div>
+                    <div class="align-items-center d-flex" onclick="{ selectPage }" data-id="1">
+                        <span class="report image"></span>
+                        <p>{ window.gettext("Road Network Length Breakdown") }</p>
+                    </div>
                 </div>
-                <div class="align-items-center d-flex">
-                    <span class="report image"></span>
-                    <p>{ window.gettext("Road Network Length Breakdown") }</p>
-                </div>
-            </div>
 
-            <h6>{ window.gettext("Road Condition Report") }</h6>
-            <div class="content-wrapper">
-                <div class="align-items-center d-flex">
-                    <span class="report image"></span>
-                    <p>{ window.gettext("Surface Condition") }</p>
+                <h6>{ window.gettext("Road Condition Report") }</h6>
+                <div class="content-wrapper">
+                    <div class="align-items-center d-flex" onclick="{ selectPage }" data-id="2">
+                        <span class="report image"></span>
+                        <p>{ window.gettext("Surface Condition") }</p>
+                    </div>
+                    <div class="align-items-center d-flex" onclick="{ selectPage }" data-id="3">
+                        <span class="report image"></span>
+                        <p>{ window.gettext("IRI Roughness") }</p>
+                    </div>
                 </div>
-                <div class="align-items-center d-flex">
-                    <span class="report image"></span>
-                    <p>{ window.gettext("IRI Roughness") }</p>
-                </div>
-            </div>
 
-            <h6>{ window.gettext("Road Network Reports by Road Class") }</h6>
-            <div class="content-wrapper">
-                <div class="align-items-center d-flex">
-                    <span class="report image"></span>
-                    <p>{ window.gettext("Road Network Length - National Class") }</p>
-                </div>
-                <div class="align-items-center d-flex">
-                    <span class="report image"></span>
-                    <p>{ window.gettext("Road Network Length - Municipal Class") }</p>
-                </div>
-                <div class="align-items-center d-flex">
-                    <span class="report image"></span>
-                    <p>{ window.gettext("Road Network Length - Rural Class") }</p>
-                </div>
-                <div class="align-items-center d-flex">
-                    <span class="report image"></span>
-                    <p>{ window.gettext("Road Network Length - Highway Class") }</p>
-                </div>
-                <div class="align-items-center d-flex">
-                    <span class="report image"></span>
-                    <p>{ window.gettext("Road Network Length - Urban Class") }</p>
+                <h6>{ window.gettext("Road Network Reports by Road Class") }</h6>
+                <div class="content-wrapper">
+                    <div class="align-items-center d-flex" onclick="{ selectPage }" data-id="4">
+                        <span class="report image"></span>
+                        <p>{ window.gettext("Road Network Length - National Class") }</p>
+                    </div>
+                    <div class="align-items-center d-flex" onclick="{ selectPage }" data-id="5">
+                        <span class="report image"></span>
+                        <p>{ window.gettext("Road Network Length - Municipal Class") }</p>
+                    </div>
+                    <div class="align-items-center d-flex" onclick="{ selectPage }" data-id="6">
+                        <span class="report image"></span>
+                        <p>{ window.gettext("Road Network Length - Rural Class") }</p>
+                    </div>
+                    <div class="align-items-center d-flex" onclick="{ selectPage }" data-id="7">
+                        <span class="report image"></span>
+                        <p>{ window.gettext("Road Network Length - Highway Class") }</p>
+                    </div>
+                    <div class="align-items-center d-flex" onclick="{ selectPage }" data-id="8">
+                        <span class="report image"></span>
+                        <p>{ window.gettext("Road Network Length - Urban Class") }</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        import Report from './report.riot';
+
+        export default {
+            state: {
+                page: "",
+            },
+            components: {
+                Report,
+            },
+            onBeforeMount(props, state) {
+                state.page = props.page;
+                window.addEventListener("hashchange", this.hashCheck);
+            },
+            onBeforeUnmount(props, state) {
+                window.removeEventListener("hashchange", this.hashCheck);
+            },
+            hashCheck() {
+                const reportHash = /#reports\/(\d?)/.exec(location.hash);
+
+                if (reportHash) {
+                    this.update({
+                        page: reportHash[1],
+                    });
+                }
+            },
+            selectPage(e) {
+                const reportId = e.currentTarget.dataset.id;
+                window.location.hash = `#reports/${reportId}`;
+            },
+        }
+    </script>
 </reports_base>

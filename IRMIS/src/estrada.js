@@ -63,21 +63,21 @@ function hashCheck() {
     const reportsBase = document.getElementById("reports");
     const editBase = document.getElementById("edit-base");
 
-    let reportsHash = /#reports/.exec(location.hash);
+    let reportsHash = /#reports\/(\d?)/.exec(location.hash);
     let editHash = /#edit\/(\d*)\/(\w+)/.exec(location.hash);
 
     if (editHash !== null && !editBase) {
-        var roadPromise = getRoad(editHash[1]);
-        riot.unmount("reports_base", true);
+        const roadPromise = getRoad(editHash[1]);
+        if (reportsBase) riot.unmount("reports_base", true);
         riot.mount("edit_base", { roadPromise: roadPromise, page: editHash[2] });
         mainContent.hidden = true;
     } else if (reportsHash !== null && !reportsBase) {
-        riot.unmount("edit_base", true);
-        riot.mount("reports_base");
+        if (editBase) riot.unmount("edit_base", true);
+        riot.mount("reports_base", { page: reportsHash[1] });
         mainContent.hidden = true;
     } else if (editHash === null && reportsHash === null) {
-        riot.unmount("reports_base", true);
-        riot.unmount("edit_base", true);
+        if (reportsBase) riot.unmount("reports_base", true);
+        if (editBase) riot.unmount("edit_base", true);
         mainContent.hidden = false;
     }
 }
