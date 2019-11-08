@@ -122,7 +122,8 @@
         import Data_Table from "./data_table.riot";
         import Edit_Modal from "./edit_modal.riot";
 
-        import { createSurvey, deleteSurvey, updateSurvey, getRoadSurveyReport, getRoadSurveys } from "../surveyManager";
+        import { createSurvey, deleteSurvey, updateSurvey, getRoadSurveys } from "../surveyManager";
+        import { getRoadSurveyReport } from "../reportManager";
         import { toChainageFormat } from "../assets/protoBufUtilities";
         import { Survey, Report } from "../../protobuf/survey_pb";
 
@@ -198,7 +199,7 @@
             },
             refreshSurveysAndReports() {
                 this.getRoadSurveys();
-                this.getRoadSurveyReports();
+                this.getRoadSurveyReport();
             },
             getRoadSurveys() {
                 const roadId = this.state.road.getId();
@@ -223,7 +224,7 @@
                         this.update();
                     });
             },
-            getRoadSurveyReports() {
+            getRoadSurveyReport() {
                 const roadId = this.state.road.getId();
                 const roadCode = this.state.road.code;
 
