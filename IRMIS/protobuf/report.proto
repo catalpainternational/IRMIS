@@ -9,15 +9,22 @@ package assets;
 
 message Report {
     string filter = 1; // JSON string
-    string counts = 2; // JSON string
-    repeated TableEntry table = 3;
+    string lengths = 2; // JSON string - effectively a consolidation of 'values'
+    repeated AttributeTable attribute_tables = 3;
 }
-    
-message TableEntry {
+
+message AttributeTable {
+    string primary_attribute = 1;
+    repeated string secondary_attribute = 2;
+    repeated AttributeEntry attribute_entries = 3;
+}
+
+message AttributeEntry {
     float chainage_start = 1;
     float chainage_end = 2;
-    string values = 3;
+    string values = 3; // JSON string listing all attributes within this AttributeEntry
     uint32 survey_id = 4;
     google.protobuf.Timestamp date_surveyed = 5;
     string added_by = 6;
+    string primary_attribute = 7;
 }

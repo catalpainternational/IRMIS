@@ -8,13 +8,13 @@ export class Report extends jspb.Message {
   getFilter(): string;
   setFilter(value: string): void;
 
-  getCounts(): string;
-  setCounts(value: string): void;
+  getLengths(): string;
+  setLengths(value: string): void;
 
-  clearTableList(): void;
-  getTableList(): Array<TableEntry>;
-  setTableList(value: Array<TableEntry>): void;
-  addTable(value?: TableEntry, index?: number): TableEntry;
+  clearAttributeTablesList(): void;
+  getAttributeTablesList(): Array<AttributeTable>;
+  setAttributeTablesList(value: Array<AttributeTable>): void;
+  addAttributeTables(value?: AttributeTable, index?: number): AttributeTable;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Report.AsObject;
@@ -29,12 +29,44 @@ export class Report extends jspb.Message {
 export namespace Report {
   export type AsObject = {
     filter: string,
-    counts: string,
-    tableList: Array<TableEntry.AsObject>,
+    lengths: string,
+    attributeTablesList: Array<AttributeTable.AsObject>,
   }
 }
 
-export class TableEntry extends jspb.Message {
+export class AttributeTable extends jspb.Message {
+  getPrimaryAttribute(): string;
+  setPrimaryAttribute(value: string): void;
+
+  clearSecondaryAttributeList(): void;
+  getSecondaryAttributeList(): Array<string>;
+  setSecondaryAttributeList(value: Array<string>): void;
+  addSecondaryAttribute(value: string, index?: number): string;
+
+  clearAttributeEntriesList(): void;
+  getAttributeEntriesList(): Array<AttributeEntry>;
+  setAttributeEntriesList(value: Array<AttributeEntry>): void;
+  addAttributeEntries(value?: AttributeEntry, index?: number): AttributeEntry;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AttributeTable.AsObject;
+  static toObject(includeInstance: boolean, msg: AttributeTable): AttributeTable.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AttributeTable, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AttributeTable;
+  static deserializeBinaryFromReader(message: AttributeTable, reader: jspb.BinaryReader): AttributeTable;
+}
+
+export namespace AttributeTable {
+  export type AsObject = {
+    primaryAttribute: string,
+    secondaryAttributeList: Array<string>,
+    attributeEntriesList: Array<AttributeEntry.AsObject>,
+  }
+}
+
+export class AttributeEntry extends jspb.Message {
   getChainageStart(): number;
   setChainageStart(value: number): void;
 
@@ -55,17 +87,20 @@ export class TableEntry extends jspb.Message {
   getAddedBy(): string;
   setAddedBy(value: string): void;
 
+  getPrimaryAttribute(): string;
+  setPrimaryAttribute(value: string): void;
+
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): TableEntry.AsObject;
-  static toObject(includeInstance: boolean, msg: TableEntry): TableEntry.AsObject;
+  toObject(includeInstance?: boolean): AttributeEntry.AsObject;
+  static toObject(includeInstance: boolean, msg: AttributeEntry): AttributeEntry.AsObject;
   static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
   static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: TableEntry, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): TableEntry;
-  static deserializeBinaryFromReader(message: TableEntry, reader: jspb.BinaryReader): TableEntry;
+  static serializeBinaryToWriter(message: AttributeEntry, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AttributeEntry;
+  static deserializeBinaryFromReader(message: AttributeEntry, reader: jspb.BinaryReader): AttributeEntry;
 }
 
-export namespace TableEntry {
+export namespace AttributeEntry {
   export type AsObject = {
     chainageStart: number,
     chainageEnd: number,
@@ -73,6 +108,7 @@ export namespace TableEntry {
     surveyId: number,
     dateSurveyed?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     addedBy: string,
+    primaryAttribute: string,
   }
 }
 

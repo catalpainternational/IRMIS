@@ -27,6 +27,8 @@ class Report:
     def __init__(self, road, surveys):
         self.road = road
         self.surveys = surveys
+        self.primary_attributes = list(surveys.keys())
+        self.segmentations = {}
 
     def validate_chainages(self):
         try:
@@ -36,22 +38,28 @@ class Report:
         except TypeError:
             return False
 
-    def build_segmentations(self):
-        """ Create all of the segments based on report chainage start/end paramenters """
-        self.segmentations = {
+    def build_empty_chainage_list(self, primary_attribute):
+        """ Create all of the segments based on report chainage start/end parameters """
+        # secondary_attributes are not yet supported
+
+        if not primary_attribute in self.segmentations:
+            self.segmentations[primary_attribute] = {}
+
+        self.segmentations[primary_attribute] = {
             item: {
                 "chainage_point": float(item),
-                "values": {"surface_condition": "None"},
+                "value": "None",
                 "date_surveyed": None,
                 "survey_id": 0,
                 "added_by": "",
+                "primary_attribute": primary_attribute
             }
             for item in range(self.road_start_chainage, self.road_end_chainage)
         }
 
-    def assign_survey_results(self):
+    def assign_survey_results(self, primary_attribute):
         """ For all the Surveys, assign only the most up-to-date results to any given segment """
-        for survey in self.surveys:
+        for survey in self.surveys[primary_attribute]:
             # ensure survey bits used covers only the road link start/end chainage portion
             if (
                 survey.chainage_start <= self.road_end_chainage
@@ -75,12 +83,12 @@ class Report:
                 # check survey does not conflict with current aggregate segmentations
                 # and update the segmentations when needed
                 for chainage_point in range(survey_chain_start, survey_chain_end):
-                    seg_point = self.segmentations[chainage_point]
+                    seg_point = self.segmentations[primary_attribute][chainage_point]
                     if not seg_point["date_surveyed"] or (
                         survey.date_surveyed
                         and survey.date_surveyed > seg_point["date_surveyed"]
                     ):
-                        seg_point["values"] = survey.values
+                        seg_point["value"] = survey.values[primary_attribute]
                         seg_point["date_surveyed"] = survey.date_surveyed
                         seg_point["survey_id"] = survey.id
                         seg_point["added_by"] = (
@@ -89,43 +97,56 @@ class Report:
                             if survey.user
                             else ""
                         )
-                    self.segmentations[chainage_point] = seg_point
+                        seg_point["primary_attribute"] = primary_attribute
+                    self.segmentations[primary_attribute][chainage_point] = seg_point
 
-    def build_summary_stats(self):
-        """ Generate the high-level counts & percentage statistics for the report """
-        segments_length = len(self.segmentations)
-        counts = {
-            "surface_condition": Counter(
-                [
-                    self.segmentations[segment]["values"]["surface_condition"]
-                    for segment in self.segmentations
-                ]
-            )
-        }
-        setattr(self.report_protobuf, "counts", json.dumps(counts))
+    def build_summary_stats(self, primary_attribute):
+        """ Generate the high-level length statistics for the report """
+        return Counter(
+            [
+                self.segmentations[primary_attribute][segment]["value"]
+                for segment in self.segmentations[primary_attribute]
+            ]
+        )
 
-    def build_chainage_table(self):
+    def build_attribute_tables(self, primary_attribute):
+        """ Add an empty table for each primary_attribute in the report """
+        # secondary_attributes are not yet supported
+
+        if not primary_attribute in self.report_protobuf.attribute_tables:
+            attribute_table = report_pb2.AttributeTable()
+            attribute_table.primary_attribute = primary_attribute
+            self.report_protobuf.attribute_tables.append(attribute_table)
+        else:
+            attribute_table = self.report_protobuf.attribute_tables.filter(primary_attribute=primary_attribute)
+
+        self.build_chainage_table(primary_attribute, attribute_table)
+
+    def build_chainage_table(self, primary_attribute, attribute_table):
         """ Generate the table of chainages in the report """
-        prev_values, prev_date, prev_added_by = "Nada", "Nada", "Nada"
-        for segment in self.segmentations:
-            segment = self.segmentations[segment]
+        # secondary_attributes are not yet supported
+        prev_value, prev_date, prev_added_by = "Nada", "Nada", "Nada"
+        for segment in self.segmentations[primary_attribute]:
+            segment = self.segmentations[primary_attribute][segment]
             if (
-                json.dumps(segment["values"]) != prev_values
+                json.dumps(segment["value"]) != prev_value
                 or segment["date_surveyed"] != prev_date
                 or segment["added_by"] != prev_added_by
             ):
-                entry = self.report_protobuf.table.add()
+                entry = attribute_table.attribute_entries.add()
                 setattr(entry, "chainage_start", segment["chainage_point"])
                 setattr(entry, "chainage_end", segment["chainage_point"])
-                setattr(entry, "values", json.dumps(segment["values"]))
+                # secondary_attributes would be injected here, in values
+                setattr(entry, "values", json.dumps({primary_attribute: segment["value"]}))
                 setattr(entry, "survey_id", segment["survey_id"])
                 setattr(entry, "added_by", segment["added_by"])
                 if segment["date_surveyed"]:
                     ts = Timestamp()
                     ts.FromDatetime(segment["date_surveyed"])
                     entry.date_surveyed.CopyFrom(ts)
+                setattr(entry, "primary_attribute", primary_attribute)
 
-                prev_values = json.dumps(segment["values"])
+                prev_value = json.dumps(segment["value"])
                 prev_date = segment["date_surveyed"]
                 prev_added_by = segment["added_by"]
             else:
@@ -140,6 +161,9 @@ class Report:
         if self.road.road_code:
             filters["road_code"] = self.road.road_code
 
+        if self.primary_attributes:
+            filters["primary_attributes"] = self.primary_attributes
+
         if self.validate_chainages():
             filters["report_chainage_start"] = self.road_start_chainage
             filters["report_chainage_end"] = self.road_end_chainage
@@ -151,13 +175,18 @@ class Report:
 
         self.report_protobuf.filter = json.dumps(filters)
 
-        # build and set report statistical data & table
-        self.build_segmentations()
-        self.assign_survey_results()
-        self.build_summary_stats()
+        lengths = { }
 
-        if self.road.road_code:
-            self.build_chainage_table()
+        for primary_attribute in self.primary_attributes:
+            # build and set report statistical data & table
+            self.build_empty_chainage_list(primary_attribute)
+            self.assign_survey_results(primary_attribute)
+            lengths[primary_attribute] = self.build_summary_stats(primary_attribute)
+
+            if self.road.road_code:
+                self.build_attribute_tables(primary_attribute)
+
+        self.report_protobuf.lengths = json.dumps(lengths)
 
         return self.report_protobuf
 
@@ -173,17 +202,20 @@ def protobuf_reports(request):
     # get the Filters
     road_id = request.GET.get("roadid", None)
     road_code = request.GET.get("roadcode", "")
+    primary_attributes = [request.GET.get("primaryattribute", "surface_condition")]
+    surveys = { }
 
     road = get_object_or_404(Road.objects.all(), pk=road_id)
     # pull any Surveys that cover the Road above
-    surveys = (
-        Survey.objects.filter(road=road.road_code)
-        .exclude(chainage_start__isnull=True)
-        .exclude(chainage_end__isnull=True)
-        # .exclude(values__surface_condition__isnull=True)
-        .order_by("road", "chainage_start", "chainage_end", "-date_surveyed")
-        .distinct("road", "chainage_start", "chainage_end")
-    )
+    for primary_attribute in primary_attributes:
+        surveys[primary_attribute] = (
+            Survey.objects.filter(road=road.road_code)
+            .exclude(chainage_start__isnull=True)
+            .exclude(chainage_end__isnull=True)
+            .exclude(**{ 'values__' + primary_attribute + '__isnull': True })
+            .order_by("road", "chainage_start", "chainage_end", "-date_surveyed")
+            .distinct("road", "chainage_start", "chainage_end")
+        )
     report_protobuf = Report(road, surveys).to_protobuf()
 
     return HttpResponse(

@@ -1,14 +1,17 @@
 import dayjs from "dayjs";
 
-import { Report, TableEntry } from "../../../protobuf/report_pb";
+import { Report, AttributeTable, AttributeEntry } from "../../../protobuf/report_pb";
 
 import { choice_or_default, getFieldName, getHelpText, makeEstradaObject } from "../protoBufUtilities";
 
 import { SURFACE_CONDITION_CHOICES } from "./road";
 
+// All Ids in the following schemas are generated
+
 const networkReportSchema = {
+    id: { display: "Id" },
     filter: { display: gettext("Filter") },
-    counts: { display: gettext("Counts") },
+    lengths: { display: gettext("Lengths") },
 };
 
 const roadReportSchema = {
@@ -16,20 +19,39 @@ const roadReportSchema = {
     roadCode: { display: gettext("Road Code") },
     reportChainageStart: { display: gettext("Chainage Start") },
     reportChainageEnd: { display: gettext("Chainage End") },
-    counts: { display: gettext("Counts") },
-    tableList: { display: gettext("Table") },
+    lengths: { display: gettext("Lengths") },
+    attributeTableList: { display: gettext("Attribute Tables") },
 };
 
-function extractCountData(countsForType, choices) {
-    const counts = [];
-    if (countsForType) {
-        Object.keys(countsForType).forEach((key) => {
+const attributeTableSchema = {
+    id: { display: "Id" },
+    primaryAttribute: { display: gettext("Attribute") },
+    secondaryAttribute: { display: gettext("Other Attributes") },
+    attributeEntries: { display: gettext("Lengths") },
+};
+
+const attributeEntrySchema = {
+    id: { display: "Id" },
+    surveyId: { display: "Survey Id" },
+    chainageStart: { display: gettext("Chainage Start") },
+    chainageEnd: { display: gettext("Chainage End") },
+    lengths: { display: gettext("Lengths") },
+    dateSurveyed: { display: gettext("Survey Date") },
+    addedBy: { display: gettext("Added By") },
+    primaryAttribute: { display: gettext("Attribute") },
+    // secondaryAttributes are implied by the contents of `lengths`
+};
+
+function extractCountData(lengthsForType, choices) {
+    const lengths = [];
+    if (lengthsForType) {
+        Object.keys(lengthsForType).forEach((key) => {
             const title = choice_or_default(key, choices, "Unknown").toLowerCase();
-            counts.push({ title, distance: countsForType[key] });
+            lengths.push({ title, distance: lengthsForType[key] });
         });
     }
 
-    return counts;
+    return lengths;
 }
 
 export class EstradaNetworkSurveyReport extends Report {
@@ -47,32 +69,32 @@ export class EstradaNetworkSurveyReport extends Report {
         return JSON.parse(filter);
     }
 
-    get counts() {
-        const counts = this.getCounts() || { surface_condition: { None: 0 } };
-        return JSON.parse(counts);
+    get lengths() {
+        const lengths = this.getLengths() || { surface_condition: { None: 0 } };
+        return JSON.parse(lengths);
     }
 
     get surfaceConditions() {
-        return extractCountData(this.counts.surface_condition, SURFACE_CONDITION_CHOICES);
+        return extractCountData(this.lengths.surface_condition, SURFACE_CONDITION_CHOICES);
     }
 
     get surfaceTypes() {
-        return extractCountData(this.counts.surface_type, SURFACE_TYPE_CHOICES);
+        return extractCountData(this.lengths.surface_type, SURFACE_TYPE_CHOICES);
     }
 
     get technicalClasses() {
-        return extractCountData(this.counts.technical_class, TECHNICAL_CLASS_CHOICES);
+        return extractCountData(this.lengths.technical_class, TECHNICAL_CLASS_CHOICES);
     }
 
     get trafficLevels() {
-        return extractCountData(this.counts.traffic_level, TRAFFIC_LEVEL_CHOICES);
+        return extractCountData(this.lengths.traffic_level, TRAFFIC_LEVEL_CHOICES);
     }
 
     get numberLanes() {
-        if (!this.counts.number_lanes || this.counts.number_lanes.length) {
+        if (!this.lengths.number_lanes || this.lengths.number_lanes.length) {
             return [];
         }
-        return this.counts.number_lanes;
+        return this.lengths.number_lanes;
     }
     
     static getFieldName(field) {
@@ -89,6 +111,10 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
         return `${this.roadCode}_${this.reportChainageStart}-${this.reportChainageEnd}`;
     }
 
+    get id() {
+        return this.getId();
+    }
+
     get roadCode() {
         return this.filter.road_code || "";
     }
@@ -101,14 +127,9 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
         return this.filter.report_chainage_end || 0;
     }
 
-    get tableList() {
-        const tableListRaw = this.getTableList();
-        if (tableListRaw.length === 1 && tableListRaw[0].getSurveyId() === 0) {
-            // Only a single generated survey segment
-            // Which means that there are actually no real survey segments
-            return [];
-        }
-        return tableListRaw.map(this.makeEstradaSurveyReportTableEntry);
+    get attributeTableList() {
+        const attributeTablesRaw = this.getAttributeTableList();
+        return attributeTablesRaw.map(this.makeEstradaSurveyAttributeTable);
     }
     
     static getFieldName(field) {
@@ -119,12 +140,58 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
         return getHelpText(roadReportSchema, field);
     }
         
-    makeEstradaSurveyReportTableEntry (pbtableentry) {
-        return makeEstradaObject(EstradaSurveyReportTableEntry, pbtableentry);
+    makeEstradaSurveyAttributeTable (pbattributetable) {
+        return makeEstradaObject(EstradaSurveyAttributeTable, pbattributetable);
     }
 }
 
-export class EstradaSurveyReportTableEntry extends TableEntry {
+export class EstradaSurveyAttributeTable extends AttributeTable {
+    getId() {
+        return `${this.primaryAttribute} ${this.secondaryAttributeList.join(", ")}`.trim();
+    }
+
+    get id() {
+        return this.getId();
+    }
+
+    /** Get the 'Primary' Attribute of this attribute table,
+     * this name MUST occur in the attribute_entry lengths member
+     * */
+    get primaryAttribute() {
+        return this.getPrimaryAttribute() || "";
+    }
+
+    /** Get any 'Secondary' Attributes of this attribute table,
+     * these names identify attributes that are 'averaged' relative to the primary attribute
+     * */
+    get secondaryAttributeList() {
+        return this.getSecondaryAttributes() || [];
+    }
+
+    get attributeTableList() {
+        const attributeTablesRaw = this.getAttributeTableList();
+        if (attributeTablesRaw.length === 1 && attributeTablesRaw[0].getSurveyId() === 0) {
+            // Only a single generated attribute table
+            // Which means that there are actually no real attribute tables
+            return [];
+        }
+        return attributeTablesRaw.map(this.makeEstradaSurveyAttributeTable);
+    }
+        
+    static getFieldName(field) {
+        return getFieldName(attributeTableSchema, field);
+    }
+
+    static getHelpText(field) {
+        return getHelpText(attributeTableSchema, field);
+    }
+
+    makeEstradaSurveyAttributeEntry (pbattributeentry) {
+        return makeEstradaObject(EstradaSurveyAttributeEntry, pbattributeentry);
+    }
+}
+
+export class EstradaSurveyAttributeEntry extends AttributeEntry {
     getId() {
         return this.getSurveyId();
     }
@@ -158,28 +225,51 @@ export class EstradaSurveyReportTableEntry extends TableEntry {
         return date.isValid() ? date.format('YYYY-MM-DD') : "";
     }
 
+    /** Get the 'Primary' Attribute of this attribute table,
+     * this name MUST occur in the lengths member
+     * */
+    get primaryAttribute() {
+        return this.getPrimaryAttribute() || "";
+    }
+
+    /** Get any 'Secondary' Attributes of this attribute table,
+     * these names identify attributes that are 'averaged' relative to the primary attribute
+     * */
+    get secondaryAttributeList() {
+        const allAttributes = Object.keys(this.lengths) || [];
+        return allAttributes.filter((attribute) => attribute != this.primaryAttribute);
+    }
+
     get surfaceCondition() {
-        return window.gettext(choice_or_default(this.values.surface_condition, SURFACE_CONDITION_CHOICES, "Unknown"));
+        return window.gettext(choice_or_default(this.lengths.surface_condition, SURFACE_CONDITION_CHOICES, "Unknown"));
     }
 
     get surfaceType() {
-        return choice_or_default(this.values.surface_type, SURFACE_TYPE_CHOICES);
+        return choice_or_default(this.lengths.surface_type, SURFACE_TYPE_CHOICES);
     }
 
     get technicalClass() {
-        return choice_or_default(this.values.technical_class, TECHNICAL_CLASS_CHOICES);
+        return choice_or_default(this.lengths.technical_class, TECHNICAL_CLASS_CHOICES);
     }
 
     get trafficLevel() {
-        return choice_or_default(this.values.traffic_level, TRAFFIC_LEVEL_CHOICES);
+        return choice_or_default(this.lengths.traffic_level, TRAFFIC_LEVEL_CHOICES);
     }
 
     get numberLanes() {
-        return this.values.number_lanes;
+        return this.lengths.number_lanes;
     }
     
-    get values() {
-        const jsonValues = this.getValues() || "{}";
+    get lengths() {
+        const jsonValues = this.getLengths() || "{}";
         return JSON.parse(jsonValues);
+    }
+
+    static getFieldName(field) {
+        return getFieldName(attributeEntrySchema, field);
+    }
+
+    static getHelpText(field) {
+        return getHelpText(attributeEntrySchema, field);
     }
 }

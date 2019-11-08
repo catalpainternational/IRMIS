@@ -234,9 +234,9 @@
                 getRoadReport(filters)
                     .then((surveyReportData) => {
                         if (surveyReportData) {
-                            const haveCounts = !!surveyReportData.counts;
+                            const haveLengths = !!surveyReportData.lengths;
                             const haveSurfaceConditions = surveyReportData.surfaceConditions.length > 0;
-                            if (haveCounts && haveSurfaceConditions) {
+                            if (haveLengths && haveSurfaceConditions) {
                                 this.updateSurfaceConditionsSummary(surveyReportData.surfaceConditions);
                             }
                             if (surveyReportData.tableList && surveyReportData.tableList.length) {
