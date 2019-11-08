@@ -4,7 +4,7 @@ import { Report, AttributeTable, AttributeEntry } from "../../../protobuf/report
 
 import { choice_or_default, getFieldName, getHelpText, makeEstradaObject } from "../protoBufUtilities";
 
-import { SURFACE_CONDITION_CHOICES } from "./road";
+import { SURFACE_CONDITION_CHOICES, SURFACE_TYPE_CHOICES, TECHNICAL_CLASS_CHOICES, TRAFFIC_LEVEL_CHOICES } from "./road";
 
 // All Ids in the following schemas are generated
 
