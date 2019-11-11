@@ -27,7 +27,8 @@ from rest_framework_condition import condition
 
 from google.protobuf.timestamp_pb2 import Timestamp
 
-from protobuf import roads_pb2, survey_pb2
+from protobuf import roads_pb2, survey_pb2, report_pb2
+from .reports import Report
 
 
 from .models import (
@@ -452,6 +453,85 @@ def protobuf_road_audit(request, pk):
         version_pb.date_created.CopyFrom(ts)
     return HttpResponse(
         versions_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )
+
+
+def protobuf_reports(request):
+    """ returns a protobuf object with a report determined by the filter conditions supplied """
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+
+    if request.method != "GET":
+        raise MethodNotAllowed(request.method)
+
+    # get/initialise the Filters
+    primary_attributes = [request.GET.get("primaryattribute", "surface_condition")]
+    road_id = request.GET.get("roadid", None)
+    road_code = request.GET.get("roadcode", "")
+    chainage_start = None
+    chainage_end = None
+
+    if (road_id != None or road_code != ""):
+        # chainage is only valid if we've specified a road
+        chainage_start = request.GET.get("chainagestart", None)
+        chainage_end = request.GET.get("chainageend", None)
+
+    # If chainage has been supplied, ensure it is clean
+    if chainage_start != None:
+        chainage_start = float(chainage_start)
+    if chainage_end != None:
+        chainage_end = float(chainage_end)
+    if chainage_start != None and chainage_end != None and chainage_start > chainage_end:
+        temp_chainage = chainage_start
+        chainage_start = chainage_end
+        chainage_end = temp_chainage
+
+    if road_id != None:
+        road = get_object_or_404(Road.objects.all(), pk=road_id)
+        roads = [road]
+    elif road_code != "":
+        roads = Road.objects.filter(road_code=road_code)
+
+    if len(roads) > 0:
+        surveys = {}
+
+        road_chainages = roads.values("link_start_chainage", "link_end_chainage")
+        min_chainage = road_chainages.order_by("link_start_chainage").first()[
+            "link_start_chainage"
+        ]
+        max_chainage = road_chainages.order_by("link_end_chainage").last()[
+            "link_end_chainage"
+        ]
+
+        if (chainage_start != None and chainage_start > min_chainage and chainage_start < max_chainage):
+            min_chainage = chainage_start
+        
+        if (chainage_end != None and chainage_end > min_chainage and chainage_end < max_chainage):
+            max_chainage = chainage_end
+
+        road_codes = list(roads.values_list("road_code").distinct())
+        road_code_index = 0
+        primary_road_code = road_codes[0][road_code_index]
+
+        # pull any Surveys that cover the roads
+        for primary_attribute in primary_attributes:
+            surveys[primary_attribute] = (
+                Survey.objects.filter(road=primary_road_code)
+                .exclude(chainage_start__isnull=True)
+                .exclude(chainage_end__isnull=True)
+                .exclude(**{"values__" + primary_attribute + "__isnull": True})
+                .order_by("road", "chainage_start", "chainage_end", "-date_surveyed")
+                .distinct("road", "chainage_start", "chainage_end")
+            )
+
+        report_protobuf = Report(
+            min_chainage, max_chainage, [primary_road_code], surveys
+        ).to_protobuf()
+    else:
+        return HttpResponseNotFound()
+
+    return HttpResponse(
+        report_protobuf.SerializeToString(), content_type="application/octet-stream"
     )
 
 

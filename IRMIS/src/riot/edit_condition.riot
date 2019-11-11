@@ -157,7 +157,7 @@
                 canSave: false,
                 errors: {},
                 pendingRows: [],
-                surfaceConditions: [{ title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
+                surfaceConditions: [{ key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
                 surveyTotalDistance: 0,
                 reportRows: [],
                 viewAll: false,
@@ -178,6 +178,7 @@
                 }
 
                 const emptyConditions = {
+                    key: 0,
                     title: "unknown",
                     distance: roadDistance
                 };
@@ -229,6 +230,8 @@
                 const filters = {
                     // roadid: this.state.road.getId(),
                     roadcode: this.state.road.code,
+                    chainagestart: this.state.road.getLinkStartChainage(),
+                    chainageend: this.state.road.getLinkEndChainage(),
                 };
 
                 getRoadReport(filters)
@@ -241,7 +244,7 @@
                                 this.updateSurfaceConditionsSummary(surfaceConditions);
                             }
                             if (haveSurfaceConditions) {
-                                this.state.reportRows = surveyReportData.surfaceConditionsList;
+                                this.state.reportRows = surveyReportData.surfaceConditionsList.attributeEntriesList;
 
                                 const eventName = `${this.current_data_table_id}.dataAdded`;
                                 const eventDetail = { detail: { pendingRows: this.state.reportRows, appendRows: this.state.loading }};

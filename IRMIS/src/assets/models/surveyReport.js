@@ -1,13 +1,15 @@
 import dayjs from "dayjs";
 
-import { Report, AttributeTable, AttributeEntry } from "../../../protobuf/report_pb";
+import { AttributeEntry, AttributeTable, Report } from "../../../protobuf/report_pb";
 
 import { choice_or_default, getFieldName, getHelpText, makeEstradaObject } from "../protoBufUtilities";
 
-import { SURFACE_CONDITION_CHOICES, SURFACE_TYPE_CHOICES, TECHNICAL_CLASS_CHOICES, TRAFFIC_LEVEL_CHOICES } from "./road";
+import {
+    SURFACE_CONDITION_CHOICES, SURFACE_TYPE_CHOICES,
+    TECHNICAL_CLASS_CHOICES, TRAFFIC_LEVEL_CHOICES,
+} from "./road";
 
 // All Ids in the following schemas are generated
-
 const networkReportSchema = {
     id: { display: "Id" },
     filter: { display: gettext("Filter") },
@@ -47,7 +49,7 @@ function extractCountData(lengthsForType, choices) {
     if (lengthsForType) {
         Object.keys(lengthsForType).forEach((key) => {
             const title = choice_or_default(key, choices, "Unknown").toLowerCase();
-            lengths.push({ title, distance: lengthsForType[key] });
+            lengths.push({ key: key === "None" ? 0 : key, title, distance: lengthsForType[key] });
         });
     }
 
@@ -70,7 +72,7 @@ export class EstradaNetworkSurveyReport extends Report {
     }
 
     get lengths() {
-        const lengths = this.getLengths() || { surface_condition: { None: 0 } };
+        const lengths = this.getLengths() || "{ surface_condition: { None: 0 } }";
         return JSON.parse(lengths);
     }
 
@@ -96,11 +98,11 @@ export class EstradaNetworkSurveyReport extends Report {
         }
         return this.lengths.number_lanes;
     }
-    
+
     static getFieldName(field) {
         return getFieldName(networkReportSchema, field);
     }
-    
+
     static getHelpText(field) {
         return getHelpText(networkReportSchema, field);
     }
@@ -131,38 +133,67 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
         const attributeTablesRaw = this.getAttributeTablesList();
         return attributeTablesRaw.map(this.makeEstradaSurveyAttributeTable);
     }
-    
-    get surfaceConditions() {
-        const primary_attribute = "surface_condition";
 
-        const lengthsForType = {}
-        this.surfaceConditionsList.attributeEntriesList.forEach((attributeEntry) => {
-            const typeKey = attributeEntry.values[primary_attribute];
-            lengthsForType[typeKey] = (lengthsForType[typeKey] || 0) + attributeEntry.length;
-        });
-        console.log(JSON.stringify(lengthsForType));
-           
-        return extractCountData(lengthsForType, SURFACE_CONDITION_CHOICES);
+    get surfaceConditions() {
+        return this.makeSpecificSurveyAttributeTable("surface_condition", SURFACE_CONDITION_CHOICES);
     }
 
     get surfaceConditionsList() {
-        const primary_attribute = "surface_condition";
-        const attributes = this.attributeTablesList.find((attributeTable) => {
-            return attributeTable.primaryAttribute === primary_attribute;
-        }) || [];
+        return this.makeSpecificSurveyAttributeTableList("surface_condition");
+    }
 
-        return attributes
+    get surfaceTypes() {
+        return this.makeSpecificSurveyAttributeTable("surface_type", SURFACE_TYPE_CHOICES);
+    }
+
+    get surfaceTypesList() {
+        return this.makeSpecificSurveyAttributeTableList("surface_type");
+    }
+
+    get technicalClasses() {
+        return this.makeSpecificSurveyAttributeTable("technical_class", TECHNICAL_CLASS_CHOICES);
+    }
+
+    get technicalClassesList() {
+        return this.makeSpecificSurveyAttributeTableList("technical_class");
+    }
+
+    get trafficLevels() {
+        return this.makeSpecificSurveyAttributeTable("traffic_level", TRAFFIC_LEVEL_CHOICES);
+    }
+
+    get trafficLevelsList() {
+        return this.makeSpecificSurveyAttributeTableList("traffic_level");
     }
 
     static getFieldName(field) {
         return getFieldName(roadReportSchema, field);
     }
-    
+
     static getHelpText(field) {
         return getHelpText(roadReportSchema, field);
     }
-        
-    makeEstradaSurveyAttributeTable (pbattributetable) {
+
+    makeSpecificSurveyAttributeTableList(primary_attribute) {
+        const attributes = this.attributeTablesList.find((attributeTable) => {
+            return attributeTable.primaryAttribute === primary_attribute;
+        }) || {};
+
+        return attributes;
+    }
+
+    makeSpecificSurveyAttributeTable(primary_attribute, choices) {
+        const lengthsForType = {};
+        this.makeSpecificSurveyAttributeTableList(primary_attribute)
+            .attributeEntriesList.forEach((attributeEntry) => {
+                const typeKey = attributeEntry.values[primary_attribute];
+                lengthsForType[typeKey] = (lengthsForType[typeKey] || 0) + attributeEntry.length;
+            });
+
+        return extractCountData(lengthsForType, choices);
+    }
+
+    makeEstradaSurveyAttributeTable(pbattributetable) {
         return makeEstradaObject(EstradaSurveyAttributeTable, pbattributetable);
     }
 }
@@ -178,14 +209,14 @@ export class EstradaSurveyAttributeTable extends AttributeTable {
 
     /** Get the 'Primary' Attribute of this attribute table,
      * this name MUST occur in the attribute_entry lengths member
-     * */
+     */
     get primaryAttribute() {
         return this.getPrimaryAttribute() || "";
     }
 
     /** Get any 'Secondary' Attributes of this attribute table,
      * these names identify attributes that are 'averaged' relative to the primary attribute
-     * */
+     */
     get secondaryAttributeList() {
         return this.getSecondaryAttributeList() || [];
     }
@@ -199,7 +230,7 @@ export class EstradaSurveyAttributeTable extends AttributeTable {
         }
         return attributeEntriesRaw.map(this.makeEstradaSurveyAttributeEntry);
     }
-        
+
     static getFieldName(field) {
         return getFieldName(attributeTableSchema, field);
     }
@@ -208,7 +239,7 @@ export class EstradaSurveyAttributeTable extends AttributeTable {
         return getHelpText(attributeTableSchema, field);
     }
 
-    makeEstradaSurveyAttributeEntry (pbattributeentry) {
+    makeEstradaSurveyAttributeEntry(pbattributeentry) {
         return makeEstradaObject(EstradaSurveyAttributeEntry, pbattributeentry);
     }
 }
@@ -244,30 +275,30 @@ export class EstradaSurveyAttributeEntry extends AttributeEntry {
 
     get dateSurveyed() {
         const pbufData = this.getDateSurveyed();
-        if (!pbufData || !pbufData.array) {
+        if (!pbufData || !pbufData.getSeconds()) {
             return "";
         }
-        let date = dayjs(new Date(pbufData.array[0] * 1000));
-        return date.isValid() ? date.format('YYYY-MM-DD') : "";
+        const date = dayjs(new Date(pbufData.getSeconds() * 1000));
+        return date.isValid() ? date.format("YYYY-MM-DD") : "";
     }
 
     /** Get the 'Primary' Attribute of this attribute table,
      * this name MUST occur in the lengths member
-     * */
+     */
     get primaryAttribute() {
         return this.getPrimaryAttribute() || "";
     }
 
     /** Get any 'Secondary' Attributes of this attribute table,
      * these names identify attributes that are 'averaged' relative to the primary attribute
-     * */
+     */
     get secondaryAttributeList() {
         const allAttributes = Object.keys(this.values) || [];
-        return allAttributes.filter((attribute) => attribute != this.primaryAttribute);
+        return allAttributes.filter((attribute) => attribute !== this.primaryAttribute);
     }
 
     get surfaceCondition() {
-        return window.gettext(choice_or_default(this.values.surface_condition, SURFACE_CONDITION_CHOICES, "Unknown"));
+        return gettext(choice_or_default(this.values.surface_condition, SURFACE_CONDITION_CHOICES, "Unknown"));
     }
 
     get surfaceType() {
@@ -285,7 +316,7 @@ export class EstradaSurveyAttributeEntry extends AttributeEntry {
     get numberLanes() {
         return this.values.number_lanes;
     }
-    
+
     get values() {
         const jsonValues = this.getValues() || "{}";
         return JSON.parse(jsonValues);
