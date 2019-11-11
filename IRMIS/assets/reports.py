@@ -24,12 +24,12 @@ from .models import (
 
 
 class Report:
-    def __init__(self, min_chainage, max_chainage, road_codes, surveys):
+    def __init__(self, surveys, withAttributes, min_chainage, max_chainage):
         self.min_chainage = min_chainage
         self.max_chainage = max_chainage
         self.surveys = surveys
         self.primary_attributes = list(surveys.keys())
-        self.road_codes = road_codes
+        self.withAttributes = withAttributes
         self.segmentations = {}
 
     def validate_chainages(self):
@@ -170,9 +170,6 @@ class Report:
         # set basic report attributes
         filters = {}
 
-        if len(self.road_codes) > 0:
-            filters["road_codes"] = self.road_codes
-
         if self.primary_attributes:
             filters["primary_attributes"] = self.primary_attributes
 
@@ -180,8 +177,8 @@ class Report:
             filters["report_chainage_start"] = self.road_start_chainage
             filters["report_chainage_end"] = self.road_end_chainage
         else:
-            if len(self.road_codes) > 0:
-                # Road link must have start & end chainages to build a report.
+            if self.withAttributes:
+                # Road level reports must have start & end chainages to build a report.
                 # Return an empty report.
                 return self.report_protobuf
 
@@ -195,7 +192,7 @@ class Report:
             self.assign_survey_results(primary_attribute)
             lengths[primary_attribute] = self.build_summary_stats(primary_attribute)
 
-            if len(self.road_codes) == 1:
+            if self.withAttributes:
                 self.build_attribute_tables(primary_attribute)
 
         self.report_protobuf.lengths = json.dumps(lengths)

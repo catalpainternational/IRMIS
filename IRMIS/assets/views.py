@@ -495,38 +495,41 @@ def protobuf_reports(request):
     if len(roads) > 0:
         surveys = {}
 
-        road_chainages = roads.values("link_start_chainage", "link_end_chainage")
-        min_chainage = road_chainages.order_by("link_start_chainage").first()[
-            "link_start_chainage"
-        ]
-        max_chainage = road_chainages.order_by("link_end_chainage").last()[
-            "link_end_chainage"
-        ]
-
-        if (chainage_start != None and chainage_start > min_chainage and chainage_start < max_chainage):
-            min_chainage = chainage_start
-        
-        if (chainage_end != None and chainage_end > min_chainage and chainage_end < max_chainage):
-            max_chainage = chainage_end
-
         road_codes = list(roads.values_list("road_code").distinct())
         road_code_index = 0
-        primary_road_code = road_codes[0][road_code_index]
 
-        # pull any Surveys that cover the roads
-        for primary_attribute in primary_attributes:
-            surveys[primary_attribute] = (
-                Survey.objects.filter(road=primary_road_code)
-                .exclude(chainage_start__isnull=True)
-                .exclude(chainage_end__isnull=True)
-                .exclude(**{"values__" + primary_attribute + "__isnull": True})
-                .order_by("road", "chainage_start", "chainage_end", "-date_surveyed")
-                .distinct("road", "chainage_start", "chainage_end")
-            )
+        for road_code in road_codes:
+            primary_road_code = road_code[road_code_index]
+            print(primary_road_code)
+            road_chainages = roads.filter(road_code=primary_road_code).values("link_start_chainage", "link_end_chainage")
+            min_chainage = road_chainages.order_by("link_start_chainage").first()[
+                "link_start_chainage"
+            ]
+            max_chainage = road_chainages.order_by("link_end_chainage").last()[
+                "link_end_chainage"
+            ]
 
-        report_protobuf = Report(
-            min_chainage, max_chainage, [primary_road_code], surveys
-        ).to_protobuf()
+            if len(road_codes) == 1:
+                if (chainage_start != None and chainage_start > min_chainage and chainage_start < max_chainage):
+                    min_chainage = chainage_start
+                
+                if (chainage_end != None and chainage_end > min_chainage and chainage_end < max_chainage):
+                    max_chainage = chainage_end
+
+            # pull any Surveys that cover the roads
+            for primary_attribute in primary_attributes:
+                surveys[primary_attribute] = (
+                    Survey.objects.filter(road=primary_road_code)
+                    .exclude(chainage_start__isnull=True)
+                    .exclude(chainage_end__isnull=True)
+                    .exclude(**{"values__" + primary_attribute + "__isnull": True})
+                    .order_by("road", "chainage_start", "chainage_end", "-date_surveyed")
+                    .distinct("road", "chainage_start", "chainage_end")
+                )
+
+            report_protobuf = Report(
+                surveys, len(road_codes) == 1, min_chainage, max_chainage
+            ).to_protobuf()
     else:
         return HttpResponseNotFound()
 
