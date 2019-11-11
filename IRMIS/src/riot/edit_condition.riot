@@ -227,7 +227,7 @@
             },
             getRoadSurveyReports() {
                 const filters = {
-                    roadid: this.state.road.getId(),
+                    // roadid: this.state.road.getId(),
                     roadcode: this.state.road.code,
                 };
 
@@ -235,12 +235,13 @@
                     .then((surveyReportData) => {
                         if (surveyReportData) {
                             const haveLengths = !!surveyReportData.lengths;
-                            const haveSurfaceConditions = surveyReportData.surfaceConditions.length > 0;
+                            const surfaceConditions = surveyReportData.surfaceConditions;
+                            const haveSurfaceConditions = surfaceConditions.length > 0;
                             if (haveLengths && haveSurfaceConditions) {
-                                this.updateSurfaceConditionsSummary(surveyReportData.surfaceConditions);
+                                this.updateSurfaceConditionsSummary(surfaceConditions);
                             }
-                            if (surveyReportData.tableList && surveyReportData.tableList.length) {
-                                this.state.reportRows = surveyReportData.tableList;
+                            if (haveSurfaceConditions) {
+                                this.state.reportRows = surveyReportData.surfaceConditionsList;
 
                                 const eventName = `${this.current_data_table_id}.dataAdded`;
                                 const eventDetail = { detail: { pendingRows: this.state.reportRows, appendRows: this.state.loading }};

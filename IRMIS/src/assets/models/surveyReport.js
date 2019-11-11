@@ -127,11 +127,33 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
         return this.filter.report_chainage_end || 0;
     }
 
-    get attributeTableList() {
-        const attributeTablesRaw = this.getAttributeTableList();
+    get attributeTablesList() {
+        const attributeTablesRaw = this.getAttributeTablesList();
         return attributeTablesRaw.map(this.makeEstradaSurveyAttributeTable);
     }
     
+    get surfaceConditions() {
+        const primary_attribute = "surface_condition";
+
+        const lengthsForType = {}
+        this.surfaceConditionsList.attributeEntriesList.forEach((attributeEntry) => {
+            const typeKey = attributeEntry.values[primary_attribute];
+            lengthsForType[typeKey] = (lengthsForType[typeKey] || 0) + attributeEntry.length;
+        });
+        console.log(JSON.stringify(lengthsForType));
+           
+        return extractCountData(lengthsForType, SURFACE_CONDITION_CHOICES);
+    }
+
+    get surfaceConditionsList() {
+        const primary_attribute = "surface_condition";
+        const attributes = this.attributeTablesList.find((attributeTable) => {
+            return attributeTable.primaryAttribute === primary_attribute;
+        }) || [];
+
+        return attributes
+    }
+
     static getFieldName(field) {
         return getFieldName(roadReportSchema, field);
     }
@@ -165,17 +187,17 @@ export class EstradaSurveyAttributeTable extends AttributeTable {
      * these names identify attributes that are 'averaged' relative to the primary attribute
      * */
     get secondaryAttributeList() {
-        return this.getSecondaryAttributes() || [];
+        return this.getSecondaryAttributeList() || [];
     }
 
-    get attributeTableList() {
-        const attributeTablesRaw = this.getAttributeTableList();
-        if (attributeTablesRaw.length === 1 && attributeTablesRaw[0].getSurveyId() === 0) {
+    get attributeEntriesList() {
+        const attributeEntriesRaw = this.getAttributeEntriesList();
+        if (attributeEntriesRaw.length === 1 && attributeEntriesRaw[0].getSurveyId() === 0) {
             // Only a single generated attribute table
             // Which means that there are actually no real attribute tables
             return [];
         }
-        return attributeTablesRaw.map(this.makeEstradaSurveyAttributeTable);
+        return attributeEntriesRaw.map(this.makeEstradaSurveyAttributeEntry);
     }
         
     static getFieldName(field) {
@@ -209,11 +231,15 @@ export class EstradaSurveyAttributeEntry extends AttributeEntry {
     }
 
     get chainageStart() {
-        return this.getChainageStart();
+        return this.getChainageStart() || 0;
     }
 
     get chainageEnd() {
         return this.getChainageEnd();
+    }
+
+    get length() {
+        return this.chainageEnd - this.chainageStart;
     }
 
     get dateSurveyed() {
@@ -236,32 +262,32 @@ export class EstradaSurveyAttributeEntry extends AttributeEntry {
      * these names identify attributes that are 'averaged' relative to the primary attribute
      * */
     get secondaryAttributeList() {
-        const allAttributes = Object.keys(this.lengths) || [];
+        const allAttributes = Object.keys(this.values) || [];
         return allAttributes.filter((attribute) => attribute != this.primaryAttribute);
     }
 
     get surfaceCondition() {
-        return window.gettext(choice_or_default(this.lengths.surface_condition, SURFACE_CONDITION_CHOICES, "Unknown"));
+        return window.gettext(choice_or_default(this.values.surface_condition, SURFACE_CONDITION_CHOICES, "Unknown"));
     }
 
     get surfaceType() {
-        return choice_or_default(this.lengths.surface_type, SURFACE_TYPE_CHOICES);
+        return choice_or_default(this.values.surface_type, SURFACE_TYPE_CHOICES);
     }
 
     get technicalClass() {
-        return choice_or_default(this.lengths.technical_class, TECHNICAL_CLASS_CHOICES);
+        return choice_or_default(this.values.technical_class, TECHNICAL_CLASS_CHOICES);
     }
 
     get trafficLevel() {
-        return choice_or_default(this.lengths.traffic_level, TRAFFIC_LEVEL_CHOICES);
+        return choice_or_default(this.values.traffic_level, TRAFFIC_LEVEL_CHOICES);
     }
 
     get numberLanes() {
-        return this.lengths.number_lanes;
+        return this.values.number_lanes;
     }
     
-    get lengths() {
-        const jsonValues = this.getLengths() || "{}";
+    get values() {
+        const jsonValues = this.getValues() || "{}";
         return JSON.parse(jsonValues);
     }
 

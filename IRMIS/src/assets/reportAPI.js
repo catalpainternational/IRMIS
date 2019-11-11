@@ -1,24 +1,25 @@
-import { Report } from "../../protobuf/survey_pb";
-import { EstradaSurveyReport } from "../surveyReport";
+import { Report } from "../../protobuf/report_pb";
+import { EstradaRoadSurveyReport } from "./models/surveyReport";
+
 import { ConfigAPI } from "./configAPI";
 import { makeEstradaObject } from "./protoBufUtilities";
 
-/** getRoadReport
+/** getRoadReports
  *
- * Retrieves a report for all surveys of a given road PK from the server
- *
- * @returns a Report object
+ * Retrieves the road report data from the server
  */
-export function getRoadReport(roadId) {
-    const assetTypeUrlFragment = "road_report";
-    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${roadId}`;
+export function getRoadReports(filters) {
+    const filterParams = ConfigAPI.objectToQueryString(filters);
+    const reportUrl = `${ConfigAPI.requestReportUrl}${filterParams}`;
 
-    return fetch(metadataUrl, ConfigAPI.requestInit())
+    const request = ConfigAPI.requestInit();
+
+    return fetch(reportUrl, request)
         .then((metadataResponse) => {
             if (metadataResponse.ok) {
                 return metadataResponse.arrayBuffer();
             }
-            throw new Error(`Survey report retrieval failed: ${metadataResponse.statusText}`);
+            throw new Error(`Road report retrieval failed: ${metadataResponse.statusText}`);
         })
         .then((protobufBytes) => {
             const uintArray = new Uint8Array(protobufBytes);
@@ -27,5 +28,5 @@ export function getRoadReport(roadId) {
 }
 
 function makeEstradaSurveyReport(pbsurveyreport) {
-    return makeEstradaObject(EstradaSurveyReport, pbsurveyreport);
+    return makeEstradaObject(EstradaRoadSurveyReport, pbsurveyreport);
 }
