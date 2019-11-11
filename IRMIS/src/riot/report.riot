@@ -1,0 +1,72 @@
+<report>
+    <header class="d-flex">
+        <div>
+            <a class="caret-dark left image" onclick="{ backToReports }"></a>
+        </div>
+        <div class="d-flex flex-column">
+            <div class="align-items-center d-flex">
+                <span class="report image"></span>
+                <h6>{ state.reportContent[props.id].title }</h6>
+            </div>
+            <div>
+                <p>{ state.reportContent[props.id].description }.</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+
+    </div>
+
+    <div class="content-wrapper">
+
+    </div>
+
+    <script>
+        export default {
+            state: {
+                reportContent: {
+                    0: {
+                        title: window.gettext("Road Network Length"),
+                        description: window.gettext("A report on the total length of the road network. The report provides total length in kilometers and percentages according to Road Status and Technical Class. A number of filters can be selected in order to generate a length report according to the required criteria"),
+                    },
+                    1: {
+                        title: window.gettext("Road Network Length Breakdown"),
+                        description: window.gettext("A breakdown report on the total length of the road network. The report provides information on total length in kilometers and percentages as well as Road Status and Technical Class, according to a breakdown by Municipality, Road Class and Surface Type"),
+                    },
+                    2: {
+                        title: window.gettext("Surface Condition"),
+                        description: window.gettext("A report on Road Surface Condition. This report provides detailed Surface Condition information per segment"),
+                    },
+                    3: { 
+                        title: window.gettext("IRI Roughness"),
+                        description: window.gettext("A report on Road IRI data. This report provides detailed information on a Road's Roughness per segment"),
+                    },
+                    4: {
+                        title: window.gettext("Road Network Length - National Class"),
+                        description: window.gettext("A report on the total length of National Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for National Roads"),
+                    },
+                    5: {
+                        title: window.gettext("Road Network Length - Municipal Class"),
+                        description: window.gettext("A report on the total length of Municipal Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Municipal Roads"),
+                    },
+                    6: {
+                        title: window.gettext("Road Network Length - Rural Class"),
+                        description: window.gettext("A report on the total length of Rural Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Rural Roads"),
+                    },
+                    7: {
+                        title: window.gettext("Road Network Length - Highway Class"),
+                        description: window.gettext("A report on the total length of Highways. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Highways"),
+                    },
+                    8: {
+                        title: window.gettext("Road Network Length - Urban Class"),
+                        description: window.gettext("A report on the total length of Urban Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Urban Roads"),
+                    },
+                },
+            },
+            backToReports() {
+                window.location.hash = "reports/";
+            },
+        }
+    </script>
+</report>
