@@ -9,57 +9,57 @@
         </div>
         <div id="reports">
             <report if="{ state.page }" id="{ state.page }"></report>
-            <div if="{ !state.page }">
+            <template if="{ !state.page }">
                 <h1>{ window.gettext("Reports") }</h1>
 
                 <h6>{ window.gettext("Road Network Report") }</h6>
                 <div class="content-wrapper">
-                    <div class="align-items-center d-flex" onclick="{ selectPage }" data-id="0">
-                        <span class="report image"></span>
+                    <div class="align-items-center d-flex report" onclick="{ selectPage }" data-id="0">
+                        <span class="report-icon image"></span>
                         <p>{ window.gettext("Road Network Length") }</p>
                     </div>
-                    <div class="align-items-center d-flex" onclick="{ selectPage }" data-id="1">
-                        <span class="report image"></span>
+                    <div class="align-items-center d-flex report" onclick="{ selectPage }" data-id="1">
+                        <span class="report-icon image"></span>
                         <p>{ window.gettext("Road Network Length Breakdown") }</p>
                     </div>
                 </div>
 
                 <h6>{ window.gettext("Road Condition Report") }</h6>
                 <div class="content-wrapper">
-                    <div class="align-items-center d-flex" onclick="{ selectPage }" data-id="2">
-                        <span class="report image"></span>
+                    <div class="align-items-center d-flex report" onclick="{ selectPage }" data-id="2">
+                        <span class="report-icon image"></span>
                         <p>{ window.gettext("Surface Condition (SDI)") }</p>
                     </div>
-                    <div class="align-items-center d-flex" onclick="{ selectPage }" data-id="3">
-                        <span class="report image"></span>
+                    <div class="align-items-center d-flex report" onclick="{ selectPage }" data-id="3">
+                        <span class="report-icon image"></span>
                         <p>{ window.gettext("IRI Roughness") }</p>
                     </div>
                 </div>
 
                 <h6>{ window.gettext("Road Network Reports by Road Class") }</h6>
                 <div class="content-wrapper">
-                    <div class="align-items-center d-flex" onclick="{ selectPage }" data-id="4">
-                        <span class="report image"></span>
+                    <div class="align-items-center d-flex report" onclick="{ selectPage }" data-id="4">
+                        <span class="report-icon image"></span>
                         <p>{ window.gettext("Road Network Length - National Class") }</p>
                     </div>
-                    <div class="align-items-center d-flex" onclick="{ selectPage }" data-id="5">
-                        <span class="report image"></span>
+                    <div class="align-items-center d-flex report" onclick="{ selectPage }" data-id="5">
+                        <span class="report-icon image"></span>
                         <p>{ window.gettext("Road Network Length - Municipal Class") }</p>
                     </div>
-                    <div class="align-items-center d-flex" onclick="{ selectPage }" data-id="6">
-                        <span class="report image"></span>
+                    <div class="align-items-center d-flex report" onclick="{ selectPage }" data-id="6">
+                        <span class="report-icon image"></span>
                         <p>{ window.gettext("Road Network Length - Rural Class") }</p>
                     </div>
-                    <div class="align-items-center d-flex" onclick="{ selectPage }" data-id="7">
-                        <span class="report image"></span>
+                    <div class="align-items-center d-flex report" onclick="{ selectPage }" data-id="7">
+                        <span class="report-icon image"></span>
                         <p>{ window.gettext("Road Network Length - Highway Class") }</p>
                     </div>
-                    <div class="align-items-center d-flex" onclick="{ selectPage }" data-id="8">
-                        <span class="report image"></span>
+                    <div class="align-items-center d-flex report" onclick="{ selectPage }" data-id="8">
+                        <span class="report-icon image"></span>
                         <p>{ window.gettext("Road Network Length - Urban Class") }</p>
                     </div>
                 </div>
-            </div>
+            </template>
         </div>
     </div>
 

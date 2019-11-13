@@ -1,12 +1,14 @@
 #reports {
-    height: calc(100vh - #{$top-menu-height} - 25px);
+    height: calc(100vh - #{$top-menu-height} - 20px);
     width: calc(100% - #{$side-menu-width});
     padding-bottom: 15px;
     padding-right: 15px;
     margin-top: 20px;
     overflow-y: auto;
     padding-left: 0;
+}
 
+reports_base {
     h1 {
         margin-bottom: 30px;
     }
@@ -15,6 +17,36 @@
         margin-bottom: 10px;
     }
 
+    .content-wrapper {
+        padding: 15px 25px 15px 60px;
+        background-color: $white;
+        margin-bottom: 30px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    .report {
+        padding-bottom: 10px;
+        padding-top: 10px;
+
+        &:hover {
+            cursor: pointer;
+        }
+
+        p {
+            margin-left: 10px;
+            margin-bottom: 0;
+        }
+    }
+
+    .report:not(:last-child) {
+        border-bottom: 1px solid $light-gray;
+    }
+}
+
+report {
     header {
         padding: 30px 30px 30px 20px;
         background-color: $white;
@@ -42,22 +74,18 @@
     }
 
     .content-wrapper {
-        padding: 25px 25px 15px 60px;
-        background-color: $white;
-        margin-bottom: 30px;
+        padding-top: 25px;
+    }
 
-        p {
-            margin-left: 10px;
-            margin-bottom: 0;
-        }
+    input.form-control {
+        margin-bottom: 10px;
+        margin-right: 10px;
+        width: 225px;
+    }
 
-        div {
-            padding-bottom: 10px;
-        }
-
-        div:not(:last-child) {
-            border-bottom: 1px solid $light-gray;
-            margin-bottom: 10px;
-        }
+    .options {
+        margin-bottom: 10px;
+        margin-right: 10px;
+        height: 31px;
     }
 }
