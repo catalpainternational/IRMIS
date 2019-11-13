@@ -3,7 +3,6 @@ import dayjs from "dayjs";
 import { Report, TableEntry } from "../../../protobuf/survey_pb";
 
 import { choice_or_default, getFieldName, getHelpText, makeEstradaObject } from "../protoBufUtilities";
-import { choice_or_empty } from "../protoBufUtilities";
 
 import { SURFACE_CONDITION_CHOICES } from "./road";
 
@@ -15,6 +14,16 @@ const surveyReportSchema = {
     counts: { display: gettext("Counts") },
     percentages: { display: gettext("Percentages") },
     tableList: { display: gettext("Table") },
+};
+
+const attributeEntrySchema = {
+    id: { display: "Id" },
+    surveyId: { display: "Survey Id" },
+    chainageStart: { display: gettext("Chainage Start") },
+    chainageEnd: { display: gettext("Chainage End") },
+    surfaceCondition: { display: gettext("Surface Condition") },
+    dateSurveyed: { display: gettext("Survey Date") },
+    addedBy: { display: gettext("Added By") },
 };
 
 export class EstradaSurveyReport extends Report {
@@ -53,11 +62,7 @@ export class EstradaSurveyReport extends Report {
         const conditions = [];
         const counts = this.counts;
         Object.keys(counts).forEach((key) => {
-            let conditionTitle = (choice_or_empty(key, SURFACE_CONDITION_CHOICES) || key).toLowerCase();
-            if (conditionTitle === "none") {
-                conditionTitle = window.gettext("unknown");
-                key = 0;
-            }
+            const conditionTitle = gettext(choice_or_default(this.values.surface_condition, SURFACE_CONDITION_CHOICES, "Unknown"));
             conditions.push({ surface: conditionTitle, key: key, distance: counts[key] });
         });
         return conditions;
@@ -131,10 +136,14 @@ export class EstradaSurveyReportTableEntry extends TableEntry {
     }
 
     get surfaceCondition() {
-        let conditionTitle = (choice_or_empty(this.getSurfaceCondition(), SURFACE_CONDITION_CHOICES) || this.getSurfaceCondition()).toLowerCase();
-        if (conditionTitle === "none") {
-            conditionTitle = "unknown";
-        }
-        return window.gettext(conditionTitle[0].toUpperCase() + conditionTitle.substring(1));
+        return gettext(choice_or_default(this.values.surface_condition, SURFACE_CONDITION_CHOICES, "Unknown"));
+    }
+    
+    static getFieldName(field) {
+        return getFieldName(attributeEntrySchema, field);
+    }
+
+    static getHelpText(field) {
+        return getHelpText(attributeEntrySchema, field);
     }
 }
