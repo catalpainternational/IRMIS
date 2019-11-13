@@ -186,38 +186,6 @@ def test_road_edit_identical_data(client, django_user_model):
 
 
 @pytest.mark.django_db
-def test_road_edit_detect_another_users_previous_changes(client, django_user_model):
-    """ This test will fail if the road api does not throw a 409 response when
-    passed which has been updated/edited by another user since the client recieved thier
-    data from the server. Header should contain 'Location' to point to the updated data."""
-    # create two users
-    user1 = django_user_model.objects.create_user(username="user1", password="bar")
-    user2 = django_user_model.objects.create_user(username="user2", password="bar")
-    # login with user1
-    client.force_login(user1)
-    with reversion.create_revision():
-        # create a road
-        road = Road.objects.create()
-        # store the user who made the changes
-        reversion.set_user(user1)
-    # make Protobuf identical to existing Road, but change one detail
-    pb = Road.objects.filter(id=road.id).to_protobuf().roads[0]
-    pb.road_name = "Pizza the Hutt Rd"
-    pb_str = pb.SerializeToString()
-    time.sleep(1)
-    # User2 updates Road on the server
-    with reversion.create_revision():
-        road.road_name = "Sir Anders Blvd"
-        road.save()
-        # store the user who made the changes
-        reversion.set_user(user2)
-    # hit the road api - detail
-    url = reverse("road_update")
-    response = client.put(url, data=pb_str, content_type="application/octet-stream")
-    assert response.status_code == 409
-
-
-@pytest.mark.django_db
 def test_api_lastmod_and_etag_present(client, django_user_model):
     """ check the road api etag and last-modified are present on requests """
     # create a user
