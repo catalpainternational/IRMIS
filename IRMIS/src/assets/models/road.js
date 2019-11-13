@@ -1,29 +1,19 @@
 import { Road } from "../../../protobuf/roads_pb";
 
 import { projToWGS84, toDms, toUtm } from "../crsUtilities";
-import { choice_or_empty, toChainageFormat } from "../protoBufUtilities";
-
-export function humanizeChoices(choiceField, valueKey=false, displayKey=false) {
-    let values = {};
-    valueKey = valueKey || 0;
-    displayKey = displayKey || 1;
-    roadSchema[choiceField].options.forEach(function(o){
-        values[o[valueKey]] = o[displayKey];
-    });
-    return values;
-}
+import { choice_or_default, getFieldName, getHelpText, humanizeChoices, toChainageFormat } from "../protoBufUtilities";
 
 const roadSchema = JSON.parse(document.getElementById('road_schema').textContent);
 
-const ADMINISTRATIVE_AREA_CHOICES = humanizeChoices('administrative_area', 'id', 'name');
-const MAINTENANCE_NEED_CHOICES = humanizeChoices('maintenance_need', 'code', 'name');
-const PAVEMENT_CLASS_CHOICES = humanizeChoices('pavement_class', 'code', 'name');
-const ROAD_STATUS_CHOICES = humanizeChoices('road_status', 'code', 'name');
-const ROAD_TYPE_CHOICES = humanizeChoices('road_type');
-export const SURFACE_CONDITION_CHOICES = humanizeChoices('surface_condition');
-export const SURFACE_TYPE_CHOICES = humanizeChoices('surface_type', 'code', 'name');
-export const TECHNICAL_CLASS_CHOICES = humanizeChoices('technical_class', 'code', 'name');
-export const TRAFFIC_LEVEL_CHOICES = humanizeChoices('traffic_level');
+const ADMINISTRATIVE_AREA_CHOICES = humanizeChoices(roadSchema, 'administrative_area', 'id', 'name');
+const MAINTENANCE_NEED_CHOICES = humanizeChoices(roadSchema, 'maintenance_need', 'code', 'name');
+const PAVEMENT_CLASS_CHOICES = humanizeChoices(roadSchema, 'pavement_class', 'code', 'name');
+const ROAD_STATUS_CHOICES = humanizeChoices(roadSchema, 'road_status', 'code', 'name');
+const ROAD_TYPE_CHOICES = humanizeChoices(roadSchema, 'road_type');
+export const SURFACE_CONDITION_CHOICES = humanizeChoices(roadSchema, 'surface_condition');
+export const SURFACE_TYPE_CHOICES = humanizeChoices(roadSchema, 'surface_type', 'code', 'name');
+export const TECHNICAL_CLASS_CHOICES = humanizeChoices(roadSchema, 'technical_class', 'code', 'name');
+export const TRAFFIC_LEVEL_CHOICES = humanizeChoices(roadSchema, 'traffic_level');
 
 export class EstradaRoad extends Road {
 
@@ -68,27 +58,27 @@ export class EstradaRoad extends Road {
     }
 
     get status() {
-        return choice_or_empty(this.getRoadStatus(), ROAD_STATUS_CHOICES);
+        return choice_or_default(this.getRoadStatus(), ROAD_STATUS_CHOICES);
     }
 
     get type() {
-        return choice_or_empty(this.getRoadType(), ROAD_TYPE_CHOICES);
+        return choice_or_default(this.getRoadType(), ROAD_TYPE_CHOICES);
     }
 
     get surfaceType() {
-        return choice_or_empty(this.getSurfaceType(), SURFACE_TYPE_CHOICES);
+        return choice_or_default(this.getSurfaceType(), SURFACE_TYPE_CHOICES);
     }
 
     get surfaceCondition() {
-        return choice_or_empty(this.getSurfaceCondition(), SURFACE_CONDITION_CHOICES);
+        return choice_or_default(this.getSurfaceCondition(), SURFACE_CONDITION_CHOICES);
     }
 
     get pavementClass() {
-        return choice_or_empty(this.getPavementClass(), PAVEMENT_CLASS_CHOICES);
+        return choice_or_default(this.getPavementClass(), PAVEMENT_CLASS_CHOICES);
     }
 
     get administrativeArea() {
-        return choice_or_empty(parseInt(this.getAdministrativeArea()), ADMINISTRATIVE_AREA_CHOICES);
+        return choice_or_default(parseInt(this.getAdministrativeArea()), ADMINISTRATIVE_AREA_CHOICES);
     }
 
     get carriagewayWidth() {
@@ -104,15 +94,15 @@ export class EstradaRoad extends Road {
     }
 
     get technicalClass() {
-        return choice_or_empty(this.getTechnicalClass(), TECHNICAL_CLASS_CHOICES);
+        return choice_or_default(this.getTechnicalClass(), TECHNICAL_CLASS_CHOICES);
     }
 
     get maintenanceNeed() {
-        return choice_or_empty(this.getMaintenanceNeed(), MAINTENANCE_NEED_CHOICES);
+        return choice_or_default(this.getMaintenanceNeed(), MAINTENANCE_NEED_CHOICES);
     }
 
     get trafficLevel() {
-        return choice_or_empty(this.getTrafficLevel(), TRAFFIC_LEVEL_CHOICES);
+        return choice_or_default(this.getTrafficLevel(), TRAFFIC_LEVEL_CHOICES);
     }
 
     get projectionStart() {
@@ -144,10 +134,10 @@ export class EstradaRoad extends Road {
     }
 
     static getFieldName(field) {
-        return (roadSchema[field]) ? roadSchema[field].display : "";
+        return getFieldName(roadSchema, field);
     }
     
     static getHelpText(field) {
-        return (roadSchema[field]) ? roadSchema[field].help_text : "";
+        return getHelpText(roadSchema, field);
     }
 }

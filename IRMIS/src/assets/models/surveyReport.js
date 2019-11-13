@@ -2,7 +2,8 @@ import dayjs from "dayjs";
 
 import { Report, TableEntry } from "../../../protobuf/survey_pb";
 
-import { choice_or_empty, makeEstradaObject } from "../protoBufUtilities";
+import { choice_or_default, getFieldName, getHelpText, makeEstradaObject } from "../protoBufUtilities";
+import { choice_or_empty } from "../protoBufUtilities";
 
 import { SURFACE_CONDITION_CHOICES } from "./road";
 
@@ -79,7 +80,19 @@ export class EstradaSurveyReport extends Report {
             // Which means that there are actually no real survey segments
             return [];
         }
-        return tableListRaw.map(makeEstradaSurveyReportTableEntry);
+        return tableListRaw.map(this.makeEstradaSurveyReportTableEntry);
+    }
+    
+    makeEstradaSurveyReportTableEntry (pbtableentry) {
+        return makeEstradaObject(EstradaSurveyReportTableEntry, pbtableentry);
+    }
+
+    static getFieldName(field) {
+        return getFieldName(surveyReportSchema, field);
+    }
+    
+    static getHelpText(field) {
+        return getHelpText(surveyReportSchema, field);
     }
 }
 
@@ -124,16 +137,4 @@ export class EstradaSurveyReportTableEntry extends TableEntry {
         }
         return window.gettext(conditionTitle[0].toUpperCase() + conditionTitle.substring(1));
     }
-}
-
-export function getFieldName(field) {
-    return (surveyReportSchema[field]) ? surveyReportSchema[field].display : "";
-}
-
-export function getHelpText(field) {
-    return (surveyReportSchema[field]) ? surveyReportSchema[field].help_text : "";
-}
-
-export function makeEstradaSurveyReportTableEntry (pbtableentry) {
-    return makeEstradaObject(EstradaSurveyReportTableEntry, pbtableentry);
 }
