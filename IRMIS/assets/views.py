@@ -71,37 +71,6 @@ def get_last_modified(request, pk=None):
         return datetime.now()
 
 
-class RoadViewSet(ViewSet):
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    @condition(etag_func=get_etag, last_modified_func=get_last_modified)
-    def list(self, request):
-        queryset = Road.objects.all()
-        serializer = RoadMetaOnlySerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    @condition(etag_func=get_etag, last_modified_func=get_last_modified)
-    def retrieve(self, request, pk):
-        # Allow metadata retrival for single road with param: `?meta`
-        if "meta" in request.query_params:
-            queryset = Road.objects.all()
-            road = get_object_or_404(queryset, pk=pk)
-            serializer = RoadMetaOnlySerializer(road)
-            return Response(serializer.data)
-        else:
-            queryset = Road.objects.to_wgs()
-            road = get_object_or_404(queryset, pk=pk)
-            serializer = RoadToWGSSerializer(road)
-            return Response(serializer.data)
-
-    def create(self, request):
-        raise MethodNotAllowed(request.method)
-
-    def destroy(self, request, pk):
-        raise MethodNotAllowed(request.method)
-
-
 def road_update(request):
     if not request.user.is_authenticated:
         return HttpResponseForbidden()
@@ -223,6 +192,9 @@ def protobuf_road(request, pk):
 
     if not request.user.is_authenticated:
         return HttpResponseForbidden()
+
+    if request.method != "GET":
+        return HttpResponse(status=405)
 
     roads = Road.objects.filter(pk=pk)
     if not roads.exists():
