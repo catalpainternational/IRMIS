@@ -92,13 +92,6 @@ class SurveyQuerySet(models.QuerySet):
             added_by="user__username",
         )
 
-        last_revisions = {
-            i["object_id"]: i["revision_id"]
-            for i in Version.objects.get_queryset()
-            .order_by("object_id", "revision_id")
-            .values("object_id", "revision_id")
-        }
-
         for survey in self.values(*fields.values()):
             survey_protobuf = surveys_protobuf.surveys.add()
             for protobuf_key, query_key in fields.items():
@@ -124,9 +117,6 @@ class SurveyQuerySet(models.QuerySet):
                 survey_protobuf.values = json.dumps(
                     survey["values"], separators=(",", ":")
                 )
-            setattr(
-                survey_protobuf, "last_revision_id", last_revisions[str(survey["id"])]
-            )
 
         return surveys_protobuf
 
@@ -241,20 +231,12 @@ class RoadQuerySet(models.QuerySet):
             .values("id", *fields.values(), *annotations)
         )
 
-        last_revisions = {
-            i["object_id"]: i["revision_id"]
-            for i in Version.objects.get_queryset()
-            .order_by("object_id", "revision_id")
-            .values("object_id", "revision_id")
-        }
-
         for road in roads:
             road_protobuf = roads_protobuf.roads.add()
             road_protobuf.id = road["id"]
             for protobuf_key, query_key in fields.items():
                 if road[query_key]:
                     setattr(road_protobuf, protobuf_key, road[query_key])
-            setattr(road_protobuf, "last_revision_id", last_revisions[str(road["id"])])
 
             # set Protobuf with with start/end projection points
             start = Projection(x=road["start_x"], y=road["start_y"])
