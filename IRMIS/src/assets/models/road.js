@@ -1,7 +1,7 @@
-import { Road } from "../protobuf/roads_pb";
+import { Road } from ".../../../protobuf/roads_pb";
 
-import { projToWGS84, toDms, toUtm } from "./assets/crsUtilities";
-import { choice_or_empty, toChainageFormat } from "./assets/protoBufUtilities";
+import { projToWGS84, toDms, toUtm } from "../crsUtilities";
+import { choice_or_empty, toChainageFormat } from "../protoBufUtilities";
 
 export function humanizeChoices(choiceField, valueKey=false, displayKey=false) {
     let values = {};
@@ -143,12 +143,11 @@ export class EstradaRoad extends Road {
         return this.getNumberLanes();
     }
 
-}
-
-export function getFieldName(field) {
-    return (roadSchema[field]) ? roadSchema[field].display : "";
-}
-
-export function getHelpText(field) {
-    return (roadSchema[field]) ? roadSchema[field].help_text : "";
+    static getFieldName(field) {
+        return (roadSchema[field]) ? roadSchema[field].display : "";
+    }
+    
+    static getHelpText(field) {
+        return (roadSchema[field]) ? roadSchema[field].help_text : "";
+    }
 }

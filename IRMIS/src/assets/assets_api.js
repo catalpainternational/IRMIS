@@ -1,6 +1,6 @@
 import { Road, Roads, Versions } from "../../protobuf/roads_pb";
-import { EstradaRoad } from "../road";
-import { EstradaAudit } from "../audit";
+import { EstradaRoad } from "./models/road";
+import { EstradaAudit } from "./models/audit";
 
 import { ConfigAPI } from "./configAPI";
 import { makeEstradaObject } from "./protoBufUtilities";

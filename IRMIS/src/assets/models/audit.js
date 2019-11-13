@@ -1,4 +1,4 @@
-import { Version } from "../protobuf/roads_pb";
+import { Version } from "../../../protobuf/roads_pb";
 
 const auditSchema = {
     id: { display: "Id" },

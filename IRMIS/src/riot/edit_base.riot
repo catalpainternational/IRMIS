@@ -68,7 +68,7 @@
         import $ from "jquery";
 
         import { saveRoad } from "../roadManager";
-        import { getHelpText } from "../road";
+        import { EstradaRoad } from "../assets/models/road";
 
         import Edit_Feedback from './edit_feedback.riot';
         import Edit_Stop_Alert from "./edit_stop_alert.riot";
@@ -197,7 +197,9 @@
                 }, 300);
             },
             getHelpText(field) {
-                return getHelpText(field);
+                // Warning: We are using EstradaRoad specific helptext support here
+                // whereas as we want generic support (for whatever schema)
+                return EstradaRoad.getHelpText(field);
             }
         };
     </script>
