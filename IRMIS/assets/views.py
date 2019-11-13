@@ -450,7 +450,7 @@ def protobuf_reports(request):
     chainage_start = None
     chainage_end = None
 
-    if (road_id != None or road_code != ""):
+    if road_id != None or road_code != "":
         # chainage is only valid if we've specified a road
         chainage_start = request.GET.get("chainagestart", None)
         chainage_end = request.GET.get("chainageend", None)
@@ -460,7 +460,11 @@ def protobuf_reports(request):
         chainage_start = float(chainage_start)
     if chainage_end != None:
         chainage_end = float(chainage_end)
-    if chainage_start != None and chainage_end != None and chainage_start > chainage_end:
+    if (
+        chainage_start != None
+        and chainage_end != None
+        and chainage_start > chainage_end
+    ):
         temp_chainage = chainage_start
         chainage_start = chainage_end
         chainage_end = temp_chainage
@@ -480,7 +484,9 @@ def protobuf_reports(request):
         for road_code in road_codes:
             primary_road_code = road_code[road_code_index]
             print(primary_road_code)
-            road_chainages = roads.filter(road_code=primary_road_code).values("link_start_chainage", "link_end_chainage")
+            road_chainages = roads.filter(road_code=primary_road_code).values(
+                "link_start_chainage", "link_end_chainage"
+            )
             min_chainage = road_chainages.order_by("link_start_chainage").first()[
                 "link_start_chainage"
             ]
@@ -489,10 +495,18 @@ def protobuf_reports(request):
             ]
 
             if len(road_codes) == 1:
-                if (chainage_start != None and chainage_start > min_chainage and chainage_start < max_chainage):
+                if (
+                    chainage_start != None
+                    and chainage_start > min_chainage
+                    and chainage_start < max_chainage
+                ):
                     min_chainage = chainage_start
-                
-                if (chainage_end != None and chainage_end > min_chainage and chainage_end < max_chainage):
+
+                if (
+                    chainage_end != None
+                    and chainage_end > min_chainage
+                    and chainage_end < max_chainage
+                ):
                     max_chainage = chainage_end
 
             # pull any Surveys that cover the roads
@@ -502,7 +516,9 @@ def protobuf_reports(request):
                     .exclude(chainage_start__isnull=True)
                     .exclude(chainage_end__isnull=True)
                     .exclude(**{"values__" + primary_attribute + "__isnull": True})
-                    .order_by("road", "chainage_start", "chainage_end", "-date_surveyed")
+                    .order_by(
+                        "road", "chainage_start", "chainage_end", "-date_surveyed"
+                    )
                     .distinct("road", "chainage_start", "chainage_end")
                 )
 
