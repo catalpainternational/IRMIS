@@ -89,8 +89,11 @@ export class Map {
             geoLayer.setStyle(switchStyle ? layerFilterStyles.styleOn : layerFilterStyles.styleOff);
         });
 
-        const bounds = (featureZoomSet.features.length) ? envelope(featureZoomSet as AllGeoJSON) : Config.tlBounds;
-        const bb = bbox(bounds);
+        let bb = Config.tlBBox;
+        if (featureZoomSet.features.length) {
+            const bounds = envelope(featureZoomSet as AllGeoJSON);
+            bb = bbox(bounds) as number[];
+        }
 
         // Don't use flyToBounds
         // - it sounds nice, but screws up tile and geoJSON alignment when the zoom level remains the ame
