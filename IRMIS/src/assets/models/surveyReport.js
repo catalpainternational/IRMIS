@@ -62,8 +62,13 @@ export class EstradaSurveyReport extends Report {
         const conditions = [];
         const counts = this.counts;
         Object.keys(counts).forEach((key) => {
-            const conditionTitle = gettext(choice_or_default(this.values.surface_condition, SURFACE_CONDITION_CHOICES, "Unknown"));
-            conditions.push({ surface: conditionTitle, key: key, distance: counts[key] });
+            let conditionTitle = (choice_or_empty(key, SURFACE_CONDITION_CHOICES) || key).toLowerCase();
+            let newKey = key;
+            if (conditionTitle === "none") {
+                conditionTitle = window.gettext("unknown");
+                newKey = "0";
+            }
+            conditions.push({ key: newKey, title: conditionTitle, distance: counts[key] });
         });
         return conditions;
     }

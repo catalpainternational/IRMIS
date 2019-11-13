@@ -2,11 +2,11 @@
     <div class="content-wrapper">
         <h5>{ window.gettext("Surface Condition (SDI)") }</h5>
         <div class="d-flex surface-condition-bar">
-            <div each="{condition in state.conditions}" class="{'condition-' + condition.key}" style="{'width:' + condition.percent + '%;'}"></div>
+            <div each="{condition in state.surfaceConditions}" class="{'condition-' + condition.key}" style="{'width:' + condition.percent + '%;'}"></div>
         </div>
         <div class="align-items-center d-flex justify-content-between surface-condition-legend">
             <div class="values d-flex flex-wrap">
-                <div each="{condition in state.conditions}" class="align-items-center d-flex">
+                <div each="{condition in state.surfaceConditions}" class="align-items-center d-flex">
                     <div class="{'condition-' + condition.key}"></div>
                     <span>{condition.label}</span>
                 </div>
@@ -157,7 +157,7 @@
                 canSave: false,
                 errors: {},
                 pendingRows: [],
-                conditions: [{ surface: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
+                surfaceConditions: [{ key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
                 surveyTotalDistance: 0,
                 reportRows: [],
                 viewAll: false,
@@ -178,7 +178,8 @@
                 }
 
                 const emptyConditions = {
-                    surface: "unknown",
+                    key: 0,
+                    title: "unknown",
                     distance: roadDistance
                 };
 
@@ -229,7 +230,10 @@
                 getRoadSurveyReport(roadId)
                     .then((surveyReportData) => {
                         if (surveyReportData) {
-                            if (surveyReportData.counts && surveyReportData.conditions.length > 0) {
+                            const haveLengths = !!surveyReportData.counts;
+                            const surfaceConditions = surveyReportData.conditions;
+                            const haveSurfaceConditions = surfaceConditions.length > 0;
+                            if (haveLengths && haveSurfaceConditions) {
                                 this.updateSurfaceConditionsSummary(surveyReportData.conditions);
                             }
                             if (surveyReportData.tableList && surveyReportData.tableList.length) {
@@ -251,16 +255,16 @@
                     });
             },
             updateSurfaceConditionsSummary(surfaceConditions) {
-                this.state.conditions.length = 0;
+                this.state.surfaceConditions.length = 0;
                 surfaceConditions.forEach((condition) => {
-                    this.state.conditions.push(condition);
+                    this.state.surfaceConditions.push(condition);
                 });
                 this.drawSurfaceConditionsSummary();
             },
             drawSurfaceConditionsSummary() {
                 // First just clean all the distance values and get the total
                 this.state.surveyTotalDistance = 0;
-                this.state.conditions.forEach((condition) => {
+                this.state.surfaceConditions.forEach((condition) => {
                     // all distances are in meters
                     condition.distance = Math.round(condition.distance);
                     this.state.surveyTotalDistance += condition.distance;
@@ -268,8 +272,8 @@
                 this.state.surveyTotalDistance = Math.round(this.state.surveyTotalDistance);
 
                 // Then calculate everything else
-                this.state.conditions.forEach((condition) => {
-                    const surfaceTitle = window.gettext(condition.surface[0].toUpperCase() + condition.surface.substring(1));
+                this.state.surfaceConditions.forEach((condition) => {
+                    const surfaceTitle = window.gettext(condition.title[0].toUpperCase() + condition.title.substring(1));
                     if (this.state.surveyTotalDistance > 0) {
                         condition.percent = Math.round((condition.distance / this.state.surveyTotalDistance) * 10000) / 100;
                         // the calculated label shows distance in km
