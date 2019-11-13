@@ -67,8 +67,9 @@
         import * as riot from "riot";
         import $ from "jquery";
 
+        // We really should NOT be importing road specific stuff here
         import { saveRoad } from "../roadManager";
-        import { getHelpText } from "../road";
+        import { EstradaRoad } from "../assets/models/road";
 
         import Edit_Feedback from './edit_feedback.riot';
         import Edit_Stop_Alert from "./edit_stop_alert.riot";
@@ -197,7 +198,8 @@
                 }, 300);
             },
             getHelpText(field) {
-                return getHelpText(field);
+                // TODO: Fix this, because it's specific to 'Roads'
+                return EstradaRoad.getHelpText(field);
             }
         };
     </script>

@@ -6,7 +6,7 @@
     <script>
         import Data_Table from "./data_table.riot";
 
-        import { getFieldName } from "../road";
+        import { EstradaRoad } from "../assets/models/road";
         import { getRoadAudit } from "../roadManager";
 
         // import { Versions } from "../../protobuf/roads_pb";
@@ -27,7 +27,7 @@
             table_id: "history-table",
             table_columns: [
                 {
-                    title: "Date", // getFieldName("dateCreated"),
+                    title: "Date", // EstradaRoad.getFieldName("dateCreated"),
                     data: "dateCreated",
                     defaultContent: "",
                     orderable: false,
@@ -38,13 +38,13 @@
                     }
                 },
                 {
-                    title: "User", // getFieldName("user"),
+                    title: "User", // EstradaRoad.getFieldName("user"),
                     data: "user",
                     defaultContent: "",
                     orderable: false,
                 },
                 {
-                    title: "Comment", // getFieldName("comment"),
+                    title: "Comment", // EstradaRoad.getFieldName("comment"),
                     data: "comment",
                     defaultContent: "",
                     orderable: false,
@@ -55,7 +55,7 @@
                         try {
                             const json = JSON.parse(data);
                             const fields = json[0].changed.fields;
-                            const fieldDisplay = fields.map(getFieldName).join(", ");
+                            const fieldDisplay = fields.map(EstradaRoad.getFieldName).join(", ");
                             return `${window.gettext('Changed')}: ${fieldDisplay}`;
                         } catch(error) {
                             return data;

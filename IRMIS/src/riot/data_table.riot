@@ -2,7 +2,8 @@
     <table if={ state.id } id={ state.id } class="d-block table table-bordered table-hover w-100"></table>
 
     <script>
-        import { getHelpText } from "../road";
+        // We really should NOT be importing roads here
+        import { EstradaRoad } from "../assets/models/road";
         import { datatableTranslations } from "../datatableTranslations";
 
         import "bootstrap/js/dist/modal";
@@ -125,7 +126,8 @@
                 document.removeEventListener(`${state.id}.dataAdded`, state.dataAdded);
             },
             getHelpText(field) {
-                return getHelpText(field);
+                // TODO: Fix this, because it's specific to Roads
+                return EstradaRoad.getHelpText(field);
             }
         };
     </script>

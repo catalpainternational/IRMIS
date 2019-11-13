@@ -1,4 +1,4 @@
-import { getFieldName } from "./road";
+import { EstradaRoad } from "./assets/models/road";
 
 /** Define the general events that the main table will respond to
  *
@@ -47,20 +47,20 @@ export const estradaTableEventListeners = {
 /** Defines the columns for the table on the Estrada main page */
 export const estradaTableColumns = [
     {
-        title: getFieldName("road_code"),
+        title: EstradaRoad.getFieldName("road_code"),
         data: "code",
         defaultContent: "",
         type: "roadCode",
         className: "text-center",
     },
     {
-        title: getFieldName("road_name"),
+        title: EstradaRoad.getFieldName("road_name"),
         data: "name",
         defaultContent: "",
         visible: false,
     },
     {
-        title: getFieldName("link_code"),
+        title: EstradaRoad.getFieldName("link_code"),
         data: "linkCode",
         defaultContent: "",
         className: "text-center",
@@ -72,35 +72,35 @@ export const estradaTableColumns = [
         visible: false,
     },
     {
-        title: getFieldName("link_length"),
+        title: EstradaRoad.getFieldName("link_length"),
         data: "linkLength",
         defaultContent: "",
         className: "text-right",
     },
     {
-        title: getFieldName("link_start_name"),
+        title: EstradaRoad.getFieldName("link_start_name"),
         data: "linkStartName",
         defaultContent: "",
     },
     {
-        title: getFieldName("link_start_chainage"),
+        title: EstradaRoad.getFieldName("link_start_chainage"),
         data: "linkStartChainage",
         defaultContent: "",
         className: "text-right",
     },
     {
-        title: getFieldName("link_end_name"),
+        title: EstradaRoad.getFieldName("link_end_name"),
         data: "linkEndName",
         defaultContent: "",
     },
     {
-        title: getFieldName("link_end_chainage"),
+        title: EstradaRoad.getFieldName("link_end_chainage"),
         data: "linkEndChainage",
         defaultContent: "",
         className: "text-right",
     },
     {
-        title: getFieldName("surface_type"),
+        title: EstradaRoad.getFieldName("surface_type"),
         data: "surfaceType",
         defaultContent: "",
         // render: r => buttonSegmentsTemplate("surface_type", r),
@@ -108,31 +108,31 @@ export const estradaTableColumns = [
         className: "text-center",
     },
     {
-        title: getFieldName("pavement_class"),
+        title: EstradaRoad.getFieldName("pavement_class"),
         data: "pavementClass",
         defaultContent: "",
         className: "text-center",
     },
     {
-        title: getFieldName("carriageway_width"),
+        title: EstradaRoad.getFieldName("carriageway_width"),
         data: "carriagewayWidth",
         defaultContent: "",
         className: "text-right",
     },
     {
-        title: getFieldName("administrative_area"),
+        title: EstradaRoad.getFieldName("administrative_area"),
         data: "administrativeArea",
         defaultContent: "",
     },
     {
-        title: getFieldName("road_type"),
+        title: EstradaRoad.getFieldName("road_type"),
         data: "type",
         defaultContent: "",
         visible: false,
         className: "text-center",
     },
     {
-        title: getFieldName("technical_class"),
+        title: EstradaRoad.getFieldName("technical_class"),
         data: "technicalClass",
         defaultContent: "",
         // render: r => buttonSegmentsTemplate("technical-class", r),
@@ -141,26 +141,26 @@ export const estradaTableColumns = [
         className: "text-center",
     },
     {
-        title: getFieldName("funding_source"),
+        title: EstradaRoad.getFieldName("funding_source"),
         data: "fundingSource",
         defaultContent: "",
         visible: false
     },
     {
-        title: getFieldName("road_status"),
+        title: EstradaRoad.getFieldName("road_status"),
         data: "status",
         defaultContent: "",
         visible: false,
         className: "text-center",
     },
     {
-        title: getFieldName("project"),
+        title: EstradaRoad.getFieldName("project"),
         data: "project",
         defaultContent: "",
         visible: false,
     },
     {
-        title: getFieldName("surface_condition"),
+        title: EstradaRoad.getFieldName("surface_condition"),
         data: null,
         defaultContent: "",
         render: r => buttonSegmentsTemplate("surface_condition", r),
@@ -169,14 +169,14 @@ export const estradaTableColumns = [
         className: "text-center",
     },
     {
-        title: getFieldName("maintenance_need"),
+        title: EstradaRoad.getFieldName("maintenance_need"),
         data: "maintenanceNeed",
         defaultContent: "",
         visible: false,
         className: "text-center",
     },
     {
-        title: getFieldName("traffic_level"),
+        title: EstradaRoad.getFieldName("traffic_level"),
         data: "trafficLevel",
         defaultContent: "",
         visible: false,
@@ -211,7 +211,7 @@ export const estradaTableColumns = [
         className: "text-center",
     },
     {
-        title: getFieldName("number_lanes"),
+        title: EstradaRoad.getFieldName("number_lanes"),
         data: "numberLanes",
         defaultContent: "",
         // render: r => buttonSegmentsTemplate("number_lanes", r),

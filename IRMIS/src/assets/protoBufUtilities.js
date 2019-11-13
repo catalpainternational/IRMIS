@@ -1,6 +1,8 @@
-/** utility function to pick from choices if value is truthy, or return empty string */
-export function choice_or_empty(value, choices) {
-    return value ? choices[value] : "";
+/** utility function to pick from choices if value is truthy, or return default string
+ * the default for defaultValue is empty string ""
+ */
+export function choice_or_default(value, choices, defaultValue = "") {
+    return value ? choices[value] || defaultValue : defaultValue;
 }
 
 export function toChainageFormat(value) {
@@ -16,4 +18,21 @@ export function makeEstradaObject(estradaObjectType, protoBufSource) {
     Object.assign(estradaObject, protoBufSource);
 
     return estradaObject;
+}
+
+export function getFieldName(schema, field) {
+    return (schema[field]) ? schema[field].display : "";
+}
+
+export function getHelpText(schema, field) {
+    return (schema[field]) ? schema[field].help_text : "";
+}
+
+export function humanizeChoices(schema, field, valueKey = false, displayKey = false) {
+    let values = {};
+    valueKey = valueKey || 0;
+    displayKey = displayKey || 1;
+    schema[field].options.forEach((o) => { values[o[valueKey]] = o[displayKey]; });
+
+    return values;
 }

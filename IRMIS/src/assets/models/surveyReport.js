@@ -1,8 +1,8 @@
 import dayjs from "dayjs";
 
-import { Report, TableEntry } from "../protobuf/survey_pb";
+import { Report, TableEntry } from "../../../protobuf/survey_pb";
 
-import { choice_or_empty, makeEstradaObject } from "./assets/protoBufUtilities";
+import { choice_or_default, getFieldName, getHelpText, makeEstradaObject } from "../protoBufUtilities";
 
 import { SURFACE_CONDITION_CHOICES } from "./road";
 
@@ -14,6 +14,16 @@ const surveyReportSchema = {
     counts: { display: gettext("Counts") },
     percentages: { display: gettext("Percentages") },
     tableList: { display: gettext("Table") },
+};
+
+const attributeEntrySchema = {
+    id: { display: "Id" },
+    surveyId: { display: "Survey Id" },
+    chainageStart: { display: gettext("Chainage Start") },
+    chainageEnd: { display: gettext("Chainage End") },
+    surfaceCondition: { display: gettext("Surface Condition") },
+    dateSurveyed: { display: gettext("Survey Date") },
+    addedBy: { display: gettext("Added By") },
 };
 
 export class EstradaSurveyReport extends Report {
@@ -80,7 +90,19 @@ export class EstradaSurveyReport extends Report {
             // Which means that there are actually no real survey segments
             return [];
         }
-        return tableListRaw.map(makeEstradaSurveyReportTableEntry);
+        return tableListRaw.map(this.makeEstradaSurveyReportTableEntry);
+    }
+    
+    makeEstradaSurveyReportTableEntry (pbtableentry) {
+        return makeEstradaObject(EstradaSurveyReportTableEntry, pbtableentry);
+    }
+
+    static getFieldName(field) {
+        return getFieldName(surveyReportSchema, field);
+    }
+    
+    static getHelpText(field) {
+        return getHelpText(surveyReportSchema, field);
     }
 }
 
@@ -119,22 +141,14 @@ export class EstradaSurveyReportTableEntry extends TableEntry {
     }
 
     get surfaceCondition() {
-        let conditionTitle = (choice_or_empty(this.getSurfaceCondition(), SURFACE_CONDITION_CHOICES) || this.getSurfaceCondition()).toLowerCase();
-        if (conditionTitle === "none") {
-            conditionTitle = "unknown";
-        }
-        return window.gettext(conditionTitle[0].toUpperCase() + conditionTitle.substring(1));
+        return gettext(choice_or_default(this.values.surface_condition, SURFACE_CONDITION_CHOICES, "Unknown"));
     }
-}
+    
+    static getFieldName(field) {
+        return getFieldName(attributeEntrySchema, field);
+    }
 
-export function getFieldName(field) {
-    return (surveyReportSchema[field]) ? surveyReportSchema[field].display : "";
-}
-
-export function getHelpText(field) {
-    return (surveyReportSchema[field]) ? surveyReportSchema[field].help_text : "";
-}
-
-export function makeEstradaSurveyReportTableEntry (pbtableentry) {
-    return makeEstradaObject(EstradaSurveyReportTableEntry, pbtableentry);
+    static getHelpText(field) {
+        return getHelpText(attributeEntrySchema, field);
+    }
 }
