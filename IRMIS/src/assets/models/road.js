@@ -1,4 +1,4 @@
-import { Road } from ".../../../protobuf/roads_pb";
+import { Road } from "../../../protobuf/roads_pb";
 
 import { projToWGS84, toDms, toUtm } from "../crsUtilities";
 import { choice_or_empty, toChainageFormat } from "../protoBufUtilities";
