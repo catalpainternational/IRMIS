@@ -38,7 +38,7 @@ window.addEventListener("load", () => {
                             feature.properties.id = Number(feature.properties.pk) || 0;
                             feature.properties.featureType = "Road";
                         });
-                        
+
                         // add to map
                         estradaMap.addMapData(geoJson);
                     });
@@ -47,8 +47,9 @@ window.addEventListener("load", () => {
 
     riot.register("reports_base", Reports_Base);
     riot.register("data_table", Data_Table);
-    riot.register("edit_base", Edit_Base);
-
+    if (window.canEdit) {
+        riot.register("edit_base", Edit_Base);
+    }
     window.goBack = () => {};
 
     hashCheck();
