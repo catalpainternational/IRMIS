@@ -40,7 +40,7 @@ body {
 }
 
 label {
-    color: $dark-green;
+    color: $darker-gray;
     line-height: 17px;
     font-weight: 700;
     font-size: 14px;
@@ -48,10 +48,6 @@ label {
 
 #side-menu label {
     color: $white;
-}
-
-edit_base label {
-    color: $darker-gray;
 }
 
 a {
@@ -155,11 +151,11 @@ small {
 }
 
 input.form-control {
-    color: $dark-green;
+    color: $darker-gray;
     line-height: 12px;
 
     &:focus {
-        color: $dark-green;
+        color: $darker-gray;
     }
 }
 

@@ -5,7 +5,7 @@
         </div>
         <div class="d-flex flex-column">
             <div class="align-items-center d-flex">
-                <span class="report image"></span>
+                <span class="report-icon image"></span>
                 <h6>{ state.reportContent[props.id].title }</h6>
             </div>
             <div>
@@ -14,8 +14,43 @@
         </div>
     </header>
 
-    <div class="content-wrapper">
+    <div class="align-items-center content-wrapper d-flex justify-content-between">
+        <div class="d-flex flex-wrap">
+            <div class="options">
+                <select id="administrative_area_select2" multiple="true">
+                    <option each="{ area in window.road_schema.administrative_area.options }" value="{ area.id }">{ area.name }</option>
+                </select>
+            </div>
 
+            <div class="options">
+                <select id="road_class_select2" multiple="true">
+                    <option each="{ road_class in window.road_schema.road_type.options }" value="{ road_class[0] }">{ road_class[1] }</option>
+                </select>
+            </div>
+
+            <div class="options">
+                <select id="surface_type_select2" multiple="true">
+                    <option each="{ surface_type in window.road_schema.surface_type.options }" value="{ surface_type.code }">{ surface_type.name }</option>
+                </select>
+            </div>
+
+            <div class="options">
+                <select id="surface_condition_select2" multiple="true">
+                    <option each="{ surface_condition in window.road_schema.surface_condition.options }" value="{ surface_condition[0] }">{ surface_condition[1] }</option>
+                </select>
+            </div>
+
+            <div class="options">
+                <select id="road_code_select2" multiple="true">
+                    <option each="{ code in window.road_schema.road_code.options }" value="{ code.road_code }">{ code.road_code }</option>
+                </select>
+            </div>
+
+            <input class="{ state.reportDate ? '' : 'inactive' } form-control form-control-sm" type="date" oninput="{ selectDate }" value="{ current_date() }" max="{ max_date() }" placeholder="Select Date" pattern="\d{4}-\d{2}-\d{2}">
+        </div>
+        <div>
+            <button type="button" class="btn btn-primary" onclick="{ createReport }">{ window.gettext("Create Report") }</button>
+        </div>
     </div>
 
     <div class="content-wrapper">
@@ -23,8 +58,13 @@
     </div>
 
     <script>
+        import $ from "jquery";
+        import "select2/dist/js/select2.full.min.js";
+        import dayjs from "dayjs";
+
         export default {
             state: {
+                reportDate: true,
                 reportContent: {
                     0: {
                         title: window.gettext("Road Network Length"),
@@ -64,9 +104,52 @@
                     },
                 },
             },
+            onMounted() {
+                $('#administrative_area_select2').select2({
+                    width: "225px",
+                    placeholder: window.gettext("Administrative area"),
+                    containerCssClass: "report-select2",
+                    dropdownCssClass: "report-dropdown-select2",
+                });
+
+                $('#road_class_select2').select2({
+                    width: "225px",
+                    placeholder: window.gettext("Road class"),
+                    containerCssClass: "report-select2",
+                    dropdownCssClass: "report-dropdown-select2",
+                });
+
+                $('#surface_type_select2').select2({
+                    width: "225px",
+                    placeholder: window.gettext("Surface type"),
+                    containerCssClass: "report-select2",
+                    dropdownCssClass: "report-dropdown-select2",
+                });
+
+                $('#surface_condition_select2').select2({
+                    width: "225px",
+                    placeholder: window.gettext("Surface condition"),
+                    containerCssClass: "report-select2",
+                    dropdownCssClass: "report-dropdown-select2",
+                });
+
+                $('#road_code_select2').select2({
+                    multiple: false,
+                    width: "225px",
+                    containerCssClass: "report-select2",
+                    dropdownCssClass: "report-dropdown-select2",
+                });
+            },
             backToReports() {
                 window.location.hash = "reports/";
             },
+            selectDate(e) {
+                this.update({
+                    reportDate: e.currentTarget.value,
+                });
+            },
+            max_date: () => new Date().toISOString().substring(0, 10),
+            current_date: () => dayjs(new Date()).format('YYYY-MM-DD'),
         }
     </script>
 </report>

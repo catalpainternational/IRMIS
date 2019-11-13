@@ -1,5 +1,5 @@
 import $ from "jquery";
-import "select2";
+import "select2/dist/js/select2.full.min.js";
 
 import { toggleFilter, clearFilter, clearAllFilters} from './filter';
 
@@ -7,7 +7,11 @@ let filterUIState = {};
 
 $(document).ready(function(){
     // setup rode_code and administrative_area filters with select2
-    $('.filter_select2').select2();
+    $('.filter_select2').select2({
+        width: "100%",
+        containerCssClass: "filter-select2",
+        dropdownCssClass: "filter-dropdown-select2",
+    });
     // event listeners to trigger filters on changes in select2 options
     $('.filter_select2').on('select2:select', toggleFilterSelect2);
     $('.filter_select2').on('select2:unselect', toggleFilterSelect2);
