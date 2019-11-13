@@ -2,6 +2,7 @@
     <table if={ state.id } id={ state.id } class="d-block table table-bordered table-hover w-100"></table>
 
     <script>
+        // We really should NOT be importing roads here
         import { EstradaRoad } from "../assets/models/road";
         import { datatableTranslations } from "../datatableTranslations";
 
@@ -125,8 +126,7 @@
                 document.removeEventListener(`${state.id}.dataAdded`, state.dataAdded);
             },
             getHelpText(field) {
-                // Warning: We are using EstradaRoad specific helptext support here
-                // whereas as we want generic support (for whatever schema)
+                // TODO: Fix this, because it's specific to Roads
                 return EstradaRoad.getHelpText(field);
             }
         };
