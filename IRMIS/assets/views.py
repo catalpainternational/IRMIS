@@ -449,6 +449,7 @@ def protobuf_reports(request):
     road_code = request.GET.get("roadcode", "")
     chainage_start = None
     chainage_end = None
+    road_type = request.GET.get("roadtype", None)
 
     if road_id != None or road_code != "":
         # chainage is only valid if we've specified a road
@@ -474,6 +475,12 @@ def protobuf_reports(request):
         roads = [road]
     elif road_code != "":
         roads = Road.objects.filter(road_code=road_code)
+
+    if road_type != None:
+        print(road_type)
+        roads = Road.objects.filter(road_type=road_type)
+
+    print(roads)
 
     if len(roads) > 0:
         surveys = {}

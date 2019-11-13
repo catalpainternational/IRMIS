@@ -66,6 +66,8 @@
     <script>
         import Report from './report.riot';
 
+        import { getRoadReport } from "../reportManager";
+
         export default {
             state: {
                 page: "",
@@ -93,7 +95,59 @@
             },
             selectPage(e) {
                 const reportId = e.currentTarget.dataset.id;
+
+                const filters = { };
+
+                switch (reportId) {
+                    case "4":
+                        filters["roadtype"] = "NAT";
+                        break;
+                    case "5":
+                        filters["roadtype"] = "MUN";
+                        break;
+                    case "6":
+                        filters["roadtype"] = "RUR";
+                        break;
+                    case "7":
+                        filters["roadtype"] = "HIGH";
+                        break;
+                    case "8":
+                        filters["roadtype"] = "URB";
+                        break;
+                }
+
                 window.location.hash = `#reports/${reportId}`;
+
+                if (!Object.keys(filters).length) {
+                    return;
+                }
+
+                getRoadReport(filters)
+                    .then((surveyReportData) => {
+                        if (surveyReportData) {
+                            const haveLengths = !!surveyReportData.lengths;
+                            const surfaceConditions = surveyReportData.surfaceConditions;
+                            const haveSurfaceConditions = surfaceConditions.length > 0;
+                            if (haveLengths && haveSurfaceConditions) {
+                                this.updateSurfaceConditionsSummary(surfaceConditions);
+                            }
+                            if (haveSurfaceConditions) {
+                                this.state.reportRows = surveyReportData.surfaceConditionsList.attributeEntriesList;
+
+                                const eventName = `${this.current_data_table_id}.dataAdded`;
+                                const eventDetail = { detail: { pendingRows: this.state.reportRows, appendRows: this.state.loading }};
+                                document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+                            }
+                            this.state.error = false;
+                        } else {
+                            this.state.error = true;
+                        }
+                    }).catch(err => {
+                        this.state.error = true;
+                    }).finally((r) => {
+                        this.state.loading = false;
+                        this.update();
+                    });
             },
         }
     </script>
