@@ -36,9 +36,6 @@ export class Survey extends jspb.Message {
   getValues(): string;
   setValues(value: string): void;
 
-  getLastRevisionId(): number;
-  setLastRevisionId(value: number): void;
-
   getAddedBy(): string;
   setAddedBy(value: string): void;
 
@@ -63,7 +60,6 @@ export namespace Survey {
     chainageStart: number,
     chainageEnd: number,
     values: string,
-    lastRevisionId: number,
     addedBy: string,
   }
 }

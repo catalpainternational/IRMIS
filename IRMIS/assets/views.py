@@ -131,12 +131,6 @@ def road_update(request):
         )
         return response
 
-    # check if the Road has revision history, then check if Road
-    # edits would be overwriting someone's changes
-    version = Version.objects.get_for_object(road).first()
-    if version and req_pb.last_revision_id != version.revision.id:
-        return HttpResponse(status=409)
-
     # update the Road instance from PB fields
     fields = [
         "road_name",
@@ -208,8 +202,6 @@ def road_update(request):
         )
 
     versions = Version.objects.get_for_object(road)
-    req_pb.last_revision_id = versions[0].id
-
     response = HttpResponse(
         req_pb.SerializeToString(), status=200, content_type="application/octet-stream"
     )
@@ -339,10 +331,6 @@ def survey_create(request):
             # store the user who made the changes
             reversion.set_user(request.user)
 
-        # set new last_reversion_id on the protobuf to be returned
-        versions = Version.objects.get_for_object(survey)
-        req_pb.last_revision_id = versions[0].id
-
         response = HttpResponse(
             req_pb.SerializeToString(),
             status=200,
@@ -390,12 +378,6 @@ def survey_update(request):
             content_type="application/octet-stream",
         )
 
-    # check if the survey has revision history, then check if survey
-    # edits would be overwriting someone's changes
-    version = Version.objects.get_for_object(survey).first()
-    if version and req_pb.last_revision_id != version.revision.id:
-        return HttpResponse(status=409)
-
     # if the new values are empty delete the record and return 200
     new_values = json.loads(req_pb.values)
     if new_values == {}:
@@ -422,9 +404,6 @@ def survey_update(request):
         survey.save()
         # store the user who made the changes
         reversion.set_user(request.user)
-
-    versions = Version.objects.get_for_object(survey)
-    req_pb.last_revision_id = versions[0].id
 
     response = HttpResponse(
         req_pb.SerializeToString(), status=200, content_type="application/octet-stream"

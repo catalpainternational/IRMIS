@@ -21,7 +21,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='assets',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x0csurvey.proto\x12\x06\x61ssets\x1a\x1fgoogle/protobuf/timestamp.proto\"\x8f\x02\n\x06Survey\x12\n\n\x02id\x18\x01 \x01(\r\x12\x0c\n\x04road\x18\x02 \x01(\t\x12\x0c\n\x04user\x18\x03 \x01(\r\x12\x0e\n\x06source\x18\t \x01(\t\x12\x30\n\x0c\x64\x61te_updated\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\rdate_surveyed\x18\x08 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x16\n\x0e\x63hainage_start\x18\x05 \x01(\x02\x12\x14\n\x0c\x63hainage_end\x18\x06 \x01(\x02\x12\x0e\n\x06values\x18\x07 \x01(\t\x12\x18\n\x10last_revision_id\x18\n \x01(\r\x12\x10\n\x08\x61\x64\x64\x65\x64_by\x18\x0b \x01(\t\"*\n\x07Surveys\x12\x1f\n\x07surveys\x18\x01 \x03(\x0b\x32\x0e.assets.Surveyb\x06proto3')
+  serialized_pb=_b('\n\x0csurvey.proto\x12\x06\x61ssets\x1a\x1fgoogle/protobuf/timestamp.proto\"\xf5\x01\n\x06Survey\x12\n\n\x02id\x18\x01 \x01(\r\x12\x0c\n\x04road\x18\x02 \x01(\t\x12\x0c\n\x04user\x18\x03 \x01(\r\x12\x0e\n\x06source\x18\t \x01(\t\x12\x30\n\x0c\x64\x61te_updated\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\rdate_surveyed\x18\x08 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x16\n\x0e\x63hainage_start\x18\x05 \x01(\x02\x12\x14\n\x0c\x63hainage_end\x18\x06 \x01(\x02\x12\x0e\n\x06values\x18\x07 \x01(\t\x12\x10\n\x08\x61\x64\x64\x65\x64_by\x18\x0b \x01(\t\"*\n\x07Surveys\x12\x1f\n\x07surveys\x18\x01 \x03(\x0b\x32\x0e.assets.Surveyb\x06proto3')
   ,
   dependencies=[google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,])
 
@@ -99,14 +99,7 @@ _SURVEY = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='last_revision_id', full_name='assets.Survey.last_revision_id', index=9,
-      number=10, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='added_by', full_name='assets.Survey.added_by', index=10,
+      name='added_by', full_name='assets.Survey.added_by', index=9,
       number=11, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -125,7 +118,7 @@ _SURVEY = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=58,
-  serialized_end=329,
+  serialized_end=303,
 )
 
 
@@ -155,8 +148,8 @@ _SURVEYS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=331,
-  serialized_end=373,
+  serialized_start=305,
+  serialized_end=347,
 )
 
 _SURVEY.fields_by_name['date_updated'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
