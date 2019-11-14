@@ -103,6 +103,13 @@ function initializeDataTable() {
         select: {
             style: "os",
             items: "row",
+        },
+        ajax: function (data, callback, settings) {
+            if (pendingRows.length) {
+                // add any rows the road manager has delivered before initialization
+                callback(pendingRows);
+                pendingRows = [];
+            }
         }
     });
 

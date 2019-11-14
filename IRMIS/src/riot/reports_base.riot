@@ -10,10 +10,8 @@
         <div id="reports">
             <report if="{ state.page }" id="{ state.page }"></report>
             <template if="{ !state.page }">
-                <h1>{ window.gettext("Reports") }</h1>
-
-                <h6>{ window.gettext("Road Network Report") }</h6>
                 <div class="content-wrapper">
+                    <h6>{ window.gettext("Road Network Report") }</h6>
                     <div class="align-items-center d-flex report" onclick="{ selectPage }" data-id="0">
                         <span class="report-icon image"></span>
                         <p>{ window.gettext("Road Network Length") }</p>
@@ -24,8 +22,8 @@
                     </div>
                 </div>
 
-                <h6>{ window.gettext("Road Condition Report") }</h6>
                 <div class="content-wrapper">
+                    <h6>{ window.gettext("Road Condition Report") }</h6>
                     <div class="align-items-center d-flex report" onclick="{ selectPage }" data-id="2">
                         <span class="report-icon image"></span>
                         <p>{ window.gettext("Surface Condition (SDI)") }</p>
@@ -36,8 +34,8 @@
                     </div>
                 </div>
 
-                <h6>{ window.gettext("Road Network Reports by Road Class") }</h6>
                 <div class="content-wrapper">
+                    <h6>{ window.gettext("Road Network Reports by Road Class") }</h6>
                     <div class="align-items-center d-flex report" onclick="{ selectPage }" data-id="4">
                         <span class="report-icon image"></span>
                         <p>{ window.gettext("Road Network Length - National Class") }</p>

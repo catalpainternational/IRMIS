@@ -36,15 +36,19 @@ edit_base {
         padding: 30px 60px 60px;
 
         &:not(:first-of-type) {
-            margin-top: 15px;
+            margin-top: 10px;
         }
 
-        a.table-toggle.active, a.table-toggle.active:hover {
-            color: $green;
-        }
+        a.table-toggle {
+            margin-top: 20px;
 
-        a.table-toggle:first-of-type {
-            margin-right: 20px;
+            &:first-of-type {
+                margin-right: 20px;
+            }
+
+            &.active, &.active:hover {
+                color: $green;
+            }
         }
     }
 }
@@ -117,6 +121,7 @@ edit_feedback {
         height: 71px;
         margin: auto;
         width: 376px;
+        z-index: 1;
         right: 0;
         left: 0;
         top: 0;
