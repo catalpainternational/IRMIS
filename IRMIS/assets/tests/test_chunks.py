@@ -10,7 +10,7 @@ def test_road_chunks_requires_auth(client):
     """ This test will fail if an unauthenticated request can access the roads api """
     url = reverse("road_chunks")
     response = client.get(url)
-    assert response.status_code == 403
+    assert response.status_code == 302
 
 
 @pytest.mark.django_db
