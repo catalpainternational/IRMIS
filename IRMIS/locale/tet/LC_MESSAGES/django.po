@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0 VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-14 03:27+0000\n"
+"POT-Creation-Date: 2019-11-14 07:55+0000\n"
 "PO-Revision-Date: 2019-10-09 05:43+0000\n"
 "Last-Translator: b'  <januario@catalpa.io>'\n"
 "Language-Team: Catalpa International <info@catalpa.io>\n"
@@ -130,11 +130,15 @@ msgstr "Aat Los"
 msgid "last modified"
 msgstr "Modifika ikus"
 
-msgid "Administrative Area"
-msgstr "Area Administrativu "
+#, fuzzy
+#| msgid "Municipal"
+msgid "Municipality"
+msgstr "Munisipiu "
 
-msgid "Choose the administrative area of the road"
-msgstr "Hili area administrativu husi estrada ne"
+#, fuzzy
+#| msgid "Choose the pavement class of the road"
+msgid "Choose the municipality for the road"
+msgstr "Hili klase pavimentu husi estrada"
 
 msgid "Funding Source"
 msgstr "Fontes Orsamentu"
@@ -196,11 +200,15 @@ msgstr "Carriageaway nia luan"
 msgid "Enter the width (in meters) of the link carriageway"
 msgstr "Hatama luan (iha metru) husi linha Carriageaway"
 
-msgid "Road Type"
-msgstr "Typu Estrada"
+#, fuzzy
+#| msgid "Road Status"
+msgid "Road Class"
+msgstr "Estatutu Estrada"
 
-msgid "Choose the administrative class of the road"
-msgstr "Hili klase administrativa husi estrada"
+#, fuzzy
+#| msgid "Choose the pavement class of the road"
+msgid "Choose the road class"
+msgstr "Hili klase pavimentu husi estrada"
 
 msgid "Road Status"
 msgstr "Estatutu Estrada"
@@ -291,11 +299,10 @@ msgstr "klase pavimentu"
 msgid "Carriageway width"
 msgstr "Luan carriageway "
 
-msgid "Administrative area"
-msgstr "Area administrativu "
-
-msgid "Road type"
-msgstr "Tipu estrada"
+#, fuzzy
+#| msgid "Road Status"
+msgid "Road class"
+msgstr "Estatutu Estrada"
 
 msgid "Technical class"
 msgstr "Klase tekniku"
@@ -485,3 +492,21 @@ msgstr "Email"
 
 msgid "Send"
 msgstr "Haruka"
+
+#~ msgid "Administrative Area"
+#~ msgstr "Area Administrativu "
+
+#~ msgid "Choose the administrative area of the road"
+#~ msgstr "Hili area administrativu husi estrada ne"
+
+#~ msgid "Road Type"
+#~ msgstr "Typu Estrada"
+
+#~ msgid "Choose the administrative class of the road"
+#~ msgstr "Hili klase administrativa husi estrada"
+
+#~ msgid "Administrative area"
+#~ msgstr "Area administrativu "
+
+#~ msgid "Road type"
+#~ msgstr "Tipu estrada"

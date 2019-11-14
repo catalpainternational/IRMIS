@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-14 03:27+0000\n"
+"POT-Creation-Date: 2019-11-14 07:55+0000\n"
 "PO-Revision-Date: 2019-10-09 01:05+0000\n"
 "Last-Translator: b'  <juliana@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -133,11 +133,15 @@ msgstr "Mau"
 msgid "last modified"
 msgstr "última alteração"
 
-msgid "Administrative Area"
-msgstr "Área administrativa"
+#, fuzzy
+#| msgid "Municipal"
+msgid "Municipality"
+msgstr "Municipal"
 
-msgid "Choose the administrative area of the road"
-msgstr "Escolha a área administrativa da estrada"
+#, fuzzy
+#| msgid "Choose the pavement class of the road"
+msgid "Choose the municipality for the road"
+msgstr "Escolha a classe de pavimento da estrada"
 
 msgid "Funding Source"
 msgstr "Fonte de financiamento"
@@ -199,11 +203,15 @@ msgstr "Largura da faixa de rodagem"
 msgid "Enter the width (in meters) of the link carriageway"
 msgstr "Introduza a largura (em metros) da faixa de rodagem da secção da estrada"
 
-msgid "Road Type"
-msgstr "Tipo de Estrada"
+#, fuzzy
+#| msgid "Road Status"
+msgid "Road Class"
+msgstr "Estrado da Estrada"
 
-msgid "Choose the administrative class of the road"
-msgstr "Escolha a classe administrativa da secção da estrada"
+#, fuzzy
+#| msgid "Choose the pavement class of the road"
+msgid "Choose the road class"
+msgstr "Escolha a classe de pavimento da estrada"
 
 msgid "Road Status"
 msgstr "Estrado da Estrada"
@@ -294,11 +302,10 @@ msgstr "Classe do pavimento"
 msgid "Carriageway width"
 msgstr "Largura da faixa de rodagem"
 
-msgid "Administrative area"
-msgstr "Área administrativa"
-
-msgid "Road type"
-msgstr "Tipo de estrada"
+#, fuzzy
+#| msgid "Road Status"
+msgid "Road class"
+msgstr "Estrado da Estrada"
 
 msgid "Technical class"
 msgstr "Classe técnica"
@@ -488,6 +495,24 @@ msgstr "Endereço de email"
 
 msgid "Send"
 msgstr "Enviar"
+
+#~ msgid "Administrative Area"
+#~ msgstr "Área administrativa"
+
+#~ msgid "Choose the administrative area of the road"
+#~ msgstr "Escolha a área administrativa da estrada"
+
+#~ msgid "Road Type"
+#~ msgstr "Tipo de Estrada"
+
+#~ msgid "Choose the administrative class of the road"
+#~ msgstr "Escolha a classe administrativa da secção da estrada"
+
+#~ msgid "Administrative area"
+#~ msgstr "Área administrativa"
+
+#~ msgid "Road type"
+#~ msgstr "Tipo de estrada"
 
 #~ msgid "Reset password at %(site_name)s"
 #~ msgstr "Redefinir palavra-passe em %(site_name)s"
