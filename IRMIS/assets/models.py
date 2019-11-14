@@ -310,11 +310,11 @@ class Road(models.Model):
         verbose_name=_("Name"), max_length=100, blank=True, null=True
     )
     administrative_area = models.CharField(
-        verbose_name=_("Administrative Area"),
+        verbose_name=_("Municipality"),
         max_length=50,
         default=None,
         null=True,
-        help_text=_("Choose the administrative area of the road"),
+        help_text=_("Choose the municipality for the road"),
     )  # need to link to admin area model
     funding_source = models.CharField(
         verbose_name=_("Funding Source"),
