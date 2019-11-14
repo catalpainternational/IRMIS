@@ -47,13 +47,13 @@ window.addEventListener("load", () => {
     riot.register("data_table", Data_Table);
     if (window.canEdit) {
         riot.register("edit_base", Edit_Base);
+        // add listener since editing is allowed
+        window.addEventListener("hashchange", () => {
+            hashCheck();
+        });
+        hashCheck();
     }
     window.goBack = () => {};
-    hashCheck();
-});
-
-window.addEventListener("hashchange", () => {
-    hashCheck();
 });
 
 function hashCheck() {
