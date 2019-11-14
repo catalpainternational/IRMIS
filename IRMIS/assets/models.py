@@ -402,12 +402,12 @@ class Road(models.Model):
         help_text=_("Enter the width (in meters) of the link carriageway"),
     )
     road_type = models.CharField(
-        verbose_name=_("Road Type"),
+        verbose_name=_("Road Class"),
         max_length=4,
         choices=ROAD_TYPE_CHOICES,
         blank=True,
         null=True,
-        help_text=_("Choose the administrative class of the road"),
+        help_text=_("Choose the road class"),
     )
     road_status = models.ForeignKey(
         "RoadStatus",

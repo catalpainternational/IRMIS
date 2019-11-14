@@ -16,7 +16,7 @@
         <div class="form-group">
             <label>{ road_types.display }</label>
             <select class="{ state.roadType != '' ? '' : 'inactive' } form-control" onchange="{ checkRoadType }">
-                <option value="">{ window.gettext("Select a Road Type") }</option>
+                <option value="">{ window.gettext("Select a Road Class") }</option>
                 <option each="{ type in road_types.options }" value="{ type[0] }" selected="{ type[0] === props.road.getRoadType() }">{ type[1] }</option>
             </select>
             <small class="form-text text-muted">{ props.getHelpText("road_type") }</small>
