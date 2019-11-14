@@ -9,7 +9,7 @@ def test_protobuf_requires_auth(client):
     """ This test will fail if an unauthenticated request can access the roads api """
     url = reverse("protobuf_roads")
     response = client.get(url)
-    assert response.status_code == 403
+    assert response.status_code == 302
 
 
 @pytest.mark.django_db

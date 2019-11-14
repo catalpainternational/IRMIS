@@ -236,7 +236,7 @@
                             if (haveLengths && haveSurfaceConditions) {
                                 this.updateSurfaceConditionsSummary(surveyReportData.conditions);
                             }
-                            if (surveyReportData.tableList && surveyReportData.tableList.length) {
+                            if (surveyReportData.tableList) {
                                 this.state.reportRows = surveyReportData.tableList;
 
                                 const eventName = `${this.current_data_table_id}.dataAdded`;

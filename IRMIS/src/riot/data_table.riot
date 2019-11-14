@@ -14,7 +14,6 @@
         const initialiseStateFromProps = function(props, state) {
             state = state || {};
 
-            state.loading = true;
             state.saving = false;
             state.error = false;
             state.hasChanges = false;
@@ -90,18 +89,23 @@
                 pageLength: state.pageLength,
                 dom: `<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>`, // https://datatables.net/reference/option/dom#Styling
                 language: datatableTranslations,
+                ajax: function (data, callback, settings) {
+                    // This is only here so that dataTables will change its internal state
+                }
             });
 
             // add any rows the caller has delivered before initialization
-            updateDataTable(state);
+            if (state.pendingRows.length) {
+                updateDataTable(state);
+            }
         }
 
         const updateDataTable = function (state) {
             if (state.pendingRows.length) {
                 if (!state.appendRows) {
-                    state.table.clear().rows.add(state.pendingRows).draw();
+                    state.table.clear().rows.add(state.pendingRows);
                 } else {
-                    state.table.rows.add(state.pendingRows).draw();
+                    state.table.rows.add(state.pendingRows);
                 }
 
                 state.pendingRows = [];
@@ -109,9 +113,14 @@
                 if (!state.appendRows) {
                     // No pendingRows and we're not appending
                     // This is interpreted as 'clear the table'
-                    state.table.clear().draw();
+                    state.table.clear();
                 }
             }
+
+            state.table.draw();
+
+            // This calls the ajax function above, resulting in dataTables internal state change
+            state.table.ajax.reload();
         }
 
         export default {

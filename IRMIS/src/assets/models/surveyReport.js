@@ -62,7 +62,7 @@ export class EstradaSurveyReport extends Report {
         const conditions = [];
         const counts = this.counts;
         Object.keys(counts).forEach((key) => {
-            let conditionTitle = (choice_or_empty(key, SURFACE_CONDITION_CHOICES) || key).toLowerCase();
+            let conditionTitle = (choice_or_default(key, SURFACE_CONDITION_CHOICES) || key).toLowerCase();
             let newKey = key;
             if (conditionTitle === "none") {
                 conditionTitle = window.gettext("unknown");
@@ -141,7 +141,7 @@ export class EstradaSurveyReportTableEntry extends TableEntry {
     }
 
     get surfaceCondition() {
-        return gettext(choice_or_default(this.values.surface_condition, SURFACE_CONDITION_CHOICES, "Unknown"));
+        return gettext(choice_or_default(this.getSurfaceCondition(), SURFACE_CONDITION_CHOICES, "Unknown"));
     }
     
     static getFieldName(field) {
