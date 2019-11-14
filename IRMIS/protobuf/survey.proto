@@ -17,7 +17,7 @@ message Survey {
   float chainage_start = 5;
   float chainage_end = 6;
   string values = 7;
-  uint32 last_revision_id = 10;
+  // uint32 last_revision_id = 10;
   string added_by = 11;
 }
 
@@ -30,13 +30,13 @@ message Report {
    * The ordering shown here lines up with the model and groups the fields better.
    * But the numbering preserves the original declaration */
   string road_code = 1;
-  float report_chainage_start = 2;  
+  float report_chainage_start = 2;
   float report_chainage_end = 3;
   string counts = 4; // JSON string
   string percentages = 5; // JSON string
   repeated TableEntry table = 6;
 }
-  
+
 message TableEntry {
   float chainage_start = 1;
   float chainage_end = 2;

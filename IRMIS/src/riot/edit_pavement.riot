@@ -6,10 +6,7 @@
             <label>{ surfaces.display }</label>
             <select class="{ state.surfaceType ? '' : 'inactive' } form-control" onchange="{ checkSurfaceType }">
                 <option value="">{ window.gettext("Select a Surface Type") }</option>
-                <template each="{ surface in surfaces.options }">
-                    <option if="{ surface.code == props.road.getSurfaceType() }" value="{ surface.code }" selected>{ surface.name }</option>
-                    <option if="{ surface.code != props.road.getSurfaceType() }" value="{ surface.code }">{ surface.name }</option>
-                </template>
+                <option each="{ surface in surfaces.options }" value="{ surface.code }" selected="{ surface.code == props.road.getSurfaceType() }">{ surface.name }</option>
             </select>
             <small class="form-text text-muted">{ props.getHelpText("surface_type") }</small>
         </div>
@@ -35,7 +32,8 @@
                 this.props.onSave();
             },
             checkSurfaceType(e) {
-                this.props.road.setSurfaceType(e.currentTarget.value);
+                this.state.surfaceType = e.currentTarget.value;
+                this.props.road.setSurfaceType(this.state.surfaceType);
                 this.update();
             },
             checkPavementClass(e) {

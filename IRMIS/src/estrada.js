@@ -37,7 +37,7 @@ window.addEventListener("load", () => {
                             feature.properties.id = Number(feature.properties.pk) || 0;
                             feature.properties.featureType = "Road";
                         });
-                        
+
                         // add to map
                         estradaMap.addMapData(geoJson);
                     });
@@ -45,13 +45,15 @@ window.addEventListener("load", () => {
         });
 
     riot.register("data_table", Data_Table);
-    riot.register("edit_base", Edit_Base);
+    if (window.canEdit) {
+        riot.register("edit_base", Edit_Base);
+        // add listener since editing is allowed
+        window.addEventListener("hashchange", () => {
+            hashCheck();
+        });
+        hashCheck();
+    }
     window.goBack = () => {};
-    hashCheck();
-});
-
-window.addEventListener("hashchange", () => {
-    hashCheck();
 });
 
 function hashCheck() {

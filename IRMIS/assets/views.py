@@ -17,6 +17,7 @@ from django.http import (
 )
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.admin.models import LogEntry, CHANGE
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.contenttypes.models import ContentType
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.exceptions import MethodNotAllowed, ValidationError
@@ -41,6 +42,17 @@ from .models import (
     Survey,
 )
 from .serializers import RoadSerializer, RoadMetaOnlySerializer, RoadToWGSSerializer
+
+
+def user_can_edit(user):
+    if (
+        user.is_staff
+        or user.is_superuser
+        or user.groups.filter(name="Editors").exists()
+    ):
+        return True
+
+    return False
 
 
 def get_etag(request, pk=None):
@@ -71,41 +83,9 @@ def get_last_modified(request, pk=None):
         return datetime.now()
 
 
-class RoadViewSet(ViewSet):
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    @condition(etag_func=get_etag, last_modified_func=get_last_modified)
-    def list(self, request):
-        queryset = Road.objects.all()
-        serializer = RoadMetaOnlySerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    @condition(etag_func=get_etag, last_modified_func=get_last_modified)
-    def retrieve(self, request, pk):
-        # Allow metadata retrival for single road with param: `?meta`
-        if "meta" in request.query_params:
-            queryset = Road.objects.all()
-            road = get_object_or_404(queryset, pk=pk)
-            serializer = RoadMetaOnlySerializer(road)
-            return Response(serializer.data)
-        else:
-            queryset = Road.objects.to_wgs()
-            road = get_object_or_404(queryset, pk=pk)
-            serializer = RoadToWGSSerializer(road)
-            return Response(serializer.data)
-
-    def create(self, request):
-        raise MethodNotAllowed(request.method)
-
-    def destroy(self, request, pk):
-        raise MethodNotAllowed(request.method)
-
-
+@login_required
+@user_passes_test(user_can_edit)
 def road_update(request):
-    if not request.user.is_authenticated:
-        return HttpResponseForbidden()
-
     if request.method != "PUT":
         raise MethodNotAllowed(request.method)
     elif request.content_type != "application/octet-stream":
@@ -129,12 +109,6 @@ def road_update(request):
             content_type="application/octet-stream",
         )
         return response
-
-    # check if the Road has revision history, then check if Road
-    # edits would be overwriting someone's changes
-    version = Version.objects.get_for_object(road).first()
-    if version and req_pb.last_revision_id != version.revision.id:
-        return HttpResponse(status=409)
 
     # update the Road instance from PB fields
     fields = [
@@ -207,30 +181,24 @@ def road_update(request):
         )
 
     versions = Version.objects.get_for_object(road)
-    req_pb.last_revision_id = versions[0].id
-
     response = HttpResponse(
         req_pb.SerializeToString(), status=200, content_type="application/octet-stream"
     )
     return response
 
 
+@login_required
 def geojson_details(request):
     """ returns a JSON object with details of geoJSON geometry collections """
-
-    if not request.user.is_authenticated:
-        return HttpResponseForbidden()
-
     geojson_files = CollatedGeoJsonFile.objects.values("id", "geobuf_file")
-
     return JsonResponse(list(geojson_files), safe=False)
 
 
+@login_required
 def protobuf_road(request, pk):
     """ returns an protobuf serialized bytestring with the set of all chunks that can be requested via protobuf_roads """
-
-    if not request.user.is_authenticated:
-        return HttpResponseForbidden()
+    if request.method != "GET":
+        return HttpResponse(status=405)
 
     roads = Road.objects.filter(pk=pk)
     if not roads.exists():
@@ -244,23 +212,16 @@ def protobuf_road(request, pk):
     )
 
 
+@login_required
 def road_chunks_set(request):
     """ returns an object with the set of all chunks that can be requested via protobuf_roads """
-
-    if not request.user.is_authenticated:
-        return HttpResponseForbidden()
-
     road_chunks = Road.objects.to_chunks()
-
     return JsonResponse(list(road_chunks), safe=False)
 
 
+@login_required
 def protobuf_road_set(request, chunk_name=None):
     """ returns a protobuf object with the set of all Roads """
-
-    if not request.user.is_authenticated:
-        return HttpResponseForbidden()
-
     roads = Road.objects.all()
     if chunk_name:
         roads = roads.filter(road_type=chunk_name)
@@ -272,10 +233,8 @@ def protobuf_road_set(request, chunk_name=None):
     )
 
 
+@login_required
 def road_report(request, pk):
-    if not request.user.is_authenticated:
-        return HttpResponseForbidden()
-
     if request.method != "GET":
         raise MethodNotAllowed(request.method)
 
@@ -418,12 +377,9 @@ class Report:
         return self.report_protobuf
 
 
+@login_required
 def protobuf_road_surveys(request, pk):
     """ returns a protobuf object with the set of surveys for a particular road pk"""
-
-    if not request.user.is_authenticated:
-        return HttpResponseForbidden()
-
     # get the Road link requested
     road = get_object_or_404(Road.objects.all(), pk=pk)
     # pull any Surveys that cover the Road above
@@ -450,10 +406,9 @@ def pbtimestamp_to_pydatetime(pb_stamp):
     return pytz.utc.localize(pb_date)
 
 
+@login_required
+@user_passes_test(user_can_edit)
 def survey_create(request):
-    if not request.user.is_authenticated:
-        return HttpResponseForbidden()
-
     if request.method != "POST":
         raise MethodNotAllowed(request.method)
     elif request.content_type != "application/octet-stream":
@@ -484,10 +439,6 @@ def survey_create(request):
             # store the user who made the changes
             reversion.set_user(request.user)
 
-        # set new last_reversion_id on the protobuf to be returned
-        versions = Version.objects.get_for_object(survey)
-        req_pb.last_revision_id = versions[0].id
-
         response = HttpResponse(
             req_pb.SerializeToString(),
             status=200,
@@ -499,10 +450,9 @@ def survey_create(request):
         return HttpResponse(status=400)
 
 
+@login_required
+@user_passes_test(user_can_edit)
 def survey_update(request):
-    if not request.user.is_authenticated:
-        return HttpResponseForbidden()
-
     if request.method != "PUT":
         raise MethodNotAllowed(request.method)
     elif request.content_type != "application/octet-stream":
@@ -535,12 +485,6 @@ def survey_update(request):
             content_type="application/octet-stream",
         )
 
-    # check if the survey has revision history, then check if survey
-    # edits would be overwriting someone's changes
-    version = Version.objects.get_for_object(survey).first()
-    if version and req_pb.last_revision_id != version.revision.id:
-        return HttpResponse(status=409)
-
     # if the new values are empty delete the record and return 200
     new_values = json.loads(req_pb.values)
     if new_values == {}:
@@ -568,20 +512,15 @@ def survey_update(request):
         # store the user who made the changes
         reversion.set_user(request.user)
 
-    versions = Version.objects.get_for_object(survey)
-    req_pb.last_revision_id = versions[0].id
-
     response = HttpResponse(
         req_pb.SerializeToString(), status=200, content_type="application/octet-stream"
     )
     return response
 
 
+@login_required
 def protobuf_road_audit(request, pk):
     """ returns a protobuf object with the set of all audit history items for a Road """
-
-    if not request.user.is_authenticated:
-        return HttpResponseForbidden()
     queryset = Road.objects.all()
     road = get_object_or_404(queryset, pk=pk)
     versions = Version.objects.get_for_object(road)

@@ -143,7 +143,6 @@ proto.assets.Survey.toObject = function(includeInstance, msg) {
     chainageStart: jspb.Message.getFloatingPointFieldWithDefault(msg, 5, 0.0),
     chainageEnd: jspb.Message.getFloatingPointFieldWithDefault(msg, 6, 0.0),
     values: jspb.Message.getFieldWithDefault(msg, 7, ""),
-    lastRevisionId: jspb.Message.getFieldWithDefault(msg, 10, 0),
     addedBy: jspb.Message.getFieldWithDefault(msg, 11, "")
   };
 
@@ -218,10 +217,6 @@ proto.assets.Survey.deserializeBinaryFromReader = function(msg, reader) {
     case 7:
       var value = /** @type {string} */ (reader.readString());
       msg.setValues(value);
-      break;
-    case 10:
-      var value = /** @type {number} */ (reader.readUint32());
-      msg.setLastRevisionId(value);
       break;
     case 11:
       var value = /** @type {string} */ (reader.readString());
@@ -318,13 +313,6 @@ proto.assets.Survey.serializeBinaryToWriter = function(message, writer) {
   if (f.length > 0) {
     writer.writeString(
       7,
-      f
-    );
-  }
-  f = message.getLastRevisionId();
-  if (f !== 0) {
-    writer.writeUint32(
-      10,
       f
     );
   }
@@ -506,21 +494,6 @@ proto.assets.Survey.prototype.getValues = function() {
 /** @param {string} value */
 proto.assets.Survey.prototype.setValues = function(value) {
   jspb.Message.setProto3StringField(this, 7, value);
-};
-
-
-/**
- * optional uint32 last_revision_id = 10;
- * @return {number}
- */
-proto.assets.Survey.prototype.getLastRevisionId = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 10, 0));
-};
-
-
-/** @param {number} value */
-proto.assets.Survey.prototype.setLastRevisionId = function(value) {
-  jspb.Message.setProto3IntField(this, 10, value);
 };
 
 
