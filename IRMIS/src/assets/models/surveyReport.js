@@ -298,7 +298,7 @@ export class EstradaSurveyAttributeEntry extends AttributeEntry {
     }
 
     get surfaceCondition() {
-        return gettext(choice_or_default(this.getSurfaceCondition(), SURFACE_CONDITION_CHOICES, "Unknown"));
+        return gettext(choice_or_default(this.values.surface_condition, SURFACE_CONDITION_CHOICES, "Unknown"));
     }
 
     get surfaceType() {
