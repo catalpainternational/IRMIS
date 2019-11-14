@@ -32,6 +32,7 @@
                 this.props.onSave();
             },
             checkSurfaceType(e) {
+                this.state.surfaceType = e.currentTarget.value;
                 this.props.road.setSurfaceType(e.currentTarget.value);
                 this.update();
             },
