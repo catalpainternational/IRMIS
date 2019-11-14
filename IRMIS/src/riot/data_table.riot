@@ -89,6 +89,13 @@
                 pageLength: state.pageLength,
                 dom: `<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>`, // https://datatables.net/reference/option/dom#Styling
                 language: datatableTranslations,
+                ajax: function (data, callback, settings) {
+                    if (state.pendingRows.length) {
+                        // add any rows the road manager has delivered before initialization
+                        callback(state.pendingRows);
+                        state.pendingRows = [];
+                    }
+                }
             });
 
             // add any rows the caller has delivered before initialization

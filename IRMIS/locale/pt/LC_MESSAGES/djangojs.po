@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-07 06:48+0000\n"
+"POT-Creation-Date: 2019-11-14 02:00+0000\n"
 "PO-Revision-Date: 2019-10-11 00:57+0000\n"
 "Last-Translator: b'  <juliana@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -223,6 +223,14 @@ msgstr "Mostrando _START_ a _END_ de _TOTAL_ entradas"
 msgid "Showing 0 to 0 of 0 entries"
 msgstr "Mostrando 0 a 0 de 0 entradas"
 
+#, fuzzy
+#| msgid "Loading"
+msgid "Loading..."
+msgstr "A carregar"
+
+msgid "Processing..."
+msgstr ""
+
 msgid "First"
 msgstr "Primeiro"
 
@@ -277,6 +285,9 @@ msgid "Percentages"
 msgstr ""
 
 msgid "Table"
+msgstr ""
+
+msgid "unknown"
 msgstr ""
 
 msgid "Surface Condition segments"
