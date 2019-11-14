@@ -1,29 +1,26 @@
 #reports {
-    height: calc(100vh - #{$top-menu-height} - 20px);
+    height: calc(100vh - #{$top-menu-height} - 40px);
     width: calc(100% - #{$side-menu-width});
-    padding-bottom: 15px;
-    padding-right: 15px;
+    padding-right: 10px;
+    overflow-y: overlay;
     margin-top: 20px;
-    overflow-y: auto;
-    padding-left: 0;
 }
 
 reports_base {
-    h1 {
-        margin-bottom: 30px;
-    }
-
-    h6 {
-        margin-bottom: 10px;
-    }
+    padding-right: 5px;
+    display: block;
 
     .content-wrapper {
-        padding: 15px 25px 15px 60px;
+        padding: 25px 25px 15px 60px;
         background-color: $white;
-        margin-bottom: 30px;
+        margin-bottom: 10px;
 
         &:last-child {
             margin-bottom: 0;
+        }
+
+        h6 {
+            margin-bottom: 10px;
         }
     }
 
@@ -74,7 +71,14 @@ report {
     }
 
     .content-wrapper {
-        padding-top: 25px;
+        padding: 25px 25px 15px 60px;
+        background-color: $white;
+        margin-bottom: 10px;
+
+        p {
+            margin-left: 10px;
+            margin-bottom: 0;
+        }
     }
 
     input.form-control {

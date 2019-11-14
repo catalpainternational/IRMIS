@@ -194,10 +194,6 @@ h1, h1 span {
     font-size: 22px;
 }
 
-reports_base h1 {
-    color: $white;
-}
-
 h5 {
     color: $dark-green;
     line-height: 22px;
@@ -216,7 +212,7 @@ h6 {
     color: $white;
 }
 
-report h6 {
+reports_base h6 {
     color: $darker-gray;
 }
 
