@@ -6,7 +6,7 @@
             <label>{ surfaces.display }</label>
             <select class="{ state.surfaceType ? '' : 'inactive' } form-control" onchange="{ checkSurfaceType }">
                 <option value="">{ window.gettext("Select a Surface Type") }</option>
-                <option each="{ surface in surfaces.options }" value="{ surface.code }" selected="{ surface.code == props.road.getSurfaceType() }">{ surface.name }</option>
+                <option each="{ surface in surfaces.options }" value="{ surface.code }" selected="{ surface.code == state.surfaceType }">{ surface.name }</option>
             </select>
             <small class="form-text text-muted">{ props.getHelpText("surface_type") }</small>
         </div>
@@ -28,6 +28,9 @@
 
     <script>
         export default {
+            onBeforeMount(props, state) {
+                state.surfaceType = props.road.getSurfaceType();
+            },
             save(e) {
                 this.props.onSave();
             },
