@@ -33,7 +33,7 @@
             },
             checkSurfaceType(e) {
                 this.state.surfaceType = e.currentTarget.value;
-                this.props.road.setSurfaceType(e.currentTarget.value);
+                this.props.road.setSurfaceType(this.state.surfaceType);
                 this.update();
             },
             checkPavementClass(e) {
