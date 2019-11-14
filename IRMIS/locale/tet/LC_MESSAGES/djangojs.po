@@ -222,6 +222,14 @@ msgstr ""
 msgid "Showing 0 to 0 of 0 entries"
 msgstr ""
 
+#, fuzzy
+#| msgid "Loading"
+msgid "Loading..."
+msgstr "Karegamentu "
+
+msgid "Processing..."
+msgstr ""
+
 msgid "First"
 msgstr ""
 

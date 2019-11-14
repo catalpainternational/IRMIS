@@ -18,13 +18,13 @@
     </div>
 
     <div class="content-wrapper">
-        <div class="align-items-center d-flex justify-content-between">
-            <div>
-                <h5>{ window.gettext("Surface Condition Data (SDI)") }</h5>
-                <a class="{ !state.viewAll ? 'active' : '' } table-toggle" onclick="{ viewCurrent }">{ window.gettext("Current condition") }</a>
-                <a class="{ state.viewAll ? 'active' : '' } table-toggle" onclick="{ viewAll }">{ window.gettext("View all data entries") }</a>
-            </div>
+        <div class="d-flex justify-content-between">
+            <h5>{ window.gettext("Surface Condition Data (SDI)") }</h5>
             <button class="btn btn-primary" onclick="{ addEdit }" disabled="{ props.editing }">{ window.gettext("Add") }</button>
+        </div>
+        <div class="d-flex">
+            <a class="{ !state.viewAll ? 'active' : '' } table-toggle" onclick="{ viewCurrent }">{ window.gettext("Current condition") }</a>
+            <a class="{ state.viewAll ? 'active' : '' } table-toggle" onclick="{ viewAll }">{ window.gettext("View all data entries") }</a>
         </div>
         <data_table if="{ state.viewAll }" table_id="{this.all_data_table_id}" columns="{this.all_data_table_columns}" columnSortOrder="{this.all_data_table_columns_order}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}" canDelete=true></data_table>
         <data_table if="{ !state.viewAll }" table_id="{this.current_data_table_id}" columns="{this.current_data_table_columns}" columnSortOrder="{this.current_data_table_columns_order}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}"></data_table>
@@ -237,7 +237,7 @@
                             if (haveLengths && haveSurfaceConditions) {
                                 this.updateSurfaceConditionsSummary(surveyReportData.conditions);
                             }
-                            if (surveyReportData.tableList && surveyReportData.tableList.length) {
+                            if (surveyReportData.tableList) {
                                 this.state.reportRows = surveyReportData.tableList;
 
                                 const eventName = `${this.current_data_table_id}.dataAdded`;
@@ -406,7 +406,7 @@
                 {
                     // To add a 'Delete' button include the attribute candelete=true
                     // on the Riot dataTable tag as well
-                    title: window.gettext("Option"),
+                    title: window.gettext("Delete"),
                     name: "Option", // Do NOT translate this
                     defaultContent: "",
                     className: "text-center",

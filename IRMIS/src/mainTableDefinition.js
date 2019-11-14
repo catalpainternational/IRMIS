@@ -104,7 +104,7 @@ export const estradaTableColumns = [
         data: "surfaceType",
         defaultContent: "",
         // render: r => buttonSegmentsTemplate("surface_type", r),
-        orderable: false,
+        // orderable: false,
         className: "text-center",
     },
     {
@@ -137,7 +137,7 @@ export const estradaTableColumns = [
         defaultContent: "",
         // render: r => buttonSegmentsTemplate("technical-class", r),
         visible: false,
-        orderable: false,
+        // orderable: false,
         className: "text-center",
     },
     {
