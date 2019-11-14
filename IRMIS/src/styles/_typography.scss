@@ -333,3 +333,20 @@ button {
     font-size: 12px;
     color: $white;
 }
+
+// Override Leaflet styles
+.leaflet-popup {
+    .label {
+        color: $darker-gray;
+        font-weight: 300;
+    }
+
+    .value {
+        color: $darker-gray;
+        font-weight: 700;
+    }
+}
+
+.leaflet-control-attribution a {
+    font-size: 11px;
+}

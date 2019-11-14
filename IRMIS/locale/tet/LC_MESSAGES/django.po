@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0 VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-08 03:56+0000\n"
+"POT-Creation-Date: 2019-11-14 07:55+0000\n"
 "PO-Revision-Date: 2019-10-09 05:43+0000\n"
 "Last-Translator: b'  <januario@catalpa.io>'\n"
 "Language-Team: Catalpa International <info@catalpa.io>\n"
@@ -21,7 +21,6 @@ msgstr ""
 msgid "IRMIS"
 msgstr "IRMIS "
 
-#| msgid "Hello there"
 msgid "Hello"
 msgstr "Halo "
 
@@ -40,6 +39,57 @@ msgstr "Kodigu "
 
 msgid "Name"
 msgstr "Naran "
+
+msgid "Road Code"
+msgstr "Kodigu Estrada "
+
+#, fuzzy
+#| msgid "Username"
+msgid "User"
+msgstr "Naran utilisador "
+
+#, fuzzy
+#| msgid "Date Created"
+msgid "Date Surveyed"
+msgstr "Data Kria"
+
+msgid "Date Created"
+msgstr "Data Kria"
+
+#, fuzzy
+#| msgid "Date Created"
+msgid "Date Updated"
+msgstr "Data Kria"
+
+#, fuzzy
+#| msgid "Link Start Chainage (Km)"
+msgid "Start Chainage (Km)"
+msgstr "Linha Estasaun Komesa (Km)"
+
+#, fuzzy
+#| msgid "Enter chainage for link starting point"
+msgid "Enter chainage for survey starting point"
+msgstr "Hatama estasaun ba linha nia pontu komesa"
+
+#, fuzzy
+#| msgid "Link End Chainage (Km)"
+msgid "End Chainage (Km)"
+msgstr "Linha Estasaun Ikus (Km)"
+
+#, fuzzy
+#| msgid "Enter chainage for link ending point"
+msgid "Enter chainage for survey ending point"
+msgstr "Hatama estasaun ba pontu linha ikus"
+
+#, fuzzy
+#| msgid "Funding Source"
+msgid "Source"
+msgstr "Fontes Orsamentu"
+
+#, fuzzy
+#| msgid "Choose the administrative area of the road"
+msgid "Choose the source of the survey"
+msgstr "Hili area administrativu husi estrada ne"
 
 msgid "National"
 msgstr "Nasional"
@@ -77,20 +127,18 @@ msgstr "Aat"
 msgid "Bad"
 msgstr "Aat Los"
 
-msgid "Date Created"
-msgstr "Data Kria"
-
 msgid "last modified"
 msgstr "Modifika ikus"
 
-msgid "Road Code"
-msgstr "Kodigu Estrada "
+#, fuzzy
+#| msgid "Municipal"
+msgid "Municipality"
+msgstr "Munisipiu "
 
-msgid "Administrative Area"
-msgstr "Area Administrativu "
-
-msgid "Choose the administrative area of the road"
-msgstr "Hili area administrativu husi estrada ne"
+#, fuzzy
+#| msgid "Choose the pavement class of the road"
+msgid "Choose the municipality for the road"
+msgstr "Hili klase pavimentu husi estrada"
 
 msgid "Funding Source"
 msgstr "Fontes Orsamentu"
@@ -107,22 +155,14 @@ msgstr "Hatama kodigu linha tuir DNEPCC nia padraun "
 msgid "Link Start Name"
 msgstr "Naran Linha Komesa"
 
-msgid ""
-"Enter the name of the link start location (municipal center, administrative "
-"post or nearest suco)"
-msgstr ""
-"Hatama naran husi fatin linha komesa (sentru munisipiu, postu administrativu"
-" ou suku nebe besik) "
+msgid "Enter the name of the link start location (municipal center, administrative post or nearest suco)"
+msgstr "Hatama naran husi fatin linha komesa (sentru munisipiu, postu administrativu ou suku nebe besik) "
 
 msgid "Link End Name"
 msgstr "Naran Linha Ikus "
 
-msgid ""
-"Enter the name of the link end location (municipal center, administrative "
-"post or nearest suco)"
-msgstr ""
-"Hatama naran husi fatin linha ikus (sentru munisipiu, postu administrativu "
-"ou suku nebe besik) "
+msgid "Enter the name of the link end location (municipal center, administrative post or nearest suco)"
+msgstr "Hatama naran husi fatin linha ikus (sentru munisipiu, postu administrativu ou suku nebe besik) "
 
 msgid "Link End Chainage (Km)"
 msgstr "Linha Estasaun Ikus (Km)"
@@ -160,11 +200,15 @@ msgstr "Carriageaway nia luan"
 msgid "Enter the width (in meters) of the link carriageway"
 msgstr "Hatama luan (iha metru) husi linha Carriageaway"
 
-msgid "Road Type"
-msgstr "Typu Estrada"
+#, fuzzy
+#| msgid "Road Status"
+msgid "Road Class"
+msgstr "Estatutu Estrada"
 
-msgid "Choose the administrative class of the road"
-msgstr "Hili klase administrativa husi estrada"
+#, fuzzy
+#| msgid "Choose the pavement class of the road"
+msgid "Choose the road class"
+msgstr "Hili klase pavimentu husi estrada"
 
 msgid "Road Status"
 msgstr "Estatutu Estrada"
@@ -187,9 +231,7 @@ msgstr "Hili volume trafiku ba linha estrada"
 msgid "Surface Condition (SDI)"
 msgstr "Kondisaun Surface (SDI)"
 
-msgid ""
-"Choose road link surface condition according to the Surface Distress Index "
-"(SDI): Good (SDI≤2), fair (2<SDI≤3), poor (3<SDI≤4) or bad (SDI>4)"
+msgid "Choose road link surface condition according to the Surface Distress Index (SDI): Good (SDI≤2), fair (2<SDI≤3), poor (3<SDI≤4) or bad (SDI>4)"
 msgstr "Hili linha estrada nia kondisaun surface tuir Surface Distress Index "
 
 msgid "Maintenance Needs"
@@ -201,12 +243,16 @@ msgstr "Hili tipu manutensaun nebe persija ba linha estrada "
 msgid "Technical Class"
 msgstr "Klase Tekniku "
 
-msgid ""
-"Choose road link technical class according to the 2010 Road Geometric Design"
-" Standards, DRBFC standards"
+msgid "Choose road link technical class according to the 2010 Road Geometric Design Standards, DRBFC standards"
+msgstr "Hili linha estrada nia klase tekniku tuir Padraun Dezenhu Geometriku Estrada 2010 "
+
+msgid "Number of Lanes"
 msgstr ""
-"Hili linha estrada nia klase tekniku tuir Padraun Dezenhu Geometriku Estrada"
-" 2010 "
+
+#, fuzzy
+#| msgid "Enter the source funding for the road link"
+msgid "Enter the number of lanes of the road"
+msgstr "Hatama fontes orsamentu ba linha estrada"
 
 msgid "Road Inventory"
 msgstr "Inventoriu Estrada "
@@ -253,11 +299,10 @@ msgstr "klase pavimentu"
 msgid "Carriageway width"
 msgstr "Luan carriageway "
 
-msgid "Administrative area"
-msgstr "Area administrativu "
-
-msgid "Road type"
-msgstr "Tipu estrada"
+#, fuzzy
+#| msgid "Road Status"
+msgid "Road class"
+msgstr "Estatutu Estrada"
 
 msgid "Technical class"
 msgstr "Klase tekniku"
@@ -295,6 +340,9 @@ msgstr "Persija manutensaun"
 msgid "Traffic data"
 msgstr "Dadus trafiku"
 
+msgid "Number of lanes"
+msgstr ""
+
 msgid "Return to default selection"
 msgstr "Fila fali ba selesaun padraun "
 
@@ -331,12 +379,8 @@ msgstr "Sasan (aset)"
 msgid "Asset condition"
 msgstr "Kondisaun sasan/aset"
 
-msgid ""
-"Please enter a correct username and password. Note that both fields may be "
-"case-sensitive"
-msgstr ""
-"Favor hatama naran utilisador ho seña nebe los. Nota Katak linha rua ne "
-"talvez sensitivu"
+msgid "Please enter a correct username and password. Note that both fields may be case-sensitive"
+msgstr "Favor hatama naran utilisador ho seña nebe los. Nota Katak linha rua ne talvez sensitivu"
 
 msgid "This password is too short. It must contain at least 8 characters"
 msgstr "Seña ne badak liu. Tenki inklui mazemeinus 8 karateristiku"
@@ -425,42 +469,44 @@ msgstr "Fila fali ba pagina tama nian"
 msgid "Reset your password"
 msgstr "Troka ita bot nia seña"
 
-msgid ""
-"We have sent a reset password link to your email. Please, click on the link "
-"to set your new password. Thanks."
-msgstr ""
-"Ami manda ona linha atu hadia seña ba ita bot nia email. Favor hanehan iha "
-"linha ne atu troka ita bot nia seña. Obrigado.  "
+msgid "We have sent a reset password link to your email. Please, click on the link to set your new password. Thanks."
+msgstr "Ami manda ona linha atu hadia seña ba ita bot nia email. Favor hanehan iha linha ne atu troka ita bot nia seña. Obrigado.  "
 
 msgid "Hello there"
 msgstr "Halo "
 
-msgid ""
-"We received a request to change your Estrada password. Click the button "
-"below to create a new password"
-msgstr ""
-"Ami simu pedidu atu troka ita bot nia seña Estrada. Hanehan iha butaun kraik"
-" atu kria seña foun. "
+msgid "We received a request to change your Estrada password. Click the button below to create a new password"
+msgstr "Ami simu pedidu atu troka ita bot nia seña Estrada. Hanehan iha butaun kraik atu kria seña foun. "
 
 msgid "Reset my password"
 msgstr "Hadia hau nia seña "
 
-msgid ""
-"If you didn't mean to reset your password, then you can just ignore this "
-"email. Your password will not change"
-msgstr ""
-"Se ita la planu atu hadia ita nia seña , entaun ita bele ignora email ida "
-"ne. Ita nia seña sei la troka"
+msgid "If you didn't mean to reset your password, then you can just ignore this email. Your password will not change"
+msgstr "Se ita la planu atu hadia ita nia seña , entaun ita bele ignora email ida ne. Ita nia seña sei la troka"
 
-msgid ""
-"Don’t worry. Resetting your password is easy, just tell us the email address"
-" you registered with Estrada."
-msgstr ""
-"Lalika tauk. Atu troka ita bot nia seña fasil. Dehan mai ami email ida nebe "
-"ita uza hodi halo rejistrasaun ho Estrada"
+msgid "Don’t worry. Resetting your password is easy, just tell us the email address you registered with Estrada."
+msgstr "Lalika tauk. Atu troka ita bot nia seña fasil. Dehan mai ami email ida nebe ita uza hodi halo rejistrasaun ho Estrada"
 
 msgid "Email address"
 msgstr "Email"
 
 msgid "Send"
 msgstr "Haruka"
+
+#~ msgid "Administrative Area"
+#~ msgstr "Area Administrativu "
+
+#~ msgid "Choose the administrative area of the road"
+#~ msgstr "Hili area administrativu husi estrada ne"
+
+#~ msgid "Road Type"
+#~ msgstr "Typu Estrada"
+
+#~ msgid "Choose the administrative class of the road"
+#~ msgstr "Hili klase administrativa husi estrada"
+
+#~ msgid "Administrative area"
+#~ msgstr "Area administrativu "
+
+#~ msgid "Road type"
+#~ msgstr "Tipu estrada"

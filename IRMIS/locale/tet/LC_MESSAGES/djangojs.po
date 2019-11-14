@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-14 02:00+0000\n"
+"POT-Creation-Date: 2019-11-14 07:55+0000\n"
 "PO-Revision-Date: 2019-10-09 05:39+0000\n"
 "Last-Translator: b'  <januario@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -106,15 +106,15 @@ msgstr ""
 msgid "Surface Condition Data (SDI)"
 msgstr ""
 
+msgid "Add"
+msgstr ""
+
 #, fuzzy
 #| msgid "Condition"
 msgid "Current condition"
 msgstr "Kondisaun "
 
 msgid "View all data entries"
-msgstr ""
-
-msgid "Add"
 msgstr ""
 
 msgid "Add Surface Condition Information"
@@ -151,9 +151,6 @@ msgstr ""
 msgid "Added by"
 msgstr ""
 
-msgid "Option"
-msgstr ""
-
 msgid "This field is required"
 msgstr ""
 
@@ -183,10 +180,12 @@ msgstr ""
 msgid "Location"
 msgstr "Fatin "
 
-msgid "Select an Administrative Area"
-msgstr "Hili Area Administrativa"
+msgid "Select a Municipality"
+msgstr ""
 
-msgid "Select a Road Type"
+#, fuzzy
+#| msgid "Select a Road Type"
+msgid "Select a Road Class"
 msgstr "Hili Tipu Estrada"
 
 msgid "Close"
@@ -300,6 +299,9 @@ msgstr ""
 
 msgid "Number of Lanes segments"
 msgstr ""
+
+#~ msgid "Select an Administrative Area"
+#~ msgstr "Hili Area Administrativa"
 
 #~ msgid "Choose the administrative area of the road"
 #~ msgstr "Hili Area Administrativa"
