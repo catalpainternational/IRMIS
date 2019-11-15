@@ -397,6 +397,7 @@ def protobuf_road_audit(request, pk):
     )
 
 
+@login_required
 def protobuf_reports(request):
     """ returns a protobuf object with a report determined by the filter conditions supplied """
     if not request.user.is_authenticated:
