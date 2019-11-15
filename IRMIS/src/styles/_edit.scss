@@ -7,8 +7,8 @@ edit_base {
     #edit-base {
         height: calc(100vh - #{$top-menu-height} - 15px);
         width: calc(100% - #{$side-menu-width});
-        padding-right: 10px;
-        overflow-y: overlay;
+        padding-right: 5px;
+        overflow-y: auto;
         
         header {
             border-bottom: 1px solid $light-gray;
