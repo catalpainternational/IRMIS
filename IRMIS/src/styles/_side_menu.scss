@@ -12,12 +12,12 @@
     background-color: $darker-gray;
     width: $side-menu-width;
     padding-bottom: 15px;
-    padding-right: 3px;
+    padding-right: 4px;
     padding-left: 15px;
 
     #view {
         margin-bottom: 40px;
-        padding-right: 7px;
+        padding-right: 6px;
 
         a {
             @extend %filter-shared;
@@ -46,8 +46,8 @@
 
     .filters {
         height: calc(100% - #{$top-menu-height} - 71px - 40px);
-        overflow-y: overlay;
-        padding-right: 8px;
+        padding-right: 6px;
+        overflow-y: auto;
 
         .filter {
             @extend %filter-shared;
@@ -165,8 +165,8 @@
 
 edit_base #side-menu > div {
     height: calc(100vh - #{$top-menu-height} - 15px);
-    overflow-y: overlay;
-    padding-right: 8px;
+    padding-right: 6px;
+    overflow-y: auto;
 }
 
 #collapsed-side-menu {
