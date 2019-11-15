@@ -168,33 +168,33 @@ class Report:
         self.report_protobuf = report_pb2.Report()
 
         # set basic report attributes
-        filters = {}
+        self.filters = {}
 
         if self.primary_attributes:
-            filters["primary_attributes"] = self.primary_attributes
+            self.filters["primary_attributes"] = self.primary_attributes
 
         if self.validate_chainages():
-            filters["report_chainage_start"] = self.road_start_chainage
-            filters["report_chainage_end"] = self.road_end_chainage
+            self.filters["report_chainage_start"] = self.road_start_chainage
+            self.filters["report_chainage_end"] = self.road_end_chainage
         else:
             if self.withAttributes:
                 # Road level reports must have start & end chainages to build a report.
                 # Return an empty report.
                 return self.report_protobuf
 
-        self.report_protobuf.filter = json.dumps(filters)
+        self.report_protobuf.filter = json.dumps(self.filters)
 
-        lengths = {}
+        self.lengths = {}
 
         for primary_attribute in self.primary_attributes:
             # build and set report statistical data & table
             self.build_empty_chainage_list(primary_attribute)
             self.assign_survey_results(primary_attribute)
-            lengths[primary_attribute] = self.build_summary_stats(primary_attribute)
+            self.lengths[primary_attribute] = self.build_summary_stats(primary_attribute)
 
             if self.withAttributes:
                 self.build_attribute_tables(primary_attribute)
 
-        self.report_protobuf.lengths = json.dumps(lengths)
+        self.report_protobuf.lengths = json.dumps(self.lengths)
 
         return self.report_protobuf

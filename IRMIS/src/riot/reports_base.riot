@@ -126,16 +126,16 @@
                             const haveLengths = !!surveyReportData.lengths;
                             const surfaceConditions = surveyReportData.surfaceConditions;
                             const haveSurfaceConditions = surfaceConditions.length > 0;
-                            if (haveLengths && haveSurfaceConditions) {
-                                this.updateSurfaceConditionsSummary(surfaceConditions);
-                            }
-                            if (haveSurfaceConditions) {
-                                this.state.reportRows = surveyReportData.surfaceConditionsList.attributeEntriesList;
+                            // if (haveLengths && haveSurfaceConditions) {
+                            //     this.updateSurfaceConditionsSummary(surfaceConditions);
+                            // }
+                            // if (haveSurfaceConditions) {
+                            //     this.state.reportRows = surveyReportData.surfaceConditionsList.attributeEntriesList;
 
-                                const eventName = `${this.current_data_table_id}.dataAdded`;
-                                const eventDetail = { detail: { pendingRows: this.state.reportRows, appendRows: this.state.loading }};
-                                document.dispatchEvent(new CustomEvent(eventName, eventDetail));
-                            }
+                            //     const eventName = `${this.current_data_table_id}.dataAdded`;
+                            //     const eventDetail = { detail: { pendingRows: this.state.reportRows, appendRows: this.state.loading }};
+                            //     document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+                            // }
                             this.state.error = false;
                         } else {
                             this.state.error = true;
