@@ -8,11 +8,11 @@
                 <option value="">{ window.gettext("Select a Surface Type") }</option>
                 <option each="{ surface in surfaces.options }" value="{ surface.code }" selected="{ surface.code == state.surfaceType }">{ surface.name }</option>
             </select>
-            <small class="form-text text-muted">{ props.getHelpText("surface_type") }</small>
+            <small class="form-text text-muted">{ props.parent.getHelpText("surface_type") }</small>
         </div>
         <div class="form-group">
             <label>{ pavements.display }</label>
-            <small class="form-text text-muted">{ props.getHelpText("pavement_class") }</small>
+            <small class="form-text text-muted">{ props.parent.getHelpText("pavement_class") }</small>
             <ul class="pavement-classes">
                 <li each="{ pavement in pavements.options }" data-pavement="{ pavement.code }" onclick="{ checkPavementClass }">
                     <span class="{ pavement.code == props.road.getPavementClass() ? 'active' : ''  } radio image"></span>
@@ -32,7 +32,7 @@
                 state.surfaceType = props.road.getSurfaceType();
             },
             save(e) {
-                this.props.onSave();
+                this.props.parent.onSave();
             },
             checkSurfaceType(e) {
                 this.state.surfaceType = e.currentTarget.value;

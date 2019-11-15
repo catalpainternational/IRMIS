@@ -26,8 +26,8 @@
             <a class="{ !state.viewAll ? 'active' : '' } table-toggle" onclick="{ viewCurrent }">{ window.gettext("Current condition") }</a>
             <a class="{ state.viewAll ? 'active' : '' } table-toggle" onclick="{ viewAll }">{ window.gettext("View all data entries") }</a>
         </div>
-        <data_table if="{ state.viewAll }" table_id="{this.all_data_table_id}" columns="{this.all_data_table_columns}" columnSortOrder="{this.all_data_table_columns_order}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}" canDelete=true></data_table>
-        <data_table if="{ !state.viewAll }" table_id="{this.current_data_table_id}" columns="{this.current_data_table_columns}" columnSortOrder="{this.current_data_table_columns_order}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}"></data_table>
+        <data_table if="{ state.viewAll }" table_id="{this.all_data_table_id}" columns="{this.all_data_table_columns}" columnSortOrder="{this.all_data_table_columns_order}" getHelpText="{props.parent.getHelpText}" pendingRows="{this.pendingRows}" canDelete=true></data_table>
+        <data_table if="{ !state.viewAll }" table_id="{this.current_data_table_id}" columns="{this.current_data_table_columns}" columnSortOrder="{this.current_data_table_columns_order}" getHelpText="{props.parent.getHelpText}" pendingRows="{this.pendingRows}"></data_table>
     </div>
 
     <edit_modal modal_id="{ modal_id }" disableSave="{ !state.canSave }">
@@ -38,7 +38,7 @@
                 <div class="form-group">
                     <label>{ window.gettext("Survey Date") }</label>
                     <span class="required">*</span>
-                    <small class="form-text text-muted">{props.getHelpText("survey_date")}</small>
+                    <small class="form-text text-muted">{props.parent.getHelpText("survey_date")}</small>
                     <!-- It would be preferable to use the 'datetime-local' input type, however Firefox currently does not support it -->
                     <input class="{ state.errors.surveyDate ? 'danger' : null } { state.survey.surveyDate ? '' : 'inactive' } form-control"
                         type="date" name="surveyDate" placeholder="Date" value="{ state.survey.surveyDate }" oninput="{ checkSurveyDate }"
@@ -59,7 +59,7 @@
                     <input class="{ state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
                         type="number" name="startChainage" placeholder="0+000" value="{ state.survey.startChainage }" oninput="{ checkChainage }"
                         required>
-                    <small class="form-text text-muted">{ props.getHelpText("start_chainage") }</small>
+                    <small class="form-text text-muted">{ props.parent.getHelpText("start_chainage") }</small>
                     <div if="{ state.errors.startChainage }" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.startChainage }.</li>
@@ -72,7 +72,7 @@
                     <input class="{ state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
                         type="number" name="endChainage" placeholder="62+410" value="{ state.survey.endChainage }" oninput="{ checkChainage }"
                         required>
-                    <small class="form-text text-muted">{ props.getHelpText("end_chainage") }</small>
+                    <small class="form-text text-muted">{ props.parent.getHelpText("end_chainage") }</small>
                     <div if="{ state.errors.endChainage }" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.endChainage }.</li>
@@ -86,7 +86,7 @@
                 <div class="form-group">
                     <label>{conditions.display}</label>
                     <span class="required">*</span>
-                    <small class="form-text text-muted">{props.getHelpText("surface_condition")}</small>
+                    <small class="form-text text-muted">{props.parent.getHelpText("surface_condition")}</small>
                     <div if="{ state.errors.surfaceCondition }" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.surfaceCondition }.</li>
@@ -122,8 +122,7 @@
         import Data_Table from "./data_table.riot";
         import Edit_Modal from "./edit_modal.riot";
 
-        import { createSurvey, deleteSurvey, updateSurvey, getRoadSurveys } from "../surveyManager";
-        import { getRoadReport } from "../reportManager";
+        import { createSurvey, deleteSurvey, updateSurvey } from "../surveyManager";
         import { cloneData, toChainageFormat } from "../assets/protoBufUtilities";
         import { Survey, Report } from "../../protobuf/survey_pb";
 
@@ -161,8 +160,8 @@
                 state.loading = true;
                 state.road = cloneData(props.road);
 
-                this.updateSurfaceConditionsSummary([state.road.emptyAttributes]);
-                this.refreshSurveysAndReports(this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id);
+                this.props.parent.updateReportAttributeSummary(state, "surfaceConditions", [props.parent.emptyAttributes]);
+                this.props.parent.refreshSurveysAndReports(state, this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id);
 
                 this.deleteListener = (data) => {
                     const rowId = data.detail.rowId;
@@ -406,13 +405,13 @@
                 if (!this.state.editMode) {
                     createSurvey(this.state.survey)
                         .then((surveyData) => {
-                            this.refreshSurveysAndReports(this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id);
+                            this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id);
                         })
                         .catch((err) => { this.props.error = true; });
                 } else {
                     updateSurvey(this.state.survey)
                         .then((surveyData) => {
-                            this.refreshSurveysAndReports(this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id);
+                            this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id);
                         })
                         .catch((err) => { this.props.error = true; });
                 }

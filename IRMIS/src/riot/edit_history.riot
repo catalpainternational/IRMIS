@@ -1,7 +1,7 @@
 <edit_history>
     <h5>{ window.gettext ("History") }</h5>
 
-    <data_table table_id="{this.table_id}" columns="{this.table_columns}" columnSortOrder="{this.columnSortOrder}" pageLength="{this.pageLength}" getHelpText="{props.getHelpText}"></data_table>
+    <data_table table_id="{this.table_id}" columns="{this.table_columns}" columnSortOrder="{this.columnSortOrder}" pageLength="{this.pageLength}" getHelpText="{props.parent.getHelpText}"></data_table>
 
     <script>
         import Data_Table from "./data_table.riot";
