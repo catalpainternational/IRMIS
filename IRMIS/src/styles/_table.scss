@@ -171,10 +171,6 @@ table.table {
 
         &.selected {
             background-color: $green;
-
-            td {
-                color: $white;
-            }
         }
     }
 }
