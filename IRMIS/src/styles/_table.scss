@@ -68,16 +68,26 @@ div.dataTables_wrapper {
         }
 
         &.active a.page-link {
-            background-color: $white;
             border-radius: $radius;
+        }
+
+        a.page-link {
+            box-shadow: none;
+            border: 0;
+        }
+    }
+}
+
+#all-data-table_wrapper ul.pagination {
+    li.paginate_button.page-item {
+        &.active a.page-link {
+            background-color: $white;
             color: $darker-gray;
         }
 
         a.page-link {
-            background-color: inherit;
-            box-shadow: none;
+            background-color: $darker-gray;
             color: $white;
-            border: 0;
         }
     }
 }
@@ -110,42 +120,6 @@ div.dataTables_wrapper {
     h6 {
         margin-bottom: 0;
         padding-top: 2px;
-    }
-}
-
-// Override DataTables.net styles
-div.dataTables_wrapper {
-    table.dataTable td.dataTables_empty {
-        text-align: left;
-    }
-
-    .dataTables_info {
-        padding-top: 8px;
-    }
-
-    div.dataTables_paginate {
-        ul.pagination {
-            margin: 0;
-
-            li.paginate_button.page-item {
-                &:focus {
-                    outline: none;
-                }
-
-                &.active a.page-link {
-                    background-color: $white;
-                    border-radius: $radius;
-                    color: $darker-gray;
-                }
-
-                a.page-link {
-                    background-color: inherit;
-                    box-shadow: none;
-                    color: $white;
-                    border: 0;
-                }
-            }
-        }
     }
 }
 
