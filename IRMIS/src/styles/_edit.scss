@@ -1,13 +1,13 @@
 $max-width: 400px;
 
 edit_base {
-    padding-right: 5px;
+    padding-right: 7px;
     display: block;
 
     #edit-base {
         height: calc(100vh - #{$top-menu-height} - 15px);
         width: calc(100% - #{$side-menu-width});
-        padding-right: 5px;
+        padding-right: 8px;
         overflow-y: auto;
         
         header {
