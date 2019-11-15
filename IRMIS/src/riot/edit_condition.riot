@@ -124,7 +124,7 @@
 
         import { createSurvey, deleteSurvey, updateSurvey, getRoadSurveys } from "../surveyManager";
         import { getRoadReport } from "../reportManager";
-        import { toChainageFormat } from "../assets/protoBufUtilities";
+        import { cloneData, toChainageFormat } from "../assets/protoBufUtilities";
         import { Survey, Report } from "../../protobuf/survey_pb";
 
         import $ from "jquery";
@@ -135,17 +135,6 @@
 
         function withinMaxDigits(text, limit, decimals) {
             return (new RegExp(`^\\d{0,${(limit - decimals)}}(\\.\\d{1,${decimals}})?$`).test(text));
-        }
-
-        /** Deep copy the supplied data to a new object
-         *  Prefers to use protobuf .cloneMessage
-         */
-        function cloneData(data) {
-            if (data.cloneMessage) {
-                return data.cloneMessage();
-            }
-
-            return JSON.parse(JSON.stringify(data));
         }
 
         export default {
@@ -172,19 +161,8 @@
                 state.loading = true;
                 state.road = cloneData(props.road);
 
-                let roadDistance = state.road.getLinkEndChainage() - state.road.getLinkStartChainage();
-                if (!roadDistance || roadDistance < 0) {
-                    roadDistance = state.road.linkLength;
-                }
-
-                const emptyConditions = {
-                    key: 0,
-                    title: "unknown",
-                    distance: roadDistance
-                };
-
-                this.updateSurfaceConditionsSummary([emptyConditions]);
-                this.refreshSurveysAndReports();
+                this.updateSurfaceConditionsSummary([state.road.emptyAttributes]);
+                this.refreshSurveysAndReports(this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id);
 
                 this.deleteListener = (data) => {
                     const rowId = data.detail.rowId;
@@ -195,104 +173,6 @@
             },
             onUnmount(props, state) {
                 document.removeEventListener(`${this.all_data_table_id}.deleteRow`, this.deleteListener);
-            },
-            refreshSurveysAndReports() {
-                this.getRoadSurveys();
-                this.getRoadSurveyReports();
-            },
-            getRoadSurveys() {
-                const roadId = this.state.road.getId();
-
-                getRoadSurveys(roadId)
-                    .then((surveyData) => {
-                        if (surveyData) {
-                            this.state.pendingRows = surveyData.map((data) => {
-                                data.title = data.surface;
-                                return data;
-                            });
-
-                            const eventName = `${this.all_data_table_id}.dataAdded`;
-                            const eventDetail = { detail: { pendingRows: this.state.pendingRows, appendRows: this.state.loading }};
-                            document.dispatchEvent(new CustomEvent(eventName, eventDetail));
-
-                            this.state.error = false;
-                        } else {
-                            this.state.error = true;
-                        }
-                    }).catch(err => {
-                        this.state.error = true;
-                    }).finally((r) => {
-                        this.state.loading = false;
-                        this.update();
-                    });
-            },
-            getRoadSurveyReports() {
-                const filters = {
-                    roadcode: this.state.road.code,
-                    chainagestart: this.state.road.getLinkStartChainage(),
-                    chainageend: this.state.road.getLinkEndChainage(),
-                };
-
-                getRoadReport(filters)
-                    .then((surveyReportData) => {
-                        if (surveyReportData) {
-                            const haveLengths = !!surveyReportData.lengths;
-                            const surfaceConditions = surveyReportData.surfaceConditions;
-                            const haveSurfaceConditionsMember = !!surfaceConditions;
-                            if (haveLengths && haveSurfaceConditionsMember) {
-                                this.updateSurfaceConditionsSummary(surfaceConditions);
-                            }
-                            if (haveSurfaceConditionsMember) {
-                                this.state.reportRows = surveyReportData.surfaceConditionsList.attributeEntriesList;
-
-                                const eventName = `${this.current_data_table_id}.dataAdded`;
-                                const eventDetail = { detail: { pendingRows: this.state.reportRows, appendRows: this.state.loading }};
-                                document.dispatchEvent(new CustomEvent(eventName, eventDetail));
-                            }
-                            this.state.error = false;
-                        } else {
-                            this.state.error = true;
-                        }
-                    }).catch(err => {
-                        this.state.error = true;
-                    }).finally((r) => {
-                        this.state.loading = false;
-                        this.update();
-                    });
-            },
-            updateSurfaceConditionsSummary(surfaceConditions) {
-                this.state.surfaceConditions.length = 0;
-                surfaceConditions.forEach((condition) => {
-                    this.state.surfaceConditions.push(condition);
-                });
-                this.drawSurfaceConditionsSummary();
-            },
-            drawSurfaceConditionsSummary() {
-                // First just clean all the distance values and get the total
-                this.state.surveyTotalDistance = 0;
-                this.state.surfaceConditions.forEach((condition) => {
-                    // all distances are in meters
-                    condition.distance = Math.round(condition.distance);
-                    this.state.surveyTotalDistance += condition.distance;
-                });
-                this.state.surveyTotalDistance = Math.round(this.state.surveyTotalDistance);
-
-                // Then calculate everything else
-                this.state.surfaceConditions.forEach((condition) => {
-                    const surfaceTitle = window.gettext(condition.title[0].toUpperCase() + condition.title.substring(1));
-                    if (this.state.surveyTotalDistance > 0) {
-                        condition.percent = Math.round((condition.distance / this.state.surveyTotalDistance) * 10000) / 100;
-                        // the calculated label shows distance in km
-                        condition.label = `${surfaceTitle} (${condition.distance / 1000}km/${condition.percent}%)`;
-                    } else {
-                        // 100% of 0km - but this won't appear in the label
-                        condition.percent = 100;
-                        // the calculated label shows distance in km
-                        condition.label = `${surfaceTitle} (0km)`;
-                    }
-                });
-
-                this.update();
             },
             viewAll(e) {
                 if (!this.state.viewAll) {
@@ -526,13 +406,13 @@
                 if (!this.state.editMode) {
                     createSurvey(this.state.survey)
                         .then((surveyData) => {
-                            this.refreshSurveysAndReports();
+                            this.refreshSurveysAndReports(this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id);
                         })
                         .catch((err) => { this.props.error = true; });
                 } else {
                     updateSurvey(this.state.survey)
                         .then((surveyData) => {
-                            this.refreshSurveysAndReports();
+                            this.refreshSurveysAndReports(this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id);
                         })
                         .catch((err) => { this.props.error = true; });
                 }
