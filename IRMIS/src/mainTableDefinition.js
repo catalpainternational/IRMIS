@@ -225,5 +225,5 @@ function buttonSegmentsTemplate(attrib, road) {
         data-target="#inventory-segments-modal"
         data-code="${road.getLinkCode()}"
         data-id="${road.getId()}"
-        data-attr="${attrib}">View Surface Condition</a>`;
+        data-attr="${attrib}">${window.gettext("View")} ${getFieldName(attrib)}</a>`;
 }
