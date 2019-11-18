@@ -32,77 +32,81 @@
 
     <edit_modal modal_id="{ modal_id }" disableSave="{ !state.canSave }">
         <span slot="modal_title">{window.gettext("Add Surface Condition Information")}</span>
-
         <form slot="modal_body">
-            <section>
-                <div class="form-group">
-                    <label>{ window.gettext("Survey Date") }</label>
-                    <span class="required">*</span>
-                    <small class="form-text text-muted">{props.getHelpText("survey_date")}</small>
-                    <!-- It would be preferable to use the 'datetime-local' input type, however Firefox currently does not support it -->
-                    <input class="{ state.errors.surveyDate ? 'danger' : null } { state.survey.surveyDate ? '' : 'inactive' } form-control"
-                        type="date" name="surveyDate" placeholder="Date" value="{ state.survey.surveyDate }" oninput="{ checkSurveyDate }"
-                        required pattern="\d{4}-\d{2}-\d{2}" max="{ max_date() }" >
-                    <div if="{ state.errors.surveyDate }" class="invalid-tooltip">
-                        <ul>
-                            <li>{ state.errors.surveyDate }.</li>
-                        </ul>
+            <div if="{ !state.isSaving }">
+                <section>
+                    <div class="form-group">
+                        <label>{ window.gettext("Survey Date") }</label>
+                        <span class="required">*</span>
+                        <small class="form-text text-muted">{props.getHelpText("survey_date")}</small>
+                        <!-- It would be preferable to use the 'datetime-local' input type, however Firefox currently does not support it -->
+                        <input class="{ state.errors.surveyDate ? 'danger' : null } { state.survey.surveyDate ? '' : 'inactive' } form-control"
+                            type="date" name="surveyDate" placeholder="Date" value="{ state.survey.surveyDate }" oninput="{ checkSurveyDate }"
+                            required pattern="\d{4}-\d{2}-\d{2}" max="{ max_date() }" >
+                        <div if="{ state.errors.surveyDate }" class="invalid-tooltip">
+                            <ul>
+                                <li>{ state.errors.surveyDate }.</li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            <section>
-                <h6>{ window.gettext("Chainage") }</h6>
-                <div class="form-group">
-                    <label>{ window.gettext("Chainage start") }</label>
-                    <span class="required">*</span>
-                    <input class="{ state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
-                        type="number" name="startChainage" placeholder="0+000" value="{ state.survey.startChainage }" oninput="{ checkChainage }"
-                        required>
-                    <small class="form-text text-muted">{ props.getHelpText("start_chainage") }</small>
-                    <div if="{ state.errors.startChainage }" class="invalid-tooltip">
-                        <ul>
-                            <li>{ state.errors.startChainage }.</li>
-                        </ul>
+                <section>
+                    <h6>{ window.gettext("Chainage") }</h6>
+                    <div class="form-group">
+                        <label>{ window.gettext("Chainage start") }</label>
+                        <span class="required">*</span>
+                        <input class="{ state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
+                            type="number" name="startChainage" placeholder="0+000" value="{ state.survey.startChainage }" oninput="{ checkChainage }"
+                            required>
+                        <small class="form-text text-muted">{ props.getHelpText("start_chainage") }</small>
+                        <div if="{ state.errors.startChainage }" class="invalid-tooltip">
+                            <ul>
+                                <li>{ state.errors.startChainage }.</li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label>{ window.gettext("Chainage end") }</label>
-                    <span class="required">*</span>
-                    <input class="{ state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
-                        type="number" name="endChainage" placeholder="62+410" value="{ state.survey.endChainage }" oninput="{ checkChainage }"
-                        required>
-                    <small class="form-text text-muted">{ props.getHelpText("end_chainage") }</small>
-                    <div if="{ state.errors.endChainage }" class="invalid-tooltip">
-                        <ul>
-                            <li>{ state.errors.endChainage }.</li>
-                        </ul>
+                    <div class="form-group">
+                        <label>{ window.gettext("Chainage end") }</label>
+                        <span class="required">*</span>
+                        <input class="{ state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
+                            type="number" name="endChainage" placeholder="62+410" value="{ state.survey.endChainage }" oninput="{ checkChainage }"
+                            required>
+                        <small class="form-text text-muted">{ props.getHelpText("end_chainage") }</small>
+                        <div if="{ state.errors.endChainage }" class="invalid-tooltip">
+                            <ul>
+                                <li>{ state.errors.endChainage }.</li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            <section>
-                <h6>{ window.gettext("Condition") }</h6>
-                <div class="form-group">
-                    <label>{conditions.display}</label>
-                    <span class="required">*</span>
-                    <small class="form-text text-muted">{props.getHelpText("surface_condition")}</small>
-                    <div if="{ state.errors.surfaceCondition }" class="invalid-tooltip">
-                        <ul>
-                            <li>{ state.errors.surfaceCondition }.</li>
+                <section>
+                    <h6>{ window.gettext("Condition") }</h6>
+                    <div class="form-group">
+                        <label>{conditions.display}</label>
+                        <span class="required">*</span>
+                        <small class="form-text text-muted">{props.getHelpText("surface_condition")}</small>
+                        <div if="{ state.errors.surfaceCondition }" class="invalid-tooltip">
+                            <ul>
+                                <li>{ state.errors.surfaceCondition }.</li>
+                            </ul>
+                        </div>
+                        <ul class="surface-condition">
+                            <li each="{ condition in conditions.options }" data-condition="{ condition[0] }" onclick="{ checkSurfaceCondition }">
+                                <span class="{ condition[0] == state.survey.surfaceCondition ? 'active' : ''  } radio image"></span>
+                                { condition[1] }
+                            </li>
                         </ul>
                     </div>
-                    <ul class="surface-condition">
-                        <li each="{ condition in conditions.options }" data-condition="{ condition[0] }" onclick="{ checkSurfaceCondition }">
-                            <span class="{ condition[0] == state.survey.surfaceCondition ? 'active' : ''  } radio image"></span>
-                            { condition[1] }
-                        </li>
-                    </ul>
-                </div>
-            </section>
+                </section>
 
-            <div class="d-flex justify-content-end">
-                <span>[</span><span class="required">*</span><span>]: Mandatory</span>
+                <div class="d-flex justify-content-end">
+                    <span>[</span><span class="required">*</span><span>]: Mandatory</span>
+                </div>
+            </div>
+            <div if="{ state.isSaving }" class="text-center">
+                <h5>{ window.gettext("Loading") }...</h5>
             </div>
         </form>
     </edit_modal>
@@ -163,6 +167,7 @@
                 reportRows: [],
                 viewAll: false,
                 editMode: false,
+                isSaving: false,
             },
             components: {
                 Edit_Stop_Alert, Edit_Modal
@@ -421,9 +426,6 @@
                 document.addEventListener(`${this.modal_id}.result`, (data) => {
                     const modalResult = data.detail.result;
 
-                    // Ensure that the dialog gets hidden
-                    $(`#${this.modal_id}`).modal("hide");
-
                     switch (modalResult) {
                         case "save":
                             if (this.hasChanges()) {
@@ -469,9 +471,11 @@
                 $(`#${modalId}`).modal("show");
             },
             discardChanges() {
-                this.state.survey = cloneData(this.state.baseSurvey);
-                this.state.errors = {};
-                this.update();
+                $(`#${this.modal_id}`).modal("hide");
+                this.update({
+                    survey: cloneData(this.state.baseSurvey),
+                    errors: {},
+                });
             },
             save(e) {
                 const missingFieldNames = checkRequiredFields(this.requiredFieldNames, this.state.survey);
@@ -513,27 +517,36 @@
 
                     // Reset baseSurvey now that we're done.
                     this.baseSurvey = new Survey({});
-
-                    $(`#${this.modal_id}`).modal("hide");
                 }
             },
             saveSurvey() {
+                this.update({
+                    isSaving: true
+                });
+
                 if (!this.state.editMode) {
                     createSurvey(this.state.survey)
                         .then((surveyData) => {
                             this.refreshSurveysAndReports();
+                            this.update({
+                                survey: new Survey({}), // clear input values
+                                isSaving: false,
+                            });
+                            $(`#${this.modal_id}`).modal("hide");
                         })
                         .catch((err) => { this.props.error = true; });
                 } else {
                     updateSurvey(this.state.survey)
                         .then((surveyData) => {
                             this.refreshSurveysAndReports();
+                            this.update({
+                                survey: new Survey({}), // clear input values
+                                isSaving: false,
+                            });
+                            $(`#${this.modal_id}`).modal("hide");
                         })
                         .catch((err) => { this.props.error = true; });
                 }
-                // clear input values
-                this.state.survey = new Survey({});
-                this.update();
             },
             canSave() {
                 const missingFieldNames = checkRequiredFields(this.requiredFieldNames, this.state.survey);
