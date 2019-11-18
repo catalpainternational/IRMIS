@@ -491,12 +491,12 @@ def protobuf_reports(request):
                     .distinct("road", "chainage_start", "chainage_end")
                 )
 
-            report_road_protobuf = Report(
+            road_report = Report(
                 surveys, len(road_codes) == 1, min_chainage, max_chainage
             )
 
             if len(road_codes) == 1:
-                report_protobuf = report_road_protobuf.to_protobuf()
+                report_protobuf = road_report.to_protobuf()
             else:
                 filters = json.loads(report_protobuf.filter)
                 lengths = json.loads(report_protobuf.lengths)
@@ -505,14 +505,14 @@ def protobuf_reports(request):
 
                 report_protobuf.filter = json.dumps(
                     {
-                        x: filters.get(x, 0) + report_road_protobuf.filters.get(x, 0)
-                        for x in set(filters).union(report_road_protobuf.filters)
+                        x: filters.get(x, 0) + road_report.filters.get(x, 0)
+                        for x in set(filters).union(road_report.filters)
                     }
                 )
                 report_protobuf.lengths = json.dumps(
                     {
-                        x: lengths.get(x, 0) + report_road_protobuf.lengths.get(x, 0)
-                        for x in set(lengths).union(report_road_protobuf.lengths)
+                        x: lengths.get(x, 0) + road_report.lengths.get(x, 0)
+                        for x in set(lengths).union(road_report.lengths)
                     }
                 )
 
