@@ -1,13 +1,13 @@
 #reports {
     height: calc(100vh - #{$top-menu-height} - 40px);
     width: calc(100% - #{$side-menu-width});
-    padding-right: 10px;
-    overflow-y: overlay;
+    padding-right: 8px;
+    overflow-y: auto;
     margin-top: 20px;
 }
 
 reports_base {
-    padding-right: 5px;
+    padding-right: 7px;
     display: block;
 
     .content-wrapper {

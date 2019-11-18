@@ -236,6 +236,21 @@ table {
         line-height: 17px;
         font-size: 14px;
     }
+
+    a {
+        color: $green !important;
+        font-weight: 400;
+    }
+
+    tr.selected {
+        td {
+            color: $white;
+        }
+
+        a {
+            color: $darker-gray !important;
+        }
+    }
 }
 
 // Override DataTables.net styles
