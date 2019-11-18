@@ -167,7 +167,7 @@
                     const rowId = data.detail.rowId;
                     this.showStopAlertModal("delete-alert", rowId);
                 };
-                
+
                 document.addEventListener(`${this.all_data_table_id}.deleteRow`, this.deleteListener);
             },
             onUnmount(props, state) {
@@ -176,6 +176,8 @@
             viewAll(e) {
                 if (!this.state.viewAll) {
                     this.update({viewAll: true});
+                    this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id);
+                    this.props.parent.updateReportAttributeSummary(this.state, "surfaceConditions", [this.props.parent.emptyAttributes]);
                     // If we're not still loading, then we assume that we want to replace all rows
                     const eventName = `${this.all_data_table_id}.dataAdded`;
                     const eventDetail = { detail: { pendingRows: this.state.pendingRows, appendRows: this.state.loading }}
@@ -185,6 +187,8 @@
             viewCurrent(e) {
                 if (this.state.viewAll) {
                     this.update({viewAll: false});
+                    this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id);
+                    this.props.parent.updateReportAttributeSummary(this.state, "surfaceConditions", [this.props.parent.emptyAttributes]);
                     // If we're not still loading, then we assume that we want to replace all rows
                     const eventName = `${this.current_data_table_id}.dataAdded`;
                     const eventDetail = { detail: { pendingRows: this.state.reportRows, appendRows: this.state.loading }}
@@ -329,7 +333,7 @@
             },
             showStopAlertModal(modalId, rowId) {
                 const eventName = `edit.${modalId}.result`;
-                // this[`${eventName}Listener`] = 
+
                 document.addEventListener(eventName, (data) => {
                     const stopAlertResult = data.detail.result;
                     $(`#${modalId}`).modal("hide");
@@ -406,12 +410,14 @@
                     createSurvey(this.state.survey)
                         .then((surveyData) => {
                             this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id);
+                            this.props.parent.updateReportAttributeSummary(this.state, "surfaceConditions", [this.props.parent.emptyAttributes]);
                         })
                         .catch((err) => { this.props.error = true; });
                 } else {
                     updateSurvey(this.state.survey)
                         .then((surveyData) => {
                             this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id);
+                            this.props.parent.updateReportAttributeSummary(this.state, "surfaceConditions", [this.props.parent.emptyAttributes]);
                         })
                         .catch((err) => { this.props.error = true; });
                 }

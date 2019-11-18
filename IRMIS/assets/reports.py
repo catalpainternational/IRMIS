@@ -190,7 +190,9 @@ class Report:
             # build and set report statistical data & table
             self.build_empty_chainage_list(primary_attribute)
             self.assign_survey_results(primary_attribute)
-            self.lengths[primary_attribute] = self.build_summary_stats(primary_attribute)
+            self.lengths[primary_attribute] = self.build_summary_stats(
+                primary_attribute
+            )
 
             if self.withAttributes:
                 self.build_attribute_tables(primary_attribute)

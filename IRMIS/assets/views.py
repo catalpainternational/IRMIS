@@ -500,12 +500,22 @@ def protobuf_reports(request):
                 filters = json.loads(report_protobuf.filter)
                 lengths = json.loads(report_protobuf.lengths)
 
-                print (filters)
+                print(filters)
 
-                report_protobuf.filter = json.dumps({x: filters.get(x, 0) + report_road_protobuf.filters.get(x, 0) for x in set(filters).union(report_road_protobuf.filters)})
-                report_protobuf.lengths = json.dumps({x: lengths.get(x, 0) + report_road_protobuf.lengths.get(x, 0) for x in set(lengths).union(report_road_protobuf.lengths)})
+                report_protobuf.filter = json.dumps(
+                    {
+                        x: filters.get(x, 0) + report_road_protobuf.filters.get(x, 0)
+                        for x in set(filters).union(report_road_protobuf.filters)
+                    }
+                )
+                report_protobuf.lengths = json.dumps(
+                    {
+                        x: lengths.get(x, 0) + report_road_protobuf.lengths.get(x, 0)
+                        for x in set(lengths).union(report_road_protobuf.lengths)
+                    }
+                )
 
-                print (report_protobuf.filter)
+                print(report_protobuf.filter)
     else:
         return HttpResponseNotFound()
 
