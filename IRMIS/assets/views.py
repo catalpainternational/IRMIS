@@ -434,6 +434,7 @@ def protobuf_reports(request):
         chainage_start = chainage_end
         chainage_end = temp_chainage
 
+    roads = []
     if road_id != None:
         road = get_object_or_404(Road.objects.all(), pk=road_id)
         roads = [road]
