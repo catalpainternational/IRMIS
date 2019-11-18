@@ -11,7 +11,6 @@ from rest_framework.exceptions import MethodNotAllowed
 from google.protobuf.timestamp_pb2 import Timestamp
 from protobuf import report_pb2
 
-
 from .models import (
     Road,
     MaintenanceNeed,
@@ -20,6 +19,7 @@ from .models import (
     SurfaceType,
     PavementClass,
     Survey,
+    display_user,
 )
 
 
@@ -93,12 +93,7 @@ class Report:
                         seg_point["value"] = survey.values[primary_attribute]
                         seg_point["date_surveyed"] = survey.date_surveyed
                         seg_point["survey_id"] = survey.id
-                        seg_point["added_by"] = (
-                            # TODO: get the user's fullname in preference to their username
-                            str(survey.user.username)
-                            if survey.user
-                            else ""
-                        )
+                        seg_point["added_by"] = display_user(survey.user)
                         seg_point["primary_attribute"] = primary_attribute
                     self.segmentations[primary_attribute][chainage_point] = seg_point
 
