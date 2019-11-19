@@ -301,7 +301,7 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
                 const eventName = `${reportDataTableId}.dataAdded`;
                 const eventDetail = { detail: { pendingRows: reportRows, appendRows: true }};
                 document.dispatchEvent(new CustomEvent(eventName, eventDetail));
-                surfaceConditionTable.rows.add(roadReport).draw();
+                surfaceConditionTable.rows.add(reportData).draw();
             }
         }).finally(() => {
             $(reportDataTableId).show();
