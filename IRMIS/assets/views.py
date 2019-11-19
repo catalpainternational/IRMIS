@@ -512,6 +512,8 @@ def protobuf_reports(request):
                 surveys, len(road_codes) == 1, min_chainage, max_chainage
             )
 
+            print (len(road_codes) == 1, min_chainage, max_chainage)
+
             if len(road_codes) == 1:
                 report_protobuf = road_report.to_protobuf()
             else:
@@ -530,12 +532,17 @@ def protobuf_reports(request):
                         for x in set(report_filters).union(road_report.filters)
                     }
                 )
-                report_protobuf.lengths = json.dumps(
-                    {
-                        x: report_lengths.get(x, 0) + road_report.lengths.get(x, 0)
-                        for x in set(report_lengths).union(road_report.lengths)
-                    }
-                )
+                temp_length = {}
+                temp_length_attributes = set(report_lengths).union(road_report.lengths)
+                for attrib in temp_length_attributes:
+                    temp_length[attrib] = {}
+                    temp_length_keys = set(report_lengths.get(attrib, "")).union(road_report.lengths.get(attrib, ""))
+                    for key in temp_length_keys:
+                        curr_length = report_lengths.get(attrib, {key: 0}).get(key, 0)
+                        new_length = road_report.lengths.get(attrib, {key: 0}).get(key, 0)
+                        temp_length[attrib][key] = curr_length + new_length
+
+                report_protobuf.lengths = json.dumps(temp_length)
 
     else:
         return HttpResponseNotFound()
