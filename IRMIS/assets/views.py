@@ -538,8 +538,12 @@ def protobuf_reports(request):
             for x in set(report_lengths):
                 final_lengths[x] += Counter(report_lengths.get(x, {}))
 
-            print(report_filters, report_lengths)
-            print(final_filters, final_lengths)
+    # Chainage is only valid if there's only two values
+    if (
+        "report_chainage" in final_filters
+        and len(final_filters["report_chainage"]) != 2
+    ):
+        final_filters.pop("report_chainage")
 
     report_protobuf.filter = json.dumps(final_filters)
     report_protobuf.lengths = json.dumps(final_lengths)
