@@ -49,7 +49,7 @@
             <input class="{ state.reportDate ? '' : 'inactive' } form-control form-control-sm" type="date" oninput="{ selectDate }" value="{ current_date() }" max="{ max_date() }" placeholder="Select Date" pattern="\d{4}-\d{2}-\d{2}">
         </div>
         <div>
-            <button type="button" class="btn btn-primary" onclick="{ createReport }">{ window.gettext("Create Report") }</button>
+            <button type="button" class="btn btn-primary" onclick="{ createReport }" data-id="{ props.id }">{ window.gettext("Create Report") }</button>
         </div>
     </div>
 
@@ -58,6 +58,8 @@
     </div>
 
     <script>
+        import { getRoadReport } from "../reportManager";
+
         import $ from "jquery";
         import "select2/dist/js/select2.full.min.js";
         import dayjs from "dayjs";
@@ -150,6 +152,60 @@
             },
             max_date: () => new Date().toISOString().substring(0, 10),
             current_date: () => dayjs(new Date()).format('YYYY-MM-DD'),
+            createReport(e) {
+                const reportId = e.currentTarget.dataset.id;
+
+                const filters = {"primaryattribute": ["road_status", "technical_class", "surface_condition"]};
+
+                switch (reportId) {
+                    case "4":
+                        filters["roadtype"] = "NAT";
+                        break;
+                    case "5":
+                        filters["roadtype"] = "MUN";
+                        break;
+                    case "6":
+                        filters["roadtype"] = "RUR";
+                        break;
+                    case "7":
+                        filters["roadtype"] = "HIGH";
+                        break;
+                    case "8":
+                        filters["roadtype"] = "URB";
+                        break;
+                }
+
+                if (!Object.keys(filters).length) {
+                    return;
+                }
+
+                getRoadReport(filters)
+                    .then((surveyReportData) => {
+                        if (surveyReportData) {
+                            const haveLengths = !!surveyReportData.lengths;
+                            const surfaceConditions = surveyReportData.surfaceConditions;
+                            const haveSurfaceConditions = surfaceConditions.length > 0;
+                            // if (haveLengths && haveSurfaceConditions) {
+                            //     this.updateSurfaceConditionsSummary(surfaceConditions);
+                            // }
+                            // if (haveSurfaceConditions) {
+                            //     this.state.reportRows = surveyReportData.surfaceConditionsList.attributeEntriesList;
+
+                            //     const eventName = `${this.current_data_table_id}.dataAdded`;
+                            //     const eventDetail = { detail: { pendingRows: this.state.reportRows, appendRows: this.state.loading }};
+                            //     document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+                            // }
+                            this.state.error = false;
+                        } else {
+                            this.state.error = true;
+                        }
+                    }).catch(err => {
+                        this.state.error = true;
+                    }).finally((r) => {
+                        this.state.loading = false;
+                        this.update();
+                    });
+            },
         }
     </script>
 </report>

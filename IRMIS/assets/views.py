@@ -408,7 +408,7 @@ def protobuf_reports(request):
         raise MethodNotAllowed(request.method)
 
     # get/initialise the Filters
-    primary_attributes = [request.GET.get("primaryattribute", "surface_condition")]
+    primary_attributes = request.GET.getlist("primaryattribute", ["surface_condition"])
     road_id = request.GET.get("roadid", None)
     road_code = request.GET.get("roadcode", "")
     chainage_start = None
@@ -503,6 +503,7 @@ def protobuf_reports(request):
             continue
 
         # pull any Surveys that cover the roads
+        print(primary_attributes)
         for primary_attribute in primary_attributes:
             surveys[primary_attribute] = (
                 Survey.objects.filter(road=primary_road_code)
