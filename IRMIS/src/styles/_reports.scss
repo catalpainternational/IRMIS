@@ -1,3 +1,5 @@
+$form-control-width: 225px;
+
 #reports {
     height: calc(100vh - #{$top-menu-height} - 40px);
     width: calc(100% - #{$side-menu-width});
@@ -84,7 +86,14 @@ report {
     input.form-control {
         margin-bottom: 10px;
         margin-right: 10px;
-        width: 225px;
+    }
+
+    input[type="date"] {
+        width: $form-control-width;
+    }
+
+    input[type="number"] {
+        width: calc((#{$form-control-width} - 10px) / 2);
     }
 
     .options {
