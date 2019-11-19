@@ -31,6 +31,9 @@ class Report:
         self.primary_attributes = list(surveys.keys())
         self.withAttributes = withAttributes
         self.segmentations = {}
+        # set basic report attributes
+        self.filters = {}
+        self.lengths = {}
 
     def validate_chainages(self):
         try:
@@ -162,9 +165,6 @@ class Report:
         """ Package up the various statistics and tables for export as Protobuf """
         self.report_protobuf = report_pb2.Report()
 
-        # set basic report attributes
-        self.filters = {}
-
         if self.primary_attributes:
             self.filters["primary_attributes"] = self.primary_attributes
 
@@ -178,8 +178,6 @@ class Report:
                 return self.report_protobuf
 
         self.report_protobuf.filter = json.dumps(self.filters)
-
-        self.lengths = {}
 
         for primary_attribute in self.primary_attributes:
             # build and set report statistical data & table

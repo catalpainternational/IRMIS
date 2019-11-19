@@ -435,6 +435,10 @@ def protobuf_reports(request):
         chainage_end = temp_chainage
 
     roads = []
+    report_protobuf = report_pb2.Report()
+    report_protobuf.filter = json.dumps({})
+    report_protobuf.lengths = json.dumps({})
+
     if road_id != None:
         road = get_object_or_404(Road.objects.all(), pk=road_id)
         roads = [road]
@@ -443,14 +447,13 @@ def protobuf_reports(request):
 
     if road_type != None:
         roads = Road.objects.filter(road_type=road_type)
+        report_protobuf.filter = json.dumps({"road_type": road_type})
 
     if len(roads) > 0:
         surveys = {}
 
         road_codes = list(roads.values_list("road_code").distinct())
         road_code_index = 0
-
-        report_protobuf = report_pb2.Report()
 
         for road_code in road_codes:
             primary_road_code = road_code[road_code_index]
@@ -506,7 +509,7 @@ def protobuf_reports(request):
 
                 report_protobuf.filter = json.dumps(
                     {
-                        x: filters.get(x, 0) + road_report.filters.get(x, 0)
+                        x: filter.get(x, 0) + road_report.filters.get(x, 0)
                         for x in set(filters).union(road_report.filters)
                     }
                 )
