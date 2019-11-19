@@ -535,8 +535,8 @@ def protobuf_reports(request):
                 )
 
             report_lengths = json.loads(report_protobuf.lengths)
-            for x in set(report_lengths).union(road_report.lengths):
-                final_lengths[x] += Counter(report_lengths.get(x, [])) + Counter(road_report.lengths.get(x, []))
+            for x in set(report_lengths):
+                final_lengths[x] += Counter(report_lengths.get(x, {}))
 
             print(report_filters, report_lengths)
             print(final_filters, final_lengths)
