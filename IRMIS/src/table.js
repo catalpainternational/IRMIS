@@ -263,25 +263,25 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
 
     switch (attr) {
         case "surface_condition":
-            reportDataTableId = "#inventory-surface-condition-table_wrapper";
+            reportDataTableId = "inventory-surface-condition-table_wrapper";
             reportAttribute = "surfaceConditions";
             modal.find(".modal-title").text(linkCode + " " + gettext("Surface Condition segments"));
             surfaceConditionTable.clear(); // remove all rows in the table
             break;
     //     case "surface_type":
-    //         reportDataTableId = "#inventory-surface-type-table_wrapper";
+    //         reportDataTableId = "inventory-surface-type-table_wrapper";
     //         reportAttribute = "surfaceTypes";
     //         modal.find(".modal-title").text(linkCode + " " + gettext("Surface Type segments"));
     //         surfaceTypeTable.clear(); // remove all rows in the table
     //         break;
     //     case "technical_class":
-    //         reportDataTableId = "#inventory-technical-class-table_wrapper";
+    //         reportDataTableId = "inventory-technical-class-table_wrapper";
     //         reportAttribute = "technicalClasses";
     //         modal.find(".modal-title").text(linkCode + " " + gettext("Technical Class segments"));
     //         technicalClassTable.clear(); // remove all rows in the table
     //         break;
     //     case "number_lanes":
-    //         reportDataTableId = "#inventory-number-lanes-table_wrapper";
+    //         reportDataTableId = "inventory-number-lanes-table_wrapper";
     //         reportAttribute = "numberLanes";
     //         modal.find(".modal-title").text(linkCode + " " + gettext("Number of Lanes segments"));
     //         numberLanesTable.clear(); // remove all rows in the table
