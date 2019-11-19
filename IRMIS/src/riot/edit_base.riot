@@ -38,29 +38,19 @@
                 <h1>{ state.editingRoad.getRoadCode() } { state.editingRoad.getRoadName() }</h1>
             </header>
 
-            <edit_feedback if="{ state.show_feedback }" close="{ closeFeedback }" error="{ state.error }"></edit_feedback>
+            <edit_feedback if="{ state.showFeedback }" close="{ closeFeedback }" error="{ state.error }"></edit_feedback>
 
             <edit_location_type road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'location_type' }" on-save="{ save }"></edit_location_type>
             <edit_asset_details road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'asset_details' }" on-save="{ save }"></edit_asset_details>
             <edit_pavement road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'pavement' }" on-save="{ save }"></edit_pavement>
             <edit_project road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'project' }" on-save="{ save }"></edit_project>
-            <edit_condition road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'condition' }" on-save="{ save }"></edit_condition>
+            <edit_condition road="{ state.editingRoad }" showBanner="{ showFeedback }" getHelpText="{getHelpText}" if="{ state.page === 'condition' }" on-save="{ save }"></edit_condition>
             <edit_maintenance road="{ state.editingRoad }" saving="{ state.saving }" getHelpText="{getHelpText}" if="{ state.page === 'maintenance' }" on-save="{ save }"></edit_maintenance>
 
             <edit_history road="{ state.baseRoad }" getHelpText="{getHelpText}" if="{ state.page === 'history' }"></edit_history>
         </div>
 
-        <div id="loading" class="modal" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-                <div class="align-items-center modal-content">
-                    <div class="modal-header"></div>
-                    <div class="modal-body text-center">
-                        <h5>{ window.gettext("Loading") }...</h5>
-                    </div>
-                    <div class="modal-footer"></div>
-                </div>
-            </div>
-        </div>
+        <loading></loading>
     </div>
 
     <script>
@@ -73,6 +63,7 @@
 
         import Edit_Feedback from './edit_feedback.riot';
         import Edit_Stop_Alert from "./edit_stop_alert.riot";
+        import Loading from "./loading.riot";
 
         import Edit_Location_Type from "./edit_location_type.riot";
         import Edit_Asset_Details from "./edit_asset_details.riot";
@@ -99,9 +90,9 @@
                 stopAlertResult: null,
             },
             components: {
+                Edit_Feedback, Edit_Stop_Alert, Loading,
                 Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Project, Edit_Condition, Edit_Maintenance,
                 Edit_History,
-                Edit_Feedback, Edit_Stop_Alert
             },
             onBeforeMount() {
                 window.onbeforeunload = () => {
@@ -143,8 +134,8 @@
                 }).catch(err => {
                     this.state.error = true;
                 }).finally((r) => {
-                    this.update({ saving: false, show_feedback: true });
-                    timeoutId = setTimeout(() => this.closeFeedback(), 5000);
+                    this.update({ saving: false });
+                    this.showFeedback(this.state.error);
                 });
             },
             hasChanges() {
@@ -188,13 +179,20 @@
                 window.location.hash = this.state.nextPage;
                 this.update();
             },
+            showFeedback(error) {
+                this.update({
+                    showFeedback: true,
+                    error: error,
+                });
+                timeoutId = setTimeout(() => this.closeFeedback(), 5000);
+            },
             closeFeedback() {
                 const feedback = document.getElementsByClassName("slide-in").item(0);
                 clearTimeout(timeoutId);
                 feedback.classList.add("slide-out");
                 setTimeout(() => {
                     feedback.classList.remove("slide-out");
-                    this.update({ show_feedback: false });
+                    this.update({ showFeedback: false });
                 }, 300);
             },
             getHelpText(field) {

@@ -32,7 +32,6 @@
 
     <edit_modal modal_id="{ modal_id }" disableSave="{ !state.canSave }">
         <span slot="modal_title">{window.gettext("Add Surface Condition Information")}</span>
-
         <form slot="modal_body">
             <section>
                 <div class="form-group">
@@ -420,9 +419,6 @@
                 document.addEventListener(`${this.modal_id}.result`, (data) => {
                     const modalResult = data.detail.result;
 
-                    // Ensure that the dialog gets hidden
-                    $(`#${this.modal_id}`).modal("hide");
-
                     switch (modalResult) {
                         case "save":
                             if (this.hasChanges()) {
@@ -468,9 +464,11 @@
                 $(`#${modalId}`).modal("show");
             },
             discardChanges() {
-                this.state.survey = cloneData(this.state.baseSurvey);
-                this.state.errors = {};
-                this.update();
+                $(`#${this.modal_id}`).modal("hide");
+                this.update({
+                    survey: cloneData(this.state.baseSurvey),
+                    errors: {},
+                });
             },
             save(e) {
                 const missingFieldNames = checkRequiredFields(this.requiredFieldNames, this.state.survey);
@@ -512,27 +510,41 @@
 
                     // Reset baseSurvey now that we're done.
                     this.baseSurvey = new Survey({});
-
-                    $(`#${this.modal_id}`).modal("hide");
                 }
             },
             saveSurvey() {
+                $(`#${this.modal_id}`).modal("hide");
+                $('#loading').modal('show');
+
                 if (!this.state.editMode) {
                     createSurvey(this.state.survey)
                         .then((surveyData) => {
                             this.refreshSurveysAndReports();
+                            this.update({
+                                survey: new Survey({}), // clear input values
+                            });
+                            $('#loading').modal('hide');
+                            this.props.showBanner();
                         })
-                        .catch((err) => { this.props.error = true; });
+                        .catch((err) => {
+                            this.props.error = true;
+                            this.props.showBanner(true);
+                        });
                 } else {
                     updateSurvey(this.state.survey)
                         .then((surveyData) => {
                             this.refreshSurveysAndReports();
+                            this.update({
+                                survey: new Survey({}), // clear input values
+                            });
+                            $('#loading').modal('hide');
+                            this.props.showBanner();
                         })
-                        .catch((err) => { this.props.error = true; });
+                        .catch((err) => {
+                            this.props.error = true;
+                            this.props.showBanner(true);
+                        });
                 }
-                // clear input values
-                this.state.survey = new Survey({});
-                this.update();
             },
             canSave() {
                 const missingFieldNames = checkRequiredFields(this.requiredFieldNames, this.state.survey);
