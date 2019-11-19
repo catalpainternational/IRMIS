@@ -17,7 +17,7 @@
     <div class="align-items-center content-wrapper d-flex justify-content-between">
         <div class="d-flex flex-wrap">
             <div class="options">
-                <select id="administrative_area_select2" multiple="true">
+                <select id="municipality_area_select2" multiple="true">
                     <option each="{ area in window.road_schema.administrative_area.options }" value="{ area.id }">{ area.name }</option>
                 </select>
             </div>
@@ -40,10 +40,22 @@
                 </select>
             </div>
 
-            <div class="options">
-                <select id="road_code_select2" multiple="true">
-                    <option each="{ code in window.road_schema.road_code.options }" value="{ code.road_code }">{ code.road_code }</option>
-                </select>
+            <div>
+                <div class="options">
+                    <select id="road_code_select2" multiple="true">
+                        <option each="{ code in window.road_schema.road_code.options }" value="{ code.road_code }">{ code.road_code }</option>
+                    </select>
+                </div>
+                <div class="d-flex flex-wrap">
+                    <div class="d-flex flex-column">
+                        <label>{ window.gettext("Chainage start") }</label>
+                        <input class="{ state.reportStartChainage ? '' : 'inactive' } form-control form-control-sm" type="number" oninput="{ selectStartChainage }" placeholder="0">
+                    </div>
+                    <div class="d-flex flex-column">
+                        <label>{ window.gettext("Chainage end") }</label>
+                        <input class="{ state.reportEndChainage ? '' : 'inactive' } form-control form-control-sm" type="number" oninput="{ selectEndChainage }" placeholder="20000">
+                    </div>
+                </div>
             </div>
 
             <input class="{ state.reportDate ? '' : 'inactive' } form-control form-control-sm" type="date" oninput="{ selectDate }" value="{ current_date() }" max="{ max_date() }" placeholder="Select Date" pattern="\d{4}-\d{2}-\d{2}">
@@ -64,6 +76,13 @@
 
         export default {
             state: {
+                reportMunicipality: [],
+                reportRoadClass: [],
+                reportSurfaceType: [],
+                reportSurfaceCondition: [],
+                reportRoadCode: null,
+                reportStartChainage: null,
+                reportEndChainage: null,
                 reportDate: true,
                 reportContent: {
                     0: {
@@ -105,12 +124,14 @@
                 },
             },
             onMounted() {
-                $('#administrative_area_select2').select2({
+                $('#municipality_area_select2').select2({
                     width: "225px",
-                    placeholder: window.gettext("Administrative area"),
+                    placeholder: window.gettext("Municipality"),
                     containerCssClass: "report-select2",
                     dropdownCssClass: "report-dropdown-select2",
                 });
+                $('#municipality_area_select2').on('select2:select', null, "reportMunicipality", this.toggleMultipleSelect2);
+                $('#municipality_area_select2').on('select2:unselect', null, "reportMunicipality", this.toggleMultipleSelect2);
 
                 $('#road_class_select2').select2({
                     width: "225px",
@@ -118,6 +139,8 @@
                     containerCssClass: "report-select2",
                     dropdownCssClass: "report-dropdown-select2",
                 });
+                $('#road_class_select2').on('select2:select', null, "reportRoadClass", this.toggleMultipleSelect2);
+                $('#road_class_select2').on('select2:unselect', null, "reportRoadClass", this.toggleMultipleSelect2);
 
                 $('#surface_type_select2').select2({
                     width: "225px",
@@ -125,6 +148,8 @@
                     containerCssClass: "report-select2",
                     dropdownCssClass: "report-dropdown-select2",
                 });
+                $('#surface_type_select2').on('select2:select', null, "reportSurfaceType", this.toggleMultipleSelect2);
+                $('#surface_type_select2').on('select2:unselect', null, "reportSurfaceType", this.toggleMultipleSelect2);
 
                 $('#surface_condition_select2').select2({
                     width: "225px",
@@ -132,6 +157,8 @@
                     containerCssClass: "report-select2",
                     dropdownCssClass: "report-dropdown-select2",
                 });
+                $('#surface_condition_select2').on('select2:select', null, "reportSurfaceCondition", this.toggleMultipleSelect2);
+                $('#surface_condition_select2').on('select2:unselect', null, "reportSurfaceCondition", this.toggleMultipleSelect2);
 
                 $('#road_code_select2').select2({
                     multiple: false,
@@ -139,6 +166,8 @@
                     containerCssClass: "report-select2",
                     dropdownCssClass: "report-dropdown-select2",
                 });
+                $('#road_code_select2').on('select2:select', null, "reportRoadCode", this.toggleSingleSelect2);
+                $('#road_code_select2').on('select2:unselect', null, "reportRoadCode", this.toggleSingleSelect2);
             },
             backToReports() {
                 window.location.hash = "reports/";
@@ -150,6 +179,36 @@
             },
             max_date: () => new Date().toISOString().substring(0, 10),
             current_date: () => dayjs(new Date()).format('YYYY-MM-DD'),
+            selectStartChainage(e) {
+                this.update({
+                    reportStartChainage: e.currentTarget.value,
+                });
+            },
+            selectEndChainage(e) {
+                this.update({
+                    reportEndChainage: e.currentTarget.value,
+                });
+            },
+            toggleMultipleSelect2(e) {
+                const selectElement = e.currentTarget;
+                const inputElement = selectElement.nextSibling.children.item(0).firstElementChild;
+                const selectedOptions = selectElement.selectedOptions;
+                let values = [];
+
+                for (let option of selectedOptions) {
+                    values.push(option.text)
+                };
+                this.state[e.data] = values;
+
+                if (selectElement.value !== "") {
+                    inputElement.classList.add("active");
+                } else {
+                    inputElement.classList.remove("active");
+                }
+            },
+            toggleSingleSelect2(e) {
+                this.state[e.data] = e.currentTarget.value;
+            }
         }
     </script>
 </report>
