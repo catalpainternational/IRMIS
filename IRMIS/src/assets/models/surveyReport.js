@@ -58,14 +58,18 @@ function extractCountData(lengthsForType, choices) {
 
 export class EstradaNetworkSurveyReport extends Report {
     getId() {
-        // TODO: we want to assemble something (anything) out of the filters as an ID
-        return "Network Report";
+        if (this.roadCodes.length === 1) {
+            return `${this.roadCodes}_${this.reportChainage[0]}-${this.reportChainage[1]}`;
+        }
+
+        return `${this.roadTypes.join(",")}`;
     }
 
     get id() {
         return this.getId();
     }
 
+    /** filter is an object(dict) of lists */
     get filter() {
         const filter = this.getFilter() || "{}";
         return JSON.parse(filter);
@@ -74,6 +78,18 @@ export class EstradaNetworkSurveyReport extends Report {
     get lengths() {
         const lengths = this.getLengths() || "{ surface_condition: { None: 0 } }";
         return JSON.parse(lengths);
+    }
+
+    get roadCodes() {
+        return this.filter.road_code || [];
+    }
+
+    get roadTypes() {
+        return this.filter.road_type || [];
+    }
+
+    get reportChainage() {
+        return this.filter.report_chainage || [];
     }
 
     get surfaceConditions() {
@@ -109,26 +125,6 @@ export class EstradaNetworkSurveyReport extends Report {
 }
 
 export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
-    getId() {
-        return `${this.roadCode}_${this.reportChainageStart}-${this.reportChainageEnd}`;
-    }
-
-    get id() {
-        return this.getId();
-    }
-
-    get roadCode() {
-        return this.filter.road_code || "";
-    }
-
-    get reportChainageStart() {
-        return this.filter.report_chainage_start || 0;
-    }
-
-    get reportChainageEnd() {
-        return this.filter.report_chainage_end || 0;
-    }
-
     get attributeTablesList() {
         const attributeTablesRaw = this.getAttributeTablesList();
         return attributeTablesRaw.map(this.makeEstradaSurveyAttributeTable);

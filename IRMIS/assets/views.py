@@ -447,19 +447,19 @@ def protobuf_reports(request):
         report_protobuf.filter = json.dumps(
             {
                 "primary_attribute": primary_attributes,
-                "road_id": road_id,
-                "road_code": road.road_code,
+                "road_id": [road_id],
+                "road_code": [road.road_code],
             }
         )
     elif road_code != "":
         roads = Road.objects.filter(road_code=road_code)
         report_protobuf.filter = json.dumps(
-            {"primary_attribute": primary_attributes, "road_code": road_code}
+            {"primary_attribute": primary_attributes, "road_code": [road_code]}
         )
     elif road_type != None:
         roads = Road.objects.filter(road_type=road_type)
         report_protobuf.filter = json.dumps(
-            {"primary_attribute": primary_attributes, "road_type": road_type}
+            {"primary_attribute": primary_attributes, "road_type": [road_type]}
         )
 
     if len(roads) > 0:

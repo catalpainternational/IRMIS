@@ -32,6 +32,7 @@ class Report:
         self.withAttributes = withAttributes
         self.segmentations = {}
         # set basic report attributes
+        # filters is a dict of lists, lengths is a dict of numeric values
         self.filters = {}
         self.lengths = {}
 
@@ -169,8 +170,7 @@ class Report:
             self.filters["primary_attributes"] = self.primary_attributes
 
         if self.validate_chainages():
-            self.filters["report_chainage_start"] = self.road_start_chainage
-            self.filters["report_chainage_end"] = self.road_end_chainage
+            self.filters["report_chainage"] = [self.road_start_chainage, self.road_end_chainage]
         else:
             if self.withAttributes:
                 # Road level reports must have start & end chainages to build a report.
