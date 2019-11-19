@@ -503,7 +503,6 @@ def protobuf_reports(request):
             continue
 
         # pull any Surveys that cover the roads
-        print(primary_attributes)
         for primary_attribute in primary_attributes:
             surveys[primary_attribute] = (
                 Survey.objects.filter(road=primary_road_code)
