@@ -436,18 +436,31 @@ def protobuf_reports(request):
 
     roads = []
     report_protobuf = report_pb2.Report()
-    report_protobuf.filter = json.dumps({})
+    report_protobuf.filter = json.dumps({"primary_attribute": primary_attributes})
     report_protobuf.lengths = json.dumps({})
 
+    # Certain filters are mutually exclusive (for reporting)
+    # road_id -> road_code -> road_type
     if road_id != None:
         road = get_object_or_404(Road.objects.all(), pk=road_id)
         roads = [road]
+        report_protobuf.filter = json.dumps(
+            {
+                "primary_attribute": primary_attributes,
+                "road_id": road_id,
+                "road_code": road.road_code,
+            }
+        )
     elif road_code != "":
         roads = Road.objects.filter(road_code=road_code)
-
-    if road_type != None:
+        report_protobuf.filter = json.dumps(
+            {"primary_attribute": primary_attributes, "road_code": road_code}
+        )
+    elif road_type != None:
         roads = Road.objects.filter(road_type=road_type)
-        report_protobuf.filter = json.dumps({"road_type": road_type})
+        report_protobuf.filter = json.dumps(
+            {"primary_attribute": primary_attributes, "road_type": road_type}
+        )
 
     if len(roads) > 0:
         surveys = {}
@@ -505,8 +518,6 @@ def protobuf_reports(request):
                 report_filters = json.loads(report_protobuf.filter)
                 report_lengths = json.loads(report_protobuf.lengths)
 
-                print(report_filters)
-
                 report_protobuf.filter = json.dumps(
                     {
                         x: report_filters.get(x, "") + road_report.filters.get(x, "")
@@ -520,7 +531,8 @@ def protobuf_reports(request):
                     }
                 )
 
-                print(report_protobuf.filter)
+                print(json.dumps(report_lengths))
+                print(json.dumps(report_protobuf.lengths))
     else:
         return HttpResponseNotFound()
 
