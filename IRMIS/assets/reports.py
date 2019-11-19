@@ -170,7 +170,10 @@ class Report:
             self.filters["primary_attributes"] = self.primary_attributes
 
         if self.validate_chainages():
-            self.filters["report_chainage"] = [self.road_start_chainage, self.road_end_chainage]
+            self.filters["report_chainage"] = [
+                self.road_start_chainage,
+                self.road_end_chainage,
+            ]
         else:
             if self.withAttributes:
                 # Road level reports must have start & end chainages to build a report.
