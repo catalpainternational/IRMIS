@@ -509,7 +509,7 @@ def protobuf_reports(request):
 
                 report_protobuf.filter = json.dumps(
                     {
-                        x: report_filters.get(x, 0) + road_report.filters.get(x, 0)
+                        x: report_filters.get(x, "") + road_report.filters.get(x, "")
                         for x in set(report_filters).union(road_report.filters)
                     }
                 )
