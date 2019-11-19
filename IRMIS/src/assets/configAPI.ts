@@ -1,3 +1,5 @@
+import { isArray } from "util";
+
 export class ConfigAPI {
     public static requestAssetUrl = `${window.location.origin}/assets`;
     public static requestMediaUrl = `${window.location.origin}/media`;
@@ -42,6 +44,16 @@ export class ConfigAPI {
             return "";
         }
 
-        return "?" + Object.keys(obj).map((key) => `${key}=${obj[key]}`).join("&");
+        const queryParams: string[] = [];
+        Object.keys(obj).forEach((key) => {
+            if (isArray(obj[key])) {
+                obj[key].forEach((element: any) => {
+                    queryParams.push(`${key}=${element}`);
+                });
+            } else {
+                queryParams.push(`${key}=${obj[key]}`);
+            }
+        });
+        return `?${queryParams.join("&")}`;
     }
 }
