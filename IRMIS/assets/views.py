@@ -498,7 +498,7 @@ def protobuf_reports(request):
             ):
                 max_chainage = chainage_end
 
-        if (min_chainage == None or max_chainage == None):
+        if min_chainage == None or max_chainage == None:
             # Without valid chainage values nothing can be done
             continue
 
@@ -517,14 +517,21 @@ def protobuf_reports(request):
 
         if len(road_codes) == 1:
             report_protobuf = road_report.to_protobuf()
+            # return early if only one road_code
+            return HttpResponse(
+                report_protobuf.SerializeToString(),
+                content_type="application/octet-stream",
+            )
         else:
             report_filters = json.loads(report_protobuf.filter)
             for x in set(report_filters).union(road_report.filters):
-                final_filters[x] = list(set(
-                    final_filters[x] +
-                    report_filters.get(x, []) +
-                    road_report.filters.get(x, [])
-                ))
+                final_filters[x] = list(
+                    set(
+                        final_filters[x]
+                        + report_filters.get(x, [])
+                        + road_report.filters.get(x, [])
+                    )
+                )
 
             report_lengths = json.loads(report_protobuf.lengths)
             final_lengths += report_lengths
