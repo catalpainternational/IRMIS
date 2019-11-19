@@ -8,7 +8,7 @@ package assets;
 * But the numbering preserves the original declaration */
 
 message Report {
-    string filter = 1; // JSON string
+    string filter = 1; // JSON string - a dictionary of lists { filter_term: ["a"], other_filter: ["x"]}
     string lengths = 2; // JSON string - effectively a consolidation of 'values'
     repeated AttributeTable attribute_tables = 3;
 }
