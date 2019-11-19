@@ -502,21 +502,21 @@ def protobuf_reports(request):
             if len(road_codes) == 1:
                 report_protobuf = road_report.to_protobuf()
             else:
-                filters = json.loads(report_protobuf.filter)
-                lengths = json.loads(report_protobuf.lengths)
+                report_filters = json.loads(report_protobuf.filter)
+                report_lengths = json.loads(report_protobuf.lengths)
 
-                print(filters)
+                print(report_filters)
 
                 report_protobuf.filter = json.dumps(
                     {
-                        x: filter.get(x, 0) + road_report.filters.get(x, 0)
-                        for x in set(filters).union(road_report.filters)
+                        x: report_filters.get(x, 0) + road_report.filters.get(x, 0)
+                        for x in set(report_filters).union(road_report.filters)
                     }
                 )
                 report_protobuf.lengths = json.dumps(
                     {
-                        x: lengths.get(x, 0) + road_report.lengths.get(x, 0)
-                        for x in set(lengths).union(road_report.lengths)
+                        x: report_lengths.get(x, 0) + road_report.lengths.get(x, 0)
+                        for x in set(report_lengths).union(road_report.lengths)
                     }
                 )
 
