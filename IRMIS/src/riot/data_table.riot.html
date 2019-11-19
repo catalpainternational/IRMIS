@@ -82,7 +82,7 @@
         }
 
         const initialiseDataTable = function (state) {
-            state.table = $(`#${state.id}`).DataTable({
+            state.table = state.table || $(`#${state.id}`).DataTable({
                 columns: state.columns,
                 rowId: ".getId()",
                 order: state.columnSortOrder,

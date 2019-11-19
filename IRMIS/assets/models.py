@@ -485,3 +485,11 @@ class CollatedGeoJsonFile(models.Model):
 
     key = models.SlugField(unique=True)
     geobuf_file = models.FileField(upload_to="geojson/geobuf/")
+
+
+def display_user(user):
+    """ returns the full username if populated, or the username, or "" """
+    if not user:
+        return ""
+    user_display = user.get_full_name()
+    return user_display or user.username

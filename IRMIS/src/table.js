@@ -7,7 +7,8 @@ import { estradaTableColumns, estradaTableEventListeners } from "./mainTableDefi
 import { surfaceConditionColumns, surfaceTypeColumns, technicalClassColumns, numberLanesColumns } from "./segmentsInventoryTableDefinition";
 
 import { datatableTranslations } from "./datatableTranslations";
-import { getRoadSurveys } from "./surveyManager";
+import { getRoad } from "./roadManager";
+import { getRoadReport } from "./reportManager";
 
 let surfaceConditionTable = null;
 let surfaceTypeTable = null;
@@ -252,6 +253,8 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
     const roadId = button.data("id");
     const attr = button.data("attr");
     const modal = $(this);
+    let reportDataTableId = undefined;
+    let reportAttribute = undefined;
 
     $("#inventory-surface-condition-table_wrapper").hide();
     $("#inventory-surface-type-table_wrapper").hide();
@@ -260,44 +263,48 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
 
     switch (attr) {
         case "surface_condition":
+            reportDataTableId = "inventory-surface-condition-table_wrapper";
+            reportAttribute = "surfaceConditions";
             modal.find(".modal-title").text(linkCode + " " + gettext("Surface Condition segments"));
             surfaceConditionTable.clear(); // remove all rows in the table
-            getRoadSurveys(roadId).then((surveyData) => {
-                if (surveyData) {
-                    surfaceConditionTable.rows.add(surveyData).draw();
-                }
-            });
-            $("#inventory-surface-condition-table_wrapper").show();
             break;
-        case "surface_type":
-            modal.find(".modal-title").text(linkCode + " " + gettext("Surface Type segments"));
-            surfaceTypeTable.clear(); // remove all rows in the table
-            getRoadSurveys(roadId).then((surveyData) => {
-                if (surveyData) {
-                    surfaceTypeTable.rows.add(surveyData).draw();
-                }
-            });
-            $("#inventory-surface-type-table_wrapper").show();
-            break;
-        case "technical_class":
-            modal.find(".modal-title").text(linkCode + " " + gettext("Technical Class segments"));
-            technicalClassTable.clear(); // remove all rows in the table
-            getRoadSurveys(roadId).then((surveyData) => {
-                if (surveyData) {
-                    technicalClassTable.rows.add(surveyData).draw();
-                }
-            });
-            $("#inventory-technical-class-table_wrapper").show();
-            break;
-        case "number_lanes":
-            modal.find(".modal-title").text(linkCode + " " + gettext("Number of Lanes segments"));
-            numberLanesTable.clear(); // remove all rows in the table
-            getRoadSurveys(roadId).then((surveyData) => {
-                if (surveyData) {
-                    numberLanesTable.rows.add(surveyData).draw();
-                }
-            });
-            $("#inventory-number-lanes-table_wrapper").show();
-            break;
+    //     case "surface_type":
+    //         reportDataTableId = "inventory-surface-type-table_wrapper";
+    //         reportAttribute = "surfaceTypes";
+    //         modal.find(".modal-title").text(linkCode + " " + gettext("Surface Type segments"));
+    //         surfaceTypeTable.clear(); // remove all rows in the table
+    //         break;
+    //     case "technical_class":
+    //         reportDataTableId = "inventory-technical-class-table_wrapper";
+    //         reportAttribute = "technicalClasses";
+    //         modal.find(".modal-title").text(linkCode + " " + gettext("Technical Class segments"));
+    //         technicalClassTable.clear(); // remove all rows in the table
+    //         break;
+    //     case "number_lanes":
+    //         reportDataTableId = "inventory-number-lanes-table_wrapper";
+    //         reportAttribute = "numberLanes";
+    //         modal.find(".modal-title").text(linkCode + " " + gettext("Number of Lanes segments"));
+    //         numberLanesTable.clear(); // remove all rows in the table
+    //         break;
     }
+
+    getRoad(roadId).then((roadData) => {
+        let filters = {
+            primaryattribute: attr,
+            roadcode: roadData.getRoadCode(),
+            chainagestart: roadData.getLinkStartChainage(),
+            chainageend: roadData.getLinkEndChainage(),
+        };
+        getRoadReport(filters).then((reportData) => {
+            if (reportData && reportDataTableId) {
+                let reportRows = reportData[`${reportAttribute}List`].attributeEntriesList;
+                const eventName = `${reportDataTableId}.dataAdded`;
+                const eventDetail = { detail: { pendingRows: reportRows, appendRows: true }};
+                document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+                surfaceConditionTable.rows.add(reportData).draw();
+            }
+        }).finally(() => {
+            $(reportDataTableId).show();
+        });
+    });
 });

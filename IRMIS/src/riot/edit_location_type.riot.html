@@ -8,7 +8,7 @@
                 <option value="">{ window.gettext("Select a Municipality") }</option>
                 <option each="{ area in administrative_areas.options }" value="{ area.id }" selected="{ area.id == state.administrativeArea }">{ area.name }</option>
             </select>
-            <small class="form-text text-muted">{ props.getHelpText("administrative_area") }</small>
+            <small class="form-text text-muted">{ props.parent.getHelpText("administrative_area") }</small>
         </div>
     </section>
 
@@ -19,7 +19,7 @@
                 <option value="">{ window.gettext("Select a Road Class") }</option>
                 <option each="{ type in road_types.options }" value="{ type[0] }" selected="{ type[0] === state.roadType }">{ type[1] }</option>
             </select>
-            <small class="form-text text-muted">{ props.getHelpText("road_type") }</small>
+            <small class="form-text text-muted">{ props.parent.getHelpText("road_type") }</small>
         </div>
     </section>
 
@@ -34,7 +34,7 @@
                 state.roadType = props.road.getRoadType();
             },
             save(e) {
-                this.props.onSave();
+                this.props.parent.onSave();
             },
             checkAdministrativeArea(e) {
                 this.state.administrativeArea = e.currentTarget.value;

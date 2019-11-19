@@ -1,9 +1,6 @@
-import { getRoadReport } from "./assets/reportAPI";
+import { getRoadReports } from "./assets/reportsAPI";
 
-export function getRoadSurveyReport(roadId) {
-    return Promise.resolve(getRoadReport(roadId))
-        .then((surveyReport) => {
-            // document.dispatchEvent(new CustomEvent("estrada.auditTable.roadAuditDataAdded", {detail: {auditList}}));
-            return surveyReport;
-        });
+export function getRoadReport(filters) {
+    return Promise.resolve(getRoadReports(filters))
+        .then((surveyReportList) => { return surveyReportList; });
 }

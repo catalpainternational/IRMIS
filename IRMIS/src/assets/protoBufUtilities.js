@@ -36,3 +36,14 @@ export function humanizeChoices(schema, field, valueKey = false, displayKey = fa
 
     return values;
 }
+
+/** Deep copy the supplied data to a new object
+ *  Prefers to use protobuf .cloneMessage
+ */
+export function cloneData(data) {
+    if (data.cloneMessage) {
+        return data.cloneMessage();
+    }
+
+    return JSON.parse(JSON.stringify(data));
+}

@@ -73,11 +73,11 @@ export class EstradaSurvey extends Survey {
         return JSON.parse(jsonValues);
     }
     
-    static getFieldName(field) {
+    getFieldName(field) {
         return getFieldName(surveySchema, field);
     }
-    
-    static getHelpText(field) {
+
+    getHelpText(field) {
         return getHelpText(surveySchema, field);
     }
 }

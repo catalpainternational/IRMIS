@@ -7,10 +7,10 @@ from .views import (
     protobuf_road,
     protobuf_road_audit,
     road_update,
-    road_report,
     survey_create,
     survey_update,
     protobuf_road_surveys,
+    protobuf_reports,
 )
 
 # Wire up our API using automatic URL routing.
@@ -20,7 +20,6 @@ urlpatterns = [
     path("geojson_details", geojson_details, name="geojson_details"),
     path("road_chunks", road_chunks_set, name="road_chunks"),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
-    path("road_report/<int:pk>", road_report, name="road_report"),
     path("survey_create", survey_create, name="survey_create"),
     path("survey_update", survey_update, name="survey_update"),
     path("protobuf_road/<int:pk>", protobuf_road, name="protobuf_road"),
@@ -34,4 +33,5 @@ urlpatterns = [
     path(
         "protobuf_road_audit/<int:pk>", protobuf_road_audit, name="protobuf_road_audit"
     ),
+    path("reports/", protobuf_reports, name="protobuf_reports"),
 ]

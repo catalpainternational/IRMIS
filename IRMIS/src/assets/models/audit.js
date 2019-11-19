@@ -29,11 +29,11 @@ export class EstradaAudit extends Version {
     get comment() {
         return this.getComment();
     }
-
+        
     static getFieldName(field) {
         return getFieldName(auditSchema, field);
     }
-    
+
     static getHelpText(field) {
         return getHelpText(auditSchema, field);
     }

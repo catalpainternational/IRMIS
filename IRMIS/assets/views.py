@@ -4,7 +4,7 @@ import pytz
 import reversion
 from reversion.models import Version
 from datetime import datetime
-from collections import Counter
+from collections import Counter, defaultdict
 import pytz
 
 from django.contrib.auth import get_user_model
@@ -28,7 +28,8 @@ from rest_framework_condition import condition
 
 from google.protobuf.timestamp_pb2 import Timestamp
 
-from protobuf import roads_pb2, survey_pb2
+from protobuf import roads_pb2, survey_pb2, report_pb2
+from .reports import Report
 
 
 from .models import (
@@ -40,6 +41,7 @@ from .models import (
     SurfaceType,
     PavementClass,
     Survey,
+    display_user,
 )
 from .serializers import RoadSerializer, RoadMetaOnlySerializer, RoadToWGSSerializer
 
@@ -234,150 +236,6 @@ def protobuf_road_set(request, chunk_name=None):
 
 
 @login_required
-def road_report(request, pk):
-    if request.method != "GET":
-        raise MethodNotAllowed(request.method)
-
-    # get the Road link requested
-    road = get_object_or_404(Road.objects.all(), pk=pk)
-
-    # pull any Surveys that cover the Road above
-    surveys = (
-        Survey.objects.filter(road=road.road_code)
-        .exclude(chainage_start__isnull=True)
-        .exclude(chainage_end__isnull=True)
-        .exclude(values__surface_condition__isnull=True)
-        .order_by("road", "chainage_start", "chainage_end", "-date_surveyed")
-        .distinct("road", "chainage_start", "chainage_end")
-    )
-    report_protobuf = Report(road, surveys).to_protobuf()
-
-    return HttpResponse(
-        report_protobuf.SerializeToString(), content_type="application/octet-stream"
-    )
-
-
-class Report:
-    def __init__(self, road, surveys):
-        self.road = road
-        self.surveys = surveys
-
-    def validate_chainages(self):
-        try:
-            self.road_start_chainage = int(self.road.link_start_chainage)
-            self.road_end_chainage = int(self.road.link_end_chainage)
-            return True
-        except TypeError:
-            return False
-
-    def build_segmentations(self):
-        """ Create all of the segments based on report chainage start/end paramenters """
-        self.segmentations = {
-            item: {
-                "chainage_point": float(item),
-                "surf_cond": "None",
-                "date_surveyed": None,
-                "survey_id": 0,
-                "added_by": "",
-            }
-            for item in range(self.road_start_chainage, self.road_end_chainage)
-        }
-
-    def assign_survey_results(self):
-        """ For all the Surveys, assign only the most up-to-date results to any given segment """
-        for survey in self.surveys:
-            # ensure survey bits used covers only the road link start/end chainage portion
-            if (
-                survey.chainage_start < self.road_end_chainage
-                and survey.chainage_end > self.road_start_chainage
-            ):
-                if survey.chainage_start < self.road_start_chainage:
-                    survey_chain_start = self.road_start_chainage
-                else:
-                    survey_chain_start = int(survey.chainage_start)
-                if survey.chainage_end > self.road_end_chainage:
-                    survey_chain_end = self.road_end_chainage
-                else:
-                    survey_chain_end = int(survey.chainage_end)
-
-                # check survey does not conflict with current aggregate segmentations
-                # and update the segmentations when needed
-                for chainage_point in range(survey_chain_start, survey_chain_end):
-                    if not self.segmentations[chainage_point]["date_surveyed"] or (
-                        survey.date_surveyed
-                        and survey.date_surveyed
-                        > self.segmentations[chainage_point]["date_surveyed"]
-                    ):
-                        self.segmentations[chainage_point]["surf_cond"] = survey.values[
-                            "surface_condition"
-                        ]
-                        self.segmentations[chainage_point][
-                            "date_surveyed"
-                        ] = survey.date_surveyed
-                        self.segmentations[chainage_point]["survey_id"] = survey.id
-                        self.segmentations[chainage_point]["added_by"] = (
-                            str(survey.user.username) if survey.user else ""
-                        )
-
-    def build_summary_stats(self):
-        """ Generate the high-level counts & percentage statistics for the report """
-        segments_length = len(self.segmentations)
-        counts = Counter(
-            [self.segmentations[segment]["surf_cond"] for segment in self.segmentations]
-        )
-        percentages = {
-            condition: (counts[condition] / segments_length * 100)
-            for condition in counts
-        }
-        setattr(self.report_protobuf, "counts", json.dumps(counts))
-        setattr(self.report_protobuf, "percentages", json.dumps(percentages))
-
-    def build_chainage_table(self):
-        """ Generate the table of chainages the report """
-        prev_cond, prev_date = "Nada", "Nada"
-        for segment in self.segmentations:
-            segment = self.segmentations[segment]
-            if segment["surf_cond"] != prev_cond:
-                entry = self.report_protobuf.table.add()
-                setattr(entry, "chainage_start", segment["chainage_point"])
-                setattr(entry, "chainage_end", segment["chainage_point"])
-                setattr(entry, "surface_condition", str(segment["surf_cond"]))
-                setattr(entry, "survey_id", segment["survey_id"])
-                setattr(entry, "added_by", segment["added_by"])
-                if segment["date_surveyed"]:
-                    ts = Timestamp()
-                    ts.FromDatetime(segment["date_surveyed"])
-                    entry.date_surveyed.CopyFrom(ts)
-                prev_cond, prev_date = (segment["surf_cond"], segment["date_surveyed"])
-            else:
-                setattr(entry, "chainage_end", segment["chainage_point"] + 1)
-
-    def to_protobuf(self):
-        """ Package up the various statistics and tables for export as Protobuf """
-        self.report_protobuf = survey_pb2.Report()
-
-        # set basic report attributes
-        setattr(self.report_protobuf, "road_code", self.road.road_code)
-        if self.validate_chainages():
-            setattr(
-                self.report_protobuf, "report_chainage_start", self.road_start_chainage
-            )
-            setattr(self.report_protobuf, "report_chainage_end", self.road_end_chainage)
-        else:
-            # Road link must have start & end chainages to build a report.
-            # Return an empty report.
-            return self.report_protobuf
-
-        # build and set report statistical data & table
-        self.build_segmentations()
-        self.assign_survey_results()
-        self.build_summary_stats()
-        self.build_chainage_table()
-
-        return self.report_protobuf
-
-
-@login_required
 def protobuf_road_surveys(request, pk):
     """ returns a protobuf object with the set of surveys for a particular road pk"""
     # get the Road link requested
@@ -529,7 +387,7 @@ def protobuf_road_audit(request, pk):
     for version in versions:
         version_pb = versions_protobuf.versions.add()
         setattr(version_pb, "pk", version.pk)
-        setattr(version_pb, "user", _display_user(version.revision.user))
+        setattr(version_pb, "user", display_user(version.revision.user))
         setattr(version_pb, "comment", version.revision.comment)
         # set datetime field
         ts = Timestamp()
@@ -540,9 +398,156 @@ def protobuf_road_audit(request, pk):
     )
 
 
-def _display_user(user):
-    """ returns the full username if populated, or the username, or "" """
-    if not user:
-        return ""
-    user_display = user.get_full_name()
-    return user_display or user.username
+@login_required
+def protobuf_reports(request):
+    """ returns a protobuf object with a report determined by the filter conditions supplied """
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+
+    if request.method != "GET":
+        raise MethodNotAllowed(request.method)
+
+    # get/initialise the Filters
+    primary_attributes = [request.GET.get("primaryattribute", "surface_condition")]
+    road_id = request.GET.get("roadid", None)
+    road_code = request.GET.get("roadcode", "")
+    chainage_start = None
+    chainage_end = None
+    road_type = request.GET.get("roadtype", None)
+
+    if road_id != None or road_code != "":
+        # chainage is only valid if we've specified a road
+        chainage_start = request.GET.get("chainagestart", None)
+        chainage_end = request.GET.get("chainageend", None)
+
+    # If chainage has been supplied, ensure it is clean
+    if chainage_start != None:
+        chainage_start = float(chainage_start)
+    if chainage_end != None:
+        chainage_end = float(chainage_end)
+    if (
+        chainage_start != None
+        and chainage_end != None
+        and chainage_start > chainage_end
+    ):
+        temp_chainage = chainage_start
+        chainage_start = chainage_end
+        chainage_end = temp_chainage
+
+    roads = []
+    report_protobuf = report_pb2.Report()
+    report_protobuf.filter = json.dumps({"primary_attribute": primary_attributes})
+    report_protobuf.lengths = json.dumps({})
+
+    # Certain filters are mutually exclusive (for reporting)
+    # road_id -> road_code -> road_type
+    if road_id != None:
+        road = get_object_or_404(Road.objects.all(), pk=road_id)
+        roads = [road]
+        report_protobuf.filter = json.dumps(
+            {
+                "primary_attribute": primary_attributes,
+                "road_id": [road_id],
+                "road_code": [road.road_code],
+            }
+        )
+    elif road_code != "":
+        roads = Road.objects.filter(road_code=road_code)
+        report_protobuf.filter = json.dumps(
+            {"primary_attribute": primary_attributes, "road_code": [road_code]}
+        )
+    elif road_type != None:
+        roads = Road.objects.filter(road_type=road_type)
+        report_protobuf.filter = json.dumps(
+            {"primary_attribute": primary_attributes, "road_type": [road_type]}
+        )
+
+    if len(roads) == 0:
+        return HttpResponseNotFound()
+
+    surveys = {}
+    road_codes = list(roads.values_list("road_code").distinct())
+    road_code_index = 0
+    final_filters = defaultdict(list)
+    final_lengths = defaultdict(Counter)
+
+    for road_code in road_codes:
+        primary_road_code = road_code[road_code_index]
+        road_chainages = roads.filter(road_code=primary_road_code).values(
+            "link_start_chainage", "link_end_chainage"
+        )
+        min_chainage = road_chainages.order_by("link_start_chainage").first()[
+            "link_start_chainage"
+        ]
+        max_chainage = road_chainages.order_by("link_end_chainage").last()[
+            "link_end_chainage"
+        ]
+
+        if len(road_codes) == 1:
+            if (
+                chainage_start != None
+                and chainage_start > min_chainage
+                and chainage_start < max_chainage
+            ):
+                min_chainage = chainage_start
+
+            if (
+                chainage_end != None
+                and chainage_end > min_chainage
+                and chainage_end < max_chainage
+            ):
+                max_chainage = chainage_end
+
+        if min_chainage == None or max_chainage == None:
+            # Without valid chainage values nothing can be done
+            continue
+
+        # pull any Surveys that cover the roads
+        for primary_attribute in primary_attributes:
+            surveys[primary_attribute] = (
+                Survey.objects.filter(road=primary_road_code)
+                .exclude(chainage_start__isnull=True)
+                .exclude(chainage_end__isnull=True)
+                .exclude(**{"values__" + primary_attribute + "__isnull": True})
+                .order_by("road", "chainage_start", "chainage_end", "-date_surveyed")
+                .distinct("road", "chainage_start", "chainage_end")
+            )
+
+        road_report = Report(surveys, len(road_codes) == 1, min_chainage, max_chainage)
+
+        if len(road_codes) == 1:
+            report_protobuf = road_report.to_protobuf()
+            # return early if only one road_code
+            return HttpResponse(
+                report_protobuf.SerializeToString(),
+                content_type="application/octet-stream",
+            )
+        else:
+            report_protobuf = road_report.to_protobuf()
+            report_filters = json.loads(report_protobuf.filter)
+            for x in set(report_filters).union(road_report.filters):
+                final_filters[x] = list(
+                    set(
+                        final_filters[x]
+                        + report_filters.get(x, [])
+                        + road_report.filters.get(x, [])
+                    )
+                )
+
+            report_lengths = json.loads(report_protobuf.lengths)
+            for x in set(report_lengths):
+                final_lengths[x] += Counter(report_lengths.get(x, {}))
+
+    # Chainage is only valid if there's only two values
+    if (
+        "report_chainage" in final_filters
+        and len(final_filters["report_chainage"]) != 2
+    ):
+        final_filters.pop("report_chainage")
+
+    report_protobuf.filter = json.dumps(final_filters)
+    report_protobuf.lengths = json.dumps(final_lengths)
+
+    return HttpResponse(
+        report_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )
