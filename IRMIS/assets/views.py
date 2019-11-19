@@ -515,6 +515,12 @@ def protobuf_reports(request):
             if len(road_codes) == 1:
                 report_protobuf = road_report.to_protobuf()
             else:
+                # Get all the statistics etc. to be generated for each road_code
+                temp_protobuf = road_report.to_protobuf()
+
+                print(json.dumps(road_report.lengths))
+                print(json.dumps(report_protobuf.lengths))
+
                 report_filters = json.loads(report_protobuf.filter)
                 report_lengths = json.loads(report_protobuf.lengths)
 
@@ -531,8 +537,6 @@ def protobuf_reports(request):
                     }
                 )
 
-                print(json.dumps(report_lengths))
-                print(json.dumps(report_protobuf.lengths))
     else:
         return HttpResponseNotFound()
 
