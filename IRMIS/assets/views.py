@@ -469,7 +469,7 @@ def protobuf_reports(request):
     road_codes = list(roads.values_list("road_code").distinct())
     road_code_index = 0
     final_filters = defaultdict(list)
-    final_lengths = Counter()
+    final_lengths = defaultdict(Counter)
 
     for road_code in road_codes:
         primary_road_code = road_code[road_code_index]
@@ -523,6 +523,7 @@ def protobuf_reports(request):
                 content_type="application/octet-stream",
             )
         else:
+            report_protobuf = road_report.to_protobuf()
             report_filters = json.loads(report_protobuf.filter)
             for x in set(report_filters).union(road_report.filters):
                 final_filters[x] = list(
@@ -534,8 +535,8 @@ def protobuf_reports(request):
                 )
 
             report_lengths = json.loads(report_protobuf.lengths)
-            final_lengths += Counter(report_lengths)
-            final_lengths += Counter(road_report.lengths)
+            for x in set(report_lengths).union(road_report.lengths):
+                final_lengths[x] += Counter(report_lengths.get(x, [])) + Counter(road_report.lengths.get(x, []))
 
             print(report_filters, report_lengths)
             print(final_filters, final_lengths)
