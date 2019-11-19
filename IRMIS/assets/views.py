@@ -495,6 +495,10 @@ def protobuf_reports(request):
                 ):
                     max_chainage = chainage_end
 
+            if (min_chainage == None or max_chainage == None):
+                # Without valid chainage values nothing can be done
+                continue
+
             # pull any Surveys that cover the roads
             for primary_attribute in primary_attributes:
                 surveys[primary_attribute] = (
@@ -512,16 +516,11 @@ def protobuf_reports(request):
                 surveys, len(road_codes) == 1, min_chainage, max_chainage
             )
 
-            print (len(road_codes) == 1, min_chainage, max_chainage)
-
             if len(road_codes) == 1:
                 report_protobuf = road_report.to_protobuf()
             else:
                 # Get all the statistics etc. to be generated for each road_code
                 temp_protobuf = road_report.to_protobuf()
-
-                print(json.dumps(road_report.lengths))
-                print(json.dumps(report_protobuf.lengths))
 
                 report_filters = json.loads(report_protobuf.filter)
                 report_lengths = json.loads(report_protobuf.lengths)
