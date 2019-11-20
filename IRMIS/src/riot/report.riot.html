@@ -65,7 +65,36 @@
         </div>
     </div>
 
-    <div class="align-items-center blank content-wrapper d-flex flex-column justify-content-center">
+    <div if="{ !state.noReport }" class="content-wrapper report-content">
+        <div class="align-items-center d-flex justify-content-between">
+            <h6>{ state.reportContent[props.id].title } { window.gettext("Report") }</h6>
+            <button class="btn btn-secondary btn-sm">{ window.gettext("Print") }</button>
+        </div>
+        <div class="filtered-segment d-flex flex-column">
+            <h6>A01-01</h6>
+            <h6>Chainage 0+000 to 2+360</h6>
+        </div>
+        <span>{ window.gettext("Created on") } 16 July 2019 - { window.gettext("Report for") } 16 September 2019</span>
+        <div class="d-flex flex-column filters-applied">
+            <p>{ window.gettext("Filters applied") }</p>
+            <div class="d-flex">
+                <div class="d-flex flex-column filter">
+                    <span>Municipality:</span>
+                    <span>Aileu, Dili</span>
+                </div>
+                <div class="d-flex flex-column filter">
+                    <span>Surface Type:</span>
+                    <span>Gravel</span>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex flex-column">
+            <p>{ window.gettext("Total Length") }</p>
+            <h1>000 km</h1>
+        </div>
+    </div>
+
+    <div if="{ state.noReport }" class="align-items-center blank content-wrapper d-flex flex-column justify-content-center">
         <span class="no-report image"></span>
         <h6>
             { window.gettext("Please select a road above to view") }
@@ -96,6 +125,7 @@
 
         export default {
             state: {
+                noReport: false,
                 reportMunicipality: [],
                 reportRoadClass: [],
                 reportSurfaceType: [],
