@@ -459,12 +459,12 @@ def protobuf_reports(request):
         else:
             return HttpResponseNotFound()
     elif road_code:
-        roads = roads.filter(road_code=road_code)
+        roads = Road.objects.filter(road_code=road_code)
         report_protobuf.filter = json.dumps(
             {"primary_attribute": primary_attributes, "road_code": [road_code]}
         )
     elif road_types != []:
-        roads = roads.filter(road_type=road_type)
+        roads = Road.objects.filter(road_type=road_type)
         report_protobuf.filter = json.dumps(
             {"primary_attribute": primary_attributes, "road_type": [road_type]}
         )
@@ -490,8 +490,11 @@ def protobuf_reports(request):
 
     for road_code in road_codes:
         primary_road_code = road_code[road_code_index]
-        road_chainages = roads.filter(road_code=primary_road_code).values(
-            "link_start_chainage", "link_end_chainage"
+        road_chainages = (
+            roads.filter(road_code=primary_road_code)
+            .exclude(link_start_chainage__isnull=True)
+            .exclude(link_end_chainage__isnull=True)
+            .values("link_start_chainage", "link_end_chainage")
         )
         min_chainage = road_chainages.order_by("link_start_chainage").first()[
             "link_start_chainage"
