@@ -459,12 +459,12 @@ def protobuf_reports(request):
         else:
             return HttpResponseNotFound()
     elif road_code:
-        roads = roads.filter(road_code=road_code)
+        roads = Road.objects.filter(road_code=road_code)
         report_protobuf.filter = json.dumps(
             {"primary_attribute": primary_attributes, "road_code": [road_code]}
         )
     elif road_types != []:
-        roads = roads.filter(road_type=road_type)
+        roads = Road.objects.filter(road_type=road_type)
         report_protobuf.filter = json.dumps(
             {"primary_attribute": primary_attributes, "road_type": [road_type]}
         )
