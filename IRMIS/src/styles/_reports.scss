@@ -2,7 +2,7 @@ $blank-report-content-width: 444px;
 $form-control-width: 225px;
 
 #reports {
-    height: calc(100vh - #{$top-menu-height} - 40px);
+    height: calc(100vh - #{$top-menu-height} - 20px - 15px);
     width: calc(100% - #{$side-menu-width});
     padding-right: 8px;
     overflow-y: auto;

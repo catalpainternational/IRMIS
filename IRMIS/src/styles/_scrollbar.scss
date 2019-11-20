@@ -9,7 +9,11 @@
     }
 }
 
-edit_base #side-menu > div, #edit-base, .filters, #reports {
+reports_base #side-menu > div,
+edit_base #side-menu > div,
+#edit-base,
+#reports,
+.filters {
     @extend %scrollbar-shared;
 }
 
