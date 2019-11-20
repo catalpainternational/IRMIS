@@ -1,12 +1,15 @@
 <reports_base>
     <div class="row">
         <div id="side-menu">
-            <ul class="navigation">
-                <ul>
-                    <li class="active">{ window.gettext("Reports") }</li>
+            <div>
+                <ul class="navigation">
+                    <ul>
+                        <li class="active">{ window.gettext("Reports") }</li>
+                    </ul>
                 </ul>
-            </ul>
+            </div>
         </div>
+
         <div id="reports">
             <report if="{ state.page }" id="{ state.page }"></report>
             <template if="{ !state.page }">

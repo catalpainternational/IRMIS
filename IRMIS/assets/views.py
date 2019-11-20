@@ -410,12 +410,18 @@ def protobuf_reports(request):
     # get/initialise the Filters
     primary_attributes = request.GET.getlist("primaryattribute", ["surface_condition"])
     road_id = request.GET.get("roadid", None)
-    road_code = request.GET.get("roadcode", "")
+    road_code = request.GET.get("roadcode", None)
     chainage_start = None
     chainage_end = None
-    road_type = request.GET.get("roadtype", None)
+    road_types = request.GET.get("roadtype", [])  # roadtype=X
+    surface_types = request.GET.getlist("surfacetype", [])  # surfacetype=X
+    municipalities = request.GET.getlist("municipality", [])  # municipality=X
+    surface_conditions = request.GET.getlist(
+        "surfacecondition", []
+    )  # surfacecondition=X
+    # report_date = request.GET.get("reportdate", None) # reportdate=X
 
-    if road_id != None or road_code != "":
+    if road_id or road_code:
         # chainage is only valid if we've specified a road
         chainage_start = request.GET.get("chainagestart", None)
         chainage_end = request.GET.get("chainageend", None)
@@ -434,33 +440,44 @@ def protobuf_reports(request):
         chainage_start = chainage_end
         chainage_end = temp_chainage
 
-    roads = []
     report_protobuf = report_pb2.Report()
     report_protobuf.filter = json.dumps({"primary_attribute": primary_attributes})
     report_protobuf.lengths = json.dumps({})
 
     # Certain filters are mutually exclusive (for reporting)
     # road_id -> road_code -> road_type
-    if road_id != None:
-        road = get_object_or_404(Road.objects.all(), pk=road_id)
-        roads = [road]
-        report_protobuf.filter = json.dumps(
-            {
-                "primary_attribute": primary_attributes,
-                "road_id": [road_id],
-                "road_code": [road.road_code],
-            }
-        )
-    elif road_code != "":
-        roads = Road.objects.filter(road_code=road_code)
+    if road_id:
+        roads = Road.objects.filter(pk=road_id)
+        if len(roads) == 1:
+            report_protobuf.filter = json.dumps(
+                {
+                    "primary_attribute": primary_attributes,
+                    "road_id": [road_id],
+                    "road_code": [roads[0].road_code],
+                }
+            )
+        else:
+            return HttpResponseNotFound()
+    elif road_code:
+        roads = roads.filter(road_code=road_code)
         report_protobuf.filter = json.dumps(
             {"primary_attribute": primary_attributes, "road_code": [road_code]}
         )
-    elif road_type != None:
-        roads = Road.objects.filter(road_type=road_type)
+    elif road_types != []:
+        roads = roads.filter(road_type=road_type)
         report_protobuf.filter = json.dumps(
             {"primary_attribute": primary_attributes, "road_type": [road_type]}
         )
+    else:
+        roads = Road.objects.all()
+
+    # apply additional filters to Roads list, if provided
+    if surface_conditions != []:
+        roads.filter(surface_condition__in=surface_conditions)
+    if surface_types != []:
+        roads.filter(surface_type__in=surface_types)
+    if municipalities != []:
+        roads.filter(administrative_area__in=municipalities)
 
     if len(roads) == 0:
         return HttpResponseNotFound()
