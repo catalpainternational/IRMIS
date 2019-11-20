@@ -73,6 +73,7 @@ div.dataTables_wrapper {
 
         a.page-link {
             box-shadow: none;
+            margin-left: 0;
             border: 0;
         }
     }
@@ -100,6 +101,7 @@ div.dataTables_wrapper {
         }
 
         a.page-link {
+            background-color: $white;
             color: $darker-gray;
         }
     }
