@@ -70,22 +70,32 @@ window.addEventListener("hashchange", () => {
 
 function hashCheck() {
     const mainContent = document.getElementById("view-content");
+    const planningBase = document.getElementById("planning");
     const reportsBase = document.getElementById("reports");
     const editBase = document.getElementById("edit-base");
 
+    let planningHash = /#planning/.exec(location.hash);
     let reportsHash = /#reports\/(\d?)/.exec(location.hash);
     let editHash = /#edit\/(\d*)\/(\w+)/.exec(location.hash);
 
     if (editHash !== null && !editBase) {
         const roadPromise = getRoad(editHash[1]);
+        if (planningBase) riot.unmount("planning_base", true);
         if (reportsBase) riot.unmount("reports_base", true);
         riot.mount("edit_base", { roadPromise: roadPromise, page: editHash[2] });
         mainContent.hidden = true;
     } else if (reportsHash !== null && !reportsBase) {
+        if (planningBase) riot.unmount("planning_base", true);
         if (editBase) riot.unmount("edit_base", true);
         riot.mount("reports_base", { page: reportsHash[1] });
         mainContent.hidden = true;
-    } else if (editHash === null && reportsHash === null) {
+    } else if (planningHash !== null && !planningBase) {
+        if (editBase) riot.unmount("edit_base", true);
+        if (reportsBase) riot.unmount("reports_base", true);
+        riot.mount("planning_base");
+        mainContent.hidden = true;
+    } else if (editHash === null && reportsHash === null && planningHash === null) {
+        if (planningBase) riot.unmount("planning_base", true);
         if (reportsBase) riot.unmount("reports_base", true);
         if (editBase) riot.unmount("edit_base", true);
         mainContent.hidden = false;
