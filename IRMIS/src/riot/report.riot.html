@@ -65,8 +65,17 @@
         </div>
     </div>
 
-    <div class="content-wrapper">
-
+    <div class="align-items-center blank content-wrapper d-flex flex-column justify-content-center">
+        <span class="no-report image"></span>
+        <h6>
+            { window.gettext("Please select a road above to view") }
+            { state.reportContent[props.id].title }
+        </h6>
+        <p>
+            { window.gettext("The report will be shown in this area and will provide you with detailed") }
+            { state.reportContent[props.id].title }
+            { window.gettext("information per segment of the selected road.") }
+        </p>
     </div>
 
     <script>

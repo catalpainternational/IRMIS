@@ -1,3 +1,4 @@
+$blank-report-content-width: 444px;
 $form-control-width: 225px;
 
 #reports {
@@ -80,6 +81,21 @@ report {
         p {
             margin-left: 10px;
             margin-bottom: 0;
+        }
+    }
+
+    .content-wrapper.blank {
+        padding: 90px;
+
+        h6 {
+            max-width: $blank-report-content-width;
+            margin-bottom: 10px;
+            margin-top: 15px;
+        }
+
+        p {
+            max-width: $blank-report-content-width;
+            margin-left: 0;
         }
     }
 
