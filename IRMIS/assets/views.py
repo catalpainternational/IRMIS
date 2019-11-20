@@ -413,7 +413,7 @@ def protobuf_reports(request):
     road_code = request.GET.get("roadcode", None)
     chainage_start = None
     chainage_end = None
-    road_types = request.GET.get("roadtype", [])  # roadtype=X
+    road_types = request.GET.getlist("roadtype", [])  # roadtype=X
     surface_types = request.GET.getlist("surfacetype", [])  # surfacetype=X
     municipalities = request.GET.getlist("municipality", [])  # municipality=X
     surface_conditions = request.GET.getlist(
@@ -459,14 +459,14 @@ def protobuf_reports(request):
         else:
             return HttpResponseNotFound()
     elif road_code:
-        roads = roads.filter(road_code=road_code)
+        roads = Road.objects.filter(road_code=road_code)
         report_protobuf.filter = json.dumps(
             {"primary_attribute": primary_attributes, "road_code": [road_code]}
         )
     elif road_types != []:
-        roads = roads.filter(road_type=road_type)
+        roads = Road.objects.filter(road_type__in=road_types)
         report_protobuf.filter = json.dumps(
-            {"primary_attribute": primary_attributes, "road_type": [road_type]}
+            {"primary_attribute": primary_attributes, "road_type": road_types}
         )
     else:
         roads = Road.objects.all()
