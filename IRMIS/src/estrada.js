@@ -1,6 +1,7 @@
 import "babel-polyfill";
 import * as riot from "riot";
 
+import Planning_Base from "./riot/planning_base.riot.html";
 import Reports_Base from "./riot/reports_base.riot.html";
 import Data_Table from "./riot/data_table.riot.html";
 import Edit_Base from "./riot/edit_base.riot.html";
@@ -45,8 +46,10 @@ window.addEventListener("load", () => {
             });
         });
 
+    riot.register("planning_base", Planning_Base);
     riot.register("reports_base", Reports_Base);
     riot.register("data_table", Data_Table);
+
     if (window.canEdit) {
         riot.register("edit_base", Edit_Base);
         // add listener since editing is allowed
@@ -55,6 +58,7 @@ window.addEventListener("load", () => {
         });
         hashCheck();
     }
+
     window.goBack = () => {};
 
     hashCheck();
