@@ -78,12 +78,21 @@
         </p>
     </div>
 
+    <div class="content-wrapper">
+        <data_table if="{ state.reportData.roadStatus }" table_id="{dataTableIds.roadStatus}" columns="{baseColumns}" columnSortOrder="{baseColumnSortOrder}"></data_table>
+        <data_table if="{ state.reportData.technicalClass }" table_id="{dataTableIds.technicalClass}" columns="{baseColumns}" columnSortOrder="{baseColumnSortOrder}"></data_table>
+    </div>
+
     <script>
         import { getRoadReport } from "../reportManager";
 
         import $ from "jquery";
         import "select2/dist/js/select2.full.min.js";
         import dayjs from "dayjs";
+
+        import { toChainageFormat } from "../assets/protoBufUtilities";
+
+        const baseColumnSortOrder = [[0, 'asc']];
 
         export default {
             state: {
@@ -133,7 +142,39 @@
                         description: window.gettext("A report on the total length of Urban Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Urban Roads"),
                     },
                 },
+                reportData: {},
             },
+            dataTableIds: {
+                roadStatus: "report-road-status-table",
+                technicalClass: "report-technical-class-table",
+            },
+            baseColumns: [
+                {
+                    // Title needs to be set per data type
+                    title: window.gettext("Title"),
+                    data: "title",
+                    defaultContent: "",
+                    orderable: false,
+                },
+                {
+                    title: window.gettext("Length (km)"),
+                    data: "distance",
+                    defaultContent: "",
+                    className: "text-right",
+                    orderable: false,
+                    render: (data, type) => {
+                        if (type === 'display') return toChainageFormat(data);
+                        return data;
+                    },
+                },
+                {
+                    title: window.gettext("Percentages (%)"),
+                    data: "percent",
+                    defaultContent: "",
+                    className: "text-right",
+                    orderable: false,
+                },
+            ],
             onMounted() {
                 $('#municipality_area_select2').select2({
                     width: "225px",
@@ -251,18 +292,20 @@
                     .then((surveyReportData) => {
                         if (surveyReportData) {
                             const haveLengths = !!surveyReportData.lengths;
-                            const surfaceConditions = surveyReportData.surfaceConditions;
-                            const haveSurfaceConditions = surfaceConditions.length > 0;
-                            // if (haveLengths && haveSurfaceConditions) {
-                            //     this.updateSurfaceConditionsSummary(surfaceConditions);
-                            // }
-                            // if (haveSurfaceConditions) {
-                            //     this.state.reportRows = surveyReportData.surfaceConditionsList.attributeEntriesList;
-
-                            //     const eventName = `${this.current_data_table_id}.dataAdded`;
-                            //     const eventDetail = { detail: { pendingRows: this.state.reportRows, appendRows: this.state.loading }};
-                            //     document.dispatchEvent(new CustomEvent(eventName, eventDetail));
-                            // }
+                            // This may not work - might need to delete all members one by one - @$@#$@# Riot
+                            this.state.reportData = {};
+                            if (haveLengths) {
+                                const surfaceConditions = surveyReportData.surfaceConditions;
+                                const haveSurfaceConditions = surfaceConditions.length > 0;
+                                const technicalClasses = surveyReportData.technicalClasses;
+                                const haveTechnicalClasses = technicalClasses.length > 0;
+                                if (haveTechnicalClasses) {
+                                    this.state.reportData.technicalClass = technicalClasses;
+                                    const eventName = `${this.dataTableIds.technicalClass}.dataAdded`;
+                                    const eventDetail = { detail: { pendingRows: this.state.reportData.technicalClass, appendRows: false }};
+                                    document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+                                }
+                            }
                             this.state.error = false;
                         } else {
                             this.state.error = true;
