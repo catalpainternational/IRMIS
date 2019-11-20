@@ -161,6 +161,7 @@
     }
 }
 
+planning_base #side-menu > div,
 reports_base #side-menu > div,
 edit_base #side-menu > div {
     height: calc(100vh - #{$top-menu-height} - 15px);
