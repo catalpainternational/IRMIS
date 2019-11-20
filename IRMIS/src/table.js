@@ -80,6 +80,13 @@ window.addEventListener("load", () => {
     initializeDataTable();
 });
 
+const segmentInventoryModalTables = {
+    surfaceCondition: "inventory-surface-condition-table",
+    surfaceType: "inventory-surface-type-table",
+    technicalClass: "inventory-technical-class-table",
+    numberLanes: "inventory-number-lanes-table",
+};
+
 function initializeDataTable() {
     if (window.canEdit) {
         estradaTableColumns.unshift({
@@ -145,28 +152,28 @@ function initializeDataTable() {
         }
     });
 
-    surfaceConditionTable = $("#inventory-surface-condition-table").DataTable({
+    surfaceConditionTable = $(`#${segmentInventoryModalTables.surfaceCondition}`).DataTable({
         columns: surfaceConditionColumns,
         rowId: ".getId()",
         dom: "<'row'<'col-sm-12'tr>>", // https://datatables.net/reference/option/dom#Styling
         language: datatableTranslations,
     });
 
-    surfaceTypeTable = $("#inventory-surface-type-table").DataTable({
+    surfaceTypeTable = $(`#${segmentInventoryModalTables.surfaceType}`).DataTable({
         columns: surfaceTypeColumns,
         rowId: ".getId()",
         dom: "<'row'<'col-sm-12'tr>>", // https://datatables.net/reference/option/dom#Styling
         language: datatableTranslations,
     });
 
-    technicalClassTable = $("#inventory-technical-class-table").DataTable({
+    technicalClassTable = $(`#${segmentInventoryModalTables.technicalClass}`).DataTable({
         columns: technicalClassColumns,
         rowId: ".getId()",
         dom: "<'row'<'col-sm-12'tr>>", // https://datatables.net/reference/option/dom#Styling
         language: datatableTranslations,
     });
 
-    numberLanesTable = $("#inventory-number-lanes-table").DataTable({
+    numberLanesTable = $(`#${segmentInventoryModalTables.numberLanes}`).DataTable({
         columns: numberLanesColumns,
         rowId: ".getId()",
         dom: "<'row'<'col-sm-12'tr>>", // https://datatables.net/reference/option/dom#Styling
@@ -255,56 +262,61 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
     const modal = $(this);
     let reportDataTableId = undefined;
     let reportAttribute = undefined;
+    let reportTable = undefined;
 
-    $("#inventory-surface-condition-table_wrapper").hide();
-    $("#inventory-surface-type-table_wrapper").hide();
-    $("#inventory-technical-class-table_wrapper").hide();
-    $("#inventory-number-lanes-table_wrapper").hide();
+    $(`#${segmentInventoryModalTables.surfaceCondition}_wrapper`).hide();
+    $(`#${segmentInventoryModalTables.surfaceType}_wrapper`).hide();
+    $(`#${segmentInventoryModalTables.technicalClass}_wrapper`).hide();
+    $(`#${segmentInventoryModalTables.numberLanes}_wrapper`).hide();
 
     switch (attr) {
         case "surface_condition":
-            reportDataTableId = "inventory-surface-condition-table_wrapper";
+            reportDataTableId = segmentInventoryModalTables.surfaceCondition;
             reportAttribute = "surfaceConditions";
             modal.find(".modal-title").text(linkCode + " " + gettext("Surface Condition segments"));
-            surfaceConditionTable.clear(); // remove all rows in the table
+            reportTable = surfaceConditionTable;
             break;
-    //     case "surface_type":
-    //         reportDataTableId = "inventory-surface-type-table_wrapper";
-    //         reportAttribute = "surfaceTypes";
-    //         modal.find(".modal-title").text(linkCode + " " + gettext("Surface Type segments"));
-    //         surfaceTypeTable.clear(); // remove all rows in the table
-    //         break;
-    //     case "technical_class":
-    //         reportDataTableId = "inventory-technical-class-table_wrapper";
-    //         reportAttribute = "technicalClasses";
-    //         modal.find(".modal-title").text(linkCode + " " + gettext("Technical Class segments"));
-    //         technicalClassTable.clear(); // remove all rows in the table
-    //         break;
-    //     case "number_lanes":
-    //         reportDataTableId = "inventory-number-lanes-table_wrapper";
-    //         reportAttribute = "numberLanes";
-    //         modal.find(".modal-title").text(linkCode + " " + gettext("Number of Lanes segments"));
-    //         numberLanesTable.clear(); // remove all rows in the table
-    //         break;
+        case "surface_type":
+            reportDataTableId = segmentInventoryModalTables.surfaceType;
+            reportAttribute = "surfaceTypes";
+            modal.find(".modal-title").text(linkCode + " " + gettext("Surface Type segments"));
+            reportTable = surfaceTypeTable;
+            break;
+        case "technical_class":
+            reportDataTableId = segmentInventoryModalTables.technicalClass;
+            reportAttribute = "technicalClasses";
+            modal.find(".modal-title").text(linkCode + " " + gettext("Technical Class segments"));
+            reportTable = technicalClassTable;
+            break;
+        case "number_lanes":
+            reportDataTableId = segmentInventoryModalTables.numberLanes;
+            reportAttribute = "numberLanes";
+            modal.find(".modal-title").text(linkCode + " " + gettext("Number of Lanes segments"));
+            reportTable = numberLanesTable;
+            break;
     }
+    reportTable.clear(); // remove all rows in the table
 
     getRoad(roadId).then((roadData) => {
-        let filters = {
+         let filters = {
             primaryattribute: attr,
-            roadcode: roadData.getRoadCode(),
-            chainagestart: roadData.getLinkStartChainage(),
-            chainageend: roadData.getLinkEndChainage(),
         };
+        if (roadData.getLinkStartChainage() && roadData.getLinkEndChainage()) {
+            filters.roadcode = roadData.getRoadCode();
+            filters.chainagestart = roadData.getLinkStartChainage();
+            filters.chainageend = roadData.getLinkEndChainage();
+        } else {
+            filters.roadid = roadData.id;
+        }
         getRoadReport(filters).then((reportData) => {
             if (reportData && reportDataTableId) {
-                let reportRows = reportData[`${reportAttribute}List`].attributeEntriesList;
-                const eventName = `${reportDataTableId}.dataAdded`;
-                const eventDetail = { detail: { pendingRows: reportRows, appendRows: true }};
-                document.dispatchEvent(new CustomEvent(eventName, eventDetail));
-                surfaceConditionTable.rows.add(reportData).draw();
+                if (reportData[`${reportAttribute}List`]) {
+                    let reportRows = reportData[`${reportAttribute}List`].attributeEntriesList;
+                    reportTable.rows.add(reportRows).draw();
+                }
             }
         }).finally(() => {
-            $(reportDataTableId).show();
+            $(`#${reportDataTableId}_wrapper`).show();
         });
     });
 });
