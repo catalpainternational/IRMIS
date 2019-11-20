@@ -336,10 +336,11 @@
                                             // 100% of 0km - but this won't appear in the label
                                             entry.percent = 100;
                                         }
+                                        entry.getId = () => { return entry.key; };
                                     });
-                                    this.state.reportData.roadStatuses = roadStatuses;
+                                    this.state.reportData.roadStatus = roadStatuses;
                                     const eventName = `${this.dataTableIds.roadStatus}.dataAdded`;
-                                    const eventDetail = { detail: { pendingRows: this.state.reportData.roadStatuses, appendRows: false }};
+                                    const eventDetail = { detail: { pendingRows: roadStatuses, appendRows: false }};
                                     document.dispatchEvent(new CustomEvent(eventName, eventDetail));
                                 }
 
@@ -354,10 +355,11 @@
                                             // 100% of 0km - but this won't appear in the label
                                             entry.percent = 100;
                                         }
+                                        entry.getId = () => { return entry.key; };
                                     });
                                     this.state.reportData.technicalClass = technicalClasses;
                                     const eventName = `${this.dataTableIds.technicalClass}.dataAdded`;
-                                    const eventDetail = { detail: { pendingRows: this.state.reportData.technicalClass, appendRows: false }};
+                                    const eventDetail = { detail: { pendingRows: technicalClasses, appendRows: false }};
                                     document.dispatchEvent(new CustomEvent(eventName, eventDetail));
                                 }
                             }
