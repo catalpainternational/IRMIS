@@ -274,11 +274,11 @@ export class EstradaSurveyAttributeEntry extends AttributeEntry {
     }
 
     get surfaceType() {
-        return choice_or_default(this.values.surface_type, SURFACE_TYPE_CHOICES);
+        return gettext(this.values.surface_type || "Unknown");
     }
 
     get technicalClass() {
-        return choice_or_default(this.values.technical_class, TECHNICAL_CLASS_CHOICES);
+        return gettext(this.values.technical_class || "Unknown");
     }
 
     get trafficLevel() {
@@ -286,7 +286,7 @@ export class EstradaSurveyAttributeEntry extends AttributeEntry {
     }
 
     get numberLanes() {
-        return this.values.number_lanes;
+        return this.values.number_lanes || gettext("Unknown");
     }
 
     get values() {

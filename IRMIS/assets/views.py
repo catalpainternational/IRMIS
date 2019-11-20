@@ -490,8 +490,11 @@ def protobuf_reports(request):
 
     for road_code in road_codes:
         primary_road_code = road_code[road_code_index]
-        road_chainages = roads.filter(road_code=primary_road_code).values(
-            "link_start_chainage", "link_end_chainage"
+        road_chainages = (
+            roads.filter(road_code=primary_road_code)
+            .exclude(link_start_chainage__isnull=True)
+            .exclude(link_end_chainage__isnull=True)
+            .values("link_start_chainage", "link_end_chainage")
         )
         min_chainage = road_chainages.order_by("link_start_chainage").first()[
             "link_start_chainage"
