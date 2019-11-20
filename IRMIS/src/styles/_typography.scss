@@ -128,6 +128,18 @@ span.required {
     color: $gray;
 }
 
+.report-content span {
+    color: $darker-gray;
+    line-height: 17px;
+    font-weight: 500;
+    font-size: 12px;
+}
+
+.report-content .filters-applied span {
+    line-height: 16px;
+    font-size: 14px;
+}
+
 p {
     color: $dark-green;
 }
@@ -139,8 +151,14 @@ p {
 }
 
 reports_base p {
+    color: $darker-gray;
     line-height: 16px;
-    color: $dark-gray;
+    font-size: 14px;
+}
+
+.report-content .filters-applied p {
+    line-height: 17px;
+    font-weight: 700;
     font-size: 14px;
 }
 
