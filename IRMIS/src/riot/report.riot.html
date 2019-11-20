@@ -92,6 +92,8 @@
             <p>{ window.gettext("Total Length") }</p>
             <h1>000 km</h1>
         </div>
+        <data_table if="{ state.reportData.roadStatus }" table_id="{dataTableIds.roadStatus}" columns="{baseColumns}" columnSortOrder="{baseColumnSortOrder}"></data_table>
+        <data_table if="{ state.reportData.technicalClass }" table_id="{dataTableIds.technicalClass}" columns="{baseColumns}" columnSortOrder="{baseColumnSortOrder}"></data_table>
     </div>
 
     <div if="{ state.noReport }" class="align-items-center blank content-wrapper d-flex flex-column justify-content-center">
@@ -105,11 +107,6 @@
             { state.reportContent[props.id].title }
             { window.gettext("information per segment of the selected road.") }
         </p>
-    </div>
-
-    <div class="content-wrapper">
-        <data_table if="{ state.reportData.roadStatus }" table_id="{dataTableIds.roadStatus}" columns="{baseColumns}" columnSortOrder="{baseColumnSortOrder}"></data_table>
-        <data_table if="{ state.reportData.technicalClass }" table_id="{dataTableIds.technicalClass}" columns="{baseColumns}" columnSortOrder="{baseColumnSortOrder}"></data_table>
     </div>
 
     <script>
@@ -327,6 +324,16 @@
                             if (haveLengths) {
                                 const surfaceConditions = surveyReportData.surfaceConditions;
                                 const haveSurfaceConditions = surfaceConditions.length > 0;
+
+                                const roadStatuses = surveyReportData.roadStatuses;
+                                const haveRoadStatuses = roadStatuses.length > 0;
+                                if (haveRoadStatuses) {
+                                    this.state.reportData.roadStatuses = roadStatuses;
+                                    const eventName = `${this.dataTableIds.roadStatus}.dataAdded`;
+                                    const eventDetail = { detail: { pendingRows: this.state.reportData.roadStatuses, appendRows: false }};
+                                    document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+                                }
+
                                 const technicalClasses = surveyReportData.technicalClasses;
                                 const haveTechnicalClasses = technicalClasses.length > 0;
                                 if (haveTechnicalClasses) {
