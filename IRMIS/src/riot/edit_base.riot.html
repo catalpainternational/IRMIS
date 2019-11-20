@@ -38,29 +38,19 @@
                 <h1>{ state.editingRoad.getRoadCode() } { state.editingRoad.getRoadName() }</h1>
             </header>
 
-            <edit_feedback if="{ state.show_feedback }" close="{ closeFeedback }" error="{ state.error }"></edit_feedback>
+            <edit_feedback if="{ state.showFeedback }" close="{ closeFeedback }" error="{ state.error }"></edit_feedback>
 
             <edit_location_type road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}" if="{ state.page === 'location_type' }"></edit_location_type>
             <edit_asset_details road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}" if="{ state.page === 'asset_details' }"></edit_asset_details>
             <edit_pavement road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}" if="{ state.page === 'pavement' }"></edit_pavement>
             <edit_project road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}" if="{ state.page === 'project' }"></edit_project>
-            <edit_condition road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}" if="{ state.page === 'condition' }"></edit_condition>
+            <edit_condition road="{ state.editingRoad }" showBanner="{ showFeedback }" parent="{parentFunctions}" if="{ state.page === 'condition' }"></edit_condition>
             <edit_maintenance road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}" if="{ state.page === 'maintenance' }"></edit_maintenance>
 
             <edit_history road="{ state.baseRoad }" parent="{parentFunctions}" if="{ state.page === 'history' }"></edit_history>
         </div>
 
-        <div id="loading" class="modal" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-                <div class="align-items-center modal-content">
-                    <div class="modal-header"></div>
-                    <div class="modal-body text-center">
-                        <h5>{ window.gettext("Loading") }...</h5>
-                    </div>
-                    <div class="modal-footer"></div>
-                </div>
-            </div>
-        </div>
+        <loading></loading>
     </div>
 
     <script>
@@ -78,6 +68,7 @@
 
         import Edit_Feedback from './edit_feedback.riot.html';
         import Edit_Stop_Alert from "./edit_stop_alert.riot.html";
+        import Loading from "./loading.riot.html";
 
         import Edit_Location_Type from "./edit_location_type.riot.html";
         import Edit_Asset_Details from "./edit_asset_details.riot.html";
@@ -106,9 +97,9 @@
                 stopAlertResult: null,
             },
             components: {
+                Edit_Feedback, Edit_Stop_Alert, Loading,
                 Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Project, Edit_Condition, Edit_Maintenance,
                 Edit_History,
-                Edit_Feedback, Edit_Stop_Alert
             },
             onBeforeMount() {
                 window.onbeforeunload = () => {
@@ -154,11 +145,11 @@
                 }
                 this.state.editingRoad.distance = roadDistance;
 
-                this.parentFunctions.emptyAttributes = {
+                this.parentFunctions.emptyAttributes = [{
                     key: 0,
                     title: "unknown",
                     distance: roadDistance
-                };
+                }];
             },
             save() {
                 this.update({saving: true});
@@ -172,8 +163,8 @@
                 }).catch(err => {
                     this.state.error = true;
                 }).finally((r) => {
-                    this.update({ saving: false, show_feedback: true });
-                    timeoutId = setTimeout(() => this.closeFeedback(), 5000);
+                    this.update({ saving: false });
+                    this.showFeedback(this.state.error);
                 });
             },
             hasChanges() {
@@ -217,18 +208,25 @@
                 window.location.hash = this.state.nextPage;
                 this.update();
             },
+            showFeedback(error) {
+                this.update({
+                    showFeedback: true,
+                    error: error,
+                });
+                timeoutId = setTimeout(() => this.closeFeedback(), 5000);
+            },
             closeFeedback() {
                 const feedback = document.getElementsByClassName("slide-in").item(0);
                 clearTimeout(timeoutId);
                 feedback.classList.add("slide-out");
                 setTimeout(() => {
                     feedback.classList.remove("slide-out");
-                    this.update({ show_feedback: false });
+                    this.update({ showFeedback: false });
                 }, 300);
             },
-            refreshSurveysAndReports(state, allDataTableId, primaryAttribute, reportAttribute, reportDataTableId) {
+            refreshSurveysAndReports(state, allDataTableId, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId) {
                 this.getRoadSurveys(state, allDataTableId);
-                this.getRoadSurveyReports(state, primaryAttribute, reportAttribute, reportDataTableId);
+                this.getRoadSurveyReports(state, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId);
             },
             getRoadSurveys(state, allDataTableId) {
                 const roadId = state.road.getId();
@@ -256,7 +254,7 @@
                         this.update();
                     });
             },
-            getRoadSurveyReports(state, primaryAttribute, reportAttribute, reportDataTableId) {
+            getRoadSurveyReports(state, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId) {
                 const editingRoad = state.editingRoad || state.road;
                 const filters = {
                     primaryattribute: primaryAttribute,
@@ -269,11 +267,15 @@
                     .then((surveyReportData) => {
                         if (surveyReportData) {
                             const haveLengths = !!surveyReportData.lengths;
-                            const reportAttributes = surveyReportData[reportAttribute];
+                            let reportAttributes = surveyReportData[reportAttribute];
+                            if (!reportAttributes || !reportAttributes.length) {
+                                reportAttributes = this.parentFunctions.emptyAttributes;
+                            }
                             const haveReportAttributesMember = !!reportAttributes;
                             if (haveLengths && haveReportAttributesMember && reportAttributes.length) {
                                 updateReportAttributeSummary(state, reportAttribute, reportAttributes);
-                                this.update();
+                                
+                                document.dispatchEvent(new CustomEvent(`${stackedBarId}.dataUpdated`, { detail: { entries: state[reportAttribute] }}));
                             }
                             if (haveReportAttributesMember) {
                                 state.reportRows = surveyReportData[`${reportAttribute}List`].attributeEntriesList;

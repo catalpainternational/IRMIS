@@ -14,27 +14,27 @@
     }
 }
 
-.surface-condition-bar {
+.entry-bar {
     @extend %bar-shared;
 }
 
-.condition-0 {
+.entry-0 {
     background-color: #E7E8EA;
 }
 
-.condition-1 {
+.entry-1 {
     background-color: #03A59A;
 }
 
-.condition-2 {
+.entry-2 {
     background-color: #81D2CC;
 }
 
-.condition-3 {
+.entry-3 {
     background-color: #FFACAF;
 }
 
-.condition-4 {
+.entry-4 {
     background-color: #FF5A5F;
 }
 
@@ -57,6 +57,6 @@
     }
 }
 
-.surface-condition-legend {
+.entry-legend {
     @extend %legend-shared;
 }

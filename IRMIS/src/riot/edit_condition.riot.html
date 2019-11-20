@@ -1,20 +1,10 @@
 <edit_condition>
     <div class="content-wrapper">
-        <h5>{ window.gettext("Surface Condition (SDI)") }</h5>
-        <div class="d-flex surface-condition-bar">
-            <div each="{condition in state.surfaceConditions}" class="{'condition-' + condition.key}" style="{'width:' + condition.percent + '%;'}"></div>
-        </div>
-        <div class="align-items-center d-flex justify-content-between surface-condition-legend">
-            <div class="values d-flex flex-wrap">
-                <div each="{condition in state.surfaceConditions}" class="align-items-center d-flex">
-                    <div class="{'condition-' + condition.key}"></div>
-                    <span>{condition.label}</span>
-                </div>
-            </div>
-            <div class="total">
-                <span>{ window.gettext("Total road chainage") }: {state.surveyTotalDistance / 1000}km</span>
-            </div>
-        </div>
+        <stacked_bar
+            id="{ this.stacked_bar_id }"
+            title="{ window.gettext('Surface Condition (SDI)') }"
+            entries="{ state.surfaceConditions }"
+            total_title="{ window.gettext('Total road chainage') }" ></stacked_bar>
     </div>
 
     <div class="content-wrapper">
@@ -121,6 +111,7 @@
         import Edit_Stop_Alert from "./edit_stop_alert.riot.html";
         import Data_Table from "./data_table.riot.html";
         import Edit_Modal from "./edit_modal.riot.html";
+        import Stacked_Bar from "./stacked_bar.riot.html";
 
         import { createSurvey, deleteSurvey, updateSurvey } from "../surveyManager";
         import { cloneData, toChainageFormat } from "../assets/protoBufUtilities";
@@ -152,7 +143,7 @@
                 editMode: false,
             },
             components: {
-                Edit_Stop_Alert, Edit_Modal
+                Edit_Stop_Alert, Edit_Modal, Stacked_Bar
             },
 
             // Condition Survey
@@ -160,8 +151,8 @@
                 state.loading = true;
                 state.road = cloneData(props.road);
 
-                this.props.parent.updateReportAttributeSummary(state, "surfaceConditions", [props.parent.emptyAttributes]);
-                this.props.parent.refreshSurveysAndReports(state, this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id);
+                this.props.parent.updateReportAttributeSummary(state, "surfaceConditions", props.parent.emptyAttributes);
+                this.props.parent.refreshSurveysAndReports(state, this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id, this.stacked_bar_id);
 
                 this.deleteListener = (data) => {
                     const rowId = data.detail.rowId;
@@ -176,8 +167,7 @@
             viewAll(e) {
                 if (!this.state.viewAll) {
                     this.update({viewAll: true});
-                    this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id);
-                    this.props.parent.updateReportAttributeSummary(this.state, "surfaceConditions", [this.props.parent.emptyAttributes]);
+                    this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id, this.stacked_bar_id);
                     // If we're not still loading, then we assume that we want to replace all rows
                     const eventName = `${this.all_data_table_id}.dataAdded`;
                     const eventDetail = { detail: { pendingRows: this.state.pendingRows, appendRows: this.state.loading }}
@@ -187,8 +177,7 @@
             viewCurrent(e) {
                 if (this.state.viewAll) {
                     this.update({viewAll: false});
-                    this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id);
-                    this.props.parent.updateReportAttributeSummary(this.state, "surfaceConditions", [this.props.parent.emptyAttributes]);
+                    this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id, this.stacked_bar_id);
                     // If we're not still loading, then we assume that we want to replace all rows
                     const eventName = `${this.current_data_table_id}.dataAdded`;
                     const eventDetail = { detail: { pendingRows: this.state.reportRows, appendRows: this.state.loading }}
@@ -205,6 +194,7 @@
                 this.showEditModal();
             },
             conditions: window.road_schema.surface_condition,
+            stacked_bar_id: "surface-condition-stacked-bar",
             current_data_table_id: "surface-condition-report-table",
             current_data_table_columns_order: [[0, 'asc']],
             current_data_table_columns: [
@@ -309,9 +299,6 @@
                 document.addEventListener(`${this.modal_id}.result`, (data) => {
                     const modalResult = data.detail.result;
 
-                    // Ensure that the dialog gets hidden
-                    $(`#${this.modal_id}`).modal("hide");
-
                     switch (modalResult) {
                         case "save":
                             if (this.hasChanges()) {
@@ -357,9 +344,11 @@
                 $(`#${modalId}`).modal("show");
             },
             discardChanges() {
-                this.state.survey = cloneData(this.state.baseSurvey);
-                this.state.errors = {};
-                this.update();
+                $(`#${this.modal_id}`).modal("hide");
+                this.update({
+                    survey: cloneData(this.state.baseSurvey),
+                    errors: {},
+                });
             },
             save(e) {
                 const missingFieldNames = checkRequiredFields(this.requiredFieldNames, this.state.survey);
@@ -406,20 +395,37 @@
                 }
             },
             saveSurvey() {
+                $(`#${this.modal_id}`).modal("hide");
+                $('#loading').modal('show');
+
                 if (!this.state.editMode) {
                     createSurvey(this.state.survey)
                         .then((surveyData) => {
-                            this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id);
-                            this.props.parent.updateReportAttributeSummary(this.state, "surfaceConditions", [this.props.parent.emptyAttributes]);
+                            this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id, this.stacked_bar_id);
+                            this.update({
+                                survey: new Survey({}), // clear input values
+                            });
+                            $('#loading').modal('hide');
+                            this.props.showBanner();
                         })
-                        .catch((err) => { this.props.error = true; });
+                        .catch((err) => {
+                            this.props.error = true;
+                            this.props.showBanner(true);
+                        });
                 } else {
                     updateSurvey(this.state.survey)
                         .then((surveyData) => {
-                            this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id);
-                            this.props.parent.updateReportAttributeSummary(this.state, "surfaceConditions", [this.props.parent.emptyAttributes]);
+                            this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id, this.stacked_bar_id);
+                            this.update({
+                                survey: new Survey({}), // clear input values
+                            });
+                            $('#loading').modal('hide');
+                            this.props.showBanner();
                         })
-                        .catch((err) => { this.props.error = true; });
+                        .catch((err) => {
+                            this.props.error = true;
+                            this.props.showBanner(true);
+                        });
                 }
                 // clear input values
                 this.state.survey = new Survey({});
