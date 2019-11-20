@@ -328,6 +328,15 @@
                                 const roadStatuses = surveyReportData.roadStatuses;
                                 const haveRoadStatuses = roadStatuses.length > 0;
                                 if (haveRoadStatuses) {
+                                    const roadStatusesTotalLength = roadStatuses.reduce((acc, cur) => acc += cur.distance || 0, 0);
+                                    roadStatuses.forEach((entry) => {
+                                        if (roadStatusesTotalLength > 0) {
+                                            entry.percent = Math.round((entry.distance / roadStatusesTotalLength) * 10000) / 100;
+                                        } else {
+                                            // 100% of 0km - but this won't appear in the label
+                                            entry.percent = 100;
+                                        }
+                                    });
                                     this.state.reportData.roadStatuses = roadStatuses;
                                     const eventName = `${this.dataTableIds.roadStatus}.dataAdded`;
                                     const eventDetail = { detail: { pendingRows: this.state.reportData.roadStatuses, appendRows: false }};
@@ -337,6 +346,15 @@
                                 const technicalClasses = surveyReportData.technicalClasses;
                                 const haveTechnicalClasses = technicalClasses.length > 0;
                                 if (haveTechnicalClasses) {
+                                    const technicalClassesTotalLength = technicalClasses.reduce((acc, cur) => acc += cur.distance || 0, 0);
+                                    technicalClasses.forEach((entry) => {
+                                        if (technicalClassesTotalLength > 0) {
+                                            entry.percent = Math.round((entry.distance / technicalClassesTotalLength) * 10000) / 100;
+                                        } else {
+                                            // 100% of 0km - but this won't appear in the label
+                                            entry.percent = 100;
+                                        }
+                                    });
                                     this.state.reportData.technicalClass = technicalClasses;
                                     const eventName = `${this.dataTableIds.technicalClass}.dataAdded`;
                                     const eventDetail = { detail: { pendingRows: this.state.reportData.technicalClass, appendRows: false }};
