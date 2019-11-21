@@ -5,6 +5,7 @@ import { AttributeEntry, AttributeTable, Report } from "../../../protobuf/report
 import { choice_or_default, getFieldName, getHelpText, makeEstradaObject } from "../protoBufUtilities";
 
 import {
+    ROAD_STATUS_CHOICES,
     SURFACE_CONDITION_CHOICES, SURFACE_TYPE_CHOICES,
     TECHNICAL_CLASS_CHOICES, TRAFFIC_LEVEL_CHOICES,
 } from "./road";
@@ -130,36 +131,24 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
         return attributeTablesRaw.map(this.makeEstradaSurveyAttributeTable);
     }
 
-    get surfaceConditions() {
-        return this.makeSpecificSurveyAttributeTable("surface_condition", SURFACE_CONDITION_CHOICES);
+    get roadStatuses() {
+        return this.makeSpecificLengths("road_status", ROAD_STATUS_CHOICES);
     }
 
-    get surfaceConditionsList() {
-        return this.makeSpecificSurveyAttributeTableList("surface_condition");
+    get surfaceConditions() {
+        return this.makeSpecificLengths("surface_condition", SURFACE_CONDITION_CHOICES);
     }
 
     get surfaceTypes() {
-        return this.makeSpecificSurveyAttributeTable("surface_type", SURFACE_TYPE_CHOICES);
-    }
-
-    get surfaceTypesList() {
-        return this.makeSpecificSurveyAttributeTableList("surface_type");
+        return this.makeSpecificLengths("surface_type", SURFACE_TYPE_CHOICES);
     }
 
     get technicalClasses() {
-        return this.makeSpecificSurveyAttributeTable("technical_class", TECHNICAL_CLASS_CHOICES);
-    }
-
-    get technicalClassesList() {
-        return this.makeSpecificSurveyAttributeTableList("technical_class");
+        return this.makeSpecificLengths("technical_class", TECHNICAL_CLASS_CHOICES);
     }
 
     get trafficLevels() {
-        return this.makeSpecificSurveyAttributeTable("traffic_level", TRAFFIC_LEVEL_CHOICES);
-    }
-
-    get trafficLevelsList() {
-        return this.makeSpecificSurveyAttributeTableList("traffic_level");
+        return this.makeSpecificLengths("traffic_level", TRAFFIC_LEVEL_CHOICES);
     }
 
     static getFieldName(field) {
@@ -170,21 +159,8 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
         return getHelpText(roadReportSchema, field);
     }
 
-    makeSpecificSurveyAttributeTableList(primary_attribute) {
-        const attributes = this.attributeTablesList.find((attributeTable) => {
-            return attributeTable.primaryAttribute === primary_attribute;
-        }) || {};
-
-        return attributes;
-    }
-
-    makeSpecificSurveyAttributeTable(primary_attribute, choices) {
-        const lengthsForType = {};
-        this.makeSpecificSurveyAttributeTableList(primary_attribute)
-            .attributeEntriesList.forEach((attributeEntry) => {
-                const typeKey = attributeEntry.values[primary_attribute];
-                lengthsForType[typeKey] = (lengthsForType[typeKey] || 0) + attributeEntry.length;
-            });
+    makeSpecificLengths(primary_attribute, choices) {
+        const lengthsForType = this.lengths[primary_attribute] || {}
 
         return extractCountData(lengthsForType, choices);
     }

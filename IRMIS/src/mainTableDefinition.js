@@ -101,11 +101,11 @@ export const estradaTableColumns = [
     },
     {
         title: EstradaRoad.getFieldName("surface_type"),
-        render: r => buttonSegmentsTemplate("surface_type", r),
         data: null,
         defaultContent: "",
-        className: "text-center",
+        render: r => buttonSegmentsTemplate("surface_type", r),
         orderable: false,
+        className: "text-center",
     },
     {
         title: EstradaRoad.getFieldName("pavement_class"),
@@ -133,12 +133,12 @@ export const estradaTableColumns = [
     },
     {
         title: EstradaRoad.getFieldName("technical_class"),
-        render: r => buttonSegmentsTemplate("technical_class", r),
         data: null,
         defaultContent: "",
-        className: "text-center",
-        orderable: false,
+        render: r => buttonSegmentsTemplate("technical_class", r),
         visible: false,
+        orderable: false,
+        className: "text-center",
     },
     {
         title: EstradaRoad.getFieldName("funding_source"),
@@ -161,9 +161,9 @@ export const estradaTableColumns = [
     },
     {
         title: EstradaRoad.getFieldName("surface_condition"),
-        render: r => buttonSegmentsTemplate("surface_condition", r),
         data: null,
         defaultContent: "",
+        render: r => buttonSegmentsTemplate("surface_condition", r),
         className: "text-center",
         orderable: false,
     },
@@ -211,12 +211,12 @@ export const estradaTableColumns = [
     },
     {
         title: EstradaRoad.getFieldName("number_lanes"),
-        render: r => buttonSegmentsTemplate("number_lanes", r),
         data: null,
         defaultContent: "",
+        render: r => buttonSegmentsTemplate("number_lanes", r),
+        visible: false,
         className: "text-center",
         orderable: false,
-        visible: false,
     },
 ];
 

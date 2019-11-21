@@ -215,11 +215,6 @@ msgstr ""
 msgid "A breakdown report on the total length of the road network. The report provides information on total length in kilometers and percentages as well as Road Status and Technical Class, according to a breakdown by Municipality, Road Class and Surface Type"
 msgstr ""
 
-#, fuzzy
-#| msgid "Condition"
-msgid "Surface Condition"
-msgstr "Kondisaun "
-
 msgid "A report on Road Surface Condition. This report provides detailed Surface Condition information per segment"
 msgstr ""
 
@@ -262,11 +257,6 @@ msgstr ""
 msgid "Municipality"
 msgstr ""
 
-#, fuzzy
-#| msgid "Select a Surface Type"
-msgid "Surface type"
-msgstr "Hili Tipu Superfície"
-
 msgid "Reports"
 msgstr ""
 
@@ -299,12 +289,6 @@ msgstr ""
 msgid "Road Code"
 msgstr ""
 
-msgid "Chainage Start"
-msgstr ""
-
-msgid "Chainage End"
-msgstr ""
-
 msgid "Attribute Tables"
 msgstr ""
 
@@ -312,9 +296,6 @@ msgid "Attribute"
 msgstr ""
 
 msgid "Other Attributes"
-msgstr ""
-
-msgid "Added By"
 msgstr ""
 
 msgid "Unknown"

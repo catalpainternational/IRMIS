@@ -28,6 +28,16 @@
             state.canEdit = !!props.canedit;
             state.canDelete = !!props.candelete;
 
+            // paging is true by default
+            state.paging = true;
+            if (typeof props.paging === "string" && props.paging.toLowerCase() === "false") {
+                state.paging = false;
+            } else if (typeof props.paging === "number") {
+                state.paging = !!props.paging;
+            } else if (typeof props.paging === "boolean") {
+                state.paging = props.paging;
+            }
+
             state.id = props.table_id || "all-data-table";
             state.columns = props.columns || [];
             state.columnSortOrder = props.columnSortOrder || [[0, "asc"]];
@@ -87,15 +97,20 @@
             data.stopPropagation();
         }
 
-        const initialiseDataTable = function(state) {
+        const initialiseDataTable = function (state) {
+            let dom = "<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>"; // https://datatables.net/reference/option/dom#Styling
+            if (!state.paging) {
+                dom = "<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>>";
+            }
             state.table = state.table || $(`#${state.id}`).DataTable({
                 columns: state.columns,
                 rowId: ".getId()",
                 order: state.columnSortOrder,
                 pageLength: state.pageLength,
-                dom: `<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>`, // https://datatables.net/reference/option/dom#Styling
+                dom: dom,
                 language: datatableTranslations,
-                ajax: function(data, callback, settings) {
+                paging: state.paging,
+                ajax: function (data, callback, settings) {
                     // This is only here so that dataTables will change its internal state
                 }
             });
