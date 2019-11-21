@@ -65,7 +65,7 @@
         </div>
     </div>
 
-    <div if="{ !state.noReport }" class="content-wrapper report-content">
+    <div hidden="{ state.noReport }" class="content-wrapper report-content">
         <div class="align-items-center d-flex justify-content-between">
             <h6>{ state.reportContent[props.id].title } { window.gettext("Report") }</h6>
             <button class="btn btn-secondary btn-sm">{ window.gettext("Print") }</button>
@@ -92,8 +92,8 @@
             <p>{ window.gettext("Total Length") }</p>
             <h1>000 km</h1>
         </div>
-        <data_table table_id="{dataTableIds.roadStatus}" columns="{baseColumns}" columnSortOrder="{baseColumnSortOrder}"></data_table>
-        <data_table table_id="{dataTableIds.technicalClass}" columns="{baseColumns}" columnSortOrder="{baseColumnSortOrder}"></data_table>
+        <data_table table_id="{dataTableIds.roadStatus}" columns="{baseColumns}" columnSortOrder="{baseColumnSortOrder}" paging="false"></data_table>
+        <data_table table_id="{dataTableIds.technicalClass}" columns="{baseColumns}" columnSortOrder="{baseColumnSortOrder}" paging="false"></data_table>
     </div>
 
     <div if="{ state.noReport }" class="align-items-center blank content-wrapper d-flex flex-column justify-content-center">
@@ -122,7 +122,7 @@
 
         export default {
             state: {
-                noReport: false,
+                noReport: true,
                 reportMunicipality: [],
                 reportRoadClass: [],
                 reportSurfaceType: [],
@@ -203,50 +203,29 @@
                 },
             ],
             onMounted() {
-                $('#municipality_area_select2').select2({
+                this.prepareSelects("municipality_area_select2", "Municipality", "reportMunicipality");
+                this.prepareSelects("road_class_select2", "Road class", "reportRoadClass");
+                this.prepareSelects("surface_type_select2", "Surface type", "reportSurfaceType");
+                this.prepareSelects("surface_condition_select2", "Surface condition", "reportSurfaceCondition");
+                this.prepareSelects("road_code_select2", "", "reportRoadCode", false);
+            },
+            prepareSelects(selectId, placeHolder, dataIn, isMulti = true) {
+                const selectOptions = {
                     width: "225px",
-                    placeholder: window.gettext("Municipality"),
                     containerCssClass: "report-select2",
                     dropdownCssClass: "report-dropdown-select2",
-                });
-                $('#municipality_area_select2').on('select2:select', null, "reportMunicipality", this.toggleMultipleSelect2);
-                $('#municipality_area_select2').on('select2:unselect', null, "reportMunicipality", this.toggleMultipleSelect2);
+                };
+                let toggleFunction = this.toggleMultipleSelect2;
+                if (isMulti) {
+                    selectOptions.placeholder = window.gettext(placeHolder)
+                } else {
+                    selectOptions.multiple = false;
+                    toggleFunction = this.toggleSingleSelect2;
+                }
 
-                $('#road_class_select2').select2({
-                    width: "225px",
-                    placeholder: window.gettext("Road class"),
-                    containerCssClass: "report-select2",
-                    dropdownCssClass: "report-dropdown-select2",
-                });
-                $('#road_class_select2').on('select2:select', null, "reportRoadClass", this.toggleMultipleSelect2);
-                $('#road_class_select2').on('select2:unselect', null, "reportRoadClass", this.toggleMultipleSelect2);
-
-                $('#surface_type_select2').select2({
-                    width: "225px",
-                    placeholder: window.gettext("Surface type"),
-                    containerCssClass: "report-select2",
-                    dropdownCssClass: "report-dropdown-select2",
-                });
-                $('#surface_type_select2').on('select2:select', null, "reportSurfaceType", this.toggleMultipleSelect2);
-                $('#surface_type_select2').on('select2:unselect', null, "reportSurfaceType", this.toggleMultipleSelect2);
-
-                $('#surface_condition_select2').select2({
-                    width: "225px",
-                    placeholder: window.gettext("Surface condition"),
-                    containerCssClass: "report-select2",
-                    dropdownCssClass: "report-dropdown-select2",
-                });
-                $('#surface_condition_select2').on('select2:select', null, "reportSurfaceCondition", this.toggleMultipleSelect2);
-                $('#surface_condition_select2').on('select2:unselect', null, "reportSurfaceCondition", this.toggleMultipleSelect2);
-
-                $('#road_code_select2').select2({
-                    multiple: false,
-                    width: "225px",
-                    containerCssClass: "report-select2",
-                    dropdownCssClass: "report-dropdown-select2",
-                });
-                $('#road_code_select2').on('select2:select', null, "reportRoadCode", this.toggleSingleSelect2);
-                $('#road_code_select2').on('select2:unselect', null, "reportRoadCode", this.toggleSingleSelect2);
+                $(`#${selectId}`).select2(selectOptions);
+                $(`#${selectId}`).on('select2:select', null, dataIn, toggleFunction);
+                $(`#${selectId}`).on('select2:unselect', null, dataIn, toggleFunction);
             },
             backToReports() {
                 window.location.hash = "reports/";
@@ -288,6 +267,33 @@
             toggleSingleSelect2(e) {
                 this.state[e.data] = e.currentTarget.value;
             },
+            prepareTableData(tableName, tableData) {
+                const haveTableData = tableData.length > 0;
+                if (haveTableData) {
+                    const tableDataTotalLength = tableData.reduce((acc, cur) => acc += cur.distance || 0, 0);
+                    tableData.forEach((entry) => {
+                        if (tableDataTotalLength > 0) {
+                            entry.percent = Math.round((entry.distance / tableDataTotalLength) * 10000) / 100;
+                        } else {
+                            // 100% of 0km - but this won't appear in the label
+                            entry.percent = 100;
+                        }
+                        entry.getId = () => { return entry.key; };
+                        if (entry.title.toLowerCase() === "unknown") {
+                            let entryKey = `${entry.key}`.toLowerCase();
+                            if (["0", "none", "unknown"].indexOf(entryKey) !== -1) {
+                                entryKey == "Unknown";
+                            }
+                            entry.title = window.gettext(entryKey);
+                        }
+                    });
+                    const eventName = `${tableName}.dataAdded`;
+                    const eventDetail = { detail: { pendingRows: tableData, appendRows: false }};
+                    document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+                }
+
+                return tableData;
+            },
             createReport(e) {
                 const reportId = e.currentTarget.dataset.id;
 
@@ -318,6 +324,7 @@
                 getRoadReport(filters)
                     .then((surveyReportData) => {
                         if (surveyReportData) {
+                            this.state.noReport = false;
                             const haveLengths = !!surveyReportData.lengths;
                             // This may not work - might need to delete all members one by one - @$@#$@# Riot
                             this.state.reportData = {};
@@ -325,49 +332,16 @@
                                 const surfaceConditions = surveyReportData.surfaceConditions;
                                 const haveSurfaceConditions = surfaceConditions.length > 0;
 
-                                const roadStatuses = surveyReportData.roadStatuses;
-                                const haveRoadStatuses = roadStatuses.length > 0;
-                                if (haveRoadStatuses) {
-                                    const roadStatusesTotalLength = roadStatuses.reduce((acc, cur) => acc += cur.distance || 0, 0);
-                                    roadStatuses.forEach((entry) => {
-                                        if (roadStatusesTotalLength > 0) {
-                                            entry.percent = Math.round((entry.distance / roadStatusesTotalLength) * 10000) / 100;
-                                        } else {
-                                            // 100% of 0km - but this won't appear in the label
-                                            entry.percent = 100;
-                                        }
-                                        entry.getId = () => { return entry.key; };
-                                    });
-                                    this.state.reportData.roadStatus = roadStatuses;
-                                    const eventName = `${this.dataTableIds.roadStatus}.dataAdded`;
-                                    const eventDetail = { detail: { pendingRows: roadStatuses, appendRows: false }};
-                                    document.dispatchEvent(new CustomEvent(eventName, eventDetail));
-                                }
-
-                                const technicalClasses = surveyReportData.technicalClasses;
-                                const haveTechnicalClasses = technicalClasses.length > 0;
-                                if (haveTechnicalClasses) {
-                                    const technicalClassesTotalLength = technicalClasses.reduce((acc, cur) => acc += cur.distance || 0, 0);
-                                    technicalClasses.forEach((entry) => {
-                                        if (technicalClassesTotalLength > 0) {
-                                            entry.percent = Math.round((entry.distance / technicalClassesTotalLength) * 10000) / 100;
-                                        } else {
-                                            // 100% of 0km - but this won't appear in the label
-                                            entry.percent = 100;
-                                        }
-                                        entry.getId = () => { return entry.key; };
-                                    });
-                                    this.state.reportData.technicalClass = technicalClasses;
-                                    const eventName = `${this.dataTableIds.technicalClass}.dataAdded`;
-                                    const eventDetail = { detail: { pendingRows: technicalClasses, appendRows: false }};
-                                    document.dispatchEvent(new CustomEvent(eventName, eventDetail));
-                                }
+                                this.state.reportData.roadStatus = this.prepareTableData(this.dataTableIds.roadStatus, surveyReportData.roadStatuses);
+                                this.state.reportData.technicalClass = this.prepareTableData(this.dataTableIds.technicalClass, surveyReportData.technicalClasses);
                             }
                             this.state.error = false;
                         } else {
+                            this.state.noReport = true;
                             this.state.error = true;
                         }
                     }).catch(err => {
+                        this.state.noReport = true;
                         this.state.error = true;
                     }).finally((r) => {
                         this.state.loading = false;
