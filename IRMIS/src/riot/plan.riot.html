@@ -11,13 +11,15 @@
         </div>
     </header>
 
-    <div class="content-wrapper">
+    <div class="content-wrapper plan-total">
         <div class="align-items-center d-flex justify-content-between">
             <h6>{ window.gettext("Total 5 Year Plan Estimated Cost - Rural Road") }</h6>
             <button class="btn btn-secondary btn-sm">{ window.gettext("Download 5 Year Plan") }</button>
         </div>
 
         <data_table table_id="plan-rural-roads" columns="{ columns }" paging="false"></data_table>
+
+        <span>{ window.gettext("Estimated costs are in million USD") }</span>
     </div>
 
     <script>
