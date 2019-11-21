@@ -43,6 +43,14 @@
     overflow-y: auto;
 }
 
+#plan-rural-roads {
+    border-bottom: 1px solid $light-gray;
+    border-right: 1px solid $light-gray;
+    border-left: 1px solid $light-gray;
+    margin-bottom: 0 !important;
+    margin-top: 10px !important;
+}
+
 
 // Override DataTables.net styles
 div.dataTables_wrapper {
