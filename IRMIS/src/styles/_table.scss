@@ -43,6 +43,11 @@
     overflow-y: auto;
 }
 
+.export-table-btn {
+    position: relative;
+    top: -19px;
+    left: 275px;
+}
 
 // Override DataTables.net styles
 div.dataTables_wrapper {

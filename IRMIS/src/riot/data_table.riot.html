@@ -1,10 +1,15 @@
 <data_table>
-    <table if={ state.id } id={ state.id } class="d-block table table-bordered table-hover w-100"></table>
+    <button if="{ state.canExport }" onclick="{ exportTable }"
+        class="btn btn-secondary btn-sm d-flex justify-content-center export-table-btn">
+        { window.gettext("Export table") }
+    </button>
+    <table if="{ state.id }" id="{ state.id }" class="d-block table table-bordered table-hover w-100"></table>
 
     <script>
         // We really should NOT be importing roads here
-        import { EstradaRoad } from "../assets/models/road";
-        import { datatableTranslations } from "../datatableTranslations";
+        import {EstradaRoad} from "../assets/models/road";
+        import {datatableTranslations} from "../datatableTranslations";
+        import {exportCsv} from "../exportCsv";
 
         import "bootstrap/js/dist/modal";
         import $ from "jquery";
@@ -19,6 +24,7 @@
             state.hasChanges = false;
             state.showFeedback = false;
 
+            state.canExport = !!props.canexport;
             state.canEdit = !!props.canedit;
             state.canDelete = !!props.candelete;
 
@@ -81,7 +87,7 @@
             data.stopPropagation();
         }
 
-        const initialiseDataTable = function (state) {
+        const initialiseDataTable = function(state) {
             state.table = state.table || $(`#${state.id}`).DataTable({
                 columns: state.columns,
                 rowId: ".getId()",
@@ -89,7 +95,7 @@
                 pageLength: state.pageLength,
                 dom: `<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>`, // https://datatables.net/reference/option/dom#Styling
                 language: datatableTranslations,
-                ajax: function (data, callback, settings) {
+                ajax: function(data, callback, settings) {
                     // This is only here so that dataTables will change its internal state
                 }
             });
@@ -100,7 +106,7 @@
             }
         }
 
-        const updateDataTable = function (state) {
+        const updateDataTable = function(state) {
             if (state.pendingRows.length) {
                 if (!state.appendRows) {
                     state.table.clear().rows.add(state.pendingRows);
@@ -137,6 +143,30 @@
             getHelpText(field) {
                 // TODO: Fix this, because it's specific to Roads
                 return EstradaRoad.getHelpText(field);
+            },
+            getTableData() {
+                const headers = this.state.columns
+                    .filter((c) => c.title !== "")
+                    .map((c) => ({title: c.title, data: c.data}));
+                const table = $(`#${this.state.id}`).dataTable().api();
+                const rowsData = table.rows().data();
+                const rows = Object.keys(rowsData).map((rowKey) => {
+                    const rowFields = [];
+                    headers.forEach((h) => {
+                        let data = rowsData[rowKey][h.data];
+                        // Check if data is null, or implicitly, undefined
+                        if (data == null) {
+                            data = "";
+                        }
+                        rowFields.push(data);
+                    })
+                    return rowFields;
+                });
+                return {headers: headers.map((h) => h.title), rows: rows};
+            },
+            exportTable() {
+                const tableData = this.getTableData();
+                exportCsv(tableData.headers, tableData.rows);
             }
         };
     </script>
