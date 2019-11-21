@@ -498,7 +498,7 @@ def protobuf_reports(request):
         )
         if len(road_chainages) == 0:
             continue
-        
+
         min_chainage = road_chainages.order_by("link_start_chainage").first()[
             "link_start_chainage"
         ]
