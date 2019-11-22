@@ -127,6 +127,13 @@
         export default {
             state: {
                 noReport: true,
+                filterDefinitions: [
+                    {selectId: "municipality_area_select2", placeHolder: "Municipality", dataIn: "reportMunicipality"},
+                    {selectId: "road_class_select2", placeHolder: "Road class", dataIn: "reportRoadClass", filterName: "roadtype"},
+                    {selectId: "surface_type_select2", placeHolder: "Surface type", dataIn: "reportSurfaceType"},
+                    {selectId: "surface_condition_select2", placeHolder: "Surface condition", dataIn: "reportSurfaceCondition"},
+                    {selectId: "road_code_select2", placeHolder: "", dataIn: "reportRoadCode", isSingle: true, filterName: "roadcode"},
+                ],
                 reportMunicipality: [],
                 reportRoadClass: [],
                 reportSurfaceType: [],
@@ -149,7 +156,9 @@
                     2: {
                         title: window.gettext("Surface Condition"),
                         description: window.gettext("A report on Road Surface Condition. This report provides detailed Surface Condition information per segment"),
-                        fixedFilter: {},
+                        fixedFilter: {
+                            primaryattribute: ["surface_condition"],
+                        },
                     },
                     3: { 
                         title: window.gettext("IRI Roughness"),
@@ -234,30 +243,29 @@
                 const reportId = this.props.id;
                 return this.state.reportContent[reportId];
             },
-            onMounted() {
-                this.prepareSelects("municipality_area_select2", "Municipality", "reportMunicipality");
-                this.prepareSelects("road_class_select2", "Road class", "reportRoadClass");
-                this.prepareSelects("surface_type_select2", "Surface type", "reportSurfaceType");
-                this.prepareSelects("surface_condition_select2", "Surface condition", "reportSurfaceCondition");
-                this.prepareSelects("road_code_select2", "", "reportRoadCode", false);
+            onMounted(props, state) {
+                state.filterDefinitions.forEach((filterDefinition) => {
+                    this.prepareSelects(filterDefinition);
+                });
             },
-            prepareSelects(selectId, placeHolder, dataIn, isMulti = true) {
+            prepareSelects(filterDefinition) {
                 const selectOptions = {
                     width: "225px",
                     containerCssClass: "report-select2",
                     dropdownCssClass: "report-dropdown-select2",
                 };
+
                 let toggleFunction = this.toggleMultipleSelect2;
-                if (isMulti) {
-                    selectOptions.placeholder = window.gettext(placeHolder)
-                } else {
+                if (filterDefinition.isSingle) {
                     selectOptions.multiple = false;
                     toggleFunction = this.toggleSingleSelect2;
+                } else {
+                    selectOptions.placeholder = window.gettext(filterDefinition.placeHolder)
                 }
 
-                $(`#${selectId}`).select2(selectOptions);
-                $(`#${selectId}`).on('select2:select', null, dataIn, toggleFunction);
-                $(`#${selectId}`).on('select2:unselect', null, dataIn, toggleFunction);
+                $(`#${filterDefinition.selectId}`).select2(selectOptions);
+                $(`#${filterDefinition.selectId}`).on('select2:select', null, filterDefinition.dataIn, toggleFunction);
+                $(`#${filterDefinition.selectId}`).on('select2:unselect', null, filterDefinition.dataIn, toggleFunction);
             },
             backToReports() {
                 window.location.hash = "reports/";
@@ -328,6 +336,18 @@
             },
             createReport(e) {
                 const filters = this.reportContent().fixedFilter;
+
+                const userFilters = {};
+                this.state.filterDefinitions.forEach((filterDefinition) => {
+                    const requestFilterName = filterDefinition.filterName || "";
+                    if (!requestFilterName || filters[requestFilterName]) {
+                        // If the fixedFilters already defines this request filter
+                        // then we will not accept this user defined one
+                        return;
+                    }
+
+                    filters[requestFilterName] = $(`#${filterDefinition.selectId}`).select2("data");
+                });
 
                 if (!Object.keys(filters).length) {
                     return;
