@@ -6,10 +6,10 @@
         <div class="d-flex flex-column">
             <div class="align-items-center d-flex">
                 <span class="report-icon image"></span>
-                <h6>{ state.reportContent[props.id].title }</h6>
+                <h6>{ reportContent().title }</h6>
             </div>
             <div>
-                <p>{ state.reportContent[props.id].description }.</p>
+                <p>{ reportContent().description }.</p>
             </div>
         </div>
     </header>
@@ -22,11 +22,15 @@
                 </select>
             </div>
 
-            <div class="options">
+            <div if="{ !reportContent().fixedFilter.roadtype }" class="options">
                 <select id="road_class_select2" multiple="true">
                     <option each="{ road_class in window.road_schema.road_type.options }" value="{ road_class[0] }">{ road_class[1] }</option>
                 </select>
             </div>
+            <!-- Optionally include the following to show the fixedFilter value (changing to the full option title) -->
+            <!-- <div if="{ reportContent().fixedFilter.roadtype }" class="options">
+                <span>{ reportContent().fixedFilter.roadtype }</span>
+            </div> -->
 
             <div class="options">
                 <select id="surface_type_select2" multiple="true">
@@ -67,7 +71,7 @@
 
     <div hidden="{ state.noReport }" class="content-wrapper report-content">
         <div class="align-items-center d-flex justify-content-between">
-            <h6>{ state.reportContent[props.id].title } { window.gettext("Report") }</h6>
+            <h6>{ reportContent().title } { window.gettext("Report") }</h6>
             <button class="btn btn-secondary btn-sm">{ window.gettext("Print") }</button>
         </div>
         <div class="filtered-segment d-flex flex-column">
@@ -100,11 +104,11 @@
         <span class="no-report image"></span>
         <h6>
             { window.gettext("Please select a road above to view") }
-            { state.reportContent[props.id].title }
+            { reportContent().title }
         </h6>
         <p>
             { window.gettext("The report will be shown in this area and will provide you with detailed") }
-            { state.reportContent[props.id].title }
+            { reportContent().title }
             { window.gettext("information per segment of the selected road.") }
         </p>
     </div>
@@ -135,38 +139,62 @@
                     0: {
                         title: window.gettext("Road Network Length"),
                         description: window.gettext("A report on the total length of the road network. The report provides total length in kilometers and percentages according to Road Status and Technical Class. A number of filters can be selected in order to generate a length report according to the required criteria"),
+                        fixedFilter: {},
                     },
                     1: {
                         title: window.gettext("Road Network Length Breakdown"),
                         description: window.gettext("A breakdown report on the total length of the road network. The report provides information on total length in kilometers and percentages as well as Road Status and Technical Class, according to a breakdown by Municipality, Road Class and Surface Type"),
+                        fixedFilter: {},
                     },
                     2: {
                         title: window.gettext("Surface Condition"),
                         description: window.gettext("A report on Road Surface Condition. This report provides detailed Surface Condition information per segment"),
+                        fixedFilter: {},
                     },
                     3: { 
                         title: window.gettext("IRI Roughness"),
                         description: window.gettext("A report on Road IRI data. This report provides detailed information on a Road's Roughness per segment"),
+                        fixedFilter: {},
                     },
                     4: {
                         title: window.gettext("Road Network Length - National Class"),
                         description: window.gettext("A report on the total length of National Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for National Roads"),
+                        fixedFilter: {
+                            primaryattribute: ["road_status", "technical_class"],
+                            roadtype: "NAT",
+                        },
                     },
                     5: {
                         title: window.gettext("Road Network Length - Municipal Class"),
                         description: window.gettext("A report on the total length of Municipal Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Municipal Roads"),
+                        fixedFilter: {
+                            primaryattribute: ["road_status", "technical_class"],
+                            roadtype: "MUN",
+                        },
                     },
                     6: {
                         title: window.gettext("Road Network Length - Rural Class"),
                         description: window.gettext("A report on the total length of Rural Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Rural Roads"),
+                        fixedFilter: {
+                            primaryattribute: ["road_status", "technical_class"],
+                            roadtype: "RUR",
+                        },
                     },
                     7: {
                         title: window.gettext("Road Network Length - Highway Class"),
                         description: window.gettext("A report on the total length of Highways. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Highways"),
+                        fixedFilter: {
+                            primaryattribute: ["road_status", "technical_class"],
+                            roadtype: "HIGH",
+                        },
                     },
                     8: {
                         title: window.gettext("Road Network Length - Urban Class"),
                         description: window.gettext("A report on the total length of Urban Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Urban Roads"),
+                        fixedFilter: {
+                            primaryattribute: ["road_status", "technical_class"],
+                            roadtype: "URB",
+                        },
                     },
                 },
                 reportData: {},
@@ -202,6 +230,10 @@
                     orderable: false,
                 },
             ],
+            reportContent() {
+                const reportId = this.props.id;
+                return this.state.reportContent[reportId];
+            },
             onMounted() {
                 this.prepareSelects("municipality_area_select2", "Municipality", "reportMunicipality");
                 this.prepareSelects("road_class_select2", "Road class", "reportRoadClass");
@@ -295,27 +327,7 @@
                 return tableData;
             },
             createReport(e) {
-                const reportId = e.currentTarget.dataset.id;
-
-                const filters = {"primaryattribute": ["road_status", "technical_class", "surface_condition"]};
-
-                switch (reportId) {
-                    case "4":
-                        filters["roadtype"] = "NAT";
-                        break;
-                    case "5":
-                        filters["roadtype"] = "MUN";
-                        break;
-                    case "6":
-                        filters["roadtype"] = "RUR";
-                        break;
-                    case "7":
-                        filters["roadtype"] = "HIGH";
-                        break;
-                    case "8":
-                        filters["roadtype"] = "URB";
-                        break;
-                }
+                const filters = this.reportContent().fixedFilter;
 
                 if (!Object.keys(filters).length) {
                     return;
