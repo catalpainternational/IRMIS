@@ -352,7 +352,7 @@ class Road(models.Model):
         ),
     )  # need to link to suco/admin area models
     link_end_chainage = models.DecimalField(
-        verbose_name=_("Link End Chainage (Km)"),
+        verbose_name=_("Link End Chainage"),
         max_digits=12,
         decimal_places=5,
         blank=True,
@@ -360,7 +360,7 @@ class Road(models.Model):
         help_text=_("Enter chainage for link ending point"),
     )
     link_start_chainage = models.DecimalField(
-        verbose_name=_("Link Start Chainage (Km)"),
+        verbose_name=_("Link Start Chainage"),
         max_digits=12,
         decimal_places=5,
         blank=True,
@@ -368,12 +368,12 @@ class Road(models.Model):
         help_text=_("Enter chainage for link starting point"),
     )
     link_length = models.DecimalField(
-        verbose_name=_("Link Length"),
+        verbose_name=_("Link Length (Km)"),
         max_digits=8,
         decimal_places=3,
         blank=True,
         null=True,
-        help_text=_("Enter road link length (in Km)"),
+        help_text=_("Enter road link length"),
     )
     surface_type = models.ForeignKey(
         "SurfaceType",
@@ -393,13 +393,13 @@ class Road(models.Model):
         help_text=_("Choose the pavement class of the road"),
     )
     carriageway_width = models.DecimalField(
-        verbose_name=_("Carriageway Width"),
+        verbose_name=_("Carriageway Width (m)"),
         validators=[MinValueValidator(0)],
         max_digits=5,
         decimal_places=3,
         blank=True,
         null=True,
-        help_text=_("Enter the width (in meters) of the link carriageway"),
+        help_text=_("Enter the width of the link carriageway"),
     )
     road_type = models.CharField(
         verbose_name=_("Road Class"),
