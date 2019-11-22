@@ -18,7 +18,9 @@ const surveyReportSchema = {
 
 export class EstradaSurveyReport extends Report {
     getId() {
-        return `${this.getRoadCode()}_${this.getReportChainageStart()}-${this.getReportChainageEnd()}`;
+        return this.getRoadCode()
+            ? `${this.getRoadCode()}_${this.getReportChainageStart()}-${this.getReportChainageEnd()}`
+            : null;
     }
 
     get id() {
@@ -74,13 +76,21 @@ export class EstradaSurveyReport extends Report {
     }
 
     get tableList() {
-        const tableListRaw = this.getTableList();
-        if (tableListRaw.length === 1 && tableListRaw[0].getSurveyId() === 0) {
-            // Only a single generated survey segment
-            // Which means that there are actually no real survey segments
-            return [];
+        let tableListRaw = [];
+        try {
+            let tableListRaw = this.getTableList();
+            if (tableListRaw.length === 0 || (tableListRaw.length === 1 && tableListRaw[0].getSurveyId() === 0)) {
+                // If there's only a single generated survey segment
+                // that means that there are actually no real survey segments
+                tableListRaw = [];
+            } else {
+                tableListRaw = tableListRaw.map(makeEstradaSurveyReportTableEntry);
+            }
+        } catch {
+            // This is the correct response on error
+            tableListRaw = [];
         }
-        return tableListRaw.map(makeEstradaSurveyReportTableEntry);
+        return tableListRaw;
     }
 }
 
