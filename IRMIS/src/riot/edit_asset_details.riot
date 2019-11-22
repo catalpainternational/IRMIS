@@ -57,7 +57,7 @@
     <section>
         <h6>{ window.gettext("Link chainage") }</h6>
         <div class="form-group">
-            <label>{ link_start_chainage.display }</label>
+            <label>{ link_start_chainage.display } (m)</label>
             <input class="{ state.errors.linkStartChainage ? 'danger' : null } { props.road.getLinkStartChainage() ? '' : 'inactive' } form-control"
                 type="number" placeholder="0" value="{ props.road.getLinkStartChainage() }" oninput="{ checkLinkStartChainage }">
             <small class="form-text text-muted">{ props.getHelpText("link_start_chainage") }</small>
@@ -68,7 +68,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label>{ link_end_chainage.display }</label>
+            <label>{ link_end_chainage.display } (m)</label>
             <input class="{ state.errors.linkEndChainage ? 'danger' : null } { props.road.getLinkEndChainage() ? '' : 'inactive' } form-control"
                 type="number" placeholder="62410" value="{ props.road.getLinkEndChainage() }" oninput="{ checkLinkEndChainage }">
             <small class="form-text text-muted">{ props.getHelpText("link_end_chainage") }</small>
