@@ -92,12 +92,12 @@
                 </div>
             </div>
         </div>
-        <div if="{state.reportData.totalLength}" class="d-flex flex-column">
+        <div if="{state.reportData.totalLength}" class="d-flex flex-column total-length">
             <p>{ window.gettext("Total Length") }</p>
             <h1>{ (state.reportData.totalLength / 1000).toFixed(1) } km</h1>
         </div>
-        <data_table table_id="{dataTableIds.roadStatus}" columns="{baseColumns}" columnSortOrder="{baseColumnSortOrder}" paging="false" canExport></data_table>
-        <data_table table_id="{dataTableIds.technicalClass}" columns="{baseColumns}" columnSortOrder="{baseColumnSortOrder}" paging="false" canExport></data_table>
+        <data_table table_id="{dataTableIds.roadStatus}" tableName="Road Status" columns="{baseColumns}" columnSortOrder="{baseColumnSortOrder}" paging="false" canExport></data_table>
+        <data_table table_id="{dataTableIds.technicalClass}" tableName="Technical Class" columns="{baseColumns}" columnSortOrder="{baseColumnSortOrder}" paging="false" canExport></data_table>
     </div>
 
     <div if="{ state.noReport }" class="align-items-center blank content-wrapper d-flex flex-column justify-content-center">
@@ -327,7 +327,28 @@
                 return tableData;
             },
             createReport(e) {
+                $('#loading').modal('show');
+
+                const reportId = e.currentTarget.dataset.id;
                 const filters = this.reportContent().fixedFilter;
+
+                switch (reportId) {
+                    case "4":
+                        filters["roadtype"] = "NAT";
+                        break;
+                    case "5":
+                        filters["roadtype"] = "MUN";
+                        break;
+                    case "6":
+                        filters["roadtype"] = "RUR";
+                        break;
+                    case "7":
+                        filters["roadtype"] = "HIGH";
+                        break;
+                    case "8":
+                        filters["roadtype"] = "URB";
+                        break;
+                }
 
                 if (!Object.keys(filters).length) {
                     return;
@@ -347,16 +368,16 @@
                                 this.state.reportData.roadStatus = this.prepareTableData(this.dataTableIds.roadStatus, surveyReportData.roadStatuses);
                                 this.state.reportData.technicalClass = this.prepareTableData(this.dataTableIds.technicalClass, surveyReportData.technicalClasses);
                             }
-                            this.state.error = false;
+                            this.props.showFeedback();
                         } else {
+                            this.props.showFeedback(true);
                             this.state.noReport = true;
-                            this.state.error = true;
                         }
                     }).catch(err => {
+                        this.props.showFeedback(true);
                         this.state.noReport = true;
-                        this.state.error = true;
                     }).finally((r) => {
-                        this.state.loading = false;
+                        $('#loading').modal('hide');
                         this.update();
                     });
             },

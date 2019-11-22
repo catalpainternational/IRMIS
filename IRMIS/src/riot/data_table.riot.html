@@ -1,8 +1,10 @@
 <data_table>
-    <button if="{ state.canExport }" onclick="{ exportTable }"
-        class="btn btn-secondary btn-sm d-flex justify-content-center export-table-btn">
-        { window.gettext("Export table") }
-    </button>
+    <div class="align-items-center d-flex justify-content-between">
+        <p if="{ props.tableName }">{ props.tableName }</p>
+        <button if="{ state.canExport }" onclick="{ exportTable }" class="btn btn-secondary btn-sm">
+            { window.gettext("Export table") }
+        </button>
+    </div>
     <table if="{ state.id }" id="{ state.id }" class="d-block table table-bordered table-hover w-100"></table>
 
     <script>

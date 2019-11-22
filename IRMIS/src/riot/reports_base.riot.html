@@ -11,7 +11,7 @@
         </div>
 
         <div id="reports">
-            <report if="{ state.page }" id="{ state.page }"></report>
+            <report if="{ state.page }" id="{ state.page }" showFeedback="{ showFeedback }"></report>
             <template if="{ !state.page }">
                 <div class="content-wrapper">
                     <h6>{ window.gettext("Road Network Report") }</h6>
@@ -64,15 +64,25 @@
         </div>
     </div>
 
+    <feedback_banner if="{ state.showFeedback }" close="{ closeFeedback }" successMessage="{ window.gettext('Report successfully created') }" error="{ state.error }"></feedback_banner>
+
+    <loading></loading>
+
     <script>
+        import Feedback_Banner from './feedback_banner.riot.html';
+        import Loading from './loading.riot.html';
         import Report from './report.riot.html';
+
+        let timeoutId = null;
 
         export default {
             state: {
+                showFeedback: false,
+                error: false,
                 page: "",
             },
             components: {
-                Report,
+                Feedback_Banner, Loading, Report,
             },
             onBeforeMount(props, state) {
                 state.page = props.page;
@@ -82,6 +92,7 @@
             onBeforeUnmount(props, state) {
                 window.removeEventListener("hashchange", this.hashCheck);
                 window.goBack = () => {};
+                clearTimeout(timeoutId);
             },
             hashCheck() {
                 const reportHash = /#reports\/(\d?)/.exec(location.hash);
@@ -96,6 +107,21 @@
                 const reportId = e.currentTarget.dataset.id;
 
                 window.location.hash = `#reports/${reportId}`;
+            },
+            showFeedback(error) {
+                this.state.showFeedback = true;
+                this.state.error = error;
+                this.update();
+                timeoutId = setTimeout(() => this.closeFeedback(), 5000);
+            },
+            closeFeedback() {
+                const feedback = document.getElementsByClassName("slide-in").item(0);
+                clearTimeout(timeoutId);
+                feedback.classList.add("slide-out");
+                setTimeout(() => {
+                    feedback.classList.remove("slide-out");
+                    this.update({ showFeedback: false });
+                }, 300);
             },
         }
     </script>
