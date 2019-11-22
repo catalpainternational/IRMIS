@@ -32,7 +32,7 @@
                 state.surfaceType = props.road.getSurfaceType();
             },
             save(e) {
-                this.props.parent.onSave();
+                this.props.parent.save();
             },
             checkSurfaceType(e) {
                 this.state.surfaceType = e.currentTarget.value;

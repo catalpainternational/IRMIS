@@ -111,7 +111,7 @@
             },
             save(e) {
                 if (Object.entries(this.state.errors).length == 0) {
-                    this.props.parent.onSave();
+                    this.props.parent.save();
                 }
             },
             checkLinkCode(e) {

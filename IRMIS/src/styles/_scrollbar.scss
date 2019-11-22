@@ -35,9 +35,11 @@ edit_base #side-menu > div,
 }
 
 #history-table,
-#plan-rural-roads,
 #surface-condition-table,
-#surface-condition-report-table {
+#surface-condition-report-table,
+#report-road-status-table,
+#report-technical-class-table,
+#plan-rural-roads {
     @extend %scrollbar-shared;
 
     &::-webkit-scrollbar:horizontal {

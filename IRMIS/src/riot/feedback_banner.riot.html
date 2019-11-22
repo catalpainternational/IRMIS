@@ -1,10 +1,10 @@
-<edit_feedback>
+<feedback_banner>
     <template if="{ !props.error }">
         <div class="align-items-center d-flex success slide-in">
             <span class="tick image"></span>
             <div class="d-flex flex-column flex-grow-1">
                 <span>{ window.gettext('Success') }</span>
-                <small class="text-muted">{ window.gettext('You have successfully saved') }</small>
+                <small class="text-muted">{ props.successMessage }</small>
             </div>
             <span class="close image" onclick="{ closeFeedback }"></span>
         </div>
@@ -27,4 +27,4 @@
             }
         }
     </script>
-</edit_feedback>
+</feedback_banner>
