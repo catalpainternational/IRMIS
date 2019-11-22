@@ -33,7 +33,7 @@
         <div class="form-group">
             <label>{ link_length.display }</label>
             <input class="{ state.errors.linkLength ? 'danger' : null } { props.road.getLinkLength() ? '' : 'inactive' } form-control"
-                type="number" placeholder="58.7" value="{ props.road.getLinkLength() }" oninput="{ checkLinkLength }">
+                type="number" placeholder="58.7" value="{ props.road.getLinkLength().toFixed(3) }" oninput="{ checkLinkLength }">
             <small class="form-text text-muted">{ props.getHelpText("link_length") }</small>
             <div if="{ state.errors.linkLength }" class="invalid-tooltip">
                 <ul>
