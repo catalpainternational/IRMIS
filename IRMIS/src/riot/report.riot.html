@@ -92,9 +92,9 @@
                 </div>
             </div>
         </div>
-        <div class="d-flex flex-column">
+        <div if="{state.reportData.totalLength}" class="d-flex flex-column">
             <p>{ window.gettext("Total Length") }</p>
-            <h1>000 km</h1>
+            <h1>{ (state.reportData.totalLength / 1000).toFixed(1) } km</h1>
         </div>
         <data_table table_id="{dataTableIds.roadStatus}" columns="{baseColumns}" columnSortOrder="{baseColumnSortOrder}" paging="false" canExport></data_table>
         <data_table table_id="{dataTableIds.technicalClass}" columns="{baseColumns}" columnSortOrder="{baseColumnSortOrder}" paging="false" canExport></data_table>
@@ -119,8 +119,6 @@
         import $ from "jquery";
         import "select2/dist/js/select2.full.min.js";
         import dayjs from "dayjs";
-
-        import { toChainageFormat } from "../assets/protoBufUtilities";
 
         const baseColumnSortOrder = [[0, 'asc']];
 
@@ -218,8 +216,9 @@
                     className: "text-right",
                     orderable: false,
                     render: (data, type) => {
-                        if (type === 'display') return toChainageFormat(data);
-                        return data;
+                        return (type === 'display')
+                            ? (data / 1000).toFixed(2)
+                            : data;
                     },
                 },
                 {
@@ -301,11 +300,12 @@
             },
             prepareTableData(tableName, tableData) {
                 const haveTableData = tableData.length > 0;
+
                 if (haveTableData) {
-                    const tableDataTotalLength = tableData.reduce((acc, cur) => acc += cur.distance || 0, 0);
+                    this.state.reportData.totalLength = this.state.reportData.totalLength || tableData.reduce((acc, cur) => acc += cur.distance || 0, 0);
                     tableData.forEach((entry) => {
-                        if (tableDataTotalLength > 0) {
-                            entry.percent = Math.round((entry.distance / tableDataTotalLength) * 10000) / 100;
+                        if (this.state.reportData.totalLength > 0) {
+                            entry.percent = Math.round((entry.distance / this.state.reportData.totalLength) * 10000) / 100;
                         } else {
                             // 100% of 0km - but this won't appear in the label
                             entry.percent = 100;
@@ -338,8 +338,8 @@
                         if (surveyReportData) {
                             this.state.noReport = false;
                             const haveLengths = !!surveyReportData.lengths;
-                            // This may not work - might need to delete all members one by one - @$@#$@# Riot
-                            this.state.reportData = {};
+                            // This may not work - might need to delete/replace all members one by one - @$@#$@# Riot
+                            this.state.reportData = {totalLength: 0};
                             if (haveLengths) {
                                 const surfaceConditions = surveyReportData.surfaceConditions;
                                 const haveSurfaceConditions = surfaceConditions.length > 0;
