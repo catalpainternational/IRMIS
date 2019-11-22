@@ -52,6 +52,25 @@
                     this.columns = this.columns.concat(yearColumns);
                 }
             },
+            onMounted(props, state) {
+                const groupedColumnsRow = this.$("#plan-rural-roads thead").insertRow(0);
+                let columnHeading;
+
+                columnHeading = document.createElement("th");
+                groupedColumnsRow.appendChild(columnHeading);
+
+                for (let year = 1; year <= 5; year++) {
+                    columnHeading = document.createElement("th");
+                    columnHeading.innerHTML = window.gettext(`Year ${year}`);
+                    columnHeading.setAttribute("colspan", 2)
+                    groupedColumnsRow.appendChild(columnHeading);
+                }
+
+                columnHeading = document.createElement("th");
+                columnHeading.innerHTML = window.gettext("Total");
+                columnHeading.setAttribute("colspan", 2)
+                groupedColumnsRow.appendChild(columnHeading);
+            },
         }
     </script>
 </plan>
