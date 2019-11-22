@@ -105,10 +105,17 @@ export function getRoadSurveyReports(roadCode) {
         .then((metadataResponse) => {
             if (metadataResponse.ok) {
                 return metadataResponse.arrayBuffer();
+            } else {
+                // Handle all fetch level errors
+                return undefined;
             }
-            throw new Error(`Survey report retrieval failed: ${metadataResponse.statusText}`);
         })
         .then((protobufBytes) => {
+            if (typeof protobufBytes === "undefined") {
+                // return an empty EstradaSurveyReport
+                return makeEstradaSurveyReport();
+            }
+
             const uintArray = new Uint8Array(protobufBytes);
             return makeEstradaSurveyReport(Report.deserializeBinary(uintArray));
         });

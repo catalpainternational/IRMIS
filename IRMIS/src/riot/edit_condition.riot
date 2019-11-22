@@ -242,6 +242,11 @@
                                 const eventName = `${this.current_data_table_id}.dataAdded`;
                                 const eventDetail = { detail: { pendingRows: this.state.reportRows, appendRows: this.state.loading }}
                                 document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+
+                                if (surveyReportData.id === null) {
+                                    // An id of null tells us conclusively that there was an error fetching the data
+                                    this.props.showBanner(true);
+                                }
                             }
                             this.state.error = false;
                         } else {
@@ -528,7 +533,6 @@
                             this.props.showBanner();
                         })
                         .catch((err) => {
-                            this.props.error = true;
                             this.props.showBanner(true);
                         });
                 } else {
@@ -542,7 +546,6 @@
                             this.props.showBanner();
                         })
                         .catch((err) => {
-                            this.props.error = true;
                             this.props.showBanner(true);
                         });
                 }
