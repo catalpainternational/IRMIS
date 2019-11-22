@@ -31,19 +31,27 @@
                     defaultContent: "",
                     orderable: false,
                 },
-                {
-                    title: window.gettext("Cost ($M)"),
-                    defaultContent: "",
-                    className: "text-right",
-                    orderable: false,
-                },
-                {
-                    title: window.gettext("Km"),
-                    defaultContent: "",
-                    className: "text-right",
-                    orderable: false,
-                },
             ],
+            onBeforeMount(props, state) {
+                const yearColumns = [
+                    {
+                        title: window.gettext("Cost ($M)"),
+                        defaultContent: "",
+                        className: "text-right",
+                        orderable: false,
+                    },
+                    {
+                        title: window.gettext("Km"),
+                        defaultContent: "",
+                        className: "text-right",
+                        orderable: false,
+                    }
+                ];
+
+                for (let year = 1; year <= 6; year++) {
+                    this.columns = this.columns.concat(yearColumns);
+                }
+            },
         }
     </script>
 </plan>
