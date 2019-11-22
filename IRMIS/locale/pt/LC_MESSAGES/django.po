@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-14 07:55+0000\n"
+"POT-Creation-Date: 2019-11-22 08:13+0000\n"
 "PO-Revision-Date: 2019-10-09 01:05+0000\n"
 "Last-Translator: b'  <juliana@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -167,22 +167,30 @@ msgstr "Nome do fim da secção"
 msgid "Enter the name of the link end location (municipal center, administrative post or nearest suco)"
 msgstr "Introduza o nome da localidade do fim da secção da estrada (centro municipal, posto administrativo ou suco mais próximo)"
 
-msgid "Link End Chainage (Km)"
-msgstr "Chainage do final da secção (Km)"
+#, fuzzy
+#| msgid "Link end chainage"
+msgid "Link End Chainage"
+msgstr "Chainage do final da secção"
 
 msgid "Enter chainage for link ending point"
 msgstr "Introduza a chainage do ponto final da secção"
 
-msgid "Link Start Chainage (Km)"
-msgstr "Chainage do início da secção (Km)"
+#, fuzzy
+#| msgid "Link start chainage"
+msgid "Link Start Chainage"
+msgstr "Chinage do início da secção"
 
 msgid "Enter chainage for link starting point"
 msgstr "Introduza a chainage do ponto inicial da secção"
 
-msgid "Link Length"
+#, fuzzy
+#| msgid "Link Length"
+msgid "Link Length (Km)"
 msgstr "Extensão da secção"
 
-msgid "Enter road link length (in Km)"
+#, fuzzy
+#| msgid "Enter road link length (in Km)"
+msgid "Enter road link length"
 msgstr "Introduza a extensão da secção da estrada (em Km)"
 
 msgid "Surface Type"
@@ -197,10 +205,14 @@ msgstr "Classe de Pavimento"
 msgid "Choose the pavement class of the road"
 msgstr "Escolha a classe de pavimento da estrada"
 
-msgid "Carriageway Width"
+#, fuzzy
+#| msgid "Carriageway Width"
+msgid "Carriageway Width (m)"
 msgstr "Largura da faixa de rodagem"
 
-msgid "Enter the width (in meters) of the link carriageway"
+#, fuzzy
+#| msgid "Enter the width (in meters) of the link carriageway"
+msgid "Enter the width of the link carriageway"
 msgstr "Introduza a largura (em metros) da faixa de rodagem da secção da estrada"
 
 #, fuzzy
@@ -280,6 +292,9 @@ msgstr "Código da secção da estrada"
 
 msgid "Link name"
 msgstr "Nome da secção da estrada"
+
+msgid "Link Length"
+msgstr "Extensão da secção"
 
 msgid "Link start name"
 msgstr "Nome do início da secção da estrada"
@@ -495,6 +510,12 @@ msgstr "Endereço de email"
 
 msgid "Send"
 msgstr "Enviar"
+
+#~ msgid "Link End Chainage (Km)"
+#~ msgstr "Chainage do final da secção (Km)"
+
+#~ msgid "Link Start Chainage (Km)"
+#~ msgstr "Chainage do início da secção (Km)"
 
 #~ msgid "Administrative Area"
 #~ msgstr "Área administrativa"
