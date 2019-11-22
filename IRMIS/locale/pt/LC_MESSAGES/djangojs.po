@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-14 07:55+0000\n"
+"POT-Creation-Date: 2019-11-20 06:42+0000\n"
 "PO-Revision-Date: 2019-10-11 00:57+0000\n"
 "Last-Translator: b'  <juliana@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -201,6 +201,77 @@ msgstr ""
 msgid "Select a Surface Type"
 msgstr "Seleccione o Tipo de Pavimento"
 
+msgid "Create Report"
+msgstr ""
+
+msgid "Road Network Length"
+msgstr ""
+
+msgid "A report on the total length of the road network. The report provides total length in kilometers and percentages according to Road Status and Technical Class. A number of filters can be selected in order to generate a length report according to the required criteria"
+msgstr ""
+
+msgid "Road Network Length Breakdown"
+msgstr ""
+
+msgid "A breakdown report on the total length of the road network. The report provides information on total length in kilometers and percentages as well as Road Status and Technical Class, according to a breakdown by Municipality, Road Class and Surface Type"
+msgstr ""
+
+msgid "A report on Road Surface Condition. This report provides detailed Surface Condition information per segment"
+msgstr ""
+
+msgid "IRI Roughness"
+msgstr ""
+
+msgid "A report on Road IRI data. This report provides detailed information on a Road's Roughness per segment"
+msgstr ""
+
+msgid "Road Network Length - National Class"
+msgstr ""
+
+msgid "A report on the total length of National Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for National Roads"
+msgstr ""
+
+msgid "Road Network Length - Municipal Class"
+msgstr ""
+
+msgid "A report on the total length of Municipal Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Municipal Roads"
+msgstr ""
+
+msgid "Road Network Length - Rural Class"
+msgstr ""
+
+msgid "A report on the total length of Rural Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Rural Roads"
+msgstr ""
+
+msgid "Road Network Length - Highway Class"
+msgstr ""
+
+msgid "A report on the total length of Highways. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Highways"
+msgstr ""
+
+msgid "Road Network Length - Urban Class"
+msgstr ""
+
+msgid "A report on the total length of Urban Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Urban Roads"
+msgstr ""
+
+msgid "Municipality"
+msgstr ""
+
+msgid "Reports"
+msgstr ""
+
+msgid "Road Network Report"
+msgstr ""
+
+#, fuzzy
+#| msgid "Condition"
+msgid "Road Condition Report"
+msgstr "Condição"
+
+msgid "Road Network Reports by Road Class"
+msgstr ""
+
 msgid "Date"
 msgstr "Data"
 
@@ -209,6 +280,27 @@ msgstr "Utilizador"
 
 msgid "Description"
 msgstr "Descrição"
+
+msgid "Filter"
+msgstr ""
+
+msgid "Lengths"
+msgstr ""
+
+msgid "Road Code"
+msgstr ""
+
+msgid "Attribute Tables"
+msgstr ""
+
+msgid "Attribute"
+msgstr ""
+
+msgid "Other Attributes"
+msgstr ""
+
+msgid "Unknown"
+msgstr ""
 
 msgid "No matching records found"
 msgstr "Não foram encontradas entradas"
@@ -257,6 +349,9 @@ msgstr "Ponto Inicial (UTM)"
 msgid "End Point (UTM)"
 msgstr "Ponto final (UTM)"
 
+msgid "View"
+msgstr ""
+
 #, fuzzy
 #| msgid "Select a Surface Type"
 msgid "Surface Type"
@@ -266,27 +361,6 @@ msgid "Technical class"
 msgstr ""
 
 msgid "Number of lanes"
-msgstr ""
-
-msgid "Road Code"
-msgstr ""
-
-msgid "Chainage Start"
-msgstr ""
-
-msgid "Chainage End"
-msgstr ""
-
-msgid "Counts"
-msgstr ""
-
-msgid "Percentages"
-msgstr ""
-
-msgid "Table"
-msgstr ""
-
-msgid "unknown"
 msgstr ""
 
 msgid "Surface Condition segments"

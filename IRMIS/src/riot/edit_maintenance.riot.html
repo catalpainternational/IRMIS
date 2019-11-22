@@ -31,7 +31,7 @@
     <script>
         export default {
             save(e) {
-                this.props.parent.onSave();
+                this.props.parent.save();
             },
             checkMaintenanceNeed(e) {
                 this.props.road.setMaintenanceNeed(e.currentTarget.dataset.maintenance);

@@ -43,6 +43,14 @@
     overflow-y: auto;
 }
 
+#report-road-status-table, #report-technical-class-table {
+    border-bottom: 1px solid $light-gray;
+    border-right: 1px solid $light-gray;
+    border-left: 1px solid $light-gray;
+    margin-bottom: 20px !important;
+    margin-top: 10px !important;
+    overflow-x: auto;
+}
 
 // Override DataTables.net styles
 div.dataTables_wrapper {
@@ -73,6 +81,7 @@ div.dataTables_wrapper {
 
         a.page-link {
             box-shadow: none;
+            margin-left: 0;
             border: 0;
         }
     }
@@ -100,6 +109,7 @@ div.dataTables_wrapper {
         }
 
         a.page-link {
+            background-color: $white;
             color: $darker-gray;
         }
     }
