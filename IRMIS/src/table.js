@@ -92,7 +92,7 @@ function initializeDataTable() {
         estradaTableColumns.unshift({
             title: "",
             data: null,
-            render: r => '<a class="image pencil" href="#edit/' + r.getId() + '/location_type"></a>',
+            render: r => `<a class="image pencil" href="#edit/${r.getId()}/location_type"></a>`,
             orderable: false,
             className: "edit-col"
         });
