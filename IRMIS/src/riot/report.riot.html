@@ -320,7 +320,7 @@
                         }
                     });
                     const eventName = `${tableName}.dataAdded`;
-                    const eventDetail = { detail: { pendingRows: tableData, appendRows: false }};
+                    const eventDetail = { detail: { pendingRows: tableData, clearRows: true }};
                     document.dispatchEvent(new CustomEvent(eventName, eventDetail));
                 }
 
