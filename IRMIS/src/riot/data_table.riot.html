@@ -43,7 +43,7 @@
             state.id = props.table_id || "all-data-table";
             state.columns = props.columns || [];
             state.columnSortOrder = props.columnSortOrder || [[0, "asc"]];
-            state.appendRows = true;
+            state.clearRows = false;
             state.pendingRows = props.pendingRows || [];
             state.pageLength = props.pageLength || 10;
 
@@ -86,14 +86,12 @@
         }
 
         const processDataAdded = function(data, state) {
-            const pendingRows = data.detail.pendingRows;
-            const haveAppendRows = typeof (data.detail.appendRows) === "boolean";
-            const appendRows = haveAppendRows ? data.detail.appendRows : true;
+            const haveClearRows = typeof (data.detail.clearRows) === "boolean";
+            const clearRows = haveClearRows ? data.detail.clearRows : true;
 
-            state.pendingRows = appendRows
-                ? state.pendingRows.concat(pendingRows)
-                : pendingRows;
-            state.appendRows = appendRows;
+            state.clearRows = clearRows;
+            state.pendingRows = data.detail.pendingRows;
+
             updateDataTable(state);
 
             data.stopPropagation();
@@ -112,6 +110,10 @@
                 dom: dom,
                 language: datatableTranslations,
                 paging: state.paging,
+                // This turns off filtering for all tables ( DO NOT SET THIS TO TRUE )
+                // dataTables has a bug where the searching / filtering clause passes from one table to another
+                // We only want it for the main table
+                searching: false,
                 ajax: function (data, callback, settings) {
                     // This is only here so that dataTables will change its internal state
                 }
@@ -125,17 +127,10 @@
 
         const updateDataTable = function(state) {
             if (state.pendingRows.length) {
-                if (!state.appendRows) {
-                    state.table.clear().rows.add(state.pendingRows);
-                } else {
-                    state.table.rows.add(state.pendingRows);
-                }
-
-                state.pendingRows = [];
+                state.table.clear().rows.add(state.pendingRows);
             } else {
-                if (!state.appendRows) {
-                    // No pendingRows and we're not appending
-                    // This is interpreted as 'clear the table'
+                if (state.clearRows) {
+                    // No pendingRows so 'clear the table'
                     state.table.clear();
                 }
             }

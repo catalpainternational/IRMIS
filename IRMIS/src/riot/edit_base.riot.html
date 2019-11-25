@@ -240,7 +240,7 @@
                             });
 
                             const eventName = `${allDataTableId}.dataAdded`;
-                            const eventDetail = { detail: { pendingRows: state.pendingRows, appendRows: state.loading }};
+                            const eventDetail = { detail: { pendingRows: state.pendingRows, clearRows: true }};
                             document.dispatchEvent(new CustomEvent(eventName, eventDetail));
 
                             state.error = false;
@@ -283,7 +283,7 @@
                                     : [];
 
                                 const eventName = `${reportDataTableId}.dataAdded`;
-                                const eventDetail = { detail: { pendingRows: state.reportRows, appendRows: state.loading }};
+                                const eventDetail = { detail: { pendingRows: state.reportRows, clearRows: true }};
                                 document.dispatchEvent(new CustomEvent(eventName, eventDetail));
                                 
                                 if (surveyReportData.id === null) {
