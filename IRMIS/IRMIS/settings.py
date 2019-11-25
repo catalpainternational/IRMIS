@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     # IRMIS
     "IRMIS_wagtail",
     "assets",
+    "protected_downloads",
     "basemap",
     "rest_framework",
     "rest_framework_gis",
@@ -179,6 +180,8 @@ STATICFILES_DIRS = (
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
+
+PROTECTED_DOWNLOADS_ROOT = os.path.join(BASE_DIR, "protected_downloads/local_content")
 
 WAGTAIL_SITE_NAME = _("IRMIS")
 
