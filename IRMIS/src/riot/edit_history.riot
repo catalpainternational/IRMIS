@@ -76,9 +76,10 @@
                     .then((auditData) => {
                         if (auditData) {
                             this.state.pendingRows = auditData;
-                            const pendingRows = this.state.pendingRows;
 
-                            document.dispatchEvent(new CustomEvent(`${this.table_id}.dataAdded`, {detail: { pendingRows }}));
+                            const eventName = `${this.table_id}.dataAdded`;
+                            const eventDetail = { detail: { pendingRows: this.state.pendingRows, clearRows: true }}
+                            document.dispatchEvent(new CustomEvent(eventName, eventDetail));
 
                             this.state.error = false;
                         } else {

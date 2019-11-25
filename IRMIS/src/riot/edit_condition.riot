@@ -209,7 +209,7 @@
                             this.state.pendingRows = surveyData;
 
                             const eventName = `${this.all_data_table_id}.dataAdded`;
-                            const eventDetail = { detail: { pendingRows: this.state.pendingRows, appendRows: this.state.loading }}
+                            const eventDetail = { detail: { pendingRows: this.state.pendingRows, clearRows: true }}
                             document.dispatchEvent(new CustomEvent(eventName, eventDetail));
 
                             this.state.error = false;
@@ -240,7 +240,7 @@
                                 this.state.reportRows = surveyReportData.tableList;
 
                                 const eventName = `${this.current_data_table_id}.dataAdded`;
-                                const eventDetail = { detail: { pendingRows: this.state.reportRows, appendRows: this.state.loading }}
+                                const eventDetail = { detail: { pendingRows: this.state.reportRows, clearRows: true }}
                                 document.dispatchEvent(new CustomEvent(eventName, eventDetail));
 
                                 if (surveyReportData.id === null) {
@@ -296,18 +296,18 @@
             viewAll(e) {
                 if (!this.state.viewAll) {
                     this.update({viewAll: true});
-                    // If we're not still loading, then we assume that we want to replace all rows
+
                     const eventName = `${this.all_data_table_id}.dataAdded`;
-                    const eventDetail = { detail: { pendingRows: this.state.pendingRows, appendRows: this.state.loading }}
+                    const eventDetail = { detail: { pendingRows: this.state.pendingRows, clearRows: true }}
                     document.dispatchEvent(new CustomEvent(eventName, eventDetail));
                 }
             },
             viewCurrent(e) {
                 if (this.state.viewAll) {
                     this.update({viewAll: false});
-                    // If we're not still loading, then we assume that we want to replace all rows
+
                     const eventName = `${this.current_data_table_id}.dataAdded`;
-                    const eventDetail = { detail: { pendingRows: this.state.reportRows, appendRows: this.state.loading }}
+                    const eventDetail = { detail: { pendingRows: this.state.reportRows, clearRows: true }}
                     document.dispatchEvent(new CustomEvent(eventName, eventDetail));
                 }
             },
@@ -330,8 +330,7 @@
                     defaultContent: "",
                     className: "text-right",
                     render: (data, type) => {
-                        if (type === 'display') return toChainageFormat(data);
-                        return data;
+                        return (type === 'display') ? toChainageFormat(data) : data;
                     },
                 },
                 {
@@ -341,7 +340,7 @@
                     className: "text-right",
                     orderable: false,
                     render: (data, type) => {
-                        if (type === 'display') return toChainageFormat(data);
+                        return (type === 'display') ? toChainageFormat(data) : data;
                     },
                 },
                 {
@@ -374,8 +373,7 @@
                     defaultContent: "",
                     className: "text-right",
                     render: (data, type) => {
-                        if (type === 'display') return toChainageFormat(data);
-                        return data;
+                        return (type === 'display') ? toChainageFormat(data) : data;
                     },
                 },
                 {
@@ -385,7 +383,7 @@
                     className: "text-right",
                     orderable: false,
                     render: (data, type) => {
-                        if (type === 'display') return toChainageFormat(data);
+                        return (type === 'display') ? toChainageFormat(data) : data;
                     },
                 },
                 {
