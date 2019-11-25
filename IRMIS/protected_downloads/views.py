@@ -16,4 +16,3 @@ def download(request, download_slug):
     DownloadAccess.objects.create(download=download_instance, user=request.user)
 
     return sendfile(request, download_instance.asset.path)
-
