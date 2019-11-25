@@ -28,7 +28,7 @@ export function getRoadReports(filters) {
                 // return an empty EstradaSurveyReport
                 return makeEstradaSurveyReport();
             }
-    
+
             const uintArray = new Uint8Array(protobufBytes);
             return makeEstradaSurveyReport(Report.deserializeBinary(uintArray));
         });
