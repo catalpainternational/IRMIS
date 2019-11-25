@@ -19,3 +19,6 @@ class DownloadAccess(models.Model):
     download = models.ForeignKey(Download, null=True, on_delete=models.SET_NULL)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     downloaded = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return '{} downloaded {}'.format(self.user, self.download)
