@@ -78,7 +78,7 @@ export class EstradaSurveyReport extends Report {
     get tableList() {
         let tableListRaw = [];
         try {
-            let tableListRaw = this.getTableList();
+            tableListRaw = this.getTableList();
             if (tableListRaw.length === 0 || (tableListRaw.length === 1 && tableListRaw[0].getSurveyId() === 0)) {
                 // If there's only a single generated survey segment
                 // that means that there are actually no real survey segments
