@@ -46,7 +46,7 @@
 
             <div>
                 <div class="options">
-                    <select id="road_code_select2" multiple="true">
+                    <select id="road_code_select2" multiple="false">
                         <option each="{ code in window.road_schema.road_code.options }" value="{ code.road_code }">{ code.road_code }</option>
                     </select>
                 </div>
@@ -354,7 +354,7 @@
                         return;
                     }
                     const selection = selectData.map((data) => {return data.text;}).join(",");
-                    console.log(selection);
+
                     filters[requestFilterName] = selection;
                 });
 
