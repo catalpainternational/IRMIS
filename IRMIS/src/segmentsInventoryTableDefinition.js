@@ -8,8 +8,7 @@ const baseColumns = [
         defaultContent: "",
         className: "text-right",
         render: (data, type) => {
-            if (type === 'display') return toChainageFormat(data);
-            return data;
+            return (type === 'display') ? toChainageFormat(data) : data;
         },
     },
     {
@@ -19,7 +18,7 @@ const baseColumns = [
         className: "text-right",
         orderable: false,
         render: (data, type) => {
-            if (type === 'display') return toChainageFormat(data);
+            return (type === 'display') ? toChainageFormat(data) : data;
         },
     },
 ];

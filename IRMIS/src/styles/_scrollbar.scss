@@ -33,7 +33,11 @@ edit_base #side-menu > div,
     }
 }
 
-#history-table, #surface-condition-table, #surface-condition-report-table {
+#history-table,
+#surface-condition-table,
+#surface-condition-report-table,
+#report-road-status-table,
+#report-technical-class-table {
     @extend %scrollbar-shared;
 
     &::-webkit-scrollbar:horizontal {

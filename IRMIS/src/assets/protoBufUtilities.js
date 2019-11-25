@@ -5,10 +5,11 @@ export function choice_or_default(value, choices, defaultValue = "") {
     return value ? choices[value] || defaultValue : defaultValue;
 }
 
-export function toChainageFormat(value) {
+export function toChainageFormat(value, thousandsSeparator = ",") {
     const distance = parseFloat(value).toFixed(0);
     const meters = `000${distance.substr(-3)}`.substr(-3);
-    const kilometers = `${distance.substr(0, distance.length - 3)}` || 0;
+    const kilometers = (`${distance.substr(0, distance.length - 3)}` || 0)
+        .toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, `$1${thousandsSeparator}`);
 
     return `${kilometers}+${meters}`;
 }

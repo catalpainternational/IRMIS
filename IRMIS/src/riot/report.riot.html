@@ -92,12 +92,12 @@
                 </div>
             </div>
         </div>
-        <div class="d-flex flex-column">
+        <div if="{state.reportData.totalLength}" class="d-flex flex-column total-length">
             <p>{ window.gettext("Total Length") }</p>
-            <h1>000 km</h1>
+            <h1>{ (state.reportData.totalLength / 1000).toFixed(1) } km</h1>
         </div>
-        <data_table table_id="{dataTableIds.roadStatus}" columns="{baseColumns}" columnSortOrder="{baseColumnSortOrder}" paging="false" canExport></data_table>
-        <data_table table_id="{dataTableIds.technicalClass}" columns="{baseColumns}" columnSortOrder="{baseColumnSortOrder}" paging="false" canExport></data_table>
+        <data_table table_id="{dataTableIds.roadStatus}" tableName="Road Status" columns="{baseColumns}" columnSortOrder="{baseColumnSortOrder}" paging="false" canExport></data_table>
+        <data_table table_id="{dataTableIds.technicalClass}" tableName="Technical Class" columns="{baseColumns}" columnSortOrder="{baseColumnSortOrder}" paging="false" canExport></data_table>
     </div>
 
     <div if="{ state.noReport }" class="align-items-center blank content-wrapper d-flex flex-column justify-content-center">
@@ -119,8 +119,6 @@
         import $ from "jquery";
         import "select2/dist/js/select2.full.min.js";
         import dayjs from "dayjs";
-
-        import { toChainageFormat } from "../assets/protoBufUtilities";
 
         const baseColumnSortOrder = [[0, 'asc']];
 
@@ -227,8 +225,9 @@
                     className: "text-right",
                     orderable: false,
                     render: (data, type) => {
-                        if (type === 'display') return toChainageFormat(data);
-                        return data;
+                        return (type === 'display')
+                            ? (data / 1000).toFixed(2)
+                            : data;
                     },
                 },
                 {
@@ -309,11 +308,12 @@
             },
             prepareTableData(tableName, tableData) {
                 const haveTableData = tableData.length > 0;
+
                 if (haveTableData) {
-                    const tableDataTotalLength = tableData.reduce((acc, cur) => acc += cur.distance || 0, 0);
+                    this.state.reportData.totalLength = this.state.reportData.totalLength || tableData.reduce((acc, cur) => acc += cur.distance || 0, 0);
                     tableData.forEach((entry) => {
-                        if (tableDataTotalLength > 0) {
-                            entry.percent = Math.round((entry.distance / tableDataTotalLength) * 10000) / 100;
+                        if (this.state.reportData.totalLength > 0) {
+                            entry.percent = Math.round((entry.distance / this.state.reportData.totalLength) * 10000) / 100;
                         } else {
                             // 100% of 0km - but this won't appear in the label
                             entry.percent = 100;
@@ -328,13 +328,16 @@
                         }
                     });
                     const eventName = `${tableName}.dataAdded`;
-                    const eventDetail = { detail: { pendingRows: tableData, appendRows: false }};
+                    const eventDetail = { detail: { pendingRows: tableData, clearRows: true }};
                     document.dispatchEvent(new CustomEvent(eventName, eventDetail));
                 }
 
                 return tableData;
             },
             createReport(e) {
+                $('#loading').modal('show');
+
+                const reportId = e.currentTarget.dataset.id;
                 const filters = this.reportContent().fixedFilter;
 
                 const userFilters = {};
@@ -346,7 +349,13 @@
                         return;
                     }
 
-                    filters[requestFilterName] = $(`#${filterDefinition.selectId}`).select2("data");
+                    const selectData = $(`#${filterDefinition.selectId}`).select2("data");
+                    if (!selectData || selectData.length === 0) {
+                        return;
+                    }
+                    const selection = selectData.map((data) => {return data.text;}).join(",");
+                    console.log(selection);
+                    filters[requestFilterName] = selection;
                 });
 
                 if (!Object.keys(filters).length) {
@@ -358,8 +367,8 @@
                         if (surveyReportData) {
                             this.state.noReport = false;
                             const haveLengths = !!surveyReportData.lengths;
-                            // This may not work - might need to delete all members one by one - @$@#$@# Riot
-                            this.state.reportData = {};
+                            // This may not work - might need to delete/replace all members one by one - @$@#$@# Riot
+                            this.state.reportData = {totalLength: 0};
                             if (haveLengths) {
                                 const surfaceConditions = surveyReportData.surfaceConditions;
                                 const haveSurfaceConditions = surfaceConditions.length > 0;
@@ -367,16 +376,16 @@
                                 this.state.reportData.roadStatus = this.prepareTableData(this.dataTableIds.roadStatus, surveyReportData.roadStatuses);
                                 this.state.reportData.technicalClass = this.prepareTableData(this.dataTableIds.technicalClass, surveyReportData.technicalClasses);
                             }
-                            this.state.error = false;
+                            this.props.showFeedback();
                         } else {
+                            this.props.showFeedback(true);
                             this.state.noReport = true;
-                            this.state.error = true;
                         }
                     }).catch(err => {
+                        this.props.showFeedback(true);
                         this.state.noReport = true;
-                        this.state.error = true;
                     }).finally((r) => {
-                        this.state.loading = false;
+                        $('#loading').modal('hide');
                         this.update();
                     });
             },

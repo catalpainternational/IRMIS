@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0 VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-14 07:55+0000\n"
+"POT-Creation-Date: 2019-11-22 08:13+0000\n"
 "PO-Revision-Date: 2019-10-09 05:43+0000\n"
 "Last-Translator: b'  <januario@catalpa.io>'\n"
 "Language-Team: Catalpa International <info@catalpa.io>\n"
@@ -164,22 +164,30 @@ msgstr "Naran Linha Ikus "
 msgid "Enter the name of the link end location (municipal center, administrative post or nearest suco)"
 msgstr "Hatama naran husi fatin linha ikus (sentru munisipiu, postu administrativu ou suku nebe besik) "
 
-msgid "Link End Chainage (Km)"
-msgstr "Linha Estasaun Ikus (Km)"
+#, fuzzy
+#| msgid "Link end chainage"
+msgid "Link End Chainage"
+msgstr "Linha estasaun ikus"
 
 msgid "Enter chainage for link ending point"
 msgstr "Hatama estasaun ba pontu linha ikus"
 
-msgid "Link Start Chainage (Km)"
-msgstr "Linha Estasaun Komesa (Km)"
+#, fuzzy
+#| msgid "Link start chainage"
+msgid "Link Start Chainage"
+msgstr "Linha estasaun komesa"
 
 msgid "Enter chainage for link starting point"
 msgstr "Hatama estasaun ba linha nia pontu komesa"
 
-msgid "Link Length"
+#, fuzzy
+#| msgid "Link Length"
+msgid "Link Length (Km)"
 msgstr "Naruk Estasaun"
 
-msgid "Enter road link length (in Km)"
+#, fuzzy
+#| msgid "Enter road link length (in Km)"
+msgid "Enter road link length"
 msgstr "Hatama linha estrada nia naruk (iha Km) "
 
 msgid "Surface Type"
@@ -194,10 +202,14 @@ msgstr "Klase Pavimentu "
 msgid "Choose the pavement class of the road"
 msgstr "Hili klase pavimentu husi estrada"
 
-msgid "Carriageway Width"
+#, fuzzy
+#| msgid "Carriageway Width"
+msgid "Carriageway Width (m)"
 msgstr "Carriageaway nia luan"
 
-msgid "Enter the width (in meters) of the link carriageway"
+#, fuzzy
+#| msgid "Enter the width (in meters) of the link carriageway"
+msgid "Enter the width of the link carriageway"
 msgstr "Hatama luan (iha metru) husi linha Carriageaway"
 
 #, fuzzy
@@ -277,6 +289,9 @@ msgstr "Kodigu linha"
 
 msgid "Link name"
 msgstr "Naran linha"
+
+msgid "Link Length"
+msgstr "Naruk Estasaun"
 
 msgid "Link start name"
 msgstr "Naran linha komesa"
@@ -492,6 +507,12 @@ msgstr "Email"
 
 msgid "Send"
 msgstr "Haruka"
+
+#~ msgid "Link End Chainage (Km)"
+#~ msgstr "Linha Estasaun Ikus (Km)"
+
+#~ msgid "Link Start Chainage (Km)"
+#~ msgstr "Linha Estasaun Komesa (Km)"
 
 #~ msgid "Administrative Area"
 #~ msgstr "Area Administrativu "

@@ -63,7 +63,9 @@ export class EstradaNetworkSurveyReport extends Report {
             return `${this.roadCodes}_${this.reportChainage[0]}-${this.reportChainage[1]}`;
         }
 
-        return `${this.roadTypes.join(",")}`;
+        return (this.roadTypes && this.roadTypes.length > 0)
+            ? `${this.roadTypes.join(",")}`
+            : null;
     }
 
     get id() {
@@ -77,7 +79,18 @@ export class EstradaNetworkSurveyReport extends Report {
     }
 
     get lengths() {
-        const lengths = this.getLengths() || "{ surface_condition: { None: 0 } }";
+        let lengths = "";
+
+        try {
+            lengths = this.getlengths();
+        } catch {
+            lengths = "";
+        }
+
+        // We can change the following to 
+        // whatever we consider an appropriate 'empty' collection of lengths
+        lengths = lengths || '{ "surface_condition": { "None": 0 } }';
+
         return JSON.parse(lengths);
     }
 
