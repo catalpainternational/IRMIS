@@ -84,8 +84,6 @@
 
         import Edit_History from "./edit_history.riot.html";
 
-        let timeoutIds = [];
-
         export default {
             state: {
                 loading: true,
@@ -180,7 +178,6 @@
                 if (this.hasChanges()) {
                     this.modalHandler();
                 } else {
-                    this.clearTimeouts();
                     window.location.hash = this.state.nextPage;
                 }
             },
@@ -218,19 +215,18 @@
                     showFeedback: true,
                     error: error,
                 });
-                timeoutIds.push(setTimeout(() => this.closeFeedback(), 5000));
+                setTimeout(() => this.closeFeedback(), 2000);
             },
             closeFeedback() {
                 const feedback = document.getElementsByClassName("slide-in").item(0);
-                this.clearTimeouts();
-                feedback.classList.add("slide-out");
-                setTimeout(() => {
-                    feedback.classList.remove("slide-out");
-                    this.update({ showFeedback: false });
-                }, 300);
-            },
-            clearTimeouts() {
-                timeoutIds.forEach(id => clearTimeout(id));
+
+                if (feedback) {
+                    feedback.classList.add("slide-out");
+                    setTimeout(() => {
+                        feedback.classList.remove("slide-out");
+                        this.update({ showFeedback: false });
+                    }, 300);
+                }
             },
             refreshSurveysAndReports(state, allDataTableId, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId) {
                 this.getRoadSurveys(state, allDataTableId);
