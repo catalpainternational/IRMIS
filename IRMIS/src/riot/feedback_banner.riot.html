@@ -14,7 +14,7 @@
             <span class="error image"></span>
             <div class="d-flex flex-column flex-grow-1">
                 <span>{ window.gettext('Error') }</span>
-                <small class="text-muted">{ window.gettext('Something went wrong') }</small>
+                <small class="text-muted">{ props.errorMessage }</small>
             </div>
             <span class="close image" onclick="{ closeFeedback }"></span>
         </div>
