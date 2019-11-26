@@ -320,20 +320,18 @@ table {
 
 // Override Bootstrap styles
 
-button {
-    &.btn {
-        line-height: 14px;
-        font-weight: 700;
-    }
+.btn {
+    line-height: 14px;
+    font-weight: 700;
+}
 
-    &.btn-sm, &.btn-sm span {
-        line-height: 14px;
-        font-size: 12px;
-    }
+.btn-sm, .btn-sm span {
+    line-height: 14px;
+    font-size: 12px;
+}
 
-    &.btn-lg {
-        font-size: inherit;
-    }
+.btn-lg {
+    font-size: inherit;
 }
 
 .dropdown-menu {
