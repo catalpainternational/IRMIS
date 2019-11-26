@@ -14,58 +14,61 @@
         </div>
     </header>
 
-    <div class="content-wrapper d-flex justify-content-between">
-        <div class="d-flex flex-wrap">
-            <div class="options">
-                <select id="municipality_area_select2" multiple="true">
-                    <option each="{ area in window.road_schema.administrative_area.options }" value="{ area.id }">{ area.name }</option>
-                </select>
-            </div>
-
-            <div if="{ !reportContent().fixedFilter.roadtype }" class="options">
-                <select id="road_class_select2" multiple="true">
-                    <option each="{ road_class in window.road_schema.road_type.options }" value="{ road_class[0] }">{ road_class[1] }</option>
-                </select>
-            </div>
-            <!-- Optionally include the following to show the fixedFilter value (changing to the full option title) -->
-            <!-- <div if="{ reportContent().fixedFilter.roadtype }" class="options">
-                <span>{ reportContent().fixedFilter.roadtype }</span>
-            </div> -->
-
-            <div class="options">
-                <select id="surface_type_select2" multiple="true">
-                    <option each="{ surface_type in window.road_schema.surface_type.options }" value="{ surface_type.code }">{ surface_type.name }</option>
-                </select>
-            </div>
-
-            <div class="options">
-                <select id="surface_condition_select2" multiple="true">
-                    <option each="{ surface_condition in window.road_schema.surface_condition.options }" value="{ surface_condition[0] }">{ surface_condition[1] }</option>
-                </select>
-            </div>
-
-            <div>
-                <div class="options">
-                    <select id="road_code_select2" multiple="true">
-                        <option each="{ code in window.road_schema.road_code.options }" value="{ code.road_code }">{ code.road_code }</option>
+    <div class="content-wrapper">
+        <h6>{ window.gettext("Select report criteria") }</h6>
+        <div class="d-flex justify-content-between">
+            <div class="d-flex flex-wrap">
+                <div if="{ reportContent().visibleFilters.municipality }" class="options">
+                    <select id="municipality_area_select2" multiple="true">
+                        <option each="{ area in window.road_schema.administrative_area.options }" value="{ area.id }">{ area.name }</option>
                     </select>
                 </div>
-                <div class="d-flex flex-wrap">
-                    <div class="d-flex flex-column">
-                        <label>{ window.gettext("Chainage start") }</label>
-                        <input class="{ state.reportStartChainage ? '' : 'inactive' } form-control form-control-sm" type="number" oninput="{ selectStartChainage }" placeholder="0">
+
+                <div if="{ reportContent().visibleFilters.roadClass }" class="options">
+                    <select id="road_class_select2" multiple="true">
+                        <option each="{ road_class in window.road_schema.road_type.options }" value="{ road_class[0] }">{ road_class[1] }</option>
+                    </select>
+                </div>
+                <!-- Optionally include the following to show the fixedFilter value (changing to the full option title) -->
+                <!-- <div if="{ reportContent().fixedFilter.roadtype }" class="options">
+                    <span>{ reportContent().fixedFilter.roadtype }</span>
+                </div> -->
+
+                <div if="{ reportContent().visibleFilters.surfaceType }" class="options">
+                    <select id="surface_type_select2" multiple="true">
+                        <option each="{ surface_type in window.road_schema.surface_type.options }" value="{ surface_type.code }">{ surface_type.name }</option>
+                    </select>
+                </div>
+
+                <div if="{ reportContent().visibleFilters.surfaceCondition }" class="options">
+                    <select id="surface_condition_select2" multiple="true">
+                        <option each="{ surface_condition in window.road_schema.surface_condition.options }" value="{ surface_condition[0] }">{ surface_condition[1] }</option>
+                    </select>
+                </div>
+
+                <div if="{ reportContent().visibleFilters.roadCode }">
+                    <div class="options">
+                        <select id="road_code_select2" multiple="true">
+                            <option each="{ code in window.road_schema.road_code.options }" value="{ code.road_code }">{ code.road_code }</option>
+                        </select>
                     </div>
-                    <div class="d-flex flex-column">
-                        <label>{ window.gettext("Chainage end") }</label>
-                        <input class="{ state.reportEndChainage ? '' : 'inactive' } form-control form-control-sm" type="number" oninput="{ selectEndChainage }" placeholder="20000">
+                    <div class="d-flex flex-wrap">
+                        <div class="d-flex flex-column">
+                            <label>{ window.gettext("Chainage start") }</label>
+                            <input class="{ state.reportStartChainage ? '' : 'inactive' } form-control form-control-sm" type="number" oninput="{ selectStartChainage }" placeholder="0">
+                        </div>
+                        <div class="d-flex flex-column">
+                            <label>{ window.gettext("Chainage end") }</label>
+                            <input class="{ state.reportEndChainage ? '' : 'inactive' } form-control form-control-sm" type="number" oninput="{ selectEndChainage }" placeholder="20000">
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <input class="{ state.reportDate ? '' : 'inactive' } form-control form-control-sm" type="date" oninput="{ selectDate }" value="{ current_date() }" max="{ max_date() }" placeholder="Select Date" pattern="\d{4}-\d{2}-\d{2}">
-        </div>
-        <div>
-            <button type="button" class="btn btn-primary" onclick="{ createReport }" data-id="{ props.id }">{ window.gettext("Create Report") }</button>
+                <input if="{ reportContent().visibleFilters.reportDate }" class="{ state.reportDate ? '' : 'inactive' } form-control form-control-sm" type="date" oninput="{ selectDate }" value="{ current_date() }" max="{ max_date() }" placeholder="Select Date" pattern="\d{4}-\d{2}-\d{2}">
+            </div>
+            <div>
+                <button type="button" class="btn btn-primary" onclick="{ createReport }" data-id="{ props.id }">{ window.gettext("Create Report") }</button>
+            </div>
         </div>
     </div>
 
@@ -138,21 +141,43 @@
                         title: window.gettext("Road Network Length"),
                         description: window.gettext("A report on the total length of the road network. The report provides total length in kilometers and percentages according to Road Status and Technical Class. A number of filters can be selected in order to generate a length report according to the required criteria"),
                         fixedFilter: {},
+                        visibleFilters: {
+                            municipality: true,
+                            roadClass: true,
+                            surfaceType: true,
+                            surfaceCondition: true,
+                            reportDate: true,
+                        },
                     },
                     1: {
                         title: window.gettext("Road Network Length Breakdown"),
                         description: window.gettext("A breakdown report on the total length of the road network. The report provides information on total length in kilometers and percentages as well as Road Status and Technical Class, according to a breakdown by Municipality, Road Class and Surface Type"),
                         fixedFilter: {},
+                        visibleFilters: {
+                            municipality: true,
+                            roadClass: true,
+                            surfaceType: true,
+                            surfaceCondition: true,
+                            reportDate: true,
+                        },
                     },
                     2: {
                         title: window.gettext("Surface Condition"),
                         description: window.gettext("A report on Road Surface Condition. This report provides detailed Surface Condition information per segment"),
                         fixedFilter: {},
+                        visibleFilters: {
+                            roadCode: true,
+                            reportDate: true,
+                        },
                     },
                     3: { 
                         title: window.gettext("IRI Roughness"),
                         description: window.gettext("A report on Road IRI data. This report provides detailed information on a Road's Roughness per segment"),
                         fixedFilter: {},
+                        visibleFilters: {
+                            roadCode: true,
+                            reportDate: true,
+                        },
                     },
                     4: {
                         title: window.gettext("Road Network Length - National Class"),
@@ -160,6 +185,9 @@
                         fixedFilter: {
                             primaryattribute: ["road_status", "technical_class"],
                             roadtype: "NAT",
+                        },
+                        visibleFilters: {
+                            reportDate: true,
                         },
                     },
                     5: {
@@ -169,6 +197,9 @@
                             primaryattribute: ["road_status", "technical_class"],
                             roadtype: "MUN",
                         },
+                        visibleFilters: {
+                            reportDate: true,
+                        },
                     },
                     6: {
                         title: window.gettext("Road Network Length - Rural Class"),
@@ -176,6 +207,9 @@
                         fixedFilter: {
                             primaryattribute: ["road_status", "technical_class"],
                             roadtype: "RUR",
+                        },
+                        visibleFilters: {
+                            reportDate: true,
                         },
                     },
                     7: {
@@ -185,6 +219,9 @@
                             primaryattribute: ["road_status", "technical_class"],
                             roadtype: "HIGH",
                         },
+                        visibleFilters: {
+                            reportDate: true,
+                        },
                     },
                     8: {
                         title: window.gettext("Road Network Length - Urban Class"),
@@ -192,6 +229,9 @@
                         fixedFilter: {
                             primaryattribute: ["road_status", "technical_class"],
                             roadtype: "URB",
+                        },
+                        visibleFilters: {
+                            reportDate: true,
                         },
                     },
                 },
