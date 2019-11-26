@@ -16,15 +16,8 @@
         import "bootstrap/js/dist/modal";
         import $ from "jquery";
 
-        let timeoutId = null;
-
         const initialiseStateFromProps = function(props, state) {
             state = state || {};
-
-            state.saving = false;
-            state.error = false;
-            state.hasChanges = false;
-            state.showFeedback = false;
 
             state.canExport = !!props.canexport;
             state.canEdit = !!props.canedit;

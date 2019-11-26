@@ -38,13 +38,18 @@
                 <h1>{ state.editingRoad.getRoadCode() } { state.editingRoad.getRoadName() }</h1>
             </header>
 
-            <feedback_banner if="{ state.showFeedback }" close="{ closeFeedback }" successMessage="{ window.gettext('You have successfully saved') }" error="{ state.error }"></feedback_banner>
+            <feedback_banner if="{ state.showFeedback }"
+                close="{ closeFeedback }"
+                successMessage="{ window.gettext('You have successfully saved') }"
+                errorMessage="{ window.gettext('Something went wrong') }"
+                error="{ state.error }">
+            </feedback_banner>
 
             <edit_location_type road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}" if="{ state.page === 'location_type' }"></edit_location_type>
             <edit_asset_details road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}" if="{ state.page === 'asset_details' }"></edit_asset_details>
             <edit_pavement road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}" if="{ state.page === 'pavement' }"></edit_pavement>
             <edit_project road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}" if="{ state.page === 'project' }"></edit_project>
-            <edit_condition road="{ state.editingRoad }" showBanner="{ showFeedback }" parent="{parentFunctions}" if="{ state.page === 'condition' }"></edit_condition>
+            <edit_condition road="{ state.editingRoad }" showFeedback="{ showFeedback }" parent="{parentFunctions}" if="{ state.page === 'condition' }"></edit_condition>
             <edit_maintenance road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}" if="{ state.page === 'maintenance' }"></edit_maintenance>
 
             <edit_history road="{ state.baseRoad }" parent="{parentFunctions}" if="{ state.page === 'history' }"></edit_history>
@@ -79,7 +84,7 @@
 
         import Edit_History from "./edit_history.riot.html";
 
-        let timeoutId = null;
+        let timeoutIds = [];
 
         export default {
             state: {
@@ -175,7 +180,7 @@
                 if (this.hasChanges()) {
                     this.modalHandler();
                 } else {
-                    clearTimeout(timeoutId);
+                    this.clearTimeouts();
                     window.location.hash = this.state.nextPage;
                 }
             },
@@ -213,16 +218,19 @@
                     showFeedback: true,
                     error: error,
                 });
-                timeoutId = setTimeout(() => this.closeFeedback(), 5000);
+                timeoutIds.push(setTimeout(() => this.closeFeedback(), 5000));
             },
             closeFeedback() {
                 const feedback = document.getElementsByClassName("slide-in").item(0);
-                clearTimeout(timeoutId);
+                this.clearTimeouts();
                 feedback.classList.add("slide-out");
                 setTimeout(() => {
                     feedback.classList.remove("slide-out");
                     this.update({ showFeedback: false });
                 }, 300);
+            },
+            clearTimeouts() {
+                timeoutIds.forEach(id => clearTimeout(id));
             },
             refreshSurveysAndReports(state, allDataTableId, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId) {
                 this.getRoadSurveys(state, allDataTableId);

@@ -404,10 +404,10 @@
                                 survey: new Survey({}), // clear input values
                             });
                             $('#loading').modal('hide');
-                            this.props.showBanner();
+                            this.props.showFeedback();
                         })
                         .catch((err) => {
-                            this.props.showBanner(true);
+                            this.props.showFeedback(true);
                         });
                 } else {
                     updateSurvey(this.state.survey)
@@ -417,10 +417,10 @@
                                 survey: new Survey({}), // clear input values
                             });
                             $('#loading').modal('hide');
-                            this.props.showBanner();
+                            this.props.showFeedback();
                         })
                         .catch((err) => {
-                            this.props.showBanner(true);
+                            this.props.showFeedback(true);
                         });
                 }
                 // clear input values
