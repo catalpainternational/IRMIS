@@ -11,6 +11,8 @@ DATABASES = {
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
+SENDFILE_BACKEND = "sendfile.backends.development"
+
 # django extensions
 try:
     import django_extensions

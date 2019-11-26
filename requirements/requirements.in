@@ -8,3 +8,4 @@ django-rest-framework-condition
 geobuf
 protobuf
 django-reversion
+django-sendfile
