@@ -164,6 +164,18 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
         return this.makeSpecificLengths("traffic_level", TRAFFIC_LEVEL_CHOICES);
     }
 
+    attributeTable(primaryAttribute) {
+        const attributeTableIndex = this.attributeTablesList.findIndex((attributeTable) => {
+            return attributeTable.primaryAttribute === primaryAttribute;
+        });
+
+        if (attributeTableIndex === -1) {
+            return [];
+        }
+
+        return this.attributeTablesList[attributeTableIndex].attributeEntriesList;
+    }
+
     static getFieldName(field) {
         return getFieldName(roadReportSchema, field);
     }
