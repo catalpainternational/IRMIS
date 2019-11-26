@@ -122,7 +122,7 @@
             },
             closeFeedback() {
                 const feedback = document.getElementsByClassName("slide-in").item(0);
-                clearTimeouts();
+                this.clearTimeouts();
                 feedback.classList.add("slide-out");
                 setTimeout(() => {
                     feedback.classList.remove("slide-out");
