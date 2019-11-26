@@ -422,6 +422,7 @@
                             }
                             this.props.showFeedback();
                         } else {
+                            // An id of null should tell us that there was an error fetching the data
                             this.props.showFeedback(true);
                             this.state.noReport = true;
                         }

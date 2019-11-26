@@ -82,7 +82,7 @@ export class EstradaNetworkSurveyReport extends Report {
         let lengths = "";
 
         try {
-            lengths = this.getlengths();
+            lengths = this.getLengths();
         } catch {
             lengths = "";
         }
