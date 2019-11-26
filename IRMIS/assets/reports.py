@@ -31,6 +31,7 @@ class Report:
         self.primary_attributes = list(surveys.keys())
         self.withAttributes = withAttributes
         self.segmentations = {}
+        self.road_codes = set()
         # set basic report attributes
         # filters is a dict of lists, lengths is a dict of numeric values
         self.filters = {}
@@ -85,6 +86,9 @@ class Report:
                 # Ensure that any attribute to be reported on is present in the values
                 if not "surface_condition" in survey.values:
                     survey.values["surface_condition"] = None
+
+                # Build up the set of road_codes
+                self.road_codes.add(survey.road)
 
                 # check survey does not conflict with current aggregate segmentations
                 # and update the segmentations when needed
@@ -180,8 +184,6 @@ class Report:
                 # Return an empty report.
                 return self.report_protobuf
 
-        self.report_protobuf.filter = json.dumps(self.filters)
-
         for primary_attribute in self.primary_attributes:
             # build and set report statistical data & table
             self.build_empty_chainage_list(primary_attribute)
@@ -193,6 +195,9 @@ class Report:
             if self.withAttributes:
                 self.build_attribute_tables(primary_attribute)
 
+        self.filters["road_code"] = list(self.road_codes)
+
+        self.report_protobuf.filter = json.dumps(self.filters)
         self.report_protobuf.lengths = json.dumps(self.lengths)
 
         return self.report_protobuf
