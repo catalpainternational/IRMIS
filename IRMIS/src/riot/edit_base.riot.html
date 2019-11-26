@@ -286,9 +286,7 @@
                                 document.dispatchEvent(new CustomEvent(`${stackedBarId}.dataUpdated`, { detail: { entries: state[reportAttribute] }}));
                             }
                             if (haveReportAttributesMember) {
-                                state.reportRows = surveyReportData["attributeTablesList"]
-                                    ? surveyReportData["attributeTablesList"][0]['attributeEntriesList'] || []
-                                    : [];
+                                state.reportRows = surveyReportData.attributeTable(primaryAttribute);
 
                                 const eventName = `${reportDataTableId}.dataAdded`;
                                 const eventDetail = { detail: { pendingRows: state.reportRows, clearRows: true }};
