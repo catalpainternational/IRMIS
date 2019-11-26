@@ -9,6 +9,21 @@
                 </ul>
             </div>
         </div>
-        <div id="planning"></div>
+        <div id="planning">
+            <plan
+                title="{  window.gettext('5 Year Plan') }"
+                description="{ window.gettext('A report on the total length of National Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for National Roads') }">
+            </plan>
+        </div>
     </div>
+
+    <script>
+        import Plan from './plan.riot.html';
+
+        export default {
+            components: {
+                Plan,
+            },
+        }
+    </script>
 </planning_base>

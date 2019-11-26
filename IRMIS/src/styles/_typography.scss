@@ -150,7 +150,7 @@ p {
     font-size: 16px;
 }
 
-reports_base p {
+reports_base p, planning_base p {
     color: $darker-gray;
     line-height: 16px;
     font-size: 14px;
@@ -230,7 +230,7 @@ h6 {
     color: $white;
 }
 
-reports_base h6 {
+reports_base h6, planning_base h6 {
     color: $darker-gray;
 }
 
@@ -357,7 +357,7 @@ button {
 }
 
 .text-muted {
-	color: $dark-gray !important;
+	color: $gray !important;
 }
 
 .invalid-tooltip li {
