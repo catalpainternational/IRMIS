@@ -391,10 +391,6 @@
                         return;
                     }
 
-                    if (requestFilterName === "roadcode") {
-                        return;
-                    }
-
                     const selectData = $(`#${filterDefinition.selectId}`).select2("data");
                     if (!selectData || selectData.length === 0) {
                         return;
