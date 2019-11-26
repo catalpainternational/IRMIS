@@ -86,8 +86,8 @@
             <button class="btn btn-secondary btn-sm">{ window.gettext("Print") }</button>
         </div>
         <div class="filtered-segment d-flex flex-column">
-            <h6>A01-01</h6>
-            <h6>Chainage 0+000 to 2+360</h6>
+            <h6 if="{ state.reportData.roadCodes && state.reportData.roadCodes.length }">{ state.reportData.roadCodes.join(" ") }</h6>
+            <h6 if="{ state.reportData.reportChainage }">Chainage { toChainageFormat(state.reportData.reportChainage[0]) } to { toChainageFormat(state.reportData.reportChainage[1]) }</h6>
         </div>
         <span>{ window.gettext("Created on") } 16 July 2019 - { window.gettext("Report for") } 16 September 2019</span>
         <div class="d-flex flex-column filters-applied">
@@ -103,16 +103,15 @@
                 </div>
             </div>
         </div>
-        <div class="content-wrapper">
-            <stacked_bar id="{ stackedBarIds.roadStatus }" title="{ window.gettext('Road Status') }"
-                entries="{ state.roadStatuses }" total_title="{ window.gettext('Total road chainage') }"></stacked_bar>
-            <stacked_bar id="{ stackedBarIds.technicalClass }" title="{ window.gettext('Technical Class') }"
-                entries="{ state.technicalClasses }" total_title="{ window.gettext('Total road chainage') }">
-            </stacked_bar>
-            <stacked_bar id="{ stackedBarIds.surfaceCondition }" title="{ window.gettext('Surface Condition (SDI)') }"
-                entries="{ state.surfaceConditions }" total_title="{ window.gettext('Total road chainage') }">
-            </stacked_bar>
-        </div>
+
+        <stacked_bar id="{ stackedBarIds.roadStatus }" title="{ window.gettext('Road Status') }"
+            entries="{ state.roadStatuses }" total_title="{ window.gettext('Total road chainage') }"></stacked_bar>
+        <stacked_bar id="{ stackedBarIds.technicalClass }" title="{ window.gettext('Technical Class') }"
+            entries="{ state.technicalClasses }" total_title="{ window.gettext('Total road chainage') }">
+        </stacked_bar>
+        <stacked_bar id="{ stackedBarIds.surfaceCondition }" title="{ window.gettext('Surface Condition (SDI)') }"
+            entries="{ state.surfaceConditions }" total_title="{ window.gettext('Total road chainage') }">
+        </stacked_bar>
 
         <div if="{state.reportData.totalLength}" class="d-flex flex-column total-length">
             <p>{ window.gettext("Total Length") }</p>
@@ -481,11 +480,14 @@
 
                 return null;
             },
+            toChainageFormat(value) {
+                return toChainageFormat(value);
+            },
             createReport(e) {
                 $('#loading').modal('show');
 
                 const reportId = e.currentTarget.dataset.id;
-                const filters = this.reportContent().fixedFilter;
+                const filters = cloneData(this.reportContent().fixedFilter);
 
                 const userFilters = {};
                 this.state.filterDefinitions.forEach((filterDefinition) => {
@@ -515,7 +517,11 @@
                             this.state.noReport = false;
                             const haveLengths = !!surveyReportData.lengths;
                             // This may not work - might need to delete/replace all members one by one - @$@#$@# Riot
-                            this.state.reportData = { totalLength: 0 };
+                            this.state.reportData = {
+                                totalLength: 0,
+                                roadCodes: surveyReportData.roadCodes || [],
+                                reportChainage: surveyReportData.reportChainage || undefined,
+                            };
 
                             if (haveLengths) {
                                 this.prepareStackedBar(this.stackedBarIds.roadStatus, surveyReportData.roadStatuses, "road_status");
