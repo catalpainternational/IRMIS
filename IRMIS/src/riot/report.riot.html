@@ -95,6 +95,24 @@
                 </div>
             </div>
         </div>
+        <div class="content-wrapper">
+            <stacked_bar
+                id="{ stackedBarIds.roadStatus }"
+                title="{ window.gettext('Road Status') }"
+                entries="{ state.roadStatuses }"
+                total_title="{ window.gettext('Total road chainage') }" ></stacked_bar>
+            <stacked_bar
+                id="{ stackedBarIds.technicalClass }"
+                title="{ window.gettext('Technical Class') }"
+                entries="{ state.technicalClasses }"
+                total_title="{ window.gettext('Total road chainage') }" ></stacked_bar>
+            <stacked_bar
+                id="{ stackedBarIds.surfaceCondition }"
+                title="{ window.gettext('Surface Condition') }"
+                entries="{ state.surfaceConditions }"
+                total_title="{ window.gettext('Total road chainage') }" ></stacked_bar>
+        </div>
+
         <div if="{state.reportData.totalLength}" class="d-flex flex-column total-length">
             <p>{ window.gettext("Total Length") }</p>
             <h1>{ (state.reportData.totalLength / 1000).toFixed(1) } km</h1>
@@ -118,7 +136,10 @@
     </div>
 
     <script>
+        import Stacked_Bar from "./stacked_bar.riot.html";
+
         import { getRoadReport } from "../reportManager";
+        import { updateReportAttributeSummary } from "../roadAttributes";
 
         import $ from "jquery";
         import "select2/dist/js/select2.full.min.js";
@@ -246,6 +267,17 @@
                     },
                 },
                 reportData: {},
+                roadStatuses: [{ key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
+                technicalClasses: [{ key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
+                surfaceConditions: [{ key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
+            },
+            components: {
+                Stacked_Bar
+            },
+            stackedBarIds: {
+                roadStatus: "report-road-status-bar",
+                technicalClass: "report-technical-class-bar",
+                surfaceCondition: "report-surface-condition-bar",
             },
             dataTableIds: {
                 roadStatus: "report-road-status-table",
@@ -288,6 +320,8 @@
                 state.filterDefinitions.forEach((filterDefinition) => {
                     this.prepareSelects(filterDefinition);
                 });
+
+                this.prepareStackedBar(this.stackedBarIds.surfaceCondition, this.state.surfaceConditions, "surface_condition");
             },
             prepareSelects(filterDefinition) {
                 const selectOptions = {
@@ -347,6 +381,12 @@
             },
             toggleSingleSelect2(e) {
                 this.state[e.data] = e.currentTarget.value;
+            },
+            prepareStackedBar(barName, barData, filterName) {
+                updateReportAttributeSummary(this.state, filterName, barData);
+                const eventName = `${barName}.dataUpdated`;
+                const eventDetail = { detail: { entries: this.state[filterName] }};
+                document.dispatchEvent(new CustomEvent(eventName, eventDetail));
             },
             prepareTableData(tableName, tableData, filterName) {
                 const haveTableData = tableData.length > 0;
@@ -417,7 +457,12 @@
                             const haveLengths = !!surveyReportData.lengths;
                             // This may not work - might need to delete/replace all members one by one - @$@#$@# Riot
                             this.state.reportData = {totalLength: 0};
+
                             if (haveLengths) {
+                                this.prepareStackedBar(this.stackedBarIds.roadStatus, surveyReportData.roadStatuses, "road_status");
+                                this.prepareStackedBar(this.stackedBarIds.technicalClass, surveyReportData.technicalClasses, "technical_class");
+                                this.prepareStackedBar(this.stackedBarIds.surfaceCondition, surveyReportData.surfaceConditions, "surface_condition");
+
                                 this.state.reportData.roadStatus = this.prepareTableData(this.dataTableIds.roadStatus, surveyReportData.roadStatuses, "road_status");
                                 this.state.reportData.technicalClass = this.prepareTableData(this.dataTableIds.technicalClass, surveyReportData.technicalClasses, "technical_class");
                                 this.state.reportData.surfaceCondition = this.prepareTableData(this.dataTableIds.surfaceCondition, surveyReportData.surfaceConditions, "surface_condition");
