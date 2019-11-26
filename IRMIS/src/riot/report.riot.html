@@ -99,9 +99,9 @@
             <p>{ window.gettext("Total Length") }</p>
             <h1>{ (state.reportData.totalLength / 1000).toFixed(1) } km</h1>
         </div>
-        <data_table table_id="{dataTableIds.roadStatus}" tableName="Road Status" columns="{baseColumns}" columnSortOrder="{baseColumnSortOrder}" paging="false" canExport></data_table>
-        <data_table table_id="{dataTableIds.technicalClass}" tableName="Technical Class" columns="{baseColumns}" columnSortOrder="{baseColumnSortOrder}" paging="false" canExport></data_table>
-        <data_table table_id="{dataTableIds.surfaceCondition}" tableName="Surface Condition" columns="{baseColumns}" columnSortOrder="{baseColumnSortOrder}" paging="false" canExport></data_table>
+        <data_table hidden="{ state.reportData.roadStatus }" table_id="{dataTableIds.roadStatus}" tableName="Road Status" columns="{baseColumns}" columnSortOrder="{baseColumnSortOrder}" paging="false" canExport></data_table>
+        <data_table hidden="{ state.reportData.technicalClass }" table_id="{dataTableIds.technicalClass}" tableName="Technical Class" columns="{baseColumns}" columnSortOrder="{baseColumnSortOrder}" paging="false" canExport></data_table>
+        <data_table hidden="{ state.reportData.surfaceCondition }" table_id="{dataTableIds.surfaceCondition}" tableName="Surface Condition" columns="{baseColumns}" columnSortOrder="{baseColumnSortOrder}" paging="false" canExport></data_table>
     </div>
 
     <div if="{ state.noReport }" class="align-items-center blank content-wrapper d-flex flex-column justify-content-center">
