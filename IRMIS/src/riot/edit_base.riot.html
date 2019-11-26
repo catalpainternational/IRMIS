@@ -295,7 +295,7 @@
                                 document.dispatchEvent(new CustomEvent(eventName, eventDetail));
                                 
                                 if (surveyReportData.id === null) {
-                                    // An id of null tells us conclusively that there was an error fetching the data
+                                    // An id of null should tell us that there was an error fetching the data
                                     state.error = true;
                                     this.showFeedback(true);
                                 }
