@@ -199,30 +199,6 @@ class RoadQuerySet(models.QuerySet):
         # See roads.proto
 
         roads_protobuf = ProtoRoads()
-        all_fields = dict(
-            geojson_id="geojson_file_id",
-            road_code="road_code",
-            road_name="road_name",
-            road_type="road_type",
-            road_status="road_status__code",
-            link_code="link_code",
-            link_start_name="link_start_name",
-            link_start_chainage="link_start_chainage",
-            link_end_name="link_end_name",
-            link_end_chainage="link_end_chainage",
-            link_length="link_length",
-            surface_type="surface_type__code",
-            surface_condition="surface_condition",
-            pavement_class="pavement_class__code",
-            carriageway_width="carriageway_width",
-            administrative_area="administrative_area",
-            technical_class="technical_class__code",
-            project="project",
-            funding_source="funding_source",
-            maintenance_need="maintenance_need__code",
-            traffic_level="traffic_level",
-            number_lanes="number_lanes",
-        )
         regular_fields = dict(
             geojson_id="geojson_file_id",
             road_code="road_code",
@@ -254,7 +230,7 @@ class RoadQuerySet(models.QuerySet):
         roads = (
             self.order_by("id")
             .annotate(**annotations)
-            .values("id", *all_fields.values(), *annotations)
+            .values("id", *regular_fields.values(), *numeric_fields.values(), *annotations)
         )
 
         for road in roads:
