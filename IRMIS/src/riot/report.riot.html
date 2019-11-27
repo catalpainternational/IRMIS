@@ -89,7 +89,7 @@
             <h6 if="{ state.reportData.roadCodes && state.reportData.roadCodes.length }">{ state.reportData.roadCodes.join(" ") }</h6>
             <h6 if="{ state.reportData.reportChainage }">Chainage { toChainageFormat(state.reportData.reportChainage[0]) } to { toChainageFormat(state.reportData.reportChainage[1]) }</h6>
         </div>
-        <span>{ window.gettext("Created on") } 16 July 2019 - { window.gettext("Report for") } 16 September 2019</span>
+        <span if="{ state.reportData.dateCreated }">{ window.gettext("Created on") } { state.reportData.dateCreated() }</span>
         <div class="d-flex flex-column filters-applied">
             <p>{ window.gettext("Filters applied") }</p>
             <div class="d-flex">
@@ -105,7 +105,8 @@
         </div>
 
         <stacked_bar id="{ stackedBarIds.roadStatus }" title="{ window.gettext('Road Status') }"
-            entries="{ state.roadStatuses }" total_title="{ window.gettext('Total road chainage') }"></stacked_bar>
+            entries="{ state.roadStatuses }" total_title="{ window.gettext('Total road chainage') }">
+        </stacked_bar>
         <stacked_bar id="{ stackedBarIds.technicalClass }" title="{ window.gettext('Technical Class') }"
             entries="{ state.technicalClasses }" total_title="{ window.gettext('Total road chainage') }">
         </stacked_bar>
@@ -521,6 +522,7 @@
                                 totalLength: 0,
                                 roadCodes: surveyReportData.roadCodes || [],
                                 reportChainage: surveyReportData.reportChainage || undefined,
+                                dateCreated: () => dayjs(new Date()).format('DD MMMM YYYY [at] HH:mm'),
                             };
 
                             if (haveLengths) {
