@@ -8,7 +8,7 @@ class Command(BaseCommand):
     help = "exports data reuqired for 5 year plan to csv"
 
     def handle(self, *args, **options):
-        rural_road_ids = Road.objects.filter(road_type='RUR', core=True).values_list('road_code', flat=True)
+        # get display values
         municipality_names = {
             municipality.id: municipality.name
             for municipality in Municipality.objects.all()
@@ -21,7 +21,6 @@ class Command(BaseCommand):
             road['road_code']: road['population']
             for road in Road.objects.filter(road_type='RUR').values('road_code', 'population')
         }
-        surveys = Survey.objects.filter(road__in=rural_road_ids).order_by('road', 'chainage_start')
         TERRAIN_DISPLAY = { str(tc[0]): tc[1] for tc in Road.TERRAIN_CLASS_CHOICES }
         TERRAIN_DISPLAY[''] = ''
         SURFACE_CONDITION_CHOICES = [
@@ -33,9 +32,9 @@ class Command(BaseCommand):
         SURFACE_CONDITION_DISPLAY = { str(sc[0]): sc[1] for sc in SURFACE_CONDITION_CHOICES }
         SURFACE_CONDITION_DISPLAY[''] = ''
 
-        columns = {
-        }
-
+        # only include core rural roads
+        rural_road_ids = Road.objects.filter(road_type='RUR', core=True).values_list('road_code', flat=True)
+        surveys = Survey.objects.filter(road__in=rural_road_ids).order_by('road', 'chainage_start')
         rows = [[
                 'Rural',
                 survey.road,
@@ -50,6 +49,8 @@ class Command(BaseCommand):
             ]
             for survey in surveys
         ]
+
+        # concatenate rows with identical road_code, municipality, surface condition, surface type and terrain
         collapsed_rows = []
         working_row = rows[0].copy()
         key_indices = [0,1,2,6,7,8]
@@ -62,6 +63,7 @@ class Command(BaseCommand):
                 working_row = row.copy()
 
 
+        # write csv to stdout
         writer = csv.writer(self.stdout)
         writer.writerow(['Road class', 'Road Code', 'Municipality', 'Chainage start',
                          'Chainage end', 'Length (Km)', 'Surface Type', 'Terrain', 'Surface Condition', 'Population'])
