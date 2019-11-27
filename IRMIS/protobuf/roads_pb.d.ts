@@ -3,6 +3,7 @@
 
 import * as jspb from "google-protobuf";
 import * as google_protobuf_timestamp_pb from "google-protobuf/google/protobuf/timestamp_pb";
+import * as google_protobuf_wrappers_pb from "google-protobuf/google/protobuf/wrappers_pb";
 
 export class Version extends jspb.Message {
   getPk(): number;
@@ -109,17 +110,23 @@ export class Road extends jspb.Message {
   getLinkStartName(): string;
   setLinkStartName(value: string): void;
 
-  getLinkStartChainage(): number;
-  setLinkStartChainage(value: number): void;
+  hasLinkStartChainage(): boolean;
+  clearLinkStartChainage(): void;
+  getLinkStartChainage(): google_protobuf_wrappers_pb.FloatValue | undefined;
+  setLinkStartChainage(value?: google_protobuf_wrappers_pb.FloatValue): void;
 
   getLinkEndName(): string;
   setLinkEndName(value: string): void;
 
-  getLinkEndChainage(): number;
-  setLinkEndChainage(value: number): void;
+  hasLinkEndChainage(): boolean;
+  clearLinkEndChainage(): void;
+  getLinkEndChainage(): google_protobuf_wrappers_pb.FloatValue | undefined;
+  setLinkEndChainage(value?: google_protobuf_wrappers_pb.FloatValue): void;
 
-  getLinkLength(): number;
-  setLinkLength(value: number): void;
+  hasLinkLength(): boolean;
+  clearLinkLength(): void;
+  getLinkLength(): google_protobuf_wrappers_pb.FloatValue | undefined;
+  setLinkLength(value?: google_protobuf_wrappers_pb.FloatValue): void;
 
   getSurfaceType(): string;
   setSurfaceType(value: string): void;
@@ -130,8 +137,10 @@ export class Road extends jspb.Message {
   getPavementClass(): string;
   setPavementClass(value: string): void;
 
-  getCarriagewayWidth(): number;
-  setCarriagewayWidth(value: number): void;
+  hasCarriagewayWidth(): boolean;
+  clearCarriagewayWidth(): void;
+  getCarriagewayWidth(): google_protobuf_wrappers_pb.FloatValue | undefined;
+  setCarriagewayWidth(value?: google_protobuf_wrappers_pb.FloatValue): void;
 
   getAdministrativeArea(): string;
   setAdministrativeArea(value: string): void;
@@ -161,8 +170,10 @@ export class Road extends jspb.Message {
   getProjectionEnd(): Projection | undefined;
   setProjectionEnd(value?: Projection): void;
 
-  getNumberLanes(): number;
-  setNumberLanes(value: number): void;
+  hasNumberLanes(): boolean;
+  clearNumberLanes(): void;
+  getNumberLanes(): google_protobuf_wrappers_pb.UInt32Value | undefined;
+  setNumberLanes(value?: google_protobuf_wrappers_pb.UInt32Value): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Road.AsObject;
@@ -184,14 +195,14 @@ export namespace Road {
     roadStatus: string,
     linkCode: string,
     linkStartName: string,
-    linkStartChainage: number,
+    linkStartChainage?: google_protobuf_wrappers_pb.FloatValue.AsObject,
     linkEndName: string,
-    linkEndChainage: number,
-    linkLength: number,
+    linkEndChainage?: google_protobuf_wrappers_pb.FloatValue.AsObject,
+    linkLength?: google_protobuf_wrappers_pb.FloatValue.AsObject,
     surfaceType: string,
     surfaceCondition: string,
     pavementClass: string,
-    carriagewayWidth: number,
+    carriagewayWidth?: google_protobuf_wrappers_pb.FloatValue.AsObject,
     administrativeArea: string,
     project: string,
     fundingSource: string,
@@ -200,7 +211,7 @@ export namespace Road {
     trafficLevel: string,
     projectionStart?: Projection.AsObject,
     projectionEnd?: Projection.AsObject,
-    numberLanes: number,
+    numberLanes?: google_protobuf_wrappers_pb.UInt32Value.AsObject,
   }
 }
 

@@ -1,5 +1,6 @@
 syntax = "proto3";
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
 
 package assets;
 
@@ -36,14 +37,14 @@ message Road {
   string link_code = 5;
   /* string link_name = 6; */
   string link_start_name = 16;
-  float link_start_chainage = 11;
+  google.protobuf.FloatValue link_start_chainage = 11;
   string link_end_name = 17;
-  float link_end_chainage = 12;
-  float link_length = 7;
+  google.protobuf.FloatValue link_end_chainage = 12;
+  google.protobuf.FloatValue link_length = 7;
   string surface_type = 8;
   string surface_condition = 9;
   string pavement_class = 13;
-  float carriageway_width = 14;
+  google.protobuf.FloatValue carriageway_width = 14;
   string administrative_area = 15;
   string project = 18;
   string funding_source = 19;
@@ -53,7 +54,7 @@ message Road {
   // uint32 last_revision_id = 24;
   Projection projection_start = 25;
   Projection projection_end = 26;
-  uint32 number_lanes = 27;
+  google.protobuf.UInt32Value number_lanes = 27;
 }
 
 message Roads {

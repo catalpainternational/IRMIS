@@ -14,6 +14,8 @@ var global = Function('return this')();
 
 var google_protobuf_timestamp_pb = require('google-protobuf/google/protobuf/timestamp_pb.js');
 goog.object.extend(proto, google_protobuf_timestamp_pb);
+var google_protobuf_wrappers_pb = require('google-protobuf/google/protobuf/wrappers_pb.js');
+goog.object.extend(proto, google_protobuf_wrappers_pb);
 goog.exportSymbol('proto.assets.Projection', null, global);
 goog.exportSymbol('proto.assets.Road', null, global);
 goog.exportSymbol('proto.assets.Roads', null, global);
@@ -702,14 +704,14 @@ proto.assets.Road.toObject = function(includeInstance, msg) {
     roadStatus: jspb.Message.getFieldWithDefault(msg, 20, ""),
     linkCode: jspb.Message.getFieldWithDefault(msg, 5, ""),
     linkStartName: jspb.Message.getFieldWithDefault(msg, 16, ""),
-    linkStartChainage: jspb.Message.getFloatingPointFieldWithDefault(msg, 11, 0.0),
+    linkStartChainage: (f = msg.getLinkStartChainage()) && google_protobuf_wrappers_pb.FloatValue.toObject(includeInstance, f),
     linkEndName: jspb.Message.getFieldWithDefault(msg, 17, ""),
-    linkEndChainage: jspb.Message.getFloatingPointFieldWithDefault(msg, 12, 0.0),
-    linkLength: jspb.Message.getFloatingPointFieldWithDefault(msg, 7, 0.0),
+    linkEndChainage: (f = msg.getLinkEndChainage()) && google_protobuf_wrappers_pb.FloatValue.toObject(includeInstance, f),
+    linkLength: (f = msg.getLinkLength()) && google_protobuf_wrappers_pb.FloatValue.toObject(includeInstance, f),
     surfaceType: jspb.Message.getFieldWithDefault(msg, 8, ""),
     surfaceCondition: jspb.Message.getFieldWithDefault(msg, 9, ""),
     pavementClass: jspb.Message.getFieldWithDefault(msg, 13, ""),
-    carriagewayWidth: jspb.Message.getFloatingPointFieldWithDefault(msg, 14, 0.0),
+    carriagewayWidth: (f = msg.getCarriagewayWidth()) && google_protobuf_wrappers_pb.FloatValue.toObject(includeInstance, f),
     administrativeArea: jspb.Message.getFieldWithDefault(msg, 15, ""),
     project: jspb.Message.getFieldWithDefault(msg, 18, ""),
     fundingSource: jspb.Message.getFieldWithDefault(msg, 19, ""),
@@ -718,7 +720,7 @@ proto.assets.Road.toObject = function(includeInstance, msg) {
     trafficLevel: jspb.Message.getFieldWithDefault(msg, 23, ""),
     projectionStart: (f = msg.getProjectionStart()) && proto.assets.Projection.toObject(includeInstance, f),
     projectionEnd: (f = msg.getProjectionEnd()) && proto.assets.Projection.toObject(includeInstance, f),
-    numberLanes: jspb.Message.getFieldWithDefault(msg, 27, 0)
+    numberLanes: (f = msg.getNumberLanes()) && google_protobuf_wrappers_pb.UInt32Value.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -788,7 +790,8 @@ proto.assets.Road.deserializeBinaryFromReader = function(msg, reader) {
       msg.setLinkStartName(value);
       break;
     case 11:
-      var value = /** @type {number} */ (reader.readFloat());
+      var value = new google_protobuf_wrappers_pb.FloatValue;
+      reader.readMessage(value,google_protobuf_wrappers_pb.FloatValue.deserializeBinaryFromReader);
       msg.setLinkStartChainage(value);
       break;
     case 17:
@@ -796,11 +799,13 @@ proto.assets.Road.deserializeBinaryFromReader = function(msg, reader) {
       msg.setLinkEndName(value);
       break;
     case 12:
-      var value = /** @type {number} */ (reader.readFloat());
+      var value = new google_protobuf_wrappers_pb.FloatValue;
+      reader.readMessage(value,google_protobuf_wrappers_pb.FloatValue.deserializeBinaryFromReader);
       msg.setLinkEndChainage(value);
       break;
     case 7:
-      var value = /** @type {number} */ (reader.readFloat());
+      var value = new google_protobuf_wrappers_pb.FloatValue;
+      reader.readMessage(value,google_protobuf_wrappers_pb.FloatValue.deserializeBinaryFromReader);
       msg.setLinkLength(value);
       break;
     case 8:
@@ -816,7 +821,8 @@ proto.assets.Road.deserializeBinaryFromReader = function(msg, reader) {
       msg.setPavementClass(value);
       break;
     case 14:
-      var value = /** @type {number} */ (reader.readFloat());
+      var value = new google_protobuf_wrappers_pb.FloatValue;
+      reader.readMessage(value,google_protobuf_wrappers_pb.FloatValue.deserializeBinaryFromReader);
       msg.setCarriagewayWidth(value);
       break;
     case 15:
@@ -854,7 +860,8 @@ proto.assets.Road.deserializeBinaryFromReader = function(msg, reader) {
       msg.setProjectionEnd(value);
       break;
     case 27:
-      var value = /** @type {number} */ (reader.readUint32());
+      var value = new google_protobuf_wrappers_pb.UInt32Value;
+      reader.readMessage(value,google_protobuf_wrappers_pb.UInt32Value.deserializeBinaryFromReader);
       msg.setNumberLanes(value);
       break;
     default:
@@ -943,10 +950,11 @@ proto.assets.Road.serializeBinaryToWriter = function(message, writer) {
     );
   }
   f = message.getLinkStartChainage();
-  if (f !== 0.0) {
-    writer.writeFloat(
+  if (f != null) {
+    writer.writeMessage(
       11,
-      f
+      f,
+      google_protobuf_wrappers_pb.FloatValue.serializeBinaryToWriter
     );
   }
   f = message.getLinkEndName();
@@ -957,17 +965,19 @@ proto.assets.Road.serializeBinaryToWriter = function(message, writer) {
     );
   }
   f = message.getLinkEndChainage();
-  if (f !== 0.0) {
-    writer.writeFloat(
+  if (f != null) {
+    writer.writeMessage(
       12,
-      f
+      f,
+      google_protobuf_wrappers_pb.FloatValue.serializeBinaryToWriter
     );
   }
   f = message.getLinkLength();
-  if (f !== 0.0) {
-    writer.writeFloat(
+  if (f != null) {
+    writer.writeMessage(
       7,
-      f
+      f,
+      google_protobuf_wrappers_pb.FloatValue.serializeBinaryToWriter
     );
   }
   f = message.getSurfaceType();
@@ -992,10 +1002,11 @@ proto.assets.Road.serializeBinaryToWriter = function(message, writer) {
     );
   }
   f = message.getCarriagewayWidth();
-  if (f !== 0.0) {
-    writer.writeFloat(
+  if (f != null) {
+    writer.writeMessage(
       14,
-      f
+      f,
+      google_protobuf_wrappers_pb.FloatValue.serializeBinaryToWriter
     );
   }
   f = message.getAdministrativeArea();
@@ -1057,10 +1068,11 @@ proto.assets.Road.serializeBinaryToWriter = function(message, writer) {
     );
   }
   f = message.getNumberLanes();
-  if (f !== 0) {
-    writer.writeUint32(
+  if (f != null) {
+    writer.writeMessage(
       27,
-      f
+      f,
+      google_protobuf_wrappers_pb.UInt32Value.serializeBinaryToWriter
     );
   }
 };
@@ -1187,17 +1199,35 @@ proto.assets.Road.prototype.setLinkStartName = function(value) {
 
 
 /**
- * optional float link_start_chainage = 11;
- * @return {number}
+ * optional google.protobuf.FloatValue link_start_chainage = 11;
+ * @return {?proto.google.protobuf.FloatValue}
  */
 proto.assets.Road.prototype.getLinkStartChainage = function() {
-  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 11, 0.0));
+  return /** @type{?proto.google.protobuf.FloatValue} */ (
+    jspb.Message.getWrapperField(this, google_protobuf_wrappers_pb.FloatValue, 11));
 };
 
 
-/** @param {number} value */
+/** @param {?proto.google.protobuf.FloatValue|undefined} value */
 proto.assets.Road.prototype.setLinkStartChainage = function(value) {
-  jspb.Message.setProto3FloatField(this, 11, value);
+  jspb.Message.setWrapperField(this, 11, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ */
+proto.assets.Road.prototype.clearLinkStartChainage = function() {
+  this.setLinkStartChainage(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.assets.Road.prototype.hasLinkStartChainage = function() {
+  return jspb.Message.getField(this, 11) != null;
 };
 
 
@@ -1217,32 +1247,68 @@ proto.assets.Road.prototype.setLinkEndName = function(value) {
 
 
 /**
- * optional float link_end_chainage = 12;
- * @return {number}
+ * optional google.protobuf.FloatValue link_end_chainage = 12;
+ * @return {?proto.google.protobuf.FloatValue}
  */
 proto.assets.Road.prototype.getLinkEndChainage = function() {
-  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 12, 0.0));
+  return /** @type{?proto.google.protobuf.FloatValue} */ (
+    jspb.Message.getWrapperField(this, google_protobuf_wrappers_pb.FloatValue, 12));
 };
 
 
-/** @param {number} value */
+/** @param {?proto.google.protobuf.FloatValue|undefined} value */
 proto.assets.Road.prototype.setLinkEndChainage = function(value) {
-  jspb.Message.setProto3FloatField(this, 12, value);
+  jspb.Message.setWrapperField(this, 12, value);
 };
 
 
 /**
- * optional float link_length = 7;
- * @return {number}
+ * Clears the message field making it undefined.
  */
-proto.assets.Road.prototype.getLinkLength = function() {
-  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 7, 0.0));
+proto.assets.Road.prototype.clearLinkEndChainage = function() {
+  this.setLinkEndChainage(undefined);
 };
 
 
-/** @param {number} value */
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.assets.Road.prototype.hasLinkEndChainage = function() {
+  return jspb.Message.getField(this, 12) != null;
+};
+
+
+/**
+ * optional google.protobuf.FloatValue link_length = 7;
+ * @return {?proto.google.protobuf.FloatValue}
+ */
+proto.assets.Road.prototype.getLinkLength = function() {
+  return /** @type{?proto.google.protobuf.FloatValue} */ (
+    jspb.Message.getWrapperField(this, google_protobuf_wrappers_pb.FloatValue, 7));
+};
+
+
+/** @param {?proto.google.protobuf.FloatValue|undefined} value */
 proto.assets.Road.prototype.setLinkLength = function(value) {
-  jspb.Message.setProto3FloatField(this, 7, value);
+  jspb.Message.setWrapperField(this, 7, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ */
+proto.assets.Road.prototype.clearLinkLength = function() {
+  this.setLinkLength(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.assets.Road.prototype.hasLinkLength = function() {
+  return jspb.Message.getField(this, 7) != null;
 };
 
 
@@ -1292,17 +1358,35 @@ proto.assets.Road.prototype.setPavementClass = function(value) {
 
 
 /**
- * optional float carriageway_width = 14;
- * @return {number}
+ * optional google.protobuf.FloatValue carriageway_width = 14;
+ * @return {?proto.google.protobuf.FloatValue}
  */
 proto.assets.Road.prototype.getCarriagewayWidth = function() {
-  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 14, 0.0));
+  return /** @type{?proto.google.protobuf.FloatValue} */ (
+    jspb.Message.getWrapperField(this, google_protobuf_wrappers_pb.FloatValue, 14));
 };
 
 
-/** @param {number} value */
+/** @param {?proto.google.protobuf.FloatValue|undefined} value */
 proto.assets.Road.prototype.setCarriagewayWidth = function(value) {
-  jspb.Message.setProto3FloatField(this, 14, value);
+  jspb.Message.setWrapperField(this, 14, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ */
+proto.assets.Road.prototype.clearCarriagewayWidth = function() {
+  this.setCarriagewayWidth(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.assets.Road.prototype.hasCarriagewayWidth = function() {
+  return jspb.Message.getField(this, 14) != null;
 };
 
 
@@ -1463,17 +1547,35 @@ proto.assets.Road.prototype.hasProjectionEnd = function() {
 
 
 /**
- * optional uint32 number_lanes = 27;
- * @return {number}
+ * optional google.protobuf.UInt32Value number_lanes = 27;
+ * @return {?proto.google.protobuf.UInt32Value}
  */
 proto.assets.Road.prototype.getNumberLanes = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 27, 0));
+  return /** @type{?proto.google.protobuf.UInt32Value} */ (
+    jspb.Message.getWrapperField(this, google_protobuf_wrappers_pb.UInt32Value, 27));
 };
 
 
-/** @param {number} value */
+/** @param {?proto.google.protobuf.UInt32Value|undefined} value */
 proto.assets.Road.prototype.setNumberLanes = function(value) {
-  jspb.Message.setProto3IntField(this, 27, value);
+  jspb.Message.setWrapperField(this, 27, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ */
+proto.assets.Road.prototype.clearNumberLanes = function() {
+  this.setNumberLanes(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.assets.Road.prototype.hasNumberLanes = function() {
+  return jspb.Message.getField(this, 27) != null;
 };
 
 
