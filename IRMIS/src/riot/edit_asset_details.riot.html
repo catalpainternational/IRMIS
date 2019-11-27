@@ -5,9 +5,9 @@
         <h6>{ window.gettext("Link code and name") }</h6>
         <div class="form-group">
             <label>{ link_code.display }</label>
-            <input class="{ state.errors.linkCode ? 'danger' : null } { props.road.getLinkCode() ? '' : 'inactive' } form-control"
-                type="text" maxlength="25" placeholder="A01-01" value="{ props.road.getLinkCode() }" oninput="{ checkLinkCode }">
-            <small class="form-text text-muted">{ props.parent.getHelpText("link_code") }</small>
+            <input class="{ state.errors.linkCode ? 'danger' : null } { state.linkCode ? '' : 'inactive' } form-control"
+                type="text" maxlength="25" placeholder="A01-01" value="{ state.linkCode }" oninput="{ checkLinkCode }">
+            <small class="form-text text-muted">{ props.getHelpText("link_code") }</small>
             <div if="{ state.errors.linkCode }" class="invalid-tooltip">
                 <ul>
                     <li>{ state.errors.linkCode }.</li>
@@ -16,15 +16,15 @@
         </div>
         <div class="form-group">
             <label>{ link_start_name.display }</label>
-            <input class="{ props.road.getLinkStartName() ? '' : 'inactive' } form-control" type="text" maxlength="150"
-                placeholder="Dili" value="{ props.road.getLinkStartName() }" oninput="{ checkLinkStartName }">
-            <small class="form-text text-muted">{ props.parent.getHelpText("link_start_name") }</small>
+            <input class="{ state.linkStartName ? '' : 'inactive' } form-control" type="text" maxlength="150"
+                placeholder="Dili" value="{ state.linkStartName }" oninput="{ checkLinkStartName }">
+            <small class="form-text text-muted">{ props.getHelpText("link_start_name") }</small>
         </div>
         <div class="form-group">
             <label>{ link_end_name.display }</label>
-            <input class="{ props.road.getLinkEndName() ? '' : 'inactive' } form-control" type="text" maxlength="150"
-                placeholder="Manatuto" value="{ props.road.getLinkEndName() }" oninput="{ checkLinkEndName }">
-            <small class="form-text text-muted">{ props.parent.getHelpText("link_end_name") }</small>
+            <input class="{ state.linkEndName ? '' : 'inactive' } form-control" type="text" maxlength="150"
+                placeholder="Manatuto" value="{ state.linkEndName }" oninput="{ checkLinkEndName }">
+            <small class="form-text text-muted">{ props.getHelpText("link_end_name") }</small>
         </div>
     </section>
 
@@ -32,9 +32,9 @@
         <h6>{ window.gettext("Link width and length") }</h6>
         <div class="form-group">
             <label>{ link_length.display }</label>
-            <input class="{ state.errors.linkLength ? 'danger' : null } { props.road.getLinkLength() ? '' : 'inactive' } form-control"
-                type="number" placeholder="58.7" value="{ props.road.getLinkLength().toFixed(3) }" oninput="{ checkLinkLength }">
-            <small class="form-text text-muted">{ props.parent.getHelpText("link_length") }</small>
+            <input class="{ state.errors.linkLength ? 'danger' : null } { state.linkLength ? '' : 'inactive' } form-control"
+                type="number" placeholder="58.7" value="{ state.linkLength }" oninput="{ checkLinkLength }">
+            <small class="form-text text-muted">{ props.getHelpText("link_length") }</small>
             <div if="{ state.errors.linkLength }" class="invalid-tooltip">
                 <ul>
                     <li>{ state.errors.linkLength }.</li>
@@ -43,9 +43,9 @@
         </div>
         <div class="form-group">
             <label>{ carriageway_width.display }</label>
-            <input class="{ state.errors.carriageWidth ? 'danger' : null } { props.road.getCarriagewayWidth() ? '' : 'inactive' } form-control"
-                type="number" placeholder="5.0" value="{ props.road.getCarriagewayWidth() }" oninput="{ checkCarriagewayWidth }">
-            <small class="form-text text-muted">{ props.parent.getHelpText("carriageway_width") }</small>
+            <input class="{ state.errors.carriageWidth ? 'danger' : null } { state.carriagewayWidth ? '' : 'inactive' } form-control"
+                type="number" placeholder="5.0" value="{ state.carriagewayWidth }" oninput="{ checkCarriagewayWidth }">
+            <small class="form-text text-muted">{ props.getHelpText("carriageway_width") }</small>
             <div if="{ state.errors.carriageWidth }" class="invalid-tooltip">
                 <ul>
                     <li>{ state.errors.carriageWidth }.</li>
@@ -58,9 +58,9 @@
         <h6>{ window.gettext("Link chainage") }</h6>
         <div class="form-group">
             <label>{ link_start_chainage.display } (m)</label>
-            <input class="{ state.errors.linkStartChainage ? 'danger' : null } { props.road.getLinkStartChainage() ? '' : 'inactive' } form-control"
-                type="number" placeholder="0" value="{ props.road.getLinkStartChainage() }" oninput="{ checkLinkStartChainage }">
-            <small class="form-text text-muted">{ props.parent.getHelpText("link_start_chainage") }</small>
+            <input class="{ state.errors.linkStartChainage ? 'danger' : null } { state.linkStartChainage ? '' : 'inactive' } form-control"
+                type="number" placeholder="0" value="{ state.linkStartChainage }" oninput="{ checkLinkStartChainage }">
+            <small class="form-text text-muted">{ props.getHelpText("link_start_chainage") }</small>
             <div if="{ state.errors.linkStartChainage }" class="invalid-tooltip">
                 <ul>
                     <li>{ state.errors.linkStartChainage }.</li>
@@ -69,9 +69,9 @@
         </div>
         <div class="form-group">
             <label>{ link_end_chainage.display } (m)</label>
-            <input class="{ state.errors.linkEndChainage ? 'danger' : null } { props.road.getLinkEndChainage() ? '' : 'inactive' } form-control"
-                type="number" placeholder="62410" value="{ props.road.getLinkEndChainage() }" oninput="{ checkLinkEndChainage }">
-            <small class="form-text text-muted">{ props.parent.getHelpText("link_end_chainage") }</small>
+            <input class="{ state.errors.linkEndChainage ? 'danger' : null } { state.linkEndChainage ? '' : 'inactive' } form-control"
+                type="number" placeholder="62410" value="{ state.linkEndChainage }" oninput="{ checkLinkEndChainage }">
+            <small class="form-text text-muted">{ props.getHelpText("link_end_chainage") }</small>
             <div if="{ state.errors.linkEndChainage }" class="invalid-tooltip">
                 <ul>
                     <li>{ state.errors.linkEndChainage }.</li>
@@ -87,7 +87,7 @@
             <small class="form-text text-muted">{ props.parent.getHelpText("technical_class") }</small>
             <ul class="technical-class">
                 <li each="{ technical_class in technical_classes.options }" data-technical="{ technical_class.code }" onclick="{ checkTechnicalClass }">
-                    <span class="{ technical_class.code == props.road.getTechnicalClass() ? 'active' : ''  } radio image"></span>
+                    <span class="{ technical_class.code == state.technicalClass ? 'active' : ''  } radio image"></span>
                     { technical_class.name }
                 </li>
             </ul>
@@ -109,83 +109,102 @@
                 carriagewayWidthDigits: 5,
                 errors: {},
             },
+            onBeforeMount(props, state) {
+                state.linkCode = props.road.getLinkCode();
+                state.linkStartName = props.road.getLinkStartName();
+                state.linkEndName = props.road.getLinkEndName();
+                state.linkLength = props.road.getLinkLength().toFixed(3);
+                state.carriagewayWidth = props.road.getCarriagewayWidth();
+                state.linkStartChainage = props.road.getLinkStartChainage();
+                state.linkEndChainage = props.road.getLinkEndChainage();
+                state.technicalClass = props.road.getTechnicalClass();
+            },
             save(e) {
                 if (Object.entries(this.state.errors).length == 0) {
                     this.props.parent.save();
                 }
             },
             checkLinkCode(e) {
-                let input = e.currentTarget.value.trim();
-                if (containsWhiteSpaces(input)) {
+                let value = e.currentTarget.value.trim();
+
+                if (containsWhiteSpaces(value)) {
                     this.state.errors.linkCode = window.gettext('Link code cannot contain white spaces');
                 } else {
                     delete this.state.errors.linkCode;
-                    this.props.road.setLinkCode(input);
+                    this.state.linkCode = value;
+                    this.props.road.setLinkCode(value);
                 }
                 this.update();
             },
             checkLinkStartName(e) {
-                this.props.road.setLinkStartName(e.currentTarget.value);
+                this.state.linkStartName = e.currentTarget.value;
+                this.props.road.setLinkStartName(this.state.linkStartName);
                 this.update();
             },
             checkLinkEndName(e) {
-                this.props.road.setLinkEndName(e.currentTarget.value);
+                this.state.linkEndName = e.currentTarget.value;
+                this.props.road.setLinkEndName(this.state.linkEndName);
                 this.update();
             },
             checkLinkLength(e) {
-                let input = e.currentTarget.value;
-                if (exceedsMaxDigits(input, this.state.linkLengthDigits, this.state.linkLengthDecimals)) {
+                let value = e.currentTarget.value;
+                if (exceedsMaxDigits(value, this.state.linkLengthDigits, this.state.linkLengthDecimals)) {
                     this.state.errors.linkLength = window.interpolate(
                         window.gettext('Link length cannot contain more than %s digits, of which %s are decimals'),
                         [this.state.linkLengthDigits, this.state.linkLengthDecimals]
                     );
                 } else {
                     delete this.state.errors.linkLength;
-                    this.props.road.setLinkLength(input);
+                    this.state.linkLength = value;
+                    this.props.road.setLinkLength(value);
                 }
                 this.update();
             },
             checkCarriagewayWidth(e) {
-                let input = e.currentTarget.value;
-                if (exceedsMaxDigits(input, this.state.carriagewayWidthDigits, this.state.carriagewayWidthDecimals)) {
+                let value = e.currentTarget.value;
+                if (exceedsMaxDigits(value, this.state.carriagewayWidthDigits, this.state.carriagewayWidthDecimals)) {
                     this.state.errors.carriageWidth = window.interpolate(
                         window.gettext('Carriage width cannot contain more than %s digits, of which %s are decimals'),
                         [this.state.carriagewayWidthDigits, this.state.carriagewayWidthDecimals]
                     );
                 } else {
                     delete this.state.errors.carriageWidth;
-                    this.props.road.setCarriagewayWidth(input);
+                    this.state.carriagewayWidth = value;
+                    this.props.road.setCarriagewayWidth(value);
                 }
                 this.update();
             },
             checkLinkStartChainage(e) {
-                let input = e.currentTarget.value;
-                if (exceedsMaxDigits(input, this.state.linkChainageDigits, this.state.linkChainageDecimals)) {
+                let value = e.currentTarget.value;
+                if (exceedsMaxDigits(value, this.state.linkChainageDigits, this.state.linkChainageDecimals)) {
                     this.state.errors.linkStartChainage = window.interpolate(
                         window.gettext('Link start chainage cannot contain more than %s digits, of which %s are decimals'),
                         [this.state.linkChainageDigits, this.state.linkChainageDecimals]
                     );
                 } else {
                     delete this.state.errors.linkStartChainage;
-                    this.props.road.setLinkStartChainage(input);
+                    this.state.linkStartChainage = value;
+                    this.props.road.setLinkStartChainage(value);
                 }
                 this.update();
             },
             checkLinkEndChainage(e) {
-                let input = e.currentTarget.value;
-                if (exceedsMaxDigits(input, this.state.linkChainageDigits, this.state.linkChainageDecimals)) {
+                let value = e.currentTarget.value;
+                if (exceedsMaxDigits(value, this.state.linkChainageDigits, this.state.linkChainageDecimals)) {
                     this.state.errors.linkEndChainage = window.interpolate(
                         window.gettext('Link end chainage cannot contain more than %s digits, of which %s are decimals'),
                         [this.state.linkChainageDigits, this.state.linkChainageDecimals]
                     );
                 } else {
                     delete this.state.errors.linkEndChainage;
-                    this.props.road.setLinkEndChainage(input);
+                    this.state.linkEndChainage = value;
+                    this.props.road.setLinkEndChainage(value);
                 }
                 this.update();
             },
             checkTechnicalClass(e) {
-                this.props.road.setTechnicalClass(e.currentTarget.dataset.technical);
+                this.state.technicalClass = e.currentTarget.dataset.technical;
+                this.props.road.setTechnicalClass(this.state.technicalClass);
                 this.update();
             },
             link_code: window.road_schema.link_code,
