@@ -24,6 +24,7 @@ SURFACE_TYPE_MAPPING_RRMPIS = {
     "Stone": "3",  # "Stone Macadam",
     "Paved": "4",  # "Cement Concrete"
 }
+TERRAIN_CLASS_MAPPING = {"Flat": 1, "Rolling": 2, "Mountainous": 3}
 MAINTENANCE_NEEDS_CHOICES_RRMPIS = {
     "Routine": "1",
     "Periodic": "2",
@@ -33,9 +34,9 @@ MAINTENANCE_NEEDS_CHOICES_RRMPIS = {
 }
 
 SURFACE_TYPE_MAPPING_EXCEL = {
-    "ER": "1",  # "Earthen",
     "GR": "2",  # "Gravel",
     "BT": "6",  # "Penetration Macadam",
+    "ER": "1",  # "Earthen"
 }
 PAVEMENT_CLASS_MAPPING_EXCEL = {"Paved": 1, "Unpaved": 2}  # "Sealed",  # "Unsealed",
 TECHNICAL_CLASS_MAPPING_EXCEL = {"R3": 6, "R5": 7}
@@ -44,6 +45,44 @@ TRAFFIC_LEVEL_MAPPING_EXCEL = {"Low": "L", "Medium": "M", "High": "H"}
 
 # IMPORT FROM SHAPEFILES
 
+
+def update_from_shapefiles(shape_file_folder):
+
+    # set all roads to core = True
+    Road.objects.all().update(core=True)
+
+    sources = (
+        ("Timor_Leste_RR_2019_Latest_Update_November.shp", "RUR", update_road_r4d),
+        ("RRMPIS_2014.shp", "RUR", update_road_rrpmis),
+    )
+    update_count = 0
+    for file_name, road_type, update in sources:
+        shp_path = str(Path(shape_file_folder) / file_name)
+        shp_file = DataSource(shp_path)
+
+        # iterate over the shape file features
+        for feature in shp_file[0]:
+
+            # get the existing road
+            try:
+                road = Road.objects.exclude(pk=4332).get(geom=feature.geom.geos)
+            except GDALException as ex:
+                # print and continue if we have a invalid geometry
+                print("GDAL Exception - ignoring", feature.fid, "from", shp_path)
+                continue
+
+            # update the road from shapefile properties
+            update(road, feature)
+
+            # save the road with a revision comment
+            with reversion.create_revision():
+                update_count += 1
+                road.save()
+                reversion.set_comment(
+                    "updated - {} - feature id({})".format(file_name, feature.fid)
+                )
+
+    print("updated", Road.objects.all().count(), "roads")
 
 def import_shapefiles(shape_file_folder):
     """ creates Road models from source shapefiles """
@@ -136,12 +175,25 @@ def populate_road_highway(road, feature):
     road.link_length = feature.get("Lenght_Km_")
 
 
+def update_road_r4d(road, feature):
+    road.road_name = feature.get("name")
+    road.road_code = feature.get("r_code")
+    road.link_length = feature.get("Lenght_Km")
+
 def populate_road_r4d(road, feature):
     """ populates a road from the r4d shapefile """
     road.road_name = feature.get("road_lin_1")
     road.road_code = feature.get("road_cod_1")
     road.link_length = feature.get("Length__Km")
 
+def update_road_rrpmis(road, feature):
+    road.road_code = feature.get("RDIDFin")
+    road.core = feature.get("Note") == "Core"
+    population = feature.get("Population")
+    road.population = population if population > 0 else None
+    terrain_class = feature.get("Terr_class")
+    if terrain_class != "0" and terrain_class != "":
+        road.terrain_class = TERRAIN_CLASS_MAPPING[terrain_class]
 
 def populate_road_rrpmis(road, feature):
     """ populates a road from the rrmpis shapefile """
