@@ -188,6 +188,13 @@ export const estradaTableColumns = [
         className: "text-center",
     },
     {
+        title: window.gettext("Roughness (IRI)"),
+        data: "",
+        defaultContent: "",
+        visible: false,
+        className: "text-center",
+    },
+    {
         title: EstradaRoad.getFieldName("surface_condition"),
         data: null,
         defaultContent: "",
