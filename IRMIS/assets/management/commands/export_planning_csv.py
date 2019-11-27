@@ -5,7 +5,7 @@ from basemap.models import Municipality
 
 
 class Command(BaseCommand):
-    help = "exports data reuqired for 5 year plan to csv"
+    help = "exports data required for 5 year plan to csv"
 
     def handle(self, *args, **options):
         # get display values
