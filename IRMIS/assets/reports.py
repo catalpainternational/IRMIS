@@ -24,7 +24,9 @@ from .models import (
 
 
 class Report:
-    def __init__(self, surveys, withAttributes, primary_road_code, min_chainage, max_chainage):
+    def __init__(
+        self, surveys, withAttributes, primary_road_code, min_chainage, max_chainage
+    ):
         self.min_chainage = min_chainage
         self.max_chainage = max_chainage
         self.surveys = surveys

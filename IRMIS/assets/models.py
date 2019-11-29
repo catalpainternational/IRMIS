@@ -231,7 +231,9 @@ class RoadQuerySet(models.QuerySet):
         roads = (
             self.order_by("id")
             .annotate(**annotations)
-            .values("id", *regular_fields.values(), *numeric_fields.values(), *annotations)
+            .values(
+                "id", *regular_fields.values(), *numeric_fields.values(), *annotations
+            )
         )
 
         for road in roads:

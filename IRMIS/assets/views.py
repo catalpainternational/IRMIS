@@ -536,7 +536,9 @@ def protobuf_reports(request):
                 .distinct("road", "chainage_start", "chainage_end")
             )
 
-        road_report = Report(surveys, len(road_codes) == 1, primary_road_code, min_chainage, max_chainage)
+        road_report = Report(
+            surveys, len(road_codes) == 1, primary_road_code, min_chainage, max_chainage
+        )
 
         if len(road_codes) == 1:
             report_protobuf = road_report.to_protobuf()
