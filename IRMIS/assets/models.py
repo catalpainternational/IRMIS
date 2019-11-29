@@ -17,7 +17,7 @@ from protobuf.survey_pb2 import Surveys as ProtoSurveys
 
 import json
 from google.protobuf.timestamp_pb2 import Timestamp
-from google.protobuf import wrappers_pb2 as wrappers
+from google.protobuf.wrappers_pb2 import FloatValue, UInt32Value
 from .geodjango_utils import start_end_point_annos
 
 
@@ -241,9 +241,12 @@ class RoadQuerySet(models.QuerySet):
                 if road[query_key]:
                     setattr(road_protobuf, protobuf_key, road[query_key])
             for protobuf_key, query_key in numeric_fields.items():
-                nullable_value = wrappers.FloatValue(value=road.get(query_key, None))
+                if query_key == "number_lanes":
+                    nullable_value = UInt32Value(value=road.get(query_key, None))
+                else:
+                    nullable_value = FloatValue(value=road.get(query_key, None))
                 if nullable_value.value is not None:
-                    print(road_protobuf.getattr(protobuf_key))
+                    print(nullable_value)
                     road_protobuf[protobuf_key].CopyFrom(nullable_value)
 
             # set Protobuf with with start/end projection points
