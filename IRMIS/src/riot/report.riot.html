@@ -83,7 +83,7 @@
     <div hidden="{ state.noReport }" class="content-wrapper report-content">
         <div class="align-items-center d-flex justify-content-between">
             <h6>{ reportContent().title } { window.gettext("Report") }</h6>
-            <button class="btn btn-secondary btn-sm">{ window.gettext("Print") }</button>
+            <button class="btn btn-secondary btn-sm" onclick="{ () => window.print() }">{ window.gettext("Print") }</button>
         </div>
         <div class="filtered-segment d-flex flex-column">
             <h6 if="{ state.reportData.roadCodes && state.reportData.roadCodes.length }">{ state.reportData.roadCodes.join(" ") }</h6>
