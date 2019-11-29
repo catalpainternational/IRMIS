@@ -34,6 +34,12 @@
         display: none !important;
     }
 
+    report {
+        .report-content button {
+            display: none;
+        }
+    }
+
     .print-header {
         border-bottom: 1px solid $light-gray;
         display: block !important;
