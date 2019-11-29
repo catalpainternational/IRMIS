@@ -47,10 +47,15 @@ reports_base {
 }
 
 report {
+    .print-header, .print-footer {
+        display: none;
+    }
+
     header {
         padding: 30px 30px 30px 20px;
         background-color: $white;
         margin-bottom: 30px;
+        display: flex;
 
         .caret-dark {
             background-size: 16px 10px;
@@ -76,7 +81,6 @@ report {
     .content-wrapper {
         padding: 25px 25px 15px 60px;
         background-color: $white;
-        margin-bottom: 10px;
 
         p {
             margin-bottom: 0;
@@ -84,6 +88,7 @@ report {
     }
 
     .content-wrapper.blank {
+        margin-bottom: 0;
         padding: 90px;
 
         h6 {
@@ -99,6 +104,12 @@ report {
     }
 
     .content-wrapper.report-content {
+        margin-bottom: 0;
+
+        .print-title {
+            display: none;
+        }
+
         h6 {
             margin-bottom: 0;
         }

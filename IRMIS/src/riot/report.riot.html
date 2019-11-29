@@ -1,5 +1,18 @@
 <report>
-    <header class="d-flex">
+    <div class="print-header">
+        <div class="align-items-center d-flex">
+            <span class="image rdtl"></span>
+            <div class="d-flex flex-column">
+                <span>{ window.gettext("Democratic Republic of Timor-Leste") }</span>
+                <span>{ window.gettext("Ministry of Public Works") }</span>
+                <span>{ window.gettext("Directorate General for Public Works") }</span>
+                <span>{ window.gettext("National Directorate for Roads, Bridges and Flood Control") }</span>
+                <small>Avenida da Restauração, Rai Kotu, Díli, Timor-Leste, Telf. +670 3311408</small>
+            </div>
+        </div>
+    </div>
+
+    <header>
         <div>
             <a class="caret-dark left image" onclick="{ backToReports }"></a>
         </div>
@@ -14,7 +27,7 @@
         </div>
     </header>
 
-    <div class="content-wrapper">
+    <div class="content-wrapper report-criteria">
         <h6>{ window.gettext("Select report criteria") }</h6>
         <div class="d-flex justify-content-between">
             <div class="d-flex flex-wrap">
@@ -82,14 +95,15 @@
 
     <div hidden="{ state.noReport }" class="content-wrapper report-content">
         <div class="align-items-center d-flex justify-content-between">
+            <h1 class="print-title">{ window.gettext("Road Asset Management") }</h1>
             <h6>{ reportContent().title } { window.gettext("Report") }</h6>
-            <button class="btn btn-secondary btn-sm">{ window.gettext("Print") }</button>
+            <button class="btn btn-secondary btn-sm" onclick="{ () => window.print() }">{ window.gettext("Print") }</button>
         </div>
         <div class="filtered-segment d-flex flex-column">
             <h6 if="{ state.reportData.roadCodes && state.reportData.roadCodes.length }">{ state.reportData.roadCodes.join(" ") }</h6>
             <h6 if="{ state.reportData.reportChainage }">Chainage { toChainageFormat(state.reportData.reportChainage[0]) } to { toChainageFormat(state.reportData.reportChainage[1]) }</h6>
         </div>
-        <span if="{ state.reportData.dateCreated }">{ window.gettext("Created on") } { state.reportData.dateCreated() }</span>
+        <span class="report-date" if="{ state.reportData.dateCreated }">{ window.gettext("Created on") } { state.reportData.dateCreated() }</span>
         <div class="d-flex flex-column filters-applied">
             <p>{ window.gettext("Filters applied") }</p>
             <div class="d-flex">
@@ -141,6 +155,11 @@
             { reportContent().title }
             { window.gettext("information per segment of the selected road.") }
         </p>
+    </div>
+
+    <div class="print-footer">
+        <div class="d-flex align-items-center" if="{ state.reportData.dateCreated }">{ window.gettext("Exported from Estrada on") } { state.reportData.dateCreated() }</div>
+        <span class="app-logo image"></span>
     </div>
 
     <script>
