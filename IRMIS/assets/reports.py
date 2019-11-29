@@ -24,12 +24,15 @@ from .models import (
 
 
 class Report:
-    def __init__(self, surveys, withAttributes, min_chainage, max_chainage):
+    def __init__(
+        self, surveys, withAttributes, primary_road_code, min_chainage, max_chainage
+    ):
         self.min_chainage = min_chainage
         self.max_chainage = max_chainage
         self.surveys = surveys
         self.primary_attributes = list(surveys.keys())
         self.withAttributes = withAttributes
+        self.primary_road_code = primary_road_code
         self.segmentations = {}
         self.road_codes = set()
         # set basic report attributes
@@ -66,12 +69,14 @@ class Report:
 
     def assign_survey_results(self, primary_attribute):
         """ For all the Surveys, assign only the most up-to-date results to any given segment """
+        have_relevant_surveys = False
         for survey in self.surveys[primary_attribute]:
             # ensure survey bits used covers only the road link start/end chainage portion
             if (
                 survey.chainage_start <= self.road_end_chainage
                 and survey.chainage_end >= self.road_start_chainage
             ):
+                have_relevant_surveys = True
                 survey_chain_start = (
                     self.road_start_chainage
                     if survey.chainage_start <= self.road_start_chainage
@@ -104,6 +109,10 @@ class Report:
                         seg_point["added_by"] = display_user(survey.user)
                         seg_point["primary_attribute"] = primary_attribute
                     self.segmentations[primary_attribute][chainage_point] = seg_point
+
+        if not have_relevant_surveys:
+            # if there's no relevant surveys at all then still ensure correct output
+            self.road_codes.add(self.primary_road_code)
 
     def build_summary_stats(self, primary_attribute):
         """ Generate the high-level length statistics for the report """
