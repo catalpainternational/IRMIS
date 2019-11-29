@@ -47,6 +47,10 @@ reports_base {
 }
 
 report {
+    .print-header {
+        display: none;
+    }
+
     header {
         padding: 30px 30px 30px 20px;
         background-color: $white;
