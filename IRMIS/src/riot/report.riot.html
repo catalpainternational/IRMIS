@@ -157,7 +157,7 @@
     </div>
 
     <div class="print-footer">
-        <div class="d-flex align-items-center">{ window.gettext("Exported from Estrada on") } 13 November - 10:30am</div>
+        <div class="d-flex align-items-center" if="{ state.reportData.dateCreated }">{ window.gettext("Exported from Estrada on") } { state.reportData.dateCreated() }</div>
         <span class="app-logo image"></span>
     </div>
 
