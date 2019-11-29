@@ -4,12 +4,9 @@
     <section>
         <div class="form-group">
             <label>{ administrative_areas.display }</label>
-            <select class="{ state.administrativeArea != '' ? '' : 'inactive' } form-control" onchange="{ checkAdministrativeArea }">
-                <option value="">{ window.gettext("Select an Administrative Area") }</option>
-                <template each="{ area in administrative_areas.options }">
-                    <option if="{ area.id == props.road.getAdministrativeArea() }" value="{ area.id }" selected>{ area.name }</option>
-                    <option if="{ area.id != props.road.getAdministrativeArea() }" value="{ area.id }">{ area.name }</option>
-                </template>
+            <select class="{ state.administrativeArea ? '' : 'inactive' } form-control" onchange="{ checkAdministrativeArea }">
+                <option value="">{ window.gettext("Select a Municipality") }</option>
+                <option each="{ area in administrative_areas.options }" value="{ area.id }" selected="{ area.id == state.administrativeArea }">{ area.name }</option>
             </select>
             <small class="form-text text-muted">{ props.getHelpText("administrative_area") }</small>
         </div>
@@ -18,12 +15,9 @@
     <section>
         <div class="form-group">
             <label>{ road_types.display }</label>
-            <select class="{ state.roadType != '' ? '' : 'inactive' } form-control" onchange="{ checkRoadType }">
-                <option value="">{ window.gettext("Select a Road Type") }</option>
-                <template each="{ type in road_types.options }">
-                    <option if="{ type[0] === props.road.getRoadType() }" value="{ type[0] }" selected>{ type[1] }</option>
-                    <option if="{ type[0] !== props.road.getRoadType() }" value="{ type[0] }">{ type[1] }</option>
-                </template>
+            <select class="{ state.roadType ? '' : 'inactive' } form-control" onchange="{ checkRoadType }">
+                <option value="">{ window.gettext("Select a Road Class") }</option>
+                <option each="{ type in road_types.options }" value="{ type[0] }" selected="{ type[0] === state.roadType }">{ type[1] }</option>
             </select>
             <small class="form-text text-muted">{ props.getHelpText("road_type") }</small>
         </div>
@@ -35,6 +29,10 @@
 
     <script>
         export default {
+            onBeforeMount(props, state) {
+                state.administrativeArea = props.road.getAdministrativeArea();
+                state.roadType = props.road.getRoadType();
+            },
             save(e) {
                 this.props.onSave();
             },

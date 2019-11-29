@@ -1,50 +1,27 @@
 import "datatables.net-bs4";
 import $ from "jquery";
 
-import { applyFilter } from './filter';
-import { getFieldName } from "./road";
 import { exportCsv } from "./exportCsv";
-import { datatableTranslations } from "./datatableTranslations";
+import { applyFilter } from './filter';
+import { estradaTableColumns, estradaTableEventListeners } from "./mainTableDefinition";
+import { surfaceConditionColumns, surfaceTypeColumns, technicalClassColumns, numberLanesColumns } from "./segmentsInventoryTableDefinition";
 
-let table;
+import { datatableTranslations } from "./datatableTranslations";
+import { getRoadSurveys } from "./surveyManager";
+
+let surfaceConditionTable = null;
+let surfaceTypeTable = null;
+let technicalClassTable = null;
+let numberLanesTable = null;
+let table = null;
 let pendingRows = [];
 
-// when the roadManager has new roads, add them to the table
-document.addEventListener('estrada.roadManager.roadMetaDataAdded', (data) => {
-    const roadList = data.detail.roadList;
-
-    // add the roads to a pending array ( in case the table is not initialised early enough )
-    pendingRows = pendingRows.concat(roadList);
-    if (table) {
-        table.rows.add(pendingRows).draw();
-        pendingRows = [];
-    }
-});
-
-document.addEventListener('estrada.table.roadMetaDataUpdated', (data) => {
-    const road = data.detail.road;
-    table.row('#' + road.id).data(road).draw();
-});
-
-// when a filter is applied, update the filter id whitelist
-document.addEventListener('estrada.filter.applied', (data) => {
-    idWhitelistMap = data.detail.idMap;
-    table.draw();
-
-    // Handle any table row selection change
-    applyTableSelection(table.selectionProcessing);
-});
-
-// when the view changes adjust the table rows
-document.addEventListener('estrada.sideMenu.viewChanged', (data) => {
-    const viewName = data.detail ? data.detail.viewName : null;
-    if (viewName && viewName.indexOf('table') !== -1) {
-        const tableRows = (viewName === 'table') ? 20 : 10;
-        table.page.len(tableRows).draw('page');
-    }
-});
-
 window.addEventListener("load", () => {
+    // Event listeners for the table, that are NOT attached to specific elements
+    Object.keys(estradaTableEventListeners).forEach((eventKey) => {
+        document.addEventListener(eventKey, (event) => estradaTableEventListeners[eventKey](event, table, pendingRows, idWhitelistMap));
+    });
+
     // Export All - to CSV
     document.getElementById("export").addEventListener("click", exportTable);
 
@@ -102,161 +79,19 @@ window.addEventListener("load", () => {
     initializeDataTable();
 });
 
-export const columns = [
-    {
-        title: getFieldName("road_code"),
-        data: "code",
-        defaultContent: "",
-        type: "roadCode"
-    },
-    {
-        title: getFieldName("road_name"),
-        data: "name",
-        defaultContent: "",
-        visible: false
-    },
-    {
-        title: getFieldName("link_code"),
-        data: "linkCode",
-        defaultContent: "",
-    },
-    {
-        title: window.gettext("Link Name"),
-        data: "linkName",
-        defaultContent: "",
-        visible: false
-    },
-    {
-        title: getFieldName("link_length"),
-        data: "linkLength",
-        defaultContent: "",
-    },
-    {
-        title: getFieldName("link_start_name"),
-        data: "linkStartName",
-        defaultContent: "",
-    },
-    {
-        title: getFieldName("link_start_chainage"),
-        data: "linkStartChainage",
-        defaultContent: "",
-    },
-    {
-        title: getFieldName("link_end_name"),
-        data: "linkEndName",
-        defaultContent: "",
-    },
-    {
-        title: getFieldName("link_end_chainage"),
-        data: "linkEndChainage",
-        defaultContent: "",
-    },
-    {
-        title: getFieldName("surface_type"),
-        data: "surfaceType",
-        defaultContent: "",
-    },
-    {
-        title: getFieldName("pavement_class"),
-        data: "pavementClass",
-        defaultContent: "",
-    },
-    {
-        title: getFieldName("carriageway_width"),
-        data: "carriagewayWidth",
-        defaultContent: "",
-    },
-    {
-        title: getFieldName("administrative_area"),
-        data: "administrativeArea",
-        defaultContent: "",
-    },
-    {
-        title: getFieldName("road_type"),
-        data: "type",
-        defaultContent: "",
-        visible: false
-    },
-    {
-        title: getFieldName("technical_class"),
-        data: "technicalClass",
-        defaultContent: "",
-        visible: false
-    },
-    {
-        title: getFieldName("funding_source"),
-        data: "fundingSource",
-        defaultContent: "",
-        visible: false
-    },
-    {
-        title: getFieldName("road_status"),
-        data: "status",
-        defaultContent: "",
-        visible: false,
-    },
-    {
-        title: getFieldName("project"),
-        data: "project",
-        defaultContent: "",
-        visible: false,
-    },
-    {
-        title: getFieldName("surface_condition"),
-        data: "surfaceCondition",
-        defaultContent: "",
-    },
-    {
-        title: getFieldName("maintenance_need"),
-        data: "maintenanceNeed",
-        defaultContent: "",
-        visible: false,
-    },
-    {
-        title: getFieldName("traffic_level"),
-        data: "trafficLevel",
-        defaultContent: "",
-        visible: false,
-    },
-    {
-        title: gettext("Start Point (DMS)"),
-        data: "startDMS",
-        defaultContent: "",
-        visible: false
-    },
-    {
-        title: gettext("End Point (DMS)"),
-        data: "endDMS",
-        defaultContent: "",
-        visible: false
-    },
-    {
-        title: gettext("Start Point (UTM)"),
-        data: "startUTM",
-        defaultContent: "",
-        visible: false
-    },
-    {
-        title: gettext("End Point (UTM)"),
-        data: "endUTM",
-        defaultContent: "",
-        visible: false
-    },
-];
-
 function initializeDataTable() {
     if (window.canEdit) {
-        columns.unshift({
+        estradaTableColumns.unshift({
             title: "",
             data: null,
-            render: r => '<a class="image pencil" href="#edit/' + r.getId() + '/location_type"></a>',
+            render: r => `<a class="image pencil" href="#edit/${r.getId()}/location_type"></a>`,
             orderable: false,
             className: "edit-col"
         });
     }
 
-    table = $("#data-table").DataTable({
-        columns: columns,
+    table = $("#all-data-table").DataTable({
+        columns: estradaTableColumns,
         rowId: ".getId()",
         // default order is ascending by: road code, link code, & link start chainage
         order: window.canEdit ? [[1, 'asc'], [3, 'asc'], [7, 'asc']] : [[0, 'asc'], [2, 'asc'], [6, 'asc']],
@@ -268,27 +103,73 @@ function initializeDataTable() {
         select: {
             style: "os",
             items: "row",
+        },
+        ajax: function (data, callback, settings) {
+            if (pendingRows.length) {
+                // add any rows the road manager has delivered before initialization
+                callback(pendingRows);
+                pendingRows = [];
+            }
         }
     });
 
-    table.on('click', 'tbody tr', (e) => {
-        const clickedRowId = e.currentTarget.id;
+    table.on("click", "tbody tr td", (e) => {
+        const clickedRowId = e.currentTarget.parentNode.id;
         const clickedRow = $(`tr#${clickedRowId}`);
-        
+
+        const cellChildren = e.currentTarget.children;
+        const cellChildrenLength = cellChildren.length;
+        if (cellChildrenLength > 0) {
+            for (let ix = 0; ix < cellChildrenLength; ix++) {
+                const cellChild = cellChildren.item(ix);
+                if (cellChild.classList.contains("image")) {
+                    return;
+                }
+            }
+        }
+
         if (clickedRow.hasClass("selected")) {
             clickedRow.removeClass("selected");
 
             table.selectionProcessing = undefined;
             // reset to the previously selected filters
-            applyFilter();            
+            applyFilter();
         } else {
-            table.$('tr.selected').removeClass('selected');
+            table.$("tr.selected").removeClass("selected");
             clickedRow.addClass("selected");
 
             table.selectionProcessing = clickedRowId;
 
             applyTableSelection(table.selectionProcessing);
         }
+    });
+
+    surfaceConditionTable = $("#inventory-surface-condition-table").DataTable({
+        columns: surfaceConditionColumns,
+        rowId: ".getId()",
+        dom: "<'row'<'col-sm-12'tr>>", // https://datatables.net/reference/option/dom#Styling
+        language: datatableTranslations,
+    });
+
+    surfaceTypeTable = $("#inventory-surface-type-table").DataTable({
+        columns: surfaceTypeColumns,
+        rowId: ".getId()",
+        dom: "<'row'<'col-sm-12'tr>>", // https://datatables.net/reference/option/dom#Styling
+        language: datatableTranslations,
+    });
+
+    technicalClassTable = $("#inventory-technical-class-table").DataTable({
+        columns: technicalClassColumns,
+        rowId: ".getId()",
+        dom: "<'row'<'col-sm-12'tr>>", // https://datatables.net/reference/option/dom#Styling
+        language: datatableTranslations,
+    });
+
+    numberLanesTable = $("#inventory-number-lanes-table").DataTable({
+        columns: numberLanesColumns,
+        rowId: ".getId()",
+        dom: "<'row'<'col-sm-12'tr>>", // https://datatables.net/reference/option/dom#Styling
+        language: datatableTranslations,
     });
 
     if (pendingRows.length) {
@@ -311,7 +192,7 @@ function applyTableSelection(rowId) {
 }
 
 function getTableData() {
-    const headers = columns
+    const headers = estradaTableColumns
         .filter((c) => c.title !== "")
         .map((c) => ({ title: c.title, data: c.data }));
 
@@ -332,16 +213,15 @@ function getTableData() {
     return { headers: headers.map((h) => h.title), rows: rows };
 }
 
-
 function exportTable() {
     const tableData = getTableData();
     exportCsv(tableData.headers, tableData.rows);
 }
 
 // Filter functionality
-let idWhitelistMap = null;
+let idWhitelistMap = {};
 let currentFilter = (p) => {
-    return idWhitelistMap === null || idWhitelistMap[p.getId().toString()];
+    return Object.keys(idWhitelistMap).length === 0 || idWhitelistMap[p.getId().toString()];
 }
 
 $.fn.dataTableExt.afnFiltering.push(
@@ -363,5 +243,61 @@ $.extend($.fn.dataTableExt.oSort, {
         if (str1 === "") return -1;
         if (str2 === "") return 1;
         return ((str1 < str2) ? 1 : ((str1 > str2) ? -1 : 0));
+    }
+});
+
+$("#inventory-segments-modal").on("show.bs.modal", function (event) {
+    const button = $(event.relatedTarget); // Button that triggered the modal
+    const linkCode = button.data("code"); // Extract info from data-* attributes
+    const roadId = button.data("id");
+    const attr = button.data("attr");
+    const modal = $(this);
+
+    $("#inventory-surface-condition-table_wrapper").hide();
+    $("#inventory-surface-type-table_wrapper").hide();
+    $("#inventory-technical-class-table_wrapper").hide();
+    $("#inventory-number-lanes-table_wrapper").hide();
+
+    switch (attr) {
+        case "surface_condition":
+            modal.find(".modal-title").text(linkCode + " " + gettext("Surface Condition segments"));
+            surfaceConditionTable.clear(); // remove all rows in the table
+            getRoadSurveys(roadId).then((surveyData) => {
+                if (surveyData) {
+                    surfaceConditionTable.rows.add(surveyData).draw();
+                }
+            });
+            $("#inventory-surface-condition-table_wrapper").show();
+            break;
+        case "surface_type":
+            modal.find(".modal-title").text(linkCode + " " + gettext("Surface Type segments"));
+            surfaceTypeTable.clear(); // remove all rows in the table
+            getRoadSurveys(roadId).then((surveyData) => {
+                if (surveyData) {
+                    surfaceTypeTable.rows.add(surveyData).draw();
+                }
+            });
+            $("#inventory-surface-type-table_wrapper").show();
+            break;
+        case "technical_class":
+            modal.find(".modal-title").text(linkCode + " " + gettext("Technical Class segments"));
+            technicalClassTable.clear(); // remove all rows in the table
+            getRoadSurveys(roadId).then((surveyData) => {
+                if (surveyData) {
+                    technicalClassTable.rows.add(surveyData).draw();
+                }
+            });
+            $("#inventory-technical-class-table_wrapper").show();
+            break;
+        case "number_lanes":
+            modal.find(".modal-title").text(linkCode + " " + gettext("Number of Lanes segments"));
+            numberLanesTable.clear(); // remove all rows in the table
+            getRoadSurveys(roadId).then((surveyData) => {
+                if (surveyData) {
+                    numberLanesTable.rows.add(surveyData).draw();
+                }
+            });
+            $("#inventory-number-lanes-table_wrapper").show();
+            break;
     }
 });

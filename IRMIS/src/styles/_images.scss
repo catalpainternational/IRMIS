@@ -110,16 +110,24 @@
     vertical-align: middle;
     height: 16px;
     width: 15px;
-    
-    &:hover {
-        background-image: url("../images/pencil_hover.svg");
-    }
+}
+
+tr.selected .pencil {
+    background-image: url("../images/pencil_white.svg");
+}
+
+.delete {
+    background-image: url("../images/delete.svg");
+    vertical-align: middle;
+    height: 10px;
+    width: 10px;
 }
 
 .close {
     background-image: url("../images/close.svg");
-    height: 15px;
-    width: 15px;
+    background-size: contain;
+    height: 20px;
+    width: 20px;
 
     &:hover {
         cursor: pointer;

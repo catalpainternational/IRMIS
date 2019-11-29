@@ -63,6 +63,7 @@ a {
     &:hover {
         text-decoration: none;
         color: $dark-green;
+        cursor: pointer;
     }
 }
 
@@ -80,6 +81,22 @@ span {
     &.danger {
         color: $white;
     }
+}
+
+.surface-condition-legend .values span {
+    color: $darker-gray;
+    line-height: 10px;
+    font-weight: 500;
+    font-size: 12px;
+}
+
+.surface-condition-legend .total span {
+    color: $darker-gray;
+    line-height: 10px;
+}
+
+span.required {
+    color: $green;
 }
 
 #side-menu span {
@@ -106,6 +123,12 @@ span {
 
 p {
     color: $dark-green;
+}
+
+.modal p {
+    color: $darker-gray;
+    line-height: 19px;
+    font-size: 16px;
 }
 
 small {
@@ -141,7 +164,7 @@ ul.navigation {
     }
 
     ul li {
-        line-height: 38px;
+        line-height: 22px;
         font-size: 18px;
         color: $gray;
 
@@ -151,7 +174,7 @@ ul.navigation {
     }
 }
 
-h1 {
+h1, h1 span {
     color: $darker-gray;
     line-height: 27px;
     font-weight: 700;
@@ -176,7 +199,14 @@ h6 {
     color: $white;
 }
 
-section h6 {
+.modal h6 {
+    color: $darker-gray;
+    line-height: 19px;
+    font-weight: 800;
+    font-size: 16px;
+}
+
+section h6, .modal section h6 {
     line-height: 17px;
     font-weight: 700;
     font-size: 14px;
@@ -188,6 +218,21 @@ table {
         color: $darker-gray;
         line-height: 17px;
         font-size: 14px;
+    }
+
+    a {
+        color: $green !important;
+        font-weight: 400;
+    }
+
+    tr.selected {
+        td {
+            color: $white;
+        }
+
+        a {
+            color: $darker-gray !important;
+        }
     }
 }
 
@@ -276,21 +321,6 @@ button {
     }
 }
 
-.modal {
-    h6 {
-        color: $darker-gray;
-        line-height: 19px;
-        font-weight: 800;
-        font-size: 16px;
-    }
-
-    p {
-        color: $darker-gray;
-        line-height: 19px;
-        font-size: 16px;
-    }
-}
-
 .text-muted {
 	color: $dark-gray !important;
 }
@@ -300,4 +330,21 @@ button {
     font-weight: 500;
     font-size: 12px;
     color: $white;
+}
+
+// Override Leaflet styles
+.leaflet-popup {
+    .label {
+        color: $darker-gray;
+        font-weight: 300;
+    }
+
+    .value {
+        color: $darker-gray;
+        font-weight: 700;
+    }
+}
+
+.leaflet-control-attribution a {
+    font-size: 11px;
 }

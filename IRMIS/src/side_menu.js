@@ -80,7 +80,7 @@ function toggleFilterSelect2(e) {
     const header = filter.querySelector('.header');
     const clear = filter.querySelector(".clear-select2");
 
-    if (value != -1) {
+    if (element.value !== "") {
         header.classList.add("active");
         clear.hidden = false;
     } else {

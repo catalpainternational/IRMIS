@@ -151,9 +151,6 @@ export class Road extends jspb.Message {
   getTrafficLevel(): string;
   setTrafficLevel(value: string): void;
 
-  getLastRevisionId(): number;
-  setLastRevisionId(value: number): void;
-
   hasProjectionStart(): boolean;
   clearProjectionStart(): void;
   getProjectionStart(): Projection | undefined;
@@ -163,6 +160,9 @@ export class Road extends jspb.Message {
   clearProjectionEnd(): void;
   getProjectionEnd(): Projection | undefined;
   setProjectionEnd(value?: Projection): void;
+
+  getNumberLanes(): number;
+  setNumberLanes(value: number): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Road.AsObject;
@@ -198,9 +198,9 @@ export namespace Road {
     technicalClass: string,
     maintenanceNeed: string,
     trafficLevel: string,
-    lastRevisionId: number,
     projectionStart?: Projection.AsObject,
     projectionEnd?: Projection.AsObject,
+    numberLanes: number,
   }
 }
 

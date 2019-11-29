@@ -1,78 +1,612 @@
 <edit_condition>
-    <h5>{ window.gettext ("Condition") }</h5>
-
-    <section>
-        <div class="form-group">
-            <label>{ conditions.display }</label>
-            <small class="form-text text-muted">{ props.getHelpText("surface_condition") }</small>
-            <ul class="surface-condition">
-                <li each="{ condition in conditions.options }" data-condition="{ condition[0] }" onclick="{ checkSurfaceCondition }">
-                    <span class="{ condition[0] == props.road.getSurfaceCondition() ? 'active' : ''  } radio image"></span>
-                    { condition[1] }
-                </li>
-            </ul>
+    <div class="content-wrapper">
+        <h5>{ window.gettext("Surface Condition (SDI)") }</h5>
+        <div class="d-flex surface-condition-bar">
+            <div each="{condition in state.surfaceConditions}" class="{'condition-' + condition.key}" style="{'width:' + condition.percent + '%;'}"></div>
         </div>
-        <div class="form-group">
-            <label>{ maintenance_needs.display }</label>
-            <small class="form-text text-muted">{ props.getHelpText("maintenance_need") }</small>
-            <ul class="maintenance-need">
-                <li each="{ maintenance_need in maintenance_needs.options }" data-maintenance="{ maintenance_need.code }" onclick="{ checkMaintenanceNeed }">
-                    <span class="{ maintenance_need.code === props.road.getMaintenanceNeed() ? 'active' : ''  } radio image"></span>
-                    { maintenance_need.name }
-                </li>
-            </ul>
+        <div class="align-items-center d-flex justify-content-between surface-condition-legend">
+            <div class="values d-flex flex-wrap">
+                <div each="{condition in state.surfaceConditions}" class="align-items-center d-flex">
+                    <div class="{'condition-' + condition.key}"></div>
+                    <span>{condition.label}</span>
+                </div>
+            </div>
+            <div class="total">
+                <span>{ window.gettext("Total road chainage") }: {state.surveyTotalDistance / 1000}km</span>
+            </div>
         </div>
-        <div class="form-group">
-            <label>{ technical_classes.display }</label>
-            <small class="form-text text-muted">{ props.getHelpText("technical_class") }</small>
-            <ul class="technical-class">
-                <li each="{ technical_class in technical_classes.options }" data-technical="{ technical_class.code }" onclick="{ checkTechnicalClass }">
-                    <span class="{ technical_class.code == props.road.getTechnicalClass() ? 'active' : ''  } radio image"></span>
-                    { technical_class.name }
-                </li>
-            </ul>
-        </div>
-        <div class="form-group">
-            <label>{ traffic_data.display }</label>
-            <small class="form-text text-muted">{ props.getHelpText("traffic_level") }</small>
-            <ul class="traffic-data">
-                <li each="{ traffic in traffic_data.options }" data-traffic="{ traffic[0] }" onclick="{ checkTrafficData }">
-                    <span class="{ traffic[0] === props.road.getTrafficLevel() ? 'active' : ''  } radio image"></span>
-                    { traffic[1] }
-                </li>
-            </ul>
-        </div>
-    </section>
-
-    <div class="button-wrapper d-flex justify-content-end">
-        <button class="btn btn-primary" onclick="{ save }" disabled="{ props.saving }">{ window.gettext("Save and continue") }</button>
     </div>
 
+    <div class="content-wrapper">
+        <div class="d-flex justify-content-between">
+            <h5>{ window.gettext("Surface Condition Data (SDI)") }</h5>
+            <button class="btn btn-primary" onclick="{ addEdit }" disabled="{ props.editing }">{ window.gettext("Add") }</button>
+        </div>
+        <div class="d-flex">
+            <a class="{ !state.viewAll ? 'active' : '' } table-toggle" onclick="{ viewCurrent }">{ window.gettext("Current condition") }</a>
+            <a class="{ state.viewAll ? 'active' : '' } table-toggle" onclick="{ viewAll }">{ window.gettext("View all data entries") }</a>
+        </div>
+        <data_table if="{ state.viewAll }" table_id="{this.all_data_table_id}" columns="{this.all_data_table_columns}" columnSortOrder="{this.all_data_table_columns_order}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}" canDelete=true></data_table>
+        <data_table if="{ !state.viewAll }" table_id="{this.current_data_table_id}" columns="{this.current_data_table_columns}" columnSortOrder="{this.current_data_table_columns_order}" getHelpText="{props.getHelpText}" pendingRows="{this.pendingRows}"></data_table>
+    </div>
+
+    <edit_modal modal_id="{ modal_id }" disableSave="{ !state.canSave }">
+        <span slot="modal_title">{window.gettext("Add Surface Condition Information")}</span>
+        <form slot="modal_body">
+            <section>
+                <div class="form-group">
+                    <label>{ window.gettext("Survey Date") }</label>
+                    <span class="required">*</span>
+                    <small class="form-text text-muted">{props.getHelpText("survey_date")}</small>
+                    <!-- It would be preferable to use the 'datetime-local' input type, however Firefox currently does not support it -->
+                    <input class="{ state.errors.surveyDate ? 'danger' : null } { state.survey.surveyDate ? '' : 'inactive' } form-control"
+                        type="date" name="surveyDate" placeholder="Date" value="{ state.survey.surveyDate }" oninput="{ checkSurveyDate }"
+                        required pattern="\d{4}-\d{2}-\d{2}" max="{ max_date() }" >
+                    <div if="{ state.errors.surveyDate }" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.surveyDate }.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h6>{ window.gettext("Chainage") }</h6>
+                <div class="form-group">
+                    <label>{ window.gettext("Chainage start") } (m)</label>
+                    <span class="required">*</span>
+                    <input class="{ state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
+                        type="number" name="startChainage" placeholder="0000" value="{ state.survey.startChainage }" oninput="{ checkChainage }"
+                        required>
+                    <small class="form-text text-muted">{ props.getHelpText("start_chainage") }</small>
+                    <div if="{ state.errors.startChainage }" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.startChainage }.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>{ window.gettext("Chainage end") } (m)</label>
+                    <span class="required">*</span>
+                    <input class="{ state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
+                        type="number" name="endChainage" placeholder="62410" value="{ state.survey.endChainage }" oninput="{ checkChainage }"
+                        required>
+                    <small class="form-text text-muted">{ props.getHelpText("end_chainage") }</small>
+                    <div if="{ state.errors.endChainage }" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.endChainage }.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h6>{ window.gettext("Condition") }</h6>
+                <div class="form-group">
+                    <label>{conditions.display}</label>
+                    <span class="required">*</span>
+                    <small class="form-text text-muted">{props.getHelpText("surface_condition")}</small>
+                    <div if="{ state.errors.surfaceCondition }" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.surfaceCondition }.</li>
+                        </ul>
+                    </div>
+                    <ul class="surface-condition">
+                        <li each="{ condition in conditions.options }" data-condition="{ condition[0] }" onclick="{ checkSurfaceCondition }">
+                            <span class="{ condition[0] == state.survey.surfaceCondition ? 'active' : ''  } radio image"></span>
+                            { condition[1] }
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="d-flex justify-content-end">
+                <span>[</span><span class="required">*</span><span>]: Mandatory</span>
+            </div>
+        </form>
+    </edit_modal>
+
+    <edit_stop_alert
+        modalId="delete-alert"
+        title="{ window.gettext('Delete') }"
+        description="{ window.gettext('Are you sure you want to delete this data entry?') }"
+        proceedLabel="{ window.gettext('Delete') }"
+        proceedResult="delete"
+        stopLabel="{ window.gettext('Don\'t delete') }"
+        stopResult="keep">
+    </edit_stop_alert>
+
     <script>
+        import Edit_Stop_Alert from "./edit_stop_alert.riot";
+        import Data_Table from "./data_table.riot";
+        import Edit_Modal from "./edit_modal.riot";
+
+        import { createSurvey, deleteSurvey, updateSurvey, getRoadSurveyReport, getRoadSurveys } from "../surveyManager";
+        import { toChainageFormat } from "../assets/protoBufUtilities";
+        import { Survey, Report } from "../../protobuf/survey_pb";
+
+        import { getFieldName } from "../road";
+
+        import $ from "jquery";
+
+        function checkRequiredFields(fieldNames, data, errors) {
+             return fieldNames.filter((fieldName) => { return !data[fieldName]; });
+        }
+
+        function withinMaxDigits(text, limit, decimals) {
+            return (new RegExp(`^\\d{0,${(limit - decimals)}}(\\.\\d{1,${decimals}})?$`).test(text));
+        }
+
+        /** Deep copy the supplied data to a new object
+         *  Prefers to use protobuf .cloneMessage
+         */
+        function cloneData(data) {
+            if (data.cloneMessage) {
+                return data.cloneMessage();
+            }
+
+            return JSON.parse(JSON.stringify(data));
+        }
+
         export default {
-            save(e) {
-                this.props.onSave();
+            state: {
+                chainageDecimals: 3,
+                chainageDigits : 9,
+                baseSurvey: new Survey({}),
+                survey: {},
+                canSave: false,
+                errors: {},
+                pendingRows: [],
+                surfaceConditions: [{ key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
+                surveyTotalDistance: 0,
+                reportRows: [],
+                viewAll: false,
+                editMode: false,
             },
-            checkSurfaceCondition(e) {
-                this.props.road.setSurfaceCondition(e.currentTarget.dataset.condition);
+            components: {
+                Edit_Stop_Alert, Edit_Modal
+            },
+
+            // Condition Survey
+            onMounted(props, state) {
+                state.loading = true;
+                state.road = cloneData(props.road);
+
+                let roadDistance = state.road.getLinkEndChainage() - state.road.getLinkStartChainage();
+                if (!roadDistance || roadDistance < 0) {
+                    roadDistance = state.road.linkLength;
+                }
+
+                const emptyConditions = {
+                    key: 0,
+                    title: "unknown",
+                    distance: roadDistance
+                };
+
+                this.updateSurfaceConditionsSummary([emptyConditions]);
+                this.refreshSurveysAndReports();
+
+                this.deleteListener = (data) => {
+                    const rowId = data.detail.rowId;
+                    this.showStopAlertModal("delete-alert", rowId);
+                };
+                
+                document.addEventListener(`${this.all_data_table_id}.deleteRow`, this.deleteListener);
+            },
+            onUnmount(props, state) {
+                document.removeEventListener(`${this.all_data_table_id}.deleteRow`, this.deleteListener);
+            },
+            refreshSurveysAndReports() {
+                this.getRoadSurveys();
+                this.getRoadSurveyReports();
+            },
+            getRoadSurveys() {
+                const roadId = this.state.road.getId();
+
+                getRoadSurveys(roadId)
+                    .then((surveyData) => {
+                        if (surveyData) {
+                            this.state.pendingRows = surveyData;
+
+                            const eventName = `${this.all_data_table_id}.dataAdded`;
+                            const eventDetail = { detail: { pendingRows: this.state.pendingRows, clearRows: true }}
+                            document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+
+                            this.state.error = false;
+                        } else {
+                            this.state.error = true;
+                        }
+                    }).catch(err => {
+                        this.state.error = true;
+                    }).finally((r) => {
+                        this.state.loading = false;
+                        this.update();
+                    });
+            },
+            getRoadSurveyReports() {
+                const roadId = this.state.road.getId();
+                const roadCode = this.state.road.code;
+
+                getRoadSurveyReport(roadId)
+                    .then((surveyReportData) => {
+                        if (surveyReportData) {
+                            const haveLengths = !!surveyReportData.counts;
+                            const surfaceConditions = surveyReportData.conditions;
+                            const haveSurfaceConditions = surfaceConditions.length > 0;
+                            if (haveLengths && haveSurfaceConditions) {
+                                this.updateSurfaceConditionsSummary(surveyReportData.conditions);
+                            }
+                            if (surveyReportData.tableList) {
+                                this.state.reportRows = surveyReportData.tableList;
+
+                                const eventName = `${this.current_data_table_id}.dataAdded`;
+                                const eventDetail = { detail: { pendingRows: this.state.reportRows, clearRows: true }}
+                                document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+
+                                if (surveyReportData.id === null) {
+                                    // An id of null tells us conclusively that there was an error fetching the data
+                                    this.props.showBanner(true);
+                                }
+                            }
+                            this.state.error = false;
+                        } else {
+                            this.state.error = true;
+                        }
+                    }).catch(err => {
+                        this.state.error = true;
+                    }).finally((r) => {
+                        this.state.loading = false;
+                        this.update();
+                    });
+            },
+            updateSurfaceConditionsSummary(surfaceConditions) {
+                this.state.surfaceConditions.length = 0;
+                surfaceConditions.forEach((condition) => {
+                    this.state.surfaceConditions.push(condition);
+                });
+                this.drawSurfaceConditionsSummary();
+            },
+            drawSurfaceConditionsSummary() {
+                // First just clean all the distance values and get the total
+                this.state.surveyTotalDistance = 0;
+                this.state.surfaceConditions.forEach((condition) => {
+                    // all distances are in meters
+                    condition.distance = Math.round(condition.distance);
+                    this.state.surveyTotalDistance += condition.distance;
+                });
+                this.state.surveyTotalDistance = Math.round(this.state.surveyTotalDistance);
+
+                // Then calculate everything else
+                this.state.surfaceConditions.forEach((condition) => {
+                    const surfaceTitle = window.gettext(condition.title[0].toUpperCase() + condition.title.substring(1));
+                    if (this.state.surveyTotalDistance > 0) {
+                        condition.percent = Math.round((condition.distance / this.state.surveyTotalDistance) * 10000) / 100;
+                        // the calculated label shows distance in km
+                        condition.label = `${surfaceTitle} (${condition.distance / 1000}km/${condition.percent}%)`;
+                    } else {
+                        // 100% of 0km - but this won't appear in the label
+                        condition.percent = 100;
+                        // the calculated label shows distance in km
+                        condition.label = `${surfaceTitle} (0km)`;
+                    }
+                });
+
                 this.update();
             },
-            checkMaintenanceNeed(e) {
-                this.props.road.setMaintenanceNeed(e.currentTarget.dataset.maintenance);
-                this.update();
+            viewAll(e) {
+                if (!this.state.viewAll) {
+                    this.update({viewAll: true});
+
+                    const eventName = `${this.all_data_table_id}.dataAdded`;
+                    const eventDetail = { detail: { pendingRows: this.state.pendingRows, clearRows: true }}
+                    document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+                }
             },
-            checkTechnicalClass(e) {
-                this.props.road.setTechnicalClass(e.currentTarget.dataset.technical);
-                this.update();
+            viewCurrent(e) {
+                if (this.state.viewAll) {
+                    this.update({viewAll: false});
+
+                    const eventName = `${this.current_data_table_id}.dataAdded`;
+                    const eventDetail = { detail: { pendingRows: this.state.reportRows, clearRows: true }}
+                    document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+                }
             },
-            checkTrafficData(e) {
-                this.props.road.setTrafficLevel(e.currentTarget.dataset.traffic);
-                this.update();
+            addEdit(e) {
+                // TODO:
+                // baseSurvey must be set to 'empty' for add.
+                // and the selected segment survey for edit.
+                this.state.survey = cloneData(this.state.baseSurvey);
+                this.state.errors = {};
+
+                this.showEditModal();
             },
             conditions: window.road_schema.surface_condition,
-            maintenance_needs: window.road_schema.maintenance_need,
-            technical_classes: window.road_schema.technical_class,
-            traffic_data: window.road_schema.traffic_level,
+            current_data_table_id: "surface-condition-report-table",
+            current_data_table_columns_order: [[0, 'asc']],
+            current_data_table_columns: [
+                {
+                    title: window.gettext("Chainage start"),
+                    data: "chainageStart",
+                    defaultContent: "",
+                    className: "text-right",
+                    render: (data, type) => {
+                        return (type === 'display') ? toChainageFormat(data) : data;
+                    },
+                },
+                {
+                    title: window.gettext("Chainage end"),
+                    data: "chainageEnd",
+                    defaultContent: "",
+                    className: "text-right",
+                    orderable: false,
+                    render: (data, type) => {
+                        return (type === 'display') ? toChainageFormat(data) : data;
+                    },
+                },
+                {
+                    title: window.gettext("Surface condition"),
+                    data: "surfaceCondition",
+                    defaultContent: "",
+                    className: "text-center",
+                    orderable: false,
+                },
+                {
+                    title: window.gettext("Survey date"),
+                    data: "dateSurveyed",
+                    defaultContent: "",
+                    className: "text-center",
+                    orderable: false,
+                },
+                {
+                    title: window.gettext("Added by"),
+                    data: "addedBy",
+                    defaultContent: "",
+                    orderable: false,
+                },
+            ],
+            all_data_table_id: "surface-condition-table",
+            all_data_table_columns_order: [[3, 'desc'], [0, 'asc']],
+            all_data_table_columns: [
+                {
+                    title: window.gettext("Chainage start"),
+                    data: "chainageStart",
+                    defaultContent: "",
+                    className: "text-right",
+                    render: (data, type) => {
+                        return (type === 'display') ? toChainageFormat(data) : data;
+                    },
+                },
+                {
+                    title: window.gettext("Chainage end"),
+                    data: "chainageEnd",
+                    defaultContent: "",
+                    className: "text-right",
+                    orderable: false,
+                    render: (data, type) => {
+                        return (type === 'display') ? toChainageFormat(data) : data;
+                    },
+                },
+                {
+                    title: window.gettext("Surface condition"),
+                    data: "surfaceCondition",
+                    defaultContent: "",
+                    className: "text-center",
+                    orderable: false,
+                },
+                {
+                    title: window.gettext("Survey date"),
+                    data: "dateSurveyed",
+                    defaultContent: "",
+                    className: "text-center",
+                },
+                {
+                    title: window.gettext("Added by"),
+                    data: "addedBy",
+                    defaultContent: "",
+                    orderable: false,
+                },
+                {
+                    // To add a 'Delete' button include the attribute candelete=true
+                    // on the Riot dataTable tag as well
+                    title: window.gettext("Delete"),
+                    name: "Option", // Do NOT translate this
+                    defaultContent: "",
+                    className: "text-center",
+                    orderable: false,
+                },
+            ],
+
+            // Survey Modal
+
+            requiredFieldNames: ["surveyDate", "startChainage", "endChainage", "surfaceCondition"],
+            showEditModal() {
+                document.addEventListener(`${this.modal_id}.result`, (data) => {
+                    const modalResult = data.detail.result;
+
+                    switch (modalResult) {
+                        case "save":
+                            if (this.hasChanges()) {
+                                this.save();
+                            }
+                            break;
+                        case "cancel":
+                            this.discardChanges();
+                            break;
+                        default:
+                            if (this.hasChanges()) {
+                                this.showStopAlertModal("stop-alert");
+                            }
+                            break;
+                    }
+                }, { once: true });
+
+                $(`#${this.modal_id}`).modal("show");
+            },
+            showStopAlertModal(modalId, rowId) {
+                const eventName = `edit.${modalId}.result`;
+                // this[`${eventName}Listener`] = 
+                document.addEventListener(eventName, (data) => {
+                    const stopAlertResult = data.detail.result;
+                    $(`#${modalId}`).modal("hide");
+
+                    if (stopAlertResult === "discard") {
+                        this.discardChanges();
+                    } else if (stopAlertResult === "delete") {
+                        this.state.editMode = true;
+                        // void the survey surface_condition value and save
+                        this.state.survey = this.state.pendingRows.find((s) => { return s.id == rowId; });
+                        if (this.state.survey) {
+                            this.state.survey.setValues(JSON.stringify({}));
+                            this.saveSurvey();
+                        }
+                        this.state.editMode = false;
+                    } else if (stopAlertResult === "continueEdit") {
+                        this.showEditModal();
+                    }
+                }, { once: true });
+
+                $(`#${modalId}`).modal("show");
+            },
+            discardChanges() {
+                $(`#${this.modal_id}`).modal("hide");
+                this.update({
+                    survey: cloneData(this.state.baseSurvey),
+                    errors: {},
+                });
+            },
+            save(e) {
+                const missingFieldNames = checkRequiredFields(this.requiredFieldNames, this.state.survey);
+
+                if (Object.keys(this.state.errors).length) {
+                    // Cannot save if there are validation errors
+                    this.canSave();
+
+                    if (!this.state.canSave) {
+                        missingFieldNames.forEach((fieldName) => {
+                            if (!data[fieldName]) {
+                                errors[fieldName] = window.gettext("This field is required");
+                            }
+                        });
+                        this.showEditModal();
+                    }
+                } else {
+                    if (this.hasChanges()) {
+                        // Complete the survey
+                        this.state.survey.setUser($("#user_welcome").data( "userId" ) || 0);
+                        this.state.survey.setSource("Estrada");
+                        this.state.survey.setChainageStart(this.state.survey.startChainage);
+                        this.state.survey.setChainageEnd(this.state.survey.endChainage);
+                        this.state.survey.setValues(JSON.stringify({
+                            surface_condition: this.state.survey.surfaceCondition
+                        }));
+                        // If we're here we will have a user entered surveyDate, even so Date.now() is still used as a fall back
+                        const dateSurveyed = new proto.google.protobuf.Timestamp();
+                        const surveyDate = new Date(this.state.survey.surveyDate || Date.now().toISOString());
+                        dateSurveyed.fromDate(surveyDate);
+
+                        this.state.survey.setDateSurveyed(dateSurveyed);
+
+                        // set Survey road from state Road road_code
+                        this.state.survey.setRoad(this.state.road.getRoadCode());
+
+                        this.saveSurvey();
+                    }
+
+                    // Reset baseSurvey now that we're done.
+                    this.baseSurvey = new Survey({});
+                }
+            },
+            saveSurvey() {
+                $(`#${this.modal_id}`).modal("hide");
+                $('#loading').modal('show');
+
+                if (!this.state.editMode) {
+                    createSurvey(this.state.survey)
+                        .then((surveyData) => {
+                            this.refreshSurveysAndReports();
+                            this.update({
+                                survey: new Survey({}), // clear input values
+                            });
+                            $('#loading').modal('hide');
+                            this.props.showBanner();
+                        })
+                        .catch((err) => {
+                            this.props.showBanner(true);
+                        });
+                } else {
+                    updateSurvey(this.state.survey)
+                        .then((surveyData) => {
+                            this.refreshSurveysAndReports();
+                            this.update({
+                                survey: new Survey({}), // clear input values
+                            });
+                            $('#loading').modal('hide');
+                            this.props.showBanner();
+                        })
+                        .catch((err) => {
+                            this.props.showBanner(true);
+                        });
+                }
+            },
+            canSave() {
+                const missingFieldNames = checkRequiredFields(this.requiredFieldNames, this.state.survey);
+
+                if (missingFieldNames.length || Object.keys(this.state.errors).length) {
+                    // Cannot save if there are validation errors
+                    this.state.canSave = false;
+                } else {
+                    // Can save if something has changed
+                    this.state.canSave = JSON.stringify(this.state.baseSurvey) !== JSON.stringify(this.state.survey);
+                }
+
+                this.update();
+            },
+            /** Compare the selected fields between baseSurvey and survey.
+             * `source` and `user` are deliberately not compared
+             */
+            hasChanges() {
+                const compareFieldNames = ["surveyDate", "startChainage", "endChainage", "surfaceCondition"];
+                const surveyBase = compareFieldNames.map((fieldName) => { return this.state.baseSurvey[fieldName] || ""; }).join("|||");
+                const surveyResult = compareFieldNames.map((fieldName) => { return this.state.survey[fieldName] || ""; }).join("|||");
+
+                return (surveyBase !== surveyResult);
+            },
+            validate(fieldName, input, testResult, errorText) {
+                if (!testResult) {
+                    this.state.errors[fieldName] = errorText;
+                } else {
+                    delete this.state.errors[fieldName];
+                    this.state.survey[fieldName] = input;
+                }
+
+                this.canSave();
+            },
+            checkSurveyDate(e) {
+                const fieldName = e.currentTarget.name;
+                const input = e.currentTarget.value;
+                const testResult = input <= this.max_date();
+                const errorText = window.gettext("Survey date cannot be in the future");
+
+                this.validate(fieldName, input, testResult, errorText );
+            },
+            checkChainage(e) {
+                const fieldName = e.currentTarget.name;
+                const input = e.currentTarget.value;
+                const chainageDigits = this.state.chainageDigits;
+                const chainageDecimals = this.state.chainageDecimals;
+                const testResult = withinMaxDigits(input, chainageDigits, chainageDecimals);
+                const errorText = window.interpolate(
+                    window.gettext("Chainage cannot contain more than %s digits, of which %s are decimals"),
+                    [chainageDigits, chainageDecimals]);
+
+                this.validate(fieldName, input, testResult, errorText);
+            },
+            checkSurfaceCondition(e) {
+                this.state.survey.surfaceCondition = e.currentTarget.dataset.condition;
+                this.canSave();
+            },
+            modal_id: "surface-condition-modal",
+            max_date: () => new Date().toISOString().substring(0, 10),
         }
     </script>
 </edit_condition>

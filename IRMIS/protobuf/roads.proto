@@ -50,9 +50,10 @@ message Road {
   string technical_class = 21;
   string maintenance_need = 22;
   string traffic_level = 23;
-  uint32 last_revision_id = 24;
+  // uint32 last_revision_id = 24;
   Projection projection_start = 25;
   Projection projection_end = 26;
+  uint32 number_lanes = 27;
 }
 
 message Roads {

@@ -1,5 +1,9 @@
 # CHANGE LOG
 
+## 1.3.0 Segmented Road Reports - Surface Condition
+
+- put user stories here
+
 ## 1.2.2 Map interaction
 
 - Clicking on the row in the table zooms the map

@@ -1,6 +1,7 @@
 import "babel-polyfill";
 import * as riot from "riot";
 
+import Data_Table from "./riot/data_table.riot";
 import Edit_Base from "./riot/edit_base.riot";
 
 import "./styles/estrada.scss";
@@ -36,20 +37,23 @@ window.addEventListener("load", () => {
                             feature.properties.id = Number(feature.properties.pk) || 0;
                             feature.properties.featureType = "Road";
                         });
-                        
+
                         // add to map
                         estradaMap.addMapData(geoJson);
                     });
             });
         });
 
-    riot.register("edit_base", Edit_Base);
+    riot.register("data_table", Data_Table);
+    if (window.canEdit) {
+        riot.register("edit_base", Edit_Base);
+        // add listener since editing is allowed
+        window.addEventListener("hashchange", () => {
+            hashCheck();
+        });
+        hashCheck();
+    }
     window.goBack = () => {};
-    hashCheck();
-});
-
-window.addEventListener("hashchange", () => {
-    hashCheck();
 });
 
 function hashCheck() {

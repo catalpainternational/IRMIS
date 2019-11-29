@@ -17,27 +17,7 @@
     }
 }
 
-#map-table-irmis.map.table {
-    #map-irmis span.popup {
-        white-space: nowrap;
-        font-size: 12px;
-
-        .label {
-            font-weight: 300
-        }
-
-        .value {
-            font-weight: 700
-        }
-    }
-}
-
-.leaflet-container a {
-    font-size: 11px;
-}
-
 // Override Leaflet styles
-
 .leaflet-touch {
     .leaflet-bar {
         margin-right: 30px;
@@ -56,5 +36,18 @@
                 background-color: $white;
             }
         }
+    }
+}
+
+.leaflet-popup {
+    .popup {
+        white-space: nowrap;
+        font-size: 12px;
+        display: flex;
+    }
+
+    a.leaflet-popup-close-button {
+        padding-right: 6px;
+        padding-top: 6px;
     }
 }

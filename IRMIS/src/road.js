@@ -1,10 +1,9 @@
 import { Road } from "../protobuf/roads_pb";
 
 import { projToWGS84, toDms, toUtm } from "./assets/crsUtilities";
+import { choice_or_empty, toChainageFormat } from "./assets/protoBufUtilities";
 
-const roadSchema = JSON.parse(document.getElementById('road_schema').textContent);
-
-function humanizeChoices(choiceField, valueKey=false, displayKey=false) {
+export function humanizeChoices(choiceField, valueKey=false, displayKey=false) {
     let values = {};
     valueKey = valueKey || 0;
     displayKey = displayKey || 1;
@@ -14,28 +13,17 @@ function humanizeChoices(choiceField, valueKey=false, displayKey=false) {
     return values;
 }
 
-/** utility function to pick from choices if value is truthy, or return empty string */ 
-function choice_or_empty(value, choices) {
-    return value ? choices[value] : "";
-}
+const roadSchema = JSON.parse(document.getElementById('road_schema').textContent);
 
+const ADMINISTRATIVE_AREA_CHOICES = humanizeChoices('administrative_area', 'id', 'name');
+const MAINTENANCE_NEED_CHOICES = humanizeChoices('maintenance_need', 'code', 'name');
+const PAVEMENT_CLASS_CHOICES = humanizeChoices('pavement_class', 'code', 'name');
 const ROAD_STATUS_CHOICES = humanizeChoices('road_status', 'code', 'name');
 const ROAD_TYPE_CHOICES = humanizeChoices('road_type');
-const SURFACE_TYPE_CHOICES = humanizeChoices('surface_type', 'code', 'name');
-const SURFACE_CONDITION_CHOICES = humanizeChoices('surface_condition');
-const PAVEMENT_CLASS_CHOICES = humanizeChoices('pavement_class', 'code', 'name');
-const ADMINISTRATIVE_AREA_CHOICES = humanizeChoices('administrative_area', 'id', 'name');
-const TECHNICAL_CLASS_CHOICES = humanizeChoices('technical_class', 'code', 'name');
-const MAINTENANCE_NEED_CHOICES = humanizeChoices('maintenance_need', 'code', 'name');
-const TRAFFIC_LEVEL_CHOICES = humanizeChoices('traffic_level');
-
-function toChainageFormat(value) {
-    const distance = parseFloat(value).toFixed(0);
-    const meters = `000${distance.substr(-3)}`.substr(-3);
-    const kilometers = `${distance.substr(0, distance.length - 3)}` || 0;
-
-    return `${kilometers}+${meters}`;
-}
+export const SURFACE_CONDITION_CHOICES = humanizeChoices('surface_condition');
+export const SURFACE_TYPE_CHOICES = humanizeChoices('surface_type', 'code', 'name');
+export const TECHNICAL_CLASS_CHOICES = humanizeChoices('technical_class', 'code', 'name');
+export const TRAFFIC_LEVEL_CHOICES = humanizeChoices('traffic_level');
 
 export class EstradaRoad extends Road {
 
@@ -149,6 +137,10 @@ export class EstradaRoad extends Road {
 
     get endUTM() {
         return toUtm(projToWGS84.forward(this.getProjectionEnd().array));
+    }
+
+    get numberLanes() {
+        return this.getNumberLanes();
     }
 
 }

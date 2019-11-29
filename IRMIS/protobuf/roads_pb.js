@@ -716,9 +716,9 @@ proto.assets.Road.toObject = function(includeInstance, msg) {
     technicalClass: jspb.Message.getFieldWithDefault(msg, 21, ""),
     maintenanceNeed: jspb.Message.getFieldWithDefault(msg, 22, ""),
     trafficLevel: jspb.Message.getFieldWithDefault(msg, 23, ""),
-    lastRevisionId: jspb.Message.getFieldWithDefault(msg, 24, 0),
     projectionStart: (f = msg.getProjectionStart()) && proto.assets.Projection.toObject(includeInstance, f),
-    projectionEnd: (f = msg.getProjectionEnd()) && proto.assets.Projection.toObject(includeInstance, f)
+    projectionEnd: (f = msg.getProjectionEnd()) && proto.assets.Projection.toObject(includeInstance, f),
+    numberLanes: jspb.Message.getFieldWithDefault(msg, 27, 0)
   };
 
   if (includeInstance) {
@@ -843,10 +843,6 @@ proto.assets.Road.deserializeBinaryFromReader = function(msg, reader) {
       var value = /** @type {string} */ (reader.readString());
       msg.setTrafficLevel(value);
       break;
-    case 24:
-      var value = /** @type {number} */ (reader.readUint32());
-      msg.setLastRevisionId(value);
-      break;
     case 25:
       var value = new proto.assets.Projection;
       reader.readMessage(value,proto.assets.Projection.deserializeBinaryFromReader);
@@ -856,6 +852,10 @@ proto.assets.Road.deserializeBinaryFromReader = function(msg, reader) {
       var value = new proto.assets.Projection;
       reader.readMessage(value,proto.assets.Projection.deserializeBinaryFromReader);
       msg.setProjectionEnd(value);
+      break;
+    case 27:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setNumberLanes(value);
       break;
     default:
       reader.skipField();
@@ -1040,13 +1040,6 @@ proto.assets.Road.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
-  f = message.getLastRevisionId();
-  if (f !== 0) {
-    writer.writeUint32(
-      24,
-      f
-    );
-  }
   f = message.getProjectionStart();
   if (f != null) {
     writer.writeMessage(
@@ -1061,6 +1054,13 @@ proto.assets.Road.serializeBinaryToWriter = function(message, writer) {
       26,
       f,
       proto.assets.Projection.serializeBinaryToWriter
+    );
+  }
+  f = message.getNumberLanes();
+  if (f !== 0) {
+    writer.writeUint32(
+      27,
+      f
     );
   }
 };
@@ -1397,21 +1397,6 @@ proto.assets.Road.prototype.setTrafficLevel = function(value) {
 
 
 /**
- * optional uint32 last_revision_id = 24;
- * @return {number}
- */
-proto.assets.Road.prototype.getLastRevisionId = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 24, 0));
-};
-
-
-/** @param {number} value */
-proto.assets.Road.prototype.setLastRevisionId = function(value) {
-  jspb.Message.setProto3IntField(this, 24, value);
-};
-
-
-/**
  * optional Projection projection_start = 25;
  * @return {?proto.assets.Projection}
  */
@@ -1474,6 +1459,21 @@ proto.assets.Road.prototype.clearProjectionEnd = function() {
  */
 proto.assets.Road.prototype.hasProjectionEnd = function() {
   return jspb.Message.getField(this, 26) != null;
+};
+
+
+/**
+ * optional uint32 number_lanes = 27;
+ * @return {number}
+ */
+proto.assets.Road.prototype.getNumberLanes = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 27, 0));
+};
+
+
+/** @param {number} value */
+proto.assets.Road.prototype.setNumberLanes = function(value) {
+  jspb.Message.setProto3IntField(this, 27, value);
 };
 
 

@@ -1,4 +1,3 @@
-// tslint:disable-next-line: max-line-length
 import bbox from "@turf/bbox";
 import envelope from "@turf/envelope";
 import { AllGeoJSON } from "@turf/helpers";
@@ -11,10 +10,10 @@ import { Config } from "./config";
 
 import { BaseLayers } from "./layers/BaseLayers";
 import { KnownGeometries } from "./layers/KnownGeometries";
-
 import { getFilterStyles } from "./utilities/filterGeoJSON";
+import { getFeatureType } from "./utilities/propertiesGeoJSON";
+
 import { FallbackLayerStyle, FixLayerStyleDefaults, styleGeometry, stylePoint } from "./utilities/leaflet-style";
-import { getFeatureType } from "./utilities/metaGeoJSON";
 
 import { roadPopup } from "../roadManager.js";
 

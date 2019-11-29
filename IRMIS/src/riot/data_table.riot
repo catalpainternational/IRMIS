@@ -13,24 +13,30 @@
         const initialiseStateFromProps = function(props, state) {
             state = state || {};
 
-            state.loading = true;
             state.saving = false;
             state.error = false;
             state.hasChanges = false;
             state.showFeedback = false;
 
-            state.canEdit = false;
+            state.canEdit = !!props.canedit;
+            state.canDelete = !!props.candelete;
 
-            state.id = props.table_id || "data-table";
+            state.id = props.table_id || "all-data-table";
             state.columns = props.columns || [];
             state.columnSortOrder = props.columnSortOrder || [[0, "asc"]];
+            state.clearRows = false;
             state.pendingRows = props.pendingRows || [];
             state.pageLength = props.pageLength || 10;
+
+            // Wraps the actual processing for 'dataAdded' event, and includes this tag's state
+            state.dataAdded = (data) => processDataAdded(data, state);
+
+            const optionColumns = state.columns.filter((column) => (column.name && column.name === "Option"));
 
             if (state.canEdit) {
                 state.columnSortOrder.forEach((columnOrder) => {
                     columnOrder[0]++;
-                })
+                });
 
                 state.columns.unshift({
                     title: "",
@@ -39,16 +45,37 @@
                     orderable: false,
                     className: "edit-col"
                 });
-            }            
+            }
+
+            if (state.canDelete && optionColumns.length === 1) {
+                optionColumns[0].render = (data, type, row) => {
+                    if (row.getAddedBy()) {
+                        return row ? button_template("delete", button_event_template(state.id, "deleteRow", row.getId())) : "";
+                    } else {
+                        return "";
+                    }
+                };
+            }
         }
 
-        const addEventListener = function(state) {
-            state.dataAddedEventHandler = document.addEventListener(`${state.id}.dataAdded`, (data) => {
-                const pendingRows = data.detail.pendingRows;
+        const button_template = function(buttonClass, clickAction) {
+            return `<span class="${buttonClass} image" onclick="${clickAction}"></span>`;
+        }
 
-                state.pendingRows = state.pendingRows.concat(pendingRows);
-                updateDataTable(state);
-            });
+        const button_event_template = function(tableId, eventName, rowId) {
+            return `document.dispatchEvent(new CustomEvent('${tableId}.${eventName}',{detail:{rowId:${rowId}}}))`;
+        }
+
+        const processDataAdded = function(data, state) {
+            const haveClearRows = typeof (data.detail.clearRows) === "boolean";
+            const clearRows = haveClearRows ? data.detail.clearRows : true;
+
+            state.clearRows = clearRows;
+            state.pendingRows = data.detail.pendingRows;
+
+            updateDataTable(state);
+
+            data.stopPropagation();
         }
 
         const initialiseDataTable = function (state) {
@@ -59,17 +86,35 @@
                 pageLength: state.pageLength,
                 dom: `<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>`, // https://datatables.net/reference/option/dom#Styling
                 language: datatableTranslations,
+                // This turns off filtering for all tables ( DO NOT SET THIS TO TRUE )
+                // dataTables has a bug where the searching / filtering clause passes from one table to another
+                // We only want it for the main table
+                searching: false,
+                ajax: function (data, callback, settings) {
+                    // This is only here so that dataTables will change its internal state
+                }
             });
 
             // add any rows the caller has delivered before initialization
-            updateDataTable(state);
+            if (state.pendingRows.length) {
+                updateDataTable(state);
+            }
         }
 
         const updateDataTable = function (state) {
             if (state.pendingRows.length) {
-                state.table.rows.add(state.pendingRows).draw();
-                state.pendingRows = [];
-            }    
+                state.table.clear().rows.add(state.pendingRows);
+            } else {
+                if (state.clearRows) {
+                    // No pendingRows so 'clear the table'
+                    state.table.clear();
+                }
+            }
+
+            state.table.draw();
+
+            // This calls the ajax function above, resulting in dataTables internal state change
+            state.table.ajax.reload();
         }
 
         export default {
@@ -78,16 +123,14 @@
                 this.update();
 
                 initialiseDataTable(state);
-                addEventListener(state);
+                document.addEventListener(`${state.id}.dataAdded`, state.dataAdded)
             },
             onBeforeUnmount(props, state) {
-                if (state.dataAddedEventHandler) {
-                    document.removeEventListener(`${state.id}.dataAdded`, state.dataAddedEventHandler);
-                }
+                document.removeEventListener(`${state.id}.dataAdded`, state.dataAdded);
             },
             getHelpText(field) {
                 return getHelpText(field);
             }
         };
     </script>
-</data_table> 
+</data_table>
