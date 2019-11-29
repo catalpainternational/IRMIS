@@ -9,6 +9,7 @@ from django.contrib.gis.geos import GEOSGeometry, LineString, MultiLineString
 from django.contrib.gis.gdal import DataSource, GDALException, OGRGeometry
 from django.core.management import call_command
 from django.db import connection
+from django.db.models import Q
 
 import geobuf
 import reversion
@@ -359,3 +360,11 @@ def make_geojson(*args, **kwargs):
         "geojson", geometries, geometry_field="geom", srid=4326, fields=("pk",)
     )
     return geojson
+
+
+def set_unknown_road_codes():
+    ''' finds all roads with meaningless codes and assigns them XX indexed codes '''
+    roads = Road.objects.filter(Q(road_code__isnull=True) | Q(road_code__in=['X', '', '-', 'Unknown']))
+    for index, road in enumerate(roads):
+        road.road_code = "XX{:>03}".format(index+1)
+        road.save()
