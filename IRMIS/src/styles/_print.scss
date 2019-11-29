@@ -18,7 +18,7 @@
         display: none;
     }
 
-    reports_base .row {
+    reports_base > .row {
         margin: 0;
     }
 
@@ -50,7 +50,9 @@
         }
 
         .report-content {
-            display: block !important;
+            & > div:first-child {
+                display: block !important;
+            }
     
             button {
                 display: none;
