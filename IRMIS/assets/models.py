@@ -246,8 +246,7 @@ class RoadQuerySet(models.QuerySet):
                 else:
                     nullable_value = FloatValue(value=road.get(query_key, None))
                 if nullable_value.value is not None:
-                    print(nullable_value)
-                    road_protobuf[protobuf_key].CopyFrom(nullable_value)
+                    getattr(road_protobuf, protobuf_key).CopyFrom(nullable_value)
 
             # set Protobuf with with start/end projection points
             start = Projection(x=road["start_x"], y=road["start_y"])
