@@ -43,4 +43,23 @@
             margin-right: 40px;
         }
     }
+
+    .print-footer {
+        border-top: 1px solid $light-gray;
+        display: block !important;
+        padding-bottom: 40px;
+        padding-top: 40px;
+
+        div {
+            background-color: $green;
+            margin-bottom: 60px;
+            padding-left: 40px;
+            color: $white;
+            height: 40px;
+        }
+
+        span.app-logo {
+            margin-left: 40px;
+        }
+    }
 }

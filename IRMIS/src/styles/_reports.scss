@@ -47,7 +47,7 @@ reports_base {
 }
 
 report {
-    .print-header {
+    .print-header, .print-footer {
         display: none;
     }
 
