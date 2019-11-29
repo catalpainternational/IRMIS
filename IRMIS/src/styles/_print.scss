@@ -1,0 +1,24 @@
+@media print {
+    body {
+        background-color: $white !important;
+        padding-right: 0;
+        padding-left: 0;
+        overflow: auto;
+    }
+
+    .top-menu {
+        display: none !important;
+    }
+
+    #side-menu {
+        display: none;
+    }
+
+    #reports {
+        overflow-y: unset;
+        height: unset;
+        width: unset;
+        padding: 0;
+        margin: 0;
+    }
+}
