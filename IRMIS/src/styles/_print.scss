@@ -34,12 +34,6 @@
         display: none !important;
     }
 
-    report {
-        .report-content button {
-            display: none;
-        }
-    }
-
     .print-header {
         border-bottom: 1px solid $light-gray;
         display: block !important;
@@ -47,6 +41,20 @@
 
         span.rdtl {
             margin-right: 40px;
+        }
+    }
+
+    report {
+        .report-content {
+            display: block !important;
+    
+            button {
+                display: none;
+            }
+
+            .print-title {
+                display: block !important;
+            }
         }
     }
 

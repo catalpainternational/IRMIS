@@ -104,6 +104,14 @@ report {
     }
 
     .content-wrapper.report-content {
+        justify-content: space-between;
+        align-items: center;
+        display: flex;
+
+        .print-title {
+            display: none;
+        }
+
         h6 {
             margin-bottom: 0;
         }

@@ -94,7 +94,8 @@
     </div>
 
     <div hidden="{ state.noReport }" class="content-wrapper report-content">
-        <div class="align-items-center d-flex justify-content-between">
+        <div>
+            <h1 class="print-title">{ window.gettext("Road Asset Management") }</h1>
             <h6>{ reportContent().title } { window.gettext("Report") }</h6>
             <button class="btn btn-secondary btn-sm" onclick="{ () => window.print() }">{ window.gettext("Print") }</button>
         </div>
