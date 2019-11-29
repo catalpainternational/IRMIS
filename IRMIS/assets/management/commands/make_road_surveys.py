@@ -78,6 +78,8 @@ class Command(BaseCommand):
                         sv["traffic_level"] = str(road.traffic_level)
                     if road.number_lanes:
                         sv["number_lanes"] = str(road.number_lanes)
+                    if road.terrain_class:
+                        sv["terrain_class"] = str(road.terrain_class)
 
                     # check that values is not empty before saving survey
                     if len(sv.keys()) > 0:
