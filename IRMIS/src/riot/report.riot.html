@@ -103,7 +103,7 @@
             <h6 if="{ state.reportData.roadCodes && state.reportData.roadCodes.length }">{ state.reportData.roadCodes.join(" ") }</h6>
             <h6 if="{ state.reportData.reportChainage }">Chainage { toChainageFormat(state.reportData.reportChainage[0]) } to { toChainageFormat(state.reportData.reportChainage[1]) }</h6>
         </div>
-        <span if="{ state.reportData.dateCreated }">{ window.gettext("Created on") } { state.reportData.dateCreated() }</span>
+        <span class="report-date" if="{ state.reportData.dateCreated }">{ window.gettext("Created on") } { state.reportData.dateCreated() }</span>
         <div class="d-flex flex-column filters-applied">
             <p>{ window.gettext("Filters applied") }</p>
             <div class="d-flex">
