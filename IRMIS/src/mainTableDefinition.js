@@ -76,6 +76,7 @@ export const estradaTableColumns = [
         data: "linkLength",
         defaultContent: "",
         className: "text-right",
+        render: linkLength => linkLength / 1000,
     },
     {
         title: EstradaRoad.getFieldName("link_start_name"),

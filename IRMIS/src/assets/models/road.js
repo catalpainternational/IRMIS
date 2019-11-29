@@ -54,7 +54,7 @@ export class EstradaRoad extends Road {
     }
 
     get linkLength() {
-        return parseFloat(this.getLinkLength()).toFixed(2);
+        return parseFloat(this.getLinkLength() * 1000).toFixed(2);
     }
 
     get status() {

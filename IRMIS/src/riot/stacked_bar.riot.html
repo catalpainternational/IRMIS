@@ -1,5 +1,5 @@
 <stacked_bar>
-    <div hidden="{ !props.id }" id="{ props.id }" >
+    <div hidden="{ !props.id }" id="{ props.id }">
         <h5 if="{ props.title }">{ props.title }</h5>
         <div class="d-flex entry-bar">
             <div each="{entry in state.entries}" class="{'entry-' + entry.key}" style="{'width:' + entry.percent + '%;'}"></div>
@@ -97,7 +97,7 @@
                     total_distance += entry.distance;
                 });
 
-                return Math.round(total_distance);                
+                return Math.round(total_distance);
             },
         }
     </script>
