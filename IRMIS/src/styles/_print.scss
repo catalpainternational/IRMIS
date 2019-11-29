@@ -45,6 +45,10 @@
     }
 
     report {
+        .report-criteria {
+            display: none;
+        }
+
         .report-content {
             display: block !important;
     
