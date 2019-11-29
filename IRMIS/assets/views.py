@@ -113,22 +113,25 @@ def road_update(request):
         return response
 
     # update the Road instance from PB fields
-    fields = [
+    regular_fields = [
         "road_name",
         "road_code",
         "road_type",
         "link_code",
         "link_start_name",
-        "link_start_chainage",
         "link_end_name",
-        "link_end_chainage",
-        "link_length",
         "surface_condition",
-        "carriageway_width",
         "administrative_area",
         "project",
         "funding_source",
         "traffic_level",
+    ]
+    numeric_fields = [
+        "link_start_chainage",
+        "link_end_chainage",
+        "link_length",
+        "carriageway_width",
+        "number_lanes",
     ]
     fks = [
         (MaintenanceNeed, "maintenance_need"),
@@ -138,9 +141,24 @@ def road_update(request):
         (PavementClass, "pavement_class"),
     ]
     changed_fields = []
-    for field in fields:
+    for field in regular_fields:
         request_value = getattr(req_pb, field)
         if getattr(old_road_pb, field) != request_value:
+            # set attribute on road
+            setattr(road, field, request_value)
+            # add field to list of changes fields
+            changed_fields.append(field)
+
+    # Nullable Numeric attributes
+    for field in numeric_fields:
+        existing_value = getattr(old_road_pb, field)
+        request_value = getattr(req_pb, field)
+
+        # -ve request_values indicate that the supplied value is actually meant to be None
+        if request_value < 0:
+            request_value = None
+
+        if existing_value != request_value:
             # set attribute on road
             setattr(road, field, request_value)
             # add field to list of changes fields

@@ -6,6 +6,10 @@ export function choice_or_default(value, choices, defaultValue = "") {
 }
 
 export function toChainageFormat(value, thousandsSeparator = ",") {
+    if (typeof value === "undefined" || value === null) {
+        return "";
+    }
+
     const distance = parseFloat(value).toFixed(0);
     const meters = `000${distance.substr(-3)}`.substr(-3);
     const kilometers = (`${distance.substr(0, distance.length - 3)}` || 0)

@@ -239,16 +239,18 @@ class RoadQuerySet(models.QuerySet):
         for road in roads:
             road_protobuf = roads_protobuf.roads.add()
             road_protobuf.id = road["id"]
+
             for protobuf_key, query_key in regular_fields.items():
                 if road[query_key]:
                     setattr(road_protobuf, protobuf_key, road[query_key])
+
             for protobuf_key, query_key in numeric_fields.items():
-                if query_key == "number_lanes":
-                    nullable_value = UInt32Value(value=road.get(query_key, None))
+                raw_value = road.get(query_key)
+                if raw_value is not None:
+                    setattr(road_protobuf, protobuf_key, raw_value)
                 else:
-                    nullable_value = FloatValue(value=road.get(query_key, None))
-                if nullable_value.value is not None:
-                    getattr(road_protobuf, protobuf_key).CopyFrom(nullable_value)
+                    # No value available, so use -ve as a substitute for None
+                    setattr(road_protobuf, protobuf_key, -1)
 
             # set Protobuf with with start/end projection points
             start = Projection(x=road["start_x"], y=road["start_y"])
