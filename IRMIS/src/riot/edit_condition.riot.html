@@ -19,12 +19,12 @@
                 { window.gettext("View all data entries") }
             </a>
         </div>
-        <data_table if="{state.viewAll}" table_id="{this.all_data_table_id}" columns="{this.all_data_table_columns}"
-            columnSortOrder="{this.all_data_table_columns_order}" getHelpText="{props.parent.getHelpText}"
-            pendingRows="{this.pendingRows}" canDelete=true></data_table>
-        <data_table if="{!state.viewAll}" table_id="{this.current_data_table_id}"
-            columns="{this.current_data_table_columns}" columnSortOrder="{this.current_data_table_columns_order}"
-            getHelpText="{props.parent.getHelpText}" pendingRows="{this.pendingRows}"></data_table>
+        <data_table if="{state.viewAll}" table_id="{all_data_table_id}" columns="{all_data_table_columns}"
+            columnSortOrder="{all_data_table_columns_order}" getHelpText="{props.parent.getHelpText}"
+            pendingRows="{state.pendingRows}" canDelete=true></data_table>
+        <data_table if="{!state.viewAll}" table_id="{current_data_table_id}" columns="{current_data_table_columns}"
+            columnSortOrder="{current_data_table_columns_order}" getHelpText="{props.parent.getHelpText}"
+            pendingRows="{state.pendingRows}"></data_table>
     </div>
 
     <edit_modal modal_id="{modal_id}" disableSave="{!state.canSave}">
@@ -159,7 +159,7 @@
                 state.loading = true;
                 state.road = cloneData(props.road);
 
-                this.props.parent.updateReportAttributeSummary(state, "surfaceConditions", props.parent.emptyAttributes);
+                this.props.parent.updateReportAttributeSummary(state, "surface_condition", props.parent.emptyAttributes);
                 this.props.parent.refreshSurveysAndReports(state, this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id, this.stacked_bar_id);
 
                 this.deleteListener = (data) => {
