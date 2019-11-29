@@ -1,26 +1,33 @@
 <edit_condition>
     <div class="content-wrapper">
-        <stacked_bar
-            id="{ this.stacked_bar_id }"
-            title="{ window.gettext('Surface Condition (SDI)') }"
-            entries="{ state.surfaceConditions }"
-            total_title="{ window.gettext('Total road chainage') }" ></stacked_bar>
+        <stacked_bar id="{stacked_bar_id}" title="{window.gettext('Surface Condition (SDI)')}"
+            entries="{state.surfaceConditions}" total_title="{window.gettext('Total road chainage')}"></stacked_bar>
     </div>
 
     <div class="content-wrapper">
         <div class="d-flex justify-content-between">
             <h5>{ window.gettext("Surface Condition Data (SDI)") }</h5>
-            <button class="btn btn-primary" onclick="{ addEdit }" disabled="{ props.editing }">{ window.gettext("Add") }</button>
+            <button class="btn btn-primary" onclick="{addEdit}" disabled="{props.editing}">
+                { window.gettext("Add") }
+            </button>
         </div>
         <div class="d-flex">
-            <a class="{ !state.viewAll ? 'active' : '' } table-toggle" onclick="{ viewCurrent }">{ window.gettext("Current condition") }</a>
-            <a class="{ state.viewAll ? 'active' : '' } table-toggle" onclick="{ viewAll }">{ window.gettext("View all data entries") }</a>
+            <a class="{!state.viewAll ? 'active' : '' } table-toggle" onclick="{viewCurrent}">
+                { window.gettext("Current condition") }
+            </a>
+            <a class="{state.viewAll ? 'active' : '' } table-toggle" onclick="{viewAll}">
+                { window.gettext("View all data entries") }
+            </a>
         </div>
-        <data_table if="{ state.viewAll }" table_id="{this.all_data_table_id}" columns="{this.all_data_table_columns}" columnSortOrder="{this.all_data_table_columns_order}" getHelpText="{props.parent.getHelpText}" pendingRows="{this.pendingRows}" canDelete=true></data_table>
-        <data_table if="{ !state.viewAll }" table_id="{this.current_data_table_id}" columns="{this.current_data_table_columns}" columnSortOrder="{this.current_data_table_columns_order}" getHelpText="{props.parent.getHelpText}" pendingRows="{this.pendingRows}"></data_table>
+        <data_table if="{state.viewAll}" table_id="{this.all_data_table_id}" columns="{this.all_data_table_columns}"
+            columnSortOrder="{this.all_data_table_columns_order}" getHelpText="{props.parent.getHelpText}"
+            pendingRows="{this.pendingRows}" canDelete=true></data_table>
+        <data_table if="{!state.viewAll}" table_id="{this.current_data_table_id}"
+            columns="{this.current_data_table_columns}" columnSortOrder="{this.current_data_table_columns_order}"
+            getHelpText="{props.parent.getHelpText}" pendingRows="{this.pendingRows}"></data_table>
     </div>
 
-    <edit_modal modal_id="{ modal_id }" disableSave="{ !state.canSave }">
+    <edit_modal modal_id="{modal_id}" disableSave="{!state.canSave}">
         <span slot="modal_title">{window.gettext("Add Surface Condition Information")}</span>
 
         <form slot="modal_body">
@@ -30,10 +37,11 @@
                     <span class="required">*</span>
                     <small class="form-text text-muted">{props.parent.getHelpText("survey_date")}</small>
                     <!-- It would be preferable to use the 'datetime-local' input type, however Firefox currently does not support it -->
-                    <input class="{ state.errors.surveyDate ? 'danger' : null } { state.survey.surveyDate ? '' : 'inactive' } form-control"
-                        type="date" name="surveyDate" placeholder="Date" value="{ state.survey.surveyDate }" oninput="{ checkSurveyDate }"
-                        required pattern="\d{4}-\d{2}-\d{2}" max="{ max_date() }" >
-                    <div if="{ state.errors.surveyDate }" class="invalid-tooltip">
+                    <input
+                        class="{state.errors.surveyDate ? 'danger' : null } { state.survey.surveyDate ? '' : 'inactive' } form-control"
+                        type="date" name="surveyDate" placeholder="Date" value="{state.survey.surveyDate}"
+                        oninput="{checkSurveyDate}" required pattern="\d{4}-\d{2}-\d{2}" max="{max_date()}">
+                    <div if="{state.errors.surveyDate}" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.surveyDate }.</li>
                         </ul>
@@ -46,11 +54,12 @@
                 <div class="form-group">
                     <label>{ window.gettext("Chainage start") } (m)</label>
                     <span class="required">*</span>
-                    <input class="{ state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
-                        type="number" name="startChainage" placeholder="0000" value="{ state.survey.startChainage }" oninput="{ checkChainage }"
-                        required>
+                    <input
+                        class="{state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
+                        type="number" name="startChainage" placeholder="0000" value="{state.survey.startChainage}"
+                        oninput="{checkChainage}" required>
                     <small class="form-text text-muted">{ props.parent.getHelpText("start_chainage") }</small>
-                    <div if="{ state.errors.startChainage }" class="invalid-tooltip">
+                    <div if="{state.errors.startChainage}" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.startChainage }.</li>
                         </ul>
@@ -59,11 +68,12 @@
                 <div class="form-group">
                     <label>{ window.gettext("Chainage end") } (m)</label>
                     <span class="required">*</span>
-                    <input class="{ state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
-                        type="number" name="endChainage" placeholder="62410" value="{ state.survey.endChainage }" oninput="{ checkChainage }"
-                        required>
+                    <input
+                        class="{state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
+                        type="number" name="endChainage" placeholder="62410" value="{state.survey.endChainage}"
+                        oninput="{checkChainage}" required>
                     <small class="form-text text-muted">{ props.parent.getHelpText("end_chainage") }</small>
-                    <div if="{ state.errors.endChainage }" class="invalid-tooltip">
+                    <div if="{state.errors.endChainage}" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.endChainage }.</li>
                         </ul>
@@ -77,14 +87,16 @@
                     <label>{conditions.display}</label>
                     <span class="required">*</span>
                     <small class="form-text text-muted">{props.parent.getHelpText("surface_condition")}</small>
-                    <div if="{ state.errors.surfaceCondition }" class="invalid-tooltip">
+                    <div if="{state.errors.surfaceCondition}" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.surfaceCondition }.</li>
                         </ul>
                     </div>
                     <ul class="surface-condition">
-                        <li each="{ condition in conditions.options }" data-condition="{ condition[0] }" onclick="{ checkSurfaceCondition }">
-                            <span class="{ condition[0] == state.survey.surfaceCondition ? 'active' : ''  } radio image"></span>
+                        <li each="{condition in conditions.options}" data-condition="{condition[0]}"
+                            onclick="{checkSurfaceCondition}">
+                            <span
+                                class="{condition[0] == state.survey.surfaceCondition ? 'active' : ''  } radio image"></span>
                             { condition[1] }
                         </li>
                     </ul>
@@ -97,13 +109,9 @@
         </form>
     </edit_modal>
 
-    <edit_stop_alert
-        modalId="delete-alert"
-        title="{ window.gettext('Delete') }"
-        description="{ window.gettext('Are you sure you want to delete this data entry?') }"
-        proceedLabel="{ window.gettext('Delete') }"
-        proceedResult="delete"
-        stopLabel="{ window.gettext('Don\'t delete') }"
+    <edit_stop_alert modalId="delete-alert" title="{window.gettext('Delete')}"
+        description="{window.gettext('Are you sure you want to delete this data entry?')}"
+        proceedLabel="{window.gettext('Delete')}" proceedResult="delete" stopLabel="{window.gettext('Don\'t delete')}"
         stopResult="keep">
     </edit_stop_alert>
 
@@ -113,14 +121,14 @@
         import Edit_Modal from "./edit_modal.riot.html";
         import Stacked_Bar from "./stacked_bar.riot.html";
 
-        import { createSurvey, deleteSurvey, updateSurvey } from "../surveyManager";
-        import { cloneData, toChainageFormat } from "../assets/protoBufUtilities";
-        import { Survey, Report } from "../../protobuf/survey_pb";
+        import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
+        import {cloneData, toChainageFormat} from "../assets/protoBufUtilities";
+        import {Survey, Report} from "../../protobuf/survey_pb";
 
         import $ from "jquery";
 
         function checkRequiredFields(fieldNames, data, errors) {
-             return fieldNames.filter((fieldName) => { return !data[fieldName]; });
+            return fieldNames.filter((fieldName) => {return !data[fieldName];});
         }
 
         function withinMaxDigits(text, limit, decimals) {
@@ -130,13 +138,13 @@
         export default {
             state: {
                 chainageDecimals: 3,
-                chainageDigits : 9,
+                chainageDigits: 9,
                 baseSurvey: new Survey({}),
                 survey: {},
                 canSave: false,
                 errors: {},
                 pendingRows: [],
-                surfaceConditions: [{ key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
+                surfaceConditions: [{key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading")}],
                 surveyTotalDistance: 0,
                 reportRows: [],
                 viewAll: false,
@@ -170,7 +178,7 @@
                     this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id, this.stacked_bar_id);
                     // If we're not still loading, then we assume that we want to replace all rows
                     const eventName = `${this.all_data_table_id}.dataAdded`;
-                    const eventDetail = { detail: { pendingRows: this.state.pendingRows, clearRows: true }}
+                    const eventDetail = {detail: {pendingRows: this.state.pendingRows, clearRows: true}}
                     document.dispatchEvent(new CustomEvent(eventName, eventDetail));
                 }
             },
@@ -180,7 +188,7 @@
                     this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id, this.stacked_bar_id);
                     // If we're not still loading, then we assume that we want to replace all rows
                     const eventName = `${this.current_data_table_id}.dataAdded`;
-                    const eventDetail = { detail: { pendingRows: this.state.reportRows, clearRows: true }}
+                    const eventDetail = {detail: {pendingRows: this.state.reportRows, clearRows: true}}
                     document.dispatchEvent(new CustomEvent(eventName, eventDetail));
                 }
             },
@@ -312,7 +320,7 @@
                             }
                             break;
                     }
-                }, { once: true });
+                }, {once: true});
 
                 $(`#${this.modal_id}`).modal("show");
             },
@@ -328,7 +336,7 @@
                     } else if (stopAlertResult === "delete") {
                         this.state.editMode = true;
                         // void the survey surface_condition value and save
-                        this.state.survey = this.state.pendingRows.find((s) => { return s.id == rowId; });
+                        this.state.survey = this.state.pendingRows.find((s) => {return s.id == rowId;});
                         if (this.state.survey) {
                             this.state.survey.setValues(JSON.stringify({}));
                             this.saveSurvey();
@@ -337,7 +345,7 @@
                     } else if (stopAlertResult === "continueEdit") {
                         this.showEditModal();
                     }
-                }, { once: true });
+                }, {once: true});
 
                 $(`#${modalId}`).modal("show");
             },
@@ -366,7 +374,7 @@
                 } else {
                     if (this.hasChanges()) {
                         // Complete the survey
-                        this.state.survey.setUser($("#user_welcome").data( "userId" ) || 0);
+                        this.state.survey.setUser($("#user_welcome").data("userId") || 0);
                         this.state.survey.setSource("Estrada");
                         this.state.survey.setChainageStart(this.state.survey.startChainage);
                         this.state.survey.setChainageEnd(this.state.survey.endChainage);
@@ -394,7 +402,7 @@
             },
             saveSurvey() {
                 $(`#${this.modal_id}`).modal("hide");
-                $('#loading').modal('show');
+                $("#loading").modal("show");
 
                 if (!this.state.editMode) {
                     createSurvey(this.state.survey)
@@ -403,7 +411,7 @@
                             this.update({
                                 survey: new Survey({}), // clear input values
                             });
-                            $('#loading').modal('hide');
+                            $("#loading").modal("hide");
                             this.props.showFeedback();
                         })
                         .catch((err) => {
@@ -416,7 +424,7 @@
                             this.update({
                                 survey: new Survey({}), // clear input values
                             });
-                            $('#loading').modal('hide');
+                            $("#loading").modal("hide");
                             this.props.showFeedback();
                         })
                         .catch((err) => {
@@ -445,8 +453,8 @@
              */
             hasChanges() {
                 const compareFieldNames = ["surveyDate", "startChainage", "endChainage", "surfaceCondition"];
-                const surveyBase = compareFieldNames.map((fieldName) => { return this.state.baseSurvey[fieldName] || ""; }).join("|||");
-                const surveyResult = compareFieldNames.map((fieldName) => { return this.state.survey[fieldName] || ""; }).join("|||");
+                const surveyBase = compareFieldNames.map((fieldName) => {return this.state.baseSurvey[fieldName] || "";}).join("|||");
+                const surveyResult = compareFieldNames.map((fieldName) => {return this.state.survey[fieldName] || "";}).join("|||");
 
                 return (surveyBase !== surveyResult);
             },
@@ -466,7 +474,7 @@
                 const testResult = input <= this.max_date();
                 const errorText = window.gettext("Survey date cannot be in the future");
 
-                this.validate(fieldName, input, testResult, errorText );
+                this.validate(fieldName, input, testResult, errorText);
             },
             checkChainage(e) {
                 const fieldName = e.currentTarget.name;
