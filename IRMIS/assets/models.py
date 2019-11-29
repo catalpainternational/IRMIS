@@ -17,6 +17,7 @@ from protobuf.survey_pb2 import Surveys as ProtoSurveys
 
 import json
 from google.protobuf.timestamp_pb2 import Timestamp
+from google.protobuf.wrappers_pb2 import FloatValue, UInt32Value
 from .geodjango_utils import start_end_point_annos
 
 
@@ -199,7 +200,7 @@ class RoadQuerySet(models.QuerySet):
         # See roads.proto
 
         roads_protobuf = ProtoRoads()
-        fields = dict(
+        regular_fields = dict(
             geojson_id="geojson_file_id",
             road_code="road_code",
             road_name="road_name",
@@ -207,20 +208,22 @@ class RoadQuerySet(models.QuerySet):
             road_status="road_status__code",
             link_code="link_code",
             link_start_name="link_start_name",
-            link_start_chainage="link_start_chainage",
             link_end_name="link_end_name",
-            link_end_chainage="link_end_chainage",
-            link_length="link_length",
             surface_type="surface_type__code",
             surface_condition="surface_condition",
             pavement_class="pavement_class__code",
-            carriageway_width="carriageway_width",
             administrative_area="administrative_area",
             technical_class="technical_class__code",
             project="project",
             funding_source="funding_source",
             maintenance_need="maintenance_need__code",
             traffic_level="traffic_level",
+        )
+        numeric_fields = dict(
+            link_start_chainage="link_start_chainage",
+            link_end_chainage="link_end_chainage",
+            link_length="link_length",
+            carriageway_width="carriageway_width",
             number_lanes="number_lanes",
         )
 
@@ -228,15 +231,22 @@ class RoadQuerySet(models.QuerySet):
         roads = (
             self.order_by("id")
             .annotate(**annotations)
-            .values("id", *fields.values(), *annotations)
+            .values("id", *regular_fields.values(), *numeric_fields.values(), *annotations)
         )
 
         for road in roads:
             road_protobuf = roads_protobuf.roads.add()
             road_protobuf.id = road["id"]
-            for protobuf_key, query_key in fields.items():
+            for protobuf_key, query_key in regular_fields.items():
                 if road[query_key]:
                     setattr(road_protobuf, protobuf_key, road[query_key])
+            for protobuf_key, query_key in numeric_fields.items():
+                if query_key == "number_lanes":
+                    nullable_value = UInt32Value(value=road.get(query_key, None))
+                else:
+                    nullable_value = FloatValue(value=road.get(query_key, None))
+                if nullable_value.value is not None:
+                    getattr(road_protobuf, protobuf_key).CopyFrom(nullable_value)
 
             # set Protobuf with with start/end projection points
             start = Projection(x=road["start_x"], y=road["start_y"])

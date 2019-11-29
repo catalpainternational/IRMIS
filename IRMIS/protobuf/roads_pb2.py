@@ -14,6 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
+from google.protobuf import wrappers_pb2 as google_dot_protobuf_dot_wrappers__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
@@ -21,9 +22,9 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='assets',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x0broads.proto\x12\x06\x61ssets\x1a\x1fgoogle/protobuf/timestamp.proto\"f\n\x07Version\x12\n\n\x02pk\x18\x01 \x01(\r\x12\x30\n\x0c\x64\x61te_created\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0c\n\x04user\x18\x03 \x01(\t\x12\x0f\n\x07\x63omment\x18\x04 \x01(\t\"-\n\x08Versions\x12!\n\x08versions\x18\x01 \x03(\x0b\x32\x0f.assets.Version\"\"\n\nProjection\x12\t\n\x01x\x18\x01 \x01(\x02\x12\t\n\x01y\x18\x02 \x01(\x02\"\xe8\x04\n\x04Road\x12\n\n\x02id\x18\x01 \x01(\r\x12\x12\n\ngeojson_id\x18\x02 \x01(\r\x12\x11\n\troad_code\x18\x03 \x01(\t\x12\x11\n\troad_name\x18\x04 \x01(\t\x12\x11\n\troad_type\x18\n \x01(\t\x12\x13\n\x0broad_status\x18\x14 \x01(\t\x12\x11\n\tlink_code\x18\x05 \x01(\t\x12\x17\n\x0flink_start_name\x18\x10 \x01(\t\x12\x1b\n\x13link_start_chainage\x18\x0b \x01(\x02\x12\x15\n\rlink_end_name\x18\x11 \x01(\t\x12\x19\n\x11link_end_chainage\x18\x0c \x01(\x02\x12\x13\n\x0blink_length\x18\x07 \x01(\x02\x12\x14\n\x0csurface_type\x18\x08 \x01(\t\x12\x19\n\x11surface_condition\x18\t \x01(\t\x12\x16\n\x0epavement_class\x18\r \x01(\t\x12\x19\n\x11\x63\x61rriageway_width\x18\x0e \x01(\x02\x12\x1b\n\x13\x61\x64ministrative_area\x18\x0f \x01(\t\x12\x0f\n\x07project\x18\x12 \x01(\t\x12\x16\n\x0e\x66unding_source\x18\x13 \x01(\t\x12\x17\n\x0ftechnical_class\x18\x15 \x01(\t\x12\x18\n\x10maintenance_need\x18\x16 \x01(\t\x12\x15\n\rtraffic_level\x18\x17 \x01(\t\x12,\n\x10projection_start\x18\x19 \x01(\x0b\x32\x12.assets.Projection\x12*\n\x0eprojection_end\x18\x1a \x01(\x0b\x32\x12.assets.Projection\x12\x14\n\x0cnumber_lanes\x18\x1b \x01(\r\"$\n\x05Roads\x12\x1b\n\x05roads\x18\x01 \x03(\x0b\x32\x0c.assets.Roadb\x06proto3')
+  serialized_pb=_b('\n\x0broads.proto\x12\x06\x61ssets\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/wrappers.proto\"f\n\x07Version\x12\n\n\x02pk\x18\x01 \x01(\r\x12\x30\n\x0c\x64\x61te_created\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0c\n\x04user\x18\x03 \x01(\t\x12\x0f\n\x07\x63omment\x18\x04 \x01(\t\"-\n\x08Versions\x12!\n\x08versions\x18\x01 \x03(\x0b\x32\x0f.assets.Version\"\"\n\nProjection\x12\t\n\x01x\x18\x01 \x01(\x02\x12\t\n\x01y\x18\x02 \x01(\x02\"\xfa\x05\n\x04Road\x12\n\n\x02id\x18\x01 \x01(\r\x12\x12\n\ngeojson_id\x18\x02 \x01(\r\x12\x11\n\troad_code\x18\x03 \x01(\t\x12\x11\n\troad_name\x18\x04 \x01(\t\x12\x11\n\troad_type\x18\n \x01(\t\x12\x13\n\x0broad_status\x18\x14 \x01(\t\x12\x11\n\tlink_code\x18\x05 \x01(\t\x12\x17\n\x0flink_start_name\x18\x10 \x01(\t\x12\x38\n\x13link_start_chainage\x18\x0b \x01(\x0b\x32\x1b.google.protobuf.FloatValue\x12\x15\n\rlink_end_name\x18\x11 \x01(\t\x12\x36\n\x11link_end_chainage\x18\x0c \x01(\x0b\x32\x1b.google.protobuf.FloatValue\x12\x30\n\x0blink_length\x18\x07 \x01(\x0b\x32\x1b.google.protobuf.FloatValue\x12\x14\n\x0csurface_type\x18\x08 \x01(\t\x12\x19\n\x11surface_condition\x18\t \x01(\t\x12\x16\n\x0epavement_class\x18\r \x01(\t\x12\x36\n\x11\x63\x61rriageway_width\x18\x0e \x01(\x0b\x32\x1b.google.protobuf.FloatValue\x12\x1b\n\x13\x61\x64ministrative_area\x18\x0f \x01(\t\x12\x0f\n\x07project\x18\x12 \x01(\t\x12\x16\n\x0e\x66unding_source\x18\x13 \x01(\t\x12\x17\n\x0ftechnical_class\x18\x15 \x01(\t\x12\x18\n\x10maintenance_need\x18\x16 \x01(\t\x12\x15\n\rtraffic_level\x18\x17 \x01(\t\x12,\n\x10projection_start\x18\x19 \x01(\x0b\x32\x12.assets.Projection\x12*\n\x0eprojection_end\x18\x1a \x01(\x0b\x32\x12.assets.Projection\x12\x32\n\x0cnumber_lanes\x18\x1b \x01(\x0b\x32\x1c.google.protobuf.UInt32Value\"$\n\x05Roads\x12\x1b\n\x05roads\x18\x01 \x03(\x0b\x32\x0c.assets.Roadb\x06proto3')
   ,
-  dependencies=[google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,])
+  dependencies=[google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,google_dot_protobuf_dot_wrappers__pb2.DESCRIPTOR,])
 
 
 
@@ -75,8 +76,8 @@ _VERSION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=56,
-  serialized_end=158,
+  serialized_start=88,
+  serialized_end=190,
 )
 
 
@@ -106,8 +107,8 @@ _VERSIONS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=160,
-  serialized_end=205,
+  serialized_start=192,
+  serialized_end=237,
 )
 
 
@@ -144,8 +145,8 @@ _PROJECTION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=207,
-  serialized_end=241,
+  serialized_start=239,
+  serialized_end=273,
 )
 
 
@@ -214,8 +215,8 @@ _ROAD = _descriptor.Descriptor(
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='link_start_chainage', full_name='assets.Road.link_start_chainage', index=8,
-      number=11, type=2, cpp_type=6, label=1,
-      has_default_value=False, default_value=float(0),
+      number=11, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
@@ -228,15 +229,15 @@ _ROAD = _descriptor.Descriptor(
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='link_end_chainage', full_name='assets.Road.link_end_chainage', index=10,
-      number=12, type=2, cpp_type=6, label=1,
-      has_default_value=False, default_value=float(0),
+      number=12, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='link_length', full_name='assets.Road.link_length', index=11,
-      number=7, type=2, cpp_type=6, label=1,
-      has_default_value=False, default_value=float(0),
+      number=7, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
@@ -263,8 +264,8 @@ _ROAD = _descriptor.Descriptor(
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='carriageway_width', full_name='assets.Road.carriageway_width', index=15,
-      number=14, type=2, cpp_type=6, label=1,
-      has_default_value=False, default_value=float(0),
+      number=14, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
@@ -326,8 +327,8 @@ _ROAD = _descriptor.Descriptor(
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='number_lanes', full_name='assets.Road.number_lanes', index=24,
-      number=27, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
+      number=27, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
@@ -343,8 +344,8 @@ _ROAD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=244,
-  serialized_end=860,
+  serialized_start=276,
+  serialized_end=1038,
 )
 
 
@@ -374,14 +375,19 @@ _ROADS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=862,
-  serialized_end=898,
+  serialized_start=1040,
+  serialized_end=1076,
 )
 
 _VERSION.fields_by_name['date_created'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
 _VERSIONS.fields_by_name['versions'].message_type = _VERSION
+_ROAD.fields_by_name['link_start_chainage'].message_type = google_dot_protobuf_dot_wrappers__pb2._FLOATVALUE
+_ROAD.fields_by_name['link_end_chainage'].message_type = google_dot_protobuf_dot_wrappers__pb2._FLOATVALUE
+_ROAD.fields_by_name['link_length'].message_type = google_dot_protobuf_dot_wrappers__pb2._FLOATVALUE
+_ROAD.fields_by_name['carriageway_width'].message_type = google_dot_protobuf_dot_wrappers__pb2._FLOATVALUE
 _ROAD.fields_by_name['projection_start'].message_type = _PROJECTION
 _ROAD.fields_by_name['projection_end'].message_type = _PROJECTION
+_ROAD.fields_by_name['number_lanes'].message_type = google_dot_protobuf_dot_wrappers__pb2._UINT32VALUE
 _ROADS.fields_by_name['roads'].message_type = _ROAD
 DESCRIPTOR.message_types_by_name['Version'] = _VERSION
 DESCRIPTOR.message_types_by_name['Versions'] = _VERSIONS
