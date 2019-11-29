@@ -16,6 +16,11 @@ reports_base {
     .content-wrapper {
         padding: 25px 25px 15px 60px;
         background-color: $white;
+        margin-bottom: 10px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
 
         h6 {
             margin-bottom: 10px;
@@ -76,7 +81,6 @@ report {
     .content-wrapper {
         padding: 25px 25px 15px 60px;
         background-color: $white;
-        margin-bottom: 10px;
 
         p {
             margin-bottom: 0;
