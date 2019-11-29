@@ -5,9 +5,9 @@
             <div class="d-flex flex-column">
                 <span>{ window.gettext("Democratic Republic of Timor-Leste") }</span>
                 <span>{ window.gettext("Ministry of Public Works") }</span>
-                <span>Direcção geral das obras públicas</span> <!-- To be translated -->
-                <span>Direcção nacional de estradas, pontes e controlo de cheias</span> <!-- To be translated -->
-                <small>Avenida da Restauração, Rai Kotu, Díli, Timor-Leste, Telf. +670 3311408</small> <!-- To be translated -->
+                <span>{ window.gettext("Directorate General for Public Works") }</span>
+                <span>{ window.gettext("National Directorate for Roads, Bridges and Flood Control") }</span>
+                <small>Avenida da Restauração, Rai Kotu, Díli, Timor-Leste, Telf. +670 3311408</small>
             </div>
         </div>
     </div>
@@ -94,7 +94,7 @@
     </div>
 
     <div hidden="{ state.noReport }" class="content-wrapper report-content">
-        <div>
+        <div class="align-items-center d-flex justify-content-between">
             <h1 class="print-title">{ window.gettext("Road Asset Management") }</h1>
             <h6>{ reportContent().title } { window.gettext("Report") }</h6>
             <button class="btn btn-secondary btn-sm" onclick="{ () => window.print() }">{ window.gettext("Print") }</button>
