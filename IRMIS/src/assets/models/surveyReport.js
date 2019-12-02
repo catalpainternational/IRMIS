@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 
 import { AttributeEntry, AttributeTable, Report } from "../../../protobuf/report_pb";
 
-import { choice_or_default, getFieldName, getHelpText, makeEstradaObject } from "../protoBufUtilities";
+import { choice_or_default, getFieldName, getHelpText, invertChoices, makeEstradaObject } from "../protoBufUtilities";
 
 import {
     ROAD_STATUS_CHOICES,

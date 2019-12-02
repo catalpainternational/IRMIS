@@ -100,7 +100,7 @@
             <button class="btn btn-secondary btn-sm" onclick="{ () => window.print() }">{ window.gettext("Print") }</button>
         </div>
         <div class="filtered-segment d-flex flex-column">
-            <h6 if="{ state.reportData.roadCodes && state.reportData.roadCodes.length }">{ state.reportData.roadCodes.join(" ") }</h6>
+            <h6 if="{ state.reportData.roadCodes && state.reportData.roadCodes.length === 1 }">{ state.reportData.roadCodes[0] }</h6>
             <h6 if="{ state.reportData.reportChainage }">Chainage { toChainageFormat(state.reportData.reportChainage[0]) } to { toChainageFormat(state.reportData.reportChainage[1]) }</h6>
         </div>
         <span class="report-date" if="{ state.reportData.dateCreated }">{ window.gettext("Created on") } { state.reportData.dateCreated() }</span>
@@ -541,11 +541,14 @@
                         if (surveyReportData) {
                             this.state.noReport = false;
                             const haveLengths = !!surveyReportData.lengths;
-                            // This may not work - might need to delete/replace all members one by one - @$@#$@# Riot
+
                             this.state.reportData = {
                                 totalLength: 0,
-                                roadCodes: surveyReportData.roadCodes || [],
-                                reportChainage: surveyReportData.reportChainage || undefined,
+                                roadCodes: (surveyReportData.roadCodes || []).sort(),
+                                reportChainage: (surveyReportData.reportChainage && surveyReportData.reportChainage.length === 2 
+                                    && (surveyReportData.reportChainage[0] + surveyReportData.reportChainage[1])) 
+                                    ? surveyReportData.reportChainage 
+                                    : undefined,
                                 dateCreated: () => dayjs(new Date()).format('DD MMMM YYYY [at] HH:mm'),
                             };
 

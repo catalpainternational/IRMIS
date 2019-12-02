@@ -5,6 +5,15 @@ export function choice_or_default(value, choices, defaultValue = "") {
     return value ? choices[value] || defaultValue : defaultValue;
 }
 
+export function invertChoices(choices) {
+    const invertedChoices = [];
+    Object.keys(choices).forEach((key) => {
+        invertedChoices[choices[key]] = key;
+    });
+
+    return invertedChoices;
+}
+
 export function toChainageFormat(value, thousandsSeparator = ",") {
     if (typeof value === "undefined" || value === null) {
         return "";
