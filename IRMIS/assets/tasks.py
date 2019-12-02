@@ -85,6 +85,7 @@ def update_from_shapefiles(shape_file_folder):
 
     print("updated", Road.objects.all().count(), "roads")
 
+
 def import_shapefiles(shape_file_folder):
     """ creates Road models from source shapefiles """
 
@@ -181,11 +182,13 @@ def update_road_r4d(road, feature):
     road.road_code = feature.get("r_code")
     road.link_length = feature.get("Lenght_Km")
 
+
 def populate_road_r4d(road, feature):
     """ populates a road from the r4d shapefile """
     road.road_name = feature.get("road_lin_1")
     road.road_code = feature.get("road_cod_1")
     road.link_length = feature.get("Length__Km")
+
 
 def update_road_rrpmis(road, feature):
     road.road_code = feature.get("RDIDFin")
@@ -195,6 +198,7 @@ def update_road_rrpmis(road, feature):
     terrain_class = feature.get("Terr_class")
     if terrain_class != "0" and terrain_class != "":
         road.terrain_class = TERRAIN_CLASS_MAPPING[terrain_class]
+
 
 def populate_road_rrpmis(road, feature):
     """ populates a road from the rrmpis shapefile """
@@ -363,8 +367,10 @@ def make_geojson(*args, **kwargs):
 
 
 def set_unknown_road_codes():
-    ''' finds all roads with meaningless codes and assigns them XX indexed codes '''
-    roads = Road.objects.filter(Q(road_code__isnull=True) | Q(road_code__in=['X', '', '-', 'Unknown']))
+    """ finds all roads with meaningless codes and assigns them XX indexed codes """
+    roads = Road.objects.filter(
+        Q(road_code__isnull=True) | Q(road_code__in=["X", "", "-", "Unknown"])
+    )
     for index, road in enumerate(roads):
-        road.road_code = "XX{:>03}".format(index+1)
+        road.road_code = "XX{:>03}".format(index + 1)
         road.save()

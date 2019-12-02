@@ -6,23 +6,36 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('assets', '0021_add_data_field_units'),
+        ("assets", "0021_add_data_field_units"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='road',
-            name='core',
-            field=models.BooleanField(help_text='Set if the road is a high priority `core` road', null=True, verbose_name='Core'),
+            model_name="road",
+            name="core",
+            field=models.BooleanField(
+                help_text="Set if the road is a high priority `core` road",
+                null=True,
+                verbose_name="Core",
+            ),
         ),
         migrations.AddField(
-            model_name='road',
-            name='population',
-            field=models.PositiveIntegerField(help_text='Set the size of population served by this road', null=True, verbose_name='Population Served'),
+            model_name="road",
+            name="population",
+            field=models.PositiveIntegerField(
+                help_text="Set the size of population served by this road",
+                null=True,
+                verbose_name="Population Served",
+            ),
         ),
         migrations.AddField(
-            model_name='road',
-            name='terrain_class',
-            field=models.PositiveSmallIntegerField(choices=[(1, 'Flat'), (2, 'Rolling'), (3, 'Mountainous')], help_text='Choose what terrain class the road runs through', null=True, verbose_name='Terrain class'),
+            model_name="road",
+            name="terrain_class",
+            field=models.PositiveSmallIntegerField(
+                choices=[(1, "Flat"), (2, "Rolling"), (3, "Mountainous")],
+                help_text="Choose what terrain class the road runs through",
+                null=True,
+                verbose_name="Terrain class",
+            ),
         ),
     ]
