@@ -118,13 +118,16 @@
             </div>
         </div>
 
-        <stacked_bar hidden="{ !state.road_status }" id="{ stackedBarIds.roadStatus }" title="{ window.gettext('Road Status') }"
+        <stacked_bar hidden="{ !state.road_status || !hasStackedBar(stackedBarIds.roadStatus) }" 
+            id="{ stackedBarIds.roadStatus }" title="{ window.gettext('Road Status') }"
             entries="{ state.road_status }" total_title="{ window.gettext('Total road chainage') }">
         </stacked_bar>
-        <stacked_bar hidden="{ !state.technical_class }" id="{ stackedBarIds.technicalClass }" title="{ window.gettext('Technical Class') }"
+        <stacked_bar hidden="{ !state.technical_class || !hasStackedBar(stackedBarIds.technicalClass) }" 
+            id="{ stackedBarIds.technicalClass }" title="{ window.gettext('Technical Class') }"
             entries="{ state.technical_class }" total_title="{ window.gettext('Total road chainage') }">
         </stacked_bar>
-        <stacked_bar hidden="{ !state.surface_condition }" id="{ stackedBarIds.surfaceCondition }" title="{ window.gettext('Surface Condition (SDI)') }"
+        <stacked_bar hidden="{ !state.surface_condition || !hasStackedBar(stackedBarIds.surfaceCondition) }" 
+            id="{ stackedBarIds.surfaceCondition }" title="{ window.gettext('Surface Condition (SDI)') }"
             entries="{ state.surface_condition }" total_title="{ window.gettext('Total road chainage') }">
         </stacked_bar>
 
@@ -132,14 +135,18 @@
             <p>{ window.gettext("Total Length") }</p>
             <h1>{ (state.reportData.totalLength / 1000).toFixed(1) } km</h1>
         </div>
-        <data_table hidden="{ !state.reportData.roadStatus }" table_id="{dataTableIds.roadStatus}"
-            tableName="Road Status" columns="{columns.roadStatus()}" columnSortOrder="{baseColumnSortOrder}"
+
+        <data_table hidden="{ !state.reportData.roadStatus || !hasDataTable(dataTableIds.roadStatus) }"
+            table_id="{dataTableIds.roadStatus}" tableName="Road Status"
+            columns="{columns.roadStatus()}" columnSortOrder="{baseColumnSortOrder}"
             paging="false" canExport></data_table>
-        <data_table hidden="{ !state.reportData.technicalClass }" table_id="{dataTableIds.technicalClass}"
-            tableName="Technical Class" columns="{columns.technicalClass()}" columnSortOrder="{baseColumnSortOrder}"
+        <data_table hidden="{ !state.reportData.technicalClass || !hasDataTable(dataTableIds.technicalClass) }"
+            table_id="{dataTableIds.technicalClass}" tableName="Technical Class"
+            columns="{columns.technicalClass()}" columnSortOrder="{baseColumnSortOrder}"
             paging="false" canExport></data_table>
-        <data_table hidden="{ !state.reportData.surfaceCondition }" table_id="{dataTableIds.surfaceCondition}"
-            tableName="Surface Condition" columns="{columns.surfaceCondition()}" columnSortOrder="{baseColumnSortOrder}"
+        <data_table hidden="{ !state.reportData.surfaceCondition || !hasDataTable(dataTableIds.surfaceCondition) }"
+            table_id="{dataTableIds.surfaceCondition}" tableName="Surface Condition"
+            columns="{columns.surfaceCondition()}" columnSortOrder="{baseColumnSortOrder}"
             paging="false" canExport></data_table>
     </div>
 
@@ -236,6 +243,23 @@
             },
         };
 
+        // Ids of the report elements
+        const stackedBarIds = {
+            roadStatus: "report-road-status-bar",
+            technicalClass: "report-technical-class-bar",
+            surfaceCondition: "report-surface-condition-bar",
+        };
+        const dataTableIds = {
+            roadStatus: "report-road-status-table",
+            technicalClass: "report-technical-class-table",
+            surfaceCondition: "report-surface-condition-table",
+        };
+
+        const allReportElements = {
+            stackedBars: [stackedBarIds.roadStatus, stackedBarIds.technicalClass, stackedBarIds.surfaceCondition],
+            tables: [dataTableIds.roadStatus, dataTableIds.technicalClass, dataTableIds.surfaceCondition],
+        };
+
         export default {
             state: {
                 noReport: true,
@@ -309,6 +333,7 @@
                         visibleFilters: {
                             reportDate: true,
                         },
+                        reportElements: { dataTables: [dataTableIds.roadStatus, dataTableIds.technicalClass] },
                     },
                     5: {
                         title: window.gettext("Road Network Length - Municipal Class"),
@@ -320,6 +345,7 @@
                         visibleFilters: {
                             reportDate: true,
                         },
+                        reportElements: { dataTables: [dataTableIds.roadStatus, dataTableIds.technicalClass] },
                     },
                     6: {
                         title: window.gettext("Road Network Length - Rural Class"),
@@ -331,6 +357,7 @@
                         visibleFilters: {
                             reportDate: true,
                         },
+                        reportElements: { dataTables: [dataTableIds.roadStatus, dataTableIds.technicalClass] },
                     },
                     7: {
                         title: window.gettext("Road Network Length - Highway Class"),
@@ -342,6 +369,7 @@
                         visibleFilters: {
                             reportDate: true,
                         },
+                        reportElements: { dataTables: [dataTableIds.roadStatus, dataTableIds.technicalClass] },
                     },
                     8: {
                         title: window.gettext("Road Network Length - Urban Class"),
@@ -353,6 +381,7 @@
                         visibleFilters: {
                             reportDate: true,
                         },
+                        reportElements: { dataTables: [dataTableIds.roadStatus, dataTableIds.technicalClass] },
                     },
                 },
                 reportData: {},
@@ -363,16 +392,8 @@
             components: {
                 Stacked_Bar
             },
-            stackedBarIds: {
-                roadStatus: "report-road-status-bar",
-                technicalClass: "report-technical-class-bar",
-                surfaceCondition: "report-surface-condition-bar",
-            },
-            dataTableIds: {
-                roadStatus: "report-road-status-table",
-                technicalClass: "report-technical-class-table",
-                surfaceCondition: "report-surface-condition-table",
-            },
+            stackedBarIds: stackedBarIds,
+            dataTableIds: dataTableIds,
             columns: {
                 roadStatus() {
                     const titleColumn = cloneData(columnSource.title);
@@ -393,6 +414,15 @@
             reportContent() {
                 const reportId = this.props.id;
                 return this.state.reportContent[reportId];
+            },
+            reportElements() {
+                return this.reportContent().reportElements || allReportElements;
+            },
+            hasStackedBar(stackedBarId) {
+                return (this.reportElements().stackedBars || []).indexOf(stackedBarId) > -1;
+            },
+            hasDataTable(dataTableId) {
+                return (this.reportElements().dataTables || []).indexOf(dataTableId) > -1;
             },
             onMounted(props, state) {
                 state.filterDefinitions.forEach((filterDefinition) => {
