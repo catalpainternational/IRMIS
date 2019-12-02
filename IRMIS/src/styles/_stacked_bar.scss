@@ -1,4 +1,4 @@
-%bar-shared {
+.entry-bar {
     margin-bottom: 20px;
     margin-top: 20px;
     height: 20px;
@@ -14,49 +14,93 @@
     }
 }
 
-.entry-bar {
-    @extend %bar-shared;
+.entry-legend div.values {
+    & > div {
+        margin-bottom: 5px;
+
+        & > div {
+            border-radius: $radius;
+            margin-right: 5px;
+            height: 20px;
+            width: 20px;
+        }
+    }
+
+    & > div:not(:last-of-type) {
+        margin-right: 15px;
+    }
 }
 
 .entry-0 {
     background-color: #E7E8EA;
 }
 
-.entry-1 {
-    background-color: #03A59A;
-}
+#surface-condition-stacked-bar {
+    .entry-1 {
+        background-color: #03A59A;
+    }
 
-.entry-2 {
-    background-color: #81D2CC;
-}
+    .entry-2 {
+        background-color: #81D2CC;
+    }
 
-.entry-3 {
-    background-color: #FFACAF;
-}
+    .entry-3 {
+        background-color: #FFACAF;
+    }
 
-.entry-4 {
-    background-color: #FF5A5F;
-}
-
-%legend-shared {
-    div.values {
-        & > div {
-            margin-bottom: 5px;
-
-            & > div {
-                border-radius: $radius;
-                margin-right: 5px;
-                height: 20px;
-                width: 20px;
-            }
-        }
-
-        & > div:not(:last-of-type) {
-            margin-right: 15px;
-        }
+    .entry-4 {
+        background-color: #FF5A5F;
     }
 }
 
-.entry-legend {
-    @extend %legend-shared;
+#pavement-class-stacked-bar {
+    .entry-1 {
+        background-color: #03A59A;
+    }
+
+    .entry-2 {
+        background-color: #81D2CC;
+    }
+
+    .entry-3 {
+        background-color: #FFC100;
+    }
+}
+
+#surface-type-stacked-bar {
+    .entry-1 {
+        background-color: #C0E8E5;
+    }
+
+    .entry-2 {
+        background-color: #3D4758;
+    }
+
+    .entry-3 {
+        background-color: #95A3A8;
+    }
+
+    .entry-4 {
+        background-color: #81D2CC;
+    }
+
+    .entry-5 {
+        background-color: #CAD1D3;
+    }
+
+    .entry-6 {
+        background-color: #61757D;
+    }
+
+    .entry-7 {
+        background-color: #03A59A;
+    }
+
+    .entry-8 {
+        background-color: #FFC100;
+    }
+
+    .entry-9 {
+        background-color: #FFACAF;
+    }
 }
