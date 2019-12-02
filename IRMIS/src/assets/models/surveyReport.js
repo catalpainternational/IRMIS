@@ -2,12 +2,13 @@ import dayjs from "dayjs";
 
 import { AttributeEntry, AttributeTable, Report } from "../../../protobuf/report_pb";
 
-import { choice_or_default, getFieldName, getHelpText, makeEstradaObject } from "../protoBufUtilities";
+import { choice_or_default, getFieldName, getHelpText, invertChoices, makeEstradaObject } from "../protoBufUtilities";
 
 import {
     ROAD_STATUS_CHOICES,
     SURFACE_CONDITION_CHOICES, SURFACE_TYPE_CHOICES,
     TECHNICAL_CLASS_CHOICES, TRAFFIC_LEVEL_CHOICES,
+    PAVEMENT_CLASS_CHOICES
 } from "./road";
 
 // All Ids in the following schemas are generated
@@ -45,12 +46,31 @@ const attributeEntrySchema = {
     // secondaryAttributes are implied by the contents of `lengths`
 };
 
+function testKeyIsReal(key) {
+    return ["0", "none", "unknown", "nan", "null", "undefined", "false"].indexOf(`${key}`.toLowerCase()) === -1;
+}
+
 function extractCountData(lengthsForType, choices) {
     const lengths = [];
     if (lengthsForType) {
         Object.keys(lengthsForType).forEach((key) => {
-            const title = choice_or_default(key, choices, "Unknown").toLowerCase();
-            lengths.push({ key: key === "None" ? 0 : key, title, distance: lengthsForType[key] });
+            let lengthKey = key;
+            let lengthKeyHasValue = testKeyIsReal(lengthKey);
+            let title = choice_or_default(lengthKey, choices, "Unknown").toLowerCase();
+
+            if (title === "unknown") {
+                // check if we've actually received the title instead of the key
+                const invertedChoices = invertChoices(choices);
+                let alternateTitle = choice_or_default(lengthKey, invertedChoices, "Unknown").toLowerCase();
+                if (alternateTitle !== "unknown") {
+                    title = lengthKey;
+                    lengthKey = alternateTitle;
+                } else if (lengthKeyHasValue) {
+                    // We do have some kind of supplied key name - so we'll use it.
+                    title = lengthKey.toLowerCase();
+                }
+            }
+            lengths.push({ key: lengthKeyHasValue ? lengthKey : 0, title, distance: lengthsForType[key] });
         });
     }
 
@@ -82,14 +102,14 @@ export class EstradaNetworkSurveyReport extends Report {
         let lengths = "";
 
         try {
-            lengths = this.getlengths();
+            lengths = this.getLengths();
         } catch {
             lengths = "";
         }
 
-        // We can change the following to 
+        // We can change the following to
         // whatever we consider an appropriate 'empty' collection of lengths
-        lengths = lengths || '{ "surface_condition": { "None": 0 } }';
+        lengths = lengths || '{ "surface_condition": { "None": 0 },  "surface_type": { "None": 0 },  "pavement_class": { "None": 0 } }';
 
         return JSON.parse(lengths);
     }
@@ -112,6 +132,10 @@ export class EstradaNetworkSurveyReport extends Report {
 
     get surfaceTypes() {
         return extractCountData(this.lengths.surface_type, SURFACE_TYPE_CHOICES);
+    }
+
+    get pavementClasses() {
+        return extractCountData(this.lengths.pavement_class, PAVEMENT_CLASS_CHOICES);
     }
 
     get technicalClasses() {
@@ -156,12 +180,28 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
         return this.makeSpecificLengths("surface_type", SURFACE_TYPE_CHOICES);
     }
 
+    get pavementClasses() {
+        return this.makeSpecificLengths("pavement_class", PAVEMENT_CLASS_CHOICES);
+    }
+
     get technicalClasses() {
         return this.makeSpecificLengths("technical_class", TECHNICAL_CLASS_CHOICES);
     }
 
     get trafficLevels() {
         return this.makeSpecificLengths("traffic_level", TRAFFIC_LEVEL_CHOICES);
+    }
+
+    attributeTable(primaryAttribute) {
+        const attributeTableIndex = this.attributeTablesList.findIndex((attributeTable) => {
+            return attributeTable.primaryAttribute === primaryAttribute;
+        });
+
+        if (attributeTableIndex === -1) {
+            return [];
+        }
+
+        return this.attributeTablesList[attributeTableIndex].attributeEntriesList;
     }
 
     static getFieldName(field) {
@@ -288,6 +328,10 @@ export class EstradaSurveyAttributeEntry extends AttributeEntry {
 
     get surfaceType() {
         return gettext(this.values.surface_type || "Unknown");
+    }
+
+    get pavementClass() {
+        return gettext(this.values.pavement_class || "Unknown");
     }
 
     get technicalClass() {

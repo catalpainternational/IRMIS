@@ -64,7 +64,12 @@
         </div>
     </div>
 
-    <feedback_banner if="{ state.showFeedback }" close="{ closeFeedback }" successMessage="{ window.gettext('Report successfully created') }" error="{ state.error }"></feedback_banner>
+    <feedback_banner if="{ state.showFeedback }"
+        close="{ closeFeedback }"
+        successMessage="{ window.gettext('Report successfully created') }"
+        errorMessage="{ window.gettext('Something went wrong') }"
+        error="{ state.error }">
+    </feedback_banner>
 
     <loading></loading>
 
@@ -72,8 +77,6 @@
         import Feedback_Banner from './feedback_banner.riot.html';
         import Loading from './loading.riot.html';
         import Report from './report.riot.html';
-
-        let timeoutId = null;
 
         export default {
             state: {
@@ -92,7 +95,6 @@
             onBeforeUnmount(props, state) {
                 window.removeEventListener("hashchange", this.hashCheck);
                 window.goBack = () => {};
-                clearTimeout(timeoutId);
             },
             hashCheck() {
                 const reportHash = /#reports\/(\d?)/.exec(location.hash);
@@ -109,19 +111,22 @@
                 window.location.hash = `#reports/${reportId}`;
             },
             showFeedback(error) {
-                this.state.showFeedback = true;
-                this.state.error = error;
-                this.update();
-                timeoutId = setTimeout(() => this.closeFeedback(), 5000);
+                this.update({
+                    showFeedback: true,
+                    error: error,
+                });
+                setTimeout(() => this.closeFeedback(), 2000);
             },
             closeFeedback() {
                 const feedback = document.getElementsByClassName("slide-in").item(0);
-                clearTimeout(timeoutId);
-                feedback.classList.add("slide-out");
-                setTimeout(() => {
-                    feedback.classList.remove("slide-out");
-                    this.update({ showFeedback: false });
-                }, 300);
+
+                if (feedback) {
+                    feedback.classList.add("slide-out");
+                    setTimeout(() => {
+                        feedback.classList.remove("slide-out");
+                        this.update({ showFeedback: false });
+                    }, 300);
+                }
             },
         }
     </script>

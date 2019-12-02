@@ -113,22 +113,25 @@ def road_update(request):
         return response
 
     # update the Road instance from PB fields
-    fields = [
+    regular_fields = [
         "road_name",
         "road_code",
         "road_type",
         "link_code",
         "link_start_name",
-        "link_start_chainage",
         "link_end_name",
-        "link_end_chainage",
-        "link_length",
         "surface_condition",
-        "carriageway_width",
         "administrative_area",
         "project",
         "funding_source",
         "traffic_level",
+    ]
+    numeric_fields = [
+        "link_start_chainage",
+        "link_end_chainage",
+        "link_length",
+        "carriageway_width",
+        "number_lanes",
     ]
     fks = [
         (MaintenanceNeed, "maintenance_need"),
@@ -138,9 +141,24 @@ def road_update(request):
         (PavementClass, "pavement_class"),
     ]
     changed_fields = []
-    for field in fields:
+    for field in regular_fields:
         request_value = getattr(req_pb, field)
         if getattr(old_road_pb, field) != request_value:
+            # set attribute on road
+            setattr(road, field, request_value)
+            # add field to list of changes fields
+            changed_fields.append(field)
+
+    # Nullable Numeric attributes
+    for field in numeric_fields:
+        existing_value = getattr(old_road_pb, field)
+        request_value = getattr(req_pb, field)
+
+        # -ve request_values indicate that the supplied value is actually meant to be None
+        if request_value < 0:
+            request_value = None
+
+        if existing_value != request_value:
             # set attribute on road
             setattr(road, field, request_value)
             # add field to list of changes fields
@@ -236,14 +254,18 @@ def protobuf_road_set(request, chunk_name=None):
 
 
 @login_required
-def protobuf_road_surveys(request, pk):
+def protobuf_road_surveys(request, pk, survey_attribute=None):
     """ returns a protobuf object with the set of surveys for a particular road pk"""
     # get the Road link requested
     road = get_object_or_404(Road.objects.all(), pk=pk)
     # pull any Surveys that cover the Road above
-    queryset = Survey.objects.filter(road=road.road_code).exclude(
-        values__surface_condition__isnull=True
-    )
+    queryset = Survey.objects.filter(road=road.road_code)
+
+    if survey_attribute:
+        queryset = queryset.filter(values__has_key=survey_attribute).exclude(
+            **{"values__" + survey_attribute + "__isnull": True}
+        )
+
     queryset.order_by("road", "chainage_start", "chainage_end", "-date_updated")
     surveys_protobuf = queryset.to_protobuf()
 
@@ -415,6 +437,7 @@ def protobuf_reports(request):
     chainage_end = None
     road_types = request.GET.getlist("roadtype", [])  # roadtype=X
     surface_types = request.GET.getlist("surfacetype", [])  # surfacetype=X
+    pavement_classes = request.GET.getlist("pavementclass", [])  # pavementclass=X
     municipalities = request.GET.getlist("municipality", [])  # municipality=X
     surface_conditions = request.GET.getlist(
         "surfacecondition", []
@@ -478,6 +501,8 @@ def protobuf_reports(request):
         roads.filter(surface_type__in=surface_types)
     if municipalities != []:
         roads.filter(administrative_area__in=municipalities)
+    if pavement_classes != []:
+        roads.filter(pavement_class__in=pavement_classes)
 
     if len(roads) == 0:
         return HttpResponseNotFound()
@@ -536,7 +561,9 @@ def protobuf_reports(request):
                 .distinct("road", "chainage_start", "chainage_end")
             )
 
-        road_report = Report(surveys, len(road_codes) == 1, min_chainage, max_chainage)
+        road_report = Report(
+            surveys, len(road_codes) == 1, primary_road_code, min_chainage, max_chainage
+        )
 
         if len(road_codes) == 1:
             report_protobuf = road_report.to_protobuf()

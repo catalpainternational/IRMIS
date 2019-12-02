@@ -26,6 +26,11 @@ urlpatterns = [
     path("protobuf_roads", protobuf_road_set, name="protobuf_roads"),
     path("protobuf_roads/<slug:chunk_name>/", protobuf_road_set, name="protobuf_roads"),
     path(
+        "protobuf_road_surveys/<int:pk>/<slug:survey_attribute>",
+        protobuf_road_surveys,
+        name="protobuf_road_surveys",
+    ),
+    path(
         "protobuf_road_surveys/<int:pk>",
         protobuf_road_surveys,
         name="protobuf_road_surveys",

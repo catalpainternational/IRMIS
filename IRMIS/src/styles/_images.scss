@@ -168,3 +168,11 @@ tr.selected .pencil {
     height: 269px;
     width: 444px;
 }
+
+
+@media print {
+    .rdtl {
+        height: 125px;
+        width: 130px;
+    }
+}

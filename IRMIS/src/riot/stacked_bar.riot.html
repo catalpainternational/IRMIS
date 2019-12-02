@@ -1,5 +1,5 @@
 <stacked_bar>
-    <div if="{ props.id }" id="{ props.id }" >
+    <div hidden="{ !props.id }" id="{ props.id }">
         <h5 if="{ props.title }">{ props.title }</h5>
         <div class="d-flex entry-bar">
             <div each="{entry in state.entries}" class="{'entry-' + entry.key}" style="{'width:' + entry.percent + '%;'}"></div>
@@ -39,16 +39,16 @@
             },
 
             initialiseStateFromProps(props, state) {
-                this.processCalculatedFields(state, props.entries);
+                this.processCalculatedFields(props.entries);
 
-                // Wraps the actual processing for 'dataUpdated' event, and includes this tag's state
-                state.dataUpdated = (data) => this.processDataUpdated(data, state);
+                // Wraps the actual processing for 'dataUpdated' event
+                state.dataUpdated = (data) => this.processDataUpdated(data);
             },
 
-            processCalculatedFields(state, newEntries) {
+            processCalculatedFields(newEntries) {
                 newEntries = newEntries && newEntries.length ? newEntries : emptyEntries;
 
-                if (JSON.stringify(newEntries) === JSON.stringify(state.entries)) {
+                if (JSON.stringify(newEntries) === JSON.stringify(this.state.entries)) {
                     // Nothing has changed - just exit
                     return;
                 }
@@ -71,14 +71,14 @@
                     }
                 });
 
-                state.entries.length = 0;
-                newEntries.forEach((newEntry) => {state.entries.push(newEntry)});
+                this.state.entries = [];
+                newEntries.forEach((newEntry) => {this.state.entries.push(newEntry)});
 
                 this.update();
             },
 
-            processDataUpdated(data, state) {
-                this.processCalculatedFields(state, data.detail.entries);
+            processDataUpdated(data) {
+                this.processCalculatedFields(data.detail.entries);
 
                 data.stopPropagation();
             },
@@ -97,7 +97,7 @@
                     total_distance += entry.distance;
                 });
 
-                return Math.round(total_distance);                
+                return Math.round(total_distance);
             },
         }
     </script>

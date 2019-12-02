@@ -7,7 +7,7 @@ const roadSchema = JSON.parse(document.getElementById('road_schema').textContent
 
 const ADMINISTRATIVE_AREA_CHOICES = humanizeChoices(roadSchema, 'administrative_area', 'id', 'name');
 const MAINTENANCE_NEED_CHOICES = humanizeChoices(roadSchema, 'maintenance_need', 'code', 'name');
-const PAVEMENT_CLASS_CHOICES = humanizeChoices(roadSchema, 'pavement_class', 'code', 'name');
+export const PAVEMENT_CLASS_CHOICES = humanizeChoices(roadSchema, 'pavement_class', 'code', 'name');
 export const ROAD_STATUS_CHOICES = humanizeChoices(roadSchema, 'road_status', 'code', 'name');
 const ROAD_TYPE_CHOICES = humanizeChoices(roadSchema, 'road_type');
 export const SURFACE_CONDITION_CHOICES = humanizeChoices(roadSchema, 'surface_condition');
@@ -16,7 +16,6 @@ export const TECHNICAL_CLASS_CHOICES = humanizeChoices(roadSchema, 'technical_cl
 export const TRAFFIC_LEVEL_CHOICES = humanizeChoices(roadSchema, 'traffic_level');
 
 export class EstradaRoad extends Road {
-
     get id() {
         return this.getId();
     }
@@ -54,7 +53,12 @@ export class EstradaRoad extends Road {
     }
 
     get linkLength() {
-        return parseFloat(this.getLinkLength()).toFixed(2);
+        const linkLength = this.getLinkLength();
+        if (linkLength === null) {
+            return linkLength;
+        }
+
+        return parseFloat(linkLength * 1000).toFixed(2);
     }
 
     get status() {
@@ -82,7 +86,12 @@ export class EstradaRoad extends Road {
     }
 
     get carriagewayWidth() {
-        return parseFloat(this.getCarriagewayWidth()).toFixed(1);
+        const carriagewayWidth = this.getCarriagewayWidth();
+        if (carriagewayWidth === null) {
+            return carriagewayWidth;
+        }
+
+        return parseFloat(carriagewayWidth).toFixed(1);
     }
 
     get project() {
@@ -131,6 +140,77 @@ export class EstradaRoad extends Road {
 
     get numberLanes() {
         return this.getNumberLanes();
+    }
+
+    /** A Null or None in the protobuf is indicated by a negative value */
+    getLinkStartChainage() {
+        const linkStartChainage = super.getLinkStartChainage();
+        return (linkStartChainage >= 0 || this.isSerialising) ? linkStartChainage : null;
+    }
+   
+    /** A Null or None in the protobuf is indicated by a negative value */
+    getLinkEndChainage() {
+        const linkEndChainage = super.getLinkEndChainage();
+        return (linkEndChainage >= 0 || this.isSerialising) ? linkEndChainage : null;
+    }
+   
+    /** A Null or None in the protobuf is indicated by a negative value */
+    getLinkLength() {
+        const linkLength = super.getLinkLength();
+        return (linkLength >= 0 || this.isSerialising) ? linkLength : null;
+    }
+   
+    /** A Null or None in the protobuf is indicated by a negative value */
+    getCarriagewayWidth() {
+        const carriagewayWidth = super.getCarriagewayWidth();
+        return (carriagewayWidth >= 0 || this.isSerialising) ? carriagewayWidth : null;
+    }
+   
+    /** A Null or None in the protobuf is indicated by a negative value */
+    getNumberLanes() {
+        const numberLanes = super.getNumberLanes();
+        return (numberLanes >= 0 || this.isSerialising) ? numberLanes : null;
+    }
+
+    nullToNegative(value) {
+        if (typeof value === "undefined" || value === null) {
+            value = -1;
+        }
+        return value;
+    }
+
+    /** A Null or None in the protobuf is indicated by a negative value */
+    setLinkStartChainage(value) {
+        super.getLinkStartChainage(this.nullToNegative(value));
+    }
+    
+    /** A Null or None in the protobuf is indicated by a negative value */
+    setLinkEndChainage(value) {
+        super.setLinkEndChainage(this.nullToNegative(value));
+    }
+    
+    /** A Null or None in the protobuf is indicated by a negative value */
+    setLinkLength(value) {
+        super.setLinkLength(this.nullToNegative(value));
+    }
+    
+    /** A Null or None in the protobuf is indicated by a negative value */
+    setCarriagewayWidth(value) {
+        super.setCarriagewayWidth(this.nullToNegative(value));
+    }
+    
+    /** A Null or None in the protobuf is indicated by a negative value */
+    setNumberLanes(value) {
+        super.setNumberLanes(this.nullToNegative(value));
+    }
+
+    serializeBinary() {
+        // prepare the nullable numerics for serialisation
+        this.isSerialising = true;
+        const wireFormat = super.serializeBinary();
+        this.isSerialising = false;
+
+        return wireFormat;
     }
 
     static getFieldName(field) {

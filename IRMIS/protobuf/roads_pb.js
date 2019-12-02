@@ -854,7 +854,7 @@ proto.assets.Road.deserializeBinaryFromReader = function(msg, reader) {
       msg.setProjectionEnd(value);
       break;
     case 27:
-      var value = /** @type {number} */ (reader.readUint32());
+      var value = /** @type {number} */ (reader.readInt32());
       msg.setNumberLanes(value);
       break;
     default:
@@ -1058,7 +1058,7 @@ proto.assets.Road.serializeBinaryToWriter = function(message, writer) {
   }
   f = message.getNumberLanes();
   if (f !== 0) {
-    writer.writeUint32(
+    writer.writeInt32(
       27,
       f
     );
@@ -1463,7 +1463,7 @@ proto.assets.Road.prototype.hasProjectionEnd = function() {
 
 
 /**
- * optional uint32 number_lanes = 27;
+ * optional int32 number_lanes = 27;
  * @return {number}
  */
 proto.assets.Road.prototype.getNumberLanes = function() {

@@ -51,6 +51,13 @@ export class ConfigAPI {
                     queryParams.push(`${key}=${element}`);
                 });
             } else {
+                if (!obj[key]) {
+                    return;
+                }
+                // Test for the protobuf wrapper types
+                if (obj[key].array && obj[key].array.length === 0) {
+                    return;
+                }
                 queryParams.push(`${key}=${obj[key]}`);
             }
         });

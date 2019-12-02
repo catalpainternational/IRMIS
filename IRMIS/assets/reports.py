@@ -11,26 +11,21 @@ from rest_framework.exceptions import MethodNotAllowed
 from google.protobuf.timestamp_pb2 import Timestamp
 from protobuf import report_pb2
 
-from .models import (
-    Road,
-    MaintenanceNeed,
-    TechnicalClass,
-    RoadStatus,
-    SurfaceType,
-    PavementClass,
-    Survey,
-    display_user,
-)
+from .models import Road, Survey, display_user
 
 
 class Report:
-    def __init__(self, surveys, withAttributes, min_chainage, max_chainage):
+    def __init__(
+        self, surveys, withAttributes, primary_road_code, min_chainage, max_chainage
+    ):
         self.min_chainage = min_chainage
         self.max_chainage = max_chainage
         self.surveys = surveys
         self.primary_attributes = list(surveys.keys())
         self.withAttributes = withAttributes
+        self.primary_road_code = primary_road_code
         self.segmentations = {}
+        self.road_codes = set()
         # set basic report attributes
         # filters is a dict of lists, lengths is a dict of numeric values
         self.filters = {}
@@ -65,12 +60,14 @@ class Report:
 
     def assign_survey_results(self, primary_attribute):
         """ For all the Surveys, assign only the most up-to-date results to any given segment """
+        have_relevant_surveys = False
         for survey in self.surveys[primary_attribute]:
             # ensure survey bits used covers only the road link start/end chainage portion
             if (
                 survey.chainage_start <= self.road_end_chainage
                 and survey.chainage_end >= self.road_start_chainage
             ):
+                have_relevant_surveys = True
                 survey_chain_start = (
                     self.road_start_chainage
                     if survey.chainage_start <= self.road_start_chainage
@@ -83,8 +80,11 @@ class Report:
                 )
 
                 # Ensure that any attribute to be reported on is present in the values
-                if not "surface_condition" in survey.values:
-                    survey.values["surface_condition"] = None
+                if not primary_attribute in survey.values:
+                    survey.values[primary_attribute] = None
+
+                # Build up the set of road_codes
+                self.road_codes.add(survey.road)
 
                 # check survey does not conflict with current aggregate segmentations
                 # and update the segmentations when needed
@@ -100,6 +100,10 @@ class Report:
                         seg_point["added_by"] = display_user(survey.user)
                         seg_point["primary_attribute"] = primary_attribute
                     self.segmentations[primary_attribute][chainage_point] = seg_point
+
+        if not have_relevant_surveys:
+            # if there's no relevant surveys at all then still ensure correct output
+            self.road_codes.add(self.primary_road_code)
 
     def build_summary_stats(self, primary_attribute):
         """ Generate the high-level length statistics for the report """
@@ -180,8 +184,6 @@ class Report:
                 # Return an empty report.
                 return self.report_protobuf
 
-        self.report_protobuf.filter = json.dumps(self.filters)
-
         for primary_attribute in self.primary_attributes:
             # build and set report statistical data & table
             self.build_empty_chainage_list(primary_attribute)
@@ -193,6 +195,9 @@ class Report:
             if self.withAttributes:
                 self.build_attribute_tables(primary_attribute)
 
+        self.filters["road_code"] = list(self.road_codes)
+
+        self.report_protobuf.filter = json.dumps(self.filters)
         self.report_protobuf.lengths = json.dumps(self.lengths)
 
         return self.report_protobuf

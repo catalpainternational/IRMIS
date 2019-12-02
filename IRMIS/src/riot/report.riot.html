@@ -1,5 +1,18 @@
 <report>
-    <header class="d-flex">
+    <div class="print-header">
+        <div class="align-items-center d-flex">
+            <span class="image rdtl"></span>
+            <div class="d-flex flex-column">
+                <span>{ window.gettext("Democratic Republic of Timor-Leste") }</span>
+                <span>{ window.gettext("Ministry of Public Works") }</span>
+                <span>{ window.gettext("Directorate General for Public Works") }</span>
+                <span>{ window.gettext("National Directorate for Roads, Bridges and Flood Control") }</span>
+                <small>Avenida da Restauração, Rai Kotu, Díli, Timor-Leste, Telf. +670 3311408</small>
+            </div>
+        </div>
+    </div>
+
+    <header>
         <div>
             <a class="caret-dark left image" onclick="{ backToReports }"></a>
         </div>
@@ -14,71 +27,83 @@
         </div>
     </header>
 
-    <div class="content-wrapper d-flex justify-content-between">
-        <div class="d-flex flex-wrap">
-            <div class="options">
-                <select id="municipality_area_select2" multiple="true">
-                    <option each="{ area in window.road_schema.administrative_area.options }" value="{ area.id }">{ area.name }</option>
-                </select>
-            </div>
-
-            <div if="{ !reportContent().fixedFilter.roadtype }" class="options">
-                <select id="road_class_select2" multiple="true">
-                    <option each="{ road_class in window.road_schema.road_type.options }" value="{ road_class[0] }">{ road_class[1] }</option>
-                </select>
-            </div>
-            <!-- Optionally include the following to show the fixedFilter value (changing to the full option title) -->
-            <!-- <div if="{ reportContent().fixedFilter.roadtype }" class="options">
-                <span>{ reportContent().fixedFilter.roadtype }</span>
-            </div> -->
-
-            <div class="options">
-                <select id="surface_type_select2" multiple="true">
-                    <option each="{ surface_type in window.road_schema.surface_type.options }" value="{ surface_type.code }">{ surface_type.name }</option>
-                </select>
-            </div>
-
-            <div class="options">
-                <select id="surface_condition_select2" multiple="true">
-                    <option each="{ surface_condition in window.road_schema.surface_condition.options }" value="{ surface_condition[0] }">{ surface_condition[1] }</option>
-                </select>
-            </div>
-
-            <div>
-                <div class="options">
-                    <select id="road_code_select2" multiple="true">
-                        <option each="{ code in window.road_schema.road_code.options }" value="{ code.road_code }">{ code.road_code }</option>
+    <div class="content-wrapper report-criteria">
+        <h6>{ window.gettext("Select report criteria") }</h6>
+        <div class="d-flex justify-content-between">
+            <div class="d-flex flex-wrap">
+                <div if="{ reportContent().visibleFilters.municipality }" class="options">
+                    <select id="municipality_area_select2" multiple="true">
+                        <option each="{ area in window.road_schema.administrative_area.options }" value="{ area.id }">{ area.name }</option>
                     </select>
                 </div>
-                <div class="d-flex flex-wrap">
-                    <div class="d-flex flex-column">
-                        <label>{ window.gettext("Chainage start") }</label>
-                        <input class="{ state.reportStartChainage ? '' : 'inactive' } form-control form-control-sm" type="number" oninput="{ selectStartChainage }" placeholder="0">
+
+                <div if="{ reportContent().visibleFilters.roadClass }" class="options">
+                    <select id="road_class_select2" multiple="true">
+                        <option each="{ road_class in window.road_schema.road_type.options }" value="{ road_class[0] }">{ road_class[1] }</option>
+                    </select>
+                </div>
+                <!-- Optionally include the following to show the fixedFilter value (changing to the full option title) -->
+                <!-- <div if="{ reportContent().fixedFilter.roadtype }" class="options">
+                    <span>{ reportContent().fixedFilter.roadtype }</span>
+                </div> -->
+
+                <div if="{ reportContent().visibleFilters.surfaceType }" class="options">
+                    <select id="surface_type_select2" multiple="true">
+                        <option each="{ surface_type in window.road_schema.surface_type.options }"
+                            value="{ surface_type.code }">{ surface_type.name }</option>
+                    </select>
+                </div>
+
+                <div if="{ reportContent().visibleFilters.surfaceCondition }" class="options">
+                    <select id="surface_condition_select2" multiple="true">
+                        <option each="{ surface_condition in window.road_schema.surface_condition.options }"
+                            value="{ surface_condition[0] }">{ surface_condition[1] }</option>
+                    </select>
+                </div>
+
+                <div if="{ reportContent().visibleFilters.roadCode }">
+                    <div class="options">
+                        <select id="road_code_select2" multiple="true">
+                            <option each="{ code in window.road_schema.road_code.options }"
+                                value="{ code.road_code }">{ code.road_code }</option>
+                        </select>
                     </div>
-                    <div class="d-flex flex-column">
-                        <label>{ window.gettext("Chainage end") }</label>
-                        <input class="{ state.reportEndChainage ? '' : 'inactive' } form-control form-control-sm" type="number" oninput="{ selectEndChainage }" placeholder="20000">
+                    <div class="d-flex flex-wrap">
+                        <div class="d-flex flex-column">
+                            <label>{ window.gettext("Chainage start") }</label>
+                            <input class="{ state.reportStartChainage ? '' : 'inactive' } form-control form-control-sm"
+                                type="number" oninput="{ selectStartChainage }" placeholder="0">
+                        </div>
+                        <div class="d-flex flex-column">
+                            <label>{ window.gettext("Chainage end") }</label>
+                            <input class="{ state.reportEndChainage ? '' : 'inactive' } form-control form-control-sm"
+                                type="number" oninput="{ selectEndChainage }" placeholder="20000">
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <input class="{ state.reportDate ? '' : 'inactive' } form-control form-control-sm" type="date" oninput="{ selectDate }" value="{ current_date() }" max="{ max_date() }" placeholder="Select Date" pattern="\d{4}-\d{2}-\d{2}">
-        </div>
-        <div>
-            <button type="button" class="btn btn-primary" onclick="{ createReport }" data-id="{ props.id }">{ window.gettext("Create Report") }</button>
+                <input if="{ reportContent().visibleFilters.reportDate }"
+                    class="{ state.reportDate ? '' : 'inactive' } form-control form-control-sm" type="date"
+                    oninput="{ selectDate }" value="{ current_date() }" max="{ max_date() }" placeholder="Select Date"
+                    pattern="\d{4}-\d{2}-\d{2}">
+            </div>
+            <div>
+                <button type="button" class="btn btn-primary" onclick="{ createReport }" data-id="{ props.id }">{ window.gettext("Create Report") }</button>
+            </div>
         </div>
     </div>
 
     <div hidden="{ state.noReport }" class="content-wrapper report-content">
         <div class="align-items-center d-flex justify-content-between">
+            <h1 class="print-title">{ window.gettext("Road Asset Management") }</h1>
             <h6>{ reportContent().title } { window.gettext("Report") }</h6>
-            <button class="btn btn-secondary btn-sm">{ window.gettext("Print") }</button>
+            <button class="btn btn-secondary btn-sm" onclick="{ () => window.print() }">{ window.gettext("Print") }</button>
         </div>
         <div class="filtered-segment d-flex flex-column">
-            <h6>A01-01</h6>
-            <h6>Chainage 0+000 to 2+360</h6>
+            <h6 if="{ state.reportData.roadCodes && state.reportData.roadCodes.length === 1 }">{ state.reportData.roadCodes[0] }</h6>
+            <h6 if="{ state.reportData.reportChainage }">Chainage { toChainageFormat(state.reportData.reportChainage[0]) } to { toChainageFormat(state.reportData.reportChainage[1]) }</h6>
         </div>
-        <span>{ window.gettext("Created on") } 16 July 2019 - { window.gettext("Report for") } 16 September 2019</span>
+        <span class="report-date" if="{ state.reportData.dateCreated }">{ window.gettext("Created on") } { state.reportData.dateCreated() }</span>
         <div class="d-flex flex-column filters-applied">
             <p>{ window.gettext("Filters applied") }</p>
             <div class="d-flex">
@@ -92,15 +117,34 @@
                 </div>
             </div>
         </div>
+
+        <stacked_bar hidden="{ !state.road_status }" id="{ stackedBarIds.roadStatus }" title="{ window.gettext('Road Status') }"
+            entries="{ state.road_status }" total_title="{ window.gettext('Total road chainage') }">
+        </stacked_bar>
+        <stacked_bar hidden="{ !state.technical_class }" id="{ stackedBarIds.technicalClass }" title="{ window.gettext('Technical Class') }"
+            entries="{ state.technical_class }" total_title="{ window.gettext('Total road chainage') }">
+        </stacked_bar>
+        <stacked_bar hidden="{ !state.surface_condition }" id="{ stackedBarIds.surfaceCondition }" title="{ window.gettext('Surface Condition (SDI)') }"
+            entries="{ state.surface_condition }" total_title="{ window.gettext('Total road chainage') }">
+        </stacked_bar>
+
         <div if="{state.reportData.totalLength}" class="d-flex flex-column total-length">
             <p>{ window.gettext("Total Length") }</p>
             <h1>{ (state.reportData.totalLength / 1000).toFixed(1) } km</h1>
         </div>
-        <data_table table_id="{dataTableIds.roadStatus}" tableName="Road Status" columns="{baseColumns}" columnSortOrder="{baseColumnSortOrder}" paging="false" canExport></data_table>
-        <data_table table_id="{dataTableIds.technicalClass}" tableName="Technical Class" columns="{baseColumns}" columnSortOrder="{baseColumnSortOrder}" paging="false" canExport></data_table>
+        <data_table hidden="{ !state.reportData.roadStatus }" table_id="{dataTableIds.roadStatus}"
+            tableName="Road Status" columns="{columns.roadStatus()}" columnSortOrder="{baseColumnSortOrder}"
+            paging="false" canExport></data_table>
+        <data_table hidden="{ !state.reportData.technicalClass }" table_id="{dataTableIds.technicalClass}"
+            tableName="Technical Class" columns="{columns.technicalClass()}" columnSortOrder="{baseColumnSortOrder}"
+            paging="false" canExport></data_table>
+        <data_table hidden="{ !state.reportData.surfaceCondition }" table_id="{dataTableIds.surfaceCondition}"
+            tableName="Surface Condition" columns="{columns.surfaceCondition()}" columnSortOrder="{baseColumnSortOrder}"
+            paging="false" canExport></data_table>
     </div>
 
-    <div if="{ state.noReport }" class="align-items-center blank content-wrapper d-flex flex-column justify-content-center">
+    <div if="{ state.noReport }"
+        class="align-items-center blank content-wrapper d-flex flex-column justify-content-center">
         <span class="no-report image"></span>
         <h6>
             { window.gettext("Please select a road above to view") }
@@ -113,8 +157,17 @@
         </p>
     </div>
 
+    <div class="print-footer">
+        <div class="d-flex align-items-center" if="{ state.reportData.dateCreated }">{ window.gettext("Exported from Estrada on") } { state.reportData.dateCreated() }</div>
+        <span class="app-logo image"></span>
+    </div>
+
     <script>
+        import Stacked_Bar from "./stacked_bar.riot.html";
+
         import { getRoadReport } from "../reportManager";
+        import { updateReportAttributeSummary } from "../roadAttributes";
+        import { cloneData, toChainageFormat } from "../assets/protoBufUtilities";
 
         import $ from "jquery";
         import "select2/dist/js/select2.full.min.js";
@@ -122,9 +175,77 @@
 
         const baseColumnSortOrder = [[0, 'asc']];
 
+        const columnSource = {
+            title: {
+                // Title needs to be set per data type
+                title: window.gettext("Title"),
+                data: "title",
+                defaultContent: "",
+                orderable: false,
+            },
+            distance: {
+                title: window.gettext("Length (km)"),
+                data: "distance",
+                defaultContent: "",
+                className: "text-right",
+                orderable: false,
+                render: (data, type) => {
+                    return (type === 'display')
+                        ? (data / 1000).toFixed(2)
+                        : data;
+                },
+            },
+            percent: {
+                title: window.gettext("Percentages (%)"),
+                data: "percent",
+                defaultContent: "",
+                className: "text-right",
+                orderable: false,
+            },
+            chainageStart: {
+                title: window.gettext("Chainage Start"),
+                data: "chainageStart",
+                defaultContent: "",
+                className: "text-right",
+                orderable: false,
+                render: (data, type) => {
+                    return (type === 'display') ? toChainageFormat(data) : data;
+                },
+            },
+            chainageEnd: {
+                title: window.gettext("Chainage End"),
+                data: "chainageEnd",
+                defaultContent: "",
+                className: "text-right",
+                orderable: false,
+                render: (data, type) => {
+                    return (type === 'display') ? toChainageFormat(data) : data;
+                },
+            },
+            surfaceCondition: {
+                title: window.gettext("Surface Condition (SDI)"),
+                data: "surfaceCondition",
+                defaultContent: "",
+                orderable: false,
+            },
+            surveyDate: {
+                title: window.gettext("Survey Date"),
+                data: "dateSurveyed",
+                defaultContent: "",
+                orderable: false,
+            },
+        };
+
         export default {
             state: {
                 noReport: true,
+                filterDefinitions: [
+                    { selectId: "municipality_area_select2", placeHolder: "Municipality", dataIn: "reportMunicipality" },
+                    { selectId: "road_class_select2", placeHolder: "Road class", dataIn: "reportRoadClass", filterName: "roadtype" },
+                    { selectId: "surface_type_select2", placeHolder: "Surface type", dataIn: "reportSurfaceType" },
+                    { selectId: "surface_condition_select2", placeHolder: "Surface condition", dataIn: "reportSurfaceCondition" },
+                    { selectId: "road_code_select2", placeHolder: "Road code", dataIn: "reportRoadCode", isSingle: true, filterName: "roadcode" },
+                ],
                 reportMunicipality: [],
                 reportRoadClass: [],
                 reportSurfaceType: [],
@@ -138,21 +259,45 @@
                         title: window.gettext("Road Network Length"),
                         description: window.gettext("A report on the total length of the road network. The report provides total length in kilometers and percentages according to Road Status and Technical Class. A number of filters can be selected in order to generate a length report according to the required criteria"),
                         fixedFilter: {},
+                        visibleFilters: {
+                            municipality: true,
+                            roadClass: true,
+                            surfaceType: true,
+                            surfaceCondition: true,
+                            reportDate: true,
+                        },
                     },
                     1: {
                         title: window.gettext("Road Network Length Breakdown"),
                         description: window.gettext("A breakdown report on the total length of the road network. The report provides information on total length in kilometers and percentages as well as Road Status and Technical Class, according to a breakdown by Municipality, Road Class and Surface Type"),
                         fixedFilter: {},
+                        visibleFilters: {
+                            municipality: true,
+                            roadClass: true,
+                            surfaceType: true,
+                            surfaceCondition: true,
+                            reportDate: true,
+                        },
                     },
                     2: {
                         title: window.gettext("Surface Condition"),
                         description: window.gettext("A report on Road Surface Condition. This report provides detailed Surface Condition information per segment"),
-                        fixedFilter: {},
+                        fixedFilter: {
+                            primaryattribute: ["surface_condition"],
+                        },
+                        visibleFilters: {
+                            roadCode: true,
+                            reportDate: true,
+                        },
                     },
-                    3: { 
+                    3: {
                         title: window.gettext("IRI Roughness"),
                         description: window.gettext("A report on Road IRI data. This report provides detailed information on a Road's Roughness per segment"),
                         fixedFilter: {},
+                        visibleFilters: {
+                            roadCode: true,
+                            reportDate: true,
+                        },
                     },
                     4: {
                         title: window.gettext("Road Network Length - National Class"),
@@ -160,6 +305,9 @@
                         fixedFilter: {
                             primaryattribute: ["road_status", "technical_class"],
                             roadtype: "NAT",
+                        },
+                        visibleFilters: {
+                            reportDate: true,
                         },
                     },
                     5: {
@@ -169,6 +317,9 @@
                             primaryattribute: ["road_status", "technical_class"],
                             roadtype: "MUN",
                         },
+                        visibleFilters: {
+                            reportDate: true,
+                        },
                     },
                     6: {
                         title: window.gettext("Road Network Length - Rural Class"),
@@ -176,6 +327,9 @@
                         fixedFilter: {
                             primaryattribute: ["road_status", "technical_class"],
                             roadtype: "RUR",
+                        },
+                        visibleFilters: {
+                            reportDate: true,
                         },
                     },
                     7: {
@@ -185,6 +339,9 @@
                             primaryattribute: ["road_status", "technical_class"],
                             roadtype: "HIGH",
                         },
+                        visibleFilters: {
+                            reportDate: true,
+                        },
                     },
                     8: {
                         title: window.gettext("Road Network Length - Urban Class"),
@@ -193,70 +350,75 @@
                             primaryattribute: ["road_status", "technical_class"],
                             roadtype: "URB",
                         },
+                        visibleFilters: {
+                            reportDate: true,
+                        },
                     },
                 },
                 reportData: {},
+                road_status: [{ key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
+                technical_class: [{ key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
+                surface_condition: [{ key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
+            },
+            components: {
+                Stacked_Bar
+            },
+            stackedBarIds: {
+                roadStatus: "report-road-status-bar",
+                technicalClass: "report-technical-class-bar",
+                surfaceCondition: "report-surface-condition-bar",
             },
             dataTableIds: {
                 roadStatus: "report-road-status-table",
                 technicalClass: "report-technical-class-table",
+                surfaceCondition: "report-surface-condition-table",
             },
-            baseColumns: [
-                {
-                    // Title needs to be set per data type
-                    title: window.gettext("Title"),
-                    data: "title",
-                    defaultContent: "",
-                    orderable: false,
+            columns: {
+                roadStatus() {
+                    const titleColumn = cloneData(columnSource.title);
+                    titleColumn.title = window.gettext("Road Status");
+
+                    return [titleColumn, columnSource.distance, columnSource.percent];
                 },
-                {
-                    title: window.gettext("Length (km)"),
-                    data: "distance",
-                    defaultContent: "",
-                    className: "text-right",
-                    orderable: false,
-                    render: (data, type) => {
-                        return (type === 'display')
-                            ? (data / 1000).toFixed(2)
-                            : data;
-                    },
+                technicalClass() {
+                    const titleColumn = cloneData(columnSource.title);
+                    titleColumn.title = window.gettext("Technical Class");
+
+                    return [titleColumn, columnSource.distance, columnSource.percent];
                 },
-                {
-                    title: window.gettext("Percentages (%)"),
-                    data: "percent",
-                    defaultContent: "",
-                    className: "text-right",
-                    orderable: false,
+                surfaceCondition() {
+                    return [columnSource.chainageStart, columnSource.chainageEnd, columnSource.surfaceCondition, columnSource.surveyDate];
                 },
-            ],
+            },
             reportContent() {
                 const reportId = this.props.id;
                 return this.state.reportContent[reportId];
             },
-            onMounted() {
-                this.prepareSelects("municipality_area_select2", "Municipality", "reportMunicipality");
-                this.prepareSelects("road_class_select2", "Road class", "reportRoadClass");
-                this.prepareSelects("surface_type_select2", "Surface type", "reportSurfaceType");
-                this.prepareSelects("surface_condition_select2", "Surface condition", "reportSurfaceCondition");
-                this.prepareSelects("road_code_select2", "", "reportRoadCode", false);
+            onMounted(props, state) {
+                state.filterDefinitions.forEach((filterDefinition) => {
+                    this.prepareSelects(filterDefinition);
+                });
+
+                this.prepareStackedBar(this.stackedBarIds.surfaceCondition, this.state.surfaceConditions, "surface_condition");
             },
-            prepareSelects(selectId, placeHolder, dataIn, isMulti = true) {
+            prepareSelects(filterDefinition) {
                 const selectOptions = {
                     width: "225px",
                     containerCssClass: "report-select2",
                     dropdownCssClass: "report-dropdown-select2",
                 };
+
                 let toggleFunction = this.toggleMultipleSelect2;
-                if (isMulti) {
-                    selectOptions.placeholder = window.gettext(placeHolder)
-                } else {
+                if (filterDefinition.isSingle) {
                     selectOptions.multiple = false;
                     toggleFunction = this.toggleSingleSelect2;
+                } else {
+                    selectOptions.placeholder = window.gettext(filterDefinition.placeHolder)
                 }
 
-                $(`#${selectId}`).select2(selectOptions);
-                $(`#${selectId}`).on('select2:select', null, dataIn, toggleFunction);
-                $(`#${selectId}`).on('select2:unselect', null, dataIn, toggleFunction);
+                $(`#${filterDefinition.selectId}`).select2(selectOptions);
+                $(`#${filterDefinition.selectId}`).on('select2:select', null, filterDefinition.dataIn, toggleFunction);
+                $(`#${filterDefinition.selectId}`).on('select2:unselect', null, filterDefinition.dataIn, toggleFunction);
             },
             backToReports() {
                 window.location.hash = "reports/";
@@ -298,10 +460,14 @@
             toggleSingleSelect2(e) {
                 this.state[e.data] = e.currentTarget.value;
             },
-            prepareTableData(tableName, tableData) {
+            prepareTableData(tableName, tableData, filterName) {
                 const haveTableData = tableData.length > 0;
+                const fixedFilter = this.reportContent().fixedFilter;
+                const isFixedFilter = fixedFilter.primaryattribute
+                    ? fixedFilter.primaryattribute.indexOf(filterName) !== -1
+                    : false;
 
-                if (haveTableData) {
+                if (haveTableData || isFixedFilter) {
                     this.state.reportData.totalLength = this.state.reportData.totalLength || tableData.reduce((acc, cur) => acc += cur.distance || 0, 0);
                     tableData.forEach((entry) => {
                         if (this.state.reportData.totalLength > 0) {
@@ -311,7 +477,7 @@
                             entry.percent = 100;
                         }
                         entry.getId = () => { return entry.key; };
-                        if (entry.title.toLowerCase() === "unknown") {
+                        if (entry.title && entry.title.toLowerCase() === "unknown") {
                             let entryKey = `${entry.key}`.toLowerCase();
                             if (["0", "none", "unknown"].indexOf(entryKey) !== -1) {
                                 entryKey == "Unknown";
@@ -320,35 +486,51 @@
                         }
                     });
                     const eventName = `${tableName}.dataAdded`;
-                    const eventDetail = { detail: { pendingRows: tableData, clearRows: true }};
+                    const eventDetail = { detail: { pendingRows: tableData, clearRows: true } };
                     document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+
+                    return tableData || [];
                 }
 
-                return tableData;
+                return null;
+            },
+            prepareStackedBar(barName, barData, filterName) {
+                if (barData && barData.length) {
+                    updateReportAttributeSummary(this.state, filterName, barData);
+                                    
+                    const eventName = `${barName}.dataUpdated`;
+                    const eventDetail = { detail: { entries: this.state[filterName], barName } };
+                    document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+                } else {
+                    delete this.state[filterName];
+                }
+            },
+            toChainageFormat(value) {
+                return toChainageFormat(value);
             },
             createReport(e) {
                 $('#loading').modal('show');
 
                 const reportId = e.currentTarget.dataset.id;
-                const filters = this.reportContent().fixedFilter;
+                const filters = cloneData(this.reportContent().fixedFilter);
 
-                switch (reportId) {
-                    case "4":
-                        filters["roadtype"] = "NAT";
-                        break;
-                    case "5":
-                        filters["roadtype"] = "MUN";
-                        break;
-                    case "6":
-                        filters["roadtype"] = "RUR";
-                        break;
-                    case "7":
-                        filters["roadtype"] = "HIGH";
-                        break;
-                    case "8":
-                        filters["roadtype"] = "URB";
-                        break;
-                }
+                const userFilters = {};
+                this.state.filterDefinitions.forEach((filterDefinition) => {
+                    const requestFilterName = filterDefinition.filterName || "";
+                    if (!requestFilterName || filters[requestFilterName]) {
+                        // If the fixedFilters already defines this request filter
+                        // then we will not accept this user defined one
+                        return;
+                    }
+
+                    const selectData = $(`#${filterDefinition.selectId}`).select2("data");
+                    if (!selectData || selectData.length === 0) {
+                        return;
+                    }
+                    const selection = selectData.map((data) => { return data.text; }).join(",");
+
+                    filters[requestFilterName] = selection;
+                });
 
                 if (!Object.keys(filters).length) {
                     return;
@@ -359,17 +541,29 @@
                         if (surveyReportData) {
                             this.state.noReport = false;
                             const haveLengths = !!surveyReportData.lengths;
-                            // This may not work - might need to delete/replace all members one by one - @$@#$@# Riot
-                            this.state.reportData = {totalLength: 0};
-                            if (haveLengths) {
-                                const surfaceConditions = surveyReportData.surfaceConditions;
-                                const haveSurfaceConditions = surfaceConditions.length > 0;
 
-                                this.state.reportData.roadStatus = this.prepareTableData(this.dataTableIds.roadStatus, surveyReportData.roadStatuses);
-                                this.state.reportData.technicalClass = this.prepareTableData(this.dataTableIds.technicalClass, surveyReportData.technicalClasses);
+                            this.state.reportData = {
+                                totalLength: 0,
+                                roadCodes: (surveyReportData.roadCodes || []).sort(),
+                                reportChainage: (surveyReportData.reportChainage && surveyReportData.reportChainage.length === 2 
+                                    && (surveyReportData.reportChainage[0] + surveyReportData.reportChainage[1])) 
+                                    ? surveyReportData.reportChainage 
+                                    : undefined,
+                                dateCreated: () => dayjs(new Date()).format('DD MMMM YYYY [at] HH:mm'),
+                            };
+
+                            if (haveLengths) {
+                                this.state.reportData.roadStatus = this.prepareTableData(this.dataTableIds.roadStatus, surveyReportData.roadStatuses, "road_status");
+                                this.state.reportData.technicalClass = this.prepareTableData(this.dataTableIds.technicalClass, surveyReportData.technicalClasses, "technical_class");
+                                this.state.reportData.surfaceCondition = this.prepareTableData(this.dataTableIds.surfaceCondition, surveyReportData.attributeTable("surface_condition"), "surface_condition");
+
+                                this.prepareStackedBar(this.stackedBarIds.roadStatus, surveyReportData.roadStatuses, "road_status");
+                                this.prepareStackedBar(this.stackedBarIds.technicalClass, surveyReportData.technicalClasses, "technical_class");
+                                this.prepareStackedBar(this.stackedBarIds.surfaceCondition, surveyReportData.surfaceConditions, "surface_condition");
                             }
                             this.props.showFeedback();
                         } else {
+                            // An id of null should tell us that there was an error fetching the data
                             this.props.showFeedback(true);
                             this.state.noReport = true;
                         }

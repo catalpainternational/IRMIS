@@ -5,31 +5,34 @@
                 <ul class="navigation">
                     <li class="text-uppercase">{ window.gettext("Edit asset") }</li>
                     <ul>
-                        <li class="{ state.page === 'location_type' ? 'active' : '' }" data-page="location_type" onclick="{ selectPage }">{ window.gettext("Location & Type") }</li>
-                        <li class="{ state.page === 'asset_details' ? 'active' : '' }" data-page="asset_details" onclick="{ selectPage }">{ window.gettext("Asset Details") }</li>
-                        <li class="{ state.page === 'pavement' ? 'active' : '' }" data-page="pavement" onclick="{ selectPage }">{ window.gettext("Pavement") }</li>
-                        <li class="{ state.page === 'project' ? 'active' : '' }" data-page="project" onclick="{ selectPage }">{ window.gettext("Project") }</li>
-                        <li class="{ state.page === 'condition' ? 'active' : '' }" data-page="condition" onclick="{ selectPage }">{ window.gettext("Condition") }</li>
-                        <li class="{ state.page === 'maintenance' ? 'active' : '' }" data-page="maintenance" onclick="{ selectPage }">{ window.gettext("Maintenance") }</li>
+                        <li class="{ state.page === 'location_type' ? 'active' : '' }" data-page="location_type"
+                            onclick="{ selectPage }">{ window.gettext("Location & Type") }</li>
+                        <li class="{ state.page === 'asset_details' ? 'active' : '' }" data-page="asset_details"
+                            onclick="{ selectPage }">{ window.gettext("Asset Details") }</li>
+                        <li class="{ state.page === 'pavement' ? 'active' : '' }" data-page="pavement"
+                            onclick="{ selectPage }">{ window.gettext("Pavement") }</li>
+                        <li class="{ state.page === 'project' ? 'active' : '' }" data-page="project"
+                            onclick="{ selectPage }">{ window.gettext("Project") }</li>
+                        <li class="{ state.page === 'condition' ? 'active' : '' }" data-page="condition"
+                            onclick="{ selectPage }">{ window.gettext("Condition") }</li>
+                        <li class="{ state.page === 'maintenance' ? 'active' : '' }" data-page="maintenance"
+                            onclick="{ selectPage }">{ window.gettext("Maintenance") }</li>
                     </ul>
                 </ul>
                 <ul class="navigation">
                     <li class="text-uppercase">{ window.gettext("History") }</li>
                     <ul>
-                        <li class="{ state.page === 'history' ? 'active' : '' }" data-page="history" onclick="{ selectPage }">{ window.gettext("Change log") }</li>
+                        <li class="{ state.page === 'history' ? 'active' : '' }" data-page="history"
+                            onclick="{ selectPage }">{ window.gettext("Change log") }</li>
                     </ul>
                 </ul>
             </div>
         </div>
 
-        <edit_stop_alert
-            modalId="stop-alert"
-            title="{ window.gettext('Unsaved Changes') }"
+        <edit_stop_alert modalId="stop-alert" title="{ window.gettext('Unsaved Changes') }"
             description="{ window.gettext('You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?') }"
-            proceedLabel="{ window.gettext('Discard') }"
-            proceedResult="discard"
-            stopLabel="{ window.gettext('Continue editing') }"
-            stopResult="continueEdit">
+            proceedLabel="{ window.gettext('Discard') }" proceedResult="discard"
+            stopLabel="{ window.gettext('Continue editing') }" stopResult="continueEdit">
         </edit_stop_alert>
 
         <div if="{ !state.loading }" id="edit-base">
@@ -38,16 +41,26 @@
                 <h1>{ state.editingRoad.getRoadCode() } { state.editingRoad.getRoadName() }</h1>
             </header>
 
-            <feedback_banner if="{ state.showFeedback }" close="{ closeFeedback }" successMessage="{ window.gettext('You have successfully saved') }" error="{ state.error }"></feedback_banner>
+            <feedback_banner if="{ state.showFeedback }" close="{ closeFeedback }"
+                successMessage="{ window.gettext('You have successfully saved') }"
+                errorMessage="{ window.gettext('Something went wrong') }" error="{ state.error }">
+            </feedback_banner>
 
-            <edit_location_type road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}" if="{ state.page === 'location_type' }"></edit_location_type>
-            <edit_asset_details road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}" if="{ state.page === 'asset_details' }"></edit_asset_details>
-            <edit_pavement road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}" if="{ state.page === 'pavement' }"></edit_pavement>
-            <edit_project road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}" if="{ state.page === 'project' }"></edit_project>
-            <edit_condition road="{ state.editingRoad }" showBanner="{ showFeedback }" parent="{parentFunctions}" if="{ state.page === 'condition' }"></edit_condition>
-            <edit_maintenance road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}" if="{ state.page === 'maintenance' }"></edit_maintenance>
+            <edit_location_type road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}"
+                if="{ state.page === 'location_type' }"></edit_location_type>
+            <edit_asset_details road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}"
+                if="{ state.page === 'asset_details' }"></edit_asset_details>
+            <edit_pavement road="{ state.editingRoad }" showFeedback="{ showFeedback }" saving="{ state.saving }"
+                parent="{parentFunctions}" if="{ state.page === 'pavement' }"></edit_pavement>
+            <edit_project road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}"
+                if="{ state.page === 'project' }"></edit_project>
+            <edit_condition road="{ state.editingRoad }" showFeedback="{ showFeedback }" parent="{parentFunctions}"
+                if="{ state.page === 'condition' }"></edit_condition>
+            <edit_maintenance road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}"
+                if="{ state.page === 'maintenance' }"></edit_maintenance>
 
-            <edit_history road="{ state.baseRoad }" parent="{parentFunctions}" if="{ state.page === 'history' }"></edit_history>
+            <edit_history road="{ state.baseRoad }" parent="{parentFunctions}" if="{ state.page === 'history' }">
+            </edit_history>
         </div>
 
         <loading></loading>
@@ -57,14 +70,14 @@
         import * as riot from "riot";
         import $ from "jquery";
 
-        import { cloneData } from "../assets/protoBufUtilities";
-        import { getRoadSurveys } from "../surveyManager";
-        import { getRoadReport } from "../reportManager";
-        import { updateReportAttributeSummary } from "../roadAttributes";
+        import {cloneData} from "../assets/protoBufUtilities";
+        import {getRoadSurveys} from "../surveyManager";
+        import {getRoadReport} from "../reportManager";
+        import {updateReportAttributeSummary} from "../roadAttributes";
 
         // We really should NOT be importing road specific stuff here
-        import { saveRoad } from "../roadManager";
-        import { EstradaRoad } from "../assets/models/road";
+        import {saveRoad} from "../roadManager";
+        import {EstradaRoad} from "../assets/models/road";
 
         import Feedback_Banner from './feedback_banner.riot.html';
         import Edit_Stop_Alert from "./edit_stop_alert.riot.html";
@@ -78,8 +91,6 @@
         import Edit_Maintenance from "./edit_maintenance.riot.html";
 
         import Edit_History from "./edit_history.riot.html";
-
-        let timeoutId = null;
 
         export default {
             state: {
@@ -163,7 +174,7 @@
                 }).catch(err => {
                     this.state.error = true;
                 }).finally((r) => {
-                    this.update({ saving: false });
+                    this.update({saving: false});
                     this.showFeedback(this.state.error);
                 });
             },
@@ -175,7 +186,6 @@
                 if (this.hasChanges()) {
                     this.modalHandler();
                 } else {
-                    clearTimeout(timeoutId);
                     window.location.hash = this.state.nextPage;
                 }
             },
@@ -199,7 +209,7 @@
                     if (stopAlertResult === "discard") {
                         this.discardChanges();
                     }
-                }, { once: true });
+                }, {once: true});
 
                 $("#stop-alert").modal("show");
             },
@@ -213,25 +223,27 @@
                     showFeedback: true,
                     error: error,
                 });
-                timeoutId = setTimeout(() => this.closeFeedback(), 5000);
+                setTimeout(() => this.closeFeedback(), 2000);
             },
             closeFeedback() {
                 const feedback = document.getElementsByClassName("slide-in").item(0);
-                clearTimeout(timeoutId);
-                feedback.classList.add("slide-out");
-                setTimeout(() => {
-                    feedback.classList.remove("slide-out");
-                    this.update({ showFeedback: false });
-                }, 300);
+
+                if (feedback) {
+                    feedback.classList.add("slide-out");
+                    setTimeout(() => {
+                        feedback.classList.remove("slide-out");
+                        this.update({showFeedback: false});
+                    }, 300);
+                }
             },
             refreshSurveysAndReports(state, allDataTableId, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId) {
-                this.getRoadSurveys(state, allDataTableId);
+                this.getRoadSurveys(state, allDataTableId, primaryAttribute);
                 this.getRoadSurveyReports(state, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId);
             },
-            getRoadSurveys(state, allDataTableId) {
+            getRoadSurveys(state, allDataTableId, primaryAttribute) {
                 const roadId = state.road.getId();
 
-                getRoadSurveys(roadId)
+                getRoadSurveys(roadId, primaryAttribute)
                     .then((surveyData) => {
                         if (surveyData) {
                             state.pendingRows = surveyData.map((data) => {
@@ -240,7 +252,7 @@
                             });
 
                             const eventName = `${allDataTableId}.dataAdded`;
-                            const eventDetail = { detail: { pendingRows: state.pendingRows, clearRows: true }};
+                            const eventDetail = {detail: {pendingRows: state.pendingRows, clearRows: true}};
                             document.dispatchEvent(new CustomEvent(eventName, eventDetail));
 
                             state.error = false;
@@ -274,20 +286,18 @@
                             const haveReportAttributesMember = !!reportAttributes;
                             if (haveLengths && haveReportAttributesMember && reportAttributes.length) {
                                 updateReportAttributeSummary(state, reportAttribute, reportAttributes);
-                                
-                                document.dispatchEvent(new CustomEvent(`${stackedBarId}.dataUpdated`, { detail: { entries: state[reportAttribute] }}));
+
+                                document.dispatchEvent(new CustomEvent(`${stackedBarId}.dataUpdated`, {detail: {entries: state[reportAttribute]}}));
                             }
                             if (haveReportAttributesMember) {
-                                state.reportRows = surveyReportData[`${reportAttribute}List`] 
-                                    ? surveyReportData[`${reportAttribute}List`].attributeEntriesList || []
-                                    : [];
+                                state.reportRows = surveyReportData.attributeTable(primaryAttribute);
 
                                 const eventName = `${reportDataTableId}.dataAdded`;
-                                const eventDetail = { detail: { pendingRows: state.reportRows, clearRows: true }};
+                                const eventDetail = {detail: {pendingRows: state.reportRows, clearRows: true}};
                                 document.dispatchEvent(new CustomEvent(eventName, eventDetail));
-                                
+
                                 if (surveyReportData.id === null) {
-                                    // An id of null tells us conclusively that there was an error fetching the data
+                                    // An id of null should tell us that there was an error fetching the data
                                     state.error = true;
                                     this.showFeedback(true);
                                 }

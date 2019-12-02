@@ -381,3 +381,11 @@ table {
 .leaflet-control-attribution a {
     font-size: 11px;
 }
+
+
+@media print {
+    .print-header span {
+        text-transform: uppercase;
+        color: $darker-gray;
+    }
+}

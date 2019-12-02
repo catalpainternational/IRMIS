@@ -310,9 +310,9 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
         }
         getRoadReport(filters).then((reportData) => {
             if (reportData && reportDataTableId) {
-                if (reportData[`${reportAttribute}List`]) {
-                    let reportRows = reportData[`${reportAttribute}List`].attributeEntriesList;
-                    reportTable.rows.add(reportRows).draw();
+                const attributes = reportData.attributeTable(attr);
+                if (attributes.length) {
+                    reportTable.rows.add(attributes).draw();
                 }
             }
         }).finally(() => {
