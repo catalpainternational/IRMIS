@@ -81,7 +81,7 @@
                     <span class="required">*</span>
                     <input
                         class="{ state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
-                        type="number" name="startChainage" placeholder="0+000" value="{ state.survey.startChainage }"
+                        type="number" name="startChainage" placeholder="1000" value="{ state.survey.startChainage }"
                         oninput="{ checkChainage }" required>
                     <small class="form-text text-muted">{ props.parent.getHelpText("start_chainage") }</small>
                     <div if="{ state.errors.startChainage }" class="invalid-tooltip">
@@ -95,7 +95,7 @@
                     <span class="required">*</span>
                     <input
                         class="{ state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
-                        type="number" name="endChainage" placeholder="62+410" value="{ state.survey.endChainage }"
+                        type="number" name="endChainage" placeholder="62410" value="{ state.survey.endChainage }"
                         oninput="{ checkChainage }" required>
                     <small class="form-text text-muted">{ props.parent.getHelpText("end_chainage") }</small>
                     <div if="{ state.errors.endChainage }" class="invalid-tooltip">
@@ -161,7 +161,7 @@
                     <span class="required">*</span>
                     <input
                         class="{ state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
-                        type="number" name="startChainage" placeholder="0+000" value="{ state.survey.startChainage }"
+                        type="number" name="startChainage" placeholder="1000" value="{ state.survey.startChainage }"
                         oninput="{ checkChainage }" required>
                     <small class="form-text text-muted">{ props.parent.getHelpText("start_chainage") }</small>
                     <div if="{ state.errors.startChainage }" class="invalid-tooltip">
@@ -175,7 +175,7 @@
                     <span class="required">*</span>
                     <input
                         class="{ state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
-                        type="number" name="endChainage" placeholder="62+410" value="{ state.survey.endChainage }"
+                        type="number" name="endChainage" placeholder="62410" value="{ state.survey.endChainage }"
                         oninput="{ checkChainage }" required>
                     <small class="form-text text-muted">{ props.parent.getHelpText("end_chainage") }</small>
                     <div if="{ state.errors.endChainage }" class="invalid-tooltip">

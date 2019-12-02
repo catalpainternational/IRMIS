@@ -56,7 +56,7 @@
                     <span class="required">*</span>
                     <input
                         class="{state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
-                        type="number" name="startChainage" placeholder="0000" value="{state.survey.startChainage}"
+                        type="number" name="startChainage" placeholder="1000" value="{state.survey.startChainage}"
                         oninput="{checkChainage}" required>
                     <small class="form-text text-muted">{ props.parent.getHelpText("start_chainage") }</small>
                     <div if="{state.errors.startChainage}" class="invalid-tooltip">
