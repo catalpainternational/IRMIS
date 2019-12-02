@@ -33,7 +33,7 @@
                 state.paging = props.paging;
             }
 
-            state.id = props.table_id || "all-data-table";
+            state.id = props.table_id;
             state.columns = props.columns || [];
             state.columnSortOrder = props.columnSortOrder || [[0, "asc"]];
             state.clearRows = false;
@@ -90,7 +90,7 @@
             data.stopPropagation();
         }
 
-        const initialiseDataTable = function (state) {
+        const initialiseDataTable = function(state) {
             let dom = "<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>"; // https://datatables.net/reference/option/dom#Styling
             if (!state.paging) {
                 dom = "<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>>";
@@ -107,19 +107,17 @@
                 // dataTables has a bug where the searching / filtering clause passes from one table to another
                 // We only want it for the main table
                 searching: false,
-                ajax: function (data, callback, settings) {
+                ajax: function(data, callback, settings) {
                     // This is only here so that dataTables will change its internal state
                 }
             });
 
             // add any rows the caller has delivered before initialization
-            if (state.pendingRows.length) {
-                updateDataTable(state);
-            }
+            updateDataTable(state);
         }
 
         const updateDataTable = function(state) {
-            if (state.pendingRows.length) {
+            if (state.pendingRows && state.pendingRows.length) {
                 state.table.clear().rows.add(state.pendingRows);
             } else {
                 if (state.clearRows) {

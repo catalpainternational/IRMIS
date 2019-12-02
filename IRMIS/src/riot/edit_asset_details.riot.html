@@ -32,7 +32,8 @@
         <h6>{ window.gettext("Link width and length") }</h6>
         <div class="form-group">
             <label>{ link_length.display }</label>
-            <input class="{ state.errors.linkLength ? 'danger' : null } { state.linkLength ? '' : 'inactive' } form-control"
+            <input
+                class="{ state.errors.linkLength ? 'danger' : null } { state.linkLength ? '' : 'inactive' } form-control"
                 type="number" placeholder="58.7" value="{ state.linkLength }" oninput="{ checkLinkLength }">
             <small class="form-text text-muted">{ props.parent.getHelpText("link_length") }</small>
             <div if="{ state.errors.linkLength }" class="invalid-tooltip">
@@ -43,7 +44,8 @@
         </div>
         <div class="form-group">
             <label>{ carriageway_width.display }</label>
-            <input class="{ state.errors.carriageWidth ? 'danger' : null } { state.carriagewayWidth ? '' : 'inactive' } form-control"
+            <input
+                class="{ state.errors.carriageWidth ? 'danger' : null } { state.carriagewayWidth ? '' : 'inactive' } form-control"
                 type="number" placeholder="5.0" value="{ state.carriagewayWidth }" oninput="{ checkCarriagewayWidth }">
             <small class="form-text text-muted">{ props.parent.getHelpText("carriageway_width") }</small>
             <div if="{ state.errors.carriageWidth }" class="invalid-tooltip">
@@ -58,7 +60,8 @@
         <h6>{ window.gettext("Link chainage") }</h6>
         <div class="form-group">
             <label>{ link_start_chainage.display } (m)</label>
-            <input class="{ state.errors.linkStartChainage ? 'danger' : null } { state.linkStartChainage ? '' : 'inactive' } form-control"
+            <input
+                class="{ state.errors.linkStartChainage ? 'danger' : null } { state.linkStartChainage ? '' : 'inactive' } form-control"
                 type="number" placeholder="0" value="{ state.linkStartChainage }" oninput="{ checkLinkStartChainage }">
             <small class="form-text text-muted">{ props.parent.getHelpText("link_start_chainage") }</small>
             <div if="{ state.errors.linkStartChainage }" class="invalid-tooltip">
@@ -69,7 +72,8 @@
         </div>
         <div class="form-group">
             <label>{ link_end_chainage.display } (m)</label>
-            <input class="{ state.errors.linkEndChainage ? 'danger' : null } { state.linkEndChainage ? '' : 'inactive' } form-control"
+            <input
+                class="{ state.errors.linkEndChainage ? 'danger' : null } { state.linkEndChainage ? '' : 'inactive' } form-control"
                 type="number" placeholder="62410" value="{ state.linkEndChainage }" oninput="{ checkLinkEndChainage }">
             <small class="form-text text-muted">{ props.parent.getHelpText("link_end_chainage") }</small>
             <div if="{ state.errors.linkEndChainage }" class="invalid-tooltip">
@@ -86,7 +90,8 @@
             <label>{ technical_classes.display }</label>
             <small class="form-text text-muted">{ props.parent.getHelpText("technical_class") }</small>
             <ul class="technical-class">
-                <li each="{ technical_class in technical_classes.options }" data-technical="{ technical_class.code }" onclick="{ checkTechnicalClass }">
+                <li each="{ technical_class in technical_classes.options }" data-technical="{ technical_class.code }"
+                    onclick="{ checkTechnicalClass }">
                     <span class="{ technical_class.code == state.technicalClass ? 'active' : ''  } radio image"></span>
                     { technical_class.name }
                 </li>
@@ -95,14 +100,16 @@
     </section>
 
     <div class="button-wrapper d-flex justify-content-end">
-        <button class="btn btn-primary" onclick="{ save }" disabled="{ props.saving || Object.entries(state.errors).length > 0 }">{ window.gettext("Save and continue") }</button>
+        <button class="btn btn-primary" onclick="{ save }"
+            disabled="{ props.saving || Object.entries(state.errors).length > 0 }">{ window.gettext("Save and continue")
+            }</button>
     </div>
 
     <script>
         export default {
             state: {
                 linkChainageDecimals: 5,
-                linkChainageDigits : 12,
+                linkChainageDigits: 12,
                 linkLengthDecimals: 3,
                 linkLengthDigits: 8,
                 carriagewayWidthDecimals: 3,

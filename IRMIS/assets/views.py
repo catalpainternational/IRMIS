@@ -254,14 +254,18 @@ def protobuf_road_set(request, chunk_name=None):
 
 
 @login_required
-def protobuf_road_surveys(request, pk):
+def protobuf_road_surveys(request, pk, survey_attribute=None):
     """ returns a protobuf object with the set of surveys for a particular road pk"""
     # get the Road link requested
     road = get_object_or_404(Road.objects.all(), pk=pk)
     # pull any Surveys that cover the Road above
-    queryset = Survey.objects.filter(road=road.road_code).exclude(
-        values__surface_condition__isnull=True
-    )
+    queryset = Survey.objects.filter(road=road.road_code)
+
+    if survey_attribute:
+        queryset = queryset.filter(values__has_key=survey_attribute).exclude(
+            **{"values__" + survey_attribute + "__isnull": True}
+        )
+
     queryset.order_by("road", "chainage_start", "chainage_end", "-date_updated")
     surveys_protobuf = queryset.to_protobuf()
 
@@ -433,6 +437,7 @@ def protobuf_reports(request):
     chainage_end = None
     road_types = request.GET.getlist("roadtype", [])  # roadtype=X
     surface_types = request.GET.getlist("surfacetype", [])  # surfacetype=X
+    pavement_classes = request.GET.getlist("pavementclass", [])  # pavementclass=X
     municipalities = request.GET.getlist("municipality", [])  # municipality=X
     surface_conditions = request.GET.getlist(
         "surfacecondition", []
@@ -496,6 +501,8 @@ def protobuf_reports(request):
         roads.filter(surface_type__in=surface_types)
     if municipalities != []:
         roads.filter(administrative_area__in=municipalities)
+    if pavement_classes != []:
+        roads.filter(pavement_class__in=pavement_classes)
 
     if len(roads) == 0:
         return HttpResponseNotFound()

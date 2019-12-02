@@ -9,10 +9,10 @@ import { makeEstradaObject } from "./protoBufUtilities";
  *
  * @returns a map {id: survey_object}
  */
-export function getSurveysMetadata(roadId) {
+export function getSurveysMetadata(roadId, surveyAttribute) {
     const surveyTypeUrlFragment = "protobuf_road_surveys";
     roadId = roadId || "";
-    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${surveyTypeUrlFragment}/${roadId}`;
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${surveyTypeUrlFragment}/${roadId}/${surveyAttribute}`;
 
     return fetch(metadataUrl, ConfigAPI.requestInit())
         .then((metadataResponse) => (metadataResponse.arrayBuffer()))

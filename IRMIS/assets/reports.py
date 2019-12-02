@@ -11,16 +11,7 @@ from rest_framework.exceptions import MethodNotAllowed
 from google.protobuf.timestamp_pb2 import Timestamp
 from protobuf import report_pb2
 
-from .models import (
-    Road,
-    MaintenanceNeed,
-    TechnicalClass,
-    RoadStatus,
-    SurfaceType,
-    PavementClass,
-    Survey,
-    display_user,
-)
+from .models import Road, Survey, display_user
 
 
 class Report:
@@ -89,8 +80,8 @@ class Report:
                 )
 
                 # Ensure that any attribute to be reported on is present in the values
-                if not "surface_condition" in survey.values:
-                    survey.values["surface_condition"] = None
+                if not primary_attribute in survey.values:
+                    survey.values[primary_attribute] = None
 
                 # Build up the set of road_codes
                 self.road_codes.add(survey.road)

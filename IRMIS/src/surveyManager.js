@@ -8,8 +8,8 @@ export function getSurvey(id) {
     return getSurveyMetadata(id);
 }
 
-export function getRoadSurveys(roadId) {
-    return Promise.resolve(getSurveysMetadata(roadId))
+export function getRoadSurveys(roadId, surveyAttribute) {
+    return Promise.resolve(getSurveysMetadata(roadId, surveyAttribute))
         .then(surveys => {
             return surveys;
         });
