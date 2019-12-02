@@ -261,7 +261,6 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
     const attr = button.data("attr");
     const modal = $(this);
     let reportDataTableId = undefined;
-    let reportAttribute = undefined;
     let reportTable = undefined;
 
     $(`#${segmentInventoryModalTables.surfaceCondition}_wrapper`).hide();
@@ -272,25 +271,21 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
     switch (attr) {
         case "surface_condition":
             reportDataTableId = segmentInventoryModalTables.surfaceCondition;
-            reportAttribute = "surfaceConditions";
             modal.find(".modal-title").text(linkCode + " " + gettext("Surface Condition segments"));
             reportTable = surfaceConditionTable;
             break;
         case "surface_type":
             reportDataTableId = segmentInventoryModalTables.surfaceType;
-            reportAttribute = "surfaceTypes";
             modal.find(".modal-title").text(linkCode + " " + gettext("Surface Type segments"));
             reportTable = surfaceTypeTable;
             break;
         case "technical_class":
             reportDataTableId = segmentInventoryModalTables.technicalClass;
-            reportAttribute = "technicalClasses";
             modal.find(".modal-title").text(linkCode + " " + gettext("Technical Class segments"));
             reportTable = technicalClassTable;
             break;
         case "number_lanes":
             reportDataTableId = segmentInventoryModalTables.numberLanes;
-            reportAttribute = "numberLanes";
             modal.find(".modal-title").text(linkCode + " " + gettext("Number of Lanes segments"));
             reportTable = numberLanesTable;
             break;
@@ -310,7 +305,7 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
         }
         getRoadReport(filters).then((reportData) => {
             if (reportData && reportDataTableId) {
-                const attributes = reportData.attributeTable(attr);
+                const attributes = reportData.attributeTable(attr, true);
                 if (attributes.length) {
                     reportTable.rows.add(attributes).draw();
                 }

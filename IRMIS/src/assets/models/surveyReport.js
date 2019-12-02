@@ -109,7 +109,9 @@ export class EstradaNetworkSurveyReport extends Report {
 
         // We can change the following to
         // whatever we consider an appropriate 'empty' collection of lengths
-        lengths = lengths || '{ "surface_condition": { "None": 0 },  "surface_type": { "None": 0 },  "pavement_class": { "None": 0 } }';
+        const emptyLengths = ["surface_condition", "surface_type", "technical_class", "pavement_class", "number_lanes"]
+            .map((attribute) => `"${attribute}": { "None": 0 }`);
+        lengths = lengths || `{ ${emptyLengths.join(", ")} }`;
 
         return JSON.parse(lengths);
     }
@@ -192,7 +194,11 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
         return this.makeSpecificLengths("traffic_level", TRAFFIC_LEVEL_CHOICES);
     }
 
-    attributeTable(primaryAttribute) {
+    get numberLanes() {
+        return this.makeSpecificLengths("number_lanes", TRAFFIC_LEVEL_CHOICES);
+    }
+
+    attributeTable(primaryAttribute, returnAll = false) {
         const attributeTableIndex = this.attributeTablesList.findIndex((attributeTable) => {
             return attributeTable.primaryAttribute === primaryAttribute;
         });
@@ -201,7 +207,7 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
             return [];
         }
 
-        return this.attributeTablesList[attributeTableIndex].attributeEntriesList;
+        return this.attributeTablesList[attributeTableIndex].attributeEntries(returnAll);
     }
 
     static getFieldName(field) {
@@ -247,8 +253,12 @@ export class EstradaSurveyAttributeTable extends AttributeTable {
     }
 
     get attributeEntriesList() {
+        return this.attributeEntries();
+    }
+
+    attributeEntries(returnAll = false) {
         const attributeEntriesRaw = this.getAttributeEntriesList();
-        if (attributeEntriesRaw.length === 1 && attributeEntriesRaw[0].getSurveyId() === 0) {
+        if (attributeEntriesRaw.length === 1 && attributeEntriesRaw[0].getSurveyId() === 0 && !returnAll) {
             // Only a single generated attribute table
             // Which means that there are actually no real attribute tables
             return [];
