@@ -150,7 +150,7 @@ p {
     font-size: 16px;
 }
 
-reports_base p {
+reports_base p, planning_base p {
     color: $darker-gray;
     line-height: 16px;
     font-size: 14px;
@@ -230,7 +230,7 @@ h6 {
     color: $white;
 }
 
-reports_base h6 {
+reports_base h6, planning_base h6 {
     color: $darker-gray;
 }
 
@@ -320,20 +320,18 @@ table {
 
 // Override Bootstrap styles
 
-button {
-    &.btn {
-        line-height: 14px;
-        font-weight: 700;
-    }
+.btn {
+    line-height: 14px;
+    font-weight: 700;
+}
 
-    &.btn-sm, &.btn-sm span {
-        line-height: 14px;
-        font-size: 12px;
-    }
+.btn-sm, .btn-sm span {
+    line-height: 14px;
+    font-size: 12px;
+}
 
-    &.btn-lg {
-        font-size: inherit;
-    }
+.btn-lg {
+    font-size: inherit;
 }
 
 .dropdown-menu {
@@ -357,7 +355,7 @@ button {
 }
 
 .text-muted {
-	color: $dark-gray !important;
+	color: $gray !important;
 }
 
 .invalid-tooltip li {

@@ -304,6 +304,7 @@ class Road(models.Model):
         ("3", _("Poor")),
         ("4", _("Bad")),
     ]
+    TERRAIN_CLASS_CHOICES = [(1, _("Flat")), (2, _("Rolling")), (3, _("Mountainous"))]
 
     geom = models.MultiLineStringField(srid=32751, dim=2, blank=True, null=True)
 
@@ -473,6 +474,22 @@ class Road(models.Model):
         help_text=_(
             "Choose road link technical class according to the 2010 Road Geometric Design Standards, DRBFC standards"
         ),
+    )
+    core = models.BooleanField(
+        verbose_name=_("Core"),
+        null=True,
+        help_text=_("Set if the road is a high priority `core` road"),
+    )
+    population = models.PositiveIntegerField(
+        verbose_name=_("Population Served"),
+        null=True,
+        help_text=_("Set the size of population served by this road"),
+    )
+    terrain_class = models.PositiveSmallIntegerField(
+        verbose_name=_("Terrain class"),
+        null=True,
+        choices=TERRAIN_CLASS_CHOICES,
+        help_text=_("Choose what terrain class the road runs through"),
     )
     number_lanes = models.IntegerField(
         verbose_name=_("Number of Lanes"),
