@@ -181,7 +181,7 @@ export class EstradaRoad extends Road {
 
     /** A Null or None in the protobuf is indicated by a negative value */
     setLinkStartChainage(value) {
-        super.getLinkStartChainage(this.nullToNegative(value));
+        super.setLinkStartChainage(this.nullToNegative(value));
     }
     
     /** A Null or None in the protobuf is indicated by a negative value */
