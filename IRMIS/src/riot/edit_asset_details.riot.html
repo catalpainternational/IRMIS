@@ -33,7 +33,7 @@
         <div class="form-group">
             <label>{ link_length.display }</label>
             <input
-                class="{ state.errors.linkLength ? 'danger' : null } { state.linkLength ? '' : 'inactive' } form-control"
+                class="{ state.errors.linkLength ? 'danger' : null } { state.linkLength != null && state.linkLength !== '' ? '' : 'inactive' } form-control"
                 type="number" placeholder="58.7" value="{ state.linkLength }" oninput="{ checkLinkLength }">
             <small class="form-text text-muted">{ props.parent.getHelpText("link_length") }</small>
             <div if="{ state.errors.linkLength }" class="invalid-tooltip">
@@ -45,7 +45,7 @@
         <div class="form-group">
             <label>{ carriageway_width.display }</label>
             <input
-                class="{ state.errors.carriageWidth ? 'danger' : null } { state.carriagewayWidth ? '' : 'inactive' } form-control"
+                class="{ state.errors.carriageWidth ? 'danger' : null } { state.carriagewayWidth != null && state.carriagewayWidth !== '' ? '' : 'inactive' } form-control"
                 type="number" placeholder="5.0" value="{ state.carriagewayWidth }" oninput="{ checkCarriagewayWidth }">
             <small class="form-text text-muted">{ props.parent.getHelpText("carriageway_width") }</small>
             <div if="{ state.errors.carriageWidth }" class="invalid-tooltip">
@@ -61,7 +61,7 @@
         <div class="form-group">
             <label>{ link_start_chainage.display } (m)</label>
             <input
-                class="{ state.errors.linkStartChainage ? 'danger' : null } { state.linkStartChainage ? '' : 'inactive' } form-control"
+                class="{ state.errors.linkStartChainage ? 'danger' : null } { state.linkStartChainage != null && state.linkStartChainage !== '' ? '' : 'inactive' } form-control"
                 type="number" placeholder="0" value="{ state.linkStartChainage }" oninput="{ checkLinkStartChainage }">
             <small class="form-text text-muted">{ props.parent.getHelpText("link_start_chainage") }</small>
             <div if="{ state.errors.linkStartChainage }" class="invalid-tooltip">
@@ -73,7 +73,7 @@
         <div class="form-group">
             <label>{ link_end_chainage.display } (m)</label>
             <input
-                class="{ state.errors.linkEndChainage ? 'danger' : null } { state.linkEndChainage ? '' : 'inactive' } form-control"
+                class="{ state.errors.linkEndChainage ? 'danger' : null } { state.linkEndChainage != null && state.linkEndChainage !== '' ? '' : 'inactive' } form-control"
                 type="number" placeholder="62410" value="{ state.linkEndChainage }" oninput="{ checkLinkEndChainage }">
             <small class="form-text text-muted">{ props.parent.getHelpText("link_end_chainage") }</small>
             <div if="{ state.errors.linkEndChainage }" class="invalid-tooltip">
