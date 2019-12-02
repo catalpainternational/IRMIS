@@ -152,33 +152,23 @@ function initializeDataTable() {
         }
     });
 
-    surfaceConditionTable = $(`#${segmentInventoryModalTables.surfaceCondition}`).DataTable({
-        columns: surfaceConditionColumns,
-        rowId: ".getId()",
-        dom: "<'row'<'col-sm-12'tr>>", // https://datatables.net/reference/option/dom#Styling
-        language: datatableTranslations,
-    });
+    function setUpModalTable(tableId, columns) {
+        return $(`#${tableId}`).DataTable({
+            columns: columns,
+            rowId: ".getId()",
+            dom: "<'row'<'col-sm-12'tr>>", // https://datatables.net/reference/option/dom#Styling
+            language: datatableTranslations,
+            // This turns off filtering for all tables ( DO NOT SET THIS TO TRUE )
+            // dataTables has a bug where the searching / filtering clause passes from one table to another
+            // We only want it for the main table
+            searching: false,
+        });
+    }
 
-    surfaceTypeTable = $(`#${segmentInventoryModalTables.surfaceType}`).DataTable({
-        columns: surfaceTypeColumns,
-        rowId: ".getId()",
-        dom: "<'row'<'col-sm-12'tr>>", // https://datatables.net/reference/option/dom#Styling
-        language: datatableTranslations,
-    });
-
-    technicalClassTable = $(`#${segmentInventoryModalTables.technicalClass}`).DataTable({
-        columns: technicalClassColumns,
-        rowId: ".getId()",
-        dom: "<'row'<'col-sm-12'tr>>", // https://datatables.net/reference/option/dom#Styling
-        language: datatableTranslations,
-    });
-
-    numberLanesTable = $(`#${segmentInventoryModalTables.numberLanes}`).DataTable({
-        columns: numberLanesColumns,
-        rowId: ".getId()",
-        dom: "<'row'<'col-sm-12'tr>>", // https://datatables.net/reference/option/dom#Styling
-        language: datatableTranslations,
-    });
+    surfaceConditionTable = setUpModalTable(segmentInventoryModalTables.surfaceCondition, surfaceConditionColumns);
+    surfaceTypeTable = setUpModalTable(segmentInventoryModalTables.surfaceType, surfaceTypeColumns);
+    technicalClassTable = setUpModalTable(segmentInventoryModalTables.technicalClass, technicalClassColumns);
+    numberLanesTable = setUpModalTable(segmentInventoryModalTables.numberLanes, numberLanesColumns);
 
     if (pendingRows.length) {
         // add any rows the road manager has delivered before initialization
@@ -261,7 +251,6 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
     const attr = button.data("attr");
     const modal = $(this);
     let reportDataTableId = undefined;
-    let reportAttribute = undefined;
     let reportTable = undefined;
 
     $(`#${segmentInventoryModalTables.surfaceCondition}_wrapper`).hide();
@@ -272,25 +261,21 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
     switch (attr) {
         case "surface_condition":
             reportDataTableId = segmentInventoryModalTables.surfaceCondition;
-            reportAttribute = "surfaceConditions";
             modal.find(".modal-title").text(linkCode + " " + gettext("Surface Condition segments"));
             reportTable = surfaceConditionTable;
             break;
         case "surface_type":
             reportDataTableId = segmentInventoryModalTables.surfaceType;
-            reportAttribute = "surfaceTypes";
             modal.find(".modal-title").text(linkCode + " " + gettext("Surface Type segments"));
             reportTable = surfaceTypeTable;
             break;
         case "technical_class":
             reportDataTableId = segmentInventoryModalTables.technicalClass;
-            reportAttribute = "technicalClasses";
             modal.find(".modal-title").text(linkCode + " " + gettext("Technical Class segments"));
             reportTable = technicalClassTable;
             break;
         case "number_lanes":
             reportDataTableId = segmentInventoryModalTables.numberLanes;
-            reportAttribute = "numberLanes";
             modal.find(".modal-title").text(linkCode + " " + gettext("Number of Lanes segments"));
             reportTable = numberLanesTable;
             break;
@@ -309,13 +294,17 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
             filters.roadid = roadData.id;
         }
         getRoadReport(filters).then((reportData) => {
+            reportTable.clear(); // remove all rows in the table - again
             if (reportData && reportDataTableId) {
-                const attributes = reportData.attributeTable(attr);
+                const attributes = reportData.attributeTable(attr, true);
                 if (attributes.length) {
-                    reportTable.rows.add(attributes).draw();
+                    reportTable.rows.add(attributes);
                 }
             }
+
         }).finally(() => {
+            reportTable.draw();
+
             $(`#${reportDataTableId}_wrapper`).show();
         });
     });
