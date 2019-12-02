@@ -116,11 +116,11 @@
                             <li>{ state.errors.surfaceType }.</li>
                         </ul>
                     </div>
-                    <select class="{ state.surfaceType ? '' : 'inactive' } form-control" onchange="{ checkSurfaceType }"
+                    <select class="{ state.survey.surfaceType ? '' : 'inactive' } form-control" onchange="{ checkSurfaceType }"
                         name="surfaceType">
                         <option value="">{ window.gettext("Select a Surface Type") }</option>
                         <option each="{ surface in surfaces.options }" value="{ surface.code }"
-                            selected="{ surface.code == state.surfaceType }">{ surface.name }</option>
+                            selected="{ surface.code == state.survey.surfaceType }">{ surface.name }</option>
                     </select>
                     <small class="form-text text-muted">{ props.parent.getHelpText("surface_type") }</small>
                 </div>
@@ -198,7 +198,7 @@
                         </ul>
                     </div>
                     <ul class="pavement-classes" name="pavementClass">
-                        <li each="{ pavement in pavements.options }" data-condition="{ pavement.code }"
+                        <li each="{ pavement in pavements.options }" data-pavement="{ pavement.code }"
                             onclick="{ checkPavementClass }">
                             <span
                                 class="{pavement.code == state.survey.pavementClass ? 'active' : ''} radio image"></span>
@@ -341,7 +341,7 @@
             addEditPavement(e) {
                 this.state.survey = cloneData(this.state.baseSurvey);
                 this.state.errors = {};
-                this.state.currentEditing = "pavement_class";
+                this.state.currentEditing = "pavementClass";
                 this.state.currentModalId = this.pavement_modal_id;
                 this.state.currentRequiredFieldNames = this.pavementRequiredFieldNames;
                 this.showEditModal();
@@ -349,7 +349,7 @@
             addEditSurface(e) {
                 this.state.survey = cloneData(this.state.baseSurvey);
                 this.state.errors = {};
-                this.state.currentEditing = "surface_type";
+                this.state.currentEditing = "surfaceType";
                 this.state.currentModalId = this.surface_modal_id;
                 this.state.currentRequiredFieldNames = this.surfaceRequiredFieldNames;
                 this.showEditModal();
@@ -643,7 +643,7 @@
                         this.state.survey.setSource("Estrada");
                         this.state.survey.setChainageStart(this.state.survey.startChainage);
                         this.state.survey.setChainageEnd(this.state.survey.endChainage);
-                        if (this.state.currentEditing == "pavement_class") {
+                        if (this.state.currentEditing == "pavementClass") {
                             this.state.survey.setValues(JSON.stringify({
                                 pavement_class: this.state.survey.pavementClass || null,
                             }));
@@ -674,7 +674,7 @@
                 if (!this.state.editMode) {
                     createSurvey(this.state.survey)
                         .then((surveyData) => {
-                            if (this.state.currentEditing == 'pavement_class') {
+                            if (this.state.currentEditing == 'pavementClass') {
                                 this.props.parent.refreshSurveysAndReports(this.state, this.pavement_all_data_table_id, "pavement_class", "pavementClasses", this.pavement_current_data_table_id, this.pavement_stacked_bar_id);
                             } else {
                                 this.props.parent.refreshSurveysAndReports(this.state, this.surface_all_data_table_id, "surface_type", "surfaceTypes", this.surface_current_data_table_id, this.surface_stacked_bar_id);
@@ -762,7 +762,7 @@
                 this.canSave();
             },
             checkPavementClass(e) {
-                this.state.survey.pavementClass = e.currentTarget.dataset.condition;
+                this.state.survey.pavementClass = e.currentTarget.dataset.pavement;
                 this.canSave();
             },
             max_date: () => new Date().toISOString().substring(0, 10),
