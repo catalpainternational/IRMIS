@@ -283,7 +283,7 @@
                             if (!reportAttributes || !reportAttributes.length) {
                                 reportAttributes = this.parentFunctions.emptyAttributes;
                             }
-                            // const haveReportAttributesMember = !!reportAttributes;
+
                             if (haveLengths && reportAttributes.length) {
                                 updateReportAttributeSummary(state, reportAttribute, reportAttributes);
                                 document.dispatchEvent(new CustomEvent(`${stackedBarId}.dataUpdated`, {detail: {entries: state[reportAttribute]}}));
