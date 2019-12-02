@@ -283,13 +283,11 @@
                             if (!reportAttributes || !reportAttributes.length) {
                                 reportAttributes = this.parentFunctions.emptyAttributes;
                             }
-                            const haveReportAttributesMember = !!reportAttributes;
-                            if (haveLengths && haveReportAttributesMember && reportAttributes.length) {
+                            // const haveReportAttributesMember = !!reportAttributes;
+                            if (haveLengths && reportAttributes.length) {
                                 updateReportAttributeSummary(state, reportAttribute, reportAttributes);
-
                                 document.dispatchEvent(new CustomEvent(`${stackedBarId}.dataUpdated`, {detail: {entries: state[reportAttribute]}}));
-                            }
-                            if (haveReportAttributesMember) {
+
                                 state.reportRows = surveyReportData.attributeTable(primaryAttribute);
 
                                 const eventName = `${reportDataTableId}.dataAdded`;
