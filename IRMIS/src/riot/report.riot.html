@@ -136,6 +136,19 @@
             <h1>{ (state.reportData.totalLength / 1000).toFixed(1) } km</h1>
         </div>
 
+        <data_table hidden="{ !state.reportData.municipality || !hasDataTable(dataTableIds.municipality) }"
+            table_id="{dataTableIds.municipality}" tableName="Municipality"
+            columns="{columns.municipality()}" columnSortOrder="{baseColumnSortOrder}"
+            paging="false" canExport></data_table>
+        <data_table hidden="{ !state.reportData.roadClass || !hasDataTable(dataTableIds.roadClass) }"
+            table_id="{dataTableIds.roadClass}" tableName="Road Class"
+            columns="{columns.roadClass()}" columnSortOrder="{baseColumnSortOrder}"
+            paging="false" canExport></data_table>
+        <data_table hidden="{ !state.reportData.surfaceType || !hasDataTable(dataTableIds.surfaceType) }"
+            table_id="{dataTableIds.surfaceType}" tableName="Surface Type"
+            columns="{columns.surfaceType()}" columnSortOrder="{baseColumnSortOrder}"
+            paging="false" canExport></data_table>
+
         <data_table hidden="{ !state.reportData.roadStatus || !hasDataTable(dataTableIds.roadStatus) }"
             table_id="{dataTableIds.roadStatus}" tableName="Road Status"
             columns="{columns.roadStatus()}" columnSortOrder="{baseColumnSortOrder}"
@@ -229,9 +242,27 @@
                     return (type === 'display') ? toChainageFormat(data) : data;
                 },
             },
+            municipality: {
+                title: window.gettext("Municipality"),
+                data: "municipality",
+                defaultContent: "",
+                orderable: false,
+            },
+            roadClass: {
+                title: window.gettext("Road Class"),
+                data: "roadClass",
+                defaultContent: "",
+                orderable: false,
+            },
             surfaceCondition: {
                 title: window.gettext("Surface Condition (SDI)"),
                 data: "surfaceCondition",
+                defaultContent: "",
+                orderable: false,
+            },
+            surfaceType: {
+                title: window.gettext("Surface Type"),
+                data: "surfaceType",
                 defaultContent: "",
                 orderable: false,
             },
@@ -250,6 +281,9 @@
             surfaceCondition: "report-surface-condition-bar",
         };
         const dataTableIds = {
+            municipality: "report-municipality-table",
+            roadClass: "report-road-class-table",
+            surfaceType: "report-surface-type-table",
             roadStatus: "report-road-status-table",
             technicalClass: "report-technical-class-table",
             surfaceCondition: "report-surface-condition-table",
@@ -257,7 +291,14 @@
 
         const allReportElements = {
             stackedBars: [stackedBarIds.roadStatus, stackedBarIds.technicalClass, stackedBarIds.surfaceCondition],
-            tables: [dataTableIds.roadStatus, dataTableIds.technicalClass, dataTableIds.surfaceCondition],
+            tables: [
+                dataTableIds.municipality, 
+                dataTableIds.roadClass, 
+                dataTableIds.surfaceType,
+                dataTableIds.roadStatus, 
+                dataTableIds.technicalClass, 
+                dataTableIds.surfaceCondition,
+            ],
         };
 
         export default {
@@ -282,7 +323,9 @@
                     0: {
                         title: window.gettext("Road Network Length"),
                         description: window.gettext("A report on the total length of the road network. The report provides total length in kilometers and percentages according to Road Status and Technical Class. A number of filters can be selected in order to generate a length report according to the required criteria"),
-                        fixedFilter: {},
+                        fixedFilter: {
+                            primaryattribute: ["municipality", "road_class", "surface_type"],
+                        },
                         visibleFilters: {
                             municipality: true,
                             roadClass: true,
@@ -290,11 +333,14 @@
                             surfaceCondition: true,
                             reportDate: true,
                         },
+                        reportElements: { dataTables: [dataTableIds.municipality, dataTableIds.roadClass, dataTableIds.surfaceType] },
                     },
                     1: {
                         title: window.gettext("Road Network Length Breakdown"),
                         description: window.gettext("A breakdown report on the total length of the road network. The report provides information on total length in kilometers and percentages as well as Road Status and Technical Class, according to a breakdown by Municipality, Road Class and Surface Type"),
-                        fixedFilter: {},
+                        fixedFilter: {
+                            primaryattribute: ["municipality", "road_class", "surface_type"],
+                        },
                         visibleFilters: {
                             municipality: true,
                             roadClass: true,
@@ -396,6 +442,24 @@
             stackedBarIds: stackedBarIds,
             dataTableIds: dataTableIds,
             columns: {
+                municipality() {
+                    const titleColumn = cloneData(columnSource.title);
+                    titleColumn.title = window.gettext("Municipality");
+
+                    return [titleColumn, columnSource.distance, columnSource.percent];
+                },
+                roadClass() {
+                    const titleColumn = cloneData(columnSource.title);
+                    titleColumn.title = window.gettext("Road Class");
+
+                    return [titleColumn, columnSource.distance, columnSource.percent];
+                },
+                surfaceType() {
+                    const titleColumn = cloneData(columnSource.title);
+                    titleColumn.title = window.gettext("Surface Type");
+
+                    return [titleColumn, columnSource.distance, columnSource.percent];
+                },
                 roadStatus() {
                     const titleColumn = cloneData(columnSource.title);
                     titleColumn.title = window.gettext("Road Status");
@@ -584,6 +648,10 @@
                             };
 
                             if (haveLengths) {
+                                this.state.reportData.municipality = this.prepareTableData(this.dataTableIds.municipality, surveyReportData.municipalities, "municipality");
+                                this.state.reportData.roadClass = this.prepareTableData(this.dataTableIds.roadClass, surveyReportData.roadClasses, "road_class");
+                                this.state.reportData.surfaceType = this.prepareTableData(this.dataTableIds.surfaceType, surveyReportData.surfaceTypes, "surface_type");
+
                                 this.state.reportData.roadStatus = this.prepareTableData(this.dataTableIds.roadStatus, surveyReportData.roadStatuses, "road_status");
                                 this.state.reportData.technicalClass = this.prepareTableData(this.dataTableIds.technicalClass, surveyReportData.technicalClasses, "technical_class");
                                 this.state.reportData.surfaceCondition = this.prepareTableData(this.dataTableIds.surfaceCondition, surveyReportData.attributeTable("surface_condition", true), "surface_condition");

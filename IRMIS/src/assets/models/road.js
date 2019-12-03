@@ -5,11 +5,11 @@ import { choice_or_default, getFieldName, getHelpText, humanizeChoices, toChaina
 
 const roadSchema = JSON.parse(document.getElementById('road_schema').textContent);
 
-const ADMINISTRATIVE_AREA_CHOICES = humanizeChoices(roadSchema, 'administrative_area', 'id', 'name');
-const MAINTENANCE_NEED_CHOICES = humanizeChoices(roadSchema, 'maintenance_need', 'code', 'name');
+export const ADMINISTRATIVE_AREA_CHOICES = humanizeChoices(roadSchema, 'administrative_area', 'id', 'name');
+export const MAINTENANCE_NEED_CHOICES = humanizeChoices(roadSchema, 'maintenance_need', 'code', 'name');
 export const PAVEMENT_CLASS_CHOICES = humanizeChoices(roadSchema, 'pavement_class', 'code', 'name');
 export const ROAD_STATUS_CHOICES = humanizeChoices(roadSchema, 'road_status', 'code', 'name');
-const ROAD_TYPE_CHOICES = humanizeChoices(roadSchema, 'road_type');
+export const ROAD_TYPE_CHOICES = humanizeChoices(roadSchema, 'road_type');
 export const SURFACE_CONDITION_CHOICES = humanizeChoices(roadSchema, 'surface_condition');
 export const SURFACE_TYPE_CHOICES = humanizeChoices(roadSchema, 'surface_type', 'code', 'name');
 export const TECHNICAL_CLASS_CHOICES = humanizeChoices(roadSchema, 'technical_class', 'code', 'name');

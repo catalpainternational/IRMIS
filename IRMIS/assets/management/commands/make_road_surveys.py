@@ -56,6 +56,8 @@ class Command(BaseCommand):
                     }
 
                     sv = survey_data["values"]
+                    if road.administrative_area:
+                        sv["municipality"] = str(road.administrative_area)
                     if road.carriageway_width:
                         sv["carriageway_width"] = str(road.carriageway_width)
                     if road.funding_source:
@@ -68,6 +70,8 @@ class Command(BaseCommand):
                         sv["project"] = str(road.project)
                     if road.road_status:
                         sv["road_status"] = str(road.road_status)
+                    if road.road_type:
+                        sv["road_type"] = str(road.road_type)
                     if road.surface_condition:
                         sv["surface_condition"] = str(road.surface_condition)
                     if road.surface_type:
