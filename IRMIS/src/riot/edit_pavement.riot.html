@@ -1,25 +1,23 @@
 <edit_pavement>
     <div class="content-wrapper">
-        <stacked_bar id="{ surface_stacked_bar_id }" title="{ window.gettext('Surface Type') }"
-            entries="{ state.surfaceTypes }" total_title="{ window.gettext('Total road chainage') }"></stacked_bar>
-    </div>
-    <div class="content-wrapper">
-        <stacked_bar id="{ pavement_stacked_bar_id }" title="{ window.gettext('Pavement Class') }"
-            entries="{ state.pavementClasses }" total_title="{ window.gettext('Total road chainage') }"></stacked_bar>
-    </div>
-
-    <div class="content-wrapper">
         <div class="d-flex justify-content-between">
             <h5>{ window.gettext("Surface Type Data (SDI)") }</h5>
             <button class="btn btn-primary" onclick="{ addEditSurface }" disabled="{ props.editing }">
                 { window.gettext("Add") }
             </button>
         </div>
+
+        <stacked_bar id="{ surface_stacked_bar_id }" entries="{ state.surfaceTypes }"
+            total_title="{ window.gettext('Total road chainage') }">
+        </stacked_bar>
+
         <div class="d-flex">
             <a class="{ !state.viewAllSurface ? 'active' : '' } table-toggle" onclick="{ viewCurrentSurface }">
-                { window.gettext("Current type") }</a>
+                { window.gettext("Current type") }
+            </a>
             <a class="{ state.viewAllSurface ? 'active' : '' } table-toggle" onclick="{ viewAllSurface }">
-                { window.gettext("View all data entries") }</a>
+                { window.gettext("View all data entries") }
+            </a>
         </div>
         <data_table if="{ state.viewAllSurface }" table_id="{surface_all_data_table_id}"
             columns="{surface_all_data_table_columns}" columnSortOrder="{surface_all_data_table_columns_order}"
@@ -27,20 +25,29 @@
         </data_table>
         <data_table if="{ !state.viewAllSurface }" table_id="{surface_current_data_table_id}"
             columns="{surface_current_data_table_columns}" columnSortOrder="{surface_current_data_table_columns_order}"
-            getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows['surface_type']}"></data_table>
+            getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows['surface_type']}">
+        </data_table>
     </div>
 
     <div class="content-wrapper">
         <div class="d-flex justify-content-between">
             <h5>{ window.gettext("Pavement Class Data") }</h5>
             <button class="btn btn-primary" onclick="{ addEditPavement }" disabled="{ props.editing }">
-                { window.gettext("Add") }</button>
+                { window.gettext("Add") }
+            </button>
         </div>
+
+        <stacked_bar id="{ pavement_stacked_bar_id }" entries="{ state.pavementClasses }"
+            total_title="{ window.gettext('Total road chainage') }">
+        </stacked_bar>
+
         <div class="d-flex">
             <a class="{ !state.viewAllPavement ? 'active' : '' } table-toggle" onclick="{ viewCurrentPavement }">
-                { window.gettext("Current type") }</a>
+                { window.gettext("Current type") }
+            </a>
             <a class="{ state.viewAllPavement ? 'active' : '' } table-toggle" onclick="{ viewAllPavement }">
-                { window.gettext("View all data entries") }</a>
+                { window.gettext("View all data entries") }
+            </a>
         </div>
         <data_table if="{ state.viewAllPavement }" table_id="{pavement_all_data_table_id}"
             columns="{pavement_all_data_table_columns}" columnSortOrder="{pavement_all_data_table_columns_order}"
@@ -49,7 +56,8 @@
         <data_table if="{ !state.viewAllPavement }" table_id="{pavement_current_data_table_id}"
             columns="{pavement_current_data_table_columns}"
             columnSortOrder="{pavement_current_data_table_columns_order}" getHelpText="{props.parent.getHelpText}"
-            pendingRows="{state.pendingRows['pavement_class']}"></data_table>
+            pendingRows="{state.pendingRows['pavement_class']}">
+        </data_table>
     </div>
 
     <edit_modal modal_id="{ surface_modal_id }" disableSave="{ !state.canSave }">

@@ -1,16 +1,16 @@
 <edit_condition>
     <div class="content-wrapper">
-        <stacked_bar id="{stacked_bar_id}" title="{window.gettext('Surface Condition (SDI)')}"
-            entries="{state.surfaceConditions}" total_title="{window.gettext('Total road chainage')}"></stacked_bar>
-    </div>
-
-    <div class="content-wrapper">
         <div class="d-flex justify-content-between">
             <h5>{ window.gettext("Surface Condition Data (SDI)") }</h5>
-            <button class="btn btn-primary" onclick="{addEdit}" disabled="{props.editing}">
+            <button class="btn btn-primary" onclick="{ addEdit }" disabled="{ props.editing }">
                 { window.gettext("Add") }
             </button>
         </div>
+
+        <stacked_bar id="{stacked_bar_id}" entries="{state.surfaceConditions}"
+            total_title="{window.gettext('Total road chainage')}">
+        </stacked_bar>
+
         <div class="d-flex">
             <a class="{!state.viewAll ? 'active' : '' } table-toggle" onclick="{viewCurrent}">
                 { window.gettext("Current condition") }
@@ -21,10 +21,12 @@
         </div>
         <data_table if="{state.viewAll}" table_id="{all_data_table_id}" columns="{all_data_table_columns}"
             columnSortOrder="{all_data_table_columns_order}" getHelpText="{props.parent.getHelpText}"
-            pendingRows="{state.pendingRows}" canDelete=true></data_table>
+            pendingRows="{state.pendingRows}" canDelete=true>
+        </data_table>
         <data_table if="{!state.viewAll}" table_id="{current_data_table_id}" columns="{current_data_table_columns}"
             columnSortOrder="{current_data_table_columns_order}" getHelpText="{props.parent.getHelpText}"
-            pendingRows="{state.pendingRows}"></data_table>
+            pendingRows="{state.pendingRows}">
+        </data_table>
     </div>
 
     <edit_modal modal_id="{modal_id}" disableSave="{!state.canSave}">
