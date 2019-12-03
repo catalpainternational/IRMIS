@@ -35,32 +35,34 @@
             stopLabel="{ window.gettext('Continue editing') }" stopResult="continueEdit">
         </edit_stop_alert>
 
-        <div if="{ !state.loading }" id="edit-base">
-            <header class="align-items-center d-flex">
-                <a class="caret-dark left image" onclick="{ goBack }"></a>
-                <h1>{ state.editingRoad.getRoadCode() } { state.editingRoad.getRoadName() }</h1>
-            </header>
-
-            <feedback_banner if="{ state.showFeedback }" close="{ closeFeedback }"
-                successMessage="{ window.gettext('You have successfully saved') }"
-                errorMessage="{ window.gettext('Something went wrong') }" error="{ state.error }">
-            </feedback_banner>
-
-            <edit_location_type road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}"
-                if="{ state.page === 'location_type' }"></edit_location_type>
-            <edit_asset_details road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}"
-                if="{ state.page === 'asset_details' }"></edit_asset_details>
-            <edit_pavement road="{ state.editingRoad }" showFeedback="{ showFeedback }" saving="{ state.saving }"
-                parent="{parentFunctions}" if="{ state.page === 'pavement' }"></edit_pavement>
-            <edit_project road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}"
-                if="{ state.page === 'project' }"></edit_project>
-            <edit_condition road="{ state.editingRoad }" showFeedback="{ showFeedback }" parent="{parentFunctions}"
-                if="{ state.page === 'condition' }"></edit_condition>
-            <edit_maintenance road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}"
-                if="{ state.page === 'maintenance' }"></edit_maintenance>
-
-            <edit_history road="{ state.baseRoad }" parent="{parentFunctions}" if="{ state.page === 'history' }">
-            </edit_history>
+        <div id="edit-base">
+            <template if="{ !state.loading }">
+                <header class="align-items-center d-flex">
+                    <a class="caret-dark left image" onclick="{ goBack }"></a>
+                    <h1>{ state.editingRoad.getRoadCode() } { state.editingRoad.getRoadName() }</h1>
+                </header>
+    
+                <feedback_banner if="{ state.showFeedback }" close="{ closeFeedback }"
+                    successMessage="{ window.gettext('You have successfully saved') }"
+                    errorMessage="{ window.gettext('Something went wrong') }" error="{ state.error }">
+                </feedback_banner>
+    
+                <edit_location_type road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}"
+                    if="{ state.page === 'location_type' }"></edit_location_type>
+                <edit_asset_details road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}"
+                    if="{ state.page === 'asset_details' }"></edit_asset_details>
+                <edit_pavement road="{ state.editingRoad }" showFeedback="{ showFeedback }" saving="{ state.saving }"
+                    parent="{parentFunctions}" if="{ state.page === 'pavement' }"></edit_pavement>
+                <edit_project road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}"
+                    if="{ state.page === 'project' }"></edit_project>
+                <edit_condition road="{ state.editingRoad }" showFeedback="{ showFeedback }" parent="{parentFunctions}"
+                    if="{ state.page === 'condition' }"></edit_condition>
+                <edit_maintenance road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}"
+                    if="{ state.page === 'maintenance' }"></edit_maintenance>
+    
+                <edit_history road="{ state.baseRoad }" parent="{parentFunctions}" if="{ state.page === 'history' }">
+                </edit_history>
+            </template>
         </div>
 
         <loading></loading>
