@@ -1,6 +1,5 @@
 .entry-bar {
     margin-bottom: 20px;
-    margin-top: 20px;
     height: 20px;
 
     & > div:first-child {
@@ -31,11 +30,18 @@
     }
 }
 
-.entry-0 {
-    background-color: #E7E8EA;
+%stacked-bar-shared {
+    margin-bottom: 25px;
+    margin-top: 25px;
+
+    .entry-0 {
+        background-color: #E7E8EA;
+    }
 }
 
 #surface-condition-stacked-bar {
+    @extend %stacked-bar-shared;
+
     .entry-1 {
         background-color: #03A59A;
     }
@@ -54,6 +60,8 @@
 }
 
 #pavement-class-stacked-bar {
+    @extend %stacked-bar-shared;
+
     .entry-1 {
         background-color: #03A59A;
     }
@@ -68,6 +76,8 @@
 }
 
 #surface-type-stacked-bar {
+    @extend %stacked-bar-shared;
+
     .entry-1 {
         background-color: #C0E8E5;
     }
