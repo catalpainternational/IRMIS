@@ -526,7 +526,10 @@ def protobuf_reports(request):
     road_chainages = []
     prev_road_code = "Nada"
     for road_chainage_set in road_chainages_list:
-        if road_chainage_set["link_start_chainage"] == road_chainage_set["link_end_chainage"]:
+        if (
+            road_chainage_set["link_start_chainage"]
+            == road_chainage_set["link_end_chainage"]
+        ):
             continue
 
         if road_chainage_set["road_code"] != prev_road_code:
@@ -561,7 +564,7 @@ def protobuf_reports(request):
         if min_chainage == None or max_chainage == None:
             # Without valid chainage values nothing can be done
             return HttpResponseNotFound()
-        
+
         road_chainages[0]["chainage_start"] = min_chainage
         road_chainages[0]["chainage_end"] = max_chainage
 
@@ -583,7 +586,11 @@ def protobuf_reports(request):
         # Generate the Report
         # This is priority #2 for performance improvement
         road_report = Report(
-            surveys, len(road_codes) == 1, primary_road_code, road_chainage["chainage_start"], road_chainage["chainage_end"]
+            surveys,
+            len(road_codes) == 1,
+            primary_road_code,
+            road_chainage["chainage_start"],
+            road_chainage["chainage_end"],
         )
 
         if len(road_codes) == 1:
