@@ -66,6 +66,8 @@ class Command(BaseCommand):
                     sv = survey_data["values"]
 
                     ## Road Link attributes
+                    if road.administrative_area:
+                        sv["municipality"] = str(road.administrative_area)
                     if road.carriageway_width:
                         sv["carriageway_width"] = str(road.carriageway_width)
                     if road.funding_source:
@@ -74,6 +76,8 @@ class Command(BaseCommand):
                         sv["project"] = str(road.project)
                     if road.number_lanes:
                         sv["number_lanes"] = str(road.number_lanes)
+                    if road.road_type:
+                        sv["road_type"] = str(road.road_type)
 
                     ## Choices-based attributes
                     if road.surface_condition:

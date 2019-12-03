@@ -5,7 +5,7 @@ import { AttributeEntry, AttributeTable, Report } from "../../../protobuf/report
 import { choice_or_default, getFieldName, getHelpText, invertChoices, makeEstradaObject } from "../protoBufUtilities";
 
 import {
-    ROAD_STATUS_CHOICES,
+    ROAD_STATUS_CHOICES, ROAD_TYPE_CHOICES,
     SURFACE_CONDITION_CHOICES, SURFACE_TYPE_CHOICES,
     TECHNICAL_CLASS_CHOICES, TRAFFIC_LEVEL_CHOICES,
     PAVEMENT_CLASS_CHOICES
@@ -109,7 +109,7 @@ export class EstradaNetworkSurveyReport extends Report {
 
         // We can change the following to
         // whatever we consider an appropriate 'empty' collection of lengths
-        const emptyLengths = ["surface_condition", "surface_type", "technical_class", "pavement_class", "number_lanes"]
+        const emptyLengths = ["municipality", "number_lanes", "pavement_class", "road_type", "surface_condition", "surface_type", "technical_class"]
             .map((attribute) => `"${attribute}": { "None": 0 }`);
         lengths = lengths || `{ ${emptyLengths.join(", ")} }`;
 
@@ -128,6 +128,29 @@ export class EstradaNetworkSurveyReport extends Report {
         return this.filter.report_chainage || [];
     }
 
+    get municipalities() {
+        return this.filter.municipality || [];
+    }
+
+    get numberLanes() {
+        if (!this.lengths.number_lanes || this.lengths.number_lanes.length) {
+            return [];
+        }
+        return this.lengths.number_lanes;
+    }
+
+    get pavementClasses() {
+        return extractCountData(this.lengths.pavement_class, PAVEMENT_CLASS_CHOICES);
+    }
+
+    get roadClasses() {
+        return this.roadTypes;
+    }
+
+    get roadTypes() {
+        return extractCountData(this.lengths.road_type, ROAD_TYPE_CHOICES);
+    }
+
     get surfaceConditions() {
         return extractCountData(this.lengths.surface_condition, SURFACE_CONDITION_CHOICES);
     }
@@ -136,23 +159,12 @@ export class EstradaNetworkSurveyReport extends Report {
         return extractCountData(this.lengths.surface_type, SURFACE_TYPE_CHOICES);
     }
 
-    get pavementClasses() {
-        return extractCountData(this.lengths.pavement_class, PAVEMENT_CLASS_CHOICES);
-    }
-
     get technicalClasses() {
         return extractCountData(this.lengths.technical_class, TECHNICAL_CLASS_CHOICES);
     }
 
     get trafficLevels() {
         return extractCountData(this.lengths.traffic_level, TRAFFIC_LEVEL_CHOICES);
-    }
-
-    get numberLanes() {
-        if (!this.lengths.number_lanes || this.lengths.number_lanes.length) {
-            return [];
-        }
-        return this.lengths.number_lanes;
     }
 
     static getFieldName(field) {
@@ -170,6 +182,26 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
         return attributeTablesRaw.map(this.makeEstradaSurveyAttributeTable);
     }
 
+    get municipalities() {
+        return this.makeSpecificLengths("municipality", {});
+    }
+
+    get numberLanes() {
+        return this.makeSpecificLengths("number_lanes", {});
+    }
+
+    get pavementClasses() {
+        return this.makeSpecificLengths("pavement_class", PAVEMENT_CLASS_CHOICES);
+    }
+
+    get roadClasses() {
+        return this.roadTypes;
+    }
+
+    get roadTypes() {
+        return this.makeSpecificLengths("road_type", ROAD_TYPE_CHOICES);
+    }
+
     get roadStatuses() {
         return this.makeSpecificLengths("road_status", ROAD_STATUS_CHOICES);
     }
@@ -182,20 +214,12 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
         return this.makeSpecificLengths("surface_type", SURFACE_TYPE_CHOICES);
     }
 
-    get pavementClasses() {
-        return this.makeSpecificLengths("pavement_class", PAVEMENT_CLASS_CHOICES);
-    }
-
     get technicalClasses() {
         return this.makeSpecificLengths("technical_class", TECHNICAL_CLASS_CHOICES);
     }
 
     get trafficLevels() {
         return this.makeSpecificLengths("traffic_level", TRAFFIC_LEVEL_CHOICES);
-    }
-
-    get numberLanes() {
-        return this.makeSpecificLengths("number_lanes", TRAFFIC_LEVEL_CHOICES);
     }
 
     attributeTable(primaryAttribute, returnAll = false) {
@@ -332,28 +356,40 @@ export class EstradaSurveyAttributeEntry extends AttributeEntry {
         return allAttributes.filter((attribute) => attribute !== this.primaryAttribute);
     }
 
+    get municipality() {
+        return this.values.municipality || gettext("Unknown");
+    }
+
+    get numberLanes() {
+        return this.values.number_lanes || gettext("Unknown");
+    }
+
+    get pavementClass() {
+        return gettext(choice_or_default(this.values.pavement_class, PAVEMENT_CLASS_CHOICES, "Unknown"));
+    }
+
+    get roadClass() {
+        return this.roadType;
+    }
+
+    get roadType() {
+        return gettext(choice_or_default(this.values.road_type, ROAD_TYPE_CHOICES, "Unknown"));
+    }
+
     get surfaceCondition() {
         return gettext(choice_or_default(this.values.surface_condition, SURFACE_CONDITION_CHOICES, "Unknown"));
     }
 
     get surfaceType() {
-        return gettext(this.values.surface_type || "Unknown");
-    }
-
-    get pavementClass() {
-        return gettext(this.values.pavement_class || "Unknown");
+        return gettext(choice_or_default(this.values.surface_type, SURFACE_TYPE_CHOICES, "Unknown"));
     }
 
     get technicalClass() {
-        return gettext(this.values.technical_class || "Unknown");
+        return gettext(choice_or_default(this.values.technical_class, TECHNICAL_CLASS_CHOICES, "Unknown"));
     }
 
     get trafficLevel() {
         return choice_or_default(this.values.traffic_level, TRAFFIC_LEVEL_CHOICES);
-    }
-
-    get numberLanes() {
-        return this.values.number_lanes || gettext("Unknown");
     }
 
     get values() {
