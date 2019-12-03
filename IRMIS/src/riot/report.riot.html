@@ -324,7 +324,7 @@
                         title: window.gettext("Road Network Length"),
                         description: window.gettext("A report on the total length of the road network. The report provides total length in kilometers and percentages according to Road Status and Technical Class. A number of filters can be selected in order to generate a length report according to the required criteria"),
                         fixedFilter: {
-                            primaryattribute: ["municipality", "road_class", "surface_type"],
+                            primaryattribute: ["road_status", "technical_class"],
                         },
                         visibleFilters: {
                             municipality: true,
@@ -333,7 +333,7 @@
                             surfaceCondition: true,
                             reportDate: true,
                         },
-                        reportElements: { dataTables: [dataTableIds.municipality, dataTableIds.roadClass, dataTableIds.surfaceType] },
+                        reportElements: { dataTables: [dataTableIds.roadStatus, dataTableIds.technicalClass] },
                     },
                     1: {
                         title: window.gettext("Road Network Length Breakdown"),
@@ -348,6 +348,7 @@
                             surfaceCondition: true,
                             reportDate: true,
                         },
+                        reportElements: { dataTables: [dataTableIds.municipality, dataTableIds.roadClass, dataTableIds.surfaceType] },
                     },
                     2: {
                         title: window.gettext("Surface Condition"),

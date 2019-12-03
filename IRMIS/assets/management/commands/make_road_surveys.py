@@ -76,6 +76,8 @@ class Command(BaseCommand):
                         sv["project"] = str(road.project)
                     if road.number_lanes:
                         sv["number_lanes"] = str(road.number_lanes)
+                    if road.road_type:
+                        sv["road_type"] = str(road.road_type)
 
                     ## Choices-based attributes
                     if road.surface_condition:
@@ -92,8 +94,6 @@ class Command(BaseCommand):
                         sv["pavement_class"] = str(road.pavement_class.code)
                     if road.road_status:
                         sv["road_status"] = str(road.road_status.code)
-                    if road.road_type:
-                        sv["road_type"] = str(road.road_type.code)
                     if road.surface_type:
                         sv["surface_type"] = str(road.surface_type.code)
                     if road.technical_class:
