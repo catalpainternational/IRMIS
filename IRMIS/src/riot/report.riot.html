@@ -313,6 +313,7 @@
                             roadCode: true,
                             reportDate: true,
                         },
+                        reportElements: { stackedBars: [stackedBarIds.surfaceCondition], dataTables: [dataTableIds.surfaceCondition] },
                     },
                     3: {
                         title: window.gettext("IRI Roughness"),
@@ -585,7 +586,7 @@
                             if (haveLengths) {
                                 this.state.reportData.roadStatus = this.prepareTableData(this.dataTableIds.roadStatus, surveyReportData.roadStatuses, "road_status");
                                 this.state.reportData.technicalClass = this.prepareTableData(this.dataTableIds.technicalClass, surveyReportData.technicalClasses, "technical_class");
-                                this.state.reportData.surfaceCondition = this.prepareTableData(this.dataTableIds.surfaceCondition, surveyReportData.attributeTable("surface_condition"), "surface_condition");
+                                this.state.reportData.surfaceCondition = this.prepareTableData(this.dataTableIds.surfaceCondition, surveyReportData.attributeTable("surface_condition", true), "surface_condition");
 
                                 this.prepareStackedBar(this.stackedBarIds.roadStatus, surveyReportData.roadStatuses, "road_status");
                                 this.prepareStackedBar(this.stackedBarIds.technicalClass, surveyReportData.technicalClasses, "technical_class");
