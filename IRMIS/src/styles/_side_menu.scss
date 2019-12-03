@@ -44,7 +44,7 @@
     }
 
     .filters {
-        height: calc(100% - #{$top-menu-height} - 71px - 40px - 15px);
+        height: calc(100% - #{$top-menu-height} - 5px - 71px - 40px - 15px);
         padding-right: 6px;
         overflow-y: auto;
 
@@ -130,7 +130,6 @@
     .navigation {
         padding-right: 50px;
         margin-bottom: 40px;
-        margin-top: 20px;
         padding-left: 0;
 
         &:last-of-type {
@@ -164,7 +163,7 @@
 planning_base #side-menu > div,
 reports_base #side-menu > div,
 edit_base #side-menu > div {
-    height: calc(100vh - #{$top-menu-height} - 15px);
+    height: calc(100vh - #{$top-menu-height} - 5px - 15px);
     padding-right: 6px;
     margin-left: -15px;
     overflow-y: auto;
