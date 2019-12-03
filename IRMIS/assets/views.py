@@ -496,59 +496,78 @@ def protobuf_reports(request):
 
     # apply additional filters to Roads list, if provided
     if surface_conditions != []:
-        roads.filter(surface_condition__in=surface_conditions)
+        roads = roads.filter(surface_condition__in=surface_conditions)
     if surface_types != []:
-        roads.filter(surface_type__in=surface_types)
+        roads = roads.filter(surface_type__in=surface_types)
     if municipalities != []:
-        roads.filter(administrative_area__in=municipalities)
+        roads = roads.filter(administrative_area__in=municipalities)
     if pavement_classes != []:
-        roads.filter(pavement_class__in=pavement_classes)
+        roads = roads.filter(pavement_class__in=pavement_classes)
 
     if len(roads) == 0:
         return HttpResponseNotFound()
 
     surveys = {}
-    road_codes = list(roads.values_list("road_code").distinct())
-    road_code_index = 0
     final_filters = defaultdict(list)
     final_lengths = defaultdict(Counter)
 
-    for road_code in road_codes:
-        primary_road_code = road_code[road_code_index]
-        road_chainages = (
-            roads.filter(road_code=primary_road_code)
-            .exclude(link_start_chainage__isnull=True)
-            .exclude(link_end_chainage__isnull=True)
-            .values("link_start_chainage", "link_end_chainage")
-        )
-        if len(road_chainages) == 0:
+    # Get the list of all relevant road_codes
+    road_codes = list(roads.values_list("road_code", flat=True).distinct())
+
+    # Compose the list of total chainages by road_code
+    road_chainages_list = (
+        roads.filter(road_code__in=road_codes)
+        .exclude(link_start_chainage__isnull=True)
+        .exclude(link_end_chainage__isnull=True)
+        .values("road_code", "link_start_chainage", "link_end_chainage")
+        .order_by("road_code", "link_start_chainage", "link_end_chainage")
+    )
+
+    road_chainages = []
+    prev_road_code = "Nada"
+    for road_chainage_set in road_chainages_list:
+        if road_chainage_set["link_start_chainage"] == road_chainage_set["link_end_chainage"]:
             continue
 
-        min_chainage = road_chainages.order_by("link_start_chainage").first()[
-            "link_start_chainage"
-        ]
-        max_chainage = road_chainages.order_by("link_end_chainage").last()[
-            "link_end_chainage"
-        ]
+        if road_chainage_set["road_code"] != prev_road_code:
+            road_chainage = {}
+            road_chainage["code"] = road_chainage_set["road_code"]
+            road_chainage["chainage_start"] = road_chainage_set["link_start_chainage"]
+            road_chainage["chainage_end"] = road_chainage_set["link_end_chainage"]
+            road_chainages.append(road_chainage)
+            prev_road_code = road_chainage["code"]
+        else:
+            road_chainage["chainage_end"] = road_chainage_set["link_end_chainage"]
 
-        if len(road_codes) == 1:
-            if (
-                chainage_start != None
-                and chainage_start > min_chainage
-                and chainage_start < max_chainage
-            ):
-                min_chainage = chainage_start
+    # Handle chainage filtering for single road_codes
+    if len(road_chainages) == 1:
+        min_chainage = road_chainages[0]["chainage_start"]
+        max_chainage = road_chainages[0]["chainage_end"]
 
-            if (
-                chainage_end != None
-                and chainage_end > min_chainage
-                and chainage_end < max_chainage
-            ):
-                max_chainage = chainage_end
+        if (
+            chainage_start != None
+            and chainage_start > min_chainage
+            and chainage_start < max_chainage
+        ):
+            min_chainage = chainage_start
+
+        if (
+            chainage_end != None
+            and chainage_end > min_chainage
+            and chainage_end < max_chainage
+        ):
+            max_chainage = chainage_end
 
         if min_chainage == None or max_chainage == None:
             # Without valid chainage values nothing can be done
-            continue
+            return HttpResponseNotFound()
+        
+        road_chainages[0]["chainage_start"] = min_chainage
+        road_chainages[0]["chainage_end"] = max_chainage
+
+    # Commence processing Reports by road_code
+    for road_chainage in road_chainages:
+        primary_road_code = road_chainage["code"]
 
         # pull any Surveys that cover the roads
         for primary_attribute in primary_attributes:
@@ -561,8 +580,10 @@ def protobuf_reports(request):
                 .distinct("road", "chainage_start", "chainage_end")
             )
 
+        # Generate the Report
+        # This is priority #2 for performance improvement
         road_report = Report(
-            surveys, len(road_codes) == 1, primary_road_code, min_chainage, max_chainage
+            surveys, len(road_codes) == 1, primary_road_code, road_chainage["chainage_start"], road_chainage["chainage_end"]
         )
 
         if len(road_codes) == 1:
@@ -573,6 +594,8 @@ def protobuf_reports(request):
                 content_type="application/octet-stream",
             )
         else:
+            # Merge Protobuf Reports
+            # This is priority #1 for performance improvement
             report_protobuf = road_report.to_protobuf()
             report_filters = json.loads(report_protobuf.filter)
             for x in set(report_filters).union(road_report.filters):
