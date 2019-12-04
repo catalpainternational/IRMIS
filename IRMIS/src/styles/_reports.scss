@@ -100,12 +100,13 @@ report {
 
         h6 {
             max-width: $blank-report-content-width;
-            margin-bottom: 10px;
+            margin-bottom: 0;
             margin-top: 15px;
         }
 
         p {
             max-width: $blank-report-content-width;
+            margin-top: 10px;
             margin-left: 0;
         }
     }
