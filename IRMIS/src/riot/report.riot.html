@@ -611,6 +611,7 @@
                 const filters = cloneData(this.reportContent().fixedFilter);
 
                 const userFilters = {};
+                // Handle the select filters
                 this.state.filterDefinitions.forEach((filterDefinition) => {
                     const requestFilterName = filterDefinition.filterName || "";
                     if (!requestFilterName || filters[requestFilterName]) {
@@ -627,6 +628,16 @@
 
                     filters[requestFilterName] = selection;
                 });
+                // Check for the other filters
+                if (this.state.reportDate) {
+                    filters["reportDate"] = this.state.reportDate;
+                }
+                if (this.state.reportStartChainage) {
+                    filters["reportStartChainage"] = this.state.reportStartChainage;
+                }
+                if (this.state.reportEndChainage) {
+                    filters["reportEndChainage"] = this.state.reportEndChainage;
+                }
 
                 if (!Object.keys(filters).length) {
                     return;
