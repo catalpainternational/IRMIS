@@ -1,130 +1,1110 @@
 <edit_asset_details>
-    <h5>{ window.gettext("Asset") }</h5>
+    <div class="content-wrapper">
+        <h5>{ window.gettext("Asset") }</h5>
 
-    <section>
-        <h6>{ window.gettext("Link code and name") }</h6>
-        <div class="form-group">
-            <label>{ link_code.display }</label>
-            <input class="{ state.errors.linkCode ? 'danger' : null } { state.linkCode ? '' : 'inactive' } form-control"
-                type="text" maxlength="25" placeholder="A01-01" value="{ state.linkCode }" oninput="{ checkLinkCode }">
-            <small class="form-text text-muted">{ props.parent.getHelpText("link_code") }</small>
-            <div if="{ state.errors.linkCode }" class="invalid-tooltip">
-                <ul>
-                    <li>{ state.errors.linkCode }.</li>
-                </ul>
+        <section>
+            <h6>{ window.gettext("Link code and name") }</h6>
+            <div class="form-group">
+                <label>{ link_code.display }</label>
+                <input
+                    class="{ state.errors.linkCode ? 'danger' : null } { state.linkCode ? '' : 'inactive' } form-control"
+                    type="text" maxlength="25" placeholder="A01-01" value="{ state.linkCode }"
+                    oninput="{ checkLinkCode }">
+                <small class="form-text text-muted">{ props.parent.getHelpText("link_code") }</small>
+                <div if="{ state.errors.linkCode }" class="invalid-tooltip">
+                    <ul>
+                        <li>{ state.errors.linkCode }.</li>
+                    </ul>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label>{ link_start_name.display }</label>
-            <input class="{ state.linkStartName ? '' : 'inactive' } form-control" type="text" maxlength="150"
-                placeholder="Dili" value="{ state.linkStartName }" oninput="{ checkLinkStartName }">
-            <small class="form-text text-muted">{ props.parent.getHelpText("link_start_name") }</small>
-        </div>
-        <div class="form-group">
-            <label>{ link_end_name.display }</label>
-            <input class="{ state.linkEndName ? '' : 'inactive' } form-control" type="text" maxlength="150"
-                placeholder="Manatuto" value="{ state.linkEndName }" oninput="{ checkLinkEndName }">
-            <small class="form-text text-muted">{ props.parent.getHelpText("link_end_name") }</small>
-        </div>
-    </section>
+            <div class="form-group">
+                <label>{ link_start_name.display }</label>
+                <input class="{ state.linkStartName ? '' : 'inactive' } form-control" type="text" maxlength="150"
+                    placeholder="Dili" value="{ state.linkStartName }" oninput="{ checkLinkStartName }">
+                <small class="form-text text-muted">{ props.parent.getHelpText("link_start_name") }</small>
+            </div>
+            <div class="form-group">
+                <label>{ link_end_name.display }</label>
+                <input class="{ state.linkEndName ? '' : 'inactive' } form-control" type="text" maxlength="150"
+                    placeholder="Manatuto" value="{ state.linkEndName }" oninput="{ checkLinkEndName }">
+                <small class="form-text text-muted">{ props.parent.getHelpText("link_end_name") }</small>
+            </div>
+        </section>
 
-    <section>
-        <h6>{ window.gettext("Link width and length") }</h6>
-        <div class="form-group">
-            <label>{ link_length.display }</label>
-            <input
-                class="{ state.errors.linkLength ? 'danger' : null } { state.linkLength != null && state.linkLength !== '' ? '' : 'inactive' } form-control"
-                type="number" placeholder="58.7" value="{ state.linkLength }" oninput="{ checkLinkLength }">
-            <small class="form-text text-muted">{ props.parent.getHelpText("link_length") }</small>
-            <div if="{ state.errors.linkLength }" class="invalid-tooltip">
-                <ul>
-                    <li>{ state.errors.linkLength }.</li>
-                </ul>
+        <section>
+            <h6>{ window.gettext("Link width and length") }</h6>
+            <div class="form-group">
+                <label>{ link_length.display }</label>
+                <input
+                    class="{ state.errors.linkLength ? 'danger' : null } { state.linkLength != null && state.linkLength !== '' ? '' : 'inactive' } form-control"
+                    type="number" placeholder="58.7" value="{ state.linkLength }" oninput="{ checkLinkLength }">
+                <small class="form-text text-muted">{ props.parent.getHelpText("link_length") }</small>
+                <div if="{ state.errors.linkLength }" class="invalid-tooltip">
+                    <ul>
+                        <li>{ state.errors.linkLength }.</li>
+                    </ul>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label>{ carriageway_width.display }</label>
-            <input
-                class="{ state.errors.carriageWidth ? 'danger' : null } { state.carriagewayWidth != null && state.carriagewayWidth !== '' ? '' : 'inactive' } form-control"
-                type="number" placeholder="5.0" value="{ state.carriagewayWidth }" oninput="{ checkCarriagewayWidth }">
-            <small class="form-text text-muted">{ props.parent.getHelpText("carriageway_width") }</small>
-            <div if="{ state.errors.carriageWidth }" class="invalid-tooltip">
-                <ul>
-                    <li>{ state.errors.carriageWidth }.</li>
-                </ul>
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <section>
-        <h6>{ window.gettext("Link chainage") }</h6>
-        <div class="form-group">
-            <label>{ link_start_chainage.display } (m)</label>
-            <input
-                class="{ state.errors.linkStartChainage ? 'danger' : null } { state.linkStartChainage != null && state.linkStartChainage !== '' ? '' : 'inactive' } form-control"
-                type="number" placeholder="0" value="{ state.linkStartChainage }" oninput="{ checkLinkStartChainage }">
-            <small class="form-text text-muted">{ props.parent.getHelpText("link_start_chainage") }</small>
-            <div if="{ state.errors.linkStartChainage }" class="invalid-tooltip">
-                <ul>
-                    <li>{ state.errors.linkStartChainage }.</li>
-                </ul>
+        <section>
+            <h6>{ window.gettext("Link chainage") }</h6>
+            <div class="form-group">
+                <label>{ link_start_chainage.display } (m)</label>
+                <input
+                    class="{ state.errors.linkStartChainage ? 'danger' : null } { state.linkStartChainage != null && state.linkStartChainage !== '' ? '' : 'inactive' } form-control"
+                    type="number" placeholder="0" value="{ state.linkStartChainage }"
+                    oninput="{ checkLinkStartChainage }">
+                <small class="form-text text-muted">{ props.parent.getHelpText("link_start_chainage") }</small>
+                <div if="{ state.errors.linkStartChainage }" class="invalid-tooltip">
+                    <ul>
+                        <li>{ state.errors.linkStartChainage }.</li>
+                    </ul>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label>{ link_end_chainage.display } (m)</label>
-            <input
-                class="{ state.errors.linkEndChainage ? 'danger' : null } { state.linkEndChainage != null && state.linkEndChainage !== '' ? '' : 'inactive' } form-control"
-                type="number" placeholder="62410" value="{ state.linkEndChainage }" oninput="{ checkLinkEndChainage }">
-            <small class="form-text text-muted">{ props.parent.getHelpText("link_end_chainage") }</small>
-            <div if="{ state.errors.linkEndChainage }" class="invalid-tooltip">
-                <ul>
-                    <li>{ state.errors.linkEndChainage }.</li>
-                </ul>
+            <div class="form-group">
+                <label>{ link_end_chainage.display } (m)</label>
+                <input
+                    class="{ state.errors.linkEndChainage ? 'danger' : null } { state.linkEndChainage != null && state.linkEndChainage !== '' ? '' : 'inactive' } form-control"
+                    type="number" placeholder="62410" value="{ state.linkEndChainage }"
+                    oninput="{ checkLinkEndChainage }">
+                <small class="form-text text-muted">{ props.parent.getHelpText("link_end_chainage") }</small>
+                <div if="{ state.errors.linkEndChainage }" class="invalid-tooltip">
+                    <ul>
+                        <li>{ state.errors.linkEndChainage }.</li>
+                    </ul>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section>
-        <h6>{ window.gettext("Road class") }</h6>
-        <div class="form-group">
-            <label>{ technical_classes.display }</label>
-            <small class="form-text text-muted">{ props.parent.getHelpText("technical_class") }</small>
-            <ul class="technical-class">
-                <li each="{ technical_class in technical_classes.options }" data-technical="{ technical_class.code }"
-                    onclick="{ checkTechnicalClass }">
-                    <span class="{ technical_class.code == state.technicalClass ? 'active' : ''  } radio image"></span>
-                    { technical_class.name }
-                </li>
-            </ul>
+        <div class="button-wrapper d-flex justify-content-end">
+            <button class="btn btn-primary" onclick="{ save }"
+                disabled="{ props.saving || Object.entries(state.errors).length > 0 }">
+                { window.gettext("Save and continue")}
+            </button>
         </div>
-    </section>
-
-    <div class="button-wrapper d-flex justify-content-end">
-        <button class="btn btn-primary" onclick="{ save }"
-            disabled="{ props.saving || Object.entries(state.errors).length > 0 }">{ window.gettext("Save and continue")
-            }</button>
     </div>
 
+    <!-- DATA TABLES FOR SURVEY-BASED ATTRIBUTES -->
+    <div class="content-wrapper">
+        <div class="d-flex justify-content-between">
+            <h5>{ window.gettext("Carriageway Width Data") }</h5>
+            <button class="btn btn-primary" onclick="{ addEditCarriageway }" disabled="{ props.editing }">
+                { window.gettext("Add") }
+            </button>
+        </div>
+
+        <div class="d-flex">
+            <a class="{ !state.viewAllCarriageway ? 'active' : '' } table-toggle" onclick="{ viewCurrentCarriageway }">
+                { window.gettext("Current carriageway width") }
+            </a>
+            <a class="{ state.viewAllCarriageway ? 'active' : '' } table-toggle" onclick="{ viewAllCarriageway }">
+                { window.gettext("View all data entries") }
+            </a>
+        </div>
+        <data_table if="{ state.viewAllCarriageway }" table_id="{carriageway_all_data_table_id}"
+            columns="{carriageway_all_data_table_columns}" columnSortOrder="{carriageway_all_data_table_columns_order}"
+            getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows['carriageway_width']}"
+            canDelete=true>
+        </data_table>
+        <data_table if="{ !state.viewAllCarriageway }" table_id="{carriageway_current_data_table_id}"
+            columns="{carriageway_current_data_table_columns}"
+            columnSortOrder="{carriageway_current_data_table_columns_order}" getHelpText="{props.parent.getHelpText}"
+            pendingRows="{state.pendingRows['carriageway_width']}">
+        </data_table>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="d-flex justify-content-between">
+            <h5>{ window.gettext("Technical Class Data") }</h5>
+            <button class="btn btn-primary" onclick="{ addEditTechnical }" disabled="{ props.editing }">
+                { window.gettext("Add") }
+            </button>
+        </div>
+
+        <div class="d-flex">
+            <a class="{ !state.viewAllTechnical ? 'active' : '' } table-toggle" onclick="{ viewCurrentTechnical }">
+                { window.gettext("Current technical class") }
+            </a>
+            <a class="{ state.viewAllTechnical ? 'active' : '' } table-toggle" onclick="{ viewAllTechnical }">
+                { window.gettext("View all data entries") }
+            </a>
+        </div>
+        <data_table if="{ state.viewAllTechnical }" table_id="{technical_all_data_table_id}"
+            columns="{technical_all_data_table_columns}" columnSortOrder="{technical_all_data_table_columns_order}"
+            getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows['technical_class']}"
+            canDelete=true>
+        </data_table>
+        <data_table if="{ !state.viewAllTechnical }" table_id="{technical_current_data_table_id}"
+            columns="{technical_current_data_table_columns}"
+            columnSortOrder="{technical_current_data_table_columns_order}" getHelpText="{props.parent.getHelpText}"
+            pendingRows="{state.pendingRows['technical_class']}">
+        </data_table>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="d-flex justify-content-between">
+            <h5>{ window.gettext("Number of Lanes Data") }</h5>
+            <button class="btn btn-primary" onclick="{ addEditLanes }" disabled="{ props.editing }">
+                { window.gettext("Add") }
+            </button>
+        </div>
+
+        <div class="d-flex">
+            <a class="{ !state.viewAllLanes ? 'active' : '' } table-toggle" onclick="{ viewCurrentLanes }">
+                { window.gettext("Current number of lanes") }
+            </a>
+            <a class="{ state.viewAllLanes ? 'active' : '' } table-toggle" onclick="{ viewAllLanes }">
+                { window.gettext("View all data entries") }
+            </a>
+        </div>
+        <data_table if="{ state.viewAllLanes }" table_id="{lanes_all_data_table_id}"
+            columns="{lanes_all_data_table_columns}" columnSortOrder="{lanes_all_data_table_columns_order}"
+            getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows['number_lanes']}" canDelete=true>
+        </data_table>
+        <data_table if="{ !state.viewAllLanes }" table_id="{lanes_current_data_table_id}"
+            columns="{lanes_current_data_table_columns}" columnSortOrder="{lanes_current_data_table_columns_order}"
+            getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows['number_lanes']}">
+        </data_table>
+    </div>
+
+    <edit_modal modal_id="{carriageway_modal_id}" disableSave="{!state.canSave}">
+        <span slot="modal_title">{window.gettext("Add Carriageway Width Information")}</span>
+
+        <form slot="modal_body">
+            <section>
+                <div class="form-group">
+                    <label>{ window.gettext("Survey Date") }</label>
+                    <span class="required">*</span>
+                    <small class="form-text text-muted">{props.parent.getHelpText("survey_date")}</small>
+                    <!-- It would be preferable to use the 'datetime-local' input type, however Firefox currently does not support it -->
+                    <input
+                        class="{state.errors.surveyDate ? 'danger' : null } { state.survey.surveyDate ? '' : 'inactive' } form-control"
+                        type="date" name="surveyDate" placeholder="Date" value="{state.survey.surveyDate}"
+                        oninput="{checkSurveyDate}" required pattern="\d{4}-\d{2}-\d{2}" max="{max_date()}">
+                    <div if="{state.errors.surveyDate}" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.surveyDate }.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h6>{ window.gettext("Chainage") }</h6>
+                <div class="form-group">
+                    <label>{ window.gettext("Chainage start") } (m)</label>
+                    <span class="required">*</span>
+                    <input
+                        class="{state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
+                        type="number" name="startChainage" placeholder="1000" value="{state.survey.startChainage}"
+                        oninput="{checkChainage}" required>
+                    <small class="form-text text-muted">{ props.parent.getHelpText("start_chainage") }</small>
+                    <div if="{state.errors.startChainage}" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.startChainage }.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>{ window.gettext("Chainage end") } (m)</label>
+                    <span class="required">*</span>
+                    <input
+                        class="{state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
+                        type="number" name="endChainage" placeholder="62410" value="{state.survey.endChainage}"
+                        oninput="{checkChainage}" required>
+                    <small class="form-text text-muted">{ props.parent.getHelpText("end_chainage") }</small>
+                    <div if="{state.errors.endChainage}" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.endChainage }.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h6>{ window.gettext("Carriageway width") }</h6>
+                <div class="form-group">
+                    <label>{ window.gettext("Carriageway width") }</label>
+                    <span class="required">*</span>
+                    <div if="{ state.errors.carriagewayWidth }" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.carriagewayWidth }.</li>
+                        </ul>
+                    </div>
+                    <input
+                        class="{ state.errors.carriagewayWidth ? 'danger' : null } { state.survey.carriagewayWidth ? '' : 'inactive' } form-control"
+                        type="number" placeholder="5.0" value="{ state.survey.carriagewayWidth }"
+                        oninput="{ checkCarriagewayWidth }">
+                    <small class="form-text text-muted">{ props.parent.getHelpText("carriageway_width") }</small>
+                </div>
+            </section>
+
+            <div class="d-flex justify-content-end">
+                <span>[</span><span class="required">*</span><span>]: Mandatory</span>
+            </div>
+        </form>
+    </edit_modal>
+
+    <edit_modal modal_id="{technical_modal_id}" disableSave="{!state.canSave}">
+        <span slot="modal_title">{window.gettext("Add Technical Class Information")}</span>
+
+        <form slot="modal_body">
+            <section>
+                <div class="form-group">
+                    <label>{ window.gettext("Survey Date") }</label>
+                    <span class="required">*</span>
+                    <small class="form-text text-muted">{props.parent.getHelpText("survey_date")}</small>
+                    <!-- It would be preferable to use the 'datetime-local' input type, however Firefox currently does not support it -->
+                    <input
+                        class="{state.errors.surveyDate ? 'danger' : null } { state.survey.surveyDate ? '' : 'inactive' } form-control"
+                        type="date" name="surveyDate" placeholder="Date" value="{state.survey.surveyDate}"
+                        oninput="{checkSurveyDate}" required pattern="\d{4}-\d{2}-\d{2}" max="{max_date()}">
+                    <div if="{state.errors.surveyDate}" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.surveyDate }.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h6>{ window.gettext("Chainage") }</h6>
+                <div class="form-group">
+                    <label>{ window.gettext("Chainage start") } (m)</label>
+                    <span class="required">*</span>
+                    <input
+                        class="{state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
+                        type="number" name="startChainage" placeholder="1000" value="{state.survey.startChainage}"
+                        oninput="{checkChainage}" required>
+                    <small class="form-text text-muted">{ props.parent.getHelpText("start_chainage") }</small>
+                    <div if="{state.errors.startChainage}" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.startChainage }.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>{ window.gettext("Chainage end") } (m)</label>
+                    <span class="required">*</span>
+                    <input
+                        class="{state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
+                        type="number" name="endChainage" placeholder="62410" value="{state.survey.endChainage}"
+                        oninput="{checkChainage}" required>
+                    <small class="form-text text-muted">{ props.parent.getHelpText("end_chainage") }</small>
+                    <div if="{state.errors.endChainage}" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.endChainage }.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h6>{ window.gettext("Road class") }</h6>
+                <div class="form-group">
+                    <label>{ window.gettext("Technical class") }</label>
+                    <span class="required">*</span>
+                    <div if="{ state.errors.technicalClass }" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.technicalClass }.</li>
+                        </ul>
+                    </div>
+                    <ul class="technical-class">
+                        <li each="{ technical in technicalClasses.options }" data-technical="{ technical.code }"
+                            onclick="{ checkTechnicalClass }">
+                            <span class="{ technical.code == state.survey.technicalClass ? 'active' : '' } radio image">
+                            </span>
+                            { technical.name }
+                        </li>
+                    </ul>
+                    <small class="form-text text-muted">{ props.parent.getHelpText("technical_class") }</small>
+                </div>
+            </section>
+
+            <div class="d-flex justify-content-end">
+                <span>[</span><span class="required">*</span><span>]: Mandatory</span>
+            </div>
+        </form>
+    </edit_modal>
+
+    <edit_modal modal_id="{lanes_modal_id}" disableSave="{!state.canSave}">
+        <span slot="modal_title">{window.gettext("Add Number Lanes Information")}</span>
+
+        <form slot="modal_body">
+            <section>
+                <div class="form-group">
+                    <label>{ window.gettext("Survey Date") }</label>
+                    <span class="required">*</span>
+                    <small class="form-text text-muted">{props.parent.getHelpText("survey_date")}</small>
+                    <!-- It would be preferable to use the 'datetime-local' input type, however Firefox currently does not support it -->
+                    <input
+                        class="{state.errors.surveyDate ? 'danger' : null } { state.survey.surveyDate ? '' : 'inactive' } form-control"
+                        type="date" name="surveyDate" placeholder="Date" value="{state.survey.surveyDate}"
+                        oninput="{checkSurveyDate}" required pattern="\d{4}-\d{2}-\d{2}" max="{max_date()}">
+                    <div if="{state.errors.surveyDate}" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.surveyDate }.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h6>{ window.gettext("Chainage") }</h6>
+                <div class="form-group">
+                    <label>{ window.gettext("Chainage start") } (m)</label>
+                    <span class="required">*</span>
+                    <input
+                        class="{state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
+                        type="number" name="startChainage" placeholder="1000" value="{state.survey.startChainage}"
+                        oninput="{checkChainage}" required>
+                    <small class="form-text text-muted">{ props.parent.getHelpText("start_chainage") }</small>
+                    <div if="{state.errors.startChainage}" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.startChainage }.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>{ window.gettext("Chainage end") } (m)</label>
+                    <span class="required">*</span>
+                    <input
+                        class="{state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
+                        type="number" name="endChainage" placeholder="62410" value="{state.survey.endChainage}"
+                        oninput="{checkChainage}" required>
+                    <small class="form-text text-muted">{ props.parent.getHelpText("end_chainage") }</small>
+                    <div if="{state.errors.endChainage}" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.endChainage }.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h6>{ window.gettext("Number lanes") }</h6>
+                <div class="form-group">
+                    <label>{ window.gettext("Number lanes") }</label>
+                    <span class="required">*</span>
+                    <div if="{ state.errors.numberLanes }" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.numberLanes }.</li>
+                        </ul>
+                    </div>
+                    <input
+                        class="{ state.errors.numberLanes ? 'danger' : null } { state.survey.numberLanes ? '' : 'inactive' } form-control"
+                        type="number" placeholder="5" value="{ state.survey.numberLanes }"
+                        oninput="{ checkNumberLanes }">
+
+                    <small class="form-text text-muted">{ props.parent.getHelpText("number_lanes") }</small>
+                </div>
+            </section>
+
+            <div class="d-flex justify-content-end">
+                <span>[</span><span class="required">*</span><span>]: Mandatory</span>
+            </div>
+        </form>
+    </edit_modal>
+
+    <edit_stop_alert modalId="delete-alert" title="{window.gettext('Delete')}"
+        description="{window.gettext('Are you sure you want to delete this data entry?')}"
+        proceedLabel="{window.gettext('Delete')}" proceedResult="delete" stopLabel="{window.gettext('Don\'t delete')}"
+        stopResult="keep">
+    </edit_stop_alert>
+
     <script>
+        import Edit_Stop_Alert from "./edit_stop_alert.riot.html";
+        import Data_Table from "./data_table.riot.html";
+        import Edit_Modal from "./edit_modal.riot.html";
+
+        import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
+        import {cloneData, toChainageFormat} from "../assets/protoBufUtilities";
+        import {Survey, Report} from "../../protobuf/survey_pb";
+
+        import $ from "jquery";
+
+        function checkRequiredFields(fieldNames, data, errors) {
+            return fieldNames.filter((fieldName) => {return !data[fieldName];});
+        }
+
+        function withinMaxDigits(text, limit, decimals) {
+            return (new RegExp(`^\\d{0,${(limit - decimals)}}(\\.\\d{1,${decimals}})?$`).test(text));
+        }
+
         export default {
             state: {
-                linkChainageDecimals: 5,
-                linkChainageDigits: 12,
+                chainageDecimals: 5,
+                chainageDigits: 12,
                 linkLengthDecimals: 3,
                 linkLengthDigits: 8,
                 carriagewayWidthDecimals: 3,
                 carriagewayWidthDigits: 5,
+                baseSurvey: new Survey({}),
+                survey: {},
+                canSave: false,
                 errors: {},
+                surveyTotalDistance: 0,
+                pendingRows: {
+                    "carriageway_width": [],
+                    "technical_class": [],
+                    "number_lanes": [],
+                },
+                reportRows: {
+                    "carriageway_width": [],
+                    "technical_class": [],
+                    "number_lanes": [],
+                },
+                carriagewayWidths: [{key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading")}],
+                technicalClasses: [{key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading")}],
+                numberLanes: [{key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading")}],
+                viewAllCarriageway: false,
+                viewAllTechnical: false,
+                viewAllLanes: false,
+                editMode: false,
+                // Current Attribute type Modal / Editing tracking
+                currentModalId: false,
+                currentRequiredFieldNames: [],
+                currentEditing: false,
+            },
+            components: {
+                Edit_Stop_Alert, Edit_Modal,
             },
             onBeforeMount(props, state) {
                 state.linkCode = props.road.getLinkCode();
                 state.linkStartName = props.road.getLinkStartName();
                 state.linkEndName = props.road.getLinkEndName();
                 state.linkLength = props.road.getLinkLength().toFixed(3);
-                state.carriagewayWidth = props.road.getCarriagewayWidth();
                 state.linkStartChainage = props.road.getLinkStartChainage();
                 state.linkEndChainage = props.road.getLinkEndChainage();
-                state.technicalClass = props.road.getTechnicalClass();
+            },
+            onMounted(props, state) {
+                state.loading = true;
+                state.road = cloneData(props.road);
+
+                this.props.parent.updateReportAttributeSummary(state, "carriageway_width", props.parent.emptyAttributes);
+                this.props.parent.updateReportAttributeSummary(state, "technical_class", props.parent.emptyAttributes);
+                this.props.parent.updateReportAttributeSummary(state, "number_lanes", props.parent.emptyAttributes);
+
+                this.props.parent.refreshSurveysAndReports(state, this.carriageway_all_data_table_id, "carriageway_width", "carriagewaywidths", this.carriageway_current_data_table_id);
+                this.props.parent.refreshSurveysAndReports(state, this.technical_all_data_table_id, "technical_class", "technicalClasses", this.technical_current_data_table_id);
+                this.props.parent.refreshSurveysAndReports(state, this.lanes_all_data_table_id, "number_lanes", "numberLanes", this.lanes_current_data_table_id);
+
+                this.deleteListener = (data) => {
+                    const rowId = data.detail.rowId;
+                    this.showStopAlertModal("delete-alert", rowId);
+                };
+
+                document.addEventListener(`${this.carriageway_all_data_table_id}.deleteRow`, this.deleteListener);
+                document.addEventListener(`${this.technical_all_data_table_id}.deleteRow`, this.deleteListener);
+                document.addEventListener(`${this.lanes_all_data_table_id}.deleteRow`, this.deleteListener);
+            },
+            onUnmount(props, state) {
+                document.removeEventListener(`${this.carriageway_all_data_table_id}.deleteRow`, this.deleteListener);
+                document.removeEventListener(`${this.technical_all_data_table_id}.deleteRow`, this.deleteListener);
+                document.removeEventListener(`${this.lanes_all_data_table_id}.deleteRow`, this.deleteListener);
+            },
+            viewAllCarriageway(e) {
+                if (!this.state.viewAllCarriageway) {
+                    this.state.viewAllCarriageway = true;
+                    this.update();
+                    this.props.parent.refreshSurveysAndReports(this.state, this.carriageway_all_data_table_id, "carriageway_width", "carriagewayWidths", this.carriageway_current_data_table_id);
+                    // If we're not still loading, then we assume that we want to replace all rows
+                    const eventName = `${this.carriageway_all_data_table_id}.dataAdded`;
+                    const eventDetail = {detail: {pendingRows: this.state.pendingRows["carriageway_width"], appendRows: this.state.loading}}
+                    document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+                }
+            },
+            viewAllTechnical(e) {
+                if (!this.state.viewAllTechnical) {
+                    this.state.viewAllTechnical = true;
+                    this.update();
+                    this.props.parent.refreshSurveysAndReports(this.state, this.technical_all_data_table_id, "technical_class", "technicalClasses", this.technical_current_data_table_id);
+                    // If we're not still loading, then we assume that we want to replace all rows
+                    const eventName = `${this.technical_all_data_table_id}.dataAdded`;
+                    const eventDetail = {detail: {pendingRows: this.state.pendingRows["technical_class"], appendRows: this.state.loading}}
+                    document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+                }
+            },
+            viewAllLanes(e) {
+                if (!this.state.viewAllLanes) {
+                    this.state.viewAllLanes = true;
+                    this.update();
+                    this.props.parent.refreshSurveysAndReports(this.state, this.lanes_all_data_table_id, "number_lanes", "numberLanes", this.lanes_current_data_table_id);
+                    // If we're not still loading, then we assume that we want to replace all rows
+                    const eventName = `${this.lanes_all_data_table_id}.dataAdded`;
+                    const eventDetail = {detail: {pendingRows: this.state.pendingRows["number_lanes"], appendRows: this.state.loading}}
+                    document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+                }
+            },
+            viewCurrentCarriageway(e) {
+                if (this.state.viewAllCarriageway) {
+                    this.state.viewAllCarriageway = false;
+                    this.update();
+                    this.props.parent.refreshSurveysAndReports(this.state, this.carriageway_all_data_table_id, "carriageway_width", "carriagewayWidths", this.carriageway_current_data_table_id);
+                    // If we're not still loading, then we assume that we want to replace all rows
+                    const eventName = `${this.carriageway_current_data_table_id}.dataAdded`;
+                    const eventDetail = {detail: {pendingRows: this.state.pendingRows["carriageway_width"], appendRows: this.state.loading}}
+                    document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+                }
+            },
+            viewCurrentTechnical(e) {
+                if (this.state.viewAllTechnical) {
+                    this.state.viewAllTechnical = false;
+                    this.update();
+                    this.props.parent.refreshSurveysAndReports(this.state, this.technical_all_data_table_id, "technical_class", "technicalClasses", this.technical_current_data_table_id);
+                    // If we're not still loading, then we assume that we want to replace all rows
+                    const eventName = `${this.technical_current_data_table_id}.dataAdded`;
+                    const eventDetail = {detail: {pendingRows: this.state.pendingRows["technical_class"], appendRows: this.state.loading}}
+                    document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+                }
+            },
+            viewCurrentLanes(e) {
+                if (this.state.viewAllLanes) {
+                    this.state.viewAllLanes = false;
+                    this.update();
+                    this.props.parent.refreshSurveysAndReports(this.state, this.lanes_all_data_table_id, "number_lanes", "numberLanes", this.lanes_current_data_table_id);
+                    // If we're not still loading, then we assume that we want to replace all rows
+                    const eventName = `${this.lanes_current_data_table_id}.dataAdded`;
+                    const eventDetail = {detail: {pendingRows: this.state.pendingRows["number_lanes"], appendRows: this.state.loading}}
+                    document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+                }
+            },
+            addEditCarriageway(e) {
+                this.state.survey = cloneData(this.state.baseSurvey);
+                this.state.errors = {};
+                this.state.currentEditing = "carriagewayWidth";
+                this.state.currentModalId = this.carriageway_modal_id;
+                this.state.currentRequiredFieldNames = this.carriagewayRequiredFieldNames;
+                this.showEditModal();
+            },
+            addEditTechnical(e) {
+                this.state.survey = cloneData(this.state.baseSurvey);
+                this.state.errors = {};
+                this.state.currentEditing = "technicalClass";
+                this.state.currentModalId = this.technical_modal_id;
+                this.state.currentRequiredFieldNames = this.technicalRequiredFieldNames;
+                this.showEditModal();
+            },
+            addEditLanes(e) {
+                this.state.survey = cloneData(this.state.baseSurvey);
+                this.state.errors = {};
+                this.state.currentEditing = "numberLanes";
+                this.state.currentModalId = this.lanes_modal_id;
+                this.state.currentRequiredFieldNames = this.lanesRequiredFieldNames;
+                this.showEditModal();
+            },
+
+            // Tables / Modal IDs
+            carriageway_current_data_table_id: "carriageway-width-report-table",
+            carriageway_all_data_table_id: "carriageway-width-table",
+            carriageway_modal_id: "carriageway-width-modal",
+            technical_current_data_table_id: "technical-class-report-table",
+            technical_all_data_table_id: "technical-class-table",
+            technical_modal_id: "technical-class-modal",
+            lanes_current_data_table_id: "number-lanes-report-table",
+            lanes_all_data_table_id: "number-lanes-table",
+            lanes_modal_id: "number-lanes-modal",
+
+            // Carriageway Width Table
+            carriagewayWidths: window.road_schema.carriageway_width,
+            carriageway_current_data_table_columns_order: [[0, 'asc']],
+            carriageway_current_data_table_columns: [
+                {
+                    title: window.gettext("Chainage start"),
+                    data: "chainageStart",
+                    defaultContent: "",
+                    className: "text-right",
+                    render: (data, type) => {
+                        return (type === 'display') ? toChainageFormat(data) : data;
+                    },
+                },
+                {
+                    title: window.gettext("Chainage end"),
+                    data: "chainageEnd",
+                    defaultContent: "",
+                    className: "text-right",
+                    orderable: false,
+                    render: (data, type) => {
+                        return (type === 'display') ? toChainageFormat(data) : data;
+                    },
+                },
+                {
+                    title: window.gettext("Carriageway width"),
+                    data: "carriagewayWidth",
+                    defaultContent: "",
+                    className: "text-center",
+                    orderable: false,
+                },
+                {
+                    title: window.gettext("Survey date"),
+                    data: "dateSurveyed",
+                    defaultContent: "",
+                    className: "text-center",
+                    orderable: false,
+                },
+                {
+                    title: window.gettext("Added by"),
+                    data: "addedBy",
+                    defaultContent: "",
+                    orderable: false,
+                },
+            ],
+
+            carriageway_all_data_table_columns_order: [[3, 'desc'], [0, 'asc']],
+            carriageway_all_data_table_columns: [
+                {
+                    title: window.gettext("Chainage start"),
+                    data: "chainageStart",
+                    defaultContent: "",
+                    className: "text-right",
+                    render: (data, type) => {
+                        return (type === 'display') ? toChainageFormat(data) : data;
+                    },
+                },
+                {
+                    title: window.gettext("Chainage end"),
+                    data: "chainageEnd",
+                    defaultContent: "",
+                    className: "text-right",
+                    orderable: false,
+                    render: (data, type) => {
+                        return (type === 'display') ? toChainageFormat(data) : data;
+                    },
+                },
+                {
+                    title: window.gettext("Carriageway width"),
+                    data: "carriagewayWidth",
+                    defaultContent: "",
+                    className: "text-center",
+                    orderable: false,
+                },
+                {
+                    title: window.gettext("Survey date"),
+                    data: "dateSurveyed",
+                    defaultContent: "",
+                    className: "text-center",
+                },
+                {
+                    title: window.gettext("Added by"),
+                    data: "addedBy",
+                    defaultContent: "",
+                    orderable: false,
+                },
+                {
+                    // To add a 'Delete' button include the attribute candelete=true
+                    // on the Riot dataTable tag as well
+                    title: window.gettext("Delete"),
+                    name: "Option", // Do NOT translate this
+                    defaultContent: "",
+                    className: "text-center",
+                    orderable: false,
+                },
+            ],
+
+            // Technical Class Table
+            technicalClasses: window.road_schema.technical_class,
+            technical_current_data_table_columns_order: [[0, 'asc']],
+            technical_current_data_table_columns: [
+                {
+                    title: window.gettext("Chainage start"),
+                    data: "chainageStart",
+                    defaultContent: "",
+                    className: "text-right",
+                    render: (data, type) => {
+                        return (type === 'display') ? toChainageFormat(data) : data;
+                    },
+                },
+                {
+                    title: window.gettext("Chainage end"),
+                    data: "chainageEnd",
+                    defaultContent: "",
+                    className: "text-right",
+                    orderable: false,
+                    render: (data, type) => {
+                        return (type === 'display') ? toChainageFormat(data) : data;
+                    },
+                },
+                {
+                    title: window.gettext("Technical Class"),
+                    data: "technicalClass",
+                    defaultContent: "",
+                    className: "text-center",
+                    orderable: false,
+                },
+                {
+                    title: window.gettext("Survey date"),
+                    data: "dateSurveyed",
+                    defaultContent: "",
+                    className: "text-center",
+                    orderable: false,
+                },
+                {
+                    title: window.gettext("Added by"),
+                    data: "addedBy",
+                    defaultContent: "",
+                    orderable: false,
+                },
+            ],
+
+            technical_all_data_table_columns_order: [[3, 'desc'], [0, 'asc']],
+            technical_all_data_table_columns: [
+                {
+                    title: window.gettext("Chainage start"),
+                    data: "chainageStart",
+                    defaultContent: "",
+                    className: "text-right",
+                    render: (data, type) => {
+                        return (type === 'display') ? toChainageFormat(data) : data;
+                    },
+                },
+                {
+                    title: window.gettext("Chainage end"),
+                    data: "chainageEnd",
+                    defaultContent: "",
+                    className: "text-right",
+                    orderable: false,
+                    render: (data, type) => {
+                        return (type === 'display') ? toChainageFormat(data) : data;
+                    },
+                },
+                {
+                    title: window.gettext("Technical class"),
+                    data: "technicalClass",
+                    defaultContent: "",
+                    className: "text-center",
+                    orderable: false,
+                },
+                {
+                    title: window.gettext("Survey date"),
+                    data: "dateSurveyed",
+                    defaultContent: "",
+                    className: "text-center",
+                },
+                {
+                    title: window.gettext("Added by"),
+                    data: "addedBy",
+                    defaultContent: "",
+                    orderable: false,
+                },
+                {
+                    // To add a 'Delete' button include the attribute candelete=true
+                    // on the Riot dataTable tag as well
+                    title: window.gettext("Delete"),
+                    name: "Option", // Do NOT translate this
+                    defaultContent: "",
+                    className: "text-center",
+                    orderable: false,
+                },
+            ],
+
+            // Number of Lanes Table
+            numberLanes: window.road_schema.number_lanes,
+            lanes_current_data_table_columns_order: [[0, 'asc']],
+            lanes_current_data_table_columns: [
+                {
+                    title: window.gettext("Chainage start"),
+                    data: "chainageStart",
+                    defaultContent: "",
+                    className: "text-right",
+                    render: (data, type) => {
+                        return (type === 'display') ? toChainageFormat(data) : data;
+                    },
+                },
+                {
+                    title: window.gettext("Chainage end"),
+                    data: "chainageEnd",
+                    defaultContent: "",
+                    className: "text-right",
+                    orderable: false,
+                    render: (data, type) => {
+                        return (type === 'display') ? toChainageFormat(data) : data;
+                    },
+                },
+                {
+                    title: window.gettext("Number lanes"),
+                    data: "numberLanes",
+                    defaultContent: "",
+                    className: "text-center",
+                    orderable: false,
+                },
+                {
+                    title: window.gettext("Survey date"),
+                    data: "dateSurveyed",
+                    defaultContent: "",
+                    className: "text-center",
+                    orderable: false,
+                },
+                {
+                    title: window.gettext("Added by"),
+                    data: "addedBy",
+                    defaultContent: "",
+                    orderable: false,
+                },
+            ],
+
+            lanes_all_data_table_columns_order: [[3, 'desc'], [0, 'asc']],
+            lanes_all_data_table_columns: [
+                {
+                    title: window.gettext("Chainage start"),
+                    data: "chainageStart",
+                    defaultContent: "",
+                    className: "text-right",
+                    render: (data, type) => {
+                        return (type === 'display') ? toChainageFormat(data) : data;
+                    },
+                },
+                {
+                    title: window.gettext("Chainage end"),
+                    data: "chainageEnd",
+                    defaultContent: "",
+                    className: "text-right",
+                    orderable: false,
+                    render: (data, type) => {
+                        return (type === 'display') ? toChainageFormat(data) : data;
+                    },
+                },
+                {
+                    title: window.gettext("Number lanes"),
+                    data: "numberLanes",
+                    defaultContent: "",
+                    className: "text-center",
+                    orderable: false,
+                },
+                {
+                    title: window.gettext("Survey date"),
+                    data: "dateSurveyed",
+                    defaultContent: "",
+                    className: "text-center",
+                },
+                {
+                    title: window.gettext("Added by"),
+                    data: "addedBy",
+                    defaultContent: "",
+                    orderable: false,
+                },
+                {
+                    // To add a 'Delete' button include the attribute candelete=true
+                    // on the Riot dataTable tag as well
+                    title: window.gettext("Delete"),
+                    name: "Option", // Do NOT translate this
+                    defaultContent: "",
+                    className: "text-center",
+                    orderable: false,
+                },
+            ],
+
+            // Surveys Modals
+            carriagewayRequiredFieldNames: ["surveyDate", "startChainage", "endChainage", "carriagewayWidth"],
+            technicalRequiredFieldNames: ["surveyDate", "startChainage", "endChainage", "technicalClass"],
+            lanesRequiredFieldNames: ["surveyDate", "startChainage", "endChainage", "numberLanes"],
+
+            showEditModal() {
+                document.addEventListener(`${this.state.currentModalId}.result`, (data) => {
+                    const modalResult = data.detail.result;
+
+                    switch (modalResult) {
+                        case "save":
+                            if (this.hasChanges()) {
+                                this.saveTheSurvey();
+                            }
+                            break;
+                        case "cancel":
+                            this.discardChanges();
+                            break;
+                        default:
+                            if (this.hasChanges()) {
+                                this.showStopAlertModal("stop-alert");
+                            }
+                            break;
+                    }
+                }, {once: true});
+
+                $(`#${this.state.currentModalId}`).modal("show");
+            },
+            showStopAlertModal(modalId, rowId) {
+                const eventName = `edit.${modalId}.result`;
+
+                document.addEventListener(eventName, (data) => {
+                    const stopAlertResult = data.detail.result;
+                    $(`#${modalId}`).modal("hide");
+
+                    if (stopAlertResult === "discard") {
+                        this.discardChanges();
+                    } else if (stopAlertResult === "delete") {
+                        this.state.editMode = true;
+                        // void the survey attribute value and save
+                        let allSurveys = [];
+                        if (this.state.pendingRows['carriageway_width'] || this.state.pendingRows['technical_class'] || this.state.pendingRows['number_lanes']) {
+                            allSurveys = this.state.pendingRows['carriageway_width']
+                                .concat(this.state.pendingRows['technical_class'])
+                                .concat(this.state.pendingRows['number_lanes']);
+                        } else {
+                            allSurveys = this.state.pendingRows;
+                        }
+                        this.state.survey = allSurveys.find((s) => {return s.id == rowId;});
+                        if (this.state.survey) {
+                            this.state.survey.setValues(JSON.stringify({}));
+                            this.saveSurvey();
+                        }
+                        this.state.editMode = false;
+                    } else if (stopAlertResult === "continueEdit") {
+                        this.showEditModal();
+                    }
+                }, {once: true});
+
+                $(`#${modalId}`).modal("show");
+            },
+            discardChanges() {
+                $(`#${this.state.currentModalId}`).modal("hide");
+                this.update({
+                    survey: cloneData(this.state.baseSurvey),
+                    errors: {},
+                    currentEditing: false,
+                    currentModalId: false,
+                    currentRequiredFieldNames: [],
+                });
+            },
+            saveTheSurvey(e) {
+                const missingFieldNames = checkRequiredFields(this.state.currentRequiredFieldNames, this.state.survey);
+                if (Object.keys(this.state.errors).length) {
+                    // Cannot save if there are validation errors
+                    this.canSave();
+                    if (!this.state.canSave) {
+                        missingFieldNames.forEach((fieldName) => {
+                            if (!data[fieldName]) {
+                                errors[fieldName] = window.gettext("This field is required");
+                            }
+                        });
+                        this.showEditModal();
+                    }
+                } else {
+                    if (this.hasChanges()) {
+                        // Complete the survey
+                        this.state.survey.setUser($("#user_welcome").data("userId") || 0);
+                        this.state.survey.setSource("Estrada");
+                        this.state.survey.setChainageStart(this.state.survey.startChainage);
+                        this.state.survey.setChainageEnd(this.state.survey.endChainage);
+                        if (this.state.currentEditing == "technicalClass") {
+                            this.state.survey.setValues(JSON.stringify({
+                                technical_class: this.state.survey.technicalClass || null,
+                            }));
+                        } else if (this.state.currentEditing == "carriagewayWidth") {
+                            this.state.survey.setValues(JSON.stringify({
+                                carriageway_width: this.state.survey.carriagewayWidth || null,
+                            }));
+                        } else {
+                            this.state.survey.setValues(JSON.stringify({
+                                number_lanes: this.state.survey.numberLanes || null,
+                            }));
+                        }
+                        // If we're here we will have a user entered surveyDate, even so Date.now() is still used as a fall back
+                        const dateSurveyed = new proto.google.protobuf.Timestamp();
+                        const surveyDate = new Date(this.state.survey.surveyDate || Date.now().toISOString());
+                        dateSurveyed.fromDate(surveyDate);
+                        this.state.survey.setDateSurveyed(dateSurveyed);
+                        // set Survey road from state Road road_code
+                        this.state.survey.setRoad(this.state.road.getRoadCode());
+                        this.saveSurvey();
+                    }
+
+                    // Reset baseSurvey now that we're done.
+                    this.baseSurvey = new Survey({});
+                    $(`#${this.state.currentModalId}`).modal("hide");
+                }
+            },
+            saveSurvey() {
+                $(`#${this.state.currentModalId}`).modal("hide");
+                $('#loading').modal('show');
+
+                if (!this.state.editMode) {
+                    createSurvey(this.state.survey)
+                        .then((surveyData) => {
+                            if (this.state.currentEditing == "technicalClass") {
+                                this.props.parent.refreshSurveysAndReports(this.state, this.technical_all_data_table_id, "technical_class", "technicalClasses", this.technical_current_data_table_id);
+                            } else if (this.state.currentEditing == "carriagewayWidth") {
+                                this.props.parent.refreshSurveysAndReports(this.state, this.carriageway_all_data_table_id, "carriageway_width", "carriagewayWidth", this.carriageway_current_data_table_id);
+                            } else {
+                                this.props.parent.refreshSurveysAndReports(this.state, this.lanes_all_data_table_id, "number_lanes", "numberLanes", this.lanes_current_data_table_id);
+                            }
+                            this.update({
+                                survey: new Survey({}), // clear input values
+                            });
+                            $('#loading').modal('hide');
+                            this.props.showFeedback();
+                        })
+                        .catch((err) => {
+                            this.props.showFeedback(true);
+                        });
+                } else {
+                    updateSurvey(this.state.survey)
+                        .then((surveyData) => {
+                            this.props.parent.refreshSurveysAndReports(this.state, this.technical_all_data_table_id, "technical_class", "technicalClasses", this.technical_current_data_table_id);
+                            this.props.parent.refreshSurveysAndReports(this.state, this.carriageway_all_data_table_id, "carriageway_width", "carriagewayWidth", this.carriageway_current_data_table_id);
+                            this.props.parent.refreshSurveysAndReports(this.state, this.lanes_all_data_table_id, "number_lanes", "numberLanes", this.lanes_current_data_table_id);
+                            this.update({
+                                survey: new Survey({}), // clear input values
+                            });
+                            $('#loading').modal('hide');
+                            this.props.showFeedback();
+                        })
+                        .catch((err) => {
+                            this.props.showFeedback(true);
+                        });
+                }
+                // clear input values
+                this.state.survey = new Survey({});
+                this.state.errors = {};
+                this.update();
+            },
+            canSave() {
+                const missingFieldNames = checkRequiredFields(this.state.currentRequiredFieldNames, this.state.survey);
+                if (missingFieldNames.length || Object.keys(this.state.errors).length) {
+                    // Cannot save if there are validation errors
+                    this.state.canSave = false;
+                } else {
+                    // Can save if something has changed
+                    this.state.canSave = JSON.stringify(this.state.baseSurvey) !== JSON.stringify(this.state.survey);
+                }
+                this.update();
+            },
+            /** Compare the selected fields between baseSurvey and survey.
+                * `source` and `user` are deliberately not compared
+                */
+            hasChanges() {
+                const compareFieldNames = ["surveyDate", "startChainage", "endChainage", this.state.currentEditing];
+                const surveyBase = compareFieldNames.map((fieldName) => {return this.state.baseSurvey[fieldName] || "";}).join("|||");
+                const surveyResult = compareFieldNames.map((fieldName) => {return this.state.survey[fieldName] || "";}).join("|||");
+                return (surveyBase !== surveyResult);
+            },
+            validate(fieldName, input, testResult, errorText) {
+                if (!testResult) {
+                    this.state.errors[fieldName] = errorText;
+                } else {
+                    delete this.state.errors[fieldName];
+                    this.state.survey[fieldName] = input;
+                }
+                this.canSave();
+            },
+            checkSurveyDate(e) {
+                const fieldName = e.currentTarget.name;
+                const input = e.currentTarget.value;
+                const testResult = input <= this.max_date();
+                const errorText = window.gettext("Survey date cannot be in the future");
+
+                this.validate(fieldName, input, testResult, errorText);
+            },
+            checkChainage(e) {
+                const fieldName = e.currentTarget.name;
+                const input = e.currentTarget.value;
+                const chainageDigits = this.state.chainageDigits;
+                const chainageDecimals = this.state.chainageDecimals;
+                const testResult = withinMaxDigits(input, chainageDigits, chainageDecimals);
+                const errorText = window.interpolate(
+                    window.gettext("Chainage cannot contain more than %s digits, of which %s are decimals"),
+                    [chainageDigits, chainageDecimals]);
+
+                this.validate(fieldName, input, testResult, errorText);
             },
             save(e) {
                 if (Object.entries(this.state.errors).length == 0) {
@@ -167,26 +1147,12 @@
                 }
                 this.update();
             },
-            checkCarriagewayWidth(e) {
-                let value = e.currentTarget.value;
-                if (exceedsMaxDigits(value, this.state.carriagewayWidthDigits, this.state.carriagewayWidthDecimals)) {
-                    this.state.errors.carriageWidth = window.interpolate(
-                        window.gettext('Carriage width cannot contain more than %s digits, of which %s are decimals'),
-                        [this.state.carriagewayWidthDigits, this.state.carriagewayWidthDecimals]
-                    );
-                } else {
-                    delete this.state.errors.carriageWidth;
-                    this.state.carriagewayWidth = value;
-                    this.props.road.setCarriagewayWidth(value);
-                }
-                this.update();
-            },
             checkLinkStartChainage(e) {
                 let value = e.currentTarget.value;
-                if (exceedsMaxDigits(value, this.state.linkChainageDigits, this.state.linkChainageDecimals)) {
+                if (exceedsMaxDigits(value, this.state.chainageDigits, this.state.chainageDecimals)) {
                     this.state.errors.linkStartChainage = window.interpolate(
                         window.gettext('Link start chainage cannot contain more than %s digits, of which %s are decimals'),
-                        [this.state.linkChainageDigits, this.state.linkChainageDecimals]
+                        [this.state.chainageDigits, this.state.chainageDecimals]
                     );
                 } else {
                     delete this.state.errors.linkStartChainage;
@@ -197,10 +1163,10 @@
             },
             checkLinkEndChainage(e) {
                 let value = e.currentTarget.value;
-                if (exceedsMaxDigits(value, this.state.linkChainageDigits, this.state.linkChainageDecimals)) {
+                if (exceedsMaxDigits(value, this.state.chainageDigits, this.state.chainageDecimals)) {
                     this.state.errors.linkEndChainage = window.interpolate(
                         window.gettext('Link end chainage cannot contain more than %s digits, of which %s are decimals'),
-                        [this.state.linkChainageDigits, this.state.linkChainageDecimals]
+                        [this.state.chainageDigits, this.state.chainageDecimals]
                     );
                 } else {
                     delete this.state.errors.linkEndChainage;
@@ -209,19 +1175,35 @@
                 }
                 this.update();
             },
-            checkTechnicalClass(e) {
-                this.state.technicalClass = e.currentTarget.dataset.technical;
-                this.props.road.setTechnicalClass(this.state.technicalClass);
-                this.update();
-            },
             link_code: window.road_schema.link_code,
             link_start_name: window.road_schema.link_start_name,
             link_end_name: window.road_schema.link_end_name,
             link_length: window.road_schema.link_length,
-            carriageway_width: window.road_schema.carriageway_width,
             link_start_chainage: window.road_schema.link_start_chainage,
             link_end_chainage: window.road_schema.link_end_chainage,
-            technical_classes: window.road_schema.technical_class,
+
+            checkCarriagewayWidth(e) {
+                let value = e.currentTarget.value;
+                if (exceedsMaxDigits(value, this.state.carriagewayWidthDigits, this.state.carriagewayWidthDecimals)) {
+                    this.state.errors.carriagewayWidth = window.interpolate(
+                        window.gettext('Carriage width cannot contain more than %s digits, of which %s are decimals'),
+                        [this.state.carriagewayWidthDigits, this.state.carriagewayWidthDecimals]
+                    );
+                } else {
+                    delete this.state.errors.carriagewayWidth;
+                }
+                this.state.survey.carriagewayWidth = value;
+                this.canSave();
+            },
+            checkTechnicalClass(e) {
+                this.state.survey.technicalClass = e.currentTarget.dataset.technical;
+                this.canSave();
+            },
+            checkNumberLanes(e) {
+                this.state.survey.numberLanes = e.currentTarget.value;
+                this.canSave();
+            },
+            max_date: () => new Date().toISOString().substring(0, 10),
         };
 
         function containsWhiteSpaces(text) {

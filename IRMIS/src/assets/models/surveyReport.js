@@ -373,6 +373,10 @@ export class EstradaSurveyAttributeEntry extends AttributeEntry {
         return this.values.municipality || gettext("Unknown");
     }
 
+    get carriagewayWidth() {
+        return this.values.carriageway_width || gettext("Unknown");
+    }
+
     get numberLanes() {
         return this.values.number_lanes || gettext("Unknown");
     }

@@ -40,6 +40,8 @@ edit_base {
         }
 
         a.table-toggle {
+            margin-top: 25px;
+
             &:first-of-type {
                 margin-right: 20px;
             }
@@ -62,6 +64,7 @@ edit_history {
     section {
         max-width: $max-width;
         margin-bottom: 40px;
+        margin-top: 20px;
 
         &:last-of-type {
             margin-bottom: 20px;
@@ -85,7 +88,6 @@ edit_history {
 }
 
 edit_location_type,
-edit_asset_details,
 edit_project,
 edit_maintenance,
 edit_history {
@@ -99,6 +101,7 @@ edit_history {
     }
 }
 
+edit_asset_details,
 edit_pavement,
 edit_condition {
     h5 {
