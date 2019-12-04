@@ -14,6 +14,8 @@ export const SURFACE_CONDITION_CHOICES = humanizeChoices(roadSchema, 'surface_co
 export const SURFACE_TYPE_CHOICES = humanizeChoices(roadSchema, 'surface_type', 'code', 'name');
 export const TECHNICAL_CLASS_CHOICES = humanizeChoices(roadSchema, 'technical_class', 'code', 'name');
 export const TRAFFIC_LEVEL_CHOICES = humanizeChoices(roadSchema, 'traffic_level');
+export const TERRAIN_CLASS_CHOICES = humanizeChoices(roadSchema, 'terrain_class');
+
 
 export class EstradaRoad extends Road {
     get id() {
@@ -106,6 +108,10 @@ export class EstradaRoad extends Road {
         return choice_or_default(this.getTechnicalClass(), TECHNICAL_CLASS_CHOICES);
     }
 
+    get terrainClass() {
+        return choice_or_default(this.getTerrainClass(), TERRAIN_CLASS_CHOICES);
+    }
+
     get maintenanceNeed() {
         return choice_or_default(this.getMaintenanceNeed(), MAINTENANCE_NEED_CHOICES);
     }
@@ -116,6 +122,10 @@ export class EstradaRoad extends Road {
 
     get projectionStart() {
         return this.getProjectionStart();
+    }
+
+    get rainfall() {
+        return this.getRainfall();
     }
 
     get projectionEnd() {
@@ -142,30 +152,40 @@ export class EstradaRoad extends Road {
         return this.getNumberLanes();
     }
 
+    get rainfall() {
+        return this.getRainfall();
+    }
+
+    /** A Null or None in the protobuf is indicated by a negative value */
+    getRainfall() {
+        const rainfall = super.getRainfall();
+        return (rainfall >= 0 || this.isSerialising) ? rainfall : null;
+    }
+
     /** A Null or None in the protobuf is indicated by a negative value */
     getLinkStartChainage() {
         const linkStartChainage = super.getLinkStartChainage();
         return (linkStartChainage >= 0 || this.isSerialising) ? linkStartChainage : null;
     }
-   
+
     /** A Null or None in the protobuf is indicated by a negative value */
     getLinkEndChainage() {
         const linkEndChainage = super.getLinkEndChainage();
         return (linkEndChainage >= 0 || this.isSerialising) ? linkEndChainage : null;
     }
-   
+
     /** A Null or None in the protobuf is indicated by a negative value */
     getLinkLength() {
         const linkLength = super.getLinkLength();
         return (linkLength >= 0 || this.isSerialising) ? linkLength : null;
     }
-   
+
     /** A Null or None in the protobuf is indicated by a negative value */
     getCarriagewayWidth() {
         const carriagewayWidth = super.getCarriagewayWidth();
         return (carriagewayWidth >= 0 || this.isSerialising) ? carriagewayWidth : null;
     }
-   
+
     /** A Null or None in the protobuf is indicated by a negative value */
     getNumberLanes() {
         const numberLanes = super.getNumberLanes();
@@ -183,22 +203,22 @@ export class EstradaRoad extends Road {
     setLinkStartChainage(value) {
         super.setLinkStartChainage(this.nullToNegative(value));
     }
-    
+
     /** A Null or None in the protobuf is indicated by a negative value */
     setLinkEndChainage(value) {
         super.setLinkEndChainage(this.nullToNegative(value));
     }
-    
+
     /** A Null or None in the protobuf is indicated by a negative value */
     setLinkLength(value) {
         super.setLinkLength(this.nullToNegative(value));
     }
-    
+
     /** A Null or None in the protobuf is indicated by a negative value */
     setCarriagewayWidth(value) {
         super.setCarriagewayWidth(this.nullToNegative(value));
     }
-    
+
     /** A Null or None in the protobuf is indicated by a negative value */
     setNumberLanes(value) {
         super.setNumberLanes(this.nullToNegative(value));
@@ -216,7 +236,7 @@ export class EstradaRoad extends Road {
     static getFieldName(field) {
         return getFieldName(roadSchema, field);
     }
-    
+
     static getHelpText(field) {
         return getHelpText(roadSchema, field);
     }

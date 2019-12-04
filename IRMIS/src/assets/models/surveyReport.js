@@ -8,7 +8,7 @@ import {
     ROAD_STATUS_CHOICES, ROAD_TYPE_CHOICES,
     SURFACE_CONDITION_CHOICES, SURFACE_TYPE_CHOICES,
     TECHNICAL_CLASS_CHOICES, TRAFFIC_LEVEL_CHOICES,
-    PAVEMENT_CLASS_CHOICES
+    PAVEMENT_CLASS_CHOICES, TERRAIN_CLASS_CHOICES
 } from "./road";
 
 // All Ids in the following schemas are generated
@@ -164,6 +164,10 @@ export class EstradaNetworkSurveyReport extends Report {
         return extractCountData(this.lengths.technical_class, TECHNICAL_CLASS_CHOICES);
     }
 
+    get terrainClasses() {
+        return extractCountData(this.lengths.terrain_class, TERRAIN_CLASS_CHOICES);
+    }
+
     get trafficLevels() {
         return extractCountData(this.lengths.traffic_level, TRAFFIC_LEVEL_CHOICES);
     }
@@ -195,6 +199,10 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
         return this.makeSpecificLengths("pavement_class", PAVEMENT_CLASS_CHOICES);
     }
 
+    get rainfalls() {
+        return this.makeSpecificLengths("rainfall", {});
+    }
+
     get roadClasses() {
         return this.roadTypes;
     }
@@ -217,6 +225,10 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
 
     get technicalClasses() {
         return this.makeSpecificLengths("technical_class", TECHNICAL_CLASS_CHOICES);
+    }
+
+    get terrainClasses() {
+        return this.makeSpecificLengths("terrain_class", TERRAIN_CLASS_CHOICES);
     }
 
     get trafficLevels() {
@@ -369,6 +381,10 @@ export class EstradaSurveyAttributeEntry extends AttributeEntry {
         return gettext(choice_or_default(this.values.pavement_class, PAVEMENT_CLASS_CHOICES, "Unknown"));
     }
 
+    get rainfall() {
+        return gettext(this.values.rainfall || "Unknown");
+    }
+
     get roadClass() {
         return this.roadType;
     }
@@ -389,8 +405,12 @@ export class EstradaSurveyAttributeEntry extends AttributeEntry {
         return gettext(choice_or_default(this.values.technical_class, TECHNICAL_CLASS_CHOICES, "Unknown"));
     }
 
+    get terrainClass() {
+        return gettext(choice_or_default(this.values.terrain_class, TERRAIN_CLASS_CHOICES, "Unknown"));
+    }
+
     get trafficLevel() {
-        return choice_or_default(this.values.traffic_level, TRAFFIC_LEVEL_CHOICES);
+        return gettext(choice_or_default(this.values.traffic_level, TRAFFIC_LEVEL_CHOICES, "Unknown"));
     }
 
     get values() {

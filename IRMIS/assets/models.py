@@ -491,6 +491,12 @@ class Road(models.Model):
         choices=TERRAIN_CLASS_CHOICES,
         help_text=_("Choose what terrain class the road runs through"),
     )
+    rainfall = models.IntegerField(
+        verbose_name=_("Rainfall"),
+        blank=True,
+        null=True,
+        help_text=_("Enter the amount of rainfall"),
+    )
     number_lanes = models.IntegerField(
         verbose_name=_("Number of Lanes"),
         blank=True,

@@ -17,6 +17,9 @@
                             onclick="{ selectPage }">{ window.gettext("Condition") }</li>
                         <li class="{ state.page === 'maintenance' ? 'active' : '' }" data-page="maintenance"
                             onclick="{ selectPage }">{ window.gettext("Maintenance") }</li>
+                        <li class="{ state.page === 'environment' ? 'active' : '' }" data-page="environment"
+                            onclick="{ selectPage }">{
+                            window.gettext("Environment") }</li>
                     </ul>
                 </ul>
                 <ul class="navigation">
@@ -41,12 +44,12 @@
                     <a class="caret-dark left image" onclick="{ goBack }"></a>
                     <h1>{ state.editingRoad.getRoadCode() } { state.editingRoad.getRoadName() }</h1>
                 </header>
-    
+
                 <feedback_banner if="{ state.showFeedback }" close="{ closeFeedback }"
                     successMessage="{ window.gettext('You have successfully saved') }"
                     errorMessage="{ window.gettext('Something went wrong') }" error="{ state.error }">
                 </feedback_banner>
-    
+
                 <edit_location_type road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}"
                     if="{ state.page === 'location_type' }"></edit_location_type>
                 <edit_asset_details road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}"
@@ -59,7 +62,8 @@
                     if="{ state.page === 'condition' }"></edit_condition>
                 <edit_maintenance road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}"
                     if="{ state.page === 'maintenance' }"></edit_maintenance>
-    
+                <edit_environment road="{ state.editingRoad }" showFeedback="{ showFeedback }" saving="{ state.saving }"
+                    parent="{parentFunctions}" if="{ state.page === 'environment' }"></edit_environment>
                 <edit_history road="{ state.baseRoad }" parent="{parentFunctions}" if="{ state.page === 'history' }">
                 </edit_history>
             </template>
@@ -91,6 +95,7 @@
         import Edit_Project from "./edit_project.riot.html";
         import Edit_Condition from "./edit_condition.riot.html";
         import Edit_Maintenance from "./edit_maintenance.riot.html";
+        import Edit_Environment from "./edit_environment.riot.html";
 
         import Edit_History from "./edit_history.riot.html";
 
@@ -111,7 +116,7 @@
             },
             components: {
                 Feedback_Banner, Edit_Stop_Alert, Loading,
-                Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Project, Edit_Condition, Edit_Maintenance,
+                Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Environment, Edit_Project, Edit_Condition, Edit_Maintenance,
                 Edit_History,
             },
             onBeforeMount() {
