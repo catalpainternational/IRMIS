@@ -443,6 +443,8 @@ def protobuf_reports(request):
         "surfacecondition", []
     )  # surfacecondition=X
     report_date = request.GET.get("reportdate", None)  # reportdate=X
+    if report_date == "true" or report_date == True:
+        report_date = None
 
     if road_id or road_code:
         # chainage is only valid if we've specified a road

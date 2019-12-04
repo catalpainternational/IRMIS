@@ -70,6 +70,7 @@ function extractCountData(lengthsForType, choices) {
                     title = lengthKey.toLowerCase();
                 }
             }
+            title = title[0].toUpperCase() + title.substring(1);
             lengths.push({ key: lengthKeyHasValue ? lengthKey : 0, title, distance: lengthsForType[key] });
         });
     }
