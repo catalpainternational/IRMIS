@@ -179,7 +179,7 @@ class Report:
         self.report_protobuf = report_pb2.Report()
 
         if self.primary_attributes:
-            self.filters["primary_attributes"] = self.primary_attributes
+            self.filters["primary_attribute"] = self.primary_attributes
 
         if self.validate_chainages():
             self.filters["report_chainage"] = [
