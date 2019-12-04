@@ -26,7 +26,9 @@
     overflow-x: auto;
 }
 
+#terrain-type-table, #terrain-type-report-table,
 #surface-type-table, #surface-type-report-table,
+#rainfall-class-table, #rainfall-class-report-table,
 #pavement-class-table, #pavement-class-report-table,
 #surface-condition-table, #surface-condition-report-table {
     border-bottom: 1px solid $light-gray;

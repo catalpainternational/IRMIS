@@ -114,3 +114,19 @@
         background-color: #FFACAF;
     }
 }
+
+#terrain-type-stacked-bar {
+    @extend %stacked-bar-shared;
+
+    .entry-1 {
+        background-color: #FFEFBF;
+    }
+
+    .entry-2 {
+        background-color: #FFE07F;
+    }
+
+    .entry-3 {
+        background-color: #FFC100;
+    }
+}

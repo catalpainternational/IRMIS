@@ -164,6 +164,9 @@ export class Road extends jspb.Message {
   getNumberLanes(): number;
   setNumberLanes(value: number): void;
 
+  getRainfall(): number;
+  setRainfall(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Road.AsObject;
   static toObject(includeInstance: boolean, msg: Road): Road.AsObject;
@@ -201,6 +204,7 @@ export namespace Road {
     projectionStart?: Projection.AsObject,
     projectionEnd?: Projection.AsObject,
     numberLanes: number,
+    rainfall: number,
   }
 }
 
