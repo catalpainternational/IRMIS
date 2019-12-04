@@ -313,10 +313,10 @@
             state: {
                 noReport: true,
                 filterDefinitions: [
-                    { selectId: "municipality_area_select2", placeHolder: "Municipality", dataIn: "reportMunicipality" },
+                    { selectId: "municipality_area_select2", placeHolder: "Municipality", dataIn: "reportMunicipality", filterName: "municipality" },
                     { selectId: "road_class_select2", placeHolder: "Road class", dataIn: "reportRoadClass", filterName: "roadtype" },
-                    { selectId: "surface_type_select2", placeHolder: "Surface type", dataIn: "reportSurfaceType" },
-                    { selectId: "surface_condition_select2", placeHolder: "Surface condition", dataIn: "reportSurfaceCondition" },
+                    { selectId: "surface_type_select2", placeHolder: "Surface type", dataIn: "reportSurfaceType", filterName: "surfacetype" },
+                    { selectId: "surface_condition_select2", placeHolder: "Surface condition", dataIn: "reportSurfaceCondition", filterName: "surfacecondition" },
                     { selectId: "road_code_select2", placeHolder: "Road code", dataIn: "reportRoadCode", isSingle: true, filterName: "roadcode" },
                 ],
                 reportMunicipality: [],
@@ -642,19 +642,19 @@
                     if (!selectData || selectData.length === 0) {
                         return;
                     }
-                    const selection = selectData.map((data) => { return data.text; }).join(",");
+                    const selection = selectData.map((data) => { return data.id; });
 
                     filters[requestFilterName] = selection;
                 });
                 // Check for the other filters
                 if (this.state.reportDate) {
-                    filters["reportDate"] = this.state.reportDate;
+                    filters["reportdate"] = this.state.reportDate;
                 }
                 if (this.state.reportStartChainage) {
-                    filters["reportStartChainage"] = this.state.reportStartChainage;
+                    filters["reportstartchainage"] = this.state.reportStartChainage;
                 }
                 if (this.state.reportEndChainage) {
-                    filters["reportEndChainage"] = this.state.reportEndChainage;
+                    filters["reportendchainage"] = this.state.reportEndChainage;
                 }
 
                 if (!Object.keys(filters).length) {
