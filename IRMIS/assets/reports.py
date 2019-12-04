@@ -39,13 +39,6 @@ class Report:
         # filters is a dict of lists, lengths is a dict of numeric values
         self.filters = {}
         self.lengths = {}
-        self.models_lookup = {
-            "maintenance_need": MaintenanceNeed,
-            "pavement_class": PavementClass,
-            "road_status": RoadStatus,
-            "surface_type": SurfaceType,
-            "technical_class": TechnicalClass,
-        }
 
     def validate_chainages(self):
         try:
@@ -164,20 +157,7 @@ class Report:
                 entry.chainage_start = segment["chainage_point"]
                 entry.chainage_end = segment["chainage_point"]
 
-                # check if primary attribute is one of the model-based attributes
-                if primary_attribute in self.models_lookup.keys():
-                    # lookup of the name associated with the key value stored
-                    attribute_model = self.models_lookup[primary_attribute]
-                    try:
-                        attribute_value = attribute_model.objects.get(
-                            code=segment["value"]
-                        ).name
-                    except attribute_model.DoesNotExist:
-                        attribute_value = None
-                else:
-                    attribute_value = segment["value"]
-
-                entry.values = json.dumps({primary_attribute: attribute_value})
+                entry.values = json.dumps({primary_attribute: segment["value"]})
                 entry.primary_attribute = primary_attribute
 
                 # 'Possible' fields

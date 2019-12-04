@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 
 import { Survey } from "../../../protobuf/survey_pb";
-import { PAVEMENT_CLASS_CHOICES, SURFACE_CONDITION_CHOICES, SURFACE_TYPE_CHOICES, TECHNICAL_CLASS_CHOICES, TRAFFIC_LEVEL_CHOICES } from "./road";
+import { PAVEMENT_CLASS_CHOICES, SURFACE_CONDITION_CHOICES, SURFACE_TYPE_CHOICES, TECHNICAL_CLASS_CHOICES, TERRAIN_CLASS_CHOICES, TRAFFIC_LEVEL_CHOICES } from "./road";
 
 import { choice_or_default, getFieldName, getHelpText } from "../protoBufUtilities";
 
@@ -64,12 +64,20 @@ export class EstradaSurvey extends Survey {
         return choice_or_default(this.values.technical_class, TECHNICAL_CLASS_CHOICES);
     }
 
+    get terrainClass() {
+        return choice_or_default(this.values.terrain_class, TERRAIN_CLASS_CHOICES);
+    }
+
     get trafficLevel() {
         return choice_or_default(this.values.traffic_level, TRAFFIC_LEVEL_CHOICES);
     }
 
     get numberLanes() {
         return this.values.number_lanes;
+    }
+
+    get rainfall() {
+        return this.values.rainfall;
     }
 
     get values() {

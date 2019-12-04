@@ -5,11 +5,11 @@
     }
 
     &.table:not(.map) #all-data-table {
-        max-height: calc(100vh - #{$top-menu-height} - 31px - 6px - 32px - 15px);
+        max-height: calc(100vh - #{$top-menu-height} - 5px - 31px - 6px - 32px - 15px);
     }
 
     &.table.map #all-data-table {
-        max-height: calc(60vh - #{$top-menu-height} - 10px - 31px - 6px - 32px - 15px);
+        max-height: calc(60vh - #{$top-menu-height} - 5px - 10px - 31px - 6px - 32px - 15px);
     }
 
     #all-data-table {
@@ -26,7 +26,9 @@
     overflow-x: auto;
 }
 
+#terrain-type-table, #terrain-type-report-table,
 #surface-type-table, #surface-type-report-table,
+#rainfall-class-table, #rainfall-class-report-table,
 #pavement-class-table, #pavement-class-report-table,
 #surface-condition-table, #surface-condition-report-table {
     border-bottom: 1px solid $light-gray;
@@ -45,7 +47,13 @@
     overflow-y: auto;
 }
 
-#report-road-status-table, #report-technical-class-table {
+#report-municipality-table,
+#report-road-class-table,
+#report-surface-type-table,
+#report-technical-class-table,
+#report-surface-condition-table,
+#report-road-status-table,
+#report-technical-class-table {
     border-bottom: 1px solid $light-gray;
     border-right: 1px solid $light-gray;
     border-left: 1px solid $light-gray;

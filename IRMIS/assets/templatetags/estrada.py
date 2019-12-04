@@ -61,5 +61,6 @@ def get_schema_data():
     road_schema["technical_class"].update(
         {"options": list(TechnicalClass.objects.all().values())}
     )
+    road_schema["terrain_class"].update({"options": Road.TERRAIN_CLASS_CHOICES})
 
     return road_schema

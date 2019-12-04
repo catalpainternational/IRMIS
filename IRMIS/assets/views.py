@@ -442,7 +442,9 @@ def protobuf_reports(request):
     surface_conditions = request.GET.getlist(
         "surfacecondition", []
     )  # surfacecondition=X
-    # report_date = request.GET.get("reportdate", None) # reportdate=X
+    report_date = request.GET.get("reportdate", None)  # reportdate=X
+    if report_date == "true" or report_date == True:
+        report_date = None
 
     if road_id or road_code:
         # chainage is only valid if we've specified a road
@@ -464,91 +466,122 @@ def protobuf_reports(request):
         chainage_end = temp_chainage
 
     report_protobuf = report_pb2.Report()
-    report_protobuf.filter = json.dumps({"primary_attribute": primary_attributes})
     report_protobuf.lengths = json.dumps({})
+
+    final_filters = defaultdict(list)
+    final_lengths = defaultdict(Counter)
+
+    final_filters["primary_attribute"] = primary_attributes
 
     # Certain filters are mutually exclusive (for reporting)
     # road_id -> road_code -> road_type
     if road_id:
         roads = Road.objects.filter(pk=road_id)
+        final_filters["road_id"] = [road_id]
         if len(roads) == 1:
-            report_protobuf.filter = json.dumps(
-                {
-                    "primary_attribute": primary_attributes,
-                    "road_id": [road_id],
-                    "road_code": [roads[0].road_code],
-                }
-            )
+            final_filters["road_code"] = [roads[0].road_code]
         else:
-            return HttpResponseNotFound()
+            report_protobuf.filter = json.dumps(final_filters)
+            return HttpResponse(
+                report_protobuf.SerializeToString(),
+                content_type="application/octet-stream",
+            )
     elif road_code:
         roads = Road.objects.filter(road_code=road_code)
-        report_protobuf.filter = json.dumps(
-            {"primary_attribute": primary_attributes, "road_code": [road_code]}
-        )
+        final_filters["road_code"] = [road_code]
     elif road_types != []:
         roads = Road.objects.filter(road_type__in=road_types)
-        report_protobuf.filter = json.dumps(
-            {"primary_attribute": primary_attributes, "road_type": road_types}
-        )
+        final_filters["road_type"] = road_types
     else:
         roads = Road.objects.all()
 
     # apply additional filters to Roads list, if provided
     if surface_conditions != []:
-        roads.filter(surface_condition__in=surface_conditions)
+        roads = roads.filter(surface_condition__in=surface_conditions)
+        final_filters["surface_condition"] = surface_conditions
     if surface_types != []:
-        roads.filter(surface_type__in=surface_types)
+        roads = roads.filter(surface_type__in=surface_types)
+        final_filters["surface_type"] = surface_types
     if municipalities != []:
-        roads.filter(administrative_area__in=municipalities)
+        roads = roads.filter(administrative_area__in=municipalities)
+        final_filters["municipality"] = municipalities
     if pavement_classes != []:
-        roads.filter(pavement_class__in=pavement_classes)
+        roads = roads.filter(pavement_class__in=pavement_classes)
+        final_filters["pavement_class"] = pavement_classes
+
+    report_protobuf.filter = json.dumps(final_filters)
 
     if len(roads) == 0:
-        return HttpResponseNotFound()
-
-    surveys = {}
-    road_codes = list(roads.values_list("road_code").distinct())
-    road_code_index = 0
-    final_filters = defaultdict(list)
-    final_lengths = defaultdict(Counter)
-
-    for road_code in road_codes:
-        primary_road_code = road_code[road_code_index]
-        road_chainages = (
-            roads.filter(road_code=primary_road_code)
-            .exclude(link_start_chainage__isnull=True)
-            .exclude(link_end_chainage__isnull=True)
-            .values("link_start_chainage", "link_end_chainage")
+        # Return the empty protobuf, showing which filters were in use
+        return HttpResponse(
+            report_protobuf.SerializeToString(), content_type="application/octet-stream"
         )
-        if len(road_chainages) == 0:
+
+    # Get the list of all relevant road_codes
+    road_codes = list(roads.values_list("road_code", flat=True).distinct())
+
+    # Compose the list of total chainages by road_code
+    road_chainages_list = (
+        roads.filter(road_code__in=road_codes)
+        .exclude(link_start_chainage__isnull=True)
+        .exclude(link_end_chainage__isnull=True)
+        .values("road_code", "link_start_chainage", "link_end_chainage")
+        .order_by("road_code", "link_start_chainage", "link_end_chainage")
+    )
+
+    road_chainages = []
+    prev_road_code = "Nada"
+    for road_chainage_set in road_chainages_list:
+        if (
+            road_chainage_set["link_start_chainage"]
+            == road_chainage_set["link_end_chainage"]
+        ):
             continue
 
-        min_chainage = road_chainages.order_by("link_start_chainage").first()[
-            "link_start_chainage"
-        ]
-        max_chainage = road_chainages.order_by("link_end_chainage").last()[
-            "link_end_chainage"
-        ]
+        if road_chainage_set["road_code"] != prev_road_code:
+            road_chainage = {}
+            road_chainage["code"] = road_chainage_set["road_code"]
+            road_chainage["chainage_start"] = road_chainage_set["link_start_chainage"]
+            road_chainage["chainage_end"] = road_chainage_set["link_end_chainage"]
+            road_chainages.append(road_chainage)
+            prev_road_code = road_chainage["code"]
+        else:
+            road_chainage["chainage_end"] = road_chainage_set["link_end_chainage"]
 
-        if len(road_codes) == 1:
-            if (
-                chainage_start != None
-                and chainage_start > min_chainage
-                and chainage_start < max_chainage
-            ):
-                min_chainage = chainage_start
+    # Handle chainage filtering for single road_codes
+    if len(road_chainages) == 1:
+        min_chainage = road_chainages[0]["chainage_start"]
+        max_chainage = road_chainages[0]["chainage_end"]
 
-            if (
-                chainage_end != None
-                and chainage_end > min_chainage
-                and chainage_end < max_chainage
-            ):
-                max_chainage = chainage_end
+        if (
+            chainage_start != None
+            and chainage_start > min_chainage
+            and chainage_start < max_chainage
+        ):
+            min_chainage = chainage_start
+
+        if (
+            chainage_end != None
+            and chainage_end > min_chainage
+            and chainage_end < max_chainage
+        ):
+            max_chainage = chainage_end
 
         if min_chainage == None or max_chainage == None:
             # Without valid chainage values nothing can be done
-            continue
+            return HttpResponseNotFound()
+
+        road_chainages[0]["chainage_start"] = min_chainage
+        road_chainages[0]["chainage_end"] = max_chainage
+
+    if report_date is not None:
+        final_filters["date_surveyed"] = report_date
+        report_protobuf.filter = json.dumps(final_filters)
+
+    # Commence processing Reports by road_code
+    surveys = {}
+    for road_chainage in road_chainages:
+        primary_road_code = road_chainage["code"]
 
         # pull any Surveys that cover the roads
         for primary_attribute in primary_attributes:
@@ -561,8 +594,19 @@ def protobuf_reports(request):
                 .distinct("road", "chainage_start", "chainage_end")
             )
 
+            if report_date is not None:
+                surveys[primary_attribute] = surveys[primary_attribute].filter(
+                    date_surveyed__lte=report_date
+                )
+
+        # Generate the Report
+        # This is priority #2 for performance improvement
         road_report = Report(
-            surveys, len(road_codes) == 1, primary_road_code, min_chainage, max_chainage
+            surveys,
+            len(road_codes) == 1,
+            primary_road_code,
+            road_chainage["chainage_start"],
+            road_chainage["chainage_end"],
         )
 
         if len(road_codes) == 1:
@@ -573,6 +617,8 @@ def protobuf_reports(request):
                 content_type="application/octet-stream",
             )
         else:
+            # Merge Protobuf Reports
+            # This is priority #1 for performance improvement
             report_protobuf = road_report.to_protobuf()
             report_filters = json.loads(report_protobuf.filter)
             for x in set(report_filters).union(road_report.filters):

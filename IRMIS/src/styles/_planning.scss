@@ -1,9 +1,8 @@
 #planning {
-    height: calc(100vh - #{$top-menu-height} - 20px - 15px);
+    height: calc(100vh - #{$top-menu-height} - 5px - 15px);
     width: calc(100% - #{$side-menu-width});
     padding-right: 8px;
     overflow-y: auto;
-    margin-top: 20px;
 }
 
 planning_base {

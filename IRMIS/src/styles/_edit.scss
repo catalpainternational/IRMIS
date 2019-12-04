@@ -5,7 +5,7 @@ edit_base {
     display: block;
 
     #edit-base {
-        height: calc(100vh - #{$top-menu-height} - 15px);
+        height: calc(100vh - #{$top-menu-height} - 5px - 15px);
         width: calc(100% - #{$side-menu-width});
         padding-right: 8px;
         overflow-y: auto;
@@ -40,8 +40,6 @@ edit_base {
         }
 
         a.table-toggle {
-            margin-top: 20px;
-
             &:first-of-type {
                 margin-right: 20px;
             }
@@ -57,9 +55,10 @@ edit_location_type,
 edit_asset_details,
 edit_pavement,
 edit_project,
+edit_condition,
 edit_maintenance,
-edit_history,
-edit_condition {
+edit_environment,
+edit_history {
     section {
         max-width: $max-width;
         margin-bottom: 40px;

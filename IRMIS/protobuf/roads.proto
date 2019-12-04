@@ -55,6 +55,7 @@ message Road {
   Projection projection_end = 26;
   // number_lanes is an int32 - so that we can set it to -ve to indicate when it is null / None
   int32 number_lanes = 27;
+  int32 rainfall = 28;
 }
 
 message Roads {
