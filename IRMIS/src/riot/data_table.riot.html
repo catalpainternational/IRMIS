@@ -8,8 +8,6 @@
     <table if="{ state.id }" id="{ state.id }" class="d-block table table-bordered table-hover w-100"></table>
 
     <script>
-        // We really should NOT be importing roads here
-        import {EstradaRoad} from "../assets/models/road";
         import {datatableTranslations} from "../datatableTranslations";
         import {exportCsv} from "../exportCsv";
 
@@ -68,6 +66,27 @@
                     }
                 };
             }
+
+            let dom = "<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>"; // https://datatables.net/reference/option/dom#Styling
+            if (!state.paging) {
+                dom = "<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>>";
+            }
+            state.dataTableConfig = props.datatableconfig || {
+                columns: state.columns,
+                rowId: ".getId()",
+                order: state.columnSortOrder,
+                pageLength: state.pageLength,
+                dom: dom,
+                language: datatableTranslations,
+                paging: state.paging,
+                // This turns off filtering for all tables ( DO NOT SET THIS TO TRUE )
+                // dataTables has a bug where the searching / filtering clause passes from one table to another
+                // We only want it for the main table
+                searching: false,
+            };
+            state.dataTableConfig.ajax = function(data, callback, settings) {
+                // This is only here so that dataTables will change its internal state
+            }
         }
 
         const button_template = function(buttonClass, clickAction) {
@@ -91,26 +110,7 @@
         }
 
         const initialiseDataTable = function(state) {
-            let dom = "<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>"; // https://datatables.net/reference/option/dom#Styling
-            if (!state.paging) {
-                dom = "<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>>";
-            }
-            state.table = state.table || $(`#${state.id}`).DataTable({
-                columns: state.columns,
-                rowId: ".getId()",
-                order: state.columnSortOrder,
-                pageLength: state.pageLength,
-                dom: dom,
-                language: datatableTranslations,
-                paging: state.paging,
-                // This turns off filtering for all tables ( DO NOT SET THIS TO TRUE )
-                // dataTables has a bug where the searching / filtering clause passes from one table to another
-                // We only want it for the main table
-                searching: false,
-                ajax: function(data, callback, settings) {
-                    // This is only here so that dataTables will change its internal state
-                }
-            });
+            state.table = state.table || $(`#${state.id}`).DataTable(state.dataTableConfig);
 
             // add any rows the caller has delivered before initialization
             updateDataTable(state);
@@ -142,10 +142,6 @@
             },
             onBeforeUnmount(props, state) {
                 document.removeEventListener(`${state.id}.dataAdded`, state.dataAdded);
-            },
-            getHelpText(field) {
-                // TODO: Fix this, because it's specific to Roads
-                return EstradaRoad.getHelpText(field);
             },
             getTableData() {
                 const headers = this.state.columns
