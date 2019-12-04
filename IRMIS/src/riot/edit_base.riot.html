@@ -52,8 +52,9 @@
 
                 <edit_location_type road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}"
                     if="{ state.page === 'location_type' }"></edit_location_type>
-                <edit_asset_details road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}"
-                    if="{ state.page === 'asset_details' }"></edit_asset_details>
+                <edit_asset_details road="{ state.editingRoad }" showFeedback="{ showFeedback }" saving="{ state.saving }"
+                    parent="{parentFunctions}" if="{ state.page === 'asset_details' }">
+                </edit_asset_details>
                 <edit_pavement road="{ state.editingRoad }" showFeedback="{ showFeedback }" saving="{ state.saving }"
                     parent="{parentFunctions}" if="{ state.page === 'pavement' }"></edit_pavement>
                 <edit_project road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}"
@@ -243,7 +244,7 @@
                     }, 300);
                 }
             },
-            refreshSurveysAndReports(state, allDataTableId, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId) {
+            refreshSurveysAndReports(state, allDataTableId, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId = null) {
                 this.getRoadSurveys(state, allDataTableId, primaryAttribute);
                 this.getRoadSurveyReports(state, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId);
             },
@@ -293,7 +294,8 @@
 
                             if (haveLengths && reportAttributes.length) {
                                 updateReportAttributeSummary(state, reportAttribute, reportAttributes);
-                                document.dispatchEvent(new CustomEvent(`${stackedBarId}.dataUpdated`, {detail: {entries: state[reportAttribute]}}));
+
+                                if (stackedBarId) document.dispatchEvent(new CustomEvent(`${stackedBarId}.dataUpdated`, {detail: {entries: state[reportAttribute]}}));
 
                                 state.reportRows = surveyReportData.attributeTable(primaryAttribute);
 

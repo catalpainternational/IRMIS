@@ -76,6 +76,10 @@ export class EstradaSurvey extends Survey {
         return this.values.number_lanes;
     }
 
+    get carriagewayWidth() {
+        return this.values.carriageway_width;
+    }
+
     get rainfall() {
         return this.values.rainfall;
     }
