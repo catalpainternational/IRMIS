@@ -3,7 +3,15 @@ from django.db import IntegrityError
 from django.utils import timezone
 
 import reversion
-from assets.models import Road, Survey
+from assets.models import (
+    MaintenanceNeed,
+    PavementClass,
+    Road,
+    RoadStatus,
+    SurfaceType,
+    Survey,
+    TechnicalClass,
+)
 
 
 class Command(BaseCommand):
@@ -56,28 +64,40 @@ class Command(BaseCommand):
                     }
 
                     sv = survey_data["values"]
+
+                    ## Road Link attributes
+                    if road.administrative_area:
+                        sv["municipality"] = str(road.administrative_area)
                     if road.carriageway_width:
                         sv["carriageway_width"] = str(road.carriageway_width)
                     if road.funding_source:
                         sv["funding_source"] = str(road.funding_source)
-                    if road.maintenance_need:
-                        sv["maintenance_need"] = str(road.maintenance_need)
-                    if road.pavement_class:
-                        sv["pavement_class"] = str(road.pavement_class)
                     if road.project:
                         sv["project"] = str(road.project)
-                    if road.road_status:
-                        sv["road_status"] = str(road.road_status)
-                    if road.surface_condition:
-                        sv["surface_condition"] = str(road.surface_condition)
-                    if road.surface_type:
-                        sv["surface_type"] = str(road.surface_type)
-                    if road.technical_class:
-                        sv["technical_class"] = str(road.technical_class)
-                    if road.traffic_level:
-                        sv["traffic_level"] = str(road.traffic_level)
                     if road.number_lanes:
                         sv["number_lanes"] = str(road.number_lanes)
+                    if road.road_type:
+                        sv["road_type"] = str(road.road_type)
+
+                    ## Choices-based attributes
+                    if road.surface_condition:
+                        sv["surface_condition"] = str(road.surface_condition)
+                    if road.traffic_level:
+                        sv["traffic_level"] = str(road.traffic_level)
+                    if road.terrain_class:
+                        sv["terrain_class"] = str(road.terrain_class)
+
+                    ## Model-based attributes (assign code value)
+                    if road.maintenance_need:
+                        sv["maintenance_need"] = str(road.maintenance_need.code)
+                    if road.pavement_class:
+                        sv["pavement_class"] = str(road.pavement_class.code)
+                    if road.road_status:
+                        sv["road_status"] = str(road.road_status.code)
+                    if road.surface_type:
+                        sv["surface_type"] = str(road.surface_type.code)
+                    if road.technical_class:
+                        sv["technical_class"] = str(road.technical_class.code)
 
                     # check that values is not empty before saving survey
                     if len(sv.keys()) > 0:

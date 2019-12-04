@@ -1,0 +1,43 @@
+#planning {
+    height: calc(100vh - #{$top-menu-height} - 5px - 15px);
+    width: calc(100% - #{$side-menu-width});
+    padding-right: 8px;
+    overflow-y: auto;
+}
+
+planning_base {
+    padding-right: 7px;
+    display: block;
+}
+
+plan {
+    header {
+        padding: 30px 30px 30px 60px;
+        background-color: $white;
+        margin-bottom: 10px;
+
+        h6 {
+            margin-left: 15px;
+            margin-bottom: 0;
+        }
+
+        p {
+            margin-bottom: 0;
+            margin-top: 20px;
+        }
+    }
+
+    .content-wrapper {
+        padding: 25px 25px 25px 60px;
+        background-color: $white;
+        margin-bottom: 10px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        h6 {
+            margin-bottom: 0;
+        }
+    }
+}

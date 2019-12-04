@@ -1,0 +1,104 @@
+<stacked_bar>
+    <div hidden="{ !props.id }" id="{ props.id }">
+        <h5 if="{ props.title }">{ props.title }</h5>
+        <div class="d-flex entry-bar">
+            <div each="{entry in state.entries}" class="{'entry-' + entry.key}" style="{'width:' + entry.percent + '%;'}"></div>
+        </div>
+        <div class="align-items-center d-flex justify-content-between entry-legend">
+            <div class="values d-flex flex-wrap">
+                <div each="{entry in state.entries}" class="align-items-center d-flex">
+                    <div class="{'entry-' + entry.key}"></div>
+                    <span>{ entry.label }</span>
+                </div>
+            </div>
+            <div class="total">
+                <span>{ totalDisplay() }</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        import $ from "jquery";
+
+        const emptyEntries = [{ key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }];
+
+        export default {
+            state: {
+                total_title: window.gettext("Total"),
+                entries: emptyEntries,
+            },
+
+            onMounted(props, state) {
+                this.initialiseStateFromProps(props, state);
+
+                document.addEventListener(`${props.id}.dataUpdated`, state.dataUpdated)
+            },
+
+            onBeforeUnmount(props, state) {
+                document.removeEventListener(`${props.id}.dataUpdated`, state.dataUpdated);
+            },
+
+            initialiseStateFromProps(props, state) {
+                this.processCalculatedFields(props.entries);
+
+                // Wraps the actual processing for 'dataUpdated' event
+                state.dataUpdated = (data) => this.processDataUpdated(data);
+            },
+
+            processCalculatedFields(newEntries) {
+                newEntries = newEntries && newEntries.length ? newEntries : emptyEntries;
+
+                if (JSON.stringify(newEntries) === JSON.stringify(this.state.entries)) {
+                    // Nothing has changed - just exit
+                    return;
+                }
+
+                // Clean all the distance values and get the total
+                const totalDistance = this.getTotalDistance(newEntries);
+
+                // Then calculate everything else
+                newEntries.forEach((entry) => {
+                    const entryTitle = window.gettext(entry.title[0].toUpperCase() + entry.title.substring(1));
+                    if (totalDistance > 0) {
+                        entry.percent = Math.round((entry.distance / totalDistance) * 10000) / 100;
+                        // the calculated label shows distance in km
+                        entry.label = `${entryTitle} (${entry.distance / 1000}km/${entry.percent}%)`;
+                    } else {
+                        // 100% of 0km - but this won't appear in the label
+                        entry.percent = 100;
+                        // the calculated label shows distance in km
+                        entry.label = `${entryTitle} (0km)`;
+                    }
+                });
+
+                this.state.entries = [];
+                newEntries.forEach((newEntry) => {this.state.entries.push(newEntry)});
+
+                this.update();
+            },
+
+            processDataUpdated(data) {
+                this.processCalculatedFields(data.detail.entries);
+
+                data.stopPropagation();
+            },
+
+            totalDisplay() {
+                const totalDistance = this.getTotalDistance(this.state.entries);
+                return `${this.state.total_title}:${totalDistance / 1000}km`;
+            },
+
+            getTotalDistance(entries) {
+                // Clean all the distance values and get the total
+                let total_distance = 0;
+                entries.forEach((entry) => {
+                    // all distances are in meters
+                    entry.distance = Math.round(entry.distance);
+                    total_distance += entry.distance;
+                });
+
+                return Math.round(total_distance);
+            },
+        }
+    </script>
+</stacked_bar>

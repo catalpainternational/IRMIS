@@ -1,0 +1,30 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+package assets;
+
+/* Note that field Id numbers once used, are fixed.
+* The ordering shown here lines up with the model and groups the fields better.
+* But the numbering preserves the original declaration */
+
+message Report {
+    string filter = 1; // JSON string - a dictionary of lists { filter_term: ["a"], other_filter: ["x"]}
+    string lengths = 2; // JSON string - effectively a consolidation of 'values'
+    repeated AttributeTable attribute_tables = 3;
+}
+
+message AttributeTable {
+    string primary_attribute = 1;
+    repeated string secondary_attribute = 2;
+    repeated AttributeEntry attribute_entries = 3;
+}
+
+message AttributeEntry {
+    float chainage_start = 1;
+    float chainage_end = 2;
+    string values = 3; // JSON string listing all attributes within this AttributeEntry
+    uint32 survey_id = 4;
+    google.protobuf.Timestamp date_surveyed = 5;
+    string added_by = 6;
+    string primary_attribute = 7;
+}

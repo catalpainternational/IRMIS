@@ -32,9 +32,11 @@
     }
 
     &::-webkit-input-placeholder { color: $gray; } /* Chrome/Opera/Safari */
+    &::-ms-input-placeholder { color: $gray; } /* Edge */
     &:-ms-input-placeholder { color: $gray; } /* IE 10+ */
     &::-moz-placeholder { color: $gray; } /* Firefox 19+ */
     &:-moz-placeholder { color: $gray; } /* Firefox 18- */
+    &::placeholder { color: $gray; } /* Most modern browsers */
 }
 
 .form-text {

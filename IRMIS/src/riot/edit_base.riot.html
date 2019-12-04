@@ -1,0 +1,329 @@
+<edit_base>
+    <div class="row">
+        <div id="side-menu">
+            <div>
+                <ul class="navigation">
+                    <li class="text-uppercase">{ window.gettext("Edit asset") }</li>
+                    <ul>
+                        <li class="{ state.page === 'location_type' ? 'active' : '' }" data-page="location_type"
+                            onclick="{ selectPage }">{ window.gettext("Location & Type") }</li>
+                        <li class="{ state.page === 'asset_details' ? 'active' : '' }" data-page="asset_details"
+                            onclick="{ selectPage }">{ window.gettext("Asset Details") }</li>
+                        <li class="{ state.page === 'pavement' ? 'active' : '' }" data-page="pavement"
+                            onclick="{ selectPage }">{ window.gettext("Pavement") }</li>
+                        <li class="{ state.page === 'project' ? 'active' : '' }" data-page="project"
+                            onclick="{ selectPage }">{ window.gettext("Project") }</li>
+                        <li class="{ state.page === 'condition' ? 'active' : '' }" data-page="condition"
+                            onclick="{ selectPage }">{ window.gettext("Condition") }</li>
+                        <li class="{ state.page === 'maintenance' ? 'active' : '' }" data-page="maintenance"
+                            onclick="{ selectPage }">{ window.gettext("Maintenance") }</li>
+                        <li class="{ state.page === 'environment' ? 'active' : '' }" data-page="environment"
+                            onclick="{ selectPage }">{
+                            window.gettext("Environment") }</li>
+                    </ul>
+                </ul>
+                <ul class="navigation">
+                    <li class="text-uppercase">{ window.gettext("History") }</li>
+                    <ul>
+                        <li class="{ state.page === 'history' ? 'active' : '' }" data-page="history"
+                            onclick="{ selectPage }">{ window.gettext("Change log") }</li>
+                    </ul>
+                </ul>
+            </div>
+        </div>
+
+        <edit_stop_alert modalId="stop-alert" title="{ window.gettext('Unsaved Changes') }"
+            description="{ window.gettext('You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?') }"
+            proceedLabel="{ window.gettext('Discard') }" proceedResult="discard"
+            stopLabel="{ window.gettext('Continue editing') }" stopResult="continueEdit">
+        </edit_stop_alert>
+
+        <div id="edit-base">
+            <template if="{ !state.loading }">
+                <header class="align-items-center d-flex">
+                    <a class="caret-dark left image" onclick="{ goBack }"></a>
+                    <h1>{ state.editingRoad.getRoadCode() } { state.editingRoad.getRoadName() }</h1>
+                </header>
+
+                <feedback_banner if="{ state.showFeedback }" close="{ closeFeedback }"
+                    successMessage="{ window.gettext('You have successfully saved') }"
+                    errorMessage="{ window.gettext('Something went wrong') }" error="{ state.error }">
+                </feedback_banner>
+
+                <edit_location_type road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}"
+                    if="{ state.page === 'location_type' }"></edit_location_type>
+                <edit_asset_details road="{ state.editingRoad }" showFeedback="{ showFeedback }" saving="{ state.saving }"
+                    parent="{parentFunctions}" if="{ state.page === 'asset_details' }">
+                </edit_asset_details>
+                <edit_pavement road="{ state.editingRoad }" showFeedback="{ showFeedback }" saving="{ state.saving }"
+                    parent="{parentFunctions}" if="{ state.page === 'pavement' }"></edit_pavement>
+                <edit_project road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}"
+                    if="{ state.page === 'project' }"></edit_project>
+                <edit_condition road="{ state.editingRoad }" showFeedback="{ showFeedback }" parent="{parentFunctions}"
+                    if="{ state.page === 'condition' }"></edit_condition>
+                <edit_maintenance road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}"
+                    if="{ state.page === 'maintenance' }"></edit_maintenance>
+                <edit_environment road="{ state.editingRoad }" showFeedback="{ showFeedback }" saving="{ state.saving }"
+                    parent="{parentFunctions}" if="{ state.page === 'environment' }"></edit_environment>
+                <edit_history road="{ state.baseRoad }" parent="{parentFunctions}" if="{ state.page === 'history' }">
+                </edit_history>
+            </template>
+        </div>
+
+        <loading></loading>
+    </div>
+
+    <script>
+        import * as riot from "riot";
+        import $ from "jquery";
+
+        import {cloneData} from "../assets/protoBufUtilities";
+        import {getRoadSurveys} from "../surveyManager";
+        import {getRoadReport} from "../reportManager";
+        import {updateReportAttributeSummary} from "../roadAttributes";
+
+        // We really should NOT be importing road specific stuff here
+        import {saveRoad} from "../roadManager";
+        import {EstradaRoad} from "../assets/models/road";
+
+        import Feedback_Banner from './feedback_banner.riot.html';
+        import Edit_Stop_Alert from "./edit_stop_alert.riot.html";
+        import Loading from "./loading.riot.html";
+
+        import Edit_Location_Type from "./edit_location_type.riot.html";
+        import Edit_Asset_Details from "./edit_asset_details.riot.html";
+        import Edit_Pavement from "./edit_pavement.riot.html";
+        import Edit_Project from "./edit_project.riot.html";
+        import Edit_Condition from "./edit_condition.riot.html";
+        import Edit_Maintenance from "./edit_maintenance.riot.html";
+        import Edit_Environment from "./edit_environment.riot.html";
+
+        import Edit_History from "./edit_history.riot.html";
+
+        export default {
+            state: {
+                loading: true,
+                saving: false,
+                /** editingRoad is the object to use to actually make changes */
+                editingRoad: null,
+                /** baseRoad is the original object */
+                baseRoad: null,
+                error: false,
+                page: "location_type",
+                nextPage: null,
+                hasChanges: false,
+                showFeedback: false,
+                stopAlertResult: null,
+            },
+            components: {
+                Feedback_Banner, Edit_Stop_Alert, Loading,
+                Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Environment, Edit_Project, Edit_Condition, Edit_Maintenance,
+                Edit_History,
+            },
+            onBeforeMount() {
+                window.onbeforeunload = () => {
+                    return this.hasChanges() ? "You have changes" : null;
+                }
+                window.goBack = this.goBack;
+            },
+            onBeforeUnmount() {
+                window.onbeforeunload = null;
+                window.goBack = () => {};
+            },
+            onMounted(props, state) {
+                $('#loading').modal('show');
+                state.page = props.page;
+
+                this.parentFunctions = {
+                    getHelpText: this.getHelpText,
+                    save: this.save,
+                    refreshSurveysAndReports: this.refreshSurveysAndReports,
+                    updateReportAttributeSummary: updateReportAttributeSummary,
+                };
+
+                props.roadPromise.then(road => {
+                    $('#loading').modal('hide');
+                    state.loading = false;
+                    this.initRoad(road);
+                    this.continueMounting();
+                }).catch(err => {
+                    state.error = err;
+                }).finally((r) => {
+                    this.update();
+                });
+            },
+            initRoad(road) {
+                this.state.baseRoad = road;
+                this.state.editingRoad = cloneData(this.state.baseRoad);
+            },
+            continueMounting() {
+                // Set up other data on editingRoad that is commonly used on the child tags
+                let roadDistance = this.state.editingRoad.getLinkEndChainage() - this.state.editingRoad.getLinkStartChainage();
+                if (!roadDistance || roadDistance < 0) {
+                    roadDistance = this.state.editingRoad.linkLength;
+                }
+                this.state.editingRoad.distance = roadDistance;
+
+                this.parentFunctions.emptyAttributes = [{
+                    key: 0,
+                    title: "unknown",
+                    distance: roadDistance
+                }];
+            },
+            save() {
+                this.update({saving: true});
+                saveRoad(this.state.editingRoad).then((road) => {
+                    if (road) {
+                        this.state.error = false;
+                        this.initRoad(road);
+                    } else {
+                        this.state.error = true;
+                    }
+                }).catch(err => {
+                    this.state.error = true;
+                }).finally((r) => {
+                    this.update({saving: false});
+                    this.showFeedback(this.state.error);
+                });
+            },
+            hasChanges() {
+                return this.state.baseRoad.toString() !== this.state.editingRoad.toString();
+            },
+            goBack(e) {
+                this.state.nextPage = "#";
+                if (this.hasChanges()) {
+                    this.modalHandler();
+                } else {
+                    window.location.hash = this.state.nextPage;
+                }
+            },
+            selectPage(e) {
+                const roadId = this.state.editingRoad.getId();
+                this.state.page = e.currentTarget.dataset.page;
+                this.state.nextPage = `#edit/${roadId}/${this.state.page}`;
+                if (this.hasChanges()) {
+                    this.modalHandler();
+                } else {
+                    this.discardChanges();
+                }
+            },
+            modalHandler() {
+                document.addEventListener("edit.stop-alert.result", (data) => {
+                    const stopAlertResult = data.detail.result;
+
+                    // Ensure that the dialog gets hidden
+                    $("#stop-alert").modal("hide");
+
+                    if (stopAlertResult === "discard") {
+                        this.discardChanges();
+                    }
+                }, {once: true});
+
+                $("#stop-alert").modal("show");
+            },
+            discardChanges() {
+                this.state.editingRoad = this.state.baseRoad.cloneMessage();
+                window.location.hash = this.state.nextPage;
+                this.update();
+            },
+            showFeedback(error) {
+                this.update({
+                    showFeedback: true,
+                    error: error,
+                });
+                setTimeout(() => this.closeFeedback(), 2000);
+            },
+            closeFeedback() {
+                const feedback = document.getElementsByClassName("slide-in").item(0);
+
+                if (feedback) {
+                    feedback.classList.add("slide-out");
+                    setTimeout(() => {
+                        feedback.classList.remove("slide-out");
+                        this.update({showFeedback: false});
+                    }, 300);
+                }
+            },
+            refreshSurveysAndReports(state, allDataTableId, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId = null) {
+                this.getRoadSurveys(state, allDataTableId, primaryAttribute);
+                this.getRoadSurveyReports(state, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId);
+            },
+            getRoadSurveys(state, allDataTableId, primaryAttribute) {
+                const roadId = state.road.getId();
+
+                getRoadSurveys(roadId, primaryAttribute)
+                    .then((surveyData) => {
+                        if (surveyData) {
+                            state.pendingRows = surveyData.map((data) => {
+                                data.title = data.surface;
+                                return data;
+                            });
+
+                            const eventName = `${allDataTableId}.dataAdded`;
+                            const eventDetail = {detail: {pendingRows: state.pendingRows, clearRows: true}};
+                            document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+
+                            state.error = false;
+                        } else {
+                            state.error = true;
+                        }
+                    }).catch(err => {
+                        state.error = true;
+                    }).finally((r) => {
+                        state.loading = false;
+                        this.update();
+                    });
+            },
+            getRoadSurveyReports(state, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId) {
+                const editingRoad = state.editingRoad || state.road;
+                const filters = {
+                    primaryattribute: primaryAttribute,
+                    roadcode: editingRoad.code,
+                    chainagestart: editingRoad.getLinkStartChainage(),
+                    chainageend: editingRoad.getLinkEndChainage(),
+                };
+
+                getRoadReport(filters)
+                    .then((surveyReportData) => {
+                        if (surveyReportData) {
+                            const haveLengths = !!surveyReportData.lengths;
+                            let reportAttributes = surveyReportData[reportAttribute];
+                            if (!reportAttributes || !reportAttributes.length) {
+                                reportAttributes = this.parentFunctions.emptyAttributes;
+                            }
+
+                            if (haveLengths && reportAttributes.length) {
+                                updateReportAttributeSummary(state, reportAttribute, reportAttributes);
+
+                                if (stackedBarId) document.dispatchEvent(new CustomEvent(`${stackedBarId}.dataUpdated`, {detail: {entries: state[reportAttribute]}}));
+
+                                state.reportRows = surveyReportData.attributeTable(primaryAttribute);
+
+                                const eventName = `${reportDataTableId}.dataAdded`;
+                                const eventDetail = {detail: {pendingRows: state.reportRows, clearRows: true}};
+                                document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+
+                                if (surveyReportData.id === null) {
+                                    // An id of null should tell us that there was an error fetching the data
+                                    state.error = true;
+                                    this.showFeedback(true);
+                                }
+                            }
+                            state.error = false;
+                        } else {
+                            state.error = true;
+                        }
+                    }).catch(err => {
+                        state.error = true;
+                    }).finally((r) => {
+                        state.loading = false;
+                        this.update();
+                    });
+            },
+            getHelpText(field) {
+                // TODO: Fix this, because it's specific to 'Roads'
+                return EstradaRoad.getHelpText(field);
+            }
+        };
+    </script>
+</edit_base>

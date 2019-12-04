@@ -7,7 +7,8 @@ import { estradaTableColumns, estradaTableEventListeners } from "./mainTableDefi
 import { surfaceConditionColumns, surfaceTypeColumns, technicalClassColumns, numberLanesColumns } from "./segmentsInventoryTableDefinition";
 
 import { datatableTranslations } from "./datatableTranslations";
-import { getRoadSurveys } from "./surveyManager";
+import { getRoad } from "./roadManager";
+import { getRoadReport } from "./reportManager";
 
 let surfaceConditionTable = null;
 let surfaceTypeTable = null;
@@ -79,6 +80,13 @@ window.addEventListener("load", () => {
     initializeDataTable();
 });
 
+const segmentInventoryModalTables = {
+    surfaceCondition: "inventory-surface-condition-table",
+    surfaceType: "inventory-surface-type-table",
+    technicalClass: "inventory-technical-class-table",
+    numberLanes: "inventory-number-lanes-table",
+};
+
 function initializeDataTable() {
     if (window.canEdit) {
         estradaTableColumns.unshift({
@@ -144,33 +152,23 @@ function initializeDataTable() {
         }
     });
 
-    surfaceConditionTable = $("#inventory-surface-condition-table").DataTable({
-        columns: surfaceConditionColumns,
-        rowId: ".getId()",
-        dom: "<'row'<'col-sm-12'tr>>", // https://datatables.net/reference/option/dom#Styling
-        language: datatableTranslations,
-    });
+    function setUpModalTable(tableId, columns) {
+        return $(`#${tableId}`).DataTable({
+            columns: columns,
+            rowId: ".getId()",
+            dom: "<'row'<'col-sm-12'tr>>", // https://datatables.net/reference/option/dom#Styling
+            language: datatableTranslations,
+            // This turns off filtering for all tables ( DO NOT SET THIS TO TRUE )
+            // dataTables has a bug where the searching / filtering clause passes from one table to another
+            // We only want it for the main table
+            searching: false,
+        });
+    }
 
-    surfaceTypeTable = $("#inventory-surface-type-table").DataTable({
-        columns: surfaceTypeColumns,
-        rowId: ".getId()",
-        dom: "<'row'<'col-sm-12'tr>>", // https://datatables.net/reference/option/dom#Styling
-        language: datatableTranslations,
-    });
-
-    technicalClassTable = $("#inventory-technical-class-table").DataTable({
-        columns: technicalClassColumns,
-        rowId: ".getId()",
-        dom: "<'row'<'col-sm-12'tr>>", // https://datatables.net/reference/option/dom#Styling
-        language: datatableTranslations,
-    });
-
-    numberLanesTable = $("#inventory-number-lanes-table").DataTable({
-        columns: numberLanesColumns,
-        rowId: ".getId()",
-        dom: "<'row'<'col-sm-12'tr>>", // https://datatables.net/reference/option/dom#Styling
-        language: datatableTranslations,
-    });
+    surfaceConditionTable = setUpModalTable(segmentInventoryModalTables.surfaceCondition, surfaceConditionColumns);
+    surfaceTypeTable = setUpModalTable(segmentInventoryModalTables.surfaceType, surfaceTypeColumns);
+    technicalClassTable = setUpModalTable(segmentInventoryModalTables.technicalClass, technicalClassColumns);
+    numberLanesTable = setUpModalTable(segmentInventoryModalTables.numberLanes, numberLanesColumns);
 
     if (pendingRows.length) {
         // add any rows the road manager has delivered before initialization
@@ -252,52 +250,62 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
     const roadId = button.data("id");
     const attr = button.data("attr");
     const modal = $(this);
+    let reportDataTableId = undefined;
+    let reportTable = undefined;
 
-    $("#inventory-surface-condition-table_wrapper").hide();
-    $("#inventory-surface-type-table_wrapper").hide();
-    $("#inventory-technical-class-table_wrapper").hide();
-    $("#inventory-number-lanes-table_wrapper").hide();
+    $(`#${segmentInventoryModalTables.surfaceCondition}_wrapper`).hide();
+    $(`#${segmentInventoryModalTables.surfaceType}_wrapper`).hide();
+    $(`#${segmentInventoryModalTables.technicalClass}_wrapper`).hide();
+    $(`#${segmentInventoryModalTables.numberLanes}_wrapper`).hide();
 
     switch (attr) {
         case "surface_condition":
+            reportDataTableId = segmentInventoryModalTables.surfaceCondition;
             modal.find(".modal-title").text(linkCode + " " + gettext("Surface Condition segments"));
-            surfaceConditionTable.clear(); // remove all rows in the table
-            getRoadSurveys(roadId).then((surveyData) => {
-                if (surveyData) {
-                    surfaceConditionTable.rows.add(surveyData).draw();
-                }
-            });
-            $("#inventory-surface-condition-table_wrapper").show();
+            reportTable = surfaceConditionTable;
             break;
         case "surface_type":
+            reportDataTableId = segmentInventoryModalTables.surfaceType;
             modal.find(".modal-title").text(linkCode + " " + gettext("Surface Type segments"));
-            surfaceTypeTable.clear(); // remove all rows in the table
-            getRoadSurveys(roadId).then((surveyData) => {
-                if (surveyData) {
-                    surfaceTypeTable.rows.add(surveyData).draw();
-                }
-            });
-            $("#inventory-surface-type-table_wrapper").show();
+            reportTable = surfaceTypeTable;
             break;
         case "technical_class":
+            reportDataTableId = segmentInventoryModalTables.technicalClass;
             modal.find(".modal-title").text(linkCode + " " + gettext("Technical Class segments"));
-            technicalClassTable.clear(); // remove all rows in the table
-            getRoadSurveys(roadId).then((surveyData) => {
-                if (surveyData) {
-                    technicalClassTable.rows.add(surveyData).draw();
-                }
-            });
-            $("#inventory-technical-class-table_wrapper").show();
+            reportTable = technicalClassTable;
             break;
         case "number_lanes":
+            reportDataTableId = segmentInventoryModalTables.numberLanes;
             modal.find(".modal-title").text(linkCode + " " + gettext("Number of Lanes segments"));
-            numberLanesTable.clear(); // remove all rows in the table
-            getRoadSurveys(roadId).then((surveyData) => {
-                if (surveyData) {
-                    numberLanesTable.rows.add(surveyData).draw();
-                }
-            });
-            $("#inventory-number-lanes-table_wrapper").show();
+            reportTable = numberLanesTable;
             break;
     }
+    reportTable.clear(); // remove all rows in the table
+
+    getRoad(roadId).then((roadData) => {
+         let filters = {
+            primaryattribute: attr,
+        };
+        if (roadData.getLinkStartChainage() && roadData.getLinkEndChainage()) {
+            filters.roadcode = roadData.getRoadCode();
+            filters.chainagestart = roadData.getLinkStartChainage();
+            filters.chainageend = roadData.getLinkEndChainage();
+        } else {
+            filters.roadid = roadData.id;
+        }
+        getRoadReport(filters).then((reportData) => {
+            reportTable.clear(); // remove all rows in the table - again
+            if (reportData && reportDataTableId) {
+                const attributes = reportData.attributeTable(attr, true);
+                if (attributes.length) {
+                    reportTable.rows.add(attributes);
+                }
+            }
+
+        }).finally(() => {
+            reportTable.draw();
+
+            $(`#${reportDataTableId}_wrapper`).show();
+        });
+    });
 });

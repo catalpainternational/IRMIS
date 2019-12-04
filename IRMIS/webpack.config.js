@@ -17,7 +17,7 @@ module.exports = {
     module: {
         rules: [
             {
-                'test': /\.riot$/,
+                'test': /\.riot.html$/,
                 'exclude': /node_modules/,
                 'use': {
                     'loader': '@riotjs/webpack-loader',

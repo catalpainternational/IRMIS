@@ -21,7 +21,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='assets',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x0csurvey.proto\x12\x06\x61ssets\x1a\x1fgoogle/protobuf/timestamp.proto\"\xf5\x01\n\x06Survey\x12\n\n\x02id\x18\x01 \x01(\r\x12\x0c\n\x04road\x18\x02 \x01(\t\x12\x0c\n\x04user\x18\x03 \x01(\r\x12\x0e\n\x06source\x18\t \x01(\t\x12\x30\n\x0c\x64\x61te_updated\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\rdate_surveyed\x18\x08 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x16\n\x0e\x63hainage_start\x18\x05 \x01(\x02\x12\x14\n\x0c\x63hainage_end\x18\x06 \x01(\x02\x12\x0e\n\x06values\x18\x07 \x01(\t\x12\x10\n\x08\x61\x64\x64\x65\x64_by\x18\x0b \x01(\t\"*\n\x07Surveys\x12\x1f\n\x07surveys\x18\x01 \x03(\x0b\x32\x0e.assets.Survey\"\x9f\x01\n\x06Report\x12\x11\n\troad_code\x18\x01 \x01(\t\x12\x1d\n\x15report_chainage_start\x18\x02 \x01(\x02\x12\x1b\n\x13report_chainage_end\x18\x03 \x01(\x02\x12\x0e\n\x06\x63ounts\x18\x04 \x01(\t\x12\x13\n\x0bpercentages\x18\x05 \x01(\t\x12!\n\x05table\x18\x06 \x03(\x0b\x32\x12.assets.TableEntry\"\xad\x01\n\nTableEntry\x12\x16\n\x0e\x63hainage_start\x18\x01 \x01(\x02\x12\x14\n\x0c\x63hainage_end\x18\x02 \x01(\x02\x12\x19\n\x11surface_condition\x18\x03 \x01(\t\x12\x11\n\tsurvey_id\x18\x04 \x01(\r\x12\x31\n\rdate_surveyed\x18\x05 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x10\n\x08\x61\x64\x64\x65\x64_by\x18\x06 \x01(\tb\x06proto3')
+  serialized_pb=_b('\n\x0csurvey.proto\x12\x06\x61ssets\x1a\x1fgoogle/protobuf/timestamp.proto\"\xf5\x01\n\x06Survey\x12\n\n\x02id\x18\x01 \x01(\r\x12\x0c\n\x04road\x18\x02 \x01(\t\x12\x0c\n\x04user\x18\x03 \x01(\r\x12\x0e\n\x06source\x18\t \x01(\t\x12\x30\n\x0c\x64\x61te_updated\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\rdate_surveyed\x18\x08 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x16\n\x0e\x63hainage_start\x18\x05 \x01(\x02\x12\x14\n\x0c\x63hainage_end\x18\x06 \x01(\x02\x12\x0e\n\x06values\x18\x07 \x01(\t\x12\x10\n\x08\x61\x64\x64\x65\x64_by\x18\x0b \x01(\t\"*\n\x07Surveys\x12\x1f\n\x07surveys\x18\x01 \x03(\x0b\x32\x0e.assets.Surveyb\x06proto3')
   ,
   dependencies=[google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,])
 
@@ -152,147 +152,11 @@ _SURVEYS = _descriptor.Descriptor(
   serialized_end=347,
 )
 
-
-_REPORT = _descriptor.Descriptor(
-  name='Report',
-  full_name='assets.Report',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='road_code', full_name='assets.Report.road_code', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='report_chainage_start', full_name='assets.Report.report_chainage_start', index=1,
-      number=2, type=2, cpp_type=6, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='report_chainage_end', full_name='assets.Report.report_chainage_end', index=2,
-      number=3, type=2, cpp_type=6, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='counts', full_name='assets.Report.counts', index=3,
-      number=4, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='percentages', full_name='assets.Report.percentages', index=4,
-      number=5, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='table', full_name='assets.Report.table', index=5,
-      number=6, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=350,
-  serialized_end=509,
-)
-
-
-_TABLEENTRY = _descriptor.Descriptor(
-  name='TableEntry',
-  full_name='assets.TableEntry',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='chainage_start', full_name='assets.TableEntry.chainage_start', index=0,
-      number=1, type=2, cpp_type=6, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='chainage_end', full_name='assets.TableEntry.chainage_end', index=1,
-      number=2, type=2, cpp_type=6, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='surface_condition', full_name='assets.TableEntry.surface_condition', index=2,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='survey_id', full_name='assets.TableEntry.survey_id', index=3,
-      number=4, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='date_surveyed', full_name='assets.TableEntry.date_surveyed', index=4,
-      number=5, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='added_by', full_name='assets.TableEntry.added_by', index=5,
-      number=6, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=512,
-  serialized_end=685,
-)
-
 _SURVEY.fields_by_name['date_updated'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
 _SURVEY.fields_by_name['date_surveyed'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
 _SURVEYS.fields_by_name['surveys'].message_type = _SURVEY
-_REPORT.fields_by_name['table'].message_type = _TABLEENTRY
-_TABLEENTRY.fields_by_name['date_surveyed'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
 DESCRIPTOR.message_types_by_name['Survey'] = _SURVEY
 DESCRIPTOR.message_types_by_name['Surveys'] = _SURVEYS
-DESCRIPTOR.message_types_by_name['Report'] = _REPORT
-DESCRIPTOR.message_types_by_name['TableEntry'] = _TABLEENTRY
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 Survey = _reflection.GeneratedProtocolMessageType('Survey', (_message.Message,), {
@@ -308,20 +172,6 @@ Surveys = _reflection.GeneratedProtocolMessageType('Surveys', (_message.Message,
   # @@protoc_insertion_point(class_scope:assets.Surveys)
   })
 _sym_db.RegisterMessage(Surveys)
-
-Report = _reflection.GeneratedProtocolMessageType('Report', (_message.Message,), {
-  'DESCRIPTOR' : _REPORT,
-  '__module__' : 'survey_pb2'
-  # @@protoc_insertion_point(class_scope:assets.Report)
-  })
-_sym_db.RegisterMessage(Report)
-
-TableEntry = _reflection.GeneratedProtocolMessageType('TableEntry', (_message.Message,), {
-  'DESCRIPTOR' : _TABLEENTRY,
-  '__module__' : 'survey_pb2'
-  # @@protoc_insertion_point(class_scope:assets.TableEntry)
-  })
-_sym_db.RegisterMessage(TableEntry)
 
 
 # @@protoc_insertion_point(module_scope)

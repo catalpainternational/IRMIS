@@ -1,0 +1,90 @@
+<plan>
+    <header>
+        <div class="d-flex flex-column">
+            <div class="align-items-center d-flex">
+                <span class="paper image"></span>
+                <h6>{ props.title }</h6>
+            </div>
+            <div>
+                <p>{ props.description }.</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <div class="align-items-center d-flex justify-content-between">
+            <h6>{ window.gettext("Total 5 Year Plan Estimated Cost - Rural Road") }</h6>
+            <a href="/downloads/5yearplan" download class="btn btn-secondary btn-sm">{ window.gettext("Download 5 Year Plan") }</a>
+        </div>
+
+        <data_table table_id="plan-rural-roads" datatableconfig={ state.tableConfig }></data_table>
+
+        <small class="text-muted">{ window.gettext("Estimated costs are in million USD") }</small>
+    </div>
+
+    <script>
+        export default {
+            onBeforeMount(props, state) {
+                let columns = [
+                    {
+                        // Title needs to be set per data type
+                        title: window.gettext("Type of Works"),
+                        defaultContent: "",
+                        orderable: false,
+                    },
+                ];
+                const yearColumns = [
+                    {
+                        title: window.gettext("Cost ($M)"),
+                        defaultContent: "",
+                        className: "text-right",
+                        orderable: false,
+                    },
+                    {
+                        title: window.gettext("Km"),
+                        defaultContent: "",
+                        className: "text-right",
+                        orderable: false,
+                    }
+                ];
+
+                for (let year = 1; year <= 6; year++) {
+                    columns = columns.concat(yearColumns);
+                }
+                state.tableConfig = {
+                    paging: false,
+                    columns: columns,
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    ordering: false,
+                    data: [
+                        [window.gettext('Routine Maintenance'), 1.05, 262, 2.18, 544, 3.18, 794, 3.60, 900, 4.38, 1095, 14.38, 3596],
+                        [window.gettext('Periodic Maintenance'), 5.31, 213, 3.89, 156, 0.13, 5, 2.27, 91, 0.15, 6, 11.74, 470],
+                        [window.gettext('Rehabilitation'), 13.85, 70, 18.74, 94, 20.78, 101, 20.83, 104, 22.42, 108, 96.62, 478],
+                        [window.gettext('Total'), 20.21, 544, 24.81, 794, 24.08, 900, 26.70, 1095, 26.95, 1209, 122.75, 4543]
+                    ],
+                };
+            },
+            onMounted(props, state) {
+                const groupedColumnsRow = this.$("#plan-rural-roads thead").insertRow(0);
+                let columnHeading;
+
+                columnHeading = document.createElement("th");
+                groupedColumnsRow.appendChild(columnHeading);
+
+                for (let year = 1; year <= 5; year++) {
+                    columnHeading = document.createElement("th");
+                    columnHeading.innerHTML = window.gettext(`Year ${year}`);
+                    columnHeading.setAttribute("colspan", 2)
+                    groupedColumnsRow.appendChild(columnHeading);
+                }
+
+                columnHeading = document.createElement("th");
+                columnHeading.innerHTML = window.gettext("Total");
+                columnHeading.setAttribute("colspan", 2)
+                groupedColumnsRow.appendChild(columnHeading);
+            },
+        }
+    </script>
+</plan>

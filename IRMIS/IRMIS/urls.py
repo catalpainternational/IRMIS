@@ -34,6 +34,7 @@ def trigger_error(request):
 urlpatterns = [
     path("jsi18n/", JavaScriptCatalog.as_view(), name="javascript-catalog"),
     path("assets/", include("assets.urls")),
+    path("downloads/", include("protected_downloads.urls")),
     path("admin/", admin.site.urls),
     path("sentry-debug/", trigger_error),
     re_path(r"^cms/", include(wagtailadmin_urls)),

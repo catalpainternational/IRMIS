@@ -17,6 +17,7 @@ from protobuf.survey_pb2 import Surveys as ProtoSurveys
 
 import json
 from google.protobuf.timestamp_pb2 import Timestamp
+from google.protobuf.wrappers_pb2 import FloatValue, UInt32Value
 from .geodjango_utils import start_end_point_annos
 
 
@@ -199,7 +200,7 @@ class RoadQuerySet(models.QuerySet):
         # See roads.proto
 
         roads_protobuf = ProtoRoads()
-        fields = dict(
+        regular_fields = dict(
             geojson_id="geojson_file_id",
             road_code="road_code",
             road_name="road_name",
@@ -207,20 +208,22 @@ class RoadQuerySet(models.QuerySet):
             road_status="road_status__code",
             link_code="link_code",
             link_start_name="link_start_name",
-            link_start_chainage="link_start_chainage",
             link_end_name="link_end_name",
-            link_end_chainage="link_end_chainage",
-            link_length="link_length",
             surface_type="surface_type__code",
             surface_condition="surface_condition",
             pavement_class="pavement_class__code",
-            carriageway_width="carriageway_width",
             administrative_area="administrative_area",
             technical_class="technical_class__code",
             project="project",
             funding_source="funding_source",
             maintenance_need="maintenance_need__code",
             traffic_level="traffic_level",
+        )
+        numeric_fields = dict(
+            link_start_chainage="link_start_chainage",
+            link_end_chainage="link_end_chainage",
+            link_length="link_length",
+            carriageway_width="carriageway_width",
             number_lanes="number_lanes",
         )
 
@@ -228,15 +231,26 @@ class RoadQuerySet(models.QuerySet):
         roads = (
             self.order_by("id")
             .annotate(**annotations)
-            .values("id", *fields.values(), *annotations)
+            .values(
+                "id", *regular_fields.values(), *numeric_fields.values(), *annotations
+            )
         )
 
         for road in roads:
             road_protobuf = roads_protobuf.roads.add()
             road_protobuf.id = road["id"]
-            for protobuf_key, query_key in fields.items():
+
+            for protobuf_key, query_key in regular_fields.items():
                 if road[query_key]:
                     setattr(road_protobuf, protobuf_key, road[query_key])
+
+            for protobuf_key, query_key in numeric_fields.items():
+                raw_value = road.get(query_key)
+                if raw_value is not None:
+                    setattr(road_protobuf, protobuf_key, raw_value)
+                else:
+                    # No value available, so use -ve as a substitute for None
+                    setattr(road_protobuf, protobuf_key, -1)
 
             # set Protobuf with with start/end projection points
             start = Projection(x=road["start_x"], y=road["start_y"])
@@ -290,6 +304,7 @@ class Road(models.Model):
         ("3", _("Poor")),
         ("4", _("Bad")),
     ]
+    TERRAIN_CLASS_CHOICES = [(1, _("Flat")), (2, _("Rolling")), (3, _("Mountainous"))]
 
     geom = models.MultiLineStringField(srid=32751, dim=2, blank=True, null=True)
 
@@ -460,6 +475,28 @@ class Road(models.Model):
             "Choose road link technical class according to the 2010 Road Geometric Design Standards, DRBFC standards"
         ),
     )
+    core = models.BooleanField(
+        verbose_name=_("Core"),
+        null=True,
+        help_text=_("Set if the road is a high priority `core` road"),
+    )
+    population = models.PositiveIntegerField(
+        verbose_name=_("Population Served"),
+        null=True,
+        help_text=_("Set the size of population served by this road"),
+    )
+    terrain_class = models.PositiveSmallIntegerField(
+        verbose_name=_("Terrain class"),
+        null=True,
+        choices=TERRAIN_CLASS_CHOICES,
+        help_text=_("Choose what terrain class the road runs through"),
+    )
+    rainfall = models.IntegerField(
+        verbose_name=_("Rainfall"),
+        blank=True,
+        null=True,
+        help_text=_("Enter the amount of rainfall"),
+    )
     number_lanes = models.IntegerField(
         verbose_name=_("Number of Lanes"),
         blank=True,
@@ -485,3 +522,11 @@ class CollatedGeoJsonFile(models.Model):
 
     key = models.SlugField(unique=True)
     geobuf_file = models.FileField(upload_to="geojson/geobuf/")
+
+
+def display_user(user):
+    """ returns the full username if populated, or the username, or "" """
+    if not user:
+        return ""
+    user_display = user.get_full_name()
+    return user_display or user.username

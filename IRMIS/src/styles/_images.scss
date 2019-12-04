@@ -156,3 +156,29 @@ tr.selected .pencil {
     height: 77px;
     width: 80px;
 }
+
+.paper {
+    background-image: url("../images/paper.svg");
+    height: 32px;
+    width: 26px;
+}
+
+.no-report {
+    background-image: url("../images/no_report.svg");
+    height: 269px;
+    width: 444px;
+}
+
+.no-report-data {
+    background-image: url("../images/no_report_data.svg");
+    height: 282px;
+    width: 432px;
+}
+
+
+@media print {
+    .rdtl {
+        height: 125px;
+        width: 130px;
+    }
+}

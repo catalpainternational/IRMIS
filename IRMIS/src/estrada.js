@@ -1,8 +1,10 @@
 import "babel-polyfill";
 import * as riot from "riot";
 
-import Data_Table from "./riot/data_table.riot";
-import Edit_Base from "./riot/edit_base.riot";
+import Planning_Base from "./riot/planning_base.riot.html";
+import Reports_Base from "./riot/reports_base.riot.html";
+import Data_Table from "./riot/data_table.riot.html";
+import Edit_Base from "./riot/edit_base.riot.html";
 
 import "./styles/estrada.scss";
 import "./styles/vendor.scss";
@@ -44,7 +46,10 @@ window.addEventListener("load", () => {
             });
         });
 
+    riot.register("planning_base", Planning_Base);
+    riot.register("reports_base", Reports_Base);
     riot.register("data_table", Data_Table);
+
     if (window.canEdit) {
         riot.register("edit_base", Edit_Base);
         // add listener since editing is allowed
@@ -53,17 +58,46 @@ window.addEventListener("load", () => {
         });
         hashCheck();
     }
+
     window.goBack = () => {};
+
+    hashCheck();
+});
+
+window.addEventListener("hashchange", () => {
+    hashCheck();
 });
 
 function hashCheck() {
-    let m = /#edit\/(\d*)\/(\w+)/.exec(location.hash);
-    if (m !== null && !document.getElementById("edit-base")) {
-        var roadPromise = getRoad(m[1]);
-        riot.mount("edit_base", { roadPromise: roadPromise, page: m[2] });
-        document.getElementById("view-content").hidden = true;
-    } else if (m === null) {
-        riot.unmount("edit_base", true);
-        document.getElementById("view-content").hidden = false;
+    const mainContent = document.getElementById("view-content");
+    const planningBase = document.getElementById("planning");
+    const reportsBase = document.getElementById("reports");
+    const editBase = document.getElementById("edit-base");
+
+    let planningHash = /#planning/.exec(location.hash);
+    let reportsHash = /#reports\/(\d?)/.exec(location.hash);
+    let editHash = /#edit\/(\d*)\/(\w+)/.exec(location.hash);
+
+    if (editHash !== null && !editBase) {
+        const roadPromise = getRoad(editHash[1]);
+        if (planningBase) riot.unmount("planning_base", true);
+        if (reportsBase) riot.unmount("reports_base", true);
+        riot.mount("edit_base", { roadPromise: roadPromise, page: editHash[2] });
+        mainContent.hidden = true;
+    } else if (reportsHash !== null && !reportsBase) {
+        if (planningBase) riot.unmount("planning_base", true);
+        if (editBase) riot.unmount("edit_base", true);
+        riot.mount("reports_base", { page: reportsHash[1] });
+        mainContent.hidden = true;
+    } else if (planningHash !== null && !planningBase) {
+        if (editBase) riot.unmount("edit_base", true);
+        if (reportsBase) riot.unmount("reports_base", true);
+        riot.mount("planning_base");
+        mainContent.hidden = true;
+    } else if (editHash === null && reportsHash === null && planningHash === null) {
+        if (planningBase) riot.unmount("planning_base", true);
+        if (reportsBase) riot.unmount("reports_base", true);
+        if (editBase) riot.unmount("edit_base", true);
+        mainContent.hidden = false;
     }
 }

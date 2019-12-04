@@ -718,7 +718,8 @@ proto.assets.Road.toObject = function(includeInstance, msg) {
     trafficLevel: jspb.Message.getFieldWithDefault(msg, 23, ""),
     projectionStart: (f = msg.getProjectionStart()) && proto.assets.Projection.toObject(includeInstance, f),
     projectionEnd: (f = msg.getProjectionEnd()) && proto.assets.Projection.toObject(includeInstance, f),
-    numberLanes: jspb.Message.getFieldWithDefault(msg, 27, 0)
+    numberLanes: jspb.Message.getFieldWithDefault(msg, 27, 0),
+    rainfall: jspb.Message.getFieldWithDefault(msg, 28, 0)
   };
 
   if (includeInstance) {
@@ -854,8 +855,12 @@ proto.assets.Road.deserializeBinaryFromReader = function(msg, reader) {
       msg.setProjectionEnd(value);
       break;
     case 27:
-      var value = /** @type {number} */ (reader.readUint32());
+      var value = /** @type {number} */ (reader.readInt32());
       msg.setNumberLanes(value);
+      break;
+    case 28:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setRainfall(value);
       break;
     default:
       reader.skipField();
@@ -1058,8 +1063,15 @@ proto.assets.Road.serializeBinaryToWriter = function(message, writer) {
   }
   f = message.getNumberLanes();
   if (f !== 0) {
-    writer.writeUint32(
+    writer.writeInt32(
       27,
+      f
+    );
+  }
+  f = message.getRainfall();
+  if (f !== 0) {
+    writer.writeInt32(
+      28,
       f
     );
   }
@@ -1463,7 +1475,7 @@ proto.assets.Road.prototype.hasProjectionEnd = function() {
 
 
 /**
- * optional uint32 number_lanes = 27;
+ * optional int32 number_lanes = 27;
  * @return {number}
  */
 proto.assets.Road.prototype.getNumberLanes = function() {
@@ -1474,6 +1486,21 @@ proto.assets.Road.prototype.getNumberLanes = function() {
 /** @param {number} value */
 proto.assets.Road.prototype.setNumberLanes = function(value) {
   jspb.Message.setProto3IntField(this, 27, value);
+};
+
+
+/**
+ * optional int32 rainfall = 28;
+ * @return {number}
+ */
+proto.assets.Road.prototype.getRainfall = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 28, 0));
+};
+
+
+/** @param {number} value */
+proto.assets.Road.prototype.setRainfall = function(value) {
+  jspb.Message.setProto3IntField(this, 28, value);
 };
 
 

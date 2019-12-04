@@ -1,7 +1,5 @@
-import { Report, Survey, Surveys } from "../../protobuf/survey_pb";
-import { EstradaSurvey } from "../survey";
-import { EstradaSurveyReport } from "../surveyReport";
-
+import { Survey, Surveys } from "../../protobuf/survey_pb";
+import { EstradaSurvey } from "./models/survey";
 import { ConfigAPI } from "./configAPI";
 import { makeEstradaObject } from "./protoBufUtilities";
 
@@ -11,10 +9,10 @@ import { makeEstradaObject } from "./protoBufUtilities";
  *
  * @returns a map {id: survey_object}
  */
-export function getSurveysMetadata(roadId) {
+export function getSurveysMetadata(roadId, surveyAttribute) {
     const surveyTypeUrlFragment = "protobuf_road_surveys";
     roadId = roadId || "";
-    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${surveyTypeUrlFragment}/${roadId}`;
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${surveyTypeUrlFragment}/${roadId}/${surveyAttribute}`;
 
     return fetch(metadataUrl, ConfigAPI.requestInit())
         .then((metadataResponse) => (metadataResponse.arrayBuffer()))
@@ -91,40 +89,6 @@ export function putSurveyData(survey) {
         });
 }
 
-/** getRoadSurveyReports
- *
- * Retrieves the road survey data from the server
- *
- * @returns a map {id: road_object}
- */
-export function getRoadSurveyReports(roadCode) {
-    const assetTypeUrlFragment = "road_report";
-    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${roadCode}`;
-
-    return fetch(metadataUrl, ConfigAPI.requestInit())
-        .then((metadataResponse) => {
-            if (metadataResponse.ok) {
-                return metadataResponse.arrayBuffer();
-            } else {
-                // Handle all fetch level errors
-                return undefined;
-            }
-        })
-        .then((protobufBytes) => {
-            if (typeof protobufBytes === "undefined") {
-                // return an empty EstradaSurveyReport
-                return makeEstradaSurveyReport();
-            }
-
-            const uintArray = new Uint8Array(protobufBytes);
-            return makeEstradaSurveyReport(Report.deserializeBinary(uintArray));
-        });
-}
-
 function makeEstradaSurvey(pbsurvey) {
     return makeEstradaObject(EstradaSurvey, pbsurvey);
-}
-
-function makeEstradaSurveyReport(pbsurveyreport) {
-    return makeEstradaObject(EstradaSurveyReport, pbsurveyreport);
 }

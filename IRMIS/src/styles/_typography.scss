@@ -40,7 +40,7 @@ body {
 }
 
 label {
-    color: $dark-green;
+    color: $darker-gray;
     line-height: 17px;
     font-weight: 700;
     font-size: 14px;
@@ -48,10 +48,6 @@ label {
 
 #side-menu label {
     color: $white;
-}
-
-edit_base label {
-    color: $darker-gray;
 }
 
 a {
@@ -72,6 +68,17 @@ a {
     font-size: 14px;
 }
 
+#top-navigation a {
+    line-height: 17px;
+    font-weight: 400;
+    font-size: 14px;
+    color: $white;
+
+    &.selected {
+        font-weight: 700;
+    }
+}
+
 span {
     color: $dark-green;
     line-height: 17px;
@@ -83,14 +90,14 @@ span {
     }
 }
 
-.surface-condition-legend .values span {
+.entry-legend .values span {
     color: $darker-gray;
     line-height: 10px;
     font-weight: 500;
     font-size: 12px;
 }
 
-.surface-condition-legend .total span {
+.entry-legend .total span {
     color: $darker-gray;
     line-height: 10px;
 }
@@ -121,6 +128,18 @@ span.required {
     color: $gray;
 }
 
+.report-content span {
+    color: $darker-gray;
+    line-height: 17px;
+    font-weight: 500;
+    font-size: 12px;
+}
+
+.report-content .filters-applied span {
+    line-height: 16px;
+    font-size: 14px;
+}
+
 p {
     color: $dark-green;
 }
@@ -131,6 +150,18 @@ p {
     font-size: 16px;
 }
 
+reports_base p, planning_base p {
+    color: $darker-gray;
+    line-height: 16px;
+    font-size: 14px;
+}
+
+.report-content p {
+    line-height: 17px;
+    font-weight: 700;
+    font-size: 14px;
+}
+
 small {
     line-height: 14px;
 	font-weight: 500;
@@ -138,11 +169,11 @@ small {
 }
 
 input.form-control {
-    color: $dark-green;
+    color: $darker-gray;
     line-height: 12px;
 
     &:focus {
-        color: $dark-green;
+        color: $darker-gray;
     }
 }
 
@@ -197,6 +228,10 @@ h6 {
     font-weight: 700;
     font-size: 16px;
     color: $white;
+}
+
+reports_base h6, planning_base h6 {
+    color: $darker-gray;
 }
 
 .modal h6 {
@@ -285,20 +320,18 @@ table {
 
 // Override Bootstrap styles
 
-button {
-    &.btn {
-        line-height: 14px;
-        font-weight: 700;
-    }
+.btn {
+    line-height: 14px;
+    font-weight: 700;
+}
 
-    &.btn-sm, &.btn-sm span {
-        line-height: 14px;
-        font-size: 12px;
-    }
+.btn-sm, .btn-sm span {
+    line-height: 14px;
+    font-size: 12px;
+}
 
-    &.btn-lg {
-        font-size: inherit;
-    }
+.btn-lg {
+    font-size: inherit;
 }
 
 .dropdown-menu {
@@ -322,7 +355,7 @@ button {
 }
 
 .text-muted {
-	color: $dark-gray !important;
+	color: $gray !important;
 }
 
 .invalid-tooltip li {
@@ -347,4 +380,12 @@ button {
 
 .leaflet-control-attribution a {
     font-size: 11px;
+}
+
+
+@media print {
+    .print-header span {
+        text-transform: uppercase;
+        color: $darker-gray;
+    }
 }

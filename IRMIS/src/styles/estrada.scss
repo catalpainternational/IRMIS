@@ -12,6 +12,8 @@
 
 // Pages
 @import "registration";
+@import "planning";
+@import "reports";
 @import "edit";
 
 // Components
@@ -19,5 +21,9 @@
 @import "scrollbar";
 @import "language";
 @import "dropdown";
+@import "select2";
 @import "table";
 @import "map";
+
+// Print
+@import "print";

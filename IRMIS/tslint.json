@@ -11,5 +11,10 @@
             "options": [120]
         }
     },
-    "rulesDirectory": []
+    "rulesDirectory": [],
+    "linterOptions": {
+        "exclude": [
+            "src/riot/*"
+        ]
+    }
 }
