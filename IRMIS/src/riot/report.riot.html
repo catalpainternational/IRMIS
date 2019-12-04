@@ -99,12 +99,15 @@
             <h6>{ reportContent().title } { window.gettext("Report") }</h6>
             <button class="btn btn-secondary btn-sm" onclick="{ () => window.print() }">{ window.gettext("Print") }</button>
         </div>
-        <div class="filtered-segment d-flex flex-column">
-            <h6 if="{ state.reportData.roadCodes && state.reportData.roadCodes.length === 1 }">{ state.reportData.roadCodes[0] }</h6>
-            <h6 if="{ state.reportData.reportChainage }">Chainage { toChainageFormat(state.reportData.reportChainage[0]) } to { toChainageFormat(state.reportData.reportChainage[1]) }</h6>
+
+        <div class="filtered-segment" hidden="{ !hasRoadCodeAndChainage() }">
+            <h6 if="{ state.reportData.roadCodes && state.reportData.roadCodes.length === 1 }">{ window.gettext("Road") } { state.reportData.roadCodes[0] }</h6>
+            <h6 if="{ state.reportData.reportChainage }">, { window.gettext("Chainage") } { toChainageFormat(state.reportData.reportChainage[0]) } { window.gettext("to") } { toChainageFormat(state.reportData.reportChainage[1]) }</h6>
         </div>
+
         <span class="report-date" if="{ state.reportData.dateCreated }">{ window.gettext("Created on") } { state.reportData.dateCreated() }</span>
-        <div class="d-flex flex-column filters-applied">
+
+        <div class="filters-applied" hidden="{ !hasFilters() }">
             <p>{ window.gettext("Filters applied") }</p>
             <div class="d-flex">
                 <div class="d-flex flex-column filter">
@@ -116,6 +119,11 @@
                     <span>Gravel</span>
                 </div>
             </div>
+        </div>
+
+        <div if="{state.reportData.totalLength}" class="d-flex flex-column total-length" hidden="{ !hasTotalLength() }">
+            <p>{ window.gettext("Total Length") }</p>
+            <h1>{ (state.reportData.totalLength / 1000).toFixed(2) } km</h1>
         </div>
 
         <stacked_bar hidden="{ !state.road_status || !hasStackedBar(stackedBarIds.roadStatus) }" 
@@ -131,36 +139,36 @@
             entries="{ state.surface_condition }" total_title="{ window.gettext('Total road chainage') }">
         </stacked_bar>
 
-        <div if="{state.reportData.totalLength}" class="d-flex flex-column total-length">
-            <p>{ window.gettext("Total Length") }</p>
-            <h1>{ (state.reportData.totalLength / 1000).toFixed(1) } km</h1>
-        </div>
-
         <data_table hidden="{ !state.reportData.municipality || !hasDataTable(dataTableIds.municipality) }"
             table_id="{dataTableIds.municipality}" tableName="Municipality"
             columns="{columns.municipality()}" columnSortOrder="{baseColumnSortOrder}"
-            paging="false" canExport></data_table>
+            paging="false" canExport>
+        </data_table>
         <data_table hidden="{ !state.reportData.roadClass || !hasDataTable(dataTableIds.roadClass) }"
             table_id="{dataTableIds.roadClass}" tableName="Road Class"
             columns="{columns.roadClass()}" columnSortOrder="{baseColumnSortOrder}"
-            paging="false" canExport></data_table>
+            paging="false" canExport>
+        </data_table>
         <data_table hidden="{ !state.reportData.surfaceType || !hasDataTable(dataTableIds.surfaceType) }"
             table_id="{dataTableIds.surfaceType}" tableName="Surface Type"
             columns="{columns.surfaceType()}" columnSortOrder="{baseColumnSortOrder}"
-            paging="false" canExport></data_table>
-
+            paging="false" canExport>
+        </data_table>
         <data_table hidden="{ !state.reportData.roadStatus || !hasDataTable(dataTableIds.roadStatus) }"
             table_id="{dataTableIds.roadStatus}" tableName="Road Status"
             columns="{columns.roadStatus()}" columnSortOrder="{baseColumnSortOrder}"
-            paging="false" canExport></data_table>
+            paging="false" canExport>
+        </data_table>
         <data_table hidden="{ !state.reportData.technicalClass || !hasDataTable(dataTableIds.technicalClass) }"
             table_id="{dataTableIds.technicalClass}" tableName="Technical Class"
             columns="{columns.technicalClass()}" columnSortOrder="{baseColumnSortOrder}"
-            paging="false" canExport></data_table>
+            paging="false" canExport>
+        </data_table>
         <data_table hidden="{ !state.reportData.surfaceCondition || !hasDataTable(dataTableIds.surfaceCondition) }"
             table_id="{dataTableIds.surfaceCondition}" tableName="Surface Condition"
             columns="{columns.surfaceCondition()}" columnSortOrder="{baseColumnSortOrder}"
-            paging="false" canExport></data_table>
+            paging="false" canExport>
+        </data_table>
     </div>
 
     <div if="{ state.noReport }"
@@ -333,7 +341,7 @@
                             surfaceCondition: true,
                             reportDate: true,
                         },
-                        reportElements: { dataTables: [dataTableIds.roadStatus, dataTableIds.technicalClass] },
+                        reportElements: { filters: true, totalLength: true, dataTables: [dataTableIds.roadStatus, dataTableIds.technicalClass] },
                     },
                     1: {
                         title: window.gettext("Road Network Length Breakdown"),
@@ -348,7 +356,7 @@
                             surfaceCondition: true,
                             reportDate: true,
                         },
-                        reportElements: { dataTables: [dataTableIds.municipality, dataTableIds.roadClass, dataTableIds.surfaceType] },
+                        reportElements: { filters: true, totalLength: true, dataTables: [dataTableIds.municipality, dataTableIds.roadClass, dataTableIds.surfaceType] },
                     },
                     2: {
                         title: window.gettext("Surface Condition"),
@@ -360,7 +368,7 @@
                             roadCode: true,
                             reportDate: true,
                         },
-                        reportElements: { stackedBars: [stackedBarIds.surfaceCondition], dataTables: [dataTableIds.surfaceCondition] },
+                        reportElements: { roadCodeAndChainage: true, stackedBars: [stackedBarIds.surfaceCondition], dataTables: [dataTableIds.surfaceCondition] },
                     },
                     3: {
                         title: window.gettext("IRI Roughness"),
@@ -370,6 +378,7 @@
                             roadCode: true,
                             reportDate: true,
                         },
+                        reportElements: { roadCodeAndChainage: true },
                     },
                     4: {
                         title: window.gettext("Road Network Length - National Class"),
@@ -381,7 +390,7 @@
                         visibleFilters: {
                             reportDate: true,
                         },
-                        reportElements: { dataTables: [dataTableIds.roadStatus, dataTableIds.technicalClass] },
+                        reportElements: { totalLength: true, dataTables: [dataTableIds.roadStatus, dataTableIds.technicalClass] },
                     },
                     5: {
                         title: window.gettext("Road Network Length - Municipal Class"),
@@ -393,7 +402,7 @@
                         visibleFilters: {
                             reportDate: true,
                         },
-                        reportElements: { dataTables: [dataTableIds.roadStatus, dataTableIds.technicalClass] },
+                        reportElements: { totalLength: true, dataTables: [dataTableIds.roadStatus, dataTableIds.technicalClass] },
                     },
                     6: {
                         title: window.gettext("Road Network Length - Rural Class"),
@@ -405,7 +414,7 @@
                         visibleFilters: {
                             reportDate: true,
                         },
-                        reportElements: { dataTables: [dataTableIds.roadStatus, dataTableIds.technicalClass] },
+                        reportElements: { totalLength: true, dataTables: [dataTableIds.roadStatus, dataTableIds.technicalClass] },
                     },
                     7: {
                         title: window.gettext("Road Network Length - Highway Class"),
@@ -417,7 +426,7 @@
                         visibleFilters: {
                             reportDate: true,
                         },
-                        reportElements: { dataTables: [dataTableIds.roadStatus, dataTableIds.technicalClass] },
+                        reportElements: { totalLength: true, dataTables: [dataTableIds.roadStatus, dataTableIds.technicalClass] },
                     },
                     8: {
                         title: window.gettext("Road Network Length - Urban Class"),
@@ -429,7 +438,7 @@
                         visibleFilters: {
                             reportDate: true,
                         },
-                        reportElements: { dataTables: [dataTableIds.roadStatus, dataTableIds.technicalClass] },
+                        reportElements: { totalLength: true, dataTables: [dataTableIds.roadStatus, dataTableIds.technicalClass] },
                     },
                 },
                 reportData: {},
@@ -483,6 +492,15 @@
             },
             reportElements() {
                 return this.reportContent().reportElements || allReportElements;
+            },
+            hasFilters() {
+                return this.reportElements().filters;
+            },
+            hasRoadCodeAndChainage() {
+                return this.reportElements().roadCodeAndChainage;
+            },
+            hasTotalLength() {
+                return this.reportElements().totalLength;
             },
             hasStackedBar(stackedBarId) {
                 return (this.reportElements().stackedBars || []).indexOf(stackedBarId) > -1;

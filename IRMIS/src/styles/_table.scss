@@ -45,7 +45,13 @@
     overflow-y: auto;
 }
 
-#report-road-status-table, #report-technical-class-table {
+#report-municipality-table,
+#report-road-class-table,
+#report-surface-type-table,
+#report-technical-class-table,
+#report-surface-condition-table,
+#report-road-status-table,
+#report-technical-class-table {
     border-bottom: 1px solid $light-gray;
     border-right: 1px solid $light-gray;
     border-left: 1px solid $light-gray;

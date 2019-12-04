@@ -24,6 +24,14 @@ reports_base {
         h6 {
             margin-bottom: 10px;
         }
+
+        .disabled {
+            pointer-events: none;
+
+            p {
+                color: $gray;
+            }
+        }
     }
 
     .report {
@@ -54,6 +62,7 @@ report {
         padding: 30px 30px 30px 20px;
         background-color: $white;
         margin-bottom: 10px;
+        display: flex;
 
         .caret-dark {
             background-size: 16px 10px;
@@ -114,11 +123,18 @@ report {
 
         .filtered-segment {
             margin-top: 5px;
+            display: flex;
+        }
+
+        .report-date {
+            margin-bottom: 30px;
+            display: block;
         }
 
         .filters-applied {
+            flex-direction: column;
             margin-bottom: 30px;
-            margin-top: 30px;
+            display: flex;
 
             p {
                 margin-bottom: 10px;
