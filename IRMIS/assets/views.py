@@ -442,7 +442,7 @@ def protobuf_reports(request):
     surface_conditions = request.GET.getlist(
         "surfacecondition", []
     )  # surfacecondition=X
-    report_date = request.GET.get("reportdate", None) # reportdate=X
+    report_date = request.GET.get("reportdate", None)  # reportdate=X
 
     if road_id or road_code:
         # chainage is only valid if we've specified a road
@@ -481,7 +481,8 @@ def protobuf_reports(request):
         else:
             report_protobuf.filter = json.dumps(final_filters)
             return HttpResponse(
-                report_protobuf.SerializeToString(), content_type="application/octet-stream"
+                report_protobuf.SerializeToString(),
+                content_type="application/octet-stream",
             )
     elif road_code:
         roads = Road.objects.filter(road_code=road_code)
@@ -583,18 +584,17 @@ def protobuf_reports(request):
         # pull any Surveys that cover the roads
         for primary_attribute in primary_attributes:
             surveys[primary_attribute] = (
-                Survey.objects
-                    .filter(road=primary_road_code)
-                    .exclude(chainage_start__isnull=True)
-                    .exclude(chainage_end__isnull=True)
-                    .exclude(**{"values__" + primary_attribute + "__isnull": True})
-                    .order_by("road", "chainage_start", "chainage_end", "-date_surveyed")
-                    .distinct("road", "chainage_start", "chainage_end")
+                Survey.objects.filter(road=primary_road_code)
+                .exclude(chainage_start__isnull=True)
+                .exclude(chainage_end__isnull=True)
+                .exclude(**{"values__" + primary_attribute + "__isnull": True})
+                .order_by("road", "chainage_start", "chainage_end", "-date_surveyed")
+                .distinct("road", "chainage_start", "chainage_end")
             )
 
             if report_date is not None:
-                surveys[primary_attribute] = (surveys[primary_attribute]
-                    .filter(date_surveyed__lte=report_date)
+                surveys[primary_attribute] = surveys[primary_attribute].filter(
+                    date_surveyed__lte=report_date
                 )
 
         # Generate the Report
