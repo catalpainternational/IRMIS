@@ -109,8 +109,8 @@
 
         <div class="filters-applied" hidden="{ !hasFilters() || !state.reportData.formattedFilters || !state.reportData.formattedFilters.length }">
 			<p>{ window.gettext("Filters applied") }</p>
-            <div class="d-flex" each="{ filter in state.reportData.formattedFilters }">
-                <div class="d-flex flex-column filter">
+            <div class="d-flex">
+                <div class="d-flex flex-column filter" each="{ filter in state.reportData.formattedFilters }">
                     <span>{filter.title}: </span>
                     <span>{filter.values.join(", ")}</span>
                 </div>
