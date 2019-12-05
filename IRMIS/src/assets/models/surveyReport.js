@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import { isArray } from "util";
 
 import { AttributeEntry, AttributeTable, Report } from "../../../protobuf/report_pb";
 
@@ -45,6 +46,30 @@ const attributeEntrySchema = {
     primaryAttribute: { display: gettext("Attribute") },
     // secondaryAttributes are implied by the contents of `lengths`
 };
+
+function AdminAreaChoices() {
+    const adminAreaChoices = {};
+    window.road_schema.administrative_area.options.forEach((option) => {
+        adminAreaChoices[option.id] = option.name || option.id;
+    });
+
+    return adminAreaChoices;
+}
+
+// These are the response filters returned from reports.py and views.py
+const filterTitles = {
+    road_id: { display: gettext("Road Id") },
+    road_type: { display: gettext("Road Class"), choices: ROAD_TYPE_CHOICES },
+    surface_condition: { display: gettext("Surface Condition"), choices: SURFACE_CONDITION_CHOICES },
+    surface_type: { display: gettext("Surface Type"), choices: SURFACE_TYPE_CHOICES },
+    municipality: { display: gettext("Municipality"), choices: AdminAreaChoices() },
+    pavement_class: { display: gettext("Pavement Class"), choices: PAVEMENT_CLASS_CHOICES },
+    date_surveyed: { display: gettext("Date Surveyed") },
+    // The following filters are handled 'specially'
+    // primary_attribute: { display: gettext("Attribute") },
+    // road_code: { display: gettext("Road Code") },
+    // report_chainage: { display: gettext("Report Chainage") },
+}
 
 function testKeyIsReal(key) {
     return ["0", "none", "unknown", "nan", "null", "undefined", "false"].indexOf(`${key}`.toLowerCase()) === -1;
@@ -97,6 +122,35 @@ export class EstradaNetworkSurveyReport extends Report {
     get filter() {
         const filter = this.getFilter() || "{}";
         return JSON.parse(filter);
+    }
+
+    get formattedFilters() {
+        const rawFilters = this.filter;
+
+        const filterKeys = Object.keys(rawFilters);
+        if (filterKeys.length === 0) {
+            return [];
+        }
+
+        const formattedFilters = [];
+        filterKeys.forEach((key) => {
+            let values = rawFilters[key];
+            let filterTitle = filterTitles[key];
+            if (values && values.length > 0 && filterTitle) {
+                if (!isArray(values)) {
+                    values = [values];
+                }
+                const title = filterTitle.display;
+                if (title) {
+                    if (filterTitle.choices) {
+                        values = values.map((value) => (choice_or_default(value, filterTitle.choices || [])));
+                    }
+                    formattedFilters.push({ key, title, values });
+                }
+            }
+        });
+
+        return formattedFilters;
     }
 
     get lengths() {

@@ -177,7 +177,7 @@ class Report:
     def prepare_protobuf(self):
         """ Package up the various statistics and tables ready for export via protobuf """
         if self.primary_attributes:
-            self.filters["primary_attributes"] = self.primary_attributes
+            self.filters["primary_attribute"] = self.primary_attributes
 
         if self.validate_chainages():
             self.filters["report_chainage"] = [
