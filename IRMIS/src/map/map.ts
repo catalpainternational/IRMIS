@@ -85,6 +85,7 @@ export class Map {
                 featureZoomSet.features.push(feature);
             }
 
+            feature.properties.switchStyle = switchStyle;
             geoLayer.setStyle(switchStyle ? layerFilterStyles.styleOn : layerFilterStyles.styleOff);
         });
 
@@ -95,13 +96,26 @@ export class Map {
         }
 
         // Don't use flyToBounds
-        // - it sounds nice, but screws up tile and geoJSON alignment when the zoom level remains the ame
+        // - it sounds nice, but screws up tile and geoJSON alignment when the zoom level remains the same
         this.lMap.fitBounds(new L.LatLngBounds([bb[1], bb[0]], [bb[3], bb[2]]));
     }
 
     private registerFeature(feature: Feature<Geometry, any>, layer: L.Layer) {
         featureLookup[feature.properties.pk] = feature;
         layerLookup[feature.properties.pk] = layer;
+        layer.on("click", (e) => {
+            const clickedFeature = e.target.feature;
+            const featureId: string = clickedFeature.properties.pk.toString();
+
+            if (typeof clickedFeature.properties.switchStyle === "undefined") {
+                clickedFeature.properties.switchStyle = true;
+            }
+
+            if (clickedFeature.properties.switchStyle) {
+                // This feature will be in the table
+                document.dispatchEvent(new CustomEvent("estrada.table.rowSelected", { detail: { rowId: featureId } }));
+            }
+        });
     }
 
     private displayGeoJSON(json: GeoJSON): Promise<any> {
