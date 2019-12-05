@@ -110,9 +110,11 @@ export const estradaTableColumns = [
     },
     {
         title: EstradaRoad.getFieldName("pavement_class"),
-        data: "pavementClass",
+        data: null,
         defaultContent: "",
+        render: r => buttonSegmentsTemplate("pavement_class", r),
         className: "text-center",
+        orderable: false,
     },
     {
         title: EstradaRoad.getFieldName("carriageway_width"),

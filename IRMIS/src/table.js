@@ -17,6 +17,7 @@ let numberLanesTable = null;
 let carriagewayWidthTable = null;
 let rainfallTable = null;
 let terrainClassTable = null;
+let pavementClassTable = null;
 let table = null;
 let pendingRows = [];
 
@@ -91,6 +92,7 @@ const segmentInventoryModalTables = {
     carriagewayWidth: "inventory-carriageway-width-table",
     rainfall: "inventory-rainfall-table",
     terrainClass: "inventory-terrain-class-table",
+    pavementClass: "inventory-pavement-class-table",
 };
 
 function initializeDataTable() {
@@ -178,6 +180,7 @@ function initializeDataTable() {
     carriagewayWidthTable = setUpModalTable(segmentInventoryModalTables.carriagewayWidth, carriagewayWidthColumns);
     rainfallTable = setUpModalTable(segmentInventoryModalTables.rainfall, rainfallColumns);
     terrainClassTable = setUpModalTable(segmentInventoryModalTables.terrainClass, terrainClassColumns);
+    pavementClassTable = setUpModalTable(segmentInventoryModalTables.pavementClass, pavementClassColumns);
 
     if (pendingRows.length) {
         // add any rows the road manager has delivered before initialization
@@ -269,6 +272,7 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
     $(`#${segmentInventoryModalTables.carriagewayWidth}_wrapper`).hide();
     $(`#${segmentInventoryModalTables.rainfall}_wrapper`).hide();
     $(`#${segmentInventoryModalTables.terrainClass}_wrapper`).hide();
+    $(`#${segmentInventoryModalTables.pavementClass}_wrapper`).hide();
 
     switch (attr) {
         case "surface_condition":
@@ -305,6 +309,11 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
             reportDataTableId = segmentInventoryModalTables.terrainClass;
             modal.find(".modal-title").text(linkCode + " " + gettext("Terrain Class segments"));
             reportTable = terrainClassTable;
+            break;
+        case "pavement_class":
+            reportDataTableId = segmentInventoryModalTables.pavementClass;
+            modal.find(".modal-title").text(linkCode + " " + gettext("Terrain Class segments"));
+            reportTable = pavementClassTable;
             break;
     }
     reportTable.clear(); // remove all rows in the table

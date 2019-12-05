@@ -92,3 +92,13 @@ export const terrainClassColumns = baseColumns.concat([
         orderable: false,
     },
 ]);
+
+/** Defines the columns for the Terrain Class segments table on the inventory page */
+export const pavementClassColumns = baseColumns.concat([
+    {
+        title: window.gettext("Pavement class"),
+        data: "pavementClass",
+        defaultContent: "",
+        orderable: false,
+    },
+]);
