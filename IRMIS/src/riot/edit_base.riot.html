@@ -39,7 +39,7 @@
         </edit_stop_alert>
 
         <div id="edit-base">
-            <template if="{ !state.loading }">
+            <div if="{ !state.loading }">
                 <header class="align-items-center d-flex">
                     <a class="caret-dark left image" onclick="{ goBack }"></a>
                     <h1>{ state.editingRoad.getRoadCode() } { state.editingRoad.getRoadName() }</h1>
@@ -67,7 +67,11 @@
                     parent="{parentFunctions}" if="{ state.page === 'environment' }"></edit_environment>
                 <edit_history road="{ state.baseRoad }" parent="{parentFunctions}" if="{ state.page === 'history' }">
                 </edit_history>
-            </template>
+            </div>
+            <footer>
+                <small>República Democrática de Timor-Leste / Ministério  das  Obras Públicas</small>
+                <small>{ window.gettext("Created by Catalpa International") }</small>
+            </footer>
         </div>
 
         <loading></loading>

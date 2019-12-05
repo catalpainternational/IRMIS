@@ -11,6 +11,9 @@ planning_base {
 }
 
 plan {
+    min-height: calc(100% - #{$footer-height});
+    display: block;
+
     header {
         padding: 30px 30px 30px 60px;
         background-color: $white;
