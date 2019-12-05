@@ -108,6 +108,14 @@
         <span class="report-date" if="{ state.reportData.dateCreated }">{ window.gettext("Created on") } { state.reportData.dateCreated() }</span>
 
         <div class="filters-applied" hidden="{ !hasFilters() || !state.reportData.formattedFilters || !state.reportData.formattedFilters.length }">
+			<p>{ window.gettext("Filters applied") }</p>
+            <div class="d-flex" each="{ filter in state.reportData.formattedFilters }">
+                <div class="d-flex flex-column filter">
+                    <span>{filter.title}: </span>
+                    <span>{filter.values.join(", ")}</span>
+                </div>
+            </div>
+        </div>
 
         <div if="{state.reportData.totalLength}" class="d-flex flex-column total-length" hidden="{ !hasTotalLength() }">
             <p>{ window.gettext("Total Length") }</p>
