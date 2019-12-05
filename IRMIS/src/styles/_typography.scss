@@ -168,6 +168,12 @@ small {
 	font-size: 11px;
 }
 
+footer small {
+    line-height: 10px;
+    font-size: 12px;
+    color: $gray;
+}
+
 input.form-control {
     color: $darker-gray;
     line-height: 12px;

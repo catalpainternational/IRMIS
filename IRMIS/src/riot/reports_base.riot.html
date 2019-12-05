@@ -12,7 +12,7 @@
 
         <div id="reports">
             <report if="{ state.page }" id="{ state.page }" showFeedback="{ showFeedback }"></report>
-            <template if="{ !state.page }">
+            <div if="{ !state.page }">
                 <div class="content-wrapper">
                     <h6>{ window.gettext("Road Network Report") }</h6>
                     <div class="align-items-center d-flex report" onclick="{ selectPage }" data-id="0">
@@ -60,7 +60,7 @@
                         <p>{ window.gettext("Road Network Length - Urban Class") }</p>
                     </div>
                 </div>
-            </template>
+            </div>
             <footer>
                 <small>República Democrática de Timor-Leste / Ministério  das  Obras Públicas</small>
                 <small>{ window.gettext("Created by Catalpa International") }</small>
