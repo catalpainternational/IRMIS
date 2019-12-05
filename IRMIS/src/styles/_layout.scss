@@ -23,6 +23,10 @@ body {
     padding-right: 15px;
     margin-bottom: 0;
     padding-left: 0;
+
+    & > div {
+        min-height: calc(100% - #{$footer-height});
+    }
 }
 
 ul {

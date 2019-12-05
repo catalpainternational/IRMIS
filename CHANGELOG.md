@@ -1,5 +1,11 @@
 # CHANGE LOG
 
+## 1.4 Decemeber release
+
+- planning
+- more segmentation
+- reports
+
 ## 1.3.0 Segmented Road Reports - Surface Condition
 
 - put user stories here

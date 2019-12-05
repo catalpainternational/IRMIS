@@ -29,6 +29,10 @@ edit_base {
                 margin-top: 5px;
             }
         }
+
+        & > div {
+            min-height: calc(100% - #{$footer-height});
+        }
     }
 
     .content-wrapper {
