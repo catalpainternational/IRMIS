@@ -624,7 +624,7 @@ def protobuf_reports(request):
                     date_surveyed__lte=report_date
                 )
 
-        # Generate the Report
+        # Initialise the Report
         # This is priority #2 for performance improvement
         road_report = Report(
             surveys,
@@ -643,21 +643,16 @@ def protobuf_reports(request):
             )
         else:
             # Merge Protobuf Reports
-            # This is priority #1 for performance improvement
-            report_protobuf = road_report.to_protobuf()
-            report_filters = json.loads(report_protobuf.filter)
-            for x in set(report_filters).union(road_report.filters):
+            # prepare_protobuf is priority #1 for performance improvement
+            road_report.prepare_protobuf()
+
+            for x in set(road_report.filters):
                 final_filters[x] = list(
-                    set(
-                        final_filters[x]
-                        + report_filters.get(x, [])
-                        + road_report.filters.get(x, [])
-                    )
+                    set(final_filters[x] + road_report.filters.get(x, []))
                 )
 
-            report_lengths = json.loads(report_protobuf.lengths)
-            for x in set(report_lengths):
-                final_lengths[x] += Counter(report_lengths.get(x, {}))
+            for x in set(road_report.lengths):
+                final_lengths[x] += Counter(road_report.lengths.get(x, {}))
 
     # Chainage is only valid if there's only two values
     if (
@@ -666,6 +661,7 @@ def protobuf_reports(request):
     ):
         final_filters.pop("report_chainage")
 
+    report_protobuf = road_report.to_protobuf()
     report_protobuf.filter = json.dumps(final_filters)
     report_protobuf.lengths = json.dumps(final_lengths)
 
