@@ -46,7 +46,6 @@ export const estradaTableEventListeners = {
     "estrada.table.rowSelected": (data, table) => {
         const rowId = data.detail ? data.detail.rowId : null;
         if (rowId) {
-            console.log(rowId);
             table.rows().every(function (rowIdx, tableLoop, rowLoop) { 
                 if (this.id() !== rowId) {
                     this.node().classList.remove("selected");
