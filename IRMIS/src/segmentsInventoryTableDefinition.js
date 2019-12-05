@@ -62,3 +62,33 @@ export const numberLanesColumns = baseColumns.concat([
         orderable: false,
     },
 ]);
+
+/** Defines the columns for the Carriageway Width segments table on the inventory page */
+export const carriagewayWidthColumns = baseColumns.concat([
+    {
+        title: window.gettext("Carriageway width"),
+        data: "carriagewayWidth",
+        defaultContent: "",
+        orderable: false,
+    },
+]);
+
+/** Defines the columns for the Rainfall segments table on the inventory page */
+export const rainfallColumns = baseColumns.concat([
+    {
+        title: window.gettext("Rainfall"),
+        data: "rainfall",
+        defaultContent: "",
+        orderable: false,
+    },
+]);
+
+/** Defines the columns for the Terrain Class segments table on the inventory page */
+export const terrainClassColumns = baseColumns.concat([
+    {
+        title: window.gettext("Terrain class"),
+        data: "terrainClass",
+        defaultContent: "",
+        orderable: false,
+    },
+]);

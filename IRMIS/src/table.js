@@ -4,7 +4,7 @@ import $ from "jquery";
 import { exportCsv } from "./exportCsv";
 import { applyFilter } from './filter';
 import { estradaTableColumns, estradaTableEventListeners } from "./mainTableDefinition";
-import { surfaceConditionColumns, surfaceTypeColumns, technicalClassColumns, numberLanesColumns } from "./segmentsInventoryTableDefinition";
+import { surfaceConditionColumns, surfaceTypeColumns, technicalClassColumns, numberLanesColumns, carriagewayWidthColumns, rainfallColumns, terrainClassColumns } from "./segmentsInventoryTableDefinition";
 
 import { datatableTranslations } from "./datatableTranslations";
 import { getRoad } from "./roadManager";
@@ -14,6 +14,9 @@ let surfaceConditionTable = null;
 let surfaceTypeTable = null;
 let technicalClassTable = null;
 let numberLanesTable = null;
+let carriagewayWidthTable = null;
+let rainfallTable = null;
+let terrainClassTable = null;
 let table = null;
 let pendingRows = [];
 
@@ -85,6 +88,9 @@ const segmentInventoryModalTables = {
     surfaceType: "inventory-surface-type-table",
     technicalClass: "inventory-technical-class-table",
     numberLanes: "inventory-number-lanes-table",
+    carriagewayWidth: "inventory-carriageway-width-table",
+    rainfall: "inventory-rainfall-table",
+    terrainClass: "inventory-terrain-class-table",
 };
 
 function initializeDataTable() {
@@ -169,6 +175,9 @@ function initializeDataTable() {
     surfaceTypeTable = setUpModalTable(segmentInventoryModalTables.surfaceType, surfaceTypeColumns);
     technicalClassTable = setUpModalTable(segmentInventoryModalTables.technicalClass, technicalClassColumns);
     numberLanesTable = setUpModalTable(segmentInventoryModalTables.numberLanes, numberLanesColumns);
+    carriagewayWidthTable = setUpModalTable(segmentInventoryModalTables.carriagewayWidth, carriagewayWidthColumns);
+    rainfallTable = setUpModalTable(segmentInventoryModalTables.rainfall, rainfallColumns);
+    terrainClassTable = setUpModalTable(segmentInventoryModalTables.terrainClass, terrainClassColumns);
 
     if (pendingRows.length) {
         // add any rows the road manager has delivered before initialization
@@ -257,6 +266,9 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
     $(`#${segmentInventoryModalTables.surfaceType}_wrapper`).hide();
     $(`#${segmentInventoryModalTables.technicalClass}_wrapper`).hide();
     $(`#${segmentInventoryModalTables.numberLanes}_wrapper`).hide();
+    $(`#${segmentInventoryModalTables.carriagewayWidth}_wrapper`).hide();
+    $(`#${segmentInventoryModalTables.rainfall}_wrapper`).hide();
+    $(`#${segmentInventoryModalTables.terrainClass}_wrapper`).hide();
 
     switch (attr) {
         case "surface_condition":
@@ -278,6 +290,21 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
             reportDataTableId = segmentInventoryModalTables.numberLanes;
             modal.find(".modal-title").text(linkCode + " " + gettext("Number of Lanes segments"));
             reportTable = numberLanesTable;
+            break;
+        case "carriageway_width":
+            reportDataTableId = segmentInventoryModalTables.carriagewayWidth;
+            modal.find(".modal-title").text(linkCode + " " + gettext("Carriageway Width segments"));
+            reportTable = carriagewayWidthTable;
+            break;
+        case "rainfall":
+            reportDataTableId = segmentInventoryModalTables.rainfall;
+            modal.find(".modal-title").text(linkCode + " " + gettext("Rainfall segments"));
+            reportTable = rainfallTable;
+            break;
+        case "terrain_class":
+            reportDataTableId = segmentInventoryModalTables.terrainClass;
+            modal.find(".modal-title").text(linkCode + " " + gettext("Terrain Class segments"));
+            reportTable = terrainClassTable;
             break;
     }
     reportTable.clear(); // remove all rows in the table
