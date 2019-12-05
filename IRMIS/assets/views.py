@@ -443,7 +443,11 @@ def protobuf_reports(request):
         "surfacecondition", []
     )  # surfacecondition=X
     report_date = request.GET.get("reportdate", None)  # reportdate=X
-    if report_date == "true" or report_date == True:
+    if (
+        report_date == "true"
+        or report_date == True
+        or report_date == datetime.today().strftime("%Y-%m-%d")
+    ):
         report_date = None
 
     if road_id or road_code:
@@ -532,6 +536,16 @@ def protobuf_reports(request):
             .distinct()
         )
         road_codes_universe = road_codes_universe.intersection(survey_codes_set)
+    if report_date:
+        final_filters["date_surveyed"] = report_date
+        survey_codes_set = set(
+            Survey.objects.filter(
+                date_surveyed__lte=datetime.strptime(report_date, "%Y-%m-%d")
+            )
+            .values_list("road", flat=True)
+            .distinct()
+        )
+        road_codes_universe = road_codes_universe.intersection(survey_codes_set)
 
     report_protobuf.filter = json.dumps(final_filters)
 
@@ -598,10 +612,6 @@ def protobuf_reports(request):
 
         road_chainages[0]["chainage_start"] = min_chainage
         road_chainages[0]["chainage_end"] = max_chainage
-
-    if report_date is not None:
-        final_filters["date_surveyed"] = report_date
-        report_protobuf.filter = json.dumps(final_filters)
 
     # Commence processing Reports by road_code
     surveys = {}
