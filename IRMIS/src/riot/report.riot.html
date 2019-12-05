@@ -107,19 +107,15 @@
 
         <span class="report-date" if="{ state.reportData.dateCreated }">{ window.gettext("Created on") } { state.reportData.dateCreated() }</span>
 
-        <!-- <div class="filters-applied" hidden="{ !hasFilters() }">
-            <p>{ window.gettext("Filters applied") }</p>
+        <div class="filters-applied" hidden="{ !hasFilters() || !state.reportData.formattedFilters || !state.reportData.formattedFilters.length }">
+			<p>{ window.gettext("Filters applied") }</p>
             <div class="d-flex">
-                <div class="d-flex flex-column filter">
-                    <span>Municipality:</span>
-                    <span>Aileu, Dili</span>
-                </div>
-                <div class="d-flex flex-column filter">
-                    <span>Surface Type:</span>
-                    <span>Gravel</span>
+                <div class="d-flex flex-column filter" each="{ filter in state.reportData.formattedFilters }">
+                    <span>{filter.title}: </span>
+                    <span>{filter.values.join(", ")}</span>
                 </div>
             </div>
-        </div> -->
+        </div>
 
         <div if="{state.reportData.totalLength}" class="d-flex flex-column total-length" hidden="{ !hasTotalLength() }">
             <p>{ window.gettext("Total Length") }</p>
@@ -694,6 +690,7 @@
                                     ? surveyReportData.reportChainage 
                                     : undefined,
                                 dateCreated: () => dayjs(new Date()).format('DD MMMM YYYY [at] HH:mm'),
+                                formattedFilters: surveyReportData.formattedFilters
                             };
 
                             if (haveLengths) {
