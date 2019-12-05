@@ -11,7 +11,7 @@
                 <!-- Table Title and Buttons -->
                 <div class="dt-buttons">
                     <h6 id="table-name" class="flex-grow-1">{% trans "Road Inventory" %}</h6>
-
+                  
                     <div id="export" class="btn btn-secondary btn-sm d-flex justify-content-center">{% trans "Export all" %}</div>
 
                     <div id="select-data" class="btn btn-secondary btn-sm d-flex dropdown justify-content-between">
@@ -138,9 +138,18 @@
                                         <span class="checkbox image"></span>
                                         {% trans "Number of lanes" %}
                                     </div>
+                                    <div class="align-items-center d-flex text-nowrap" data-column="27">
+                                        <span class="checkbox image"></span>
+                                        {% trans "Rainfall" %}
+                                    </div>
+                                    <div class="align-items-center d-flex text-nowrap" data-column="28">
+                                        <span class="checkbox image"></span>
+                                        {% trans "Terrain Class" %}
+                                    </div>
                                 </div>
-                                <button
-                                    class="btn btn-sm btn-secondary restore text-nowrap">{% trans "Return to default selection" %}</button>
+                                <button class="btn btn-sm btn-secondary restore text-nowrap">
+                                    {% trans "Return to default selection" %}
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -162,13 +171,23 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title"></h1>
-                <span class="close image" data-dismiss="modal" aria-label="{ window.gettext('Close') }" aria-hidden="true"></span>
+                <span class="close image" data-dismiss="modal" aria-label="{ window.gettext('Close') }"
+                    aria-hidden="true"></span>
             </div>
             <div class="modal-body">
-                <table id="inventory-surface-condition-table" class="d-block table table-bordered table-hover w-100"></table>
+                <table id="inventory-surface-condition-table" class="d-block table table-bordered table-hover w-100">
+                </table>
                 <table id="inventory-surface-type-table" class="d-block table table-bordered table-hover w-100"></table>
-                <table id="inventory-technical-class-table" class="d-block table table-bordered table-hover w-100"></table>
+                <table id="inventory-technical-class-table" class="d-block table table-bordered table-hover w-100">
+                </table>
                 <table id="inventory-number-lanes-table" class="d-block table table-bordered table-hover w-100"></table>
+                <table id="inventory-carriageway-width-table" class="d-block table table-bordered table-hover w-100">
+                </table>
+                <table id="inventory-terrain-class-table" class="d-block table table-bordered table-hover w-100">
+                </table>
+                <table id="inventory-rainfall-table" class="d-block table table-bordered table-hover w-100"></table>
+                <table id="inventory-pavement-class-table" class="d-block table table-bordered table-hover w-100">
+                </table>
             </div>
         </div>
     </div>
