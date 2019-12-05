@@ -4,7 +4,7 @@ import $ from "jquery";
 import { exportCsv } from "./exportCsv";
 import { applyFilter } from './filter';
 import { estradaTableColumns, estradaTableEventListeners } from "./mainTableDefinition";
-import { surfaceConditionColumns, surfaceTypeColumns, technicalClassColumns, numberLanesColumns, carriagewayWidthColumns, rainfallColumns, terrainClassColumns } from "./segmentsInventoryTableDefinition";
+import { carriagewayWidthColumns, numberLanesColumns, pavementClassColumns, rainfallColumns, surfaceConditionColumns, surfaceTypeColumns, technicalClassColumns, terrainClassColumns } from "./segmentsInventoryTableDefinition";
 
 import { datatableTranslations } from "./datatableTranslations";
 import { getRoad } from "./roadManager";
@@ -312,7 +312,7 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
             break;
         case "pavement_class":
             reportDataTableId = segmentInventoryModalTables.pavementClass;
-            modal.find(".modal-title").text(linkCode + " " + gettext("Terrain Class segments"));
+            modal.find(".modal-title").text(linkCode + " " + gettext("Pavement Class segments"));
             reportTable = pavementClassTable;
             break;
     }
