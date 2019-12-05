@@ -174,10 +174,8 @@ class Report:
             else:
                 setattr(entry, "chainage_end", segment["chainage_point"] + 1)
 
-    def to_protobuf(self):
-        """ Package up the various statistics and tables for export as Protobuf """
-        self.report_protobuf = report_pb2.Report()
-
+    def prepare_protobuf(self):
+        """ Package up the various statistics and tables ready for export via protobuf """
         if self.primary_attributes:
             self.filters["primary_attributes"] = self.primary_attributes
 
@@ -189,11 +187,11 @@ class Report:
         else:
             if self.withAttributes:
                 # Road level reports must have start & end chainages to build a report.
-                # Return an empty report.
-                return self.report_protobuf
+                return
 
         for primary_attribute in self.primary_attributes:
             # build and set report statistical data & table
+            # build_empty_chainage_list and assign_survey_results take the most time
             self.build_empty_chainage_list(primary_attribute)
             self.assign_survey_results(primary_attribute)
             self.lengths[primary_attribute] = self.build_summary_stats(
@@ -204,6 +202,17 @@ class Report:
                 self.build_attribute_tables(primary_attribute)
 
         self.filters["road_code"] = list(self.road_codes)
+
+
+    def to_protobuf(self):
+        """ Package up the various statistics and tables for export as Protobuf """
+        self.prepare_protobuf()
+        self.report_protobuf = report_pb2.Report()
+
+        if not self.validate_chainages() and self.withAttributes:
+            # Road level reports must have start & end chainages to build a report.
+            # Return an empty report.
+            return self.report_protobuf
 
         self.report_protobuf.filter = json.dumps(self.filters)
         self.report_protobuf.lengths = json.dumps(self.lengths)
