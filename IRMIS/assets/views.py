@@ -495,30 +495,55 @@ def protobuf_reports(request):
     else:
         roads = Road.objects.all()
 
-    # apply additional filters to Roads list, if provided
-    if surface_conditions != []:
-        roads = roads.filter(surface_condition__in=surface_conditions)
-        final_filters["surface_condition"] = surface_conditions
-    if surface_types != []:
-        roads = roads.filter(surface_type__in=surface_types)
-        final_filters["surface_type"] = surface_types
+    # Road level attribute
     if municipalities != []:
-        roads = roads.filter(administrative_area__in=municipalities)
         final_filters["municipality"] = municipalities
+        roads = roads.filter(administrative_area__in=municipalities)
+
+    # Get a Road Codes Set Universe to work with for Survey level attributes
+    road_codes_universe = set(roads.values_list("road_code", flat=True).distinct())
+
+    # For each of the segmented attributes filters:
+    # 1. Derive a set of valid road_codes after filtering on Survey's values HStore for given filter conditions.
+    # 2. Perform an intersection of the Road Codes Set Universe with the Surveys road_code set.
+    # 3. Store that resulting set as the new Road Code Set Universe.
+    # ie. NEW Road Codes Universe = {Road Codes Universe} ∩ {Survey valid road_codes}
+    if surface_conditions != []:
+        final_filters["surface_condition"] = surface_conditions
+        survey_codes_set = set(
+            Survey.objects.filter(values__surface_condition__in=surface_conditions)
+            .values_list("road", flat=True)
+            .distinct()
+        )
+        road_codes_universe = road_codes_universe.intersection(survey_codes_set)
+    if surface_types != []:
+        final_filters["surface_type"] = surface_types
+        survey_codes_set = set(
+            Survey.objects.filter(values__surface_type__in=surface_types)
+            .values_list("road", flat=True)
+            .distinct()
+        )
+        road_codes_universe = road_codes_universe.intersection(survey_codes_set)
     if pavement_classes != []:
-        roads = roads.filter(pavement_class__in=pavement_classes)
         final_filters["pavement_class"] = pavement_classes
+        survey_codes_set = set(
+            Survey.objects.filter(values__pavement_class__in=pavement_classes)
+            .values_list("road", flat=True)
+            .distinct()
+        )
+        road_codes_universe = road_codes_universe.intersection(survey_codes_set)
 
     report_protobuf.filter = json.dumps(final_filters)
 
-    if len(roads) == 0:
+    # Empty Set {} of Roads
+    if len(road_codes_universe) == 0:
         # Return the empty protobuf, showing which filters were in use
         return HttpResponse(
             report_protobuf.SerializeToString(), content_type="application/octet-stream"
         )
 
     # Get the list of all relevant road_codes
-    road_codes = list(roads.values_list("road_code", flat=True).distinct())
+    road_codes = list(road_codes_universe)
 
     # Compose the list of total chainages by road_code
     road_chainages_list = (
