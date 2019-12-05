@@ -107,7 +107,7 @@
 
         <span class="report-date" if="{ state.reportData.dateCreated }">{ window.gettext("Created on") } { state.reportData.dateCreated() }</span>
 
-        <div class="filters-applied" hidden="{ !hasFilters() }">
+        <!-- <div class="filters-applied" hidden="{ !hasFilters() }">
             <p>{ window.gettext("Filters applied") }</p>
             <div class="d-flex">
                 <div class="d-flex flex-column filter">
@@ -119,7 +119,7 @@
                     <span>Gravel</span>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <div if="{state.reportData.totalLength}" class="d-flex flex-column total-length" hidden="{ !hasTotalLength() }">
             <p>{ window.gettext("Total Length") }</p>
