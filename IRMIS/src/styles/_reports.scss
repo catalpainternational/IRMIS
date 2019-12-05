@@ -6,6 +6,10 @@ $form-control-width: 225px;
     width: calc(100% - #{$side-menu-width});
     padding-right: 8px;
     overflow-y: auto;
+
+    & > div {
+        min-height: calc(100% - #{$footer-height});
+    }
 }
 
 reports_base {
@@ -54,6 +58,9 @@ reports_base {
 }
 
 report {
+    min-height: calc(100% - 40px);
+    display: block;
+
     .print-header, .print-footer {
         display: none;
     }
@@ -100,12 +107,13 @@ report {
 
         h6 {
             max-width: $blank-report-content-width;
-            margin-bottom: 10px;
+            margin-bottom: 0;
             margin-top: 15px;
         }
 
         p {
             max-width: $blank-report-content-width;
+            margin-top: 10px;
             margin-left: 0;
         }
     }
