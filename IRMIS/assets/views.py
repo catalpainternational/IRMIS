@@ -648,10 +648,7 @@ def protobuf_reports(request):
 
             for x in set(road_report.filters):
                 final_filters[x] = list(
-                    set(
-                        final_filters[x]
-                        + road_report.filters.get(x, [])
-                    )
+                    set(final_filters[x] + road_report.filters.get(x, []))
                 )
 
             for x in set(road_report.lengths):

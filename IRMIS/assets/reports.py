@@ -203,7 +203,6 @@ class Report:
 
         self.filters["road_code"] = list(self.road_codes)
 
-
     def to_protobuf(self):
         """ Package up the various statistics and tables for export as Protobuf """
         self.prepare_protobuf()
