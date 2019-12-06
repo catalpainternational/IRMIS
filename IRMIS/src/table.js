@@ -256,21 +256,21 @@ $.extend($.fn.dataTableExt.oSort, {
     }
 });
 
-$.fn.dataTable.Api.register('row().show()', function() {
-    var page_info = this.table().page.info();
-    // Get row index
-    var new_row_index = this.index();
-    // Row position
-    var row_position = this.table().rows()[0].indexOf( new_row_index );
-    // Already on right page ?
-    if( row_position >= page_info.start && row_position < page_info.end ) {
-        // Return row object
+$.fn.dataTable.Api.register('row().show()', function () {
+    const page = this.table().page;
+    const tableRows = this.table().rows({ order:"current", page:"all", search: "applied" });
+    const rowIndex = this.index();
+    const rowPosition = tableRows[0].indexOf( rowIndex );
+
+    if( rowPosition >= page.info().start && rowPosition < page.info().end ) {
+        // On the correct page - return the row
         return this;
     }
-    // Find page number
-    var page_to_display = Math.floor( row_position / this.table().page.len() );
-    // Go to that page
-    this.table().page( page_to_display );
+
+    const newPageNumber = Math.floor(rowPosition / page.len());
+    // Change page
+    page(newPageNumber);
+
     // Return row object
     return this;
 });
