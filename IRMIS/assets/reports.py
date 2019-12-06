@@ -199,6 +199,7 @@ class Report:
             )
 
             if self.withAttributes:
+                self.report_protobuf = report_pb2.Report()
                 self.build_attribute_tables(primary_attribute)
 
         self.filters["road_code"] = list(self.road_codes)
@@ -206,7 +207,8 @@ class Report:
     def to_protobuf(self):
         """ Package up the various statistics and tables for export as Protobuf """
         self.prepare_protobuf()
-        self.report_protobuf = report_pb2.Report()
+        if not hasattr(self, "report_protobuf"):
+            self.report_protobuf = report_pb2.Report()
 
         if not self.validate_chainages() and self.withAttributes:
             # Road level reports must have start & end chainages to build a report.
