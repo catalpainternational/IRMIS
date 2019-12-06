@@ -89,7 +89,7 @@ export function roadPopup(id) {
     const road = roads[id];
     if (!road) {
         // If the user clicks on the road in the map before the data is in protoBuf
-        return '<span class="popup"><span class="popup label">' + gettext('Loading')  + '</span></span>';
+        return `<span class="popup"><span class="popup label">${window.gettext("Loading")}</span></span>`;
     }
     const code = road.getRoadCode();
     const name = road.getRoadName();
@@ -97,11 +97,11 @@ export function roadPopup(id) {
     let html = "";
 
     if (code) {
-        html += '<span class="popup"><span class="popup label">Code: </span><span class="popup value">' + code + '</span></span>';
+        html += `<span class="popup"><span class="popup label">${window.gettext("Code")}: </span><span class="popup value">${code}</span></span>`;
     }
 
     if (name) {
-        html += '<span class="popup"><span class="popup label">Name: </span><span class="popup value">' + name + '</span> </span>';
+        html += `<span class="popup"><span class="popup label">${window.gettext("Name")}: </span><span class="popup value">${name}</span> </span>`;
     }
 
     return html;
