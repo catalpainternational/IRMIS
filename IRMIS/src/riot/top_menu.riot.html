@@ -1,0 +1,42 @@
+<top_menu>
+    <div class="align-items-center d-flex top-menu">
+        <span class="app-logo-dark-bg image" onclick="goBack()"></span>
+    
+        <div class="align-items-center d-flex justify-content-between">
+            <div id="top-navigation">
+                <a id="asset_manager_button" href="/#">{ window.gettext("Asset Manager") }</a>
+                <a id="reports_button" href="/#reports/">{ window.gettext("Reports") }</a>
+                <a id="planning_button" href="/#planning/">{ window.gettext("Planning") }</a>
+                <a id="planning_button" href="/#planning/">{ props.user }</a>
+            </div>
+    
+            <div class="dropdown" id="topmenu_toggle">
+                <span id="user_welcome" data-user-id="{ window.pk }" data-user-name="{ window.user }">
+                    { window.gettext("Hello") }, { window.user }
+                </span>
+                <span class="caret image"></span>
+                <div id="settings" class="dropdown-menu flex-column" hidden>
+                    <form class="language-selector" action="{ window.language_url }" method="post">
+                        <button class="btn" type="submit" name="language" each="{ language in state.languages }" value="{ language.code }">
+                            <span class="{ language.code == window.language_code ? 'active' : '' } radio image"></span>
+                            { language.name_local }
+                        </button>
+                        <br>
+                    </form>
+                    <div class="dropdown-divider"></div>
+                    <a href="{ window.password_change_url }">{ window.gettext("Change password") }</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="{ window.logout_url }">{ window.gettext("Log out") }</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        export default {
+            state: {
+                languages: JSON.parse(document.getElementById('languages').textContent),
+            },
+        }
+    </script>
+</top_menu>
