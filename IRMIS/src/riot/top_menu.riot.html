@@ -17,6 +17,7 @@
                 <span class="caret image"></span>
                 <div id="settings" class="dropdown-menu flex-column" hidden>
                     <form class="language-selector" action="{ window.language_url }" method="post">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="{ state.csrftoken }">
                         <button class="btn" type="submit" name="language" each="{ language in state.languages }" value="{ language.code }">
                             <span class="{ language.code == window.language_code ? 'active' : '' } radio image"></span>
                             { language.name_local }
@@ -35,6 +36,7 @@
     <script>
         export default {
             state: {
+                csrftoken: document.cookie.replace(/(?:(?:^|.*;\s*)csrftoken\s*\=\s*([^;]*).*$)|^.*$/, "$1"),
                 languages: JSON.parse(document.getElementById('languages').textContent),
             },
         }
