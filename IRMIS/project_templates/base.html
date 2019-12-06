@@ -34,14 +34,9 @@
     </head>
 
     <body class="h-100 {% block body_class %}{% endblock %}">
-        <div class="align-items-center d-flex top-menu">
-            {% block top_menu %}{% endblock %}
-        </div>
-
         {% block base_content %}{% endblock %}
 
         {# Global javascript #}
-
         <script>
             {% if perms.assets.change_road %}
             window.canEdit = true;
