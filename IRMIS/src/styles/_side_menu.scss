@@ -9,6 +9,7 @@
 }
 
 #side-menu {
+    height: calc(100% - #{$top-menu-height} - 5px);
     background-color: $darker-gray;
     width: $side-menu-width;
     padding-right: 4px;
@@ -44,7 +45,7 @@
     }
 
     .filters {
-        height: calc(100% - #{$top-menu-height} - 5px - 71px - 40px - 15px);
+        height: calc(100% - 72px - 40px - #{$footer-height});
         padding-right: 6px;
         overflow-y: auto;
 
@@ -163,7 +164,7 @@
 planning_base #side-menu > div,
 reports_base #side-menu > div,
 edit_base #side-menu > div {
-    height: calc(100vh - #{$top-menu-height} - 5px - 15px);
+    height: calc(100vh - #{$top-menu-height} - 5px - #{$footer-height});
     padding-right: 6px;
     margin-left: -15px;
     overflow-y: auto;
