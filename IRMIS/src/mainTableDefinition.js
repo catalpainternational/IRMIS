@@ -41,7 +41,21 @@ export const estradaTableEventListeners = {
             const tableRows = (viewName === 'table') ? 20 : 10;
             table.page.len(tableRows).draw('page');
         }
-    }
+    },
+    /** select a row in the table by id */
+    "estrada.table.rowSelected": (data, table) => {
+        const rowId = data.detail ? data.detail.rowId : null;
+        if (rowId) {
+            table.rows().every(function (rowIdx, tableLoop, rowLoop) { 
+                if (this.id() !== rowId) {
+                    this.node().classList.remove("selected");
+                } else {
+                    this.node().classList.add("selected");
+                    table.row(this.index()).show().draw(false);
+                }
+            });
+        }
+    }    
 };
 
 /** Defines the columns for the table on the Estrada main page */

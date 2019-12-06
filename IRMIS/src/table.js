@@ -256,6 +256,25 @@ $.extend($.fn.dataTableExt.oSort, {
     }
 });
 
+$.fn.dataTable.Api.register('row().show()', function () {
+    const page = this.table().page;
+    const tableRows = this.table().rows({ order:"current", page:"all", search: "applied" });
+    const rowIndex = this.index();
+    const rowPosition = tableRows[0].indexOf( rowIndex );
+
+    if( rowPosition >= page.info().start && rowPosition < page.info().end ) {
+        // On the correct page - return the row
+        return this;
+    }
+
+    const newPageNumber = Math.floor(rowPosition / page.len());
+    // Change page
+    page(newPageNumber);
+
+    // Return row object
+    return this;
+});
+
 $("#inventory-segments-modal").on("show.bs.modal", function (event) {
     const button = $(event.relatedTarget); // Button that triggered the modal
     const linkCode = button.data("code"); // Extract info from data-* attributes
