@@ -164,20 +164,29 @@ report {
 
     input.form-control {
         margin-bottom: 10px;
-        margin-right: 10px;
     }
 
     input[type="date"] {
         width: $form-control-width;
     }
 
-    input[type="number"] {
-        width: calc((#{$form-control-width} - 10px) / 2);
-    }
-
     .options {
         margin-bottom: 10px;
         margin-right: 10px;
         height: 31px;
+    }
+
+    .chainages {
+        & > div {
+            width: calc(#{$form-control-width} / 2);
+        }
+
+        & > div:first-child {
+            padding-right: 2.5px;
+        }
+
+        & > div:last-child {
+            padding-left: 2.5px;
+        }
     }
 }

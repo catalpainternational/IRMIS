@@ -26,6 +26,10 @@
         border: 1px solid $red;
     }
 
+    &:-moz-ui-invalid {
+        box-shadow: none;
+    }
+
     &:focus {
         box-shadow: 0 0 2px 1px rgba(16, 165, 150, 0.5);
         border: 1px solid $green;

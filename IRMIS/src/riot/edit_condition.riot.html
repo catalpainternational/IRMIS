@@ -56,10 +56,8 @@
                 <div class="form-group">
                     <label>{ window.gettext("Chainage start") } (m)</label>
                     <span class="required">*</span>
-                    <input
-                        class="{state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
-                        type="number" name="startChainage" placeholder="1000" value="{state.survey.startChainage}"
-                        oninput="{checkChainage}" required>
+                    <input class="{state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
+                        type="number" name="startChainage" placeholder="1000" value="{state.survey.startChainage}" oninput="{checkChainage}" min="0" max="999999999" step="1" required>
                     <small class="form-text text-muted">{ props.parent.getHelpText("start_chainage") }</small>
                     <div if="{state.errors.startChainage}" class="invalid-tooltip">
                         <ul>
@@ -70,10 +68,8 @@
                 <div class="form-group">
                     <label>{ window.gettext("Chainage end") } (m)</label>
                     <span class="required">*</span>
-                    <input
-                        class="{state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
-                        type="number" name="endChainage" placeholder="62410" value="{state.survey.endChainage}"
-                        oninput="{checkChainage}" required>
+                    <input class="{state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
+                        type="number" name="endChainage" placeholder="62410" value="{state.survey.endChainage}" oninput="{checkChainage}" min="0" max="999999999" step="1" required>
                     <small class="form-text text-muted">{ props.parent.getHelpText("end_chainage") }</small>
                     <div if="{state.errors.endChainage}" class="invalid-tooltip">
                         <ul>
@@ -134,12 +130,11 @@
         }
 
         function withinMaxDigits(text, limit, decimals) {
-            return (new RegExp(`^\\d{0,${(limit - decimals)}}(\\.\\d{1,${decimals}})?$`).test(text));
+            return (new RegExp(`^\\d{0,${(limit - decimals)}}(\\.\\d{0,${decimals}})?$`).test(text));
         }
 
         export default {
             state: {
-                chainageDecimals: 3,
                 chainageDigits: 9,
                 baseSurvey: new Survey({}),
                 survey: {},
@@ -481,13 +476,8 @@
             checkChainage(e) {
                 const fieldName = e.currentTarget.name;
                 const input = e.currentTarget.value;
-                const chainageDigits = this.state.chainageDigits;
-                const chainageDecimals = this.state.chainageDecimals;
-                const testResult = withinMaxDigits(input, chainageDigits, chainageDecimals);
-                const errorText = window.interpolate(
-                    window.gettext("Chainage cannot contain more than %s digits, of which %s are decimals"),
-                    [chainageDigits, chainageDecimals]);
-
+                const testResult = withinMaxDigits(input, this.state.chainageDigits, 0);
+                const errorText = window.gettext(`Chainage cannot contain more than ${this.state.chainageDigits} digits and value shouldn't contain decimals`);
                 this.validate(fieldName, input, testResult, errorText);
             },
             checkSurfaceCondition(e) {

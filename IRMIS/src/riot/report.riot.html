@@ -68,16 +68,16 @@
                                 value="{ code.road_code }">{ code.road_code }</option>
                         </select>
                     </div>
-                    <div class="d-flex flex-wrap">
-                        <div class="d-flex flex-column">
-                            <label>{ window.gettext("Chainage start") }</label>
+                    <div class="chainages d-flex flex-wrap">
+                        <div class="align-items-center d-flex flex-column justify-content-between">
+                            <label>{ window.gettext("Chainage start") } (m)</label>
                             <input class="{ state.reportStartChainage ? '' : 'inactive' } form-control form-control-sm"
-                                type="number" oninput="{ selectStartChainage }" placeholder="0">
+                                type="number" oninput="{ selectStartChainage }" placeholder="0" min="0" step="1">
                         </div>
-                        <div class="d-flex flex-column">
-                            <label>{ window.gettext("Chainage end") }</label>
+                        <div class="align-items-center d-flex flex-column justify-content-between">
+                            <label>{ window.gettext("Chainage end") } (m)</label>
                             <input class="{ state.reportEndChainage ? '' : 'inactive' } form-control form-control-sm"
-                                type="number" oninput="{ selectEndChainage }" placeholder="20000">
+                                type="number" oninput="{ selectEndChainage }" placeholder="20000" min="0" step="1">
                         </div>
                     </div>
                 </div>
