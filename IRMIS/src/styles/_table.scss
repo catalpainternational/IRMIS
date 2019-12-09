@@ -5,14 +5,15 @@
     }
 
     &.table:not(.map) #all-data-table {
-        max-height: calc(100vh - #{$top-menu-height} - 5px - 31px - 6px - 37px - #{$footer-height});
+        max-height: calc(100vh - #{$top-menu-height} - 5px - 31px - #{$footer-height});
     }
 
     &.table.map #all-data-table {
-        max-height: calc(60vh - #{$top-menu-height} - 5px - 10px - 31px - 6px - 37px - #{$footer-height});
+        max-height: calc(60vh - #{$top-menu-height} - 5px - 10px - 31px - #{$footer-height});
     }
 
     #all-data-table {
+        margin-bottom: 0 !important;
         margin-top: 0 !important;
         overflow: auto;
     }
