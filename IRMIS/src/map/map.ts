@@ -15,7 +15,7 @@ import { getFeatureType } from "./utilities/propertiesGeoJSON";
 
 import { FallbackLayerStyle, FixLayerStyleDefaults, styleGeometry, stylePoint } from "./utilities/leaflet-style";
 
-import { roadPopup } from "../roadManager.js";
+import { roadPopup } from "../roadManager";
 
 /** The collection of all GeoJSON elements currently added to the map,
  * organised by their featureType

@@ -1,4 +1,4 @@
-import { GeoDataStyle } from "models/geo-data-style";
+import { GeoDataStyle } from "../models/geo-data-style";
 
 // tslint:disable: object-literal-sort-keys
 

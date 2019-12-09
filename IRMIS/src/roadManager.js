@@ -85,6 +85,11 @@ function filterRoads(filterState) {
     document.dispatchEvent(new CustomEvent("estrada.filter.applied", {"detail": { idMap }}));
 }
 
+/**
+ * Generate a popup on the map
+ * @param {number} id
+ * @return {string}
+ */
 export function roadPopup(id) {
     const road = roads[id];
     if (!road) {

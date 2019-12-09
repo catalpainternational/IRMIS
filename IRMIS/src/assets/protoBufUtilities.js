@@ -46,7 +46,9 @@ export function humanizeChoices(schema, field, valueKey = false, displayKey = fa
     let values = {};
     valueKey = valueKey || 0;
     displayKey = displayKey || 1;
-    schema[field].options.forEach((o) => { values[o[valueKey]] = o[displayKey]; });
+    if (schema[field] && schema[field].options) {
+        schema[field].options.forEach((o) => { values[o[valueKey]] = o[displayKey]; });
+    }
 
     return values;
 }

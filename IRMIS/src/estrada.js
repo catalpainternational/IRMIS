@@ -1,4 +1,8 @@
-import "babel-polyfill";
+// polyfills - babel-polyfill is core-js
+import "core-js/stable";
+import "regenerator-runtime/runtime";
+import "./polyfills/array_from";
+import "./polyfills/nodelist_foreach";
 import * as riot from "riot";
 
 import Planning_Base from "./riot/planning_base.riot.html";
