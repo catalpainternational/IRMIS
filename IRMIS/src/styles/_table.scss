@@ -41,7 +41,14 @@
     overflow-x: auto;
 }
 
-#inventory-surface-condition-table, #inventory-surface-type-table, #inventory-technical-class-table {
+#inventory-surface-condition-table,
+#inventory-surface-type-table,
+#inventory-technical-class-table,
+#inventory-number-lanes-table,
+#inventory-carriageway-width-table,
+#inventory-terrain-class-table,
+#inventory-rainfall-table,
+#inventory-pavement-class-table {
     border-bottom: 1px solid $light-gray;
     border-right: 1px solid $light-gray;
     border-left: 1px solid $light-gray;
