@@ -39,6 +39,9 @@ export class Map {
         this.zoomControl = L.control.zoom({ position: "topright" });
         this.zoomControl.addTo(this.lMap);
 
+        // Set the minimum zoom level
+        this.lMap.setMinZoom(this.lMap.getZoom());
+
         // Set up the baseLayers and add the selected one to the map
         const bl = BaseLayers.baseLayers;
         this.currentLayer = bl[Config.preferredBaseLayerName];
