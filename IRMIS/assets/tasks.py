@@ -337,8 +337,10 @@ def collate_geometries():
     """
 
     geometry_sets = dict(
-        national=Road.objects.filter(road_type__in=["NAT", "HIGH"]),
+        highway=Road.objects.filter(road_type="HIGH"),
+        national=Road.objects.filter(road_type="NAT"),
         municipal=Road.objects.filter(road_type="MUN"),
+        urban=Road.objects.filter(road_type="URB"),
         rural=Road.objects.filter(road_type="RUR"),
     )
 

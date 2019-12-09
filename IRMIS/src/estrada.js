@@ -31,13 +31,14 @@ window.addEventListener("load", () => {
         .then(geoJsonDetails => {
             // for each chunk, download the geojson
             geoJsonDetails.forEach(geoJsonDetail => {
+                const featureType = geoJsonDetail.key || "Road";
                 getGeoJsonDetail(geoJsonDetail)
                     .then(geoJson => {
                         // add in road metadata to the GeoJSON that we'll need
                         // for filtering and for styling
                         geoJson.features.forEach((feature) => {
                             feature.properties.id = Number(feature.properties.pk) || 0;
-                            feature.properties.featureType = "Road";
+                            feature.properties.featureType = featureType;
                         });
 
                         // add to map

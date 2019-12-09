@@ -210,7 +210,7 @@ def road_update(request):
 @login_required
 def geojson_details(request):
     """ returns a JSON object with details of geoJSON geometry collections """
-    geojson_files = CollatedGeoJsonFile.objects.values("id", "geobuf_file")
+    geojson_files = CollatedGeoJsonFile.objects.values("id", "key", "geobuf_file")
     return JsonResponse(list(geojson_files), safe=False)
 
 

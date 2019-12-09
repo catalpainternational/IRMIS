@@ -73,9 +73,8 @@ export class Map {
     }
 
     private handleFilter(data: Event) {
-        const layerFilterStyles = getFilterStyles("Road");
-
         const featureZoomSet: FeatureCollection = { type: "FeatureCollection", features: [] };
+        const featureTypeSet: any = {};
         Object.values(featureLookup).forEach((feature: any) => {
             const featureId: string = feature.properties.pk.toString();
             const geoLayer = layerLookup[featureId] as L.GeoJSON;
@@ -85,6 +84,11 @@ export class Map {
                 featureZoomSet.features.push(feature);
             }
 
+            const featureType: string = feature.properties.featureType || "Road";
+            if (!featureTypeSet[featureType]) {
+                featureTypeSet[featureType] = getFilterStyles(featureType);
+            }
+            const layerFilterStyles = featureTypeSet[featureType];
             feature.properties.switchStyle = switchStyle;
             geoLayer.setStyle(switchStyle ? layerFilterStyles.styleOn : layerFilterStyles.styleOff);
         });
