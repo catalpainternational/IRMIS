@@ -1,6 +1,8 @@
 import $ from "jquery";
 import "select2/dist/js/select2.full.min.js";
 
+import { dispatch } from "./assets/utilities";
+
 import { toggleFilter, clearFilter, clearAllFilters} from './filter';
 
 let filterUIState = {};
@@ -44,7 +46,7 @@ function collapse_side_menu() {
     mapTable.style.flex = "0 0 100%";
     sideMenu.hidden = true;
     collapsedSideMenu.classList.add("d-flex");
-    document.dispatchEvent(new CustomEvent("estrada.sideMenu.viewChanged"));
+    dispatch("estrada.sideMenu.viewChanged", undefined);
 }
 
 function expand_side_menu() {
@@ -56,7 +58,7 @@ function expand_side_menu() {
     mapTable.style.removeProperty('flex');
     sideMenu.hidden = false;
     collapsedSideMenu.classList.remove("d-flex");
-    document.dispatchEvent(new CustomEvent("estrada.sideMenu.viewChanged"));
+    dispatch("estrada.sideMenu.viewChanged", undefined);
 }
 
 function change_view(e) {

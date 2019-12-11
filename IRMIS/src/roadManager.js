@@ -1,5 +1,6 @@
 import { slugToPropertyGetter } from "./filter";
 import { getRoadAuditData, getRoadMetadata, getRoadsMetadata, getRoadsMetadataChunks, putRoadMetadata } from "./assets/assets_api";
+import { dispatch } from "./assets/utilities";
 
 const roads = {};
 let filteredRoads = {};
@@ -39,14 +40,14 @@ function addRoadMetadata(roadList) {
         },
         roads,
     );
-    document.dispatchEvent(new CustomEvent("estrada.roadManager.roadMetaDataAdded", {detail: { roadList }}));
+    dispatch("estrada.roadManager.roadMetaDataAdded", { detail: { roadList } });
 }
 
 export function saveRoad(sourceRoad) {
     return Promise.resolve(putRoadMetadata(sourceRoad))
         .then((road) => {
             roads[road.getId()] = road;
-            document.dispatchEvent(new CustomEvent("estrada.table.roadMetaDataUpdated", {detail: {road}}));
+            dispatch("estrada.table.roadMetaDataUpdated", { detail: { road } });
             return road;
         });
 }
@@ -54,7 +55,7 @@ export function saveRoad(sourceRoad) {
 export function getRoadAudit(roadId) {
     return Promise.resolve(getRoadAuditData(roadId))
         .then((auditList) => {
-            // document.dispatchEvent(new CustomEvent("estrada.auditTable.roadAuditDataAdded", {detail: {auditList}}));
+            // dispatch("estrada.auditTable.roadAuditDataAdded", { detail: { auditList } });
             return auditList;
         });
 }
@@ -82,7 +83,7 @@ function filterRoads(filterState) {
         return idMap;
     }, {});
 
-    document.dispatchEvent(new CustomEvent("estrada.filter.applied", {"detail": { idMap }}));
+    dispatch("estrada.filter.applied", { detail: { idMap } });
 }
 
 /**

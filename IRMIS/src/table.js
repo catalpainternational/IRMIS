@@ -9,6 +9,7 @@ import { carriagewayWidthColumns, numberLanesColumns, pavementClassColumns, rain
 import { datatableTranslations } from "./datatableTranslations";
 import { getRoad } from "./roadManager";
 import { getRoadReport } from "./reportManager";
+import { dispatch } from "./assets/utilities";
 
 let surfaceConditionTable = null;
 let surfaceTypeTable = null;
@@ -199,7 +200,7 @@ function applyTableSelection(rowId) {
     idMap[rowId] = true;
 
     // communicate the filter
-    document.dispatchEvent(new CustomEvent("estrada.idFilter.applied", { "detail": { idMap } }));
+    dispatch("estrada.idFilter.applied", { detail: { idMap } });
 }
 
 function getTableData() {

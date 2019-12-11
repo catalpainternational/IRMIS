@@ -1,3 +1,5 @@
+import { dispatch } from "./assets/utilities";
+
 /* Hold the state for the global filter
  * expose methods that change or query the global filter
  * communicate the filter function to the map and table
@@ -55,5 +57,5 @@ export function clearAllFilters() {
 
 /** actually make the filter happen */
 export function applyFilter() {
-    document.dispatchEvent(new CustomEvent("estrada.filter.apply", { "detail": { filterState } }));
+    dispatch("estrada.filter.apply", { detail: { filterState } });
 }

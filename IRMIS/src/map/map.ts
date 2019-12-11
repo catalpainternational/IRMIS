@@ -17,6 +17,8 @@ import { FallbackLayerStyle, FixLayerStyleDefaults, styleGeometry, stylePoint } 
 
 import { roadPopup } from "../roadManager";
 
+import { dispatch } from "../assets/utilities";
+
 /** The collection of all GeoJSON elements currently added to the map,
  * organised by their featureType
  */
@@ -120,7 +122,7 @@ export class Map {
 
             if (clickedFeature.properties.switchStyle) {
                 // This feature will be in the table
-                document.dispatchEvent(new CustomEvent("estrada.table.rowSelected", { detail: { rowId: featureId } }));
+                dispatch("estrada.table.rowSelected", { detail: { rowId: featureId } });
             }
         });
     }
