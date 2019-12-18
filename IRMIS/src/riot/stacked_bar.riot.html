@@ -20,6 +20,8 @@
     <script>
         import $ from "jquery";
 
+        import { testKeyIsReal } from "../assets/models/surveyReport.js";
+
         const emptyEntries = [{ key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }];
 
         export default {
@@ -72,7 +74,17 @@
                 });
 
                 this.state.entries = [];
-                newEntries.forEach((newEntry) => {this.state.entries.push(newEntry)});
+                // Add any 'unknown' entries first - so they appear last
+                newEntries.forEach((newEntry) => {
+                    if (testKeyIsReal(newEntry.key) || testKeyIsReal(newEntry.title)) {
+                        this.state.entries.push(newEntry)
+                    }
+                });
+                newEntries.forEach((newEntry) => {
+                    if (!testKeyIsReal(newEntry.key) && !testKeyIsReal(newEntry.title)) {
+                        this.state.entries.push(newEntry)
+                    }
+                });
 
                 this.update();
             },

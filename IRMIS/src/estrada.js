@@ -76,11 +76,11 @@ window.addEventListener("hashchange", () => {
 function hashCheck() {
     const mainContent = document.getElementById("view-content");
     const planningBase = document.getElementById("planning");
-    const reportsBase = document.getElementById("reports");
+    const reportsBase = document.getElementById("reports") || document.getElementById("dashboard");
     const editBase = document.getElementById("edit-base");
 
     let planningHash = /#planning/.exec(location.hash);
-    let reportsHash = /#reports\/(\d?)/.exec(location.hash);
+    let reportsHash = /#reports\/(.*)\/?/.exec(location.hash);
     let editHash = /#edit\/(\d*)\/(\w+)/.exec(location.hash);
 
     if (editHash !== null && !editBase) {

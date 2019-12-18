@@ -4,75 +4,48 @@
             <div>
                 <ul class="navigation">
                     <ul>
-                        <li class="active">{ window.gettext("Reports") }</li>
+                        <li class="{ state.page === 'dashboard' ? 'active' : '' }" data-id="dashboard"
+                            onclick="{ selectPage }">{ window.gettext("Dashboard") }</li>
+                        <li class="{ pageIdIsNumeric(state.page) ? 'active' : '' }" data-id=0
+                            onclick="{ selectPage }">{ window.gettext("Reports") }</li>
+                        <!-- <li class="{ state.page === 'reports_builder' ? 'active' : '' }" data-page="reports_builder"
+                            onclick="{ selectPage }">{ window.gettext("Reports Builder") }</li> -->
                     </ul>
                 </ul>
             </div>
         </div>
 
-        <div id="reports">
-            <report if="{ state.page }" id="{ state.page }" showFeedback="{ showFeedback }"></report>
-            <div if="{ !state.page }">
-                <div class="content-wrapper">
-                    <h6>{ window.gettext("Road Network Report") }</h6>
-                    <div class="align-items-center d-flex report" onclick="{ selectPage }" data-id="0">
-                        <span class="paper image"></span>
-                        <p>{ window.gettext("Road Network Length") }</p>
-                    </div>
-                    <div class="align-items-center d-flex disabled report" onclick="{ selectPage }" data-id="1">
-                        <span class="paper image"></span>
-                        <p>{ window.gettext("Road Network Length Breakdown") } (coming soon)</p>
-                    </div>
-                </div>
+        <div id="dashboard" if="{ state.page === 'dashboard' }">
+            <report_dashboard id="{ state.page }" showFeedback="{ showFeedback }"></report_dashboard>
+            <footer>
+                <small>República Democrática de Timor-Leste / Ministério das Obras Públicas</small>
+                <small>{ window.gettext("Created by Catalpa International") }</small>
+            </footer>
+        </div>
 
-                <div class="content-wrapper">
-                    <h6>{ window.gettext("Road Condition Report") }</h6>
-                    <div class="align-items-center d-flex report" onclick="{ selectPage }" data-id="2">
+        <div id="reports" if="{ pageIdIsNumeric(state.page) }">
+            <report if="{ state.page > 0 }" id="{ state.page }" showFeedback="{ showFeedback }"></report>
+            <div if="{ state.page === 0 }">
+                <div each="{ section in state.sections }" class="content-wrapper">
+                    <h6>{ section.title }</h6>
+                    <div each="{ report in state.reports.filter((report) => { return report.section === section.section }) }"
+                        class="{ report.disabled ? 'align-items-center d-flex report disabled' : 'align-items-center d-flex report' }"
+                        onclick="{ selectPage }" data-id="{ report.id }">
                         <span class="paper image"></span>
-                        <p>{ window.gettext("Surface Condition (SDI)") }</p>
-                    </div>
-                    <div class="align-items-center d-flex disabled report" onclick="{ selectPage }" data-id="3">
-                        <span class="paper image"></span>
-                        <p>{ window.gettext("IRI Roughness") } (coming soon)</p>
-                    </div>
-                </div>
-
-                <div class="content-wrapper">
-                    <h6>{ window.gettext("Road Network Reports by Road Class") }</h6>
-                    <div class="align-items-center d-flex report" onclick="{ selectPage }" data-id="4">
-                        <span class="paper image"></span>
-                        <p>{ window.gettext("Road Network Length - National Class") }</p>
-                    </div>
-                    <div class="align-items-center d-flex report" onclick="{ selectPage }" data-id="5">
-                        <span class="paper image"></span>
-                        <p>{ window.gettext("Road Network Length - Municipal Class") }</p>
-                    </div>
-                    <div class="align-items-center d-flex report" onclick="{ selectPage }" data-id="6">
-                        <span class="paper image"></span>
-                        <p>{ window.gettext("Road Network Length - Rural Class") }</p>
-                    </div>
-                    <div class="align-items-center d-flex report" onclick="{ selectPage }" data-id="7">
-                        <span class="paper image"></span>
-                        <p>{ window.gettext("Road Network Length - Highway Class") }</p>
-                    </div>
-                    <div class="align-items-center d-flex report" onclick="{ selectPage }" data-id="8">
-                        <span class="paper image"></span>
-                        <p>{ window.gettext("Road Network Length - Urban Class") }</p>
+                        <p>{ report.title }</p>
                     </div>
                 </div>
             </div>
             <footer>
-                <small>República Democrática de Timor-Leste / Ministério  das  Obras Públicas</small>
+                <small>República Democrática de Timor-Leste / Ministério das Obras Públicas</small>
                 <small>{ window.gettext("Created by Catalpa International") }</small>
             </footer>
         </div>
     </div>
 
-    <feedback_banner if="{ state.showFeedback }"
-        close="{ closeFeedback }"
+    <feedback_banner if="{ state.showFeedback }" close="{ closeFeedback }"
         successMessage="{ window.gettext('Report successfully created') }"
-        errorMessage="{ window.gettext('Something went wrong') }"
-        error="{ state.error }">
+        errorMessage="{ window.gettext('Something went wrong') }" error="{ state.error }">
     </feedback_banner>
 
     <loading></loading>
@@ -81,38 +54,70 @@
         import Feedback_Banner from './feedback_banner.riot.html';
         import Loading from './loading.riot.html';
         import Report from './report.riot.html';
+        import Report_Dashboard from './report_dashboard.riot.html';
+
+        const standardReportSections = [
+            { section: "network", title: window.gettext("Road Network Report") },
+            { section: "condition", title: window.gettext("Road Condition Report") },
+            { section: "road class", title: window.gettext("Road Network Reports by Road Class") },
+        ];
+
+        // standardReport.id matches the definitions in reportManager.js
+        const standardReports = [
+            { id: 1, section: "network", title: window.gettext("Road Network Length") },
+            { id: 2, section: "network", title: window.gettext("Road Network Length Breakdown"), disabled: true },
+            { id: 3, section: "condition", title: window.gettext("Surface Condition (SDI)") },
+            { id: 4, section: "condition", title: window.gettext("IRI Roughness"), disabled: true },
+            { id: 5, section: "road class", title: window.gettext("Road Network Length - National Class") },
+            { id: 6, section: "road class", title: window.gettext("Road Network Length - Municipal Class") },
+            { id: 7, section: "road class", title: window.gettext("Road Network Length - Rural Class") },
+            { id: 8, section: "road class", title: window.gettext("Road Network Length - Highway Class") },
+            { id: 9, section: "road class", title: window.gettext("Road Network Length - Urban Class") },
+        ];
 
         export default {
             state: {
                 showFeedback: false,
                 error: false,
-                page: "",
+                page: 0,
+                sections: standardReportSections,
+                reports: standardReports,
             },
             components: {
-                Feedback_Banner, Loading, Report,
+                Feedback_Banner, Loading, Report, Report_Dashboard,
             },
             onBeforeMount(props, state) {
-                state.page = props.page;
+                state.page = this.getPageId(props.page);
                 window.addEventListener("hashchange", this.hashCheck);
                 window.goBack = () => window.location.hash = "#";
             },
             onBeforeUnmount(props, state) {
                 window.removeEventListener("hashchange", this.hashCheck);
-                window.goBack = () => {};
+                window.goBack = () => { };
+            },
+            pageIdIsNumeric(pageId) {
+                return !Number.isNaN(Number.parseInt(pageId));
+            },
+            getPageId(pageId) {
+                // Coerce the pageId (AKA Report Id):
+                // numeric-like -> numeric
+                // text -> text
+                // null, undefined, "" -> 0 (numeric)
+                return this.pageIdIsNumeric(pageId)
+                    ? Number.parseInt(pageId)
+                    : pageId || 0;
             },
             hashCheck() {
-                const reportHash = /#reports\/(\d?)/.exec(location.hash);
+                const reportHash = /#reports\/(.*)\/?/.exec(location.hash);
 
                 if (reportHash) {
-                    this.update({
-                        page: reportHash[1],
-                    });
+                    this.update({ page: this.getPageId(reportHash[1]) });
                 }
             },
             selectPage(e) {
-                const reportId = e.currentTarget.dataset.id;
+                this.state.page = this.getPageId(e.currentTarget.dataset.id);
 
-                window.location.hash = `#reports/${reportId}`;
+                window.location.hash = `#reports/${this.state.page}`;
             },
             showFeedback(error) {
                 this.update({

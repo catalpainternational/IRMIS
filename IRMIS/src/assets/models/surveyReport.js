@@ -72,7 +72,7 @@ const filterTitles = {
     // report_chainage: { display: gettext("Report Chainage") },
 }
 
-function testKeyIsReal(key) {
+export function testKeyIsReal(key) {
     return ["0", "none", "unknown", "nan", "null", "undefined", "false"].indexOf(`${key}`.toLowerCase()) === -1;
 }
 

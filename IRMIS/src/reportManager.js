@@ -98,14 +98,16 @@ export const reportTableIds = {
 
 /** The names of the stacked bars used in the reports */
 export const reportBarIds = {
+    roadClass: "report-road-class-bar",
     roadStatus: "report-road-status-bar",
     technicalClass: "report-technical-class-bar",
     surfaceCondition: "report-surface-condition-bar",
+    pavementClass: "report-pavement-class-bar",
 };
 
 /** The definitions of the different reports */
 export const reportContent = {
-    0: {
+    1: {
         title: window.gettext("Road Network Length"),
         description: window.gettext("A report on the total length of the road network. The report provides total length in kilometers and percentages according to Road Status and Technical Class. A number of filters can be selected in order to generate a length report according to the required criteria"),
         noReportTitle: window.gettext("Click on Create Report button to access the Road Network Length report"),
@@ -123,7 +125,7 @@ export const reportContent = {
         },
         reportElements: { filters: true, totalLength: true, dataTables: [reportTableIds.roadStatus, reportTableIds.technicalClass] },
     },
-    1: {
+    2: {
         title: window.gettext("Road Network Length Breakdown"),
         description: window.gettext("A breakdown report on the total length of the road network. The report provides information on total length in kilometers and percentages as well as Road Status and Technical Class, according to a breakdown by Municipality, Road Class and Surface Type"),
         noReportTitle: window.gettext("Click on Create Report button to access the Road Network Length Breakdown report"),
@@ -141,7 +143,7 @@ export const reportContent = {
         },
         reportElements: { filters: true, totalLength: true, dataTables: [reportTableIds.municipality, reportTableIds.roadClass, reportTableIds.surfaceType] },
     },
-    2: {
+    3: {
         title: window.gettext("Surface Condition"),
         description: window.gettext("A report on Road Surface Condition. This report provides detailed Surface Condition information per segment"),
         noReportTitle: window.gettext("Please select a road above to view Surface Condition reports"),
@@ -156,7 +158,7 @@ export const reportContent = {
         },
         reportElements: { roadCodeAndChainage: true, stackedBars: [reportBarIds.surfaceCondition], dataTables: [reportTableIds.surfaceCondition] },
     },
-    3: {
+    4: {
         title: window.gettext("IRI Roughness"),
         description: window.gettext("A report on Road IRI data. This report provides detailed information on a Road's Roughness per segment"),
         noReportTitle: window.gettext("Please select a road above to view IRI Roughness reports"),
@@ -169,7 +171,7 @@ export const reportContent = {
         },
         reportElements: { roadCodeAndChainage: true },
     },
-    4: {
+    5: {
         title: window.gettext("Road Network Length - National Class"),
         description: window.gettext("A report on the total length of National Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for National Roads"),
         noReportTitle: window.gettext("Click on Create Report button to access the Road Network Length report for National roads"),
@@ -184,7 +186,7 @@ export const reportContent = {
         },
         reportElements: { totalLength: true, dataTables: [reportTableIds.roadStatus, reportTableIds.technicalClass] },
     },
-    5: {
+    6: {
         title: window.gettext("Road Network Length - Municipal Class"),
         description: window.gettext("A report on the total length of Municipal Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Municipal Roads"),
         noReportTitle: window.gettext("Click on Create Report button to access the Road Network Length report for Municipal roads"),
@@ -199,7 +201,7 @@ export const reportContent = {
         },
         reportElements: { totalLength: true, dataTables: [reportTableIds.roadStatus, reportTableIds.technicalClass] },
     },
-    6: {
+    7: {
         title: window.gettext("Road Network Length - Rural Class"),
         description: window.gettext("A report on the total length of Rural Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Rural Roads"),
         noReportTitle: window.gettext("Click on Create Report button to access the Road Network Length report for Rural roads"),
@@ -214,7 +216,7 @@ export const reportContent = {
         },
         reportElements: { totalLength: true, dataTables: [reportTableIds.roadStatus, reportTableIds.technicalClass] },
     },
-    7: {
+    8: {
         title: window.gettext("Road Network Length - Highway Class"),
         description: window.gettext("A report on the total length of Highways. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Highways"),
         noReportTitle: window.gettext("Click on Create Report button to access the Road Network Length report for Highways"),
@@ -229,7 +231,7 @@ export const reportContent = {
         },
         reportElements: { totalLength: true, dataTables: [reportTableIds.roadStatus, reportTableIds.technicalClass] },
     },
-    8: {
+    9: {
         title: window.gettext("Road Network Length - Urban Class"),
         description: window.gettext("A report on the total length of Urban Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Urban Roads"),
         noReportTitle: window.gettext("Click on Create Report button to access the Road Network Length report for Urban roads"),

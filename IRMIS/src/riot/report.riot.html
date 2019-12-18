@@ -393,6 +393,8 @@
             prepareStackedBar(barName, barData, filterName) {
                 if (barData && barData.length) {
                     updateReportAttributeSummary(this.state, filterName, barData);
+
+                    this.state.reportData.totalLength = this.state.reportData.totalLength || barData.reduce((acc, cur) => acc += cur.distance || 0, 0);
                                     
                     const eventName = `${barName}.dataUpdated`;
                     const eventDetail = { detail: { entries: this.state[filterName], barName } };
