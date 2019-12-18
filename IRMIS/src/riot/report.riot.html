@@ -465,9 +465,10 @@
                                 this.state.reportData.roadClass = this.prepareTableData(this.dataTableIds.roadClass, surveyReportData.roadClasses, "road_class");
                                 this.state.reportData.surfaceType = this.prepareTableData(this.dataTableIds.surfaceType, surveyReportData.surfaceTypes, "surface_type");
 
+                                const surfaceConditions = surveyReportData.attributeTables("surface_condition", null, false, true)[0].attributeEntries;
                                 this.state.reportData.roadStatus = this.prepareTableData(this.dataTableIds.roadStatus, surveyReportData.roadStatuses, "road_status");
                                 this.state.reportData.technicalClass = this.prepareTableData(this.dataTableIds.technicalClass, surveyReportData.technicalClasses, "technical_class");
-                                this.state.reportData.surfaceCondition = this.prepareTableData(this.dataTableIds.surfaceCondition, surveyReportData.attributeTable("surface_condition", true), "surface_condition");
+                                this.state.reportData.surfaceCondition = this.prepareTableData(this.dataTableIds.surfaceCondition, surfaceConditions, "surface_condition");
 
                                 this.prepareStackedBar(this.stackedBarIds.roadStatus, surveyReportData.roadStatuses, "road_status");
                                 this.prepareStackedBar(this.stackedBarIds.technicalClass, surveyReportData.technicalClasses, "technical_class");
@@ -480,7 +481,7 @@
                                     reportingTables.includes(this.dataTableIds.surfaceType) && surveyReportData.surfaceTypes.length ||
                                     reportingTables.includes(this.dataTableIds.roadStatus) && surveyReportData.roadStatuses.length ||
                                     reportingTables.includes(this.dataTableIds.technicalClass) && surveyReportData.technicalClasses.length ||
-                                    reportingTables.includes(this.dataTableIds.surfaceCondition) && surveyReportData.attributeTable("surface_condition", true).length) {
+                                    reportingTables.includes(this.dataTableIds.surfaceCondition) && surfaceConditions.length) {
                                     this.state.noReportData = false;
                                 }
                             } else {

@@ -21,7 +21,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='assets',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x0creport.proto\x12\x06\x61ssets\x1a\x1fgoogle/protobuf/timestamp.proto\"[\n\x06Report\x12\x0e\n\x06\x66ilter\x18\x01 \x01(\t\x12\x0f\n\x07lengths\x18\x02 \x01(\t\x12\x30\n\x10\x61ttribute_tables\x18\x03 \x03(\x0b\x32\x16.assets.AttributeTable\"{\n\x0e\x41ttributeTable\x12\x19\n\x11primary_attribute\x18\x01 \x01(\t\x12\x1b\n\x13secondary_attribute\x18\x02 \x03(\t\x12\x31\n\x11\x61ttribute_entries\x18\x03 \x03(\x0b\x32\x16.assets.AttributeEntry\"\xc1\x01\n\x0e\x41ttributeEntry\x12\x16\n\x0e\x63hainage_start\x18\x01 \x01(\x02\x12\x14\n\x0c\x63hainage_end\x18\x02 \x01(\x02\x12\x0e\n\x06values\x18\x03 \x01(\t\x12\x11\n\tsurvey_id\x18\x04 \x01(\r\x12\x31\n\rdate_surveyed\x18\x05 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x10\n\x08\x61\x64\x64\x65\x64_by\x18\x06 \x01(\t\x12\x19\n\x11primary_attribute\x18\x07 \x01(\tb\x06proto3')
+  serialized_pb=_b('\n\x0creport.proto\x12\x06\x61ssets\x1a\x1fgoogle/protobuf/timestamp.proto\"[\n\x06Report\x12\x0e\n\x06\x66ilter\x18\x01 \x01(\t\x12\x0f\n\x07lengths\x18\x02 \x01(\t\x12\x30\n\x10\x61ttribute_tables\x18\x03 \x03(\x0b\x32\x16.assets.AttributeTable\"\xae\x01\n\x0e\x41ttributeTable\x12\x19\n\x11primary_attribute\x18\x01 \x01(\t\x12\x31\n\rdate_surveyed\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x1b\n\x13secondary_attribute\x18\x02 \x03(\t\x12\x31\n\x11\x61ttribute_entries\x18\x03 \x03(\x0b\x32\x16.assets.AttributeEntry\"\xc1\x01\n\x0e\x41ttributeEntry\x12\x16\n\x0e\x63hainage_start\x18\x01 \x01(\x02\x12\x14\n\x0c\x63hainage_end\x18\x02 \x01(\x02\x12\x0e\n\x06values\x18\x03 \x01(\t\x12\x11\n\tsurvey_id\x18\x04 \x01(\r\x12\x31\n\rdate_surveyed\x18\x05 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x10\n\x08\x61\x64\x64\x65\x64_by\x18\x06 \x01(\t\x12\x19\n\x11primary_attribute\x18\x07 \x01(\tb\x06proto3')
   ,
   dependencies=[google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,])
 
@@ -88,14 +88,21 @@ _ATTRIBUTETABLE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='secondary_attribute', full_name='assets.AttributeTable.secondary_attribute', index=1,
+      name='date_surveyed', full_name='assets.AttributeTable.date_surveyed', index=1,
+      number=4, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='secondary_attribute', full_name='assets.AttributeTable.secondary_attribute', index=2,
       number=2, type=9, cpp_type=9, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='attribute_entries', full_name='assets.AttributeTable.attribute_entries', index=2,
+      name='attribute_entries', full_name='assets.AttributeTable.attribute_entries', index=3,
       number=3, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -113,8 +120,8 @@ _ATTRIBUTETABLE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=150,
-  serialized_end=273,
+  serialized_start=151,
+  serialized_end=325,
 )
 
 
@@ -186,11 +193,12 @@ _ATTRIBUTEENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=276,
-  serialized_end=469,
+  serialized_start=328,
+  serialized_end=521,
 )
 
 _REPORT.fields_by_name['attribute_tables'].message_type = _ATTRIBUTETABLE
+_ATTRIBUTETABLE.fields_by_name['date_surveyed'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
 _ATTRIBUTETABLE.fields_by_name['attribute_entries'].message_type = _ATTRIBUTEENTRY
 _ATTRIBUTEENTRY.fields_by_name['date_surveyed'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
 DESCRIPTOR.message_types_by_name['Report'] = _REPORT

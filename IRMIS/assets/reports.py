@@ -123,27 +123,11 @@ class Report:
             ]
         )
 
-    def build_attribute_tables(self, primary_attribute):
-        """ Add an empty table for each primary_attribute in the report """
-        # secondary_attributes are not yet supported
-        attribute_table = next(
-            (
-                item
-                for item in self.report_protobuf.attribute_tables
-                if item.primary_attribute == primary_attribute
-            ),
-            None,
-        )
-        if attribute_table == None:
-            attribute_table = self.report_protobuf.attribute_tables.add()
-            attribute_table.primary_attribute = primary_attribute
-
-        self.build_chainage_table(primary_attribute, attribute_table)
-
     def build_chainage_table(self, primary_attribute, attribute_table):
         """ Generate the table of chainages in the report """
         # secondary_attributes are not yet supported
         prev_value, prev_date, prev_added_by = "Nada", "Nada", "Nada"
+        max_date = None
         for segment in self.segmentations[primary_attribute]:
             segment = self.segmentations[primary_attribute][segment]
             if (
@@ -168,11 +152,39 @@ class Report:
                     ts.FromDatetime(segment["date_surveyed"])
                     entry.date_surveyed.CopyFrom(ts)
 
+                    if max_date is None or max_date < segment["date_surveyed"]:
+                        max_date = segment["date_surveyed"]
+
                 prev_value = json.dumps(segment["value"])
                 prev_date = segment["date_surveyed"]
                 prev_added_by = segment["added_by"]
             else:
                 setattr(entry, "chainage_end", segment["chainage_point"] + 1)
+
+        # Finally set the maximum date_surveyed value we found onto the attribute_table
+        # primary_attribute + date_surveyed = unique Id for the attribute_table
+        if max_date:
+            ts = Timestamp()
+            ts.FromDatetime(max_date)
+            attribute_table.date_surveyed.CopyFrom(ts)
+
+    def build_attribute_tables(self, primary_attribute):
+        """ Add an empty table for each primary_attribute in the report """
+        # secondary_attributes are not yet supported
+        attribute_table = next(
+            (
+                item
+                for item in self.report_protobuf.attribute_tables
+                if item.primary_attribute == primary_attribute
+            ),
+            None,
+        )
+        if attribute_table == None:
+            attribute_table = self.report_protobuf.attribute_tables.add()
+            attribute_table.primary_attribute = primary_attribute
+            # attribute_table.date_surveyed defaults to None
+
+        self.build_chainage_table(primary_attribute, attribute_table)
 
     def prepare_protobuf(self):
         """ Package up the various statistics and tables ready for export via protobuf """

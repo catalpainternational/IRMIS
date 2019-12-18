@@ -301,7 +301,7 @@
 
                                 if (stackedBarId) document.dispatchEvent(new CustomEvent(`${stackedBarId}.dataUpdated`, {detail: {entries: state[reportAttribute]}}));
 
-                                state.reportRows = surveyReportData.attributeTable(primaryAttribute);
+                                state.reportRows = surveyReportData.attributeTables(primaryAttribute)[0].attributeEntries;
 
                                 const eventName = `${reportDataTableId}.dataAdded`;
                                 const eventDetail = {detail: {pendingRows: state.reportRows, clearRows: true}};

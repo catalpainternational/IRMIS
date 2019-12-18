@@ -330,6 +330,7 @@ proto.assets.AttributeTable.prototype.toObject = function(opt_includeInstance) {
 proto.assets.AttributeTable.toObject = function(includeInstance, msg) {
   var f, obj = {
     primaryAttribute: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    dateSurveyed: (f = msg.getDateSurveyed()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
     secondaryAttributeList: (f = jspb.Message.getRepeatedField(msg, 2)) == null ? undefined : f,
     attributeEntriesList: jspb.Message.toObjectList(msg.getAttributeEntriesList(),
     proto.assets.AttributeEntry.toObject, includeInstance)
@@ -372,6 +373,11 @@ proto.assets.AttributeTable.deserializeBinaryFromReader = function(msg, reader) 
     case 1:
       var value = /** @type {string} */ (reader.readString());
       msg.setPrimaryAttribute(value);
+      break;
+    case 4:
+      var value = new google_protobuf_timestamp_pb.Timestamp;
+      reader.readMessage(value,google_protobuf_timestamp_pb.Timestamp.deserializeBinaryFromReader);
+      msg.setDateSurveyed(value);
       break;
     case 2:
       var value = /** @type {string} */ (reader.readString());
@@ -418,6 +424,14 @@ proto.assets.AttributeTable.serializeBinaryToWriter = function(message, writer) 
       f
     );
   }
+  f = message.getDateSurveyed();
+  if (f != null) {
+    writer.writeMessage(
+      4,
+      f,
+      google_protobuf_timestamp_pb.Timestamp.serializeBinaryToWriter
+    );
+  }
   f = message.getSecondaryAttributeList();
   if (f.length > 0) {
     writer.writeRepeatedString(
@@ -448,6 +462,39 @@ proto.assets.AttributeTable.prototype.getPrimaryAttribute = function() {
 /** @param {string} value */
 proto.assets.AttributeTable.prototype.setPrimaryAttribute = function(value) {
   jspb.Message.setProto3StringField(this, 1, value);
+};
+
+
+/**
+ * optional google.protobuf.Timestamp date_surveyed = 4;
+ * @return {?proto.google.protobuf.Timestamp}
+ */
+proto.assets.AttributeTable.prototype.getDateSurveyed = function() {
+  return /** @type{?proto.google.protobuf.Timestamp} */ (
+    jspb.Message.getWrapperField(this, google_protobuf_timestamp_pb.Timestamp, 4));
+};
+
+
+/** @param {?proto.google.protobuf.Timestamp|undefined} value */
+proto.assets.AttributeTable.prototype.setDateSurveyed = function(value) {
+  jspb.Message.setWrapperField(this, 4, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ */
+proto.assets.AttributeTable.prototype.clearDateSurveyed = function() {
+  this.setDateSurveyed(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.assets.AttributeTable.prototype.hasDateSurveyed = function() {
+  return jspb.Message.getField(this, 4) != null;
 };
 
 

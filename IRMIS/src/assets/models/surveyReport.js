@@ -11,6 +11,7 @@ import {
     TECHNICAL_CLASS_CHOICES, TRAFFIC_LEVEL_CHOICES,
     PAVEMENT_CLASS_CHOICES, TERRAIN_CLASS_CHOICES
 } from "./road";
+import { Timestamp } from "google-protobuf/google/protobuf/timestamp_pb";
 
 // All Ids in the following schemas are generated
 const networkReportSchema = {
@@ -289,16 +290,58 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
         return this.makeSpecificLengths("traffic_level", TRAFFIC_LEVEL_CHOICES);
     }
 
-    attributeTable(primaryAttribute, returnAll = false) {
-        const attributeTableIndex = this.attributeTablesList.findIndex((attributeTable) => {
+    /** Returns one or more attributeTables matching the criteria
+     * @param {string} primaryAttribute The primaryAttribute (within all of the attribute tables) to search for
+     * @param {Timestamp} [date_surveyed=null] All attribute tables up to and including this date are acceptable (null = take them all)
+     * @param {boolean} [returnAllDates=false] Return all matching attribute tables, false means only return the most recent
+     * @param {boolean} [returnAllEntries=false] Return all entries within thos tables, false means return nothing if there are only 'generated' entries
+     * @return {object[]} An array of simplified attribute table objects
+     */
+    attributeTables(primaryAttribute, date_surveyed = null, returnAllDates = false, returnAllEntries = false) {
+        let filteredAttributeTables = this.attributeTablesList.filter((attributeTable) => {
             return attributeTable.primaryAttribute === primaryAttribute;
         });
 
-        if (attributeTableIndex === -1) {
-            return [];
+        if (filteredAttributeTables.length === 0) {
+            return [{date_surveyed: null, attributeEntries: []}];
         }
 
-        return this.attributeTablesList[attributeTableIndex].attributeEntries(returnAll);
+        // Descending sort most recent date_surveyed, down to null date_surveyed
+        filteredAttributeTables.sort((a, b) => {
+            if (a.date_surveyed && b.date_surveyed) {
+                return (a.date_surveyed > b.date_surveyed) ? -1 : 1;
+            }
+            if (a.date_surveyed && !b.date_surveyed) {
+                return -1;
+            }
+            if (!a.date_surveyed && b.date_surveyed) {
+                return 1;
+            }
+
+            // If we're here it's actually bad data
+            return 0;
+        });
+
+        if (date_surveyed) {
+            filteredAttributeTables = filteredAttributeTables.filter((attributeTable) => {
+                if (!attributeTable.date_surveyed) {
+                    return true;
+                }
+
+                return (attributeTable.date_surveyed <= date_surveyed);
+            });
+        }
+
+        if (!returnAllDates) {
+            filteredAttributeTables = [filteredAttributeTables[0]];
+        }
+
+        return filteredAttributeTables.map((attributeTable) => {
+            return {
+                date_surveyed: attributeTable.date_surveyed,
+                attributeEntries: attributeTable.attributeEntries(returnAllEntries)
+            };
+        })
     }
 
     static getFieldName(field) {
@@ -322,7 +365,7 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
 
 export class EstradaSurveyAttributeTable extends AttributeTable {
     getId() {
-        return `${this.primaryAttribute} ${this.secondaryAttributeList.join(", ")}`.trim();
+        return `${this.primaryAttribute}(${this.dateSurveyed} || "") ${this.secondaryAttributeList.join(", ")}`.trim();
     }
 
     get id() {
@@ -334,6 +377,15 @@ export class EstradaSurveyAttributeTable extends AttributeTable {
      */
     get primaryAttribute() {
         return this.getPrimaryAttribute() || "";
+    }
+
+    /** Get the 'Date_Surveyed' Attribute of this attribute table,
+     * primary_attribute + date_surveyed = attributeTable's unique key
+     * 
+     * This is the maximum (most recent) date_surveyed found in the attributeEntries
+     */
+    get dateSurveyed() {
+        return this.getDateSurveyed() || null;
     }
 
     /** Get any 'Secondary' Attributes of this attribute table,

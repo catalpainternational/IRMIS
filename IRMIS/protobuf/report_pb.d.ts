@@ -38,6 +38,11 @@ export class AttributeTable extends jspb.Message {
   getPrimaryAttribute(): string;
   setPrimaryAttribute(value: string): void;
 
+  hasDateSurveyed(): boolean;
+  clearDateSurveyed(): void;
+  getDateSurveyed(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setDateSurveyed(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
   clearSecondaryAttributeList(): void;
   getSecondaryAttributeList(): Array<string>;
   setSecondaryAttributeList(value: Array<string>): void;
@@ -61,6 +66,7 @@ export class AttributeTable extends jspb.Message {
 export namespace AttributeTable {
   export type AsObject = {
     primaryAttribute: string,
+    dateSurveyed?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     secondaryAttributeList: Array<string>,
     attributeEntriesList: Array<AttributeEntry.AsObject>,
   }

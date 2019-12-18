@@ -14,7 +14,8 @@ message Report {
 }
 
 message AttributeTable {
-    string primary_attribute = 1;
+    string primary_attribute = 1; // primary_attribute + date_surveyed = unique key for this table
+    google.protobuf.Timestamp date_surveyed = 4; // This is the most recent date_surveyed within the attribute_entries
     repeated string secondary_attribute = 2;
     repeated AttributeEntry attribute_entries = 3;
 }
