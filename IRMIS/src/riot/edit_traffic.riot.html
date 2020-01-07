@@ -1,0 +1,75 @@
+<edit_traffic>
+    <div class="content-wrapper">
+        <div class="d-flex justify-content-between">
+            <h5>{ window.gettext ("Traffic Data") }</h5>
+            <button class="btn btn-primary" onclick="{ addEditTraffic }" disabled="{ props.editing }">
+                { window.gettext("Add") }
+            </button>
+        </div>
+    </div>
+
+    <edit_modal modal_id="{ modal_id }" disableSave="{!state.canSave}">
+        <span slot="modal_title">{window.gettext("Add Traffic Data")}</span>
+
+        <form slot="modal_body">
+        <section>
+            <div class="form-group">
+                <label>{ window.gettext("Traffic Data Type") }</label>
+                <span class="required">*</span>
+                <small class="form-text text-muted">{props.parent.getHelpText("traffic_data_type")}</small>
+                <ul>
+                    <li>
+                        example list item
+                    </li> 
+                </ul>
+            </div>
+        </section>
+
+        <div class="d-flex justify-content-end">
+            <span>[</span><span class="required">*</span><span>]: Mandatory</span>
+        </div>
+        </form>
+    </edit_modal>
+
+    <script>
+        import Edit_Modal from "./edit_modal.riot.html";
+
+        import $ from "jquery";
+        
+        export default {
+            state: {
+
+            },
+            components: {
+                Edit_Modal,
+            },
+            addEditTraffic(e) {
+                this.showEditModal();
+            },
+            showEditModal() {
+                document.addEventListener(`${this.modal_id}.result`, (data) => {
+                        const modalResult = data.detail.result;
+
+                        switch (modalResult) {
+                            case "save":
+                                if (this.hasChanges()) {
+                                    this.save();
+                                }
+                                break;
+                            case "cancel":
+                                this.discardChanges();
+                                break;
+                            default:
+                                if (this.hasChanges()) {
+                                    this.showStopAlertModal("stop-alert");
+                                }
+                                break;
+                        }
+                    }, {once: true});
+
+                    $(`#${this.modal_id}`).modal("show");
+                },
+            modal_id: "traffic-modal"
+        }
+    </script>
+</edit_traffic>

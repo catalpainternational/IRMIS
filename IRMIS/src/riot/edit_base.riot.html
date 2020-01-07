@@ -13,6 +13,8 @@
                             onclick="{ selectPage }">{ window.gettext("Pavement") }</li>
                         <li class="{ state.page === 'project' ? 'active' : '' }" data-page="project"
                             onclick="{ selectPage }">{ window.gettext("Project") }</li>
+                        <li class="{ state.page === 'traffic' ? 'active' : '' }" data-page="traffic"
+                        onclick="{ selectPage }">{ window.gettext("Traffic") }</li>
                         <li class="{ state.page === 'condition' ? 'active' : '' }" data-page="condition"
                             onclick="{ selectPage }">{ window.gettext("Condition") }</li>
                         <li class="{ state.page === 'maintenance' ? 'active' : '' }" data-page="maintenance"
@@ -61,6 +63,8 @@
                     if="{ state.page === 'project' }"></edit_project>
                 <edit_condition road="{ state.editingRoad }" showFeedback="{ showFeedback }" parent="{parentFunctions}"
                     if="{ state.page === 'condition' }"></edit_condition>
+                <edit_traffic road="{ state.editingRoad }" showFeedback="{ showFeedback }" parent="{parentFunctions}"
+                    if="{ state.page === 'traffic' }"></edit_traffic>
                 <edit_maintenance road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}"
                     if="{ state.page === 'maintenance' }"></edit_maintenance>
                 <edit_environment road="{ state.editingRoad }" showFeedback="{ showFeedback }" saving="{ state.saving }"
@@ -98,6 +102,7 @@
         import Edit_Asset_Details from "./edit_asset_details.riot.html";
         import Edit_Pavement from "./edit_pavement.riot.html";
         import Edit_Project from "./edit_project.riot.html";
+        import Edit_Traffic from "./edit_traffic.riot.html";
         import Edit_Condition from "./edit_condition.riot.html";
         import Edit_Maintenance from "./edit_maintenance.riot.html";
         import Edit_Environment from "./edit_environment.riot.html";
@@ -121,7 +126,7 @@
             },
             components: {
                 Feedback_Banner, Edit_Stop_Alert, Loading,
-                Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Environment, Edit_Project, Edit_Condition, Edit_Maintenance,
+                Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Environment, Edit_Project, Edit_Traffic, Edit_Condition, Edit_Maintenance,
                 Edit_History,
             },
             onBeforeMount() {
