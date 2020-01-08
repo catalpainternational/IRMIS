@@ -2,9 +2,12 @@
     <div id="loading" class="modal" tabindex="-1" role="dialog" data-backdrop="static">
         <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
             <div class="align-items-center modal-content">
-                <div class="modal-header"></div>
+                <div class="modal-header">
+                    <div class="loading"></div>
+                </div>
                 <div class="modal-body text-center">
-                    <h5>{ window.gettext("Loading") }...</h5>
+                    <h5>{props.messageHeader}</h5>
+                    <p>{props.messageBody}</p>
                 </div>
                 <div class="modal-footer"></div>
             </div>

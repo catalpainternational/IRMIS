@@ -175,6 +175,11 @@ tr.selected .pencil {
     width: 432px;
 }
 
+.loading {
+    background-image: url("../images/loading_spinner.gif");
+    height: 120px;
+    width: 120px;
+}
 
 @media print {
     .rdtl {
