@@ -12,64 +12,201 @@
         <span slot="modal_title">{window.gettext("Add Traffic Data")}</span>
 
         <form slot="modal_body">
-        <section>
-            <div class="form-group">
-                <label>{ window.gettext("Traffic Data Type") }</label>
-                <span class="required">*</span>
-                <small class="form-text text-muted">{props.parent.getHelpText("traffic_data_type")}</small>
-                <ul>
-                    <li>
-                        example list item
-                    </li> 
-                </ul>
-            </div>
-        </section>
+            <section>
+                <h6>{ window.gettext("Survey") }</h6>
+                <div class="form-group">
+                    <label>{ window.gettext("Traffic Data Type") }</label>
+                    <!-- label (above) could be from trafficTypes.display, but wouldn't be able to use gettext -->
+                    <span class="required">*</span>
+                    <small class="form-text text-muted">{props.parent.getHelpText("traffic_data_type")}</small>
+                    <ul> 
+                        <li each="{type in trafficTypes.options}" 
+                            data-type="{type[0]}"
+                            onclick="{checkTrafficType}">
+                            <span class="{type[0] == state.survey.trafficType ? 'active' : ''  } radio image"></span>
+                            { type[1] }
+                        </li>
+                    </ul>
+                </div>
+            </section>
 
-        <div class="d-flex justify-content-end">
-            <span>[</span><span class="required">*</span><span>]: Mandatory</span>
-        </div>
+            <div if="{state.survey.trafficType === '1' || state.survey.trafficType === '2'}">
+                <section>
+                    <div class="form-group">
+                        <label>{ window.gettext("Traffic Counting Method") }</label> 
+                        <!-- label could be from countingMethods.display, but wouldn't be able to use gettext -->
+                        <span class="required">*</span>
+                        <small class="form-text text-muted">{props.parent.getHelpText("traffic_counting_method")}</small>
+                        <ul> 
+                            <li each="{method in countingMethods.options}" 
+                                data-method="{method[0]}"
+                                onclick="{checkCountingMethod}">
+                                <span class="{method[0] == state.survey.countMethod ? 'active' : ''  } radio image"></span>
+                                { method[1] }
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section>
+                    <div class="form-group">
+                        <label>{ window.gettext("Survey Date") }</label>
+                        <span class="required">*</span>
+                        <small class="form-text text-muted">{props.parent.getHelpText("survey_date")}</small>
+                        <!-- It would be preferable to use the 'datetime-local' input type, however Firefox currently does not support it -->
+                        <div>
+                            <p>From</p>
+                            <input 
+                                style="width: 50%"
+                                class="{ state.survey.surveyFromDate ? '' : 'inactive' } form-control"
+                                type="date" name="surveyFromDate" placeholder="Date" value="{state.survey.surveyFromDate}"
+                                oninput="{checkSurveyDate}" required pattern="\d{4}-\d{2}-\d{2}" max="{max_date()}">
+                        </div>
+                        <div>
+                            <p>To</p>
+                            <input 
+                                style="width: 50%"
+                                class="{ state.survey.surveyToDate ? '' : 'inactive' } form-control"
+                                type="date" name="surveyToDate" placeholder="Date" value="{state.survey.surveyToDate}"
+                                oninput="{checkSurveyDate}" required pattern="\d{4}-\d{2}-\d{2}" max="{max_date()}">
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <div class="form-group">
+                        <label>{ window.gettext("Total Count per Vehicle Type") }</label>
+                        <span class="required">*</span>
+                        <small class="form-text text-muted">{props.parent.getHelpText("total_count_per_vehicle_type")}</small>
+                        <input class=" { state.survey.motorcycleCount ? '' : 'inactive' } form-control"
+                            type="number" name="motorcycleCount" placeholder="1000" value="{state.survey.motorcycleCount}" oninput="{checkCount}" min="0" max="999999999" step="1" required>
+                    </div>
+                </section>
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <span>[</span><span class="required">*</span><span>]: Mandatory</span>
+            </div>
         </form>
     </edit_modal>
 
     <script>
         import Edit_Modal from "./edit_modal.riot.html";
+        
+        import {cloneData} from "../assets/protoBufUtilities";
+        import {Survey} from "../../protobuf/survey_pb";
 
         import $ from "jquery";
+
+        function withinMaxDigits(text, limit, decimals) {
+            return (new RegExp(`^\\d{0,${(limit - decimals)}}(\\.\\d{0,${decimals}})?$`).test(text));
+        }
         
         export default {
             state: {
-
+                baseSurvey: new Survey({}),
+                canSave: false,
+                survey: {}
             },
             components: {
                 Edit_Modal,
             },
+            trafficTypes: {
+                display: "Traffic Data Type",
+                slug: "traffic_data_type",
+                help_text: "Choose the traffic type for the road link",
+                options: [
+                    ["1", "AADT (Annual Average Daily Traffic)"],
+                    ["2", "ADT (Average Daily Traffic)"],
+                    ["3", "Forecast"]
+                ]
+            },
+            countingMethods: {
+                display: "Traffic Counting Method",
+                slug: "traffic_counting_method",
+                help_text: "Choose the method of counting the traffic for the road link",
+                options: [
+                    ["1", "Electronic"],
+                    ["2", "Manual"]
+                ]
+            },
+            requiredFieldNames: ["surveyDate", "countMethod", "trafficType"], // countMethod is only required if trafficType isn't 3
+            discardChanges() {
+                $(`#${this.modal_id}`).modal("hide");
+                this.update({
+                    survey: cloneData(this.state.baseSurvey),
+                    errors: {},
+                });
+            },
             addEditTraffic(e) {
+                this.state.survey = cloneData(this.state.baseSurvey);
+                this.state.errors = {};
+
                 this.showEditModal();
             },
             showEditModal() {
-                document.addEventListener(`${this.modal_id}.result`, (data) => {
-                        const modalResult = data.detail.result;
+                    // document.addEventListener(`${this.modal_id}.result`, (data) => {
+                    //         const modalResult = data.detail.result;
 
-                        switch (modalResult) {
-                            case "save":
-                                if (this.hasChanges()) {
-                                    this.save();
-                                }
-                                break;
-                            case "cancel":
-                                this.discardChanges();
-                                break;
-                            default:
-                                if (this.hasChanges()) {
-                                    this.showStopAlertModal("stop-alert");
-                                }
-                                break;
-                        }
-                    }, {once: true});
+                    //         switch (modalResult) {
+                    //             case "save":
+                    //                 if (this.hasChanges()) {
+                    //                     this.save();
+                    //                 }
+                    //                 break;
+                    //             case "cancel":
+                    //                 this.discardChanges();
+                    //                 break;
+                    //             default:
+                    //                 if (this.hasChanges()) {
+                    //                     this.showStopAlertModal("stop-alert");
+                    //                 }
+                    //                 break;
+                    //         }
+                    //     }, {once: true});
 
                     $(`#${this.modal_id}`).modal("show");
                 },
-            modal_id: "traffic-modal"
+            canSave() {
+                this.update();
+            },
+
+            // Check and validation
+            validate(fieldName, input, testResult, errorText) {
+                if (!testResult) {
+                    this.state.errors[fieldName] = errorText;
+                } else {
+                    delete this.state.errors[fieldName];
+                    this.state.survey[fieldName] = input;
+                }
+
+                this.canSave();
+            },
+            checkCount(e) {
+                const fieldName = e.currentTarget.name;
+                const input = e.currentTarget.value;
+                const testResult = withinMaxDigits(input, this.state.chainageDigits, 0);
+                const errorText = window.gettext(`Chainage cannot contain more than ${this.state.chainageDigits} digits and value shouldn't contain decimals`);
+                this.validate(fieldName, input, testResult, errorText);
+            },
+            checkSurveyDate(e) {
+                const fieldName = e.currentTarget.name;
+                const input = e.currentTarget.value;
+                const testResult = input <= this.max_date();
+                const errorText = window.gettext("Survey date cannot be in the future");
+
+                this.validate(fieldName, input, testResult, errorText);
+            },
+            checkTrafficType(e) {
+                this.state.survey.trafficType = e.currentTarget.dataset.type;
+                this.canSave();
+            },
+            checkCountingMethod(e) {
+                this.state.survey.countMethod = e.currentTarget.dataset.method;
+                this.canSave();
+            },
+            modal_id: "traffic-modal",
+            max_date: () => new Date().toISOString().substring(0, 10),
         }
     </script>
 </edit_traffic>
