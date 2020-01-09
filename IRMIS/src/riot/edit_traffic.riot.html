@@ -15,16 +15,12 @@
             <section>
                 <h6>{ window.gettext("Survey") }</h6>
                 <div class="form-group">
-                    <label>{ window.gettext("Traffic Data Type") }</label>
-                    <!-- label (above) could be from trafficTypes.display, but wouldn't be able to use gettext -->
+                    <label>{ window.gettext(trafficTypes.display) }</label>
                     <span class="required">*</span>
-                    <small class="form-text text-muted">{props.parent.getHelpText("traffic_data_type")}</small>
                     <ul> 
-                        <li each="{type in trafficTypes.options}" 
-                            data-type="{type[0]}"
-                            onclick="{checkTrafficType}">
+                        <li each="{type in trafficTypes.options}" data-type="{type[0]}" onclick="{checkTrafficType}">
                             <span class="{type[0] == state.survey.trafficType ? 'active' : ''  } radio image"></span>
-                            { type[1] }
+                            { window.gettext(type[1]) }
                         </li>
                     </ul>
                 </div>
@@ -33,16 +29,12 @@
             <div if="{state.survey.trafficType === '1' || state.survey.trafficType === '2'}">
                 <section>
                     <div class="form-group">
-                        <label>{ window.gettext("Traffic Counting Method") }</label> 
-                        <!-- label could be from countingMethods.display, but wouldn't be able to use gettext -->
+                        <label>{ window.gettext(countingMethods.display) }</label>
                         <span class="required">*</span>
-                        <small class="form-text text-muted">{props.parent.getHelpText("traffic_counting_method")}</small>
                         <ul> 
-                            <li each="{method in countingMethods.options}" 
-                                data-method="{method[0]}"
-                                onclick="{checkCountingMethod}">
+                            <li each="{method in countingMethods.options}" data-method="{method[0]}" onclick="{checkCountingMethod}">
                                 <span class="{method[0] == state.survey.countMethod ? 'active' : ''  } radio image"></span>
-                                { method[1] }
+                                { window.gettext(method[1]) }
                             </li>
                         </ul>
                     </div>
@@ -52,37 +44,46 @@
                     <div class="form-group">
                         <label>{ window.gettext("Survey Date") }</label>
                         <span class="required">*</span>
-                        <small class="form-text text-muted">{props.parent.getHelpText("survey_date")}</small>
                         <!-- It would be preferable to use the 'datetime-local' input type, however Firefox currently does not support it -->
-                        <div>
-                            <p>From</p>
-                            <input 
-                                style="width: 50%"
-                                class="{ state.survey.surveyFromDate ? '' : 'inactive' } form-control"
+                        <div class="form-inline" style="height: 2rem;">
+                            <span style="font-size: 14px; width: 6rem; margin-left: 10px; font-weight: 400;">
+                                { window.gettext("From") }
+                            </span>
+                            <input style="width: 12rem; height: 1.75rem;" class="{ state.survey.surveyFromDate ? '' : 'inactive' } form-control"
                                 type="date" name="surveyFromDate" placeholder="Date" value="{state.survey.surveyFromDate}"
                                 oninput="{checkSurveyDate}" required pattern="\d{4}-\d{2}-\d{2}" max="{max_date()}">
                         </div>
-                        <div>
-                            <p>To</p>
-                            <input 
-                                style="width: 50%"
-                                class="{ state.survey.surveyToDate ? '' : 'inactive' } form-control"
+                        <div class="form-inline" style="height: 2rem;">
+                            <span style="font-size: 14px; width: 6rem; margin-left: 10px; font-weight: 400;">
+                                { window.gettext("To") }
+                            </span>
+                            <input style="width: 12rem; height: 1.75rem;" class="{ state.survey.surveyToDate ? '' : 'inactive' } form-control" 
                                 type="date" name="surveyToDate" placeholder="Date" value="{state.survey.surveyToDate}"
                                 oninput="{checkSurveyDate}" required pattern="\d{4}-\d{2}-\d{2}" max="{max_date()}">
                         </div>
                     </div>
                 </section>
-
-                <section>
-                    <div class="form-group">
-                        <label>{ window.gettext("Total Count per Vehicle Type") }</label>
-                        <span class="required">*</span>
-                        <small class="form-text text-muted">{props.parent.getHelpText("total_count_per_vehicle_type")}</small>
-                        <input class=" { state.survey.motorcycleCount ? '' : 'inactive' } form-control"
-                            type="number" name="motorcycleCount" placeholder="1000" value="{state.survey.motorcycleCount}" oninput="{checkCount}" min="0" max="999999999" step="1" required>
-                    </div>
-                </section>
             </div>
+
+            <section if="{state.survey.trafficType}">
+                <div class="form-group">
+                    <label>{ window.gettext("Total Count per Vehicle Type") }</label>
+                    <span class="required">*</span>
+                    <div class="form-inline" each="{ vehicle in vehicleTypes.options }" style="height: 40px;">
+                        <div class="icon">
+                            <span class="{ vehicle[0] } image"></span>
+                        </div>
+                        <div style="width: 6rem; font-size: 14px;">
+                            { window.gettext(vehicle[1]) }
+                        </div>
+                        <!-- note that class and value is not unique, so styling won't work right for inactive -->
+                        <input class="{ vehicle[4] ? '' : 'inactive' } form-control" style="height: 1.75rem; margin: 0 1rem;"
+                            type="number" name="{vehicle[3]}" placeholder="0000" value="{vehicle[4]}" 
+                            oninput="{checkCount}" min="0" max="999999999" step="1" required>
+                        <small>{ window.gettext(vehicle[2]) }</small>
+                    </div>
+                </div>
+            </section>
 
             <div class="d-flex justify-content-end">
                 <span>[</span><span class="required">*</span><span>]: Mandatory</span>
@@ -111,6 +112,7 @@
             components: {
                 Edit_Modal,
             },
+            // Data for title and options
             trafficTypes: {
                 display: "Traffic Data Type",
                 slug: "traffic_data_type",
@@ -128,6 +130,19 @@
                 options: [
                     ["1", "Electronic"],
                     ["2", "Manual"]
+                ]
+            },
+            vehicleTypes: {
+                options: [
+                    ["motorcycle", "Motorcycle", "2 axels, 2 wheels", "motorcycleCount", "state.survey.motorcycleCount"],
+                    ["car", "Passenger Car", "2 axels, 4 wheels", "carCount", "state.survey.carCount"],
+                    ["pickup", "Pickup/4WD", "2 axels, 4 wheels", "pickupCount", "state.survey.pickupCount"],
+                    ["mini-bus", "Mini Bus", "2 axels, 4 wheels", "miniBusCount", "state.survey.miniBusCount"],
+                    ["large-bus", "Large Bus", "2-3 axels, 6-10 wheels", "largeBusCount", "state.survey.largeBusCount"],
+                    ["light-truck", "Light Truck", "2 axels, 4 wheels", "lightTruckCount", "state.survey.lightTruckCount"],
+                    ["medium-truck", "Medium Truck", "2-3 axels, 6-10 wheels", "mediumTruckCount", "state.survey.mediumTruckCount"],
+                    ["large-truck", "Large Truck", "5 axels, 18 wheels", "largeTruckCount", "state.survey.largeTruckCount"],
+                    ["ufo", "Non Defined", "", "ufoCount", "state.survey.ufoCount"]
                 ]
             },
             requiredFieldNames: ["surveyDate", "countMethod", "trafficType"], // countMethod is only required if trafficType isn't 3
@@ -186,7 +201,8 @@
                 const fieldName = e.currentTarget.name;
                 const input = e.currentTarget.value;
                 const testResult = withinMaxDigits(input, this.state.chainageDigits, 0);
-                const errorText = window.gettext(`Chainage cannot contain more than ${this.state.chainageDigits} digits and value shouldn't contain decimals`);
+                const errorText = window.gettext(`Cannot contain more than ${this.state.chainageDigits} digits and value shouldn't contain decimals`);
+                // fix errorText
                 this.validate(fieldName, input, testResult, errorText);
             },
             checkSurveyDate(e) {
