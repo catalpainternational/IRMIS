@@ -176,6 +176,12 @@ tr.selected .pencil {
 }
 
 // Vehicle icons
+
+.icon {
+    margin: 0 10px;
+    width: 2rem;
+}
+
 .motorcycle {
     background-image: url("../images/motorcycle_icon.svg");
     height: 18px;
@@ -184,50 +190,50 @@ tr.selected .pencil {
 
 .car {
     background-image: url("../images/car_icon.svg");
-    height: 18px;
-    width: 24px;
+    height: 21px;
+    width: 26px;
 }
 
 .pickup {
     background-image: url("../images/pickup_icon.svg");
-    height: 18px;
-    width: 24px;
+    height: 24px;
+    width: 25px;
 }
 
 .mini-bus {
     background-image: url("../images/mini_bus_icon.svg");
-    height: 18px;
-    width: 24px;
+    height: 25px;
+    width: 25px;
 }
 
 .large-bus {
     background-image: url("../images/large_bus_icon.svg");
-    height: 18px;
-    width: 24px;
+    height: 29px;
+    width: 28px;
 }
 
 .light-truck {
     background-image: url("../images/light_truck_icon.svg");
-    height: 18px;
-    width: 24px;
+    height: 24px;
+    width: 27px;
 }
 
 .medium-truck {
     background-image: url("../images/medium_truck_icon.svg");
-    height: 18px;
-    width: 24px;
+    height: 25px;
+    width: 25px;
 }
 
 .large-truck {
     background-image: url("../images/large_truck_icon.svg");
-    height: 18px;
-    width: 24px;
+    height: 30px;
+    width: 28px;
 }
 
 .ufo {
     background-image: url("../images/ufo_icon.svg");
-    height: 18px;
-    width: 24px;
+    height: 26px;
+    width: 30px;
 }
 
 
