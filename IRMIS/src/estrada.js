@@ -57,11 +57,6 @@ window.addEventListener("load", () => {
 
     if (window.canEdit) {
         riot.register("edit_base", Edit_Base);
-        // add listener since editing is allowed
-        window.addEventListener("hashchange", () => {
-            hashCheck();
-        });
-        hashCheck();
     }
 
     window.goBack = () => {};
