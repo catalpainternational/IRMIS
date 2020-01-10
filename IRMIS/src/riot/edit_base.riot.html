@@ -124,7 +124,8 @@
                 Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Environment, Edit_Project, Edit_Condition, Edit_Maintenance,
                 Edit_History,
             },
-            onBeforeMount() {
+            onBeforeMount(props, state) {
+                state.page = props.page;
                 window.onbeforeunload = () => {
                     return this.hasChanges() ? "You have changes" : null;
                 }
@@ -136,7 +137,6 @@
             },
             onMounted(props, state) {
                 $('#loading').modal('show');
-                state.page = props.page;
 
                 this.parentFunctions = {
                     getHelpText: this.getHelpText,
