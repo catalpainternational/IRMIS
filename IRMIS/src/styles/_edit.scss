@@ -142,3 +142,39 @@ feedback_banner {
         }
     }
 }
+
+edit_traffic {
+    .survey-field-height {
+        height: 32px;
+    }
+
+    .date-field-title {
+        font-size: 14px; 
+        width: 96px; 
+        margin-left: 10px; 
+        font-weight: 400;
+    }
+
+    .date-input-field {
+        width: 192px; 
+        height: 28px;
+    }
+
+    .traffic-width {
+        width: 480px;
+    }
+
+    .vehicle-field-height {
+        height: 40px;
+    }
+
+    .vehicle-name {
+        width: 96px; 
+        font-size: 14px;
+    }
+
+    .vehicle-input {
+        height: 28px; 
+        margin: 0 16px;
+    }
+}
