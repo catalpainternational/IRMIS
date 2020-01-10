@@ -69,8 +69,8 @@
             <section if="{state.survey.trafficType === '3'}">
                 <div class="form-group">
                     <label>{ window.gettext("Forecast Year") }</label>
-                    <span class="required">*</span>
-                    <!--TODO readd:  onchange="{ checkRoadType }"  -->
+                    <span class="required">*</span> 
+                    <!-- does this need a check function to validate the value? -->
                     <select class="{ state.forecastYear ? '' : 'inactive' } form-control">
                         <option each="{ year in forecastYears.options }" value="{ year[0] }" selected="{ year[0] === state.forecastYear }">{ year[1] }</option>
                     </select>
