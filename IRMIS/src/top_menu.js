@@ -1,10 +1,7 @@
-const asset_manager = document.getElementById("asset_manager_button");
-const reports = document.getElementById("reports_button");
-const planning = document.getElementById("planning_button");
-const menuToggle = document.getElementById("topmenu_toggle");
-const dropdown = document.getElementById("settings");
-
 window.addEventListener("load", function() {
+    const menuToggle = document.getElementById("topmenu_toggle");
+    const dropdown = document.getElementById("settings");
+
     menuToggle.addEventListener("click", () => {
         function clickOutside(e) {
             if (!menuToggle.contains(e.target)) {
@@ -33,6 +30,10 @@ window.addEventListener("hashchange", () => {
 });
 
 function hashCheck() {
+    const asset_manager = document.getElementById("asset_manager_button");
+    const reports = document.getElementById("reports_button");
+    const planning = document.getElementById("planning_button");
+
     asset_manager.classList.remove("selected");
     reports.classList.remove("selected");
     planning.classList.remove("selected");
