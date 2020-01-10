@@ -13,7 +13,6 @@
 
         <form slot="modal_body">
             <section>
-                <!--  style "border-bottom: none;" ? -->
                 <h6>{ window.gettext("Survey") }</h6>
                 <div class="form-group">
                     <label>{ window.gettext(trafficTypes.display) }</label>
@@ -88,7 +87,7 @@
                         <div class="vehicle-name">
                             { window.gettext(vehicle[1]) }
                         </div>
-                        <!-- note that class and value is not unique, so styling won't work right for inactive -->
+                        <!-- note that class and value is not unique, so styling won't apply inactive class correctly -->
                         <input class="{ vehicle[4] ? '' : 'inactive' } vehicle-input form-control"
                             type="number" name="{vehicle[3]}" placeholder="0000" value="{vehicle[4]}" 
                             oninput="{checkCount}" min="0" max="999999999" step="1" required>
@@ -226,52 +225,7 @@
 
                 this.showEditModal();
             },
-            // showStopAlertModal(modalId, rowId) {
-            //     const eventName = `edit.${modalId}.result`;
-
-            //     document.addEventListener(eventName, (data) => {
-            //         const stopAlertResult = data.detail.result;
-            //         $(`#${modalId}`).modal("hide");
-
-            //         if (stopAlertResult === "discard") {
-            //             this.discardChanges();
-            //         } else if (stopAlertResult === "delete") {
-            //             this.state.editMode = true;
-            //             // void the survey surface_condition value and save
-            //             this.state.survey = this.state.pendingRows.find((s) => {return s.id == rowId;});
-            //             if (this.state.survey) {
-            //                 this.state.survey.setValues(JSON.stringify({}));
-            //                 this.saveSurvey();
-            //             }
-            //             this.state.editMode = false;
-            //         } else if (stopAlertResult === "continueEdit") {
-            //             this.showEditModal();
-            //         }
-            //     }, {once: true});
-
-            //     $(`#${modalId}`).modal("show");
-            // },
             showEditModal() {
-                // document.addEventListener(`${this.modal_id}.result`, (data) => {
-                //         const modalResult = data.detail.result;
-
-                //         switch (modalResult) {
-                //             case "save":
-                //                 if (this.hasChanges()) {
-                //                     this.save();
-                //                 }
-                //                 break;
-                //             case "cancel":
-                //                 this.discardChanges();
-                //                 break;
-                //             default:
-                //                 if (this.hasChanges()) {
-                //                     this.showStopAlertModal("stop-alert");
-                //                 }
-                //                 break;
-                //         }
-                //     }, {once: true});
-
                 $(`#${this.modal_id}`).modal("show");
             },
             canSave() {
@@ -294,7 +248,7 @@
                 const input = e.currentTarget.value;
                 const testResult = withinMaxDigits(input, this.state.chainageDigits, 0);
                 const errorText = window.gettext(`Cannot contain more than ${this.state.chainageDigits} digits and value shouldn't contain decimals`);
-                // fix errorText
+                    // fix errorText
                 this.validate(fieldName, input, testResult, errorText);
             },
             checkSurveyDate(e) {
