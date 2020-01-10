@@ -103,8 +103,15 @@
         </form>
     </edit_modal>
 
+    <edit_stop_alert modalId="stop-alert" title="{ window.gettext('Unsaved Changes') }"
+        description="{ window.gettext('You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?') }"
+        proceedLabel="{ window.gettext('Discard') }" proceedResult="discard"
+        stopLabel="{ window.gettext('Continue editing') }" stopResult="continueEdit">
+    </edit_stop_alert>
+
     <script>
         import Edit_Modal from "./edit_modal.riot.html";
+        import Edit_Stop_Alert from "./edit_stop_alert.riot.html";
         
         import {cloneData} from "../assets/protoBufUtilities";
         import {Survey} from "../../protobuf/survey_pb";
@@ -123,7 +130,7 @@
                 forecastYear: ''
             },
             components: {
-                Edit_Modal,
+                Edit_Modal, Edit_Stop_Alert
             },
 
             // Data for title and options
@@ -219,29 +226,54 @@
 
                 this.showEditModal();
             },
+            // showStopAlertModal(modalId, rowId) {
+            //     const eventName = `edit.${modalId}.result`;
+
+            //     document.addEventListener(eventName, (data) => {
+            //         const stopAlertResult = data.detail.result;
+            //         $(`#${modalId}`).modal("hide");
+
+            //         if (stopAlertResult === "discard") {
+            //             this.discardChanges();
+            //         } else if (stopAlertResult === "delete") {
+            //             this.state.editMode = true;
+            //             // void the survey surface_condition value and save
+            //             this.state.survey = this.state.pendingRows.find((s) => {return s.id == rowId;});
+            //             if (this.state.survey) {
+            //                 this.state.survey.setValues(JSON.stringify({}));
+            //                 this.saveSurvey();
+            //             }
+            //             this.state.editMode = false;
+            //         } else if (stopAlertResult === "continueEdit") {
+            //             this.showEditModal();
+            //         }
+            //     }, {once: true});
+
+            //     $(`#${modalId}`).modal("show");
+            // },
             showEditModal() {
-                    // document.addEventListener(`${this.modal_id}.result`, (data) => {
-                    //         const modalResult = data.detail.result;
+                // document.addEventListener(`${this.modal_id}.result`, (data) => {
+                //         const modalResult = data.detail.result;
 
-                    //         switch (modalResult) {
-                    //             case "save":
-                    //                 if (this.hasChanges()) {
-                    //                     this.save();
-                    //                 }
-                    //                 break;
-                    //             case "cancel":
-                    //                 this.discardChanges();
-                    //                 break;
-                    //             default:
-                    //                 if (this.hasChanges()) {
-                    //                     this.showStopAlertModal("stop-alert");
-                    //                 }
-                    //                 break;
-                    //         }
-                    //     }, {once: true});
+                //         switch (modalResult) {
+                //             case "save":
+                //                 if (this.hasChanges()) {
+                //                     this.save();
+                //                 }
+                //                 break;
+                //             case "cancel":
+                //                 this.discardChanges();
+                //                 break;
+                //             default:
+                //                 if (this.hasChanges()) {
+                //                     this.showStopAlertModal("stop-alert");
+                //                 }
+                //                 break;
+                //         }
+                //     }, {once: true});
 
-                    $(`#${this.modal_id}`).modal("show");
-                },
+                $(`#${this.modal_id}`).modal("show");
+            },
             canSave() {
                 this.update();
             },
