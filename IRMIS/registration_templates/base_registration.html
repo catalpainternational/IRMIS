@@ -3,19 +3,19 @@
 
 {% block body_class %}registration{% endblock %}
 
-{% block top_menu %}
-<form class="language-selector text-right" action="{% url 'set_language' %}" method="post">
-    {% csrf_token %}
-    {% get_current_language as LANGUAGE_CODE %}
-    {% get_available_languages as LANGUAGES %}
-    {% get_language_info_list for LANGUAGES as languages %}
-    {% for language in languages %}
-    <button class="{% if language.code == LANGUAGE_CODE %}active{% endif %} btn" type="submit" name="language" value="{{ language.code }}">{{ language.name_local }}</button>
-    {% endfor %}
-</form>
-{% endblock %}
-
 {% block base_content %}
+<div class="align-items-center d-flex top-menu">
+    <form class="language-selector text-right" action="{% url 'set_language' %}" method="post">
+        {% csrf_token %}
+        {% get_current_language as LANGUAGE_CODE %}
+        {% get_available_languages as LANGUAGES %}
+        {% get_language_info_list for LANGUAGES as languages %}
+        {% for language in languages %}
+        <button class="{% if language.code == LANGUAGE_CODE %}active{% endif %} btn" type="submit" name="language" value="{{ language.code }}">{{ language.name_local }}</button>
+        {% endfor %}
+    </form>
+</div>
+
 <div class="align-items-center d-flex flex-column h-100 justify-content-center registration-content">
     <span class="image app-logo"></span>
 

@@ -9,6 +9,7 @@ import Planning_Base from "./riot/planning_base.riot.html";
 import Reports_Base from "./riot/reports_base.riot.html";
 import Data_Table from "./riot/data_table.riot.html";
 import Edit_Base from "./riot/edit_base.riot.html";
+import Top_Menu from "./riot/top_menu.riot.html";
 
 import "./styles/estrada.scss";
 import "./styles/vendor.scss";
@@ -25,6 +26,8 @@ export const estradaMap = new Map();
 
 import "./dayjs/dayjs";
 
+riot.register("top_menu", Top_Menu);
+riot.mount("top_menu");
 
 window.addEventListener("load", () => {
     // Set up the map and table - but without any data for either
@@ -57,11 +60,6 @@ window.addEventListener("load", () => {
 
     if (window.canEdit) {
         riot.register("edit_base", Edit_Base);
-        // add listener since editing is allowed
-        window.addEventListener("hashchange", () => {
-            hashCheck();
-        });
-        hashCheck();
     }
 
     window.goBack = () => {};

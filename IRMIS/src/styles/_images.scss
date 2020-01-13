@@ -175,8 +175,13 @@ tr.selected .pencil {
     width: 432px;
 }
 
-// Vehicle icons
+.loading {
+    background-image: url("../images/loading_spinner.gif");
+    height: 120px;
+    width: 120px;
+}
 
+// Vehicle icons
 .icon {
     margin: 0 10px;
     width: 2rem;
@@ -235,7 +240,6 @@ tr.selected .pencil {
     height: 26px;
     width: 30px;
 }
-
 
 @media print {
     .rdtl {
