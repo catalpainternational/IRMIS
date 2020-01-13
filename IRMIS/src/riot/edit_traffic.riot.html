@@ -137,6 +137,7 @@
         import Edit_Modal from "./edit_modal.riot.html";
         import Edit_Stop_Alert from "./edit_stop_alert.riot.html";
 
+        import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
         import {cloneData} from "../assets/protoBufUtilities";
         import {Survey} from "../../protobuf/survey_pb";
 
@@ -342,6 +343,90 @@
                 const surveyResult = compareFieldNames.map((fieldName) => {return this.state.survey[fieldName] || "";}).join("|||");
 
                 return (surveyBase !== surveyResult);
+            },
+            save(e) {
+                const missingFieldNames = checkRequiredFields(this.requiredFieldNames, this.state.survey);
+
+                if (Object.keys(this.state.errors).length) {
+                    // Cannot save if there are validation errors
+                    this.canSave();
+
+                    if (!this.state.canSave) {
+                        missingFieldNames.forEach((fieldName) => {
+                            if (!data[fieldName]) {
+                                errors[fieldName] = window.gettext("This field is required");
+                            }
+                        });
+                        this.showEditModal();
+                    }
+                } else {
+                    if (this.hasChanges()) {
+                        // Complete the survey
+                        this.state.survey.setUser($("#user_welcome").data("userId") || 0);
+                        this.state.survey.setSource("Estrada");
+                        this.state.survey.setChainageStart(this.state.survey.startChainage);
+                        this.state.survey.setChainageEnd(this.state.survey.endChainage);
+                        this.state.survey.setValues(JSON.stringify({
+                            trafficType: this.state.survey.trafficType,
+                            countMethod: this.state.survey.countMethod,
+                            surveyFromDate: this.state.survey.surveyFromDate,
+                            surveyToDate: this.state.survey.surveyFromDate,
+                            forecastYear: this.state.survey.forecastYear,
+                            counts: {},
+                        }));
+                        // If we're here we will have a user entered surveyDate, even so Date.now() is still used as a fall back
+                        const dateSurveyed = new proto.google.protobuf.Timestamp();
+                        const surveyDate = new Date(this.state.survey.surveyFromDate) || new Date(this.state.survey.forcastYear) || new Date().toISOString();
+                        dateSurveyed.fromDate(surveyDate);
+
+                        this.state.survey.setDateSurveyed(dateSurveyed);
+
+                        // set Survey road from state Road road_code
+                        this.state.survey.setRoad(this.state.road.getRoadCode());
+
+                        this.saveSurvey();
+                    }
+
+                    // Reset baseSurvey now that we're done.
+                    this.baseSurvey = new Survey({});
+
+                    $(`#${this.modal_id}`).modal("hide");
+                }
+            },
+            saveSurvey() {
+                $(`#${this.modal_id}`).modal("hide");
+                $("#loading").modal("show");
+
+                if (!this.state.editMode) {
+                    createSurvey(this.state.survey)
+                        .then((surveyData) => {
+                            this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id, this.stacked_bar_id);
+                            this.update({
+                                survey: new Survey({}), // clear input values
+                            });
+                            $("#loading").modal("hide");
+                            this.props.showFeedback();
+                        })
+                        .catch((err) => {
+                            this.props.showFeedback(true);
+                        });
+                } else {
+                    updateSurvey(this.state.survey)
+                        .then((surveyData) => {
+                            this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id, this.stacked_bar_id);
+                            this.update({
+                                survey: new Survey({}), // clear input values
+                            });
+                            $("#loading").modal("hide");
+                            this.props.showFeedback();
+                        })
+                        .catch((err) => {
+                            this.props.showFeedback(true);
+                        });
+                }
+                // clear input values
+                this.state.survey = new Survey({});
+                this.update();
             },
             canSave() {
                 const missingFieldNames = checkRequiredFields(this.requiredFieldNames, this.state.survey);
