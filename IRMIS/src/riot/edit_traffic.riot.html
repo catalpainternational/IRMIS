@@ -1,0 +1,377 @@
+<edit_traffic>
+    <div class="content-wrapper">
+        <div class="d-flex justify-content-between">
+            <h5>{ window.gettext ("Traffic Data") }</h5>
+            <button class="btn btn-primary" onclick="{ addEditTraffic }" disabled="{ props.editing }">
+                { window.gettext("Add") }
+            </button>
+        </div>
+        <div class="table-spacing">
+            <data_table table_id="{this.table_id}" columns="{this.table_columns}" canDelete=true
+                columnSortOrder="{this.table_sort_order}" pageLength="{this.pageLength}" getHelpText="help">
+            </data_table>
+        </div>
+    </div>
+
+    <edit_modal modal_id="{ modal_id }" disableSave="{!state.canSave}">
+        <span slot="modal_title">{window.gettext("Add Traffic Data")}</span>
+
+        <form slot="modal_body">
+            <section>
+                <h6>{ window.gettext("Survey") }</h6>
+                <div class="form-group">
+                    <label>{ trafficTypes.display }</label>
+                    <span class="required">*</span>
+                    <ul> 
+                        <li each="{type in trafficTypes.options}" data-type="{type[0]}" onclick="{checkTrafficType}">
+                            <span class="{type[0] == state.survey.trafficType ? 'active' : ''  } radio image"></span>
+                            { type[1] }
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section if="{state.survey.trafficType === '1' || state.survey.trafficType === '2'}">
+                <section>
+                    <div class="form-group">
+                        <label>{ countingMethods.display }</label>
+                        <span class="required">*</span>
+                        <ul> 
+                            <li each="{method in countingMethods.options}" data-method="{method[0]}" onclick="{checkCountingMethod}">
+                                <span class="{method[0] == state.survey.countMethod ? 'active' : ''  } radio image"></span>
+                                { method[1] }
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section>
+                    <div class="form-group">
+                        <label>{ window.gettext("Survey Date") }</label>
+                        <span class="required">*</span>
+                        <!-- It would be preferable to use the 'datetime-local' input type, however Firefox currently does not support it -->
+                        <div class="form-inline survey-field-height">
+                            <span class="date-field-title">
+                                { window.gettext("From") }
+                            </span>
+                            <input class="{ state.survey.surveyFromDate ? '' : 'inactive' } date-input-field form-control"
+                                type="date" name="surveyFromDate" placeholder="Date" value="{state.survey.surveyFromDate}"
+                                oninput="{checkSurveyDate}" required pattern="\d{4}-\d{2}-\d{2}" max="{max_date()}">
+                        </div>
+                        <div class="form-inline survey-field-height">
+                            <span class="date-field-title">
+                                { window.gettext("To") }
+                            </span>
+                            <input class="{ state.survey.surveyToDate ? '' : 'inactive' } date-input-field form-control" 
+                                type="date" name="surveyToDate" placeholder="Date" value="{state.survey.surveyToDate}"
+                                oninput="{checkSurveyDate}" required pattern="\d{4}-\d{2}-\d{2}" max="{max_date()}">
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <section if="{state.survey.trafficType === '3'}">
+                <div class="form-group">
+                    <label>{ window.gettext("Forecast Year") }</label>
+                    <span class="required">*</span> 
+                    <!-- does this need a check function to validate the value? -->
+                    <select class="{ state.forecastYear ? '' : 'inactive' } form-control">
+                        <option each="{ year in forecastYears.options }" value="{ year[0] }" selected="{ year[0] === state.forecastYear }">{ year[1] }</option>
+                    </select>
+                </div>
+            </section>
+
+            <section if="{state.survey.trafficType}">
+                <div class="form-group traffic-width">
+                    <label>{ window.gettext("Total Count per Vehicle Type") }</label>
+                    <span class="required">*</span>
+                    <div class="form-inline vehicle-field-height" each="{ vehicle in vehicleTypes.options }">
+                        <div class="icon">
+                            <span class="{ vehicle[0] } image"></span>
+                        </div>
+                        <div class="vehicle-name">
+                            { vehicle[1] }
+                        </div>
+                        <!-- note that class and value is not unique, so styling won't apply inactive class correctly -->
+                        <input class="{ vehicle[4] ? '' : 'inactive' } vehicle-input form-control"
+                            type="number" name="{vehicle[3]}" placeholder="0000" value="{vehicle[4]}" 
+                            oninput="{checkCount}" min="0" max="999999999" step="1" required>
+                        <small>{ vehicle[2] }</small>
+                    </div>
+                </div>
+            </section>
+
+            <div class="d-flex justify-content-end">
+                <span>[</span><span class="required">*</span><span>]: Mandatory</span>
+            </div>
+        </form>
+    </edit_modal>
+
+    <edit_stop_alert modalId="stop-alert" title="{ window.gettext('Unsaved Changes') }"
+        description="{ window.gettext('You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?') }"
+        proceedLabel="{ window.gettext('Discard') }" proceedResult="discard"
+        stopLabel="{ window.gettext('Continue editing') }" stopResult="continueEdit">
+    </edit_stop_alert>
+
+    <script>
+        import Edit_Modal from "./edit_modal.riot.html";
+        import Edit_Stop_Alert from "./edit_stop_alert.riot.html";
+
+        import Data_Table from "./data_table.riot.html"; 
+
+        import { getRoadAudit } from "../roadManager"; //TODO remove
+        
+        import {cloneData} from "../assets/protoBufUtilities";
+        import {Survey} from "../../protobuf/survey_pb";
+
+        import $ from "jquery";
+
+        function withinMaxDigits(text, limit, decimals) {
+            return (new RegExp(`^\\d{0,${(limit - decimals)}}(\\.\\d{0,${decimals}})?$`).test(text));
+        }
+        
+        export default {
+            state: {
+                baseSurvey: new Survey({}),
+                canSave: false,
+                survey: {},
+                forecastYear: '',
+                loading: false,
+                pendingRows: []
+            },
+            components: {
+                Edit_Modal, Edit_Stop_Alert, Data_Table
+            },
+            onMounted(props, state) {
+                state.loading = true;
+                state.road = props.road;
+                // this.getTrafficData();
+                this.getRoadAudit() //TODO remove
+            },
+
+            // Data for traffic
+            trafficDataForTable: [
+                {
+                    "surveyDate": "2018",
+                    "dataType": "AADT (Average Annual Daily Traffic)",
+                    "totalVehicles": "23",
+                    "addedBy": "User 1"
+                },
+                {
+                    "surveyDate": "2019",
+                    "dataType": "ADT (Average Daily Traffic)",
+                    "totalVehicles": "234",
+                    "addedBy": "User 2"
+                },
+                {
+                    "surveyDate": "2020",
+                    "dataType": "Forecast",
+                    "totalVehicles": "123",
+                    "addedBy": "User 3"
+                },
+            ],
+
+            getTrafficData(){
+                this.state.pendingRows = this.trafficDataForTable;
+
+                const eventName = `${this.table_id}.dataAdded`;
+                const eventDetail = { detail: { pendingRows: this.state.pendingRows, clearRows: true }}
+                document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+                
+                this.update();
+            },
+
+            getRoadAudit() { //TODO remove
+                const roadId = this.state.road.id;
+                getRoadAudit(roadId)
+                    .then((auditData) => {
+                        this.state.pendingRows = auditData;
+
+                        const eventName = `${this.table_id}.dataAdded`;
+                        const eventDetail = { detail: { pendingRows: this.state.pendingRows, clearRows: true }}
+                        document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+                        
+                        this.state.loading = false;
+                        this.update();
+                    });
+            },
+
+            table_id: "traffic-table",
+            table_columns: [
+                {
+                    title: window.gettext("Survey Date"),
+                    //data: "surveyDate",
+                    data: "dateCreated", //TODO remove
+                    orderable: false,
+                },
+                {
+                    title: window.gettext("Data Type"),
+                    // data: "dataType",
+                    data: "comment", //TODO remove
+                    orderable: false,
+                },
+                {
+                    title: window.gettext("Total Vehicles"),
+                    // data: "totalVehicles",
+                    data: "user", //TODO remove
+                    orderable: false,
+                },
+                {
+                    title: window.gettext("Added By"),
+                    // data: "addedBy", 
+                    data: "user", //TODO remove
+                    orderable: false,
+                },
+                {
+                    // To add a 'Delete' button include the attribute candelete=true
+                    // on the Riot dataTable tag as well
+                    title: window.gettext("Delete"),
+                    // name: "Option", 
+                    data: "user", //TODO remove
+                    orderable: false,
+                },
+            ],
+            table_sort_order: [],
+            pageLength: 15,
+
+
+            // Data for title and options
+            trafficTypes: {
+                display: window.gettext("Traffic Data Type"),
+                slug: "traffic_data_type",
+                help_text: window.gettext("Choose the traffic type for the road link"),
+                options: [
+                    ["1", window.gettext("AADT (Annual Average Daily Traffic)")],
+                    ["2", window.gettext("ADT (Average Daily Traffic)")],
+                    ["3", window.gettext("Forecast")]
+                ]
+            },
+            countingMethods: {
+                display: window.gettext("Traffic Counting Method"),
+                slug: "traffic_counting_method",
+                help_text: window.gettext("Choose the method of counting the traffic for the road link"),
+                options: [
+                    ["1", window.gettext("Electronic")],
+                    ["2", window.gettext("Manual")]
+                ]
+            },
+            vehicleTypes: {
+                options: [
+                    ["motorcycle", window.gettext("Motorcycle"), window.gettext("2 axels, 2 wheels"), "motorcycleCount", "state.survey.motorcycleCount"],
+                    ["car", window.gettext("Passenger Car"), window.gettext("2 axels, 4 wheels"), "carCount", "state.survey.carCount"],
+                    ["pickup", window.gettext("Pickup/4WD"), window.gettext("2 axels, 4 wheels"), "pickupCount", "state.survey.pickupCount"],
+                    ["mini-bus", window.gettext("Mini Bus"), window.gettext("2 axels, 4 wheels"), "miniBusCount", "state.survey.miniBusCount"],
+                    ["large-bus", window.gettext("Large Bus"), window.gettext("2-3 axels, 6-10 wheels"), "largeBusCount", "state.survey.largeBusCount"],
+                    ["light-truck", window.gettext("Light Truck"), window.gettext("2 axels, 4 wheels"), "lightTruckCount", "state.survey.lightTruckCount"],
+                    ["medium-truck", window.gettext("Medium Truck"), window.gettext("2-3 axels, 6-10 wheels"), "mediumTruckCount", "state.survey.mediumTruckCount"],
+                    ["large-truck", window.gettext("Large Truck"), window.gettext("5 axels, 18 wheels"), "largeTruckCount", "state.survey.largeTruckCount"],
+                    ["ufo", window.gettext("Non Defined"), "", "ufoCount", "state.survey.ufoCount"]
+                ]
+            },
+            forecastYears: {
+                options: [              
+                    ["1", "2000"],
+                    ["2", "2001"],
+                    ["3", "2002"],
+                    ["4", "2003"],
+                    ["5", "2004"],
+                    ["6", "2005"],
+                    ["7", "2006"],
+                    ["8", "2007"],
+                    ["9", "2008"],
+                    ["10", "2009"],
+                    ["11", "2010"],
+                    ["12", "2011"],
+                    ["13", "2012"],
+                    ["14", "2013"],
+                    ["15", "2014"],
+                    ["16", "2015"],
+                    ["17", "2016"],
+                    ["18", "2017"],
+                    ["19", "2018"],
+                    ["20", "2019"],
+                    ["21", "2020"],
+                    ["22", "2021"],
+                    ["23", "2022"],
+                    ["24", "2023"],
+                    ["25", "2024"],
+                    ["26", "2025"],
+                    ["27", "2026"],
+                    ["28", "2027"],
+                    ["29", "2028"],
+                    ["30", "2029"],
+                    ["31", "2030"],
+                    ["32", "2031"],
+                    ["33", "2032"],
+                    ["34", "2033"],
+                    ["35", "2034"],
+                    ["36", "2035"],
+                    ["37", "2036"],
+                    ["38", "2037"],
+                    ["39", "2038"],
+                    ["40", "2039"],
+                    ["41", "2040"]
+                ]
+            },
+            
+            requiredFieldNames: ["surveyDate", "countMethod", "trafficType"], // countMethod is only required if trafficType isn't 3
+            discardChanges() {
+                $(`#${this.modal_id}`).modal("hide");
+                this.update({
+                    survey: cloneData(this.state.baseSurvey),
+                    errors: {},
+                });
+            },
+            addEditTraffic(e) {
+                this.state.survey = cloneData(this.state.baseSurvey);
+                this.state.errors = {};
+
+                this.showEditModal();
+            },
+            showEditModal() {
+                $(`#${this.modal_id}`).modal("show");
+            },
+            canSave() {
+                this.update();
+            },
+
+            // Check and validation
+            validate(fieldName, input, testResult, errorText) {
+                if (!testResult) {
+                    this.state.errors[fieldName] = errorText;
+                } else {
+                    delete this.state.errors[fieldName];
+                    this.state.survey[fieldName] = input;
+                }
+
+                this.canSave();
+            },
+            checkCount(e) {
+                const fieldName = e.currentTarget.name;
+                const input = e.currentTarget.value;
+                const testResult = withinMaxDigits(input, this.state.chainageDigits, 0);
+                const errorText = window.gettext(`Cannot contain more than ${this.state.chainageDigits} digits and value shouldn't contain decimals`);
+                    // fix errorText
+                this.validate(fieldName, input, testResult, errorText);
+            },
+            checkSurveyDate(e) {
+                const fieldName = e.currentTarget.name;
+                const input = e.currentTarget.value;
+                const testResult = input <= this.max_date();
+                const errorText = window.gettext("Survey date cannot be in the future");
+
+                this.validate(fieldName, input, testResult, errorText);
+            },
+            checkTrafficType(e) {
+                this.state.survey.trafficType = e.currentTarget.dataset.type;
+                this.canSave();
+            },
+            checkCountingMethod(e) {
+                this.state.survey.countMethod = e.currentTarget.dataset.method;
+                this.canSave();
+            },
+            modal_id: "traffic-modal",
+            max_date: () => new Date().toISOString().substring(0, 10),
+        }
+    </script>
+</edit_traffic>
