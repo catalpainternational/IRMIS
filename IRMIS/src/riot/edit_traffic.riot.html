@@ -6,6 +6,10 @@
                 { window.gettext("Add") }
             </button>
         </div>
+        <data_table if="{state.viewAll}" table_id="{all_data_table_id}" columns="{all_data_table_columns}"
+            columnSortOrder="{all_data_table_columns_order}" getHelpText="{props.parent.getHelpText}"
+            pendingRows="{state.pendingRows}" canDelete=true>
+        </data_table>
     </div>
 
     <edit_modal modal_id="{ modal_id }" disableSave="{!state.canSave}">
@@ -17,7 +21,7 @@
                 <div class="form-group">
                     <label>{ window.gettext(trafficTypes.display) }</label>
                     <span class="required">*</span>
-                    <ul> 
+                    <ul>
                         <li each="{type in trafficTypes.options}" data-type="{type[0]}" onclick="{checkTrafficType}">
                             <span class="{type[0] == state.survey.trafficType ? 'active' : ''  } radio image"></span>
                             { window.gettext(type[1]) }
@@ -31,9 +35,11 @@
                     <div class="form-group">
                         <label>{ window.gettext(countingMethods.display) }</label>
                         <span class="required">*</span>
-                        <ul> 
-                            <li each="{method in countingMethods.options}" data-method="{method[0]}" onclick="{checkCountingMethod}">
-                                <span class="{method[0] == state.survey.countMethod ? 'active' : ''  } radio image"></span>
+                        <ul>
+                            <li each="{method in countingMethods.options}" data-method="{method[0]}"
+                                onclick="{checkCountingMethod}">
+                                <span
+                                    class="{method[0] == state.survey.countMethod ? 'active' : ''  } radio image"></span>
                                 { window.gettext(method[1]) }
                             </li>
                         </ul>
@@ -49,17 +55,30 @@
                             <span class="date-field-title">
                                 { window.gettext("From") }
                             </span>
-                            <input class="{ state.survey.surveyFromDate ? '' : 'inactive' } date-input-field form-control"
-                                type="date" name="surveyFromDate" placeholder="Date" value="{state.survey.surveyFromDate}"
-                                oninput="{checkSurveyDate}" required pattern="\d{4}-\d{2}-\d{2}" max="{max_date()}">
+                            <input
+                                class="{ state.survey.surveyFromDate ? '' : 'inactive' } date-input-field form-control"
+                                type="date" id="surveyFromDate" name="surveyFromDate" placeholder="Date"
+                                value="{state.survey.surveyFromDate}" oninput="{checkSurveyDate}" required
+                                pattern="\d{4}-\d{2}-\d{2}" max="{max_date()}">
+                            <div if="{state.errors.surveyFromDate}" class="invalid-tooltip">
+                                <ul>
+                                    <li>{ state.errors.surveyFromDate }.</li>
+                                </ul>
+                            </div>
                         </div>
                         <div class="form-inline survey-field-height">
                             <span class="date-field-title">
                                 { window.gettext("To") }
                             </span>
-                            <input class="{ state.survey.surveyToDate ? '' : 'inactive' } date-input-field form-control" 
-                                type="date" name="surveyToDate" placeholder="Date" value="{state.survey.surveyToDate}"
-                                oninput="{checkSurveyDate}" required pattern="\d{4}-\d{2}-\d{2}" max="{max_date()}">
+                            <input class="{ state.survey.surveyToDate ? '' : 'inactive' } date-input-field form-control"
+                                type="date" id="surveyToDate" name="surveyToDate" placeholder="Date"
+                                value="{state.survey.surveyToDate}" oninput="{checkSurveyDate}" required
+                                pattern="\d{4}-\d{2}-\d{2}" max="{max_date()}">
+                            <div if="{state.errors.surveyToDate}" class="invalid-tooltip">
+                                <ul>
+                                    <li>{ state.errors.surveyToDate }.</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -68,10 +87,11 @@
             <section if="{state.survey.trafficType === '3'}">
                 <div class="form-group">
                     <label>{ window.gettext("Forecast Year") }</label>
-                    <span class="required">*</span> 
+                    <span class="required">*</span>
                     <!-- does this need a check function to validate the value? -->
                     <select class="{ state.forecastYear ? '' : 'inactive' } form-control">
-                        <option each="{ year in forecastYears.options }" value="{ year[0] }" selected="{ year[0] === state.forecastYear }">{ year[1] }</option>
+                        <option each="{ year in forecastYears.options }" value="{ year[0] }"
+                            selected="{ year[0] === state.forecastYear }">{ year[1] }</option>
                     </select>
                 </div>
             </section>
@@ -88,10 +108,15 @@
                             { window.gettext(vehicle[1]) }
                         </div>
                         <!-- note that class and value is not unique, so styling won't apply inactive class correctly -->
-                        <input class="{ vehicle[4] ? '' : 'inactive' } vehicle-input form-control"
-                            type="number" name="{vehicle[3]}" placeholder="0000" value="{vehicle[4]}" 
-                            oninput="{checkCount}" min="0" max="999999999" step="1" required>
+                        <input class="{ vehicle[4] ? '' : 'inactive' } vehicle-input form-control" type="number"
+                            name="{vehicle[3]}" placeholder="0000" value="{vehicle[4]}" oninput="{checkCount}" min="0"
+                            max="999999999" step="1" required>
                         <small>{ window.gettext(vehicle[2]) }</small>
+                        <div if="{state.errors[vehicle[3]]}" class="invalid-tooltip">
+                            <ul>
+                                <li>{ state.errors[vehicle[3]] }.</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -111,22 +136,40 @@
     <script>
         import Edit_Modal from "./edit_modal.riot.html";
         import Edit_Stop_Alert from "./edit_stop_alert.riot.html";
-        
+
         import {cloneData} from "../assets/protoBufUtilities";
         import {Survey} from "../../protobuf/survey_pb";
 
         import $ from "jquery";
 
+        function checkRequiredFields(fieldNames, data, errors) {
+            return fieldNames.filter((fieldName) => {return !data[fieldName];});
+        }
+
+        function checkVehicleCountFields(fieldNames, data, errors) {
+            return fieldNames.filter((fieldName) => {
+                return !data[fieldName] || data[fieldName] == 0;
+            });
+        }
+
         function withinMaxDigits(text, limit, decimals) {
             return (new RegExp(`^\\d{0,${(limit - decimals)}}(\\.\\d{0,${decimals}})?$`).test(text));
         }
-        
+
+        const forecastYearsRange = [...Array(41).keys()].map(i => i + new Date().getFullYear() - 20);
+
         export default {
             state: {
                 baseSurvey: new Survey({}),
-                canSave: false,
                 survey: {},
-                forecastYear: ''
+                canSave: false,
+                errors: {},
+                pendingRows: [],
+                reportRows: [],
+                viewAll: true,
+                editMode: false,
+                forecastYear: '',
+                maxCountDigits: 6,
             },
             components: {
                 Edit_Modal, Edit_Stop_Alert
@@ -134,24 +177,29 @@
 
             // Data for title and options
             trafficTypes: {
-                display: "Traffic Data Type",
+                display: window.gettext("Traffic Data Type"),
                 slug: "traffic_data_type",
-                help_text: "Choose the traffic type for the road link",
+                help_text: window.gettext("Choose the traffic type for the road link"),
                 options: [
-                    ["1", "AADT (Annual Average Daily Traffic)"],
-                    ["2", "ADT (Average Daily Traffic)"],
-                    ["3", "Forecast"]
+                    ["1", window.gettext("AADT (Annual Average Daily Traffic)")],
+                    ["2", window.gettext("ADT (Average Daily Traffic)")],
+                    ["3", window.gettext("Forecast")]
                 ]
             },
             countingMethods: {
-                display: "Traffic Counting Method",
+                display: window.gettext("Traffic Counting Method"),
                 slug: "traffic_counting_method",
-                help_text: "Choose the method of counting the traffic for the road link",
+                help_text: window.gettext("Choose the method of counting the traffic for the road link"),
                 options: [
-                    ["1", "Electronic"],
-                    ["2", "Manual"]
+                    ["1", window.gettext("Electronic")],
+                    ["2", window.gettext("Manual")]
                 ]
             },
+            vehicleCountFieldNames: [
+                "motorcycleCount", "carCount", "pickupCount", "miniBusCount",
+                "largeBusCount", "lightTruckCount", "mediumTruckCount",
+                "largeTruckCount", "ufoCount"
+            ],
             vehicleTypes: {
                 options: [
                     ["motorcycle", "Motorcycle", "2 axels, 2 wheels", "motorcycleCount", "state.survey.motorcycleCount"],
@@ -166,52 +214,92 @@
                 ]
             },
             forecastYears: {
-                options: [              
-                    ["1", "2000"],
-                    ["2", "2001"],
-                    ["3", "2002"],
-                    ["4", "2003"],
-                    ["5", "2004"],
-                    ["6", "2005"],
-                    ["7", "2006"],
-                    ["8", "2007"],
-                    ["9", "2008"],
-                    ["10", "2009"],
-                    ["11", "2010"],
-                    ["12", "2011"],
-                    ["13", "2012"],
-                    ["14", "2013"],
-                    ["15", "2014"],
-                    ["16", "2015"],
-                    ["17", "2016"],
-                    ["18", "2017"],
-                    ["19", "2018"],
-                    ["20", "2019"],
-                    ["21", "2020"],
-                    ["22", "2021"],
-                    ["23", "2022"],
-                    ["24", "2023"],
-                    ["25", "2024"],
-                    ["26", "2025"],
-                    ["27", "2026"],
-                    ["28", "2027"],
-                    ["29", "2028"],
-                    ["30", "2029"],
-                    ["31", "2030"],
-                    ["32", "2031"],
-                    ["33", "2032"],
-                    ["34", "2033"],
-                    ["35", "2034"],
-                    ["36", "2035"],
-                    ["37", "2036"],
-                    ["38", "2037"],
-                    ["39", "2038"],
-                    ["40", "2039"],
-                    ["41", "2040"]
-                ]
+                options: [...Array(41).keys()].map(i => i + 1).map(function(e, i) {
+                    return [e, forecastYearsRange[i]];
+                })
             },
-            
-            requiredFieldNames: ["surveyDate", "countMethod", "trafficType"], // countMethod is only required if trafficType isn't 3
+
+            requiredFieldNames: ["surveyToDate", "surveyFromDate", "countMethod", "trafficType"], // countMethod is only required if trafficType isn't 3
+            all_data_table_id: "traffic-data-table",
+            all_data_table_columns_order: [[0, 'desc']],
+            all_data_table_columns: [
+                {
+                    title: window.gettext("Survey date"),
+                    data: "dateToSurveyed",
+                    defaultContent: "",
+                    className: "text-center",
+                },
+                {
+                    title: window.gettext("Data type"),
+                    data: "dataType",
+                    defaultContent: "",
+                    className: "text-center",
+                },
+                {
+                    title: window.gettext("Total vehicles"),
+                    data: "totalVehicles",
+                    defaultContent: "",
+                    className: "text-center",
+                },
+                {
+                    title: window.gettext("Added by"),
+                    data: "addedBy",
+                    defaultContent: "",
+                    orderable: false,
+                },
+                {
+                    // To add a 'Delete' button include the attribute candelete=true
+                    // on the Riot dataTable tag as well
+                    title: window.gettext("Delete"),
+                    name: "Option", // Do NOT translate this
+                    defaultContent: "",
+                    className: "text-center",
+                    orderable: false,
+                },
+            ],
+            onMounted(props, state) {
+                state.loading = true;
+                state.road = cloneData(props.road);
+                this.props.parent.refreshSurveysAndReports(state, this.all_data_table_id, "traffic_data", "trafficData");
+                // If we're not still loading, then we assume that we want to replace all rows
+                const eventName = `${this.all_data_table_id}.dataAdded`;
+                const eventDetail = {detail: {pendingRows: this.state.pendingRows, clearRows: true}}
+                document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+
+                this.deleteListener = (data) => {
+                    const rowId = data.detail.rowId;
+                    this.showStopAlertModal("delete-alert", rowId);
+                };
+                document.addEventListener(`${this.all_data_table_id}.deleteRow`, this.deleteListener);
+            },
+            onUnmount(props, state) {
+                document.removeEventListener(`${this.all_data_table_id}.deleteRow`, this.deleteListener);
+            },
+            showStopAlertModal(modalId, rowId) {
+                const eventName = `edit.${modalId}.result`;
+
+                document.addEventListener(eventName, (data) => {
+                    const stopAlertResult = data.detail.result;
+                    $(`#${modalId}`).modal("hide");
+
+                    if (stopAlertResult === "discard") {
+                        this.discardChanges();
+                    } else if (stopAlertResult === "delete") {
+                        this.state.editMode = true;
+                        // void the survey surface_condition value and save
+                        this.state.survey = this.state.pendingRows.find((s) => {return s.id == rowId;});
+                        if (this.state.survey) {
+                            this.state.survey.setValues(JSON.stringify({}));
+                            this.saveSurvey();
+                        }
+                        this.state.editMode = false;
+                    } else if (stopAlertResult === "continueEdit") {
+                        this.showEditModal();
+                    }
+                }, {once: true});
+
+                $(`#${modalId}`).modal("show");
+            },
             discardChanges() {
                 $(`#${this.modal_id}`).modal("hide");
                 this.update({
@@ -226,12 +314,47 @@
                 this.showEditModal();
             },
             showEditModal() {
+                document.addEventListener(`${this.modal_id}.result`, (data) => {
+                    const modalResult = data.detail.result;
+
+                    switch (modalResult) {
+                        case "save":
+                            if (this.hasChanges()) {
+                                this.save();
+                            }
+                            break;
+                        case "cancel":
+                            this.discardChanges();
+                            break;
+                        default:
+                            if (this.hasChanges()) {
+                                this.showStopAlertModal("stop-alert");
+                            }
+                            break;
+                    }
+                }, {once: true});
+
                 $(`#${this.modal_id}`).modal("show");
             },
+            hasChanges() {
+                const compareFieldNames = this.requiredFieldNames;
+                const surveyBase = compareFieldNames.map((fieldName) => {return this.state.baseSurvey[fieldName] || "";}).join("|||");
+                const surveyResult = compareFieldNames.map((fieldName) => {return this.state.survey[fieldName] || "";}).join("|||");
+
+                return (surveyBase !== surveyResult);
+            },
             canSave() {
+                const missingFieldNames = checkRequiredFields(this.requiredFieldNames, this.state.survey);
+                const missingVehicleCounts = checkVehicleCountFields(this.vehicleCountFieldNames, this.state.survey)
+                if (missingFieldNames.length || missingVehicleCounts.length == this.vehicleCountFieldNames.length || Object.keys(this.state.errors).length) {
+                    // Cannot save if there are validation errors
+                    this.state.canSave = false;
+                } else {
+                    // Can save if something has changed
+                    this.state.canSave = JSON.stringify(this.state.baseSurvey) !== JSON.stringify(this.state.survey);
+                }
                 this.update();
             },
-
             // Check and validation
             validate(fieldName, input, testResult, errorText) {
                 if (!testResult) {
@@ -246,18 +369,41 @@
             checkCount(e) {
                 const fieldName = e.currentTarget.name;
                 const input = e.currentTarget.value;
-                const testResult = withinMaxDigits(input, this.state.chainageDigits, 0);
-                const errorText = window.gettext(`Cannot contain more than ${this.state.chainageDigits} digits and value shouldn't contain decimals`);
-                    // fix errorText
+                const testResult = withinMaxDigits(input, this.state.maxCountDigits, 0);
+                const errorText = window.gettext(`Cannot contain more than ${this.state.maxCountDigits} digits and value shouldn't contain decimals`);
+                // fix errorText
                 this.validate(fieldName, input, testResult, errorText);
+            },
+            checkMaxDate(input, fieldName) {
+                const errorText = window.gettext("Survey date cannot be in the future");
+                const testResult = new Date(input) <= new Date(this.max_date());
+                this.validate(fieldName, input, testResult, errorText);
+                return testResult;
+            },
+            checkToFrom(input, fieldName) {
+                const fromDate = document.getElementById('surveyFromDate').value;
+                const toDate = document.getElementById('surveyToDate').value;
+                const errorText = window.gettext("Survey TO date cannot be less than Survey FROM date");
+                let testResult = true;
+                if (toDate && fromDate) {
+                    testResult = new Date(fromDate) <= new Date(toDate);
+                }
+                if (testResult) {
+                    // clear both date fields with true
+                    // done in case user fixed one field's error by changing the other
+                    this.validate('surveyFromDate', fromDate, testResult, errorText);
+                    this.validate('surveyToDate', toDate, testResult, errorText);
+                } else {
+                    // only need to throw the error tooltip on one field
+                    this.validate(fieldName, input, testResult, errorText);
+                }
             },
             checkSurveyDate(e) {
                 const fieldName = e.currentTarget.name;
                 const input = e.currentTarget.value;
-                const testResult = input <= this.max_date();
-                const errorText = window.gettext("Survey date cannot be in the future");
-
-                this.validate(fieldName, input, testResult, errorText);
+                if (this.checkMaxDate(input, fieldName)) {
+                    this.checkToFrom(input, fieldName);
+                }
             },
             checkTrafficType(e) {
                 this.state.survey.trafficType = e.currentTarget.dataset.type;
