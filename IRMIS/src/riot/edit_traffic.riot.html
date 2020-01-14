@@ -30,7 +30,7 @@
                 </div>
             </section>
 
-            <section if="{state.survey.trafficType === '1' || state.survey.trafficType === '2'}">
+            <section if="{state.survey.trafficType === 'AADT' || state.survey.trafficType === 'ADT'}">
                 <section>
                     <div class="form-group">
                         <label>{ window.gettext(countingMethods.display) }</label>
@@ -84,7 +84,7 @@
                 </section>
             </section>
 
-            <section if="{state.survey.trafficType === '3'}">
+            <section if="{state.survey.trafficType === 'Forecast'}">
                 <div class="form-group">
                     <label>{ window.gettext("Forecast Year") }</label>
                     <span class="required">*</span>
@@ -129,10 +129,10 @@
         </form>
     </edit_modal>
 
-    <edit_stop_alert modalId="stop-alert" title="{ window.gettext('Unsaved Changes') }"
-        description="{ window.gettext('You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?') }"
-        proceedLabel="{ window.gettext('Discard') }" proceedResult="discard"
-        stopLabel="{ window.gettext('Continue editing') }" stopResult="continueEdit">
+    <edit_stop_alert modalId="delete-alert" title="{window.gettext('Delete')}"
+        description="{window.gettext('Are you sure you want to delete this data entry?')}"
+        proceedLabel="{window.gettext('Delete')}" proceedResult="delete" stopLabel="{window.gettext('Don\'t delete')}"
+        stopResult="keep">
     </edit_stop_alert>
 
     <script>
@@ -159,8 +159,6 @@
             return (new RegExp(`^\\d{0,${(limit - decimals)}}(\\.\\d{0,${decimals}})?$`).test(text));
         }
 
-        // const forecastYearsRange = [...Array(41).keys()].map(i => i + new Date().getFullYear() - 20);
-
         export default {
             state: {
                 baseSurvey: new Survey({}),
@@ -184,9 +182,9 @@
                 slug: "traffic_data_type",
                 help_text: window.gettext("Choose the traffic type for the road link"),
                 options: [
-                    ["1", window.gettext("AADT (Annual Average Daily Traffic)")],
-                    ["2", window.gettext("ADT (Average Daily Traffic)")],
-                    ["3", window.gettext("Forecast")]
+                    ["AADT", window.gettext("AADT (Annual Average Daily Traffic)")],
+                    ["ADT", window.gettext("ADT (Average Daily Traffic)")],
+                    ["Forecast", window.gettext("Forecast")]
                 ]
             },
             countingMethods: {
@@ -226,19 +224,19 @@
             all_data_table_columns: [
                 {
                     title: window.gettext("Survey date"),
-                    data: "dateToSurveyed",
+                    data: "trafficSurveyedDates",
                     defaultContent: "",
                     className: "text-center",
                 },
                 {
                     title: window.gettext("Data type"),
-                    data: "dataType",
+                    data: "trafficDataType",
                     defaultContent: "",
                     className: "text-center",
                 },
                 {
                     title: window.gettext("Total vehicles"),
-                    data: "totalVehicles",
+                    data: "trafficCountTotal",
                     defaultContent: "",
                     className: "text-center",
                 },
@@ -261,7 +259,7 @@
             onMounted(props, state) {
                 state.loading = true;
                 state.road = cloneData(props.road);
-                this.props.parent.refreshSurveysAndReports(state, this.all_data_table_id, "traffic_data", "trafficData");
+                this.props.parent.refreshSurveysAndReports(state, this.all_data_table_id, "trafficType", "trafficType");
                 // If we're not still loading, then we assume that we want to replace all rows
                 const eventName = `${this.all_data_table_id}.dataAdded`;
                 const eventDetail = {detail: {pendingRows: this.state.pendingRows, clearRows: true}}
@@ -367,7 +365,7 @@
                         this.state.survey.setChainageStart(this.state.survey.startChainage);
                         this.state.survey.setChainageEnd(this.state.survey.endChainage);
 
-                        let json_data = {
+                        let traffic_data = {
                             trafficType: this.state.survey.trafficType,
                             counts: {},
                             countTotal: 0,
@@ -377,25 +375,24 @@
                         this.vehicleCountFieldNames.forEach((fieldName) => {
                             if (this.state.survey[fieldName] && this.state.survey[fieldName] > 0) {
                                 let count = Number(this.state.survey[fieldName]);
-                                json_data.counts[fieldName] = count;
-                                json_data.countTotal += count;
+                                traffic_data.counts[fieldName] = count;
+                                traffic_data.countTotal += count;
                             }
                         });
 
-                        if (this.state.survey.trafficType === '3') {
-                            json_data.surveyFromDate = new Date(this.state.survey.forecastYear + "/01/01").toISOString()
-                            json_data.surveyToDate = new Date(this.state.survey.forecastYear + "/12/31").toISOString()
-                            json_data.forecastYear = true;
+                        if (this.state.survey.trafficType == "Forecast") {
+                            traffic_data.surveyFromDate = new Date(this.state.survey.forecastYear + "/01/01").toISOString()
+                            traffic_data.surveyToDate = new Date(this.state.survey.forecastYear + "/12/31").toISOString()
+                            traffic_data.forecastYear = this.state.survey.forecastYear;
                         } else {
-                            json_data.countMethod = this.state.survey.countMethod;
-                            json_data.surveyFromDate = this.state.survey.surveyFromDate;
-                            json_data.surveyToDate = this.state.survey.surveyToDate;
-                            json_data.forecastYear = false;
+                            traffic_data.countMethod = this.state.survey.countMethod;
+                            traffic_data.surveyFromDate = this.state.survey.surveyFromDate;
+                            traffic_data.surveyToDate = this.state.survey.surveyToDate;
                         }
-                        this.state.survey.setValues(JSON.stringify(json_data));
+                        this.state.survey.setValues(JSON.stringify(traffic_data));
                         // If we're here we will have a user entered surveyDate, even so Date.now() is still used as a fall back
                         const dateSurveyed = new proto.google.protobuf.Timestamp();
-                        const surveyDate = new Date(json_data.surveyFromDate) || new Date();
+                        const surveyDate = new Date(traffic_data.surveyFromDate) || new Date();
                         dateSurveyed.fromDate(surveyDate);
 
                         this.state.survey.setDateSurveyed(dateSurveyed);
@@ -419,7 +416,7 @@
                 if (!this.state.editMode) {
                     createSurvey(this.state.survey)
                         .then((surveyData) => {
-                            this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id, this.stacked_bar_id);
+                            this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "trafficType", "trafficType");
                             this.update({
                                 survey: new Survey({}), // clear input values
                             });
@@ -432,7 +429,7 @@
                 } else {
                     updateSurvey(this.state.survey)
                         .then((surveyData) => {
-                            this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id, this.stacked_bar_id);
+                            this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "trafficType", "trafficType");
                             this.update({
                                 survey: new Survey({}), // clear input values
                             });
@@ -480,7 +477,7 @@
             },
             checkMaxDate(input, fieldName) {
                 const errorText = window.gettext("Survey date cannot be in the future");
-                const testResult = new Date(input) <= new Date(this.max_date());
+                const testResult = input <= this.max_date();
                 this.validate(fieldName, input, testResult, errorText);
                 return testResult;
             },
@@ -490,7 +487,7 @@
                 const errorText = window.gettext("Survey TO date cannot be less than Survey FROM date");
                 let testResult = true;
                 if (toDate && fromDate) {
-                    testResult = new Date(fromDate) <= new Date(toDate);
+                    testResult = fromDate <= toDate;
                 }
                 if (testResult) {
                     // clear both date fields with true
