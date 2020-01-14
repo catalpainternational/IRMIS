@@ -84,11 +84,11 @@ export class EstradaSurvey extends Survey {
         return this.values.rainfall;
     }
 
-    get trafficSurveyedDates() {
+    get trafficSurveyedDate() {
         if (this.values.forecastYear) {
             return this.values.forecastYear;
         } else {
-            return this.values.surveyFromDate + " - " + this.values.surveyToDate;
+            return this.values.surveyFromDate;
         }
     }
 
