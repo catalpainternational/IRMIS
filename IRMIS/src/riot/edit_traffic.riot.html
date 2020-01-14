@@ -19,12 +19,12 @@
             <section>
                 <h6>{ window.gettext("Survey") }</h6>
                 <div class="form-group">
-                    <label>{ window.gettext(trafficTypes.display) }</label>
+                    <label>{ trafficTypes.display }</label>
                     <span class="required">*</span>
                     <ul>
                         <li each="{type in trafficTypes.options}" data-type="{type[0]}" onclick="{checkTrafficType}">
                             <span class="{type[0] == state.survey.trafficType ? 'active' : ''  } radio image"></span>
-                            { window.gettext(type[1]) }
+                            { type[1] }
                         </li>
                     </ul>
                 </div>
@@ -33,7 +33,7 @@
             <section if="{state.survey.trafficType === 'AADT' || state.survey.trafficType === 'ADT'}">
                 <section>
                     <div class="form-group">
-                        <label>{ window.gettext(countingMethods.display) }</label>
+                        <label>{ countingMethods.display }</label>
                         <span class="required">*</span>
                         <ul>
                             <li each="{method in countingMethods.options}" data-method="{method[0]}"
@@ -107,7 +107,7 @@
                             <span class="{ vehicle[0] } image"></span>
                         </div>
                         <div class="vehicle-name">
-                            { window.gettext(vehicle[1]) }
+                            { vehicle[1] }
                         </div>
                         <!-- note that class and value is not unique, so styling won't apply inactive class correctly -->
                         <input class="{ vehicle[4] ? '' : 'inactive' } vehicle-input form-control" type="number"
@@ -203,15 +203,15 @@
             ],
             vehicleTypes: {
                 options: [
-                    ["motorcycle", "Motorcycle", "2 axels, 2 wheels", "motorcycleCount", "state.survey.motorcycleCount"],
-                    ["car", "Passenger Car", "2 axels, 4 wheels", "carCount", "state.survey.carCount"],
-                    ["pickup", "Pickup/4WD", "2 axels, 4 wheels", "pickupCount", "state.survey.pickupCount"],
-                    ["mini-bus", "Mini Bus", "2 axels, 4 wheels", "miniBusCount", "state.survey.miniBusCount"],
-                    ["large-bus", "Large Bus", "2-3 axels, 6-10 wheels", "largeBusCount", "state.survey.largeBusCount"],
-                    ["light-truck", "Light Truck", "2 axels, 4 wheels", "lightTruckCount", "state.survey.lightTruckCount"],
-                    ["medium-truck", "Medium Truck", "2-3 axels, 6-10 wheels", "mediumTruckCount", "state.survey.mediumTruckCount"],
-                    ["large-truck", "Large Truck", "5 axels, 18 wheels", "largeTruckCount", "state.survey.largeTruckCount"],
-                    ["ufo", "Non Defined", "", "ufoCount", "state.survey.ufoCount"]
+                    ["motorcycle", window.gettext("Motorcycle"), window.gettext("2 axels, 2 wheels"), "motorcycleCount", "state.survey.motorcycleCount"],
+                    ["car", window.gettext("Passenger Car"), window.gettext("2 axels, 4 wheels"), "carCount", "state.survey.carCount"],
+                    ["pickup", window.gettext("Pickup/4WD"), window.gettext("2 axels, 4 wheels"), "pickupCount", "state.survey.pickupCount"],
+                    ["mini-bus", window.gettext("Mini Bus"), window.gettext("2 axels, 4 wheels"), "miniBusCount", "state.survey.miniBusCount"],
+                    ["large-bus", window.gettext("Large Bus"), window.gettext("2-3 axels, 6-10 wheels"), "largeBusCount", "state.survey.largeBusCount"],
+                    ["light-truck", window.gettext("Light Truck"), window.gettext("2 axels, 4 wheels"), "lightTruckCount", "state.survey.lightTruckCount"],
+                    ["medium-truck", window.gettext("Medium Truck"), window.gettext("2-3 axels, 6-10 wheels"), "mediumTruckCount", "state.survey.mediumTruckCount"],
+                    ["large-truck", window.gettext("Large Truck"), window.gettext("5 axels, 18 wheels"), "largeTruckCount", "state.survey.largeTruckCount"],
+                    ["ufo", window.gettext("Non Defined"), "", "ufoCount", "state.survey.ufoCount"]
                 ]
             },
             forecastYears: [...Array(41).keys()].map(i => i + new Date().getFullYear() - 20),
