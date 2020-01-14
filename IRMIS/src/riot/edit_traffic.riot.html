@@ -11,6 +11,11 @@
                 columnSortOrder="{this.table_sort_order}" pageLength="{this.pageLength}" getHelpText="help">
             </data_table>
         </div>
+        <div class="d-flex justify-content-between" style="margin-top: 5rem;">
+            <button class="btn btn-primary" onclick="{ showDetailModal }" disabled="{ props.editing }">
+                { window.gettext("View vehicle breakdown") }
+            </button>
+        </div>
     </div>
 
     <edit_modal modal_id="{ modal_id }" disableSave="{!state.canSave}">
@@ -119,6 +124,60 @@
         stopResult="keep">
     </edit_stop_alert>
 
+    <div id="inventory-segments-modal" class="modal inventory-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title">{window.gettext("Total Vehicles Breakdown")}</h1>
+                    <span class="close image" data-dismiss="modal" aria-label="{ window.gettext('Close') }"
+                        aria-hidden="true"></span>
+                </div>
+                <div class="modal-body">
+                    <section>
+                        <div class="form-group">
+                            <label>{ window.gettext("Survey Type") }</label>
+                            <div>{ window.gettext("ADT") }</div>
+                        </div>
+                    </section>
+                    <section>
+                        <div class="form-group">
+                            <label>{ window.gettext("Survey Date") }</label>
+                            <div class="form-inline survey-field-height">
+                                <span class="date-field-title">
+                                    { window.gettext("From") }
+                                </span>
+                                <div>03/01/2020</div>
+                            </div>
+                            <div class="form-inline survey-field-height">
+                                <span class="date-field-title">
+                                    { window.gettext("To") }
+                                </span>
+                                <div>07/01/2020</div>
+                            </div>
+                        </div>
+                    </section>
+                    <section>
+                        <div class="form-group">
+                            <label>{ window.gettext("Total Count per Vehicle Type") }</label>
+                            <div class="form-inline vehicle-field-height" each="{ vehicle in vehicleTypes.options }">
+                                <div class="icon">
+                                    <span class="{ vehicle[0] } image"></span>
+                                </div>
+                                <div class="vehicle-name">
+                                    { vehicle[1] }
+                                </div>
+                                <!-- note that class and value is not unique, so styling won't apply inactive class correctly -->
+                                <div style="margin-left: 2rem; margin-right: 5rem;">5</div>
+                                <small>{ vehicle[2] }</small>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <h2 class="modal-title">{window.gettext("Total 45")}</h2>
+            </div>
+        </div>
+    </div>
+
     <script>
         import Edit_Modal from "./edit_modal.riot.html";
         import Edit_Stop_Alert from "./edit_stop_alert.riot.html";
@@ -163,6 +222,11 @@
             },
             onUnmount(props, state) {
                 document.removeEventListener(`${this.all_data_table_id}.deleteRow`, this.deleteListener);
+            },
+
+            // Detail modal
+            showDetailModal() {
+                $(`#inventory-segments-modal`).modal("show");
             },
 
             // Data for traffic
