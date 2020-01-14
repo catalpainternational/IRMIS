@@ -89,9 +89,11 @@
                     <label>{ window.gettext("Forecast Year") }</label>
                     <span class="required">*</span>
                     <!-- does this need a check function to validate the value? -->
-                    <select class="{ state.forecastYear ? '' : 'inactive' } form-control">
-                        <option each="{ year in forecastYears.options }" value="{ year[0] }"
-                            selected="{ year[0] === state.forecastYear }">{ year[1] }</option>
+                    <select class="{ state.forecastYear ? '' : 'inactive' } form-control"
+                        onchange="{checkForecastYear}">
+                        <option value="">{ window.gettext("Select forecast year") }</option>
+                        <option each="{ year in forecastYears }" value="{ year }"
+                            selected="{ year === state.forecastYear }">{ year }</option>
                     </select>
                 </div>
             </section>
@@ -157,7 +159,7 @@
             return (new RegExp(`^\\d{0,${(limit - decimals)}}(\\.\\d{0,${decimals}})?$`).test(text));
         }
 
-        const forecastYearsRange = [...Array(41).keys()].map(i => i + new Date().getFullYear() - 20);
+        // const forecastYearsRange = [...Array(41).keys()].map(i => i + new Date().getFullYear() - 20);
 
         export default {
             state: {
@@ -214,13 +216,11 @@
                     ["ufo", "Non Defined", "", "ufoCount", "state.survey.ufoCount"]
                 ]
             },
-            forecastYears: {
-                options: [...Array(41).keys()].map(i => i + 1).map(function(e, i) {
-                    return [e, forecastYearsRange[i]];
-                })
-            },
+            forecastYears: [...Array(41).keys()].map(i => i + new Date().getFullYear() - 20),
 
-            requiredFieldNames: ["surveyToDate", "surveyFromDate", "countMethod", "trafficType"], // countMethod is only required if trafficType isn't 3
+            // countMethod & from/to dates are only required if trafficType isn't 3
+            requiredFieldNames: ["trafficType"],
+
             all_data_table_id: "traffic-data-table",
             all_data_table_columns_order: [[0, 'desc']],
             all_data_table_columns: [
@@ -366,17 +366,36 @@
                         this.state.survey.setSource("Estrada");
                         this.state.survey.setChainageStart(this.state.survey.startChainage);
                         this.state.survey.setChainageEnd(this.state.survey.endChainage);
-                        this.state.survey.setValues(JSON.stringify({
+
+                        let json_data = {
                             trafficType: this.state.survey.trafficType,
-                            countMethod: this.state.survey.countMethod,
-                            surveyFromDate: this.state.survey.surveyFromDate,
-                            surveyToDate: this.state.survey.surveyFromDate,
-                            forecastYear: this.state.survey.forecastYear,
                             counts: {},
-                        }));
+                            countTotal: 0,
+                        }
+
+                        // assign counts data and a total vehicle count
+                        this.vehicleCountFieldNames.forEach((fieldName) => {
+                            if (this.state.survey[fieldName] && this.state.survey[fieldName] > 0) {
+                                let count = Number(this.state.survey[fieldName]);
+                                json_data.counts[fieldName] = count;
+                                json_data.countTotal += count;
+                            }
+                        });
+
+                        if (this.state.survey.trafficType === '3') {
+                            json_data.surveyFromDate = new Date(this.state.survey.forecastYear + "/01/01").toISOString()
+                            json_data.surveyToDate = new Date(this.state.survey.forecastYear + "/12/31").toISOString()
+                            json_data.forecastYear = true;
+                        } else {
+                            json_data.countMethod = this.state.survey.countMethod;
+                            json_data.surveyFromDate = this.state.survey.surveyFromDate;
+                            json_data.surveyToDate = this.state.survey.surveyToDate;
+                            json_data.forecastYear = false;
+                        }
+                        this.state.survey.setValues(JSON.stringify(json_data));
                         // If we're here we will have a user entered surveyDate, even so Date.now() is still used as a fall back
                         const dateSurveyed = new proto.google.protobuf.Timestamp();
-                        const surveyDate = new Date(this.state.survey.surveyFromDate) || new Date(this.state.survey.forcastYear) || new Date().toISOString();
+                        const surveyDate = new Date(json_data.surveyFromDate) || new Date();
                         dateSurveyed.fromDate(surveyDate);
 
                         this.state.survey.setDateSurveyed(dateSurveyed);
@@ -489,6 +508,10 @@
                 if (this.checkMaxDate(input, fieldName)) {
                     this.checkToFrom(input, fieldName);
                 }
+            },
+            checkForecastYear(e) {
+                this.state.survey.forecastYear = e.currentTarget.value;
+                this.canSave();
             },
             checkTrafficType(e) {
                 this.state.survey.trafficType = e.currentTarget.dataset.type;
