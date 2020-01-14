@@ -216,8 +216,7 @@
             },
             forecastYears: [...Array(41).keys()].map(i => i + new Date().getFullYear() - 20),
 
-            // countMethod & from/to dates are only required if trafficType isn't 3
-            requiredFieldNames: ["trafficType"],
+            requiredFieldNames: [],
 
             all_data_table_id: "traffic-data-table",
             all_data_table_columns_order: [[0, 'desc']],
@@ -446,7 +445,7 @@
             },
             canSave() {
                 const missingFieldNames = checkRequiredFields(this.requiredFieldNames, this.state.survey);
-                const missingVehicleCounts = checkVehicleCountFields(this.vehicleCountFieldNames, this.state.survey)
+                const missingVehicleCounts = checkVehicleCountFields(this.vehicleCountFieldNames, this.state.survey);
                 if (missingFieldNames.length || missingVehicleCounts.length == this.vehicleCountFieldNames.length || Object.keys(this.state.errors).length) {
                     // Cannot save if there are validation errors
                     this.state.canSave = false;
@@ -511,6 +510,11 @@
                 this.canSave();
             },
             checkTrafficType(e) {
+                if (e.currentTarget.dataset.type === 'Forecast') {
+                    this.requiredFieldNames = ['trafficType', 'forecastyear'];
+                } else {
+                    this.requiredFieldNames = ['trafficType', 'surveyFromDate', 'surveyToDate', 'countMethod'];
+                }
                 this.state.survey.trafficType = e.currentTarget.dataset.type;
                 this.canSave();
             },
