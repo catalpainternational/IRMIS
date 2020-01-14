@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="26px" height="21px" viewBox="0 0 26 21" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 55.2 (78181) - https://sketchapp.com -->
+    <title>BE1646A8-B9D9-4D33-B1FC-B3C44F211AA6@2x</title>
+    <desc>Created with sketchtool.</desc>
+    <g id="Estrada-web" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="Edit-Road-Asset-Data/Traffic/Add-traffic-data/ADT" transform="translate(-472.000000, -742.000000)" stroke="#465060">
+            <g id="form" transform="translate(420.000000, 100.000000)">
+                <g id="form/road">
+                    <g id="Technical-Class-Copy-3" transform="translate(40.000000, 583.000000)">
+                        <g id="icons" transform="translate(11.000000, 32.000000)">
+                            <g id="Car" transform="translate(2.000000, 28.000000)">
+                                <path d="M0.8,10.8 L2.4864,10.8 C3.0208,10.8 3.5344,11.0152 3.9128,11.3992 L6.8,14 L0.852,14" id="Stroke-716"></path>
+                                <path d="M23.2,10.8 L21.5136,10.8 C20.9792,10.8 20.4656,11.0152 20.0872,11.3992 L17.2,14 L23.148,14" id="Stroke-718"></path>
+                                <path d="M16.4,16.4 L18.4,15.6 L23.2,15.6 C23.2,15.6 23.6,13.8936 23.6,11.7776 C23.6,9.6624 22.9696,8.5112 21.5824,7.796 C20.196,7.08 16.8232,6.8 12,6.8 C7.1768,6.8 3.804,7.08 2.4176,7.796 C1.0304,8.5112 0.4,9.6624 0.4,11.7776 C0.4,13.8936 0.8,15.6 0.8,15.6 L5.6,15.6 L7.6,16.4 L16.4,16.4 L16.4,16.4 Z" id="Stroke-720"></path>
+                                <polygon id="Stroke-722" points="14.8 14 18 10.8 6 10.8 9.2 14"></polygon>
+                                <path d="M21.58264,7.55552 C21.58264,7.55552 19.18664,1.96512 18.55624,1.42192 C17.92584,0.87952 15.87704,0.40032 12.50424,0.40032 L11.49544,0.40032 C8.12264,0.40032 6.07384,0.87952 5.44344,1.42192 C4.81304,1.96512 2.41704,7.55552 2.41704,7.55552" id="Stroke-724"></path>
+                                <path d="M22.8,15.6 L22.8,17.7776 C22.8,18.3424 22.348,18.8 21.7912,18.8 L19.0088,18.8 C18.452,18.8 18,18.3424 18,17.7776 L18,16" id="Stroke-726"></path>
+                                <path d="M6,16 L6,17.7776 C6,18.3424 5.548,18.8 4.9912,18.8 L2.2088,18.8 C1.652,18.8 1.2,18.3424 1.2,17.7776 L1.2,16" id="Stroke-728"></path>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

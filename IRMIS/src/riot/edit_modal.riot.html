@@ -39,9 +39,10 @@
             state: {
                 result: null,
             },
-            onMounted(props, state) {
+            onBeforeMount(props, state) {
                 initialiseStateFromProps(props, state);
-
+            },
+            onMounted(props, state) {
                 // To respond to bootstrap modal events properly you must use the full
                 // jQuery `.on` event handler syntax
                 // and attach the event handler to `$(document)`
