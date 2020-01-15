@@ -149,12 +149,12 @@
                             <span class="{ vehicle[0] } image"></span>
                         </div>
                         <div class="vehicle-name">{ vehicle[1] }</div>
-                        <div class="vehicle-count">{ currentDetails[vehicle[3]] }</div>
+                        <div class="vehicle-count">{ state.currentDetails[vehicle[3]] }</div>
                         <small>{ window.gettext(vehicle[2]) }</small>
                     </div>
                     <div class="traffic-details-total">
                         TOTAL:
-                        <span>{ currentDetails.totalCount }</span>
+                        <span>{ state.currentDetails.totalCount }</span>
                     </div>
                 </div>
             </div>
@@ -273,10 +273,10 @@
                 },
                 {
                     title: window.gettext("Total vehicles"),
-                    data: "trafficCountTotal",
+                    data: "trafficCountDetails",
                     defaultContent: "",
                     className: "text-center",
-                    render: (data) => {return "<a href='#'>" + data.getTrafficCountTotal() + "<a>"}
+                    render: (data) => {return `<a onclick={updateCurrentDetails}>${data[1]}</a>`;}
                 },
                 {
                     title: window.gettext("Added by"),
@@ -562,7 +562,6 @@
                 this.canSave();
             },
             updateCurrentDetails(e) {
-                // const counts = e.getTrafficCountDetails();
                 this.update({
                     currentDetails: {
                         motorcycleCount: 0,
@@ -574,7 +573,7 @@
                         mediumTruckCount: 0,
                         largeTruckCount: 0,
                         ufoCount: 0,
-                        totalCount: 0 // e.getTrafficCountTotal(),
+                        totalCount: 0,
                     }
                 });
             },
