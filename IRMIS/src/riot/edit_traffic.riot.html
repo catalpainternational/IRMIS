@@ -149,12 +149,13 @@
                             <span class="{ vehicle[0] } image"></span>
                         </div>
                         <div class="vehicle-name">{ vehicle[1] }</div>
-                        <div class="vehicle-count">{ state.currentDetails[vehicle[3]] }</div>
+                        <div class="vehicle-count" style="padding-right: 15px;">{ state.currentCounts[vehicle[3]] }
+                        </div>
                         <small>{ window.gettext(vehicle[2]) }</small>
                     </div>
                     <div class="traffic-details-total">
                         TOTAL:
-                        <span>{ state.currentDetails.totalCount }</span>
+                        <span>{ state.currentTotal }</span>
                     </div>
                 </div>
             </div>
@@ -197,7 +198,8 @@
                 editMode: false,
                 forecastYear: '',
                 maxCountDigits: 6,
-                currentDetails: {
+                currentTotal: 0,
+                currentCounts: {
                     motorcycleCount: 0,
                     carCount: 0,
                     pickupCount: 0,
@@ -206,8 +208,7 @@
                     lightTruckCount: 0,
                     mediumTruckCount: 0,
                     largeTruckCount: 0,
-                    ufoCount: 0,
-                    totalCount: 0,
+                    ufoCount: 0
                 },
             },
             components: {
@@ -273,10 +274,12 @@
                 },
                 {
                     title: window.gettext("Total vehicles"),
-                    data: "trafficCountDetails",
+                    data: "trafficCountTotal",
                     defaultContent: "",
                     className: "text-center",
-                    render: (data) => {return `<a onclick={updateCurrentDetails}>${data[1]}</a>`;}
+                    render: (data, type, row) => {
+                        return `<a onclick="document.dispatchEvent(new CustomEvent('traffic-data-table.trafficDetails',{detail:{rowId:${row.getId()}}}))">${data}</a>`;
+                    }
                 },
                 {
                     title: window.gettext("Added by"),
@@ -308,9 +311,21 @@
                     this.showStopAlertModal("delete-alert", rowId);
                 };
                 document.addEventListener(`${this.all_data_table_id}.deleteRow`, this.deleteListener);
+
+                this.trafficDetailsListener = (data) => {
+                    const s = this.state.pendingRows.find((s) => {return s.id == data.detail.rowId;});
+                    const values = JSON.parse(s.getValues());
+                    const counts = JSON.parse(values["counts"].replace(/\'/g, '"'));
+                    this.state.currentTotal = values["countTotal"];
+                    Object.keys(this.state.currentCounts).forEach((k) => {if (counts[k]) this.state.currentCounts[k] = counts[k];});
+                    this.update();
+                    $("#traffic-count-details-modal").modal("show");
+                };
+                document.addEventListener(`${this.all_data_table_id}.trafficDetails`, this.trafficDetailsListener);
             },
             onUnmount(props, state) {
                 document.removeEventListener(`${this.all_data_table_id}.deleteRow`, this.deleteListener);
+                document.removeEventListener(`${this.all_data_table_id}.trafficDetails`, this.trafficDetailsListener);
             },
             showStopAlertModal(modalId, rowId) {
                 const eventName = `edit.${modalId}.result`;
@@ -561,37 +576,11 @@
                 this.state.survey.countMethod = e.currentTarget.dataset.method;
                 this.canSave();
             },
-            updateCurrentDetails(e) {
-                this.update({
-                    currentDetails: {
-                        motorcycleCount: 0,
-                        carCount: 0,
-                        pickupCount: 0,
-                        miniBusCount: 0,
-                        largeBusCount: 0,
-                        lightTruckCount: 0,
-                        mediumTruckCount: 0,
-                        largeTruckCount: 0,
-                        ufoCount: 0,
-                        totalCount: 0,
-                    }
-                });
-            },
             clearCurrentDetails() {
-                this.update({
-                    currentDetails: {
-                        motorcycleCount: 0,
-                        carCount: 0,
-                        pickupCount: 0,
-                        miniBusCount: 0,
-                        largeBusCount: 0,
-                        lightTruckCount: 0,
-                        mediumTruckCount: 0,
-                        largeTruckCount: 0,
-                        ufoCount: 0,
-                        totalCount: 0,
-                    }
-                });
+                this.state.currentTotal = 0;
+                Object.keys(this.state.currentCounts).forEach((k) => {this.state.currentCounts[k] = 0;});
+                $("#traffic-count-details-modal").modal("hide");
+                this.update();
             },
             modal_id: "traffic-modal",
             max_date: () => new Date().toISOString().substring(0, 10),
