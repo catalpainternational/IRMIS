@@ -90,18 +90,113 @@
                 <div class="form-group traffic-width">
                     <label>{ window.gettext("Total Count per Vehicle Type") }</label>
                     <span class="required">*</span>
-                    <div class="form-inline vehicle-field-height" each="{ vehicle in vehicleTypes.options }">
+                    <div class="form-inline vehicle-field-height">
                         <div class="icon">
-                            <span class="{ vehicle[0] } image"></span>
+                            <span class="motorcycle image"></span>
                         </div>
                         <div class="vehicle-name">
-                            { vehicle[1] }
+                            { window.gettext("Motorcycle") }
                         </div>
-                        <!-- note that class and value is not unique, so styling won't apply inactive class correctly -->
-                        <input class="{ vehicle[4] ? '' : 'inactive' } vehicle-input form-control"
-                            type="number" name="{vehicle[3]}" placeholder="0000" value="{vehicle[4]}" 
+                        <input class="{ state.survey.motorcycleCount ? '' : 'inactive' } vehicle-input form-control"
+                            type="number" name="motorcycleCount" placeholder="0000" value="{ state.survey.motorcycleCount }" 
                             oninput="{checkCount}" min="0" max="999999999" step="1" required>
-                        <small>{ vehicle[2] }</small>
+                        <small>{ window.gettext("2 axels, 2 wheels") }</small>
+                    </div>
+                    <div class="form-inline vehicle-field-height">
+                        <div class="icon">
+                            <span class="car image"></span>
+                        </div>
+                        <div class="vehicle-name">
+                            { window.gettext("Passenger Car") }
+                        </div>
+                        <input class="{ state.survey.carCount ? '' : 'inactive' } vehicle-input form-control"
+                            type="number" name="carCount" placeholder="0000" value="{ state.survey.carCount }" 
+                            oninput="{checkCount}" min="0" max="999999999" step="1" required>
+                        <small>{ window.gettext("2 axels, 4 wheels") }</small>
+                    </div>
+                    <div class="form-inline vehicle-field-height">
+                        <div class="icon">
+                            <span class="pickup image"></span>
+                        </div>
+                        <div class="vehicle-name">
+                            { window.gettext("Pickup/4WD") }
+                        </div>
+                        <input class="{ state.survey.pickupCount ? '' : 'inactive' } vehicle-input form-control"
+                            type="number" name="pickupCount" placeholder="0000" value="{ state.survey.pickupCount }" 
+                            oninput="{checkCount}" min="0" max="999999999" step="1" required>
+                        <small>{ window.gettext("2 axels, 4 wheels") }</small>
+                    </div>
+                    <div class="form-inline vehicle-field-height">
+                        <div class="icon">
+                            <span class="mini-bus image"></span>
+                        </div>
+                        <div class="vehicle-name">
+                            { window.gettext("Mini Bus") }
+                        </div>
+                        <input class="{ state.survey.miniBusCount ? '' : 'inactive' } vehicle-input form-control"
+                            type="number" name="miniBusCount" placeholder="0000" value="{ state.survey.miniBusCount }" 
+                            oninput="{checkCount}" min="0" max="999999999" step="1" required>
+                        <small>{ window.gettext("2 axels, 4 wheels") }</small>
+                    </div>
+                    <div class="form-inline vehicle-field-height">
+                        <div class="icon">
+                            <span class="large-bus image"></span>
+                        </div>
+                        <div class="vehicle-name">
+                            { window.gettext("Large Bus") }
+                        </div>
+                        <input class="{ state.survey.largeBusCount ? '' : 'inactive' } vehicle-input form-control"
+                            type="number" name="largeBusCount" placeholder="0000" value="{ state.survey.largeBusCount }" 
+                            oninput="{checkCount}" min="0" max="999999999" step="1" required>
+                        <small>{ window.gettext("2-3 axels, 6-10 wheels") }</small>
+                    </div>
+                    <div class="form-inline vehicle-field-height">
+                        <div class="icon">
+                            <span class="light-truck image"></span>
+                        </div>
+                        <div class="vehicle-name">
+                            { window.gettext("Light Truck") }
+                        </div>
+                        <input class="{ state.survey.lightTruckCount ? '' : 'inactive' } vehicle-input form-control"
+                            type="number" name="lightTruckCount" placeholder="0000" value="{ state.survey.lightTruckCount }" 
+                            oninput="{checkCount}" min="0" max="999999999" step="1" required>
+                        <small>{ window.gettext("2 axels, 4 wheels") }</small>
+                    </div>
+                    <div class="form-inline vehicle-field-height">
+                        <div class="icon">
+                            <span class="medium-truck image"></span>
+                        </div>
+                        <div class="vehicle-name">
+                            { window.gettext("Medium Truck") }
+                        </div>
+                        <input class="{ state.survey.mediumTruckCount ? '' : 'inactive' } vehicle-input form-control"
+                            type="number" name="mediumTruckCount" placeholder="0000" value="{ state.survey.mediumTruckCount }" 
+                            oninput="{checkCount}" min="0" max="999999999" step="1" required>
+                        <small>{ window.gettext("2-3 axels, 6-10 wheels") }</small>
+                    </div>
+                    <div class="form-inline vehicle-field-height">
+                        <div class="icon">
+                            <span class="large-truck image"></span>
+                        </div>
+                        <div class="vehicle-name">
+                            { window.gettext("Large Truck") }
+                        </div>
+                        <input class="{ state.survey.largeTruckCount ? '' : 'inactive' } vehicle-input form-control"
+                            type="number" name="largeTruckCount" placeholder="0000" value="{ state.survey.largeTruckCount }" 
+                            oninput="{checkCount}" min="0" max="999999999" step="1" required>
+                        <small>{ window.gettext("5 axels, 18 wheels") }</small>
+                    </div>
+                    <div class="form-inline vehicle-field-height">
+                        <div class="icon">
+                            <span class="ufo image"></span>
+                        </div>
+                        <div class="vehicle-name">
+                            { window.gettext("Undefined") }
+                        </div>
+                        <input class="{ state.survey.ufoCount ? '' : 'inactive' } vehicle-input form-control"
+                            type="number" name="ufoCount" placeholder="0000" value="{ state.survey.ufoCount }" 
+                            oninput="{checkCount}" min="0" max="999999999" step="1" required>
+                        <small></small>
                     </div>
                 </div>
             </section>
