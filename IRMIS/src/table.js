@@ -112,8 +112,7 @@ function initializeDataTable() {
         rowId: ".getId()",
         // default order is ascending by: road code, link code, & link start chainage
         order: window.canEdit ? [[1, 'asc'], [3, 'asc'], [7, 'asc']] : [[0, 'asc'], [2, 'asc'], [6, 'asc']],
-        dom: "<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>>", // https://datatables.net/reference/option/dom#Styling
-        paging: false,
+        dom: "<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>", // https://datatables.net/reference/option/dom#Styling
         language: datatableTranslations,
         search: {
             regex: true, // Enable escaping of regular expression characters in the search term.
@@ -259,7 +258,19 @@ $.extend($.fn.dataTableExt.oSort, {
 });
 
 $.fn.dataTable.Api.register('row().show()', function () {
-    this.table().row(this.index()).node().scrollIntoView(false);
+    const page = this.table().page;
+    const tableRows = this.table().rows({ order:"current", page:"all", search: "applied" });
+    const rowIndex = this.index();
+    const rowPosition = tableRows[0].indexOf( rowIndex );
+
+    if( rowPosition >= page.info().start && rowPosition < page.info().end ) {
+        // On the correct page - return the row
+        return this;
+    }
+
+    const newPageNumber = Math.floor(rowPosition / page.len());
+    // Change page
+    page(newPageNumber);
 
     // Return row object
     return this;

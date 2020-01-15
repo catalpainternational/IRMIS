@@ -73,6 +73,9 @@ function change_view(e) {
         if (sibling !== e.currentTarget) { sibling.classList.remove("active"); }
     }
     e.currentTarget.classList.add("active");
+
+    document.dispatchEvent(new CustomEvent("estrada.sideMenu.viewChanged", { "detail": { viewName } }));
+
 }
 
 function toggleFilterSelect2(e) {
