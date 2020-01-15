@@ -1,7 +1,7 @@
 import hashlib
 import json
 from datetime import datetime
-from collections import Counter
+from collections import defaultdict
 
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotFound
@@ -116,12 +116,66 @@ class Report:
 
     def build_summary_stats(self, primary_attribute):
         """ Generate the high-level length statistics for the report """
-        return Counter(
-            [
-                self.segmentations[primary_attribute][segment]["value"]
-                for segment in self.segmentations[primary_attribute]
-            ]
-        )
+        # Defaultdict is more performant than Counter
+        counter = defaultdict(int)
+
+        if primary_attribute != "rainfall":
+            # Normal, categorical attribute values
+            for segment in self.segmentations[primary_attribute]:
+                counter[self.segmentations[primary_attribute][segment]["value"]] += 1
+        else:
+            # Attributes with continuous values need to be binned
+            max_val = max(
+                self.segmentations[primary_attribute],
+                key=lambda segment: self.segmentations[primary_attribute][segment][
+                    "value"
+                ],
+            )
+            if max_val <= 0:
+                max_val = 1
+
+            # different attributes will have different "reasonable" step values
+            if primary_attribute == "rainfall":
+                step = 5000
+            elif primary_attribute == "carriageway_width":
+                step = 10
+            elif primary_attribute == "number_lanes":
+                step = 1
+            else:
+                # fall back to a default step value
+                step = 1000
+
+            # add step to the max value in order to ensure we capture the upper bounds
+            bins = list(range(0, max_val + step, step))
+            bin_tuples = [tuple(bins[i : i + 2]) for i in range(0, len(bins))]
+
+            for bin in bin_tuples:
+                count = len(
+                    list(
+                        segment
+                        for segment in self.segmentations[primary_attribute]
+                        if self.segmentations[primary_attribute][segment]["value"]
+                        != "None"
+                        and bin[0]
+                        <= int(self.segmentations[primary_attribute][segment]["value"])
+                        < bin[1]
+                    )
+                )
+                if count > 0:
+                    counter["Less than " + str(bin[1]) + "mm"] += count
+
+            # count the segments with unknowns
+            unknowns = len(
+                list(
+                    segment
+                    for segment in self.segmentations[primary_attribute]
+                    if self.segmentations[primary_attribute][segment]["value"] == "None"
+                )
+            )
+            if unknowns > 0:
+                counter["None"] += unknowns
+
+        return counter
 
     def build_chainage_table(self, primary_attribute, attribute_table):
         """ Generate the table of chainages in the report """

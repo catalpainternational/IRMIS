@@ -126,7 +126,9 @@
     }
 }
 
-#surface-type-stacked-bar, #report-surface-type-bar {
+#rainfall-stacked-bar,
+#surface-type-stacked-bar,
+#report-surface-type-bar {
     @extend %stacked-bar-shared;
 
     .entry-1 {
