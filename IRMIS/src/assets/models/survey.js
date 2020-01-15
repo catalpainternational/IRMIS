@@ -92,6 +92,10 @@ export class EstradaSurvey extends Survey {
         }
     }
 
+    get trafficCountDetails() {
+        return this.values.counts || {};
+    }
+
     get trafficCountTotal() {
         return this.values.countTotal || 0;
     }

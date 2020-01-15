@@ -135,6 +135,35 @@
         stopResult="keep">
     </edit_stop_alert>
 
+    <div id="traffic-count-details-modal" class="modal inventory-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title"></h1>
+                    <span class="close image" data-dismiss="modal" aria-label="{ window.gettext('Close') }"
+                        aria-hidden="true" onclick={clearCurrentDetails}></span>
+                </div>
+                <div class="modal-body">
+                    <div class="form-inline vehicle-field-height" each="{ vehicle in vehicleTypes.options }">
+                        <div class="icon">
+                            <span class="{ vehicle[0] } image"></span>
+                        </div>
+                        <div class="vehicle-name">
+                            { vehicle[1] }
+                        </div>
+                        <!-- note that class and value is not unique, so styling won't apply inactive class correctly -->
+                        <div>{ currentDetails[vehicle[3]] }</div>
+                        <small>{ window.gettext(vehicle[2]) }</small>
+                    </div>
+                    <div class="traffic-details-total">
+                        TOTAL:
+                        <span>{ currentDetails.totalCount }</span> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         import Edit_Modal from "./edit_modal.riot.html";
         import Edit_Stop_Alert from "./edit_stop_alert.riot.html";
@@ -171,6 +200,18 @@
                 editMode: false,
                 forecastYear: '',
                 maxCountDigits: 6,
+                currentDetails: {
+                    motorcycleCount: 0,
+                    carCount: 0,
+                    pickupCount: 0,
+                    miniBusCount: 0,
+                    largeBusCount: 0,
+                    lightTruckCount: 0,
+                    mediumTruckCount: 0,
+                    largeTruckCount: 0,
+                    ufoCount: 0,
+                    totalCount: 0,
+                },
             },
             components: {
                 Edit_Modal, Edit_Stop_Alert
@@ -238,6 +279,7 @@
                     data: "trafficCountTotal",
                     defaultContent: "",
                     className: "text-center",
+                    render: (data) => { return "<a href='#'>"+ data.getTrafficCountTotal() + "<a>"}; },
                 },
                 {
                     title: window.gettext("Added by"),
@@ -521,6 +563,39 @@
             checkCountingMethod(e) {
                 this.state.survey.countMethod = e.currentTarget.dataset.method;
                 this.canSave();
+            },
+            updateCurrentDetails(e) {
+                // const counts = e.getTrafficCountDetails();
+                this.update({
+                    currentDetails: {
+                        motorcycleCount: 0,
+                        carCount: 0,
+                        pickupCount: 0,
+                        miniBusCount: 0,
+                        largeBusCount: 0,
+                        lightTruckCount: 0,
+                        mediumTruckCount: 0,
+                        largeTruckCount: 0,
+                        ufoCount: 0,
+                        totalCount: 0 // e.getTrafficCountTotal(),
+                    }
+                });
+            },
+            clearCurrentDetails() {
+                this.update({
+                    currentDetails: {
+                        motorcycleCount: 0,
+                        carCount: 0,
+                        pickupCount: 0,
+                        miniBusCount: 0,
+                        largeBusCount: 0,
+                        lightTruckCount: 0,
+                        mediumTruckCount: 0,
+                        largeTruckCount: 0,
+                        ufoCount: 0,
+                        totalCount: 0,
+                    }
+                });
             },
             modal_id: "traffic-modal",
             max_date: () => new Date().toISOString().substring(0, 10),

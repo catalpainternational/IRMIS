@@ -442,6 +442,10 @@ export class EstradaSurveyAttributeEntry extends AttributeEntry {
     get rainfall() {
         return gettext(this.values.rainfall || "Unknown");
     }
+    
+    get trafficCountDetails() {
+        return this.values.counts || {};
+    }
 
     get trafficCountTotal() {
         return this.values.countTotal || 0;
