@@ -6,7 +6,7 @@
                 { window.gettext("Add") }
             </button>
         </div>
-        <data_table if="{state.viewAll}" table_id="{all_data_table_id}" columns="{all_data_table_columns}"
+        <data_table table_id="{all_data_table_id}" columns="{all_data_table_columns}"
             columnSortOrder="{all_data_table_columns_order}" getHelpText="{props.parent.getHelpText}"
             pendingRows="{state.pendingRows}" canDelete=true>
         </data_table>
@@ -193,8 +193,6 @@
                 canSave: false,
                 errors: {},
                 pendingRows: [],
-                reportRows: [],
-                viewAll: true,
                 editMode: false,
                 forecastYear: '',
                 maxCountDigits: 6,
@@ -253,7 +251,7 @@
                     ["ufo", window.gettext("Non Defined"), "", "ufoCount", "state.survey.ufoCount"]
                 ]
             },
-            forecastYears: [...Array(41).keys()].map(i => i + new Date().getFullYear() - 20),
+            forecastYears: [...Array(33).keys()].map(i => i + new Date().getFullYear() - 12),
 
             requiredFieldNames: [],
 
@@ -338,7 +336,6 @@
                         this.discardChanges();
                     } else if (stopAlertResult === "delete") {
                         this.state.editMode = true;
-                        // void the survey surface_condition value and save
                         this.state.survey = this.state.pendingRows.find((s) => {return s.id == rowId;});
                         if (this.state.survey) {
                             this.state.survey.setValues(JSON.stringify({}));
