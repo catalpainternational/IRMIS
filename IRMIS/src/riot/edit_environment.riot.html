@@ -36,7 +36,7 @@
                 { window.gettext("Add") }</button>
         </div>
 
-        <stacked_bar hidden id="{ rainfall_stacked_bar_id }" entries="{ state.rainfalls }"
+        <stacked_bar id="{ rainfall_stacked_bar_id }" entries="{ state.rainfalls }"
             total_title="{ window.gettext('Total road chainage') }">
         </stacked_bar>
 
@@ -355,10 +355,10 @@
             terrain_current_data_table_id: "terrain-type-report-table",
             terrain_all_data_table_id: "terrain-type-table",
             terrain_modal_id: "terrain-type-modal",
-            rainfall_stacked_bar_id: "rainfall-class-stacked-bar",
-            rainfall_current_data_table_id: "rainfall-class-report-table",
-            rainfall_all_data_table_id: "rainfall-class-table",
-            rainfall_modal_id: "rainfall-class-modal",
+            rainfall_stacked_bar_id: "rainfall-stacked-bar",
+            rainfall_current_data_table_id: "rainfall-report-table",
+            rainfall_all_data_table_id: "rainfall-table",
+            rainfall_modal_id: "rainfall-modal",
 
             // Terrain Class Table
             terrainClasses: window.road_schema.terrain_class,
