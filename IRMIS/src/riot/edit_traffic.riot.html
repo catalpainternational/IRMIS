@@ -254,15 +254,95 @@
                     <section>
                         <div class="form-group">
                             <label>{ window.gettext("Total Count per Vehicle Type") }</label>
-                            <div class="form-inline vehicle-field-height" each="{ vehicle in vehicleTypes.options }">
+                            <div class="form-inline vehicle-field-height">
                                 <div class="icon">
-                                    <span class="{ vehicle[0] } image"></span>
+                                    <span class="motorcycle image"></span>
                                 </div>
                                 <div class="vehicle-name">
-                                    { vehicle[1] }
+                                    { window.gettext("Motorcycle") }
                                 </div>
-                                <div class="details-vehicle-spacing">5</div>
-                                <small>{ vehicle[2] }</small>
+                                <div class="details-vehicle-spacing">{ state.motorcycleCount }</div>
+                                <small>{ window.gettext("2 axels, 2 wheels") }</small>
+                            </div>
+                            <div class="form-inline vehicle-field-height">
+                                <div class="icon">
+                                    <span class="car image"></span>
+                                </div>
+                                <div class="vehicle-name">
+                                    { window.gettext("Passenger Car") }
+                                </div>
+                                <div class="details-vehicle-spacing">{ state.carCount }</div>
+                                <small>{ window.gettext("2 axels, 4 wheels") }</small>
+                            </div>
+                            <div class="form-inline vehicle-field-height">
+                                <div class="icon">
+                                    <span class="pickup image"></span>
+                                </div>
+                                <div class="vehicle-name">
+                                    { window.gettext("Pickup/4WD") }
+                                </div>
+                                <div class="details-vehicle-spacing">{ state.pickupCount }</div>
+                                <small>{ window.gettext("2 axels, 4 wheels") }</small>
+                            </div>
+                            <div class="form-inline vehicle-field-height">
+                                <div class="icon">
+                                    <span class="mini-bus image"></span>
+                                </div>
+                                <div class="vehicle-name">
+                                    { window.gettext("Mini Bus") }
+                                </div>
+                                <div class="details-vehicle-spacing">{ state.miniBusCount }</div>
+                                <small>{ window.gettext("2 axels, 4 wheels") }</small>
+                            </div>
+                            <div class="form-inline vehicle-field-height">
+                                <div class="icon">
+                                    <span class="large-bus image"></span>
+                                </div>
+                                <div class="vehicle-name">
+                                    { window.gettext("Large Bus") }
+                                </div>
+                                <div class="details-vehicle-spacing">{ state.largeBusCount }</div>
+                                <small>{ window.gettext("2-3 axels, 6-10 wheels") }</small>
+                            </div>
+                            <div class="form-inline vehicle-field-height">
+                                <div class="icon">
+                                    <span class="light-truck image"></span>
+                                </div>
+                                <div class="vehicle-name">
+                                    { window.gettext("Light Truck") }
+                                </div>
+                                <div class="details-vehicle-spacing">{ state.lightTruckCount }</div>
+                                <small>{ window.gettext("2 axels, 4 wheels") }</small>
+                            </div>
+                            <div class="form-inline vehicle-field-height">
+                                <div class="icon">
+                                    <span class="medium-truck image"></span>
+                                </div>
+                                <div class="vehicle-name">
+                                    { window.gettext("Medium Truck") }
+                                </div>
+                                <div class="details-vehicle-spacing">{ state.mediumTruckCount }</div>
+                                <small>{ window.gettext("2-3 axels, 6-10 wheels") }</small>
+                            </div>
+                            <div class="form-inline vehicle-field-height">
+                                <div class="icon">
+                                    <span class="large-truck image"></span>
+                                </div>
+                                <div class="vehicle-name">
+                                    { window.gettext("Large Truck") }
+                                </div>
+                                <div class="details-vehicle-spacing">{ state.largeTruckCount }</div>
+                                <small>{ window.gettext("5 axels, 18 wheels") }</small>
+                            </div>
+                            <div class="form-inline vehicle-field-height">
+                                <div class="icon">
+                                    <span class="ufo image"></span>
+                                </div>
+                                <div class="vehicle-name">
+                                    { window.gettext("Undefined") }
+                                </div>
+                                <div class="details-vehicle-spacing">{ state.ufoCount }</div>
+                                <small></small>
                             </div>
                         </div>
                     </section>
@@ -299,7 +379,17 @@
                 survey: {},
                 forecastYear: '',
                 loading: false,
-                pendingRows: []
+                pendingRows: [],
+                motorcycleCount: 5,
+                carCount: 7,
+                pickupCount: 2,
+                miniBusCount: 4,
+                largeBusCount: 10,
+                lightTruckCount: 3,
+                mediumTruckCount: 0,
+                largeTruckCount: 111,
+                ufoCount: 0
+
             },
             components: {
                 Edit_Modal, Edit_Stop_Alert, Data_Table
@@ -432,19 +522,6 @@
                 options: [
                     ["1", window.gettext("Electronic")],
                     ["2", window.gettext("Manual")]
-                ]
-            },
-            vehicleTypes: {
-                options: [
-                    ["motorcycle", window.gettext("Motorcycle"), window.gettext("2 axels, 2 wheels"), "motorcycleCount", "state.survey.motorcycleCount"],
-                    ["car", window.gettext("Passenger Car"), window.gettext("2 axels, 4 wheels"), "carCount", "state.survey.carCount"],
-                    ["pickup", window.gettext("Pickup/4WD"), window.gettext("2 axels, 4 wheels"), "pickupCount", "state.survey.pickupCount"],
-                    ["mini-bus", window.gettext("Mini Bus"), window.gettext("2 axels, 4 wheels"), "miniBusCount", "state.survey.miniBusCount"],
-                    ["large-bus", window.gettext("Large Bus"), window.gettext("2-3 axels, 6-10 wheels"), "largeBusCount", "state.survey.largeBusCount"],
-                    ["light-truck", window.gettext("Light Truck"), window.gettext("2 axels, 4 wheels"), "lightTruckCount", "state.survey.lightTruckCount"],
-                    ["medium-truck", window.gettext("Medium Truck"), window.gettext("2-3 axels, 6-10 wheels"), "mediumTruckCount", "state.survey.mediumTruckCount"],
-                    ["large-truck", window.gettext("Large Truck"), window.gettext("5 axels, 18 wheels"), "largeTruckCount", "state.survey.largeTruckCount"],
-                    ["ufo", window.gettext("Non Defined"), "", "ufoCount", "state.survey.ufoCount"]
                 ]
             },
             forecastYears: {
