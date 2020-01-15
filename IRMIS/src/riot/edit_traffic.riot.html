@@ -11,11 +11,6 @@
                 columnSortOrder="{this.table_sort_order}" pageLength="{this.pageLength}" getHelpText="help">
             </data_table>
         </div>
-        <div class="d-flex justify-content-between" style="margin-top: 5rem;">
-            <button class="btn btn-primary" onclick="{ showDetailModal }" disabled="{ props.editing }">
-                { window.gettext("View vehicle breakdown") }
-            </button>
-        </div>
     </div>
 
     <edit_modal modal_id="{ modal_id }" disableSave="{!state.canSave}">
@@ -228,28 +223,6 @@
             showDetailModal() {
                 $(`#inventory-segments-modal`).modal("show");
             },
-
-            // Data for traffic
-            trafficDataForTable: [
-                {
-                    "surveyDate": "2018",
-                    "dataType": "AADT (Average Annual Daily Traffic)",
-                    "totalVehicles": "23",
-                    "addedBy": "User 1"
-                },
-                {
-                    "surveyDate": "2019",
-                    "dataType": "ADT (Average Daily Traffic)",
-                    "totalVehicles": "234",
-                    "addedBy": "User 2"
-                },
-                {
-                    "surveyDate": "2020",
-                    "dataType": "Forecast",
-                    "totalVehicles": "123",
-                    "addedBy": "User 3"
-                },
-            ],
 
             getTrafficData(){
                 this.state.pendingRows = this.trafficDataForTable;
