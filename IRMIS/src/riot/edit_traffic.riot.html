@@ -176,12 +176,6 @@
             return fieldNames.filter((fieldName) => {return !data[fieldName];});
         }
 
-        function checkVehicleCountFields(fieldNames, data, errors) {
-            return fieldNames.filter((fieldName) => {
-                return !data[fieldName] || data[fieldName] == 0;
-            });
-        }
-
         function withinMaxDigits(text, limit, decimals) {
             return (new RegExp(`^\\d{0,${(limit - decimals)}}(\\.\\d{0,${decimals}})?$`).test(text));
         }
@@ -233,11 +227,6 @@
                     ["2", window.gettext("Manual")]
                 ]
             },
-            vehicleCountFieldNames: [
-                "motorcycleCount", "carCount", "pickupCount", "miniBusCount",
-                "largeBusCount", "lightTruckCount", "mediumTruckCount",
-                "largeTruckCount", "ufoCount"
-            ],
             vehicleTypes: {
                 options: [
                     ["motorcycle", window.gettext("Motorcycle"), window.gettext("2 axels, 2 wheels"), "motorcycleCount", "state.survey.motorcycleCount"],
@@ -422,7 +411,7 @@
                         }
 
                         // assign counts data and a total vehicle count
-                        this.vehicleCountFieldNames.forEach((fieldName) => {
+                        Object.keys(this.state.currentCounts).forEach((fieldName) => {
                             if (this.state.survey[fieldName] && this.state.survey[fieldName] > 0) {
                                 let count = Number(this.state.survey[fieldName]);
                                 traffic_data.counts[fieldName] = count;
@@ -496,8 +485,10 @@
             },
             canSave() {
                 const missingFieldNames = checkRequiredFields(this.requiredFieldNames, this.state.survey);
-                const missingVehicleCounts = checkVehicleCountFields(this.vehicleCountFieldNames, this.state.survey);
-                if (missingFieldNames.length || missingVehicleCounts.length == this.vehicleCountFieldNames.length || Object.keys(this.state.errors).length) {
+                const missingVehicleCounts = this.vehicleTypes.options.filter((f) => {
+                    return !this.state.survey[f[3]] || this.state.survey[f[3]] == 0;
+                });
+                if (missingFieldNames.length || missingVehicleCounts.length == this.vehicleTypes.options.length || Object.keys(this.state.errors).length) {
                     // Cannot save if there are validation errors
                     this.state.canSave = false;
                 } else {
