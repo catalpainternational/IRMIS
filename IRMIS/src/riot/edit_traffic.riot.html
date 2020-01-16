@@ -8,8 +8,7 @@
         </div>
         <div class="table-spacing">
             <data_table table_id="{table_id}" columns="{table_columns}" columnSortOrder="{table_columns_order}"
-                pageLength={state.pageLength} getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows}"
-                canDelete=true>
+                getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows}" canDelete=true>
             </data_table>
         </div>
     </div>
@@ -233,7 +232,6 @@
                 canSave: false,
                 errors: {},
                 pendingRows: [],
-                pageLength: 15,
                 editMode: false,
                 loading: false,
                 maxCountDigits: 6,
@@ -322,7 +320,7 @@
             onMounted(props, state) {
                 state.loading = true;
                 state.road = cloneData(props.road);
-                this.props.parent.refreshSurveysAndReports(state, this.table_id, "trafficType", "trafficType");
+                this.props.parent.refreshSurveysAndReports(state, this.table_id, "trafficType");
                 // If we're not still loading, then we assume that we want to replace all rows
                 const eventName = `${this.table_id}.dataAdded`;
                 const eventDetail = {detail: {pendingRows: this.state.pendingRows, clearRows: true}}
@@ -488,7 +486,7 @@
                 if (!this.state.editMode) {
                     createSurvey(this.state.survey)
                         .then((surveyData) => {
-                            this.props.parent.refreshSurveysAndReports(this.state, this.table_id, "trafficType", "trafficType");
+                            this.props.parent.refreshSurveysAndReports(this.state, this.table_id, "trafficType");
                             this.update({
                                 survey: new Survey({}), // clear input values
                             });
@@ -501,7 +499,7 @@
                 } else {
                     updateSurvey(this.state.survey)
                         .then((surveyData) => {
-                            this.props.parent.refreshSurveysAndReports(this.state, this.table_id, "trafficType", "trafficType");
+                            this.props.parent.refreshSurveysAndReports(this.state, this.table_id, "trafficType");
                             this.update({
                                 survey: new Survey({}), // clear input values
                             });
