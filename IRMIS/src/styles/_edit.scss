@@ -151,7 +151,8 @@ feedback_banner {
 
 edit_traffic {
     .survey-field-height {
-        height: 32px;
+        height: 30px;
+        align-items: flex-end;
     }
 
     .date-field-title {
@@ -193,13 +194,27 @@ edit_traffic {
         font-size: 14px;
     }
 
+    .details-survey-type {
+        display: inline-block; 
+        width: 250px; 
+        border-right: 1px solid #CFD1D6; 
+        margin-right: 50px; 
+        margin-bottom: 10px;
+    }
+
+    .details-forecast-methods-block {
+        display: inline-block; 
+        margin-bottom: 10px;
+    }
+
     .details-modal-date {
         font-size: 14px; 
         font-weight: 700;
+        margin-right: 32px;
     }
 
     .details-modal-date-spacing {
-        width: 64px;
+        width: 56px;
     }
     
     .details-vehicle-spacing {
@@ -220,7 +235,7 @@ edit_traffic {
     }
 
     .details-total-number {
-        margin-left: 90px; 
+        margin-left: 138px; 
         font-size: 18px;
     }
 }

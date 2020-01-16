@@ -228,26 +228,36 @@
                         aria-hidden="true"></span>
                 </div>
                 <div class="modal-body">
-                    <section>
+                    <section class="details-survey-type">
                         <div class="form-group">
                             <label>{ window.gettext("Survey Type") }</label>
                             <p class="details-modal-type-spacing">{ window.gettext("ADT") }</p>
                         </div>
                     </section>
-                    <section>
+                    <section if="{!state.isForecast}" class="details-forecast-methods-block">
+                        <div class="form-group">
+                            <label>{ countingMethods.display }</label>
+                            <p class="details-modal-type-spacing">{ window.gettext("Electronic") }</p>
+                        </div>
+                    </section>
+                    <section if="{state.isForecast}" class="details-forecast-methods-block">
+                        <div class="form-group">
+                            <label>{ window.gettext("Forecast Year") }</label>
+                            <p class="details-modal-type-spacing">2020</p>
+                        </div>
+                    </section>
+                    <section if="{!state.isForecast}">
                         <div class="form-group">
                             <label>{ window.gettext("Survey Date") }</label>
                             <div class="form-inline survey-field-height">
                                 <span class="date-field-title details-modal-date-spacing">
                                     { window.gettext("From") }
                                 </span>
-                                <div class="details-modal-date">03/01/2020</div>
-                            </div>
-                            <div class="form-inline survey-field-height">
+                                <span class="details-modal-date">03/01/2020</span>
                                 <span class="date-field-title details-modal-date-spacing">
                                     { window.gettext("To") }
                                 </span>
-                                <div class="details-modal-date">07/01/2020</div>
+                                <span class="details-modal-date">07/01/2020</span>
                             </div>
                         </div>
                     </section>
@@ -349,7 +359,7 @@
                     <div class="form-inline details-total">
                         <span class="details-total-title">{window.gettext("Total")}</span>
                         <span class="details-total-number">45</span>
-                    </h3>
+                    </div>
                 </div>
             </div>
         </div>
@@ -388,7 +398,8 @@
                 lightTruckCount: 3,
                 mediumTruckCount: 0,
                 largeTruckCount: 111,
-                ufoCount: 0
+                ufoCount: 0,
+                isForecast: true
 
             },
             components: {
