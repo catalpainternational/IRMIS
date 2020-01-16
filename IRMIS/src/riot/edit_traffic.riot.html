@@ -80,7 +80,7 @@
                     <label>{ window.gettext("Forecast Year") }</label>
                     <span class="required">*</span> 
                     <!-- does this need a check function to validate the value? -->
-                    <select class="{ state.forecastYear ? '' : 'inactive' } form-control">
+                    <select class="{ state.forecastYear ? '' : 'inactive' } form-control date-input-field">
                         <option each="{ year in forecastYears.options }" value="{ year[0] }" selected="{ year[0] === state.forecastYear }">{ year[1] }</option>
                     </select>
                 </div>

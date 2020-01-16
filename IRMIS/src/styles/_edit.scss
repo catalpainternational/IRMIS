@@ -92,6 +92,12 @@ edit_history {
     }
 }
 
+edit_traffic {
+    section {
+        max-width: inherit;
+    }
+}
+
 edit_location_type,
 edit_project,
 edit_maintenance,
@@ -169,13 +175,13 @@ edit_traffic {
     }
 
     .vehicle-name {
-        width: 96px; 
+        width: 144px; 
         font-size: 14px;
     }
 
     .vehicle-input {
         height: 28px; 
-        margin: 0 16px;
+        margin: 0 36px 0 16px;
     }
 
     .table-spacing {
@@ -198,7 +204,7 @@ edit_traffic {
     
     .details-vehicle-spacing {
         margin-left: 32px; 
-        margin-right: 60px; 
+        margin-right: 88px; 
         font-weight: 700;
         width: 32px;
     }
