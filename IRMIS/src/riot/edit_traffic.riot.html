@@ -147,7 +147,7 @@
                 <div class="modal-header">
                     <h1 class="modal-title">{window.gettext("Total Vehicles Breakdown")}</h1>
                     <span class="close image" data-dismiss="modal" aria-label="{ window.gettext('Close') }"
-                        aria-hidden="true" onclick="{clearCurrentDetails}"></span>
+                        aria-hidden="true" onclick="{clearDetailsData}"></span>
                 </div>
                 <div class="modal-body">
                     <section>
@@ -612,7 +612,7 @@
                 this.state.survey.countMethod = e.currentTarget.dataset.method;
                 this.canSave();
             },
-            clearCurrentDetails() {
+            clearDetailsData() {
                 this.state.modalData.total = 0;
                 this.state.modalData.trafficType = "";
                 this.state.modalData.surveyFrom = "";
