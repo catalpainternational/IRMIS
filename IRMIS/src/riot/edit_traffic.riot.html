@@ -445,10 +445,10 @@
                         }
 
                         // assign counts data and a total vehicle count
-                        Object.keys(this.state.modalData.counts).forEach((fieldName) => {
-                            if (this.state.survey[fieldName] && this.state.survey[fieldName] > 0) {
-                                let count = Number(this.state.survey[fieldName]);
-                                traffic_data.counts[fieldName] = count;
+                        this.vehicleTypes.options.forEach((field) => {
+                            if (this.state.survey[field[3]] && this.state.survey[field[3]] > 0) {
+                                let count = Number(this.state.survey[field[3]]);
+                                traffic_data.counts[field[3]] = count;
                                 traffic_data.countTotal += count;
                             }
                         });
