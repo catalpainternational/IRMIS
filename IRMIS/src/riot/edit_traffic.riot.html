@@ -6,6 +6,16 @@
                 { window.gettext("Add") }
             </button>
         </div>
+        <div class="table-spacing">
+            <data_table table_id="{this.table_id}" columns="{this.table_columns}" canDelete=true
+                columnSortOrder="{this.table_sort_order}" pageLength="{this.pageLength}" getHelpText="help">
+            </data_table>
+        </div>
+        <div class="d-flex justify-content-between" style="margin-top: 5rem;"> <!--TODO remove this button -->
+            <button class="btn btn-primary" onclick="{ showDetailModal }" disabled="{ props.editing }">
+                { window.gettext("View vehicle breakdown") }
+            </button>
+        </div>
     </div>
 
     <edit_modal modal_id="{ modal_id }" disableSave="{!state.canSave}">
@@ -80,18 +90,113 @@
                 <div class="form-group traffic-width">
                     <label>{ window.gettext("Total Count per Vehicle Type") }</label>
                     <span class="required">*</span>
-                    <div class="form-inline vehicle-field-height" each="{ vehicle in vehicleTypes.options }">
+                    <div class="form-inline vehicle-field-height">
                         <div class="icon">
-                            <span class="{ vehicle[0] } image"></span>
+                            <span class="motorcycle image"></span>
                         </div>
                         <div class="vehicle-name">
-                            { vehicle[1] }
+                            { window.gettext("Motorcycle") }
                         </div>
-                        <!-- note that class and value is not unique, so styling won't apply inactive class correctly -->
-                        <input class="{ vehicle[4] ? '' : 'inactive' } vehicle-input form-control"
-                            type="number" name="{vehicle[3]}" placeholder="0000" value="{vehicle[4]}" 
+                        <input class="{ state.survey.motorcycleCount ? '' : 'inactive' } vehicle-input form-control"
+                            type="number" name="motorcycleCount" placeholder="0000" value="{ state.survey.motorcycleCount }" 
                             oninput="{checkCount}" min="0" max="999999999" step="1" required>
-                        <small>{ vehicle[2] }</small>
+                        <small>{ window.gettext("2 axels, 2 wheels") }</small>
+                    </div>
+                    <div class="form-inline vehicle-field-height">
+                        <div class="icon">
+                            <span class="car image"></span>
+                        </div>
+                        <div class="vehicle-name">
+                            { window.gettext("Passenger Car") }
+                        </div>
+                        <input class="{ state.survey.carCount ? '' : 'inactive' } vehicle-input form-control"
+                            type="number" name="carCount" placeholder="0000" value="{ state.survey.carCount }" 
+                            oninput="{checkCount}" min="0" max="999999999" step="1" required>
+                        <small>{ window.gettext("2 axels, 4 wheels") }</small>
+                    </div>
+                    <div class="form-inline vehicle-field-height">
+                        <div class="icon">
+                            <span class="pickup image"></span>
+                        </div>
+                        <div class="vehicle-name">
+                            { window.gettext("Pickup/4WD") }
+                        </div>
+                        <input class="{ state.survey.pickupCount ? '' : 'inactive' } vehicle-input form-control"
+                            type="number" name="pickupCount" placeholder="0000" value="{ state.survey.pickupCount }" 
+                            oninput="{checkCount}" min="0" max="999999999" step="1" required>
+                        <small>{ window.gettext("2 axels, 4 wheels") }</small>
+                    </div>
+                    <div class="form-inline vehicle-field-height">
+                        <div class="icon">
+                            <span class="mini-bus image"></span>
+                        </div>
+                        <div class="vehicle-name">
+                            { window.gettext("Mini Bus") }
+                        </div>
+                        <input class="{ state.survey.miniBusCount ? '' : 'inactive' } vehicle-input form-control"
+                            type="number" name="miniBusCount" placeholder="0000" value="{ state.survey.miniBusCount }" 
+                            oninput="{checkCount}" min="0" max="999999999" step="1" required>
+                        <small>{ window.gettext("2 axels, 4 wheels") }</small>
+                    </div>
+                    <div class="form-inline vehicle-field-height">
+                        <div class="icon">
+                            <span class="large-bus image"></span>
+                        </div>
+                        <div class="vehicle-name">
+                            { window.gettext("Large Bus") }
+                        </div>
+                        <input class="{ state.survey.largeBusCount ? '' : 'inactive' } vehicle-input form-control"
+                            type="number" name="largeBusCount" placeholder="0000" value="{ state.survey.largeBusCount }" 
+                            oninput="{checkCount}" min="0" max="999999999" step="1" required>
+                        <small>{ window.gettext("2-3 axels, 6-10 wheels") }</small>
+                    </div>
+                    <div class="form-inline vehicle-field-height">
+                        <div class="icon">
+                            <span class="light-truck image"></span>
+                        </div>
+                        <div class="vehicle-name">
+                            { window.gettext("Light Truck") }
+                        </div>
+                        <input class="{ state.survey.lightTruckCount ? '' : 'inactive' } vehicle-input form-control"
+                            type="number" name="lightTruckCount" placeholder="0000" value="{ state.survey.lightTruckCount }" 
+                            oninput="{checkCount}" min="0" max="999999999" step="1" required>
+                        <small>{ window.gettext("2 axels, 4 wheels") }</small>
+                    </div>
+                    <div class="form-inline vehicle-field-height">
+                        <div class="icon">
+                            <span class="medium-truck image"></span>
+                        </div>
+                        <div class="vehicle-name">
+                            { window.gettext("Medium Truck") }
+                        </div>
+                        <input class="{ state.survey.mediumTruckCount ? '' : 'inactive' } vehicle-input form-control"
+                            type="number" name="mediumTruckCount" placeholder="0000" value="{ state.survey.mediumTruckCount }" 
+                            oninput="{checkCount}" min="0" max="999999999" step="1" required>
+                        <small>{ window.gettext("2-3 axels, 6-10 wheels") }</small>
+                    </div>
+                    <div class="form-inline vehicle-field-height">
+                        <div class="icon">
+                            <span class="large-truck image"></span>
+                        </div>
+                        <div class="vehicle-name">
+                            { window.gettext("Large Truck") }
+                        </div>
+                        <input class="{ state.survey.largeTruckCount ? '' : 'inactive' } vehicle-input form-control"
+                            type="number" name="largeTruckCount" placeholder="0000" value="{ state.survey.largeTruckCount }" 
+                            oninput="{checkCount}" min="0" max="999999999" step="1" required>
+                        <small>{ window.gettext("5 axels, 18 wheels") }</small>
+                    </div>
+                    <div class="form-inline vehicle-field-height">
+                        <div class="icon">
+                            <span class="ufo image"></span>
+                        </div>
+                        <div class="vehicle-name">
+                            { window.gettext("Undefined") }
+                        </div>
+                        <input class="{ state.survey.ufoCount ? '' : 'inactive' } vehicle-input form-control"
+                            type="number" name="ufoCount" placeholder="0000" value="{ state.survey.ufoCount }" 
+                            oninput="{checkCount}" min="0" max="999999999" step="1" required>
+                        <small></small>
                     </div>
                 </div>
             </section>
@@ -108,9 +213,155 @@
         stopLabel="{ window.gettext('Continue editing') }" stopResult="continueEdit">
     </edit_stop_alert>
 
+    <edit_stop_alert modalId="delete-alert" title="{window.gettext('Delete')}"
+        description="{window.gettext('Are you sure you want to delete this data entry?')}"
+        proceedLabel="{window.gettext('Delete')}" proceedResult="delete" stopLabel="{window.gettext('Don\'t delete')}"
+        stopResult="keep">
+    </edit_stop_alert>
+
+    <div id="traffic-segments-modal" class="modal inventory-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title">{window.gettext("Total Vehicles Breakdown")}</h1>
+                    <span class="close image" data-dismiss="modal" aria-label="{ window.gettext('Close') }"
+                        aria-hidden="true"></span>
+                </div>
+                <div class="modal-body">
+                    <section>
+                        <div class="form-group">
+                            <label>{ window.gettext("Survey Type") }</label>
+                            <p class="details-modal-type-spacing">{ window.gettext("ADT") }</p>
+                        </div>
+                    </section>
+                    <section>
+                        <div class="form-group">
+                            <label>{ window.gettext("Survey Date") }</label>
+                            <div class="form-inline survey-field-height">
+                                <span class="date-field-title details-modal-date-spacing">
+                                    { window.gettext("From") }
+                                </span>
+                                <div class="details-modal-date">03/01/2020</div>
+                            </div>
+                            <div class="form-inline survey-field-height">
+                                <span class="date-field-title details-modal-date-spacing">
+                                    { window.gettext("To") }
+                                </span>
+                                <div class="details-modal-date">07/01/2020</div>
+                            </div>
+                        </div>
+                    </section>
+                    <section>
+                        <div class="form-group">
+                            <label>{ window.gettext("Total Count per Vehicle Type") }</label>
+                            <div class="form-inline vehicle-field-height">
+                                <div class="icon">
+                                    <span class="motorcycle image"></span>
+                                </div>
+                                <div class="vehicle-name">
+                                    { window.gettext("Motorcycle") }
+                                </div>
+                                <div class="details-vehicle-spacing">{ state.motorcycleCount }</div>
+                                <small>{ window.gettext("2 axels, 2 wheels") }</small>
+                            </div>
+                            <div class="form-inline vehicle-field-height">
+                                <div class="icon">
+                                    <span class="car image"></span>
+                                </div>
+                                <div class="vehicle-name">
+                                    { window.gettext("Passenger Car") }
+                                </div>
+                                <div class="details-vehicle-spacing">{ state.carCount }</div>
+                                <small>{ window.gettext("2 axels, 4 wheels") }</small>
+                            </div>
+                            <div class="form-inline vehicle-field-height">
+                                <div class="icon">
+                                    <span class="pickup image"></span>
+                                </div>
+                                <div class="vehicle-name">
+                                    { window.gettext("Pickup/4WD") }
+                                </div>
+                                <div class="details-vehicle-spacing">{ state.pickupCount }</div>
+                                <small>{ window.gettext("2 axels, 4 wheels") }</small>
+                            </div>
+                            <div class="form-inline vehicle-field-height">
+                                <div class="icon">
+                                    <span class="mini-bus image"></span>
+                                </div>
+                                <div class="vehicle-name">
+                                    { window.gettext("Mini Bus") }
+                                </div>
+                                <div class="details-vehicle-spacing">{ state.miniBusCount }</div>
+                                <small>{ window.gettext("2 axels, 4 wheels") }</small>
+                            </div>
+                            <div class="form-inline vehicle-field-height">
+                                <div class="icon">
+                                    <span class="large-bus image"></span>
+                                </div>
+                                <div class="vehicle-name">
+                                    { window.gettext("Large Bus") }
+                                </div>
+                                <div class="details-vehicle-spacing">{ state.largeBusCount }</div>
+                                <small>{ window.gettext("2-3 axels, 6-10 wheels") }</small>
+                            </div>
+                            <div class="form-inline vehicle-field-height">
+                                <div class="icon">
+                                    <span class="light-truck image"></span>
+                                </div>
+                                <div class="vehicle-name">
+                                    { window.gettext("Light Truck") }
+                                </div>
+                                <div class="details-vehicle-spacing">{ state.lightTruckCount }</div>
+                                <small>{ window.gettext("2 axels, 4 wheels") }</small>
+                            </div>
+                            <div class="form-inline vehicle-field-height">
+                                <div class="icon">
+                                    <span class="medium-truck image"></span>
+                                </div>
+                                <div class="vehicle-name">
+                                    { window.gettext("Medium Truck") }
+                                </div>
+                                <div class="details-vehicle-spacing">{ state.mediumTruckCount }</div>
+                                <small>{ window.gettext("2-3 axels, 6-10 wheels") }</small>
+                            </div>
+                            <div class="form-inline vehicle-field-height">
+                                <div class="icon">
+                                    <span class="large-truck image"></span>
+                                </div>
+                                <div class="vehicle-name">
+                                    { window.gettext("Large Truck") }
+                                </div>
+                                <div class="details-vehicle-spacing">{ state.largeTruckCount }</div>
+                                <small>{ window.gettext("5 axels, 18 wheels") }</small>
+                            </div>
+                            <div class="form-inline vehicle-field-height">
+                                <div class="icon">
+                                    <span class="ufo image"></span>
+                                </div>
+                                <div class="vehicle-name">
+                                    { window.gettext("Undefined") }
+                                </div>
+                                <div class="details-vehicle-spacing">{ state.ufoCount }</div>
+                                <small></small>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="form-inline details-total">
+                        <span class="details-total-title">{window.gettext("Total")}</span>
+                        <span class="details-total-number">45</span>
+                    </h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         import Edit_Modal from "./edit_modal.riot.html";
         import Edit_Stop_Alert from "./edit_stop_alert.riot.html";
+
+        import Data_Table from "./data_table.riot.html"; 
+
+        import { getRoadAudit } from "../roadManager"; //TODO remove
         
         import {cloneData} from "../assets/protoBufUtilities";
         import {Survey} from "../../protobuf/survey_pb";
@@ -126,10 +377,131 @@
                 baseSurvey: new Survey({}),
                 canSave: false,
                 survey: {},
-                forecastYear: ''
+                forecastYear: '',
+                loading: false,
+                pendingRows: [],
+                motorcycleCount: 5,
+                carCount: 7,
+                pickupCount: 2,
+                miniBusCount: 4,
+                largeBusCount: 10,
+                lightTruckCount: 3,
+                mediumTruckCount: 0,
+                largeTruckCount: 111,
+                ufoCount: 0
+
             },
             components: {
-                Edit_Modal, Edit_Stop_Alert
+                Edit_Modal, Edit_Stop_Alert, Data_Table
+            },
+            onMounted(props, state) {
+                state.loading = true;
+                state.road = props.road;
+                // this.getTrafficData();
+                this.getRoadAudit() //TODO remove
+
+                this.deleteListener = (data) => {
+                    const rowId = data.detail.rowId;
+                    this.showStopAlertModal("delete-alert", rowId);
+                };
+
+                document.addEventListener(`${this.all_data_table_id}.deleteRow`, this.deleteListener);
+            },
+            onUnmount(props, state) {
+                document.removeEventListener(`${this.all_data_table_id}.deleteRow`, this.deleteListener);
+            },
+
+            // Detail modal
+            showDetailModal() {
+                $(`#traffic-segments-modal`).modal("show");
+            },
+
+            getTrafficData(){
+                this.state.pendingRows = this.trafficDataForTable;
+
+                const eventName = `${this.table_id}.dataAdded`;
+                const eventDetail = { detail: { pendingRows: this.state.pendingRows, clearRows: true }}
+                document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+                
+                this.update();
+            },
+
+            getRoadAudit() { //TODO remove
+                const roadId = this.state.road.id;
+                getRoadAudit(roadId)
+                    .then((auditData) => {
+                        this.state.pendingRows = auditData;
+
+                        const eventName = `${this.table_id}.dataAdded`;
+                        const eventDetail = { detail: { pendingRows: this.state.pendingRows, clearRows: true }}
+                        document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+                        
+                        this.state.loading = false;
+                        this.update();
+                    });
+            },
+
+            table_id: "traffic-table",
+            table_columns: [
+                {
+                    title: window.gettext("Survey Date"),
+                    //data: "surveyDate",
+                    data: "dateCreated", //TODO remove
+                    orderable: false,
+                },
+                {
+                    title: window.gettext("Data Type"),
+                    // data: "dataType",
+                    data: "comment", //TODO remove
+                    orderable: false,
+                },
+                {
+                    title: window.gettext("Total Vehicles"),
+                    // data: "totalVehicles",
+                    data: "user", //TODO remove
+                    orderable: false,
+                },
+                {
+                    title: window.gettext("Added By"),
+                    // data: "addedBy", 
+                    data: "user", //TODO remove
+                    orderable: false,
+                },
+                {
+                    // To add a 'Delete' button include the attribute candelete=true
+                    // on the Riot dataTable tag as well
+                    title: window.gettext("Delete"),
+                    // name: "Option", 
+                    defaultContent: "X",
+                    className: "text-center",
+                    orderable: false,
+                },
+            ],
+            table_sort_order: [],
+            pageLength: 15,
+
+
+            showStopAlertModal(modalId, rowId) {
+                const eventName = `edit.${modalId}.result`;
+
+                document.addEventListener(eventName, (data) => {
+                    const stopAlertResult = data.detail.result;
+                    $(`#${modalId}`).modal("hide");
+
+                    if (stopAlertResult === "discard") {
+                        this.discardChanges();
+                    } else if (stopAlertResult === "delete") {
+                        this.state.editMode = true;
+                    } else if (stopAlertResult === "continueEdit") {
+                        this.showEditModal();
+                    }
+                }, {once: true});
+
+                // $(`#${modalId}`).modal("show");
+                $(`#delete-alert`).modal("show");
+            },
+            discardChanges() {
+                $(`#${this.modal_id}`).modal("hide");
             },
 
             // Data for title and options
@@ -150,19 +522,6 @@
                 options: [
                     ["1", window.gettext("Electronic")],
                     ["2", window.gettext("Manual")]
-                ]
-            },
-            vehicleTypes: {
-                options: [
-                    ["motorcycle", window.gettext("Motorcycle"), window.gettext("2 axels, 2 wheels"), "motorcycleCount", "state.survey.motorcycleCount"],
-                    ["car", window.gettext("Passenger Car"), window.gettext("2 axels, 4 wheels"), "carCount", "state.survey.carCount"],
-                    ["pickup", window.gettext("Pickup/4WD"), window.gettext("2 axels, 4 wheels"), "pickupCount", "state.survey.pickupCount"],
-                    ["mini-bus", window.gettext("Mini Bus"), window.gettext("2 axels, 4 wheels"), "miniBusCount", "state.survey.miniBusCount"],
-                    ["large-bus", window.gettext("Large Bus"), window.gettext("2-3 axels, 6-10 wheels"), "largeBusCount", "state.survey.largeBusCount"],
-                    ["light-truck", window.gettext("Light Truck"), window.gettext("2 axels, 4 wheels"), "lightTruckCount", "state.survey.lightTruckCount"],
-                    ["medium-truck", window.gettext("Medium Truck"), window.gettext("2-3 axels, 6-10 wheels"), "mediumTruckCount", "state.survey.mediumTruckCount"],
-                    ["large-truck", window.gettext("Large Truck"), window.gettext("5 axels, 18 wheels"), "largeTruckCount", "state.survey.largeTruckCount"],
-                    ["ufo", window.gettext("Non Defined"), "", "ufoCount", "state.survey.ufoCount"]
                 ]
             },
             forecastYears: {
