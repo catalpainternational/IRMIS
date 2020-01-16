@@ -6,10 +6,12 @@
                 { window.gettext("Add") }
             </button>
         </div>
-        <data_table table_id="{all_data_table_id}" columns="{all_data_table_columns}"
-            columnSortOrder="{all_data_table_columns_order}" getHelpText="{props.parent.getHelpText}"
-            pendingRows="{state.pendingRows}" canDelete=true>
-        </data_table>
+        <div class="table-spacing">
+            <data_table table_id="{table_id}" columns="{table_columns}" columnSortOrder="{table_columns_order}"
+                pageLength={state.pageLength} getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows}"
+                canDelete=true>
+            </data_table>
+        </div>
     </div>
 
     <edit_modal modal_id="{ modal_id }" disableSave="{!state.canSave}">
@@ -95,6 +97,11 @@
                         <option each="{ year in forecastYears }" value="{ year }"
                             selected="{ year === state.forecastYear }">{ year }</option>
                     </select>
+                    <div if="{state.errors.forecastYear}" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.forecastYear }.</li>
+                        </ul>
+                    </div>
                 </div>
             </section>
 
@@ -109,10 +116,9 @@
                         <div class="vehicle-name">
                             { vehicle[1] }
                         </div>
-                        <!-- note that class and value is not unique, so styling won't apply inactive class correctly -->
-                        <input class="{ vehicle[4] ? '' : 'inactive' } vehicle-input form-control" type="number"
-                            name="{vehicle[3]}" placeholder="0000" value="{vehicle[4]}" oninput="{checkCount}" min="0"
-                            max="999999999" step="1" required>
+                        <input class="{ state.survey[vehicle[3]] ? '' : 'inactive' } vehicle-input form-control"
+                            type="number" name="{ vehicle[3] }" placeholder="0000" value="{ state.survey[vehicle[3]] }"
+                            oninput="{checkCount}" min="0" max="999999999" step="1" required>
                         <small>{ window.gettext(vehicle[2]) }</small>
                         <div if="{state.errors[vehicle[3]]}" class="invalid-tooltip">
                             <ul>
@@ -135,27 +141,59 @@
         stopResult="keep">
     </edit_stop_alert>
 
-    <div id="traffic-count-details-modal" class="modal inventory-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div id="traffic-segments-modal" class="modal inventory-modal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title"></h1>
+                    <h1 class="modal-title">{window.gettext("Total Vehicles Breakdown")}</h1>
                     <span class="close image" data-dismiss="modal" aria-label="{ window.gettext('Close') }"
-                        aria-hidden="true" onclick={clearCurrentDetails}></span>
+                        aria-hidden="true" onclick="{clearCurrentDetails}"></span>
                 </div>
                 <div class="modal-body">
-                    <div class="form-inline vehicle-field-height" each="{ vehicle in vehicleTypes.options }">
-                        <div class="icon">
-                            <span class="{ vehicle[0] } image"></span>
+                    <section>
+                        <div class="form-group">
+                            <label>{ window.gettext("Survey Type") }</label>
+                            <p class="details-modal-type-spacing">{ window.gettext(state.modalData.trafficType) }</p>
                         </div>
-                        <div class="vehicle-name">{ vehicle[1] }</div>
-                        <div class="vehicle-count" style="padding-right: 15px;">{ state.currentCounts[vehicle[3]] }
+                    </section>
+                    <section>
+                        <div class="form-group">
+                            <label>{ window.gettext("Survey Date") }</label>
+                            <div class="form-inline survey-field-height">
+                                <span class="date-field-title details-modal-date-spacing">
+                                    { window.gettext("From") }
+                                </span>
+                                <div class="details-modal-date">{state.modalData.surveyFrom}</div>
+                            </div>
+                            <div class="form-inline survey-field-height">
+                                <span class="date-field-title details-modal-date-spacing">
+                                    { window.gettext("To") }
+                                </span>
+                                <div class="details-modal-date">{state.modalData.surveyTo}</div>
+                            </div>
                         </div>
-                        <small>{ window.gettext(vehicle[2]) }</small>
-                    </div>
-                    <div class="traffic-details-total">
-                        TOTAL:
-                        <span>{ state.currentTotal }</span>
+                    </section>
+                    <section>
+                        <div class="form-group">
+                            <label>{ window.gettext("Total Count per Vehicle Type") }</label>
+                            <div class="form-inline vehicle-field-height" each="{ vehicle in vehicleTypes.options }">
+                                <div class="icon">
+                                    <span class="{ vehicle[0] } image"></span>
+                                </div>
+                                <div class="vehicle-name">
+                                    { vehicle[1] }
+                                </div>
+                                <div class="details-vehicle-spacing">
+                                    { state.modalData.counts[vehicle[3]] }
+                                </div>
+                                <small>{ window.gettext(vehicle[2]) }</small>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="form-inline details-total">
+                        <span class="details-total-title">{window.gettext("Total")}</span>
+                        <span class="details-total-number">{ state.modalData.total }</span>
+                        </h3>
                     </div>
                 </div>
             </div>
@@ -165,6 +203,7 @@
     <script>
         import Edit_Modal from "./edit_modal.riot.html";
         import Edit_Stop_Alert from "./edit_stop_alert.riot.html";
+        import Data_Table from "./data_table.riot.html";
 
         import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
         import {cloneData} from "../assets/protoBufUtilities";
@@ -187,26 +226,32 @@
                 canSave: false,
                 errors: {},
                 pendingRows: [],
+                pageLength: 15,
                 editMode: false,
+                loading: false,
                 forecastYear: '',
                 maxCountDigits: 6,
-                currentTotal: 0,
-                currentCounts: {
-                    motorcycleCount: 0,
-                    carCount: 0,
-                    pickupCount: 0,
-                    miniBusCount: 0,
-                    largeBusCount: 0,
-                    lightTruckCount: 0,
-                    mediumTruckCount: 0,
-                    largeTruckCount: 0,
-                    ufoCount: 0
+                modalData: {
+                    total: 0,
+                    trafficType: "",
+                    surveyFrom: "",
+                    surveyTo: "",
+                    counts: {
+                        motorcycleCount: 0,
+                        carCount: 0,
+                        pickupCount: 0,
+                        miniBusCount: 0,
+                        largeBusCount: 0,
+                        lightTruckCount: 0,
+                        mediumTruckCount: 0,
+                        largeTruckCount: 0,
+                        ufoCount: 0
+                    },
                 },
             },
             components: {
-                Edit_Modal, Edit_Stop_Alert
+                Edit_Modal, Edit_Stop_Alert, Data_Table
             },
-
             // Data for title and options
             trafficTypes: {
                 display: window.gettext("Traffic Data Type"),
@@ -244,9 +289,9 @@
 
             requiredFieldNames: [],
 
-            all_data_table_id: "traffic-data-table",
-            all_data_table_columns_order: [[0, 'desc']],
-            all_data_table_columns: [
+            table_id: "traffic-table",
+            table_columns_order: [[0, 'desc']],
+            table_columns: [
                 {
                     title: window.gettext("Survey date"),
                     data: "trafficSurveyedDate",
@@ -265,7 +310,7 @@
                     defaultContent: "",
                     className: "text-center",
                     render: (data, type, row) => {
-                        return `<a onclick="document.dispatchEvent(new CustomEvent('traffic-data-table.trafficDetails',{detail:{rowId:${row.getId()}}}))">${data}</a>`;
+                        return `<a onclick="document.dispatchEvent(new CustomEvent('traffic-table.trafficDetails',{detail:{rowId:${row.getId()}}}))">${data}</a>`;
                     }
                 },
                 {
@@ -287,9 +332,9 @@
             onMounted(props, state) {
                 state.loading = true;
                 state.road = cloneData(props.road);
-                this.props.parent.refreshSurveysAndReports(state, this.all_data_table_id, "trafficType", "trafficType");
+                this.props.parent.refreshSurveysAndReports(state, this.table_id, "trafficType", "trafficType");
                 // If we're not still loading, then we assume that we want to replace all rows
-                const eventName = `${this.all_data_table_id}.dataAdded`;
+                const eventName = `${this.table_id}.dataAdded`;
                 const eventDetail = {detail: {pendingRows: this.state.pendingRows, clearRows: true}}
                 document.dispatchEvent(new CustomEvent(eventName, eventDetail));
 
@@ -297,22 +342,27 @@
                     const rowId = data.detail.rowId;
                     this.showStopAlertModal("delete-alert", rowId);
                 };
-                document.addEventListener(`${this.all_data_table_id}.deleteRow`, this.deleteListener);
+                document.addEventListener(`${this.table_id}.deleteRow`, this.deleteListener);
 
                 this.trafficDetailsListener = (data) => {
                     const s = this.state.pendingRows.find((s) => {return s.id == data.detail.rowId;});
                     const values = JSON.parse(s.getValues());
                     const counts = JSON.parse(values["counts"].replace(/\'/g, '"'));
-                    this.state.currentTotal = values["countTotal"];
-                    Object.keys(this.state.currentCounts).forEach((k) => {if (counts[k]) this.state.currentCounts[k] = counts[k];});
+
+                    Object.keys(this.state.modalData.counts).forEach((k) => {if (counts[k]) this.state.modalData.counts[k] = counts[k];});
+                    this.state.modalData.total = values["countTotal"];
+                    this.state.modalData.trafficType = values["trafficType"];
+                    this.state.modalData.surveyFrom = values["surveyFromDate"];
+                    this.state.modalData.surveyTo = values["surveyToDate"];
+
                     this.update();
-                    $("#traffic-count-details-modal").modal("show");
+                    $("#traffic-segments-modal").modal("show");
                 };
-                document.addEventListener(`${this.all_data_table_id}.trafficDetails`, this.trafficDetailsListener);
+                document.addEventListener(`${this.table_id}.trafficDetails`, this.trafficDetailsListener);
             },
             onUnmount(props, state) {
-                document.removeEventListener(`${this.all_data_table_id}.deleteRow`, this.deleteListener);
-                document.removeEventListener(`${this.all_data_table_id}.trafficDetails`, this.trafficDetailsListener);
+                document.removeEventListener(`${this.table_id}.deleteRow`, this.deleteListener);
+                document.removeEventListener(`${this.table_id}.trafficDetails`, this.trafficDetailsListener);
             },
             showStopAlertModal(modalId, rowId) {
                 const eventName = `edit.${modalId}.result`;
@@ -325,6 +375,7 @@
                         this.discardChanges();
                     } else if (stopAlertResult === "delete") {
                         this.state.editMode = true;
+                        // void the survey surface_condition value and save
                         this.state.survey = this.state.pendingRows.find((s) => {return s.id == rowId;});
                         if (this.state.survey) {
                             this.state.survey.setValues(JSON.stringify({}));
@@ -411,7 +462,7 @@
                         }
 
                         // assign counts data and a total vehicle count
-                        Object.keys(this.state.currentCounts).forEach((fieldName) => {
+                        Object.keys(this.state.modalData.counts).forEach((fieldName) => {
                             if (this.state.survey[fieldName] && this.state.survey[fieldName] > 0) {
                                 let count = Number(this.state.survey[fieldName]);
                                 traffic_data.counts[fieldName] = count;
@@ -420,8 +471,8 @@
                         });
 
                         if (this.state.survey.trafficType == "Forecast") {
-                            traffic_data.surveyFromDate = new Date(this.state.survey.forecastYear + "/01/01").toISOString()
-                            traffic_data.surveyToDate = new Date(this.state.survey.forecastYear + "/12/31").toISOString()
+                            traffic_data.surveyFromDate = new Date(this.state.survey.forecastYear + "-01-01").toISOString().substring(0, 10);
+                            traffic_data.surveyToDate = new Date(this.state.survey.forecastYear + "-12-31").toISOString().substring(0, 10);
                             traffic_data.forecastYear = this.state.survey.forecastYear;
                         } else {
                             traffic_data.countMethod = this.state.survey.countMethod;
@@ -451,11 +502,10 @@
             saveSurvey() {
                 $(`#${this.modal_id}`).modal("hide");
                 $("#loading").modal("show");
-
                 if (!this.state.editMode) {
                     createSurvey(this.state.survey)
                         .then((surveyData) => {
-                            this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "trafficType", "trafficType");
+                            this.props.parent.refreshSurveysAndReports(this.state, this.table_id, "trafficType", "trafficType");
                             this.update({
                                 survey: new Survey({}), // clear input values
                             });
@@ -468,7 +518,7 @@
                 } else {
                     updateSurvey(this.state.survey)
                         .then((surveyData) => {
-                            this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "trafficType", "trafficType");
+                            this.props.parent.refreshSurveysAndReports(this.state, this.table_id, "trafficType", "trafficType");
                             this.update({
                                 survey: new Survey({}), // clear input values
                             });
@@ -479,8 +529,7 @@
                             this.props.showFeedback(true);
                         });
                 }
-                // clear input values
-                this.state.survey = new Survey({});
+                this.state.survey = new Survey({}); // clear input values
                 this.update();
             },
             canSave() {
@@ -513,7 +562,6 @@
                 const input = e.currentTarget.value;
                 const testResult = withinMaxDigits(input, this.state.maxCountDigits, 0);
                 const errorText = window.gettext(`Cannot contain more than ${this.state.maxCountDigits} digits and value shouldn't contain decimals`);
-                // fix errorText
                 this.validate(fieldName, input, testResult, errorText);
             },
             checkMaxDate(input, fieldName) {
@@ -565,9 +613,12 @@
                 this.canSave();
             },
             clearCurrentDetails() {
-                this.state.currentTotal = 0;
-                Object.keys(this.state.currentCounts).forEach((k) => {this.state.currentCounts[k] = 0;});
-                $("#traffic-count-details-modal").modal("hide");
+                this.state.modalData.total = 0;
+                this.state.modalData.trafficType = "";
+                this.state.modalData.surveyFrom = "";
+                this.state.modalData.surveyTo = "";
+                Object.keys(this.state.modalData.counts).forEach((k) => {this.state.modalData.counts[k] = 0;});
+                $("#traffic-segments-modal").modal("hide");
                 this.update();
             },
             modal_id: "traffic-modal",

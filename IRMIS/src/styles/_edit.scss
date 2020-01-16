@@ -177,4 +177,44 @@ edit_traffic {
         height: 28px; 
         margin: 0 16px;
     }
+
+    .table-spacing {
+        margin-top: 25px;
+    }
+
+    .details-modal-type-spacing {
+        margin: 10px 0 0 10px; 
+        font-size: 14px;
+    }
+
+    .details-modal-date {
+        font-size: 14px; 
+        font-weight: 700;
+    }
+
+    .details-modal-date-spacing {
+        width: 64px;
+    }
+    
+    .details-vehicle-spacing {
+        margin-left: 32px; 
+        margin-right: 60px; 
+        font-weight: 700;
+        width: 32px;
+    }
+
+    .details-total {
+        padding-top: 20px; 
+        border-top: 1px solid #CFD1D6;
+    }
+
+    .details-total-title {
+        margin-left: 50px; 
+        font-size: 18px;
+    }
+
+    .details-total-number {
+        margin-left: 90px; 
+        font-size: 18px;
+    }
 }
