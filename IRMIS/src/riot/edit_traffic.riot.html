@@ -153,7 +153,9 @@
                     <section>
                         <div class="form-group">
                             <label>{ window.gettext("Survey Type") }</label>
-                            <p class="details-modal-type-spacing">{ window.gettext(state.modalData.trafficType) }</p>
+                            <p if={state.modalData.values} class="details-modal-type-spacing">
+                                { window.gettext(state.modalData.values.trafficType) }
+                            </p>
                         </div>
                     </section>
                     <section>
@@ -163,20 +165,25 @@
                                 <span class="date-field-title details-modal-date-spacing">
                                     { window.gettext("From") }
                                 </span>
-                                <div class="details-modal-date">{state.modalData.surveyFrom}</div>
+                                <div if={state.modalData.values} class="details-modal-date">
+                                    {state.modalData.values.surveyFromDate}
+                                </div>
                             </div>
                             <div class="form-inline survey-field-height">
                                 <span class="date-field-title details-modal-date-spacing">
                                     { window.gettext("To") }
                                 </span>
-                                <div class="details-modal-date">{state.modalData.surveyTo}</div>
+                                <div if={state.modalData.values} class="details-modal-date">
+                                    {state.modalData.values.surveyToDate}
+                                </div>
                             </div>
                         </div>
                     </section>
                     <section>
                         <div class="form-group">
                             <label>{ window.gettext("Total Count per Vehicle Type") }</label>
-                            <div class="form-inline vehicle-field-height" each="{ vehicle in vehicleTypes.options }">
+                            <div if={state.modalData.values} class="form-inline vehicle-field-height"
+                                each="{ vehicle in vehicleTypes.options }">
                                 <div class="icon">
                                     <span class="{ vehicle[0] } image"></span>
                                 </div>
@@ -184,15 +191,15 @@
                                     { vehicle[1] }
                                 </div>
                                 <div class="details-vehicle-spacing details-vehicle-count">
-                                    { state.modalData.counts[vehicle[3]] }
+                                    { JSON.parse(state.modalData.values.counts.replace(/\'/g, '"'))[vehicle[3]] || 0 }
                                 </div>
                                 <small>{ window.gettext(vehicle[2]) }</small>
                             </div>
                         </div>
                     </section>
-                    <div class="form-inline details-total">
+                    <div if={state.modalData.values} class="form-inline details-total">
                         <span class="details-total-title">{window.gettext("Total")}</span>
-                        <span class="details-total-number">{ state.modalData.total }</span>
+                        <span class="details-total-number">{ state.modalData.values.countTotal }</span>
                         </h3>
                     </div>
                 </div>
@@ -231,23 +238,7 @@
                 loading: false,
                 forecastYear: '',
                 maxCountDigits: 6,
-                modalData: {
-                    total: 0,
-                    trafficType: "",
-                    surveyFrom: "",
-                    surveyTo: "",
-                    counts: {
-                        motorcycleCount: 0,
-                        carCount: 0,
-                        pickupCount: 0,
-                        miniBusCount: 0,
-                        largeBusCount: 0,
-                        lightTruckCount: 0,
-                        mediumTruckCount: 0,
-                        largeTruckCount: 0,
-                        ufoCount: 0
-                    },
-                },
+                modalData: new Survey({}),
             },
             components: {
                 Edit_Modal, Edit_Stop_Alert, Data_Table
@@ -347,14 +338,7 @@
                 this.trafficDetailsListener = (data) => {
                     const s = this.state.pendingRows.find((s) => {return s.id == data.detail.rowId;});
                     const values = JSON.parse(s.getValues());
-                    const counts = JSON.parse(values["counts"].replace(/\'/g, '"'));
-
-                    Object.keys(this.state.modalData.counts).forEach((k) => {if (counts[k]) this.state.modalData.counts[k] = counts[k];});
-                    this.state.modalData.total = values["countTotal"];
-                    this.state.modalData.trafficType = values["trafficType"];
-                    this.state.modalData.surveyFrom = values["surveyFromDate"];
-                    this.state.modalData.surveyTo = values["surveyToDate"];
-
+                    this.state.modalData = s;
                     this.update();
                     $("#traffic-segments-modal").modal("show");
                 };
@@ -613,11 +597,7 @@
                 this.canSave();
             },
             clearDetailsData() {
-                this.state.modalData.total = 0;
-                this.state.modalData.trafficType = "";
-                this.state.modalData.surveyFrom = "";
-                this.state.modalData.surveyTo = "";
-                Object.keys(this.state.modalData.counts).forEach((k) => {this.state.modalData.counts[k] = 0;});
+                this.state.modalData = new Survey({});
                 $("#traffic-segments-modal").modal("hide");
                 this.update();
             },
