@@ -91,7 +91,7 @@
                     <label>{ window.gettext("Forecast Year") }</label>
                     <span class="required">*</span>
                     <!-- does this need a check function to validate the value? -->
-                    <select class="{ state.forecastYear ? '' : 'inactive' } form-control"
+                    <select class="{ state.survey.forecastYear ? '' : 'inactive' } form-control"
                         onchange="{checkForecastYear}">
                         <option value="">{ window.gettext("Select forecast year") }</option>
                         <option each="{ year in forecastYears }" value="{ year }"
@@ -236,7 +236,6 @@
                 pageLength: 15,
                 editMode: false,
                 loading: false,
-                forecastYear: '',
                 maxCountDigits: 6,
                 modalData: new Survey({}),
             },
