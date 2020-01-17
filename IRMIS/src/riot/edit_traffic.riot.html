@@ -90,7 +90,7 @@
                     <label>{ window.gettext("Forecast Year") }</label>
                     <span class="required">*</span>
                     <!-- does this need a check function to validate the value? -->
-                    <select class="{ state.survey.forecastYear ? '' : 'inactive' } form-control"
+                    <select class="{ state.survey.forecastYear ? '' : 'inactive' } form-control date-input-field"
                         onchange="{checkForecastYear}">
                         <option value="">{ window.gettext("Select forecast year") }</option>
                         <option each="{ year in forecastYears }" value="{ year }"
@@ -149,7 +149,7 @@
                         aria-hidden="true" onclick="{clearDetailsData}"></span>
                 </div>
                 <div class="modal-body">
-                    <section>
+                    <section class="details-survey-type">
                         <div class="form-group">
                             <label>{ window.gettext("Survey Type") }</label>
                             <p if={state.modalData.values} class="details-modal-type-spacing">
@@ -157,7 +157,21 @@
                             </p>
                         </div>
                     </section>
-                    <section>
+                    <section if="{state.modalData.values}" class="details-forecast-methods-block">
+                        <div if="{!state.modalData.values.forecastYear}" class="form-group">
+                            <label>{ countingMethods.display }</label>
+                            <p class="details-modal-type-spacing">
+                                {state.modalData.values.countMethod}
+                            </p>
+                        </div>
+                        <div if="{state.modalData.values.forecastYear}" class="form-group">
+                            <label>{ window.gettext("Forecast Year") }</label>
+                            <p class="details-modal-type-spacing">
+                                {state.modalData.values.forecastYear}
+                            </p>
+                        </div>
+                    </section>
+                    <section if="{state.modalData.values && !state.modalData.values.forecastYear}">
                         <div class="form-group">
                             <label>{ window.gettext("Survey Date") }</label>
                             <div class="form-inline survey-field-height">
@@ -172,7 +186,7 @@
                                 <span class="date-field-title details-modal-date-spacing">
                                     { window.gettext("To") }
                                 </span>
-                                <div if={state.modalData.values} class="details-modal-date">
+                                <div if="{state.modalData.values}" class="details-modal-date">
                                     {state.modalData.values.surveyToDate}
                                 </div>
                             </div>
@@ -181,7 +195,7 @@
                     <section>
                         <div class="form-group">
                             <label>{ window.gettext("Total Count per Vehicle Type") }</label>
-                            <div if={state.modalData.values} class="form-inline vehicle-field-height"
+                            <div if="{state.modalData.values}" class="form-inline vehicle-field-height"
                                 each="{ vehicle in vehicleTypes.options }">
                                 <div class="icon">
                                     <span class="{ vehicle[0] } image"></span>
@@ -199,7 +213,6 @@
                     <div if={state.modalData.values} class="form-inline details-total">
                         <span class="details-total-title">{window.gettext("Total")}</span>
                         <span class="details-total-number">{ state.modalData.values.countTotal }</span>
-                        </h3>
                     </div>
                 </div>
             </div>

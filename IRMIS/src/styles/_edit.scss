@@ -92,6 +92,12 @@ edit_history {
     }
 }
 
+edit_traffic {
+    section {
+        max-width: inherit;
+    }
+}
+
 edit_location_type,
 edit_project,
 edit_maintenance,
@@ -145,7 +151,8 @@ feedback_banner {
 
 edit_traffic {
     .survey-field-height {
-        height: 32px;
+        height: 30px;
+        align-items: flex-end;
     }
 
     .date-field-title {
@@ -169,13 +176,13 @@ edit_traffic {
     }
 
     .vehicle-name {
-        width: 96px; 
+        width: 144px; 
         font-size: 14px;
     }
 
     .vehicle-input {
         height: 28px; 
-        margin: 0 16px;
+        margin: 0 36px 0 16px;
     }
 
     .table-spacing {
@@ -187,18 +194,32 @@ edit_traffic {
         font-size: 14px;
     }
 
+    .details-survey-type {
+        display: inline-block; 
+        width: 250px; 
+        border-right: 1px solid #CFD1D6; 
+        margin-right: 50px; 
+        margin-bottom: 10px;
+    }
+
+    .details-forecast-methods-block {
+        display: inline-block; 
+        margin-bottom: 10px;
+    }
+
     .details-modal-date {
         font-size: 14px; 
         font-weight: 700;
+        margin-right: 32px;
     }
 
     .details-modal-date-spacing {
-        width: 64px;
+        width: 56px;
     }
     
     .details-vehicle-spacing {
         margin-left: 32px; 
-        margin-right: 60px; 
+        margin-right: 88px; 
         font-weight: 700;
         width: 32px;
     }
@@ -218,7 +239,7 @@ edit_traffic {
     }
 
     .details-total-number {
-        margin-left: 90px; 
+        margin-left: 138px; 
         font-size: 18px;
     }
 }
