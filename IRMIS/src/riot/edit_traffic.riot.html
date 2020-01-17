@@ -89,7 +89,6 @@
                 <div class="form-group">
                     <label>{ window.gettext("Forecast Year") }</label>
                     <span class="required">*</span>
-                    <!-- does this need a check function to validate the value? -->
                     <select class="{ state.survey.forecastYear ? '' : 'inactive' } form-control date-input-field"
                         onchange="{checkForecastYear}">
                         <option value="">{ window.gettext("Select forecast year") }</option>
