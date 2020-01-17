@@ -295,19 +295,19 @@
                     title: window.gettext("Survey date"),
                     data: "trafficSurveyedDate",
                     defaultContent: "",
-                    className: "text-center",
+                    className: "text-right",
                 },
                 {
                     title: window.gettext("Data type"),
                     data: "trafficDataType",
                     defaultContent: "",
-                    className: "text-center",
+                    className: "text-left",
                 },
                 {
                     title: window.gettext("Total vehicles"),
                     data: "trafficCountTotal",
                     defaultContent: "",
-                    className: "text-center",
+                    className: "text-right",
                     render: (data, type, row) => {
                         return `<a onclick="document.dispatchEvent(new CustomEvent('traffic-table.trafficDetails',{detail:{rowId:${row.getId()}}}))">${data}</a>`;
                     }
@@ -316,6 +316,7 @@
                     title: window.gettext("Added by"),
                     data: "addedBy",
                     defaultContent: "",
+                    className: "text-left",
                     orderable: false,
                 },
                 {
