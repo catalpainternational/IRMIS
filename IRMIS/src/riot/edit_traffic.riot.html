@@ -41,7 +41,7 @@
                                 onclick="{checkCountingMethod}">
                                 <span
                                     class="{method[0] == state.survey.countMethod ? 'active' : ''  } radio image"></span>
-                                { window.gettext(method[1]) }
+                                { method[1] }
                             </li>
                         </ul>
                     </div>
@@ -118,7 +118,7 @@
                         <input class="{ state.survey[vehicle[3]] ? '' : 'inactive' } vehicle-input form-control"
                             type="number" name="{ vehicle[3] }" placeholder="0000" value="{ state.survey[vehicle[3]] }"
                             oninput="{checkCount}" min="0" max="999999999" step="1" required>
-                        <small>{ window.gettext(vehicle[2]) }</small>
+                        <small>{ vehicle[2] }</small>
                         <div if="{state.errors[vehicle[3]]}" class="invalid-tooltip">
                             <ul>
                                 <li>{ state.errors[vehicle[3]] }.</li>
@@ -153,7 +153,7 @@
                         <div class="form-group">
                             <label>{ window.gettext("Survey Type") }</label>
                             <p if={state.modalData.values} class="details-modal-type-spacing">
-                                { window.gettext(state.modalData.values.trafficType) }
+                                { state.modalData.values.trafficType }
                             </p>
                         </div>
                     </section>
@@ -161,7 +161,7 @@
                         <div if="{!state.modalData.values.forecastYear}" class="form-group">
                             <label>{ countingMethods.display }</label>
                             <p class="details-modal-type-spacing">
-                                {state.modalData.values.countMethod}
+                                {state.modalData.values.countMethod == 1 ? 'Electronic' : 'Manual'} 
                             </p>
                         </div>
                         <div if="{state.modalData.values.forecastYear}" class="form-group">
@@ -204,7 +204,7 @@
                                 <div class="details-vehicle-spacing details-vehicle-count">
                                     { JSON.parse(state.modalData.values.counts.replace(/\'/g, '"'))[vehicle[3]] || 0 }
                                 </div>
-                                <small>{ window.gettext(vehicle[2]) }</small>
+                                <small>{ vehicle[2] }</small>
                             </div>
                         </div>
                     </section>

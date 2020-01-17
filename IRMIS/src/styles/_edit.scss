@@ -218,10 +218,9 @@ edit_traffic {
     }
     
     .details-vehicle-spacing {
-        margin-left: 32px; 
         margin-right: 88px; 
         font-weight: 700;
-        width: 32px;
+        width: 100px;
     }
     
     .details-vehicle-count {
@@ -239,7 +238,9 @@ edit_traffic {
     }
 
     .details-total-number {
-        margin-left: 138px; 
+        margin-left: 105px; 
         font-size: 18px;
+        width: 100px;
+        text-align: right;
     }
 }
