@@ -178,17 +178,15 @@
                                 <span class="date-field-title details-modal-date-spacing">
                                     { window.gettext("From") }
                                 </span>
-                                <div if={state.modalData.values} class="details-modal-date">
+                                <span if={state.modalData.values} class="details-modal-date">
                                     {state.modalData.values.surveyFromDate}
-                                </div>
-                            </div>
-                            <div class="form-inline survey-field-height">
+                                </span>
                                 <span class="date-field-title details-modal-date-spacing">
                                     { window.gettext("To") }
                                 </span>
-                                <div if="{state.modalData.values}" class="details-modal-date">
+                                <span if="{state.modalData.values}" class="details-modal-date">
                                     {state.modalData.values.surveyToDate}
-                                </div>
+                                </span>
                             </div>
                         </div>
                     </section>
@@ -482,7 +480,7 @@
                         this.state.survey.setDateSurveyed(dateSurveyed);
 
                         // set Survey road from state Road road_code
-                        this.state.survey.setRoad(this.state.road.getRoadCode());
+                        this.state.survey.setRoadCode(this.state.road.getRoadCode());
 
                         this.saveSurvey();
                     }
@@ -501,22 +499,26 @@
                         .then((surveyData) => {
                             this.props.parent.getRoadSurveys(this.state, this.table_id, "trafficType");
                             this.update();
-                            $("#loading").modal("hide");
                             this.props.showFeedback();
                         })
                         .catch((err) => {
                             this.props.showFeedback(true);
+                        })
+                        .finally((r) => {
+                            $("#loading").modal("hide");
                         });
                 } else {
                     updateSurvey(this.state.survey)
                         .then((surveyData) => {
                             this.props.parent.getRoadSurveys(this.state, this.table_id, "trafficType");
                             this.update();
-                            $("#loading").modal("hide");
                             this.props.showFeedback();
                         })
                         .catch((err) => {
                             this.props.showFeedback(true);
+                        })
+                        .finally((r) => {
+                            $("#loading").modal("hide");
                         });
                 }
                 this.state.survey = new Survey({}); // clear input values
