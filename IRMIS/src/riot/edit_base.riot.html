@@ -54,8 +54,8 @@
 
                 <edit_location_type road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}"
                     if="{ state.page === 'location_type' }"></edit_location_type>
-                <edit_asset_details road="{ state.editingRoad }" showFeedback="{ showFeedback }" saving="{ state.saving }"
-                    parent="{parentFunctions}" if="{ state.page === 'asset_details' }">
+                <edit_asset_details road="{ state.editingRoad }" showFeedback="{ showFeedback }"
+                    saving="{ state.saving }" parent="{parentFunctions}" if="{ state.page === 'asset_details' }">
                 </edit_asset_details>
                 <edit_pavement road="{ state.editingRoad }" showFeedback="{ showFeedback }" saving="{ state.saving }"
                     parent="{parentFunctions}" if="{ state.page === 'pavement' }"></edit_pavement>
@@ -73,7 +73,7 @@
                 </edit_history>
             </div>
             <footer>
-                <small>República Democrática de Timor-Leste / Ministério  das  Obras Públicas</small>
+                <small>República Democrática de Timor-Leste / Ministério das Obras Públicas</small>
                 <small>{ window.gettext("Created by Catalpa International") }</small>
             </footer>
         </div>
@@ -146,6 +146,7 @@
                 this.parentFunctions = {
                     getHelpText: this.getHelpText,
                     save: this.save,
+                    getRoadSurveys: this.getRoadSurveys,
                     refreshSurveysAndReports: this.refreshSurveysAndReports,
                     updateReportAttributeSummary: updateReportAttributeSummary,
                 };
