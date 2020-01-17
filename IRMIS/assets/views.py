@@ -15,10 +15,12 @@ from django.http import (
     JsonResponse,
     HttpResponseNotFound,
 )
+from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Value, CharField
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.exceptions import MethodNotAllowed, ValidationError
 from rest_framework.permissions import IsAuthenticated
@@ -29,7 +31,7 @@ from rest_framework_condition import condition
 from google.protobuf.timestamp_pb2 import Timestamp
 
 from protobuf import roads_pb2, survey_pb2, report_pb2
-from .reports import Report
+from .report_query import ReportQuery
 
 
 from .models import (
@@ -258,15 +260,15 @@ def protobuf_road_surveys(request, pk, survey_attribute=None):
     """ returns a protobuf object with the set of surveys for a particular road pk"""
     # get the Road link requested
     road = get_object_or_404(Road.objects.all(), pk=pk)
-    # pull any Surveys that cover the Road above
-    queryset = Survey.objects.filter(road=road.road_code)
+    # pull any Surveys that cover the Road Code above
+    queryset = Survey.objects.filter(road_code=road.road_code)
 
     if survey_attribute:
         queryset = queryset.filter(values__has_key=survey_attribute).exclude(
             **{"values__" + survey_attribute + "__isnull": True}
         )
 
-    queryset.order_by("road", "chainage_start", "chainage_end", "-date_updated")
+    queryset.order_by("road_code", "chainage_start", "chainage_end", "-date_updated")
     surveys_protobuf = queryset.to_protobuf()
 
     return HttpResponse(
@@ -299,14 +301,28 @@ def survey_create(request):
     req_pb.ParseFromString(request.body)
 
     # check that Protobuf parsed
-    if not req_pb.road:
+    if not req_pb.road_id:
         return HttpResponse(status=400)
+
+    # check there's a road to attach this survey to
+    survey_road = get_object_or_404(Road.objects.filter(pk=req_pb.road_id))
+    # and default the road_code if none was provided
+    if not req_pb.road_code:
+        req_pb.road_code = survey_road.road_code
+    elif survey_road.road_code != req_pb.road_code:
+        # or check it for basic data integrity problem
+        return HttpResponse(
+            req_pb.SerializeToString(),
+            status=400,
+            content_type="application/octet-stream",
+        )
 
     try:
         with reversion.create_revision():
             survey = Survey.objects.create(
                 **{
-                    "road": req_pb.road,
+                    "road_id": req_pb.road_id,
+                    "road_code": req_pb.road_code,
                     "user": get_user_model().objects.get(pk=req_pb.user),
                     "chainage_start": req_pb.chainage_start,
                     "chainage_end": req_pb.chainage_end,
@@ -357,7 +373,20 @@ def survey_update(request):
             content_type="application/octet-stream",
         )
 
-    # if there are not changes between the DB survey and the protobuf survey return 200
+    # check there's a road to attach this survey to
+    survey_road = get_object_or_404(Road.objects.filter(pk=req_pb.road_id))
+    # and default the road_code if none was provided
+    if not req_pb.road_code:
+        req_pb.road_code = survey_road.road_code
+    elif survey_road.road_code != req_pb.road_code:
+        # or check it for basic data integrity problem
+        return HttpResponse(
+            req_pb.SerializeToString(),
+            status=400,
+            content_type="application/octet-stream",
+        )
+
+    # if there are no changes between the DB survey and the protobuf survey return 200
     if Survey.objects.filter(pk=req_pb.id).to_protobuf().surveys[0] == req_pb:
         return HttpResponse(
             req_pb.SerializeToString(),
@@ -379,7 +408,8 @@ def survey_update(request):
         )
 
     # update the Survey instance from PB fields
-    survey.road = req_pb.road
+    survey.road_id = req_pb.road_id
+    survey.road_code = req_pb.road_code
     survey.user = get_user_model().objects.get(pk=req_pb.user)
     survey.chainage_start = req_pb.chainage_start
     survey.chainage_end = req_pb.chainage_end
@@ -430,7 +460,7 @@ def protobuf_reports(request):
         raise MethodNotAllowed(request.method)
 
     # get/initialise the Filters
-    primary_attributes = request.GET.getlist("primaryattribute", ["surface_condition"])
+    primary_attributes = request.GET.getlist("primaryattribute", [])
     road_id = request.GET.get("roadid", None)
     road_code = request.GET.get("roadcode", None)
     chainage_start = None
@@ -469,8 +499,13 @@ def protobuf_reports(request):
         chainage_start = chainage_end
         chainage_end = temp_chainage
 
+    # Ensure a minimum set of filters have been provided
+    if len(primary_attributes) == 0:
+        raise ValidationError(
+            _("'primaryattribute' must contain at least one reportable attribute")
+        )
+
     report_protobuf = report_pb2.Report()
-    report_protobuf.lengths = json.dumps({})
 
     final_filters = defaultdict(list)
     final_lengths = defaultdict(Counter)
@@ -480,200 +515,60 @@ def protobuf_reports(request):
     # Certain filters are mutually exclusive (for reporting)
     # road_id -> road_code -> road_type
     if road_id:
-        roads = Road.objects.filter(pk=road_id)
         final_filters["road_id"] = [road_id]
-        if len(roads) == 1:
-            final_filters["road_code"] = [roads[0].road_code]
-        else:
-            report_protobuf.filter = json.dumps(final_filters)
-            return HttpResponse(
-                report_protobuf.SerializeToString(),
-                content_type="application/octet-stream",
-            )
     elif road_code:
-        roads = Road.objects.filter(road_code=road_code)
         final_filters["road_code"] = [road_code]
     elif road_types != []:
-        roads = Road.objects.filter(road_type__in=road_types)
         final_filters["road_type"] = road_types
-    else:
-        roads = Road.objects.all()
 
     # Road level attribute
     if municipalities != []:
         final_filters["municipality"] = municipalities
-        roads = roads.filter(administrative_area__in=municipalities)
 
-    # Get a Road Codes Set Universe to work with for Survey level attributes
-    road_codes_universe = set(roads.values_list("road_code", flat=True).distinct())
-
-    # For each of the segmented attributes filters:
-    # 1. Derive a set of valid road_codes after filtering on Survey's values HStore for given filter conditions.
-    # 2. Perform an intersection of the Road Codes Set Universe with the Surveys road_code set.
-    # 3. Store that resulting set as the new Road Code Set Universe.
-    # ie. NEW Road Codes Universe = {Road Codes Universe} ∩ {Survey valid road_codes}
-    if surface_conditions != []:
-        final_filters["surface_condition"] = surface_conditions
-        survey_codes_set = set(
-            Survey.objects.filter(values__surface_condition__in=surface_conditions)
-            .values_list("road", flat=True)
-            .distinct()
-        )
-        road_codes_universe = road_codes_universe.intersection(survey_codes_set)
-    if surface_types != []:
+    if len(surface_types):
         final_filters["surface_type"] = surface_types
-        survey_codes_set = set(
-            Survey.objects.filter(values__surface_type__in=surface_types)
-            .values_list("road", flat=True)
-            .distinct()
-        )
-        road_codes_universe = road_codes_universe.intersection(survey_codes_set)
-    if pavement_classes != []:
+    if len(pavement_classes):
         final_filters["pavement_class"] = pavement_classes
-        survey_codes_set = set(
-            Survey.objects.filter(values__pavement_class__in=pavement_classes)
-            .values_list("road", flat=True)
-            .distinct()
-        )
-        road_codes_universe = road_codes_universe.intersection(survey_codes_set)
-    if report_date:
-        final_filters["date_surveyed"] = report_date
-        survey_codes_set = set(
-            Survey.objects.filter(
-                date_surveyed__lte=datetime.strptime(report_date, "%Y-%m-%d")
-            )
-            .values_list("road", flat=True)
-            .distinct()
-        )
-        road_codes_universe = road_codes_universe.intersection(survey_codes_set)
+    if len(surface_conditions):
+        final_filters["surface_condition"] = surface_conditions
 
-    report_protobuf.filter = json.dumps(final_filters)
+    # Survey level attributes
+    # if report_date:
+    #     final_filters["report_date"] = report_date
+    if (road_id or road_code) and chainage_start and chainage_end:
+        final_filters["chainage_start"] = chainage_start
+        final_filters["chainage_end"] = chainage_end
 
-    # Empty Set {} of Roads
-    if len(road_codes_universe) == 0:
-        # Return the empty protobuf, showing which filters were in use
-        return HttpResponse(
-            report_protobuf.SerializeToString(), content_type="application/octet-stream"
-        )
-
-    # Get the list of all relevant road_codes
-    road_codes = list(road_codes_universe)
-
-    # Compose the list of total chainages by road_code
-    road_chainages_list = (
-        roads.filter(road_code__in=road_codes)
-        .exclude(link_start_chainage__isnull=True)
-        .exclude(link_end_chainage__isnull=True)
-        .values("road_code", "link_start_chainage", "link_end_chainage")
-        .order_by("road_code", "link_start_chainage", "link_end_chainage")
+    # Initialise the Report
+    road_report = ReportQuery(final_filters)
+    final_lengths = road_report.compile_summary_stats(
+        road_report.execute_aggregate_query()
     )
 
-    road_chainages = []
-    prev_road_code = "Nada"
-    for road_chainage_set in road_chainages_list:
-        if (
-            road_chainage_set["link_start_chainage"]
-            == road_chainage_set["link_end_chainage"]
-        ):
-            continue
-
-        if road_chainage_set["road_code"] != prev_road_code:
-            road_chainage = {}
-            road_chainage["code"] = road_chainage_set["road_code"]
-            road_chainage["chainage_start"] = road_chainage_set["link_start_chainage"]
-            road_chainage["chainage_end"] = road_chainage_set["link_end_chainage"]
-            road_chainages.append(road_chainage)
-            prev_road_code = road_chainage["code"]
-        else:
-            road_chainage["chainage_end"] = road_chainage_set["link_end_chainage"]
-
-    # Handle chainage filtering for single road_codes
-    if len(road_chainages) == 1:
-        min_chainage = road_chainages[0]["chainage_start"]
-        max_chainage = road_chainages[0]["chainage_end"]
-
-        if (
-            chainage_start != None
-            and chainage_start > min_chainage
-            and chainage_start < max_chainage
-        ):
-            min_chainage = chainage_start
-
-        if (
-            chainage_end != None
-            and chainage_end > min_chainage
-            and chainage_end < max_chainage
-        ):
-            max_chainage = chainage_end
-
-        if min_chainage == None or max_chainage == None:
-            # Without valid chainage values nothing can be done
-            return HttpResponseNotFound()
-
-        road_chainages[0]["chainage_start"] = min_chainage
-        road_chainages[0]["chainage_end"] = max_chainage
-
-    # Commence processing Reports by road_code
-    surveys = {}
-    for road_chainage in road_chainages:
-        primary_road_code = road_chainage["code"]
-
-        # pull any Surveys that cover the roads
-        for primary_attribute in primary_attributes:
-            surveys[primary_attribute] = (
-                Survey.objects.filter(road=primary_road_code)
-                .exclude(chainage_start__isnull=True)
-                .exclude(chainage_end__isnull=True)
-                .exclude(**{"values__" + primary_attribute + "__isnull": True})
-                .order_by("road", "chainage_start", "chainage_end", "-date_surveyed")
-                .distinct("road", "chainage_start", "chainage_end")
-            )
-
-            if report_date is not None:
-                surveys[primary_attribute] = surveys[primary_attribute].filter(
-                    date_surveyed__lte=report_date
-                )
-
-        # Initialise the Report
-        # This is priority #2 for performance improvement
-        road_report = Report(
-            surveys,
-            len(road_codes) == 1,
-            primary_road_code,
-            road_chainage["chainage_start"],
-            road_chainage["chainage_end"],
-        )
-
-        if len(road_codes) == 1:
-            report_protobuf = road_report.to_protobuf()
-            # return early if only one road_code
-            return HttpResponse(
-                report_protobuf.SerializeToString(),
-                content_type="application/octet-stream",
-            )
-        else:
-            # Merge Protobuf Reports
-            # prepare_protobuf is priority #1 for performance improvement
-            road_report.prepare_protobuf()
-
-            for x in set(road_report.filters):
-                final_filters[x] = list(
-                    set(final_filters[x] + road_report.filters.get(x, []))
-                )
-
-            for x in set(road_report.lengths):
-                final_lengths[x] += Counter(road_report.lengths.get(x, {}))
-
-    # Chainage is only valid if there's only two values
-    if (
-        "report_chainage" in final_filters
-        and len(final_filters["report_chainage"]) != 2
-    ):
-        final_filters.pop("report_chainage")
-
-    report_protobuf = road_report.to_protobuf()
     report_protobuf.filter = json.dumps(final_filters)
     report_protobuf.lengths = json.dumps(final_lengths)
+
+    if road_id or road_code:
+        report_surveys = road_report.execute_main_query()
+        if len(report_surveys):
+            for report_survey in report_surveys:
+                report_attribute = report_pb2.Attribute()
+                report_attribute.road_id = report_survey["road_id"]
+                report_attribute.road_code = report_survey["road_code"]
+                report_attribute.primary_attribute = report_survey["attribute"]
+                report_attribute.chainage_start = report_survey["start_chainage"]
+                report_attribute.chainage_end = report_survey["end_chainage"]
+                report_attribute.survey_id = report_survey["survey_id"]
+                if report_survey["user_id"]:
+                    report_attribute.user_id = report_survey["user_id"]
+                if report_survey["date_surveyed"]:
+                    ts = Timestamp()
+                    ts.FromDatetime(report_survey["date_surveyed"])
+                    report_attribute.date_surveyed.CopyFrom(ts)
+                report_attribute.added_by = report_survey["added_by"]
+                if report_survey["value"]:
+                    report_attribute.value = report_survey["value"]
+                report_protobuf.attributes.append(report_attribute)
 
     return HttpResponse(
         report_protobuf.SerializeToString(), content_type="application/octet-stream"

@@ -1,0 +1,136 @@
+<report_dashboard>
+    <div class="print-header">
+        <div class="align-items-center d-flex">
+            <span class="image rdtl"></span>
+            <div class="d-flex flex-column">
+                <span>{ window.gettext("Democratic Republic of Timor-Leste") }</span>
+                <span>{ window.gettext("Ministry of Public Works") }</span>
+                <span>{ window.gettext("Directorate General for Public Works") }</span>
+                <span>{ window.gettext("National Directorate for Roads, Bridges and Flood Control") }</span>
+                <small>Avenida da Restauração, Rai Kotu, Díli, Timor-Leste, Telf. +670 3311408</small>
+            </div>
+        </div>
+    </div>
+
+    <header>
+        <div class="d-flex flex-column">
+            <h6>{ window.gettext("Road Network Overview") }</h6>
+        </div>
+    </header>
+
+    <div class="content-wrapper report-content">
+        <div class="d-flex flex-column total-length">
+            <p>{ window.gettext("Total Length of Road Network") }</p>
+            <h1 if="{!state.reportData.totalLength}">Loading</h1>
+            <h1 if="{state.reportData.totalLength}">{ (state.reportData.totalLength / 1000).toFixed(2) } km</h1>
+        </div>
+
+        <div if="{state.reportData.totalLength && state.road_type}" class="d-flex">
+            <div class="d-flex flex-column total-length" each="{ roadClass in state.road_type }">
+                <span>{roadClass.title} </span>
+                <span>{roadClass.distance / 1000}km</span>
+            </div>
+        </div>
+
+        <stacked_bar each="{ stackedBar in stackedBars }" id="{ stackedBar.id }" title="{ stackedBar.title }"
+            entries="{ state[stackedBar.filterName] }" total_title="{ window.gettext('Total road chainage') }">
+        </stacked_bar>
+    </div>
+
+    <div class="print-footer">
+        <div class="d-flex align-items-center" if="{ state.reportData.dateCreated }">
+            { window.gettext("Exported from Estrada on") } { state.reportData.dateCreated() }</div>
+        <span class="app-logo image"></span>
+    </div>
+
+    <script>
+        import Stacked_Bar from "./stacked_bar.riot.html";
+
+        import { getRoadReport, reportBarIds } from "../reportManager";
+        import { updateReportAttributeSummary } from "../roadAttributes";
+
+        import $ from "jquery";
+        import dayjs from "dayjs";
+
+        const emptyEntries = [{ key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }];
+
+        export default {
+            state: {
+                reportData: {},
+                road_type: emptyEntries,
+                road_status: emptyEntries,
+                surface_condition: emptyEntries,
+                pavement_class: emptyEntries,
+            },
+            components: {
+                Stacked_Bar
+            },
+            stackedBars: [
+                { id: reportBarIds.roadClass, title: window.gettext("Road Class"), filterName: "road_type" },
+                { id: reportBarIds.roadStatus, title: window.gettext("Road Status"), filterName: "road_status" },
+                { id: reportBarIds.surfaceCondition, title: window.gettext("Surface Condition (SDI)"), filterName: "surface_condition" },
+                { id: reportBarIds.pavementClass, title: window.gettext("Pavement Class"), filterName: "pavement_class" },
+            ],
+            onMounted(props, state) {
+                this.stackedBars.forEach((stackedBar) => {
+                    this.prepareStackedBar(stackedBar.id, this.state[stackedBar.filterName], stackedBar.filterName);
+                });
+
+                this.update();
+
+                this.createReport();
+            },
+            backToReports() {
+                window.location.hash = "reports/";
+            },
+            prepareStackedBar(barName, barData, filterName) {
+                if (barData && barData.length) {
+                    updateReportAttributeSummary(this.state, filterName, barData);
+
+                    this.state.reportData.totalLength = this.state.reportData.totalLength || barData.reduce((acc, cur) => acc += cur.distance || 0, 0);
+
+                    const eventName = `${barName}.dataUpdated`;
+                    const eventDetail = { detail: { entries: this.state[filterName], barName } };
+                    document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+                } else {
+                    this.state[filterName] = [{ key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("unknown") }];
+                }
+            },
+            createReport() {
+                $('#loading').modal('show');
+
+                const filter = { primaryattribute: this.stackedBars.map((stackedBar) => stackedBar.filterName) };
+
+                getRoadReport(filter)
+                    .then((surveyReportData) => {
+                        if (surveyReportData) {
+                            this.state.reportData = {
+                                totalLength: 0,
+                                road_type: surveyReportData.roadClasses,
+                                road_status: surveyReportData.roadStatuses,
+                                surface_condition: surveyReportData.surfaceConditions,
+                                pavement_class: surveyReportData.pavementClasses,
+                                dateCreated: () => dayjs(new Date()).format('DD MMMM YYYY [at] HH:mm'),
+                            };
+
+                            if (!!surveyReportData.lengths) {
+                                this.stackedBars.forEach((stackedBar) => {
+                                    this.prepareStackedBar(stackedBar.id, this.state.reportData[stackedBar.filterName], stackedBar.filterName);
+                                });
+                            }
+
+                            this.props.showFeedback();
+                        } else {
+                            // An id of null should tell us that there was an error fetching the data
+                            this.props.showFeedback(true);
+                        }
+                    }).catch(err => {
+                        this.props.showFeedback(true);
+                    }).finally((r) => {
+                        $('#loading').modal('hide');
+                        this.update();
+                    });
+            },
+        }
+    </script>
+</report_dashboard>

@@ -108,7 +108,7 @@
         <span class="report-date" if="{ state.reportData.dateCreated }">{ window.gettext("Created on") } { state.reportData.dateCreated() }</span>
 
         <div class="filters-applied" hidden="{ !hasFilters() || !state.reportData.formattedFilters || !state.reportData.formattedFilters.length }">
-			<p>{ window.gettext("Filters applied") }</p>
+            <p>{ window.gettext("Filters applied") }</p>
             <div class="d-flex">
                 <div class="d-flex flex-column filter" each="{ filter in state.reportData.formattedFilters }">
                     <span>{filter.title}: </span>
@@ -200,11 +200,11 @@
         const allReportElements = {
             stackedBars: [reportBarIds.roadStatus, reportBarIds.technicalClass, reportBarIds.surfaceCondition],
             tables: [
-                reportTableIds.municipality, 
-                reportTableIds.roadClass, 
+                reportTableIds.municipality,
+                reportTableIds.roadClass,
                 reportTableIds.surfaceType,
-                reportTableIds.roadStatus, 
-                reportTableIds.technicalClass, 
+                reportTableIds.roadStatus,
+                reportTableIds.technicalClass,
                 reportTableIds.surfaceCondition,
             ],
         };
@@ -393,7 +393,9 @@
             prepareStackedBar(barName, barData, filterName) {
                 if (barData && barData.length) {
                     updateReportAttributeSummary(this.state, filterName, barData);
-                                    
+
+                    this.state.reportData.totalLength = this.state.reportData.totalLength || barData.reduce((acc, cur) => acc += cur.distance || 0, 0);
+
                     const eventName = `${barName}.dataUpdated`;
                     const eventDetail = { detail: { entries: this.state[filterName], barName } };
                     document.dispatchEvent(new CustomEvent(eventName, eventDetail));
@@ -452,9 +454,9 @@
                             this.state.reportData = {
                                 totalLength: 0,
                                 roadCodes: (surveyReportData.roadCodes || []).sort(),
-                                reportChainage: (surveyReportData.reportChainage && surveyReportData.reportChainage.length === 2 
-                                    && (surveyReportData.reportChainage[0] + surveyReportData.reportChainage[1])) 
-                                    ? surveyReportData.reportChainage 
+                                reportChainage: (surveyReportData.reportChainage && surveyReportData.reportChainage.length === 2
+                                    && (surveyReportData.reportChainage[0] + surveyReportData.reportChainage[1]))
+                                    ? surveyReportData.reportChainage
                                     : undefined,
                                 dateCreated: () => dayjs(new Date()).format('DD MMMM YYYY [at] HH:mm'),
                                 formattedFilters: surveyReportData.formattedFilters
@@ -462,14 +464,14 @@
 
                             if (haveLengths) {
                                 this.state.reportData.municipality = this.prepareTableData(this.dataTableIds.municipality, surveyReportData.municipalities, "municipality");
-                                this.state.reportData.roadClass = this.prepareTableData(this.dataTableIds.roadClass, surveyReportData.roadClasses, "road_class");
+                                this.state.reportData.roadClass = this.prepareTableData(this.dataTableIds.roadClass, surveyReportData.roadClasses, "road_type");
                                 this.state.reportData.surfaceType = this.prepareTableData(this.dataTableIds.surfaceType, surveyReportData.surfaceTypes, "surface_type");
 
                                 this.state.reportData.roadStatus = this.prepareTableData(this.dataTableIds.roadStatus, surveyReportData.roadStatuses, "road_status");
                                 this.state.reportData.technicalClass = this.prepareTableData(this.dataTableIds.technicalClass, surveyReportData.technicalClasses, "technical_class");
-                                this.state.reportData.surfaceCondition = this.prepareTableData(this.dataTableIds.surfaceCondition, surveyReportData.attributeTable("surface_condition", true), "surface_condition");
+                                this.state.reportData.surfaceCondition = this.prepareTableData(this.dataTableIds.surfaceCondition, surveyReportData.surfaceConditions, "surface_condition");
 
-                                this.prepareStackedBar(this.stackedBarIds.roadStatus, surveyReportData.roadStatuses, "road_status");
+                                this.prepareStackedBar(this.stackedBarIds.roadStatus, surveyReportData.roadStatuses, "road_type");
                                 this.prepareStackedBar(this.stackedBarIds.technicalClass, surveyReportData.technicalClasses, "technical_class");
                                 this.prepareStackedBar(this.stackedBarIds.surfaceCondition, surveyReportData.surfaceConditions, "surface_condition");
 
@@ -480,7 +482,7 @@
                                     reportingTables.includes(this.dataTableIds.surfaceType) && surveyReportData.surfaceTypes.length ||
                                     reportingTables.includes(this.dataTableIds.roadStatus) && surveyReportData.roadStatuses.length ||
                                     reportingTables.includes(this.dataTableIds.technicalClass) && surveyReportData.technicalClasses.length ||
-                                    reportingTables.includes(this.dataTableIds.surfaceCondition) && surveyReportData.attributeTable("surface_condition", true).length) {
+                                    reportingTables.includes(this.dataTableIds.surfaceCondition) && surveyReportData.surfaceConditions.length) {
                                     this.state.noReportData = false;
                                 }
                             } else {

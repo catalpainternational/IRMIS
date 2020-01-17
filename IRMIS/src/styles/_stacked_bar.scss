@@ -58,7 +58,7 @@
     }
 }
 
-#pavement-class-stacked-bar {
+#pavement-class-stacked-bar, #report-pavement-class-bar {
     @extend %stacked-bar-shared;
 
     .entry-1 {
@@ -74,8 +74,61 @@
     }
 }
 
+#report-road-class-bar {
+    @extend %stacked-bar-shared;
+
+    .entry-NAT {
+        // National
+        background-color: #EC0007;
+    }
+
+    .entry-MUN {
+        // Municipal
+        background-color: #985321;
+    }
+
+    .entry-RUR {
+        // Rural
+        background-color: #FF9400;
+    }
+
+    .entry-URB {
+        // Urban
+        background-color: #FFDC00;
+    }
+
+    .entry-HIGH {
+        // Highway
+        background-color: #03A568;
+    }
+}
+
+#report-road-status-bar {
+    @extend %stacked-bar-shared;
+    .entry-c, .entry-Kompletu {
+        // Complete
+        background-color: #03A59A;
+    }
+
+    .entry-o {
+        // Ongoing
+        background-color: #FFC100;
+    }
+
+    .entry-p, .entry-Pendente {
+        // Pending
+        background-color: #FFACAF;
+    }
+    
+    .entry-n, .entry-Planeadu {
+        // Planned
+        background-color: #FF5A5F;
+    }
+}
+
 #rainfall-stacked-bar,
-#surface-type-stacked-bar {
+#surface-type-stacked-bar,
+#report-surface-type-bar {
     @extend %stacked-bar-shared;
 
     .entry-1 {
@@ -115,7 +168,7 @@
     }
 }
 
-#terrain-type-stacked-bar {
+#terrain-type-stacked-bar, #report-terrain-type-bar {
     @extend %stacked-bar-shared;
 
     .entry-1 {

@@ -9,22 +9,20 @@ package assets;
 
 message Report {
     string filter = 1; // JSON string - a dictionary of lists { filter_term: ["a"], other_filter: ["x"]}
-    string lengths = 2; // JSON string - effectively a consolidation of 'values'
-    repeated AttributeTable attribute_tables = 3;
+    string lengths = 2; // JSON string - effectively a consolidation of 'values' below
+    reserved 3; // Previously attribute_tables
+    repeated Attribute attributes = 4;
 }
 
-message AttributeTable {
-    string primary_attribute = 1;
-    repeated string secondary_attribute = 2;
-    repeated AttributeEntry attribute_entries = 3;
-}
-
-message AttributeEntry {
-    float chainage_start = 1;
-    float chainage_end = 2;
-    string values = 3; // JSON string listing all attributes within this AttributeEntry
-    uint32 survey_id = 4;
-    google.protobuf.Timestamp date_surveyed = 5;
-    string added_by = 6;
-    string primary_attribute = 7;
+message Attribute {
+    uint32 road_id = 1; // road_id + primary_attribute + survey_id = unique key for this data
+    string road_code = 2;
+    string primary_attribute = 3;
+    float chainage_start = 4;
+    float chainage_end = 5;
+    uint32 survey_id = 6;
+    uint32 user_id = 7;
+    google.protobuf.Timestamp date_surveyed = 8;
+    string added_by = 9; // The full name of the user who added the original survey for the primary_attribute
+    string value = 10;
 }

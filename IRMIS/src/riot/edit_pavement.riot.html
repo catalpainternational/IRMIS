@@ -226,18 +226,15 @@
         import Edit_Modal from "./edit_modal.riot.html";
         import Stacked_Bar from "./stacked_bar.riot.html";
 
-        import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
-        import {cloneData, toChainageFormat} from "../assets/protoBufUtilities";
-        import {Survey, Report} from "../../protobuf/survey_pb";
+        import { createSurvey, deleteSurvey, updateSurvey } from "../surveyManager";
+        import { cloneData, toChainageFormat } from "../assets/protoBufUtilities";
+        import { withinMaxDigits } from "../assets/utilities";
+        import { Survey, Report } from "../../protobuf/survey_pb";
 
         import $ from "jquery";
 
         function checkRequiredFields(fieldNames, data, errors) {
             return fieldNames.filter((fieldName) => {return !data[fieldName];});
-        }
-
-        function withinMaxDigits(text, limit, decimals) {
-            return (new RegExp(`^\\d{0,${(limit - decimals)}}(\\.\\d{1,${decimals}})?$`).test(text));
         }
 
         export default {
@@ -271,10 +268,11 @@
             },
 
             // Condition Survey
-            onMounted(props, state) {
+            onBeforeMount(props, state) {
                 state.loading = true;
                 state.road = cloneData(props.road);
-
+            },
+            onMounted(props, state) {
                 this.props.parent.updateReportAttributeSummary(state, "surface_type", props.parent.emptyAttributes);
                 this.props.parent.updateReportAttributeSummary(state, "pavement_class", props.parent.emptyAttributes);
 
@@ -601,6 +599,7 @@
                         }
                         this.state.survey = allSurveys.find((s) => {return s.id == rowId;});
                         if (this.state.survey) {
+                            this.state.survey.setRoadId(this.state.road.getId());
                             this.state.survey.setValues(JSON.stringify({}));
                             this.saveSurvey();
                         }
@@ -657,7 +656,8 @@
                         dateSurveyed.fromDate(surveyDate);
                         this.state.survey.setDateSurveyed(dateSurveyed);
                         // set Survey road from state Road road_code
-                        this.state.survey.setRoad(this.state.road.getRoadCode());
+                        this.state.survey.setRoadId(this.state.road.getId());
+                        this.state.survey.setRoadCode(this.state.road.getRoadCode());
                         this.saveSurvey();
                     }
 
@@ -747,7 +747,7 @@
             checkChainage(e) {
                 const fieldName = e.currentTarget.name;
                 const input = e.currentTarget.value;
-                const testResult = withinMaxDigits(input, this.state.chainageDigits, 0);
+                const testResult = withinMaxDigits(input, this.state.chainageDigits);
                 const errorText = window.gettext(`Chainage cannot contain more than ${this.state.chainageDigits} digits and value shouldn't contain decimals`);
                 this.validate(fieldName, input, testResult, errorText);
             },

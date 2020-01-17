@@ -57,7 +57,7 @@ reports_base {
     }
 }
 
-report {
+report, report_dashboard {
     min-height: calc(100% - 40px);
     display: block;
 
