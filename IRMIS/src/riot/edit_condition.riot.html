@@ -119,18 +119,15 @@
         import Edit_Modal from "./edit_modal.riot.html";
         import Stacked_Bar from "./stacked_bar.riot.html";
 
-        import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
-        import {cloneData, toChainageFormat} from "../assets/protoBufUtilities";
-        import {Survey, Report} from "../../protobuf/survey_pb";
+        import { createSurvey, deleteSurvey, updateSurvey } from "../surveyManager";
+        import { cloneData, toChainageFormat } from "../assets/protoBufUtilities";
+        import { withinMaxDigits } from "../assets/utilities";
+        import { Survey, Report } from "../../protobuf/survey_pb";
 
         import $ from "jquery";
 
         function checkRequiredFields(fieldNames, data, errors) {
             return fieldNames.filter((fieldName) => {return !data[fieldName];});
-        }
-
-        function withinMaxDigits(text, limit, decimals) {
-            return (new RegExp(`^\\d{0,${(limit - decimals)}}(\\.\\d{0,${decimals}})?$`).test(text));
         }
 
         export default {
@@ -335,6 +332,7 @@
                         // void the survey surface_condition value and save
                         this.state.survey = this.state.pendingRows.find((s) => {return s.id == rowId;});
                         if (this.state.survey) {
+                            this.state.survey.setRoadId(this.state.road.getId());
                             this.state.survey.setValues(JSON.stringify({}));
                             this.saveSurvey();
                         }
@@ -386,7 +384,8 @@
                         this.state.survey.setDateSurveyed(dateSurveyed);
 
                         // set Survey road from state Road road_code
-                        this.state.survey.setRoad(this.state.road.getRoadCode());
+                        this.state.survey.setRoadId(this.state.road.getId());
+                        this.state.survey.setRoadCode(this.state.road.getRoadCode());
 
                         this.saveSurvey();
                     }
@@ -476,7 +475,7 @@
             checkChainage(e) {
                 const fieldName = e.currentTarget.name;
                 const input = e.currentTarget.value;
-                const testResult = withinMaxDigits(input, this.state.chainageDigits, 0);
+                const testResult = withinMaxDigits(input, this.state.chainageDigits);
                 const errorText = window.gettext(`Chainage cannot contain more than ${this.state.chainageDigits} digits and value shouldn't contain decimals`);
                 this.validate(fieldName, input, testResult, errorText);
             },

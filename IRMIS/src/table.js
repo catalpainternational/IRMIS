@@ -352,9 +352,9 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
         getRoadReport(filters).then((reportData) => {
             reportTable.clear(); // remove all rows in the table - again
             if (reportData && reportDataTableId) {
-                const attributes = reportData.attributeTables(attr, null, false, true);
-                if (attributes[0].attributeEntries.length) {
-                    reportTable.rows.add(attributes[0].attributeEntries);
+                const attributes = reportData.attributes(attr, null, false, true);
+                if (attributes.attributeEntries.length) {
+                    reportTable.rows.add(attributes.attributeEntries);
                 }
             }
 

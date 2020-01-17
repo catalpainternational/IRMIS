@@ -105,7 +105,7 @@
 
 #report-road-status-bar {
     @extend %stacked-bar-shared;
-    .entry-c {
+    .entry-c, .entry-Kompletu {
         // Complete
         background-color: #03A59A;
     }
@@ -115,12 +115,12 @@
         background-color: #FFC100;
     }
 
-    .entry-p {
+    .entry-p, .entry-Pendente {
         // Pending
         background-color: #FFACAF;
     }
     
-    .entry-n {
+    .entry-n, .entry-Planeadu {
         // Planned
         background-color: #FF5A5F;
     }

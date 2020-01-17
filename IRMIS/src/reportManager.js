@@ -132,7 +132,7 @@ export const reportContent = {
         noReportDescription: window.gettext("The report will be shown in this area and will provide you with detailed Road Network Length Breakdown information. You can use filters to generate a customized report"),
         noReportData: window.gettext("Sorry, data for the road network is not available yet"),
         fixedFilter: {
-            primaryattribute: ["municipality", "road_class", "surface_type"],
+            primaryattribute: ["municipality", "road_type", "surface_type"],
         },
         visibleFilters: {
             municipality: true,

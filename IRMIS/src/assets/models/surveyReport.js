@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import { isArray } from "util";
 
-import { AttributeEntry, AttributeTable, Report } from "../../../protobuf/report_pb";
+import { Attribute, Report } from "../../../protobuf/report_pb";
 
 import { choice_or_default, getFieldName, getHelpText, invertChoices, makeEstradaObject } from "../protoBufUtilities";
 
@@ -29,23 +29,17 @@ const roadReportSchema = {
     attributeTableList: { display: gettext("Attribute Tables") },
 };
 
-const attributeTableSchema = {
-    id: { display: "Id" },
+const attributeSchema = {
+    roadId: { display: gettext("Road Id") },
+    roadCode: { display: gettext("Road Code") },
     primaryAttribute: { display: gettext("Attribute") },
-    secondaryAttribute: { display: gettext("Other Attributes") },
-    attributeEntries: { display: gettext("Lengths") },
-};
-
-const attributeEntrySchema = {
-    id: { display: "Id" },
-    surveyId: { display: "Survey Id" },
     chainageStart: { display: gettext("Chainage Start") },
     chainageEnd: { display: gettext("Chainage End") },
-    lengths: { display: gettext("Lengths") },
+    surveyId: { display: "Survey Id" },
+    userId: { display: "User Id" },
     dateSurveyed: { display: gettext("Survey Date") },
     addedBy: { display: gettext("Added By") },
-    primaryAttribute: { display: gettext("Attribute") },
-    // secondaryAttributes are implied by the contents of `lengths`
+    value: { display: gettext("Value") },
 };
 
 function AdminAreaChoices() {
@@ -76,13 +70,13 @@ export function testKeyIsReal(key) {
     return ["0", "none", "unknown", "nan", "null", "undefined", "false"].indexOf(`${key}`.toLowerCase()) === -1;
 }
 
-function extractCountData(lengthsForType, choices) {
+function extractCountData(lengthsForType, choices, useLengthKeyAsDefault = false) {
     const lengths = [];
     if (lengthsForType) {
         Object.keys(lengthsForType).forEach((key) => {
             let lengthKey = key;
             let lengthKeyHasValue = testKeyIsReal(lengthKey);
-            let title = choice_or_default(lengthKey, choices, "Unknown").toLowerCase();
+            let title = choice_or_default(lengthKey, choices, useLengthKeyAsDefault ? lengthKey : "Unknown").toLowerCase();
 
             if (title === "unknown") {
                 // check if we've actually received the title instead of the key
@@ -185,7 +179,7 @@ export class EstradaNetworkSurveyReport extends Report {
     }
 
     get municipalities() {
-        return this.filter.municipality || [];
+        return extractCountData(this.lengths.municipality, AdminAreaChoices());
     }
 
     get numberLanes() {
@@ -237,13 +231,14 @@ export class EstradaNetworkSurveyReport extends Report {
 }
 
 export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
-    get attributeTablesList() {
-        const attributeTablesRaw = this.getAttributeTablesList();
-        return attributeTablesRaw.map(this.makeEstradaSurveyAttributeTable);
+    /// 'v2' of the reports proto
+    get attributesList() {
+        const attributesRaw = this.getAttributesList();
+        return attributesRaw.map(this.makeEstradaSurveyAttribute);
     }
 
     get municipalities() {
-        return this.makeSpecificLengths("municipality", {});
+        return this.makeSpecificLengths("municipality", AdminAreaChoices());
     }
 
     get numberLanes() {
@@ -290,31 +285,31 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
         return this.makeSpecificLengths("traffic_level", TRAFFIC_LEVEL_CHOICES);
     }
 
-    /** Returns one or more attributeTables matching the criteria
-     * @param {string} primaryAttribute The primaryAttribute (within all of the attribute tables) to search for
-     * @param {Timestamp} [date_surveyed=null] All attribute tables up to and including this date are acceptable (null = take them all)
-     * @param {boolean} [returnAllDates=false] Return all matching attribute tables, false means only return the most recent
-     * @param {boolean} [returnAllEntries=false] Return all entries within thos tables, false means return nothing if there are only 'generated' entries
-     * @return {object[]} An array of simplified attribute table objects
+    /** Returns one or more collections of attributes matching the criteria
+     * @param {string} primaryAttribute The primaryAttribute (within all of the attributes) to search for
+     * @param {Timestamp} [date_surveyed=null] All attributes up to and including this date are acceptable (null = take them all)
+     * @param {boolean} [returnAllDates=false] Return all matching attributes, false means only return the most recent
+     * @param {boolean} [returnAllEntries=false] Return all entries, false means return nothing if there are only 'generated' entries
+     * @return {object[]} An array of simplified attribute objects
      */
-    attributeTables(primaryAttribute, date_surveyed = null, returnAllDates = false, returnAllEntries = false) {
-        let filteredAttributeTables = this.attributeTablesList.filter((attributeTable) => {
-            return attributeTable.primaryAttribute === primaryAttribute;
+    attributes(primaryAttribute, date_surveyed = null, returnAllDates = false, returnAllEntries = false) {
+        let filteredAttributes = this.attributesList.filter((attribute) => {
+            return attribute.primaryAttribute === primaryAttribute;
         });
 
-        if (filteredAttributeTables.length === 0) {
+        if (filteredAttributes.length === 0) {
             return [{date_surveyed: null, attributeEntries: []}];
         }
 
-        // Descending sort most recent date_surveyed, down to null date_surveyed
-        filteredAttributeTables.sort((a, b) => {
-            if (a.date_surveyed && b.date_surveyed) {
-                return (a.date_surveyed > b.date_surveyed) ? -1 : 1;
+        // Descending sort most recent dateSurveyed, down to null dateSurveyed
+        filteredAttributes.sort((a, b) => {
+            if (a.dateSurveyed && b.dateSurveyed) {
+                return (a.dateSurveyed > b.dateSurveyed) ? -1 : 1;
             }
-            if (a.date_surveyed && !b.date_surveyed) {
+            if (a.dateSurveyed && !b.dateSurveyed) {
                 return -1;
             }
-            if (!a.date_surveyed && b.date_surveyed) {
+            if (!a.dateSurveyed && b.dateSurveyed) {
                 return 1;
             }
 
@@ -323,25 +318,34 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
         });
 
         if (date_surveyed) {
-            filteredAttributeTables = filteredAttributeTables.filter((attributeTable) => {
-                if (!attributeTable.date_surveyed) {
+            filteredAttributes = filteredAttributes.filter((attribute) => {
+                if (!attribute.dateSurveyed) {
                     return true;
                 }
 
-                return (attributeTable.date_surveyed <= date_surveyed);
+                return (attribute.dateSurveyed <= date_surveyed);
             });
         }
 
-        if (!returnAllDates) {
-            filteredAttributeTables = [filteredAttributeTables[0]];
+        // Temporarily commented out until actual date_filtering done
+        // if (!returnAllDates) {
+        //     filteredAttributes = [filteredAttributes];
+        // }
+
+        if (!returnAllEntries) {
+            const allGenerated = filteredAttributes.filter((attribute) => {
+                return attribute.userId;
+            }).length === 0;
+
+            if (allGenerated) {
+                filteredAttributes = [];
+            }
         }
 
-        return filteredAttributeTables.map((attributeTable) => {
-            return {
-                date_surveyed: attributeTable.date_surveyed,
-                attributeEntries: attributeTable.attributeEntries(returnAllEntries)
-            };
-        })
+        return {
+            date_surveyed: date_surveyed,
+            attributeEntries: filteredAttributes
+        };
     }
 
     static getFieldName(field) {
@@ -352,93 +356,38 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
         return getHelpText(roadReportSchema, field);
     }
 
-    makeSpecificLengths(primary_attribute, choices) {
+    makeSpecificLengths(primary_attribute, choices, useLengthKeyAsDefault = false) {
         const lengthsForType = this.lengths[primary_attribute] || {}
 
-        return extractCountData(lengthsForType, choices);
+        return extractCountData(lengthsForType, choices, useLengthKeyAsDefault);
     }
 
-    makeEstradaSurveyAttributeTable(pbattributetable) {
-        return makeEstradaObject(EstradaSurveyAttributeTable, pbattributetable);
+    makeEstradaSurveyAttribute(pbattribute) {
+        return makeEstradaObject(EstradaSurveyAttribute, pbattribute);
     }
 }
 
-export class EstradaSurveyAttributeTable extends AttributeTable {
+export class EstradaSurveyAttribute extends Attribute {
     getId() {
-        return `${this.primaryAttribute}(${this.dateSurveyed} || "") ${this.secondaryAttributeList.join(", ")}`.trim();
+        return `${this.roadId}_${this.primaryAttribute}-${this.surveyId}`;
     }
 
     get id() {
         return this.getId();
     }
 
-    /** Get the 'Primary' Attribute of this attribute table,
-     * this name MUST occur in the attribute_entry lengths member
-     */
+    get roadId() {
+        return this.getRoadId();
+    }
+
+    get roadCode() {
+        return this.getRoadCode();
+    }
+        
     get primaryAttribute() {
         return this.getPrimaryAttribute() || "";
     }
-
-    /** Get the 'Date_Surveyed' Attribute of this attribute table,
-     * primary_attribute + date_surveyed = attributeTable's unique key
-     * 
-     * This is the maximum (most recent) date_surveyed found in the attributeEntries
-     */
-    get dateSurveyed() {
-        return this.getDateSurveyed() || null;
-    }
-
-    /** Get any 'Secondary' Attributes of this attribute table,
-     * these names identify attributes that are 'averaged' relative to the primary attribute
-     */
-    get secondaryAttributeList() {
-        return this.getSecondaryAttributeList() || [];
-    }
-
-    get attributeEntriesList() {
-        return this.attributeEntries();
-    }
-
-    attributeEntries(returnAll = false) {
-        const attributeEntriesRaw = this.getAttributeEntriesList();
-        if (attributeEntriesRaw.length === 1 && attributeEntriesRaw[0].getSurveyId() === 0 && !returnAll) {
-            // Only a single generated attribute table
-            // Which means that there are actually no real attribute tables
-            return [];
-        }
-        return attributeEntriesRaw.map(this.makeEstradaSurveyAttributeEntry);
-    }
-
-    static getFieldName(field) {
-        return getFieldName(attributeTableSchema, field);
-    }
-
-    static getHelpText(field) {
-        return getHelpText(attributeTableSchema, field);
-    }
-
-    makeEstradaSurveyAttributeEntry(pbattributeentry) {
-        return makeEstradaObject(EstradaSurveyAttributeEntry, pbattributeentry);
-    }
-}
-
-export class EstradaSurveyAttributeEntry extends AttributeEntry {
-    getId() {
-        return this.getSurveyId();
-    }
-
-    get id() {
-        return this.getId();
-    }
-
-    get surveyId() {
-        return this.getSurveyId();
-    }
-
-    get addedBy() {
-        return this.getAddedBy() || "";
-    }
-
+        
     get chainageStart() {
         return this.getChainageStart() || 0;
     }
@@ -447,10 +396,14 @@ export class EstradaSurveyAttributeEntry extends AttributeEntry {
         return this.getChainageEnd();
     }
 
-    get length() {
-        return this.chainageEnd - this.chainageStart;
+    get surveyId() {
+        return this.getSurveyId();
     }
 
+    get userId() {
+        return this.getUserId();
+    }
+    
     get dateSurveyed() {
         const pbufData = this.getDateSurveyed();
         if (!pbufData || !pbufData.getSeconds()) {
@@ -460,39 +413,40 @@ export class EstradaSurveyAttributeEntry extends AttributeEntry {
         return date.isValid() ? date.format("YYYY-MM-DD") : "";
     }
 
-    /** Get the 'Primary' Attribute of this attribute table,
-     * this name MUST occur in the lengths member
-     */
-    get primaryAttribute() {
-        return this.getPrimaryAttribute() || "";
+    get addedBy() {
+        return this.getAddedBy() || "";
     }
 
-    /** Get any 'Secondary' Attributes of this attribute table,
-     * these names identify attributes that are 'averaged' relative to the primary attribute
-     */
-    get secondaryAttributeList() {
-        const allAttributes = Object.keys(this.values) || [];
-        return allAttributes.filter((attribute) => attribute !== this.primaryAttribute);
+    get value() {
+        return this.getValue() || "";
+    }
+
+    get length() {
+        return this.chainageEnd - this.chainageStart;
     }
 
     get municipality() {
-        return this.values.municipality || gettext("Unknown");
+        return this.primaryAttribute === "municipality" ? this.value || gettext("Unknown") : gettext("Unknown");
     }
 
     get carriagewayWidth() {
-        return this.values.carriageway_width || gettext("Unknown");
+        return this.primaryAttribute === "carriageway_width" ? this.value || gettext("Unknown") : gettext("Unknown");
     }
 
     get numberLanes() {
-        return this.values.number_lanes || gettext("Unknown");
+        return this.primaryAttribute === "number_lanes" ? this.value || gettext("Unknown") : gettext("Unknown");
     }
 
     get pavementClass() {
-        return gettext(choice_or_default(this.values.pavement_class, PAVEMENT_CLASS_CHOICES, "Unknown"));
+        return this.primaryAttribute === "pavement_class"
+            ? gettext(choice_or_default(this.value, PAVEMENT_CLASS_CHOICES, "Unknown"))
+            : gettext("Unknown");
     }
 
     get rainfall() {
-        return gettext(this.values.rainfall || "Unknown");
+        return this.primaryAttribute === "rainfall"
+            ? gettext(this.value || "Unknown")
+            : gettext("Unknown");
     }
 
     get roadClass() {
@@ -500,39 +454,46 @@ export class EstradaSurveyAttributeEntry extends AttributeEntry {
     }
 
     get roadType() {
-        return gettext(choice_or_default(this.values.road_type, ROAD_TYPE_CHOICES, "Unknown"));
+        return this.primaryAttribute === "road_type"
+            ? gettext(choice_or_default(this.value, ROAD_TYPE_CHOICES, "Unknown"))
+            : gettext("Unknown");
     }
 
     get surfaceCondition() {
-        return gettext(choice_or_default(this.values.surface_condition, SURFACE_CONDITION_CHOICES, "Unknown"));
+        return this.primaryAttribute === "surface_condition"
+            ? gettext(choice_or_default(this.value, SURFACE_CONDITION_CHOICES, "Unknown"))
+            : gettext("Unknown");
     }
 
     get surfaceType() {
-        return gettext(choice_or_default(this.values.surface_type, SURFACE_TYPE_CHOICES, "Unknown"));
+        return this.primaryAttribute === "surface_type"
+            ? gettext(choice_or_default(this.value, SURFACE_TYPE_CHOICES, "Unknown"))
+            : gettext("Unknown");
     }
 
     get technicalClass() {
-        return gettext(choice_or_default(this.values.technical_class, TECHNICAL_CLASS_CHOICES, "Unknown"));
+        return this.primaryAttribute === "technical_class"
+            ? gettext(choice_or_default(this.value, TECHNICAL_CLASS_CHOICES, "Unknown"))
+            : gettext("Unknown");
     }
 
     get terrainClass() {
-        return gettext(choice_or_default(this.values.terrain_class, TERRAIN_CLASS_CHOICES, "Unknown"));
+        return this.primaryAttribute === "terrain_class"
+            ? gettext(choice_or_default(this.value, TERRAIN_CLASS_CHOICES, "Unknown"))
+            : gettext("Unknown");
     }
 
     get trafficLevel() {
-        return gettext(choice_or_default(this.values.traffic_level, TRAFFIC_LEVEL_CHOICES, "Unknown"));
-    }
-
-    get values() {
-        const jsonValues = this.getValues() || "{}";
-        return JSON.parse(jsonValues);
+        return this.primaryAttribute === "traffic_level"
+            ? gettext(choice_or_default(this.value, TRAFFIC_LEVEL_CHOICES, "Unknown"))
+            : gettext("Unknown");
     }
 
     static getFieldName(field) {
-        return getFieldName(attributeEntrySchema, field);
+        return getFieldName(attributeSchema, field);
     }
 
     static getHelpText(field) {
-        return getHelpText(attributeEntrySchema, field);
+        return getHelpText(attributeSchema, field);
     }
 }
