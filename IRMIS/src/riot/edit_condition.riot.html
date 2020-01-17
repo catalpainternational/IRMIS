@@ -407,11 +407,13 @@
                             this.update({
                                 survey: new Survey({}), // clear input values
                             });
-                            $("#loading").modal("hide");
                             this.props.showFeedback();
                         })
                         .catch((err) => {
                             this.props.showFeedback(true);
+                        })
+                        .finally((r) => {
+                            $("#loading").modal("hide");
                         });
                 } else {
                     updateSurvey(this.state.survey)
@@ -420,11 +422,13 @@
                             this.update({
                                 survey: new Survey({}), // clear input values
                             });
-                            $("#loading").modal("hide");
                             this.props.showFeedback();
                         })
                         .catch((err) => {
                             this.props.showFeedback(true);
+                        })
+                        .finally((r) => {
+                            $("#loading").modal("hide");
                         });
                 }
                 // clear input values
