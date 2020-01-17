@@ -10,7 +10,8 @@ package assets;
 message Survey {
   /* Note that field Id numbers once used, are fixed. */
   uint32 id = 1;
-  string road = 2;
+  uint32 road_id = 12;
+  string road_code = 2; // This was just 'road' before - it still has the same meaning now
   uint32 user = 3;
   string source = 9;
   google.protobuf.Timestamp date_updated = 4;

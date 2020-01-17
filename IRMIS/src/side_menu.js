@@ -3,12 +3,12 @@ import "select2/dist/js/select2.full.min.js";
 
 import { dispatch } from "./assets/utilities";
 
-import { toggleFilter, clearFilter, clearAllFilters} from './filter';
+import { toggleFilter, clearFilter, clearAllFilters, filterDetail } from "./filter";
 
 let filterUIState = {};
 
 $(document).ready(function(){
-    // setup rode_code and administrative_area filters with select2
+    // setup road_code and administrative_area filters with select2
     $('.filter_select2').select2({
         width: "100%",
         containerCssClass: "filter-select2",
@@ -24,6 +24,9 @@ $(document).ready(function(){
 
     // switch map and table views
     $('#view a').click(change_view);
+
+    // switch asset types
+    $('#assetType a').click(change_assetType);
 
     // toggle filter open/close
     $('.filterToggle').click(toggleFilterOpen);
@@ -70,94 +73,113 @@ function change_view(e) {
 
     for (let index = 0; index < siblings.length; index += 1) {
         const sibling = siblings[index];
-        if (sibling !== e.currentTarget) { sibling.classList.remove("active"); }
+        if (sibling !== e.currentTarget) {
+            sibling.classList.remove("active");
+        }
     }
     e.currentTarget.classList.add("active");
+
+    dispatch("estrada.sideMenu.viewChanged", { "detail": { viewName } });
+}
+
+function change_assetType(e) {
+    const assetTypeName = e.currentTarget.attributes['data-filtername'].value;
+    const siblings = document.getElementById("assetType").children;
+    const filterSections = document.getElementsByClassName("filters-section");
+
+    for (let index = 0; index < siblings.length; index++) {
+        const sibling = siblings[index];
+        if (sibling !== e.currentTarget) {
+            sibling.classList.remove("active");
+        }
+    }
+    e.currentTarget.classList.add("active");
+
+    for (let index = 0; index < filterSections.length; index++) {
+        const filterSection = filterSections[index];
+        const sectionClasses = filterSection.classList;
+        if (sectionClasses.contains(assetTypeName)) {
+            filterSection.removeAttribute("hidden");
+        } else {
+            filterSection.setAttribute("hidden", true)
+        }
+    }
+
+    dispatch("estrada.sideMenu.assetTypeChanged", { "detail": { assetTypeName } });
 }
 
 function toggleFilterSelect2(e) {
-    const element = e.currentTarget;
+    const fd = filterDetail(e);
     const value = e.params.data.id;
-    const filter = element.closest('.filter');
-    const slug = filter.attributes['data-slug'].value;
-    const header = filter.querySelector('.header');
-    const clear = filter.querySelector(".clear-select2");
+    const clear = fd.filter.querySelector(".clear-select2");
 
-    if (element.value !== "") {
-        header.classList.add("active");
+    if (fd.element.value !== "") {
+        fd.header.classList.add("active");
         clear.hidden = false;
     } else {
-        header.classList.remove("active");
+        fd.header.classList.remove("active");
         clear.hidden = true;
     }
 
-    toggleFilter(slug, value);
+    toggleFilter(fd.slug, value);
 }
 
 function toggleFilterOption(e) {
-    const element = e.currentTarget;
-    const value = element.attributes['data-option'].value;
+    const fd = filterDetail(e);
+    const value = fd.element.attributes['data-option'].value;
+    const clear = fd.filter.querySelector(".clear-filter");
+    const checkbox = fd.element.querySelector("span");
 
-    const filter = element.closest('.filter');
-    const slug = filter.attributes['data-slug'].value;
-    const clear = filter.querySelector(".clear-filter");
-    const header = filter.querySelector('.header');
-
-    const checkbox = element.querySelector("span");
     checkbox.classList.toggle("selected");
 
-    if (filter.getElementsByClassName("selected").length > 0) {
-        header.classList.add("active");
+    if (fd.filter.getElementsByClassName("selected").length > 0) {
+        fd.header.classList.add("active");
         clear.hidden = false;
     } else {
-        header.classList.remove("active");
+        fd.header.classList.remove("active");
         clear.hidden = true;
     }
 
-    toggleFilter(slug, value);
+    toggleFilter(fd.slug, value);
 }
 
 function toggleFilterOpen(e) {
-    const element = e.currentTarget;
-    const filter = element.closest('.filter');
-    const header = filter.querySelector('.header');
-    const options = filter.querySelector('.options');
-    const slug = filter.attributes['data-slug'].value;
+    const fd = filterDetail(e);
+    const options = fd.filter.querySelector('.options');
 
-    toggleFilterUIState(slug);
-    if (element.classList.contains("plus")) {
-        element.classList.replace("plus", "minus");
+    toggleFilterUIState(fd.slug);
+    if (fd.element.classList.contains("plus")) {
+        fd.element.classList.replace("plus", "minus");
     } else {
-        element.classList.replace("minus", "plus");
+        fd.element.classList.replace("minus", "plus");
     }
-    header.classList.toggle('open');
-    options.hidden = !isFilterOpen(slug);
+    fd.header.classList.toggle('open');
+    options.hidden = !isFilterOpen(fd.slug);
 }
 
 function clear_filter(e) {
-    const element = e.currentTarget;
-    const filter = element.closest('.filter');
-    const slug = filter.attributes['data-slug'].value;
-    const header = filter.querySelector('.header');
-    const checkboxes = filter.getElementsByClassName("selected");
+    const fd = filterDetail(e);
+    const clear = fd.filter.getElementsByClassName("clear-filter");
+    const checkboxes = fd.filter.getElementsByClassName("selected");
+
     while (checkboxes.length) {
         checkboxes[0].classList.remove("selected");
     }
-    header.classList.remove("active");
-    filter.getElementsByClassName("clear-filter").item(0).hidden = true;
-    clearFilter(slug);
+    fd.header.classList.remove("active");
+    clear.item(0).hidden = true;
+    clearFilter(fd.slug);
 }
 
 function clear_select2(e) {
-    const element = e.currentTarget;
-    const filter = element.closest('.filter');
-    const slug = filter.attributes['data-slug'].value;
-    // trigger clearing of select2
-    $(".filter_select2", filter).val([]).trigger('change');
+    const fd = filterDetail(e);
+    const clear = fd.filter.querySelector(".clear-select2");
 
-    filter.querySelector(".header").classList.remove("active");
-    filter.querySelector(".clear-select2").hidden = true;
-    clearFilter(slug);
+    // trigger clearing of select2
+    $(".filter_select2", fd.filter).val([]).trigger('change');
+
+    fd.header.classList.remove("active");
+    clear.hidden = true;
+    clearFilter(fd.slug);
 }
 
 function clear_all_filters() {

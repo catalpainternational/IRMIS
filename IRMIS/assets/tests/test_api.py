@@ -250,12 +250,14 @@ def test_survey_create(client, django_user_model):
     group = Group.objects.get(name="Editors")
     user.groups.add(group)
     client.force_login(user)
+    # create a road
+    road_code = "A01"
+    road = Road.objects.create(**{"road_code": road_code})
     # build protobuf to send new survey
     pb = survey_pb2.Survey()
     pb.user = user.pk
-    group = Group.objects.get(name="Editors")
-    user.groups.add(group)
-    pb.road = "A01"
+    pb.road_id = road.id
+    pb.road_code = road_code
     pb.chainage_start = 6000.0
     pb.chainage_end = 7000.0
     pb.values = json.dumps({"traffic_level": "None", "surface_condition": "2"})
@@ -279,11 +281,15 @@ def test_survey_edit_update(client, django_user_model):
     group = Group.objects.get(name="Editors")
     user.groups.add(group)
     client.force_login(user)
+    # create a road
+    road_code = "A01"
+    road = Road.objects.create(**{"road_code": road_code})
+    # create a survey
     with reversion.create_revision():
-        # create a survey
         survey = Survey.objects.create(
             **{
-                "road": "A01",
+                "road_id": road.id,
+                "road_code": road_code,
                 "user": user,
                 "chainage_start": 600.0,
                 "chainage_end": 700.25,
@@ -356,11 +362,15 @@ def test_survey_delete(client, django_user_model):
     group = Group.objects.get(name="Editors")
     user.groups.add(group)
     client.force_login(user)
+    # create a road
+    road_code = "A01"
+    road = Road.objects.create(**{"road_code": road_code})
+    # create a survey
     with reversion.create_revision():
-        # create a survey
         survey = Survey.objects.create(
             **{
-                "road": "A01",
+                "road_id": road.id,
+                "road_code": road_code,
                 "user": user,
                 "chainage_start": 600.0,
                 "chainage_end": 700.25,

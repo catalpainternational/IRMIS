@@ -36,7 +36,7 @@
                 { window.gettext("Add") }</button>
         </div>
 
-        <stacked_bar hidden id="{ rainfall_stacked_bar_id }" entries="{ state.rainfalls }"
+        <stacked_bar id="{ rainfall_stacked_bar_id }" entries="{ state.rainfalls }"
             total_title="{ window.gettext('Total road chainage') }">
         </stacked_bar>
 
@@ -112,7 +112,7 @@
             <section>
                 <h6>{ window.gettext("Terrain Class") }</h6>
                 <div class="form-group">
-                    <label>{ terrainClasses.display }</label>
+                    <label>{ terrains.display }</label>
                     <span class="required">*</span>
                     <div if="{ state.errors.terrainClass }" class="invalid-tooltip">
                         <ul>
@@ -120,7 +120,7 @@
                         </ul>
                     </div>
                     <ul class="terrain-class">
-                        <li each="{terrain in terrainClasses.options}" data-terrain="{terrain[0]}"
+                        <li each="{terrain in terrains.options}" data-terrain="{terrain[0]}"
                             onclick="{checkTerrainClass}">
                             <span
                                 class="{terrain[0] == state.survey.terrainClass ? 'active' : ''  } radio image"></span>
@@ -190,7 +190,7 @@
             <section>
                 <h6>{ window.gettext("Rainfall") }</h6>
                 <div class="form-group">
-                    <label>{ rainfalls.display }</label>
+                    <label>{ rainfallRanges.display }</label>
                     <span class="required">*</span>
                     <small class="form-text text-muted">{ props.parent.getHelpText("rainfall") } (mm)</small>
                     <div if="{ state.errors.rainfall }" class="invalid-tooltip">
@@ -221,18 +221,15 @@
         import Edit_Modal from "./edit_modal.riot.html";
         import Stacked_Bar from "./stacked_bar.riot.html";
 
-        import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
-        import {cloneData, toChainageFormat} from "../assets/protoBufUtilities";
-        import {Survey, Report} from "../../protobuf/survey_pb";
+        import { createSurvey, deleteSurvey, updateSurvey } from "../surveyManager";
+        import { cloneData, toChainageFormat } from "../assets/protoBufUtilities";
+        import { withinMaxDigits } from "../assets/utilities";
+        import { Survey, Report } from "../../protobuf/survey_pb";
 
         import $ from "jquery";
 
         function checkRequiredFields(fieldNames, data, errors) {
             return fieldNames.filter((fieldName) => {return !data[fieldName];});
-        }
-
-        function withinMaxDigits(text, limit, decimals) {
-            return (new RegExp(`^\\d{0,${(limit - decimals)}}(\\.\\d{1,${decimals}})?$`).test(text));
         }
 
         export default {
@@ -355,13 +352,13 @@
             terrain_current_data_table_id: "terrain-type-report-table",
             terrain_all_data_table_id: "terrain-type-table",
             terrain_modal_id: "terrain-type-modal",
-            rainfall_stacked_bar_id: "rainfall-class-stacked-bar",
-            rainfall_current_data_table_id: "rainfall-class-report-table",
-            rainfall_all_data_table_id: "rainfall-class-table",
-            rainfall_modal_id: "rainfall-class-modal",
+            rainfall_stacked_bar_id: "rainfall-stacked-bar",
+            rainfall_current_data_table_id: "rainfall-report-table",
+            rainfall_all_data_table_id: "rainfall-table",
+            rainfall_modal_id: "rainfall-modal",
 
             // Terrain Class Table
-            terrainClasses: window.road_schema.terrain_class,
+            terrains: window.road_schema.terrain_class,
             terrain_current_data_table_columns_order: [[0, 'asc']],
             terrain_current_data_table_columns: [
                 {
@@ -456,7 +453,7 @@
                 },
             ],
             // Rainfall Class Table
-            rainfalls: window.road_schema.rainfall,
+            rainfallRanges: window.road_schema.rainfall,
             rainfall_current_data_table_columns_order: [[0, 'asc']],
             rainfall_current_data_table_columns: [
                 {
@@ -597,6 +594,7 @@
                         }
                         this.state.survey = allSurveys.find((s) => {return s.id == rowId;});
                         if (this.state.survey) {
+                            this.state.survey.setRoadId(this.state.road.getId());
                             this.state.survey.setValues(JSON.stringify({}));
                             this.saveSurvey();
                         }
@@ -653,7 +651,8 @@
                         dateSurveyed.fromDate(surveyDate);
                         this.state.survey.setDateSurveyed(dateSurveyed);
                         // set Survey road from state Road road_code
-                        this.state.survey.setRoad(this.state.road.getRoadCode());
+                        this.state.survey.setRoadId(this.state.road.getId());
+                        this.state.survey.setRoadCode(this.state.road.getRoadCode());
                         this.saveSurvey();
                     }
 
@@ -743,7 +742,7 @@
             checkChainage(e) {
                 const fieldName = e.currentTarget.name;
                 const input = e.currentTarget.value;
-                const testResult = withinMaxDigits(input, this.state.chainageDigits, 0);
+                const testResult = withinMaxDigits(input, this.state.chainageDigits);
                 const errorText = window.gettext(`Chainage cannot contain more than ${this.state.chainageDigits} digits and value shouldn't contain decimals`);
                 this.validate(fieldName, input, testResult, errorText);
             },
@@ -754,7 +753,7 @@
             checkRainfall(e) {
                 const fieldName = e.currentTarget.name;
                 const input = e.currentTarget.value;
-                const testResult = withinMaxDigits(input, this.state.rainfallDigits, 0);
+                const testResult = withinMaxDigits(input, this.state.rainfallDigits);
                 const errorText = window.gettext(`Rainfall cannot contain more than ${this.state.chainageDigits} digits and value shouldn't contain decimals`);
                 this.validate(fieldName, input, testResult, errorText);
             },

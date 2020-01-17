@@ -255,17 +255,17 @@
                 }
             },
             refreshSurveysAndReports(state, allDataTableId, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId = null) {
-                this.getRoadSurveys(state, allDataTableId, primaryAttribute);
+                this.getRoadSurveys(state, allDataTableId, primaryAttribute, reportAttribute);
                 this.getRoadSurveyReports(state, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId);
             },
-            getRoadSurveys(state, allDataTableId, primaryAttribute) {
+            getRoadSurveys(state, allDataTableId, primaryAttribute, reportAttribute) {
                 const roadId = state.road.getId();
 
                 getRoadSurveys(roadId, primaryAttribute)
                     .then((surveyData) => {
                         if (surveyData) {
                             state.pendingRows = surveyData.map((data) => {
-                                data.title = data.surface;
+                                data.title = data[reportAttribute] || data.values[primaryAttribute] || "";
                                 return data;
                             });
 
@@ -305,9 +305,11 @@
                             if (haveLengths && reportAttributes.length) {
                                 updateReportAttributeSummary(state, reportAttribute, reportAttributes);
 
-                                if (stackedBarId) document.dispatchEvent(new CustomEvent(`${stackedBarId}.dataUpdated`, {detail: {entries: state[reportAttribute]}}));
+                                if (stackedBarId) {
+                                    document.dispatchEvent(new CustomEvent(`${stackedBarId}.dataUpdated`, {detail: {entries: state[reportAttribute]}}));
+                                }
 
-                                state.reportRows = surveyReportData.attributeTable(primaryAttribute);
+                                state.reportRows = surveyReportData.attributes(primaryAttribute).attributeEntries;
 
                                 const eventName = `${reportDataTableId}.dataAdded`;
                                 const eventDetail = {detail: {pendingRows: state.reportRows, clearRows: true}};

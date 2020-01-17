@@ -15,8 +15,8 @@ export class EstradaSurvey extends Survey {
         return this.getId();
     }
 
-    get road() {
-        return this.getRoad();
+    get roadCode() {
+        return this.getRoadCode();
     }
 
     get user() {
@@ -48,6 +48,8 @@ export class EstradaSurvey extends Survey {
         return this.getSource();
     }
 
+    // All of the `values` defined in 'make_road_surveys.py' should also be present
+    // in the following `get` properties
     get surfaceCondition() {
         return choice_or_default(this.values.surface_condition, SURFACE_CONDITION_CHOICES);
     }

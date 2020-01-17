@@ -91,7 +91,8 @@ proto.assets.Survey.prototype.toObject = function(opt_includeInstance) {
 proto.assets.Survey.toObject = function(includeInstance, msg) {
   var f, obj = {
     id: jspb.Message.getFieldWithDefault(msg, 1, 0),
-    road: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    roadId: jspb.Message.getFieldWithDefault(msg, 12, 0),
+    roadCode: jspb.Message.getFieldWithDefault(msg, 2, ""),
     user: jspb.Message.getFieldWithDefault(msg, 3, 0),
     source: jspb.Message.getFieldWithDefault(msg, 9, ""),
     dateUpdated: (f = msg.getDateUpdated()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
@@ -140,9 +141,13 @@ proto.assets.Survey.deserializeBinaryFromReader = function(msg, reader) {
       var value = /** @type {number} */ (reader.readUint32());
       msg.setId(value);
       break;
+    case 12:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setRoadId(value);
+      break;
     case 2:
       var value = /** @type {string} */ (reader.readString());
-      msg.setRoad(value);
+      msg.setRoadCode(value);
       break;
     case 3:
       var value = /** @type {number} */ (reader.readUint32());
@@ -214,7 +219,14 @@ proto.assets.Survey.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
-  f = message.getRoad();
+  f = message.getRoadId();
+  if (f !== 0) {
+    writer.writeUint32(
+      12,
+      f
+    );
+  }
+  f = message.getRoadCode();
   if (f.length > 0) {
     writer.writeString(
       2,
@@ -298,16 +310,31 @@ proto.assets.Survey.prototype.setId = function(value) {
 
 
 /**
- * optional string road = 2;
+ * optional uint32 road_id = 12;
+ * @return {number}
+ */
+proto.assets.Survey.prototype.getRoadId = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 12, 0));
+};
+
+
+/** @param {number} value */
+proto.assets.Survey.prototype.setRoadId = function(value) {
+  jspb.Message.setProto3IntField(this, 12, value);
+};
+
+
+/**
+ * optional string road_code = 2;
  * @return {string}
  */
-proto.assets.Survey.prototype.getRoad = function() {
+proto.assets.Survey.prototype.getRoadCode = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
 
 /** @param {string} value */
-proto.assets.Survey.prototype.setRoad = function(value) {
+proto.assets.Survey.prototype.setRoadCode = function(value) {
   jspb.Message.setProto3StringField(this, 2, value);
 };
 

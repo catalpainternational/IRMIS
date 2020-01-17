@@ -22,7 +22,7 @@
         margin: 0;
     }
 
-    #reports {
+    #reports, #dashboard {
         overflow-y: unset;
         height: unset;
         width: unset;
@@ -44,7 +44,7 @@
         }
     }
 
-    report {
+    report, report_dashboard {
         .report-criteria {
             display: none;
         }

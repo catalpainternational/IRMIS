@@ -17,9 +17,6 @@ export const estradaTableEventListeners = {
         roadList.forEach((road) => pendingRows.push(road));
         if (table) {
             table.rows.add(pendingRows).draw();
-
-            displayRoadTotals(table.page.info().recordsDisplay, table.page.info().recordsTotal);
-
             // truncate the pendingRows (superfast)
             pendingRows.length = 0;
         }
@@ -36,8 +33,14 @@ export const estradaTableEventListeners = {
         Object.keys(idMap).forEach((key) => { idWhitelistMap[key] = idMap[key]; });
 
         table.draw();
-
-        displayRoadTotals(table.page.info().recordsDisplay, table.page.info().recordsTotal);
+    },
+    /** when the view changes adjust the table rows */
+    "estrada.sideMenu.viewChanged": (data, table) => {
+        const viewName = data.detail ? data.detail.viewName : null;
+        if (viewName && viewName.indexOf('table') !== -1) {
+            const tableRows = (viewName === 'table') ? 20 : 10;
+            table.page.len(tableRows).draw('page');
+        }
     },
     /** select a row in the table by id */
     "estrada.table.rowSelected": (data, table) => {
@@ -54,11 +57,6 @@ export const estradaTableEventListeners = {
         }
     }    
 };
-
-function displayRoadTotals(display, total) {
-    const totalRoads = window.gettext(`Road Inventory - ${display} of ${total} roads`);
-    document.getElementById("table-name").innerHTML = totalRoads;
-}
 
 /** Defines the columns for the table on the Estrada main page */
 export const estradaTableColumns = [
