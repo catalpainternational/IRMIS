@@ -59,3 +59,13 @@ export function clearAllFilters() {
 export function applyFilter() {
     dispatch("estrada.filter.apply", { detail: { filterState } });
 }
+
+/** Get the common filter details from the event */
+export function filterDetail(e) {
+    const element = e.currentTarget;
+    const filter = element.closest('.filter');
+    const slug = filter.attributes['data-slug'].value;
+    const header = filter.querySelector('.header');
+
+    return { element, filter, slug, header };
+}
