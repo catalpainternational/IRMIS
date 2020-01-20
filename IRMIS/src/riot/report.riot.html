@@ -469,7 +469,9 @@
 
                                 this.state.reportData.roadStatus = this.prepareTableData(this.dataTableIds.roadStatus, surveyReportData.roadStatuses, "road_status");
                                 this.state.reportData.technicalClass = this.prepareTableData(this.dataTableIds.technicalClass, surveyReportData.technicalClasses, "technical_class");
-                                this.state.reportData.surfaceCondition = this.prepareTableData(this.dataTableIds.surfaceCondition, surveyReportData.surfaceConditions, "surface_condition");
+                                const surfaceConditions = surveyReportData.attributes("surface_condition", null, false, true);
+                                const surfaceConditionAttributes = surfaceConditions ? surfaceConditions.attributeEntries || [] : [];
+                                this.state.reportData.surfaceCondition = this.prepareTableData(this.dataTableIds.surfaceCondition, surfaceConditionAttributes, "surface_condition");
 
                                 this.prepareStackedBar(this.stackedBarIds.roadStatus, surveyReportData.roadStatuses, "road_type");
                                 this.prepareStackedBar(this.stackedBarIds.technicalClass, surveyReportData.technicalClasses, "technical_class");

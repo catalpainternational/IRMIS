@@ -159,6 +159,7 @@
                 }).catch(err => {
                     state.error = err;
                 }).finally((r) => {
+                    $('#loading').modal('hide');
                     this.update();
                 });
             },
