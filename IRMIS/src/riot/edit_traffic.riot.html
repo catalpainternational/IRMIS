@@ -52,30 +52,30 @@
                         <label>{ window.gettext("Survey Date") }</label>
                         <span class="required">*</span>
                         <!-- It would be preferable to use the 'datetime-local' input type, however Firefox currently does not support it -->
-                        <div class="form-inline survey-field-height">
+                        <div class="form-inline survey-field-height contains-tooltip">
                             <span class="date-field-title">
                                 { window.gettext("From") }
                             </span>
                             <input
-                                class="{ state.survey.surveyFromDate ? '' : 'inactive' } date-input-field form-control"
+                                class="{ state.errors.surveyFromDate ? 'danger' : null } { state.survey.surveyFromDate ? '' : 'inactive' } date-input-field form-control"
                                 type="date" id="surveyFromDate" name="surveyFromDate" placeholder="Date"
                                 value="{state.survey.surveyFromDate}" oninput="{checkSurveyDate}" required
                                 pattern="\d{4}-\d{2}-\d{2}" max="{max_date()}">
-                            <div if="{state.errors.surveyFromDate}" class="invalid-tooltip">
+                            <div if="{state.errors.surveyFromDate}" class="invalid-tooltip error-tooltip-date">
                                 <ul>
                                     <li>{ state.errors.surveyFromDate }.</li>
                                 </ul>
                             </div>
                         </div>
-                        <div class="form-inline survey-field-height">
+                        <div class="form-inline survey-field-height contains-tooltip">
                             <span class="date-field-title">
                                 { window.gettext("To") }
                             </span>
-                            <input class="{ state.survey.surveyToDate ? '' : 'inactive' } date-input-field form-control"
+                            <input class="{ state.errors.surveyToDate ? 'danger' : null } { state.survey.surveyToDate ? '' : 'inactive' } date-input-field form-control"
                                 type="date" id="surveyToDate" name="surveyToDate" placeholder="Date"
                                 value="{state.survey.surveyToDate}" oninput="{checkSurveyDate}" required
                                 pattern="\d{4}-\d{2}-\d{2}" max="{max_date()}">
-                            <div if="{state.errors.surveyToDate}" class="invalid-tooltip">
+                            <div if="{state.errors.surveyToDate}" class="invalid-tooltip error-tooltip-date">
                                 <ul>
                                     <li>{ state.errors.surveyToDate }.</li>
                                 </ul>
@@ -89,7 +89,7 @@
                 <div class="form-group">
                     <label>{ window.gettext("Forecast Year") }</label>
                     <span class="required">*</span>
-                    <select class="{ state.survey.forecastYear ? '' : 'inactive' } form-control date-input-field"
+                    <select class="{ state.errors.forecastYear ? 'danger' : null } { state.survey.forecastYear ? '' : 'inactive' } form-control date-input-field"
                         onchange="{checkForecastYear}">
                         <option value="">{ window.gettext("Select forecast year") }</option>
                         <option each="{ year in forecastYears }" value="{ year }"
@@ -107,18 +107,18 @@
                 <div class="form-group traffic-width">
                     <label>{ window.gettext("Total Count per Vehicle Type") }</label>
                     <span class="required">*</span>
-                    <div class="form-inline vehicle-field-height" each="{ vehicle in vehicleTypes.options }">
+                    <div class="form-inline vehicle-field-height contains-tooltip" each="{ vehicle in vehicleTypes.options }">
                         <div class="icon">
                             <span class="{ vehicle[0] } image"></span>
                         </div>
                         <div class="vehicle-name">
                             { vehicle[1] }
                         </div>
-                        <input class="{ state.survey[vehicle[3]] ? '' : 'inactive' } vehicle-input form-control"
+                        <input class="{ state.errors[vehicle[3]] ? 'danger' : null } { state.survey[vehicle[3]] ? '' : 'inactive' } vehicle-input form-control"
                             type="number" name="{ vehicle[3] }" placeholder="0000" value="{ state.survey[vehicle[3]] }"
                             oninput="{checkCount}" min="0" max="999999999" step="1" required>
                         <small>{ vehicle[2] }</small>
-                        <div if="{state.errors[vehicle[3]]}" class="invalid-tooltip">
+                        <div if="{state.errors[vehicle[3]]}" class="invalid-tooltip error-tooltip-vehicle">
                             <ul>
                                 <li>{ state.errors[vehicle[3]] }.</li>
                             </ul>
@@ -294,7 +294,7 @@
                     title: window.gettext("Survey date"),
                     data: "trafficSurveyedDate",
                     defaultContent: "",
-                    className: "text-right",
+                    className: "text-center",
                 },
                 {
                     title: window.gettext("Data type"),
