@@ -484,12 +484,11 @@
                                     break;
                             }
                             if (selectSource) {
-                                expandedPrimaries[parentPrimary] = Object.keys(selectSource)
-                                    .forEach((option) => { return option; });
+                                expandedPrimaries[parentPrimary] = Object.keys(selectSource);
                             }
                         }
                     });
-                    expandedPrimaryKeys = Object.keys(expandedPrimaries);
+                    const expandedPrimaryKeys = Object.keys(expandedPrimaries);
                     if (expandedPrimaryKeys.length === 0) {
                         // Somehow none of our expanded primaries matched up
                         // Have you (the programmer) made relevant code changes to support this secondaryattribute?
@@ -501,13 +500,14 @@
                             return !expandedPrimaryKeys.includes(primaryattribute);
                         });
                         // Build up a new collection of filterSets for every permutation we need
-                        Object.keys(expandedPrimaries).forEach((expandedPrimary) => {
+                        expandedPrimaryKeys.forEach((expandedPrimary) => {
                             // The new primary attributes will include the revised list
                             // plus the secondary attributes that relate to the expanded primary
                             const newPrimaryAttributes = [].concat(revisedPrimary, filterSet.secondaryattribute[expandedPrimary]);
-                            expandedPrimaries[expandedPrimary].forEach((expandedPrimary) => {
+                            expandedPrimaries[expandedPrimary].forEach((ep) => {
                                 const newFilterSet = cloneData(filterSet);
                                 newFilterSet.primaryattribute = newPrimaryAttributes;
+                                newFilterSet[expandedPrimary] = [ep];
                                 delete newFilterSet.secondaryattribute;
                                 filters.push(newFilterSet);
                             });
@@ -561,6 +561,16 @@
                     this.state.noReportData = true;
                 }
             },
+            mergeReports(assembledReportData, survey) {
+                Object.keys(survey.filter).forEach((filterKey) => {
+                    assembledReportData[filterKey] = assembledReportData[filterKey] || [];
+                    survey.filter[filterKey].forEach((filterValue) => {
+                        if (!assembledReportData[filterKey].includes(filterValue)) {
+                            assembledReportData[filterKey].push(filterValue);
+                        }
+                    });
+                });
+            },
             createReport(e) {
                 $('#loading').modal('show');
 
@@ -575,14 +585,36 @@
 
                 Promise.all(getRoadReports)
                     .then((surveyReportData) => {
-                        if (surveyReportData.length === 1) {
-                            this.assembleSurveyReportData(surveyReportData[0]);
-
-                            this.props.showFeedback();
-                        } else {
-                            // An id of null should tell us that there was an error fetching the data
-                            this.props.showFeedback(true);
-                            this.state.noReport = true;
+                        switch (surveyReportData.length) {
+                            case 0:
+                                this.props.showFeedback(true);
+                                this.state.noReport = true;
+                                break;
+                            case 1:
+                                this.assembleSurveyReportData(surveyReportData[0]);
+                                this.props.showFeedback();                                
+                                break;
+                            default:
+                                // A report with secondaryattributes defined
+                                // it will need 'assembling'
+                                const assembledReportData = {
+                                    filter: {},
+                                    lengths: [],
+                                    attributes: []
+                                };
+                                filters.primaryattribute.forEach((primaryattribute) => {
+                                    const filteredSurveys = surveyReportData.filter((survey) => {
+                                        return survey.filter[primaryattribute];
+                                    })
+                                    if (filteredSurveys.length === 1 && filteredSurveys[0].filter.primary_attribute.includes(primaryattribute)) {
+                                        // We didn't have any secondaryattributes for this primaryattribute
+                                        // so just merge it as-is
+                                        assembledReportData = this.mergeReports(assembledReportData, filteredSurveys[0]);
+                                    } else {
+                                        
+                                    }
+                                });
+                                break;
                         }
                     }).catch(err => {
                         this.props.showFeedback(true);
