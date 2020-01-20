@@ -133,6 +133,11 @@ export const reportContent = {
         noReportData: window.gettext("Sorry, data for the road network is not available yet"),
         fixedFilter: {
             primaryattribute: ["municipality", "road_type", "surface_type"],
+            secondaryattribute: {
+                "municipality": ["road_status", "technical_class"],
+                "road_type": ["road_status", "technical_class"],
+                "surface_type": ["road_status", "technical_class"],
+            },
         },
         visibleFilters: {
             municipality: true,
