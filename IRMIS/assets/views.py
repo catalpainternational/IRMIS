@@ -461,7 +461,7 @@ def protobuf_reports(request):
 
     # get/initialise the Filters
     primary_attributes = request.GET.getlist("primaryattribute", [])
-    road_id = request.GET.get("roadid", None)
+    road_id = request.GET.get("road_id", None)
     road_code = request.GET.get("road_code", None)
     chainage_start = None
     chainage_end = None

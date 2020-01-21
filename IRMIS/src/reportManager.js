@@ -106,11 +106,12 @@ export const reportBarIds = {
 };
 
 /** The definitions of the different reports
- * Note: fixedFilters uses snake_case for various field names
+ * Note:
+ * - fixedFilters uses snake_case for various field names
  * this excludes 'primaryattribute' and 'secondaryattribute' because they are not field names
- * visibleFilters uses camelCase for various html id names 
+ * within report.riot.html it also excludes several fields that a heavily verified/manipulated as filters
+ * - visibleFilters uses camelCase for various html id names within report.riot.html
 */
-
 export const reportContent = {
     1: {
         title: window.gettext("Road Network Length"),

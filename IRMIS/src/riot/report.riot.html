@@ -440,10 +440,10 @@
                     filterSet["reportdate"] = this.state.reportDate;
                 }
                 if (this.state.reportStartChainage) {
-                    filterSet["reportstartchainage"] = this.state.reportStartChainage;
+                    filters["chainagestart"] = this.state.reportStartChainage;
                 }
                 if (this.state.reportEndChainage) {
-                    filterSet["reportendchainage"] = this.state.reportEndChainage;
+                    filters["chainageend"] = this.state.reportEndChainage;
                 }
 
                 // Secondary Attributes are handled in a special way
