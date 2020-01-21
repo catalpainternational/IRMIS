@@ -527,7 +527,7 @@ def protobuf_reports(request):
 
     if len(surface_types) > 0:
         final_filters["surface_type"] = surface_types
-    if len(pavement_classes) > 0
+    if len(pavement_classes) > 0:
         final_filters["pavement_class"] = pavement_classes
     if len(surface_conditions) > 0:
         final_filters["surface_condition"] = surface_conditions
