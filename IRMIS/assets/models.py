@@ -21,6 +21,8 @@ import json
 from google.protobuf.timestamp_pb2 import Timestamp
 from google.protobuf.wrappers_pb2 import FloatValue, UInt32Value
 from .geodjango_utils import start_end_point_annos
+from csv_data_sources.models import CsvData
+from .managers import RoughnessManager
 
 
 def no_spaces(value):
@@ -1212,6 +1214,12 @@ class Culvert(models.Model):
     def __str__(self,):
         return "%s(%s)" % (self.structure_name, self.pk)
 
+
+class RoughnessSurvey(CsvData):
+    ''' Proxy model to provide typed access to roughness CSV data '''
+    class Meta:
+        proxy = True
+    objects = RoughnessManager()
 
 def timestamp_from_datetime(dt):
     ts = Timestamp()

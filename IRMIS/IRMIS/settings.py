@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     # IRMIS
     "IRMIS_wagtail",
     "assets",
+    "csv_data_sources",
     "protected_downloads",
     "basemap",
     "rest_framework",
