@@ -276,6 +276,8 @@ class ReportQuery:
                     filter_name = "administrative_area"
                 elif filter_key == "road_id":
                     filter_name = "id"
+                elif filter_key == "surface_type":
+                    filter_name = "surface_type_id"
                 road_clause = "CAST(r." + filter_name + " AS TEXT)=ANY(%s)"
                 road_filter_clauses.append(road_clause)
                 road_filter_cases.append(list(self.filters[filter_key]))

@@ -105,7 +105,13 @@ export const reportBarIds = {
     pavementClass: "report-pavement-class-bar",
 };
 
-/** The definitions of the different reports */
+/** The definitions of the different reports
+ * Note:
+ * - fixedFilters uses snake_case for various field names
+ * this excludes 'primaryattribute' and 'secondaryattribute' because they are not field names
+ * within report.riot.html it also excludes several fields that a heavily verified/manipulated as filters
+ * - visibleFilters uses camelCase for various html id names within report.riot.html
+*/
 export const reportContent = {
     1: {
         title: window.gettext("Road Network Length"),
@@ -179,7 +185,7 @@ export const reportContent = {
         noReportData: window.gettext("Sorry, data for National Class roads is not available yet"),
         fixedFilter: {
             primaryattribute: ["road_status", "technical_class"],
-            roadtype: "NAT",
+            road_type: "NAT",
         },
         visibleFilters: {
             reportDate: true,
@@ -194,7 +200,7 @@ export const reportContent = {
         noReportData: window.gettext("Sorry, data for Municipal Class roads is not available yet"),
         fixedFilter: {
             primaryattribute: ["road_status", "technical_class"],
-            roadtype: "MUN",
+            road_type: "MUN",
         },
         visibleFilters: {
             reportDate: true,
@@ -209,7 +215,7 @@ export const reportContent = {
         noReportData: window.gettext("Sorry, data for Rural Class roads is not available yet"),
         fixedFilter: {
             primaryattribute: ["road_status", "technical_class"],
-            roadtype: "RUR",
+            road_type: "RUR",
         },
         visibleFilters: {
             reportDate: true,
@@ -224,7 +230,7 @@ export const reportContent = {
         noReportData: window.gettext("Sorry, data for Highway Class roads is not available yet"),
         fixedFilter: {
             primaryattribute: ["road_status", "technical_class"],
-            roadtype: "HIGH",
+            road_type: "HIGH",
         },
         visibleFilters: {
             reportDate: true,
@@ -239,7 +245,7 @@ export const reportContent = {
         noReportData: window.gettext("Sorry, data for Urban Class roads is not available yet"),
         fixedFilter: {
             primaryattribute: ["road_status", "technical_class"],
-            roadtype: "URB",
+            road_type: "URB",
         },
         visibleFilters: {
             reportDate: true,
