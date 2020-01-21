@@ -71,7 +71,8 @@
                             <span class="date-field-title">
                                 { window.gettext("To") }
                             </span>
-                            <input class="{ state.errors.surveyToDate ? 'danger' : null } { state.survey.surveyToDate ? '' : 'inactive' } date-input-field form-control"
+                            <input
+                                class="{ state.errors.surveyToDate ? 'danger' : null } { state.survey.surveyToDate ? '' : 'inactive' } date-input-field form-control"
                                 type="date" id="surveyToDate" name="surveyToDate" placeholder="Date"
                                 value="{state.survey.surveyToDate}" oninput="{checkSurveyDate}" required
                                 pattern="\d{4}-\d{2}-\d{2}" max="{max_date()}">
@@ -89,7 +90,8 @@
                 <div class="form-group">
                     <label>{ window.gettext("Forecast Year") }</label>
                     <span class="required">*</span>
-                    <select class="{ state.errors.forecastYear ? 'danger' : null } { state.survey.forecastYear ? '' : 'inactive' } form-control date-input-field"
+                    <select
+                        class="{ state.errors.forecastYear ? 'danger' : null } { state.survey.forecastYear ? '' : 'inactive' } form-control date-input-field"
                         onchange="{checkForecastYear}">
                         <option value="">{ window.gettext("Select forecast year") }</option>
                         <option each="{ year in forecastYears }" value="{ year }"
@@ -107,14 +109,16 @@
                 <div class="form-group traffic-width">
                     <label>{ window.gettext("Total Count per Vehicle Type") }</label>
                     <span class="required">*</span>
-                    <div class="form-inline vehicle-field-height contains-tooltip" each="{ vehicle in vehicleTypes.options }">
+                    <div class="form-inline vehicle-field-height contains-tooltip"
+                        each="{ vehicle in vehicleTypes.options }">
                         <div class="icon">
                             <span class="{ vehicle[0] } image"></span>
                         </div>
                         <div class="vehicle-name">
                             { vehicle[1] }
                         </div>
-                        <input class="{ state.errors[vehicle[3]] ? 'danger' : null } { state.survey[vehicle[3]] ? '' : 'inactive' } vehicle-input form-control"
+                        <input
+                            class="{ state.errors[vehicle[3]] ? 'danger' : null } { state.survey[vehicle[3]] ? '' : 'inactive' } vehicle-input form-control"
                             type="number" name="{ vehicle[3] }" placeholder="0000" value="{ state.survey[vehicle[3]] }"
                             oninput="{checkCount}" min="0" max="999999999" step="1" required>
                         <small>{ vehicle[2] }</small>
@@ -160,7 +164,7 @@
                         <div if="{!state.modalData.values.forecastYear}" class="form-group">
                             <label>{ countingMethods.display }</label>
                             <p class="details-modal-type-spacing">
-                                {state.modalData.values.countMethod == 1 ? 'Electronic' : 'Manual'} 
+                                {state.modalData.values.countMethod == 1 ? 'Electronic' : 'Manual'}
                             </p>
                         </div>
                         <div if="{state.modalData.values.forecastYear}" class="form-group">
@@ -595,8 +599,10 @@
             checkTrafficType(e) {
                 if (e.currentTarget.dataset.type === 'Forecast') {
                     this.requiredFieldNames = ['trafficType', 'forecastYear'];
+                    this.removeErrors(['surveyFromDate', 'surveyToDate']);
                 } else {
                     this.requiredFieldNames = ['trafficType', 'surveyFromDate', 'surveyToDate', 'countMethod'];
+                    this.removeErrors(['forecastYear']);
                 }
                 this.state.survey.trafficType = e.currentTarget.dataset.type;
                 this.canSave();
@@ -609,6 +615,11 @@
                 this.state.modalData = new Survey({});
                 $("#traffic-segments-modal").modal("hide");
                 this.update();
+            },
+            removeErrors(names) {
+                names.forEach((name) => {
+                    delete this.state.errors[name];
+                });
             },
             modal_id: "traffic-modal",
             max_date: () => new Date().toISOString().substring(0, 10),
