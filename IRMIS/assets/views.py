@@ -545,8 +545,6 @@ def protobuf_reports(request):
         road_report.execute_aggregate_query()
     )
 
-    print(json.dumps(final_filters))
-
     report_protobuf.filter = json.dumps(final_filters)
     report_protobuf.lengths = json.dumps(final_lengths)
 
