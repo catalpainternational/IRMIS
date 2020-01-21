@@ -22,13 +22,13 @@
         <div class="d-flex flex-column total-length">
             <p>{ window.gettext("Total Length of Road Network") }</p>
             <h1 if="{!state.reportData.totalLength}">Loading</h1>
-            <h1 if="{state.reportData.totalLength}">{ (state.reportData.totalLength / 1000).toFixed(2) } km</h1>
+            <h1 if="{state.reportData.totalLength}" class="highlight">{ (state.reportData.totalLength / 1000).toFixed(2) } km</h1>
         </div>
 
         <div if="{state.reportData.totalLength && state.road_type}" class="d-flex">
             <div class="d-flex flex-column total-length" each="{ roadClass in state.road_type }">
-                <span>{roadClass.title} </span>
-                <span>{roadClass.distance / 1000}km</span>
+                <p>{roadClass.title} </p>
+                <h1>{roadClass.distance / 1000} km</h1>
             </div>
         </div>
 
