@@ -3,7 +3,10 @@ from django.db.models import Func, FloatField, CharField, DateTimeField
 
 
 class RoughnessRoadCode(Func):
-    """ Road code is stored sometimes under 'Road Code', sometimes 'Road code'
+    """
+    Django Func implementation to extract road code from roughness csv json
+
+    Road code is stored sometimes under 'Road Code', sometimes 'Road code'
     Sometimes it has a road name ( from-to ) after it so only the first 3 characters are needed
     """
 
@@ -23,18 +26,27 @@ class RoughnessRoadCode(Func):
 
 
 class RoughnessLinkCode(Func):
+    """
+    Django Func implementation to extract link code from roughness csv json
+    """
     template = "(data::json->>'Link Code')"
     output_field = CharField()
     default_alias = "link_code"
 
 
 class Roughness(Func):
+    """
+    Django Func implementation to extract roughness as a float from roughness csv json
+    """
     template = "(data::json->>'roughness')::numeric"
     output_field = FloatField()
     default_alias = "roughness"
 
 
 class RoughnessDate(Func):
+    """
+    Django Func implementation to extract and parse timestamp from roughness csv json
+    """
     template = (
         "to_timestamp((data::json->>'Survey date and time'), 'HH24:MI:SS YYY-Month-DD')"
     )
@@ -43,12 +55,18 @@ class RoughnessDate(Func):
 
 
 class RoughnessStartPoint(Func):
+    """
+    Django Func implementation to extract start point from roughness csv json
+    """
     template = "ST_Point((data::json->>'interval_start_latitude')::numeric, (data::json->>'interval_start_longitude')::numeric)"
     output_field = models.PointField()
     default_alias = "start"
 
 
 class RoughnessEndPoint(Func):
+    """
+    Django Func implementation to extract end point from roughness csv json
+    """
     template = "ST_Point((data::json->>'interval_end_latitude')::numeric, (data::json->>'interval_end_longitude')::numeric)"
     output_field = models.PointField()
     default_alias = "end"
