@@ -8,7 +8,7 @@
         </div>
         <div class="table-spacing">
             <data_table table_id="{table_id}" columns="{table_columns}" columnSortOrder="{table_columns_order}"
-                getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows}" canDelete=true>
+                getHelpText="{props.parent.getHelpText}" candelete=true>
             </data_table>
         </div>
     </div>
@@ -155,40 +155,40 @@
                     <section class="details-survey-type">
                         <div class="form-group">
                             <label>{ window.gettext("Survey Type") }</label>
-                            <p if={state.modalData.values} class="details-modal-type-spacing">
-                                { state.modalData.values.trafficType }
+                            <p if={state.survey.values} class="details-modal-type-spacing">
+                                { state.survey.values.trafficType }
                             </p>
                         </div>
                     </section>
-                    <section if="{state.modalData.values}" class="details-forecast-methods-block">
-                        <div if="{!state.modalData.values.forecastYear}" class="form-group">
+                    <section if="{state.survey.values}" class="details-forecast-methods-block">
+                        <div if="{!state.survey.values.forecastYear}" class="form-group">
                             <label>{ countingMethods.display }</label>
                             <p class="details-modal-type-spacing">
-                                {state.modalData.values.countMethod == 1 ? 'Electronic' : 'Manual'}
+                                {state.survey.values.countMethod == 1 ? 'Electronic' : 'Manual'}
                             </p>
                         </div>
-                        <div if="{state.modalData.values.forecastYear}" class="form-group">
+                        <div if="{state.survey.values.forecastYear}" class="form-group">
                             <label>{ window.gettext("Forecast Year") }</label>
                             <p class="details-modal-type-spacing">
-                                {state.modalData.values.forecastYear}
+                                {state.survey.values.forecastYear}
                             </p>
                         </div>
                     </section>
-                    <section if="{state.modalData.values && !state.modalData.values.forecastYear}">
+                    <section if="{state.survey.values && !state.survey.values.forecastYear}">
                         <div class="form-group">
                             <label>{ window.gettext("Survey Date") }</label>
                             <div class="form-inline survey-field-height">
                                 <span class="date-field-title details-modal-date-spacing">
                                     { window.gettext("From") }
                                 </span>
-                                <span if={state.modalData.values} class="details-modal-date">
-                                    {state.modalData.values.surveyFromDate}
+                                <span if={state.survey.values} class="details-modal-date">
+                                    {state.survey.values.surveyFromDate}
                                 </span>
                                 <span class="date-field-title details-modal-date-spacing">
                                     { window.gettext("To") }
                                 </span>
-                                <span if="{state.modalData.values}" class="details-modal-date">
-                                    {state.modalData.values.surveyToDate}
+                                <span if="{state.survey.values}" class="details-modal-date">
+                                    {state.survey.values.surveyToDate}
                                 </span>
                             </div>
                         </div>
@@ -196,7 +196,7 @@
                     <section>
                         <div class="form-group">
                             <label>{ window.gettext("Total Count per Vehicle Type") }</label>
-                            <div if="{state.modalData.values}" class="form-inline vehicle-field-height"
+                            <div if="{state.survey.values}" class="form-inline vehicle-field-height"
                                 each="{ vehicle in vehicleTypes.options }">
                                 <div class="icon">
                                     <span class="{ vehicle[0] } image"></span>
@@ -205,15 +205,15 @@
                                     { vehicle[1] }
                                 </div>
                                 <div class="details-vehicle-spacing details-vehicle-count">
-                                    { JSON.parse(state.modalData.values.counts.replace(/\'/g, '"'))[vehicle[3]] || 0 }
+                                    { JSON.parse(state.survey.values.counts.replace(/\'/g, '"'))[vehicle[3]] || 0 }
                                 </div>
                                 <small>{ vehicle[2] }</small>
                             </div>
                         </div>
                     </section>
-                    <div if={state.modalData.values} class="form-inline details-total">
+                    <div if={state.survey.values} class="form-inline details-total">
                         <span class="details-total-title">{window.gettext("Total")}</span>
-                        <span class="details-total-number">{ state.modalData.values.countTotal }</span>
+                        <span class="details-total-number">{ state.survey.values.countTotal }</span>
                     </div>
                 </div>
             </div>
@@ -249,7 +249,6 @@
                 editMode: false,
                 loading: false,
                 maxCountDigits: 6,
-                modalData: new Survey({}),
             },
             components: {
                 Edit_Modal, Edit_Stop_Alert, Data_Table
@@ -348,9 +347,7 @@
                 document.addEventListener(`${this.table_id}.deleteRow`, this.deleteListener);
 
                 this.trafficDetailsListener = (data) => {
-                    const s = this.state.pendingRows.find((s) => {return s.id == data.detail.rowId;});
-                    const values = JSON.parse(s.getValues());
-                    this.state.modalData = s;
+                    document.dispatchEvent(new CustomEvent(`${this.table_id}.getRowSurvey`, {detail: {rowId: data.detail.rowId, state: this.state}}));
                     this.update();
                     $("#traffic-segments-modal").modal("show");
                 };
@@ -371,8 +368,7 @@
                         this.discardChanges();
                     } else if (stopAlertResult === "delete") {
                         this.state.editMode = true;
-                        // void the survey surface_condition value and save
-                        this.state.survey = this.state.pendingRows.find((s) => {return s.id == rowId;});
+                        document.dispatchEvent(new CustomEvent(`${this.table_id}.getRowSurvey`, {detail: {rowId: rowId, state: this.state}}));
                         if (this.state.survey) {
                             this.state.survey.setValues(JSON.stringify({}));
                             this.saveSurvey();
@@ -612,7 +608,7 @@
                 this.canSave();
             },
             clearDetailsData() {
-                this.state.modalData = new Survey({});
+                this.state.survey = new Survey({});
                 $("#traffic-segments-modal").modal("hide");
                 this.update();
             },

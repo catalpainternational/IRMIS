@@ -21,7 +21,7 @@
         </div>
         <data_table if="{ state.viewAllSurface }" table_id="{surface_all_data_table_id}"
             columns="{surface_all_data_table_columns}" columnSortOrder="{surface_all_data_table_columns_order}"
-            getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows['surface_type']}" canDelete=true>
+            getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows['surface_type']}" candelete=true>
         </data_table>
         <data_table if="{ !state.viewAllSurface }" table_id="{surface_current_data_table_id}"
             columns="{surface_current_data_table_columns}" columnSortOrder="{surface_current_data_table_columns_order}"
@@ -51,7 +51,7 @@
         </div>
         <data_table if="{ state.viewAllPavement }" table_id="{pavement_all_data_table_id}"
             columns="{pavement_all_data_table_columns}" columnSortOrder="{pavement_all_data_table_columns_order}"
-            getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows['pavement_class']}" canDelete=true>
+            getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows['pavement_class']}" candelete=true>
         </data_table>
         <data_table if="{ !state.viewAllPavement }" table_id="{pavement_current_data_table_id}"
             columns="{pavement_current_data_table_columns}"
@@ -87,8 +87,10 @@
                 <div class="form-group">
                     <label>{ window.gettext("Chainage start") } (m)</label>
                     <span class="required">*</span>
-                    <input class="{ state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
-                        type="number" name="startChainage" placeholder="1000" value="{ state.survey.startChainage }" oninput="{ checkChainage }" min="0" max="999999999" step="1" required>
+                    <input
+                        class="{ state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
+                        type="number" name="startChainage" placeholder="1000" value="{ state.survey.startChainage }"
+                        oninput="{ checkChainage }" min="0" max="999999999" step="1" required>
                     <small class="form-text text-muted">{ props.parent.getHelpText("start_chainage") }</small>
                     <div if="{ state.errors.startChainage }" class="invalid-tooltip">
                         <ul>
@@ -99,8 +101,10 @@
                 <div class="form-group">
                     <label>{ window.gettext("Chainage end") } (m)</label>
                     <span class="required">*</span>
-                    <input class="{ state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
-                        type="number" name="endChainage" placeholder="62410" value="{ state.survey.endChainage }" oninput="{ checkChainage }" min="0" max="999999999" step="1" required>
+                    <input
+                        class="{ state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
+                        type="number" name="endChainage" placeholder="62410" value="{ state.survey.endChainage }"
+                        oninput="{ checkChainage }" min="0" max="999999999" step="1" required>
                     <small class="form-text text-muted">{ props.parent.getHelpText("end_chainage") }</small>
                     <div if="{ state.errors.endChainage }" class="invalid-tooltip">
                         <ul>
@@ -120,8 +124,8 @@
                             <li>{ state.errors.surfaceType }.</li>
                         </ul>
                     </div>
-                    <select class="{ state.survey.surfaceType ? '' : 'inactive' } form-control" onchange="{ checkSurfaceType }"
-                        name="surfaceType">
+                    <select class="{ state.survey.surfaceType ? '' : 'inactive' } form-control"
+                        onchange="{ checkSurfaceType }" name="surfaceType">
                         <option value="">{ window.gettext("Select a Surface Type") }</option>
                         <option each="{ surface in surfaces.options }" value="{ surface.code }"
                             selected="{ surface.code == state.survey.surfaceType }">{ surface.name }</option>
@@ -163,8 +167,10 @@
                 <div class="form-group">
                     <label>{ window.gettext("Chainage start") } (m)</label>
                     <span class="required">*</span>
-                    <input class="{ state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
-                        type="number" name="startChainage" placeholder="1000" value="{ state.survey.startChainage }" oninput="{ checkChainage }" min="0" max="999999999" step="1" required>
+                    <input
+                        class="{ state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
+                        type="number" name="startChainage" placeholder="1000" value="{ state.survey.startChainage }"
+                        oninput="{ checkChainage }" min="0" max="999999999" step="1" required>
                     <small class="form-text text-muted">{ props.parent.getHelpText("start_chainage") }</small>
                     <div if="{ state.errors.startChainage }" class="invalid-tooltip">
                         <ul>
@@ -175,8 +181,10 @@
                 <div class="form-group">
                     <label>{ window.gettext("Chainage end") } (m)</label>
                     <span class="required">*</span>
-                    <input class="{ state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
-                        type="number" name="endChainage" placeholder="62410" value="{ state.survey.endChainage }" oninput="{ checkChainage }" min="0" max="999999999" step="1" required>
+                    <input
+                        class="{ state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
+                        type="number" name="endChainage" placeholder="62410" value="{ state.survey.endChainage }"
+                        oninput="{ checkChainage }" min="0" max="999999999" step="1" required>
                     <small class="form-text text-muted">{ props.parent.getHelpText("end_chainage") }</small>
                     <div if="{ state.errors.endChainage }" class="invalid-tooltip">
                         <ul>
@@ -226,10 +234,10 @@
         import Edit_Modal from "./edit_modal.riot.html";
         import Stacked_Bar from "./stacked_bar.riot.html";
 
-        import { createSurvey, deleteSurvey, updateSurvey } from "../surveyManager";
-        import { cloneData, toChainageFormat } from "../assets/protoBufUtilities";
-        import { withinMaxDigits } from "../assets/utilities";
-        import { Survey, Report } from "../../protobuf/survey_pb";
+        import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
+        import {cloneData, toChainageFormat} from "../assets/protoBufUtilities";
+        import {withinMaxDigits} from "../assets/utilities";
+        import {Survey, Report} from "../../protobuf/survey_pb";
 
         import $ from "jquery";
 
@@ -280,8 +288,9 @@
                 this.props.parent.refreshSurveysAndReports(state, this.pavement_all_data_table_id, "pavement_class", "pavementClasses", this.pavement_current_data_table_id, this.pavement_stacked_bar_id);
 
                 this.deleteListener = (data) => {
+                    const tableId = data.detail.tableId;
                     const rowId = data.detail.rowId;
-                    this.showStopAlertModal("delete-alert", rowId);
+                    this.showStopAlertModal("delete-alert", rowId, tableId);
                 };
 
                 document.addEventListener(`${this.surface_all_data_table_id}.deleteRow`, this.deleteListener);
@@ -579,7 +588,7 @@
 
                 $(`#${this.state.currentModalId}`).modal("show");
             },
-            showStopAlertModal(modalId, rowId) {
+            showStopAlertModal(modalId, rowId, tableId) {
                 const eventName = `edit.${modalId}.result`;
 
                 document.addEventListener(eventName, (data) => {
@@ -591,13 +600,7 @@
                     } else if (stopAlertResult === "delete") {
                         this.state.editMode = true;
                         // void the survey attribute value and save
-                        let allSurveys = [];
-                        if (this.state.pendingRows['survey_type'] || this.state.pendingRows['pavement_class']) {
-                            allSurveys = this.state.pendingRows['survey_type'].concat(this.state.pendingRows['pavement_class']);
-                        } else {
-                            allSurveys = this.state.pendingRows;
-                        }
-                        this.state.survey = allSurveys.find((s) => {return s.id == rowId;});
+                        document.dispatchEvent(new CustomEvent(`${tableId}.getRowSurvey`, {detail: {rowId: rowId, state: this.state}}));
                         if (this.state.survey) {
                             this.state.survey.setRoadId(this.state.road.getId());
                             this.state.survey.setValues(JSON.stringify({}));
