@@ -414,8 +414,7 @@
             toChainageFormat(value) {
                 return toChainageFormat(value);
             },
-            assembleFilters() {
-                let filters = [];
+            assembleFilterSet() {
                 const filterSet = cloneData(this.reportContent().fixedFilter);
 
                 // Handle the select filters
@@ -440,11 +439,16 @@
                     filterSet["reportdate"] = this.state.reportDate;
                 }
                 if (this.state.reportStartChainage) {
-                    filters["chainagestart"] = this.state.reportStartChainage;
+                    filterSet["chainagestart"] = this.state.reportStartChainage;
                 }
                 if (this.state.reportEndChainage) {
-                    filters["chainageend"] = this.state.reportEndChainage;
+                    filterSet["chainageend"] = this.state.reportEndChainage;
                 }
+
+                return filterSet;
+            },
+            buildFilterSets(filterSet) {
+                let filters = [];
 
                 // Secondary Attributes are handled in a special way
                 // They result in multiple requests to the reports API
@@ -575,7 +579,8 @@
                 $('#loading').modal('show');
 
                 const reportId = e.currentTarget.dataset.id;
-                const filters = this.assembleFilters();
+                const baseFilterSet = this.assembleFilterSet();
+                const filters = this.buildFilterSets(baseFilterSet);
 
                 if (filters.length === 0 || filters.filter((f) => {return Object.keys(f).length;}).length === 0) {
                     return;
@@ -591,32 +596,39 @@
                                 this.state.noReport = true;
                                 break;
                             case 1:
+                                console.log(JSON.stringify(surveyReportData[0]));
                                 this.assembleSurveyReportData(surveyReportData[0]);
-                                this.props.showFeedback();                                
+                                this.props.showFeedback();
                                 break;
                             default:
                                 // A report with secondaryattributes defined
                                 // it will need 'assembling'
                                 const assembledReportData = {
                                     filter: {},
-                                    lengths: [],
+                                    lengths: {},
                                     attributes: []
                                 };
-                                surveyReportData.forEach((survey) => {
-                                    console.log(JSON.stringify(survey));
-                                });
-                                filters.primaryattribute.forEach((primaryattribute) => {
+                                baseFilterSet.primaryattribute.forEach((primaryattribute) => {
                                     const filteredSurveys = surveyReportData.filter((survey) => {
                                         return survey.filter[primaryattribute];
-                                    })
+                                    });
                                     if (filteredSurveys.length === 1 && filteredSurveys[0].filter.primary_attribute.includes(primaryattribute)) {
                                         // We didn't have any secondaryattributes for this primaryattribute
                                         // so just merge it as-is
                                         assembledReportData = this.mergeReports(assembledReportData, filteredSurveys[0]);
                                     } else {
-                                        
-                                    }
+                                        assembledReportData.filter["primary_attribute"] = assembledReportData.filter["primary_attribute"] || [];
+                                        assembledReportData.filter["primary_attribute"].push(primaryattribute);
+                                        assembledReportData.lengths[primaryattribute] = assembledReportData.lengths[primaryattribute] || {};
+                                        filteredSurveys.forEach((survey) => {
+                                            assembledReportData.lengths[primaryattribute][survey.filter[primaryattribute]] = assembledReportData.lengths[primaryattribute][survey.filter[primaryattribute]] || 0;
+                                        });
+                                    }                            
                                 });
+                                
+                                console.log(JSON.stringify(assembledReportData));
+                                this.assembleSurveyReportData(assembledReportData);
+                                this.props.showFeedback();
                                 break;
                         }
                     }).catch(err => {
