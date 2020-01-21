@@ -343,11 +343,11 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
             primaryattribute: attr,
         };
         if (roadData.getLinkStartChainage() && roadData.getLinkEndChainage()) {
-            filters.roadcode = roadData.getRoadCode();
+            filters.road_code = roadData.getRoadCode();
             filters.chainagestart = roadData.getLinkStartChainage();
             filters.chainageend = roadData.getLinkEndChainage();
         } else {
-            filters.roadid = roadData.id;
+            filters.road_id = roadData.id;
         }
         getRoadReport(filters).then((reportData) => {
             reportTable.clear(); // remove all rows in the table - again

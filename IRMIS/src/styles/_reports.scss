@@ -157,7 +157,14 @@ report, report_dashboard {
             margin-bottom: 30px;
 
             h1 {
+                margin-right: 30px;
                 margin-bottom: 0;
+                font-size: 36px;
+                line-height: 44px;
+
+                &.highlight {
+                    color: #03A59A;
+                }
             }
         }
     }

@@ -36,8 +36,8 @@ export class ConfigAPI {
     }
 
     /** Converts an object into a query string
-     * e.g. {roadcode: "A01", roadchainagestart: 12345}
-     * -> ?roadcode=A01&roadchainagestart=12345
+     * e.g. {road_code: "A01", roadchainagestart: 12345}
+     * -> ?road_code=A01&roadchainagestart=12345
      */
     public static objectToQueryString(obj: { [name: string]: any }) {
         if (!obj || Object.keys(obj).length === 0) {
