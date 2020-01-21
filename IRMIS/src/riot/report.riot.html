@@ -603,11 +603,12 @@
                             default:
                                 // A report with secondaryattributes defined
                                 // it will need 'assembling'
-                                const assembledReportData = {
-                                    filter: {},
-                                    lengths: {},
-                                    attributes: []
-                                };
+                                const assembledReportData = cloneData(surveyReportData[0]);
+                                assembledReportData.array[0] = {"primary_attribute": []};
+                                assembledReportData.array[1] = {};
+                                assembledReportData.array[2] = null;
+                                assembledReportData.array[3] = [];
+
                                 baseFilterSet.primaryattribute.forEach((primaryattribute) => {
                                     const filteredSurveys = surveyReportData.filter((survey) => {
                                         return survey.filter[primaryattribute];
@@ -617,13 +618,15 @@
                                         // so just merge it as-is
                                         assembledReportData = this.mergeReports(assembledReportData, filteredSurveys[0]);
                                     } else {
-                                        assembledReportData.filter["primary_attribute"] = assembledReportData.filter["primary_attribute"] || [];
-                                        assembledReportData.filter["primary_attribute"].push(primaryattribute);
-                                        assembledReportData.lengths[primaryattribute] = assembledReportData.lengths[primaryattribute] || {};
+                                        assembledReportData.array[0]["primary_attribute"].push(primaryattribute);
+                                        assembledReportData.array[1][primaryattribute] = assembledReportData.array[1][primaryattribute] || {};
+
                                         filteredSurveys.forEach((survey) => {
-                                            assembledReportData.lengths[primaryattribute][survey.filter[primaryattribute]] = assembledReportData.lengths[primaryattribute][survey.filter[primaryattribute]] || 0;
+                                            let lengthsTotal = 0;
+                                            console.log(JSON.stringify(survey.filter[primaryattribute]));
+                                            assembledReportData.array[1][primaryattribute][survey.filter[primaryattribute]] = assembledReportData.array[1][primaryattribute][survey.filter[primaryattribute]] || 0;
                                         });
-                                    }                            
+                                    }
                                 });
                                 
                                 console.log(JSON.stringify(assembledReportData));
