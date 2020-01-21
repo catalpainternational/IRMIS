@@ -43,8 +43,8 @@
                     </select>
                 </div>
                 <!-- Optionally include the following to show the fixedFilter value (changing to the full option title) -->
-                <!-- <div if="{ reportContent().fixedFilter.roadtype }" class="options">
-                    <span>{ reportContent().fixedFilter.roadtype }</span>
+                <!-- <div if="{ reportContent().fixedFilter.road_type }" class="options">
+                    <span>{ reportContent().fixedFilter.road_type }</span>
                 </div> -->
 
                 <div if="{ reportContent().visibleFilters.surfaceType }" class="options">
@@ -223,10 +223,10 @@
                 noReportData: false,
                 filterDefinitions: [
                     { selectId: "municipality_area_select2", placeHolder: "Municipality", dataIn: "reportMunicipality", filterName: "municipality" },
-                    { selectId: "road_class_select2", placeHolder: "Road class", dataIn: "reportRoadClass", filterName: "roadtype" },
-                    { selectId: "surface_type_select2", placeHolder: "Surface type", dataIn: "reportSurfaceType", filterName: "surfacetype" },
-                    { selectId: "surface_condition_select2", placeHolder: "Surface condition", dataIn: "reportSurfaceCondition", filterName: "surfacecondition" },
-                    { selectId: "road_code_select2", placeHolder: "Road code", dataIn: "reportRoadCode", isSingle: true, filterName: "roadcode" },
+                    { selectId: "road_class_select2", placeHolder: "Road class", dataIn: "reportRoadClass", filterName: "road_type" },
+                    { selectId: "surface_type_select2", placeHolder: "Surface type", dataIn: "reportSurfaceType", filterName: "surface_type" },
+                    { selectId: "surface_condition_select2", placeHolder: "Surface condition", dataIn: "reportSurfaceCondition", filterName: "surface_condition" },
+                    { selectId: "road_code_select2", placeHolder: "Road code", dataIn: "reportRoadCode", isSingle: true, filterName: "road_code" },
                 ],
                 reportMunicipality: [],
                 reportRoadClass: [],
@@ -602,6 +602,9 @@
                                     lengths: [],
                                     attributes: []
                                 };
+                                surveyReportData.forEach((survey) => {
+                                    console.log(JSON.stringify(survey));
+                                });
                                 filters.primaryattribute.forEach((primaryattribute) => {
                                     const filteredSurveys = surveyReportData.filter((survey) => {
                                         return survey.filter[primaryattribute];

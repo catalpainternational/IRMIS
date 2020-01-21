@@ -462,16 +462,16 @@ def protobuf_reports(request):
     # get/initialise the Filters
     primary_attributes = request.GET.getlist("primaryattribute", [])
     road_id = request.GET.get("roadid", None)
-    road_code = request.GET.get("roadcode", None)
+    road_code = request.GET.get("road_code", None)
     chainage_start = None
     chainage_end = None
-    road_types = request.GET.getlist("roadtype", [])  # roadtype=X
-    surface_types = request.GET.getlist("surfacetype", [])  # surfacetype=X
-    pavement_classes = request.GET.getlist("pavementclass", [])  # pavementclass=X
+    road_types = request.GET.getlist("road_type", [])  # road_type=X
+    surface_types = request.GET.getlist("surface_type", [])  # surface_type=X
+    pavement_classes = request.GET.getlist("pavement_class", [])  # pavement_class=X
     municipalities = request.GET.getlist("municipality", [])  # municipality=X
     surface_conditions = request.GET.getlist(
-        "surfacecondition", []
-    )  # surfacecondition=X
+        "surface_condition", []
+    )  # surface_condition=X
     report_date = request.GET.get("reportdate", None)  # reportdate=X
     if (
         report_date == "true"
@@ -518,18 +518,18 @@ def protobuf_reports(request):
         final_filters["road_id"] = [road_id]
     elif road_code:
         final_filters["road_code"] = [road_code]
-    elif road_types != []:
+    elif len(road_types) > 0:
         final_filters["road_type"] = road_types
 
     # Road level attribute
-    if municipalities != []:
+    if len(municipalities) > 0:
         final_filters["municipality"] = municipalities
 
-    if len(surface_types):
+    if len(surface_types) > 0:
         final_filters["surface_type"] = surface_types
-    if len(pavement_classes):
+    if len(pavement_classes) > 0:
         final_filters["pavement_class"] = pavement_classes
-    if len(surface_conditions):
+    if len(surface_conditions) > 0:
         final_filters["surface_condition"] = surface_conditions
 
     # Survey level attributes
@@ -544,6 +544,8 @@ def protobuf_reports(request):
     final_lengths = road_report.compile_summary_stats(
         road_report.execute_aggregate_query()
     )
+
+    print(json.dumps(final_filters))
 
     report_protobuf.filter = json.dumps(final_filters)
     report_protobuf.lengths = json.dumps(final_lengths)
