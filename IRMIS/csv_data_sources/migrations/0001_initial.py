@@ -10,30 +10,67 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='CsvDataSource',
+            name="CsvDataSource",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('data_type', models.CharField(max_length=24)),
-                ('path', models.TextField(help_text='The path inside the git@github.com:catalpainternational/estrada-data-sources.git repository')),
-                ('added', models.DateTimeField(auto_now=True)),
-                ('columns', django.contrib.postgres.fields.ArrayField(base_field=models.TextField(), help_text='The column names present in the csv', size=None)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("data_type", models.CharField(max_length=24)),
+                (
+                    "path",
+                    models.TextField(
+                        help_text="The path inside the git@github.com:catalpainternational/estrada-data-sources.git repository"
+                    ),
+                ),
+                ("added", models.DateTimeField(auto_now=True)),
+                (
+                    "columns",
+                    django.contrib.postgres.fields.ArrayField(
+                        base_field=models.TextField(),
+                        help_text="The column names present in the csv",
+                        size=None,
+                    ),
+                ),
             ],
-            options={
-                'unique_together': {('data_type', 'path')},
-            },
+            options={"unique_together": {("data_type", "path")},},
         ),
         migrations.CreateModel(
-            name='CsvData',
+            name="CsvData",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('row_index', models.PositiveSmallIntegerField(help_text='The row index from the source csv file')),
-                ('data', django.contrib.postgres.fields.jsonb.JSONField()),
-                ('source', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='rows', to='csv_data_sources.CsvDataSource')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "row_index",
+                    models.PositiveSmallIntegerField(
+                        help_text="The row index from the source csv file"
+                    ),
+                ),
+                ("data", django.contrib.postgres.fields.jsonb.JSONField()),
+                (
+                    "source",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="rows",
+                        to="csv_data_sources.CsvDataSource",
+                    ),
+                ),
             ],
         ),
     ]

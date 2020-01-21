@@ -6,20 +6,15 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('csv_data_sources', '0001_initial'),
-        ('assets', '0027_auto_20200114_0742'),
+        ("csv_data_sources", "0001_initial"),
+        ("assets", "0027_auto_20200114_0742"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='RoughnessSurvey',
-            fields=[
-            ],
-            options={
-                'proxy': True,
-                'indexes': [],
-                'constraints': [],
-            },
-            bases=('csv_data_sources.csvdata',),
+            name="RoughnessSurvey",
+            fields=[],
+            options={"proxy": True, "indexes": [], "constraints": [],},
+            bases=("csv_data_sources.csvdata",),
         ),
     ]

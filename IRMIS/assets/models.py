@@ -1216,10 +1216,13 @@ class Culvert(models.Model):
 
 
 class RoughnessSurvey(CsvData):
-    ''' Proxy model to provide typed access to roughness CSV data '''
+    """ Proxy model to provide typed access to roughness CSV data """
+
     class Meta:
         proxy = True
+
     objects = RoughnessManager()
+
 
 def timestamp_from_datetime(dt):
     ts = Timestamp()
