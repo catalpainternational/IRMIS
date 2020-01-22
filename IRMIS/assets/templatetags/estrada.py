@@ -19,8 +19,8 @@ def estrada_main():
 
 @register.inclusion_tag("assets/filter_pane.html")
 def filter_pane():
-    """ Returns script tags that contain translations of Road Schema data. """
-    return {"road_schema": get_schema_data()}
+    """ Returns script tags that contain translations of Asset Schema data. """
+    return {"asset_schema": get_schema_data()}
 
 
 def get_schema_data():
@@ -33,34 +33,36 @@ def get_schema_data():
             Road._meta.fields,
         )
     )
-    road_schema = {
+    asset_schema = {
         x.name: {"display": x.verbose_name, "slug": x.name, "help_text": x.help_text}
         for x in road_fields
     }
-    road_schema["road_code"].update(
+    asset_schema["road_code"].update(
         {"options": list(Road.objects.all().distinct("road_code").values("road_code"))}
     )
-    road_schema["road_type"].update({"options": Road.ROAD_TYPE_CHOICES})
-    road_schema["surface_condition"].update({"options": Road.SURFACE_CONDITION_CHOICES})
-    road_schema["surface_type"].update(
+    asset_schema["road_type"].update({"options": Road.ROAD_TYPE_CHOICES})
+    asset_schema["surface_condition"].update(
+        {"options": Road.SURFACE_CONDITION_CHOICES}
+    )
+    asset_schema["surface_type"].update(
         {"options": list(SurfaceType.objects.all().values())}
     )
-    road_schema["road_status"].update(
+    asset_schema["road_status"].update(
         {"options": list(RoadStatus.objects.all().values())}
     )
-    road_schema["pavement_class"].update(
+    asset_schema["pavement_class"].update(
         {"options": list(PavementClass.objects.all().values())}
     )
-    road_schema["administrative_area"].update(
+    asset_schema["administrative_area"].update(
         {"options": list(Municipality.objects.all().values("id", "name"))}
     )
-    road_schema["traffic_level"].update({"options": Road.TRAFFIC_LEVEL_CHOICES})
-    road_schema["maintenance_need"].update(
+    asset_schema["traffic_level"].update({"options": Road.TRAFFIC_LEVEL_CHOICES})
+    asset_schema["maintenance_need"].update(
         {"options": list(MaintenanceNeed.objects.all().values())}
     )
-    road_schema["technical_class"].update(
+    asset_schema["technical_class"].update(
         {"options": list(TechnicalClass.objects.all().values())}
     )
-    road_schema["terrain_class"].update({"options": Road.TERRAIN_CLASS_CHOICES})
+    asset_schema["terrain_class"].update({"options": Road.TERRAIN_CLASS_CHOICES})
 
-    return road_schema
+    return asset_schema

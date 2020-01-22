@@ -33,13 +33,13 @@
             <div class="d-flex flex-wrap">
                 <div if="{ reportContent().visibleFilters.municipality }" class="options">
                     <select id="municipality_area_select2" multiple="true">
-                        <option each="{ area in window.road_schema.administrative_area.options }" value="{ area.id }">{ area.name }</option>
+                        <option each="{ area in window.asset_schema.administrative_area.options }" value="{ area.id }">{ area.name }</option>
                     </select>
                 </div>
 
                 <div if="{ reportContent().visibleFilters.roadClass }" class="options">
                     <select id="road_class_select2" multiple="true">
-                        <option each="{ road_class in window.road_schema.road_type.options }" value="{ road_class[0] }">{ road_class[1] }</option>
+                        <option each="{ road_class in window.asset_schema.road_type.options }" value="{ road_class[0] }">{ road_class[1] }</option>
                     </select>
                 </div>
                 <!-- Optionally include the following to show the fixedFilter value (changing to the full option title) -->
@@ -49,14 +49,14 @@
 
                 <div if="{ reportContent().visibleFilters.surfaceType }" class="options">
                     <select id="surface_type_select2" multiple="true">
-                        <option each="{ surface_type in window.road_schema.surface_type.options }"
+                        <option each="{ surface_type in window.asset_schema.surface_type.options }"
                             value="{ surface_type.code }">{ surface_type.name }</option>
                     </select>
                 </div>
 
                 <div if="{ reportContent().visibleFilters.surfaceCondition }" class="options">
                     <select id="surface_condition_select2" multiple="true">
-                        <option each="{ surface_condition in window.road_schema.surface_condition.options }"
+                        <option each="{ surface_condition in window.asset_schema.surface_condition.options }"
                             value="{ surface_condition[0] }">{ surface_condition[1] }</option>
                     </select>
                 </div>
@@ -64,7 +64,7 @@
                 <div if="{ reportContent().visibleFilters.roadCode }">
                     <div class="options">
                         <select id="road_code_select2" multiple="true">
-                            <option each="{ code in window.road_schema.road_code.options }"
+                            <option each="{ code in window.asset_schema.road_code.options }"
                                 value="{ code.road_code }">{ code.road_code }</option>
                         </select>
                     </div>
