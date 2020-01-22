@@ -26,11 +26,11 @@
         <div class="filters-section roads structures">
             <span class="subtitle">{% trans "Location" %}</span>
             {% comment %} ADMINISTRATIVE AREA {% endcomment %}
-            {% with slug=road_schema.administrative_area.slug %}
+            {% with slug=asset_schema.administrative_area.slug %}
             <div data-slug="{{ slug }}" class="filter">
                 <div class="d-flex header justify-content-between">
                     <div class="align-items-center d-flex">
-                        <label>{{ road_schema.administrative_area.display }}</label>
+                        <label>{{ asset_schema.administrative_area.display }}</label>
                     </div>
                     <div class="align-items-center d-flex">
                         <span class="clear-select2" hidden>{% trans "Clear" %}</span>
@@ -39,7 +39,7 @@
                 </div>
                 <div class="options" hidden>
                     <select class="filter_select2" multiple="true">
-                        {% for option in road_schema.administrative_area.options %}
+                        {% for option in asset_schema.administrative_area.options %}
                         <option value="{{ option.id }}">{{ option.name }}</option>
                         {% endfor %}
                     </select>
@@ -52,11 +52,11 @@
         <div class="filters-section roads">
             <span class="subtitle">{% trans "Asset" %}</span>
             {% comment %} ROAD TYPE {% endcomment %}
-            {% with slug=road_schema.road_type.slug %}
+            {% with slug=asset_schema.road_type.slug %}
             <div data-slug="{{ slug }}" class="filter">
                 <div class="d-flex header justify-content-between">
                     <div class="align-items-center d-flex">
-                        <label>{{ road_schema.road_type.display }}</label>
+                        <label>{{ asset_schema.road_type.display }}</label>
                     </div>
                     <div class="align-items-center d-flex">
                         <span class="clear-filter" hidden>{% trans "Clear" %}</span>
@@ -65,7 +65,7 @@
                 </div>
                 <div class="options" hidden>
                     <ul>
-                        {% for option in road_schema.road_type.options %}
+                        {% for option in asset_schema.road_type.options %}
                         <li class="align-items-center d-flex optionToggle" data-option="{{ option.0 }}">
                             <span class="checkbox image"></span>
                             {{ option.1 }}
@@ -77,11 +77,11 @@
             {% endwith %}
 
             {% comment %} ROAD CODE {% endcomment %}
-            {% with slug=road_schema.road_code.slug %}
+            {% with slug=asset_schema.road_code.slug %}
             <div data-slug="{{ slug }}" class="filter">
                 <div class="d-flex header justify-content-between">
                     <div class="align-items-center d-flex">
-                        <label>{{ road_schema.road_code.display }}</label>
+                        <label>{{ asset_schema.road_code.display }}</label>
                     </div>
                     <div class="align-items-center d-flex">
                         <span class="clear-select2" hidden>{% trans "Clear" %}</span>
@@ -90,7 +90,7 @@
                 </div>
                 <div class="options" hidden>
                     <select class="filter_select2" multiple="true">
-                        {% for option in road_schema.road_code.options %}
+                        {% for option in asset_schema.road_code.options %}
                         <option value="{{ option.road_code }}">{{ option.road_code }}</option>
                         {% endfor %}
                     </select>
@@ -99,11 +99,11 @@
             {% endwith %}
 
             {% comment %} ROAD STATUS {% endcomment %}
-            {% with slug=road_schema.road_status.slug %}
+            {% with slug=asset_schema.road_status.slug %}
             <div data-slug="{{ slug }}" class="filter">
                 <div class="d-flex header justify-content-between">
                     <div class="align-items-center d-flex">
-                        <label>{{ road_schema.road_status.display }}</label>
+                        <label>{{ asset_schema.road_status.display }}</label>
                     </div>
                     <div class="align-items-center d-flex">
                         <span class="clear-filter" hidden>{% trans "Clear" %}</span>
@@ -112,7 +112,7 @@
                 </div>
                 <div class="options" hidden>
                     <ul>
-                        {% for option in road_schema.road_status.options %}
+                        {% for option in asset_schema.road_status.options %}
                         <li class="align-items-center d-flex optionToggle" data-option="{{ option.code }}">
                             <span class="checkbox image"></span>
                             {{ option.name }}
@@ -124,11 +124,11 @@
             {% endwith %}
 
             {% comment %} PAVEMENT CLASS {% endcomment %}
-            {% with slug=road_schema.surface_type.slug %}
+            {% with slug=asset_schema.surface_type.slug %}
             <div data-slug="{{ slug }}" class="filter">
                 <div class="d-flex header justify-content-between">
                     <div class="align-items-center d-flex">
-                        <label>{{ road_schema.surface_type.display }}</label>
+                        <label>{{ asset_schema.surface_type.display }}</label>
                     </div>
                     <div class="align-items-center d-flex">
                         <span class="clear-filter" hidden>{% trans "Clear" %}</span>
@@ -137,7 +137,7 @@
                 </div>
                 <div class="options" hidden>
                     <ul>
-                        {% for option in road_schema.surface_type.options %}
+                        {% for option in asset_schema.surface_type.options %}
                         <li class="align-items-center d-flex optionToggle" data-option="{{ option.code }}">
                             <span class="checkbox image"></span>
                             {{ option.name }}
@@ -153,11 +153,11 @@
         <div class="filters-section roads">
             <span class="subtitle">{% trans "Asset condition" %}</span>
             {% comment %} SURFACE CONDITION {% endcomment %}
-            {% with slug=road_schema.surface_condition.slug %}
+            {% with slug=asset_schema.surface_condition.slug %}
             <div data-slug="{{ slug }}" class="filter">
                 <div class="d-flex header justify-content-between">
                     <div class="align-items-center d-flex">
-                        <label>{{ road_schema.surface_condition.display }}</label>
+                        <label>{{ asset_schema.surface_condition.display }}</label>
                     </div>
                     <div class="align-items-center d-flex">
                         <span class="clear-filter" hidden>{% trans "Clear" %}</span>
@@ -166,7 +166,7 @@
                 </div>
                 <div class="options" hidden>
                     <ul>
-                        {% for option in road_schema.surface_condition.options %}
+                        {% for option in asset_schema.surface_condition.options %}
                         <li class="align-items-center d-flex optionToggle" data-option="{{ option.0 }}">
                             <span class="checkbox image"></span>
                             {{ option.1 }}
@@ -184,7 +184,7 @@
     <span class="arrow image"></span>
 </div>
 
-{{ road_schema|json_script:"road_schema" }}
+{{ asset_schema|json_script:"asset_schema" }}
 <script>
-    var road_schema = JSON.parse(document.getElementById('road_schema').textContent);
+    var asset_schema = JSON.parse(document.getElementById('asset_schema').textContent);
 </script>

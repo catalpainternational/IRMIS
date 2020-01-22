@@ -605,7 +605,7 @@
             lanes_modal_id: "number-lanes-modal",
 
             // Carriageway Width Table
-            carriagewayWidths: window.road_schema.carriageway_width,
+            carriagewayWidths: window.asset_schema.carriageway_width,
             carriageway_current_data_table_columns_order: [[0, 'asc']],
             carriageway_current_data_table_columns: [
                 {
@@ -701,7 +701,7 @@
             ],
 
             // Technical Class Table
-            technicalClasses: window.road_schema.technical_class,
+            technicalClasses: window.asset_schema.technical_class,
             technical_current_data_table_columns_order: [[0, 'asc']],
             technical_current_data_table_columns: [
                 {
@@ -797,7 +797,7 @@
             ],
 
             // Number of Lanes Table
-            numberLanes: window.road_schema.number_lanes,
+            numberLanes: window.asset_schema.number_lanes,
             lanes_current_data_table_columns_order: [[0, 'asc']],
             lanes_current_data_table_columns: [
                 {
@@ -1160,12 +1160,12 @@
                 }
                 this.update();
             },
-            link_code: window.road_schema.link_code,
-            link_start_name: window.road_schema.link_start_name,
-            link_end_name: window.road_schema.link_end_name,
-            link_length: window.road_schema.link_length,
-            link_start_chainage: window.road_schema.link_start_chainage,
-            link_end_chainage: window.road_schema.link_end_chainage,
+            link_code: window.asset_schema.link_code,
+            link_start_name: window.asset_schema.link_start_name,
+            link_end_name: window.asset_schema.link_end_name,
+            link_length: window.asset_schema.link_length,
+            link_start_chainage: window.asset_schema.link_start_chainage,
+            link_end_chainage: window.asset_schema.link_end_chainage,
 
             checkCarriagewayWidth(e) {
                 let value = e.currentTarget.value;

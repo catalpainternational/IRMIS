@@ -44,7 +44,7 @@ const attributeSchema = {
 
 function AdminAreaChoices() {
     const adminAreaChoices = {};
-    window.road_schema.administrative_area.options.forEach((option) => {
+    window.asset_schema.administrative_area.options.forEach((option) => {
         adminAreaChoices[option.id] = option.name || option.id;
     });
 
