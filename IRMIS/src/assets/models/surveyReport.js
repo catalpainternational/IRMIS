@@ -114,7 +114,9 @@ export class EstradaNetworkSurveyReport extends Report {
         return this.getId();
     }
 
-    /** filter is an object(dict) of lists {"key": [values,...]} */
+    /** filter is an object(dict) of lists {"key": [values,...]}
+     * except for the special "secondary_attribute" which is itself an object of lists
+     */
     get filter() {
         const filter = this.getFilter() || "{}";
         return JSON.parse(filter);
@@ -127,37 +129,48 @@ export class EstradaNetworkSurveyReport extends Report {
 
     /** Sets a key (member) in the filter to a specific list of values
      * If values is undefined - then the key will be deleted
-     * If values is not an array - then it will be converted to an array with a single value
-    */
+     * If values is not an array and key is not "secondary_attribute"
+     *  - then it will be converted to an array with a single value
+     * If key is "secondary_attribute" we assume value is OK if it's an object or undefined
+     */
     setFilterKey(key, values) {
         // Verify/correct input parameters
         const hasKey = (key || key === 0);
-        const hasValues = (typeof values !== "undefined");
         if (!hasKey) {
             // no supplied key - so nothing to do
             return;
         }
-        if (hasValues && !isArray(values)) {
-            values = [values];
+        if (key === "secondary_attribute") {
+            let hasValidSecondaryValues = typeof values === "object" && values !== null;
+            if (!hasValidSecondaryValues) {
+                return;
+            }
+        } else {
+            if (!isArray(values)) {
+                values = [values];
+            }
         }
 
-        const currentFilter = this.filter();
-        currentFilter[key] = (typeof values === "undefined") ? undefined : values;
+        const currentFilter = this.filter;
+        currentFilter[key] = values;
         
         this.setFilter(JSON.stringify(currentFilter));
     }
 
-    /** Adds a value to the list that is in the filter key */
+    /** Adds a value to the list that is in the filter key
+     * 
+     * Note: this does NOT support "secondary_attribute" filters, use setFilterKey instead
+     */
     filterKeyAddItem(key, value) {
         // Verify/correct input parameters
-        const hasKey = (key || key === 0);
-        const hasValue = (typeof value !== "undefined");
+        const hasKey = (key || key === 0) && key !== "secondary_attribute";
+        const hasValue = (typeof value === "string" || typeof value === "number");
         if (!hasKey || !hasValue) {
             // no supplied key or value  - so nothing to do
             return;
         }
 
-        const currentFilter = this.filter();
+        const currentFilter = this.filter;
         currentFilter[key] = currentFilter[key] || [];
         if (!currentFilter[key].includes(value)) {
             currentFilter[key].push(value);
@@ -256,7 +269,7 @@ export class EstradaNetworkSurveyReport extends Report {
             return;
         }
         
-        const currentLengths = this.lengths();
+        const currentLengths = this.lengths;
         const keyExists = currentLengths[key];
         if (!keyExists && typeof termValues === "undefined") {
             // nothing to do
@@ -283,7 +296,7 @@ export class EstradaNetworkSurveyReport extends Report {
             return;
         }
 
-        const currentLengths = this.lengths();
+        const currentLengths = this.lengths;
         const keyExists = currentLengths[key];
         const termExists = keyExists && currentLengths[key][term];
 
