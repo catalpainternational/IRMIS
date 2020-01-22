@@ -92,7 +92,8 @@ function extractCountData(lengthsForType, choices, useLengthKeyAsDefault = false
                 }
             }
             title = title[0].toUpperCase() + title.substring(1);
-            lengths.push({ key: lengthKeyHasValue ? lengthKey : 0, title, distance: lengthsForType[key] });
+            const distance = typeof lengthsForType[key] === "number" ? lengthsForType[key] : lengthsForType[key].value;
+            lengths.push({ key: lengthKeyHasValue ? lengthKey : 0, title, distance });
         });
     }
 
@@ -207,8 +208,9 @@ export class EstradaNetworkSurveyReport extends Report {
         return formattedFilters;
     }
 
-    /** lengths is an object(dict) of term:value pairs where value is numeric
-     *  {"key": {"term": value}, ...}
+    /** lengths is an object(dict) of term:value pairs where value is an object of the form:
+     * - {"value": numeric} for simple reports (no secondary attribute)
+     * - {"value": numeric, "secondary_attribute": {"term": numeric}}
     */
     get lengths() {
         let lengths = "";
@@ -231,7 +233,7 @@ export class EstradaNetworkSurveyReport extends Report {
             "surface_type",
             "technical_class",
             "terrain_class"
-        ].map((attribute) => `"${attribute}": { "None": 0 }`);
+        ].map((attribute) => `"${attribute}": { "None": { "value": 0 } }`);
 
         lengths = lengths || `{ ${emptyLengths.join(", ")} }`;
 
@@ -254,6 +256,8 @@ export class EstradaNetworkSurveyReport extends Report {
             const tempTermValues = {};
             Object.keys(termValues).forEach((term) => {
                 if (typeof termValues[term] === "number") {
+                    tempTermValues[term] = { "value": termValues[term] };
+                } else if (termValues[term] && typeof termValues[term].value === "number") {
                     tempTermValues[term] = termValues[term];
                 }
             });
@@ -281,8 +285,8 @@ export class EstradaNetworkSurveyReport extends Report {
     }
 
     /** Sets a term:value pair in the lengths[key]
-     * If value is undefined or not numeric then nothing is done
-     * If value is numeric then the term:value pair is set/appended in lengths[key]
+     * If value is undefined or not numeric, or not an object that at least specifies {value: numeric} then nothing is done
+     * If value is numeric or {value: numeric} then the term:value pair is set/appended in lengths[key]
      * If value is undefined then the term is removed from lengths[key]
      * If lengths[key] has no more terms then the key is removed from lengths
      */
@@ -290,10 +294,13 @@ export class EstradaNetworkSurveyReport extends Report {
         // Verify/correct input parameters
         const hasKey = (key || key === 0);
         const hasTerm = (term || term === 0);
-        const hasValue = (typeof value === "undefined" || typeof value === "number");
+        const hasValue = (typeof value === "undefined" || typeof value === "number" || (value && typeof value.value === "number"));
         if (!hasKey || !hasTerm || !hasValue) {
             // no supplied key, term or valid value  - so nothing to do
             return;
+        }
+        if (typeof value === "number") {
+            value = { "value": value };
         }
 
         const currentLengths = this.lengths;

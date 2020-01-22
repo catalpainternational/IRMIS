@@ -627,18 +627,28 @@
                                                 assembledReportData.setFilterKey("secondary_attribute", filterSecondary);
                                             }
 
-                                            let lengthsTotal = 0;
+                                            const value = { "value": 0 };
                                             secondaryAttributes.forEach((attribute) => {
                                                 const attributeLengths = survey.lengths[attribute];
-                                                if (lengthsTotal || !attributeLengths) {
+                                                value[attribute] = {};
+                                                if (attributeLengths) {
+                                                    Object.keys(attributeLengths).forEach((attrKey) => {
+                                                        const attrValue = typeof attributeLengths[attrKey] === "number"
+                                                            ? attributeLengths[attrKey]
+                                                            : attributeLengths[attrKey].value;
+                                                        value[attribute][attrKey] = attrValue;
+                                                    });
+                                                }
+                                                if (value.value || !attributeLengths) {
                                                     return; // 'continue' out of the forEach
                                                 }
-                                                Object.keys(attributeLengths).forEach((term) => {
-                                                    lengthsTotal += attributeLengths[term];
+                                                // Add up the primary value for this 'length' (only done once)
+                                                Object.keys(value[attribute]).forEach((term) => {
+                                                    value.value += value[attribute][term];
                                                 });
 
                                             });
-                                            assembledReportData.lengthsKeyAddItem(primaryattribute, survey.filter[primaryattribute], lengthsTotal);
+                                            assembledReportData.lengthsKeyAddItem(primaryattribute, survey.filter[primaryattribute], value);
                                         });
                                     }
                                 });
