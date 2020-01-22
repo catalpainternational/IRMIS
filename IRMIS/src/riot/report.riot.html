@@ -604,10 +604,9 @@
                                 // A report with secondaryattributes defined
                                 // it will need 'assembling'
                                 const assembledReportData = cloneData(surveyReportData[0]);
-                                assembledReportData.array[0] = {"primary_attribute": []};
-                                assembledReportData.array[1] = {};
-                                assembledReportData.array[2] = null;
-                                assembledReportData.array[3] = [];
+                                assembledReportData.clearFilter();
+                                assembledReportData.setLengths(JSON.stringify({}));
+                                assembledReportData.clearAttributesList();
 
                                 baseFilterSet.primaryattribute.forEach((primaryattribute) => {
                                     const filteredSurveys = surveyReportData.filter((survey) => {
@@ -618,12 +617,15 @@
                                         // so just merge it as-is
                                         assembledReportData = this.mergeReports(assembledReportData, filteredSurveys[0]);
                                     } else {
-                                        assembledReportData.array[0]["primary_attribute"].push(primaryattribute);
-                                        assembledReportData.array[1][primaryattribute] = assembledReportData.array[1][primaryattribute] || {};
+                                        assembledReportData.filterAddItem("primary_attribute", primaryattribute);
+                                        assembledReportData.lengths(primaryattribute);
 
                                         filteredSurveys.forEach((survey) => {
                                             let lengthsTotal = 0;
-                                            console.log(JSON.stringify(survey));
+                                            const secondaryattribute = survey.array[0][0];
+                                            console.log(JSON.stringify(survey.array[1][secondaryattribute]));
+
+                                            // {"array":["{\"primary_attribute\": [\"road_status\", \"technical_class\"], \"municipality\": [\"1\"]}","{\"road_status\": {\"c\": 40751.0, \"n\": 24365.0, \"p\": 30971.0, \"null\": 260722.0}, \"technical_class\": {\"3\": 84741.0, \"4\": 30971.0, \"null\": 241097.0}}",null,[]],"pivot_":1.7976931348623157e+308,"convertedPrimitiveFields_":{}}
                                             assembledReportData.array[1][primaryattribute][survey.filter[primaryattribute]] = assembledReportData.array[1][primaryattribute][survey.filter[primaryattribute]] || 0;
                                         });
                                     }

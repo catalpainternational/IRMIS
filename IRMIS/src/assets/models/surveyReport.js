@@ -119,6 +119,28 @@ export class EstradaNetworkSurveyReport extends Report {
         return JSON.parse(filter);
     }
 
+    /** Clears the filter, leaving it with a 'primary_attribute' member with an empty list */
+    clearFilter() {
+        this.setFilter(JSON.stringify({"primary_attribute": []}));
+    }
+
+    /** Sets a key (member) in the filter to a specific value */
+    set filter(key, value) {
+        const currentFilter = this.filter();
+        currentFilter[key] = value;
+        this.setFilter(JSON.stringify(currentFilter));
+    }
+
+    /** Adds a value to the list that is in the filter key */
+    filterAddItem(key, value) {
+        const currentFilter = this.filter();
+        currentFilter[key] = currentFilter[key] || [];
+        if (!currentFilter[key].includes(value)) {
+            currentFilter[key].push(value);
+        }
+        this.setFilter(JSON.stringify(currentFilter));
+    }
+
     get formattedFilters() {
         const rawFilters = this.filter;
 
@@ -164,6 +186,34 @@ export class EstradaNetworkSurveyReport extends Report {
         lengths = lengths || `{ ${emptyLengths.join(", ")} }`;
 
         return JSON.parse(lengths);
+    }
+
+    /** Clears the lengths */
+    clearLengths() {
+        this.setLengths(JSON.stringify({}));
+    }
+
+    /** Sets a key (member) in the lengths to a specific term:value */
+    set lengths(key, term = undefined, value = undefined) {
+        const currentLengths = this.lengths();
+        currentLengths[key] = currentLengths[key] || {};
+        if (term || term !== 0) {
+            currentLengths[key][term] = value;
+        }
+        
+        this.setLengths(JSON.stringify(currentLengths));
+    }
+
+    /** Adds a term:value to the lengths key */
+    lengthsAddItem(key, term, value = undefined) {
+        const currentLengths = this.lengths();
+        currentLengths[key] = currentLengths[key] || {};
+        if ()
+        currentLengths[key][term] = currentLengths[key][term] || null;
+        if (!currentLengths[key].includes(value)) {
+            currentLengths[key].push(value);
+        }
+        this.setLengths(JSON.stringify(currentLengths));
     }
 
     get roadCodes() {
