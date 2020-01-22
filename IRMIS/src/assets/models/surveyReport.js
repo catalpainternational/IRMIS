@@ -12,6 +12,7 @@ import {
     PAVEMENT_CLASS_CHOICES, TERRAIN_CLASS_CHOICES
 } from "./road";
 import { Timestamp } from "google-protobuf/google/protobuf/timestamp_pb";
+import { type } from "os";
 
 // All Ids in the following schemas are generated
 const networkReportSchema = {
@@ -113,7 +114,7 @@ export class EstradaNetworkSurveyReport extends Report {
         return this.getId();
     }
 
-    /** filter is an object(dict) of lists */
+    /** filter is an object(dict) of lists {"key": [values,...]} */
     get filter() {
         const filter = this.getFilter() || "{}";
         return JSON.parse(filter);
@@ -124,21 +125,44 @@ export class EstradaNetworkSurveyReport extends Report {
         this.setFilter(JSON.stringify({"primary_attribute": []}));
     }
 
-    /** Sets a key (member) in the filter to a specific value */
-    set filter(key, value) {
+    /** Sets a key (member) in the filter to a specific list of values
+     * If values is undefined - then the key will be deleted
+     * If values is not an array - then it will be converted to an array with a single value
+    */
+    setFilterKey(key, values) {
+        // Verify/correct input parameters
+        const hasKey = (key || key === 0);
+        const hasValues = (typeof values !== "undefined");
+        if (!hasKey) {
+            // no supplied key - so nothing to do
+            return;
+        }
+        if (hasValues && !isArray(values)) {
+            values = [values];
+        }
+
         const currentFilter = this.filter();
-        currentFilter[key] = value;
+        currentFilter[key] = (typeof values === "undefined") ? undefined : values;
+        
         this.setFilter(JSON.stringify(currentFilter));
     }
 
     /** Adds a value to the list that is in the filter key */
-    filterAddItem(key, value) {
+    filterKeyAddItem(key, value) {
+        // Verify/correct input parameters
+        const hasKey = (key || key === 0);
+        const hasValue = (typeof value !== "undefined");
+        if (!hasKey || !hasValue) {
+            // no supplied key or value  - so nothing to do
+            return;
+        }
+
         const currentFilter = this.filter();
         currentFilter[key] = currentFilter[key] || [];
         if (!currentFilter[key].includes(value)) {
             currentFilter[key].push(value);
+            this.setFilter(JSON.stringify(currentFilter));
         }
-        this.setFilter(JSON.stringify(currentFilter));
     }
 
     get formattedFilters() {
@@ -170,6 +194,9 @@ export class EstradaNetworkSurveyReport extends Report {
         return formattedFilters;
     }
 
+    /** lengths is an object(dict) of term:value pairs where value is numeric
+     *  {"key": {"term": value}, ...}
+    */
     get lengths() {
         let lengths = "";
 
@@ -181,8 +208,18 @@ export class EstradaNetworkSurveyReport extends Report {
 
         // We can change the following to
         // whatever we consider an appropriate 'empty' collection of lengths
-        const emptyLengths = ["municipality", "number_lanes", "pavement_class", "road_type", "surface_condition", "surface_type", "technical_class"]
-            .map((attribute) => `"${attribute}": { "None": 0 }`);
+        const emptyLengths = [
+            "municipality",
+            "number_lanes",
+            "pavement_class",
+            "rainfall",
+            "road_type",
+            "surface_condition",
+            "surface_type",
+            "technical_class",
+            "terrain_class"
+        ].map((attribute) => `"${attribute}": { "None": 0 }`);
+
         lengths = lengths || `{ ${emptyLengths.join(", ")} }`;
 
         return JSON.parse(lengths);
@@ -193,26 +230,82 @@ export class EstradaNetworkSurveyReport extends Report {
         this.setLengths(JSON.stringify({}));
     }
 
-    /** Sets a key (member) in the lengths to a specific term:value */
-    set lengths(key, term = undefined, value = undefined) {
-        const currentLengths = this.lengths();
-        currentLengths[key] = currentLengths[key] || {};
-        if (term || term !== 0) {
-            currentLengths[key][term] = value;
+    /** Sets a key (member) in the lengths specified object of term:value pairs
+     * If termValues is undefined - then the key will be deleted
+     */
+    setLengthsKey(key, termValues = undefined) {
+        // Verify/correct input parameters
+        const hasKey = (key || key === 0);
+        let hasValidTermValues = typeof termValues === "object" && termValues !== null;
+        if (hasValidTermValues) {
+            const tempTermValues = {};
+            Object.keys(termValues).forEach((term) => {
+                if (typeof termValues[term] === "number") {
+                    tempTermValues[term] = termValues[term];
+                }
+            });
+            termValues = tempTermValues;
+            // Reassess whether we have valid term:value pairs
+            hasValidTermValues = Object.keys(termValues).length > 0;
+        } else if (typeof termValues === "undefined") {
+            // "undefined" termValues is a valid termValues
+            hasValidTermValues = true;
         }
+        if (!hasKey || !hasValidTermValues) {
+            // no supplied key and/or no valid termValues - so nothing to do
+            return;
+        }
+        
+        const currentLengths = this.lengths();
+        const keyExists = currentLengths[key];
+        if (!keyExists && typeof termValues === "undefined") {
+            // nothing to do
+            return;
+        }
+        currentLengths[key] = termValues;
         
         this.setLengths(JSON.stringify(currentLengths));
     }
 
-    /** Adds a term:value to the lengths key */
-    lengthsAddItem(key, term, value = undefined) {
-        const currentLengths = this.lengths();
-        currentLengths[key] = currentLengths[key] || {};
-        if ()
-        currentLengths[key][term] = currentLengths[key][term] || null;
-        if (!currentLengths[key].includes(value)) {
-            currentLengths[key].push(value);
+    /** Sets a term:value pair in the lengths[key]
+     * If value is undefined or not numeric then nothing is done
+     * If value is numeric then the term:value pair is set/appended in lengths[key]
+     * If value is undefined then the term is removed from lengths[key]
+     * If lengths[key] has no more terms then the key is removed from lengths
+     */
+    lengthsKeyAddItem(key, term, value = undefined) {
+        // Verify/correct input parameters
+        const hasKey = (key || key === 0);
+        const hasTerm = (term || term === 0);
+        const hasValue = (typeof value === "undefined" || typeof value === "number");
+        if (!hasKey || !hasTerm || !hasValue) {
+            // no supplied key, term or valid value  - so nothing to do
+            return;
         }
+
+        const currentLengths = this.lengths();
+        const keyExists = currentLengths[key];
+        const termExists = keyExists && currentLengths[key][term];
+
+        if (typeof value === "undefined") {
+            let isDirty = false;
+            if (termExists) {
+                currentLengths[key][term] = undefined; // delete the term
+                isDirty = true;
+            }
+            if (keyExists && Object.keys(currentLengths[key]).length === 0) {
+                currentLengths[key] = undefined; // delete the key
+                isDirty = true;
+            }
+            if (!isDirty) {
+                // nothing to do
+                return;
+            }
+        } else {
+            currentLengths[key] = currentLengths[key] || {};
+            currentLengths[key][term] = value;
+        }
+
         this.setLengths(JSON.stringify(currentLengths));
     }
 
