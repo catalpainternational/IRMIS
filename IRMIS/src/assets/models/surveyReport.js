@@ -116,6 +116,7 @@ function extractTitle(lengthKey, choices, useLengthKeyAsDefault) {
         // check if we've actually received the title instead of the key
         const invertedChoices = invertChoices(choices);
         let alternateTitle = choice_or_default(lengthKey, invertedChoices, "Unknown").toLowerCase();
+        let lengthKeyHasValue = testKeyIsReal(lengthKey);
         if (alternateTitle !== "unknown") {
             title = lengthKey;
             lengthKey = alternateTitle;
@@ -153,7 +154,7 @@ function extractCountData(allLengths, primary_attribute, useLengthKeyAsDefault =
                 const attrChoices = lengthTypeChoices[attrKey] || {};
                 Object.keys(lengthsForType[key][attrKey]).forEach((attrTerm) => {
                     let [attrTermTitle, attrLengthKey] = extractTitle(attrTerm, attrChoices, useLengthKeyAsDefault);
-                    const fullAttrTerm = `${attryKey}.${attrTermTitle}`;
+                    const fullAttrTerm = `${attrKey}.${attrTermTitle}`;
                     newLength[fullAttrTerm] = lengthsForType[key][attrKey][attrTerm];
                     defineReportColumn(attrTermTitle, fullAttrTerm);
                 });
@@ -591,9 +592,7 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
     }
 
     makeSpecificLengths(primary_attribute, useLengthKeyAsDefault = false) {
-        const specificLengths = extractCountData(this.lengths, primary_attribute, useLengthKeyAsDefault);
-        console.log(JSON.stringify(specificLengths));
-        return specificLengths;
+        return extractCountData(this.lengths, primary_attribute, useLengthKeyAsDefault);
     }
 
     makeEstradaSurveyAttribute(pbattribute) {
