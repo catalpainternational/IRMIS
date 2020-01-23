@@ -222,7 +222,7 @@
         // A title is usually injected as the first element by the columns functions below
         const columnSets = {
             municipality: [reportColumns.distance, reportColumns.percent],
-            road_class: [reportColumns.distance, reportColumns.percent],
+            road_type: [reportColumns.distance, reportColumns.percent],
             road_status: [reportColumns.distance, reportColumns.percent],
             surface_condition: [reportColumns.chainageStart, reportColumns.chainageEnd, reportColumns.surfaceCondition, reportColumns.surveyDate],
             surface_type: [reportColumns.distance, reportColumns.percent],
@@ -271,7 +271,7 @@
                     const titleColumn = cloneData(reportColumns.title);
                     titleColumn.title = window.gettext("Road Class");
 
-                    return [titleColumn].concat(columnSets.road_class);
+                    return [titleColumn].concat(columnSets.road_type);
                 },
                 roadStatus() {
                     const titleColumn = cloneData(reportColumns.title);
@@ -410,12 +410,13 @@
                     fixedFilter.secondaryattribute[filterName].forEach((secondaryattribute) => {
                         const attrKey = secondaryattribute;
                         tableData.forEach((entry) => {
-                            if (!entry[attrKey]) {
+                            const fullAttrTerms = Object.keys(entry)
+                                .filter((entryKey) => { return entryKey.indexOf(`${attrKey}.`) === 0; });
+                            if (fullAttrTerms.length === 0) {
                                 return; // continue to next entry
                             }
 
-                            Object.keys(entry[attrKey]).forEach((attrTermTitle) => {
-                                const fullAttrTerm = `${attrKey}.${attrTermTitle}`;
+                            fullAttrTerms.forEach((fullAttrTerm) => {
                                 if (!columnSet[fullAttrTerm] && reportColumns[fullAttrTerm]) {
                                     columnSet[fullAttrTerm] = reportColumns[fullAttrTerm];
                                 }
@@ -425,7 +426,12 @@
 
                     // Only replace the 'normal' columnSet if we actually have some new ones defined
                     if (Object.keys(columnSet).length > 1) {
-                        columnSets[filterName] = Object.values(columnSet);
+                        columnSets[filterName].splice(0, 2);
+                        Array.prototype.push.apply(columnSets[filterName], Object.values(columnSet));
+
+                        const eventName = `${tableName}.changedColumns`;
+                        const eventDetail = { detail: { columns: columnSets[filterName] } };
+                        document.dispatchEvent(new CustomEvent(eventName, eventDetail));
                     }
                 }
 
