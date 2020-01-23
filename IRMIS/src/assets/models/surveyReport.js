@@ -65,35 +65,77 @@ const filterTitles = {
     // primary_attribute: { display: gettext("Attribute") },
     // road_code: { display: gettext("Road Code") },
     // report_chainage: { display: gettext("Report Chainage") },
-}
+};
+
+const lengthTypeChoices = {
+    municipality: AdminAreaChoices(),
+    number_lanes: {},
+    pavement_class: PAVEMENT_CLASS_CHOICES,
+    rainfall: {},
+    // road_class is an alias for road_type
+    road_class: ROAD_TYPE_CHOICES,
+    road_status: ROAD_STATUS_CHOICES,
+    road_type: ROAD_TYPE_CHOICES,
+    surface_condition: SURFACE_CONDITION_CHOICES,
+    surface_type: SURFACE_TYPE_CHOICES,
+    technical_class: TECHNICAL_CLASS_CHOICES,
+    terrain_class: TERRAIN_CLASS_CHOICES,
+    traffic_level: TRAFFIC_LEVEL_CHOICES,
+};
 
 export function testKeyIsReal(key) {
     return ["0", "none", "unknown", "nan", "null", "undefined", "false"].indexOf(`${key}`.toLowerCase()) === -1;
 }
 
-function extractCountData(lengthsForType, choices, useLengthKeyAsDefault = false) {
-    const lengths = [];
-    if (lengthsForType) {
-        Object.keys(lengthsForType).forEach((key) => {
-            let lengthKey = key;
-            let lengthKeyHasValue = testKeyIsReal(lengthKey);
-            let title = choice_or_default(lengthKey, choices, useLengthKeyAsDefault ? lengthKey : "Unknown").toLowerCase();
+function extractTitle(lengthKey, choices, useLengthKeyAsDefault) {
+    let title = choice_or_default(lengthKey, choices, useLengthKeyAsDefault ? lengthKey : "Unknown").toLowerCase();
 
-            if (title === "unknown") {
-                // check if we've actually received the title instead of the key
-                const invertedChoices = invertChoices(choices);
-                let alternateTitle = choice_or_default(lengthKey, invertedChoices, "Unknown").toLowerCase();
-                if (alternateTitle !== "unknown") {
-                    title = lengthKey;
-                    lengthKey = alternateTitle;
-                } else if (lengthKeyHasValue) {
-                    // We do have some kind of supplied key name - so we'll use it.
-                    title = lengthKey.toLowerCase();
-                }
+    if (title === "unknown") {
+        // check if we've actually received the title instead of the key
+        const invertedChoices = invertChoices(choices);
+        let alternateTitle = choice_or_default(lengthKey, invertedChoices, "Unknown").toLowerCase();
+        if (alternateTitle !== "unknown") {
+            title = lengthKey;
+            lengthKey = alternateTitle;
+        } else if (lengthKeyHasValue) {
+            // We do have some kind of supplied key name - so we'll use it.
+            title = lengthKey.toLowerCase();
+        }
+    }
+    title = title[0].toUpperCase() + title.substring(1);
+
+    return [title, lengthKey];
+}
+
+function extractCountData(allLengths, primary_attribute, useLengthKeyAsDefault = false) {
+    const lengths = [];
+    const lengthsForType = allLengths[primary_attribute] || [];
+    const choices = lengthTypeChoices[primary_attribute] || {};
+    if (lengthsForType && Object.keys(lengthsForType).length) {
+        Object.keys(lengthsForType).forEach((key) => {
+            let lengthKeyHasValue = testKeyIsReal(key);
+            let [title, lengthKey] = extractTitle(key, choices, useLengthKeyAsDefault);
+
+            if (typeof lengthsForType[key] === "number") {
+                lengthsForType[key] = { "value": lengthsForType[key]}
             }
-            title = title[0].toUpperCase() + title.substring(1);
-            const distance = typeof lengthsForType[key] === "number" ? lengthsForType[key] : lengthsForType[key].value;
-            lengths.push({ key: lengthKeyHasValue ? lengthKey : 0, title, distance });
+            const distance = lengthsForType[key].value;
+
+            // Start building the new 'length' ready for reporting 
+            const newLength = { key: lengthKeyHasValue ? lengthKey : 0, title, distance };
+            Object.keys(lengthsForType[key]).forEach((attrKey) => {
+                if (attrKey === "value") {
+                    // Skip the primary attribute value
+                    return;
+                }
+                const attrChoices = lengthTypeChoices[attrKey] || {};
+                Object.keys(lengthsForType[key][attrKey]).forEach((attrTerm) => {
+                    let [attrTermTitle, attrLengthKey] = extractTitle(attrTerm, attrChoices, useLengthKeyAsDefault);
+                    const fullAttrTerm = `${attryKey}.${attrTermTitle}`;
+                    newLength[fullAttrTerm] = lengthsForType[key][attrKey][attrTerm];
+                });
+            });
+            lengths.push(newLength);
         });
     }
 
@@ -342,46 +384,52 @@ export class EstradaNetworkSurveyReport extends Report {
     }
 
     get municipalities() {
-        return extractCountData(this.lengths.municipality, AdminAreaChoices());
+        return extractCountData(this.lengths, "municipality");
     }
 
     get numberLanes() {
-        if (!this.lengths.number_lanes || this.lengths.number_lanes.length) {
-            return [];
-        }
-        return this.lengths.number_lanes;
+        return extractCountData(this.lengths, "number_lanes");
     }
 
     get pavementClasses() {
-        return extractCountData(this.lengths.pavement_class, PAVEMENT_CLASS_CHOICES);
+        return extractCountData(this.lengths, "pavement_class");
     }
 
+    get rainfall() {
+        return extractCountData(this.lengths, "rainfall");
+    }
+
+    /** roadClasses is an alias for roadTypes */
     get roadClasses() {
         return this.roadTypes;
     }
 
+    get roadStatuses() {
+        return extractCountData(this.lengths, "road_status");
+    }
+
     get roadTypes() {
-        return extractCountData(this.lengths.road_type, ROAD_TYPE_CHOICES);
+        return extractCountData(this.lengths, "road_type");
     }
 
     get surfaceConditions() {
-        return extractCountData(this.lengths.surface_condition, SURFACE_CONDITION_CHOICES);
+        return extractCountData(this.lengths, "surface_condition");
     }
 
     get surfaceTypes() {
-        return extractCountData(this.lengths.surface_type, SURFACE_TYPE_CHOICES);
+        return extractCountData(this.lengths, "surface_type");
     }
 
     get technicalClasses() {
-        return extractCountData(this.lengths.technical_class, TECHNICAL_CLASS_CHOICES);
+        return extractCountData(this.lengths, "technical_class");
     }
 
     get terrainClasses() {
-        return extractCountData(this.lengths.terrain_class, TERRAIN_CLASS_CHOICES);
+        return extractCountData(this.lengths, "terrain_class");
     }
 
     get trafficLevels() {
-        return extractCountData(this.lengths.traffic_level, TRAFFIC_LEVEL_CHOICES);
+        return extractCountData(this.lengths, "traffic_level");
     }
 
     static getFieldName(field) {
@@ -401,19 +449,19 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
     }
 
     get municipalities() {
-        return this.makeSpecificLengths("municipality", AdminAreaChoices());
+        return this.makeSpecificLengths("municipality");
     }
 
     get numberLanes() {
-        return this.makeSpecificLengths("number_lanes", {});
+        return this.makeSpecificLengths("number_lanes");
     }
 
     get pavementClasses() {
-        return this.makeSpecificLengths("pavement_class", PAVEMENT_CLASS_CHOICES);
+        return this.makeSpecificLengths("pavement_class");
     }
 
     get rainfalls() {
-        return this.makeSpecificLengths("rainfall", {});
+        return this.makeSpecificLengths("rainfall");
     }
 
     get roadClasses() {
@@ -421,31 +469,31 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
     }
 
     get roadTypes() {
-        return this.makeSpecificLengths("road_type", ROAD_TYPE_CHOICES);
+        return this.makeSpecificLengths("road_type");
     }
 
     get roadStatuses() {
-        return this.makeSpecificLengths("road_status", ROAD_STATUS_CHOICES);
+        return this.makeSpecificLengths("road_status");
     }
 
     get surfaceConditions() {
-        return this.makeSpecificLengths("surface_condition", SURFACE_CONDITION_CHOICES);
+        return this.makeSpecificLengths("surface_condition");
     }
 
     get surfaceTypes() {
-        return this.makeSpecificLengths("surface_type", SURFACE_TYPE_CHOICES);
+        return this.makeSpecificLengths("surface_type");
     }
 
     get technicalClasses() {
-        return this.makeSpecificLengths("technical_class", TECHNICAL_CLASS_CHOICES);
+        return this.makeSpecificLengths("technical_class");
     }
 
     get terrainClasses() {
-        return this.makeSpecificLengths("terrain_class", TERRAIN_CLASS_CHOICES);
+        return this.makeSpecificLengths("terrain_class");
     }
 
     get trafficLevels() {
-        return this.makeSpecificLengths("traffic_level", TRAFFIC_LEVEL_CHOICES);
+        return this.makeSpecificLengths("traffic_level");
     }
 
     /** Returns one or more collections of attributes matching the criteria
@@ -519,10 +567,10 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
         return getHelpText(roadReportSchema, field);
     }
 
-    makeSpecificLengths(primary_attribute, choices, useLengthKeyAsDefault = false) {
-        const lengthsForType = this.lengths[primary_attribute] || {}
-
-        return extractCountData(lengthsForType, choices, useLengthKeyAsDefault);
+    makeSpecificLengths(primary_attribute, useLengthKeyAsDefault = false) {
+        const specificLengths = extractCountData(this.lengths, primary_attribute, useLengthKeyAsDefault);
+        console.log(JSON.stringify(specificLengths));
+        return specificLengths;
     }
 
     makeEstradaSurveyAttribute(pbattribute) {
