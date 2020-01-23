@@ -86,6 +86,26 @@ export class EstradaSurvey extends Survey {
         return this.values.rainfall;
     }
 
+    get trafficSurveyedDate() {
+        if (this.values.forecastYear) {
+            return this.values.forecastYear;
+        } else {
+            return this.values.surveyFromDate;
+        }
+    }
+
+    get trafficCounts() {
+        return this.values.counts || {};
+    }
+
+    get trafficCountTotal() {
+        return this.values.countTotal || 0;
+    }
+
+    get trafficDataType() {
+        return this.values.trafficType || "Unknown";
+    }
+
     get values() {
         const jsonValues = this.getValues() || "{}";
         return JSON.parse(jsonValues);

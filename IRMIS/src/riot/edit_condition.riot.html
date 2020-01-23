@@ -21,7 +21,7 @@
         </div>
         <data_table if="{state.viewAll}" table_id="{all_data_table_id}" columns="{all_data_table_columns}"
             columnSortOrder="{all_data_table_columns_order}" getHelpText="{props.parent.getHelpText}"
-            pendingRows="{state.pendingRows}" canDelete=true>
+            pendingRows="{state.pendingRows}" candelete=true>
         </data_table>
         <data_table if="{!state.viewAll}" table_id="{current_data_table_id}" columns="{current_data_table_columns}"
             columnSortOrder="{current_data_table_columns_order}" getHelpText="{props.parent.getHelpText}"
@@ -56,8 +56,10 @@
                 <div class="form-group">
                     <label>{ window.gettext("Chainage start") } (m)</label>
                     <span class="required">*</span>
-                    <input class="{state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
-                        type="number" name="startChainage" placeholder="1000" value="{state.survey.startChainage}" oninput="{checkChainage}" min="0" max="999999999" step="1" required>
+                    <input
+                        class="{state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
+                        type="number" name="startChainage" placeholder="1000" value="{state.survey.startChainage}"
+                        oninput="{checkChainage}" min="0" max="999999999" step="1" required>
                     <small class="form-text text-muted">{ props.parent.getHelpText("start_chainage") }</small>
                     <div if="{state.errors.startChainage}" class="invalid-tooltip">
                         <ul>
@@ -68,8 +70,10 @@
                 <div class="form-group">
                     <label>{ window.gettext("Chainage end") } (m)</label>
                     <span class="required">*</span>
-                    <input class="{state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
-                        type="number" name="endChainage" placeholder="62410" value="{state.survey.endChainage}" oninput="{checkChainage}" min="0" max="999999999" step="1" required>
+                    <input
+                        class="{state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
+                        type="number" name="endChainage" placeholder="62410" value="{state.survey.endChainage}"
+                        oninput="{checkChainage}" min="0" max="999999999" step="1" required>
                     <small class="form-text text-muted">{ props.parent.getHelpText("end_chainage") }</small>
                     <div if="{state.errors.endChainage}" class="invalid-tooltip">
                         <ul>
@@ -119,10 +123,10 @@
         import Edit_Modal from "./edit_modal.riot.html";
         import Stacked_Bar from "./stacked_bar.riot.html";
 
-        import { createSurvey, deleteSurvey, updateSurvey } from "../surveyManager";
-        import { cloneData, toChainageFormat } from "../assets/protoBufUtilities";
-        import { withinMaxDigits } from "../assets/utilities";
-        import { Survey, Report } from "../../protobuf/survey_pb";
+        import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
+        import {cloneData, toChainageFormat} from "../assets/protoBufUtilities";
+        import {withinMaxDigits} from "../assets/utilities";
+        import {Survey, Report} from "../../protobuf/survey_pb";
 
         import $ from "jquery";
 
@@ -143,6 +147,7 @@
                 reportRows: [],
                 viewAll: false,
                 editMode: false,
+                currentRowData: new Survey({}),
             },
             components: {
                 Edit_Stop_Alert, Edit_Modal, Stacked_Bar
@@ -318,7 +323,7 @@
 
                 $(`#${this.modal_id}`).modal("show");
             },
-            showStopAlertModal(modalId, rowId) {
+            showStopAlertModal(modalId, rowId, tableId) {
                 const eventName = `edit.${modalId}.result`;
 
                 document.addEventListener(eventName, (data) => {
@@ -330,8 +335,9 @@
                     } else if (stopAlertResult === "delete") {
                         this.state.editMode = true;
                         // void the survey surface_condition value and save
-                        this.state.survey = this.state.pendingRows.find((s) => {return s.id == rowId;});
-                        if (this.state.survey) {
+                        document.dispatchEvent(new CustomEvent(`${tableId}.getRowData`, {detail: {rowId: rowId, state: this.state}}));
+                        if (this.state.currentRowData) {
+                            this.state.survey = this.state.currentRowData;
                             this.state.survey.setRoadId(this.state.road.getId());
                             this.state.survey.setValues(JSON.stringify({}));
                             this.saveSurvey();
