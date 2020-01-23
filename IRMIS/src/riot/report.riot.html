@@ -246,39 +246,58 @@
             },
             stackedBarIds: reportBarIds,
             dataTableIds: reportTableIds,
+            // These are the default column sets for each report type,
+            // they are overriden for any report that specifies fixedFilter.secondaryattribute
+            // A title is usually injected as the first element by the columns functions below
+            columnSets: {
+                municipality: [reportColumns.distance, reportColumns.percent],
+                road_class: [reportColumns.distance, reportColumns.percent],
+                road_status: [reportColumns.distance, reportColumns.percent],
+                surface_condition: [reportColumns.chainageStart, reportColumns.chainageEnd, reportColumns.surfaceCondition, reportColumns.surveyDate],
+                surface_type: [reportColumns.distance, reportColumns.percent],
+                technical_class: [reportColumns.distance, reportColumns.percent],
+                terrain_class: [reportColumns.distance, reportColumns.percent],
+            },
+            // These functions define the actual columns used by each report
             columns: {
                 municipality() {
                     const titleColumn = cloneData(reportColumns.title);
                     titleColumn.title = window.gettext("Municipality");
 
-                    return [titleColumn, reportColumns.distance, reportColumns.percent];
+                    return [titleColumn].concat(this.columnSets.municipality);
                 },
                 roadClass() {
                     const titleColumn = cloneData(reportColumns.title);
                     titleColumn.title = window.gettext("Road Class");
 
-                    return [titleColumn, reportColumns.distance, reportColumns.percent];
-                },
-                surfaceType() {
-                    const titleColumn = cloneData(reportColumns.title);
-                    titleColumn.title = window.gettext("Surface Type");
-
-                    return [titleColumn, reportColumns.distance, reportColumns.percent];
+                    return [titleColumn].concat(this.columnSets.road_class);
                 },
                 roadStatus() {
                     const titleColumn = cloneData(reportColumns.title);
                     titleColumn.title = window.gettext("Road Status");
 
-                    return [titleColumn, reportColumns.distance, reportColumns.percent];
+                    return [titleColumn].concat(this.columnSets.road_status);
+                },
+                surfaceCondition() {
+                    return this.columnSets.surface_condition;
+                },                
+                surfaceType() {
+                    const titleColumn = cloneData(reportColumns.title);
+                    titleColumn.title = window.gettext("Surface Type");
+
+                    return [titleColumn].concat(this.columnSets.surface_type);
                 },
                 technicalClass() {
                     const titleColumn = cloneData(reportColumns.title);
                     titleColumn.title = window.gettext("Technical Class");
 
-                    return [titleColumn, reportColumns.distance, reportColumns.percent];
+                    return [titleColumn].concat(this.columnSets.technical_class);
                 },
-                surfaceCondition() {
-                    return [reportColumns.chainageStart, reportColumns.chainageEnd, reportColumns.surfaceCondition, reportColumns.surveyDate];
+                terrainClass() {
+                    const titleColumn = cloneData(reportColumns.title);
+                    titleColumn.title = window.gettext("Terrain Class");
+
+                    return [titleColumn].concat(this.columnSets.terrain_class);
                 },
             },
             reportContent() {
@@ -376,6 +395,38 @@
                 const isFixedFilter = fixedFilter.primaryattribute
                     ? fixedFilter.primaryattribute.indexOf(filterName) !== -1
                     : false;
+                const hasSecondaryAttributes = fixedFilter.secondaryattribute
+                    ? fixedFilter.secondaryattribute.indexOf(filterName) !== -1 && this.reportElements().dataTables.includes(tableName)
+                    : false;
+
+                // Add in the extra columns needed by any secondaryattributes
+                // This assumes that the reportColumns definitions have been generated
+                // in the defineReportColumn in surveyReport.js
+                if (haveTableData && hasSecondaryAttributes) {
+                    // Initialise the new set of columns with the distance column (but not percent)
+                    const columnSet = {};
+                    columnSet[reportColumns.distance.data] = reportColumns.distance;
+                    fixedFilter.secondaryattribute[filterName].forEach((secondaryattribute) => {
+                        const attryKey = secondaryattribute;
+                        tableData.forEach((entry) => {
+                            if (!entry[attryKey]) {
+                                return; // continue to next entry
+                            }
+
+                            Object.keys(entry[attryKey]).forEach((attrTermTitle) => {
+                                const fullAttrTerm = `${attryKey}.${attrTermTitle}`;
+                                if (!columnSet[fullAttrTerm] && reportColumns[fullAttrTerm]) {
+                                    columnSet[fullAttrTerm] = reportColumns[fullAttrTerm];
+                                }
+                            });
+                        });
+                    });
+
+                    // Only replace the 'normal' columnSet if we actually have some new ones defined
+                    if (Object.keys(columnSet).length > 1) {
+                        this.columnSets[filterName] = Object.values(columnSet);
+                    }
+                }
 
                 if (haveTableData || isFixedFilter) {
                     this.state.reportData.totalLength = this.state.reportData.totalLength || tableData.reduce((acc, cur) => acc += cur.distance || 0, 0);

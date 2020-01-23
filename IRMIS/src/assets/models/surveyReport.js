@@ -1,9 +1,11 @@
 import dayjs from "dayjs";
 import { isArray } from "util";
 
+import { Timestamp } from "google-protobuf/google/protobuf/timestamp_pb";
 import { Attribute, Report } from "../../../protobuf/report_pb";
 
 import { choice_or_default, getFieldName, getHelpText, invertChoices, makeEstradaObject } from "../protoBufUtilities";
+import { reportColumns } from "../../reportManager";
 
 import {
     ROAD_STATUS_CHOICES, ROAD_TYPE_CHOICES,
@@ -11,8 +13,6 @@ import {
     TECHNICAL_CLASS_CHOICES, TRAFFIC_LEVEL_CHOICES,
     PAVEMENT_CLASS_CHOICES, TERRAIN_CLASS_CHOICES
 } from "./road";
-import { Timestamp } from "google-protobuf/google/protobuf/timestamp_pb";
-import { type } from "os";
 
 // All Ids in the following schemas are generated
 const networkReportSchema = {
@@ -87,6 +87,28 @@ export function testKeyIsReal(key) {
     return ["0", "none", "unknown", "nan", "null", "undefined", "false"].indexOf(`${key}`.toLowerCase()) === -1;
 }
 
+/** Define a new report column based on the supplied title and columnData */
+function defineReportColumn(title, columnData) {
+    if (reportColumns[columnData]) {
+        return;
+    }
+
+    // It is assumed that "title" has already been translated
+    const newColumn = {
+        title,
+        data: columnData,
+        defaultContent: "",
+        className: "text-right",
+        orderable: false,
+        render: (data, type) => {
+            return (type === 'display')
+                ? (data / 1000).toFixed(2)
+                : data;
+        },
+    };
+    reportColumns[columnData] = newColumn;
+}
+
 function extractTitle(lengthKey, choices, useLengthKeyAsDefault) {
     let title = choice_or_default(lengthKey, choices, useLengthKeyAsDefault ? lengthKey : "Unknown").toLowerCase();
 
@@ -133,6 +155,7 @@ function extractCountData(allLengths, primary_attribute, useLengthKeyAsDefault =
                     let [attrTermTitle, attrLengthKey] = extractTitle(attrTerm, attrChoices, useLengthKeyAsDefault);
                     const fullAttrTerm = `${attryKey}.${attrTermTitle}`;
                     newLength[fullAttrTerm] = lengthsForType[key][attrKey][attrTerm];
+                    defineReportColumn(attrTermTitle, fullAttrTerm);
                 });
             });
             lengths.push(newLength);
