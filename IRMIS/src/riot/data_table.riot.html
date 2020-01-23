@@ -40,8 +40,8 @@
 
             // Wraps the actual processing for 'dataAdded' event, and includes this tag's state
             state.dataAdded = (data) => processDataAdded(data, state);
-            // Wrap the survey lookup function for event to take tag's state and data
-            state.getRowSurvey = (data) => getRowSurvey(data, state);
+            // Wrap the Row Data lookup function for event to take tag's state and data
+            state.getRowData = (data) => getRowData(data, state);
 
             const optionColumns = state.columns.filter((column) => (column.name && column.name === "Option"));
 
@@ -111,11 +111,11 @@
             data.stopPropagation();
         }
 
-        const getRowSurvey = function(data, state) {
-            const s = state.pendingRows.find((s) => {
-                return s.id == data.detail.rowId;
+        const getRowData = function(data, state) {
+            const r = state.pendingRows.find((r) => {
+                return r.id == data.detail.rowId;
             });
-            data.detail.state.survey = s;
+            data.detail.state.currentRowData = r;
         };
 
         const initialiseDataTable = function(state) {
@@ -149,11 +149,11 @@
                 initialiseDataTable(state);
 
                 document.addEventListener(`${state.id}.dataAdded`, state.dataAdded);
-                document.addEventListener(`${state.id}.getRowSurvey`, state.getRowSurvey);
+                document.addEventListener(`${state.id}.getRowData`, state.getRowData);
             },
             onBeforeUnmount(props, state) {
                 document.removeEventListener(`${state.id}.dataAdded`, state.dataAdded);
-                document.removeEventListener(`${state.id}.getRowSurvey`, state.getRowSurvey);
+                document.removeEventListener(`${state.id}.getRowData`, state.getRowData);
             },
             getTableData() {
                 const headers = this.state.columns

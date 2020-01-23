@@ -270,6 +270,7 @@
                 currentModalId: false,
                 currentRequiredFieldNames: [],
                 currentEditing: false,
+                currentRowData: new Survey({}),
             },
             components: {
                 Edit_Stop_Alert, Edit_Modal, Stacked_Bar
@@ -600,8 +601,9 @@
                     } else if (stopAlertResult === "delete") {
                         this.state.editMode = true;
                         // void the survey attribute value and save
-                        document.dispatchEvent(new CustomEvent(`${tableId}.getRowSurvey`, {detail: {rowId: rowId, state: this.state}}));
-                        if (this.state.survey) {
+                        document.dispatchEvent(new CustomEvent(`${tableId}.getRowData`, {detail: {rowId: rowId, state: this.state}}));
+                        if (this.state.currentRowData) {
+                            this.state.survey = this.state.currentRowData;
                             this.state.survey.setRoadId(this.state.road.getId());
                             this.state.survey.setValues(JSON.stringify({}));
                             this.saveSurvey();
