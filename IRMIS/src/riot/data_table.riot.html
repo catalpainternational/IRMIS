@@ -40,6 +40,8 @@
 
             // Wraps the actual processing for 'dataAdded' event, and includes this tag's state
             state.dataAdded = (data) => processDataAdded(data, state);
+            // Wrap the Row Data lookup function for event to take tag's state and data
+            state.getRowData = (data) => getRowData(data, state);
 
             const optionColumns = state.columns.filter((column) => (column.name && column.name === "Option"));
 
@@ -94,7 +96,7 @@
         }
 
         const button_event_template = function(tableId, eventName, rowId) {
-            return `document.dispatchEvent(new CustomEvent('${tableId}.${eventName}',{detail:{rowId:${rowId}}}))`;
+            return `document.dispatchEvent(new CustomEvent('${tableId}.${eventName}',{detail:{rowId:${rowId},tableId:'${tableId}'}}))`;
         }
 
         const processDataAdded = function(data, state) {
@@ -108,6 +110,13 @@
 
             data.stopPropagation();
         }
+
+        const getRowData = function(data, state) {
+            const r = state.pendingRows.find((r) => {
+                return r.id == data.detail.rowId;
+            });
+            data.detail.state.currentRowData = r;
+        };
 
         const initialiseDataTable = function(state) {
             state.table = state.table || $(`#${state.id}`).DataTable(state.dataTableConfig);
@@ -138,10 +147,13 @@
                 this.update();
 
                 initialiseDataTable(state);
-                document.addEventListener(`${state.id}.dataAdded`, state.dataAdded)
+
+                document.addEventListener(`${state.id}.dataAdded`, state.dataAdded);
+                document.addEventListener(`${state.id}.getRowData`, state.getRowData);
             },
             onBeforeUnmount(props, state) {
                 document.removeEventListener(`${state.id}.dataAdded`, state.dataAdded);
+                document.removeEventListener(`${state.id}.getRowData`, state.getRowData);
             },
             getTableData() {
                 const headers = this.state.columns

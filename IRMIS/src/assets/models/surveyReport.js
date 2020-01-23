@@ -449,6 +449,18 @@ export class EstradaSurveyAttribute extends Attribute {
             : gettext("Unknown");
     }
 
+    get trafficCounts() {
+        return this.values.counts || {};
+    }
+
+    get trafficCountTotal() {
+        return this.values.countTotal || 0;
+    }
+
+    get trafficDataType() {
+        return this.values.trafficType || "Unknown";
+    }
+
     get roadClass() {
         return this.roadType;
     }

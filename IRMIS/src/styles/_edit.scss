@@ -62,6 +62,7 @@ edit_asset_details,
 edit_pavement,
 edit_project,
 edit_condition,
+edit_traffic,
 edit_maintenance,
 edit_environment,
 edit_history {
@@ -88,6 +89,12 @@ edit_history {
                 margin-right: 15px;
             }
         }
+    }
+}
+
+edit_traffic {
+    section {
+        max-width: inherit;
     }
 }
 
@@ -139,5 +146,117 @@ feedback_banner {
         &.unsuccess {
             border-top-color: $red;
         }
+    }
+}
+
+edit_traffic {
+    .survey-field-height {
+        height: 30px;
+        align-items: flex-end;
+    }
+
+    .date-field-title {
+        font-size: 14px; 
+        width: 96px; 
+        margin-left: 10px; 
+        font-weight: 400;
+    }
+
+    .date-input-field {
+        width: 192px; 
+        height: 28px;
+    }
+
+    .traffic-width {
+        width: 480px;
+    }
+
+    .vehicle-field-height {
+        height: 40px;
+    }
+
+    .vehicle-name {
+        width: 144px; 
+        font-size: 14px;
+    }
+
+    .vehicle-input {
+        height: 28px; 
+        margin: 0 36px 0 16px;
+    }
+
+    .table-spacing {
+        margin-top: 25px;
+    }
+
+    .details-modal-type-spacing {
+        margin: 10px 0 0 10px; 
+        font-size: 14px;
+    }
+
+    .details-survey-type {
+        display: inline-block; 
+        width: 250px; 
+        border-right: 1px solid #CFD1D6; 
+        margin-right: 50px; 
+        margin-bottom: 10px;
+    }
+
+    .details-forecast-methods-block {
+        display: inline-block; 
+        margin-bottom: 10px;
+    }
+
+    .details-modal-date {
+        font-size: 14px; 
+        font-weight: 700;
+        margin-right: 32px;
+    }
+
+    .details-modal-date-spacing {
+        width: 56px;
+    }
+    
+    .details-vehicle-spacing {
+        margin-right: 88px; 
+        font-weight: 700;
+        width: 100px;
+    }
+    
+    .details-vehicle-count {
+        text-align: right;
+    }
+
+    .details-total {
+        padding-top: 20px; 
+        border-top: 1px solid #CFD1D6;
+    }
+
+    .details-total-title {
+        margin-left: 50px; 
+        font-size: 18px;
+    }
+
+    .details-total-number {
+        margin-left: 105px; 
+        font-size: 18px;
+        width: 100px;
+        text-align: right;
+    }
+
+    .error-tooltip-date {
+        position: absolute;
+        margin-left: 110px;
+        margin-top: -32px;
+    }
+
+    .error-tooltip-vehicle {
+        position: aboslute;
+        margin-left: 210px;
+        margin-top: -30px;
+    }
+
+    .contains-tooltip {
+        position: relative;
     }
 }
