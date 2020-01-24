@@ -372,8 +372,8 @@ class ReportQuery:
             if attribute_type not in lengths:
                 lengths[attribute_type] = {}
             if attribute_value not in lengths[attribute_type]:
-                lengths[attribute_type][attribute_value] = 0.0
-            lengths[attribute_type][attribute_value] += attribute_total
+                lengths[attribute_type][attribute_value] = {"value": 0.0}
+            lengths[attribute_type][attribute_value]["value"] += attribute_total
 
         return lengths
 

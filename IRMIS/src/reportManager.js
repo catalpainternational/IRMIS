@@ -22,7 +22,7 @@ export const reportColumns = {
         className: "text-right",
         orderable: false,
         render: (data, type) => {
-            return (type === 'display')
+            return (type === "display")
                 ? (data / 1000).toFixed(2)
                 : data;
         },
@@ -41,7 +41,7 @@ export const reportColumns = {
         className: "text-right",
         orderable: false,
         render: (data, type) => {
-            return (type === 'display') ? toChainageFormat(data) : data;
+            return (type === "display") ? toChainageFormat(data) : data;
         },
     },
     chainageEnd: {
@@ -51,7 +51,7 @@ export const reportColumns = {
         className: "text-right",
         orderable: false,
         render: (data, type) => {
-            return (type === 'display') ? toChainageFormat(data) : data;
+            return (type === "display") ? toChainageFormat(data) : data;
         },
     },
     municipality: {
@@ -139,12 +139,17 @@ export const reportContent = {
         noReportData: window.gettext("Sorry, data for the road network is not available yet"),
         fixedFilter: {
             primaryattribute: ["municipality", "road_type", "surface_type"],
+            secondaryattribute: {
+                "municipality": ["road_status", "technical_class"],
+                "road_type": ["road_status", "technical_class"],
+                "surface_type": ["road_status", "technical_class"],
+            },
         },
         visibleFilters: {
-            municipality: true,
-            roadClass: true,
-            surfaceType: true,
-            surfaceCondition: true,
+            // municipality: true,
+            // roadClass: true,
+            // surfaceType: true,
+            // surfaceCondition: true,
             reportDate: true,
         },
         reportElements: { filters: true, totalLength: true, dataTables: [reportTableIds.municipality, reportTableIds.roadClass, reportTableIds.surfaceType] },

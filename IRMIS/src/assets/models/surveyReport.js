@@ -1,9 +1,11 @@
 import dayjs from "dayjs";
 import { isArray } from "util";
 
+import { Timestamp } from "google-protobuf/google/protobuf/timestamp_pb";
 import { Attribute, Report } from "../../../protobuf/report_pb";
 
 import { choice_or_default, getFieldName, getHelpText, invertChoices, makeEstradaObject } from "../protoBufUtilities";
+import { reportColumns } from "../../reportManager";
 
 import {
     ROAD_STATUS_CHOICES, ROAD_TYPE_CHOICES,
@@ -11,7 +13,6 @@ import {
     TECHNICAL_CLASS_CHOICES, TRAFFIC_LEVEL_CHOICES,
     PAVEMENT_CLASS_CHOICES, TERRAIN_CLASS_CHOICES
 } from "./road";
-import { Timestamp } from "google-protobuf/google/protobuf/timestamp_pb";
 
 // All Ids in the following schemas are generated
 const networkReportSchema = {
@@ -64,34 +65,101 @@ const filterTitles = {
     // primary_attribute: { display: gettext("Attribute") },
     // road_code: { display: gettext("Road Code") },
     // report_chainage: { display: gettext("Report Chainage") },
-}
+};
+
+const lengthTypeChoices = {
+    municipality: AdminAreaChoices(),
+    number_lanes: {},
+    pavement_class: PAVEMENT_CLASS_CHOICES,
+    rainfall: {},
+    // road_class is an alias for road_type
+    road_class: ROAD_TYPE_CHOICES,
+    road_status: ROAD_STATUS_CHOICES,
+    road_type: ROAD_TYPE_CHOICES,
+    surface_condition: SURFACE_CONDITION_CHOICES,
+    surface_type: SURFACE_TYPE_CHOICES,
+    technical_class: TECHNICAL_CLASS_CHOICES,
+    terrain_class: TERRAIN_CLASS_CHOICES,
+    traffic_level: TRAFFIC_LEVEL_CHOICES,
+};
 
 export function testKeyIsReal(key) {
     return ["0", "none", "unknown", "nan", "null", "undefined", "false"].indexOf(`${key}`.toLowerCase()) === -1;
 }
 
-function extractCountData(lengthsForType, choices, useLengthKeyAsDefault = false) {
-    const lengths = [];
-    if (lengthsForType) {
-        Object.keys(lengthsForType).forEach((key) => {
-            let lengthKey = key;
-            let lengthKeyHasValue = testKeyIsReal(lengthKey);
-            let title = choice_or_default(lengthKey, choices, useLengthKeyAsDefault ? lengthKey : "Unknown").toLowerCase();
+/** Define a new report column based on the supplied title and columnData */
+function defineReportColumn(title, columnData) {
+    if (reportColumns[columnData]) {
+        return;
+    }
 
-            if (title === "unknown") {
-                // check if we've actually received the title instead of the key
-                const invertedChoices = invertChoices(choices);
-                let alternateTitle = choice_or_default(lengthKey, invertedChoices, "Unknown").toLowerCase();
-                if (alternateTitle !== "unknown") {
-                    title = lengthKey;
-                    lengthKey = alternateTitle;
-                } else if (lengthKeyHasValue) {
-                    // We do have some kind of supplied key name - so we'll use it.
-                    title = lengthKey.toLowerCase();
-                }
+    // It is assumed that "title" has already been translated
+    const newColumn = {
+        title,
+        data: columnData,
+        defaultContent: "",
+        className: "text-right",
+        orderable: false,
+        render: (data, type) => {
+            return (type === "display" && typeof data === "number")
+                ? (data / 1000).toFixed(2)
+                : data;
+        },
+    };
+    reportColumns[columnData] = newColumn;
+}
+
+function extractTitle(lengthKey, choices, useLengthKeyAsDefault) {
+    let title = choice_or_default(lengthKey, choices, useLengthKeyAsDefault ? lengthKey : "Unknown").toLowerCase();
+
+    if (title === "unknown") {
+        // check if we've actually received the title instead of the key
+        const invertedChoices = invertChoices(choices);
+        let alternateTitle = choice_or_default(lengthKey, invertedChoices, "Unknown").toLowerCase();
+        let lengthKeyHasValue = testKeyIsReal(lengthKey);
+        if (alternateTitle !== "unknown") {
+            title = lengthKey;
+            lengthKey = alternateTitle;
+        } else if (lengthKeyHasValue) {
+            // We do have some kind of supplied key name - so we'll use it.
+            title = lengthKey.toLowerCase();
+        }
+    }
+    title = title[0].toUpperCase() + title.substring(1);
+
+    return [title, lengthKey];
+}
+
+function extractCountData(allLengths, primary_attribute, useLengthKeyAsDefault = false) {
+    const lengths = [];
+    const lengthsForType = allLengths[primary_attribute] || [];
+    const choices = lengthTypeChoices[primary_attribute] || {};
+    if (lengthsForType && Object.keys(lengthsForType).length) {
+        Object.keys(lengthsForType).forEach((key) => {
+            let lengthKeyHasValue = testKeyIsReal(key);
+            let [title, lengthKey] = extractTitle(key, choices, useLengthKeyAsDefault);
+
+            if (typeof lengthsForType[key] === "number") {
+                lengthsForType[key] = { "value": lengthsForType[key]}
             }
-            title = title[0].toUpperCase() + title.substring(1);
-            lengths.push({ key: lengthKeyHasValue ? lengthKey : 0, title, distance: lengthsForType[key] });
+            const distance = lengthsForType[key].value;
+
+            // Start building the new 'length' ready for reporting 
+            const newLength = { key: lengthKeyHasValue ? lengthKey : 0, title, distance };
+            Object.keys(lengthsForType[key]).forEach((attrKey) => {
+                if (attrKey === "value") {
+                    // Skip the primary attribute value
+                    return;
+                }
+                const attrChoices = lengthTypeChoices[attrKey] || {};
+                Object.keys(lengthsForType[key][attrKey]).forEach((attrTerm) => {
+                    let [attrTermTitle, attrLengthKey] = extractTitle(attrTerm, attrChoices, useLengthKeyAsDefault);
+                    const fullAttrTerm = `${attrKey}|${attrTermTitle}`;
+                    newLength[fullAttrTerm] = lengthsForType[key][attrKey][attrTerm];
+                    defineReportColumn(attrTermTitle, fullAttrTerm);
+                });
+            });
+            lengths.push(newLength);
         });
     }
 
@@ -113,10 +181,68 @@ export class EstradaNetworkSurveyReport extends Report {
         return this.getId();
     }
 
-    /** filter is an object(dict) of lists */
+    /** filter is an object(dict) of lists {"key": [values,...]}
+     * except for the special "secondary_attribute" which is itself an object of lists
+     */
     get filter() {
         const filter = this.getFilter() || "{}";
         return JSON.parse(filter);
+    }
+
+    /** Clears the filter, leaving it with a 'primary_attribute' member with an empty list */
+    clearFilter() {
+        this.setFilter(JSON.stringify({"primary_attribute": []}));
+    }
+
+    /** Sets a key (member) in the filter to a specific list of values
+     * If values is undefined - then the key will be deleted
+     * If values is not an array and key is not "secondary_attribute"
+     *  - then it will be converted to an array with a single value
+     * If key is "secondary_attribute" we assume value is OK if it's an object or undefined
+     */
+    setFilterKey(key, values) {
+        // Verify/correct input parameters
+        const hasKey = (key || key === 0);
+        if (!hasKey) {
+            // no supplied key - so nothing to do
+            return;
+        }
+        if (key === "secondary_attribute") {
+            let hasValidSecondaryValues = typeof values === "object" && values !== null;
+            if (!hasValidSecondaryValues) {
+                return;
+            }
+        } else {
+            if (!isArray(values)) {
+                values = [values];
+            }
+        }
+
+        const currentFilter = this.filter;
+        currentFilter[key] = values;
+        
+        this.setFilter(JSON.stringify(currentFilter));
+    }
+
+    /** Adds a value to the list that is in the filter key
+     * 
+     * Note: this does NOT support "secondary_attribute" filters, use setFilterKey instead
+     */
+    filterKeyAddItem(key, value) {
+        // Verify/correct input parameters
+        const hasKey = (key || key === 0) && key !== "secondary_attribute";
+        const hasValue = (typeof value === "string" || typeof value === "number");
+        if (!hasKey || !hasValue) {
+            // no supplied key or value  - so nothing to do
+            return;
+        }
+
+        const currentFilter = this.filter;
+        currentFilter[key] = currentFilter[key] || [];
+        if (!currentFilter[key].includes(value)) {
+            currentFilter[key].push(value);
+            this.setFilter(JSON.stringify(currentFilter));
+        }
     }
 
     get formattedFilters() {
@@ -148,6 +274,10 @@ export class EstradaNetworkSurveyReport extends Report {
         return formattedFilters;
     }
 
+    /** lengths is an object(dict) of term:value pairs where value is an object of the form:
+     * - {"value": numeric} for simple reports (no secondary attribute)
+     * - {"value": numeric, "secondary_attribute": {"term": numeric}}
+    */
     get lengths() {
         let lengths = "";
 
@@ -159,11 +289,110 @@ export class EstradaNetworkSurveyReport extends Report {
 
         // We can change the following to
         // whatever we consider an appropriate 'empty' collection of lengths
-        const emptyLengths = ["municipality", "number_lanes", "pavement_class", "road_type", "surface_condition", "surface_type", "technical_class"]
-            .map((attribute) => `"${attribute}": { "None": 0 }`);
+        const emptyLengths = [
+            "municipality",
+            "number_lanes",
+            "pavement_class",
+            "rainfall",
+            "road_type",
+            "surface_condition",
+            "surface_type",
+            "technical_class",
+            "terrain_class"
+        ].map((attribute) => `"${attribute}": { "None": { "value": 0 } }`);
+
         lengths = lengths || `{ ${emptyLengths.join(", ")} }`;
 
         return JSON.parse(lengths);
+    }
+
+    /** Clears the lengths */
+    clearLengths() {
+        this.setLengths(JSON.stringify({}));
+    }
+
+    /** Sets a key (member) in the lengths specified object of term:value pairs
+     * If termValues is undefined - then the key will be deleted
+     */
+    setLengthsKey(key, termValues = undefined) {
+        // Verify/correct input parameters
+        const hasKey = (key || key === 0);
+        let hasValidTermValues = typeof termValues === "object" && termValues !== null;
+        if (hasValidTermValues) {
+            const tempTermValues = {};
+            Object.keys(termValues).forEach((term) => {
+                if (typeof termValues[term] === "number") {
+                    tempTermValues[term] = { "value": termValues[term] };
+                } else if (termValues[term] && typeof termValues[term].value === "number") {
+                    tempTermValues[term] = termValues[term];
+                }
+            });
+            termValues = tempTermValues;
+            // Reassess whether we have valid term:value pairs
+            hasValidTermValues = Object.keys(termValues).length > 0;
+        } else if (typeof termValues === "undefined") {
+            // "undefined" termValues is a valid termValues
+            hasValidTermValues = true;
+        }
+        if (!hasKey || !hasValidTermValues) {
+            // no supplied key and/or no valid termValues - so nothing to do
+            return;
+        }
+        
+        const currentLengths = this.lengths;
+        const keyExists = currentLengths[key];
+        if (!keyExists && typeof termValues === "undefined") {
+            // nothing to do
+            return;
+        }
+        currentLengths[key] = termValues;
+        
+        this.setLengths(JSON.stringify(currentLengths));
+    }
+
+    /** Sets a term:value pair in the lengths[key]
+     * If value is undefined or not numeric, or not an object that at least specifies {value: numeric} then nothing is done
+     * If value is numeric or {value: numeric} then the term:value pair is set/appended in lengths[key]
+     * If value is undefined then the term is removed from lengths[key]
+     * If lengths[key] has no more terms then the key is removed from lengths
+     */
+    lengthsKeyAddItem(key, term, value = undefined) {
+        // Verify/correct input parameters
+        const hasKey = (key || key === 0);
+        const hasTerm = (term || term === 0);
+        const hasValue = (typeof value === "undefined" || typeof value === "number" || (value && typeof value.value === "number"));
+        if (!hasKey || !hasTerm || !hasValue) {
+            // no supplied key, term or valid value  - so nothing to do
+            return;
+        }
+        if (typeof value === "number") {
+            value = { "value": value };
+        }
+
+        const currentLengths = this.lengths;
+        const keyExists = currentLengths[key];
+        const termExists = keyExists && currentLengths[key][term];
+
+        if (typeof value === "undefined") {
+            let isDirty = false;
+            if (termExists) {
+                currentLengths[key][term] = undefined; // delete the term
+                isDirty = true;
+            }
+            if (keyExists && Object.keys(currentLengths[key]).length === 0) {
+                currentLengths[key] = undefined; // delete the key
+                isDirty = true;
+            }
+            if (!isDirty) {
+                // nothing to do
+                return;
+            }
+        } else {
+            currentLengths[key] = currentLengths[key] || {};
+            currentLengths[key][term] = value;
+        }
+
+        this.setLengths(JSON.stringify(currentLengths));
     }
 
     get roadCodes() {
@@ -179,46 +408,52 @@ export class EstradaNetworkSurveyReport extends Report {
     }
 
     get municipalities() {
-        return extractCountData(this.lengths.municipality, AdminAreaChoices());
+        return extractCountData(this.lengths, "municipality");
     }
 
     get numberLanes() {
-        if (!this.lengths.number_lanes || this.lengths.number_lanes.length) {
-            return [];
-        }
-        return this.lengths.number_lanes;
+        return extractCountData(this.lengths, "number_lanes");
     }
 
     get pavementClasses() {
-        return extractCountData(this.lengths.pavement_class, PAVEMENT_CLASS_CHOICES);
+        return extractCountData(this.lengths, "pavement_class");
     }
 
+    get rainfall() {
+        return extractCountData(this.lengths, "rainfall");
+    }
+
+    /** roadClasses is an alias for roadTypes */
     get roadClasses() {
         return this.roadTypes;
     }
 
+    get roadStatuses() {
+        return extractCountData(this.lengths, "road_status");
+    }
+
     get roadTypes() {
-        return extractCountData(this.lengths.road_type, ROAD_TYPE_CHOICES);
+        return extractCountData(this.lengths, "road_type");
     }
 
     get surfaceConditions() {
-        return extractCountData(this.lengths.surface_condition, SURFACE_CONDITION_CHOICES);
+        return extractCountData(this.lengths, "surface_condition");
     }
 
     get surfaceTypes() {
-        return extractCountData(this.lengths.surface_type, SURFACE_TYPE_CHOICES);
+        return extractCountData(this.lengths, "surface_type");
     }
 
     get technicalClasses() {
-        return extractCountData(this.lengths.technical_class, TECHNICAL_CLASS_CHOICES);
+        return extractCountData(this.lengths, "technical_class");
     }
 
     get terrainClasses() {
-        return extractCountData(this.lengths.terrain_class, TERRAIN_CLASS_CHOICES);
+        return extractCountData(this.lengths, "terrain_class");
     }
 
     get trafficLevels() {
-        return extractCountData(this.lengths.traffic_level, TRAFFIC_LEVEL_CHOICES);
+        return extractCountData(this.lengths, "traffic_level");
     }
 
     static getFieldName(field) {
@@ -238,19 +473,19 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
     }
 
     get municipalities() {
-        return this.makeSpecificLengths("municipality", AdminAreaChoices());
+        return this.makeSpecificLengths("municipality");
     }
 
     get numberLanes() {
-        return this.makeSpecificLengths("number_lanes", {});
+        return this.makeSpecificLengths("number_lanes");
     }
 
     get pavementClasses() {
-        return this.makeSpecificLengths("pavement_class", PAVEMENT_CLASS_CHOICES);
+        return this.makeSpecificLengths("pavement_class");
     }
 
     get rainfalls() {
-        return this.makeSpecificLengths("rainfall", {});
+        return this.makeSpecificLengths("rainfall");
     }
 
     get roadClasses() {
@@ -258,31 +493,31 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
     }
 
     get roadTypes() {
-        return this.makeSpecificLengths("road_type", ROAD_TYPE_CHOICES);
+        return this.makeSpecificLengths("road_type");
     }
 
     get roadStatuses() {
-        return this.makeSpecificLengths("road_status", ROAD_STATUS_CHOICES);
+        return this.makeSpecificLengths("road_status");
     }
 
     get surfaceConditions() {
-        return this.makeSpecificLengths("surface_condition", SURFACE_CONDITION_CHOICES);
+        return this.makeSpecificLengths("surface_condition");
     }
 
     get surfaceTypes() {
-        return this.makeSpecificLengths("surface_type", SURFACE_TYPE_CHOICES);
+        return this.makeSpecificLengths("surface_type");
     }
 
     get technicalClasses() {
-        return this.makeSpecificLengths("technical_class", TECHNICAL_CLASS_CHOICES);
+        return this.makeSpecificLengths("technical_class");
     }
 
     get terrainClasses() {
-        return this.makeSpecificLengths("terrain_class", TERRAIN_CLASS_CHOICES);
+        return this.makeSpecificLengths("terrain_class");
     }
 
     get trafficLevels() {
-        return this.makeSpecificLengths("traffic_level", TRAFFIC_LEVEL_CHOICES);
+        return this.makeSpecificLengths("traffic_level");
     }
 
     /** Returns one or more collections of attributes matching the criteria
@@ -356,10 +591,8 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
         return getHelpText(roadReportSchema, field);
     }
 
-    makeSpecificLengths(primary_attribute, choices, useLengthKeyAsDefault = false) {
-        const lengthsForType = this.lengths[primary_attribute] || {}
-
-        return extractCountData(lengthsForType, choices, useLengthKeyAsDefault);
+    makeSpecificLengths(primary_attribute, useLengthKeyAsDefault = false) {
+        return extractCountData(this.lengths, primary_attribute, useLengthKeyAsDefault);
     }
 
     makeEstradaSurveyAttribute(pbattribute) {
