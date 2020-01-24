@@ -114,11 +114,16 @@
                         if (colIdx === 0) {
                             $(currentColumn.footer()).html(window.gettext("Total"));
                         } else {
-                            const columnTotal = currentColumn.data().reduce((acc, cur) => {
+                            let columnTotal = currentColumn.data().reduce((acc, cur) => {
                                 return !cur ? acc : acc + cur;
                             }, 0);
                             if (columnTotal) {
-                                $(currentColumn.footer()).html((columnTotal / 1000).toFixed(2));
+                                if (state.columns[colIdx].data !== "percent") {
+                                    // If the column.data is not explicitly called 'percent'
+                                    // we assume that it is in meters and convert it to kilometers
+                                    columnTotal = columnTotal / 1000;
+                                }
+                                $(currentColumn.footer()).html(columnTotal.toFixed(2));
                             }
                         }
                     });
