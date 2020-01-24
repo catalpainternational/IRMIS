@@ -122,6 +122,9 @@
                                     // If the column.data is not explicitly called 'percent'
                                     // we assume that it is in meters and convert it to kilometers
                                     columnTotal = columnTotal / 1000;
+                                } else {
+                                    // But if it is percent - then we knw that the total is ...
+                                    columnTotal = 100.00;
                                 }
                                 $(currentColumn.footer()).html(columnTotal.toFixed(2));
                             }
