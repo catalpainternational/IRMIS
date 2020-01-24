@@ -36,6 +36,7 @@
             state.clearRows = false;
             state.pendingRows = props.pendingRows || [];
             state.pageLength = props.pageLength || 10;
+            state.showTotal = !!props.showTotal;
 
             // Wraps the handling for the 'changedColumns' event, and includes this tag's state
             state.changedColumns = (data) => processColumnsChanged(data, state);
@@ -101,6 +102,28 @@
             state.dataTableConfig.ajax = function(data, callback, settings) {
                 // This is only here so that dataTables will change its internal state
             }
+            if (state.showTotal) {
+                state.dataTableConfig.footerCallback = ( tfoot, data, start, end, display ) => {
+                    if (!state.table) {
+                        // If the actual dataTable is not defined yet - then exit
+                        return;
+                    }
+
+                    state.table.columns().flatten().each((colIdx) => {
+                        const currentColumn = state.table.column(colIdx);
+                        if (colIdx === 0) {
+                            $(currentColumn.footer()).html(window.gettext("Total"));
+                        } else {
+                            const columnTotal = currentColumn.data().reduce((acc, cur) => {
+                                return !cur ? acc : acc + cur;
+                            }, 0);
+                            if (columnTotal) {
+                                $(currentColumn.footer()).html((columnTotal / 1000).toFixed(2));
+                            }
+                        }
+                    });
+                };
+            }
         }
 
         const button_template = function(buttonClass, clickAction) {
@@ -149,6 +172,19 @@
         };
 
         const initialiseDataTable = function(state) {
+            const newTable = !state.table;
+
+            // Inject a footer if a "footerCallback" is defined in the dataTableConfig
+            if (newTable && state.dataTableConfig.footerCallback) {
+                const colCount = state.dataTableConfig.columns.length;
+                let emptyFooter = "<tfoot><tr>";
+                for (let ix = 0; ix < colCount; ix++) {
+                    emptyFooter += "<th></th>";
+                }
+                emptyFooter += "</tr></tfoot>";
+                $(`#${state.id}`).append(emptyFooter);
+            }
+
             state.table = state.table || $(`#${state.id}`).DataTable(state.dataTableConfig);
 
             // add any rows the caller has delivered before initialization

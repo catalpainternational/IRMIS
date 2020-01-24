@@ -101,7 +101,7 @@ function defineReportColumn(title, columnData) {
         className: "text-right",
         orderable: false,
         render: (data, type) => {
-            return (type === 'display')
+            return (type === "display" && typeof data === "number")
                 ? (data / 1000).toFixed(2)
                 : data;
         },
@@ -154,7 +154,7 @@ function extractCountData(allLengths, primary_attribute, useLengthKeyAsDefault =
                 const attrChoices = lengthTypeChoices[attrKey] || {};
                 Object.keys(lengthsForType[key][attrKey]).forEach((attrTerm) => {
                     let [attrTermTitle, attrLengthKey] = extractTitle(attrTerm, attrChoices, useLengthKeyAsDefault);
-                    const fullAttrTerm = `${attrKey}.${attrTermTitle}`;
+                    const fullAttrTerm = `${attrKey}|${attrTermTitle}`;
                     newLength[fullAttrTerm] = lengthsForType[key][attrKey][attrTerm];
                     defineReportColumn(attrTermTitle, fullAttrTerm);
                 });

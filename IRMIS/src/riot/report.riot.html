@@ -138,32 +138,32 @@
         <data_table hidden="{ !state.reportData.municipality || !hasDataTable(dataTableIds.municipality) }"
             table_id="{dataTableIds.municipality}" tableName="Municipality"
             columns="{columns.municipality()}" columnSortOrder="{baseColumnSortOrder}"
-            paging="false" canExport>
+            paging="false" canExport showTotal>
         </data_table>
         <data_table hidden="{ !state.reportData.roadClass || !hasDataTable(dataTableIds.roadClass) }"
             table_id="{dataTableIds.roadClass}" tableName="Road Class"
             columns="{columns.roadClass()}" columnSortOrder="{baseColumnSortOrder}"
-            paging="false" canExport>
+            paging="false" canExport showTotal>
         </data_table>
         <data_table hidden="{ !state.reportData.surfaceType || !hasDataTable(dataTableIds.surfaceType) }"
             table_id="{dataTableIds.surfaceType}" tableName="Surface Type"
             columns="{columns.surfaceType()}" columnSortOrder="{baseColumnSortOrder}"
-            paging="false" canExport>
+            paging="false" canExport showTotal>
         </data_table>
         <data_table hidden="{ !state.reportData.roadStatus || !hasDataTable(dataTableIds.roadStatus) }"
             table_id="{dataTableIds.roadStatus}" tableName="Road Status"
             columns="{columns.roadStatus()}" columnSortOrder="{baseColumnSortOrder}"
-            paging="false" canExport>
+            paging="false" canExport showTotal>
         </data_table>
         <data_table hidden="{ !state.reportData.technicalClass || !hasDataTable(dataTableIds.technicalClass) }"
             table_id="{dataTableIds.technicalClass}" tableName="Technical Class"
             columns="{columns.technicalClass()}" columnSortOrder="{baseColumnSortOrder}"
-            paging="false" canExport>
+            paging="false" canExport showTotal>
         </data_table>
         <data_table hidden="{ !state.reportData.surfaceCondition || !hasDataTable(dataTableIds.surfaceCondition) }"
             table_id="{dataTableIds.surfaceCondition}" tableName="Surface Condition"
             columns="{columns.surfaceCondition()}" columnSortOrder="{baseColumnSortOrder}"
-            paging="false" canExport>
+            paging="false" canExport showTotal>
         </data_table>
     </div>
 
@@ -219,16 +219,36 @@
 
         // These are the default column sets for each report type,
         // they are overriden for any report that specifies fixedFilter.secondaryattribute
-        // A title is usually injected as the first element by the columns functions below
+        // A title is usually reset by the columns functions below
         const columnSets = {
-            municipality: [reportColumns.distance, reportColumns.percent],
-            road_type: [reportColumns.distance, reportColumns.percent],
-            road_status: [reportColumns.distance, reportColumns.percent],
+            municipality: [reportColumns.title, reportColumns.distance, reportColumns.percent],
+            road_type: [reportColumns.title, reportColumns.distance, reportColumns.percent],
+            road_status: [reportColumns.title, reportColumns.distance, reportColumns.percent],
             surface_condition: [reportColumns.chainageStart, reportColumns.chainageEnd, reportColumns.surfaceCondition, reportColumns.surveyDate],
-            surface_type: [reportColumns.distance, reportColumns.percent],
-            technical_class: [reportColumns.distance, reportColumns.percent],
-            terrain_class: [reportColumns.distance, reportColumns.percent],
+            surface_type: [reportColumns.title, reportColumns.distance, reportColumns.percent],
+            technical_class: [reportColumns.title, reportColumns.distance, reportColumns.percent],
+            terrain_class: [reportColumns.title, reportColumns.distance, reportColumns.percent],
         };
+        const titleColumnMapping = {
+            municipality: "Municipality",
+            road_class: "Road Class",
+            road_status: "Road Status",
+            road_type: "Road Type",
+            // surface_condition: no title column for surface condition
+            surface_type: "Surface Type",
+            technical_class: "Technical Class",
+            terrain_class: "Terrain Class",
+        };
+
+        function SetTitleColumn(titleColumnName) {
+            if (titleColumnMapping[titleColumnName]) {
+                const titleColumn = cloneData(reportColumns.title);
+                titleColumn.title = window.gettext(titleColumnMapping[titleColumnName]);
+                columnSets[titleColumnName][0] = titleColumn;
+            }
+
+            return columnSets.municipality;            
+        }
 
         export default {
             state: {
@@ -261,45 +281,13 @@
             dataTableIds: reportTableIds,
             // These functions define the actual columns used by each report
             columns: {
-                municipality() {
-                    const titleColumn = cloneData(reportColumns.title);
-                    titleColumn.title = window.gettext("Municipality");
-
-                    return [titleColumn].concat(columnSets.municipality);
-                },
-                roadClass() {
-                    const titleColumn = cloneData(reportColumns.title);
-                    titleColumn.title = window.gettext("Road Class");
-
-                    return [titleColumn].concat(columnSets.road_type);
-                },
-                roadStatus() {
-                    const titleColumn = cloneData(reportColumns.title);
-                    titleColumn.title = window.gettext("Road Status");
-
-                    return [titleColumn].concat(columnSets.road_status);
-                },
-                surfaceCondition() {
-                    return columnSets.surface_condition;
-                },                
-                surfaceType() {
-                    const titleColumn = cloneData(reportColumns.title);
-                    titleColumn.title = window.gettext("Surface Type");
-
-                    return [titleColumn].concat(columnSets.surface_type);
-                },
-                technicalClass() {
-                    const titleColumn = cloneData(reportColumns.title);
-                    titleColumn.title = window.gettext("Technical Class");
-
-                    return [titleColumn].concat(columnSets.technical_class);
-                },
-                terrainClass() {
-                    const titleColumn = cloneData(reportColumns.title);
-                    titleColumn.title = window.gettext("Terrain Class");
-
-                    return [titleColumn].concat(columnSets.terrain_class);
-                },
+                municipality: () => SetTitleColumn("municipality"),
+                roadClass: () => SetTitleColumn("road_type"),
+                roadStatus: () => SetTitleColumn("road_status"),
+                surfaceCondition: () => SetTitleColumn("surface_condition"),
+                surfaceType: () => SetTitleColumn("surface_type"),
+                technicalClass: () => SetTitleColumn("technical_class"),
+                terrainClass: () => SetTitleColumn("terrain_class"),
             },
             reportContent() {
                 // For the definitions of the reports themselves see reportContent in reportManager.js
@@ -411,7 +399,7 @@
                         const attrKey = secondaryattribute;
                         tableData.forEach((entry) => {
                             const fullAttrTerms = Object.keys(entry)
-                                .filter((entryKey) => { return entryKey.indexOf(`${attrKey}.`) === 0; });
+                                .filter((entryKey) => { return entryKey.indexOf(`${attrKey}|`) === 0; });
                             if (fullAttrTerms.length === 0) {
                                 return; // continue to next entry
                             }
@@ -426,11 +414,15 @@
 
                     // Only replace the 'normal' columnSet if we actually have some new ones defined
                     if (Object.keys(columnSet).length > 1) {
-                        columnSets[filterName].splice(0, 2);
-                        Array.prototype.push.apply(columnSets[filterName], Object.values(columnSet));
+                        // Take just the first column - the title column
+                        const newColumnSet = SetTitleColumn(filterName).slice(0, 1);
+                        // And add the rest generated from the data
+                        Object.keys(columnSet).sort().forEach((fullAttrTerm) => {
+                            newColumnSet.push(columnSet[fullAttrTerm]);
+                        });
 
                         const eventName = `${tableName}.changedColumns`;
-                        const eventDetail = { detail: { columns: columnSets[filterName] } };
+                        const eventDetail = { detail: { columns: newColumnSet } };
                         document.dispatchEvent(new CustomEvent(eventName, eventDetail));
                     }
                 }

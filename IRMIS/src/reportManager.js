@@ -22,7 +22,7 @@ export const reportColumns = {
         className: "text-right",
         orderable: false,
         render: (data, type) => {
-            return (type === 'display')
+            return (type === "display")
                 ? (data / 1000).toFixed(2)
                 : data;
         },
@@ -41,7 +41,7 @@ export const reportColumns = {
         className: "text-right",
         orderable: false,
         render: (data, type) => {
-            return (type === 'display') ? toChainageFormat(data) : data;
+            return (type === "display") ? toChainageFormat(data) : data;
         },
     },
     chainageEnd: {
@@ -51,7 +51,7 @@ export const reportColumns = {
         className: "text-right",
         orderable: false,
         render: (data, type) => {
-            return (type === 'display') ? toChainageFormat(data) : data;
+            return (type === "display") ? toChainageFormat(data) : data;
         },
     },
     municipality: {
@@ -146,10 +146,10 @@ export const reportContent = {
             },
         },
         visibleFilters: {
-            municipality: true,
-            roadClass: true,
-            surfaceType: true,
-            surfaceCondition: true,
+            // municipality: true,
+            // roadClass: true,
+            // surfaceType: true,
+            // surfaceCondition: true,
             reportDate: true,
         },
         reportElements: { filters: true, totalLength: true, dataTables: [reportTableIds.municipality, reportTableIds.roadClass, reportTableIds.surfaceType] },
