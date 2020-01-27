@@ -105,6 +105,18 @@ function change_assetType(e) {
         }
     }
 
+    // Swap road and structures table
+    const roadTable = document.getElementById("table-roads");
+    const structureTable = document.getElementById("table-structures");
+
+    if (assetTypeName === "roads") {
+        roadTable.removeAttribute("hidden");
+        structureTable.setAttribute("hidden", true);
+    } else {
+        roadTable.setAttribute("hidden", true);
+        structureTable.removeAttribute("hidden");
+    }
+
     dispatch("estrada.sideMenu.assetTypeChanged", { "detail": { assetTypeName } });
 }
 

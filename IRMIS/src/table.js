@@ -3,7 +3,7 @@ import $ from "jquery";
 
 import { exportCsv } from "./exportCsv";
 import { applyFilter } from './filter';
-import { estradaTableColumns, estradaTableEventListeners } from "./mainTableDefinition";
+import { estradaTableColumns, estradaTableEventListeners, structuresTableColumns } from "./mainTableDefinition";
 import { carriagewayWidthColumns, numberLanesColumns, pavementClassColumns, rainfallColumns, surfaceConditionColumns, surfaceTypeColumns, technicalClassColumns, terrainClassColumns } from "./segmentsInventoryTableDefinition";
 
 import { datatableTranslations } from "./datatableTranslations";
@@ -19,69 +19,12 @@ let carriagewayWidthTable = null;
 let rainfallTable = null;
 let terrainClassTable = null;
 let pavementClassTable = null;
-let table = null;
+let roadsTable = null;
+let structuresTable = null;
 let pendingRows = [];
 
 window.addEventListener("load", () => {
-    // Event listeners for the table, that are NOT attached to specific elements
-    Object.keys(estradaTableEventListeners).forEach((eventKey) => {
-        document.addEventListener(eventKey, (event) => estradaTableEventListeners[eventKey](event, table, pendingRows, idWhitelistMap));
-    });
-
-    // Export All - to CSV
-    document.getElementById("export").addEventListener("click", exportTable);
-
-    // Select - data columns
-    const restoreDefaults = document.getElementsByClassName("restore").item(0);
-    const columnsDropdown = document.getElementById("columns-dropdown");
-    const columns = columnsDropdown.querySelectorAll("[data-column]");
-
-    document.getElementById("select-data").addEventListener("click", () => {
-        function clickOutside(e) {
-            if (!document.getElementById("select-data").contains(e.target)) {
-                columnsDropdown.hidden = true;
-            }
-        }
-
-        if (columnsDropdown.hidden) {
-            document.addEventListener("click", clickOutside);
-        } else {
-            document.removeEventListener("click", clickOutside);
-        }
-
-        columnsDropdown.hidden = !columnsDropdown.hidden;
-    });
-
-    columnsDropdown.addEventListener("click", (e) => {
-        e.stopPropagation();
-    });
-
-    columns.forEach((item) => {
-        item.addEventListener("click", (e) => {
-            e.stopPropagation();
-            const element = e.currentTarget;
-            const column = table.column(window.canEdit ? parseInt(element.dataset.column) + 1 : element.dataset.column);
-            column.visible(!column.visible());
-            element.getElementsByClassName("checkbox").item(0).classList.toggle("selected");
-        });
-    });
-
-    restoreDefaults.addEventListener("click", (e) => {
-        e.stopPropagation();
-        columns.forEach((item) => {
-            const column = table.column(window.canEdit ? parseInt(item.dataset.column) + 1 : item.dataset.column);
-            const checkbox = item.getElementsByClassName("checkbox").item(0);
-
-            if (item.dataset.default && !checkbox.classList.contains("selected")) {
-                column.visible(true);
-                checkbox.classList.add("selected");
-            } else if (!item.dataset.default) {
-                column.visible(false);
-                checkbox.classList.remove("selected");
-            }
-        });
-    });
-
+    // Initialize both roads and structures tables
     initializeDataTable();
 });
 
@@ -105,9 +48,16 @@ function initializeDataTable() {
             orderable: false,
             className: "edit-col"
         });
+        structuresTableColumns.unshift({
+            title: "",
+            data: null,
+            render: r => `<a class="image pencil" href="#edit/${r.getId()}/location_type"></a>`,
+            orderable: false,
+            className: "edit-col"
+        });
     }
 
-    table = $("#all-data-table").DataTable({
+    roadsTable = $("#all-data-table").DataTable({
         columns: estradaTableColumns,
         rowId: ".getId()",
         // default order is ascending by: road code, link code, & link start chainage
@@ -130,36 +80,23 @@ function initializeDataTable() {
         }
     });
 
-    table.on("click", "tbody tr td", (e) => {
-        const clickedRowId = e.currentTarget.parentNode.id;
-        const clickedRow = $(`tr#${clickedRowId}`);
-
-        const cellChildren = e.currentTarget.children;
-        const cellChildrenLength = cellChildren.length;
-        if (cellChildrenLength > 0) {
-            for (let ix = 0; ix < cellChildrenLength; ix++) {
-                const cellChild = cellChildren.item(ix);
-                if (cellChild.classList.contains("image")) {
-                    return;
-                }
-            }
-        }
-
-        if (clickedRow.hasClass("selected")) {
-            clickedRow.removeClass("selected");
-
-            table.selectionProcessing = undefined;
-            // reset to the previously selected filters
-            applyFilter();
-        } else {
-            table.$("tr.selected").removeClass("selected");
-            clickedRow.addClass("selected");
-
-            table.selectionProcessing = clickedRowId;
-
-            applyTableSelection(table.selectionProcessing);
-        }
+    structuresTable = $("#structures-data-table").DataTable({
+        columns: structuresTableColumns,
+        rowId: ".getId()",
+        // default order is ascending by: structure code
+        order: window.canEdit ? [[2, 'asc']] : [[1, 'asc']],
+        dom: "<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>", // https://datatables.net/reference/option/dom#Styling
+        language: datatableTranslations,
+        search: {
+            regex: true, // Enable escaping of regular expression characters in the search term.
+        },
+        select: {
+            style: "os",
+            items: "row",
+        },
     });
+
+    setupTableEventHandlers();
 
     function setUpModalTable(tableId, columns) {
         return $(`#${tableId}`).DataTable({
@@ -169,7 +106,7 @@ function initializeDataTable() {
             language: datatableTranslations,
             // This turns off filtering for all tables ( DO NOT SET THIS TO TRUE )
             // dataTables has a bug where the searching / filtering clause passes from one table to another
-            // We only want it for the main table
+            // We only want it for the main tables
             searching: false,
         });
     }
@@ -185,8 +122,138 @@ function initializeDataTable() {
 
     if (pendingRows.length) {
         // add any rows the road manager has delivered before initialization
-        table.rows.add(pendingRows).draw();
+        roadsTable.rows.add(pendingRows).draw();
         pendingRows = [];
+    }
+}
+
+function setupTableEventHandlers() {
+    // Event listeners for the roadsTable and structuresTable, that are NOT attached to specific elements
+    Object.keys(estradaTableEventListeners).forEach((eventKey) => {
+        document.addEventListener(eventKey, (event) => estradaTableEventListeners[eventKey](event, roadsTable, pendingRows, idWhitelistMap));
+        document.addEventListener(eventKey, (event) => estradaTableEventListeners[eventKey](event, structuresTable, pendingRows, idWhitelistMap));
+    });
+
+    // Export All - to CSV
+    document.getElementById("export-road").addEventListener("click", exportRoadsTable);
+    document.getElementById("export-structure").addEventListener("click", exportStructuresTable);
+
+    // Setup column selection and column click handlers
+    setupColumnEventHandlers("roads");
+    setupColumnEventHandlers("structures");
+   
+    function setupColumnEventHandlers(mainTableType = "roads") {
+        const selectId = (mainTableType === "roads")
+            ? "select-road-data"
+            : "select-structure-data";
+
+        const columnsDropdown = (mainTableType === "roads")
+            ? document.getElementById("road-columns-dropdown")
+            : document.getElementById("structure-columns-dropdown");
+        
+        const columns = columnsDropdown.querySelectorAll("[data-column]");
+
+        const mainTable = (mainTableType === "roads")
+            ? roadsTable
+            : structuresTable;
+        
+        const restoreColumnDefaults = (mainTableType === "roads")
+            ? document.getElementsByClassName("restore-road").item(0)
+            : document.getElementsByClassName("restore-structure").item(0);
+        
+        columnSelectionHandler(selectId, columnsDropdown);
+        columnClickHandler(columns, mainTable);
+        restoreDefaultColumnSelectionHandler(restoreColumnDefaults, columns, mainTable);
+    }
+
+    function columnSelectionHandler(selectId, columnsDropdown) {
+        document.getElementById(selectId).addEventListener("click", () => {
+            function clickOutside(e) {
+                if (!document.getElementById(selectId).contains(e.target)) {
+                    columnsDropdown.hidden = true;
+                }
+            }
+    
+            if (columnsDropdown.hidden) {
+                document.addEventListener("click", clickOutside);
+            } else {
+                document.removeEventListener("click", clickOutside);
+            }
+    
+            columnsDropdown.hidden = !columnsDropdown.hidden;
+        });
+
+        columnsDropdown.addEventListener("click", (e) => {
+            e.stopPropagation();
+        });
+    }
+
+    function columnClickHandler(columns, mainTable) {
+        columns.forEach((item) => {
+            item.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const element = e.currentTarget;
+                const column = mainTable.column(window.canEdit ? parseInt(element.dataset.column) + 1 : element.dataset.column);
+                column.visible(!column.visible());
+                element.getElementsByClassName("checkbox").item(0).classList.toggle("selected");
+            });
+        });
+    }
+
+    function restoreDefaultColumnSelectionHandler(restoreColumnDefaults, columns, mainTable) {
+        restoreColumnDefaults.addEventListener("click", (e) => {
+            e.stopPropagation();
+            columns.forEach((item) => {
+                const column = mainTable.column(window.canEdit ? parseInt(item.dataset.column) + 1 : item.dataset.column);
+                const checkbox = item.getElementsByClassName("checkbox").item(0);
+
+                if (item.dataset.default && !checkbox.classList.contains("selected")) {
+                    column.visible(true);
+                    checkbox.classList.add("selected");
+                } else if (!item.dataset.default) {
+                    column.visible(false);
+                    checkbox.classList.remove("selected");
+                }
+            });
+        });
+    }
+
+    roadsTable.on("click", "tbody tr td", (e) => { handleCellClick(e, "roads"); });
+    structuresTable.on("click", "tbody tr td", (e) => { handleCellClick(e, "structures"); });
+
+    function handleCellClick(e, mainTableType = "roads") {
+        const mainTable = (mainTableType === "roads")
+            ? roadsTable
+            : structuresTable;
+        
+        const clickedRowId = e.currentTarget.parentNode.id;
+        const clickedRow = $(`tr#${clickedRowId}`);
+    
+        const cellChildren = e.currentTarget.children;
+        const cellChildrenLength = cellChildren.length;
+        if (cellChildrenLength > 0) {
+            for (let ix = 0; ix < cellChildrenLength; ix++) {
+                const cellChild = cellChildren.item(ix);
+                if (cellChild.classList.contains("image")) {
+                    return;
+                }
+            }
+        }
+    
+        if (clickedRow.hasClass("selected")) {
+            clickedRow.removeClass("selected");
+    
+            mainTable.selectionProcessing = undefined;
+            // reset to the previously selected filters
+            applyFilter();
+        } else {
+            mainTable.$("tr.selected").removeClass("selected");
+            clickedRow.addClass("selected");
+    
+            mainTable.selectionProcessing = clickedRowId;
+    
+            applyTableSelection(mainTable.selectionProcessing);
+        }
     }
 }
 
@@ -202,12 +269,19 @@ function applyTableSelection(rowId) {
     dispatch("estrada.idFilter.applied", { detail: { idMap } });
 }
 
-function getTableData() {
-    const headers = estradaTableColumns
+function getTableData(mainTableType = "roads") {
+    const mainTableColumns = (mainTableType === "roads")
+        ? estradaTableColumns
+        : structuresTableColumns;
+    const mainTable = (mainTableType === "roads")
+        ? roadsTable
+        : structuresTable;
+
+    const headers = mainTableColumns
         .filter((c) => c.title !== "")
         .map((c) => ({ title: c.title, data: c.data }));
 
-    const rowsData = table.rows().data();
+    const rowsData = mainTable.rows().data();
     const rows = Object.keys(rowsData).map((rowKey) => {
         const rowFields = [];
         headers.forEach((h) => {
@@ -224,9 +298,14 @@ function getTableData() {
     return { headers: headers.map((h) => h.title), rows: rows };
 }
 
-function exportTable() {
-    const tableData = getTableData();
+function exportRoadsTable() {
+    const tableData = getTableData("roads");
     exportCsv(tableData.headers, tableData.rows);
+}
+
+function exportStructuresTable() {
+    const structuresData = getTableData("structures");
+    exportCsv(structuresData.headers, structuresData.rows);
 }
 
 // Filter functionality
