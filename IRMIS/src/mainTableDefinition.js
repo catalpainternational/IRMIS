@@ -264,6 +264,142 @@ export const estradaTableColumns = [
     },
 ];
 
+/** Defines the columns for the Structures table on the Estrada main page */
+export const structuresTableColumns = [
+    {
+        title: "Structure",
+        defaultContent: "Bridge",
+    },
+    {
+        title: "Structure Code",
+        defaultContent: "A04",
+    },
+    {
+        title: "Structure Name",
+        defaultContent: "Le Pont Neuf",
+    },
+    {
+        title: "River Name",
+        defaultContent: "La Garonne",
+        visible: false,
+    },
+    {
+        title: "Road Code",
+        defaultContent: "A-02",
+    },
+    {
+        title: "Road Name",
+        defaultContent: "Rue de Metz",
+        visible: false,
+    },
+    {
+        title: "Class",
+        defaultContent: "Urban",
+        visible: false,
+    },    
+    {
+        title: "GPS Longitude",
+        defaultContent: "43.599307°N",
+        className: "text-right",
+        visible: false,
+    },
+    {
+        title: "GPS Latitude",
+        defaultContent: "1.438724°E",
+        className: "text-right",
+        visible: false,
+    },
+    {
+        title: "Chainage",
+        defaultContent: "63+260",
+        className: "text-right",
+    },    
+    {
+        title: "Municipality",
+        defaultContent: "Toulouse",
+        visible: false,
+    },    
+    {
+        title: "Type",
+        defaultContent: "New bridge",
+    },    
+    {
+        title: "Deck Material",
+        defaultContent: "Stone",
+    },    
+    {
+        title: "Material",
+        defaultContent: "N/A",
+    },    
+    {
+        title: "Length",
+        defaultContent: "220",
+        className: "text-right",
+    },    
+    {
+        title: "Width",
+        defaultContent: "30",
+        className: "text-right",
+    },    
+    {
+        title: "Height",
+        defaultContent: "5",
+        className: "text-right",
+        visible: false,
+    },    
+    {
+        title: "Number of Spans",
+        defaultContent: "7",
+        className: "text-right",
+        visible: false,
+    },    
+    {
+        title: "Number of Cells",
+        defaultContent: "N/A",
+        className: "text-right",
+        visible: false,
+    },    
+    {
+        title: "Protection Upstream",
+        defaultContent: "Yes",
+        visible: false,
+    },    
+    {
+        title: "Protection Downstream",
+        defaultContent: "No",
+        visible: false,
+    },    
+    {
+        title: "Construction Year",
+        defaultContent: "1632",
+        className: "text-right",
+        visible: false,
+    },    
+    {
+        title: "Structure Condition",
+        defaultContent: "x",
+        className: "text-center",
+        render: r => buttonSegmentsTemplate("surface_type", r),
+        data: null,
+        visible: false,
+    },    
+    {
+        title: "Condition Description",
+        defaultContent: "x",
+        className: "text-center",
+        render: r => buttonSegmentsTemplate("surface_type", r),
+        data: null,
+        visible: false,
+    },    
+    {
+        title: "Inventory Photos",
+        defaultContent: "x",
+        className: "text-center",
+        render: r => buttonSegmentsTemplate("surface_type", r),
+        data: null
+    },    
+];
+
 function buttonSegmentsTemplate(attrib, road) {
     return `<a data-toggle="modal"
         data-target="#inventory-segments-modal"
