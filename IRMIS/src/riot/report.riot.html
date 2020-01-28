@@ -135,33 +135,33 @@
             entries="{ state.surface_condition }" total_title="{ window.gettext('Total road chainage') }">
         </stacked_bar>
 
-        <data_table hidden="{ !state.reportData.municipality || !hasDataTable(dataTableIds.municipality) }"
-            table_id="{dataTableIds.municipality}" tableName="Municipality"
+        <data_table hidden="{ !state.reportData.municipality || !hasDataTable(reportTableIds.municipality) }"
+            table_id="{reportTableIds.municipality}" title="{ window.gettext('Municipality') }"
             columns="{columns.municipality()}" columnSortOrder="{baseColumnSortOrder}"
             paging="false" canExport showTotal>
         </data_table>
-        <data_table hidden="{ !state.reportData.roadClass || !hasDataTable(dataTableIds.roadClass) }"
-            table_id="{dataTableIds.roadClass}" tableName="Road Class"
+        <data_table hidden="{ !state.reportData.roadClass || !hasDataTable(reportTableIds.roadClass) }"
+            table_id="{reportTableIds.roadClass}" title="{ window.gettext('Road Class') }"
             columns="{columns.roadClass()}" columnSortOrder="{baseColumnSortOrder}"
             paging="false" canExport showTotal>
         </data_table>
-        <data_table hidden="{ !state.reportData.surfaceType || !hasDataTable(dataTableIds.surfaceType) }"
-            table_id="{dataTableIds.surfaceType}" tableName="Surface Type"
+        <data_table hidden="{ !state.reportData.surfaceType || !hasDataTable(reportTableIds.surfaceType) }"
+            table_id="{reportTableIds.surfaceType}" title="{ window.gettext('Surface Type') }"
             columns="{columns.surfaceType()}" columnSortOrder="{baseColumnSortOrder}"
             paging="false" canExport showTotal>
         </data_table>
-        <data_table hidden="{ !state.reportData.roadStatus || !hasDataTable(dataTableIds.roadStatus) }"
-            table_id="{dataTableIds.roadStatus}" tableName="Road Status"
+        <data_table hidden="{ !state.reportData.roadStatus || !hasDataTable(reportTableIds.roadStatus) }"
+            table_id="{reportTableIds.roadStatus}" title="{ window.gettext('Road Status') }"
             columns="{columns.roadStatus()}" columnSortOrder="{baseColumnSortOrder}"
             paging="false" canExport showTotal>
         </data_table>
-        <data_table hidden="{ !state.reportData.technicalClass || !hasDataTable(dataTableIds.technicalClass) }"
-            table_id="{dataTableIds.technicalClass}" tableName="Technical Class"
+        <data_table hidden="{ !state.reportData.technicalClass || !hasDataTable(reportTableIds.technicalClass) }"
+            table_id="{reportTableIds.technicalClass}" title="{ window.gettext('Technical Class') }"
             columns="{columns.technicalClass()}" columnSortOrder="{baseColumnSortOrder}"
             paging="false" canExport showTotal>
         </data_table>
-        <data_table hidden="{ !state.reportData.surfaceCondition || !hasDataTable(dataTableIds.surfaceCondition) }"
-            table_id="{dataTableIds.surfaceCondition}" tableName="Surface Condition"
+        <data_table hidden="{ !state.reportData.surfaceCondition || !hasDataTable(reportTableIds.surfaceCondition) }"
+            table_id="{reportTableIds.surfaceCondition}" title="{ window.gettext('Surface Condition (SDI)') }"
             columns="{columns.surfaceCondition()}" columnSortOrder="{baseColumnSortOrder}"
             paging="false" canExport showTotal>
         </data_table>
@@ -219,7 +219,7 @@
 
         // These are the default column sets for each report type,
         // they are overriden for any report that specifies fixedFilter.secondaryattribute
-        // A title is usually reset by the columns functions below
+        // A column title is usually reset by the columns functions below
         const columnSets = {
             municipality: [reportColumns.title, reportColumns.distance, reportColumns.percent],
             road_type: [reportColumns.title, reportColumns.distance, reportColumns.percent],
@@ -240,14 +240,20 @@
             terrain_class: "Terrain Class",
         };
 
+        function GetTitleTranslation(titleColumnName) {
+            return (titleColumnMapping[titleColumnName])
+                ? window.gettext(titleColumnMapping[titleColumnName])
+                : titleColumnName;
+        }
+
         function SetTitleColumn(titleColumnName) {
             if (titleColumnMapping[titleColumnName]) {
                 const titleColumn = cloneData(reportColumns.title);
-                titleColumn.title = window.gettext(titleColumnMapping[titleColumnName]);
+                titleColumn.title = GetTitleTranslation(titleColumnName);
                 columnSets[titleColumnName][0] = titleColumn;
             }
 
-            return columnSets[titleColumnName];            
+            return columnSets[titleColumnName];
         }
 
         export default {
@@ -278,7 +284,8 @@
                 Stacked_Bar
             },
             stackedBarIds: reportBarIds,
-            dataTableIds: reportTableIds,
+            // This just ensures we can see the reportTableIds from the HTML above
+            reportTableIds: reportTableIds,
             // These functions define the actual columns used by each report
             columns: {
                 municipality: () => SetTitleColumn("municipality"),
@@ -378,14 +385,14 @@
             toggleSingleSelect2(e) {
                 this.state[e.data] = e.currentTarget.value;
             },
-            prepareTableData(tableName, tableData, filterName) {
+            prepareTableData(reportTableId, tableData, filterName) {
                 const haveTableData = tableData.length > 0;
                 const fixedFilter = this.reportContent().fixedFilter;
                 const isFixedFilter = fixedFilter.primaryattribute
                     ? fixedFilter.primaryattribute.indexOf(filterName) !== -1
                     : false;
                 const hasSecondaryAttributes = fixedFilter.secondaryattribute
-                    ? fixedFilter.secondaryattribute[filterName] && this.reportElements().dataTables.includes(tableName)
+                    ? fixedFilter.secondaryattribute[filterName] && this.reportElements().dataTables.includes(reportTableId)
                     : false;
 
                 // Add in the extra columns needed by any secondaryattributes
@@ -395,8 +402,13 @@
                     // Initialise the new set of columns with the distance column (but not percent)
                     const columnSet = {};
                     columnSet[reportColumns.distance.data] = reportColumns.distance;
+                    
+                    // Build up the new title
+                    const newTitles = [GetTitleTranslation(filterName)];
+
                     fixedFilter.secondaryattribute[filterName].forEach((secondaryattribute) => {
                         const attrKey = secondaryattribute;
+                        newTitles.push(GetTitleTranslation(attrKey));
                         tableData.forEach((entry) => {
                             const fullAttrTerms = Object.keys(entry)
                                 .filter((entryKey) => { return entryKey.indexOf(`${attrKey}|`) === 0; });
@@ -412,6 +424,13 @@
                         });
                     });
 
+                    // Only replace the 'title' if we've got something new defined
+                    if (newTitles.length > 1) {
+                        const eventName = `${reportTableId}.changedTitle`;
+                        const eventDetail = { detail: { title: newTitles.join(", ") } };
+                        document.dispatchEvent(new CustomEvent(eventName, eventDetail));                        
+                    }
+
                     // Only replace the 'normal' columnSet if we actually have some new ones defined
                     if (Object.keys(columnSet).length > 1) {
                         // Take just the first column - the title column
@@ -421,7 +440,7 @@
                             newColumnSet.push(columnSet[fullAttrTerm]);
                         });
 
-                        const eventName = `${tableName}.changedColumns`;
+                        const eventName = `${reportTableId}.changedColumns`;
                         const eventDetail = { detail: { columns: newColumnSet } };
                         document.dispatchEvent(new CustomEvent(eventName, eventDetail));
                     }
@@ -439,7 +458,7 @@
                         entry.getId = () => { return entry.key; };
                         entry.title = window.gettext(entry.title || entry.key);
                     });
-                    const eventName = `${tableName}.dataAdded`;
+                    const eventName = `${reportTableId}.dataAdded`;
                     const eventDetail = { detail: { pendingRows: tableData, clearRows: true } };
                     document.dispatchEvent(new CustomEvent(eventName, eventDetail));
 
@@ -587,15 +606,15 @@
                 };
 
                 if (haveLengths) {
-                    this.state.reportData.municipality = this.prepareTableData(this.dataTableIds.municipality, surveyReportData.municipalities, "municipality");
-                    this.state.reportData.roadClass = this.prepareTableData(this.dataTableIds.roadClass, surveyReportData.roadClasses, "road_type");
-                    this.state.reportData.surfaceType = this.prepareTableData(this.dataTableIds.surfaceType, surveyReportData.surfaceTypes, "surface_type");
+                    this.state.reportData.municipality = this.prepareTableData(reportTableIds.municipality, surveyReportData.municipalities, "municipality");
+                    this.state.reportData.roadClass = this.prepareTableData(reportTableIds.roadClass, surveyReportData.roadClasses, "road_type");
+                    this.state.reportData.surfaceType = this.prepareTableData(reportTableIds.surfaceType, surveyReportData.surfaceTypes, "surface_type");
 
-                    this.state.reportData.roadStatus = this.prepareTableData(this.dataTableIds.roadStatus, surveyReportData.roadStatuses, "road_status");
-                    this.state.reportData.technicalClass = this.prepareTableData(this.dataTableIds.technicalClass, surveyReportData.technicalClasses, "technical_class");
+                    this.state.reportData.roadStatus = this.prepareTableData(reportTableIds.roadStatus, surveyReportData.roadStatuses, "road_status");
+                    this.state.reportData.technicalClass = this.prepareTableData(reportTableIds.technicalClass, surveyReportData.technicalClasses, "technical_class");
                     const surfaceConditions = surveyReportData.attributes("surface_condition", null, false, true);
                     const surfaceConditionAttributes = surfaceConditions ? surfaceConditions.attributeEntries || [] : [];
-                    this.state.reportData.surfaceCondition = this.prepareTableData(this.dataTableIds.surfaceCondition, surfaceConditionAttributes, "surface_condition");
+                    this.state.reportData.surfaceCondition = this.prepareTableData(reportTableIds.surfaceCondition, surfaceConditionAttributes, "surface_condition");
 
                     this.prepareStackedBar(this.stackedBarIds.roadStatus, surveyReportData.roadStatuses, "road_type");
                     this.prepareStackedBar(this.stackedBarIds.technicalClass, surveyReportData.technicalClasses, "technical_class");
@@ -603,12 +622,12 @@
 
                     const reportingTables = this.reportElements().dataTables;
                     this.state.noReportData = true;
-                    if (reportingTables.includes(this.dataTableIds.municipality) && surveyReportData.municipalities.length ||
-                        reportingTables.includes(this.dataTableIds.roadClass) && surveyReportData.roadClasses.length ||
-                        reportingTables.includes(this.dataTableIds.surfaceType) && surveyReportData.surfaceTypes.length ||
-                        reportingTables.includes(this.dataTableIds.roadStatus) && surveyReportData.roadStatuses.length ||
-                        reportingTables.includes(this.dataTableIds.technicalClass) && surveyReportData.technicalClasses.length ||
-                        reportingTables.includes(this.dataTableIds.surfaceCondition) && surveyReportData.surfaceConditions.length) {
+                    if (reportingTables.includes(reportTableIds.municipality) && surveyReportData.municipalities.length ||
+                        reportingTables.includes(reportTableIds.roadClass) && surveyReportData.roadClasses.length ||
+                        reportingTables.includes(reportTableIds.surfaceType) && surveyReportData.surfaceTypes.length ||
+                        reportingTables.includes(reportTableIds.roadStatus) && surveyReportData.roadStatuses.length ||
+                        reportingTables.includes(reportTableIds.technicalClass) && surveyReportData.technicalClasses.length ||
+                        reportingTables.includes(reportTableIds.surfaceCondition) && surveyReportData.surfaceConditions.length) {
                         this.state.noReportData = false;
                     }
                 } else {
