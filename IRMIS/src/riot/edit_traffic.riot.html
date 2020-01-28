@@ -524,7 +524,10 @@
                             $("#loading").modal("hide");
                         });
                 }
-                this.state.survey = new Survey({}); // clear input values
+                // clear input values
+                this.state.survey = new Survey({}); 
+                this.state.currentRowData = new Survey({});
+                
                 this.update();
             },
             canSave() {
