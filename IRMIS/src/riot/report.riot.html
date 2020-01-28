@@ -409,6 +409,7 @@
                     fixedFilter.secondaryattribute[filterName].forEach((secondaryattribute) => {
                         const attrKey = secondaryattribute;
                         newTitles.push(GetTitleTranslation(attrKey));
+
                         tableData.forEach((entry) => {
                             const fullAttrTerms = Object.keys(entry)
                                 .filter((entryKey) => { return entryKey.indexOf(`${attrKey}|`) === 0; });
@@ -436,7 +437,13 @@
                         // Take just the first column - the title column
                         const newColumnSet = SetTitleColumn(filterName).slice(0, 1);
                         // And add the rest generated from the data
+                        let prevAttrKey = "";
                         Object.keys(columnSet).sort().forEach((fullAttrTerm) => {
+                            const attrTerms = fullAttrTerm.split("|");
+                            if (attrTerms.length > 1 && prevAttrKey !== attrTerms[0]) {
+                                columnSet[fullAttrTerm].className += " dark-left";
+                                prevAttrKey = attrTerms[0];
+                            }
                             newColumnSet.push(columnSet[fullAttrTerm]);
                         });
 

@@ -71,6 +71,10 @@
     margin-bottom: 20px !important;
     margin-top: 10px !important;
     overflow-x: auto;
+
+    .dark-left {
+        border-left: 1px solid $dark-gray;
+    }
 }
 
 #plan-rural-roads {
