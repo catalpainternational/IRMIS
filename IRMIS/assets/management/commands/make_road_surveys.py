@@ -7,6 +7,8 @@ import datetime
 import decimal
 import reversion
 
+from reversion.models import Version
+
 from assets.models import (
     MaintenanceNeed,
     PavementClass,
@@ -41,6 +43,8 @@ class Command(BaseCommand):
     def delete_programmatic_surveys(self):
         # delete all previously created "programmatic" source surveys
         Survey.objects.filter(source="programmatic").delete()
+        # delete revisions associated with the now deleted "programmatic" surveys
+        Version.objects.get_deleted(Survey).delete()
 
     def get_current_road_codes(self):
         return [

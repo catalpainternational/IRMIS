@@ -547,7 +547,399 @@ class CollatedGeoJsonFile(models.Model):
     """ FeatureCollection GeoJson(srid=4326) files made up of collated geometries """
 
     key = models.SlugField(unique=True)
+    asset_type = models.CharField(
+        default="road", max_length=10, verbose_name=_("Asset Type")
+    )
     geobuf_file = models.FileField(upload_to="geojson/geobuf/")
+
+
+class StructureProtectionType(models.Model):
+    code = models.CharField(max_length=3, unique=True, verbose_name=_("Code"))
+    name = models.CharField(max_length=50, verbose_name=_("Name"))
+
+    def __str__(self):
+        return self.name
+
+
+class BridgeClass(models.Model):
+    code = models.CharField(max_length=3, unique=True, verbose_name=_("Code"))
+    name = models.CharField(max_length=50, verbose_name=_("Name"))
+
+    def __str__(self):
+        return self.name
+
+
+class BridgeMaterialType(models.Model):
+    code = models.CharField(max_length=3, unique=True, verbose_name=_("Code"))
+    name = models.CharField(max_length=50, verbose_name=_("Name"))
+
+    def __str__(self):
+        return self.name
+
+
+class BridgeQuerySet(models.QuerySet):
+    def to_protobuf(self):
+        """ returns a bridge protobuf object from the queryset """
+        # See bridge.proto
+        return self
+
+
+class BridgeManager(models.Manager):
+    def get_queryset(self):
+        return BridgeQuerySet(self.model, using=self._db)
+
+    def to_protobuf(self):
+        """ returns a bridges protobuf object from the manager """
+        return self.get_queryset().to_protobuf()
+
+    def to_wgs(self):
+        """
+        "To World Geodetic System"
+        Adds a `to_wgs` param which is the geometry transformed into latitude, longitude coordinates
+        """
+        return (
+            super()
+            .get_queryset()
+            .annotate(to_wgs=models.functions.Transform("geom", 4326))
+        )
+
+
+@reversion.register()
+class Bridge(models.Model):
+
+    STRUCTURE_CLASS_CHOICES = [
+        ("NAT", _("National")),
+        ("HIGH", _("Highway")),
+        ("MUN", _("Municipal")),
+        ("URB", _("Urban")),
+        ("RUR", _("Rural")),
+    ]
+
+    objects = BridgeManager()
+
+    geom = models.PointField(srid=32751, dim=2, blank=True, null=True)
+
+    # a disconnected reference to the road record this structure relates to
+    road_id = models.IntegerField(verbose_name=_("Road Id"), blank=True, null=True)
+
+    date_created = models.DateTimeField(
+        verbose_name=_("Date Created"), auto_now_add=True, null=True
+    )
+    last_modified = models.DateTimeField(verbose_name=_("last modified"), auto_now=True)
+
+    structure_code = models.CharField(
+        verbose_name=_("Structure Code"),
+        validators=[no_spaces],
+        max_length=25,
+        # unique=True,
+        blank=True,
+        null=True,
+    )
+    structure_name = models.CharField(
+        verbose_name=_("Name"), max_length=100, blank=True, null=True
+    )
+    structure_class = models.CharField(
+        verbose_name=_("Structure Class"),
+        max_length=4,
+        choices=STRUCTURE_CLASS_CHOICES,
+        blank=True,
+        null=True,
+        help_text=_("Choose the structure class"),
+    )
+    administrative_area = models.CharField(
+        verbose_name=_("Municipality"),
+        max_length=50,
+        default=None,
+        null=True,
+        help_text=_("Choose the municipality for the structure"),
+    )
+    road_code = models.CharField(
+        verbose_name=_("Road Code"),
+        validators=[no_spaces],
+        max_length=25,
+        blank=True,
+        null=True,
+        help_text=_("Enter the Road Code associated with the structure"),
+    )
+    construction_year = models.IntegerField(
+        verbose_name=_("Structure Construction Year"), blank=True, null=True
+    )
+    length = models.DecimalField(
+        verbose_name=_("Structure Length (m)"),
+        max_digits=8,
+        decimal_places=3,
+        blank=True,
+        null=True,
+        validators=[MinValueValidator(0)],
+        help_text=_("Enter structure length"),
+    )
+    width = models.DecimalField(
+        verbose_name=_("Structure Width (m)"),
+        max_digits=8,
+        decimal_places=3,
+        blank=True,
+        null=True,
+        validators=[MinValueValidator(0)],
+        help_text=_("Enter structure width"),
+    )
+    chainage = models.DecimalField(
+        verbose_name=_("Chainage"),
+        max_digits=12,
+        decimal_places=5,
+        blank=True,
+        null=True,
+        help_text=_("Enter chainage point for the structure"),
+    )
+    # a reference to the collated geojson file this Structure's geometry is in
+    geojson_file = models.ForeignKey(
+        "CollatedGeoJsonFile", on_delete=models.DO_NOTHING, blank=True, null=True
+    )
+
+    structure_type = models.ForeignKey(
+        "BridgeClass",
+        verbose_name=_("Bridge Type"),
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        help_text=_("Choose the bridge type"),
+    )
+    river_name = models.CharField(
+        verbose_name=_("River Name"),
+        max_length=100,
+        blank=True,
+        null=True,
+        help_text=_("Enter the name of the river the bridge crosses over"),
+    )
+    number_spans = models.IntegerField(
+        verbose_name=_("Number of Spans"),
+        blank=True,
+        null=True,
+        validators=[MinValueValidator(1)],
+        help_text=_("Enter number of spans"),
+    )
+    span_length = models.DecimalField(
+        verbose_name=_("Structure Width (m)"),
+        max_digits=8,
+        decimal_places=3,
+        blank=True,
+        null=True,
+        validators=[MinValueValidator(0.1)],
+        help_text=_("Enter span length"),
+    )
+    material = models.ForeignKey(
+        "BridgeMaterialType",
+        verbose_name=_("Deck Material"),
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        help_text=_("Choose the bridge deck material"),
+    )
+    protection_upstream = models.ForeignKey(
+        "StructureProtectionType",
+        verbose_name=_("Protection Upstream"),
+        related_name="bridge_protection_upstream",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        help_text=_("Choose the upstream protection type"),
+    )
+    protection_downstream = models.ForeignKey(
+        "StructureProtectionType",
+        verbose_name=_("Protection Downstream"),
+        related_name="bridge_protection_downstream",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        help_text=_("Choose the downstream protection type"),
+    )
+
+    def __str__(self,):
+        return "%s(%s)" % (self.structure_name, self.pk)
+
+
+class CulvertClass(models.Model):
+    code = models.CharField(max_length=3, unique=True, verbose_name=_("Code"))
+    name = models.CharField(max_length=50, verbose_name=_("Name"))
+
+    def __str__(self):
+        return self.name
+
+
+class CulvertMaterialType(models.Model):
+    code = models.CharField(max_length=3, unique=True, verbose_name=_("Code"))
+    name = models.CharField(max_length=50, verbose_name=_("Name"))
+
+    def __str__(self):
+        return self.name
+
+
+class CulvertQuerySet(models.QuerySet):
+    def to_protobuf(self):
+        """ returns a culvert protobuf object from the queryset """
+        # See bridge.proto
+        return self
+
+
+class CulvertManager(models.Manager):
+    def get_queryset(self):
+        return CulvertQuerySet(self.model, using=self._db)
+
+    def to_protobuf(self):
+        """ returns a culverts protobuf object from the manager """
+        return self.get_queryset().to_protobuf()
+
+    def to_wgs(self):
+        """
+        "To World Geodetic System"
+        Adds a `to_wgs` param which is the geometry transformed into latitude, longitude coordinates
+        """
+        return (
+            super()
+            .get_queryset()
+            .annotate(to_wgs=models.functions.Transform("geom", 4326))
+        )
+
+
+@reversion.register()
+class Culvert(models.Model):
+
+    STRUCTURE_CLASS_CHOICES = [
+        ("NAT", _("National")),
+        ("HIGH", _("Highway")),
+        ("MUN", _("Municipal")),
+        ("URB", _("Urban")),
+        ("RUR", _("Rural")),
+    ]
+
+    objects = CulvertManager()
+
+    geom = models.PointField(srid=32751, dim=2, blank=True, null=True)
+
+    # a disconnected reference to the road record this structure relates to
+    road_id = models.IntegerField(verbose_name=_("Road Id"), blank=True, null=True)
+
+    date_created = models.DateTimeField(
+        verbose_name=_("Date Created"), auto_now_add=True, null=True
+    )
+    last_modified = models.DateTimeField(verbose_name=_("last modified"), auto_now=True)
+
+    structure_code = models.CharField(
+        verbose_name=_("Structure Code"),
+        validators=[no_spaces],
+        max_length=25,
+        # unique=True,
+        blank=True,
+        null=True,
+    )
+    structure_name = models.CharField(
+        verbose_name=_("Name"), max_length=100, blank=True, null=True
+    )
+    structure_class = models.CharField(
+        verbose_name=_("Structure Class"),
+        max_length=4,
+        choices=STRUCTURE_CLASS_CHOICES,
+        blank=True,
+        null=True,
+        help_text=_("Choose the structure class"),
+    )
+    administrative_area = models.CharField(
+        verbose_name=_("Municipality"),
+        max_length=50,
+        default=None,
+        null=True,
+        help_text=_("Choose the municipality for the structure"),
+    )
+    road_code = models.CharField(
+        verbose_name=_("Road Code"),
+        validators=[no_spaces],
+        max_length=25,
+        blank=True,
+        null=True,
+        help_text=_("Enter the Road Code associated with the structure"),
+    )
+    construction_year = models.IntegerField(
+        verbose_name=_("Structure Construction Year"), blank=True, null=True
+    )
+    length = models.DecimalField(
+        verbose_name=_("Structure Length (m)"),
+        max_digits=8,
+        decimal_places=3,
+        blank=True,
+        null=True,
+        validators=[MinValueValidator(0)],
+        help_text=_("Enter structure length"),
+    )
+    width = models.DecimalField(
+        verbose_name=_("Structure Width (m)"),
+        max_digits=8,
+        decimal_places=3,
+        blank=True,
+        null=True,
+        validators=[MinValueValidator(0)],
+        help_text=_("Enter structure width"),
+    )
+    chainage = models.DecimalField(
+        verbose_name=_("Chainage"),
+        max_digits=12,
+        decimal_places=5,
+        blank=True,
+        null=True,
+        help_text=_("Enter chainage point for the structure"),
+    )
+    # a reference to the collated geojson file this Structure's geometry is in
+    geojson_file = models.ForeignKey(
+        "CollatedGeoJsonFile", on_delete=models.DO_NOTHING, blank=True, null=True
+    )
+
+    structure_type = models.ForeignKey(
+        "CulvertClass",
+        verbose_name=_("Culvert Type"),
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        help_text=_("Choose the culvert type"),
+    )
+    height = models.DecimalField(
+        verbose_name=_("Structure Height (m)"),
+        max_digits=8,
+        decimal_places=3,
+        blank=True,
+        null=True,
+        validators=[MinValueValidator(0)],
+        help_text=_("Enter structure height"),
+    )
+    number_cells = models.IntegerField(
+        verbose_name=_("Number of Cells"),
+        blank=True,
+        null=True,
+        validators=[MinValueValidator(1)],
+    )
+    material = models.ForeignKey(
+        "CulvertMaterialType",
+        verbose_name=_("Material"),
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        help_text=_("Choose the culvert material"),
+    )
+    protection_upstream = models.ForeignKey(
+        "StructureProtectionType",
+        verbose_name=_("Protection Upstream"),
+        related_name="culvert_protection_upstream",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        help_text=_("Choose the upstream protection type"),
+    )
+    protection_downstream = models.ForeignKey(
+        "StructureProtectionType",
+        verbose_name=_("Protection Downstream"),
+        related_name="culvert_protection_downstream",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        help_text=_("Choose the downstream protection type"),
+    )
 
 
 def timestamp_from_datetime(dt):
