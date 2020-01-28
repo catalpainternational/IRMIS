@@ -1,6 +1,6 @@
 <data_table>
     <div class="align-items-center d-flex justify-content-between">
-        <p if="{ props.tableName }">{ props.tableName }</p>
+        <p if="{ state.title }">{ state.title }</p>
         <button if="{ state.canExport }" onclick="{ exportTable }" class="btn btn-secondary btn-sm">
             { window.gettext("Export table") }
         </button>
@@ -32,18 +32,12 @@
             }
 
             state.id = props.table_id;
+            state.title = props.title;
             state.columnSortOrder = props.columnSortOrder || [[0, "asc"]];
             state.clearRows = false;
             state.pendingRows = props.pendingRows || [];
             state.pageLength = props.pageLength || 10;
             state.showTotal = !!props.showTotal;
-
-            // Wraps the handling for the 'changedColumns' event, and includes this tag's state
-            state.changedColumns = (data) => processColumnsChanged(data, state);
-            // Wraps the actual processing for 'dataAdded' event, and includes this tag's state
-            state.dataAdded = (data) => processDataAdded(data, state);
-            // Wrap the Row Data lookup function for event to take tag's state and data
-            state.getRowData = (data) => getRowData(data, state);
 
             if (state.canEdit) {
                 state.columnSortOrder.forEach((columnOrder) => {
@@ -126,7 +120,9 @@
                                     // But if it is percent - then we knw that the total is ...
                                     columnTotal = 100.00;
                                 }
-                                $(currentColumn.footer()).html(columnTotal.toFixed(2));
+                                if (!isNaN(columnTotal)) {
+                                    $(currentColumn.footer()).html(columnTotal.toFixed(2));
+                                }
                             }
                         }
                     });
@@ -141,43 +137,6 @@
         const button_event_template = function(tableId, eventName, rowId) {
             return `document.dispatchEvent(new CustomEvent('${tableId}.${eventName}',{detail:{rowId:${rowId},tableId:'${tableId}'}}))`;
         }
-
-        const processColumnsChanged = function(data, state) {
-            if (data.detail.columns) {
-                // We want the dataTable gone
-                state.table.destroy();
-                // No seriously, we want it gone
-                $(`#${state.id}`).empty();
-                // Argh - just shoot the zombie in the head
-                state.table = undefined;
-                
-                setColumns(state, data.detail.columns);
-                setDataTableConfig(state);
-
-                initialiseDataTable(state);
-            }
-
-            data.stopPropagation();
-        }
-
-        const processDataAdded = function(data, state) {
-            const haveClearRows = typeof (data.detail.clearRows) === "boolean";
-            const clearRows = haveClearRows ? data.detail.clearRows : true;
-
-            state.clearRows = clearRows;
-            state.pendingRows = data.detail.pendingRows;
-
-            updateDataTable(state);
-
-            data.stopPropagation();
-        }
-
-        const getRowData = function(data, state) {
-            const r = state.pendingRows.find((r) => {
-                return r.id == data.detail.rowId;
-            });
-            data.detail.state.currentRowData = r;
-        };
 
         const initialiseDataTable = function(state) {
             const newTable = !state.table;
@@ -218,15 +177,27 @@
         export default {
             onMounted(props, state) {
                 initialiseStateFromProps(props, state);
+              
+                // Wraps the handling for the 'changedTitle' event, and includes this tag's state
+                state.changedTitle = (data) => this.processTitleChanged(data, state);
+                // Wraps the handling for the 'changedColumns' event, and includes this tag's state
+                state.changedColumns = (data) => this.processColumnsChanged(data, state);
+                // Wraps the actual processing for 'dataAdded' event, and includes this tag's state
+                state.dataAdded = (data) => this.processDataAdded(data, state);
+                // Wrap the Row Data lookup function for event to take tag's state and data
+                state.getRowData = (data) => this.getRowData(data, state);
+
                 this.update();
 
                 initialiseDataTable(state);
 
+                document.addEventListener(`${state.id}.changedTitle`, state.changedTitle);
                 document.addEventListener(`${state.id}.changedColumns`, state.changedColumns);
                 document.addEventListener(`${state.id}.dataAdded`, state.dataAdded);
                 document.addEventListener(`${state.id}.getRowData`, state.getRowData);
             },
             onBeforeUnmount(props, state) {
+                document.removeEventListener(`${state.id}.changedTitle`, state.changedTitle);
                 document.removeEventListener(`${state.id}.changedColumns`, state.changedColumns);
                 document.removeEventListener(`${state.id}.dataAdded`, state.dataAdded);
                 document.removeEventListener(`${state.id}.getRowData`, state.getRowData);
@@ -254,7 +225,50 @@
             exportTable() {
                 const tableData = this.getTableData();
                 exportCsv(tableData.headers, tableData.rows);
-            }
+            },
+            processTitleChanged(data, state) {
+                if (data.detail.title) {
+                    this.update({
+                        title: data.detail.title,
+                    });
+                }
+
+                data.stopPropagation();
+            },
+            processColumnsChanged(data, state) {
+                if (data.detail.columns) {
+                    // We want the dataTable gone
+                    state.table.destroy();
+                    // No seriously, we want it gone
+                    $(`#${state.id}`).empty();
+                    // Argh - just shoot the zombie in the head
+                    state.table = undefined;
+                    
+                    setColumns(state, data.detail.columns);
+                    setDataTableConfig(state);
+
+                    initialiseDataTable(state);
+                }
+
+                data.stopPropagation();
+            },
+            processDataAdded(data, state) {
+                const haveClearRows = typeof (data.detail.clearRows) === "boolean";
+                const clearRows = haveClearRows ? data.detail.clearRows : true;
+
+                state.clearRows = clearRows;
+                state.pendingRows = data.detail.pendingRows;
+
+                updateDataTable(state);
+
+                data.stopPropagation();
+            },
+            getRowData(data, state) {
+                const r = state.pendingRows.find((r) => {
+                    return r.id == data.detail.rowId;
+                });
+                data.detail.state.currentRowData = r;
+            },
         };
     </script>
 </data_table>
