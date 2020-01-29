@@ -2,7 +2,7 @@ import { slugToPropertyGetter } from "./filter";
 import { getRoadAuditData, getRoadMetadata, getRoadsMetadata, getRoadsMetadataChunks, putRoadMetadata } from "./assets/assets_api";
 import { dispatch } from "./assets/utilities";
 
-const roads = {};
+export const roads = {};
 let filteredRoads = {};
 
 // Get the road metadata chunk details
@@ -84,31 +84,4 @@ function filterRoads(filterState) {
     }, {});
 
     dispatch("estrada.filter.applied", { detail: { idMap } });
-}
-
-/**
- * Generate a popup on the map
- * @param {number} id
- * @return {string}
- */
-export function roadPopup(id) {
-    const road = roads[id];
-    if (!road) {
-        // If the user clicks on the road in the map before the data is in protoBuf
-        return `<span class="popup"><span class="popup label">${window.gettext("Loading")}</span></span>`;
-    }
-    const code = road.getRoadCode();
-    const name = road.getRoadName();
-
-    let html = "";
-
-    if (code) {
-        html += `<span class="popup"><span class="popup label">${window.gettext("Code")}: </span><span class="popup value">${code}</span></span>`;
-    }
-
-    if (name) {
-        html += `<span class="popup"><span class="popup label">${window.gettext("Name")}: </span><span class="popup value">${name}</span> </span>`;
-    }
-
-    return html;
 }

@@ -1,4 +1,6 @@
 import { EstradaRoad } from "./assets/models/road";
+import { EstradaStructure } from "./assets/models/structure";
+import { assetTypeName } from "./side_menu";
 
 /** Define the general events that the main table will respond to
  *
@@ -46,8 +48,11 @@ export const estradaTableEventListeners = {
     "estrada.table.rowSelected": (data, table) => {
         const rowId = data.detail ? data.detail.rowId : null;
         if (rowId) {
+            const featureType = data.detail ? data.detail.featureType : "";
+            const assetType = ["bridge", "culvert"].includes(featureType) ? "structures" : "roads";
+    
             table.rows().every(function (rowIdx, tableLoop, rowLoop) { 
-                if (this.id() !== rowId) {
+                if (assetType !== assetTypeName || this.id() !== rowId) {
                     this.node().classList.remove("selected");
                 } else {
                     this.node().classList.add("selected");
@@ -379,7 +384,7 @@ export const structuresTableColumns = [
         title: "Structure Condition",
         defaultContent: "x",
         className: "text-center",
-        render: r => buttonSegmentsTemplate("surface_type", r),
+        render: r => buttonSegmentsTemplate("structure_condition", r),
         data: null,
         visible: false,
     },    
@@ -387,7 +392,7 @@ export const structuresTableColumns = [
         title: "Condition Description",
         defaultContent: "x",
         className: "text-center",
-        render: r => buttonSegmentsTemplate("surface_type", r),
+        render: r => buttonSegmentsTemplate("condition", r),
         data: null,
         visible: false,
     },    
@@ -395,15 +400,18 @@ export const structuresTableColumns = [
         title: "Inventory Photos",
         defaultContent: "x",
         className: "text-center",
-        render: r => buttonSegmentsTemplate("surface_type", r),
+        render: r => buttonSegmentsTemplate("inventory_photos", r),
         data: null
     },    
 ];
 
-function buttonSegmentsTemplate(attrib, road) {
+function buttonSegmentsTemplate(attrib, asset) {
+    const code = (assetTypeName === "roads") ? asset.getLinkCode() : asset.getStructureCode();
+    const getFieldName = (assetTypeName === "roads") ? EstradaRoad.getFieldName : EstradaStructure.getFieldName;
+
     return `<a data-toggle="modal"
         data-target="#inventory-segments-modal"
-        data-code="${road.getLinkCode()}"
-        data-id="${road.getId()}"
-        data-attr="${attrib}">${window.gettext("View")} ${EstradaRoad.getFieldName(attrib)}</a>`;
+        data-code="${code}"
+        data-id="${asset.getId()}"
+        data-attr="${attrib}">${window.gettext("View")} ${getFieldName(attrib)}</a>`;
 }

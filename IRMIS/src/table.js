@@ -2,25 +2,33 @@ import "datatables.net-bs4";
 import $ from "jquery";
 
 import { exportCsv } from "./exportCsv";
-import { applyFilter } from './filter';
+import { applyFilter } from "./filter";
+import { assetTypeName } from "./side_menu";
 import { estradaTableColumns, estradaTableEventListeners, structuresTableColumns } from "./mainTableDefinition";
-import { carriagewayWidthColumns, numberLanesColumns, pavementClassColumns, rainfallColumns, surfaceConditionColumns, surfaceTypeColumns, technicalClassColumns, terrainClassColumns } from "./segmentsInventoryTableDefinition";
+import {
+    carriagewayWidthColumns,
+    numberLanesColumns,
+    pavementClassColumns,
+    rainfallColumns,
+    surfaceConditionColumns,
+    surfaceTypeColumns,
+    technicalClassColumns,
+    terrainClassColumns,
+
+    conditionDescriptionColumns,
+    inventoryPhotosColumns,
+    structureConditionColumns,
+} from "./segmentsInventoryTableDefinition";
 
 import { datatableTranslations } from "./datatableTranslations";
-import { getRoad } from "./roadManager";
-import { getRoadReport } from "./reportManager";
+import { getRoad, roads } from "./roadManager";
+import { getRoadReport as getAssetReport } from "./reportManager";
+import { getStructure, structures } from "./structureManager";
 import { dispatch } from "./assets/utilities";
 
-let surfaceConditionTable = null;
-let surfaceTypeTable = null;
-let technicalClassTable = null;
-let numberLanesTable = null;
-let carriagewayWidthTable = null;
-let rainfallTable = null;
-let terrainClassTable = null;
-let pavementClassTable = null;
 let roadsTable = null;
 let structuresTable = null;
+
 let pendingRows = [];
 
 window.addEventListener("load", () => {
@@ -28,16 +36,74 @@ window.addEventListener("load", () => {
     initializeDataTable();
 });
 
-const segmentInventoryModalTables = {
-    surfaceCondition: "inventory-surface-condition-table",
-    surfaceType: "inventory-surface-type-table",
-    technicalClass: "inventory-technical-class-table",
-    numberLanes: "inventory-number-lanes-table",
-    carriagewayWidth: "inventory-carriageway-width-table",
-    rainfall: "inventory-rainfall-table",
-    terrainClass: "inventory-terrain-class-table",
-    pavementClass: "inventory-pavement-class-table",
-};
+const attributeModalMapping = {
+    surface_condition: {
+        columns: surfaceConditionColumns,
+        reportDataTableId: "inventory-surface-condition-table",
+        reportTable: null,
+        title: gettext("Surface Condition segments"),
+    },
+    surface_type: {
+        columns: surfaceTypeColumns,
+        reportDataTableId: "inventory-surface-type-table",
+        reportTable: null,
+        title: gettext("Surface Type segments"),
+    },
+    technical_class: {
+        columns: technicalClassColumns,
+        reportDataTableId: "inventory-technical-class-table",
+        reportTable: null,
+        title: gettext("Technical Class segments"),
+    },
+    number_lanes: {
+        columns: numberLanesColumns,
+        reportDataTableId: "inventory-number-lanes-table",
+        reportTable: null,
+        title: gettext("Number of Lanes segments"),
+    },
+    carriageway_width: {
+        columns: carriagewayWidthColumns,
+        reportDataTableId: "inventory-carriageway-width-table",
+        reportTable: null,
+        title: gettext("Carriageway Width segments"),
+    },
+    rainfall: {
+        columns: rainfallColumns,
+        reportDataTableId: "inventory-rainfall-table",
+        reportTable: null,
+        title: gettext("Rainfall segments"),
+    },
+    terrain_class: {
+        columns: terrainClassColumns,
+        reportDataTableId: "inventory-terrain-class-table",
+        reportTable: null,
+        title: gettext("Terrain Class segments"),
+    },
+    pavement_class: {
+        columns: pavementClassColumns,
+        reportDataTableId: "inventory-pavement-class-table",
+        reportTable: null,
+        title: gettext("Pavement Class segments"),
+    },
+    structure_condition: {
+        columns: structureConditionColumns,
+        reportDataTableId: "inventory-structure-condition-table",
+        reportTable: null,
+        title: gettext("Structure Condition details"),
+    },
+    condition_description: {
+        columns: conditionDescriptionColumns,
+        reportDataTableId: "inventory-condition-description-table",
+        reportTable: null,
+        title: gettext("Condition Description details"),
+    },
+    inventory_photos: {
+        columns: inventoryPhotosColumns,
+        reportDataTableId: "inventory-inventory-photos-table",
+        reportTable: null,
+        title: gettext("Inventory Photos details"),
+    },
+}
 
 function initializeDataTable() {
     if (window.canEdit) {
@@ -111,18 +177,19 @@ function initializeDataTable() {
         });
     }
 
-    surfaceConditionTable = setUpModalTable(segmentInventoryModalTables.surfaceCondition, surfaceConditionColumns);
-    surfaceTypeTable = setUpModalTable(segmentInventoryModalTables.surfaceType, surfaceTypeColumns);
-    technicalClassTable = setUpModalTable(segmentInventoryModalTables.technicalClass, technicalClassColumns);
-    numberLanesTable = setUpModalTable(segmentInventoryModalTables.numberLanes, numberLanesColumns);
-    carriagewayWidthTable = setUpModalTable(segmentInventoryModalTables.carriagewayWidth, carriagewayWidthColumns);
-    rainfallTable = setUpModalTable(segmentInventoryModalTables.rainfall, rainfallColumns);
-    terrainClassTable = setUpModalTable(segmentInventoryModalTables.terrainClass, terrainClassColumns);
-    pavementClassTable = setUpModalTable(segmentInventoryModalTables.pavementClass, pavementClassColumns);
+    Object.keys(attributeModalMapping).forEach((attribute) => {
+        const attrMapping = attributeModalMapping[attribute];
+        attrMapping.reportTable = setUpModalTable(attrMapping.reportDataTableId, attrMapping.columns);
+    });
 
     if (pendingRows.length) {
-        // add any rows the road manager has delivered before initialization
-        roadsTable.rows.add(pendingRows).draw();
+        // add any rows the road/structure manager has delivered before initialization
+        if (assetTypeName === "roads") {
+            roadsTable.rows.add(pendingRows).draw();
+        } else {
+            structuresTable.rows.add(pendingRows).draw();
+        }
+        
         pendingRows = [];
     }
 }
@@ -269,6 +336,37 @@ function applyTableSelection(rowId) {
     dispatch("estrada.idFilter.applied", { detail: { idMap } });
 }
 
+/**
+ * Get correct data for the popup on the map
+ * @param {number} id
+ * @param {string} featureType
+ * @return [{label: string, value: string}]
+ */
+export function GetDataForMapPopup(id, featureType) {
+    const assetType = ["bridge", "culvert"].includes(featureType) ? "structures" : "roads";
+    if (assetType !== assetTypeName) {
+        return [{ label: window.gettext("Asset Type"), value: featureType }];
+    }
+    const asset = assetTypeName === "roads" ? roads[id] : structures[id];
+
+    if (!asset) {
+        return [{ label: window.gettext("Loading"), value: "" }];
+    }
+
+    const code = assetTypeName === "roads" ? asset.getRoadCode() : asset.getStructureCode();
+    const name = assetTypeName === "roads" ? asset.getRoadName() : asset.getStructureName();
+
+    const mapPopupData = [];
+    if (code) {
+        mapPopupData.push({ label: window.gettext("Code"), value: code });
+    }
+    if (name) {
+        mapPopupData.push({ label: window.gettext("Name"), value: name });
+    }
+
+    return mapPopupData;
+}
+
 function getTableData(mainTableType = "roads") {
     const mainTableColumns = (mainTableType === "roads")
         ? estradaTableColumns
@@ -316,24 +414,29 @@ let currentFilter = (p) => {
 
 $.fn.dataTableExt.afnFiltering.push(
     function (oSettings, aData, iDataIndex) {
-        let road = oSettings.aoData[iDataIndex]._aData;
-        return currentFilter(road);
+        let asset = oSettings.aoData[iDataIndex]._aData;
+        return currentFilter(asset);
     }
 );
 
-// change the sorting of the road code column to place empty values last
-$.extend($.fn.dataTableExt.oSort, {
-    "roadCode-asc": function (str1, str2) {
-        if (str1 === "") return 1;
-        if (str2 === "") return -1;
-        return ((str1 < str2) ? -1 : ((str1 > str2) ? 1 : 0));
-    },
+// change the sorting of the road/structure code columns to place empty values last
+function ascSort(str1, str2) {
+    if (str1 === "") return 1;
+    if (str2 === "") return -1;
+    return ((str1 < str2) ? -1 : ((str1 > str2) ? 1 : 0));
+}
 
-    "roadCode-desc": function (str1, str2) {
-        if (str1 === "") return -1;
-        if (str2 === "") return 1;
-        return ((str1 < str2) ? 1 : ((str1 > str2) ? -1 : 0));
-    }
+function descSort(str1, str2) {
+    if (str1 === "") return -1;
+    if (str2 === "") return 1;
+    return ((str1 < str2) ? 1 : ((str1 > str2) ? -1 : 0));
+}
+
+$.extend($.fn.dataTableExt.oSort, {
+    "roadCode-asc": ascSort,
+    "roadCode-desc": descSort,
+    "structureCode-asc": ascSort,
+    "structureCode-desc": descSort
 });
 
 $.fn.dataTable.Api.register('row().show()', function () {
@@ -356,91 +459,69 @@ $.fn.dataTable.Api.register('row().show()', function () {
 });
 
 $("#inventory-segments-modal").on("show.bs.modal", function (event) {
+    // Hide them all first
+    Object.keys(attributeModalMapping).forEach((attribute) => {
+        const repTable = attributeModalMapping[attribute].reportTable;
+        if (repTable) {
+            const repTableId = attributeModalMapping[attribute].reportDataTableId;
+            $(`#${repTableId}_wrapper`).hide();
+        }
+    });
+
     const button = $(event.relatedTarget); // Button that triggered the modal
-    const linkCode = button.data("code"); // Extract info from data-* attributes
-    const roadId = button.data("id");
+    const assetCode = button.data("code"); // Extract info from data-* attributes
+    const assetId = button.data("id");
     const attr = button.data("attr");
+
+    const reportDataTableId = attributeModalMapping[attr].reportDataTableId;
+    const reportTable = attributeModalMapping[attr].reportTable;
     const modal = $(this);
-    let reportDataTableId = undefined;
-    let reportTable = undefined;
+    modal.find(".modal-title").text(`${assetCode} ${attributeModalMapping[attr].title}`);
 
-    $(`#${segmentInventoryModalTables.surfaceCondition}_wrapper`).hide();
-    $(`#${segmentInventoryModalTables.surfaceType}_wrapper`).hide();
-    $(`#${segmentInventoryModalTables.technicalClass}_wrapper`).hide();
-    $(`#${segmentInventoryModalTables.numberLanes}_wrapper`).hide();
-    $(`#${segmentInventoryModalTables.carriagewayWidth}_wrapper`).hide();
-    $(`#${segmentInventoryModalTables.rainfall}_wrapper`).hide();
-    $(`#${segmentInventoryModalTables.terrainClass}_wrapper`).hide();
-    $(`#${segmentInventoryModalTables.pavementClass}_wrapper`).hide();
-
-    switch (attr) {
-        case "surface_condition":
-            reportDataTableId = segmentInventoryModalTables.surfaceCondition;
-            modal.find(".modal-title").text(linkCode + " " + gettext("Surface Condition segments"));
-            reportTable = surfaceConditionTable;
-            break;
-        case "surface_type":
-            reportDataTableId = segmentInventoryModalTables.surfaceType;
-            modal.find(".modal-title").text(linkCode + " " + gettext("Surface Type segments"));
-            reportTable = surfaceTypeTable;
-            break;
-        case "technical_class":
-            reportDataTableId = segmentInventoryModalTables.technicalClass;
-            modal.find(".modal-title").text(linkCode + " " + gettext("Technical Class segments"));
-            reportTable = technicalClassTable;
-            break;
-        case "number_lanes":
-            reportDataTableId = segmentInventoryModalTables.numberLanes;
-            modal.find(".modal-title").text(linkCode + " " + gettext("Number of Lanes segments"));
-            reportTable = numberLanesTable;
-            break;
-        case "carriageway_width":
-            reportDataTableId = segmentInventoryModalTables.carriagewayWidth;
-            modal.find(".modal-title").text(linkCode + " " + gettext("Carriageway Width segments"));
-            reportTable = carriagewayWidthTable;
-            break;
-        case "rainfall":
-            reportDataTableId = segmentInventoryModalTables.rainfall;
-            modal.find(".modal-title").text(linkCode + " " + gettext("Rainfall segments"));
-            reportTable = rainfallTable;
-            break;
-        case "terrain_class":
-            reportDataTableId = segmentInventoryModalTables.terrainClass;
-            modal.find(".modal-title").text(linkCode + " " + gettext("Terrain Class segments"));
-            reportTable = terrainClassTable;
-            break;
-        case "pavement_class":
-            reportDataTableId = segmentInventoryModalTables.pavementClass;
-            modal.find(".modal-title").text(linkCode + " " + gettext("Pavement Class segments"));
-            reportTable = pavementClassTable;
-            break;
-    }
     reportTable.clear(); // remove all rows in the table
 
-    getRoad(roadId).then((roadData) => {
-         let filters = {
+    const getAsset = assetTypeName === "roads" ? getRoad : getStructure;
+    const getAssetFilters = (assetData) => {
+        let filters = {
             primaryattribute: attr,
         };
-        if (roadData.getLinkStartChainage() && roadData.getLinkEndChainage()) {
-            filters.road_code = roadData.getRoadCode();
-            filters.chainagestart = roadData.getLinkStartChainage();
-            filters.chainageend = roadData.getLinkEndChainage();
-        } else {
-            filters.road_id = roadData.id;
-        }
-        getRoadReport(filters).then((reportData) => {
-            reportTable.clear(); // remove all rows in the table - again
-            if (reportData && reportDataTableId) {
-                const attributes = reportData.attributes(attr, null, false, true);
-                if (attributes.attributeEntries.length) {
-                    reportTable.rows.add(attributes.attributeEntries);
-                }
+
+        if (assetTypeName === "roads") {
+            if (assetData.getLinkStartChainage() && assetData.getLinkEndChainage()) {
+                filters.road_code = assetData.getRoadCode();
+                filters.chainagestart = assetData.getLinkStartChainage();
+                filters.chainageend = assetData.getLinkEndChainage();
+            } else {
+                filters.road_id = assetData.id;
             }
+        } else {
+            if (assetData.getChainage()) {
+                filters.structure_code = assetData.getStructureCode();
+                filters.chainage = assetData.getChainage();
+            } else {
+                filters.structure_id = assetData.id;
+            }
+        }
+        
+        return filters;
+    };
 
-        }).finally(() => {
-            reportTable.draw();
+    getAsset(assetId).then((assetData) => {
+        const filters = getAssetFilters(assetData)
+        getAssetReport(filters)
+            .then((reportData) => {
+                reportTable.clear(); // remove all rows in the table - again
+                if (reportData && reportDataTableId) {
+                    const attributes = reportData.attributes(attr, null, false, true);
+                    if (attributes.attributeEntries.length) {
+                        reportTable.rows.add(attributes.attributeEntries);
+                    }
+                }
+            })
+            .finally(() => {
+                reportTable.draw();
 
-            $(`#${reportDataTableId}_wrapper`).show();
-        });
+                $(`#${reportDataTableId}_wrapper`).show();
+            });
     });
 });

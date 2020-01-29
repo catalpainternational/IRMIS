@@ -15,7 +15,7 @@ import { getFeatureType } from "./utilities/propertiesGeoJSON";
 
 import { FallbackLayerStyle, FixLayerStyleDefaults, styleGeometry, stylePoint } from "./utilities/leaflet-style";
 
-import { roadPopup } from "../roadManager";
+import { GetDataForMapPopup } from "../table";
 
 import { dispatch } from "../assets/utilities";
 
@@ -115,6 +115,7 @@ export class Map {
         layer.on("click", (e) => {
             const clickedFeature = e.target.feature;
             const featureId: string = clickedFeature.properties.pk.toString();
+            const featureType = clickedFeature.properties.featureType || "";
 
             if (typeof clickedFeature.properties.switchStyle === "undefined") {
                 clickedFeature.properties.switchStyle = true;
@@ -122,7 +123,7 @@ export class Map {
 
             if (clickedFeature.properties.switchStyle) {
                 // This feature will be in the table
-                dispatch("estrada.table.rowSelected", { detail: { rowId: featureId } });
+                dispatch("estrada.table.rowSelected", { detail: { rowId: featureId, featureType } });
             }
         });
     }
@@ -171,6 +172,19 @@ export class Map {
 
     private getPopup(layer: any): string {
         const id = parseInt(layer.feature.properties.pk, 10);
-        return roadPopup(id);
+        const featureType = layer.feature.properties.featureType || "";
+
+        const popupData = GetDataForMapPopup(id, featureType);
+
+        let html = "";
+
+        popupData.forEach((popupDetail) => {
+            html = `<span class="popup"><span class="popup label">${popupDetail.label}`;
+            html += popupDetail.value
+                ? `: </span><span class="popup value">${popupDetail.value}</span></span>`
+                : "</span></span>";
+        });
+
+        return html;
     }
 }
