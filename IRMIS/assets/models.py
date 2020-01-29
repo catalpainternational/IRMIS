@@ -14,6 +14,8 @@ from reversion.models import Version
 from protobuf.roads_pb2 import Roads as ProtoRoads
 from protobuf.roads_pb2 import Projection
 from protobuf.survey_pb2 import Surveys as ProtoSurveys
+from protobuf.structure_pb2 import Bridges as ProtoBridges
+from protobuf.structure_pb2 import Culverts as ProtoCulverts
 
 import json
 from google.protobuf.timestamp_pb2 import Timestamp
@@ -580,8 +582,50 @@ class BridgeMaterialType(models.Model):
 class BridgeQuerySet(models.QuerySet):
     def to_protobuf(self):
         """ returns a bridge protobuf object from the queryset """
-        # See bridge.proto
-        return self
+        # See sturcture.proto --> Bridge / Bridges
+        bridges_protobuf = ProtoBridges()
+
+        fields = dict(
+            id="id",
+            road_id="road_id",
+            date_created="date_created",
+            last_modified="last_modified",
+            structure_code="structure_code",
+            structure_name="structure_name",
+            structure_class="structure_class",
+            administrative_area="administrative_area",
+            road_code="road_code",
+            construction_year="construction_year",
+            length="length",
+            width="width",
+            chainage="chainage",
+            structure_type="structure_type",
+            river_name="river_name",
+            number_spans="number_spans",
+            span_length="span_length",
+            material="material",
+            protection_upstream="protection_upstream",
+            protection_downstream="protection_downstream",
+        )
+
+        for bridge in self.values(*fields.values()):
+            bridge_protobuf = bridges_protobuf.bridges.add()
+            for protobuf_key, query_key in fields.items():
+                if bridge[query_key] and query_key not in [
+                    "date_created",
+                    "last_modified",
+                ]:
+                    setattr(bridge_protobuf, protobuf_key, bridge[query_key])
+
+            if bridge["date_created"]:
+                ts = timestamp_from_datetime(bridge["date_created"])
+                bridge_protobuf.date_created.CopyFrom(ts)
+
+            if bridge["last_modified"]:
+                ts = timestamp_from_datetime(bridge["last_modified"])
+                bridge_protobuf.last_modified.CopyFrom(ts)
+
+        return bridges_protobuf
 
 
 class BridgeManager(models.Manager):
@@ -776,8 +820,49 @@ class CulvertMaterialType(models.Model):
 class CulvertQuerySet(models.QuerySet):
     def to_protobuf(self):
         """ returns a culvert protobuf object from the queryset """
-        # See bridge.proto
-        return self
+        # See sturcture.proto --> Culvert / Culverts
+        culverts_protobuf = ProtoCulverts()
+
+        fields = dict(
+            id="id",
+            road_id="road_id",
+            date_created="date_created",
+            last_modified="last_modified",
+            structure_code="structure_code",
+            structure_name="structure_name",
+            structure_class="structure_class",
+            administrative_area="administrative_area",
+            road_code="road_code",
+            construction_year="construction_year",
+            length="length",
+            width="width",
+            chainage="chainage",
+            structure_type="structure_type",
+            height="height",
+            number_cells="number_cells",
+            material="material",
+            protection_upstream="protection_upstream",
+            protection_downstream="protection_downstream",
+        )
+
+        for culvert in self.values(*fields.values()):
+            culvert_protobuf = culverts_protobuf.culverts.add()
+            for protobuf_key, query_key in fields.items():
+                if culvert[query_key] and query_key not in [
+                    "date_created",
+                    "last_modified",
+                ]:
+                    setattr(culvert_protobuf, protobuf_key, culvert[query_key])
+
+            if culvert["date_created"]:
+                ts = timestamp_from_datetime(culvert["date_created"])
+                culvert_protobuf.date_created.CopyFrom(ts)
+
+            if culvert["last_modified"]:
+                ts = timestamp_from_datetime(culvert["last_modified"])
+                culvert_protobuf.last_modified.CopyFrom(ts)
+
+        return culverts_protobuf
 
 
 class CulvertManager(models.Manager):

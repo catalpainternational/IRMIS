@@ -1,3 +1,4 @@
+import { EstradaBridge, EstradaCulvert } from "./assets/models/structures";
 import { EstradaRoad } from "./assets/models/road";
 import { EstradaStructure } from "./assets/models/structure";
 import { assetTypeName } from "./side_menu";
@@ -9,6 +10,20 @@ import { assetTypeName } from "./side_menu";
  * This ensures that their 'update' is visible to the 'outside'.
  */
 export const estradaTableEventListeners = {
+    /** when the structureManager has new structures, add them to the table */
+    "estrada.structureManager.structureMetaDataAdded": (data, table, pendingRows) => {
+        const structureList = data.detail.structureList;
+
+        // add the structures to a pending array ( in case the table is not initialised early enough )
+        // Note we can't use array.concat here because concat returns a new array
+        // and we need to retain the existing pendingRows array
+        structureList.forEach((structure) => pendingRows.push(structure));
+        if (table) {
+            table.rows.add(pendingRows).draw();
+            // truncate the pendingRows (superfast)
+            pendingRows.length = 0;
+        }
+    },
     /** when the roadManager has new roads, add them to the table */
     "estrada.roadManager.roadMetaDataAdded": (data, table, pendingRows) => {
         const roadList = data.detail.roadList;
@@ -50,8 +65,8 @@ export const estradaTableEventListeners = {
         if (rowId) {
             const featureType = data.detail ? data.detail.featureType : "";
             const assetType = ["bridge", "culvert"].includes(featureType) ? "structures" : "roads";
-    
-            table.rows().every(function (rowIdx, tableLoop, rowLoop) { 
+
+            table.rows().every(function (rowIdx, tableLoop, rowLoop) {
                 if (assetType !== assetTypeName || this.id() !== rowId) {
                     this.node().classList.remove("selected");
                 } else {
@@ -60,7 +75,7 @@ export const estradaTableEventListeners = {
                 }
             });
         }
-    }    
+    }
 };
 
 /** Defines the columns for the table on the Estrada main page */
@@ -272,114 +287,146 @@ export const estradaTableColumns = [
 /** Defines the columns for the Structures table on the Estrada main page */
 export const structuresTableColumns = [
     {
-        title: "Structure",
-        defaultContent: "Bridge",
+        title: window.gettext("Structure"),
+        render: s => detectStructure(s),
+        data: null,
+        className: "text-center",
     },
     {
-        title: "Structure Code",
-        defaultContent: "A04",
+        title: getStructureFieldName("structure_code"),
+        data: "structureCode",
+        className: "text-center",
+        defaultContent: "",
     },
     {
-        title: "Structure Name",
-        defaultContent: "Le Pont Neuf",
+        title: getStructureFieldName("structure_name"),
+        data: "structureName",
+        className: "text-center",
+        defaultContent: "",
     },
     {
-        title: "River Name",
-        defaultContent: "La Garonne",
+        title: getStructureFieldName("river_name"),
+        data: "riverName",
+        className: "text-center",
+        defaultContent: "",
         visible: false,
     },
     {
-        title: "Road Code",
-        defaultContent: "A-02",
+        title: getStructureFieldName("road_code"),
+        data: "roadCode",
+        className: "text-center",
+        defaultContent: "",
     },
+    // {
+    //     title: getStructureFieldName("road_name"),
+    //     data: "roadName",
+    //     className: "text-center",
+    //     defaultContent: "",
+    //     visible: false,
+    // },
     {
-        title: "Road Name",
-        defaultContent: "Rue de Metz",
+        title: getStructureFieldName("structure_class"),
+        data: "structureClass",
+        className: "text-center",
+        defaultContent: "",
         visible: false,
     },
-    {
-        title: "Class",
-        defaultContent: "Urban",
-        visible: false,
-    },    
     {
         title: "GPS Longitude",
-        defaultContent: "43.599307°N",
         className: "text-right",
+        defaultContent: "43.599307°N",
         visible: false,
     },
     {
         title: "GPS Latitude",
-        defaultContent: "1.438724°E",
         className: "text-right",
+        defaultContent: "1.438724°E",
         visible: false,
     },
     {
-        title: "Chainage",
-        defaultContent: "63+260",
+        title: getStructureFieldName("chainage"),
+        data: "chainage",
         className: "text-right",
-    },    
+        defaultContent: "",
+    },
     {
-        title: "Municipality",
-        defaultContent: "Toulouse",
+        title: getStructureFieldName("administrative_area"),
+        data: "administrativeArea",
+        className: "text-center",
+        defaultContent: "",
         visible: false,
-    },    
+    },
+    // {
+    //     title: "Type",
+    //     defaultContent: "New bridge",
+    // },
     {
-        title: "Type",
-        defaultContent: "New bridge",
-    },    
+        title: getStructureFieldName("material"),
+        data: "material",
+        className: "text-center",
+        defaultContent: "",
+    },
     {
-        title: "Deck Material",
-        defaultContent: "Stone",
-    },    
-    {
-        title: "Material",
+        title: getStructureFieldName("structure_type"),
+        data: "structureType",
+        className: "text-center",
         defaultContent: "N/A",
-    },    
+    },
     {
-        title: "Length",
-        defaultContent: "220",
+        title: getStructureFieldName("length"),
+        data: "length",
         className: "text-right",
-    },    
+        defaultContent: "",
+    },
     {
-        title: "Width",
-        defaultContent: "30",
+        title: getStructureFieldName("width"),
+        data: "width",
         className: "text-right",
-    },    
+        defaultContent: "",
+
+    },
     {
-        title: "Height",
-        defaultContent: "5",
+        title: getStructureFieldName("height"),
+        data: "height",
         className: "text-right",
+        defaultContent: "",
         visible: false,
-    },    
+    },
     {
-        title: "Number of Spans",
-        defaultContent: "7",
+        title: getStructureFieldName("number_spans"),
+        data: "numberSpans",
         className: "text-right",
-        visible: false,
-    },    
-    {
-        title: "Number of Cells",
         defaultContent: "N/A",
+        visible: false,
+    },
+    {
+        title: getStructureFieldName("number_cells"),
+        data: "numberCells",
         className: "text-right",
+        defaultContent: "N/A",
         visible: false,
-    },    
+    },
     {
-        title: "Protection Upstream",
-        defaultContent: "Yes",
+        title: getStructureFieldName("protection_upstream"),
+        data: "protectionUpstream",
+        className: "text-center",
+        defaultContent: "",
         visible: false,
-    },    
+    },
     {
-        title: "Protection Downstream",
-        defaultContent: "No",
+        title: getStructureFieldName("protection_downstream"),
+        data: "protectionDownstream",
+        className: "text-center",
+        defaultContent: "",
         visible: false,
-    },    
+    },
     {
-        title: "Construction Year",
-        defaultContent: "1632",
+        title: getStructureFieldName("construction_year"),
+        data: "constructionYear",
         className: "text-right",
+        defaultContent: "",
         visible: false,
-    },    
+    },
     {
         title: "Structure Condition",
         defaultContent: "x",
@@ -387,7 +434,7 @@ export const structuresTableColumns = [
         render: r => buttonSegmentsTemplate("structure_condition", r),
         data: null,
         visible: false,
-    },    
+    },
     {
         title: "Condition Description",
         defaultContent: "x",
@@ -395,19 +442,57 @@ export const structuresTableColumns = [
         render: r => buttonSegmentsTemplate("condition", r),
         data: null,
         visible: false,
-    },    
+    },
     {
         title: "Inventory Photos",
         defaultContent: "x",
         className: "text-center",
         render: r => buttonSegmentsTemplate("inventory_photos", r),
         data: null
-    },    
+    },
 ];
 
+function detectStructure(structure) {
+    switch (structure.constructor.name) {
+        case "EstradaBridge":
+            return "Bridge";
+        case "EstradaCulvert":
+            return "Culvert";
+        default:
+            return null;
+    }
+}
+
+function getStructureFieldName(field) {
+    try {
+        return EstradaBridge.getFieldName(field);
+    } catch (err) {
+        return EstradaCulvert.getFieldName(field);
+    }
+}
+
+// function getStructureFieldData(field, structure) { return null; }
 function buttonSegmentsTemplate(attrib, asset) {
-    const code = (assetTypeName === "roads") ? asset.getLinkCode() : asset.getStructureCode();
-    const getFieldName = (assetTypeName === "roads") ? EstradaRoad.getFieldName : EstradaStructure.getFieldName;
+    const assetStructureType = detectStructure(asset);
+    const assetType = !assetStructureType
+        ? assetTypeName === "roads" ? "roads" : "structures"
+        : assetStructureType === "Bridge" ? "bridges" : "culverts";
+
+    const code = (assetType === "roads") ? asset.getLinkCode() : asset.getStructureCode();
+    let getFieldName = (attrib) => (attrib);
+    switch (assetType) {
+        case "roads":
+            getFieldName = EstradaRoad.getFieldName;
+            break;
+        case "bridges":
+            getFieldName = EstradaBridge.getFieldName;
+            break;
+        case "culverts":
+            getFieldName = EstradaCulvert.getFieldName;
+            break;
+        default:
+            break;
+    }
 
     return `<a data-toggle="modal"
         data-target="#inventory-segments-modal"

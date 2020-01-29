@@ -1,0 +1,63 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+package assets;
+
+message Bridge {
+    /* Note that field Id numbers once used, are fixed.
+    * The ordering shown here lines up with the model and groups the fields better.
+    * But the numbering preserves the original declaration */
+    uint32 id = 1;
+    uint32 road_id = 2;
+    google.protobuf.Timestamp date_created = 3;
+    google.protobuf.Timestamp last_modified = 4;
+    string structure_code = 5;
+    string structure_name = 6;
+    string structure_class = 7;
+    string administrative_area = 8;
+    string road_code = 9;
+    int32 construction_year = 10;
+    float length = 11;
+    float width = 12;
+    float chainage = 13;
+    string structure_type = 14;
+    string river_name = 15;
+    int32 number_spans = 16;
+    float span_length = 17;
+    string material = 18;
+    string protection_upstream = 19;
+    string protection_downstream = 20;
+}
+
+message Bridges {
+    repeated Bridge bridges = 1;
+}
+
+message Culvert {
+    /* Note that field Id numbers once used, are fixed.
+    * The ordering shown here lines up with the model and groups the fields better.
+    * But the numbering preserves the original declaration */
+    uint32 id = 1;
+    uint32 road_id = 2;
+    google.protobuf.Timestamp date_created = 3;
+    google.protobuf.Timestamp last_modified = 4;
+    string structure_code = 5;
+    string structure_name = 6;
+    string structure_class = 7;
+    string administrative_area = 8;
+    string road_code = 9;
+    int32 construction_year = 10;
+    float length = 11;
+    float width = 12;
+    float chainage = 13;
+    string structure_type = 14;
+    float height = 15;
+    int32 number_cells = 16;
+    string material = 17;
+    string protection_upstream = 18;
+    string protection_downstream = 19;
+}
+
+message Culverts {
+    repeated Culvert culverts = 1;
+}

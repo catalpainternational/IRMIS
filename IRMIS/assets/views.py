@@ -35,15 +35,17 @@ from .report_query import ReportQuery
 
 
 from .models import (
+    Bridge,
     CollatedGeoJsonFile,
-    Road,
+    Culvert,
+    display_user,
     MaintenanceNeed,
-    TechnicalClass,
+    PavementClass,
+    Road,
     RoadStatus,
     SurfaceType,
-    PavementClass,
     Survey,
-    display_user,
+    TechnicalClass,
 )
 from .serializers import RoadSerializer, RoadMetaOnlySerializer, RoadToWGSSerializer
 
@@ -217,6 +219,42 @@ def geojson_details(request):
 
 
 @login_required
+def protobuf_bridge(request, pk):
+    """ returns an protobuf serialized bytestring with the set of all bridges that can be requested via protobuf_bridges """
+    if request.method != "GET":
+        return HttpResponse(status=405)
+
+    bridges = Bridge.objects.filter(pk=pk)
+    if not bridges.exists():
+        return HttpResponseNotFound()
+
+    bridges_protobuf = bridges.to_protobuf()
+
+    return HttpResponse(
+        bridges_protobuf.bridges[0].SerializeToString(),
+        content_type="application/octet-stream",
+    )
+
+
+@login_required
+def protobuf_culvert(request, pk):
+    """ returns an protobuf serialized bytestring with the set of all culverts that can be requested via protobuf_culverts """
+    if request.method != "GET":
+        return HttpResponse(status=405)
+
+    culverts = Culvert.objects.filter(pk=pk)
+    if not culverts.exists():
+        return HttpResponseNotFound()
+
+    culverts_protobuf = culverts.to_protobuf()
+
+    return HttpResponse(
+        culverts_protobuf.culverts[0].SerializeToString(),
+        content_type="application/octet-stream",
+    )
+
+
+@login_required
 def protobuf_road(request, pk):
     """ returns an protobuf serialized bytestring with the set of all chunks that can be requested via protobuf_roads """
     if request.method != "GET":
@@ -256,6 +294,56 @@ def protobuf_road_set(request, chunk_name=None):
 
 
 @login_required
+def protobuf_bridge_set(request):
+    """ returns a protobuf object with the set of all Bridge Structures """
+    bridges = Bridge.objects.all()
+    bridges_protobuf = bridges.to_protobuf()
+
+    return HttpResponse(
+        bridges_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )
+
+
+@login_required
+def protobuf_culvert_set(request):
+    """ returns a protobuf object with the set of all Culvert Structures """
+    culverts = Culvert.objects.all()
+    culverts_protobuf = culverts.to_protobuf()
+
+    return HttpResponse(
+        culverts_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )
+
+
+@login_required
+def protobuf_road_bridges(request, pk):
+    """ returns a protobuf object with the set of bridges for a particular road pk"""
+    # get the Road link requested
+    road = get_object_or_404(Road.objects.all(), pk=pk)
+    # pull any Surveys that cover the Road Code above
+    queryset = Bridge.objects.filter(road_code=road.road_code)
+    queryset.order_by("chainage", "-date_updated")
+    bridges_protobuf = queryset.to_protobuf()
+    return HttpResponse(
+        bridges_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )
+
+
+@login_required
+def protobuf_road_culverts(request, pk):
+    """ returns a protobuf object with the set of culverts for a particular road pk"""
+    # get the Road link requested
+    road = get_object_or_404(Road.objects.all(), pk=pk)
+    # pull any Surveys that cover the Road Code above
+    queryset = Culvert.objects.filter(road_code=road.road_code)
+    queryset.order_by("chainage", "-date_updated")
+    culverts_protobuf = queryset.to_protobuf()
+    return HttpResponse(
+        culverts_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )
+
+
+@login_required
 def protobuf_road_surveys(request, pk, survey_attribute=None):
     """ returns a protobuf object with the set of surveys for a particular road pk"""
     # get the Road link requested
@@ -286,6 +374,298 @@ def pbtimestamp_to_pydatetime(pb_stamp):
     except ValueError:
         pb_date = datetime.strptime(pb_stamp.ToJsonString(), "%Y-%m-%dT%H:%M:%S.%fZ")
     return pytz.utc.localize(pb_date)
+
+
+@login_required
+@user_passes_test(user_can_edit)
+def bridge_create(request):
+    if request.method != "POST":
+        raise MethodNotAllowed(request.method)
+    elif request.content_type != "application/octet-stream":
+        return HttpResponse(status=400)
+
+    # parse Bridge from protobuf in request body
+    req_pb = structure_pb2.Bridge()
+    req_pb.ParseFromString(request.body)
+
+    # check that Protobuf parsed
+    if not req_pb.road_id:
+        return HttpResponse(status=400)
+
+    # check there's a road to attach this structure to
+    structure_road = get_object_or_404(Road.objects.filter(pk=req_pb.road_id))
+    # and default the road_code if none was provided
+    if not req_pb.road_code:
+        req_pb.road_code = structure_road.road_code
+    elif structure_road.road_code != req_pb.road_code:
+        # or check it for basic data integrity problem
+        return HttpResponse(
+            req_pb.SerializeToString(),
+            status=400,
+            content_type="application/octet-stream",
+        )
+
+    try:
+        with reversion.create_revision():
+            bridge = Bridge.objects.create(
+                **{
+                    "road_id": req_pb.road_id,
+                    "road_code": req_pb.road_code,
+                    "user": get_user_model().objects.get(pk=req_pb.user),
+                    "structure_code": req_pb.structure_code,
+                    "structure_name": req_pb.structure_name,
+                    "structure_class": req_pb.structure_class,
+                    "administrative_area": req_pb.administrative_area,
+                    "construction_year": req_pb.construction_year,
+                    "length": req_pb.length,
+                    "width": req_pb.width,
+                    "chainage": req_pb.chainage,
+                    "structure_type": req_pb.structure_type,
+                    "river_name": req_pb.river_name,
+                    "number_spans": req_pb.number_spans,
+                    "span_length": req_pb.span_length,
+                    "material": req_pb.material,
+                    "protection_upstream": req_pb.protection_upstream,
+                    "protection_downstream": req_pb.protection_downstream,
+                }
+            )
+
+            # store the user who made the changes
+            reversion.set_user(request.user)
+
+        response = HttpResponse(
+            req_pb.SerializeToString(),
+            status=200,
+            content_type="application/octet-stream",
+        )
+
+        return response
+    except Exception as err:
+        return HttpResponse(status=400)
+
+
+@login_required
+@user_passes_test(user_can_edit)
+def bridge_update(request):
+    if request.method != "POST":
+        raise MethodNotAllowed(request.method)
+    elif request.content_type != "application/octet-stream":
+        return HttpResponse(status=400)
+
+    # parse Bridge from protobuf in request body
+    req_pb = structure_pb2.Bridge()
+    req_pb.ParseFromString(request.body)
+
+    # check that Protobuf parsed
+    if not req_pb.id:
+        return HttpResponse(status=400)
+
+    # assert Bridge ID given exists in the DB & there are changes to make
+    bridge = get_object_or_404(Bridge.objects.filter(pk=req_pb.id))
+
+    # check that the bridge has a user assigned, if not, do not allow updating
+    if not bridge.user:
+        return HttpResponse(
+            req_pb.SerializeToString(),
+            status=400,
+            content_type="application/octet-stream",
+        )
+
+    # check there's a road to attach this bridge to
+    bridge_road = get_object_or_404(Road.objects.filter(pk=req_pb.road_id))
+    # and default the road_code if none was provided
+    if not req_pb.road_code:
+        req_pb.road_code = bridge_road.road_code
+    elif bridge_road.road_code != req_pb.road_code:
+        # or check it for basic data integrity problem
+        return HttpResponse(
+            req_pb.SerializeToString(),
+            status=400,
+            content_type="application/octet-stream",
+        )
+
+    # if there are no changes between the DB bridge and the protobuf bridge return 200
+    if Bridge.objects.filter(pk=req_pb.id).to_protobuf().bridges[0] == req_pb:
+        return HttpResponse(
+            req_pb.SerializeToString(),
+            status=200,
+            content_type="application/octet-stream",
+        )
+
+    # update the Survey instance from PB fields
+    bridge.road_id = req_pb.road_id
+    bridge.road_code = req_pb.road_code
+    bridge.user = get_user_model().objects.get(pk=req_pb.user)
+    bridge.structure_code = req_pb.structure_code
+    bridge.structure_name = req_pb.structure_name
+    bridge.structure_class = req_pb.structure_class
+    bridge.administrative_area = req_pb.administrative_area
+    bridge.construction_year = req_pb.construction_year
+    bridge.length = req_pb.length
+    bridge.width = req_pb.width
+    bridge.chainage = req_pb.chainage
+    bridge.structure_type = req_pb.structure_type
+    bridge.river_name = req_pb.river_name
+    bridge.number_spans = req_pb.number_spans
+    bridge.span_length = req_pb.span_length
+    bridge.material = req_pb.material
+    bridge.protection_upstream = req_pb.protection_upstream
+    bridge.protection_downstream = req_pb.protection_downstream
+
+    with reversion.create_revision():
+        bridge.save()
+        # store the user who made the changes
+        reversion.set_user(request.user)
+
+    response = HttpResponse(
+        req_pb.SerializeToString(), status=200, content_type="application/octet-stream"
+    )
+    return response
+
+
+@login_required
+@user_passes_test(user_can_edit)
+def culvert_create(request):
+    if request.method != "POST":
+        raise MethodNotAllowed(request.method)
+    elif request.content_type != "application/octet-stream":
+        return HttpResponse(status=400)
+
+    # parse Culvert from protobuf in request body
+    req_pb = structure_pb2.Culvert()
+    req_pb.ParseFromString(request.body)
+
+    # check that Protobuf parsed
+    if not req_pb.road_id:
+        return HttpResponse(status=400)
+
+    # check there's a road to attach this structure to
+    structure_road = get_object_or_404(Road.objects.filter(pk=req_pb.road_id))
+    # and default the road_code if none was provided
+    if not req_pb.road_code:
+        req_pb.road_code = structure_road.road_code
+    elif structure_road.road_code != req_pb.road_code:
+        # or check it for basic data integrity problem
+        return HttpResponse(
+            req_pb.SerializeToString(),
+            status=400,
+            content_type="application/octet-stream",
+        )
+
+    try:
+        with reversion.create_revision():
+            culvert = Culvert.objects.create(
+                **{
+                    "road_id": req_pb.road_id,
+                    "road_code": req_pb.road_code,
+                    "user": get_user_model().objects.get(pk=req_pb.user),
+                    "structure_code": req_pb.structure_code,
+                    "structure_name": req_pb.structure_name,
+                    "structure_class": req_pb.structure_class,
+                    "administrative_area": req_pb.administrative_area,
+                    "construction_year": req_pb.construction_year,
+                    "length": req_pb.length,
+                    "width": req_pb.width,
+                    "chainage": req_pb.chainage,
+                    "structure_type": req_pb.structure_type,
+                    "height": req_pb.height,
+                    "number_cells": req_pb.number_cells,
+                    "material": req_pb.material,
+                    "protection_upstream": req_pb.protection_upstream,
+                    "protection_downstream": req_pb.protection_downstream,
+                }
+            )
+
+            # store the user who made the changes
+            reversion.set_user(request.user)
+
+        response = HttpResponse(
+            req_pb.SerializeToString(),
+            status=200,
+            content_type="application/octet-stream",
+        )
+
+        return response
+    except Exception as err:
+        return HttpResponse(status=400)
+
+
+@login_required
+@user_passes_test(user_can_edit)
+def culvert_update(request):
+    if request.method != "POST":
+        raise MethodNotAllowed(request.method)
+    elif request.content_type != "application/octet-stream":
+        return HttpResponse(status=400)
+
+    # parse Culvert from protobuf in request body
+    req_pb = structure_pb2.Culvert()
+    req_pb.ParseFromString(request.body)
+
+    # check that Protobuf parsed
+    if not req_pb.id:
+        return HttpResponse(status=400)
+
+    # assert Culvert ID given exists in the DB & there are changes to make
+    culvert = get_object_or_404(Culvert.objects.filter(pk=req_pb.id))
+
+    # check that the culvert has a user assigned, if not, do not allow updating
+    if not culvert.user:
+        return HttpResponse(
+            req_pb.SerializeToString(),
+            status=400,
+            content_type="application/octet-stream",
+        )
+
+    # check there's a road to attach this culvert to
+    culvert_road = get_object_or_404(Road.objects.filter(pk=req_pb.road_id))
+    # and default the road_code if none was provided
+    if not req_pb.road_code:
+        req_pb.road_code = culvert_road.road_code
+    elif culvert_road.road_code != req_pb.road_code:
+        # or check it for basic data integrity problem
+        return HttpResponse(
+            req_pb.SerializeToString(),
+            status=400,
+            content_type="application/octet-stream",
+        )
+
+    # if there are no changes between the DB culvert and the protobuf culvert return 200
+    if Culvert.objects.filter(pk=req_pb.id).to_protobuf().culverts[0] == req_pb:
+        return HttpResponse(
+            req_pb.SerializeToString(),
+            status=200,
+            content_type="application/octet-stream",
+        )
+
+    # update the Survey instance from PB fields
+    culvert.road_id = req_pb.road_id
+    culvert.road_code = req_pb.road_code
+    culvert.user = get_user_model().objects.get(pk=req_pb.user)
+    culvert.structure_code = req_pb.structure_code
+    culvert.structure_name = req_pb.structure_name
+    culvert.structure_class = req_pb.structure_class
+    culvert.administrative_area = req_pb.administrative_area
+    culvert.construction_year = req_pb.construction_year
+    culvert.length = req_pb.length
+    culvert.width = req_pb.width
+    culvert.chainage = req_pb.chainage
+    culvert.structure_type = req_pb.structure_type
+    culvert.height = req_pb.height
+    culvert.number_cells = req_pb.number_cells
+    culvert.material = req_pb.material
+    culvert.protection_upstream = req_pb.protection_upstream
+    culvert.protection_downstream = req_pb.protection_downstream
+
+    with reversion.create_revision():
+        culvert.save()
+        # store the user who made the changes
+        reversion.set_user(request.user)
+
+    response = HttpResponse(
+        req_pb.SerializeToString(), status=200, content_type="application/octet-stream"
+    )
+    return response
 
 
 @login_required
@@ -434,6 +814,50 @@ def protobuf_road_audit(request, pk):
     queryset = Road.objects.all()
     road = get_object_or_404(queryset, pk=pk)
     versions = Version.objects.get_for_object(road)
+    versions_protobuf = roads_pb2.Versions()
+
+    for version in versions:
+        version_pb = versions_protobuf.versions.add()
+        setattr(version_pb, "pk", version.pk)
+        setattr(version_pb, "user", display_user(version.revision.user))
+        setattr(version_pb, "comment", version.revision.comment)
+        # set datetime field
+        ts = Timestamp()
+        ts.FromDatetime(version.revision.date_created)
+        version_pb.date_created.CopyFrom(ts)
+    return HttpResponse(
+        versions_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )
+
+
+@login_required
+def protobuf_bridge_audit(request, pk):
+    """ returns a protobuf object with the set of all audit history items for a Bridge """
+    queryset = Bridge.objects.all()
+    bridge = get_object_or_404(queryset, pk=pk)
+    versions = Version.objects.get_for_object(bridge)
+    versions_protobuf = roads_pb2.Versions()
+
+    for version in versions:
+        version_pb = versions_protobuf.versions.add()
+        setattr(version_pb, "pk", version.pk)
+        setattr(version_pb, "user", display_user(version.revision.user))
+        setattr(version_pb, "comment", version.revision.comment)
+        # set datetime field
+        ts = Timestamp()
+        ts.FromDatetime(version.revision.date_created)
+        version_pb.date_created.CopyFrom(ts)
+    return HttpResponse(
+        versions_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )
+
+
+@login_required
+def protobuf_culvert_audit(request, pk):
+    """ returns a protobuf object with the set of all audit history items for a Culvert """
+    queryset = Culvert.objects.all()
+    culvert = get_object_or_404(queryset, pk=pk)
+    versions = Version.objects.get_for_object(culvert)
     versions_protobuf = roads_pb2.Versions()
 
     for version in versions:
