@@ -2,7 +2,7 @@ import { Road, Roads, Versions } from "../../protobuf/roads_pb";
 import { EstradaRoad } from "./models/road";
 import { EstradaAudit } from "./models/audit";
 
-// Placeholders, purely as reminders of 
+// Placeholders, purely as reminders of what kinds of things we'll need for structures
 // import { Structure, Structures } from "../../protobuf/structures_pb";
 // import { EstradaStructure } from "./models/structure";
 
@@ -122,7 +122,7 @@ export function getStructuresMetadataChunks() {
                 // Dummy data
                 return [{ "asset_type": "BRIDGE", "asset_type__count": 0 }, { "asset_type": "CULVERT", "asset_type__count": 0 }];
             }
-        })
+        });
 }
 
 /** getStructuresMetadata
