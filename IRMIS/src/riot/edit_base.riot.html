@@ -52,25 +52,24 @@
                     errorMessage="{ window.gettext('Something went wrong') }" error="{ state.error }">
                 </feedback_banner>
 
-                <edit_location_type road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}"
-                    if="{ state.page === 'location_type' }"></edit_location_type>
-                <edit_asset_details road="{ state.editingRoad }" showFeedback="{ showFeedback }"
-                    saving="{ state.saving }" parent="{parentFunctions}" if="{ state.page === 'asset_details' }">
-                </edit_asset_details>
-                <edit_pavement road="{ state.editingRoad }" showFeedback="{ showFeedback }" saving="{ state.saving }"
-                    parent="{parentFunctions}" if="{ state.page === 'pavement' }"></edit_pavement>
-                <edit_project road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}"
-                    if="{ state.page === 'project' }"></edit_project>
-                <edit_condition road="{ state.editingRoad }" showFeedback="{ showFeedback }" parent="{parentFunctions}"
-                    if="{ state.page === 'condition' }"></edit_condition>
-                <edit_traffic road="{ state.editingRoad }" showFeedback="{ showFeedback }" parent="{parentFunctions}"
-                    if="{ state.page === 'traffic' }"></edit_traffic>
-                <edit_maintenance road="{ state.editingRoad }" saving="{ state.saving }" parent="{parentFunctions}"
-                    if="{ state.page === 'maintenance' }"></edit_maintenance>
-                <edit_environment road="{ state.editingRoad }" showFeedback="{ showFeedback }" saving="{ state.saving }"
-                    parent="{parentFunctions}" if="{ state.page === 'environment' }"></edit_environment>
-                <edit_history road="{ state.baseRoad }" parent="{parentFunctions}" if="{ state.page === 'history' }">
-                </edit_history>
+                <edit_location_type if="{ state.page === 'location_type' }" road="{ state.editingRoad }" 
+                    saving="{ state.saving }" parent="{parentFunctions}"></edit_location_type>
+                <edit_asset_details if="{ state.page === 'asset_details' }" road="{ state.editingRoad }" 
+                    saving="{ state.saving }" showFeedback="{ showFeedback }" parent="{parentFunctions}"></edit_asset_details>
+                <edit_pavement if="{ state.page === 'pavement' }" road="{ state.editingRoad }" 
+                    saving="{ state.saving }" showFeedback="{ showFeedback }" parent="{parentFunctions}"></edit_pavement>
+                <edit_project if="{ state.page === 'project' }" road="{ state.editingRoad }" 
+                    saving="{ state.saving }" parent="{parentFunctions}"></edit_project>
+                <edit_condition if="{ state.page === 'condition' }" road="{ state.editingRoad }" 
+                    showFeedback="{ showFeedback }" parent="{parentFunctions}"></edit_condition>
+                <edit_traffic if="{ state.page === 'traffic' }" road="{ state.editingRoad }" 
+                    showFeedback="{ showFeedback }" parent="{parentFunctions}"></edit_traffic>
+                <edit_maintenance if="{ state.page === 'maintenance' }" road="{ state.editingRoad }" 
+                    saving="{ state.saving }" parent="{parentFunctions}"></edit_maintenance>
+                <edit_environment if="{ state.page === 'environment' }" road="{ state.editingRoad }" 
+                    saving="{ state.saving }" showFeedback="{ showFeedback }" parent="{parentFunctions}"></edit_environment>
+                <edit_history if="{ state.page === 'history' }" road="{ state.baseRoad }" 
+                    parent="{parentFunctions}"></edit_history>
             </div>
             <footer>
                 <small>República Democrática de Timor-Leste / Ministério das Obras Públicas</small>
