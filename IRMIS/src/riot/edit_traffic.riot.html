@@ -205,7 +205,7 @@
                                     { vehicle[1] }
                                 </div>
                                 <div class="details-vehicle-spacing details-vehicle-count">
-                                    { JSON.parse(state.currentRowData.values.counts.replace(/\'/g, '"'))[vehicle[3]] || 0 }
+                                    { parseVehicleCount(vehicle[3]) || 0 }
                                 </div>
                                 <small>{ vehicle[2] }</small>
                             </div>
@@ -524,7 +524,10 @@
                             $("#loading").modal("hide");
                         });
                 }
-                this.state.survey = new Survey({}); // clear input values
+                // clear input values
+                this.state.survey = new Survey({}); 
+                this.state.currentRowData = new Survey({});
+                
                 this.update();
             },
             canSave() {
@@ -618,6 +621,9 @@
                 names.forEach((name) => {
                     delete this.state.errors[name];
                 });
+            },
+            parseVehicleCount(vehicleType) {
+                return JSON.parse(this.state.currentRowData.values.counts.replace(/\'/g, '"'))[vehicleType];
             },
             modal_id: "traffic-modal",
             max_date: () => new Date().toISOString().substring(0, 10),

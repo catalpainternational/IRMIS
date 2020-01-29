@@ -159,11 +159,12 @@ report, report_dashboard {
             h1 {
                 margin-right: 30px;
                 margin-bottom: 0;
-                font-size: 36px;
+                font-size: 30px;
                 line-height: 44px;
 
                 &.highlight {
                     color: #03A59A;
+                    font-size: 36px;
                 }
             }
         }
