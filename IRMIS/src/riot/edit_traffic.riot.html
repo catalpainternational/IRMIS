@@ -624,7 +624,7 @@
             },
             parseVehicleCount(vehicleType) {
                 return JSON.parse(this.state.currentRowData.values.counts.replace(/\'/g, '"'))[vehicleType];
-            }
+            },
             modal_id: "traffic-modal",
             max_date: () => new Date().toISOString().substring(0, 10),
         }
