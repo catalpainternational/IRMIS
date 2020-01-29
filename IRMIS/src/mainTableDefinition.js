@@ -1,4 +1,5 @@
 import { EstradaRoad } from "./assets/models/road";
+import { assetTypeName } from "./side_menu";
 
 /** Define the general events that the main table will respond to
  *
@@ -46,8 +47,11 @@ export const estradaTableEventListeners = {
     "estrada.table.rowSelected": (data, table) => {
         const rowId = data.detail ? data.detail.rowId : null;
         if (rowId) {
+            const featureType = data.detail ? data.detail.featureType : "";
+            const assetType = ["bridge", "culvert"].includes(featureType) ? "structures" : "roads";
+    
             table.rows().every(function (rowIdx, tableLoop, rowLoop) { 
-                if (this.id() !== rowId) {
+                if (assetType !== assetTypeName || this.id() !== rowId) {
                     this.node().classList.remove("selected");
                 } else {
                     this.node().classList.add("selected");

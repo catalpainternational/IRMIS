@@ -2,13 +2,15 @@ import "datatables.net-bs4";
 import $ from "jquery";
 
 import { exportCsv } from "./exportCsv";
-import { applyFilter } from './filter';
+import { applyFilter } from "./filter";
+import { assetTypeName } from "./side_menu";
 import { estradaTableColumns, estradaTableEventListeners, structuresTableColumns } from "./mainTableDefinition";
 import { carriagewayWidthColumns, numberLanesColumns, pavementClassColumns, rainfallColumns, surfaceConditionColumns, surfaceTypeColumns, technicalClassColumns, terrainClassColumns } from "./segmentsInventoryTableDefinition";
 
 import { datatableTranslations } from "./datatableTranslations";
-import { getRoad } from "./roadManager";
+import { getRoad, roads } from "./roadManager";
 import { getRoadReport } from "./reportManager";
+import { structures } from "./structureManager";
 import { dispatch } from "./assets/utilities";
 
 let surfaceConditionTable = null;
@@ -267,6 +269,37 @@ function applyTableSelection(rowId) {
 
     // communicate the filter
     dispatch("estrada.idFilter.applied", { detail: { idMap } });
+}
+
+/**
+ * Get correct data for the popup on the map
+ * @param {number} id
+ * @param {string} featureType
+ * @return [{label: string, value: string}]
+ */
+export function GetDataForMapPopup(id, featureType) {
+    const assetType = ["bridge", "culvert"].includes(featureType) ? "structures" : "roads";
+    if (assetType !== assetTypeName) {
+        return [{ label: window.gettext("Asset Type"), value: featureType }];
+    }
+    const asset = assetTypeName === "roads" ? roads[id] : structures[id];
+
+    if (!asset) {
+        return [{ label: window.gettext("Loading"), value: "" }];
+    }
+
+    const code = assetTypeName === "roads" ? asset.getRoadCode() : asset.getStructureCode();
+    const name = assetTypeName === "roads" ? asset.getRoadName() : asset.getStructureName();
+
+    const mapPopupData = [];
+    if (code) {
+        mapPopupData.push({ label: window.gettext("Code"), value: code });
+    }
+    if (name) {
+        mapPopupData.push({ label: window.gettext("Name"), value: name });
+    }
+
+    return mapPopupData;
 }
 
 function getTableData(mainTableType = "roads") {

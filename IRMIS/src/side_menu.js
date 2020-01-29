@@ -82,8 +82,11 @@ function change_view(e) {
     dispatch("estrada.sideMenu.viewChanged", { "detail": { viewName } });
 }
 
+/** assetTypeName is the current selection of the Asset Type filter switch */
+export let assetTypeName = "roads";
+
 function change_assetType(e) {
-    const assetTypeName = e.currentTarget.attributes['data-filtername'].value;
+    assetTypeName = e.currentTarget.attributes['data-filtername'].value;
     const siblings = document.getElementById("assetType").children;
     const filterSections = document.getElementsByClassName("filters-section");
 
@@ -217,4 +220,3 @@ function toggleFilterUIState(slug) {
     initFilterUIState(slug);
     filterUIState[slug] = !filterUIState[slug];
 }
-
