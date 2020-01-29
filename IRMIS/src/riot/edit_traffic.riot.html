@@ -205,7 +205,7 @@
                                     { vehicle[1] }
                                 </div>
                                 <div class="details-vehicle-spacing details-vehicle-count">
-                                    { JSON.parse(state.currentRowData.values.counts.replace(/\'/g, '"'))[vehicle[3]] || 0 }
+                                    { parseVehicleCount(vehicle[3]) || 0 }
                                 </div>
                                 <small>{ vehicle[2] }</small>
                             </div>
@@ -622,6 +622,9 @@
                     delete this.state.errors[name];
                 });
             },
+            parseVehicleCount(vehicleType) {
+                return JSON.parse(this.state.currentRowData.values.counts.replace(/\'/g, '"'))[vehicleType];
+            }
             modal_id: "traffic-modal",
             max_date: () => new Date().toISOString().substring(0, 10),
         }
