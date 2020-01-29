@@ -1,7 +1,7 @@
 import { toChainageFormat } from "./assets/protoBufUtilities";
 
 /** Defines base columns needed in all segments modal tables **/
-const baseColumns = [
+const baseSegmentColumns = [
     {
         title: window.gettext("Chainage start"),
         data: "chainageStart",
@@ -23,8 +23,22 @@ const baseColumns = [
     },
 ];
 
+
+/** Defines base columns needed in all details modal tables **/
+const baseDetailColumns = [
+    {
+        title: window.gettext("Chainage"),
+        data: "chainage",
+        defaultContent: "",
+        className: "text-right",
+        render: (data, type) => {
+            return (type === 'display') ? toChainageFormat(data) : data;
+        },
+    },
+];
+
 /** Defines the columns for the Surface Condition segments table on the inventory page */
-export const surfaceConditionColumns = baseColumns.concat([
+export const surfaceConditionColumns = baseSegmentColumns.concat([
     {
         title: window.gettext("Surface condition"),
         data: "surfaceCondition",
@@ -34,7 +48,7 @@ export const surfaceConditionColumns = baseColumns.concat([
 ]);
 
 /** Defines the columns for the Surface Type segments table on the inventory page */
-export const surfaceTypeColumns = baseColumns.concat([
+export const surfaceTypeColumns = baseSegmentColumns.concat([
     {
         title: window.gettext("Surface Type"),
         data: "surfaceType",
@@ -44,7 +58,7 @@ export const surfaceTypeColumns = baseColumns.concat([
 ]);
 
 /** Defines the columns for the Technical Class segments table on the inventory page */
-export const technicalClassColumns = baseColumns.concat([
+export const technicalClassColumns = baseSegmentColumns.concat([
     {
         title: window.gettext("Technical class"),
         data: "technicalClass",
@@ -54,7 +68,7 @@ export const technicalClassColumns = baseColumns.concat([
 ]);
 
 /** Defines the columns for the Number of Lanes segments table on the inventory page */
-export const numberLanesColumns = baseColumns.concat([
+export const numberLanesColumns = baseSegmentColumns.concat([
     {
         title: window.gettext("Number of lanes"),
         data: "numberLanes",
@@ -64,7 +78,7 @@ export const numberLanesColumns = baseColumns.concat([
 ]);
 
 /** Defines the columns for the Carriageway Width segments table on the inventory page */
-export const carriagewayWidthColumns = baseColumns.concat([
+export const carriagewayWidthColumns = baseSegmentColumns.concat([
     {
         title: window.gettext("Carriageway width"),
         data: "carriagewayWidth",
@@ -74,7 +88,7 @@ export const carriagewayWidthColumns = baseColumns.concat([
 ]);
 
 /** Defines the columns for the Rainfall segments table on the inventory page */
-export const rainfallColumns = baseColumns.concat([
+export const rainfallColumns = baseSegmentColumns.concat([
     {
         title: window.gettext("Rainfall"),
         data: "rainfall",
@@ -84,7 +98,7 @@ export const rainfallColumns = baseColumns.concat([
 ]);
 
 /** Defines the columns for the Terrain Class segments table on the inventory page */
-export const terrainClassColumns = baseColumns.concat([
+export const terrainClassColumns = baseSegmentColumns.concat([
     {
         title: window.gettext("Terrain class"),
         data: "terrainClass",
@@ -94,10 +108,40 @@ export const terrainClassColumns = baseColumns.concat([
 ]);
 
 /** Defines the columns for the Terrain Class segments table on the inventory page */
-export const pavementClassColumns = baseColumns.concat([
+export const pavementClassColumns = baseSegmentColumns.concat([
     {
         title: window.gettext("Pavement class"),
         data: "pavementClass",
+        defaultContent: "",
+        orderable: false,
+    },
+]);
+
+/** Defines the columns for the Condition Description details table on the inventory page */
+export const conditionDescriptionColumns = baseDetailColumns.concat([
+    {
+        title: window.gettext("Condition description"),
+        data: "conditionDescription",
+        defaultContent: "",
+        orderable: false,
+    },
+]);
+
+/** Defines the columns for the Inventory Photos details table on the inventory page */
+export const inventoryPhotosColumns = baseDetailColumns.concat([
+    {
+        title: window.gettext("Inventory photos"),
+        data: "inventoryPhotos", // This should probably be a link to the document/photo
+        defaultContent: "",
+        orderable: false,
+    },
+]);
+
+/** Defines the columns for the Condition Description details table on the inventory page */
+export const structureConditionColumns = baseDetailColumns.concat([
+    {
+        title: window.gettext("Structure condition"),
+        data: "structureCondition",
         defaultContent: "",
         orderable: false,
     },
