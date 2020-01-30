@@ -4,7 +4,7 @@
             <div>
                 <ul class="navigation">
                     <li class="text-uppercase">{ window.gettext("Edit asset") }</li>
-                    <ul>
+                    <ul if="{ state.assetType === "road" }">
                         <li class="{ state.page === 'location_type' ? 'active' : '' }" data-page="location_type"
                             onclick="{ selectPage }">{ window.gettext("Location & Type") }</li>
                         <li class="{ state.page === 'asset_details' ? 'active' : '' }" data-page="asset_details"
@@ -20,8 +20,19 @@
                         <li class="{ state.page === 'maintenance' ? 'active' : '' }" data-page="maintenance"
                             onclick="{ selectPage }">{ window.gettext("Maintenance") }</li>
                         <li class="{ state.page === 'environment' ? 'active' : '' }" data-page="environment"
-                            onclick="{ selectPage }">{
-                            window.gettext("Environment") }</li>
+                            onclick="{ selectPage }">{ window.gettext("Environment") }</li>
+                    </ul>
+                    <ul if="{ state.assetType === "structure" }">
+                        <li class="{ state.page === 'location_type' ? 'active' : '' }" data-page="location_type"
+                            onclick="{ selectPage }">{ window.gettext("Type") }</li>
+                        <li class="{ state.page === 'asset_details' ? 'active' : '' }" data-page="asset_details"
+                            onclick="{ selectPage }">{ window.gettext("Asset Details") }</li>
+                        <li class="{ state.page === 'condition' ? 'active' : '' }" data-page="condition"
+                            onclick="{ selectPage }">{ window.gettext("Protection") }</li>
+                        <li class="{ state.page === 'condition' ? 'active' : '' }" data-page="condition"
+                            onclick="{ selectPage }">{ window.gettext("Photos") }</li>
+                        <li class="{ state.page === 'condition' ? 'active' : '' }" data-page="condition"
+                            onclick="{ selectPage }">{ window.gettext("Condition") }</li>
                     </ul>
                 </ul>
                 <ul class="navigation">
@@ -130,6 +141,7 @@
             },
             onBeforeMount(props, state) {
                 state.page = props.page;
+                state.assetType = props.assetType;
                 window.onbeforeunload = () => {
                     return this.hasChanges() ? "You have changes" : null;
                 }
@@ -210,7 +222,7 @@
             selectPage(e) {
                 const roadId = this.state.editingRoad.getId();
                 this.state.page = e.currentTarget.dataset.page;
-                this.state.nextPage = `#edit/${roadId}/${this.state.page}`;
+                this.state.nextPage = `#edit/${this.state.assetType}/${roadId}/${this.state.page}`;
                 if (this.hasChanges()) {
                     this.modalHandler();
                 } else {
