@@ -134,7 +134,7 @@ proto.assets.Bridge.prototype.toObject = function(opt_includeInstance) {
  */
 proto.assets.Bridge.toObject = function(includeInstance, msg) {
   var f, obj = {
-    id: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    id: jspb.Message.getFieldWithDefault(msg, 1, ""),
     roadId: jspb.Message.getFieldWithDefault(msg, 2, 0),
     dateCreated: (f = msg.getDateCreated()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
     lastModified: (f = msg.getLastModified()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
@@ -191,7 +191,7 @@ proto.assets.Bridge.deserializeBinaryFromReader = function(msg, reader) {
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {number} */ (reader.readUint32());
+      var value = /** @type {string} */ (reader.readString());
       msg.setId(value);
       break;
     case 2:
@@ -302,8 +302,8 @@ proto.assets.Bridge.prototype.serializeBinary = function() {
 proto.assets.Bridge.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getId();
-  if (f !== 0) {
-    writer.writeUint32(
+  if (f.length > 0) {
+    writer.writeString(
       1,
       f
     );
@@ -447,17 +447,17 @@ proto.assets.Bridge.serializeBinaryToWriter = function(message, writer) {
 
 
 /**
- * optional uint32 id = 1;
- * @return {number}
+ * optional string id = 1;
+ * @return {string}
  */
 proto.assets.Bridge.prototype.getId = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
-/** @param {number} value */
+/** @param {string} value */
 proto.assets.Bridge.prototype.setId = function(value) {
-  jspb.Message.setProto3IntField(this, 1, value);
+  jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -970,7 +970,7 @@ proto.assets.Culvert.prototype.toObject = function(opt_includeInstance) {
  */
 proto.assets.Culvert.toObject = function(includeInstance, msg) {
   var f, obj = {
-    id: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    id: jspb.Message.getFieldWithDefault(msg, 1, ""),
     roadId: jspb.Message.getFieldWithDefault(msg, 2, 0),
     dateCreated: (f = msg.getDateCreated()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
     lastModified: (f = msg.getLastModified()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
@@ -1026,7 +1026,7 @@ proto.assets.Culvert.deserializeBinaryFromReader = function(msg, reader) {
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {number} */ (reader.readUint32());
+      var value = /** @type {string} */ (reader.readString());
       msg.setId(value);
       break;
     case 2:
@@ -1133,8 +1133,8 @@ proto.assets.Culvert.prototype.serializeBinary = function() {
 proto.assets.Culvert.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getId();
-  if (f !== 0) {
-    writer.writeUint32(
+  if (f.length > 0) {
+    writer.writeString(
       1,
       f
     );
@@ -1271,17 +1271,17 @@ proto.assets.Culvert.serializeBinaryToWriter = function(message, writer) {
 
 
 /**
- * optional uint32 id = 1;
- * @return {number}
+ * optional string id = 1;
+ * @return {string}
  */
 proto.assets.Culvert.prototype.getId = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
-/** @param {number} value */
+/** @param {string} value */
 proto.assets.Culvert.prototype.setId = function(value) {
-  jspb.Message.setProto3IntField(this, 1, value);
+  jspb.Message.setProto3StringField(this, 1, value);
 };
 
 

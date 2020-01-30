@@ -7,7 +7,7 @@ message Bridge {
     /* Note that field Id numbers once used, are fixed.
     * The ordering shown here lines up with the model and groups the fields better.
     * But the numbering preserves the original declaration */
-    uint32 id = 1;
+    string id = 1;
     uint32 road_id = 2;
     google.protobuf.Timestamp date_created = 3;
     google.protobuf.Timestamp last_modified = 4;
@@ -37,7 +37,7 @@ message Culvert {
     /* Note that field Id numbers once used, are fixed.
     * The ordering shown here lines up with the model and groups the fields better.
     * But the numbering preserves the original declaration */
-    uint32 id = 1;
+    string id = 1;
     uint32 road_id = 2;
     google.protobuf.Timestamp date_created = 3;
     google.protobuf.Timestamp last_modified = 4;
