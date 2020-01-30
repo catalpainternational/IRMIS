@@ -26,7 +26,7 @@ class ReportQuery:
             ),
             "roads_to_use": (
                 # This is a template for "roads_to_chart"
-                "SELECT DISTINCT s.road_id, s.road_code, r.geom_end_chainage"
+                "SELECT DISTINCT s.road_id as asset_id, s.road_code as asset_code, r.geom_end_chainage as geom_chainage"
                 " FROM assets_survey s, assets_road r"
                 " WHERE s.road_id = r.id"
             ),
@@ -42,9 +42,9 @@ class ReportQuery:
             ),
             # Surveys which match the given values and roads
             "su": (
-                "SELECT s.id, s.road_id, s.road_code,"
+                "SELECT s.id, s.road_id as asset_id, s.road_code as asset_code,"
                 " s.date_created, s.date_updated, s.date_surveyed,"
-                " s.chainage_start, s.chainage_end, rtc.geom_end_chainage,"
+                " s.chainage_start, s.chainage_end, rtc.geom_chainage,"
                 " CASE"
                 "  WHEN s.user_id IS NULL THEN TRIM(FROM s.source)"
                 "  WHEN TRIM(FROM u.username) != '' THEN u.username"
@@ -53,7 +53,7 @@ class ReportQuery:
                 " s.user_id, vtc.attr,"
                 " s.values - (SELECT ARRAY(SELECT attr FROM values_to_exclude)) AS values"
                 " FROM assets_survey s"
-                " JOIN roads_to_chart rtc ON s.road_id = rtc.road_id"
+                " JOIN roads_to_chart rtc ON s.road_id = rtc.asset_id"
                 " JOIN values_to_chart vtc ON s.values ? vtc.attr"
                 " LEFT OUTER JOIN usernames u ON s.user_id = u.user_id"
                 " WHERE s.chainage_start != s.chainage_end"
@@ -61,10 +61,10 @@ class ReportQuery:
             # Where these roads have a survey start or end point
             "breakpoints": (
                 "SELECT DISTINCT * FROM ("
-                "  SELECT id as survey_id, attr, road_id, road_code, chainage_start c"
+                "  SELECT id as survey_id, attr, asset_id, asset_code, chainage_start c"
                 "  FROM su"
                 " UNION"
-                "  SELECT id as survey_id, attr, road_id, road_code, chainage_end c"
+                "  SELECT id as survey_id, attr, asset_id, asset_code, chainage_end c"
                 "  FROM su"
                 " ) xxxx"
             ),
@@ -73,7 +73,7 @@ class ReportQuery:
                 "SELECT bp.survey_id, bp.attr AS break_attr, bp.c, su.*,"
                 " bp.c = su.chainage_end AS isend,"
                 " RANK() OVER ("
-                "  PARTITION BY bp.road_id, bp.road_code, bp.c, bp.attr"
+                "  PARTITION BY bp.asset_id, bp.asset_code, bp.c, bp.attr"
                 "  ORDER BY"
                 "  CASE"
                 "   WHEN bp.c = su.chainage_end THEN 1"
@@ -82,7 +82,7 @@ class ReportQuery:
                 "  date_surveyed DESC NULLS LAST"
                 " )"
                 " FROM breakpoints bp, su"
-                " WHERE bp.road_id = su.road_id"
+                " WHERE bp.asset_id = su.asset_id"
                 " AND bp.attr = su.attr"
                 " AND bp.c >= su.chainage_start"
                 " AND bp.c <= su.chainage_end"
@@ -91,7 +91,7 @@ class ReportQuery:
             # If the survey is actually the end value we NULLify the value
             # rather than using the attribute, we use this in final_results below
             "results": (
-                "SELECT survey_id, rank, road_id, road_code, c, break_attr, geom_end_chainage,"
+                "SELECT survey_id, rank, asset_id, asset_code, c, break_attr, geom_chainage,"
                 " CASE"
                 "  WHEN NOT isend THEN values -> break_attr"
                 "  ELSE NULL"
@@ -100,14 +100,14 @@ class ReportQuery:
                 " user_id, added_by, date_surveyed"
                 " FROM merge_breakpoints"
                 " WHERE rank = 1"
-                " ORDER BY road_id, road_code, c"
+                " ORDER BY asset_id, asset_code, c"
             ),
             # Filters out situations where the value does not actually change between surveys
             "with_unchanged": (
                 "SELECT *,"
                 " rank() over ("
                 "  PARTITION"
-                "  BY survey_id, road_id, road_code, break_attr, value, user_id, added_by, date_surveyed"
+                "  BY survey_id, asset_id, asset_code, break_attr, value, user_id, added_by, date_surveyed"
                 "  ORDER BY c"
                 " ) AS filtered"
                 " FROM results"
@@ -115,17 +115,17 @@ class ReportQuery:
             "with_lead_values": (
                 "SELECT"
                 " survey_id,"
-                " road_id,"
-                " road_code,"
+                " asset_id,"
+                " asset_code,"
                 " break_attr,"
                 " c as start_chainage,"
                 # Pick the previous end point
                 " lead(c) over ("
                 "  PARTITION"
-                "  BY road_id, road_code, break_attr"
+                "  BY asset_id, asset_code, break_attr"
                 "  ORDER BY c"
                 " ) AS end_chainage,"
-                " geom_end_chainage,"
+                " geom_chainage,"
                 " value,"
                 " user_id,"
                 " added_by,"
@@ -134,17 +134,17 @@ class ReportQuery:
                 " WHERE filtered = 1"
             ),
             "final_results": (
-                "SELECT road_id, road_code, break_attr AS attribute, start_chainage,"
+                "SELECT asset_id, asset_code, break_attr AS attribute, start_chainage,"
                 " CASE"
-                "  WHEN end_chainage IS NULL THEN geom_end_chainage"
+                "  WHEN end_chainage IS NULL THEN geom_chainage"
                 "  ELSE end_chainage"
                 " END AS end_chainage,"
                 " value, survey_id,"
                 " user_id, added_by, date_surveyed"
                 " FROM with_lead_values"
                 " WHERE start_chainage != end_chainage"
-                " OR (end_chainage IS NULL AND start_chainage != geom_end_chainage)"
-                " ORDER BY road_code, break_attr, start_chainage"
+                " OR (end_chainage IS NULL AND start_chainage != geom_chainage)"
+                " ORDER BY asset_code, break_attr, start_chainage"
             ),
             # Max rainfall bracket is 2000-2999 mm
             "rainfall_series": "SELECT generate_series(0, 2000, 1000) AS r_from",
@@ -209,28 +209,44 @@ class ReportQuery:
         value_filter_keys = []
         # These should be ALL of the possible values keys in surveys.values
         value_filters = [
+            # Common
+            "municipality",
+            # Maybe Common from Road
             "carriageway_width",
             "funding_source",
             "maintenance_need",
-            "municipality",
             "number_lanes",
             "pavement_class",
             "project",
             "rainfall",
-            "road_type",
+            "road_type",  # Actually road_class
             "road_status",
             "surface_condition",
             "surface_type",
             "terrain_class",
             "traffic_level",
+            # Road Specific
             "technical_class",
+            # Structure Specific
+            "height",
+            "length",
+            "material",
+            "number_cells",
+            "number_spans",
+            "protection_downstream",
+            "protection_upstream",
+            "river_name",
+            "span_length",
+            "structure_class",
+            "structure_type",
+            "width",
         ]
 
         # Ideally for these road filters we'd drill down (in time) through the surveys instead
         road_filters = [
-            "road_type",
-            "road_code",
-            "road_id",
+            "asset_id",  # will be mapped to road.*
+            "asset_code",
+            "asset_class",
             "carriageway_width",
             "funding_source",
             "maintenance_need",
@@ -239,7 +255,6 @@ class ReportQuery:
             "pavement_class",
             "project",
             "rainfall",
-            "road_type",
             "road_status",
             "surface_condition",
             "surface_type",
@@ -249,6 +264,44 @@ class ReportQuery:
         ]
         road_filter_clauses = []
         road_filter_cases = []
+
+        # Ideally for these structure filters we'd drill down (in time) through the surveys instead
+        structure_filters = [
+            "structure_id",  # will be mapped to *.id
+            "structure_code",
+            "structure_class",
+            "structure_name",
+            "road_id",  # Only used for the relationship to roads for bridge or culvert
+            "road_code",
+            # "road_type",
+            "municipality",
+            "length",
+            "width",
+            "height",
+            "construction_year",
+            "structure_type",
+            "material",
+            "protection_upstream",
+            "protection_downstream",
+            "number_cells",
+            "river_name",
+            "number_spans",
+            "span_length",
+            # Left overs from roads - don't know yet if we need them
+            "maintenance_need",
+            "number_lanes",
+            "pavement_class",
+            "project",
+            "rainfall",
+            "road_status",
+            "surface_condition",
+            "surface_type",
+            "terrain_class",
+            "traffic_level",
+            "technical_class",
+        ]
+        structure_filter_clauses = []
+        structure_filter_cases = []
 
         attribute_clauses = []
         attribute_cases = []
@@ -274,7 +327,7 @@ class ReportQuery:
                 # deal with the 'special' cases
                 if filter_key == "municipality":
                     filter_name = "administrative_area"
-                elif filter_key == "road_id":
+                elif filter_key == "asset_id" or filter_key == "road_id":
                     filter_name = "id"
                 elif filter_key == "surface_type":
                     filter_name = "surface_type_id"
