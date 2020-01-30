@@ -21,182 +21,182 @@ class ReportQuery:
         self.report_clauses = {
             "values_to_use": (
                 # This is a template for "values_to_chart" and "values_to_exclude"
-                "SELECT attr"
-                " FROM (SELECT DISTINCT skeys(values) attr FROM assets_survey) attrs"
+                "SELECT attr\n"
+                " FROM (SELECT DISTINCT skeys(values) attr FROM assets_survey) attrs\n"
             ),
             "roads_to_use": (
                 # This is a template for "roads_to_chart"
-                "SELECT DISTINCT s.road_id as asset_id, s.road_code as asset_code, r.geom_end_chainage as geom_chainage"
-                " FROM assets_survey s, assets_road r"
-                " WHERE s.road_id = r.id"
+                "SELECT DISTINCT s.road_id as asset_id, s.road_code as asset_code, r.geom_end_chainage as geom_chainage\n"
+                " FROM assets_survey s, assets_road r\n"
+                " WHERE s.road_id = r.id\n"
             ),
             "usernames": (
-                "SELECT id AS user_id,"
-                " CASE"
-                "  WHEN TRIM(FROM CONCAT(first_name, ' ', last_name)) != '' THEN TRIM(FROM CONCAT(first_name, ' ', last_name))"
-                "  WHEN TRIM(FROM first_name) != '' THEN TRIM(FROM first_name)"
-                "  WHEN TRIM(FROM username) != '' THEN TRIM(FROM username)"
-                "  ELSE ''"
-                " END AS username"
-                " FROM auth_user"
+                "SELECT id AS user_id,\n"
+                " CASE\n"
+                "  WHEN TRIM(FROM CONCAT(first_name, ' ', last_name)) != '' THEN TRIM(FROM CONCAT(first_name, ' ', last_name))\n"
+                "  WHEN TRIM(FROM first_name) != '' THEN TRIM(FROM first_name)\n"
+                "  WHEN TRIM(FROM username) != '' THEN TRIM(FROM username)\n"
+                "  ELSE ''\n"
+                " END AS username\n"
+                " FROM auth_user\n"
             ),
             # Surveys which match the given values and roads
             "su": (
-                "SELECT s.id, s.road_id as asset_id, s.road_code as asset_code,"
-                " s.date_created, s.date_updated, s.date_surveyed,"
-                " s.chainage_start, s.chainage_end, rtc.geom_chainage,"
-                " CASE"
-                "  WHEN s.user_id IS NULL THEN TRIM(FROM s.source)"
-                "  WHEN TRIM(FROM u.username) != '' THEN u.username"
-                "  ELSE TRIM(FROM s.source)"
-                " END AS added_by,"
-                " s.user_id, vtc.attr,"
-                " s.values - (SELECT ARRAY(SELECT attr FROM values_to_exclude)) AS values"
-                " FROM assets_survey s"
-                " JOIN roads_to_chart rtc ON s.road_id = rtc.asset_id"
-                " JOIN values_to_chart vtc ON s.values ? vtc.attr"
-                " LEFT OUTER JOIN usernames u ON s.user_id = u.user_id"
-                " WHERE s.chainage_start != s.chainage_end"
+                "SELECT s.id, s.road_id as asset_id, s.road_code as asset_code,\n"
+                " s.date_created, s.date_updated, s.date_surveyed,\n"
+                " s.chainage_start, s.chainage_end, rtc.geom_chainage,\n"
+                " CASE\n"
+                "  WHEN s.user_id IS NULL THEN TRIM(FROM s.source)\n"
+                "  WHEN TRIM(FROM u.username) != '' THEN u.username\n"
+                "  ELSE TRIM(FROM s.source)\n"
+                " END AS added_by,\n"
+                " s.user_id, vtc.attr,\n"
+                " s.values - (SELECT ARRAY(SELECT attr FROM values_to_exclude)) AS values\n"
+                " FROM assets_survey s\n"
+                " JOIN roads_to_chart rtc ON s.road_id = rtc.asset_id\n"
+                " JOIN values_to_chart vtc ON s.values ? vtc.attr\n"
+                " LEFT OUTER JOIN usernames u ON s.user_id = u.user_id\n"
+                " WHERE s.chainage_start != s.chainage_end\n"
             ),
             # Where these roads have a survey start or end point
             "breakpoints": (
-                "SELECT DISTINCT * FROM ("
-                "  SELECT id as survey_id, attr, asset_id, asset_code, chainage_start c"
-                "  FROM su"
-                " UNION"
-                "  SELECT id as survey_id, attr, asset_id, asset_code, chainage_end c"
-                "  FROM su"
-                " ) xxxx"
+                "SELECT DISTINCT * FROM (\n"
+                "  SELECT id as survey_id, attr, asset_id, asset_code, chainage_start c\n"
+                "  FROM su\n"
+                " UNION\n"
+                "  SELECT id as survey_id, attr, asset_id, asset_code, chainage_end c\n"
+                "  FROM su\n"
+                " ) xxxx\n"
             ),
             # merge and rank breakpoints (by date)
             "merge_breakpoints": (
-                "SELECT bp.survey_id, bp.attr AS break_attr, bp.c, su.*,"
-                " bp.c = su.chainage_end AS isend,"
-                " RANK() OVER ("
-                "  PARTITION BY bp.asset_id, bp.asset_code, bp.c, bp.attr"
-                "  ORDER BY"
-                "  CASE"
-                "   WHEN bp.c = su.chainage_end THEN 1"
-                "   ELSE 0"
-                "  END,"
-                "  date_surveyed DESC NULLS LAST"
-                " )"
-                " FROM breakpoints bp, su"
-                " WHERE bp.asset_id = su.asset_id"
-                " AND bp.attr = su.attr"
-                " AND bp.c >= su.chainage_start"
-                " AND bp.c <= su.chainage_end"
-                " AND su.chainage_start != su.chainage_end"
+                "SELECT bp.survey_id, bp.attr AS break_attr, bp.c, su.*,\n"
+                " bp.c = su.chainage_end AS isend,\n"
+                " RANK() OVER (\n"
+                "  PARTITION BY bp.asset_id, bp.asset_code, bp.c, bp.attr\n"
+                "  ORDER BY\n"
+                "  CASE\n"
+                "   WHEN bp.c = su.chainage_end THEN 1\n"
+                "   ELSE 0\n"
+                "  END,\n"
+                "  date_surveyed DESC NULLS LAST\n"
+                " )\n"
+                " FROM breakpoints bp, su\n"
+                " WHERE bp.asset_id = su.asset_id\n"
+                " AND bp.attr = su.attr\n"
+                " AND bp.c >= su.chainage_start\n"
+                " AND bp.c <= su.chainage_end\n"
+                " AND su.chainage_start != su.chainage_end\n"
             ),
             # If the survey is actually the end value we NULLify the value
             # rather than using the attribute, we use this in final_results below
             "results": (
-                "SELECT survey_id, rank, asset_id, asset_code, c, break_attr, geom_chainage,"
-                " CASE"
-                "  WHEN NOT isend THEN values -> break_attr"
-                "  ELSE NULL"
-                " END as value,"
-                " values,"
-                " user_id, added_by, date_surveyed"
-                " FROM merge_breakpoints"
-                " WHERE rank = 1"
-                " ORDER BY asset_id, asset_code, c"
+                "SELECT survey_id, rank, asset_id, asset_code, c, break_attr, geom_chainage,\n"
+                " CASE\n"
+                "  WHEN NOT isend THEN values -> break_attr\n"
+                "  ELSE NULL\n"
+                " END as value,\n"
+                " values,\n"
+                " user_id, added_by, date_surveyed\n"
+                " FROM merge_breakpoints\n"
+                " WHERE rank = 1\n"
+                " ORDER BY asset_id, asset_code, c\n"
             ),
             # Filters out situations where the value does not actually change between surveys
             "with_unchanged": (
-                "SELECT *,"
-                " rank() over ("
-                "  PARTITION"
-                "  BY survey_id, asset_id, asset_code, break_attr, value, user_id, added_by, date_surveyed"
-                "  ORDER BY c"
-                " ) AS filtered"
-                " FROM results"
+                "SELECT *,\n"
+                " rank() over (\n"
+                "  PARTITION\n"
+                "  BY survey_id, asset_id, asset_code, break_attr, value, user_id, added_by, date_surveyed\n"
+                "  ORDER BY c\n"
+                " ) AS filtered\n"
+                " FROM results\n"
             ),
             "with_lead_values": (
-                "SELECT"
-                " survey_id,"
-                " asset_id,"
-                " asset_code,"
-                " break_attr,"
-                " c as start_chainage,"
+                "SELECT\n"
+                " survey_id,\n"
+                " asset_id,\n"
+                " asset_code,\n"
+                " break_attr,\n"
+                " c as start_chainage,\n"
                 # Pick the previous end point
-                " lead(c) over ("
-                "  PARTITION"
-                "  BY asset_id, asset_code, break_attr"
-                "  ORDER BY c"
-                " ) AS end_chainage,"
-                " geom_chainage,"
-                " value,"
-                " user_id,"
-                " added_by,"
-                " date_surveyed"
-                " FROM with_unchanged"
-                " WHERE filtered = 1"
+                " lead(c) over (\n"
+                "  PARTITION\n"
+                "  BY asset_id, asset_code, break_attr\n"
+                "  ORDER BY c\n"
+                " ) AS end_chainage,\n"
+                " geom_chainage,\n"
+                " value,\n"
+                " user_id,\n"
+                " added_by,\n"
+                " date_surveyed\n"
+                " FROM with_unchanged\n"
+                " WHERE filtered = 1\n"
             ),
             "final_results": (
-                "SELECT asset_id, asset_code, break_attr AS attribute, start_chainage,"
-                " CASE"
-                "  WHEN end_chainage IS NULL THEN geom_chainage"
-                "  ELSE end_chainage"
-                " END AS end_chainage,"
-                " value, survey_id,"
-                " user_id, added_by, date_surveyed"
-                " FROM with_lead_values"
-                " WHERE start_chainage != end_chainage"
-                " OR (end_chainage IS NULL AND start_chainage != geom_chainage)"
-                " ORDER BY asset_code, break_attr, start_chainage"
+                "SELECT asset_id, asset_code, break_attr AS attribute, start_chainage,\n"
+                " CASE\n"
+                "  WHEN end_chainage IS NULL THEN geom_chainage\n"
+                "  ELSE end_chainage\n"
+                " END AS end_chainage,\n"
+                " value, survey_id,\n"
+                " user_id, added_by, date_surveyed\n"
+                " FROM with_lead_values\n"
+                " WHERE start_chainage != end_chainage\n"
+                " OR (end_chainage IS NULL AND start_chainage != geom_chainage)\n"
+                " ORDER BY asset_code, break_attr, start_chainage\n"
             ),
             # Max rainfall bracket is 2000-2999 mm
-            "rainfall_series": "SELECT generate_series(0, 2000, 1000) AS r_from",
+            "rainfall_series": "SELECT generate_series(0, 2000, 1000) AS r_from\n",
             "rainfall_range": (
-                "SELECT r_from, (r_from + 999) AS r_to, 'mm' AS units"
-                " FROM rainfall_series"
+                "SELECT r_from, (r_from + 999) AS r_to, 'mm' AS units\n"
+                " FROM rainfall_series\n"
             ),
             # Max carriageway width bracket is 99.0-99.9 m
-            "carriageway_width_series": "SELECT generate_series(0.0, 99.0, 1.0) AS r_from",
+            "carriageway_width_series": "SELECT generate_series(0.0, 99.0, 1.0) AS r_from\n",
             "carriageway_width_range": (
-                "SELECT r_from, (r_from + 0.9) AS r_to, 'm' AS units"
-                " FROM carriageway_width_series"
+                "SELECT r_from, (r_from + 0.9) AS r_to, 'm' AS units\n"
+                " FROM carriageway_width_series\n"
             ),
             # The "retrieve_" queries are templates for corresponding "get_" queries
-            "retrieve_all": "SELECT * FROM final_results",
+            "retrieve_all": "SELECT * FROM final_results\n",
             "retrieve_aggregate_select": (
-                "SELECT *"
-                " FROM ("
-                " SELECT 'rainfall' AS attribute,"
-                " CONCAT(r_from, '-', r_to, ' ', units) AS value,"
-                " ("
-                "  SELECT SUM(end_chainage - start_chainage)"
-                "  FROM final_results"
-                "  WHERE attribute = 'rainfall'"
-                "  AND CAST(value AS INTEGER) BETWEEN r_from AND r_to"
-                " ) AS total_length"
-                " FROM rainfall_range"
-                " UNION"
-                " SELECT 'carriageway_width' AS attribute,"
-                " CONCAT(r_from, '-', r_to, ' ', units) AS value,"
-                " ("
-                "  SELECT SUM(end_chainage - start_chainage)"
-                "  FROM final_results"
-                "  WHERE attribute = 'carriageway_width'"
-                "  AND CAST(value AS FLOAT) BETWEEN r_from AND r_to"
-                " ) AS total_length"
-                " FROM carriageway_width_range"
-                " UNION"
-                " SELECT attribute, value, SUM(end_chainage - start_chainage) AS total_length"
-                " FROM final_results"
-                " WHERE attribute IN ('rainfall', 'carriageway_width')"
-                " AND value IS NULL"
-                " GROUP BY attribute, value"
-                " UNION"
-                " SELECT attribute, value, SUM(end_chainage - start_chainage) AS total_length"
-                " FROM final_results"
-                " WHERE attribute NOT IN ('rainfall', 'carriageway_width')"
-                " GROUP BY attribute, value"
-                ") totals"
-                " WHERE total_length IS NOT NULL"
+                "SELECT *\n"
+                " FROM (\n"
+                " SELECT 'rainfall' AS attribute,\n"
+                " CONCAT(r_from, '-', r_to, ' ', units) AS value,\n"
+                " (\n"
+                "  SELECT SUM(end_chainage - start_chainage)\n"
+                "  FROM final_results\n"
+                "  WHERE attribute = 'rainfall'\n"
+                "  AND CAST(value AS INTEGER) BETWEEN r_from AND r_to\n"
+                " ) AS total_length\n"
+                " FROM rainfall_range\n"
+                " UNION\n"
+                " SELECT 'carriageway_width' AS attribute,\n"
+                " CONCAT(r_from, '-', r_to, ' ', units) AS value,\n"
+                " (\n"
+                "  SELECT SUM(end_chainage - start_chainage)\n"
+                "  FROM final_results\n"
+                "  WHERE attribute = 'carriageway_width'\n"
+                "  AND CAST(value AS FLOAT) BETWEEN r_from AND r_to\n"
+                " ) AS total_length\n"
+                " FROM carriageway_width_range\n"
+                " UNION\n"
+                " SELECT attribute, value, SUM(end_chainage - start_chainage) AS total_length\n"
+                " FROM final_results\n"
+                " WHERE attribute IN ('rainfall', 'carriageway_width')\n"
+                " AND value IS NULL\n"
+                " GROUP BY attribute, value\n"
+                " UNION\n"
+                " SELECT attribute, value, SUM(end_chainage - start_chainage) AS total_length\n"
+                " FROM final_results\n"
+                " WHERE attribute NOT IN ('rainfall', 'carriageway_width')\n"
+                " GROUP BY attribute, value\n"
+                ") totals\n"
+                " WHERE total_length IS NOT NULL\n"
             ),
-            "get_aggregate_ordering": " ORDER BY attribute, value",
+            "get_aggregate_ordering": " ORDER BY attribute, value\n",
         }
 
     def filter_assembly(self, get_all_surveys):
@@ -315,8 +315,8 @@ class ReportQuery:
         value_filter_keys = list(set(value_filter_keys).intersection(value_filters))
         self.report_clauses["values_to_chart"] = self.report_clauses["values_to_use"]
         self.report_clauses["values_to_exclude"] = self.report_clauses["values_to_use"]
-        self.report_clauses["values_to_chart"] += " WHERE attr=ANY(%s)"
-        self.report_clauses["values_to_exclude"] += " WHERE NOT (attr=ANY(%s))"
+        self.report_clauses["values_to_chart"] += " WHERE attr=ANY(%s)\n"
+        self.report_clauses["values_to_exclude"] += " WHERE NOT (attr=ANY(%s))\n"
         # Note the deliberate double appending of these values (because they're used twice)
         self.filter_cases.append(value_filter_keys)
         self.filter_cases.append(value_filter_keys)
@@ -331,13 +331,13 @@ class ReportQuery:
                     filter_name = "id"
                 elif filter_key == "surface_type":
                     filter_name = "surface_type_id"
-                road_clause = "CAST(r." + filter_name + " AS TEXT)=ANY(%s)"
+                road_clause = "CAST(r." + filter_name + " AS TEXT)=ANY(%s)\n"
                 road_filter_clauses.append(road_clause)
                 road_filter_cases.append(list(self.filters[filter_key]))
 
             elif filter_key == "primary_attribute":
                 filter_name = "attribute"
-                attribute_clauses.append(filter_name + "=ANY(%s)")
+                attribute_clauses.append(filter_name + "=ANY(%s)\n")
                 attribute_cases.append(list(self.filters[filter_key]))
 
         self.report_clauses["roads_to_chart"] = self.report_clauses["roads_to_use"]
@@ -365,7 +365,7 @@ class ReportQuery:
 
     def add_report_clause(self, clause_name):
         self.reportSQL += (
-            " " + clause_name + " AS (" + self.report_clauses[clause_name] + "),"
+            "\n" + clause_name + " AS (\n" + self.report_clauses[clause_name] + "),"
         )
 
     def build_query_body(self, get_all_surveys):
@@ -394,6 +394,7 @@ class ReportQuery:
     def execute_main_query(self):
         self.build_query_body(True)
         self.reportSQL += " " + self.report_clauses["get_all"] + ";"
+        print(self.reportSQL, self.filter_cases)
 
         with connection.cursor() as cursor:
             cursor.execute(self.reportSQL, self.filter_cases)
@@ -406,6 +407,7 @@ class ReportQuery:
         self.build_query_body(False)
         self.reportSQL += " " + self.report_clauses["get_aggregate_select"]
         self.reportSQL += " " + self.report_clauses["get_aggregate_ordering"] + ";"
+        print(self.reportSQL, self.filter_cases)
 
         with connection.cursor() as cursor:
             cursor.execute(self.reportSQL, self.filter_cases)
