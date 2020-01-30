@@ -117,7 +117,7 @@ function initializeDataTable() {
         structuresTableColumns.unshift({
             title: "",
             data: null,
-            render: r => `<a class="image pencil" href="#edit/structure/${r.getId()}/location_type"></a>`,
+            render: r => `<a class="image pencil" href="#edit/culvert/${r.getId()}/type"></a>`,
             orderable: false,
             className: "edit-col"
         });
