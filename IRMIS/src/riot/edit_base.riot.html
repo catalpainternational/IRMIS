@@ -25,9 +25,9 @@
                     <ul if="{ state.assetType === "bridge" || state.assetType === "culvert" }">
                         <li class="{ state.page === 'type' ? 'active' : '' }" data-page="type"
                             onclick="{ selectPage }">{ window.gettext("Type") }</li>
-                        <li class="{ state.page === 'asset_details' ? 'active' : '' }" data-page="asset_details"
+                        <li class="{ state.page === 'structure_details' ? 'active' : '' }" data-page="structure_details"
                             onclick="{ selectPage }">{ window.gettext("Asset Details") }</li>
-                        <li class="{ state.page === 'condition' ? 'active' : '' }" data-page="condition"
+                        <li if="{ state.assetType === "bridge" } class="{ state.page === 'condition' ? 'active' : '' }" data-page="condition"
                             onclick="{ selectPage }">{ window.gettext("Protection") }</li>
                         <li class="{ state.page === 'condition' ? 'active' : '' }" data-page="condition"
                             onclick="{ selectPage }">{ window.gettext("Photos") }</li>
@@ -83,6 +83,8 @@
                     parent="{parentFunctions}"></edit_history>
                 <edit_type if="{ state.page === 'type' }" road="{ state.editingRoad }"
                     assetType="{ state.assetType }"></edit_type>
+                <edit_structure_details if="{ state.page === 'structure_details' }" road="{ state.editingRoad }"
+                    assetType="{ state.assetType }"></edit_structure_details>
             </div>
             <footer>
                 <small>República Democrática de Timor-Leste / Ministério das Obras Públicas</small>
@@ -119,6 +121,7 @@
         import Edit_Maintenance from "./edit_maintenance.riot.html";
         import Edit_Environment from "./edit_environment.riot.html";
         import Edit_Type from "./edit_type.riot.html";
+        import Edit_Structure_Details from "./edit_structure_details.riot.html";
 
         import Edit_History from "./edit_history.riot.html";
 
@@ -140,7 +143,7 @@
             components: {
                 Feedback_Banner, Edit_Stop_Alert, Loading,
                 Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Environment, Edit_Project, Edit_Traffic, Edit_Condition, Edit_Maintenance,
-                Edit_History, Edit_Type,
+                Edit_History, Edit_Type, Edit_Structure_Details,
             },
             onBeforeMount(props, state) {
                 state.page = props.page;
