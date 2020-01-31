@@ -36,9 +36,9 @@ const baseDetailColumns = [
     },
 ];
 
-/** 
- * Defines the additional columns for the various segments/details 
- * attributes modals, found on the inventory page 
+/**
+ * Defines the additional columns for the various segments/details
+ * attributes modals, found on the inventory page
  * */
 export const surfaceConditionColumns = baseSegmentColumns.concat([
     {
@@ -103,15 +103,6 @@ export const terrainClassColumns = baseSegmentColumns.concat([
     },
 ]);
 
-export const trafficLevelColumns = baseSegmentColumns.concat([
-    {
-        title: window.gettext("Traffic level"),
-        data: "trafficLevel",
-        defaultContent: "",
-        orderable: false,
-    },
-]);
-
 export const pavementClassColumns = baseSegmentColumns.concat([
     {
         title: window.gettext("Pavement class"),
@@ -147,3 +138,31 @@ export const structureConditionDescriptionColumns = baseDetailColumns.concat([
         orderable: false,
     },
 ]);
+
+/** SPECIAL SNOWFAKE: Defines all of the columns needed for the TRAFFIC LEVEL inventory modal table **/
+export const trafficLevelColumns = [
+    {
+        title: window.gettext("Survey date"),
+        data: "values",
+        defaultContent: "",
+        className: "text-center",
+        render: (data) => {
+            if (data.forcastYear) { return data.forcastYear; }
+            else { return data.surveyFromDate + " - " + data.surveyToDate; }
+        },
+    },
+    {
+        title: window.gettext("Traffic type"),
+        data: "",
+        defaultContent: "HEHEHE",
+        className: "text-center",
+        render: (data) => { return data.trafficType; },
+    },
+    {
+        title: window.gettext("Total vehicles"),
+        data: "",
+        defaultContent: "9999",
+        className: "text-center",
+        render: (data) => { return data.countTotal; },
+    },
+];

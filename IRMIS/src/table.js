@@ -22,6 +22,7 @@ import {
 
 import { datatableTranslations } from "./datatableTranslations";
 import { getRoad, roads } from "./roadManager";
+import { getRoadSurveys as getAssetSurveys } from "./surveyManager";
 import { getRoadReport as getAssetReport } from "./reportManager";
 import { getStructure, structures } from "./structureManager";
 import { dispatch } from "./assets/utilities";
@@ -195,7 +196,7 @@ function initializeDataTable() {
         } else {
             structuresTable.rows.add(pendingRows).draw();
         }
-        
+
         pendingRows = [];
     }
 }
@@ -214,7 +215,7 @@ function setupTableEventHandlers() {
     // Setup column selection and column click handlers
     setupColumnEventHandlers("roads");
     setupColumnEventHandlers("structures");
-   
+
     function setupColumnEventHandlers(mainTableType = "roads") {
         const selectId = (mainTableType === "roads")
             ? "select-road-data"
@@ -223,17 +224,17 @@ function setupTableEventHandlers() {
         const columnsDropdown = (mainTableType === "roads")
             ? document.getElementById("road-columns-dropdown")
             : document.getElementById("structure-columns-dropdown");
-        
+
         const columns = columnsDropdown.querySelectorAll("[data-column]");
 
         const mainTable = (mainTableType === "roads")
             ? roadsTable
             : structuresTable;
-        
+
         const restoreColumnDefaults = (mainTableType === "roads")
             ? document.getElementsByClassName("restore-road").item(0)
             : document.getElementsByClassName("restore-structure").item(0);
-        
+
         columnSelectionHandler(selectId, columnsDropdown);
         columnClickHandler(columns, mainTable);
         restoreDefaultColumnSelectionHandler(restoreColumnDefaults, columns, mainTable);
@@ -246,13 +247,13 @@ function setupTableEventHandlers() {
                     columnsDropdown.hidden = true;
                 }
             }
-    
+
             if (columnsDropdown.hidden) {
                 document.addEventListener("click", clickOutside);
             } else {
                 document.removeEventListener("click", clickOutside);
             }
-    
+
             columnsDropdown.hidden = !columnsDropdown.hidden;
         });
 
@@ -298,10 +299,10 @@ function setupTableEventHandlers() {
         const mainTable = (mainTableType === "roads")
             ? roadsTable
             : structuresTable;
-        
+
         const clickedRowId = e.currentTarget.parentNode.id;
         const clickedRow = $(`tr#${clickedRowId}`);
-    
+
         const cellChildren = e.currentTarget.children;
         const cellChildrenLength = cellChildren.length;
         if (cellChildrenLength > 0) {
@@ -312,19 +313,19 @@ function setupTableEventHandlers() {
                 }
             }
         }
-    
+
         if (clickedRow.hasClass("selected")) {
             clickedRow.removeClass("selected");
-    
+
             mainTable.selectionProcessing = undefined;
             // reset to the previously selected filters
             applyFilter();
         } else {
             mainTable.$("tr.selected").removeClass("selected");
             clickedRow.addClass("selected");
-    
+
             mainTable.selectionProcessing = clickedRowId;
-    
+
             applyTableSelection(mainTable.selectionProcessing);
         }
     }
@@ -508,7 +509,7 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
                 filters.structure_id = assetData.id;
             }
         }
-        
+
         return filters;
     };
 
@@ -526,7 +527,6 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
             })
             .finally(() => {
                 reportTable.draw();
-
                 $(`#${reportDataTableId}_wrapper`).show();
             });
     });
