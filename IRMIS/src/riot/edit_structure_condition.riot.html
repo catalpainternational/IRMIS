@@ -1,0 +1,108 @@
+<edit_structure_condition>
+    <div class="content-wrapper">
+        <div class="d-flex justify-content-between">
+            <h5>{ window.gettext("Structure Condition") }</h5>
+            <button class="btn btn-primary" onclick="{ addEdit }" disabled="{ props.editing }">
+                { window.gettext("Add") }
+            </button>
+        </div>
+
+        <data_table table_id="{table_id}" columns="{table_columns}"
+            columnSortOrder="{table_columns_order}" candelete=true>
+        </data_table>
+    </div>
+
+    <edit_stop_alert modalId="delete-alert" title="{window.gettext('Delete')}"
+        description="{window.gettext('Are you sure you want to delete this data entry?')}"
+        proceedLabel="{window.gettext('Delete')}" proceedResult="delete" stopLabel="{window.gettext('Don\'t delete')}"
+        stopResult="keep">
+    </edit_stop_alert>
+
+    <script>
+        import Edit_Stop_Alert from "./edit_stop_alert.riot.html";
+        import Data_Table from "./data_table.riot.html";
+        import Edit_Modal from "./edit_modal.riot.html";
+
+        import $ from "jquery";
+
+        export default {
+            state: {
+                survey: {},
+                canSave: false,
+                errors: {},
+                pendingRows: [],
+                surfaceConditions: [{key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading")}],
+                editMode: false,
+            },
+            components: {
+                Edit_Stop_Alert, Edit_Modal, Data_Table
+            },
+
+            // Condition Survey
+            onMounted(props, state) {
+                state.loading = true;
+                state.road = props.road;
+
+                this.deleteListener = (data) => {
+                    const rowId = data.detail.rowId;
+                    this.showStopAlertModal("delete-alert", rowId);
+                };
+
+                document.addEventListener(`${this.table_id}.deleteRow`, this.deleteListener);
+            },
+            onUnmount(props, state) {
+                document.removeEventListener(`${this.table_id}.deleteRow`, this.deleteListener);
+            },
+            addEdit(e) {
+                // TODO:
+                // baseSurvey must be set to 'empty' for add.
+                // and the selected segment survey for edit.
+            },
+            table_id: "structure-condition-table",
+            table_columns_order: [[0, 'asc']],
+            table_columns: [
+                {
+                    title: window.gettext("Survey date"),
+                    data: "dateCreated",
+                    defaultContent: "12/12/2019",
+                    className: "text-center",
+                },
+                {
+                    title: window.gettext("Condition"),
+                    // data: "surfaceCondition",
+                    defaultContent: "Good",
+                    className: "text-center",
+                    orderable: false,
+                },
+                {
+                    title: window.gettext("Description"),
+                    defaultContent: "Lorem ipsum dolor...",
+                    className: "text-center",
+                    orderable: false,
+                },
+                {
+                    title: window.gettext("Photos"),
+                    defaultContent: "View Photo",
+                    render: r => `<a class="image" href=""></a>`,
+                    className: "text-center",
+                    orderable: false,
+                },
+                {
+                    title: window.gettext("Added by"),
+                    // data: "addedBy",
+                    defaultContent: "Jose Soares",
+                    orderable: false,
+                },
+                {
+                    // To add a 'Delete' button include the attribute candelete=true
+                    // on the Riot dataTable tag as well
+                    title: window.gettext("Delete"),
+                    name: "Option", // Do NOT translate this
+                    defaultContent: "X",
+                    className: "text-center",
+                    orderable: false,
+                },
+            ],
+        }
+    </script>
+</edit_structure_condition>
