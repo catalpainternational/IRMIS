@@ -27,7 +27,7 @@
                             onclick="{ selectPage }">{ window.gettext("Type") }</li>
                         <li class="{ state.page === 'structure_details' ? 'active' : '' }" data-page="structure_details"
                             onclick="{ selectPage }">{ window.gettext("Asset Details") }</li>
-                        <li if="{ state.assetType === "bridge" } class="{ state.page === 'condition' ? 'active' : '' }" data-page="condition"
+                        <li if="{ state.assetType === "bridge" }" class="{ state.page === 'condition' ? 'active' : '' }" data-page="condition"
                             onclick="{ selectPage }">{ window.gettext("Protection") }</li>
                         <li class="{ state.page === 'condition' ? 'active' : '' }" data-page="condition"
                             onclick="{ selectPage }">{ window.gettext("Photos") }</li>
@@ -84,7 +84,7 @@
                 <edit_type if="{ state.page === 'type' }" road="{ state.editingRoad }"
                     assetType="{ state.assetType }"></edit_type>
                 <edit_structure_details if="{ state.page === 'structure_details' }" road="{ state.editingRoad }"
-                    assetType="{ state.assetType }"></edit_structure_details>
+                    assetType="{ state.assetType }" saving="{ state.saving }" parent="{parentFunctions}"></edit_structure_details>
             </div>
             <footer>
                 <small>República Democrática de Timor-Leste / Ministério das Obras Públicas</small>
