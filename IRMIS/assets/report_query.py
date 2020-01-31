@@ -26,7 +26,10 @@ class ReportQuery:
             ),
             "roads_to_use": (
                 # This is a template for "roads_to_chart"
-                "SELECT DISTINCT s.road_id as asset_id, s.road_code as asset_code, r.geom_end_chainage as geom_chainage\n"
+                # Note that the road_id and road_code are only returned as asset_id and asset_code
+                # and that the returned 'road_id' and 'road_code' are deliberately set to NULL
+                "SELECT DISTINCT 'ROAD-' AS asset_type_prefix, s.road_id AS asset_id, s.road_code AS asset_code,\n"
+                " r.geom_end_chainage AS geom_chainage, NULL AS road_id, NULL AS road_code\n"
                 " FROM assets_survey s, assets_road r\n"
                 " WHERE s.road_id = r.id\n"
             ),
@@ -42,9 +45,10 @@ class ReportQuery:
             ),
             # Surveys which match the given values and roads
             "su": (
-                "SELECT s.id, s.road_id as asset_id, s.road_code as asset_code,\n"
+                "SELECT s.id, rtc.asset_type_prefix, s.road_id AS asset_id, s.road_code AS asset_code,\n"
                 " s.date_created, s.date_updated, s.date_surveyed,\n"
                 " s.chainage_start, s.chainage_end, rtc.geom_chainage,\n"
+                " rtc.road_id, rtc.road_code,\n"
                 " CASE\n"
                 "  WHEN s.user_id IS NULL THEN TRIM(FROM s.source)\n"
                 "  WHEN TRIM(FROM u.username) != '' THEN u.username\n"
@@ -61,10 +65,10 @@ class ReportQuery:
             # Where these roads have a survey start or end point
             "breakpoints": (
                 "SELECT DISTINCT * FROM (\n"
-                "  SELECT id as survey_id, attr, asset_id, asset_code, chainage_start c\n"
+                "  SELECT id AS survey_id, attr, asset_type_prefix, asset_id, asset_code, chainage_start c\n"
                 "  FROM su\n"
                 " UNION\n"
-                "  SELECT id as survey_id, attr, asset_id, asset_code, chainage_end c\n"
+                "  SELECT id AS survey_id, attr, asset_type_prefix, asset_id, asset_code, chainage_end c\n"
                 "  FROM su\n"
                 " ) xxxx\n"
             ),
@@ -73,7 +77,7 @@ class ReportQuery:
                 "SELECT bp.survey_id, bp.attr AS break_attr, bp.c, su.*,\n"
                 " bp.c = su.chainage_end AS isend,\n"
                 " RANK() OVER (\n"
-                "  PARTITION BY bp.asset_id, bp.asset_code, bp.c, bp.attr\n"
+                "  PARTITION BY bp.asset_type_prefix, bp.asset_id, bp.asset_code, bp.c, bp.attr\n"
                 "  ORDER BY\n"
                 "  CASE\n"
                 "   WHEN bp.c = su.chainage_end THEN 1\n"
@@ -82,7 +86,8 @@ class ReportQuery:
                 "  date_surveyed DESC NULLS LAST\n"
                 " )\n"
                 " FROM breakpoints bp, su\n"
-                " WHERE bp.asset_id = su.asset_id\n"
+                " WHERE bp.asset_type_prefix = su.asset_type_prefix\n"
+                " AND bp.asset_id = su.asset_id\n"
                 " AND bp.attr = su.attr\n"
                 " AND bp.c >= su.chainage_start\n"
                 " AND bp.c <= su.chainage_end\n"
@@ -91,23 +96,24 @@ class ReportQuery:
             # If the survey is actually the end value we NULLify the value
             # rather than using the attribute, we use this in final_results below
             "results": (
-                "SELECT survey_id, rank, asset_id, asset_code, c, break_attr, geom_chainage,\n"
+                "SELECT survey_id, rank, asset_type_prefix, asset_id, asset_code, c, break_attr, geom_chainage,\n"
                 " CASE\n"
                 "  WHEN NOT isend THEN values -> break_attr\n"
                 "  ELSE NULL\n"
-                " END as value,\n"
+                " END AS value,\n"
                 " values,\n"
-                " user_id, added_by, date_surveyed\n"
+                " user_id, added_by, date_surveyed,\n"
+                " road_id, road_code\n"
                 " FROM merge_breakpoints\n"
                 " WHERE rank = 1\n"
-                " ORDER BY asset_id, asset_code, c\n"
+                " ORDER BY asset_type_prefix, asset_id, asset_code, c\n"
             ),
             # Filters out situations where the value does not actually change between surveys
             "with_unchanged": (
                 "SELECT *,\n"
                 " rank() over (\n"
                 "  PARTITION\n"
-                "  BY survey_id, asset_id, asset_code, break_attr, value, user_id, added_by, date_surveyed\n"
+                "  BY survey_id, asset_type_prefix, asset_id, asset_code, break_attr, value, user_id, added_by, date_surveyed\n"
                 "  ORDER BY c\n"
                 " ) AS filtered\n"
                 " FROM results\n"
@@ -115,36 +121,35 @@ class ReportQuery:
             "with_lead_values": (
                 "SELECT\n"
                 " survey_id,\n"
-                " asset_id,\n"
-                " asset_code,\n"
+                " asset_type_prefix, asset_id, asset_code,\n"
                 " break_attr,\n"
-                " c as start_chainage,\n"
+                " c AS start_chainage,\n"
                 # Pick the previous end point
                 " lead(c) over (\n"
                 "  PARTITION\n"
-                "  BY asset_id, asset_code, break_attr\n"
+                "  BY asset_type_prefix, asset_id, asset_code, break_attr\n"
                 "  ORDER BY c\n"
                 " ) AS end_chainage,\n"
                 " geom_chainage,\n"
                 " value,\n"
-                " user_id,\n"
-                " added_by,\n"
-                " date_surveyed\n"
+                " user_id, added_by, date_surveyed,\n"
+                " road_id, road_code\n"
                 " FROM with_unchanged\n"
                 " WHERE filtered = 1\n"
             ),
             "final_results": (
-                "SELECT asset_id, asset_code, break_attr AS attribute, start_chainage,\n"
+                "SELECT CONCAT(asset_type_prefix, asset_id::text) AS asset_id, asset_code, break_attr AS attribute, start_chainage,\n"
                 " CASE\n"
                 "  WHEN end_chainage IS NULL THEN geom_chainage\n"
                 "  ELSE end_chainage\n"
                 " END AS end_chainage,\n"
                 " value, survey_id,\n"
-                " user_id, added_by, date_surveyed\n"
+                " user_id, added_by, date_surveyed,\n"
+                " road_id, road_code\n"
                 " FROM with_lead_values\n"
                 " WHERE start_chainage != end_chainage\n"
                 " OR (end_chainage IS NULL AND start_chainage != geom_chainage)\n"
-                " ORDER BY asset_code, break_attr, start_chainage\n"
+                " ORDER BY asset_type_prefix, asset_code, break_attr, start_chainage\n"
             ),
             # Max rainfall bracket is 2000-2999 mm
             "rainfall_series": "SELECT generate_series(0, 2000, 1000) AS r_from\n",
@@ -329,6 +334,8 @@ class ReportQuery:
                     filter_name = "administrative_area"
                 elif filter_key == "asset_id" or filter_key == "road_id":
                     filter_name = "id"
+                elif filter_key == "asset_code":
+                    filter_name = "road_code"
                 elif filter_key == "surface_type":
                     filter_name = "surface_type_id"
                 road_clause = "CAST(r." + filter_name + " AS TEXT)=ANY(%s)\n"
@@ -394,7 +401,12 @@ class ReportQuery:
     def execute_main_query(self):
         self.build_query_body(True)
         self.reportSQL += " " + self.report_clauses["get_all"] + ";"
-        print(self.reportSQL, self.filter_cases)
+        # If you need to understand the generated query then please:
+        # * uncomment the following print statement
+        # * substitute the plain text (no quotes) of each set of filter_cases
+        #   within the corresponding {} part of each of the ANY clauses
+        # then you'll be able to run the query in any tool that can handle SQL (recommend LINQPad)
+        # print(self.reportSQL.replace("ANY(%s)", "ANY('{}'::text[])"), "\n-- " + self.filter_cases)
 
         with connection.cursor() as cursor:
             cursor.execute(self.reportSQL, self.filter_cases)
@@ -407,7 +419,12 @@ class ReportQuery:
         self.build_query_body(False)
         self.reportSQL += " " + self.report_clauses["get_aggregate_select"]
         self.reportSQL += " " + self.report_clauses["get_aggregate_ordering"] + ";"
-        print(self.reportSQL, self.filter_cases)
+        # If you need to understand the generated query then please:
+        # * uncomment the following print statement
+        # * substitute the plain text (no quotes) of each set of filter_cases
+        #   within the corresponding {} part of each of the ANY clauses
+        # then you'll be able to run the query in any tool that can handle SQL (recommend LINQPad)
+        # print(self.reportSQL.replace("ANY(%s)", "ANY('{}'::text[])"), "\n-- " + self.filter_cases)
 
         with connection.cursor() as cursor:
             cursor.execute(self.reportSQL, self.filter_cases)

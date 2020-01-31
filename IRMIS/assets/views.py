@@ -1127,8 +1127,13 @@ def protobuf_reports(request):
                 report_attribute.added_by = report_survey["added_by"]
                 if report_survey["value"]:
                     report_attribute.value = report_survey["value"]
-                report_attribute.road_id = report_survey["road_id"]
-                report_attribute.road_code = report_survey["road_code"]
+                # road_id and road_code should only be present if required by a structure report
+                # i.e. they will NOT be present for a road report
+                # instead they'll be the values asset_id and asset_code
+                if report_survey["road_id"]:
+                    report_attribute.road_id = report_survey["road_id"]
+                if report_survey["road_code"]:
+                    report_attribute.road_code = report_survey["road_code"]
 
                 report_protobuf.attributes.append(report_attribute)
 
