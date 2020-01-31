@@ -874,6 +874,71 @@ def protobuf_culvert_audit(request, pk):
     )
 
 
+def clean_id_filter(id_value, prefix):
+    if id_value == None:
+        return id_value
+
+    if type(id_value) == int:
+        id_value = str(id_value)
+    if not id_value.startswith(prefix):
+        id_value = prefix + id_value
+
+    return id_value
+
+
+def id_filter_consistency(primary_id, culvert_id, bridge_id, road_id=None):
+    if primary_id != None:
+        if culvert_id != None and "CULV-" + str(asset_id) == culvert_id:
+            primary_id = culvert_id
+        if bridge_id != None and "BRDG-" + str(asset_id) == bridge_id:
+            primary_id = bridge_id
+        if road_id != None and "ROAD-" + str(asset_id) == road_id:
+            primary_id = road_id
+
+    return primary_id
+
+
+def filter_consistency(asset, structure, culvert, bridge, road):
+    if structure == None and (bridge != None or culvert != None):
+        if bridge != None:
+            structure = bridge
+        else:
+            structure = culvert
+    if asset == None and (structure != None or road != None):
+        if structure != None:
+            asset = structure
+        else:
+            asset = road
+
+    return asset, structure
+
+
+def filters_consistency(assets, structures, culverts, bridges, roads):
+    if len(structures) == 0 and (len(bridges) > 0 or len(culverts) > 0):
+        if len(bridges) > 0:
+            structures = bridges
+        else:
+            structures = culverts
+    if len(assets) == 0 and (len(structures) > 0 or len(roads) > 0):
+        if len(structures) > 0:
+            assets = structures
+        else:
+            assets = roads
+
+    return assets, structures
+
+
+def filter_priority(final_filters, id, code, classes, id_name, code_name, classes_name):
+    """ Certain filters are mutually exclusive (for reporting) """
+    """ _id -> _code -> _classes """
+    if id:
+        final_filters[id_name] = [id]
+    elif code:
+        final_filters[code_name] = [code]
+    elif len(classes) > 0:
+        final_filters[classes_name] = classes
+
+
 @login_required
 def protobuf_reports(request):
     """ returns a protobuf object with a report determined by the filter conditions supplied """
@@ -885,17 +950,56 @@ def protobuf_reports(request):
 
     # get/initialise the Filters
     primary_attributes = request.GET.getlist("primaryattribute", [])
-    road_id = request.GET.get("road_id", None)
+
+    # Ensure a minimum set of filters have been provided
+    if len(primary_attributes) == 0:
+        raise ValidationError(
+            _("'primaryattribute' must contain at least one reportable attribute")
+        )
+
+    # handle all of the id, code and class (road_type) permutations
+    # asset_* will be set to something, if bridge_*, culvert_*, road_* is set
+    # structure_* will be set if either bridge_* or culvert_* is set
+    culvert_id = clean_id_filter(request.GET.get("culvert_id", None), "CULV-")
+    bridge_id = clean_id_filter(request.GET.get("bridge_id", None), "BRDG-")
+    road_id = clean_id_filter(request.GET.get("road_id", None), "ROAD-")
+    asset_id = id_filter_consistency(
+        request.GET.get("asset_id", None), culvert_id, bridge_id, road_id
+    )
+    structure_id = id_filter_consistency(
+        request.GET.get("structure_id", None), culvert_id, bridge_id
+    )
+    asset_id, structure_id = filter_consistency(
+        asset_id, structure_id, culvert_id, bridge_id, road_id
+    )
+
+    culvert_code = request.GET.get("culvert_code", None)
+    bridge_code = request.GET.get("bridge_code", None)
     road_code = request.GET.get("road_code", None)
-    chainage_start = None
-    chainage_end = None
+    asset_code = request.GET.get("asset_code", None)
+    structure_code = request.GET.get("structure_code", None)
+    asset_code, structure_code = filter_consistency(
+        asset_code, structure_code, culvert_code, bridge_code, road_code
+    )
+
+    culvert_classes = request.GET.getlist("culvert_class", [])
+    bridge_classes = request.GET.get("bridge_class", [])
     road_types = request.GET.getlist("road_type", [])  # road_type=X
+    asset_classes = request.GET.getlist("asset_class", [])
+    structure_classes = request.GET.getlist("structure_class", [])
+    asset_classes, structure_classes = filter_consistency(
+        asset_classes, structure_classes, culvert_classes, bridge_classes, road_types
+    )
+
+    # handle the other [array] filters
     surface_types = request.GET.getlist("surface_type", [])  # surface_type=X
     pavement_classes = request.GET.getlist("pavement_class", [])  # pavement_class=X
     municipalities = request.GET.getlist("municipality", [])  # municipality=X
     surface_conditions = request.GET.getlist(
         "surface_condition", []
     )  # surface_condition=X
+
+    # handle the (maximum) report date
     report_date = request.GET.get("reportdate", None)  # reportdate=X
     if (
         report_date == "true"
@@ -904,12 +1008,20 @@ def protobuf_reports(request):
     ):
         report_date = None
 
+    # handle chainage filters
+    chainage_start = None
+    chainage_end = None
+    chainage = None
     if road_id or road_code:
-        # chainage is only valid if we've specified a road
+        # chainage range is only valid if we've specified a road
         chainage_start = request.GET.get("chainagestart", None)
         chainage_end = request.GET.get("chainageend", None)
-
+    if structure_id or structure_code:
+        # chainage is only valid if we've specified a bridge or culvert
+        chainage = request.GET.get("chainage", None)
     # If chainage has been supplied, ensure it is clean
+    if chainage != None:
+        chainage = float(chainage)
     if chainage_start != None:
         chainage_start = float(chainage_start)
     if chainage_end != None:
@@ -923,12 +1035,6 @@ def protobuf_reports(request):
         chainage_start = chainage_end
         chainage_end = temp_chainage
 
-    # Ensure a minimum set of filters have been provided
-    if len(primary_attributes) == 0:
-        raise ValidationError(
-            _("'primaryattribute' must contain at least one reportable attribute")
-        )
-
     report_protobuf = report_pb2.Report()
 
     final_filters = defaultdict(list)
@@ -936,16 +1042,43 @@ def protobuf_reports(request):
 
     final_filters["primary_attribute"] = primary_attributes
 
-    # Certain filters are mutually exclusive (for reporting)
-    # road_id -> road_code -> road_type
-    if road_id:
-        final_filters["road_id"] = [road_id]
-    elif road_code:
-        final_filters["road_code"] = [road_code]
-    elif len(road_types) > 0:
-        final_filters["road_type"] = road_types
+    # Set the final_filters for all of the various id, code and class values
+    # Of the specific asset types only road_* may be included,
+    # and that's only if structure_* is specified
+    filter_priority(
+        final_filters,
+        asset_id,
+        asset_code,
+        asset_classes,
+        "asset_id",
+        "asset_code",
+        "asset_class",
+    )
+    filter_priority(
+        final_filters,
+        structure_id,
+        structure_code,
+        structure_classes,
+        "structure_id",
+        "structure_code",
+        "structure_class",
+    )
+    if (
+        final_filters["structure_id"] != None
+        or final_filters["structure_code"] != None
+        or final_filters["structure_class"] != None
+    ):
+        filter_priority(
+            final_filters,
+            road_id,
+            road_code,
+            road_types,
+            "road_id",
+            "road_code",
+            "road_type",
+        )
 
-    # Road level attribute
+    # Asset level attribute
     if len(municipalities) > 0:
         final_filters["municipality"] = municipalities
 
@@ -962,23 +1095,25 @@ def protobuf_reports(request):
     if (road_id or road_code) and chainage_start and chainage_end:
         final_filters["chainage_start"] = chainage_start
         final_filters["chainage_end"] = chainage_end
+    if (structure_id or structure_code or road_id or road_code) and chainage:
+        final_filters["chainage"] = chainage
 
     # Initialise the Report
-    road_report = ReportQuery(final_filters)
-    final_lengths = road_report.compile_summary_stats(
-        road_report.execute_aggregate_query()
+    asset_report = ReportQuery(final_filters)
+    final_lengths = asset_report.compile_summary_stats(
+        asset_report.execute_aggregate_query()
     )
 
     report_protobuf.filter = json.dumps(final_filters)
     report_protobuf.lengths = json.dumps(final_lengths)
 
-    if road_id or road_code:
-        report_surveys = road_report.execute_main_query()
+    if asset_id or asset_code:
+        report_surveys = asset_report.execute_main_query()
         if len(report_surveys):
             for report_survey in report_surveys:
                 report_attribute = report_pb2.Attribute()
-                report_attribute.road_id = report_survey["road_id"]
-                report_attribute.road_code = report_survey["road_code"]
+                report_attribute.asset_id = report_survey["asset_id"]
+                report_attribute.asset_code = report_survey["asset_code"]
                 report_attribute.primary_attribute = report_survey["attribute"]
                 report_attribute.chainage_start = report_survey["start_chainage"]
                 report_attribute.chainage_end = report_survey["end_chainage"]
@@ -992,6 +1127,14 @@ def protobuf_reports(request):
                 report_attribute.added_by = report_survey["added_by"]
                 if report_survey["value"]:
                     report_attribute.value = report_survey["value"]
+                # road_id and road_code should only be present if required by a structure report
+                # i.e. they will NOT be present for a road report
+                # instead they'll be the values asset_id and asset_code
+                if report_survey["road_id"]:
+                    report_attribute.road_id = report_survey["road_id"]
+                if report_survey["road_code"]:
+                    report_attribute.road_code = report_survey["road_code"]
+
                 report_protobuf.attributes.append(report_attribute)
 
     return HttpResponse(
