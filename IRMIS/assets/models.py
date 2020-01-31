@@ -610,8 +610,13 @@ class BridgeQuerySet(models.QuerySet):
 
         for bridge in self.values(*fields.values()):
             bridge_protobuf = bridges_protobuf.bridges.add()
+
             for protobuf_key, query_key in fields.items():
-                if bridge[query_key] and query_key not in [
+                if query_key == "id":
+                    setattr(
+                        bridge_protobuf, protobuf_key, "BRDG-" + str(bridge[query_key])
+                    )
+                elif bridge[query_key] and query_key not in [
                     "date_created",
                     "last_modified",
                 ]:
@@ -848,7 +853,13 @@ class CulvertQuerySet(models.QuerySet):
         for culvert in self.values(*fields.values()):
             culvert_protobuf = culverts_protobuf.culverts.add()
             for protobuf_key, query_key in fields.items():
-                if culvert[query_key] and query_key not in [
+                if query_key == "id":
+                    setattr(
+                        culvert_protobuf,
+                        protobuf_key,
+                        "CULV-" + str(culvert[query_key]),
+                    )
+                elif culvert[query_key] and query_key not in [
                     "date_created",
                     "last_modified",
                 ]:
@@ -1025,6 +1036,9 @@ class Culvert(models.Model):
         null=True,
         help_text=_("Choose the downstream protection type"),
     )
+
+    def __str__(self,):
+        return "%s(%s)" % (self.structure_name, self.pk)
 
 
 def timestamp_from_datetime(dt):

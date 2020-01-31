@@ -5,8 +5,8 @@ import * as jspb from "google-protobuf";
 import * as google_protobuf_timestamp_pb from "google-protobuf/google/protobuf/timestamp_pb";
 
 export class Bridge extends jspb.Message {
-  getId(): number;
-  setId(value: number): void;
+  getId(): string;
+  setId(value: string): void;
 
   getRoadId(): number;
   setRoadId(value: number): void;
@@ -81,7 +81,7 @@ export class Bridge extends jspb.Message {
 
 export namespace Bridge {
   export type AsObject = {
-    id: number,
+    id: string,
     roadId: number,
     dateCreated?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     lastModified?: google_protobuf_timestamp_pb.Timestamp.AsObject,
@@ -127,8 +127,8 @@ export namespace Bridges {
 }
 
 export class Culvert extends jspb.Message {
-  getId(): number;
-  setId(value: number): void;
+  getId(): string;
+  setId(value: string): void;
 
   getRoadId(): number;
   setRoadId(value: number): void;
@@ -200,7 +200,7 @@ export class Culvert extends jspb.Message {
 
 export namespace Culvert {
   export type AsObject = {
-    id: number,
+    id: string,
     roadId: number,
     dateCreated?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     lastModified?: google_protobuf_timestamp_pb.Timestamp.AsObject,
