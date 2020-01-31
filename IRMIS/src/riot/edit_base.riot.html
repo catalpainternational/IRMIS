@@ -29,7 +29,7 @@
                             onclick="{ selectPage }">{ window.gettext("Asset Details") }</li>
                         <li if="{ state.assetType === "bridge" }" class="{ state.page === 'protection' ? 'active' : '' }" data-page="protection"
                             onclick="{ selectPage }">{ window.gettext("Protection") }</li>
-                        <li class="{ state.page === 'condition' ? 'active' : '' }" data-page="condition"
+                        <li class="{ state.page === 'photo' ? 'active' : '' }" data-page="photo"
                             onclick="{ selectPage }">{ window.gettext("Photos") }</li>
                         <li class="{ state.page === 'condition' ? 'active' : '' }" data-page="condition"
                             onclick="{ selectPage }">{ window.gettext("Condition") }</li>
@@ -87,6 +87,8 @@
                     assetType="{ state.assetType }" saving="{ state.saving }" parent="{parentFunctions}"></edit_structure_details>
                 <edit_protection if="{ state.page === 'protection' }" road="{ state.editingRoad }"
                     saving="{ state.saving }" parent="{parentFunctions}"></edit_protection>
+                <edit_photo if="{ state.page === 'photo' }" road="{ state.editingRoad }"
+                    saving="{ state.saving }" parent="{parentFunctions}"></edit_photo>
             </div>
             <footer>
                 <small>República Democrática de Timor-Leste / Ministério das Obras Públicas</small>
@@ -125,6 +127,7 @@
         import Edit_Type from "./edit_type.riot.html";
         import Edit_Structure_Details from "./edit_structure_details.riot.html";
         import Edit_Protection from "./edit_protection.riot.html";
+        import Edit_Photo from "./edit_photo.riot.html";
 
         import Edit_History from "./edit_history.riot.html";
 
@@ -146,7 +149,7 @@
             components: {
                 Feedback_Banner, Edit_Stop_Alert, Loading,
                 Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Environment, Edit_Project, Edit_Traffic, Edit_Condition, Edit_Maintenance,
-                Edit_History, Edit_Type, Edit_Structure_Details, Edit_Protection,
+                Edit_History, Edit_Type, Edit_Structure_Details, Edit_Protection, Edit_Photo
             },
             onBeforeMount(props, state) {
                 state.page = props.page;
