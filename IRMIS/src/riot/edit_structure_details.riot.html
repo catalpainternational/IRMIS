@@ -30,11 +30,9 @@
                     </ul>
                 </div>
             </div>
-        </section>
 
-        <!-- Bridge-specific field -->
-        <div if="{ props.assetType === "bridge" }">
-            <section>
+            <!-- Bridge-specific field -->
+            <div if="{ props.assetType === "bridge" }">
                 <div class="form-group">
                     <label>{ window.gettext("River Name") }</label>
                     <input
@@ -48,10 +46,8 @@
                         </ul>
                     </div>
                 </div>
-            </section>
-        </div>
+            </div>
 
-        <section>
             <div class="form-group">
                 <label>{ window.gettext("Construction Year") }</label>
                 <input
@@ -93,11 +89,9 @@
                     </ul>
                 </div>
             </div>
-        </section>
 
-        <!-- Culvert-specific fields -->
-        <div if="{ props.assetType === "culvert" }">
-            <section>
+            <!-- Culvert-specific fields -->
+            <div if="{ props.assetType === "culvert" }">
                 <div class="form-group">
                     <label>{ window.gettext("Height (meters)") }</label>
                     <input
@@ -125,12 +119,10 @@
                         </ul>
                     </div>
                 </div>
-            </section>
-        </div>
+            </div>
 
-        <!-- Bridge-specific field -->
-        <div if="{ props.assetType === "bridge" }">
-            <section>
+            <!-- Bridge-specific field -->
+            <div if="{ props.assetType === "bridge" }">
                 <div class="form-group">
                     <label>{ window.gettext("Number of spans") }</label>
                     <input
@@ -144,8 +136,8 @@
                         </ul>
                     </div>
                 </div>
-            </section>
-        </div>
+            </div>
+        </section>
 
         <div class="button-wrapper d-flex justify-content-end">
             <button class="btn btn-primary" onclick="{ save }" disabled="{ props.saving }">{ window.gettext("Save and continue") }</button>
