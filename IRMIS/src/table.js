@@ -10,14 +10,14 @@ import {
     numberLanesColumns,
     pavementClassColumns,
     rainfallColumns,
+    structureConditionColumns,
+    structureConditionDescriptionColumns,
+    structurePhotosColumns,
     surfaceConditionColumns,
     surfaceTypeColumns,
     technicalClassColumns,
     terrainClassColumns,
-
-    conditionDescriptionColumns,
-    inventoryPhotosColumns,
-    structureConditionColumns,
+    trafficLevelColumns,
 } from "./segmentsInventoryTableDefinition";
 
 import { datatableTranslations } from "./datatableTranslations";
@@ -85,21 +85,27 @@ const attributeModalMapping = {
         reportTable: null,
         title: gettext("Pavement Class segments"),
     },
+    traffic_level: {
+        columns: trafficLevelColumns,
+        reportDataTableId: "inventory-traffic-level-table",
+        reportTable: null,
+        title: gettext("Traffic level segments"),
+    },
     structure_condition: {
         columns: structureConditionColumns,
         reportDataTableId: "inventory-structure-condition-table",
         reportTable: null,
         title: gettext("Structure Condition details"),
     },
-    condition_description: {
-        columns: conditionDescriptionColumns,
-        reportDataTableId: "inventory-condition-description-table",
+    structure_condition_description: {
+        columns: structureConditionDescriptionColumns,
+        reportDataTableId: "inventory-structure-condition-description-table",
         reportTable: null,
-        title: gettext("Condition Description details"),
+        title: gettext("Structure Condition Description details"),
     },
-    inventory_photos: {
-        columns: inventoryPhotosColumns,
-        reportDataTableId: "inventory-inventory-photos-table",
+    structure_photos: {
+        columns: structurePhotosColumns,
+        reportDataTableId: "inventory-structure-photos-table",
         reportTable: null,
         title: gettext("Inventory Photos details"),
     },

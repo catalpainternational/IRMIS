@@ -250,8 +250,9 @@ export const estradaTableColumns = [
     },
     {
         title: EstradaRoad.getFieldName("traffic_level"),
-        data: "trafficLevel",
+        data: null,
         defaultContent: "",
+        render: r => buttonSegmentsTemplate("traffic_level", r),
         visible: false,
         className: "text-center",
     },
@@ -429,7 +430,7 @@ export const structuresTableColumns = [
     },
     {
         title: "Structure Condition",
-        defaultContent: "x",
+        defaultContent: "",
         className: "text-center",
         render: r => buttonSegmentsTemplate("structure_condition", r),
         data: null,
@@ -437,17 +438,17 @@ export const structuresTableColumns = [
     },
     {
         title: "Condition Description",
-        defaultContent: "x",
+        defaultContent: "",
         className: "text-center",
-        render: r => buttonSegmentsTemplate("condition", r),
+        render: r => buttonSegmentsTemplate("condition_description", r),
         data: null,
         visible: false,
     },
     {
         title: "Inventory Photos",
-        defaultContent: "x",
+        defaultContent: "",
         className: "text-center",
-        render: r => buttonSegmentsTemplate("inventory_photos", r),
+        render: r => buttonSegmentsTemplate("structure_photos", r),
         data: null
     },
 ];
