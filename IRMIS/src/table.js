@@ -91,7 +91,7 @@ const attributeModalMapping = {
         columns: trafficLevelColumns,
         reportDataTableId: "inventory-traffic-level-table",
         reportTable: null,
-        title: gettext("Traffic level segments"),
+        title: gettext("Traffic data"),
     },
     structure_condition: {
         columns: structureConditionColumns,

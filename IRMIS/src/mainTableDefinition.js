@@ -289,7 +289,7 @@ export const estradaTableColumns = [
         className: "text-center",
     },
     {
-        title: EstradaRoad.getFieldName("traffic_level"),
+        title: window.gettext("Traffic data"),
         data: null,
         defaultContent: "",
         render: r => buttonSegmentsTemplate("traffic_level", r),
