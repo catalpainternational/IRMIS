@@ -1,5 +1,5 @@
 import { slugToPropertyGetter } from "./filter";
-import { getRoadAuditData, getRoadMetadata, getRoadsMetadata, getRoadsMetadataChunks, putRoadMetadata } from "./assets/assets_api";
+import { getRoadAuditData, getRoadMetadata, getRoadsMetadata, getRoadsMetadataChunks, putRoadMetadata } from "./assets/assetsAPI";
 import { dispatch } from "./assets/utilities";
 
 export const roads = {};
@@ -19,7 +19,7 @@ getRoadsMetadataChunks()
     });
 
 // when a filter is applied filter the roads
-document.addEventListener("estrada.filter.apply", (data) => {
+document.addEventListener("estrada.roadTable.filter.apply", (data) => {
     const filterState = data.detail.filterState;
     filterRoads(filterState);
 });
@@ -47,7 +47,7 @@ export function saveRoad(sourceRoad) {
     return Promise.resolve(putRoadMetadata(sourceRoad))
         .then((road) => {
             roads[road.getId()] = road;
-            dispatch("estrada.table.roadMetaDataUpdated", { detail: { road } });
+            dispatch("estrada.roadTable.roadMetaDataUpdated", { detail: { road } });
             return road;
         });
 }
@@ -68,7 +68,7 @@ function filterRoads(filterState) {
             if (!values.length) {
                 return true;
             }
-            
+
             // or some values of one state must match
             return values.some(value => {
                 let propertyGetter = slugToPropertyGetter[slug];
@@ -83,5 +83,5 @@ function filterRoads(filterState) {
         return idMap;
     }, {});
 
-    dispatch("estrada.filter.applied", { detail: { idMap } });
+    dispatch("estrada.roadTable.filter.applied", { detail: { idMap } });
 }

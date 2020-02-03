@@ -1,49 +1,34 @@
 import { EstradaBridge, EstradaCulvert } from "./assets/models/structures";
 import { EstradaRoad } from "./assets/models/road";
-import { EstradaStructure } from "./assets/models/structure";
 import { assetTypeName } from "./side_menu";
 
-/** Define the general events that the main table will respond to
+/** Define the general events that the main tables will respond to
  *
- * Note that the passed in values `pendingRows` and `idWhiteListMap`
+ * Note that the passed in values `pendingRoads` / `pendingStructures` and `idWhiteListMap`
  * are carefully updated (as opposed to simply reassigned).
  * This ensures that their 'update' is visible to the 'outside'.
  */
-export const estradaTableEventListeners = {
-    /** when the structureManager has new structures, add them to the table */
-    "estrada.structureManager.structureMetaDataAdded": (data, table, pendingRows) => {
-        const structureList = data.detail.structureList;
-
-        // add the structures to a pending array ( in case the table is not initialised early enough )
-        // Note we can't use array.concat here because concat returns a new array
-        // and we need to retain the existing pendingRows array
-        structureList.forEach((structure) => pendingRows.push(structure));
-        if (table) {
-            table.rows.add(pendingRows).draw();
-            // truncate the pendingRows (superfast)
-            pendingRows.length = 0;
-        }
-    },
+export const estradaRoadTableEventListeners = {
     /** when the roadManager has new roads, add them to the table */
-    "estrada.roadManager.roadMetaDataAdded": (data, table, pendingRows) => {
+    "estrada.roadManager.roadMetaDataAdded": (data, table, pendingRoads) => {
         const roadList = data.detail.roadList;
 
         // add the roads to a pending array ( in case the table is not initialised early enough )
         // Note we can't use array.concat here because concat returns a new array
-        // and we need to retain the existing pendingRows array
-        roadList.forEach((road) => pendingRows.push(road));
+        // and we need to retain the existing pendingRoads array
+        roadList.forEach((road) => pendingRoads.push(road));
         if (table) {
-            table.rows.add(pendingRows).draw();
-            // truncate the pendingRows (superfast)
-            pendingRows.length = 0;
+            table.rows.add(pendingRoads).draw();
+            // truncate the pendingRoads (superfast)
+            pendingRoads.length = 0;
         }
     },
-    "estrada.table.roadMetaDataUpdated": (data, table) => {
+    "estrada.roadTable.roadMetaDataUpdated": (data, table) => {
         const road = data.detail.road;
         table.row(`#${road.id}`).data(road).draw();
     },
     /** when a filter is applied, update the filter id whitelist */
-    "estrada.filter.applied": (data, table, pendingRows, idWhitelistMap) => {
+    "estrada.roadTable.filter.applied": (data, table, pendingRows, idWhitelistMap) => {
         Object.keys(idWhitelistMap).forEach((key) => { idWhitelistMap[key] = undefined; });
 
         const idMap = data.detail.idMap;
@@ -52,7 +37,7 @@ export const estradaTableEventListeners = {
         table.draw();
     },
     /** when the view changes adjust the table rows */
-    "estrada.sideMenu.viewChanged": (data, table) => {
+    "estrada.roadTable.sideMenu.viewChanged": (data, table) => {
         const viewName = data.detail ? data.detail.viewName : null;
         if (viewName && viewName.indexOf('table') !== -1) {
             const tableRows = (viewName === 'table') ? 20 : 10;
@@ -60,11 +45,66 @@ export const estradaTableEventListeners = {
         }
     },
     /** select a row in the table by id */
-    "estrada.table.rowSelected": (data, table) => {
+    "estrada.roadTable.table.rowSelected": (data, table) => {
         const rowId = data.detail ? data.detail.rowId : null;
         if (rowId) {
             const featureType = data.detail ? data.detail.featureType : "";
-            const assetType = ["bridge", "culvert"].includes(featureType) ? "structures" : "roads";
+            const assetType = "roads";
+
+            table.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                if (assetType !== assetTypeName || this.id() !== rowId) {
+                    this.node().classList.remove("selected");
+                } else {
+                    this.node().classList.add("selected");
+                    table.row(this.index()).show().draw(false);
+                }
+            });
+        }
+    }
+};
+export const estradaStructureTableEventListeners = {
+    /** when the structureManager has new structures, add them to the table */
+    "estrada.structureManager.structureMetaDataAdded": (data, table, pendingStructures) => {
+        // structures is a keyed object
+        const structures = data.detail.structures;
+
+        // add the structures to a pending array ( in case the table is not initialised early enough )
+        // Note we can't use array.concat here because concat returns a new array
+        // and we need to retain the existing pendingStructures array
+        Object.keys(structures).forEach((key) => pendingStructures.push(structures[key]));
+        if (table) {
+            table.rows.add(pendingStructures).draw();
+            // truncate the pendingStructures (superfast)
+            pendingStructures.length = 0;
+        }
+    },
+    "estrada.structureTable.roadMetaDataUpdated": (data, table) => {
+        const road = data.detail.road;
+        table.row(`#${road.id}`).data(road).draw();
+    },
+    /** when a filter is applied, update the filter id whitelist */
+    "estrada.structureTable.filter.applied": (data, table, pendingRows, idWhitelistMap) => {
+        Object.keys(idWhitelistMap).forEach((key) => { idWhitelistMap[key] = undefined; });
+
+        const idMap = data.detail.idMap;
+        Object.keys(idMap).forEach((key) => { idWhitelistMap[key] = idMap[key]; });
+
+        table.draw();
+    },
+    /** when the view changes adjust the table rows */
+    "estrada.structureTable.sideMenu.viewChanged": (data, table) => {
+        const viewName = data.detail ? data.detail.viewName : null;
+        if (viewName && viewName.indexOf('table') !== -1) {
+            const tableRows = (viewName === 'table') ? 20 : 10;
+            table.page.len(tableRows).draw('page');
+        }
+    },
+    /** select a row in the table by id */
+    "estrada.structureTable.table.rowSelected": (data, table) => {
+        const rowId = data.detail ? data.detail.rowId : null;
+        if (rowId) {
+            const featureType = data.detail ? data.detail.featureType : "";
+            const assetType = "structures";
 
             table.rows().every(function (rowIdx, tableLoop, rowLoop) {
                 if (assetType !== assetTypeName || this.id() !== rowId) {

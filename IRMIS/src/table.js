@@ -4,7 +4,7 @@ import $ from "jquery";
 import { exportCsv } from "./exportCsv";
 import { applyFilter } from "./filter";
 import { assetTypeName } from "./side_menu";
-import { estradaTableColumns, estradaTableEventListeners, structuresTableColumns } from "./mainTableDefinition";
+import { estradaTableColumns, estradaRoadTableEventListeners, estradaStructureTableEventListeners, structuresTableColumns } from "./mainTableDefinition";
 import {
     carriagewayWidthColumns,
     numberLanesColumns,
@@ -29,7 +29,8 @@ import { dispatch } from "./assets/utilities";
 let roadsTable = null;
 let structuresTable = null;
 
-let pendingRows = [];
+let pendingRoads = [];
+let pendingStructures = [];
 
 window.addEventListener("load", () => {
     // Initialize both roads and structures tables
@@ -138,10 +139,10 @@ function initializeDataTable() {
             items: "row",
         },
         ajax: function (data, callback, settings) {
-            if (pendingRows.length) {
+            if (pendingRoads.length) {
                 // add any rows the road manager has delivered before initialization
-                callback(pendingRows);
-                pendingRows = [];
+                callback(pendingRoads);
+                pendingRoads = [];
             }
         }
     });
@@ -160,6 +161,14 @@ function initializeDataTable() {
             style: "os",
             items: "row",
         },
+        ajax: function (data, callback, settings) {
+            if (pendingStructures.length) {
+                // add any rows the structure manager has delivered before initialization
+                callback(pendingStructures);
+                pendingStructures = [];
+            }
+        }
+
     });
 
     setupTableEventHandlers();
@@ -182,23 +191,32 @@ function initializeDataTable() {
         attrMapping.reportTable = setUpModalTable(attrMapping.reportDataTableId, attrMapping.columns);
     });
 
-    if (pendingRows.length) {
-        // add any rows the road/structure manager has delivered before initialization
+    if (pendingRoads.length) {
+        // add any rows the road manager has delivered before initialization
         if (assetTypeName === "roads") {
-            roadsTable.rows.add(pendingRows).draw();
-        } else {
-            structuresTable.rows.add(pendingRows).draw();
-        }
+            roadsTable.rows.add(pendingRoads).draw();
         
-        pendingRows = [];
+            pendingRoads = [];
+        }
+    }
+
+    if (pendingStructures.length) {
+        // add any rows the structure manager has delivered before initialization
+        if (assetTypeName !== "roads") {
+            structuresTable.rows.add(pendingStructures).draw();
+        
+            pendingStructures = [];
+        }
     }
 }
 
 function setupTableEventHandlers() {
     // Event listeners for the roadsTable and structuresTable, that are NOT attached to specific elements
-    Object.keys(estradaTableEventListeners).forEach((eventKey) => {
-        document.addEventListener(eventKey, (event) => estradaTableEventListeners[eventKey](event, roadsTable, pendingRows, idWhitelistMap));
-        document.addEventListener(eventKey, (event) => estradaTableEventListeners[eventKey](event, structuresTable, pendingRows, idWhitelistMap));
+    Object.keys(estradaRoadTableEventListeners).forEach((eventKey) => {
+        document.addEventListener(eventKey, (event) => estradaRoadTableEventListeners[eventKey](event, roadsTable, pendingRoads, idWhitelistMap));
+    });
+    Object.keys(estradaStructureTableEventListeners).forEach((eventKey) => {
+        document.addEventListener(eventKey, (event) => estradaStructureTableEventListeners[eventKey](event, structuresTable, pendingStructures, idWhitelistMap));
     });
 
     // Export All - to CSV

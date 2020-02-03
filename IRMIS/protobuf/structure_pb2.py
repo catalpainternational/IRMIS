@@ -24,9 +24,66 @@ DESCRIPTOR = _descriptor.FileDescriptor(
     syntax="proto3",
     serialized_options=None,
     serialized_pb=_b(
-        '\n\x0fstructure.proto\x12\x06\x61ssets\x1a\x1fgoogle/protobuf/timestamp.proto"\xf4\x03\n\x06\x42ridge\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0f\n\x07road_id\x18\x02 \x01(\r\x12\x30\n\x0c\x64\x61te_created\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\rlast_modified\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x16\n\x0estructure_code\x18\x05 \x01(\t\x12\x16\n\x0estructure_name\x18\x06 \x01(\t\x12\x17\n\x0fstructure_class\x18\x07 \x01(\t\x12\x1b\n\x13\x61\x64ministrative_area\x18\x08 \x01(\t\x12\x11\n\troad_code\x18\t \x01(\t\x12\x19\n\x11\x63onstruction_year\x18\n \x01(\x05\x12\x0e\n\x06length\x18\x0b \x01(\x02\x12\r\n\x05width\x18\x0c \x01(\x02\x12\x10\n\x08\x63hainage\x18\r \x01(\x02\x12\x16\n\x0estructure_type\x18\x0e \x01(\t\x12\x12\n\nriver_name\x18\x0f \x01(\t\x12\x14\n\x0cnumber_spans\x18\x10 \x01(\x05\x12\x13\n\x0bspan_length\x18\x11 \x01(\x02\x12\x10\n\x08material\x18\x12 \x01(\t\x12\x1b\n\x13protection_upstream\x18\x13 \x01(\t\x12\x1d\n\x15protection_downstream\x18\x14 \x01(\t"*\n\x07\x42ridges\x12\x1f\n\x07\x62ridges\x18\x01 \x03(\x0b\x32\x0e.assets.Bridge"\xdc\x03\n\x07\x43ulvert\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0f\n\x07road_id\x18\x02 \x01(\r\x12\x30\n\x0c\x64\x61te_created\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\rlast_modified\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x16\n\x0estructure_code\x18\x05 \x01(\t\x12\x16\n\x0estructure_name\x18\x06 \x01(\t\x12\x17\n\x0fstructure_class\x18\x07 \x01(\t\x12\x1b\n\x13\x61\x64ministrative_area\x18\x08 \x01(\t\x12\x11\n\troad_code\x18\t \x01(\t\x12\x19\n\x11\x63onstruction_year\x18\n \x01(\x05\x12\x0e\n\x06length\x18\x0b \x01(\x02\x12\r\n\x05width\x18\x0c \x01(\x02\x12\x10\n\x08\x63hainage\x18\r \x01(\x02\x12\x16\n\x0estructure_type\x18\x0e \x01(\t\x12\x0e\n\x06height\x18\x0f \x01(\x02\x12\x14\n\x0cnumber_cells\x18\x10 \x01(\x05\x12\x10\n\x08material\x18\x11 \x01(\t\x12\x1b\n\x13protection_upstream\x18\x12 \x01(\t\x12\x1d\n\x15protection_downstream\x18\x13 \x01(\t"-\n\x08\x43ulverts\x12!\n\x08\x63ulverts\x18\x01 \x03(\x0b\x32\x0f.assets.Culvertb\x06proto3'
+        '\n\x0fstructure.proto\x12\x06\x61ssets\x1a\x1fgoogle/protobuf/timestamp.proto"P\n\nStructures\x12\x1f\n\x07\x62ridges\x18\x01 \x03(\x0b\x32\x0e.assets.Bridge\x12!\n\x08\x63ulverts\x18\x02 \x03(\x0b\x32\x0f.assets.Culvert"\xf4\x03\n\x06\x42ridge\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0f\n\x07road_id\x18\x02 \x01(\r\x12\x30\n\x0c\x64\x61te_created\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\rlast_modified\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x16\n\x0estructure_code\x18\x05 \x01(\t\x12\x16\n\x0estructure_name\x18\x06 \x01(\t\x12\x17\n\x0fstructure_class\x18\x07 \x01(\t\x12\x1b\n\x13\x61\x64ministrative_area\x18\x08 \x01(\t\x12\x11\n\troad_code\x18\t \x01(\t\x12\x19\n\x11\x63onstruction_year\x18\n \x01(\x05\x12\x0e\n\x06length\x18\x0b \x01(\x02\x12\r\n\x05width\x18\x0c \x01(\x02\x12\x10\n\x08\x63hainage\x18\r \x01(\x02\x12\x16\n\x0estructure_type\x18\x0e \x01(\t\x12\x10\n\x08material\x18\x0f \x01(\t\x12\x1b\n\x13protection_upstream\x18\x1a \x01(\t\x12\x1d\n\x15protection_downstream\x18\x1b \x01(\t\x12\x12\n\nriver_name\x18\x1c \x01(\t\x12\x14\n\x0cnumber_spans\x18\x1d \x01(\x05\x12\x13\n\x0bspan_length\x18\x1e \x01(\x02"\xdc\x03\n\x07\x43ulvert\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0f\n\x07road_id\x18\x02 \x01(\r\x12\x30\n\x0c\x64\x61te_created\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\rlast_modified\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x16\n\x0estructure_code\x18\x05 \x01(\t\x12\x16\n\x0estructure_name\x18\x06 \x01(\t\x12\x17\n\x0fstructure_class\x18\x07 \x01(\t\x12\x1b\n\x13\x61\x64ministrative_area\x18\x08 \x01(\t\x12\x11\n\troad_code\x18\t \x01(\t\x12\x19\n\x11\x63onstruction_year\x18\n \x01(\x05\x12\x0e\n\x06length\x18\x0b \x01(\x02\x12\r\n\x05width\x18\x0c \x01(\x02\x12\x10\n\x08\x63hainage\x18\r \x01(\x02\x12\x16\n\x0estructure_type\x18\x0e \x01(\t\x12\x10\n\x08material\x18\x0f \x01(\t\x12\x1b\n\x13protection_upstream\x18\x1a \x01(\t\x12\x1d\n\x15protection_downstream\x18\x1b \x01(\t\x12\x0e\n\x06height\x18\x1c \x01(\x02\x12\x14\n\x0cnumber_cells\x18\x1d \x01(\x05\x62\x06proto3'
     ),
     dependencies=[google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,],
+)
+
+
+_STRUCTURES = _descriptor.Descriptor(
+    name="Structures",
+    full_name="assets.Structures",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="bridges",
+            full_name="assets.Structures.bridges",
+            index=0,
+            number=1,
+            type=11,
+            cpp_type=10,
+            label=3,
+            has_default_value=False,
+            default_value=[],
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+        ),
+        _descriptor.FieldDescriptor(
+            name="culverts",
+            full_name="assets.Structures.culverts",
+            index=1,
+            number=2,
+            type=11,
+            cpp_type=10,
+            label=3,
+            has_default_value=False,
+            default_value=[],
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+        ),
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=60,
+    serialized_end=140,
 )
 
 
@@ -290,8 +347,8 @@ _BRIDGE = _descriptor.Descriptor(
             file=DESCRIPTOR,
         ),
         _descriptor.FieldDescriptor(
-            name="river_name",
-            full_name="assets.Bridge.river_name",
+            name="material",
+            full_name="assets.Bridge.material",
             index=14,
             number=15,
             type=9,
@@ -308,64 +365,10 @@ _BRIDGE = _descriptor.Descriptor(
             file=DESCRIPTOR,
         ),
         _descriptor.FieldDescriptor(
-            name="number_spans",
-            full_name="assets.Bridge.number_spans",
-            index=15,
-            number=16,
-            type=5,
-            cpp_type=1,
-            label=1,
-            has_default_value=False,
-            default_value=0,
-            message_type=None,
-            enum_type=None,
-            containing_type=None,
-            is_extension=False,
-            extension_scope=None,
-            serialized_options=None,
-            file=DESCRIPTOR,
-        ),
-        _descriptor.FieldDescriptor(
-            name="span_length",
-            full_name="assets.Bridge.span_length",
-            index=16,
-            number=17,
-            type=2,
-            cpp_type=6,
-            label=1,
-            has_default_value=False,
-            default_value=float(0),
-            message_type=None,
-            enum_type=None,
-            containing_type=None,
-            is_extension=False,
-            extension_scope=None,
-            serialized_options=None,
-            file=DESCRIPTOR,
-        ),
-        _descriptor.FieldDescriptor(
-            name="material",
-            full_name="assets.Bridge.material",
-            index=17,
-            number=18,
-            type=9,
-            cpp_type=9,
-            label=1,
-            has_default_value=False,
-            default_value=_b("").decode("utf-8"),
-            message_type=None,
-            enum_type=None,
-            containing_type=None,
-            is_extension=False,
-            extension_scope=None,
-            serialized_options=None,
-            file=DESCRIPTOR,
-        ),
-        _descriptor.FieldDescriptor(
             name="protection_upstream",
             full_name="assets.Bridge.protection_upstream",
-            index=18,
-            number=19,
+            index=15,
+            number=26,
             type=9,
             cpp_type=9,
             label=1,
@@ -382,8 +385,8 @@ _BRIDGE = _descriptor.Descriptor(
         _descriptor.FieldDescriptor(
             name="protection_downstream",
             full_name="assets.Bridge.protection_downstream",
-            index=19,
-            number=20,
+            index=16,
+            number=27,
             type=9,
             cpp_type=9,
             label=1,
@@ -397,37 +400,52 @@ _BRIDGE = _descriptor.Descriptor(
             serialized_options=None,
             file=DESCRIPTOR,
         ),
-    ],
-    extensions=[],
-    nested_types=[],
-    enum_types=[],
-    serialized_options=None,
-    is_extendable=False,
-    syntax="proto3",
-    extension_ranges=[],
-    oneofs=[],
-    serialized_start=61,
-    serialized_end=561,
-)
-
-
-_BRIDGES = _descriptor.Descriptor(
-    name="Bridges",
-    full_name="assets.Bridges",
-    filename=None,
-    file=DESCRIPTOR,
-    containing_type=None,
-    fields=[
         _descriptor.FieldDescriptor(
-            name="bridges",
-            full_name="assets.Bridges.bridges",
-            index=0,
-            number=1,
-            type=11,
-            cpp_type=10,
-            label=3,
+            name="river_name",
+            full_name="assets.Bridge.river_name",
+            index=17,
+            number=28,
+            type=9,
+            cpp_type=9,
+            label=1,
             has_default_value=False,
-            default_value=[],
+            default_value=_b("").decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+        ),
+        _descriptor.FieldDescriptor(
+            name="number_spans",
+            full_name="assets.Bridge.number_spans",
+            index=18,
+            number=29,
+            type=5,
+            cpp_type=1,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+        ),
+        _descriptor.FieldDescriptor(
+            name="span_length",
+            full_name="assets.Bridge.span_length",
+            index=19,
+            number=30,
+            type=2,
+            cpp_type=6,
+            label=1,
+            has_default_value=False,
+            default_value=float(0),
             message_type=None,
             enum_type=None,
             containing_type=None,
@@ -445,8 +463,8 @@ _BRIDGES = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=563,
-    serialized_end=605,
+    serialized_start=143,
+    serialized_end=643,
 )
 
 
@@ -710,46 +728,10 @@ _CULVERT = _descriptor.Descriptor(
             file=DESCRIPTOR,
         ),
         _descriptor.FieldDescriptor(
-            name="height",
-            full_name="assets.Culvert.height",
-            index=14,
-            number=15,
-            type=2,
-            cpp_type=6,
-            label=1,
-            has_default_value=False,
-            default_value=float(0),
-            message_type=None,
-            enum_type=None,
-            containing_type=None,
-            is_extension=False,
-            extension_scope=None,
-            serialized_options=None,
-            file=DESCRIPTOR,
-        ),
-        _descriptor.FieldDescriptor(
-            name="number_cells",
-            full_name="assets.Culvert.number_cells",
-            index=15,
-            number=16,
-            type=5,
-            cpp_type=1,
-            label=1,
-            has_default_value=False,
-            default_value=0,
-            message_type=None,
-            enum_type=None,
-            containing_type=None,
-            is_extension=False,
-            extension_scope=None,
-            serialized_options=None,
-            file=DESCRIPTOR,
-        ),
-        _descriptor.FieldDescriptor(
             name="material",
             full_name="assets.Culvert.material",
-            index=16,
-            number=17,
+            index=14,
+            number=15,
             type=9,
             cpp_type=9,
             label=1,
@@ -766,8 +748,8 @@ _CULVERT = _descriptor.Descriptor(
         _descriptor.FieldDescriptor(
             name="protection_upstream",
             full_name="assets.Culvert.protection_upstream",
-            index=17,
-            number=18,
+            index=15,
+            number=26,
             type=9,
             cpp_type=9,
             label=1,
@@ -784,8 +766,8 @@ _CULVERT = _descriptor.Descriptor(
         _descriptor.FieldDescriptor(
             name="protection_downstream",
             full_name="assets.Culvert.protection_downstream",
-            index=18,
-            number=19,
+            index=16,
+            number=27,
             type=9,
             cpp_type=9,
             label=1,
@@ -799,37 +781,34 @@ _CULVERT = _descriptor.Descriptor(
             serialized_options=None,
             file=DESCRIPTOR,
         ),
-    ],
-    extensions=[],
-    nested_types=[],
-    enum_types=[],
-    serialized_options=None,
-    is_extendable=False,
-    syntax="proto3",
-    extension_ranges=[],
-    oneofs=[],
-    serialized_start=608,
-    serialized_end=1084,
-)
-
-
-_CULVERTS = _descriptor.Descriptor(
-    name="Culverts",
-    full_name="assets.Culverts",
-    filename=None,
-    file=DESCRIPTOR,
-    containing_type=None,
-    fields=[
         _descriptor.FieldDescriptor(
-            name="culverts",
-            full_name="assets.Culverts.culverts",
-            index=0,
-            number=1,
-            type=11,
-            cpp_type=10,
-            label=3,
+            name="height",
+            full_name="assets.Culvert.height",
+            index=17,
+            number=28,
+            type=2,
+            cpp_type=6,
+            label=1,
             has_default_value=False,
-            default_value=[],
+            default_value=float(0),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+        ),
+        _descriptor.FieldDescriptor(
+            name="number_cells",
+            full_name="assets.Culvert.number_cells",
+            index=18,
+            number=29,
+            type=5,
+            cpp_type=1,
+            label=1,
+            has_default_value=False,
+            default_value=0,
             message_type=None,
             enum_type=None,
             containing_type=None,
@@ -847,29 +826,39 @@ _CULVERTS = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=1086,
-    serialized_end=1131,
+    serialized_start=646,
+    serialized_end=1122,
 )
 
+_STRUCTURES.fields_by_name["bridges"].message_type = _BRIDGE
+_STRUCTURES.fields_by_name["culverts"].message_type = _CULVERT
 _BRIDGE.fields_by_name[
     "date_created"
 ].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
 _BRIDGE.fields_by_name[
     "last_modified"
 ].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
-_BRIDGES.fields_by_name["bridges"].message_type = _BRIDGE
 _CULVERT.fields_by_name[
     "date_created"
 ].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
 _CULVERT.fields_by_name[
     "last_modified"
 ].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
-_CULVERTS.fields_by_name["culverts"].message_type = _CULVERT
+DESCRIPTOR.message_types_by_name["Structures"] = _STRUCTURES
 DESCRIPTOR.message_types_by_name["Bridge"] = _BRIDGE
-DESCRIPTOR.message_types_by_name["Bridges"] = _BRIDGES
 DESCRIPTOR.message_types_by_name["Culvert"] = _CULVERT
-DESCRIPTOR.message_types_by_name["Culverts"] = _CULVERTS
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
+
+Structures = _reflection.GeneratedProtocolMessageType(
+    "Structures",
+    (_message.Message,),
+    {
+        "DESCRIPTOR": _STRUCTURES,
+        "__module__": "structure_pb2"
+        # @@protoc_insertion_point(class_scope:assets.Structures)
+    },
+)
+_sym_db.RegisterMessage(Structures)
 
 Bridge = _reflection.GeneratedProtocolMessageType(
     "Bridge",
@@ -882,17 +871,6 @@ Bridge = _reflection.GeneratedProtocolMessageType(
 )
 _sym_db.RegisterMessage(Bridge)
 
-Bridges = _reflection.GeneratedProtocolMessageType(
-    "Bridges",
-    (_message.Message,),
-    {
-        "DESCRIPTOR": _BRIDGES,
-        "__module__": "structure_pb2"
-        # @@protoc_insertion_point(class_scope:assets.Bridges)
-    },
-)
-_sym_db.RegisterMessage(Bridges)
-
 Culvert = _reflection.GeneratedProtocolMessageType(
     "Culvert",
     (_message.Message,),
@@ -903,17 +881,6 @@ Culvert = _reflection.GeneratedProtocolMessageType(
     },
 )
 _sym_db.RegisterMessage(Culvert)
-
-Culverts = _reflection.GeneratedProtocolMessageType(
-    "Culverts",
-    (_message.Message,),
-    {
-        "DESCRIPTOR": _CULVERTS,
-        "__module__": "structure_pb2"
-        # @@protoc_insertion_point(class_scope:assets.Culverts)
-    },
-)
-_sym_db.RegisterMessage(Culverts)
 
 
 # @@protoc_insertion_point(module_scope)

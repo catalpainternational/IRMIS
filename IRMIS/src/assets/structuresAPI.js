@@ -1,6 +1,6 @@
-import { Bridge, Bridges, Culvert, Culverts } from "../../protobuf/structure_pb";
-import { EstradaBridge, EstradaCulvert } from "./models/structures";
-import { makeEstradaAudit } from "./assets_api";
+import { Bridge, Culvert, Structures } from "../../protobuf/structure_pb";
+import { EstradaBridge, EstradaCulvert, EstradaStructures } from "./models/structures";
+import { makeEstradaAudit } from "./assetsAPI";
 import { ConfigAPI } from "./configAPI";
 import { makeEstradaObject } from "./protoBufUtilities";
 
@@ -8,21 +8,16 @@ import { makeEstradaObject } from "./protoBufUtilities";
  *
  * Retrieves the structures metadata from the server
  *
- * @returns a map {id: bridge_object}
+ * @returns a map {id: structure_object}
  */
-export function getStructuresMetadata(structureType) {
-    const structureTypeUrlFragment = (structureType === "bridge") ? "protobuf_bridges" : "protobuf_culverts";
+export function getStructuresMetadata() {
+    const structureTypeUrlFragment = "protobuf_structures";
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${structureTypeUrlFragment}`;
-
     return fetch(metadataUrl, ConfigAPI.requestInit())
         .then((metadataResponse) => (metadataResponse.arrayBuffer()))
         .then((protobufBytes) => {
             const uintArray = new Uint8Array(protobufBytes);
-            if (structureType === "bridge") {
-                return Bridges.deserializeBinary(uintArray).getBridgesList().map(makeEstradaBridge);
-            } else {
-                return Culverts.deserializeBinary(uintArray).getCulvertsList().map(makeEstradaCulvert);
-            }
+            return makeEstradaStructures(Structures.deserializeBinary(uintArray));
         });
 }
 
@@ -32,15 +27,15 @@ export function getStructuresMetadata(structureType) {
  *
  * @returns a structure_object
  */
-export function getStructureMetadata(structureId, structureType) {
-    const structureTypeUrlFragment = (structureType === "bridge") ? "protobuf_bridge" : "protobuf_culvert";
+export function getStructureMetadata(structureId) {
+    const structureTypeUrlFragment = "protobuf_structure";
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${structureTypeUrlFragment}/${structureId}`;
 
     return fetch(metadataUrl, ConfigAPI.requestInit())
         .then((metadataResponse) => (metadataResponse.arrayBuffer()))
         .then((protobufBytes) => {
             const uintArray = new Uint8Array(protobufBytes);
-            if (structureType === "bridge") {
+            if (structureId.includes("BRDG")) {
                 return makeEstradaBridge(Bridge.deserializeBinary(uintArray));
             } else {
                 return makeEstradaCulvert(Culvert.deserializeBinary(uintArray));
@@ -48,14 +43,14 @@ export function getStructureMetadata(structureId, structureType) {
         });
 }
 
-/** getStructuresMetadata
+/** getRoadStructuresMetadata
  *
  * Retrieves the structures metadata from the server
  *
  * @returns a map {id: bridge_object}
  */
-export function getRoadStructuresMetadata(roadId, structureType) {
-    const structureTypeUrlFragment = (structureType === "bridge") ? "protobuf_road_bridges" : "protobuf_road_culverts";
+export function getRoadStructuresMetadata(roadId) {
+    const structureTypeUrlFragment = "protobuf_road_structures";
     roadId = roadId || "";
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${structureTypeUrlFragment}/${roadId}`;
 
@@ -63,11 +58,7 @@ export function getRoadStructuresMetadata(roadId, structureType) {
         .then((metadataResponse) => (metadataResponse.arrayBuffer()))
         .then((protobufBytes) => {
             const uintArray = new Uint8Array(protobufBytes);
-            if (structureType === "bridge") {
-                return Bridges.deserializeBinary(uintArray).getBridgesList().map(makeEstradaBridge);
-            } else {
-                return Culverts.deserializeBinary(uintArray).getCulvertsList().map(makeEstradaCulvert);
-            }
+            return makeEstradaStructures(Structures.deserializeBinary(uintArray));
         });
 }
 
@@ -78,7 +69,7 @@ export function getRoadStructuresMetadata(roadId, structureType) {
  * @returns 200 (success) or 400 (failure)
  */
 export function postStructureData(structure, structureType) {
-    const structureTypeUrlFragment = (structureType === "bridge") ? "bridge_create" : "culvert_create";
+    const structureTypeUrlFragment = "structure_create";
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${structureTypeUrlFragment}`;
 
     const postAssetInit = ConfigAPI.requestInit("POST");
@@ -91,7 +82,7 @@ export function postStructureData(structure, structureType) {
         })
         .then(protobufBytes => {
             const uintArray = new Uint8Array(protobufBytes);
-            if (structureType === "bridge") {
+            if (structureType === "BRDG") {
                 return makeEstradaBridge(Bridge.deserializeBinary(uintArray));
             } else {
                 return makeEstradaCulvert(Culvert.deserializeBinary(uintArray));
@@ -106,7 +97,7 @@ export function postStructureData(structure, structureType) {
  * @returns 200 (success) or 400 (failure)
  */
 export function putStructureData(structure, structureType) {
-    const structureTypeUrlFragment = (structureType === "bridge") ? "bridge_update" : "culvert_update";
+    const structureTypeUrlFragment = "structure_update";
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${structureTypeUrlFragment}`;
 
     const postAssetInit = ConfigAPI.requestInit("PUT");
@@ -119,7 +110,7 @@ export function putStructureData(structure, structureType) {
         })
         .then(protobufBytes => {
             const uintArray = new Uint8Array(protobufBytes);
-            if (structureType === "bridge") {
+            if (structureType === "BRDG") {
                 return makeEstradaBridge(Bridge.deserializeBinary(uintArray));
             } else {
                 return makeEstradaCulvert(Culvert.deserializeBinary(uintArray));
@@ -133,8 +124,8 @@ export function putStructureData(structure, structureType) {
  *
  * @returns a list of version objects
  */
-export function getStructureAuditData(structureId, structureType) {
-    const structureTypeUrlFragment = (structureType === "bridge") ? "protobuf_bridge_audit" : "protobuf_culvert_audit";
+export function getStructureAuditData(structureId) {
+    const structureTypeUrlFragment = "protobuf_structure_audit";
     const auditDataUrl = `${ConfigAPI.requestAssetUrl}/${structureTypeUrlFragment}/${structureId}`;
 
     return fetch(auditDataUrl, ConfigAPI.requestInit())
@@ -143,6 +134,10 @@ export function getStructureAuditData(structureId, structureType) {
             const uintArray = new Uint8Array(protobufBytes);
             return Versions.deserializeBinary(uintArray).getVersionsList().map(makeEstradaAudit);
         });
+}
+
+function makeEstradaStructures(pbstructures) {
+    return makeEstradaObject(EstradaStructures, pbstructures);
 }
 
 function makeEstradaBridge(pbbridge) {

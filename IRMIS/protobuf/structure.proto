@@ -3,10 +3,14 @@ import "google/protobuf/timestamp.proto";
 
 package assets;
 
+message Structures {
+    repeated Bridge bridges = 1;
+    repeated Culvert culverts = 2;
+}
+
 message Bridge {
-    /* Note that field Id numbers once used, are fixed.
-    * The ordering shown here lines up with the model and groups the fields better.
-    * But the numbering preserves the original declaration */
+    /* Note that field Id numbers once used, are fixed. */
+    // SHARED FIELDS BETWEEN ALL STRUCTURES (#1 - 25 are reserved for this)
     string id = 1;
     uint32 road_id = 2;
     google.protobuf.Timestamp date_created = 3;
@@ -21,22 +25,18 @@ message Bridge {
     float width = 12;
     float chainage = 13;
     string structure_type = 14;
-    string river_name = 15;
-    int32 number_spans = 16;
-    float span_length = 17;
-    string material = 18;
-    string protection_upstream = 19;
-    string protection_downstream = 20;
-}
-
-message Bridges {
-    repeated Bridge bridges = 1;
+    string material = 15;
+    // NON-SHARED FIELDS (#26 and onwards)
+    string protection_upstream = 16;
+    string protection_downstream = 17;
+    string river_name = 28;
+    int32 number_spans = 29;
+    float span_length = 30;
 }
 
 message Culvert {
-    /* Note that field Id numbers once used, are fixed.
-    * The ordering shown here lines up with the model and groups the fields better.
-    * But the numbering preserves the original declaration */
+    /* Note that field Id numbers once used, are fixed. */
+    // SHARED FIELDS BETWEEN ALL STRUCTURES (#1 - 25 are reserved for this)
     string id = 1;
     uint32 road_id = 2;
     google.protobuf.Timestamp date_created = 3;
@@ -51,13 +51,10 @@ message Culvert {
     float width = 12;
     float chainage = 13;
     string structure_type = 14;
-    float height = 15;
-    int32 number_cells = 16;
-    string material = 17;
-    string protection_upstream = 18;
-    string protection_downstream = 19;
-}
-
-message Culverts {
-    repeated Culvert culverts = 1;
+    string material = 15;
+    // NON-SHARED FIELDS (#26 and onwards)
+    string protection_upstream = 16;
+    string protection_downstream = 17;
+    float height = 28;
+    int32 number_cells = 29;
 }
