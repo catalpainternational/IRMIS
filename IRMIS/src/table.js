@@ -515,19 +515,35 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
 
     getAsset(assetId).then((assetData) => {
         const filters = getAssetFilters(assetData)
-        getAssetReport(filters)
-            .then((reportData) => {
-                reportTable.clear(); // remove all rows in the table - again
-                if (reportData && reportDataTableId) {
-                    const attributes = reportData.attributes(attr, null, false, true);
-                    if (attributes.attributeEntries.length) {
-                        reportTable.rows.add(attributes.attributeEntries);
+        if (attr != "traffic_level") {
+            getAssetReport(filters)
+                .then((reportData) => {
+                    reportTable.clear(); // remove all rows in the table - again
+                    if (reportData && reportDataTableId) {
+                        const attributes = reportData.attributes(attr, null, false, true);
+                        if (attributes.attributeEntries.length) {
+                            reportTable.rows.add(attributes.attributeEntries);
+                        }
                     }
-                }
-            })
-            .finally(() => {
-                reportTable.draw();
-                $(`#${reportDataTableId}_wrapper`).show();
-            });
+                })
+                .finally(() => {
+                    reportTable.draw();
+                    $(`#${reportDataTableId}_wrapper`).show();
+                });
+        } else {
+            getAssetSurveys(assetId, "trafficType")
+                .then((surveyData) => {
+                    reportTable.clear(); // remove all rows in the table - again
+                    if (surveyData && reportDataTableId) {
+                        if (surveyData.length) {
+                            reportTable.rows.add(surveyData);
+                        }
+                    }
+                })
+                .finally(() => {
+                    reportTable.draw();
+                    $(`#${reportDataTableId}_wrapper`).show();
+                });
+        }
     });
 });

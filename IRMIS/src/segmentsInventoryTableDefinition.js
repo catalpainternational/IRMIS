@@ -154,14 +154,14 @@ export const trafficLevelColumns = [
     {
         title: window.gettext("Traffic type"),
         data: "",
-        defaultContent: "HEHEHE",
+        defaultContent: "",
         className: "text-center",
         render: (data) => { return data.trafficType; },
     },
     {
         title: window.gettext("Total vehicles"),
         data: "",
-        defaultContent: "9999",
+        defaultContent: "",
         className: "text-center",
         render: (data) => { return data.countTotal; },
     },
