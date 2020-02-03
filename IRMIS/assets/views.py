@@ -120,7 +120,7 @@ def road_update(request):
     regular_fields = [
         "road_name",
         "road_code",
-        "asset_class", # was road_type, specially handled below
+        "asset_class",  # was road_type, specially handled below
         "link_code",
         "link_start_name",
         "link_end_name",

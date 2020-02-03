@@ -27,7 +27,11 @@ def filter_pane():
 
 
 def field_name_standardisation(field_name):
-    return "asset_class" if field_name == "road_type" or field_name == "structure_class" else field_name
+    return (
+        "asset_class"
+        if field_name == "road_type" or field_name == "structure_class"
+        else field_name
+    )
 
 
 def get_schema_data():
@@ -62,15 +66,27 @@ def get_schema_data():
     asset_schema = {}
     for x in road_fields:
         field_name = field_name_standardisation(x.name)
-        asset_schema[field_name] = {"display": x.verbose_name, "slug": field_name, "help_text": x.help_text}
+        asset_schema[field_name] = {
+            "display": x.verbose_name,
+            "slug": field_name,
+            "help_text": x.help_text,
+        }
     for x in bridge_fields:
         field_name = field_name_standardisation(x.name)
         if not field_name in asset_schema:
-            asset_schema[field_name] = {"display": x.verbose_name, "slug": field_name, "help_text": x.help_text}
+            asset_schema[field_name] = {
+                "display": x.verbose_name,
+                "slug": field_name,
+                "help_text": x.help_text,
+            }
     for x in culvert_fields:
         field_name = field_name_standardisation(x.name)
         if not field_name in asset_schema:
-            asset_schema[field_name] = {"display": x.verbose_name, "slug": field_name, "help_text": x.help_text}
+            asset_schema[field_name] = {
+                "display": x.verbose_name,
+                "slug": field_name,
+                "help_text": x.help_text,
+            }
 
     # Schemas that are common to both asset types
     # note that many road_code values will not have any matching Bridge or Culvert asset

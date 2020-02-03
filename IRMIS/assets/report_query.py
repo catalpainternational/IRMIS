@@ -143,7 +143,7 @@ class ReportQuery:
                 "  WHEN break_attr = 'road_type' THEN 'asset_class'\n"
                 "  WHEN break_attr = 'structure_class' THEN 'asset_class'\n"
                 "  ELSE break_attr\n"
-                " END AS attribute,\n"              
+                " END AS attribute,\n"
                 " start_chainage,\n"
                 " CASE\n"
                 "  WHEN end_chainage IS NULL THEN geom_chainage\n"
@@ -321,7 +321,7 @@ class ReportQuery:
         self.report_clauses["values_to_exclude"] = self.report_clauses["values_to_use"]
         self.report_clauses["values_to_chart"] += " WHERE attr=ANY(%s)\n"
         self.report_clauses["values_to_exclude"] += " WHERE NOT (attr=ANY(%s))\n"
-        
+
         # handle the filtering of the 'values' attributes
         for filter_key in self.filters.keys():
             if filter_key == "primary_attribute":
@@ -329,7 +329,7 @@ class ReportQuery:
             else:
                 value_filter_keys.append(filter_key)
         value_filter_keys = list(set(value_filter_keys).intersection(value_filters))
-        
+
         # do any field name mapping to make things work
         has_asset_class = "asset_class" in value_filter_keys
         has_road_type = "road_type" in value_filter_keys
