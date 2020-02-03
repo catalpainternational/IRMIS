@@ -1,4 +1,5 @@
 import { dispatch } from "./assets/utilities";
+import { assetTypeName } from "./side_menu";
 
 /* Hold the state for the global filter
  * expose methods that change or query the global filter
@@ -57,7 +58,10 @@ export function clearAllFilters() {
 
 /** actually make the filter happen */
 export function applyFilter() {
-    dispatch("estrada.filter.apply", { detail: { filterState } });
+    const eventName = (assetTypeName === "structures")
+        ? "estrada.roadTable.filter.apply"
+        : "estrada.structureTable.filter.apply";
+    dispatch(eventName, { detail: { filterState } });
 }
 
 /** Get the common filter details from the event */

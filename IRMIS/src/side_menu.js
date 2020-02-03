@@ -49,7 +49,11 @@ function collapse_side_menu() {
     mapTable.style.flex = "0 0 100%";
     sideMenu.hidden = true;
     collapsedSideMenu.classList.add("d-flex");
-    dispatch("estrada.sideMenu.viewChanged", undefined);
+
+    const eventName = (assetTypeName === "structures")
+        ? "estrada.roadTable.sideMenu.viewChanged"
+        : "estrada.structureTable.sideMenu.viewChanged";
+    dispatch(eventName, undefined);
 }
 
 function expand_side_menu() {
@@ -61,7 +65,11 @@ function expand_side_menu() {
     mapTable.style.removeProperty('flex');
     sideMenu.hidden = false;
     collapsedSideMenu.classList.remove("d-flex");
-    dispatch("estrada.sideMenu.viewChanged", undefined);
+
+    const eventName = (assetTypeName === "structures")
+        ? "estrada.roadTable.sideMenu.viewChanged"
+        : "estrada.structureTable.sideMenu.viewChanged";
+    dispatch(eventName, undefined);
 }
 
 function change_view(e) {
@@ -79,7 +87,10 @@ function change_view(e) {
     }
     e.currentTarget.classList.add("active");
 
-    dispatch("estrada.sideMenu.viewChanged", { "detail": { viewName } });
+    const eventName = (assetTypeName === "structures")
+        ? "estrada.roadTable.sideMenu.viewChanged"
+        : "estrada.structureTable.sideMenu.viewChanged";
+    dispatch(eventName, { "detail": { viewName } });
 }
 
 /** assetTypeName is the current selection of the Asset Type filter switch */
@@ -120,7 +131,10 @@ function change_assetType(e) {
         structureTable.removeAttribute("hidden");
     }
 
-    dispatch("estrada.sideMenu.assetTypeChanged", { "detail": { assetTypeName } });
+    const eventName = (assetTypeName === "structures")
+        ? "estrada.roadTable.sideMenu.assetTypeChanged"
+        : "estrada.structureTable.sideMenu.assetTypeChanged";
+    dispatch(eventName, { "detail": { assetTypeName } });
 }
 
 function toggleFilterSelect2(e) {

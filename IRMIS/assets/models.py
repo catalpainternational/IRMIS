@@ -14,8 +14,7 @@ from reversion.models import Version
 from protobuf.roads_pb2 import Roads as ProtoRoads
 from protobuf.roads_pb2 import Projection
 from protobuf.survey_pb2 import Surveys as ProtoSurveys
-from protobuf.structure_pb2 import Bridges as ProtoBridges
-from protobuf.structure_pb2 import Culverts as ProtoCulverts
+from protobuf.structure_pb2 import Structures as ProtoStructures
 
 import json
 from google.protobuf.timestamp_pb2 import Timestamp
@@ -581,9 +580,9 @@ class BridgeMaterialType(models.Model):
 
 class BridgeQuerySet(models.QuerySet):
     def to_protobuf(self):
-        """ returns a bridge protobuf object from the queryset """
-        # See sturcture.proto --> Bridge / Bridges
-        bridges_protobuf = ProtoBridges()
+        """ returns a Structure protobuf object from the queryset with a Bridges list """
+        # See sturcture.proto --> Structures --> Bridges --> Bridge
+        structures_protobuf = ProtoStructures()
 
         fields = dict(
             id="id",
@@ -609,7 +608,7 @@ class BridgeQuerySet(models.QuerySet):
         )
 
         for bridge in self.values(*fields.values()):
-            bridge_protobuf = bridges_protobuf.bridges.add()
+            bridge_protobuf = structures_protobuf.bridges.add()
 
             for protobuf_key, query_key in fields.items():
                 if query_key == "id":
@@ -630,7 +629,7 @@ class BridgeQuerySet(models.QuerySet):
                 ts = timestamp_from_datetime(bridge["last_modified"])
                 bridge_protobuf.last_modified.CopyFrom(ts)
 
-        return bridges_protobuf
+        return structures_protobuf
 
 
 class BridgeManager(models.Manager):
@@ -824,9 +823,9 @@ class CulvertMaterialType(models.Model):
 
 class CulvertQuerySet(models.QuerySet):
     def to_protobuf(self):
-        """ returns a culvert protobuf object from the queryset """
-        # See sturcture.proto --> Culvert / Culverts
-        culverts_protobuf = ProtoCulverts()
+        """ returns a Structure protobuf object from the queryset with a Culverts list """
+        # See sturcture.proto --> Structures --> Culverts --> Culvert
+        structures_protobuf = ProtoStructures()
 
         fields = dict(
             id="id",
@@ -851,7 +850,7 @@ class CulvertQuerySet(models.QuerySet):
         )
 
         for culvert in self.values(*fields.values()):
-            culvert_protobuf = culverts_protobuf.culverts.add()
+            culvert_protobuf = structures_protobuf.culverts.add()
             for protobuf_key, query_key in fields.items():
                 if query_key == "id":
                     setattr(
@@ -873,7 +872,7 @@ class CulvertQuerySet(models.QuerySet):
                 ts = timestamp_from_datetime(culvert["last_modified"])
                 culvert_protobuf.last_modified.CopyFrom(ts)
 
-        return culverts_protobuf
+        return structures_protobuf
 
 
 class CulvertManager(models.Manager):
