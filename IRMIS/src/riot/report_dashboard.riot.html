@@ -25,10 +25,10 @@
             <h1 if="{state.reportData.totalLength}" class="highlight">{ (state.reportData.totalLength / 1000).toFixed(2) } km</h1>
         </div>
 
-        <div if="{state.reportData.totalLength && state.road_type}" class="d-flex">
-            <div class="d-flex flex-column total-length" each="{ roadClass in state.road_type }">
-                <p>{roadClass.title} </p>
-                <h1>{roadClass.distance / 1000} km</h1>
+        <div if="{state.reportData.totalLength && state.asset_class}" class="d-flex">
+            <div class="d-flex flex-column total-length" each="{ assetClass in state.asset_class }">
+                <p>{assetClass.title} </p>
+                <h1>{assetClass.distance / 1000} km</h1>
             </div>
         </div>
 
@@ -66,7 +66,7 @@
                 Stacked_Bar
             },
             stackedBars: [
-                { id: reportBarIds.roadClass, title: window.gettext("Road Class"), filterName: "road_type" },
+                { id: reportBarIds.assetClass, title: window.gettext("Asset Class"), filterName: "asset_class" },
                 { id: reportBarIds.roadStatus, title: window.gettext("Road Status"), filterName: "road_status" },
                 { id: reportBarIds.surfaceCondition, title: window.gettext("Surface Condition (SDI)"), filterName: "surface_condition" },
                 { id: reportBarIds.pavementClass, title: window.gettext("Pavement Class"), filterName: "pavement_class" },
@@ -106,7 +106,7 @@
                         if (surveyReportData) {
                             this.state.reportData = {
                                 totalLength: 0,
-                                road_type: surveyReportData.roadClasses,
+                                asset_class: surveyReportData.assetClasses,
                                 road_status: surveyReportData.roadStatuses,
                                 surface_condition: surveyReportData.surfaceConditions,
                                 pavement_class: surveyReportData.pavementClasses,

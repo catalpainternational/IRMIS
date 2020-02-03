@@ -365,8 +365,8 @@ export const structuresTableColumns = [
     //     visible: false,
     // },
     {
-        title: getStructureFieldName("structure_class"),
-        data: "structureClass",
+        title: getStructureFieldName("asset_class"),
+        data: "assetClass",
         className: "text-center",
         defaultContent: "",
         visible: false,

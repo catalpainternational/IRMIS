@@ -1,7 +1,10 @@
 from django import template
 from basemap.models import Municipality
 from ..models import (
+    Asset,
     Road,
+    Bridge,
+    Culvert,
     RoadStatus,
     SurfaceType,
     PavementClass,
@@ -33,28 +36,56 @@ def get_schema_data():
             Road._meta.fields,
         )
     )
+    bridge_fields = list(
+        filter(
+            lambda x: (
+                x.name
+                not in ["id", "geom", "properties_content_type", "properties_object_id"]
+            ),
+            Bridge._meta.fields,
+        )
+    )
+    culvert_fields = list(
+        filter(
+            lambda x: (
+                x.name
+                not in ["id", "geom", "properties_content_type", "properties_object_id"]
+            ),
+            Culvert._meta.fields,
+        )
+    )
     asset_schema = {
         x.name: {"display": x.verbose_name, "slug": x.name, "help_text": x.help_text}
         for x in road_fields
     }
+
+    # Schemas that are common to both asset types
+    # note that many road_code values will not have any matching Bridge or Culvert asset
     asset_schema["road_code"].update(
         {"options": list(Road.objects.all().distinct("road_code").values("road_code"))}
     )
-    asset_schema["road_type"].update({"options": Road.ROAD_TYPE_CHOICES})
-    asset_schema["surface_condition"].update(
-        {"options": Road.SURFACE_CONDITION_CHOICES}
+    asset_schema["administrative_area"].update(
+        {"options": list(Municipality.objects.all().values("id", "name"))}
+    )
+
+    # Schemas that have the same values for both asset types
+    # Asset Class - AKA road_type or structure_class
+    asset_schema["asset_class"].update({"options": Asset.ASSET_CLASS_CHOICES})
+
+    # Road specific schema values
+    # - Used in side_menu filters
+    asset_schema["road_status"].update(
+        {"options": list(RoadStatus.objects.all().values())}
     )
     asset_schema["surface_type"].update(
         {"options": list(SurfaceType.objects.all().values())}
     )
-    asset_schema["road_status"].update(
-        {"options": list(RoadStatus.objects.all().values())}
+    asset_schema["surface_condition"].update(
+        {"options": Road.SURFACE_CONDITION_CHOICES}
     )
+    # - Can be used in other filters
     asset_schema["pavement_class"].update(
         {"options": list(PavementClass.objects.all().values())}
-    )
-    asset_schema["administrative_area"].update(
-        {"options": list(Municipality.objects.all().values("id", "name"))}
     )
     asset_schema["traffic_level"].update({"options": Road.TRAFFIC_LEVEL_CHOICES})
     asset_schema["maintenance_need"].update(
@@ -64,5 +95,11 @@ def get_schema_data():
         {"options": list(TechnicalClass.objects.all().values())}
     )
     asset_schema["terrain_class"].update({"options": Road.TERRAIN_CLASS_CHOICES})
+
+    # Structure specific schema values
+    # - Used in side_menu filters
+    asset_schema["structure_type"].update(
+        {"options": list(RoadStatus.objects.all().values())}
+    )
 
     return asset_schema

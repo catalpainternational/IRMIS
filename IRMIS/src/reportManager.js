@@ -60,9 +60,9 @@ export const reportColumns = {
         defaultContent: "",
         orderable: false,
     },
-    roadClass: {
-        title: window.gettext("Road Class"),
-        data: "roadClass",
+    assetClass: {
+        title: window.gettext("Asset Class"),
+        data: "assetClass",
         defaultContent: "",
         orderable: false,
     },
@@ -89,7 +89,7 @@ export const reportColumns = {
 /** The names given to the dataTables used in the reports */
 export const reportTableIds = {
     municipality: "report-municipality-table",
-    roadClass: "report-road-class-table",
+    assetClass: "report-asset-class-table",
     surfaceType: "report-surface-type-table",
     roadStatus: "report-road-status-table",
     technicalClass: "report-technical-class-table",
@@ -98,7 +98,7 @@ export const reportTableIds = {
 
 /** The names of the stacked bars used in the reports */
 export const reportBarIds = {
-    roadClass: "report-road-class-bar",
+    assetClass: "report-asset-class-bar",
     roadStatus: "report-road-status-bar",
     technicalClass: "report-technical-class-bar",
     surfaceCondition: "report-surface-condition-bar",
@@ -124,7 +124,7 @@ export const reportContent = {
         },
         visibleFilters: {
             municipality: true,
-            roadClass: true,
+            assetClass: true,
             surfaceType: true,
             surfaceCondition: true,
             reportDate: true,
@@ -138,21 +138,21 @@ export const reportContent = {
         noReportDescription: window.gettext("The report will be shown in this area and will provide you with detailed Road Network Length Breakdown information. You can use filters to generate a customized report"),
         noReportData: window.gettext("Sorry, data for the road network is not available yet"),
         fixedFilter: {
-            primaryattribute: ["municipality", "road_type", "surface_type"],
+            primaryattribute: ["municipality", "asset_class", "surface_type"],
             secondaryattribute: {
                 "municipality": ["road_status", "technical_class"],
-                "road_type": ["road_status", "technical_class"],
+                "asset_class": ["road_status", "technical_class"],
                 "surface_type": ["road_status", "technical_class"],
             },
         },
         visibleFilters: {
             // municipality: true,
-            // roadClass: true,
+            // assetClass: true,
             // surfaceType: true,
             // surfaceCondition: true,
             reportDate: true,
         },
-        reportElements: { filters: true, totalLength: true, dataTables: [reportTableIds.municipality, reportTableIds.roadClass, reportTableIds.surfaceType] },
+        reportElements: { filters: true, totalLength: true, dataTables: [reportTableIds.municipality, reportTableIds.assetClass, reportTableIds.surfaceType] },
     },
     3: {
         title: window.gettext("Surface Condition"),

@@ -37,9 +37,9 @@
                     </select>
                 </div>
 
-                <div if="{ reportContent().visibleFilters.roadClass }" class="options">
-                    <select id="road_class_select2" multiple="true">
-                        <option each="{ road_class in window.asset_schema.road_type.options }" value="{ road_class[0] }">{ road_class[1] }</option>
+                <div if="{ reportContent().visibleFilters.assetClass }" class="options">
+                    <select id="asset_class_select2" multiple="true">
+                        <option each="{ asset_class in window.asset_schema.asset_class.options }" value="{ asset_class[0] }">{ asset_class[1] }</option>
                     </select>
                 </div>
                 <!-- Optionally include the following to show the fixedFilter value (changing to the full option title) -->
@@ -140,9 +140,9 @@
             columns="{columns.municipality()}" columnSortOrder="{baseColumnSortOrder}"
             paging="false" canExport showTotal>
         </data_table>
-        <data_table hidden="{ !state.reportData.roadClass || !hasDataTable(reportTableIds.roadClass) }"
-            table_id="{reportTableIds.roadClass}" title="{ window.gettext('Road Class') }"
-            columns="{columns.roadClass()}" columnSortOrder="{baseColumnSortOrder}"
+        <data_table hidden="{ !state.reportData.assetClass || !hasDataTable(reportTableIds.assetClass) }"
+            table_id="{reportTableIds.assetClass}" title="{ window.gettext('Road Class') }"
+            columns="{columns.assetClass()}" columnSortOrder="{baseColumnSortOrder}"
             paging="false" canExport showTotal>
         </data_table>
         <data_table hidden="{ !state.reportData.surfaceType || !hasDataTable(reportTableIds.surfaceType) }"
@@ -190,7 +190,7 @@
         // add their reference data here
         import {
             ADMINISTRATIVE_AREA_CHOICES, // municipality
-            ROAD_TYPE_CHOICES, // road_class / road_type
+            ASSET_CLASS_CHOICES, // asset_class - previously road_class / road_type, structure_class
             SURFACE_TYPE_CHOICES // surface_type
         } from "../assets/models/road";
 
@@ -209,7 +209,7 @@
             stackedBars: [reportBarIds.roadStatus, reportBarIds.technicalClass, reportBarIds.surfaceCondition],
             tables: [
                 reportTableIds.municipality,
-                reportTableIds.roadClass,
+                reportTableIds.assetClass,
                 reportTableIds.surfaceType,
                 reportTableIds.roadStatus,
                 reportTableIds.technicalClass,
@@ -262,13 +262,13 @@
                 noReportData: false,
                 filterDefinitions: [
                     { selectId: "municipality_area_select2", placeHolder: "Municipality", dataIn: "reportMunicipality", filterName: "municipality" },
-                    { selectId: "road_class_select2", placeHolder: "Road class", dataIn: "reportRoadClass", filterName: "road_type" },
+                    { selectId: "asset_class_select2", placeHolder: "Asset class", dataIn: "reportAssetClass", filterName: "asset_class" },
                     { selectId: "surface_type_select2", placeHolder: "Surface type", dataIn: "reportSurfaceType", filterName: "surface_type" },
                     { selectId: "surface_condition_select2", placeHolder: "Surface condition", dataIn: "reportSurfaceCondition", filterName: "surface_condition" },
                     { selectId: "road_code_select2", placeHolder: "Road code", dataIn: "reportRoadCode", isSingle: true, filterName: "road_code" },
                 ],
                 reportMunicipality: [],
-                reportRoadClass: [],
+                reportAssetClass: [],
                 reportSurfaceType: [],
                 reportSurfaceCondition: [],
                 reportRoadCode: null,
@@ -289,7 +289,7 @@
             // These functions define the actual columns used by each report
             columns: {
                 municipality: () => SetTitleColumn("municipality"),
-                roadClass: () => SetTitleColumn("road_type"),
+                assetClass: () => SetTitleColumn("asset_class"),
                 roadStatus: () => SetTitleColumn("road_status"),
                 surfaceCondition: () => SetTitleColumn("surface_condition"),
                 surfaceType: () => SetTitleColumn("surface_type"),
@@ -558,10 +558,7 @@
                             switch (parentPrimary) {
                                 case "municipality": selectSource = ADMINISTRATIVE_AREA_CHOICES; break;
                                 case "surface_type": selectSource = SURFACE_TYPE_CHOICES; break;
-                                case "road_class":
-                                case "road_type":
-                                    selectSource = ROAD_TYPE_CHOICES;
-                                    break;
+                                case "asset_class": selectSource = ASSET_CLASS_CHOICES; break;
                             }
                             if (selectSource) {
                                 expandedPrimaries[parentPrimary] = Object.keys(selectSource);
@@ -614,7 +611,7 @@
 
                 if (haveLengths) {
                     this.state.reportData.municipality = this.prepareTableData(reportTableIds.municipality, surveyReportData.municipalities, "municipality");
-                    this.state.reportData.roadClass = this.prepareTableData(reportTableIds.roadClass, surveyReportData.roadClasses, "road_type");
+                    this.state.reportData.assetClass = this.prepareTableData(reportTableIds.assetClass, surveyReportData.assetClasses, "asset_class");
                     this.state.reportData.surfaceType = this.prepareTableData(reportTableIds.surfaceType, surveyReportData.surfaceTypes, "surface_type");
 
                     this.state.reportData.roadStatus = this.prepareTableData(reportTableIds.roadStatus, surveyReportData.roadStatuses, "road_status");
@@ -630,7 +627,7 @@
                     const reportingTables = this.reportElements().dataTables;
                     this.state.noReportData = true;
                     if (reportingTables.includes(reportTableIds.municipality) && surveyReportData.municipalities.length ||
-                        reportingTables.includes(reportTableIds.roadClass) && surveyReportData.roadClasses.length ||
+                        reportingTables.includes(reportTableIds.assetClass) && surveyReportData.assetClasses.length ||
                         reportingTables.includes(reportTableIds.surfaceType) && surveyReportData.surfaceTypes.length ||
                         reportingTables.includes(reportTableIds.roadStatus) && surveyReportData.roadStatuses.length ||
                         reportingTables.includes(reportTableIds.technicalClass) && surveyReportData.technicalClasses.length ||

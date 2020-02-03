@@ -10,7 +10,7 @@ getRoadsMetadataChunks()
     .then((chunks) => {
         // for each chunk, download the roads
         chunks.forEach((chunk) => {
-            getRoadsMetadata(chunk.road_type)
+            getRoadsMetadata(chunk.road_type) // Actually asset_class
                 .then((roadList) => {
                     // add the roads to the road manager
                     addRoadMetadata(roadList);

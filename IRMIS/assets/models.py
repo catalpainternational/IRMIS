@@ -182,12 +182,32 @@ class Survey(models.Model):
         )
 
 
+class Asset(models.Model):
+    """ Ultimately this will provide the definitions that are common to all types of Assets. """
+
+    """ Currently it is a mixture of items some just for 'Structures', others for everything. """
+
+    ASSET_CLASS_CHOICES = [
+        ("NAT", _("National")),
+        ("HIGH", _("Highway")),
+        ("MUN", _("Municipal")),
+        ("URB", _("Urban")),
+        ("RUR", _("Rural")),
+    ]
+
+    ASSET_TYPE_CHOICES = [
+        # ("ROAD", _("Road")),
+        ("BRDG", _("Bridge")),
+        ("CULV", _("Culvert")),
+    ]
+
+
 class RoadQuerySet(models.QuerySet):
     def to_chunks(self):
         """ returns an object defining the available chunks from the roads queryset """
 
         return (
-            Road.objects.order_by("road_type")
+            Road.objects.order_by("road_type")  # Actually asset_class
             .values("road_type")
             .annotate(Count("road_type"))
         )
@@ -201,7 +221,7 @@ class RoadQuerySet(models.QuerySet):
             geojson_id="geojson_file_id",
             road_code="road_code",
             road_name="road_name",
-            road_type="road_type",
+            asset_class="road_type",
             road_status="road_status__code",
             link_code="link_code",
             link_start_name="link_start_name",
@@ -288,13 +308,6 @@ class Road(models.Model):
 
     objects = RoadManager()
 
-    ROAD_TYPE_CHOICES = [
-        ("NAT", _("National")),
-        ("HIGH", _("Highway")),
-        ("MUN", _("Municipal")),
-        ("URB", _("Urban")),
-        ("RUR", _("Rural")),
-    ]
     TRAFFIC_LEVEL_CHOICES = [("L", _("Low")), ("M", _("Medium")), ("H", _("High"))]
     SURFACE_CONDITION_CHOICES = [
         ("1", _("Good")),
@@ -443,10 +456,11 @@ class Road(models.Model):
         null=True,
         help_text=_("Enter the width of the link carriageway"),
     )
+    # Actually asset_class
     road_type = models.CharField(
-        verbose_name=_("Road Class"),
+        verbose_name=_("Asset Class"),
         max_length=4,
-        choices=ROAD_TYPE_CHOICES,
+        choices=Asset.ASSET_CLASS_CHOICES,
         blank=True,
         null=True,
         help_text=_("Choose the road class"),
@@ -591,7 +605,7 @@ class BridgeQuerySet(models.QuerySet):
             last_modified="last_modified",
             structure_code="structure_code",
             structure_name="structure_name",
-            structure_class="structure_class",
+            asset_class="structure_class",
             administrative_area="administrative_area",
             road_code="road_code",
             construction_year="construction_year",
@@ -834,7 +848,7 @@ class CulvertQuerySet(models.QuerySet):
             last_modified="last_modified",
             structure_code="structure_code",
             structure_name="structure_name",
-            structure_class="structure_class",
+            asset_class="structure_class",
             administrative_area="administrative_area",
             road_code="road_code",
             construction_year="construction_year",

@@ -8,7 +8,7 @@ import { choice_or_default, getFieldName, getHelpText, invertChoices, makeEstrad
 import { reportColumns } from "../../reportManager";
 
 import {
-    ROAD_STATUS_CHOICES, ROAD_TYPE_CHOICES,
+    ASSET_CLASS_CHOICES, ROAD_STATUS_CHOICES,
     SURFACE_CONDITION_CHOICES, SURFACE_TYPE_CHOICES,
     TECHNICAL_CLASS_CHOICES, TRAFFIC_LEVEL_CHOICES,
     PAVEMENT_CLASS_CHOICES, TERRAIN_CLASS_CHOICES
@@ -55,7 +55,7 @@ function AdminAreaChoices() {
 // These are the response filters returned from reports.py and views.py
 const filterTitles = {
     road_id: { display: gettext("Road Id") },
-    road_type: { display: gettext("Road Class"), choices: ROAD_TYPE_CHOICES },
+    asset_class: { display: gettext("Asset Class"), choices: ASSET_CLASS_CHOICES },
     surface_condition: { display: gettext("Surface Condition"), choices: SURFACE_CONDITION_CHOICES },
     surface_type: { display: gettext("Surface Type"), choices: SURFACE_TYPE_CHOICES },
     municipality: { display: gettext("Municipality"), choices: AdminAreaChoices() },
@@ -72,10 +72,8 @@ const lengthTypeChoices = {
     number_lanes: {},
     pavement_class: PAVEMENT_CLASS_CHOICES,
     rainfall: {},
-    // road_class is an alias for road_type
-    road_class: ROAD_TYPE_CHOICES,
+    asset_class: ASSET_CLASS_CHOICES,
     road_status: ROAD_STATUS_CHOICES,
-    road_type: ROAD_TYPE_CHOICES,
     surface_condition: SURFACE_CONDITION_CHOICES,
     surface_type: SURFACE_TYPE_CHOICES,
     technical_class: TECHNICAL_CLASS_CHOICES,
@@ -172,8 +170,8 @@ export class EstradaNetworkSurveyReport extends Report {
             return `${this.roadCodes}_${this.reportChainage[0]}-${this.reportChainage[1]}`;
         }
 
-        return (this.roadTypes && this.roadTypes.length > 0)
-            ? `${this.roadTypes.join(",")}`
+        return (this.assetClasses && this.assetClasses.length > 0)
+            ? `${this.assetClasses.join(",")}`
             : null;
     }
 
@@ -294,7 +292,7 @@ export class EstradaNetworkSurveyReport extends Report {
             "number_lanes",
             "pavement_class",
             "rainfall",
-            "road_type",
+            "asset_class",
             "surface_condition",
             "surface_type",
             "technical_class",
@@ -399,8 +397,8 @@ export class EstradaNetworkSurveyReport extends Report {
         return this.filter.road_code || [];
     }
 
-    get roadTypes() {
-        return this.filter.road_type || [];
+    get assetClass() {
+        return this.filter.asset_class || [];
     }
 
     get reportChainage() {
@@ -423,17 +421,12 @@ export class EstradaNetworkSurveyReport extends Report {
         return extractCountData(this.lengths, "rainfall");
     }
 
-    /** roadClasses is an alias for roadTypes */
-    get roadClasses() {
-        return this.roadTypes;
+    get assetClasses() {
+        return extractCountData(this.lengths, "asset_class");
     }
 
     get roadStatuses() {
         return extractCountData(this.lengths, "road_status");
-    }
-
-    get roadTypes() {
-        return extractCountData(this.lengths, "road_type");
     }
 
     get surfaceConditions() {
@@ -488,12 +481,8 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
         return this.makeSpecificLengths("rainfall");
     }
 
-    get roadClasses() {
-        return this.roadTypes;
-    }
-
-    get roadTypes() {
-        return this.makeSpecificLengths("road_type");
+    get assetClasses() {
+        return this.makeSpecificLengths("asset_class");
     }
 
     get roadStatuses() {
@@ -694,14 +683,11 @@ export class EstradaSurveyAttribute extends Attribute {
         return this.values.trafficType || "Unknown";
     }
 
-    get roadClass() {
-        return this.roadType;
-    }
-
-    get roadType() {
-        return this.primaryAttribute === "road_type"
-            ? gettext(choice_or_default(this.value, ROAD_TYPE_CHOICES, "Unknown"))
-            : gettext("Unknown");
+    get assetClass() {
+        // "structure_class", "road_class", "road_type" have all been deprecated
+        return this.primaryAttribute === "asset_class"
+            ? gettext(choice_or_default(this.value, ASSET_CLASS_CHOICES, "Unknown"))
+            : gettext("Unknown");        
     }
 
     get surfaceCondition() {

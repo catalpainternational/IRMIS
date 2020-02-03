@@ -51,12 +51,12 @@
         {% comment %} SECTION - ASSET {% endcomment %}
         <div class="filters-section roads">
             <span class="subtitle">{% trans "Asset" %}</span>
-            {% comment %} ROAD TYPE {% endcomment %}
-            {% with slug=asset_schema.road_type.slug %}
+            {% comment %} ASSET CLASS {% endcomment %}
+            {% with slug=asset_schema.asset_class.slug %}
             <div data-slug="{{ slug }}" class="filter">
                 <div class="d-flex header justify-content-between">
                     <div class="align-items-center d-flex">
-                        <label>{{ asset_schema.road_type.display }}</label>
+                        <label>{{ asset_schema.asset_class.display }}</label>
                     </div>
                     <div class="align-items-center d-flex">
                         <span class="clear-filter" hidden>{% trans "Clear" %}</span>
@@ -65,7 +65,7 @@
                 </div>
                 <div class="options" hidden>
                     <ul>
-                        {% for option in asset_schema.road_type.options %}
+                        {% for option in asset_schema.asset_class.options %}
                         <li class="align-items-center d-flex optionToggle" data-option="{{ option.0 }}">
                             <span class="checkbox image"></span>
                             {{ option.1 }}
@@ -209,7 +209,7 @@
             </div>
             {% endwith %}
 
-            {% comment %} STRUCTURE CLASS {% endcomment %}
+            {% comment %} ASSET CLASS {% endcomment %}
             {% with slug=asset_schema.road_code.slug %}
             <div data-slug="{{ slug }}" class="filter">
                 <div class="d-flex header justify-content-between">
@@ -223,7 +223,7 @@
                 </div>
                 <div class="options" hidden>
                     <ul>
-                        {% for option in asset_schema.road_type.options %}
+                        {% for option in asset_schema.asset_class.options %}
                         <li class="align-items-center d-flex optionToggle" data-option="{{ option.0 }}">
                             <span class="checkbox image"></span>
                             {{ option.1 }}

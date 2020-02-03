@@ -224,7 +224,7 @@ class ReportQuery:
             "pavement_class",
             "project",
             "rainfall",
-            "road_type",  # Actually road_class
+            "road_type",  # Actually asset_class
             "road_status",
             "surface_condition",
             "surface_type",
@@ -242,7 +242,7 @@ class ReportQuery:
             "protection_upstream",
             "river_name",
             "span_length",
-            "structure_class",
+            "structure_class",  # Actually asset_class
             "structure_type",
             "width",
         ]
@@ -284,7 +284,7 @@ class ReportQuery:
             "width",
             "height",
             "construction_year",
-            "structure_type",
+            "structure_type",  # Actually asset_class
             "material",
             "protection_upstream",
             "protection_downstream",

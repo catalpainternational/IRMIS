@@ -535,7 +535,7 @@ def protobuf_reports(request):
             _("'primaryattribute' must contain at least one reportable attribute")
         )
 
-    # handle all of the id, code and class (road_type) permutations
+    # handle all of the id, code and asset_class (road_type) permutations
     # asset_* will be set to something, if bridge_*, culvert_*, road_* is set
     # structure_* will be set if either bridge_* or culvert_* is set
     culvert_id = clean_id_filter(request.GET.get("culvert_id", None), "CULV-")
