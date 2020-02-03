@@ -274,17 +274,16 @@ class ReportQuery:
         structure_filters = [
             "structure_id",  # will be mapped to *.id
             "structure_code",
-            "structure_class",
+            "asset_class",
             "structure_name",
             "road_id",  # Only used for the relationship to roads for bridge or culvert
             "road_code",
-            # "road_type",
             "municipality",
             "length",
             "width",
             "height",
             "construction_year",
-            "structure_type",  # Actually asset_class
+            "structure_type",
             "material",
             "protection_upstream",
             "protection_downstream",
@@ -336,6 +335,8 @@ class ReportQuery:
                     filter_name = "id"
                 elif filter_key == "asset_code":
                     filter_name = "road_code"
+                elif filter_key == "asset_class":
+                    filter_name = "road_type"
                 elif filter_key == "surface_type":
                     filter_name = "surface_type_id"
                 road_clause = "CAST(r." + filter_name + " AS TEXT)=ANY(%s)\n"
@@ -406,7 +407,7 @@ class ReportQuery:
         # * substitute the plain text (no quotes) of each set of filter_cases
         #   within the corresponding {} part of each of the ANY clauses
         # then you'll be able to run the query in any tool that can handle SQL (recommend LINQPad)
-        # print(self.reportSQL.replace("ANY(%s)", "ANY('{}'::text[])"), "\n-- " + self.filter_cases)
+        # print(self.reportSQL.replace(r"ANY(%s)", r"ANY('{}'::text[])"), "\n-- ", self.filter_cases)
 
         with connection.cursor() as cursor:
             cursor.execute(self.reportSQL, self.filter_cases)
@@ -424,7 +425,7 @@ class ReportQuery:
         # * substitute the plain text (no quotes) of each set of filter_cases
         #   within the corresponding {} part of each of the ANY clauses
         # then you'll be able to run the query in any tool that can handle SQL (recommend LINQPad)
-        # print(self.reportSQL.replace("ANY(%s)", "ANY('{}'::text[])"), "\n-- " + self.filter_cases)
+        print(self.reportSQL.replace(r"ANY(%s)", r"ANY('{}'::text[])"), "\n-- ", self.filter_cases)
 
         with connection.cursor() as cursor:
             cursor.execute(self.reportSQL, self.filter_cases)

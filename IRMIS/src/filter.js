@@ -11,7 +11,7 @@ let filterState = {};
 // we'll need to add more in here as we add more filters
 export const slugToPropertyGetter = {
     road_code: 'getRoadCode',
-    road_type: 'getRoadType',
+    asset_class: 'getAssetClass',
     surface_type: 'getSurfaceType',
     surface_condition: 'getSurfaceCondition',
     road_status: 'getRoadStatus',
@@ -58,7 +58,7 @@ export function clearAllFilters() {
 
 /** actually make the filter happen */
 export function applyFilter() {
-    const eventName = (assetTypeName === "structures")
+    const eventName = (assetTypeName !== "structures")
         ? "estrada.roadTable.filter.apply"
         : "estrada.structureTable.filter.apply";
     dispatch(eventName, { detail: { filterState } });

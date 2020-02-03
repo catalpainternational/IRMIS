@@ -222,7 +222,7 @@
         // A column title is usually reset by the columns functions below
         const columnSets = {
             municipality: [reportColumns.title, reportColumns.distance, reportColumns.percent],
-            road_type: [reportColumns.title, reportColumns.distance, reportColumns.percent],
+            asset_class: [reportColumns.title, reportColumns.distance, reportColumns.percent],
             road_status: [reportColumns.title, reportColumns.distance, reportColumns.percent],
             surface_condition: [reportColumns.chainageStart, reportColumns.chainageEnd, reportColumns.surfaceCondition, reportColumns.surveyDate],
             surface_type: [reportColumns.title, reportColumns.distance, reportColumns.percent],
@@ -231,9 +231,8 @@
         };
         const titleColumnMapping = {
             municipality: "Municipality",
-            road_class: "Road Class",
+            asset_class: "Asset Class",
             road_status: "Road Status",
-            road_type: "Road Type",
             // surface_condition: no title column for surface condition
             surface_type: "Surface Type",
             technical_class: "Technical Class",

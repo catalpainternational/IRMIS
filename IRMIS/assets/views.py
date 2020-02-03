@@ -682,7 +682,12 @@ def protobuf_reports(request):
         asset_report.execute_aggregate_query()
     )
 
-    report_protobuf.filter = json.dumps(final_filters)
+    filtered_filters = (
+        json.dumps(final_filters)
+        .replace("""road_type""", """asset_class""")
+        .replace("""structure_class""", """asset_class""")
+    )
+    report_protobuf.filter = filtered_filters
     report_protobuf.lengths = json.dumps(final_lengths)
 
     if asset_id or asset_code:
