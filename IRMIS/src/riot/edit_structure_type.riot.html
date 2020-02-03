@@ -1,8 +1,8 @@
-<edit_type>
+<edit_structure_type>
     <h5>{ window.gettext("Type") }</h5>
 
     <!-- Bridge-specific fields -->
-    <div if="{ props.assetType === "bridge" }">
+    <div if="{ props.assetType === 'BRDG' }">
         <section>
             <div class="form-group">
                 <label>{ bridgeTypes.display }</label>
@@ -25,7 +25,7 @@
     </div>
 
     <!-- Culvert-specific fields -->
-    <div if="{ props.assetType === "culvert" }">
+    <div if="{ props.assetType === 'CULV' }">
         <section>
             <div class="form-group">
                 <label>{ culvertTypes.display }</label>
@@ -122,4 +122,4 @@
             },
         }
     </script>
-</edit_type>
+</edit_structure_type>

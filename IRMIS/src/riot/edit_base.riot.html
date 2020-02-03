@@ -4,7 +4,7 @@
             <div>
                 <ul class="navigation">
                     <li class="text-uppercase">{ window.gettext("Edit asset") }</li>
-                    <ul if="{ state.assetType === "road" }">
+                    <ul if="{ state.assetType === 'road' }">
                         <li class="{ state.page === 'location_type' ? 'active' : '' }" data-page="location_type"
                             onclick="{ selectPage }">{ window.gettext("Location & Type") }</li>
                         <li class="{ state.page === 'asset_details' ? 'active' : '' }" data-page="asset_details"
@@ -22,12 +22,12 @@
                         <li class="{ state.page === 'environment' ? 'active' : '' }" data-page="environment"
                             onclick="{ selectPage }">{ window.gettext("Environment") }</li>
                     </ul>
-                    <ul if="{ state.assetType === "bridge" || state.assetType === "culvert" }">
-                        <li class="{ state.page === 'type' ? 'active' : '' }" data-page="type"
+                    <ul if="{ state.assetType === 'BRDG' || state.assetType === 'CULV' }">
+                        <li class="{ state.page === 'structure_type' ? 'active' : '' }" data-page="structure_type"
                             onclick="{ selectPage }">{ window.gettext("Type") }</li>
                         <li class="{ state.page === 'structure_details' ? 'active' : '' }" data-page="structure_details"
                             onclick="{ selectPage }">{ window.gettext("Asset Details") }</li>
-                        <li if="{ state.assetType === "bridge" }" class="{ state.page === 'protection' ? 'active' : '' }" data-page="protection"
+                        <li if="{ state.assetType === 'BRDG' }" class="{ state.page === 'protection' ? 'active' : '' }" data-page="protection"
                             onclick="{ selectPage }">{ window.gettext("Protection") }</li>
                         <li class="{ state.page === 'photo' ? 'active' : '' }" data-page="photo"
                             onclick="{ selectPage }">{ window.gettext("Photos") }</li>
@@ -81,8 +81,8 @@
                     saving="{ state.saving }" showFeedback="{ showFeedback }" parent="{parentFunctions}"></edit_environment>
                 <edit_history if="{ state.page === 'history' }" road="{ state.baseRoad }" 
                     parent="{parentFunctions}"></edit_history>
-                <edit_type if="{ state.page === 'type' }" road="{ state.editingRoad }"
-                    assetType="{ state.assetType }"></edit_type>
+                <edit_structure_type if="{ state.page === 'structure_type' }" road="{ state.editingRoad }"
+                    assetType="{ state.assetType }"></edit_structure_type>
                 <edit_structure_details if="{ state.page === 'structure_details' }" road="{ state.editingRoad }"
                     assetType="{ state.assetType }" saving="{ state.saving }" parent="{parentFunctions}"></edit_structure_details>
                 <edit_protection if="{ state.page === 'protection' }" road="{ state.editingRoad }"
@@ -126,7 +126,7 @@
         import Edit_Condition from "./edit_condition.riot.html";
         import Edit_Maintenance from "./edit_maintenance.riot.html";
         import Edit_Environment from "./edit_environment.riot.html";
-        import Edit_Type from "./edit_type.riot.html";
+        import Edit_Structure_Type from "./edit_structure_type.riot.html";
         import Edit_Structure_Details from "./edit_structure_details.riot.html";
         import Edit_Protection from "./edit_protection.riot.html";
         import Edit_Photo from "./edit_photo.riot.html";
@@ -152,7 +152,7 @@
             components: {
                 Feedback_Banner, Edit_Stop_Alert, Loading,
                 Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Environment, Edit_Project, Edit_Traffic, Edit_Condition, Edit_Maintenance,
-                Edit_History, Edit_Type, Edit_Structure_Details, Edit_Protection, Edit_Photo, Edit_Structure_Condition,
+                Edit_History, Edit_Structure_Type, Edit_Structure_Details, Edit_Protection, Edit_Photo, Edit_Structure_Condition,
             },
             onBeforeMount(props, state) {
                 state.page = props.page;

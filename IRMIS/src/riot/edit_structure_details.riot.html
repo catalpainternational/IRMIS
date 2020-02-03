@@ -32,7 +32,7 @@
             </div>
 
             <!-- Bridge-specific field -->
-            <div if="{ props.assetType === "bridge" }">
+            <div if="{ props.assetType === 'BRDG' }">
                 <div class="form-group">
                     <label>{ window.gettext("River Name") }</label>
                     <input
@@ -91,7 +91,7 @@
             </div>
 
             <!-- Culvert-specific fields -->
-            <div if="{ props.assetType === "culvert" }">
+            <div if="{ props.assetType === 'CULV' }">
                 <div class="form-group">
                     <label>{ window.gettext("Height (meters)") }</label>
                     <input
@@ -122,7 +122,7 @@
             </div>
 
             <!-- Bridge-specific field -->
-            <div if="{ props.assetType === "bridge" }">
+            <div if="{ props.assetType === 'BRDG' }">
                 <div class="form-group">
                     <label>{ window.gettext("Number of spans") }</label>
                     <input
