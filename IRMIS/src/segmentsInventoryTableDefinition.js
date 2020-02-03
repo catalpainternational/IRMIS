@@ -147,22 +147,20 @@ export const trafficLevelColumns = [
         defaultContent: "",
         className: "text-center",
         render: (data) => {
-            if (data.forcastYear) { return data.forcastYear; }
+            if (data.forecastYear) { return data.forecastYear; }
             else { return data.surveyFromDate + " - " + data.surveyToDate; }
         },
     },
     {
         title: window.gettext("Traffic type"),
-        data: "",
+        data: "trafficDataType",
         defaultContent: "",
         className: "text-center",
-        render: (data) => { return data.trafficType; },
     },
     {
         title: window.gettext("Total vehicles"),
-        data: "",
+        data: "trafficCountTotal",
         defaultContent: "",
         className: "text-center",
-        render: (data) => { return data.countTotal; },
     },
 ];

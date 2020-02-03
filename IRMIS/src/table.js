@@ -552,12 +552,8 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
             getAssetSurveys(assetId, "trafficType")
                 .then((surveyData) => {
                     reportTable.clear(); // remove all rows in the table - again
-                    if (surveyData && reportDataTableId) {
-                        const processedSurveyData = surveyData.map((data) => {
-                            data.title = data["traffic_level"] || data.values["traffic_level"] || "";
-                            return data;
-                        });
-                        reportTable.rows.add(processedSurveyData);
+                    if (surveyData && surveyData.length && reportDataTableId) {
+                        reportTable.rows.add(surveyData);
                     }
                 })
                 .finally(() => {
