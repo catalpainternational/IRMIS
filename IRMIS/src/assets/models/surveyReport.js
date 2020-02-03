@@ -522,7 +522,7 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
         });
 
         if (filteredAttributes.length === 0) {
-            return [{date_surveyed: null, attributeEntries: []}];
+            return {date_surveyed: null, attributeEntries: []};
         }
 
         // Descending sort most recent dateSurveyed, down to null dateSurveyed
