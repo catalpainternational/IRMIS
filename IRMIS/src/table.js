@@ -553,9 +553,11 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
                 .then((surveyData) => {
                     reportTable.clear(); // remove all rows in the table - again
                     if (surveyData && reportDataTableId) {
-                        if (surveyData.length) {
-                            reportTable.rows.add(surveyData);
-                        }
+                        const processedSurveyData = surveyData.map((data) => {
+                            data.title = data["traffic_level"] || data.values["traffic_level"] || "";
+                            return data;
+                        });
+                        reportTable.rows.add(processedSurveyData);
                     }
                 })
                 .finally(() => {
