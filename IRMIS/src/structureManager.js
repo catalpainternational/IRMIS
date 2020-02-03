@@ -5,40 +5,39 @@ import { slugToPropertyGetter } from "./filter";
 export const structures = {};
 let filteredStructures = {};
 
-// Get the structure metadata details
-// for each Structure type download the Structures
-["bridge", "culvert"].forEach((t) => {
-    getStructuresMetadata(t)
-        .then((structureList) => {
-            // add the structures to the structure manager
-            addStructureMetadata(structureList);
+// Get all Structures metadata details
+// add the list to the Structure Manager's master list
+getStructuresMetadata()
+    .then((sourceStructure) => {
+        // Delete all keys from the existing structures object
+        Object.keys(structures).forEach((key) => {
+            delete structures[key];
         });
-});
+
+        // Add in all the ones that were returned
+        const sourceObject = sourceStructure.getObject();
+        Object.keys(sourceObject).forEach((key) => {
+            structures[key] = sourceObject[key];
+        });
+
+        // Let everyone know
+        const eventName = "estrada.structureManager.structureMetaDataAdded";
+        const eventDetail = { detail: { structures } };
+        dispatch(eventName, eventDetail);
+    });
 
 // when a filter is applied filter the structures
-document.addEventListener("estrada.filter.apply", (data) => {
+document.addEventListener("estrada.structureTable.filter.apply", (data) => {
     const filterState = data.detail.filterState;
     filterStructures(filterState);
 });
 
-function addStructureMetadata(structureList) {
-    structureList.reduce(
-        (structuresLookup, structureMetadata) => {
-            structuresLookup[structureMetadata.getId()] = structureMetadata;
-            return structuresLookup;
-        },
-        structures,
-    );
-    dispatch("estrada.structureManager.structureMetaDataAdded", { detail: { structureList } });
-}
-
-export function getStructure(id, structureType) {
+export function getStructure(id) {
     let structure = structures[id];
     if (structure) {
         return Promise.resolve(structure);
     }
-
-    return getStructureMetadata(id, structureType);
+    return getStructureMetadata(id);
 }
 
 export function getRoadStructures(roadId, structureType) {
@@ -49,7 +48,7 @@ export function createStructure(structure, structureType) {
     return Promise.resolve(postStructureData(structure, structureType))
         .then((structure) => {
             structures[structure.getId()] = structure;
-            dispatch("estrada.table.structureMetaDataCreated", { detail: { structure } });
+            dispatch("estrada.structureTable.structureMetaDataCreated", { detail: { structure } });
             return structure;
         });
 }
@@ -58,7 +57,7 @@ export function updateStructure(structure, structureType) {
     return Promise.resolve(putStructureData(structure, structureType))
         .then((structure) => {
             structures[structure.getId()] = structure;
-            dispatch("estrada.table.structureMetaDataUpdated", { detail: { structure } });
+            dispatch("estrada.structureTable.structureMetaDataUpdated", { detail: { structure } });
             return structure;
         });
 }
@@ -94,5 +93,5 @@ function filterStructures(filterState) {
         return idMap;
     }, {});
 
-    dispatch("estrada.filter.applied", { detail: { idMap } });
+    dispatch("estrada.structureTable.filter.applied", { detail: { idMap } });
 }

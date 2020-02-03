@@ -213,12 +213,9 @@ proto.assets.Report.prototype.getFilter = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Report} returns this
- */
+/** @param {string} value */
 proto.assets.Report.prototype.setFilter = function(value) {
-  return jspb.Message.setProto3StringField(this, 1, value);
+  jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -231,12 +228,9 @@ proto.assets.Report.prototype.getLengths = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Report} returns this
- */
+/** @param {string} value */
 proto.assets.Report.prototype.setLengths = function(value) {
-  return jspb.Message.setProto3StringField(this, 2, value);
+  jspb.Message.setProto3StringField(this, 2, value);
 };
 
 
@@ -250,12 +244,9 @@ proto.assets.Report.prototype.getAttributesList = function() {
 };
 
 
-/**
- * @param {!Array<!proto.assets.Attribute>} value
- * @return {!proto.assets.Report} returns this
-*/
+/** @param {!Array<!proto.assets.Attribute>} value */
 proto.assets.Report.prototype.setAttributesList = function(value) {
-  return jspb.Message.setRepeatedWrapperField(this, 4, value);
+  jspb.Message.setRepeatedWrapperField(this, 4, value);
 };
 
 
@@ -271,10 +262,9 @@ proto.assets.Report.prototype.addAttributes = function(opt_value, opt_index) {
 
 /**
  * Clears the list making it empty but non-null.
- * @return {!proto.assets.Report} returns this
  */
 proto.assets.Report.prototype.clearAttributesList = function() {
-  return this.setAttributesList([]);
+  this.setAttributesList([]);
 };
 
 
@@ -533,12 +523,9 @@ proto.assets.Attribute.prototype.getAssetId = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Attribute} returns this
- */
+/** @param {string} value */
 proto.assets.Attribute.prototype.setAssetId = function(value) {
-  return jspb.Message.setProto3StringField(this, 1, value);
+  jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -551,12 +538,9 @@ proto.assets.Attribute.prototype.getAssetCode = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Attribute} returns this
- */
+/** @param {string} value */
 proto.assets.Attribute.prototype.setAssetCode = function(value) {
-  return jspb.Message.setProto3StringField(this, 2, value);
+  jspb.Message.setProto3StringField(this, 2, value);
 };
 
 
@@ -569,12 +553,9 @@ proto.assets.Attribute.prototype.getPrimaryAttribute = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Attribute} returns this
- */
+/** @param {string} value */
 proto.assets.Attribute.prototype.setPrimaryAttribute = function(value) {
-  return jspb.Message.setProto3StringField(this, 3, value);
+  jspb.Message.setProto3StringField(this, 3, value);
 };
 
 
@@ -587,12 +568,9 @@ proto.assets.Attribute.prototype.getChainageStart = function() {
 };
 
 
-/**
- * @param {number} value
- * @return {!proto.assets.Attribute} returns this
- */
+/** @param {number} value */
 proto.assets.Attribute.prototype.setChainageStart = function(value) {
-  return jspb.Message.setProto3FloatField(this, 4, value);
+  jspb.Message.setProto3FloatField(this, 4, value);
 };
 
 
@@ -605,12 +583,9 @@ proto.assets.Attribute.prototype.getChainageEnd = function() {
 };
 
 
-/**
- * @param {number} value
- * @return {!proto.assets.Attribute} returns this
- */
+/** @param {number} value */
 proto.assets.Attribute.prototype.setChainageEnd = function(value) {
-  return jspb.Message.setProto3FloatField(this, 5, value);
+  jspb.Message.setProto3FloatField(this, 5, value);
 };
 
 
@@ -623,12 +598,9 @@ proto.assets.Attribute.prototype.getSurveyId = function() {
 };
 
 
-/**
- * @param {number} value
- * @return {!proto.assets.Attribute} returns this
- */
+/** @param {number} value */
 proto.assets.Attribute.prototype.setSurveyId = function(value) {
-  return jspb.Message.setProto3IntField(this, 6, value);
+  jspb.Message.setProto3IntField(this, 6, value);
 };
 
 
@@ -641,12 +613,9 @@ proto.assets.Attribute.prototype.getUserId = function() {
 };
 
 
-/**
- * @param {number} value
- * @return {!proto.assets.Attribute} returns this
- */
+/** @param {number} value */
 proto.assets.Attribute.prototype.setUserId = function(value) {
-  return jspb.Message.setProto3IntField(this, 7, value);
+  jspb.Message.setProto3IntField(this, 7, value);
 };
 
 
@@ -660,21 +629,17 @@ proto.assets.Attribute.prototype.getDateSurveyed = function() {
 };
 
 
-/**
- * @param {?proto.google.protobuf.Timestamp|undefined} value
- * @return {!proto.assets.Attribute} returns this
-*/
+/** @param {?proto.google.protobuf.Timestamp|undefined} value */
 proto.assets.Attribute.prototype.setDateSurveyed = function(value) {
-  return jspb.Message.setWrapperField(this, 8, value);
+  jspb.Message.setWrapperField(this, 8, value);
 };
 
 
 /**
  * Clears the message field making it undefined.
- * @return {!proto.assets.Attribute} returns this
  */
 proto.assets.Attribute.prototype.clearDateSurveyed = function() {
-  return this.setDateSurveyed(undefined);
+  this.setDateSurveyed(undefined);
 };
 
 
@@ -696,12 +661,9 @@ proto.assets.Attribute.prototype.getAddedBy = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Attribute} returns this
- */
+/** @param {string} value */
 proto.assets.Attribute.prototype.setAddedBy = function(value) {
-  return jspb.Message.setProto3StringField(this, 9, value);
+  jspb.Message.setProto3StringField(this, 9, value);
 };
 
 
@@ -714,12 +676,9 @@ proto.assets.Attribute.prototype.getValue = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Attribute} returns this
- */
+/** @param {string} value */
 proto.assets.Attribute.prototype.setValue = function(value) {
-  return jspb.Message.setProto3StringField(this, 10, value);
+  jspb.Message.setProto3StringField(this, 10, value);
 };
 
 
@@ -732,12 +691,9 @@ proto.assets.Attribute.prototype.getRoadId = function() {
 };
 
 
-/**
- * @param {number} value
- * @return {!proto.assets.Attribute} returns this
- */
+/** @param {number} value */
 proto.assets.Attribute.prototype.setRoadId = function(value) {
-  return jspb.Message.setProto3IntField(this, 11, value);
+  jspb.Message.setProto3IntField(this, 11, value);
 };
 
 
@@ -750,12 +706,9 @@ proto.assets.Attribute.prototype.getRoadCode = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Attribute} returns this
- */
+/** @param {string} value */
 proto.assets.Attribute.prototype.setRoadCode = function(value) {
-  return jspb.Message.setProto3StringField(this, 12, value);
+  jspb.Message.setProto3StringField(this, 12, value);
 };
 
 

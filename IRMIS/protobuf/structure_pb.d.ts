@@ -4,6 +4,34 @@
 import * as jspb from "google-protobuf";
 import * as google_protobuf_timestamp_pb from "google-protobuf/google/protobuf/timestamp_pb";
 
+export class Structures extends jspb.Message {
+  clearBridgesList(): void;
+  getBridgesList(): Array<Bridge>;
+  setBridgesList(value: Array<Bridge>): void;
+  addBridges(value?: Bridge, index?: number): Bridge;
+
+  clearCulvertsList(): void;
+  getCulvertsList(): Array<Culvert>;
+  setCulvertsList(value: Array<Culvert>): void;
+  addCulverts(value?: Culvert, index?: number): Culvert;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): Structures.AsObject;
+  static toObject(includeInstance: boolean, msg: Structures): Structures.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: Structures, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Structures;
+  static deserializeBinaryFromReader(message: Structures, reader: jspb.BinaryReader): Structures;
+}
+
+export namespace Structures {
+  export type AsObject = {
+    bridgesList: Array<Bridge.AsObject>,
+    culvertsList: Array<Culvert.AsObject>,
+  }
+}
+
 export class Bridge extends jspb.Message {
   getId(): string;
   setId(value: string): void;
@@ -51,15 +79,6 @@ export class Bridge extends jspb.Message {
   getStructureType(): string;
   setStructureType(value: string): void;
 
-  getRiverName(): string;
-  setRiverName(value: string): void;
-
-  getNumberSpans(): number;
-  setNumberSpans(value: number): void;
-
-  getSpanLength(): number;
-  setSpanLength(value: number): void;
-
   getMaterial(): string;
   setMaterial(value: string): void;
 
@@ -68,6 +87,15 @@ export class Bridge extends jspb.Message {
 
   getProtectionDownstream(): string;
   setProtectionDownstream(value: string): void;
+
+  getRiverName(): string;
+  setRiverName(value: string): void;
+
+  getNumberSpans(): number;
+  setNumberSpans(value: number): void;
+
+  getSpanLength(): number;
+  setSpanLength(value: number): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Bridge.AsObject;
@@ -95,34 +123,12 @@ export namespace Bridge {
     width: number,
     chainage: number,
     structureType: string,
-    riverName: string,
-    numberSpans: number,
-    spanLength: number,
     material: string,
     protectionUpstream: string,
     protectionDownstream: string,
-  }
-}
-
-export class Bridges extends jspb.Message {
-  clearBridgesList(): void;
-  getBridgesList(): Array<Bridge>;
-  setBridgesList(value: Array<Bridge>): void;
-  addBridges(value?: Bridge, index?: number): Bridge;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): Bridges.AsObject;
-  static toObject(includeInstance: boolean, msg: Bridges): Bridges.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: Bridges, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): Bridges;
-  static deserializeBinaryFromReader(message: Bridges, reader: jspb.BinaryReader): Bridges;
-}
-
-export namespace Bridges {
-  export type AsObject = {
-    bridgesList: Array<Bridge.AsObject>,
+    riverName: string,
+    numberSpans: number,
+    spanLength: number,
   }
 }
 
@@ -173,12 +179,6 @@ export class Culvert extends jspb.Message {
   getStructureType(): string;
   setStructureType(value: string): void;
 
-  getHeight(): number;
-  setHeight(value: number): void;
-
-  getNumberCells(): number;
-  setNumberCells(value: number): void;
-
   getMaterial(): string;
   setMaterial(value: string): void;
 
@@ -187,6 +187,12 @@ export class Culvert extends jspb.Message {
 
   getProtectionDownstream(): string;
   setProtectionDownstream(value: string): void;
+
+  getHeight(): number;
+  setHeight(value: number): void;
+
+  getNumberCells(): number;
+  setNumberCells(value: number): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Culvert.AsObject;
@@ -214,33 +220,11 @@ export namespace Culvert {
     width: number,
     chainage: number,
     structureType: string,
-    height: number,
-    numberCells: number,
     material: string,
     protectionUpstream: string,
     protectionDownstream: string,
-  }
-}
-
-export class Culverts extends jspb.Message {
-  clearCulvertsList(): void;
-  getCulvertsList(): Array<Culvert>;
-  setCulvertsList(value: Array<Culvert>): void;
-  addCulverts(value?: Culvert, index?: number): Culvert;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): Culverts.AsObject;
-  static toObject(includeInstance: boolean, msg: Culverts): Culverts.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: Culverts, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): Culverts;
-  static deserializeBinaryFromReader(message: Culverts, reader: jspb.BinaryReader): Culverts;
-}
-
-export namespace Culverts {
-  export type AsObject = {
-    culvertsList: Array<Culvert.AsObject>,
+    height: number,
+    numberCells: number,
   }
 }
 
