@@ -182,7 +182,7 @@ class Survey(models.Model):
         )
 
 
-class Asset():
+class Asset:
     """ Ultimately this will provide the definitions that are common to all types of Assets. """
 
     """ Currently it is a mixture of items some just for 'Structures', others for everything. """
