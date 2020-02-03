@@ -4,7 +4,7 @@
             <div>
                 <ul class="navigation">
                     <li class="text-uppercase">{ window.gettext("Edit asset") }</li>
-                    <ul if="{ state.assetType === 'road' }">
+                    <ul if="{ props.assetType === 'road' }">
                         <li class="{ state.page === 'location_type' ? 'active' : '' }" data-page="location_type"
                             onclick="{ selectPage }">{ window.gettext("Location & Type") }</li>
                         <li class="{ state.page === 'asset_details' ? 'active' : '' }" data-page="asset_details"
@@ -22,12 +22,12 @@
                         <li class="{ state.page === 'environment' ? 'active' : '' }" data-page="environment"
                             onclick="{ selectPage }">{ window.gettext("Environment") }</li>
                     </ul>
-                    <ul if="{ state.assetType === 'BRDG' || state.assetType === 'CULV' }">
+                    <ul if="{ props.assetType === 'BRDG' || props.assetType === 'CULV' }">
                         <li class="{ state.page === 'structure_type' ? 'active' : '' }" data-page="structure_type"
                             onclick="{ selectPage }">{ window.gettext("Type") }</li>
                         <li class="{ state.page === 'structure_details' ? 'active' : '' }" data-page="structure_details"
                             onclick="{ selectPage }">{ window.gettext("Asset Details") }</li>
-                        <li if="{ state.assetType === 'BRDG' }" class="{ state.page === 'protection' ? 'active' : '' }" data-page="protection"
+                        <li if="{ props.assetType === 'BRDG' }" class="{ state.page === 'protection' ? 'active' : '' }" data-page="protection"
                             onclick="{ selectPage }">{ window.gettext("Protection") }</li>
                         <li class="{ state.page === 'photo' ? 'active' : '' }" data-page="photo"
                             onclick="{ selectPage }">{ window.gettext("Photos") }</li>
@@ -82,9 +82,9 @@
                 <edit_history if="{ state.page === 'history' }" road="{ state.baseRoad }" 
                     parent="{parentFunctions}"></edit_history>
                 <edit_structure_type if="{ state.page === 'structure_type' }" road="{ state.editingRoad }"
-                    assetType="{ state.assetType }"></edit_structure_type>
+                    assetType="{ props.assetType }"></edit_structure_type>
                 <edit_structure_details if="{ state.page === 'structure_details' }" road="{ state.editingRoad }"
-                    assetType="{ state.assetType }" saving="{ state.saving }" parent="{parentFunctions}"></edit_structure_details>
+                    assetType="{ props.assetType }" saving="{ state.saving }" parent="{parentFunctions}"></edit_structure_details>
                 <edit_protection if="{ state.page === 'protection' }" road="{ state.editingRoad }"
                     saving="{ state.saving }" parent="{parentFunctions}"></edit_protection>
                 <edit_photo if="{ state.page === 'photo' }" road="{ state.editingRoad }"
@@ -156,7 +156,6 @@
             },
             onBeforeMount(props, state) {
                 state.page = props.page;
-                state.assetType = props.assetType;
                 window.onbeforeunload = () => {
                     return this.hasChanges() ? "You have changes" : null;
                 }
@@ -237,7 +236,7 @@
             selectPage(e) {
                 const roadId = this.state.editingRoad.getId();
                 this.state.page = e.currentTarget.dataset.page;
-                this.state.nextPage = `#edit/${this.state.assetType}/${roadId}/${this.state.page}`;
+                this.state.nextPage = `#edit/${this.props.assetType}/${roadId}/${this.state.page}`;
                 if (this.hasChanges()) {
                     this.modalHandler();
                 } else {
