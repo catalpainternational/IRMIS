@@ -138,7 +138,13 @@ class ReportQuery:
                 " WHERE filtered = 1\n"
             ),
             "final_results": (
-                "SELECT CONCAT(asset_type_prefix, asset_id::text) AS asset_id, asset_code, break_attr AS attribute, start_chainage,\n"
+                "SELECT CONCAT(asset_type_prefix, asset_id::text) AS asset_id, asset_code,\n"
+                " CASE\n"
+                "  WHEN break_attr = 'road_type' THEN 'asset_class'\n"
+                "  WHEN break_attr = 'structure_class' THEN 'asset_class'\n"
+                "  ELSE break_attr\n"
+                " END AS attribute,\n"              
+                " start_chainage,\n"
                 " CASE\n"
                 "  WHEN end_chainage IS NULL THEN geom_chainage\n"
                 "  ELSE end_chainage\n"
@@ -215,6 +221,7 @@ class ReportQuery:
         # These should be ALL of the possible values keys in surveys.values
         value_filters = [
             # Common
+            "asset_class",
             "municipality",
             # Maybe Common from Road
             "carriageway_width",
@@ -310,6 +317,11 @@ class ReportQuery:
         attribute_clauses = []
         attribute_cases = []
 
+        self.report_clauses["values_to_chart"] = self.report_clauses["values_to_use"]
+        self.report_clauses["values_to_exclude"] = self.report_clauses["values_to_use"]
+        self.report_clauses["values_to_chart"] += " WHERE attr=ANY(%s)\n"
+        self.report_clauses["values_to_exclude"] += " WHERE NOT (attr=ANY(%s))\n"
+        
         # handle the filtering of the 'values' attributes
         for filter_key in self.filters.keys():
             if filter_key == "primary_attribute":
@@ -317,10 +329,15 @@ class ReportQuery:
             else:
                 value_filter_keys.append(filter_key)
         value_filter_keys = list(set(value_filter_keys).intersection(value_filters))
-        self.report_clauses["values_to_chart"] = self.report_clauses["values_to_use"]
-        self.report_clauses["values_to_exclude"] = self.report_clauses["values_to_use"]
-        self.report_clauses["values_to_chart"] += " WHERE attr=ANY(%s)\n"
-        self.report_clauses["values_to_exclude"] += " WHERE NOT (attr=ANY(%s))\n"
+        
+        # do any field name mapping to make things work
+        has_asset_class = "asset_class" in value_filter_keys
+        has_road_type = "road_type" in value_filter_keys
+        # has_structure_class = "structure_class" in value_filter_keys
+        if has_asset_class and not has_road_type:
+            value_filter_keys.remove("asset_class")
+            value_filter_keys.append("road_type")
+
         # Note the deliberate double appending of these values (because they're used twice)
         self.filter_cases.append(value_filter_keys)
         self.filter_cases.append(value_filter_keys)
@@ -425,7 +442,7 @@ class ReportQuery:
         # * substitute the plain text (no quotes) of each set of filter_cases
         #   within the corresponding {} part of each of the ANY clauses
         # then you'll be able to run the query in any tool that can handle SQL (recommend LINQPad)
-        print(self.reportSQL.replace(r"ANY(%s)", r"ANY('{}'::text[])"), "\n-- ", self.filter_cases)
+        # print(self.reportSQL.replace(r"ANY(%s)", r"ANY('{}'::text[])"), "\n-- ", self.filter_cases)
 
         with connection.cursor() as cursor:
             cursor.execute(self.reportSQL, self.filter_cases)

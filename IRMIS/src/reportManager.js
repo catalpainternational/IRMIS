@@ -190,7 +190,7 @@ export const reportContent = {
         noReportData: window.gettext("Sorry, data for National Class roads is not available yet"),
         fixedFilter: {
             primaryattribute: ["road_status", "technical_class"],
-            road_type: "NAT",
+            asset_class: "NAT",
         },
         visibleFilters: {
             reportDate: true,
@@ -205,7 +205,7 @@ export const reportContent = {
         noReportData: window.gettext("Sorry, data for Municipal Class roads is not available yet"),
         fixedFilter: {
             primaryattribute: ["road_status", "technical_class"],
-            road_type: "MUN",
+            asset_class: "MUN",
         },
         visibleFilters: {
             reportDate: true,
@@ -220,7 +220,7 @@ export const reportContent = {
         noReportData: window.gettext("Sorry, data for Rural Class roads is not available yet"),
         fixedFilter: {
             primaryattribute: ["road_status", "technical_class"],
-            road_type: "RUR",
+            asset_class: "RUR",
         },
         visibleFilters: {
             reportDate: true,
@@ -235,7 +235,7 @@ export const reportContent = {
         noReportData: window.gettext("Sorry, data for Highway Class roads is not available yet"),
         fixedFilter: {
             primaryattribute: ["road_status", "technical_class"],
-            road_type: "HIGH",
+            asset_class: "HIGH",
         },
         visibleFilters: {
             reportDate: true,
@@ -250,7 +250,7 @@ export const reportContent = {
         noReportData: window.gettext("Sorry, data for Urban Class roads is not available yet"),
         fixedFilter: {
             primaryattribute: ["road_status", "technical_class"],
-            road_type: "URB",
+            asset_class: "URB",
         },
         visibleFilters: {
             reportDate: true,

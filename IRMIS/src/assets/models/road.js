@@ -10,7 +10,7 @@ export const MAINTENANCE_NEED_CHOICES = humanizeChoices(assetSchema, 'maintenanc
 export const PAVEMENT_CLASS_CHOICES = humanizeChoices(assetSchema, 'pavement_class', 'code', 'name');
 export const ROAD_STATUS_CHOICES = humanizeChoices(assetSchema, 'road_status', 'code', 'name');
 // Asset Class is actually common for all types of asset,
-// for roads its renamed from 'road_type' to 'asset_class'
+// for roads it's renamed from 'road_type' to 'asset_class'
 export const ASSET_CLASS_CHOICES = humanizeChoices(assetSchema, 'asset_class');
 export const SURFACE_CONDITION_CHOICES = humanizeChoices(assetSchema, 'surface_condition');
 export const SURFACE_TYPE_CHOICES = humanizeChoices(assetSchema, 'surface_type', 'code', 'name');

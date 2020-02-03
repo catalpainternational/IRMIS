@@ -43,8 +43,8 @@
                     </select>
                 </div>
                 <!-- Optionally include the following to show the fixedFilter value (changing to the full option title) -->
-                <!-- <div if="{ reportContent().fixedFilter.road_type }" class="options">
-                    <span>{ reportContent().fixedFilter.road_type }</span>
+                <!-- <div if="{ reportContent().fixedFilter.asset_class }" class="options">
+                    <span>{ reportContent().fixedFilter.asset_class }</span>
                 </div> -->
 
                 <div if="{ reportContent().visibleFilters.surfaceType }" class="options">
@@ -619,7 +619,7 @@
                     const surfaceConditionAttributes = surfaceConditions ? surfaceConditions.attributeEntries || [] : [];
                     this.state.reportData.surfaceCondition = this.prepareTableData(reportTableIds.surfaceCondition, surfaceConditionAttributes, "surface_condition");
 
-                    this.prepareStackedBar(this.stackedBarIds.roadStatus, surveyReportData.roadStatuses, "road_type");
+                    this.prepareStackedBar(this.stackedBarIds.roadStatus, surveyReportData.roadStatuses, "asset_class");
                     this.prepareStackedBar(this.stackedBarIds.technicalClass, surveyReportData.technicalClasses, "technical_class");
                     this.prepareStackedBar(this.stackedBarIds.surfaceCondition, surveyReportData.surfaceConditions, "surface_condition");
 

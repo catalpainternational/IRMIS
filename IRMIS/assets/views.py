@@ -120,7 +120,7 @@ def road_update(request):
     regular_fields = [
         "road_name",
         "road_code",
-        "road_type",
+        "asset_class", # was road_type, specially handled below
         "link_code",
         "link_start_name",
         "link_end_name",
@@ -146,12 +146,16 @@ def road_update(request):
     ]
     changed_fields = []
     for field in regular_fields:
+        field_name = field
         request_value = getattr(req_pb, field)
         if getattr(old_road_pb, field) != request_value:
+            # handle mapping over changed field names
+            if field == "asset_class":
+                field_name = "road_type"
             # set attribute on road
-            setattr(road, field, request_value)
+            setattr(road, field_name, request_value)
             # add field to list of changes fields
-            changed_fields.append(field)
+            changed_fields.append(field_name)
 
     # Nullable Numeric attributes
     for field in numeric_fields:
@@ -733,7 +737,7 @@ def bridge_create(req_pb):
             "user": get_user_model().objects.get(pk=req_pb.user),
             "structure_code": req_pb.structure_code,
             "structure_name": req_pb.structure_name,
-            "structure_class": req_pb.structure_class,
+            "structure_class": req_pb.asset_class,
             "administrative_area": req_pb.administrative_area,
             "construction_year": req_pb.construction_year,
             "length": req_pb.length,
@@ -758,7 +762,7 @@ def culvert_create(req_pb):
             "user": get_user_model().objects.get(pk=req_pb.user),
             "structure_code": req_pb.structure_code,
             "structure_name": req_pb.structure_name,
-            "structure_class": req_pb.structure_class,
+            "structure_class": req_pb.asset_class,
             "administrative_area": req_pb.administrative_area,
             "construction_year": req_pb.construction_year,
             "length": req_pb.length,
@@ -781,7 +785,7 @@ def bridge_update(bridge, req_pb):
     bridge.user = get_user_model().objects.get(pk=req_pb.user)
     bridge.structure_code = req_pb.structure_code
     bridge.structure_name = req_pb.structure_name
-    bridge.structure_class = req_pb.structure_class
+    bridge.structure_class = req_pb.asset_class
     bridge.administrative_area = req_pb.administrative_area
     bridge.construction_year = req_pb.construction_year
     bridge.length = req_pb.length
@@ -805,7 +809,7 @@ def culvert_update(culvert, req_pb):
     culvert.user = get_user_model().objects.get(pk=req_pb.user)
     culvert.structure_code = req_pb.structure_code
     culvert.structure_name = req_pb.structure_name
-    culvert.structure_class = req_pb.structure_class
+    culvert.structure_class = req_pb.asset_class
     culvert.administrative_area = req_pb.administrative_area
     culvert.construction_year = req_pb.construction_year
     culvert.length = req_pb.length
