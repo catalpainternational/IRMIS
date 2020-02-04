@@ -498,20 +498,20 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
 
     if (attr === "traffic_level") {
         modal.find(".modal-title").text(`${assetCode} Traffic Data`);
+        let latestSurvey = false;
         getAssetSurveys(assetId, "trafficType")
             .then((surveyData) => {
-                if (surveyData.length) {
-                    // Get the latest Survey (AADT or Forecast)
-                    const latestSurvey = surveyData.filter((s) => {
-                        return s.values.trafficType === "Forecast" || s.values.trafficType === "AADT";
-                    }).sort((a, b) => {
-                        a = new Date(a.dateSurveyed);
-                        b = new Date(b.dateSurveyed);
-                        return (a > b) ? -1 : (a < b) ? 1 : 0;
-                    });
-                    // update the traffic details inventory modal tag with current data
-                    document.dispatchEvent(new CustomEvent("inventory-traffic-level-table.updateTrafficData", {detail: {currentRowData: latestSurvey[0] || false }}));
-                }
+                // Get the latest Survey (AADT or Forecast)
+                latestSurvey = surveyData.filter((s) => {
+                    return s.values.trafficType === "Forecast" || s.values.trafficType === "AADT";
+                }).sort((a, b) => {
+                    a = new Date(a.dateSurveyed);
+                    b = new Date(b.dateSurveyed);
+                    return (a > b) ? -1 : (a < b) ? 1 : 0;
+                })[0] || false;
+            }).finally(() => {
+                // update the traffic details inventory modal tag with current data
+                document.dispatchEvent(new CustomEvent("inventory-traffic-level-table.updateTrafficData", {detail: {currentRowData: latestSurvey }}));
             });
     } else {
         const reportDataTableId = attributeModalMapping[attr].reportDataTableId;
