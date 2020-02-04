@@ -1,0 +1,202 @@
+<edit_structure_details>
+    <div class="content-wrapper">
+        <h5>{ window.gettext("Asset Details") }</h5>
+
+        <section>
+            <div class="form-group">
+                <label>{ window.gettext("Structure Code") }</label>
+                <input
+                    class="{ state.errors.structureCode ? 'danger' : null } { state.structureCode ? '' : 'inactive' } form-control"
+                    type="text" maxlength="25" placeholder="DI-001" value="{ state.structureCode }"
+                    oninput="{ checkStructureCode }">
+                <small class="form-text text-muted">{ window.gettext("Enter the code of the structure") }</small>
+                <div if="{ state.errors.structureCode }" class="invalid-tooltip">
+                    <ul>
+                        <li>{ state.errors.structureCode }.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>{ window.gettext("Structure Name") }</label>
+                <input
+                    class="{ state.errors.structureName ? 'danger' : null } { state.structureName ? '' : 'inactive' } form-control"
+                    type="text" maxlength="25" placeholder="Kuluhun" value="{ state.structureName }"
+                    oninput="{ checkStructureName }">
+                <small class="form-text text-muted">{ window.gettext("Enter the name of the structure") }</small>
+                <div if="{ state.errors.structureName }" class="invalid-tooltip">
+                    <ul>
+                        <li>{ state.errors.structureName }.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bridge-specific field -->
+            <div if="{ props.assetType === 'BRDG' }">
+                <div class="form-group">
+                    <label>{ window.gettext("River Name") }</label>
+                    <input
+                        class="{ state.errors.riverName ? 'danger' : null } { state.riverName ? '' : 'inactive' } form-control"
+                        type="text" maxlength="25" placeholder="Kuluhun" value="{ state.riverName }"
+                        oninput="{ checkRiverName }">
+                    <small class="form-text text-muted">{ window.gettext("Enter the name of the river where the structure is located") }</small>
+                    <div if="{ state.errors.riverName }" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.riverName }.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>{ window.gettext("Construction Year") }</label>
+                <input
+                    class="{ state.errors.constructionYear ? 'danger' : null } { state.constructionYear ? '' : 'inactive' } form-control"
+                    type="number" maxlength="4" placeholder="1970" value="{ state.constructionYear }"  min="0"
+                    oninput="{ checkConstructionYear }">
+                <small class="form-text text-muted">{ window.gettext("Enter structure's construction year") }</small>
+                <div if="{ state.errors.constructionYear }" class="invalid-tooltip">
+                    <ul>
+                        <li>{ state.errors.constructionYear }.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>{ window.gettext("Length (meters)") }</label>
+                <input
+                    class="{ state.errors.structureLength ? 'danger' : null } { state.structureLength ? '' : 'inactive' } form-control"
+                    type="number" maxlength="25" placeholder="6" value="{ state.structureLength }"
+                    oninput="{ checkStructureLength }">
+                <small class="form-text text-muted">{ window.gettext("Enter the structure length in meters") }</small>
+                <div if="{ state.errors.structureLength }" class="invalid-tooltip">
+                    <ul>
+                        <li>{ state.errors.structureLength }.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>{ window.gettext("Width (meters)") }</label>
+                <input
+                    class="{ state.errors.structureWidth ? 'danger' : null } { state.structureWidth ? '' : 'inactive' } form-control"
+                    type="number" maxlength="25" placeholder="6" value="{ state.structureWidth }"
+                    oninput="{ checkStructureWidth }">
+                <small class="form-text text-muted">{ window.gettext("Enter the structure width in meters") }</small>
+                <div if="{ state.errors.structureWidth }" class="invalid-tooltip">
+                    <ul>
+                        <li>{ state.errors.structureWidth }.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Culvert-specific fields -->
+            <div if="{ props.assetType === 'CULV' }">
+                <div class="form-group">
+                    <label>{ window.gettext("Height (meters)") }</label>
+                    <input
+                        class="{ state.errors.structureHeight ? 'danger' : null } { state.structureHeight ? '' : 'inactive' } form-control"
+                        type="number" maxlength="25" placeholder="6" value="{ state.structureHeight }"
+                        oninput="{ checkStructureHeight }">
+                    <small class="form-text text-muted">{ window.gettext("Enter the structure height in meters") }</small>
+                    <div if="{ state.errors.structureHeight }" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.structureHeight }.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>{ window.gettext("Number of cells") }</label>
+                    <input
+                        class="{ state.errors.structureCells ? 'danger' : null } { state.structureCells ? '' : 'inactive' } form-control"
+                        type="number" maxlength="25" placeholder="2" value="{ state.structureCells }"
+                        oninput="{ checkStructureCells }">
+                    <small class="form-text text-muted">{ window.gettext("Enter the number of cells in the structure") }</small>
+                    <div if="{ state.errors.structureCells }" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.structureCells }.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bridge-specific field -->
+            <div if="{ props.assetType === 'BRDG' }">
+                <div class="form-group">
+                    <label>{ window.gettext("Number of spans") }</label>
+                    <input
+                        class="{ state.errors.structureSpans ? 'danger' : null } { state.structureSpans ? '' : 'inactive' } form-control"
+                        type="number" maxlength="25" placeholder="1" value="{ state.structureSpans }"
+                        oninput="{ checkStructureSpans }">
+                    <small class="form-text text-muted">{ window.gettext("Enter the number of spans in the structure") }</small>
+                    <div if="{ state.errors.structureSpans }" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.structureSpans }.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="button-wrapper d-flex justify-content-end">
+            <button class="btn btn-primary" onclick="{ save }" disabled="{ props.saving }">{ window.gettext("Save and continue") }</button>
+        </div>
+    </div>
+
+    <script>
+        export default {
+            onBeforeMount(props, state) {
+                state.structureCode = null;
+                state.structureName = null;
+                state.riverName = null;
+                state.constructionYear = null;
+                state.structureLength = null;
+                state.structureWidth = null;
+                state.structureHeight = null;
+                state.structureCells = null;
+                state.structureSpans = null;
+                state.errors = {};
+            },
+            save(e) {
+                this.props.parent.save();
+            },
+            checkStructureCode(e) {
+                this.state.structureCode = e.currentTarget.value;
+                this.update();
+            },
+            checkStructureName(e) {
+                this.state.structureName = e.currentTarget.value;
+                this.update();
+            },
+            checkRiverName(e) {
+                this.state.riverName = e.currentTarget.value;
+                this.update();
+            },
+            checkConstructionYear(e) {
+                this.state.constructionYear = e.currentTarget.value;
+                this.update();
+            },
+            checkStructureLength(e) {
+                this.state.structureLength = e.currentTarget.value;
+                this.update();
+            },
+            checkStructureWidth(e) {
+                this.state.structureWidth = e.currentTarget.value;
+                this.update();
+            },
+            checkStructureHeight(e) {
+                this.state.structureHeight = e.currentTarget.value;
+                this.update();
+            },
+            checkStructureCells(e) {
+                this.state.structureCells = e.currentTarget.value;
+                this.update();
+            },
+            checkStructureSpans(e) {
+                this.state.structureSpans = e.currentTarget.value;
+                this.update();
+            },
+        }
+    </script>
+</edit_structure_details>

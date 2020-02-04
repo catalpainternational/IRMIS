@@ -79,13 +79,13 @@ function hashCheck() {
 
     let planningHash = /#planning/.exec(location.hash);
     let reportsHash = /#reports\/(.*)\/?/.exec(location.hash);
-    let editHash = /#edit\/(\d*)\/(\w+)/.exec(location.hash);
+    let editHash = /#edit\/(\w+)\/(\d*)\/(\w+)/.exec(location.hash);
 
     if (editHash !== null && !editBase) {
-        const roadPromise = getRoad(editHash[1]);
+        const roadPromise = getRoad(editHash[2]);
         if (planningBase) riot.unmount("planning_base", true);
         if (reportsBase) riot.unmount("reports_base", true);
-        riot.mount("edit_base", { roadPromise: roadPromise, page: editHash[2] });
+        riot.mount("edit_base", { roadPromise: roadPromise, assetType: editHash[1], page: editHash[3] });
         mainContent.hidden = true;
     } else if (reportsHash !== null && !reportsBase) {
         if (planningBase) riot.unmount("planning_base", true);
