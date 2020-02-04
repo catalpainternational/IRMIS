@@ -1,7 +1,8 @@
 import dayjs from "dayjs";
 
 import { Survey } from "../../../protobuf/survey_pb";
-import { PAVEMENT_CLASS_CHOICES, SURFACE_CONDITION_CHOICES, SURFACE_TYPE_CHOICES, TECHNICAL_CLASS_CHOICES, TERRAIN_CLASS_CHOICES, TRAFFIC_LEVEL_CHOICES } from "./road";
+import { PAVEMENT_CLASS_CHOICES, SURFACE_TYPE_CHOICES, TECHNICAL_CLASS_CHOICES, TERRAIN_CLASS_CHOICES, TRAFFIC_LEVEL_CHOICES } from "./road";
+import { ASSET_CONDITION_CHOICES } from "./asset";
 
 import { choice_or_default, getFieldName, getHelpText } from "../protoBufUtilities";
 
@@ -50,8 +51,8 @@ export class EstradaSurvey extends Survey {
 
     // All of the `values` defined in 'make_road_surveys.py' should also be present
     // in the following `get` properties
-    get surfaceCondition() {
-        return choice_or_default(this.values.surface_condition, SURFACE_CONDITION_CHOICES);
+    get assetCondition() {
+        return choice_or_default(this.values.asset_condition, ASSET_CONDITION_CHOICES);
     }
 
     get surfaceType() {

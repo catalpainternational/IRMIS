@@ -124,8 +124,8 @@ export class Road extends jspb.Message {
   getSurfaceType(): string;
   setSurfaceType(value: string): void;
 
-  getSurfaceCondition(): string;
-  setSurfaceCondition(value: string): void;
+  getAssetCondition(): string;
+  setAssetCondition(value: string): void;
 
   getPavementClass(): string;
   setPavementClass(value: string): void;
@@ -192,7 +192,7 @@ export namespace Road {
     linkEndChainage: number,
     linkLength: number,
     surfaceType: string,
-    surfaceCondition: string,
+    assetCondition: string,
     pavementClass: string,
     carriagewayWidth: number,
     administrativeArea: string,

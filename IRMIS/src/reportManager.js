@@ -66,9 +66,9 @@ export const reportColumns = {
         defaultContent: "",
         orderable: false,
     },
-    surfaceCondition: {
+    assetCondition: {
         title: window.gettext("Surface Condition (SDI)"),
-        data: "surfaceCondition",
+        data: "assetCondition",
         defaultContent: "",
         orderable: false,
     },
@@ -93,7 +93,7 @@ export const reportTableIds = {
     surfaceType: "report-surface-type-table",
     roadStatus: "report-road-status-table",
     technicalClass: "report-technical-class-table",
-    surfaceCondition: "report-surface-condition-table",
+    assetCondition: "report-asset-condition-table",
 };
 
 /** The names of the stacked bars used in the reports */
@@ -101,7 +101,7 @@ export const reportBarIds = {
     assetClass: "report-asset-class-bar",
     roadStatus: "report-road-status-bar",
     technicalClass: "report-technical-class-bar",
-    surfaceCondition: "report-surface-condition-bar",
+    assetCondition: "report-asset-condition-bar",
     pavementClass: "report-pavement-class-bar",
 };
 
@@ -126,7 +126,7 @@ export const reportContent = {
             municipality: true,
             assetClass: true,
             surfaceType: true,
-            surfaceCondition: true,
+            assetCondition: true,
             reportDate: true,
         },
         reportElements: { filters: true, totalLength: true, dataTables: [reportTableIds.roadStatus, reportTableIds.technicalClass] },
@@ -149,7 +149,7 @@ export const reportContent = {
             // municipality: true,
             // assetClass: true,
             // surfaceType: true,
-            // surfaceCondition: true,
+            // assetCondition: true,
             reportDate: true,
         },
         reportElements: { filters: true, totalLength: true, dataTables: [reportTableIds.municipality, reportTableIds.assetClass, reportTableIds.surfaceType] },
@@ -161,13 +161,13 @@ export const reportContent = {
         noReportDescription: window.gettext("The report will be shown in this area and will provide you with detailed Surface Condition information per segment of the selected road"),
         noReportData: window.gettext("Sorry, Surface Condition data is not available for the selected road"),
         fixedFilter: {
-            primaryattribute: ["surface_condition"],
+            primaryattribute: ["asset_condition"],
         },
         visibleFilters: {
             roadCode: true,
             reportDate: true,
         },
-        reportElements: { roadCodeAndChainage: true, stackedBars: [reportBarIds.surfaceCondition], dataTables: [reportTableIds.surfaceCondition] },
+        reportElements: { roadCodeAndChainage: true, stackedBars: [reportBarIds.assetCondition], dataTables: [reportTableIds.assetCondition] },
     },
     4: {
         title: window.gettext("IRI Roughness"),

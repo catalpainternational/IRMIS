@@ -124,7 +124,7 @@ def road_update(request):
         "link_code",
         "link_start_name",
         "link_end_name",
-        "surface_condition",
+        "asset_condition",  # was surface_type, specially handled below
         "administrative_area",
         "project",
         "funding_source",
@@ -152,6 +152,8 @@ def road_update(request):
             # handle mapping over changed field names
             if field == "asset_class":
                 field_name = "road_type"
+            elif field == "asset_condition":
+                field_name = "surface_condition"
             # set attribute on road
             setattr(road, field_name, request_value)
             # add field to list of changes fields
@@ -577,9 +579,7 @@ def protobuf_reports(request):
     surface_types = request.GET.getlist("surface_type", [])  # surface_type=X
     pavement_classes = request.GET.getlist("pavement_class", [])  # pavement_class=X
     municipalities = request.GET.getlist("municipality", [])  # municipality=X
-    surface_conditions = request.GET.getlist(
-        "surface_condition", []
-    )  # surface_condition=X
+    asset_conditions = request.GET.getlist("asset_condition", [])  # asset_condition=X
 
     # handle the (maximum) report date
     report_date = request.GET.get("reportdate", None)  # reportdate=X
@@ -668,8 +668,8 @@ def protobuf_reports(request):
         final_filters["surface_type"] = surface_types
     if len(pavement_classes) > 0:
         final_filters["pavement_class"] = pavement_classes
-    if len(surface_conditions) > 0:
-        final_filters["surface_condition"] = surface_conditions
+    if len(asset_conditions) > 0:
+        final_filters["asset_condition"] = asset_conditions
 
     # Survey level attributes
     # if report_date:
@@ -690,6 +690,8 @@ def protobuf_reports(request):
         json.dumps(final_filters)
         .replace("""road_type""", """asset_class""")
         .replace("""structure_class""", """asset_class""")
+        .replace("""surface_condition""", """asset_condition""")
+        .replace("""structure_condition""", """asset_condition""")
     )
     report_protobuf.filter = filtered_filters
     report_protobuf.lengths = json.dumps(final_lengths)
