@@ -7,9 +7,9 @@ import { assetTypeName } from "./side_menu";
  * */
 let filterState = {};
 
-
 // we'll need to add more in here as we add more filters
 export const slugToPropertyGetter = {
+    asset_type: "getAssetType",
     road_code: 'getRoadCode',
     asset_class: 'getAssetClass',
     surface_type: 'getSurfaceType',

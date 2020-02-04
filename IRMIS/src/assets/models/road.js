@@ -158,6 +158,10 @@ export class EstradaRoad extends Road {
         return this.getRainfall();
     }
 
+    getAssetType() {
+        return "ROAD";
+    }
+
     /** A Null or None in the protobuf is indicated by a negative value */
     getRainfall() {
         const rainfall = super.getRainfall();

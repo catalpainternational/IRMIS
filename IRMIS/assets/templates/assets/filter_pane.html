@@ -11,11 +11,16 @@
         </div>
     </div>
 
-    <div class="asset-type position-relative">
+    <div class="filters asset-type position-relative">
         <h6>{% trans "Asset Type" %}</h6>
-        <div id="assetType" class="d-flex">
-            <a class="active align-items-center d-flex justify-content-center text-center" data-filtername="roads">{% trans "Roads" %}</a>
-            <a class="align-items-center d-flex justify-content-center text-center" data-filtername="structures">{% trans "Structures" %}</a>
+        {% comment %} ASSET TYPE {% endcomment %}
+        <div id="assetType" class="d-flex filters-section roads structures">
+            {% with slug=asset_schema.asset_type.slug %}
+            <div data-slug="{{ slug }}" class="d-flex filter">
+                <a class="active align-items-center d-flex justify-content-center text-center" data-option="ROAD">{% trans "Roads" %}</a>
+                <a class="align-items-center d-flex justify-content-center text-center" data-option="STRC">{% trans "Structures" %}</a>
+            </div>
+            {% endwith %}
         </div>
     </div>
 

@@ -141,6 +141,9 @@ export class EstradaBridge extends Bridge {
         return choice_or_default(this.getProtectionDownstream(), STRUCTURE_DOWNSTREAM_PROTECTION_TYPE_CHOICES);
     }
 
+    getAssetType() {
+        return "BRDG";
+    }
 
     /** A Null or None in the protobuf is indicated by a negative value */
     getChainage() {
@@ -229,6 +232,10 @@ export class EstradaCulvert extends Culvert {
 
     get protectionDownstream() {
         return choice_or_default(this.getProtectionDownstream(), STRUCTURE_DOWNSTREAM_PROTECTION_TYPE_CHOICES);
+    }
+
+    getAssetType() {
+        return "CULV";
     }
 
     /** A Null or None in the protobuf is indicated by a negative value */
