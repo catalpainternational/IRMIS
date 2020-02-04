@@ -124,7 +124,7 @@ def road_update(request):
         "link_code",
         "link_start_name",
         "link_end_name",
-        "asset_condition",  # was surface_type, specially handled below
+        "asset_condition",  # was surface_condition, specially handled below
         "administrative_area",
         "project",
         "funding_source",
@@ -302,6 +302,16 @@ def pbtimestamp_to_pydatetime(pb_stamp):
     return pytz.utc.localize(pb_date)
 
 
+def road_survey_values(req_pb_values):
+    """ convert the json and do any required key manipulation """
+    req_values = json.loads(req_pb_values)
+    if "asset_class" in req_values:
+        req_values["road_type"] = req_values.pop("asset_class")
+    if "asset_condition" in req_values:
+        req_values["surface_condition"] = req_values.pop("asset_condition")
+
+    return req_values
+
 @login_required
 @user_passes_test(user_can_edit)
 def survey_create(request):
@@ -313,6 +323,9 @@ def survey_create(request):
     # parse Survey from protobuf in request body
     req_pb = survey_pb2.Survey()
     req_pb.ParseFromString(request.body)
+
+    # convert the json and do any required key manipulation
+    req_values = road_survey_values(req_pb.values)
 
     # check that Protobuf parsed
     if not req_pb.road_id:
@@ -342,7 +355,7 @@ def survey_create(request):
                     "chainage_end": req_pb.chainage_end,
                     "date_surveyed": pbtimestamp_to_pydatetime(req_pb.date_surveyed),
                     "source": req_pb.source,
-                    "values": json.loads(req_pb.values),
+                    "values": req_values,
                 }
             )
 
@@ -409,7 +422,7 @@ def survey_update(request):
         )
 
     # if the new values are empty delete the record and return 200
-    new_values = json.loads(req_pb.values)
+    req_values = road_survey_values(req_pb.values)
     if new_values == {}:
         with reversion.create_revision():
             survey.delete()
@@ -429,7 +442,7 @@ def survey_update(request):
     survey.chainage_end = req_pb.chainage_end
     survey.date_surveyed = pbtimestamp_to_pydatetime(req_pb.date_surveyed)
     survey.source = req_pb.source
-    survey.values = new_values
+    survey.values = req_values
 
     with reversion.create_revision():
         survey.save()
