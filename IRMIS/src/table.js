@@ -505,7 +505,9 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
                     const latestSurvey = surveyData.filter((s) => {
                         return s.values.trafficType === "Forecast" || s.values.trafficType === "AADT";
                     }).sort((a, b) => {
-                        return a.dateSurveyed - b.dateSurveyed;
+                        a = new Date(a.dateSurveyed);
+                        b = new Date(b.dateSurveyed);
+                        return (a > b) ? -1 : (a < b) ? 1 : 0;
                     });
                     // update the traffic details inventory modal tag with current data
                     document.dispatchEvent(new CustomEvent("inventory-traffic-level-table.updateTrafficData", {detail: {currentRowData: latestSurvey[0] || false }}));
