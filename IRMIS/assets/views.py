@@ -271,9 +271,15 @@ def protobuf_road_surveys(request, pk, survey_attribute=None):
     # pull any Surveys that cover the Road Code above
     queryset = Survey.objects.filter(road_code=road.road_code)
 
+    filter_attribute = survey_attribute
+    if survey_attribute == "asset_condition":
+        filter_attribute = "surface_condition"
+    elif survey_attribute == "asset_class":
+        filter_attribute = "road_type"
+
     if survey_attribute:
-        queryset = queryset.filter(values__has_key=survey_attribute).exclude(
-            **{"values__" + survey_attribute + "__isnull": True}
+        queryset = queryset.filter(values__has_key=filter_attribute).exclude(
+            **{"values__" + filter_attribute + "__isnull": True}
         )
 
     queryset.order_by("road_code", "chainage_start", "chainage_end", "-date_updated")
