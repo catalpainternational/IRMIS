@@ -9,7 +9,9 @@ export const ADMINISTRATIVE_AREA_CHOICES = humanizeChoices(assetSchema, 'adminis
 export const MAINTENANCE_NEED_CHOICES = humanizeChoices(assetSchema, 'maintenance_need', 'code', 'name');
 export const PAVEMENT_CLASS_CHOICES = humanizeChoices(assetSchema, 'pavement_class', 'code', 'name');
 export const ROAD_STATUS_CHOICES = humanizeChoices(assetSchema, 'road_status', 'code', 'name');
-export const ROAD_TYPE_CHOICES = humanizeChoices(assetSchema, 'road_type');
+// Asset Class is actually common for all types of asset,
+// for roads it's renamed from 'road_type' to 'asset_class'
+export const ASSET_CLASS_CHOICES = humanizeChoices(assetSchema, 'asset_class');
 export const SURFACE_CONDITION_CHOICES = humanizeChoices(assetSchema, 'surface_condition');
 export const SURFACE_TYPE_CHOICES = humanizeChoices(assetSchema, 'surface_type', 'code', 'name');
 export const TECHNICAL_CLASS_CHOICES = humanizeChoices(assetSchema, 'technical_class', 'code', 'name');
@@ -67,8 +69,8 @@ export class EstradaRoad extends Road {
         return choice_or_default(this.getRoadStatus(), ROAD_STATUS_CHOICES);
     }
 
-    get type() {
-        return choice_or_default(this.getRoadType(), ROAD_TYPE_CHOICES);
+    get assetClass() {
+        return choice_or_default(this.getAssetClass(), ASSET_CLASS_CHOICES);
     }
 
     get surfaceType() {

@@ -55,8 +55,8 @@ export class Bridge extends jspb.Message {
   getStructureName(): string;
   setStructureName(value: string): void;
 
-  getStructureClass(): string;
-  setStructureClass(value: string): void;
+  getAssetClass(): string;
+  setAssetClass(value: string): void;
 
   getAdministrativeArea(): string;
   setAdministrativeArea(value: string): void;
@@ -115,7 +115,7 @@ export namespace Bridge {
     lastModified?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     structureCode: string,
     structureName: string,
-    structureClass: string,
+    assetClass: string,
     administrativeArea: string,
     roadCode: string,
     constructionYear: number,
@@ -155,8 +155,8 @@ export class Culvert extends jspb.Message {
   getStructureName(): string;
   setStructureName(value: string): void;
 
-  getStructureClass(): string;
-  setStructureClass(value: string): void;
+  getAssetClass(): string;
+  setAssetClass(value: string): void;
 
   getAdministrativeArea(): string;
   setAdministrativeArea(value: string): void;
@@ -212,7 +212,7 @@ export namespace Culvert {
     lastModified?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     structureCode: string,
     structureName: string,
-    structureClass: string,
+    assetClass: string,
     administrativeArea: string,
     roadCode: string,
     constructionYear: number,

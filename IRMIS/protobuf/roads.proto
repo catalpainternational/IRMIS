@@ -31,7 +31,7 @@ message Road {
   uint32 geojson_id = 2;
   string road_code = 3;
   string road_name = 4;
-  string road_type = 10;
+  string asset_class = 10; // road_type has been renamed to asset_class
   string road_status = 20;
   string link_code = 5;
   /* string link_name = 6; */

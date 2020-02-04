@@ -6,7 +6,9 @@ const assetSchema = JSON.parse(document.getElementById("asset_schema").textConte
 
 // export const STRUCTURE_CONDITION_CHOICES = humanizeChoices(assetSchema, 'structure_condition', 'code', 'name');
 export const ADMINISTRATIVE_AREA_CHOICES = humanizeChoices(assetSchema, 'administrative_area', 'id', 'name');
-export const STRUCTURE_CLASS_CHOICES = humanizeChoices(assetSchema, 'structure_class');
+// Asset Class is actually common for all types of asset,
+// for structures it needs to be renamed from 'structure_class' to 'asset_class'
+export const ASSET_CLASS_CHOICES = humanizeChoices(assetSchema, 'asset_class');
 export const STRUCTURE_UPSTREAM_PROTECTION_TYPE_CHOICES = humanizeChoices(assetSchema, 'protection_upstream', 'code', 'name');
 export const STRUCTURE_DOWNSTREAM_PROTECTION_TYPE_CHOICES = humanizeChoices(assetSchema, 'protection_downstream', 'code', 'name');
 export const STRUCTURE_TYPE_BRIDGE_CHOICES = humanizeChoices(assetSchema, 'structure_type', 'code', 'name');
@@ -119,8 +121,8 @@ export class EstradaBridge extends Bridge {
         return this.getSpanLength();
     }
 
-    get structureClass() {
-        return choice_or_default(this.getStructureClass(), STRUCTURE_CLASS_CHOICES);
+    get assetClass() {
+        return choice_or_default(this.getAssetClass(), ASSET_CLASS_CHOICES);
     }
 
     get structureType() {
@@ -209,8 +211,8 @@ export class EstradaCulvert extends Culvert {
         return this.getNumberCells();
     }
 
-    get structureClass() {
-        return choice_or_default(this.getStructureClass(), STRUCTURE_CLASS_CHOICES);
+    get assetClass() {
+        return choice_or_default(this.getAssetClass(), ASSET_CLASS_CHOICES);
     }
 
     get structureType() {

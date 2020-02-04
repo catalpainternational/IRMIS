@@ -97,8 +97,8 @@ export class Road extends jspb.Message {
   getRoadName(): string;
   setRoadName(value: string): void;
 
-  getRoadType(): string;
-  setRoadType(value: string): void;
+  getAssetClass(): string;
+  setAssetClass(value: string): void;
 
   getRoadStatus(): string;
   setRoadStatus(value: string): void;
@@ -183,7 +183,7 @@ export namespace Road {
     geojsonId: number,
     roadCode: string,
     roadName: string,
-    roadType: string,
+    assetClass: string,
     roadStatus: string,
     linkCode: string,
     linkStartName: string,
