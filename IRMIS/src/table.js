@@ -1,5 +1,6 @@
 import "datatables.net-bs4";
 import $ from "jquery";
+import * as riot from "riot";
 
 import { exportCsv } from "./exportCsv";
 import { applyFilter } from "./filter";
@@ -17,15 +18,15 @@ import {
     surfaceTypeColumns,
     technicalClassColumns,
     terrainClassColumns,
-    trafficLevelColumns,
 } from "./segmentsInventoryTableDefinition";
 
 import { datatableTranslations } from "./datatableTranslations";
 import { getRoad, roads } from "./roadManager";
-import { getRoadSurveys as getAssetSurveys } from "./surveyManager";
 import { getRoadReport as getAssetReport } from "./reportManager";
+import {getRoadSurveys as getAssetSurveys} from "./surveyManager";
 import { getStructure, structures } from "./structureManager";
 import { dispatch } from "./assets/utilities";
+import {Survey} from "../protobuf/survey_pb";
 
 let roadsTable = null;
 let structuresTable = null;
@@ -86,12 +87,6 @@ const attributeModalMapping = {
         reportDataTableId: "inventory-pavement-class-table",
         reportTable: null,
         title: gettext("Pavement Class segments"),
-    },
-    traffic_level: {
-        columns: trafficLevelColumns,
-        reportDataTableId: "inventory-traffic-level-table",
-        reportTable: null,
-        title: gettext("Traffic data"),
     },
     structure_condition: {
         columns: structureConditionColumns,
@@ -484,7 +479,7 @@ $.fn.dataTable.Api.register('row().show()', function () {
 });
 
 $("#inventory-segments-modal").on("show.bs.modal", function (event) {
-    // Hide them all first
+    // Hide them all segment tables first
     Object.keys(attributeModalMapping).forEach((attribute) => {
         const repTable = attributeModalMapping[attribute].reportTable;
         if (repTable) {
@@ -492,48 +487,64 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
             $(`#${repTableId}_wrapper`).hide();
         }
     });
+    // Hide special traffic data div
+    document.dispatchEvent(new CustomEvent("inventory-traffic-level-table.hideData"));
 
     const button = $(event.relatedTarget); // Button that triggered the modal
     const assetCode = button.data("code"); // Extract info from data-* attributes
     const assetId = button.data("id");
     const attr = button.data("attr");
-
-    const reportDataTableId = attributeModalMapping[attr].reportDataTableId;
-    const reportTable = attributeModalMapping[attr].reportTable;
     const modal = $(this);
-    modal.find(".modal-title").text(`${assetCode} ${attributeModalMapping[attr].title}`);
 
-    reportTable.clear(); // remove all rows in the table
+    if (attr === "traffic_level") {
+        modal.find(".modal-title").text(`${assetCode} Traffic Data`);
+        getAssetSurveys(assetId, "trafficType")
+            .then((surveyData) => {
+                if (surveyData.length) {
+                    // Get the latest Survey (AADT or Forecast)
+                    const latestSurvey = surveyData.filter((s) => {
+                        return s.values.trafficType === "Forecast" || s.values.trafficType === "AADT";
+                    }).sort((a, b) => {
+                        return a.dateSurveyed - b.dateSurveyed;
+                    });
+                    // update the traffic details inventory modal tag with current data
+                    document.dispatchEvent(new CustomEvent("inventory-traffic-level-table.updateTrafficData", {detail: {currentRowData: latestSurvey[0] || false }}));
+                }
+            });
+    } else {
+        const reportDataTableId = attributeModalMapping[attr].reportDataTableId;
+        const reportTable = attributeModalMapping[attr].reportTable;
+        modal.find(".modal-title").text(`${assetCode} ${attributeModalMapping[attr].title}`);
+        reportTable.clear(); // remove all rows in the table
 
-    const getAsset = assetTypeName === "roads" ? getRoad : getStructure;
-    const getAssetFilters = (assetData) => {
-        let filters = {
-            primaryattribute: attr,
+        const getAsset = assetTypeName === "roads" ? getRoad : getStructure;
+        const getAssetFilters = (assetData) => {
+            let filters = {
+                primaryattribute: attr,
+            };
+
+            if (assetTypeName === "roads") {
+                if (assetData.getLinkStartChainage() && assetData.getLinkEndChainage()) {
+                    filters.road_code = assetData.getRoadCode();
+                    filters.chainagestart = assetData.getLinkStartChainage();
+                    filters.chainageend = assetData.getLinkEndChainage();
+                } else {
+                    filters.road_id = assetData.id;
+                }
+            } else {
+                if (assetData.getChainage()) {
+                    filters.structure_code = assetData.getStructureCode();
+                    filters.chainage = assetData.getChainage();
+                } else {
+                    filters.structure_id = assetData.id;
+                }
+            }
+
+            return filters;
         };
 
-        if (assetTypeName === "roads") {
-            if (assetData.getLinkStartChainage() && assetData.getLinkEndChainage()) {
-                filters.road_code = assetData.getRoadCode();
-                filters.chainagestart = assetData.getLinkStartChainage();
-                filters.chainageend = assetData.getLinkEndChainage();
-            } else {
-                filters.road_id = assetData.id;
-            }
-        } else {
-            if (assetData.getChainage()) {
-                filters.structure_code = assetData.getStructureCode();
-                filters.chainage = assetData.getChainage();
-            } else {
-                filters.structure_id = assetData.id;
-            }
-        }
-
-        return filters;
-    };
-
-    getAsset(assetId).then((assetData) => {
-        const filters = getAssetFilters(assetData)
-        if (attr != "traffic_level") {
+        getAsset(assetId).then((assetData) => {
+            const filters = getAssetFilters(assetData)
             getAssetReport(filters)
                 .then((reportData) => {
                     reportTable.clear(); // remove all rows in the table - again
@@ -548,18 +559,6 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
                     reportTable.draw();
                     $(`#${reportDataTableId}_wrapper`).show();
                 });
-        } else {
-            getAssetSurveys(assetId, "trafficType")
-                .then((surveyData) => {
-                    reportTable.clear(); // remove all rows in the table - again
-                    if (surveyData && surveyData.length && reportDataTableId) {
-                        reportTable.rows.add(surveyData);
-                    }
-                })
-                .finally(() => {
-                    reportTable.draw();
-                    $(`#${reportDataTableId}_wrapper`).show();
-                });
-        }
-    });
+        });
+    }
 });

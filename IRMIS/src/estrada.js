@@ -10,6 +10,7 @@ import Reports_Base from "./riot/reports_base.riot.html";
 import Data_Table from "./riot/data_table.riot.html";
 import Edit_Base from "./riot/edit_base.riot.html";
 import Top_Menu from "./riot/top_menu.riot.html";
+import TrafficDataDetails from "./riot/traffic_data_details.riot.html";
 
 import "./styles/estrada.scss";
 import "./styles/vendor.scss";
@@ -57,6 +58,9 @@ window.addEventListener("load", () => {
     riot.register("planning_base", Planning_Base);
     riot.register("reports_base", Reports_Base);
     riot.register("data_table", Data_Table);
+
+    riot.register("traffic_data_details", TrafficDataDetails);
+    riot.mount("traffic_data_details");
 
     if (window.canEdit) {
         riot.register("edit_base", Edit_Base);

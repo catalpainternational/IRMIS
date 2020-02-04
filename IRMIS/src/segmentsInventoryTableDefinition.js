@@ -138,29 +138,3 @@ export const structureConditionDescriptionColumns = baseDetailColumns.concat([
         orderable: false,
     },
 ]);
-
-/** SPECIAL SNOWFAKE: Defines all of the columns needed for the TRAFFIC LEVEL inventory modal table **/
-export const trafficLevelColumns = [
-    {
-        title: window.gettext("Survey date"),
-        data: "values",
-        defaultContent: "",
-        className: "text-center",
-        render: (data) => {
-            if (data.forecastYear) { return data.forecastYear; }
-            else { return data.surveyFromDate + " - " + data.surveyToDate; }
-        },
-    },
-    {
-        title: window.gettext("Traffic type"),
-        data: "trafficDataType",
-        defaultContent: "",
-        className: "text-center",
-    },
-    {
-        title: window.gettext("Total vehicles"),
-        data: "trafficCountTotal",
-        defaultContent: "",
-        className: "text-center",
-    },
-];
