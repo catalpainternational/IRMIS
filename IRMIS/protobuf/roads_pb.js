@@ -283,9 +283,12 @@ proto.assets.Version.prototype.getPk = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.assets.Version} returns this
+ */
 proto.assets.Version.prototype.setPk = function(value) {
-  jspb.Message.setProto3IntField(this, 1, value);
+  return jspb.Message.setProto3IntField(this, 1, value);
 };
 
 
@@ -299,17 +302,21 @@ proto.assets.Version.prototype.getDateCreated = function() {
 };
 
 
-/** @param {?proto.google.protobuf.Timestamp|undefined} value */
+/**
+ * @param {?proto.google.protobuf.Timestamp|undefined} value
+ * @return {!proto.assets.Version} returns this
+*/
 proto.assets.Version.prototype.setDateCreated = function(value) {
-  jspb.Message.setWrapperField(this, 2, value);
+  return jspb.Message.setWrapperField(this, 2, value);
 };
 
 
 /**
  * Clears the message field making it undefined.
+ * @return {!proto.assets.Version} returns this
  */
 proto.assets.Version.prototype.clearDateCreated = function() {
-  this.setDateCreated(undefined);
+  return this.setDateCreated(undefined);
 };
 
 
@@ -331,9 +338,12 @@ proto.assets.Version.prototype.getUser = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Version} returns this
+ */
 proto.assets.Version.prototype.setUser = function(value) {
-  jspb.Message.setProto3StringField(this, 3, value);
+  return jspb.Message.setProto3StringField(this, 3, value);
 };
 
 
@@ -346,9 +356,12 @@ proto.assets.Version.prototype.getComment = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Version} returns this
+ */
 proto.assets.Version.prototype.setComment = function(value) {
-  jspb.Message.setProto3StringField(this, 4, value);
+  return jspb.Message.setProto3StringField(this, 4, value);
 };
 
 
@@ -484,9 +497,12 @@ proto.assets.Versions.prototype.getVersionsList = function() {
 };
 
 
-/** @param {!Array<!proto.assets.Version>} value */
+/**
+ * @param {!Array<!proto.assets.Version>} value
+ * @return {!proto.assets.Versions} returns this
+*/
 proto.assets.Versions.prototype.setVersionsList = function(value) {
-  jspb.Message.setRepeatedWrapperField(this, 1, value);
+  return jspb.Message.setRepeatedWrapperField(this, 1, value);
 };
 
 
@@ -502,9 +518,10 @@ proto.assets.Versions.prototype.addVersions = function(opt_value, opt_index) {
 
 /**
  * Clears the list making it empty but non-null.
+ * @return {!proto.assets.Versions} returns this
  */
 proto.assets.Versions.prototype.clearVersionsList = function() {
-  this.setVersionsList([]);
+  return this.setVersionsList([]);
 };
 
 
@@ -641,9 +658,12 @@ proto.assets.Projection.prototype.getX = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.assets.Projection} returns this
+ */
 proto.assets.Projection.prototype.setX = function(value) {
-  jspb.Message.setProto3FloatField(this, 1, value);
+  return jspb.Message.setProto3FloatField(this, 1, value);
 };
 
 
@@ -656,9 +676,12 @@ proto.assets.Projection.prototype.getY = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.assets.Projection} returns this
+ */
 proto.assets.Projection.prototype.setY = function(value) {
-  jspb.Message.setProto3FloatField(this, 2, value);
+  return jspb.Message.setProto3FloatField(this, 2, value);
 };
 
 
@@ -698,7 +721,7 @@ proto.assets.Road.toObject = function(includeInstance, msg) {
     geojsonId: jspb.Message.getFieldWithDefault(msg, 2, 0),
     roadCode: jspb.Message.getFieldWithDefault(msg, 3, ""),
     roadName: jspb.Message.getFieldWithDefault(msg, 4, ""),
-    roadType: jspb.Message.getFieldWithDefault(msg, 10, ""),
+    assetClass: jspb.Message.getFieldWithDefault(msg, 10, ""),
     roadStatus: jspb.Message.getFieldWithDefault(msg, 20, ""),
     linkCode: jspb.Message.getFieldWithDefault(msg, 5, ""),
     linkStartName: jspb.Message.getFieldWithDefault(msg, 16, ""),
@@ -774,7 +797,7 @@ proto.assets.Road.deserializeBinaryFromReader = function(msg, reader) {
       break;
     case 10:
       var value = /** @type {string} */ (reader.readString());
-      msg.setRoadType(value);
+      msg.setAssetClass(value);
       break;
     case 20:
       var value = /** @type {string} */ (reader.readString());
@@ -919,7 +942,7 @@ proto.assets.Road.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
-  f = message.getRoadType();
+  f = message.getAssetClass();
   if (f.length > 0) {
     writer.writeString(
       10,
@@ -1087,9 +1110,12 @@ proto.assets.Road.prototype.getId = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.assets.Road} returns this
+ */
 proto.assets.Road.prototype.setId = function(value) {
-  jspb.Message.setProto3IntField(this, 1, value);
+  return jspb.Message.setProto3IntField(this, 1, value);
 };
 
 
@@ -1102,9 +1128,12 @@ proto.assets.Road.prototype.getGeojsonId = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.assets.Road} returns this
+ */
 proto.assets.Road.prototype.setGeojsonId = function(value) {
-  jspb.Message.setProto3IntField(this, 2, value);
+  return jspb.Message.setProto3IntField(this, 2, value);
 };
 
 
@@ -1117,9 +1146,12 @@ proto.assets.Road.prototype.getRoadCode = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Road} returns this
+ */
 proto.assets.Road.prototype.setRoadCode = function(value) {
-  jspb.Message.setProto3StringField(this, 3, value);
+  return jspb.Message.setProto3StringField(this, 3, value);
 };
 
 
@@ -1132,24 +1164,30 @@ proto.assets.Road.prototype.getRoadName = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Road} returns this
+ */
 proto.assets.Road.prototype.setRoadName = function(value) {
-  jspb.Message.setProto3StringField(this, 4, value);
+  return jspb.Message.setProto3StringField(this, 4, value);
 };
 
 
 /**
- * optional string road_type = 10;
+ * optional string asset_class = 10;
  * @return {string}
  */
-proto.assets.Road.prototype.getRoadType = function() {
+proto.assets.Road.prototype.getAssetClass = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 10, ""));
 };
 
 
-/** @param {string} value */
-proto.assets.Road.prototype.setRoadType = function(value) {
-  jspb.Message.setProto3StringField(this, 10, value);
+/**
+ * @param {string} value
+ * @return {!proto.assets.Road} returns this
+ */
+proto.assets.Road.prototype.setAssetClass = function(value) {
+  return jspb.Message.setProto3StringField(this, 10, value);
 };
 
 
@@ -1162,9 +1200,12 @@ proto.assets.Road.prototype.getRoadStatus = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Road} returns this
+ */
 proto.assets.Road.prototype.setRoadStatus = function(value) {
-  jspb.Message.setProto3StringField(this, 20, value);
+  return jspb.Message.setProto3StringField(this, 20, value);
 };
 
 
@@ -1177,9 +1218,12 @@ proto.assets.Road.prototype.getLinkCode = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Road} returns this
+ */
 proto.assets.Road.prototype.setLinkCode = function(value) {
-  jspb.Message.setProto3StringField(this, 5, value);
+  return jspb.Message.setProto3StringField(this, 5, value);
 };
 
 
@@ -1192,9 +1236,12 @@ proto.assets.Road.prototype.getLinkStartName = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Road} returns this
+ */
 proto.assets.Road.prototype.setLinkStartName = function(value) {
-  jspb.Message.setProto3StringField(this, 16, value);
+  return jspb.Message.setProto3StringField(this, 16, value);
 };
 
 
@@ -1207,9 +1254,12 @@ proto.assets.Road.prototype.getLinkStartChainage = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.assets.Road} returns this
+ */
 proto.assets.Road.prototype.setLinkStartChainage = function(value) {
-  jspb.Message.setProto3FloatField(this, 11, value);
+  return jspb.Message.setProto3FloatField(this, 11, value);
 };
 
 
@@ -1222,9 +1272,12 @@ proto.assets.Road.prototype.getLinkEndName = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Road} returns this
+ */
 proto.assets.Road.prototype.setLinkEndName = function(value) {
-  jspb.Message.setProto3StringField(this, 17, value);
+  return jspb.Message.setProto3StringField(this, 17, value);
 };
 
 
@@ -1237,9 +1290,12 @@ proto.assets.Road.prototype.getLinkEndChainage = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.assets.Road} returns this
+ */
 proto.assets.Road.prototype.setLinkEndChainage = function(value) {
-  jspb.Message.setProto3FloatField(this, 12, value);
+  return jspb.Message.setProto3FloatField(this, 12, value);
 };
 
 
@@ -1252,9 +1308,12 @@ proto.assets.Road.prototype.getLinkLength = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.assets.Road} returns this
+ */
 proto.assets.Road.prototype.setLinkLength = function(value) {
-  jspb.Message.setProto3FloatField(this, 7, value);
+  return jspb.Message.setProto3FloatField(this, 7, value);
 };
 
 
@@ -1267,9 +1326,12 @@ proto.assets.Road.prototype.getSurfaceType = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Road} returns this
+ */
 proto.assets.Road.prototype.setSurfaceType = function(value) {
-  jspb.Message.setProto3StringField(this, 8, value);
+  return jspb.Message.setProto3StringField(this, 8, value);
 };
 
 
@@ -1282,9 +1344,12 @@ proto.assets.Road.prototype.getSurfaceCondition = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Road} returns this
+ */
 proto.assets.Road.prototype.setSurfaceCondition = function(value) {
-  jspb.Message.setProto3StringField(this, 9, value);
+  return jspb.Message.setProto3StringField(this, 9, value);
 };
 
 
@@ -1297,9 +1362,12 @@ proto.assets.Road.prototype.getPavementClass = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Road} returns this
+ */
 proto.assets.Road.prototype.setPavementClass = function(value) {
-  jspb.Message.setProto3StringField(this, 13, value);
+  return jspb.Message.setProto3StringField(this, 13, value);
 };
 
 
@@ -1312,9 +1380,12 @@ proto.assets.Road.prototype.getCarriagewayWidth = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.assets.Road} returns this
+ */
 proto.assets.Road.prototype.setCarriagewayWidth = function(value) {
-  jspb.Message.setProto3FloatField(this, 14, value);
+  return jspb.Message.setProto3FloatField(this, 14, value);
 };
 
 
@@ -1327,9 +1398,12 @@ proto.assets.Road.prototype.getAdministrativeArea = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Road} returns this
+ */
 proto.assets.Road.prototype.setAdministrativeArea = function(value) {
-  jspb.Message.setProto3StringField(this, 15, value);
+  return jspb.Message.setProto3StringField(this, 15, value);
 };
 
 
@@ -1342,9 +1416,12 @@ proto.assets.Road.prototype.getProject = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Road} returns this
+ */
 proto.assets.Road.prototype.setProject = function(value) {
-  jspb.Message.setProto3StringField(this, 18, value);
+  return jspb.Message.setProto3StringField(this, 18, value);
 };
 
 
@@ -1357,9 +1434,12 @@ proto.assets.Road.prototype.getFundingSource = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Road} returns this
+ */
 proto.assets.Road.prototype.setFundingSource = function(value) {
-  jspb.Message.setProto3StringField(this, 19, value);
+  return jspb.Message.setProto3StringField(this, 19, value);
 };
 
 
@@ -1372,9 +1452,12 @@ proto.assets.Road.prototype.getTechnicalClass = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Road} returns this
+ */
 proto.assets.Road.prototype.setTechnicalClass = function(value) {
-  jspb.Message.setProto3StringField(this, 21, value);
+  return jspb.Message.setProto3StringField(this, 21, value);
 };
 
 
@@ -1387,9 +1470,12 @@ proto.assets.Road.prototype.getMaintenanceNeed = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Road} returns this
+ */
 proto.assets.Road.prototype.setMaintenanceNeed = function(value) {
-  jspb.Message.setProto3StringField(this, 22, value);
+  return jspb.Message.setProto3StringField(this, 22, value);
 };
 
 
@@ -1402,9 +1488,12 @@ proto.assets.Road.prototype.getTrafficLevel = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Road} returns this
+ */
 proto.assets.Road.prototype.setTrafficLevel = function(value) {
-  jspb.Message.setProto3StringField(this, 23, value);
+  return jspb.Message.setProto3StringField(this, 23, value);
 };
 
 
@@ -1418,17 +1507,21 @@ proto.assets.Road.prototype.getProjectionStart = function() {
 };
 
 
-/** @param {?proto.assets.Projection|undefined} value */
+/**
+ * @param {?proto.assets.Projection|undefined} value
+ * @return {!proto.assets.Road} returns this
+*/
 proto.assets.Road.prototype.setProjectionStart = function(value) {
-  jspb.Message.setWrapperField(this, 25, value);
+  return jspb.Message.setWrapperField(this, 25, value);
 };
 
 
 /**
  * Clears the message field making it undefined.
+ * @return {!proto.assets.Road} returns this
  */
 proto.assets.Road.prototype.clearProjectionStart = function() {
-  this.setProjectionStart(undefined);
+  return this.setProjectionStart(undefined);
 };
 
 
@@ -1451,17 +1544,21 @@ proto.assets.Road.prototype.getProjectionEnd = function() {
 };
 
 
-/** @param {?proto.assets.Projection|undefined} value */
+/**
+ * @param {?proto.assets.Projection|undefined} value
+ * @return {!proto.assets.Road} returns this
+*/
 proto.assets.Road.prototype.setProjectionEnd = function(value) {
-  jspb.Message.setWrapperField(this, 26, value);
+  return jspb.Message.setWrapperField(this, 26, value);
 };
 
 
 /**
  * Clears the message field making it undefined.
+ * @return {!proto.assets.Road} returns this
  */
 proto.assets.Road.prototype.clearProjectionEnd = function() {
-  this.setProjectionEnd(undefined);
+  return this.setProjectionEnd(undefined);
 };
 
 
@@ -1483,9 +1580,12 @@ proto.assets.Road.prototype.getNumberLanes = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.assets.Road} returns this
+ */
 proto.assets.Road.prototype.setNumberLanes = function(value) {
-  jspb.Message.setProto3IntField(this, 27, value);
+  return jspb.Message.setProto3IntField(this, 27, value);
 };
 
 
@@ -1498,9 +1598,12 @@ proto.assets.Road.prototype.getRainfall = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.assets.Road} returns this
+ */
 proto.assets.Road.prototype.setRainfall = function(value) {
-  jspb.Message.setProto3IntField(this, 28, value);
+  return jspb.Message.setProto3IntField(this, 28, value);
 };
 
 
@@ -1636,9 +1739,12 @@ proto.assets.Roads.prototype.getRoadsList = function() {
 };
 
 
-/** @param {!Array<!proto.assets.Road>} value */
+/**
+ * @param {!Array<!proto.assets.Road>} value
+ * @return {!proto.assets.Roads} returns this
+*/
 proto.assets.Roads.prototype.setRoadsList = function(value) {
-  jspb.Message.setRepeatedWrapperField(this, 1, value);
+  return jspb.Message.setRepeatedWrapperField(this, 1, value);
 };
 
 
@@ -1654,9 +1760,10 @@ proto.assets.Roads.prototype.addRoads = function(opt_value, opt_index) {
 
 /**
  * Clears the list making it empty but non-null.
+ * @return {!proto.assets.Roads} returns this
  */
 proto.assets.Roads.prototype.clearRoadsList = function() {
-  this.setRoadsList([]);
+  return this.setRoadsList([]);
 };
 
 

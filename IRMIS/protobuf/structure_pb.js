@@ -227,9 +227,12 @@ proto.assets.Structures.prototype.getBridgesList = function() {
 };
 
 
-/** @param {!Array<!proto.assets.Bridge>} value */
+/**
+ * @param {!Array<!proto.assets.Bridge>} value
+ * @return {!proto.assets.Structures} returns this
+*/
 proto.assets.Structures.prototype.setBridgesList = function(value) {
-  jspb.Message.setRepeatedWrapperField(this, 1, value);
+  return jspb.Message.setRepeatedWrapperField(this, 1, value);
 };
 
 
@@ -245,9 +248,10 @@ proto.assets.Structures.prototype.addBridges = function(opt_value, opt_index) {
 
 /**
  * Clears the list making it empty but non-null.
+ * @return {!proto.assets.Structures} returns this
  */
 proto.assets.Structures.prototype.clearBridgesList = function() {
-  this.setBridgesList([]);
+  return this.setBridgesList([]);
 };
 
 
@@ -261,9 +265,12 @@ proto.assets.Structures.prototype.getCulvertsList = function() {
 };
 
 
-/** @param {!Array<!proto.assets.Culvert>} value */
+/**
+ * @param {!Array<!proto.assets.Culvert>} value
+ * @return {!proto.assets.Structures} returns this
+*/
 proto.assets.Structures.prototype.setCulvertsList = function(value) {
-  jspb.Message.setRepeatedWrapperField(this, 2, value);
+  return jspb.Message.setRepeatedWrapperField(this, 2, value);
 };
 
 
@@ -279,9 +286,10 @@ proto.assets.Structures.prototype.addCulverts = function(opt_value, opt_index) {
 
 /**
  * Clears the list making it empty but non-null.
+ * @return {!proto.assets.Structures} returns this
  */
 proto.assets.Structures.prototype.clearCulvertsList = function() {
-  this.setCulvertsList([]);
+  return this.setCulvertsList([]);
 };
 
 
@@ -323,7 +331,7 @@ proto.assets.Bridge.toObject = function(includeInstance, msg) {
     lastModified: (f = msg.getLastModified()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
     structureCode: jspb.Message.getFieldWithDefault(msg, 5, ""),
     structureName: jspb.Message.getFieldWithDefault(msg, 6, ""),
-    structureClass: jspb.Message.getFieldWithDefault(msg, 7, ""),
+    assetClass: jspb.Message.getFieldWithDefault(msg, 7, ""),
     administrativeArea: jspb.Message.getFieldWithDefault(msg, 8, ""),
     roadCode: jspb.Message.getFieldWithDefault(msg, 9, ""),
     constructionYear: jspb.Message.getFieldWithDefault(msg, 10, 0),
@@ -332,8 +340,8 @@ proto.assets.Bridge.toObject = function(includeInstance, msg) {
     chainage: jspb.Message.getFloatingPointFieldWithDefault(msg, 13, 0.0),
     structureType: jspb.Message.getFieldWithDefault(msg, 14, ""),
     material: jspb.Message.getFieldWithDefault(msg, 15, ""),
-    protectionUpstream: jspb.Message.getFieldWithDefault(msg, 26, ""),
-    protectionDownstream: jspb.Message.getFieldWithDefault(msg, 27, ""),
+    protectionUpstream: jspb.Message.getFieldWithDefault(msg, 16, ""),
+    protectionDownstream: jspb.Message.getFieldWithDefault(msg, 17, ""),
     riverName: jspb.Message.getFieldWithDefault(msg, 28, ""),
     numberSpans: jspb.Message.getFieldWithDefault(msg, 29, 0),
     spanLength: jspb.Message.getFloatingPointFieldWithDefault(msg, 30, 0.0)
@@ -401,7 +409,7 @@ proto.assets.Bridge.deserializeBinaryFromReader = function(msg, reader) {
       break;
     case 7:
       var value = /** @type {string} */ (reader.readString());
-      msg.setStructureClass(value);
+      msg.setAssetClass(value);
       break;
     case 8:
       var value = /** @type {string} */ (reader.readString());
@@ -435,11 +443,11 @@ proto.assets.Bridge.deserializeBinaryFromReader = function(msg, reader) {
       var value = /** @type {string} */ (reader.readString());
       msg.setMaterial(value);
       break;
-    case 26:
+    case 16:
       var value = /** @type {string} */ (reader.readString());
       msg.setProtectionUpstream(value);
       break;
-    case 27:
+    case 17:
       var value = /** @type {string} */ (reader.readString());
       msg.setProtectionDownstream(value);
       break;
@@ -528,7 +536,7 @@ proto.assets.Bridge.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
-  f = message.getStructureClass();
+  f = message.getAssetClass();
   if (f.length > 0) {
     writer.writeString(
       7,
@@ -594,14 +602,14 @@ proto.assets.Bridge.serializeBinaryToWriter = function(message, writer) {
   f = message.getProtectionUpstream();
   if (f.length > 0) {
     writer.writeString(
-      26,
+      16,
       f
     );
   }
   f = message.getProtectionDownstream();
   if (f.length > 0) {
     writer.writeString(
-      27,
+      17,
       f
     );
   }
@@ -638,9 +646,12 @@ proto.assets.Bridge.prototype.getId = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Bridge} returns this
+ */
 proto.assets.Bridge.prototype.setId = function(value) {
-  jspb.Message.setProto3StringField(this, 1, value);
+  return jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -653,9 +664,12 @@ proto.assets.Bridge.prototype.getRoadId = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.assets.Bridge} returns this
+ */
 proto.assets.Bridge.prototype.setRoadId = function(value) {
-  jspb.Message.setProto3IntField(this, 2, value);
+  return jspb.Message.setProto3IntField(this, 2, value);
 };
 
 
@@ -669,17 +683,21 @@ proto.assets.Bridge.prototype.getDateCreated = function() {
 };
 
 
-/** @param {?proto.google.protobuf.Timestamp|undefined} value */
+/**
+ * @param {?proto.google.protobuf.Timestamp|undefined} value
+ * @return {!proto.assets.Bridge} returns this
+*/
 proto.assets.Bridge.prototype.setDateCreated = function(value) {
-  jspb.Message.setWrapperField(this, 3, value);
+  return jspb.Message.setWrapperField(this, 3, value);
 };
 
 
 /**
  * Clears the message field making it undefined.
+ * @return {!proto.assets.Bridge} returns this
  */
 proto.assets.Bridge.prototype.clearDateCreated = function() {
-  this.setDateCreated(undefined);
+  return this.setDateCreated(undefined);
 };
 
 
@@ -702,17 +720,21 @@ proto.assets.Bridge.prototype.getLastModified = function() {
 };
 
 
-/** @param {?proto.google.protobuf.Timestamp|undefined} value */
+/**
+ * @param {?proto.google.protobuf.Timestamp|undefined} value
+ * @return {!proto.assets.Bridge} returns this
+*/
 proto.assets.Bridge.prototype.setLastModified = function(value) {
-  jspb.Message.setWrapperField(this, 4, value);
+  return jspb.Message.setWrapperField(this, 4, value);
 };
 
 
 /**
  * Clears the message field making it undefined.
+ * @return {!proto.assets.Bridge} returns this
  */
 proto.assets.Bridge.prototype.clearLastModified = function() {
-  this.setLastModified(undefined);
+  return this.setLastModified(undefined);
 };
 
 
@@ -734,9 +756,12 @@ proto.assets.Bridge.prototype.getStructureCode = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Bridge} returns this
+ */
 proto.assets.Bridge.prototype.setStructureCode = function(value) {
-  jspb.Message.setProto3StringField(this, 5, value);
+  return jspb.Message.setProto3StringField(this, 5, value);
 };
 
 
@@ -749,24 +774,30 @@ proto.assets.Bridge.prototype.getStructureName = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Bridge} returns this
+ */
 proto.assets.Bridge.prototype.setStructureName = function(value) {
-  jspb.Message.setProto3StringField(this, 6, value);
+  return jspb.Message.setProto3StringField(this, 6, value);
 };
 
 
 /**
- * optional string structure_class = 7;
+ * optional string asset_class = 7;
  * @return {string}
  */
-proto.assets.Bridge.prototype.getStructureClass = function() {
+proto.assets.Bridge.prototype.getAssetClass = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 7, ""));
 };
 
 
-/** @param {string} value */
-proto.assets.Bridge.prototype.setStructureClass = function(value) {
-  jspb.Message.setProto3StringField(this, 7, value);
+/**
+ * @param {string} value
+ * @return {!proto.assets.Bridge} returns this
+ */
+proto.assets.Bridge.prototype.setAssetClass = function(value) {
+  return jspb.Message.setProto3StringField(this, 7, value);
 };
 
 
@@ -779,9 +810,12 @@ proto.assets.Bridge.prototype.getAdministrativeArea = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Bridge} returns this
+ */
 proto.assets.Bridge.prototype.setAdministrativeArea = function(value) {
-  jspb.Message.setProto3StringField(this, 8, value);
+  return jspb.Message.setProto3StringField(this, 8, value);
 };
 
 
@@ -794,9 +828,12 @@ proto.assets.Bridge.prototype.getRoadCode = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Bridge} returns this
+ */
 proto.assets.Bridge.prototype.setRoadCode = function(value) {
-  jspb.Message.setProto3StringField(this, 9, value);
+  return jspb.Message.setProto3StringField(this, 9, value);
 };
 
 
@@ -809,9 +846,12 @@ proto.assets.Bridge.prototype.getConstructionYear = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.assets.Bridge} returns this
+ */
 proto.assets.Bridge.prototype.setConstructionYear = function(value) {
-  jspb.Message.setProto3IntField(this, 10, value);
+  return jspb.Message.setProto3IntField(this, 10, value);
 };
 
 
@@ -824,9 +864,12 @@ proto.assets.Bridge.prototype.getLength = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.assets.Bridge} returns this
+ */
 proto.assets.Bridge.prototype.setLength = function(value) {
-  jspb.Message.setProto3FloatField(this, 11, value);
+  return jspb.Message.setProto3FloatField(this, 11, value);
 };
 
 
@@ -839,9 +882,12 @@ proto.assets.Bridge.prototype.getWidth = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.assets.Bridge} returns this
+ */
 proto.assets.Bridge.prototype.setWidth = function(value) {
-  jspb.Message.setProto3FloatField(this, 12, value);
+  return jspb.Message.setProto3FloatField(this, 12, value);
 };
 
 
@@ -854,9 +900,12 @@ proto.assets.Bridge.prototype.getChainage = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.assets.Bridge} returns this
+ */
 proto.assets.Bridge.prototype.setChainage = function(value) {
-  jspb.Message.setProto3FloatField(this, 13, value);
+  return jspb.Message.setProto3FloatField(this, 13, value);
 };
 
 
@@ -869,9 +918,12 @@ proto.assets.Bridge.prototype.getStructureType = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Bridge} returns this
+ */
 proto.assets.Bridge.prototype.setStructureType = function(value) {
-  jspb.Message.setProto3StringField(this, 14, value);
+  return jspb.Message.setProto3StringField(this, 14, value);
 };
 
 
@@ -884,39 +936,48 @@ proto.assets.Bridge.prototype.getMaterial = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Bridge} returns this
+ */
 proto.assets.Bridge.prototype.setMaterial = function(value) {
-  jspb.Message.setProto3StringField(this, 15, value);
+  return jspb.Message.setProto3StringField(this, 15, value);
 };
 
 
 /**
- * optional string protection_upstream = 26;
+ * optional string protection_upstream = 16;
  * @return {string}
  */
 proto.assets.Bridge.prototype.getProtectionUpstream = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 26, ""));
-};
-
-
-/** @param {string} value */
-proto.assets.Bridge.prototype.setProtectionUpstream = function(value) {
-  jspb.Message.setProto3StringField(this, 26, value);
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 16, ""));
 };
 
 
 /**
- * optional string protection_downstream = 27;
- * @return {string}
+ * @param {string} value
+ * @return {!proto.assets.Bridge} returns this
  */
-proto.assets.Bridge.prototype.getProtectionDownstream = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 27, ""));
+proto.assets.Bridge.prototype.setProtectionUpstream = function(value) {
+  return jspb.Message.setProto3StringField(this, 16, value);
 };
 
 
-/** @param {string} value */
+/**
+ * optional string protection_downstream = 17;
+ * @return {string}
+ */
+proto.assets.Bridge.prototype.getProtectionDownstream = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 17, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assets.Bridge} returns this
+ */
 proto.assets.Bridge.prototype.setProtectionDownstream = function(value) {
-  jspb.Message.setProto3StringField(this, 27, value);
+  return jspb.Message.setProto3StringField(this, 17, value);
 };
 
 
@@ -929,9 +990,12 @@ proto.assets.Bridge.prototype.getRiverName = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Bridge} returns this
+ */
 proto.assets.Bridge.prototype.setRiverName = function(value) {
-  jspb.Message.setProto3StringField(this, 28, value);
+  return jspb.Message.setProto3StringField(this, 28, value);
 };
 
 
@@ -944,9 +1008,12 @@ proto.assets.Bridge.prototype.getNumberSpans = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.assets.Bridge} returns this
+ */
 proto.assets.Bridge.prototype.setNumberSpans = function(value) {
-  jspb.Message.setProto3IntField(this, 29, value);
+  return jspb.Message.setProto3IntField(this, 29, value);
 };
 
 
@@ -959,9 +1026,12 @@ proto.assets.Bridge.prototype.getSpanLength = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.assets.Bridge} returns this
+ */
 proto.assets.Bridge.prototype.setSpanLength = function(value) {
-  jspb.Message.setProto3FloatField(this, 30, value);
+  return jspb.Message.setProto3FloatField(this, 30, value);
 };
 
 
@@ -1003,7 +1073,7 @@ proto.assets.Culvert.toObject = function(includeInstance, msg) {
     lastModified: (f = msg.getLastModified()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
     structureCode: jspb.Message.getFieldWithDefault(msg, 5, ""),
     structureName: jspb.Message.getFieldWithDefault(msg, 6, ""),
-    structureClass: jspb.Message.getFieldWithDefault(msg, 7, ""),
+    assetClass: jspb.Message.getFieldWithDefault(msg, 7, ""),
     administrativeArea: jspb.Message.getFieldWithDefault(msg, 8, ""),
     roadCode: jspb.Message.getFieldWithDefault(msg, 9, ""),
     constructionYear: jspb.Message.getFieldWithDefault(msg, 10, 0),
@@ -1012,8 +1082,8 @@ proto.assets.Culvert.toObject = function(includeInstance, msg) {
     chainage: jspb.Message.getFloatingPointFieldWithDefault(msg, 13, 0.0),
     structureType: jspb.Message.getFieldWithDefault(msg, 14, ""),
     material: jspb.Message.getFieldWithDefault(msg, 15, ""),
-    protectionUpstream: jspb.Message.getFieldWithDefault(msg, 26, ""),
-    protectionDownstream: jspb.Message.getFieldWithDefault(msg, 27, ""),
+    protectionUpstream: jspb.Message.getFieldWithDefault(msg, 16, ""),
+    protectionDownstream: jspb.Message.getFieldWithDefault(msg, 17, ""),
     height: jspb.Message.getFloatingPointFieldWithDefault(msg, 28, 0.0),
     numberCells: jspb.Message.getFieldWithDefault(msg, 29, 0)
   };
@@ -1080,7 +1150,7 @@ proto.assets.Culvert.deserializeBinaryFromReader = function(msg, reader) {
       break;
     case 7:
       var value = /** @type {string} */ (reader.readString());
-      msg.setStructureClass(value);
+      msg.setAssetClass(value);
       break;
     case 8:
       var value = /** @type {string} */ (reader.readString());
@@ -1114,11 +1184,11 @@ proto.assets.Culvert.deserializeBinaryFromReader = function(msg, reader) {
       var value = /** @type {string} */ (reader.readString());
       msg.setMaterial(value);
       break;
-    case 26:
+    case 16:
       var value = /** @type {string} */ (reader.readString());
       msg.setProtectionUpstream(value);
       break;
-    case 27:
+    case 17:
       var value = /** @type {string} */ (reader.readString());
       msg.setProtectionDownstream(value);
       break;
@@ -1203,7 +1273,7 @@ proto.assets.Culvert.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
-  f = message.getStructureClass();
+  f = message.getAssetClass();
   if (f.length > 0) {
     writer.writeString(
       7,
@@ -1269,14 +1339,14 @@ proto.assets.Culvert.serializeBinaryToWriter = function(message, writer) {
   f = message.getProtectionUpstream();
   if (f.length > 0) {
     writer.writeString(
-      26,
+      16,
       f
     );
   }
   f = message.getProtectionDownstream();
   if (f.length > 0) {
     writer.writeString(
-      27,
+      17,
       f
     );
   }
@@ -1306,9 +1376,12 @@ proto.assets.Culvert.prototype.getId = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Culvert} returns this
+ */
 proto.assets.Culvert.prototype.setId = function(value) {
-  jspb.Message.setProto3StringField(this, 1, value);
+  return jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -1321,9 +1394,12 @@ proto.assets.Culvert.prototype.getRoadId = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.assets.Culvert} returns this
+ */
 proto.assets.Culvert.prototype.setRoadId = function(value) {
-  jspb.Message.setProto3IntField(this, 2, value);
+  return jspb.Message.setProto3IntField(this, 2, value);
 };
 
 
@@ -1337,17 +1413,21 @@ proto.assets.Culvert.prototype.getDateCreated = function() {
 };
 
 
-/** @param {?proto.google.protobuf.Timestamp|undefined} value */
+/**
+ * @param {?proto.google.protobuf.Timestamp|undefined} value
+ * @return {!proto.assets.Culvert} returns this
+*/
 proto.assets.Culvert.prototype.setDateCreated = function(value) {
-  jspb.Message.setWrapperField(this, 3, value);
+  return jspb.Message.setWrapperField(this, 3, value);
 };
 
 
 /**
  * Clears the message field making it undefined.
+ * @return {!proto.assets.Culvert} returns this
  */
 proto.assets.Culvert.prototype.clearDateCreated = function() {
-  this.setDateCreated(undefined);
+  return this.setDateCreated(undefined);
 };
 
 
@@ -1370,17 +1450,21 @@ proto.assets.Culvert.prototype.getLastModified = function() {
 };
 
 
-/** @param {?proto.google.protobuf.Timestamp|undefined} value */
+/**
+ * @param {?proto.google.protobuf.Timestamp|undefined} value
+ * @return {!proto.assets.Culvert} returns this
+*/
 proto.assets.Culvert.prototype.setLastModified = function(value) {
-  jspb.Message.setWrapperField(this, 4, value);
+  return jspb.Message.setWrapperField(this, 4, value);
 };
 
 
 /**
  * Clears the message field making it undefined.
+ * @return {!proto.assets.Culvert} returns this
  */
 proto.assets.Culvert.prototype.clearLastModified = function() {
-  this.setLastModified(undefined);
+  return this.setLastModified(undefined);
 };
 
 
@@ -1402,9 +1486,12 @@ proto.assets.Culvert.prototype.getStructureCode = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Culvert} returns this
+ */
 proto.assets.Culvert.prototype.setStructureCode = function(value) {
-  jspb.Message.setProto3StringField(this, 5, value);
+  return jspb.Message.setProto3StringField(this, 5, value);
 };
 
 
@@ -1417,24 +1504,30 @@ proto.assets.Culvert.prototype.getStructureName = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Culvert} returns this
+ */
 proto.assets.Culvert.prototype.setStructureName = function(value) {
-  jspb.Message.setProto3StringField(this, 6, value);
+  return jspb.Message.setProto3StringField(this, 6, value);
 };
 
 
 /**
- * optional string structure_class = 7;
+ * optional string asset_class = 7;
  * @return {string}
  */
-proto.assets.Culvert.prototype.getStructureClass = function() {
+proto.assets.Culvert.prototype.getAssetClass = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 7, ""));
 };
 
 
-/** @param {string} value */
-proto.assets.Culvert.prototype.setStructureClass = function(value) {
-  jspb.Message.setProto3StringField(this, 7, value);
+/**
+ * @param {string} value
+ * @return {!proto.assets.Culvert} returns this
+ */
+proto.assets.Culvert.prototype.setAssetClass = function(value) {
+  return jspb.Message.setProto3StringField(this, 7, value);
 };
 
 
@@ -1447,9 +1540,12 @@ proto.assets.Culvert.prototype.getAdministrativeArea = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Culvert} returns this
+ */
 proto.assets.Culvert.prototype.setAdministrativeArea = function(value) {
-  jspb.Message.setProto3StringField(this, 8, value);
+  return jspb.Message.setProto3StringField(this, 8, value);
 };
 
 
@@ -1462,9 +1558,12 @@ proto.assets.Culvert.prototype.getRoadCode = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Culvert} returns this
+ */
 proto.assets.Culvert.prototype.setRoadCode = function(value) {
-  jspb.Message.setProto3StringField(this, 9, value);
+  return jspb.Message.setProto3StringField(this, 9, value);
 };
 
 
@@ -1477,9 +1576,12 @@ proto.assets.Culvert.prototype.getConstructionYear = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.assets.Culvert} returns this
+ */
 proto.assets.Culvert.prototype.setConstructionYear = function(value) {
-  jspb.Message.setProto3IntField(this, 10, value);
+  return jspb.Message.setProto3IntField(this, 10, value);
 };
 
 
@@ -1492,9 +1594,12 @@ proto.assets.Culvert.prototype.getLength = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.assets.Culvert} returns this
+ */
 proto.assets.Culvert.prototype.setLength = function(value) {
-  jspb.Message.setProto3FloatField(this, 11, value);
+  return jspb.Message.setProto3FloatField(this, 11, value);
 };
 
 
@@ -1507,9 +1612,12 @@ proto.assets.Culvert.prototype.getWidth = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.assets.Culvert} returns this
+ */
 proto.assets.Culvert.prototype.setWidth = function(value) {
-  jspb.Message.setProto3FloatField(this, 12, value);
+  return jspb.Message.setProto3FloatField(this, 12, value);
 };
 
 
@@ -1522,9 +1630,12 @@ proto.assets.Culvert.prototype.getChainage = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.assets.Culvert} returns this
+ */
 proto.assets.Culvert.prototype.setChainage = function(value) {
-  jspb.Message.setProto3FloatField(this, 13, value);
+  return jspb.Message.setProto3FloatField(this, 13, value);
 };
 
 
@@ -1537,9 +1648,12 @@ proto.assets.Culvert.prototype.getStructureType = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Culvert} returns this
+ */
 proto.assets.Culvert.prototype.setStructureType = function(value) {
-  jspb.Message.setProto3StringField(this, 14, value);
+  return jspb.Message.setProto3StringField(this, 14, value);
 };
 
 
@@ -1552,39 +1666,48 @@ proto.assets.Culvert.prototype.getMaterial = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Culvert} returns this
+ */
 proto.assets.Culvert.prototype.setMaterial = function(value) {
-  jspb.Message.setProto3StringField(this, 15, value);
+  return jspb.Message.setProto3StringField(this, 15, value);
 };
 
 
 /**
- * optional string protection_upstream = 26;
+ * optional string protection_upstream = 16;
  * @return {string}
  */
 proto.assets.Culvert.prototype.getProtectionUpstream = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 26, ""));
-};
-
-
-/** @param {string} value */
-proto.assets.Culvert.prototype.setProtectionUpstream = function(value) {
-  jspb.Message.setProto3StringField(this, 26, value);
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 16, ""));
 };
 
 
 /**
- * optional string protection_downstream = 27;
- * @return {string}
+ * @param {string} value
+ * @return {!proto.assets.Culvert} returns this
  */
-proto.assets.Culvert.prototype.getProtectionDownstream = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 27, ""));
+proto.assets.Culvert.prototype.setProtectionUpstream = function(value) {
+  return jspb.Message.setProto3StringField(this, 16, value);
 };
 
 
-/** @param {string} value */
+/**
+ * optional string protection_downstream = 17;
+ * @return {string}
+ */
+proto.assets.Culvert.prototype.getProtectionDownstream = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 17, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assets.Culvert} returns this
+ */
 proto.assets.Culvert.prototype.setProtectionDownstream = function(value) {
-  jspb.Message.setProto3StringField(this, 27, value);
+  return jspb.Message.setProto3StringField(this, 17, value);
 };
 
 
@@ -1597,9 +1720,12 @@ proto.assets.Culvert.prototype.getHeight = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.assets.Culvert} returns this
+ */
 proto.assets.Culvert.prototype.setHeight = function(value) {
-  jspb.Message.setProto3FloatField(this, 28, value);
+  return jspb.Message.setProto3FloatField(this, 28, value);
 };
 
 
@@ -1612,9 +1738,12 @@ proto.assets.Culvert.prototype.getNumberCells = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.assets.Culvert} returns this
+ */
 proto.assets.Culvert.prototype.setNumberCells = function(value) {
-  jspb.Message.setProto3IntField(this, 29, value);
+  return jspb.Message.setProto3IntField(this, 29, value);
 };
 
 

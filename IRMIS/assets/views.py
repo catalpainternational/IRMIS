@@ -120,7 +120,7 @@ def road_update(request):
     regular_fields = [
         "road_name",
         "road_code",
-        "road_type",
+        "asset_class",  # was road_type, specially handled below
         "link_code",
         "link_start_name",
         "link_end_name",
@@ -146,12 +146,16 @@ def road_update(request):
     ]
     changed_fields = []
     for field in regular_fields:
+        field_name = field
         request_value = getattr(req_pb, field)
         if getattr(old_road_pb, field) != request_value:
+            # handle mapping over changed field names
+            if field == "asset_class":
+                field_name = "road_type"
             # set attribute on road
-            setattr(road, field, request_value)
+            setattr(road, field_name, request_value)
             # add field to list of changes fields
-            changed_fields.append(field)
+            changed_fields.append(field_name)
 
     # Nullable Numeric attributes
     for field in numeric_fields:
@@ -535,7 +539,7 @@ def protobuf_reports(request):
             _("'primaryattribute' must contain at least one reportable attribute")
         )
 
-    # handle all of the id, code and class (road_type) permutations
+    # handle all of the id, code and asset_class (road_type) permutations
     # asset_* will be set to something, if bridge_*, culvert_*, road_* is set
     # structure_* will be set if either bridge_* or culvert_* is set
     culvert_id = clean_id_filter(request.GET.get("culvert_id", None), "CULV-")
@@ -682,7 +686,12 @@ def protobuf_reports(request):
         asset_report.execute_aggregate_query()
     )
 
-    report_protobuf.filter = json.dumps(final_filters)
+    filtered_filters = (
+        json.dumps(final_filters)
+        .replace("""road_type""", """asset_class""")
+        .replace("""structure_class""", """asset_class""")
+    )
+    report_protobuf.filter = filtered_filters
     report_protobuf.lengths = json.dumps(final_lengths)
 
     if asset_id or asset_code:
@@ -728,7 +737,7 @@ def bridge_create(req_pb):
             "user": get_user_model().objects.get(pk=req_pb.user),
             "structure_code": req_pb.structure_code,
             "structure_name": req_pb.structure_name,
-            "structure_class": req_pb.structure_class,
+            "structure_class": req_pb.asset_class,
             "administrative_area": req_pb.administrative_area,
             "construction_year": req_pb.construction_year,
             "length": req_pb.length,
@@ -753,7 +762,7 @@ def culvert_create(req_pb):
             "user": get_user_model().objects.get(pk=req_pb.user),
             "structure_code": req_pb.structure_code,
             "structure_name": req_pb.structure_name,
-            "structure_class": req_pb.structure_class,
+            "structure_class": req_pb.asset_class,
             "administrative_area": req_pb.administrative_area,
             "construction_year": req_pb.construction_year,
             "length": req_pb.length,
@@ -776,7 +785,7 @@ def bridge_update(bridge, req_pb):
     bridge.user = get_user_model().objects.get(pk=req_pb.user)
     bridge.structure_code = req_pb.structure_code
     bridge.structure_name = req_pb.structure_name
-    bridge.structure_class = req_pb.structure_class
+    bridge.structure_class = req_pb.asset_class
     bridge.administrative_area = req_pb.administrative_area
     bridge.construction_year = req_pb.construction_year
     bridge.length = req_pb.length
@@ -800,7 +809,7 @@ def culvert_update(culvert, req_pb):
     culvert.user = get_user_model().objects.get(pk=req_pb.user)
     culvert.structure_code = req_pb.structure_code
     culvert.structure_name = req_pb.structure_name
-    culvert.structure_class = req_pb.structure_class
+    culvert.structure_class = req_pb.asset_class
     culvert.administrative_area = req_pb.administrative_area
     culvert.construction_year = req_pb.construction_year
     culvert.length = req_pb.length

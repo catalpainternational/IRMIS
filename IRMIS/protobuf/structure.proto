@@ -17,7 +17,7 @@ message Bridge {
     google.protobuf.Timestamp last_modified = 4;
     string structure_code = 5;
     string structure_name = 6;
-    string structure_class = 7;
+    string asset_class = 7; // structure_class has been renamed
     string administrative_area = 8;
     string road_code = 9;
     int32 construction_year = 10;
@@ -26,9 +26,9 @@ message Bridge {
     float chainage = 13;
     string structure_type = 14;
     string material = 15;
-    // NON-SHARED FIELDS (#26 and onwards)
     string protection_upstream = 16;
     string protection_downstream = 17;
+    // NON-SHARED FIELDS (#26 and onwards)
     string river_name = 28;
     int32 number_spans = 29;
     float span_length = 30;
@@ -43,7 +43,7 @@ message Culvert {
     google.protobuf.Timestamp last_modified = 4;
     string structure_code = 5;
     string structure_name = 6;
-    string structure_class = 7;
+    string asset_class = 7; // structure_class has been renamed
     string administrative_area = 8;
     string road_code = 9;
     int32 construction_year = 10;
@@ -52,9 +52,9 @@ message Culvert {
     float chainage = 13;
     string structure_type = 14;
     string material = 15;
-    // NON-SHARED FIELDS (#26 and onwards)
     string protection_upstream = 16;
     string protection_downstream = 17;
+    // NON-SHARED FIELDS (#26 and onwards)
     float height = 28;
     int32 number_cells = 29;
 }
