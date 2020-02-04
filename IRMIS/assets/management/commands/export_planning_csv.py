@@ -27,7 +27,7 @@ class Command(BaseCommand):
         }
         TERRAIN_DISPLAY = {str(tc[0]): tc[1] for tc in Road.TERRAIN_CLASS_CHOICES}
         TERRAIN_DISPLAY[""] = ""
-        ASSET_CONDITION_DISPLAY = {str(sc[0]): sc[1] for sc in ASSET_CONDITION_CHOICES}
+        ASSET_CONDITION_DISPLAY = {str(sc[0]): sc[1] for sc in Asset.ASSET_CONDITION_CHOICES}
         ASSET_CONDITION_DISPLAY[""] = ""
 
         # only include core rural roads
