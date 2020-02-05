@@ -23,8 +23,8 @@
                     <small class="form-text text-muted">{props.parent.getHelpText("survey_date")}</small>
                     <!-- It would be preferable to use the 'datetime-local' input type, however Firefox currently does not support it -->
                     <input
-                        class="{state.errors.surveyDate ? 'danger' : null } { state.survey.surveyDate ? '' : 'inactive' } form-control"
-                        type="date" name="surveyDate" placeholder="Date" value="{state.survey.surveyDate}"
+                        class="{state.errors.surveyDate ? 'danger' : null } { state.surveyDate ? '' : 'inactive' } form-control"
+                        type="date" name="surveyDate" placeholder="Date" value="{state.surveyDate}"
                         oninput="{checkSurveyDate}" required pattern="\d{4}-\d{2}-\d{2}">
                         <!-- max="{max_date()}" -->
                     <div if="{state.errors.surveyDate}" class="invalid-tooltip">
@@ -36,7 +36,7 @@
             </section>
 
             <section>
-                <h6>{ window.gettext("Surface Condition") }</h6>
+                <h6>{ window.gettext("Condition") }</h6>
                 <div class="form-group">
                     <label>{conditions.display}</label>
                     <span class="required">*</span>
@@ -50,9 +50,61 @@
                         <li each="{condition in conditions.options}" data-condition="{condition[0]}"
                             onclick="{checkSurfaceCondition}">
                             <span
-                                class="{condition[0] == state.survey.surfaceCondition ? 'active' : ''  } radio image"></span>
+                                class="{ condition[0] == state.surfaceCondition ? 'active' : ''  } radio image"></span>
                             { condition[1] }
                         </li>
+                    </ul>
+                </div>
+            </section>
+            <section>
+                <div class="form-group">
+                    <label>{ window.gettext("Condition Description") }</label>
+                    <input
+                        class="{ state.errors.description ? 'danger' : null } { state.description ? '' : 'inactive' } form-control"
+                        type="text" maxlength="500" placeholder="E.g." value="{ state.description }"
+                        oninput="{ checkDescription }">
+                    <div if="{state.errors.description}" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.description }.</li>
+                        </ul>
+                    </div>
+                    <small class="form-text text-muted">{window.gettext("Enter a description on the structure condition")}</small>
+                </div>
+            </section>
+            <section>
+                <h6>{ window.gettext("Upload photos") }</h6>
+                <div class="upload-box">
+                    <div class="cloud-box">
+                        <div class="upload-cloud"></div>
+                        <div class="upload-text">{ window.gettext("Click to upload") }</div>
+                        <div>{ window.gettext("Maximum file size 500KB") }</div>
+                        <div>{ window.gettext("Accepted file formats: JPEG, GIF, PNG, TIFF") }</div>
+                    </div>
+                </div>
+                <input
+                    class="{ state.errors.photo1 ? 'danger' : null } { state.photo1 ? '' : 'inactive' } form-control"
+                    type="text" maxlength="500" placeholder="Enter a description of the picture" value="{ state.photo1 }"
+                    oninput="{ checkPhoto1 }">
+                <div if="{state.errors.photo1}" class="invalid-tooltip">
+                    <ul>
+                        <li>{ state.errors.photo1 }.</li>
+                    </ul>
+                </div>
+                <div class="upload-box">
+                    <div class="cloud-box">
+                        <div class="upload-cloud"></div>
+                        <div class="upload-text">{ window.gettext("Click to upload") }</div>
+                        <div>{ window.gettext("Maximum file size 500KB") }</div>
+                        <div>{ window.gettext("Accepted file formats: JPEG, GIF, PNG, TIFF") }</div>
+                    </div>
+                </div>
+                <input
+                    class="{ state.errors.photo2 ? 'danger' : null } { state.photo2 ? '' : 'inactive' } form-control"
+                    type="text" maxlength="500" placeholder="Enter a description of the picture" value="{ state.photo2 }"
+                    oninput="{ checkPhoto2 }">
+                <div if="{state.errors.photo2}" class="invalid-tooltip">
+                    <ul>
+                        <li>{ state.errors.photo2 }.</li>
                     </ul>
                 </div>
             </section>
@@ -85,6 +137,10 @@
                 pendingRows: [],
                 assetConditions: [{key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading")}],
                 editMode: false,
+                surfaceCondition: '',
+                description: '',
+                photo1: '',
+                photo2: ''
             },
             components: {
                 Edit_Stop_Alert, Edit_Modal, Data_Table
@@ -108,14 +164,13 @@
 
             // Structure Condition Survey
             checkSurveyDate(e) {
-                console.log(e.currentTarget.value);
+                this.state.surveyDate = e.currentTarget.value;
             },
-            checkSurfaceCondition() {
-                console.log(e.currentTarget.value);
+            checkSurfaceCondition(e) {
+                this.state.surfaceCondition = e.currentTarget.dataset.condition;
             },
             showEditModal() {
                 $(`#${this.modal_id}`).modal("show");
-                console.log(this.modal_id)
             },
             conditions: {
                 display: window.gettext('Surface Condition'),

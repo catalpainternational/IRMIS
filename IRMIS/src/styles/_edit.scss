@@ -128,6 +128,37 @@ edit_condition {
     }
 }
 
+edit_structure_condition {
+    section {
+        min-width: 450px;
+    }
+
+    .upload-box { 
+        box-sizing: border-box;
+        height: 230px;
+        border: 1px solid $light-gray;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        margin-top: 30px;
+    }
+
+    .cloud-box {
+        margin: 70px 85px 20px 85px;
+        font-size: 12px;
+        line-height: 14px;
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        font-weight: 600;
+
+        div.upload-text {
+            color: $green;
+            margin-bottom: 30px;
+            margin-top: 5px;
+        }
+    }
+}
+
 feedback_banner {
     & > div {
         box-shadow: 0 0 10px 0 rgba(61, 71, 88, 0.5);
