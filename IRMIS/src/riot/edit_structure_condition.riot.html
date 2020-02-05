@@ -26,7 +26,6 @@
                         class="{state.errors.surveyDate ? 'danger' : null } { state.surveyDate ? '' : 'inactive' } form-control"
                         type="date" name="surveyDate" placeholder="Date" value="{state.surveyDate}"
                         oninput="{checkSurveyDate}" required pattern="\d{4}-\d{2}-\d{2}">
-                        <!-- max="{max_date()}" -->
                     <div if="{state.errors.surveyDate}" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.surveyDate }.</li>
