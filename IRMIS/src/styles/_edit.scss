@@ -157,6 +157,15 @@ feedback_banner {
     }
 }
 
+#inventory-traffic-level-table_wrapper {
+    border-top: 1px solid #CFD1D6;
+    padding-top: 30px;
+
+    section {
+        margin-bottom: 25px;
+    }
+}
+
 edit_traffic,
 traffic_data_details {
     .survey-field-height {
