@@ -366,10 +366,7 @@ export function GetDataForMapPopup(id, featureType) {
     if (assetType !== assetTypeName) {
         return [{ label: window.gettext("Asset Type"), value: featureType }];
     }
-    const idPrefix = assetType === "STRC"
-        ? (["CULV", "culvert"].includes(featureType) ? "CULV-" : "BRDG-")
-        : "";
-    const asset = assetTypeName === "ROAD" ? roads[idPrefix + id] : structures[idPrefix + id];
+    const asset = assetTypeName === "ROAD" ? roads[id] : structures[ id];
 
     if (!asset) {
         return [{ label: window.gettext("Loading"), value: "" }];

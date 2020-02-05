@@ -4,6 +4,8 @@ import "select2/dist/js/select2.full.min.js";
 import { dispatch } from "./assets/utilities";
 
 import { toggleFilter, clearFilter, clearAllFilters, filterDetail, isFilterApplied } from "./filter";
+import { roads } from "./roadManager";
+import { structures } from "./structureManager";
 
 let filterUIState = {};
 
@@ -138,22 +140,33 @@ function toggleAssetType(e) {
         : "estrada.structureTable.sideMenu.assetTypeChanged";
     dispatch(eventName, { "detail": { assetTypeName } });
 
-    const roadValues = ["Road"];
-    const structureValues = ["Structure", "bridge", "culvert"];
-
-    const onValues = (assetTypeName !== "STRC") ? roadValues : structureValues;
-    const offValues = (assetTypeName !== "STRC") ? structureValues : roadValues;
-
-    onValues.forEach((on) => {
-        if (!isFilterApplied(fd.slug, on)) {
-            toggleFilter(fd.slug, on);
-        }
+    const idMap = {};
+    Object.keys(roads).forEach((roadId) => {
+        idMap[roadId] = (assetTypeName !== "STRC");
     });
-    offValues.forEach((off) => {
-        if (isFilterApplied(fd.slug, off)) {
-            toggleFilter(fd.slug, off);
-        }
+    Object.keys(structures).forEach((structureId) => {
+        idMap[structureId] = (assetTypeName === "STRC");
     });
+
+    // communicate this basic filter to the map
+    dispatch("estrada.map.idFilter.applied", { detail: { idMap } });
+
+    // const roadValues = ["Road"];
+    // const structureValues = ["Structure", "bridge", "culvert"];
+
+    // const onValues = (assetTypeName !== "STRC") ? roadValues : structureValues;
+    // const offValues = (assetTypeName !== "STRC") ? structureValues : roadValues;
+
+    // onValues.forEach((on) => {
+    //     if (!isFilterApplied(fd.slug, on)) {
+    //         toggleFilter(fd.slug, on);
+    //     }
+    // });
+    // offValues.forEach((off) => {
+    //     if (isFilterApplied(fd.slug, off)) {
+    //         toggleFilter(fd.slug, off);
+    //     }
+    // });
 }
 
 function toggleFilterSelect2(e) {
