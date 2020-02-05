@@ -423,7 +423,7 @@ def survey_update(request):
 
     # if the new values are empty delete the record and return 200
     req_values = road_survey_values(req_pb.values)
-    if new_values == {}:
+    if req_values == {}:
         with reversion.create_revision():
             survey.delete()
             # store the user who made the changes
