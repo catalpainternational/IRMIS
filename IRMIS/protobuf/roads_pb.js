@@ -730,7 +730,7 @@ proto.assets.Road.toObject = function(includeInstance, msg) {
     linkEndChainage: jspb.Message.getFloatingPointFieldWithDefault(msg, 12, 0.0),
     linkLength: jspb.Message.getFloatingPointFieldWithDefault(msg, 7, 0.0),
     surfaceType: jspb.Message.getFieldWithDefault(msg, 8, ""),
-    surfaceCondition: jspb.Message.getFieldWithDefault(msg, 9, ""),
+    assetCondition: jspb.Message.getFieldWithDefault(msg, 9, ""),
     pavementClass: jspb.Message.getFieldWithDefault(msg, 13, ""),
     carriagewayWidth: jspb.Message.getFloatingPointFieldWithDefault(msg, 14, 0.0),
     administrativeArea: jspb.Message.getFieldWithDefault(msg, 15, ""),
@@ -833,7 +833,7 @@ proto.assets.Road.deserializeBinaryFromReader = function(msg, reader) {
       break;
     case 9:
       var value = /** @type {string} */ (reader.readString());
-      msg.setSurfaceCondition(value);
+      msg.setAssetCondition(value);
       break;
     case 13:
       var value = /** @type {string} */ (reader.readString());
@@ -1005,7 +1005,7 @@ proto.assets.Road.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
-  f = message.getSurfaceCondition();
+  f = message.getAssetCondition();
   if (f.length > 0) {
     writer.writeString(
       9,
@@ -1336,10 +1336,10 @@ proto.assets.Road.prototype.setSurfaceType = function(value) {
 
 
 /**
- * optional string surface_condition = 9;
+ * optional string asset_condition = 9;
  * @return {string}
  */
-proto.assets.Road.prototype.getSurfaceCondition = function() {
+proto.assets.Road.prototype.getAssetCondition = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 9, ""));
 };
 
@@ -1348,7 +1348,7 @@ proto.assets.Road.prototype.getSurfaceCondition = function() {
  * @param {string} value
  * @return {!proto.assets.Road} returns this
  */
-proto.assets.Road.prototype.setSurfaceCondition = function(value) {
+proto.assets.Road.prototype.setAssetCondition = function(value) {
   return jspb.Message.setProto3StringField(this, 9, value);
 };
 

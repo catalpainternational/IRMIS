@@ -27,11 +27,11 @@ def filter_pane():
 
 
 def field_name_standardisation(field_name):
-    return (
-        "asset_class"
-        if field_name == "road_type" or field_name == "structure_class"
-        else field_name
-    )
+    if field_name == "road_type" or field_name == "structure_class":
+        return "asset_class"
+    elif field_name == "surface_condition" or field_name == "structure_condition":
+        return "asset_condition"
+    return field_name
 
 
 def get_schema_data():
@@ -100,6 +100,8 @@ def get_schema_data():
     # Schemas that have the same values for both asset types
     # Asset Class - AKA road_type or structure_class
     asset_schema["asset_class"].update({"options": Asset.ASSET_CLASS_CHOICES})
+    # Asset Condition - AKA surface_condition or structure_condition
+    asset_schema["asset_condition"].update({"options": Asset.ASSET_CONDITION_CHOICES})
 
     # Road specific schema values
     # - Used in side_menu filters
@@ -108,9 +110,6 @@ def get_schema_data():
     )
     asset_schema["surface_type"].update(
         {"options": list(SurfaceType.objects.all().values())}
-    )
-    asset_schema["surface_condition"].update(
-        {"options": Road.SURFACE_CONDITION_CHOICES}
     )
     # - Can be used in other filters
     asset_schema["pavement_class"].update(

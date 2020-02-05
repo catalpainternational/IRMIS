@@ -195,6 +195,13 @@ class Asset:
         ("RUR", _("Rural")),
     ]
 
+    ASSET_CONDITION_CHOICES = [
+        ("1", _("Good")),
+        ("2", _("Fair")),
+        ("3", _("Poor")),
+        ("4", _("Bad")),
+    ]
+
     ASSET_TYPE_CHOICES = [
         # ("ROAD", _("Road")),
         ("BRDG", _("Bridge")),
@@ -227,7 +234,7 @@ class RoadQuerySet(models.QuerySet):
             link_start_name="link_start_name",
             link_end_name="link_end_name",
             surface_type="surface_type__code",
-            surface_condition="surface_condition",
+            asset_condition="surface_condition",
             pavement_class="pavement_class__code",
             administrative_area="administrative_area",
             technical_class="technical_class__code",
@@ -309,12 +316,6 @@ class Road(models.Model):
     objects = RoadManager()
 
     TRAFFIC_LEVEL_CHOICES = [("L", _("Low")), ("M", _("Medium")), ("H", _("High"))]
-    SURFACE_CONDITION_CHOICES = [
-        ("1", _("Good")),
-        ("2", _("Fair")),
-        ("3", _("Poor")),
-        ("4", _("Bad")),
-    ]
     TERRAIN_CLASS_CHOICES = [(1, _("Flat")), (2, _("Rolling")), (3, _("Mountainous"))]
 
     geom = models.MultiLineStringField(srid=32751, dim=2, blank=True, null=True)
@@ -491,7 +492,7 @@ class Road(models.Model):
     surface_condition = models.CharField(
         verbose_name=_("Surface Condition (SDI)"),
         max_length=1,
-        choices=SURFACE_CONDITION_CHOICES,
+        choices=Asset.ASSET_CONDITION_CHOICES,
         blank=True,
         null=True,
         help_text=_(
@@ -669,14 +670,6 @@ class BridgeManager(models.Manager):
 @reversion.register()
 class Bridge(models.Model):
 
-    STRUCTURE_CLASS_CHOICES = [
-        ("NAT", _("National")),
-        ("HIGH", _("Highway")),
-        ("MUN", _("Municipal")),
-        ("URB", _("Urban")),
-        ("RUR", _("Rural")),
-    ]
-
     objects = BridgeManager()
 
     geom = models.PointField(srid=32751, dim=2, blank=True, null=True)
@@ -703,7 +696,7 @@ class Bridge(models.Model):
     structure_class = models.CharField(
         verbose_name=_("Structure Class"),
         max_length=4,
-        choices=STRUCTURE_CLASS_CHOICES,
+        choices=Asset.ASSET_CLASS_CHOICES,
         blank=True,
         null=True,
         help_text=_("Choose the structure class"),
@@ -912,14 +905,6 @@ class CulvertManager(models.Manager):
 @reversion.register()
 class Culvert(models.Model):
 
-    STRUCTURE_CLASS_CHOICES = [
-        ("NAT", _("National")),
-        ("HIGH", _("Highway")),
-        ("MUN", _("Municipal")),
-        ("URB", _("Urban")),
-        ("RUR", _("Rural")),
-    ]
-
     objects = CulvertManager()
 
     geom = models.PointField(srid=32751, dim=2, blank=True, null=True)
@@ -946,7 +931,7 @@ class Culvert(models.Model):
     structure_class = models.CharField(
         verbose_name=_("Structure Class"),
         max_length=4,
-        choices=STRUCTURE_CLASS_CHOICES,
+        choices=Asset.ASSET_CLASS_CHOICES,
         blank=True,
         null=True,
         help_text=_("Choose the structure class"),
