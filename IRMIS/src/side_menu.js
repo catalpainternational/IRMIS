@@ -3,7 +3,7 @@ import "select2/dist/js/select2.full.min.js";
 
 import { dispatch } from "./assets/utilities";
 
-import { toggleFilter, clearFilter, clearAllFilters, filterDetail } from "./filter";
+import { toggleFilter, clearFilter, clearAllFilters, filterDetail, isFilterApplied } from "./filter";
 
 let filterUIState = {};
 
@@ -26,7 +26,7 @@ $(document).ready(function(){
     $('#view a').click(change_view);
 
     // switch asset types
-    $('#assetType a').click(change_assetType);
+    $('#assetType a').click(toggleAssetType);
 
     // toggle filter open/close
     $('.filterToggle').click(toggleFilterOpen);
@@ -96,8 +96,10 @@ function change_view(e) {
 /** assetTypeName is the current selection of the Asset Type filter switch */
 export let assetTypeName = "ROAD"; // or "STRC" for structures, i.e. bridges and culverts
 
-function change_assetType(e) {
-    assetTypeName = e.currentTarget.attributes['data-option'].value;
+function toggleAssetType(e) {
+    const fd = filterDetail(e);
+    assetTypeName = fd.element.attributes["data-option"].value;
+
     const siblings = document.getElementById("assetType").getElementsByTagName("a");
     const filterSections = document.getElementsByClassName("filters-section");
 
@@ -135,6 +137,23 @@ function change_assetType(e) {
         ? "estrada.roadTable.sideMenu.assetTypeChanged"
         : "estrada.structureTable.sideMenu.assetTypeChanged";
     dispatch(eventName, { "detail": { assetTypeName } });
+
+    const roadValues = ["Road"];
+    const structureValues = ["Structure", "bridge", "culvert"];
+
+    const onValues = (assetTypeName !== "STRC") ? roadValues : structureValues;
+    const offValues = (assetTypeName !== "STRC") ? structureValues : roadValues;
+
+    onValues.forEach((on) => {
+        if (!isFilterApplied(fd.slug, on)) {
+            toggleFilter(fd.slug, on);
+        }
+    });
+    offValues.forEach((off) => {
+        if (isFilterApplied(fd.slug, off)) {
+            toggleFilter(fd.slug, off);
+        }
+    });
 }
 
 function toggleFilterSelect2(e) {

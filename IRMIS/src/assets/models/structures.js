@@ -66,16 +66,20 @@ export class EstradaBridge extends Bridge {
         return this.getId();
     }
 
-    get name() {
-        return this.getStructureName();
-    }
-
     get code() {
         return this.structureCode;
     }
 
+    get name() {
+        return this.structureName;
+    }
+
     get structureCode() {
         return this.getStructureCode();
+    }
+
+    get structureName() {
+        return this.getStructureName();
     }
 
     get roadCode() {
@@ -175,16 +179,20 @@ export class EstradaCulvert extends Culvert {
         return this.getId();
     }
 
-    get name() {
-        return this.getStructureName();
-    }
-
     get code() {
         return this.structureCode;
     }
 
+    get name() {
+        return this.structureName;
+    }
+
     get structureCode() {
         return this.getStructureCode();
+    }
+
+    get structureName() {
+        return this.getStructureName();
     }
 
     get roadCode() {

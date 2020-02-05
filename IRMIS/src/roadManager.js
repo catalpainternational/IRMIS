@@ -78,10 +78,11 @@ function filterRoads(filterState) {
     });
 
     // communicate the filter
-    let idMap = filteredRoads.reduce((idMap, road) => {
+    const assetType = "ROAD";
+    const idMap = filteredRoads.reduce((idMap, road) => {
         idMap[road.getId().toString()] = true;
         return idMap;
     }, {});
 
-    dispatch("estrada.roadTable.filter.applied", { detail: { idMap } });
+    dispatch("estrada.roadTable.filter.applied", { detail: { assetType, idMap } });
 }

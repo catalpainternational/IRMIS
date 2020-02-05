@@ -45,10 +45,11 @@ export const estradaRoadTableEventListeners = {
         }
     },
     /** select a row in the table by id */
-    "estrada.roadTable.table.rowSelected": (data, table) => {
-        const rowId = data.detail ? data.detail.rowId : null;
+    "estrada.roadTable.rowSelected": (data, table) => {
+        let rowId = data.detail ? data.detail.rowId : null;
         if (rowId) {
-            const featureType = data.detail ? data.detail.featureType : "";
+            // featureType is not currently needed as it is implied by the rowId
+            // const featureType = data.detail ? data.detail.featureType : "";
             const assetType = "ROAD";
 
             table.rows().every(function (rowIdx, tableLoop, rowLoop) {
@@ -100,10 +101,11 @@ export const estradaStructureTableEventListeners = {
         }
     },
     /** select a row in the table by id */
-    "estrada.structureTable.table.rowSelected": (data, table) => {
+    "estrada.structureTable.rowSelected": (data, table) => {
         const rowId = data.detail ? data.detail.rowId : null;
         if (rowId) {
-            const featureType = data.detail ? data.detail.featureType : "";
+            // featureType is not currently needed as it is implied by the rowId
+            // const featureType = data.detail ? data.detail.featureType : "";
             const assetType = "STRC";
 
             table.rows().every(function (rowIdx, tableLoop, rowLoop) {

@@ -53,23 +53,19 @@ export class Map {
             this.lMap.invalidateSize();
         });
 
-        document.addEventListener("estrada.roadTable.filter.applied", (data: Event) => {
-            this.handleFilter(data);
-        });
-
-        document.addEventListener("estrada.roadTable.idFilter.applied", (data: Event) => {
-            this.handleFilter(data);
-        });
-
         document.addEventListener("estrada.structureTable.sideMenu.viewChanged", () => {
             this.lMap.invalidateSize();
+        });
+
+        document.addEventListener("estrada.roadTable.filter.applied", (data: Event) => {
+            this.handleFilter(data);
         });
 
         document.addEventListener("estrada.structureTable.filter.applied", (data: Event) => {
             this.handleFilter(data);
         });
 
-        document.addEventListener("estrada.structureTable.idFilter.applied", (data: Event) => {
+        document.addEventListener("estrada.map.idFilter.applied", (data: Event) => {
             this.handleFilter(data);
         });
 
@@ -93,7 +89,7 @@ export class Map {
         const featureZoomSet: FeatureCollection = { type: "FeatureCollection", features: [] };
         const featureTypeSet: any = {};
         Object.values(featureLookup).forEach((feature: any) => {
-            const featureId: string = feature.properties.pk.toString();
+            const featureId: string = feature.properties.id;
             const geoLayer = layerLookup[featureId] as L.GeoJSON;
 
             const switchStyle = !!(data as CustomEvent).detail.idMap[featureId];
@@ -122,11 +118,11 @@ export class Map {
     }
 
     private registerFeature(feature: Feature<Geometry, any>, layer: L.Layer) {
-        featureLookup[feature.properties.pk] = feature;
-        layerLookup[feature.properties.pk] = layer;
+        featureLookup[feature.properties.id] = feature;
+        layerLookup[feature.properties.id] = layer;
         layer.on("click", (e) => {
             const clickedFeature = e.target.feature;
-            const featureId: string = clickedFeature.properties.pk.toString();
+            const featureId = clickedFeature.properties.id;
             const featureType = clickedFeature.properties.featureType || "";
 
             if (typeof clickedFeature.properties.switchStyle === "undefined") {
@@ -186,7 +182,7 @@ export class Map {
     }
 
     private getPopup(layer: any): string {
-        const id = parseInt(layer.feature.properties.pk, 10);
+        const id = layer.feature.properties.id;
         const featureType = layer.feature.properties.featureType || "";
 
         const popupData = GetDataForMapPopup(id, featureType);

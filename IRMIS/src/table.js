@@ -337,12 +337,12 @@ function setupTableEventHandlers() {
     
             mainTable.selectionProcessing = clickedRowId;
     
-            applyTableSelection(mainTable.selectionProcessing);
+            applyTableSelectionToMap(mainTable.selectionProcessing);
         }
     }
 }
 
-function applyTableSelection(rowId) {
+function applyTableSelectionToMap(rowId) {
     if (!rowId) {
         return;
     }
@@ -351,7 +351,8 @@ function applyTableSelection(rowId) {
     idMap[rowId] = true;
 
     // communicate the filter
-    dispatch("estrada.idFilter.applied", { detail: { idMap } });
+    const eventName = "estrada.map.idFilter.applied";
+    dispatch(eventName, { detail: { idMap } });
 }
 
 /**
@@ -365,14 +366,17 @@ export function GetDataForMapPopup(id, featureType) {
     if (assetType !== assetTypeName) {
         return [{ label: window.gettext("Asset Type"), value: featureType }];
     }
-    const asset = assetTypeName === "ROAD" ? roads[id] : structures[id];
+    const idPrefix = assetType === "STRC"
+        ? (["CULV", "culvert"].includes(featureType) ? "CULV-" : "BRDG-")
+        : "";
+    const asset = assetTypeName === "ROAD" ? roads[idPrefix + id] : structures[idPrefix + id];
 
     if (!asset) {
         return [{ label: window.gettext("Loading"), value: "" }];
     }
 
-    const code = assetTypeName === "ROAD" ? asset.getRoadCode() : asset.getStructureCode();
-    const name = assetTypeName === "ROAD" ? asset.getRoadName() : asset.getStructureName();
+    const code = asset.code || asset.getRoadCode();
+    const name = asset.name;
 
     const mapPopupData = [];
     if (code) {

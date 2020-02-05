@@ -44,8 +44,11 @@ window.addEventListener("load", () => {
                         // add in road metadata to the GeoJSON that we'll need
                         // for filtering and for styling
                         geoJson.features.forEach((feature) => {
-                            feature.properties.id = Number(feature.properties.pk) || 0;
                             feature.properties.featureType = featureType;
+                            const idPrefix = ["bridge", "culvert"].includes(featureType)
+                                ? featureType === "culvert" ? "CULV-" : "BRDG-"
+                                : "";
+                            feature.properties.id = idPrefix + (Number(feature.properties.pk) || 0);
                         });
 
                         // add to map

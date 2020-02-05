@@ -88,7 +88,7 @@ function filterStructures(filterState) {
     });
 
     // communicate the filter
-    let idMap = filteredStructures.reduce((idMap, structure) => {
+    const idMap = filteredStructures.reduce((idMap, structure) => {
         idMap[structure.getId().toString()] = true;
         return idMap;
     }, {});
