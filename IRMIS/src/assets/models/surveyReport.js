@@ -164,6 +164,24 @@ function extractCountData(allLengths, primary_attribute, useLengthKeyAsDefault =
     return lengths;
 }
 
+function getAssetConditionName(lengths) {
+    const assetConditionNames = ["asset_condition", "surface_condition", "structure_condition"];
+    let assetConditionName = "asset_condition";
+
+    if (!lengths) {
+        return assetConditionName;
+    }
+
+    for (let ix = 0; ix < assetConditionNames.length; ix++) {
+        if (lengths[assetConditionNames[ix]]) {
+            assetConditionName = assetConditionNames[ix];
+            break;
+        }
+    }
+
+    return assetConditionName;
+}
+
 export class EstradaNetworkSurveyReport extends Report {
     getId() {
         if (this.roadCodes.length === 1) {
@@ -430,7 +448,8 @@ export class EstradaNetworkSurveyReport extends Report {
     }
 
     get assetConditions() {
-        return extractCountData(this.lengths, "asset_condition");
+        const assetConditionName = getAssetConditionName(this.lengths);
+        return extractCountData(this.lengths, assetConditionName);
     }
 
     get surfaceTypes() {
@@ -490,7 +509,8 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
     }
 
     get assetConditions() {
-        return this.makeSpecificLengths("asset_condition");
+        const assetConditionName = getAssetConditionName(this.lengths);
+        return this.makeSpecificLengths(assetConditionName);
     }
 
     get surfaceTypes() {
@@ -691,7 +711,7 @@ export class EstradaSurveyAttribute extends Attribute {
     }
 
     get assetCondition() {
-        return this.primaryAttribute === "asset_condition"
+        return ["asset_condition", "surface_condition", "structure_condition"].includes(this.primaryAttribute)
             ? gettext(choice_or_default(this.value, ASSET_CONDITION_CHOICES, "Unknown"))
             : gettext("Unknown");
     }

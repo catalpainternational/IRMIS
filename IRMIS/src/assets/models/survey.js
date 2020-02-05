@@ -52,7 +52,11 @@ export class EstradaSurvey extends Survey {
     // All of the `values` defined in 'make_road_surveys.py' should also be present
     // in the following `get` properties
     get assetCondition() {
-        return choice_or_default(this.values.asset_condition, ASSET_CONDITION_CHOICES);
+        const asset_condition = this.values.asset_condition
+            || this.values.surface_condition
+            || this.values.structure_condition
+            || undefined;
+        return choice_or_default(asset_condition, ASSET_CONDITION_CHOICES);     
     }
 
     get surfaceType() {
