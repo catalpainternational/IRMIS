@@ -7,9 +7,9 @@ import { Attribute, Report } from "../../../protobuf/report_pb";
 import { choice_or_default, getFieldName, getHelpText, invertChoices, makeEstradaObject } from "../protoBufUtilities";
 import { reportColumns } from "../../reportManager";
 
+import { ASSET_CLASS_CHOICES, ASSET_CONDITION_CHOICES } from "./asset";
 import {
-    ASSET_CLASS_CHOICES, ROAD_STATUS_CHOICES,
-    SURFACE_CONDITION_CHOICES, SURFACE_TYPE_CHOICES,
+    ROAD_STATUS_CHOICES, SURFACE_TYPE_CHOICES,
     TECHNICAL_CLASS_CHOICES, TRAFFIC_LEVEL_CHOICES,
     PAVEMENT_CLASS_CHOICES, TERRAIN_CLASS_CHOICES
 } from "./road";
@@ -56,7 +56,7 @@ function AdminAreaChoices() {
 const filterTitles = {
     road_id: { display: gettext("Road Id") },
     asset_class: { display: gettext("Asset Class"), choices: ASSET_CLASS_CHOICES },
-    surface_condition: { display: gettext("Surface Condition"), choices: SURFACE_CONDITION_CHOICES },
+    asset_condition: { display: gettext("Surface Condition"), choices: ASSET_CONDITION_CHOICES },
     surface_type: { display: gettext("Surface Type"), choices: SURFACE_TYPE_CHOICES },
     municipality: { display: gettext("Municipality"), choices: AdminAreaChoices() },
     pavement_class: { display: gettext("Pavement Class"), choices: PAVEMENT_CLASS_CHOICES },
@@ -74,7 +74,7 @@ const lengthTypeChoices = {
     rainfall: {},
     asset_class: ASSET_CLASS_CHOICES,
     road_status: ROAD_STATUS_CHOICES,
-    surface_condition: SURFACE_CONDITION_CHOICES,
+    asset_condition: ASSET_CONDITION_CHOICES,
     surface_type: SURFACE_TYPE_CHOICES,
     technical_class: TECHNICAL_CLASS_CHOICES,
     terrain_class: TERRAIN_CLASS_CHOICES,
@@ -162,6 +162,24 @@ function extractCountData(allLengths, primary_attribute, useLengthKeyAsDefault =
     }
 
     return lengths;
+}
+
+function getAssetConditionName(lengths) {
+    const assetConditionNames = ["asset_condition", "surface_condition", "structure_condition"];
+    let assetConditionName = "asset_condition";
+
+    if (!lengths) {
+        return assetConditionName;
+    }
+
+    for (let ix = 0; ix < assetConditionNames.length; ix++) {
+        if (lengths[assetConditionNames[ix]]) {
+            assetConditionName = assetConditionNames[ix];
+            break;
+        }
+    }
+
+    return assetConditionName;
 }
 
 export class EstradaNetworkSurveyReport extends Report {
@@ -293,7 +311,7 @@ export class EstradaNetworkSurveyReport extends Report {
             "pavement_class",
             "rainfall",
             "asset_class",
-            "surface_condition",
+            "asset_condition",
             "surface_type",
             "technical_class",
             "terrain_class"
@@ -429,8 +447,9 @@ export class EstradaNetworkSurveyReport extends Report {
         return extractCountData(this.lengths, "road_status");
     }
 
-    get surfaceConditions() {
-        return extractCountData(this.lengths, "surface_condition");
+    get assetConditions() {
+        const assetConditionName = getAssetConditionName(this.lengths);
+        return extractCountData(this.lengths, assetConditionName);
     }
 
     get surfaceTypes() {
@@ -489,8 +508,9 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
         return this.makeSpecificLengths("road_status");
     }
 
-    get surfaceConditions() {
-        return this.makeSpecificLengths("surface_condition");
+    get assetConditions() {
+        const assetConditionName = getAssetConditionName(this.lengths);
+        return this.makeSpecificLengths(assetConditionName);
     }
 
     get surfaceTypes() {
@@ -690,9 +710,9 @@ export class EstradaSurveyAttribute extends Attribute {
             : gettext("Unknown");        
     }
 
-    get surfaceCondition() {
-        return this.primaryAttribute === "surface_condition"
-            ? gettext(choice_or_default(this.value, SURFACE_CONDITION_CHOICES, "Unknown"))
+    get assetCondition() {
+        return ["asset_condition", "surface_condition", "structure_condition"].includes(this.primaryAttribute)
+            ? gettext(choice_or_default(this.value, ASSET_CONDITION_CHOICES, "Unknown"))
             : gettext("Unknown");
     }
 

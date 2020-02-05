@@ -2,13 +2,10 @@ import { Bridge, Culvert, Structures } from "../../../protobuf/structure_pb";
 import { projToWGS84, toDms } from "../crsUtilities";
 import { choice_or_default, getFieldName, getHelpText, humanizeChoices, makeEstradaObject, toChainageFormat } from "../protoBufUtilities";
 
+import { ADMINISTRATIVE_AREA_CHOICES, ASSET_CLASS_CHOICES, ASSET_CONDITION_CHOICES } from "./asset";
+
 const assetSchema = JSON.parse(document.getElementById("asset_schema").textContent);
 
-// export const STRUCTURE_CONDITION_CHOICES = humanizeChoices(assetSchema, 'structure_condition', 'code', 'name');
-export const ADMINISTRATIVE_AREA_CHOICES = humanizeChoices(assetSchema, 'administrative_area', 'id', 'name');
-// Asset Class is actually common for all types of asset,
-// for structures it needs to be renamed from 'structure_class' to 'asset_class'
-export const ASSET_CLASS_CHOICES = humanizeChoices(assetSchema, 'asset_class');
 export const STRUCTURE_UPSTREAM_PROTECTION_TYPE_CHOICES = humanizeChoices(assetSchema, 'protection_upstream', 'code', 'name');
 export const STRUCTURE_DOWNSTREAM_PROTECTION_TYPE_CHOICES = humanizeChoices(assetSchema, 'protection_downstream', 'code', 'name');
 export const STRUCTURE_TYPE_BRIDGE_CHOICES = humanizeChoices(assetSchema, 'structure_type', 'code', 'name');
@@ -73,6 +70,10 @@ export class EstradaBridge extends Bridge {
         return this.getStructureName();
     }
 
+    get code() {
+        return this.structureCode;
+    }
+
     get structureCode() {
         return this.getStructureCode();
     }
@@ -125,6 +126,10 @@ export class EstradaBridge extends Bridge {
         return choice_or_default(this.getAssetClass(), ASSET_CLASS_CHOICES);
     }
 
+    get assetCondition() {
+        return choice_or_default(this.getAssetCondition(), ASSET_CONDITION_CHOICES);
+    }
+
     get structureType() {
         return choice_or_default(this.getStructureType(), STRUCTURE_TYPE_BRIDGE_CHOICES );
     }
@@ -168,6 +173,10 @@ export class EstradaCulvert extends Culvert {
 
     get name() {
         return this.getStructureName();
+    }
+
+    get code() {
+        return this.structureCode;
     }
 
     get structureCode() {
@@ -216,6 +225,10 @@ export class EstradaCulvert extends Culvert {
 
     get assetClass() {
         return choice_or_default(this.getAssetClass(), ASSET_CLASS_CHOICES);
+    }
+
+    get assetCondition() {
+        return choice_or_default(this.getAssetCondition(), ASSET_CONDITION_CHOICES);
     }
 
     get structureType() {

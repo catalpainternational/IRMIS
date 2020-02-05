@@ -59,7 +59,7 @@
                 reportData: {},
                 asset_class: emptyEntries,
                 road_status: emptyEntries,
-                surface_condition: emptyEntries,
+                asset_condition: emptyEntries,
                 pavement_class: emptyEntries,
             },
             components: {
@@ -68,7 +68,7 @@
             stackedBars: [
                 { id: reportBarIds.assetClass, title: window.gettext("Asset Class"), filterName: "asset_class" },
                 { id: reportBarIds.roadStatus, title: window.gettext("Road Status"), filterName: "road_status" },
-                { id: reportBarIds.surfaceCondition, title: window.gettext("Surface Condition (SDI)"), filterName: "surface_condition" },
+                { id: reportBarIds.assetCondition, title: window.gettext("Surface Condition (SDI)"), filterName: "asset_condition" },
                 { id: reportBarIds.pavementClass, title: window.gettext("Pavement Class"), filterName: "pavement_class" },
             ],
             onMounted(props, state) {
@@ -108,7 +108,7 @@
                                 totalLength: 0,
                                 asset_class: surveyReportData.assetClasses,
                                 road_status: surveyReportData.roadStatuses,
-                                surface_condition: surveyReportData.surfaceConditions,
+                                asset_condition: surveyReportData.assetConditions,
                                 pavement_class: surveyReportData.pavementClasses,
                                 dateCreated: () => dayjs(new Date()).format('DD MMMM YYYY [at] HH:mm'),
                             };

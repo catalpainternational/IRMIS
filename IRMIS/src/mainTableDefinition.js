@@ -275,10 +275,10 @@ export const estradaTableColumns = [
         className: "text-center",
     },
     {
-        title: EstradaRoad.getFieldName("surface_condition"),
+        title: EstradaRoad.getFieldName("asset_condition"),
         data: null,
         defaultContent: "",
-        render: r => buttonSegmentsTemplate("surface_condition", r),
+        render: r => buttonSegmentsTemplate("asset_condition", r),
         className: "text-center",
         orderable: false,
     },

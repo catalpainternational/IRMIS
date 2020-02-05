@@ -54,10 +54,10 @@
                     </select>
                 </div>
 
-                <div if="{ reportContent().visibleFilters.surfaceCondition }" class="options">
-                    <select id="surface_condition_select2" multiple="true">
-                        <option each="{ surface_condition in window.asset_schema.surface_condition.options }"
-                            value="{ surface_condition[0] }">{ surface_condition[1] }</option>
+                <div if="{ reportContent().visibleFilters.assetCondition }" class="options">
+                    <select id="asset_condition_select2" multiple="true">
+                        <option each="{ asset_condition in window.asset_schema.asset_condition.options }"
+                            value="{ asset_condition[0] }">{ asset_condition[1] }</option>
                     </select>
                 </div>
 
@@ -130,9 +130,9 @@
             id="{ stackedBarIds.technicalClass }" title="{ window.gettext('Technical Class') }"
             entries="{ state.technical_class }" total_title="{ window.gettext('Total road chainage') }">
         </stacked_bar>
-        <stacked_bar hidden="{ !state.surface_condition || !hasStackedBar(stackedBarIds.surfaceCondition) }" 
-            id="{ stackedBarIds.surfaceCondition }" title="{ window.gettext('Surface Condition (SDI)') }"
-            entries="{ state.surface_condition }" total_title="{ window.gettext('Total road chainage') }">
+        <stacked_bar hidden="{ !state.asset_condition || !hasStackedBar(stackedBarIds.assetCondition) }" 
+            id="{ stackedBarIds.assetCondition }" title="{ window.gettext('Surface Condition (SDI)') }"
+            entries="{ state.asset_condition }" total_title="{ window.gettext('Total road chainage') }">
         </stacked_bar>
 
         <data_table hidden="{ !state.reportData.municipality || !hasDataTable(reportTableIds.municipality) }"
@@ -160,9 +160,9 @@
             columns="{columns.technicalClass()}" columnSortOrder="{baseColumnSortOrder}"
             paging="false" canExport showTotal>
         </data_table>
-        <data_table hidden="{ !state.reportData.surfaceCondition || !hasDataTable(reportTableIds.surfaceCondition) }"
-            table_id="{reportTableIds.surfaceCondition}" title="{ window.gettext('Surface Condition (SDI)') }"
-            columns="{columns.surfaceCondition()}" columnSortOrder="{baseColumnSortOrder}"
+        <data_table hidden="{ !state.reportData.assetCondition || !hasDataTable(reportTableIds.assetCondition) }"
+            table_id="{reportTableIds.assetCondition}" title="{ window.gettext('Surface Condition (SDI)') }"
+            columns="{columns.assetCondition()}" columnSortOrder="{baseColumnSortOrder}"
             paging="false" canExport showTotal>
         </data_table>
     </div>
@@ -191,6 +191,9 @@
         import {
             ADMINISTRATIVE_AREA_CHOICES, // municipality
             ASSET_CLASS_CHOICES, // asset_class - previously road_class / road_type, structure_class
+            ASSET_CONDITION_CHOICES, // asset_condition - previously surface_condition, structure_condition
+        } from "../assets/models/asset";
+        import {
             SURFACE_TYPE_CHOICES // surface_type
         } from "../assets/models/road";
 
@@ -206,14 +209,14 @@
 
         // Ids of the report elements
         const allReportElements = {
-            stackedBars: [reportBarIds.roadStatus, reportBarIds.technicalClass, reportBarIds.surfaceCondition],
+            stackedBars: [reportBarIds.roadStatus, reportBarIds.technicalClass, reportBarIds.assetCondition],
             tables: [
                 reportTableIds.municipality,
                 reportTableIds.assetClass,
                 reportTableIds.surfaceType,
                 reportTableIds.roadStatus,
                 reportTableIds.technicalClass,
-                reportTableIds.surfaceCondition,
+                reportTableIds.assetCondition,
             ],
         };
 
@@ -224,7 +227,7 @@
             municipality: [reportColumns.title, reportColumns.distance, reportColumns.percent],
             asset_class: [reportColumns.title, reportColumns.distance, reportColumns.percent],
             road_status: [reportColumns.title, reportColumns.distance, reportColumns.percent],
-            surface_condition: [reportColumns.chainageStart, reportColumns.chainageEnd, reportColumns.surfaceCondition, reportColumns.surveyDate],
+            asset_condition: [reportColumns.chainageStart, reportColumns.chainageEnd, reportColumns.assetCondition, reportColumns.surveyDate],
             surface_type: [reportColumns.title, reportColumns.distance, reportColumns.percent],
             technical_class: [reportColumns.title, reportColumns.distance, reportColumns.percent],
             terrain_class: [reportColumns.title, reportColumns.distance, reportColumns.percent],
@@ -233,7 +236,7 @@
             municipality: "Municipality",
             asset_class: "Asset Class",
             road_status: "Road Status",
-            // surface_condition: no title column for surface condition
+            // asset_condition: no title column for asset condition
             surface_type: "Surface Type",
             technical_class: "Technical Class",
             terrain_class: "Terrain Class",
@@ -263,13 +266,13 @@
                     { selectId: "municipality_area_select2", placeHolder: "Municipality", dataIn: "reportMunicipality", filterName: "municipality" },
                     { selectId: "asset_class_select2", placeHolder: "Asset class", dataIn: "reportAssetClass", filterName: "asset_class" },
                     { selectId: "surface_type_select2", placeHolder: "Surface type", dataIn: "reportSurfaceType", filterName: "surface_type" },
-                    { selectId: "surface_condition_select2", placeHolder: "Surface condition", dataIn: "reportSurfaceCondition", filterName: "surface_condition" },
+                    { selectId: "asset_condition_select2", placeHolder: "Surface condition", dataIn: "reportAssetCondition", filterName: "asset_condition" },
                     { selectId: "road_code_select2", placeHolder: "Road code", dataIn: "reportRoadCode", isSingle: true, filterName: "road_code" },
                 ],
                 reportMunicipality: [],
                 reportAssetClass: [],
                 reportSurfaceType: [],
-                reportSurfaceCondition: [],
+                reportAssetCondition: [],
                 reportRoadCode: null,
                 reportStartChainage: null,
                 reportEndChainage: null,
@@ -277,7 +280,7 @@
                 reportData: {},
                 road_status: [{ key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
                 technical_class: [{ key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
-                surface_condition: [{ key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
+                asset_condition: [{ key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
             },
             components: {
                 Stacked_Bar
@@ -290,7 +293,7 @@
                 municipality: () => SetTitleColumn("municipality"),
                 assetClass: () => SetTitleColumn("asset_class"),
                 roadStatus: () => SetTitleColumn("road_status"),
-                surfaceCondition: () => SetTitleColumn("surface_condition"),
+                assetCondition: () => SetTitleColumn("asset_condition"),
                 surfaceType: () => SetTitleColumn("surface_type"),
                 technicalClass: () => SetTitleColumn("technical_class"),
                 terrainClass: () => SetTitleColumn("terrain_class"),
@@ -323,7 +326,7 @@
                     this.prepareSelects(filterDefinition);
                 });
 
-                this.prepareStackedBar(this.stackedBarIds.surfaceCondition, this.state.surfaceConditions, "surface_condition");
+                this.prepareStackedBar(this.stackedBarIds.assetCondition, this.state.assetConditions, "asset_condition");
             },
             prepareSelects(filterDefinition) {
                 const selectOptions = {
@@ -556,8 +559,9 @@
                             // add their reference data here
                             switch (parentPrimary) {
                                 case "municipality": selectSource = ADMINISTRATIVE_AREA_CHOICES; break;
-                                case "surface_type": selectSource = SURFACE_TYPE_CHOICES; break;
                                 case "asset_class": selectSource = ASSET_CLASS_CHOICES; break;
+                                case "asset_condition": selectSource = ASSET_CONDITION_CHOICES; break;
+                                case "surface_type": selectSource = SURFACE_TYPE_CHOICES; break;
                             }
                             if (selectSource) {
                                 expandedPrimaries[parentPrimary] = Object.keys(selectSource);
@@ -615,13 +619,13 @@
 
                     this.state.reportData.roadStatus = this.prepareTableData(reportTableIds.roadStatus, surveyReportData.roadStatuses, "road_status");
                     this.state.reportData.technicalClass = this.prepareTableData(reportTableIds.technicalClass, surveyReportData.technicalClasses, "technical_class");
-                    const surfaceConditions = surveyReportData.attributes("surface_condition", null, false, true);
-                    const surfaceConditionAttributes = surfaceConditions ? surfaceConditions.attributeEntries || [] : [];
-                    this.state.reportData.surfaceCondition = this.prepareTableData(reportTableIds.surfaceCondition, surfaceConditionAttributes, "surface_condition");
+                    const assetConditions = surveyReportData.attributes("asset_condition", null, false, true);
+                    const assetConditionAttributes = assetConditions ? assetConditions.attributeEntries || [] : [];
+                    this.state.reportData.assetCondition = this.prepareTableData(reportTableIds.assetCondition, assetConditionAttributes, "asset_condition");
 
                     this.prepareStackedBar(this.stackedBarIds.roadStatus, surveyReportData.roadStatuses, "asset_class");
                     this.prepareStackedBar(this.stackedBarIds.technicalClass, surveyReportData.technicalClasses, "technical_class");
-                    this.prepareStackedBar(this.stackedBarIds.surfaceCondition, surveyReportData.surfaceConditions, "surface_condition");
+                    this.prepareStackedBar(this.stackedBarIds.assetCondition, surveyReportData.assetConditions, "asset_condition");
 
                     const reportingTables = this.reportElements().dataTables;
                     this.state.noReportData = true;
@@ -630,7 +634,7 @@
                         reportingTables.includes(reportTableIds.surfaceType) && surveyReportData.surfaceTypes.length ||
                         reportingTables.includes(reportTableIds.roadStatus) && surveyReportData.roadStatuses.length ||
                         reportingTables.includes(reportTableIds.technicalClass) && surveyReportData.technicalClasses.length ||
-                        reportingTables.includes(reportTableIds.surfaceCondition) && surveyReportData.surfaceConditions.length) {
+                        reportingTables.includes(reportTableIds.assetCondition) && surveyReportData.assetConditions.length) {
                         this.state.noReportData = false;
                     }
                 } else {

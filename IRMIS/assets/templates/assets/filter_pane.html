@@ -157,12 +157,12 @@
         {% comment %} SECTION - ASSET CONDITION {% endcomment %}
         <div class="filters-section roads">
             <span class="subtitle">{% trans "Asset condition" %}</span>
-            {% comment %} SURFACE CONDITION {% endcomment %}
-            {% with slug=asset_schema.surface_condition.slug %}
+            {% comment %} ASSET CONDITION {% endcomment %}
+            {% with slug=asset_schema.asset_condition.slug %}
             <div data-slug="{{ slug }}" class="filter">
                 <div class="d-flex header justify-content-between">
                     <div class="align-items-center d-flex">
-                        <label>{{ asset_schema.surface_condition.display }}</label>
+                        <label>{{ asset_schema.asset_condition.display }}</label>
                     </div>
                     <div class="align-items-center d-flex">
                         <span class="clear-filter" hidden>{% trans "Clear" %}</span>
@@ -171,7 +171,7 @@
                 </div>
                 <div class="options" hidden>
                     <ul>
-                        {% for option in asset_schema.surface_condition.options %}
+                        {% for option in asset_schema.asset_condition.options %}
                         <li class="align-items-center d-flex optionToggle" data-option="{{ option.0 }}">
                             <span class="checkbox image"></span>
                             {{ option.1 }}
@@ -279,7 +279,7 @@
                 </div>
                 <div class="options" hidden>
                     <ul>
-                        {% for option in asset_schema.surface_condition.options %}
+                        {% for option in asset_schema.asset_condition.options %}
                         <li class="align-items-center d-flex optionToggle" data-option="{{ option.0 }}">
                             <span class="checkbox image"></span>
                             {{ option.1 }}
