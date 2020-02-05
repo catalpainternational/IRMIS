@@ -193,7 +193,7 @@ function initializeDataTable() {
 
     if (pendingRoads.length) {
         // add any rows the road manager has delivered before initialization
-        if (assetTypeName === "roads") {
+        if (assetTypeName === "ROAD") {
             roadsTable.rows.add(pendingRoads).draw();
         
             pendingRoads = [];
@@ -202,7 +202,7 @@ function initializeDataTable() {
 
     if (pendingStructures.length) {
         // add any rows the structure manager has delivered before initialization
-        if (assetTypeName !== "roads") {
+        if (assetTypeName !== "ROAD") {
             structuresTable.rows.add(pendingStructures).draw();
         
             pendingStructures = [];
@@ -224,25 +224,25 @@ function setupTableEventHandlers() {
     document.getElementById("export-structure").addEventListener("click", exportStructuresTable);
 
     // Setup column selection and column click handlers
-    setupColumnEventHandlers("roads");
-    setupColumnEventHandlers("structures");
+    setupColumnEventHandlers("ROAD");
+    setupColumnEventHandlers("STRC");
    
-    function setupColumnEventHandlers(mainTableType = "roads") {
-        const selectId = (mainTableType === "roads")
+    function setupColumnEventHandlers(mainTableType = "ROAD") {
+        const selectId = (mainTableType === "ROAD")
             ? "select-road-data"
             : "select-structure-data";
 
-        const columnsDropdown = (mainTableType === "roads")
+        const columnsDropdown = (mainTableType === "ROAD")
             ? document.getElementById("road-columns-dropdown")
             : document.getElementById("structure-columns-dropdown");
         
         const columns = columnsDropdown.querySelectorAll("[data-column]");
 
-        const mainTable = (mainTableType === "roads")
+        const mainTable = (mainTableType === "ROAD")
             ? roadsTable
             : structuresTable;
         
-        const restoreColumnDefaults = (mainTableType === "roads")
+        const restoreColumnDefaults = (mainTableType === "ROAD")
             ? document.getElementsByClassName("restore-road").item(0)
             : document.getElementsByClassName("restore-structure").item(0);
         
@@ -303,11 +303,11 @@ function setupTableEventHandlers() {
         });
     }
 
-    roadsTable.on("click", "tbody tr td", (e) => { handleCellClick(e, "roads"); });
-    structuresTable.on("click", "tbody tr td", (e) => { handleCellClick(e, "structures"); });
+    roadsTable.on("click", "tbody tr td", (e) => { handleCellClick(e, "ROAD"); });
+    structuresTable.on("click", "tbody tr td", (e) => { handleCellClick(e, "STRC"); });
 
-    function handleCellClick(e, mainTableType = "roads") {
-        const mainTable = (mainTableType === "roads")
+    function handleCellClick(e, mainTableType = "ROAD") {
+        const mainTable = (mainTableType === "ROAD")
             ? roadsTable
             : structuresTable;
         
@@ -361,18 +361,18 @@ function applyTableSelection(rowId) {
  * @return [{label: string, value: string}]
  */
 export function GetDataForMapPopup(id, featureType) {
-    const assetType = ["bridge", "culvert"].includes(featureType) ? "structures" : "roads";
+    const assetType = ["BRDG", "CULV", "bridge", "culvert"].includes(featureType) ? "STRC" : "ROAD";
     if (assetType !== assetTypeName) {
         return [{ label: window.gettext("Asset Type"), value: featureType }];
     }
-    const asset = assetTypeName === "roads" ? roads[id] : structures[id];
+    const asset = assetTypeName === "ROAD" ? roads[id] : structures[id];
 
     if (!asset) {
         return [{ label: window.gettext("Loading"), value: "" }];
     }
 
-    const code = assetTypeName === "roads" ? asset.getRoadCode() : asset.getStructureCode();
-    const name = assetTypeName === "roads" ? asset.getRoadName() : asset.getStructureName();
+    const code = assetTypeName === "ROAD" ? asset.getRoadCode() : asset.getStructureCode();
+    const name = assetTypeName === "ROAD" ? asset.getRoadName() : asset.getStructureName();
 
     const mapPopupData = [];
     if (code) {
@@ -385,11 +385,11 @@ export function GetDataForMapPopup(id, featureType) {
     return mapPopupData;
 }
 
-function getTableData(mainTableType = "roads") {
-    const mainTableColumns = (mainTableType === "roads")
+function getTableData(mainTableType = "ROAD") {
+    const mainTableColumns = (mainTableType === "ROAD")
         ? estradaTableColumns
         : structuresTableColumns;
-    const mainTable = (mainTableType === "roads")
+    const mainTable = (mainTableType === "ROAD")
         ? roadsTable
         : structuresTable;
 
@@ -415,12 +415,12 @@ function getTableData(mainTableType = "roads") {
 }
 
 function exportRoadsTable() {
-    const tableData = getTableData("roads");
+    const tableData = getTableData("ROAD");
     exportCsv(tableData.headers, tableData.rows);
 }
 
 function exportStructuresTable() {
-    const structuresData = getTableData("structures");
+    const structuresData = getTableData("STRC");
     exportCsv(structuresData.headers, structuresData.rows);
 }
 
@@ -498,13 +498,13 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
 
     reportTable.clear(); // remove all rows in the table
 
-    const getAsset = assetTypeName === "roads" ? getRoad : getStructure;
+    const getAsset = assetTypeName === "ROAD" ? getRoad : getStructure;
     const getAssetFilters = (assetData) => {
         let filters = {
             primaryattribute: attr,
         };
 
-        if (assetTypeName === "roads") {
+        if (assetTypeName === "ROAD") {
             if (assetData.getLinkStartChainage() && assetData.getLinkEndChainage()) {
                 filters.road_code = assetData.getRoadCode();
                 filters.chainagestart = assetData.getLinkStartChainage();

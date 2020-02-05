@@ -50,7 +50,7 @@ function collapse_side_menu() {
     sideMenu.hidden = true;
     collapsedSideMenu.classList.add("d-flex");
 
-    const eventName = (assetTypeName === "structures")
+    const eventName = (assetTypeName === "STRC")
         ? "estrada.roadTable.sideMenu.viewChanged"
         : "estrada.structureTable.sideMenu.viewChanged";
     dispatch(eventName, undefined);
@@ -66,7 +66,7 @@ function expand_side_menu() {
     sideMenu.hidden = false;
     collapsedSideMenu.classList.remove("d-flex");
 
-    const eventName = (assetTypeName === "structures")
+    const eventName = (assetTypeName === "STRC")
         ? "estrada.roadTable.sideMenu.viewChanged"
         : "estrada.structureTable.sideMenu.viewChanged";
     dispatch(eventName, undefined);
@@ -87,17 +87,17 @@ function change_view(e) {
     }
     e.currentTarget.classList.add("active");
 
-    const eventName = (assetTypeName === "structures")
+    const eventName = (assetTypeName === "STRC")
         ? "estrada.roadTable.sideMenu.viewChanged"
         : "estrada.structureTable.sideMenu.viewChanged";
     dispatch(eventName, { "detail": { viewName } });
 }
 
 /** assetTypeName is the current selection of the Asset Type filter switch */
-export let assetTypeName = "roads";
+export let assetTypeName = "ROAD"; // or "STRC" for structures, i.e. bridges and culverts
 
 function change_assetType(e) {
-    assetTypeName = e.currentTarget.attributes['data-filtername'].value;
+    assetTypeName = e.currentTarget.attributes['data-option'].value;
     const siblings = document.getElementById("assetType").children;
     const filterSections = document.getElementsByClassName("filters-section");
 
@@ -123,7 +123,7 @@ function change_assetType(e) {
     const roadTable = document.getElementById("table-roads");
     const structureTable = document.getElementById("table-structures");
 
-    if (assetTypeName === "roads") {
+    if (assetTypeName === "ROAD") {
         roadTable.removeAttribute("hidden");
         structureTable.setAttribute("hidden", true);
     } else {
@@ -131,7 +131,7 @@ function change_assetType(e) {
         structureTable.removeAttribute("hidden");
     }
 
-    const eventName = (assetTypeName === "structures")
+    const eventName = (assetTypeName !== "STRC")
         ? "estrada.roadTable.sideMenu.assetTypeChanged"
         : "estrada.structureTable.sideMenu.assetTypeChanged";
     dispatch(eventName, { "detail": { assetTypeName } });

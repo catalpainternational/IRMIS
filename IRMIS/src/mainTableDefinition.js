@@ -49,7 +49,7 @@ export const estradaRoadTableEventListeners = {
         const rowId = data.detail ? data.detail.rowId : null;
         if (rowId) {
             const featureType = data.detail ? data.detail.featureType : "";
-            const assetType = "roads";
+            const assetType = "ROAD";
 
             table.rows().every(function (rowIdx, tableLoop, rowLoop) {
                 if (assetType !== assetTypeName || this.id() !== rowId) {
@@ -104,7 +104,7 @@ export const estradaStructureTableEventListeners = {
         const rowId = data.detail ? data.detail.rowId : null;
         if (rowId) {
             const featureType = data.detail ? data.detail.featureType : "";
-            const assetType = "structures";
+            const assetType = "STRC";
 
             table.rows().every(function (rowIdx, tableLoop, rowLoop) {
                 if (assetType !== assetTypeName || this.id() !== rowId) {
@@ -496,9 +496,9 @@ export const structuresTableColumns = [
 function detectStructure(structure) {
     switch (structure.constructor.name) {
         case "EstradaBridge":
-            return "Bridge";
+            return "BRDG";
         case "EstradaCulvert":
-            return "Culvert";
+            return "CULV";
         default:
             return null;
     }
@@ -516,19 +516,19 @@ function getStructureFieldName(field) {
 function buttonSegmentsTemplate(attrib, asset) {
     const assetStructureType = detectStructure(asset);
     const assetType = !assetStructureType
-        ? assetTypeName === "roads" ? "roads" : "structures"
-        : assetStructureType === "Bridge" ? "bridges" : "culverts";
+        ? assetTypeName === "ROAD" ? "ROAD" : "STRC"
+        : ["BRDG"].includes(assetStructureType) ? "BRDG" : "CULV";
 
-    const code = (assetType === "roads") ? asset.getLinkCode() : asset.getStructureCode();
+    const code = (assetType === "ROAD") ? asset.getLinkCode() : asset.getStructureCode();
     let getFieldName = (attrib) => (attrib);
     switch (assetType) {
-        case "roads":
+        case "ROAD":
             getFieldName = EstradaRoad.getFieldName;
             break;
-        case "bridges":
+        case "BRDG":
             getFieldName = EstradaBridge.getFieldName;
             break;
-        case "culverts":
+        case "CULV":
             getFieldName = EstradaCulvert.getFieldName;
             break;
         default:

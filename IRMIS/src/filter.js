@@ -58,7 +58,7 @@ export function clearAllFilters() {
 
 /** actually make the filter happen */
 export function applyFilter() {
-    const eventName = (assetTypeName !== "structures")
+    const eventName = (assetTypeName !== "STRC")
         ? "estrada.roadTable.filter.apply"
         : "estrada.structureTable.filter.apply";
     dispatch(eventName, { detail: { filterState } });
