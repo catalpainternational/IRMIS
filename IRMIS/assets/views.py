@@ -124,7 +124,7 @@ def road_update(request):
         "link_code",
         "link_start_name",
         "link_end_name",
-        "surface_condition",
+        "asset_condition",  # was surface_condition, specially handled below
         "administrative_area",
         "project",
         "funding_source",
@@ -152,6 +152,8 @@ def road_update(request):
             # handle mapping over changed field names
             if field == "asset_class":
                 field_name = "road_type"
+            elif field == "asset_condition":
+                field_name = "surface_condition"
             # set attribute on road
             setattr(road, field_name, request_value)
             # add field to list of changes fields
@@ -269,9 +271,15 @@ def protobuf_road_surveys(request, pk, survey_attribute=None):
     # pull any Surveys that cover the Road Code above
     queryset = Survey.objects.filter(road_code=road.road_code)
 
+    filter_attribute = survey_attribute
+    if survey_attribute == "asset_condition":
+        filter_attribute = "surface_condition"
+    elif survey_attribute == "asset_class":
+        filter_attribute = "road_type"
+
     if survey_attribute:
-        queryset = queryset.filter(values__has_key=survey_attribute).exclude(
-            **{"values__" + survey_attribute + "__isnull": True}
+        queryset = queryset.filter(values__has_key=filter_attribute).exclude(
+            **{"values__" + filter_attribute + "__isnull": True}
         )
 
     queryset.order_by("road_code", "chainage_start", "chainage_end", "-date_updated")
@@ -294,6 +302,17 @@ def pbtimestamp_to_pydatetime(pb_stamp):
     return pytz.utc.localize(pb_date)
 
 
+def road_survey_values(req_pb_values):
+    """ convert the json and do any required key manipulation """
+    req_values = json.loads(req_pb_values)
+    if "asset_class" in req_values:
+        req_values["road_type"] = req_values.pop("asset_class")
+    if "asset_condition" in req_values:
+        req_values["surface_condition"] = req_values.pop("asset_condition")
+
+    return req_values
+
+
 @login_required
 @user_passes_test(user_can_edit)
 def survey_create(request):
@@ -305,6 +324,9 @@ def survey_create(request):
     # parse Survey from protobuf in request body
     req_pb = survey_pb2.Survey()
     req_pb.ParseFromString(request.body)
+
+    # convert the json and do any required key manipulation
+    req_values = road_survey_values(req_pb.values)
 
     # check that Protobuf parsed
     if not req_pb.road_id:
@@ -334,7 +356,7 @@ def survey_create(request):
                     "chainage_end": req_pb.chainage_end,
                     "date_surveyed": pbtimestamp_to_pydatetime(req_pb.date_surveyed),
                     "source": req_pb.source,
-                    "values": json.loads(req_pb.values),
+                    "values": req_values,
                 }
             )
 
@@ -401,8 +423,8 @@ def survey_update(request):
         )
 
     # if the new values are empty delete the record and return 200
-    new_values = json.loads(req_pb.values)
-    if new_values == {}:
+    req_values = road_survey_values(req_pb.values)
+    if req_values == {}:
         with reversion.create_revision():
             survey.delete()
             # store the user who made the changes
@@ -421,7 +443,7 @@ def survey_update(request):
     survey.chainage_end = req_pb.chainage_end
     survey.date_surveyed = pbtimestamp_to_pydatetime(req_pb.date_surveyed)
     survey.source = req_pb.source
-    survey.values = new_values
+    survey.values = req_values
 
     with reversion.create_revision():
         survey.save()
@@ -577,9 +599,7 @@ def protobuf_reports(request):
     surface_types = request.GET.getlist("surface_type", [])  # surface_type=X
     pavement_classes = request.GET.getlist("pavement_class", [])  # pavement_class=X
     municipalities = request.GET.getlist("municipality", [])  # municipality=X
-    surface_conditions = request.GET.getlist(
-        "surface_condition", []
-    )  # surface_condition=X
+    asset_conditions = request.GET.getlist("asset_condition", [])  # asset_condition=X
 
     # handle the (maximum) report date
     report_date = request.GET.get("reportdate", None)  # reportdate=X
@@ -668,8 +688,8 @@ def protobuf_reports(request):
         final_filters["surface_type"] = surface_types
     if len(pavement_classes) > 0:
         final_filters["pavement_class"] = pavement_classes
-    if len(surface_conditions) > 0:
-        final_filters["surface_condition"] = surface_conditions
+    if len(asset_conditions) > 0:
+        final_filters["asset_condition"] = asset_conditions
 
     # Survey level attributes
     # if report_date:
@@ -690,6 +710,8 @@ def protobuf_reports(request):
         json.dumps(final_filters)
         .replace("""road_type""", """asset_class""")
         .replace("""structure_class""", """asset_class""")
+        .replace("""surface_condition""", """asset_condition""")
+        .replace("""structure_condition""", """asset_condition""")
     )
     report_protobuf.filter = filtered_filters
     report_protobuf.lengths = json.dumps(final_lengths)

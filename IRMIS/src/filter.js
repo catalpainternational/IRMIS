@@ -10,12 +10,18 @@ let filterState = {};
 
 // we'll need to add more in here as we add more filters
 export const slugToPropertyGetter = {
-    road_code: 'getRoadCode',
-    asset_class: 'getAssetClass',
-    surface_type: 'getSurfaceType',
-    surface_condition: 'getSurfaceCondition',
-    road_status: 'getRoadStatus',
-    administrative_area: 'getAdministrativeArea',
+    // Common
+    administrative_area: "getAdministrativeArea",
+    asset_class: "getAssetClass",
+    asset_condition: "getAssetCondition",
+    // Common-ish
+    road_code: "getRoadCode",
+    structure_code: "getStructureCode",
+    // Road
+    surface_type: "getSurfaceType",
+    road_status: "getRoadStatus",
+    // Structure
+    structure_type: "getStructureType",
 };
 
 /** applies or unapplies the value to the slug filter */

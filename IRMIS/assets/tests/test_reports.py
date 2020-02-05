@@ -57,7 +57,7 @@ def test_report_protobuf_simple(client, django_user_model):
 
     # hit the reports api with a primaryattribute
     url = reverse("protobuf_reports")
-    response = client.get(url, {"primaryattribute": ["surface_condition"]})
+    response = client.get(url, {"primaryattribute": ["asset_condition"]})
     assert response.status_code == 200
 
     # parse report from protobuf in response content
@@ -67,4 +67,4 @@ def test_report_protobuf_simple(client, django_user_model):
 
     filter = json.loads(rsp_pb.filter)
     lengths = json.loads(rsp_pb.lengths)
-    assert filter["primary_attribute"] == ["surface_condition"]
+    assert filter["primary_attribute"] == ["asset_condition"]

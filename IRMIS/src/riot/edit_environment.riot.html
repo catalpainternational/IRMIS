@@ -234,7 +234,7 @@
         import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
         import {cloneData, toChainageFormat} from "../assets/protoBufUtilities";
         import {withinMaxDigits} from "../assets/utilities";
-        import {Survey, Report} from "../../protobuf/survey_pb";
+        import {Survey} from "../../protobuf/survey_pb";
 
         import $ from "jquery";
 
@@ -597,10 +597,15 @@
                         this.discardChanges();
                     } else if (stopAlertResult === "delete") {
                         this.state.editMode = true;
-                        // void the survey attribute value and save
-                        document.dispatchEvent(new CustomEvent(`${tableId}.getRowData`, {detail: {rowId: rowId, state: this.state}}));
+                        // Coming out of the stop-alert modal we want to re-establish the data-table
+                        const eventName = `${tableId}.getRowData`;
+                        const eventDetail = {detail: {rowId: rowId, state: this.state}};
+                        document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+
+                        // void the survey asset_condition value and save
                         if (this.state.currentRowData) {
                             this.state.survey = this.state.currentRowData;
+                            this.state.survey.setId(rowId);
                             this.state.survey.setRoadId(this.state.road.getId());
                             this.state.survey.setValues(JSON.stringify({}));
                             this.saveSurvey();

@@ -10,7 +10,7 @@ import {
     numberLanesColumns,
     pavementClassColumns,
     rainfallColumns,
-    surfaceConditionColumns,
+    assetConditionColumns,
     surfaceTypeColumns,
     technicalClassColumns,
     terrainClassColumns,
@@ -38,9 +38,9 @@ window.addEventListener("load", () => {
 });
 
 const attributeModalMapping = {
-    surface_condition: {
-        columns: surfaceConditionColumns,
-        reportDataTableId: "inventory-surface-condition-table",
+    asset_condition: {
+        columns: assetConditionColumns,
+        reportDataTableId: "inventory-asset-condition-table",
         reportTable: null,
         title: gettext("Surface Condition segments"),
     },

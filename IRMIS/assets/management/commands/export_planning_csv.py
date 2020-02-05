@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 import csv
-from assets.models import Road, Survey
+from assets.models import Asset, Road, Survey
 from basemap.models import Municipality
 
 
@@ -27,16 +27,10 @@ class Command(BaseCommand):
         }
         TERRAIN_DISPLAY = {str(tc[0]): tc[1] for tc in Road.TERRAIN_CLASS_CHOICES}
         TERRAIN_DISPLAY[""] = ""
-        SURFACE_CONDITION_CHOICES = [
-            ("1", "Good"),
-            ("2", "Fair"),
-            ("3", "Poor"),
-            ("4", "Bad"),
-        ]
-        SURFACE_CONDITION_DISPLAY = {
-            str(sc[0]): sc[1] for sc in SURFACE_CONDITION_CHOICES
+        ASSET_CONDITION_DISPLAY = {
+            str(sc[0]): sc[1] for sc in Asset.ASSET_CONDITION_CHOICES
         }
-        SURFACE_CONDITION_DISPLAY[""] = ""
+        ASSET_CONDITION_DISPLAY[""] = ""
 
         # only include core rural roads
         rural_road_ids = Road.objects.filter(road_type="RUR", core=True).values_list(
@@ -55,7 +49,7 @@ class Command(BaseCommand):
                 round((survey.chainage_end - survey.chainage_start) / 1000, 3),
                 survey.values.get("surface_type", ""),
                 TERRAIN_DISPLAY[survey.values.get("terrain_class", "")],
-                SURFACE_CONDITION_DISPLAY[survey.values.get("surface_condition", "")],
+                ASSET_CONDITION_DISPLAY[survey.values.get("surface_condition", "")],
                 rural_road_populations[survey.road],
             ]
             for survey in surveys

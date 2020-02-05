@@ -142,6 +142,8 @@ class ReportQuery:
                 " CASE\n"
                 "  WHEN break_attr = 'road_type' THEN 'asset_class'\n"
                 "  WHEN break_attr = 'structure_class' THEN 'asset_class'\n"
+                "  WHEN break_attr = 'surface_condition' THEN 'asset_condition'\n"
+                "  WHEN break_attr = 'structure_condition' THEN 'asset_condition'\n"
                 "  ELSE break_attr\n"
                 " END AS attribute,\n"
                 " start_chainage,\n"
@@ -233,7 +235,7 @@ class ReportQuery:
             "rainfall",
             "road_type",  # Actually asset_class
             "road_status",
-            "surface_condition",
+            "asset_condition",
             "surface_type",
             "terrain_class",
             "traffic_level",
@@ -268,7 +270,7 @@ class ReportQuery:
             "project",
             "rainfall",
             "road_status",
-            "surface_condition",
+            "asset_condition",
             "surface_type",
             "terrain_class",
             "traffic_level",
@@ -305,7 +307,7 @@ class ReportQuery:
             "project",
             "rainfall",
             "road_status",
-            "surface_condition",
+            "asset_condition",
             "surface_type",
             "terrain_class",
             "traffic_level",
@@ -334,9 +336,15 @@ class ReportQuery:
         has_asset_class = "asset_class" in value_filter_keys
         has_road_type = "road_type" in value_filter_keys
         # has_structure_class = "structure_class" in value_filter_keys
+        has_asset_condition = "asset_condition" in value_filter_keys
+        has_surface_condition = "surface_condition" in value_filter_keys
+        # has_structure_condition = "structure_condition" in value_filter_keys
         if has_asset_class and not has_road_type:
             value_filter_keys.remove("asset_class")
             value_filter_keys.append("road_type")
+        if has_asset_condition and not has_surface_condition:
+            value_filter_keys.remove("asset_condition")
+            value_filter_keys.append("surface_condition")
 
         # Note the deliberate double appending of these values (because they're used twice)
         self.filter_cases.append(value_filter_keys)
@@ -354,6 +362,8 @@ class ReportQuery:
                     filter_name = "road_code"
                 elif filter_key == "asset_class":
                     filter_name = "road_type"
+                elif filter_key == "asset_condition":
+                    filter_name = "surface_condition"
                 elif filter_key == "surface_type":
                     filter_name = "surface_type_id"
                 road_clause = "CAST(r." + filter_name + " AS TEXT)=ANY(%s)\n"
