@@ -340,7 +340,8 @@
 
                 this.deleteListener = (data) => {
                     const rowId = data.detail.rowId;
-                    this.showStopAlertModal("delete-alert", rowId);
+                    const tableId = data.detail.tableId;
+                    this.showStopAlertModal("delete-alert", rowId, tableId);
                 };
                 document.addEventListener(`${this.table_id}.deleteRow`, this.deleteListener);
 
@@ -355,7 +356,7 @@
                 document.removeEventListener(`${this.table_id}.deleteRow`, this.deleteListener);
                 document.removeEventListener(`${this.table_id}.trafficDetails`, this.trafficDetailsListener);
             },
-            showStopAlertModal(modalId, rowId) {
+            showStopAlertModal(modalId, rowId, tableId) {
                 const eventName = `edit.${modalId}.result`;
 
                 document.addEventListener(eventName, (data) => {
