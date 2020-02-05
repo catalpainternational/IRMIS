@@ -98,7 +98,7 @@ export let assetTypeName = "ROAD"; // or "STRC" for structures, i.e. bridges and
 
 function change_assetType(e) {
     assetTypeName = e.currentTarget.attributes['data-option'].value;
-    const siblings = document.getElementById("assetType").children;
+    const siblings = document.getElementById("assetType").getElementsByTagName("a");
     const filterSections = document.getElementsByClassName("filters-section");
 
     for (let index = 0; index < siblings.length; index++) {

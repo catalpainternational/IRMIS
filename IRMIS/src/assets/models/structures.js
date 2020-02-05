@@ -150,6 +150,10 @@ export class EstradaBridge extends Bridge {
         return "BRDG";
     }
 
+    getAssetTypeName() {
+        return window.gettext("Bridge");
+    }
+
     /** A Null or None in the protobuf is indicated by a negative value */
     getChainage() {
         const chainage = super.getChainage();
@@ -249,6 +253,10 @@ export class EstradaCulvert extends Culvert {
 
     getAssetType() {
         return "CULV";
+    }
+
+    getAssetTypeName() {
+        return window.gettext("Culvert");
     }
 
     /** A Null or None in the protobuf is indicated by a negative value */

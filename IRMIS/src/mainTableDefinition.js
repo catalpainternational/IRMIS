@@ -329,7 +329,7 @@ export const estradaTableColumns = [
 export const structuresTableColumns = [
     {
         title: window.gettext("Structure"),
-        render: s => detectStructure(s),
+        render: s => getStructureTypeName(detectStructure(s)),
         data: null,
         className: "text-center",
     },
@@ -502,6 +502,17 @@ function detectStructure(structure) {
         default:
             return null;
     }
+}
+
+function getStructureTypeName(structureType) {
+    const structureTypeToName = {
+        "ROAD": "Road",
+        "BRDG": "Bridge",
+        "CULV": "Culvert",
+        "STRC": "Structure",
+    };
+
+    return window.gettext(structureTypeToName[structureType] || structureType);
 }
 
 function getStructureFieldName(field) {
