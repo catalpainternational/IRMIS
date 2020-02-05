@@ -1,4 +1,6 @@
 from django import template
+from django.utils.translation import ugettext_lazy as _
+
 from basemap.models import Municipality
 from ..models import (
     Asset,
@@ -64,6 +66,10 @@ def get_schema_data():
     )
 
     asset_schema = {}
+    asset_schema["asset_type"] = {
+        "display": _("Asset Type"),
+        "slug": "asset_type",
+    }
     for x in road_fields:
         field_name = field_name_standardisation(x.name)
         asset_schema[field_name] = {
