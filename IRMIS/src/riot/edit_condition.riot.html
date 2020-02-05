@@ -126,7 +126,7 @@
         import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
         import {cloneData, toChainageFormat} from "../assets/protoBufUtilities";
         import {withinMaxDigits} from "../assets/utilities";
-        import {Survey, Report} from "../../protobuf/survey_pb";
+        import {Survey} from "../../protobuf/survey_pb";
 
         import $ from "jquery";
 
@@ -334,10 +334,15 @@
                         this.discardChanges();
                     } else if (stopAlertResult === "delete") {
                         this.state.editMode = true;
+                        // Coming out of the stop-alert modal we want to re-establish the data-table
+                        const eventName = `${tableId}.getRowData`;
+                        const eventDetail = {detail: {rowId: rowId, state: this.state}};
+                        document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+
                         // void the survey asset_condition value and save
-                        document.dispatchEvent(new CustomEvent(`${tableId}.getRowData`, {detail: {rowId: rowId, state: this.state}}));
                         if (this.state.currentRowData) {
                             this.state.survey = this.state.currentRowData;
+                            this.state.survey.setId(rowId);
                             this.state.survey.setRoadId(this.state.road.getId());
                             this.state.survey.setValues(JSON.stringify({}));
                             this.saveSurvey();
@@ -406,37 +411,32 @@
                 $(`#${this.modal_id}`).modal("hide");
                 $("#loading").modal("show");
 
-                if (!this.state.editMode) {
-                    createSurvey(this.state.survey)
-                        .then((surveyData) => {
-                            this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "asset_condition", "assetConditions", this.current_data_table_id, this.stacked_bar_id);
-                            this.update({
-                                survey: new Survey({}), // clear input values
-                            });
-                            this.props.showFeedback();
-                        })
-                        .catch((err) => {
-                            this.props.showFeedback(true);
-                        })
-                        .finally((r) => {
-                            $("#loading").modal("hide");
+                const surveyPromise = (!this.state.editMode)
+                    ? createSurvey(this.state.survey)
+                    : updateSurvey(this.state.survey);
+
+                surveyPromise
+                    .then((surveyData) => {
+                        this.props.parent.refreshSurveysAndReports(
+                            this.state, 
+                            this.all_data_table_id, 
+                            "asset_condition", 
+                            "assetConditions", 
+                            this.current_data_table_id, 
+                            this.stacked_bar_id
+                        );
+                        this.update({
+                            survey: new Survey({}), // clear input values
                         });
-                } else {
-                    updateSurvey(this.state.survey)
-                        .then((surveyData) => {
-                            this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "asset_condition", "assetConditions", this.current_data_table_id, this.stacked_bar_id);
-                            this.update({
-                                survey: new Survey({}), // clear input values
-                            });
-                            this.props.showFeedback();
-                        })
-                        .catch((err) => {
-                            this.props.showFeedback(true);
-                        })
-                        .finally((r) => {
-                            $("#loading").modal("hide");
-                        });
-                }
+                        this.props.showFeedback();                           
+                    })
+                    .catch((err) => {
+                        this.props.showFeedback(true);
+                    })
+                    .finally((r) => {
+                        $("#loading").modal("hide");
+                    });
+
                 // clear input values
                 this.state.survey = new Survey({});
                 this.update();
