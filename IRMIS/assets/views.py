@@ -312,6 +312,7 @@ def road_survey_values(req_pb_values):
 
     return req_values
 
+
 @login_required
 @user_passes_test(user_can_edit)
 def survey_create(request):
