@@ -479,7 +479,7 @@ $.fn.dataTable.Api.register('row().show()', function () {
 });
 
 $("#inventory-segments-modal").on("show.bs.modal", function (event) {
-    // Hide them all segment tables first
+    // Hide all segment tables first
     Object.keys(attributeModalMapping).forEach((attribute) => {
         const repTable = attributeModalMapping[attribute].reportTable;
         if (repTable) {
