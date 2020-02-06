@@ -1,0 +1,128 @@
+<traffic_data_details>
+    <span if={!state.hidden}>
+        <span if={state.errors.length}>
+            <p class="small">{ window.gettext(state.errors[0]) }</p>
+        </span>
+        <span if={!state.errors.length}>
+            <section class="details-survey-type">
+                <div class="form-group">
+                    <label>{ window.gettext("Survey Type") }</label>
+                    <p if={state.currentRowData.values} class="details-modal-type-spacing small">
+                        { state.currentRowData.values.trafficType }
+                    </p>
+                </div>
+            </section>
+            <section if="{state.currentRowData.values}" class="details-forecast-methods-block">
+                <div if="{!state.currentRowData.values.forecastYear}" class="form-group">
+                    <label>{ window.gettext("Counting Method") }</label>
+                    <p class="details-modal-type-spacing small">
+                        {state.currentRowData.values.countMethod == 1 ? 'Electronic' : 'Manual'}
+                    </p>
+                </div>
+                <div if="{state.currentRowData.values.forecastYear}" class="form-group">
+                    <label>{ window.gettext("Forecast Year") }</label>
+                    <p class="details-modal-type-spacing small">
+                        {state.currentRowData.values.forecastYear}
+                    </p>
+                </div>
+            </section>
+            <section if="{state.currentRowData.values && !state.currentRowData.values.forecastYear}">
+                <div class="form-group">
+                    <label>{ window.gettext("Survey Date") }</label>
+                    <div class="form-inline survey-field-height">
+                        <span class="date-field-title details-modal-date-spacing">
+                            { window.gettext("From") }
+                        </span>
+                        <span if={state.currentRowData.values} class="details-modal-date">
+                            {state.currentRowData.values.surveyFromDate}
+                        </span>
+                        <span class="date-field-title details-modal-date-spacing">
+                            { window.gettext("To") }
+                        </span>
+                        <span if="{state.currentRowData.values}" class="details-modal-date">
+                            {state.currentRowData.values.surveyToDate}
+                        </span>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div class="form-group">
+                    <label>{ window.gettext("Total Count per Vehicle Type") }</label>
+                    <div if="{state.currentRowData.values}" class="form-inline vehicle-field-height"
+                        each="{ vehicle in vehicleTypes.options }">
+                        <div class="icon">
+                            <span class="{ vehicle[0] } image"></span>
+                        </div>
+                        <div class="vehicle-name">
+                            { vehicle[1] }
+                        </div>
+                        <div class="details-vehicle-spacing details-vehicle-count">
+                            { parseVehicleCount(vehicle[3]) || 0 }
+                        </div>
+                        <small>{ vehicle[2] }</small>
+                    </div>
+                </div>
+            </section>
+            <div if={state.currentRowData.values} class="form-inline details-total">
+                <span class="details-total-title">{window.gettext("Total")}</span>
+                <span class="details-total-number">{ state.currentRowData.values.countTotal }</span>
+            </div>
+        </span>
+    </span>
+
+    <script>
+        export default {
+            state: {
+                hidden: true,
+                errors: [],
+                currentRowData: undefined,
+            },
+            vehicleTypes: {
+                options: [
+                    ["motorcycle", window.gettext("Motorcycle"), window.gettext("2 axles, 2 wheels"), "motorcycleCount",
+                        "state.survey.motorcycleCount"],
+                    ["car", window.gettext("Passenger Car"), window.gettext("2 axles, 4 wheels"), "carCount", "state.survey.carCount"],
+                    ["pickup", window.gettext("Pickup/4WD"), window.gettext("2 axles, 4 wheels"), "pickupCount",
+                        "state.survey.pickupCount"],
+                    ["mini-bus", window.gettext("Mini Bus"), window.gettext("2 axles, 4 wheels"), "miniBusCount",
+                        "state.survey.miniBusCount"],
+                    ["large-bus", window.gettext("Large Bus"), window.gettext("2-3 axles, 6-10 wheels"), "largeBusCount",
+                        "state.survey.largeBusCount"],
+                    ["light-truck", window.gettext("Light Truck"), window.gettext("2 axles, 4 wheels"), "lightTruckCount",
+                        "state.survey.lightTruckCount"],
+                    ["medium-truck", window.gettext("Medium Truck"), window.gettext("2-3 axles, 6-10 wheels"), "mediumTruckCount",
+                        "state.survey.mediumTruckCount"],
+                    ["large-truck", window.gettext("Large Truck"), window.gettext("5 axles, 18 wheels"), "largeTruckCount",
+                        "state.survey.largeTruckCount"],
+                    ["ufo", window.gettext("Non Defined"), "", "ufoCount", "state.survey.ufoCount"]
+                ]
+            },
+            onMounted(props, state) {
+                this.trafficDetailsListener = (data) => {
+                    if (data.detail.currentRowData) {
+                        this.state.currentRowData = data.detail.currentRowData;
+                        this.state.errors = [];
+                    } else {
+                        this.state.errors = ["No traffic data to show."];
+                    }
+                    this.state.hidden = false;
+                    this.update();
+                };
+                document.addEventListener("inventory-traffic-level-table.updateTrafficData", this.trafficDetailsListener);
+
+                this.trafficDetailsHideData = () => {
+                    this.state.hidden = true;
+                    this.update();
+                };
+                document.addEventListener("inventory-traffic-level-table.hideData", this.trafficDetailsHideData);
+            },
+            onUnmount(props, state) {
+                document.removeEventListener("inventory-traffic-level-table.updateTrafficData", this.trafficDetailsListener);
+                document.removeEventListener("inventory-traffic-level-table.hideData", this.trafficDetailsHideData);
+            },
+            parseVehicleCount(vehicleType) {
+                return JSON.parse(this.state.currentRowData.values.counts.replace(/\'/g, '"'))[vehicleType];
+            },
+        }
+    </script>
+</traffic_data_details>
