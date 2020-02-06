@@ -138,7 +138,8 @@
                 editMode: false,
                 structureCondition: '',
                 description: '',
-                structurePhotos: []
+                structurePhotos: [],
+                surveyDate: ''
             },
             components: {
                 Edit_Stop_Alert, Edit_Modal, Data_Table
@@ -163,9 +164,11 @@
             // Structure Condition Survey
             checkSurveyDate(e) {
                 this.state.surveyDate = e.currentTarget.value;
+                this.canSave();
             },
             checkStructureCondition(e) {
                 this.state.structureCondition = e.currentTarget.dataset.condition;
+                this.canSave();
             },
             showEditModal() {
                 $(`#${this.modal_id}`).modal("show");
@@ -173,13 +176,23 @@
             checkPhotoText(e) {
                 this.structurePhotos = e.currentTarget.value;
             },
+            canSave() {
+                if (this.state.surveyDate == '' || this.state.structureCondition == '') { 
+                    this.state.canSave = false;
+                } else {
+                    this.state.canSave = true;
+                }
+            },
+            save(e) {
+                $(`#${this.modal_id}`).modal("hide");
+            },
             conditions: {
                 display: window.gettext('Structure Condition'),
                 options: [
-                    ["1", window.gettext("Good")],
-                    ["2", window.gettext("Fair")],
-                    ["3", window.gettext("Poor")],
-                    ["4", window.gettext("Bad")]
+                    [1, window.gettext("Good")],
+                    [2, window.gettext("Fair")],
+                    [3, window.gettext("Poor")],
+                    [4, window.gettext("Bad")]
                 ]
             },
             table_id: "structure-condition-table",
