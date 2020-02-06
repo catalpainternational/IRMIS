@@ -7,6 +7,9 @@ import { toggleFilter, clearFilter, clearAllFilters, filterDetail, isFilterAppli
 import { roads } from "./roadManager";
 import { structures } from "./structureManager";
 
+/** assetTypeName is the current selection of the Asset Type filter switch */
+export let assetTypeName = "ROAD"; // or "STRC" for structures, i.e. bridges and culverts
+
 let filterUIState = {};
 
 $(document).ready(function(){
@@ -53,8 +56,8 @@ function collapse_side_menu() {
     collapsedSideMenu.classList.add("d-flex");
 
     const eventName = (assetTypeName === "STRC")
-        ? "estrada.roadTable.sideMenu.viewChanged"
-        : "estrada.structureTable.sideMenu.viewChanged";
+        ? "estrada.road.sideMenu.viewChanged"
+        : "estrada.structure.sideMenu.viewChanged";
     dispatch(eventName, undefined);
 }
 
@@ -69,8 +72,8 @@ function expand_side_menu() {
     collapsedSideMenu.classList.remove("d-flex");
 
     const eventName = (assetTypeName === "STRC")
-        ? "estrada.roadTable.sideMenu.viewChanged"
-        : "estrada.structureTable.sideMenu.viewChanged";
+        ? "estrada.road.sideMenu.viewChanged"
+        : "estrada.structure.sideMenu.viewChanged";
     dispatch(eventName, undefined);
 }
 
@@ -90,13 +93,10 @@ function change_view(e) {
     e.currentTarget.classList.add("active");
 
     const eventName = (assetTypeName === "STRC")
-        ? "estrada.roadTable.sideMenu.viewChanged"
-        : "estrada.structureTable.sideMenu.viewChanged";
+        ? "estrada.road.sideMenu.viewChanged"
+        : "estrada.structure.sideMenu.viewChanged";
     dispatch(eventName, { "detail": { viewName } });
 }
-
-/** assetTypeName is the current selection of the Asset Type filter switch */
-export let assetTypeName = "ROAD"; // or "STRC" for structures, i.e. bridges and culverts
 
 function toggleAssetType(e) {
     const fd = filterDetail(e);

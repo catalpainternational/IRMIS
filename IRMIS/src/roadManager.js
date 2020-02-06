@@ -19,7 +19,7 @@ getRoadsMetadataChunks()
     });
 
 // when a filter is applied filter the roads
-document.addEventListener("estrada.roadTable.filter.apply", (data) => {
+document.addEventListener("estrada.road.filter.apply", (data) => {
     const filterState = data.detail.filterState;
     filterRoads(filterState);
 });
@@ -40,14 +40,14 @@ function addRoadMetadata(roadList) {
         },
         roads,
     );
-    dispatch("estrada.roadManager.roadMetaDataAdded", { detail: { roadList } });
+    dispatch("estrada.road.assetMetaDataAdded", { detail: { assets: roadList } });
 }
 
 export function saveRoad(sourceRoad) {
     return Promise.resolve(putRoadMetadata(sourceRoad))
         .then((road) => {
             roads[road.getId()] = road;
-            dispatch("estrada.roadTable.roadMetaDataUpdated", { detail: { road } });
+            dispatch("estrada.road.assetMetaDataUpdated", { detail: { asset: road } });
             return road;
         });
 }
@@ -84,5 +84,5 @@ function filterRoads(filterState) {
         return idMap;
     }, {});
 
-    dispatch("estrada.roadTable.filter.applied", { detail: { assetType, idMap } });
+    dispatch("estrada.road.filter.applied", { detail: { assetType, idMap } });
 }

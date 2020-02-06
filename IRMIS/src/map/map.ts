@@ -49,19 +49,19 @@ export class Map {
         this.currentLayer = bl[Config.preferredBaseLayerName];
         this.currentLayer.addTo(this.lMap);
 
-        document.addEventListener("estrada.roadTable.sideMenu.viewChanged", () => {
+        document.addEventListener("estrada.road.sideMenu.viewChanged", () => {
             this.lMap.invalidateSize();
         });
 
-        document.addEventListener("estrada.structureTable.sideMenu.viewChanged", () => {
+        document.addEventListener("estrada.structure.sideMenu.viewChanged", () => {
             this.lMap.invalidateSize();
         });
 
-        document.addEventListener("estrada.roadTable.filter.applied", (data: Event) => {
+        document.addEventListener("estrada.road.filter.applied", (data: Event) => {
             this.handleFilter(data);
         });
 
-        document.addEventListener("estrada.structureTable.filter.applied", (data: Event) => {
+        document.addEventListener("estrada.structure.filter.applied", (data: Event) => {
             this.handleFilter(data);
         });
 
@@ -131,10 +131,11 @@ export class Map {
 
             if (clickedFeature.properties.switchStyle) {
                 // This feature will be in the table
-                const eventName = ["bridge", "culvert"].includes(featureType)
+                const assetType = ["bridge", "culvert"].includes(featureType) ? "STRC" : "ROAD";
+                const eventName = assetType === "STRC"
                     ? "estrada.structureTable.rowSelected"
                     : "estrada.roadTable.rowSelected";
-                dispatch(eventName, { detail: { rowId: featureId, featureType } });
+                dispatch(eventName, { detail: { rowId: featureId, featureType, assetType } });
             }
         });
     }
