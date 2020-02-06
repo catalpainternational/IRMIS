@@ -13,7 +13,7 @@
     </div>
 
     <edit_modal modal_id="{modal_id}" disableSave="{!state.canSave}">
-        <span slot="modal_title">{window.gettext("Add Surface Condition Information")}</span>
+        <span slot="modal_title">{window.gettext("Add Structure Condition Information")}</span>
 
         <form slot="modal_body">
             <section>
@@ -39,17 +39,17 @@
                 <div class="form-group">
                     <label>{conditions.display}</label>
                     <span class="required">*</span>
-                    <small class="form-text text-muted">{window.gettext("Choose the surface condition")}</small>
-                    <div if="{state.errors.surfaceCondition}" class="invalid-tooltip">
+                    <small class="form-text text-muted">{window.gettext("Choose the structure condition")}</small>
+                    <div if="{state.errors.structureCondition}" class="invalid-tooltip">
                         <ul>
-                            <li>{ state.errors.surfaceCondition }.</li>
+                            <li>{ state.errors.structureCondition }.</li>
                         </ul>
                     </div>
-                    <ul class="surface-condition">
+                    <ul>
                         <li each="{condition in conditions.options}" data-condition="{condition[0]}"
-                            onclick="{checkSurfaceCondition}">
+                            onclick="{checkStructureCondition}">
                             <span
-                                class="{ condition[0] == state.surfaceCondition ? 'active' : ''  } radio image"></span>
+                                class="{ condition[0] == state.structureCondition ? 'active' : ''  } radio image"></span>
                             { condition[1] }
                         </li>
                     </ul>
@@ -82,8 +82,8 @@
                 </div>
                 <input
                     class="{ state.errors.photo1 ? 'danger' : null } { state.photo1 ? '' : 'inactive' } form-control"
-                    type="text" maxlength="500" placeholder="Enter a description of the picture" value="{ state.photo1 }"
-                    oninput="{ checkPhoto1 }">
+                    type="text" maxlength="500" placeholder="Enter a description of the photo" value="{ state.photo1 }"
+                    oninput="{ checkPhotoText }">
                 <div if="{state.errors.photo1}" class="invalid-tooltip">
                     <ul>
                         <li>{ state.errors.photo1 }.</li>
@@ -99,8 +99,8 @@
                 </div>
                 <input
                     class="{ state.errors.photo2 ? 'danger' : null } { state.photo2 ? '' : 'inactive' } form-control"
-                    type="text" maxlength="500" placeholder="Enter a description of the picture" value="{ state.photo2 }"
-                    oninput="{ checkPhoto2 }">
+                    type="text" maxlength="500" placeholder="Enter a description of the photo" value="{ state.photo2 }"
+                    oninput="{ checkPhotoText }">
                 <div if="{state.errors.photo2}" class="invalid-tooltip">
                     <ul>
                         <li>{ state.errors.photo2 }.</li>
@@ -136,10 +136,9 @@
                 pendingRows: [],
                 assetConditions: [{key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading")}],
                 editMode: false,
-                surfaceCondition: '',
+                structureCondition: '',
                 description: '',
-                photo1: '',
-                photo2: ''
+                structurePhotos: []
             },
             components: {
                 Edit_Stop_Alert, Edit_Modal, Data_Table
@@ -165,25 +164,23 @@
             checkSurveyDate(e) {
                 this.state.surveyDate = e.currentTarget.value;
             },
-            checkSurfaceCondition(e) {
-                this.state.surfaceCondition = e.currentTarget.dataset.condition;
+            checkStructureCondition(e) {
+                this.state.structureCondition = e.currentTarget.dataset.condition;
             },
             showEditModal() {
                 $(`#${this.modal_id}`).modal("show");
             },
+            checkPhotoText(e) {
+                this.structurePhotos = e.currentTarget.value;
+            },
             conditions: {
-                display: window.gettext('Surface Condition'),
+                display: window.gettext('Structure Condition'),
                 options: [
                     ["1", window.gettext("Good")],
                     ["2", window.gettext("Fair")],
                     ["3", window.gettext("Poor")],
                     ["4", window.gettext("Bad")]
                 ]
-            },
-            addEdit(e) {
-                // TODO:
-                // baseSurvey must be set to 'empty' for add.
-                // and the selected segment survey for edit.
             },
             table_id: "structure-condition-table",
             table_columns_order: [[0, 'asc']],
