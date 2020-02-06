@@ -41,7 +41,7 @@ message Road {
   float link_end_chainage = 12;
   float link_length = 7;
   string surface_type = 8;
-  string surface_condition = 9;
+  string asset_condition = 9; // surface_condition has been renamed to asset_condition
   string pavement_class = 13;
   float carriageway_width = 14;
   string administrative_area = 15;

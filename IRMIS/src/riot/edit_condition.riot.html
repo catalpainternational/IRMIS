@@ -7,7 +7,7 @@
             </button>
         </div>
 
-        <stacked_bar id="{stacked_bar_id}" entries="{state.surfaceConditions}"
+        <stacked_bar id="{stacked_bar_id}" entries="{state.assetConditions}"
             total_title="{window.gettext('Total road chainage')}">
         </stacked_bar>
 
@@ -88,17 +88,17 @@
                 <div class="form-group">
                     <label>{conditions.display}</label>
                     <span class="required">*</span>
-                    <small class="form-text text-muted">{props.parent.getHelpText("surface_condition")}</small>
-                    <div if="{state.errors.surfaceCondition}" class="invalid-tooltip">
+                    <small class="form-text text-muted">{props.parent.getHelpText("asset_condition")}</small>
+                    <div if="{state.errors.assetCondition}" class="invalid-tooltip">
                         <ul>
-                            <li>{ state.errors.surfaceCondition }.</li>
+                            <li>{ state.errors.assetCondition }.</li>
                         </ul>
                     </div>
-                    <ul class="surface-condition">
+                    <ul class="asset-condition">
                         <li each="{condition in conditions.options}" data-condition="{condition[0]}"
-                            onclick="{checkSurfaceCondition}">
+                            onclick="{checkAssetCondition}">
                             <span
-                                class="{condition[0] == state.survey.surfaceCondition ? 'active' : ''  } radio image"></span>
+                                class="{condition[0] == state.survey.assetCondition ? 'active' : ''  } radio image"></span>
                             { condition[1] }
                         </li>
                     </ul>
@@ -126,7 +126,7 @@
         import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
         import {cloneData, toChainageFormat} from "../assets/protoBufUtilities";
         import {withinMaxDigits} from "../assets/utilities";
-        import {Survey, Report} from "../../protobuf/survey_pb";
+        import {Survey} from "../../protobuf/survey_pb";
 
         import $ from "jquery";
 
@@ -142,7 +142,7 @@
                 canSave: false,
                 errors: {},
                 pendingRows: [],
-                surfaceConditions: [{key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading")}],
+                assetConditions: [{key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading")}],
                 surveyTotalDistance: 0,
                 reportRows: [],
                 viewAll: false,
@@ -158,8 +158,8 @@
                 state.loading = true;
                 state.road = cloneData(props.road);
 
-                this.props.parent.updateReportAttributeSummary(state, "surface_condition", props.parent.emptyAttributes);
-                this.props.parent.refreshSurveysAndReports(state, this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id, this.stacked_bar_id);
+                this.props.parent.updateReportAttributeSummary(state, "asset_condition", props.parent.emptyAttributes);
+                this.props.parent.refreshSurveysAndReports(state, this.all_data_table_id, "asset_condition", "assetConditions", this.current_data_table_id, this.stacked_bar_id);
 
                 this.deleteListener = (data) => {
                     const rowId = data.detail.rowId;
@@ -174,7 +174,7 @@
             viewAll(e) {
                 if (!this.state.viewAll) {
                     this.update({viewAll: true});
-                    this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id, this.stacked_bar_id);
+                    this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "asset_condition", "assetConditions", this.current_data_table_id, this.stacked_bar_id);
                     // If we're not still loading, then we assume that we want to replace all rows
                     const eventName = `${this.all_data_table_id}.dataAdded`;
                     const eventDetail = {detail: {pendingRows: this.state.pendingRows, clearRows: true}}
@@ -184,7 +184,7 @@
             viewCurrent(e) {
                 if (this.state.viewAll) {
                     this.update({viewAll: false});
-                    this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id, this.stacked_bar_id);
+                    this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "asset_condition", "assetConditions", this.current_data_table_id, this.stacked_bar_id);
                     // If we're not still loading, then we assume that we want to replace all rows
                     const eventName = `${this.current_data_table_id}.dataAdded`;
                     const eventDetail = {detail: {pendingRows: this.state.reportRows, clearRows: true}}
@@ -200,9 +200,9 @@
 
                 this.showEditModal();
             },
-            conditions: window.asset_schema.surface_condition,
-            stacked_bar_id: "surface-condition-stacked-bar",
-            current_data_table_id: "surface-condition-report-table",
+            conditions: window.asset_schema.asset_condition,
+            stacked_bar_id: "asset-condition-stacked-bar",
+            current_data_table_id: "asset-condition-report-table",
             current_data_table_columns_order: [[0, 'asc']],
             current_data_table_columns: [
                 {
@@ -226,7 +226,7 @@
                 },
                 {
                     title: window.gettext("Surface condition"),
-                    data: "surfaceCondition",
+                    data: "assetCondition",
                     defaultContent: "",
                     className: "text-center",
                     orderable: false,
@@ -245,7 +245,7 @@
                     orderable: false,
                 },
             ],
-            all_data_table_id: "surface-condition-table",
+            all_data_table_id: "asset-condition-table",
             all_data_table_columns_order: [[3, 'desc'], [0, 'asc']],
             all_data_table_columns: [
                 {
@@ -269,7 +269,7 @@
                 },
                 {
                     title: window.gettext("Surface condition"),
-                    data: "surfaceCondition",
+                    data: "assetCondition",
                     defaultContent: "",
                     className: "text-center",
                     orderable: false,
@@ -299,7 +299,7 @@
 
             // Survey Modal
 
-            requiredFieldNames: ["surveyDate", "startChainage", "endChainage", "surfaceCondition"],
+            requiredFieldNames: ["surveyDate", "startChainage", "endChainage", "assetCondition"],
             showEditModal() {
                 document.addEventListener(`${this.modal_id}.result`, (data) => {
                     const modalResult = data.detail.result;
@@ -334,10 +334,15 @@
                         this.discardChanges();
                     } else if (stopAlertResult === "delete") {
                         this.state.editMode = true;
-                        // void the survey surface_condition value and save
-                        document.dispatchEvent(new CustomEvent(`${tableId}.getRowData`, {detail: {rowId: rowId, state: this.state}}));
+                        // Coming out of the stop-alert modal we want to re-establish the data-table
+                        const eventName = `${tableId}.getRowData`;
+                        const eventDetail = {detail: {rowId: rowId, state: this.state}};
+                        document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+
+                        // void the survey asset_condition value and save
                         if (this.state.currentRowData) {
                             this.state.survey = this.state.currentRowData;
+                            this.state.survey.setId(rowId);
                             this.state.survey.setRoadId(this.state.road.getId());
                             this.state.survey.setValues(JSON.stringify({}));
                             this.saveSurvey();
@@ -380,7 +385,7 @@
                         this.state.survey.setChainageStart(this.state.survey.startChainage);
                         this.state.survey.setChainageEnd(this.state.survey.endChainage);
                         this.state.survey.setValues(JSON.stringify({
-                            surface_condition: this.state.survey.surfaceCondition
+                            asset_condition: this.state.survey.assetCondition
                         }));
                         // If we're here we will have a user entered surveyDate, even so Date.now() is still used as a fall back
                         const dateSurveyed = new proto.google.protobuf.Timestamp();
@@ -406,37 +411,32 @@
                 $(`#${this.modal_id}`).modal("hide");
                 $("#loading").modal("show");
 
-                if (!this.state.editMode) {
-                    createSurvey(this.state.survey)
-                        .then((surveyData) => {
-                            this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id, this.stacked_bar_id);
-                            this.update({
-                                survey: new Survey({}), // clear input values
-                            });
-                            this.props.showFeedback();
-                        })
-                        .catch((err) => {
-                            this.props.showFeedback(true);
-                        })
-                        .finally((r) => {
-                            $("#loading").modal("hide");
+                const surveyPromise = (!this.state.editMode)
+                    ? createSurvey(this.state.survey)
+                    : updateSurvey(this.state.survey);
+
+                surveyPromise
+                    .then((surveyData) => {
+                        this.props.parent.refreshSurveysAndReports(
+                            this.state, 
+                            this.all_data_table_id, 
+                            "asset_condition", 
+                            "assetConditions", 
+                            this.current_data_table_id, 
+                            this.stacked_bar_id
+                        );
+                        this.update({
+                            survey: new Survey({}), // clear input values
                         });
-                } else {
-                    updateSurvey(this.state.survey)
-                        .then((surveyData) => {
-                            this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "surface_condition", "surfaceConditions", this.current_data_table_id, this.stacked_bar_id);
-                            this.update({
-                                survey: new Survey({}), // clear input values
-                            });
-                            this.props.showFeedback();
-                        })
-                        .catch((err) => {
-                            this.props.showFeedback(true);
-                        })
-                        .finally((r) => {
-                            $("#loading").modal("hide");
-                        });
-                }
+                        this.props.showFeedback();                           
+                    })
+                    .catch((err) => {
+                        this.props.showFeedback(true);
+                    })
+                    .finally((r) => {
+                        $("#loading").modal("hide");
+                    });
+
                 // clear input values
                 this.state.survey = new Survey({});
                 this.update();
@@ -458,7 +458,7 @@
              * `source` and `user` are deliberately not compared
              */
             hasChanges() {
-                const compareFieldNames = ["surveyDate", "startChainage", "endChainage", "surfaceCondition"];
+                const compareFieldNames = ["surveyDate", "startChainage", "endChainage", "assetCondition"];
                 const surveyBase = compareFieldNames.map((fieldName) => {return this.state.baseSurvey[fieldName] || "";}).join("|||");
                 const surveyResult = compareFieldNames.map((fieldName) => {return this.state.survey[fieldName] || "";}).join("|||");
 
@@ -489,11 +489,11 @@
                 const errorText = window.gettext(`Chainage cannot contain more than ${this.state.chainageDigits} digits and value shouldn't contain decimals`);
                 this.validate(fieldName, input, testResult, errorText);
             },
-            checkSurfaceCondition(e) {
-                this.state.survey.surfaceCondition = e.currentTarget.dataset.condition;
+            checkAssetCondition(e) {
+                this.state.survey.assetCondition = e.currentTarget.dataset.condition;
                 this.canSave();
             },
-            modal_id: "surface-condition-modal",
+            modal_id: "asset-condition-modal",
             max_date: () => new Date().toISOString().substring(0, 10),
         }
     </script>

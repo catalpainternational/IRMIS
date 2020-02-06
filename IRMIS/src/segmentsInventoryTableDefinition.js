@@ -36,14 +36,11 @@ const baseDetailColumns = [
     },
 ];
 
-/**
- * Defines the additional columns for the various segments/details
- * attributes modals, found on the inventory page
- * */
-export const surfaceConditionColumns = baseSegmentColumns.concat([
+/** Defines the columns for the Asset Condition (Surface / Structure) segments table on the inventory page */
+export const assetConditionColumns = baseSegmentColumns.concat([
     {
         title: window.gettext("Surface condition"),
-        data: "surfaceCondition",
+        data: "assetCondition",
         defaultContent: "",
         orderable: false,
     },

@@ -3,16 +3,13 @@ import { Road } from "../../../protobuf/roads_pb";
 import { projToWGS84, toDms, toUtm } from "../crsUtilities";
 import { choice_or_default, getFieldName, getHelpText, humanizeChoices, toChainageFormat } from "../protoBufUtilities";
 
+import { ADMINISTRATIVE_AREA_CHOICES, ASSET_CLASS_CHOICES, ASSET_CONDITION_CHOICES } from "./asset";
+
 const assetSchema = JSON.parse(document.getElementById("asset_schema").textContent);
 
-export const ADMINISTRATIVE_AREA_CHOICES = humanizeChoices(assetSchema, 'administrative_area', 'id', 'name');
 export const MAINTENANCE_NEED_CHOICES = humanizeChoices(assetSchema, 'maintenance_need', 'code', 'name');
 export const PAVEMENT_CLASS_CHOICES = humanizeChoices(assetSchema, 'pavement_class', 'code', 'name');
 export const ROAD_STATUS_CHOICES = humanizeChoices(assetSchema, 'road_status', 'code', 'name');
-// Asset Class is actually common for all types of asset,
-// for roads it's renamed from 'road_type' to 'asset_class'
-export const ASSET_CLASS_CHOICES = humanizeChoices(assetSchema, 'asset_class');
-export const SURFACE_CONDITION_CHOICES = humanizeChoices(assetSchema, 'surface_condition');
 export const SURFACE_TYPE_CHOICES = humanizeChoices(assetSchema, 'surface_type', 'code', 'name');
 export const TECHNICAL_CLASS_CHOICES = humanizeChoices(assetSchema, 'technical_class', 'code', 'name');
 export const TRAFFIC_LEVEL_CHOICES = humanizeChoices(assetSchema, 'traffic_level');
@@ -77,8 +74,8 @@ export class EstradaRoad extends Road {
         return choice_or_default(this.getSurfaceType(), SURFACE_TYPE_CHOICES);
     }
 
-    get surfaceCondition() {
-        return choice_or_default(this.getSurfaceCondition(), SURFACE_CONDITION_CHOICES);
+    get assetCondition() {
+        return choice_or_default(this.getAssetCondition(), ASSET_CONDITION_CHOICES);
     }
 
     get pavementClass() {
