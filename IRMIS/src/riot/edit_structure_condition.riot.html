@@ -2,7 +2,7 @@
     <div class="content-wrapper">
         <div class="d-flex justify-content-between">
             <h5>{ window.gettext("Structure Condition") }</h5>
-            <button class="btn btn-primary" onclick="{ addEdit }" disabled="{ props.editing }">
+            <button class="btn btn-primary" onclick="{ showEditModal }" disabled="{ props.editing }">
                 { window.gettext("Add") }
             </button>
         </div>
@@ -11,6 +11,109 @@
             columnSortOrder="{table_columns_order}" candelete=true>
         </data_table>
     </div>
+
+    <edit_modal modal_id="{modal_id}" disableSave="{!state.canSave}">
+        <span slot="modal_title">{window.gettext("Add Structure Condition Information")}</span>
+
+        <form slot="modal_body">
+            <section>
+                <div class="form-group">
+                    <label>{ window.gettext("Survey Date") }</label>
+                    <span class="required">*</span>
+                    <small class="form-text text-muted">{props.parent.getHelpText("survey_date")}</small>
+                    <!-- It would be preferable to use the 'datetime-local' input type, however Firefox currently does not support it -->
+                    <input
+                        class="{state.errors.surveyDate ? 'danger' : null } { state.surveyDate ? '' : 'inactive' } form-control"
+                        type="date" name="surveyDate" placeholder="Date" value="{state.surveyDate}"
+                        oninput="{checkSurveyDate}" required pattern="\d{4}-\d{2}-\d{2}">
+                    <div if="{state.errors.surveyDate}" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.surveyDate }.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h6>{ window.gettext("Condition") }</h6>
+                <div class="form-group">
+                    <label>{conditions.display}</label>
+                    <span class="required">*</span>
+                    <small class="form-text text-muted">{window.gettext("Choose the structure condition")}</small>
+                    <div if="{state.errors.structureCondition}" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.structureCondition }.</li>
+                        </ul>
+                    </div>
+                    <ul>
+                        <li each="{condition in conditions.options}" data-condition="{condition[0]}"
+                            onclick="{checkStructureCondition}">
+                            <span
+                                class="{ condition[0] == state.structureCondition ? 'active' : ''  } radio image"></span>
+                            { condition[1] }
+                        </li>
+                    </ul>
+                </div>
+            </section>
+            <section>
+                <div class="form-group">
+                    <label>{ window.gettext("Condition Description") }</label>
+                    <input
+                        class="{ state.errors.description ? 'danger' : null } { state.description ? '' : 'inactive' } form-control"
+                        type="text" maxlength="500" placeholder="E.g." value="{ state.description }"
+                        oninput="{ checkDescription }">
+                    <div if="{state.errors.description}" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.description }.</li>
+                        </ul>
+                    </div>
+                    <small class="form-text text-muted">{window.gettext("Enter a description on the structure condition")}</small>
+                </div>
+            </section>
+            <section>
+                <h6>{ window.gettext("Upload photos") }</h6>
+                <div class="upload-box">
+                    <div class="cloud-box">
+                        <div class="upload-cloud"></div>
+                        <div class="upload-text">{ window.gettext("Click to upload") }</div>
+                        <div>{ window.gettext("Maximum file size 500KB") }</div>
+                        <div>{ window.gettext("Accepted file formats: JPEG, GIF, PNG, TIFF") }</div>
+                    </div>
+                </div>
+                <input
+                    class="{ state.errors.photo1 ? 'danger' : null } { state.photo1 ? '' : 'inactive' } form-control"
+                    type="text" maxlength="500" placeholder="Enter a description of the photo" value="{ state.photo1 }"
+                    oninput="{ checkPhotoText }">
+                <div if="{state.errors.photo1}" class="invalid-tooltip">
+                    <ul>
+                        <li>{ state.errors.photo1 }.</li>
+                    </ul>
+                </div>
+                <div class="upload-box">
+                    <div class="cloud-box">
+                        <div class="upload-cloud"></div>
+                        <div class="upload-text">{ window.gettext("Click to upload") }</div>
+                        <div>{ window.gettext("Maximum file size 500KB") }</div>
+                        <div>{ window.gettext("Accepted file formats: JPEG, GIF, PNG, TIFF") }</div>
+                    </div>
+                </div>
+                <input
+                    class="{ state.errors.photo2 ? 'danger' : null } { state.photo2 ? '' : 'inactive' } form-control"
+                    type="text" maxlength="500" placeholder="Enter a description of the photo" value="{ state.photo2 }"
+                    oninput="{ checkPhotoText }">
+                <div if="{state.errors.photo2}" class="invalid-tooltip">
+                    <ul>
+                        <li>{ state.errors.photo2 }.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="d-flex justify-content-end">
+                <span>[</span><span class="required">*</span><span>]: Mandatory</span>
+            </div>
+        </form>
+    </edit_modal>
+
 
     <edit_stop_alert modalId="delete-alert" title="{window.gettext('Delete')}"
         description="{window.gettext('Are you sure you want to delete this data entry?')}"
@@ -33,6 +136,10 @@
                 pendingRows: [],
                 assetConditions: [{key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading")}],
                 editMode: false,
+                structureCondition: '',
+                description: '',
+                structurePhotos: [],
+                surveyDate: ''
             },
             components: {
                 Edit_Stop_Alert, Edit_Modal, Data_Table
@@ -53,10 +160,40 @@
             onUnmount(props, state) {
                 document.removeEventListener(`${this.table_id}.deleteRow`, this.deleteListener);
             },
-            addEdit(e) {
-                // TODO:
-                // baseSurvey must be set to 'empty' for add.
-                // and the selected segment survey for edit.
+
+            // Structure Condition Survey
+            checkSurveyDate(e) {
+                this.state.surveyDate = e.currentTarget.value;
+                this.canSave();
+            },
+            checkStructureCondition(e) {
+                this.state.structureCondition = e.currentTarget.dataset.condition;
+                this.canSave();
+            },
+            showEditModal() {
+                $(`#${this.modal_id}`).modal("show");
+            },
+            checkPhotoText(e) {
+                this.structurePhotos = e.currentTarget.value;
+            },
+            canSave() {
+                if (this.state.surveyDate == '' || this.state.structureCondition == '') { 
+                    this.state.canSave = false;
+                } else {
+                    this.state.canSave = true;
+                }
+            },
+            save(e) {
+                $(`#${this.modal_id}`).modal("hide");
+            },
+            conditions: {
+                display: window.gettext('Structure Condition'),
+                options: [
+                    [1, window.gettext("Good")],
+                    [2, window.gettext("Fair")],
+                    [3, window.gettext("Poor")],
+                    [4, window.gettext("Bad")]
+                ]
             },
             table_id: "structure-condition-table",
             table_columns_order: [[0, 'asc']],
@@ -103,6 +240,7 @@
                     orderable: false,
                 },
             ],
+            modal_id: "structure-condition-modal",
         }
     </script>
 </edit_structure_condition>

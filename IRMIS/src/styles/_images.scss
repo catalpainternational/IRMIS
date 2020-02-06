@@ -241,6 +241,12 @@ tr.selected .pencil {
     width: 30px;
 }
 
+.upload-cloud {
+    background-image: url("../images/upload-cloud.svg");
+    height: 55px;
+    width: 85px;
+}
+
 @media print {
     .rdtl {
         height: 125px;
