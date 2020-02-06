@@ -11,7 +11,6 @@ import { choice_or_default, getFieldName, getHelpText } from "../protoBufUtiliti
 const surveySchema = {};
 
 export class EstradaSurvey extends Survey {
-
     get id() {
         return this.getId();
     }

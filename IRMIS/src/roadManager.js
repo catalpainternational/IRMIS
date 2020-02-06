@@ -35,7 +35,7 @@ export function getRoad(id) {
 function addRoadMetadata(roadList) {
     roadList.reduce(
         (roadsLookup, roadMetadata) => {
-            roadsLookup[roadMetadata.getId()] = roadMetadata;
+            roadsLookup[roadMetadata.id] = roadMetadata;
             return roadsLookup;
         },
         roads,
@@ -46,7 +46,7 @@ function addRoadMetadata(roadList) {
 export function saveRoad(sourceRoad) {
     return Promise.resolve(putRoadMetadata(sourceRoad))
         .then((road) => {
-            roads[road.getId()] = road;
+            roads[road.id] = road;
             dispatch("estrada.road.assetMetaDataUpdated", { detail: { asset: road } });
             return road;
         });
@@ -80,7 +80,7 @@ function filterRoads(filterState) {
     // communicate the filter
     const assetType = "ROAD";
     const idMap = filteredRoads.reduce((idMap, road) => {
-        idMap[road.getId().toString()] = true;
+        idMap[road.id] = true;
         return idMap;
     }, {});
 

@@ -47,7 +47,7 @@ export function getRoadStructures(roadId, structureType) {
 export function createStructure(structure, structureType) {
     return Promise.resolve(postStructureData(structure, structureType))
         .then((structure) => {
-            structures[structure.getId()] = structure;
+            structures[structure.id] = structure;
             dispatch("estrada.structure.assetMetaDataCreated", { detail: { assets: structures } });
             return structure;
         });
@@ -56,7 +56,7 @@ export function createStructure(structure, structureType) {
 export function updateStructure(structure, structureType) {
     return Promise.resolve(putStructureData(structure, structureType))
         .then((structure) => {
-            structures[structure.getId()] = structure;
+            structures[structure.id] = structure;
             dispatch("estrada.structure.assetMetaDataUpdated", { detail: { asset: structure } });
             return structure;
         });
@@ -90,7 +90,7 @@ function filterStructures(filterState) {
     // communicate the filter
     const assetType = "STRC";
     const idMap = filteredStructures.reduce((idMap, structure) => {
-        idMap[structure.getId().toString()] = true;
+        idMap[structure.id] = true;
         return idMap;
     }, {});
 

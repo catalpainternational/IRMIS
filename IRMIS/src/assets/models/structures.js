@@ -61,9 +61,24 @@ export class EstradaStructures extends Structures {
 }
 
 export class EstradaBridge extends Bridge {
-
     get id() {
         return this.getId();
+    }
+
+    /** The asset's type - the prefix part of its Id */
+    get assetType() {
+        return "BRDG";
+    }
+
+    get assetTypeName() {
+        return window.gettext("Bridge");
+    }
+
+    /** Return just the asset's Id without the assetType prefix */
+    get assetId() {
+        return this.id.startsWith(this.assetType)
+            ? this.id.split("-")[1]
+            : this.id
     }
 
     get code() {
@@ -150,14 +165,6 @@ export class EstradaBridge extends Bridge {
         return choice_or_default(this.getProtectionDownstream(), STRUCTURE_DOWNSTREAM_PROTECTION_TYPE_CHOICES);
     }
 
-    getAssetType() {
-        return "BRDG";
-    }
-
-    getAssetTypeName() {
-        return window.gettext("Bridge");
-    }
-
     /** A Null or None in the protobuf is indicated by a negative value */
     getChainage() {
         const chainage = super.getChainage();
@@ -174,9 +181,24 @@ export class EstradaBridge extends Bridge {
 }
 
 export class EstradaCulvert extends Culvert {
-
     get id() {
         return this.getId();
+    }
+
+    /** The asset's type - the prefix part of its Id */
+    get assetType() {
+        return "CULV";
+    }
+
+    get assetTypeName() {
+        return window.gettext("Culvert");
+    }
+
+    /** Return just the asset's Id without the assetType prefix */
+    get assetId() {
+        return this.id.startsWith(this.assetType)
+            ? this.id.split("-")[1]
+            : this.id
     }
 
     get code() {
@@ -257,14 +279,6 @@ export class EstradaCulvert extends Culvert {
 
     get protectionDownstream() {
         return choice_or_default(this.getProtectionDownstream(), STRUCTURE_DOWNSTREAM_PROTECTION_TYPE_CHOICES);
-    }
-
-    getAssetType() {
-        return "CULV";
-    }
-
-    getAssetTypeName() {
-        return window.gettext("Culvert");
     }
 
     /** A Null or None in the protobuf is indicated by a negative value */

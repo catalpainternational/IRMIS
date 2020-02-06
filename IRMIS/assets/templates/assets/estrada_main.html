@@ -341,8 +341,10 @@
                     aria-hidden="true"></span>
             </div>
             <div class="modal-body">
+                {% comment %} Common table - for both surface_condition and structure_condition {% endcomment %}
                 <table id="inventory-asset-condition-table" class="d-block table table-bordered table-hover w-100">
                 </table>
+                {% comment %} ROAD COLUMN MODALS TABLES {% endcomment %}
                 <table id="inventory-surface-type-table" class="d-block table table-bordered table-hover w-100"></table>
                 <table id="inventory-technical-class-table" class="d-block table table-bordered table-hover w-100">
                 </table>
@@ -356,8 +358,6 @@
                 </table>
                 {% comment %} STRUCTURES COLUMN MODALS TABLES {% endcomment %}
                 <table id="inventory-structure-photos-table" class="d-block table table-bordered table-hover w-100">
-                </table>
-                <table id="inventory-structure-condition-table" class="d-block table table-bordered table-hover w-100">
                 </table>
                 <table id="inventory-structure-condition-description-table"
                     class="d-block table table-bordered table-hover w-100">

@@ -36,8 +36,8 @@ const baseDetailColumns = [
     },
 ];
 
-/** Defines the columns for the Asset Condition (Surface / Structure) segments table on the inventory page */
-export const assetConditionColumns = baseSegmentColumns.concat([
+/** Defines the columns for the Surface (Asset) Condition segments table on the inventory page */
+export const surfaceConditionColumns = baseSegmentColumns.concat([
     {
         title: window.gettext("Surface condition"),
         data: "assetCondition",
@@ -118,10 +118,11 @@ export const structurePhotosColumns = baseDetailColumns.concat([
     },
 ]);
 
+/** Defines the columns for the Structure (Asset) Condition segments table on the inventory page */
 export const structureConditionColumns = baseDetailColumns.concat([
     {
         title: window.gettext("Structure condition"),
-        data: "structureCondition",
+        data: "assetCondition",
         defaultContent: "",
         orderable: false,
     },

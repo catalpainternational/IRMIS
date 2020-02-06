@@ -18,7 +18,23 @@ export const TERRAIN_CLASS_CHOICES = humanizeChoices(assetSchema, 'terrain_class
 
 export class EstradaRoad extends Road {
     get id() {
-        return this.getId();
+        return this.getId().toString();
+    }
+
+    /** The asset's type - the prefix part of its Id */
+    get assetType() {
+        return "ROAD";
+    }
+
+    get assetTypeName() {
+        return window.gettext("Road");
+    }
+
+    /** Return just the asset's Id without the assetType prefix */
+    get assetId() {
+        return this.id.startsWith(this.assetType)
+            ? this.id.split("-")[1]
+            : this.id
     }
 
     get name() {
@@ -153,14 +169,6 @@ export class EstradaRoad extends Road {
 
     get rainfall() {
         return this.getRainfall();
-    }
-
-    getAssetType() {
-        return "ROAD";
-    }
-
-    getAssetTypeName() {
-        return window.gettext("Road");
     }
 
     /** A Null or None in the protobuf is indicated by a negative value */

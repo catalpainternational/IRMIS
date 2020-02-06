@@ -1,6 +1,7 @@
 import "datatables.net-bs4";
 import $ from "jquery";
-import * as riot from "riot";
+
+import { dispatch } from "./assets/utilities";
 
 import { exportCsv } from "./exportCsv";
 import { applyFilter } from "./filter";
@@ -14,19 +15,18 @@ import {
     structureConditionColumns,
     structureConditionDescriptionColumns,
     structurePhotosColumns,
-    assetConditionColumns,
+    surfaceConditionColumns,
     surfaceTypeColumns,
     technicalClassColumns,
     terrainClassColumns,
 } from "./segmentsInventoryTableDefinition";
-
 import { datatableTranslations } from "./datatableTranslations";
+
 import { getRoad, roads } from "./roadManager";
-import { getRoadReport as getAssetReport } from "./reportManager";
-import {getRoadSurveys as getAssetSurveys} from "./surveyManager";
 import { getStructure, structures } from "./structureManager";
-import { dispatch } from "./assets/utilities";
-import {Survey} from "../protobuf/survey_pb";
+
+import { getRoadReport as getAssetReport } from "./reportManager";
+import { getRoadSurveys as getAssetSurveys } from "./surveyManager";
 
 let roadsTable = null;
 let structuresTable = null;
@@ -41,7 +41,7 @@ window.addEventListener("load", () => {
 
 const attributeModalMapping = {
     asset_condition: {
-        columns: assetConditionColumns,
+        columns: surfaceConditionColumns,
         reportDataTableId: "inventory-asset-condition-table",
         reportTable: null,
         title: gettext("Surface Condition segments"),
@@ -90,7 +90,7 @@ const attributeModalMapping = {
     },
     structure_condition: {
         columns: structureConditionColumns,
-        reportDataTableId: "inventory-structure-condition-table",
+        reportDataTableId: "inventory-asset-condition-table",
         reportTable: null,
         title: gettext("Structure Condition details"),
     },
@@ -113,14 +113,14 @@ function initializeDataTable() {
         estradaTableColumns.unshift({
             title: "",
             data: null,
-            render: r => `<a class="image pencil" href="#edit/road/${r.getId()}/location_type"></a>`,
+            render: r => `<a class="image pencil" href="#edit/${r.assetType}/${r.assetId}/location_type"></a>`,
             orderable: false,
             className: "edit-col"
         });
         structuresTableColumns.unshift({
             title: "",
             data: null,
-            render: r => `<a class="image pencil" href="#edit/${r.getId().substring(0, 4)}/${r.getId().substring(5)}/structure_type"></a>`,
+            render: r => `<a class="image pencil" href="#edit/${r.assetType}/${r.assetId}/structure_type"></a>`,
             orderable: false,
             className: "edit-col"
         });
@@ -128,7 +128,7 @@ function initializeDataTable() {
 
     roadsTable = $("#all-data-table").DataTable({
         columns: estradaTableColumns,
-        rowId: ".getId()",
+        rowId: ".id",
         // default order is ascending by: road code, link code, & link start chainage
         order: window.canEdit ? [[1, 'asc'], [3, 'asc'], [7, 'asc']] : [[0, 'asc'], [2, 'asc'], [6, 'asc']],
         dom: "<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>", // https://datatables.net/reference/option/dom#Styling
@@ -151,7 +151,7 @@ function initializeDataTable() {
 
     structuresTable = $("#structures-data-table").DataTable({
         columns: structuresTableColumns,
-        rowId: ".getId()",
+        rowId: ".id",
         // default order is ascending by: structure code
         order: window.canEdit ? [[2, 'asc']] : [[1, 'asc']],
         dom: "<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>", // https://datatables.net/reference/option/dom#Styling
@@ -178,7 +178,7 @@ function initializeDataTable() {
     function setUpModalTable(tableId, columns) {
         return $(`#${tableId}`).DataTable({
             columns: columns,
-            rowId: ".getId()",
+            rowId: ".id",
             dom: "<'row'<'col-sm-12'tr>>", // https://datatables.net/reference/option/dom#Styling
             language: datatableTranslations,
             // This turns off filtering for all tables ( DO NOT SET THIS TO TRUE )
@@ -368,7 +368,7 @@ export function GetDataForMapPopup(id, featureType) {
     if (assetType !== assetTypeName) {
         return [{ label: window.gettext("Asset Type"), value: featureType }];
     }
-    const asset = assetTypeName === "ROAD" ? roads[id] : structures[ id];
+    const asset = assetTypeName === "ROAD" ? roads[id] : structures[id];
 
     if (!asset) {
         return [{ label: window.gettext("Loading"), value: "" }];
@@ -430,7 +430,7 @@ function exportStructuresTable() {
 // Filter functionality
 let idWhitelistMap = {};
 let currentFilter = (p) => {
-    return Object.keys(idWhitelistMap).length === 0 || idWhitelistMap[p.getId().toString()];
+    return Object.keys(idWhitelistMap).length === 0 || idWhitelistMap[p.id];
 }
 
 $.fn.dataTableExt.afnFiltering.push(
@@ -526,7 +526,7 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
                 primaryattribute: attr,
             };
 
-            if (assetTypeName === "roads") {
+            if (assetTypeName === "ROAD") {
                 if (assetData.getLinkStartChainage() && assetData.getLinkEndChainage()) {
                     filters.road_code = assetData.getRoadCode();
                     filters.chainagestart = assetData.getLinkStartChainage();
@@ -542,50 +542,26 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
                     filters.structure_id = assetData.id;
                 }
             }
+    
+            return filters;
+        };
 
-            const getAsset = assetTypeName === "ROAD" ? getRoad : getStructure;
-            const getAssetFilters = (assetData) => {
-                let filters = {
-                    primaryattribute: attr,
-                };
-
-                if (assetTypeName === "ROAD") {
-                    if (assetData.getLinkStartChainage() && assetData.getLinkEndChainage()) {
-                        filters.road_code = assetData.getRoadCode();
-                        filters.chainagestart = assetData.getLinkStartChainage();
-                        filters.chainageend = assetData.getLinkEndChainage();
-                    } else {
-                        filters.road_id = assetData.id;
-                    }
-                } else {
-                    if (assetData.getChainage()) {
-                        filters.structure_code = assetData.getStructureCode();
-                        filters.chainage = assetData.getChainage();
-                    } else {
-                        filters.structure_id = assetData.id;
-                    }
-                }
-        
-                return filters;
-            };
-
-            getAsset(assetId).then((assetData) => {
-                const filters = getAssetFilters(assetData);
-                getAssetReport(filters)
-                    .then((reportData) => {
-                        reportTable.clear(); // remove all rows in the table - again
-                        if (reportData && reportDataTableId) {
-                            const attributes = reportData.attributes(attr, null, false, true);
-                            if (attributes.attributeEntries.length) {
-                                reportTable.rows.add(attributes.attributeEntries);
-                            }
+        getAsset(assetId).then((assetData) => {
+            const filters = getAssetFilters(assetData);
+            getAssetReport(filters)
+                .then((reportData) => {
+                    reportTable.clear(); // remove all rows in the table - again
+                    if (reportData && reportDataTableId) {
+                        const attributes = reportData.attributes(attr, null, false, true);
+                        if (attributes.attributeEntries.length) {
+                            reportTable.rows.add(attributes.attributeEntries);
                         }
-                    })
-                    .finally(() => {
-                        reportTable.draw();
-                        $(`#${reportDataTableId}_wrapper`).show();
-                    });
-            });
-        }
+                    }
+                })
+                .finally(() => {
+                    reportTable.draw();
+                    $(`#${reportDataTableId}_wrapper`).show();
+                });
+        });
     }
 });

@@ -40,7 +40,7 @@
 #number-lanes-table, #number-lanes-report-table,
 #terrain-type-table, #terrain-type-report-table,
 #surface-type-table, #surface-type-report-table,
-#rainfall-table, #rainfall-report-table, #structure-condition-table,
+#rainfall-table, #rainfall-report-table,
 #pavement-class-table, #pavement-class-report-table,
 #asset-condition-table, #asset-condition-report-table {
     border-bottom: 1px solid $light-gray;
@@ -59,7 +59,6 @@
 #inventory-pavement-class-table,
 #inventory-traffic-level-table,
 #inventory-structure-photos-table,
-#inventory-structure-condition-table,
 #inventory-structure-condition-description-table {
     border-bottom: 1px solid $light-gray;
     border-right: 1px solid $light-gray;

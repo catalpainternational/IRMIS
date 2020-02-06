@@ -451,7 +451,7 @@ export const structuresTableColumns = [
         title: "Structure Condition",
         defaultContent: "",
         className: "text-center",
-        render: r => buttonSegmentsTemplate("structure_condition", r),
+        render: r => buttonSegmentsTemplate("asset_condition", r),
         data: null,
         visible: false,
     },
@@ -528,6 +528,6 @@ function buttonSegmentsTemplate(attrib, asset) {
     return `<a data-toggle="modal"
         data-target="#inventory-segments-modal"
         data-code="${code}"
-        data-id="${asset.getId()}"
+        data-id="${asset.id}"
         data-attr="${attrib}">${window.gettext("View")} ${getFieldName(attrib)}</a>`;
 }
