@@ -20,10 +20,72 @@ export class KnownGeometries {
     public static Known: {[name: string]: GeoDataStyle} = {
         // Shows a sample of how to set up marker styles, identified in leaflet as 'pointToLayer'
         // This styling would support areas, lines and points that have a featureType of 'Bridge'
-        // "Bridge": {
-        //     style: {color: "MAROON"},
-        //     pointToLayer: {radius: 3, fillColor: "MAROON", color: "#111", weight: 2, opacity: 0.65, fillOpacity: 0.35},
-        // },
+        "bridge": {
+            style: { color: "#447DA9" },
+            pointToLayer: {
+                radius: 3,
+                fillColor: "#447DA9",
+                color: "#447DA9",
+                weight: 2,
+                opacity: 0.85,
+                fillOpacity: 0.35,
+            },
+        },
+        "bridge.on": {
+            style: { color: "#447DA9" },
+            pointToLayer: {
+                radius: 3,
+                fillColor: "#447DA9",
+                color: "#447DA9",
+                weight: 2,
+                opacity: 0.85,
+                fillOpacity: 0.35,
+            },
+        },
+        "bridge.off": {
+            style: { color: "#447DA9" },
+            pointToLayer: {
+                radius: 3,
+                fillColor: "#447DA9",
+                color: "#447DA9",
+                weight: 2,
+                opacity: 0.35,
+                fillOpacity: 0.2,
+            },
+        },
+        "culvert": {
+            style: { color: "#674194" },
+            pointToLayer: {
+                radius: 3,
+                fillColor: "#674194",
+                color: "#674194",
+                weight: 2,
+                opacity: 0.85,
+                fillOpacity: 0.35,
+            },
+        },
+        "culvert.on": {
+            style: { color: "#674194" },
+            pointToLayer: {
+                radius: 3,
+                fillColor: "#674194",
+                color: "#674194",
+                weight: 2,
+                opacity: 0.85,
+                fillOpacity: 0.35,
+            },
+        },
+        "culvert.off": {
+            style: { color: "#674194" },
+            pointToLayer: {
+                radius: 3,
+                fillColor: "#674194",
+                color: "#674194",
+                weight: 2,
+                opacity: 0.35,
+                fillOpacity: 0.2,
+            },
+        },
 
         // New - as per the protobuf import
         "highway": { style: { color: "#03A568", opacity: 1 }},
