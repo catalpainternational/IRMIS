@@ -600,7 +600,6 @@ class BridgeQuerySet(models.QuerySet):
         structures_protobuf = ProtoStructures()
 
         regular_fields = dict(
-            geojson_id="geojson_file_id",
             road_id="road_id",
             road_code="road_code",
             structure_code="structure_code",
@@ -632,6 +631,7 @@ class BridgeQuerySet(models.QuerySet):
             .annotate(to_wgs=models.functions.Transform("geom", 4326))
             .values(
                 "id",
+                "geojson_file_id",
                 *regular_fields.values(),
                 *datetime_fields.values(),
                 *numeric_fields.values(),
@@ -645,7 +645,7 @@ class BridgeQuerySet(models.QuerySet):
 
             for protobuf_key, query_key in regular_fields.items():
                 if bridge[query_key]:
-                    setattr(bridge_protobuf, protobuf_key, bridge[query_key])
+                    setattr(bridge_protobuf, protobuf_key, str(bridge[query_key]))
 
             for protobuf_key, query_key in numeric_fields.items():
                 raw_value = bridge.get(query_key)
