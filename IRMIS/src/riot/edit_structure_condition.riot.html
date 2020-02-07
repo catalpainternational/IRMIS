@@ -73,25 +73,7 @@
             <section>
                 <h6>{ window.gettext("Upload photos") }</h6>
                 <upload_photo></upload_photo>
-                <input
-                    class="{ state.errors.photo1 ? 'danger' : null } { state.photo1 ? '' : 'inactive' } form-control"
-                    type="text" maxlength="500" placeholder="Enter a description of the photo" value="{ state.photo1 }"
-                    oninput="{ checkPhotoText }">
-                <div if="{state.errors.photo1}" class="invalid-tooltip">
-                    <ul>
-                        <li>{ state.errors.photo1 }.</li>
-                    </ul>
-                </div>
                 <upload_photo></upload_photo>
-                <input
-                    class="{ state.errors.photo2 ? 'danger' : null } { state.photo2 ? '' : 'inactive' } form-control"
-                    type="text" maxlength="500" placeholder="Enter a description of the photo" value="{ state.photo2 }"
-                    oninput="{ checkPhotoText }">
-                <div if="{state.errors.photo2}" class="invalid-tooltip">
-                    <ul>
-                        <li>{ state.errors.photo2 }.</li>
-                    </ul>
-                </div>
             </section>
 
             <div class="d-flex justify-content-end">

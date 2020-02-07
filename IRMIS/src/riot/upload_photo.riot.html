@@ -1,15 +1,31 @@
 <upload_photo>
-    <div class="upload-box">
-        <div class="cloud-box">
-            <div class="upload-cloud"></div>
-            <div class="upload-text">{ window.gettext("Click to upload") }</div>
-            <div>{ window.gettext("Maximum file size 500KB") }</div>
-            <div>{ window.gettext("Accepted file formats: JPEG, GIF, PNG, TIFF") }</div>
+    <div>
+        <div class="upload-box">
+            <div class="cloud-box">
+                <div class="upload-cloud"></div>
+                <div class="upload-text">{ window.gettext("Click to upload") }</div>
+                <div>{ window.gettext("Maximum file size 500KB") }</div>
+                <div>{ window.gettext("Accepted file formats: JPEG, GIF, PNG, TIFF") }</div>
+            </div>
+        </div>
+        <input
+            class="{ state.errors.photo ? 'danger' : null } { state.photo ? '' : 'inactive' } form-control upload-text"
+            type="text" maxlength="500" placeholder="Enter a description of the photo" value="{ state.photo }"
+            oninput="{ checkPhotoText }">
+        <div if="{state.errors.photo}" class="invalid-tooltip">
+            <ul>
+                <li>{ state.errors.photo }.</li>
+            </ul>
         </div>
     </div>
     <script>
         export default {
             state: {
+                photo: '',
+                errors: {}
+            },
+            checkPhotoText(e) {
+                console.log(e.currentTarget.value)
             }
         }
     </script>

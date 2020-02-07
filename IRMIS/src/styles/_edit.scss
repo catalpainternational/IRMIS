@@ -132,7 +132,15 @@ edit_structure_condition {
     section {
         min-width: 450px;
     }
+}
 
+// edit_photo {
+//     .photo-wrapper {
+//         margin-bottom: 30px;
+//     }
+// }
+
+upload_photo {
     .upload-box { 
         box-sizing: border-box;
         height: 230px;
@@ -140,6 +148,7 @@ edit_structure_condition {
         border-radius: 4px;
         margin-bottom: 20px;
         margin-top: 30px;
+        max-width: 500px;
     }
 
     .cloud-box {
@@ -156,6 +165,10 @@ edit_structure_condition {
             margin-bottom: 30px;
             margin-top: 5px;
         }
+    }
+
+    .upload-text {
+        max-width: 500px;
     }
 }
 
