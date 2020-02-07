@@ -81,12 +81,14 @@ export class EstradaBridge extends Bridge {
             : this.id
     }
 
+    // generic version of the getStructureCode() function for Map use
     get code() {
-        return this.structureCode;
+        return this.getStructureCode();
     }
 
+    // generic version of the getStructureName() function for Map use
     get name() {
-        return this.structureName;
+        return this.getStructureName();
     }
 
     get structureCode() {
@@ -105,8 +107,12 @@ export class EstradaBridge extends Bridge {
         return this.getUser() || "";
     }
 
+    get geomPoint() {
+        return this.getGeomPoint();
+    }
+
     get dms() {
-        return toDms(projToWGS84.forward(this.getProjectionStart().array));
+        return toDms(projToWGS84.forward(this.getGeomPoint().array));
     }
 
     get chainage() {
@@ -114,7 +120,8 @@ export class EstradaBridge extends Bridge {
     }
 
     get administrativeArea() {
-        return choice_or_default(parseInt(this.getAdministrativeArea()), ADMINISTRATIVE_AREA_CHOICES);
+        // return choice_or_default(parseInt(this.getAdministrativeArea()), ADMINISTRATIVE_AREA_CHOICES);
+        return this.getAdministrativeArea();
     }
 
     get constructionYear() {
@@ -201,12 +208,14 @@ export class EstradaCulvert extends Culvert {
             : this.id
     }
 
+    // generic version of the getStructureCode() function for Map use
     get code() {
-        return this.structureCode;
+        return this.getStructureCode();
     }
 
+    // generic version of the getStructureName() function for Map use
     get name() {
-        return this.structureName;
+        return this.getStructureName();
     }
 
     get structureCode() {
@@ -226,7 +235,7 @@ export class EstradaCulvert extends Culvert {
     }
 
     get dms() {
-        return toDms(projToWGS84.forward(this.getProjectionStart().array));
+        return toDms(projToWGS84.forward(this.getPointStart().array));
     }
 
     get chainage() {
@@ -234,7 +243,8 @@ export class EstradaCulvert extends Culvert {
     }
 
     get administrativeArea() {
-        return choice_or_default(parseInt(this.getAdministrativeArea()), ADMINISTRATIVE_AREA_CHOICES);
+        // return choice_or_default(parseInt(this.getAdministrativeArea()), ADMINISTRATIVE_AREA_CHOICES);
+        return this.getAdministrativeArea();
     }
 
     get constructionYear() {
