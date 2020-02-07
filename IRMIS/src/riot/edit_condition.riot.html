@@ -124,9 +124,10 @@
         import Stacked_Bar from "./stacked_bar.riot.html";
 
         import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
-        import {toChainageFormat} from "../assets/protoBufUtilities";
+        import { choice_or_default, toChainageFormat } from "../assets/protoBufUtilities";
         import {withinMaxDigits} from "../assets/utilities";
 
+        import { ASSET_CONDITION_CHOICES } from "../assets/models/estradaBase";
         import { makeEstradaRoad } from "../assets/models/road";
         import { EstradaSurvey, makeEstradaSurvey } from "../assets/models/survey";
 
@@ -275,7 +276,9 @@
                     defaultContent: "",
                     className: "text-center",
                     orderable: false,
-                },
+                    render: (data, type) => {
+                        return (type === 'display') ? choice_or_default(data, ASSET_CONDITION_CHOICES) : data;
+                    },                },
                 {
                     title: window.gettext("Survey date"),
                     data: "dateSurveyed",
@@ -492,9 +495,7 @@
                 this.validate(fieldName, input, testResult, errorText);
             },
             checkAssetCondition(e) {
-                this.state.survey.setValues(JSON.stringify({
-                    asset_condition: this.state.survey.assetCondition
-                }));
+                this.state.survey.assetCondition = e.currentTarget.value;
                 this.canSave();
             },
             modal_id: "asset-condition-modal",

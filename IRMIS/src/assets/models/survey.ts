@@ -8,7 +8,7 @@ import {
     TRAFFIC_LEVEL_CHOICES,
 } from "./road";
 
-import { choice_or_default, getFieldName, getHelpText, makeEstradaObject } from "../protoBufUtilities";
+import { choice_or_default, getFieldName, getHelpText, invertChoices, makeEstradaObject } from "../protoBufUtilities";
 
 // We may need a survey schema - primarily for formatted field names
 // JSON.parse(document.getElementById('survey_schema').textContent);
@@ -66,39 +66,76 @@ export class EstradaSurvey extends Survey implements IEstrada {
             || this.values.surface_condition
             || this.values.structure_condition
             || undefined;
-        return choice_or_default(assetCondition, ASSET_CONDITION_CHOICES);
+        return assetCondition;
+    }
+
+    set assetCondition(value: string) {
+        this.setValue(value, "surface_condition");
+        this.setValue(value, "structure_condition");
     }
 
     get surfaceType() {
-        return choice_or_default(this.values.surface_type, SURFACE_TYPE_CHOICES);
+        return this.values.surface_type;
+    }
+
+    set surfaceType(value: string) {
+        this.setValue(value, "surface_type");
     }
 
     get pavementClass() {
-        return choice_or_default(this.values.pavement_class, PAVEMENT_CLASS_CHOICES);
+        return this.values.pavement_class;
+    }
+
+    set pavementClass(value: string) {
+        this.setValue(value, "pavement_class");
     }
 
     get technicalClass() {
-        return choice_or_default(this.values.technical_class, TECHNICAL_CLASS_CHOICES);
+        return this.values.technical_class;
+    }
+
+    set technicalClass(value: string) {
+        this.setValue(value, "technical_class");
     }
 
     get terrainClass() {
-        return choice_or_default(this.values.terrain_class, TERRAIN_CLASS_CHOICES);
+        return this.values.terrain_class;
+    }
+
+    set terrainClass(value: string) {
+        this.setValue(value, "terrain_class");
     }
 
     get trafficLevel() {
-        return choice_or_default(this.values.traffic_level, TRAFFIC_LEVEL_CHOICES);
+        return this.values.traffic_level;
+    }
+
+    set trafficLevel(value: string) {
+        this.setValue(value, "traffic_level");
     }
 
     get numberLanes() {
-        return this.values.number_lanes;
+        return this.values.number_lanes as number;
+    }
+
+    set numberLanes(value: number) {
+        this.setValue(value, "number_lanes");
     }
 
     get carriagewayWidth() {
-        return this.values.carriageway_width;
+        return this.values.carriageway_width as number;
+    }
+
+    set carriagewayWidth(value: number) {
+        this.setValue(value, "carriageway_width");
     }
 
     get rainfall() {
-        return this.values.rainfall;
+        return this.values.rainfall as number;
+    }
+
+    set rainfall(value: number) {
+        this.setValue(value, "rainfall");
     }
 
     get trafficSurveyedDate() {
@@ -113,17 +150,35 @@ export class EstradaSurvey extends Survey implements IEstrada {
         return this.values.counts || {};
     }
 
+    set trafficCounts(value: any) {
+        this.setValue(value, "counts");
+    }
+
     get trafficCountTotal() {
         return this.values.countTotal || 0;
+    }
+
+    set trafficCountTotal(value: number) {
+        this.setValue(value, "countTotal");
     }
 
     get trafficDataType() {
         return this.values.trafficType || "Unknown";
     }
 
+    set trafficDataType(value: any) {
+        this.setValue(value, "trafficType");
+    }
+
     get values() {
         const jsonValues = this.getValues() || "{}";
         return JSON.parse(jsonValues);
+    }
+
+    private setValue(value: any, fieldName: string) {
+        const values = this.values;
+        values[fieldName] = value;
+        this.setValues(JSON.stringify(values));
     }
 }
 

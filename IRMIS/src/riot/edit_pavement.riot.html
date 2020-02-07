@@ -235,10 +235,10 @@
         import Stacked_Bar from "./stacked_bar.riot.html";
 
         import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
-        import {toChainageFormat} from "../assets/protoBufUtilities";
+        import { choice_or_default, toChainageFormat } from "../assets/protoBufUtilities";
         import {withinMaxDigits} from "../assets/utilities";
 
-        import { makeEstradaRoad } from "../assets/models/road";
+        import { makeEstradaRoad, PAVEMENT_CLASS_CHOICES, SURFACE_TYPE_CHOICES } from "../assets/models/road";
         import { EstradaSurvey, makeEstradaSurvey } from "../assets/models/survey";
 
         import $ from "jquery";
@@ -446,6 +446,9 @@
                     defaultContent: "",
                     className: "text-center",
                     orderable: false,
+                    render: (data, type) => {
+                        return (type === 'display') ? choice_or_default(data, SURFACE_TYPE_CHOICES) : data;
+                    },
                 },
                 {
                     title: window.gettext("Survey date"),
@@ -540,7 +543,9 @@
                     defaultContent: "",
                     className: "text-center",
                     orderable: false,
-                },
+                    render: (data, type) => {
+                        return (type === 'display') ? choice_or_default(data, PAVEMENT_CLASS_CHOICES) : data;
+                    },                },
                 {
                     title: window.gettext("Survey date"),
                     data: "dateSurveyed",

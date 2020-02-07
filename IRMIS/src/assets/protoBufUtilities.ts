@@ -58,7 +58,10 @@ export function humanizeChoices(
     valueKey = valueKey || 0;
     displayKey = displayKey || 1;
     if (schema[field] && schema[field].options) {
-        schema[field].options.forEach((o: any) => { values[o[valueKey]] = o[displayKey]; });
+        schema[field].options.forEach((o: any) => {
+            const newValueKey = o[valueKey].toString();
+            values[newValueKey] = o[displayKey];
+        });
     }
 
     return values;

@@ -422,7 +422,7 @@
         import {toChainageFormat} from "../assets/protoBufUtilities";
         import {withinMaxDigits} from "../assets/utilities";
 
-        import { makeEstradaRoad } from "../assets/models/road";
+        import { makeEstradaRoad, TECHNICAL_CLASS_CHOICES } from "../assets/models/road";
         import { EstradaSurvey, makeEstradaSurvey } from "../assets/models/survey";
 
         import $ from "jquery";
@@ -775,6 +775,9 @@
                     defaultContent: "",
                     className: "text-center",
                     orderable: false,
+                    render: (data, type) => {
+                        return (type === 'display') ? choice_or_default(data, TECHNICAL_CLASS_CHOICES) : data;
+                    },
                 },
                 {
                     title: window.gettext("Survey date"),
@@ -1185,9 +1188,9 @@
                     );
                 } else {
                     delete this.state.errors.carriagewayWidth;
+                    this.state.survey.carriagewayWidth = value;
+                    this.canSave();
                 }
-                this.state.survey.carriagewayWidth = value;
-                this.canSave();
             },
             checkTechnicalClass(e) {
                 this.state.survey.technicalClass = e.currentTarget.dataset.technical;
@@ -1199,9 +1202,9 @@
                     this.state.errors.numberLanes = window.gettext(`Number of lanes cannot contain more than ${this.state.numberLanesDigits} digits and value shouldn't contain decimals`);
                 } else {
                     delete this.state.errors.numberLanes;
+                    this.state.survey.numberLanes = value;
+                    this.canSave();
                 }
-                this.state.survey.numberLanes = value;
-                this.canSave();
             },
             max_date: () => new Date().toISOString().substring(0, 10),
         };
