@@ -15,7 +15,13 @@ export function AdminAreaChoices() {
     return adminAreaChoices;
 }
 
-export interface IAsset {
+export interface IEstrada {
+    id: string | number;
+    getId(): string | number;
+}
+
+export interface IAsset extends IEstrada {
+    // Asset Ids can only be strings
     id: string;
     name: string;
     code: string;

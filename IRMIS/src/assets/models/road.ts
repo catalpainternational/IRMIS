@@ -11,7 +11,7 @@ import {
     toChainageFormat,
 } from "../protoBufUtilities";
 
-import { ADMINISTRATIVE_AREA_CHOICES, ASSET_CLASS_CHOICES, ASSET_CONDITION_CHOICES, IAsset } from "./asset";
+import { ADMINISTRATIVE_AREA_CHOICES, ASSET_CLASS_CHOICES, ASSET_CONDITION_CHOICES, IAsset } from "./estradaBase";
 
 const assetSchema = JSON.parse(document.getElementById("asset_schema")?.textContent || "");
 

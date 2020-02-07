@@ -7,7 +7,7 @@ import { Attribute, Report } from "../../../protobuf/report_pb";
 import { choice_or_default, getFieldName, getHelpText, invertChoices, makeEstradaObject } from "../protoBufUtilities";
 import { reportColumns } from "../../reportManager";
 
-import { ASSET_CLASS_CHOICES, ASSET_CONDITION_CHOICES } from "./asset";
+import { ASSET_CLASS_CHOICES, ASSET_CONDITION_CHOICES } from "./estradaBase";
 import {
     ROAD_STATUS_CHOICES, SURFACE_TYPE_CHOICES,
     TECHNICAL_CLASS_CHOICES, TRAFFIC_LEVEL_CHOICES,

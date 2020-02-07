@@ -10,7 +10,7 @@ import {
     toChainageFormat,
 } from "../protoBufUtilities";
 
-import { ADMINISTRATIVE_AREA_CHOICES, ASSET_CLASS_CHOICES, ASSET_CONDITION_CHOICES } from "./asset";
+import { ADMINISTRATIVE_AREA_CHOICES, ASSET_CLASS_CHOICES, ASSET_CONDITION_CHOICES, IEstrada, IAsset } from "./estradaBase";
 
 const assetSchema = JSON.parse(document.getElementById("asset_schema")?.textContent || "");
 
@@ -31,8 +31,12 @@ const structureSchemas = {
     culvert: {},
 };
 
-export class EstradaStructures extends Structures {
+export class EstradaStructures extends Structures implements IEstrada {
     get id() {
+        return this.getId();
+    }
+
+    public getId() {
         return "StructuresWrapperClass";
     }
 
@@ -63,7 +67,7 @@ export class EstradaStructures extends Structures {
     }
 }
 
-export class EstradaBridge extends Bridge {
+export class EstradaBridge extends Bridge implements IAsset {
     public static getFieldName(field: string) {
         return getFieldName(assetSchema, field);
     }
@@ -198,7 +202,7 @@ export class EstradaBridge extends Bridge {
     }
 }
 
-export class EstradaCulvert extends Culvert {
+export class EstradaCulvert extends Culvert implements IAsset {
     public static getFieldName(field: string) {
         return getFieldName(assetSchema, field);
     }

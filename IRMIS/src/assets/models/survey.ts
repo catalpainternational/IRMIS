@@ -1,8 +1,12 @@
 import dayjs from "dayjs";
 
 import { Survey } from "../../../protobuf/survey_pb";
-import { ASSET_CONDITION_CHOICES } from "./asset";
-import { PAVEMENT_CLASS_CHOICES, SURFACE_TYPE_CHOICES, TECHNICAL_CLASS_CHOICES, TERRAIN_CLASS_CHOICES, TRAFFIC_LEVEL_CHOICES } from "./road";
+import { ASSET_CONDITION_CHOICES, IEstrada } from "./estradaBase";
+import {
+    PAVEMENT_CLASS_CHOICES, SURFACE_TYPE_CHOICES,
+    TECHNICAL_CLASS_CHOICES, TERRAIN_CLASS_CHOICES,
+    TRAFFIC_LEVEL_CHOICES,
+} from "./road";
 
 import { choice_or_default, getFieldName, getHelpText, makeEstradaObject } from "../protoBufUtilities";
 
@@ -10,7 +14,7 @@ import { choice_or_default, getFieldName, getHelpText, makeEstradaObject } from 
 // JSON.parse(document.getElementById('survey_schema').textContent);
 const surveySchema = {};
 
-export class EstradaSurvey extends Survey {
+export class EstradaSurvey extends Survey implements IEstrada {
     public static getFieldName(field: string) {
         return getFieldName(surveySchema, field);
     }

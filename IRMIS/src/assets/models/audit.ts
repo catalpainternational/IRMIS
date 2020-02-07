@@ -1,6 +1,7 @@
 import { Version } from "../../../protobuf/version_pb";
 
 import { getFieldName, getHelpText, makeEstradaObject } from "../protoBufUtilities";
+import { IEstrada } from "./estradaBase";
 
 const auditSchema = {
     comment: { display: (window as any).gettext("Description") },
@@ -9,7 +10,7 @@ const auditSchema = {
     user: { display: (window as any).gettext("User") },
 };
 
-export class EstradaAudit extends Version {
+export class EstradaAudit extends Version implements IEstrada {
     public static getFieldName(field: string) {
         return getFieldName(auditSchema, field);
     }
