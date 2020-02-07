@@ -26,13 +26,13 @@ export function getFeatureType(json: GeoJSON, defaultFeatureType: string = "Road
 /** populateGeoJsonProperties
  *
  * for each feature in a geojson FeatureCollection,
- * use the property `pk` to access the relevant metadata from the propertiesLookup
+ * use the property `id` to access the relevant metadata from the propertiesLookup
  * and add it to the feature properties.
  *
  * also ensure that each feature.properties has a validly set `featureType`
  *
  * @param geoJson - the GeoJSON that needs its feature.properties populated
- * @param propertiesLookup - the source of the properties data referenced by properties.pk
+ * @param propertiesLookup - the source of the properties data referenced by properties.id
  */
 export function populateGeoJsonProperties(geoJson: GeoJSON, propertiesLookup: { [name: string]: any }) {
     if (geoJson.type !== "FeatureCollection") {
@@ -44,7 +44,7 @@ export function populateGeoJsonProperties(geoJson: GeoJSON, propertiesLookup: { 
             return;
         }
 
-        const propertySet = propertiesLookup[feature.properties.pk];
+        const propertySet = propertiesLookup[feature.properties.id];
         if (!propertySet) {
             return;
         }

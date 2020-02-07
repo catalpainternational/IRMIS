@@ -1,6 +1,7 @@
 import "datatables.net-bs4";
 import $ from "jquery";
-import * as riot from "riot";
+
+import { dispatch } from "./assets/utilities";
 
 import { exportCsv } from "./exportCsv";
 import { applyFilter } from "./filter";
@@ -14,19 +15,18 @@ import {
     structureConditionColumns,
     structureConditionDescriptionColumns,
     structurePhotosColumns,
-    assetConditionColumns,
+    surfaceConditionColumns,
     surfaceTypeColumns,
     technicalClassColumns,
     terrainClassColumns,
 } from "./segmentsInventoryTableDefinition";
-
 import { datatableTranslations } from "./datatableTranslations";
+
 import { getRoad, roads } from "./roadManager";
-import { getRoadReport as getAssetReport } from "./reportManager";
-import {getRoadSurveys as getAssetSurveys} from "./surveyManager";
 import { getStructure, structures } from "./structureManager";
-import { dispatch } from "./assets/utilities";
-import {Survey} from "../protobuf/survey_pb";
+
+import { getRoadReport as getAssetReport } from "./reportManager";
+import { getRoadSurveys as getAssetSurveys } from "./surveyManager";
 
 let roadsTable = null;
 let structuresTable = null;
@@ -41,7 +41,7 @@ window.addEventListener("load", () => {
 
 const attributeModalMapping = {
     asset_condition: {
-        columns: assetConditionColumns,
+        columns: surfaceConditionColumns,
         reportDataTableId: "inventory-asset-condition-table",
         reportTable: null,
         title: gettext("Surface Condition segments"),
@@ -90,7 +90,7 @@ const attributeModalMapping = {
     },
     structure_condition: {
         columns: structureConditionColumns,
-        reportDataTableId: "inventory-structure-condition-table",
+        reportDataTableId: "inventory-asset-condition-table",
         reportTable: null,
         title: gettext("Structure Condition details"),
     },
@@ -113,14 +113,14 @@ function initializeDataTable() {
         estradaTableColumns.unshift({
             title: "",
             data: null,
-            render: r => `<a class="image pencil" href="#edit/road/${r.getId()}/location_type"></a>`,
+            render: r => `<a class="image pencil" href="#edit/${r.assetType}/${r.assetId}/location_type"></a>`,
             orderable: false,
             className: "edit-col"
         });
         structuresTableColumns.unshift({
             title: "",
             data: null,
-            render: r => `<a class="image pencil" href="#edit/${r.getId().substring(0, 4)}/${r.getId().substring(5)}/structure_type"></a>`,
+            render: r => `<a class="image pencil" href="#edit/${r.assetType}/${r.assetId}/structure_type"></a>`,
             orderable: false,
             className: "edit-col"
         });
@@ -128,7 +128,7 @@ function initializeDataTable() {
 
     roadsTable = $("#all-data-table").DataTable({
         columns: estradaTableColumns,
-        rowId: ".getId()",
+        rowId: ".id",
         // default order is ascending by: road code, link code, & link start chainage
         order: window.canEdit ? [[1, 'asc'], [3, 'asc'], [7, 'asc']] : [[0, 'asc'], [2, 'asc'], [6, 'asc']],
         dom: "<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>", // https://datatables.net/reference/option/dom#Styling
@@ -151,7 +151,7 @@ function initializeDataTable() {
 
     structuresTable = $("#structures-data-table").DataTable({
         columns: structuresTableColumns,
-        rowId: ".getId()",
+        rowId: ".id",
         // default order is ascending by: structure code
         order: window.canEdit ? [[2, 'asc']] : [[1, 'asc']],
         dom: "<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>", // https://datatables.net/reference/option/dom#Styling
@@ -178,7 +178,7 @@ function initializeDataTable() {
     function setUpModalTable(tableId, columns) {
         return $(`#${tableId}`).DataTable({
             columns: columns,
-            rowId: ".getId()",
+            rowId: ".id",
             dom: "<'row'<'col-sm-12'tr>>", // https://datatables.net/reference/option/dom#Styling
             language: datatableTranslations,
             // This turns off filtering for all tables ( DO NOT SET THIS TO TRUE )
@@ -195,7 +195,7 @@ function initializeDataTable() {
 
     if (pendingRoads.length) {
         // add any rows the road manager has delivered before initialization
-        if (assetTypeName === "roads") {
+        if (assetTypeName === "ROAD") {
             roadsTable.rows.add(pendingRoads).draw();
 
             pendingRoads = [];
@@ -204,7 +204,7 @@ function initializeDataTable() {
 
     if (pendingStructures.length) {
         // add any rows the structure manager has delivered before initialization
-        if (assetTypeName !== "roads") {
+        if (assetTypeName !== "ROAD") {
             structuresTable.rows.add(pendingStructures).draw();
 
             pendingStructures = [];
@@ -226,25 +226,25 @@ function setupTableEventHandlers() {
     document.getElementById("export-structure").addEventListener("click", exportStructuresTable);
 
     // Setup column selection and column click handlers
-    setupColumnEventHandlers("roads");
-    setupColumnEventHandlers("structures");
-
-    function setupColumnEventHandlers(mainTableType = "roads") {
-        const selectId = (mainTableType === "roads")
+    setupColumnEventHandlers("ROAD");
+    setupColumnEventHandlers("STRC");
+   
+    function setupColumnEventHandlers(mainTableType = "ROAD") {
+        const selectId = (mainTableType === "ROAD")
             ? "select-road-data"
             : "select-structure-data";
 
-        const columnsDropdown = (mainTableType === "roads")
+        const columnsDropdown = (mainTableType === "ROAD")
             ? document.getElementById("road-columns-dropdown")
             : document.getElementById("structure-columns-dropdown");
 
         const columns = columnsDropdown.querySelectorAll("[data-column]");
 
-        const mainTable = (mainTableType === "roads")
+        const mainTable = (mainTableType === "ROAD")
             ? roadsTable
             : structuresTable;
-
-        const restoreColumnDefaults = (mainTableType === "roads")
+        
+        const restoreColumnDefaults = (mainTableType === "ROAD")
             ? document.getElementsByClassName("restore-road").item(0)
             : document.getElementsByClassName("restore-structure").item(0);
 
@@ -305,11 +305,11 @@ function setupTableEventHandlers() {
         });
     }
 
-    roadsTable.on("click", "tbody tr td", (e) => { handleCellClick(e, "roads"); });
-    structuresTable.on("click", "tbody tr td", (e) => { handleCellClick(e, "structures"); });
+    roadsTable.on("click", "tbody tr td", (e) => { handleCellClick(e, "ROAD"); });
+    structuresTable.on("click", "tbody tr td", (e) => { handleCellClick(e, "STRC"); });
 
-    function handleCellClick(e, mainTableType = "roads") {
-        const mainTable = (mainTableType === "roads")
+    function handleCellClick(e, mainTableType = "ROAD") {
+        const mainTable = (mainTableType === "ROAD")
             ? roadsTable
             : structuresTable;
 
@@ -338,13 +338,13 @@ function setupTableEventHandlers() {
             clickedRow.addClass("selected");
 
             mainTable.selectionProcessing = clickedRowId;
-
-            applyTableSelection(mainTable.selectionProcessing);
+    
+            applyTableSelectionToMap(mainTable.selectionProcessing);
         }
     }
 }
 
-function applyTableSelection(rowId) {
+function applyTableSelectionToMap(rowId) {
     if (!rowId) {
         return;
     }
@@ -353,7 +353,8 @@ function applyTableSelection(rowId) {
     idMap[rowId] = true;
 
     // communicate the filter
-    dispatch("estrada.idFilter.applied", { detail: { idMap } });
+    const eventName = "estrada.map.idFilter.applied";
+    dispatch(eventName, { detail: { idMap } });
 }
 
 /**
@@ -363,18 +364,18 @@ function applyTableSelection(rowId) {
  * @return [{label: string, value: string}]
  */
 export function GetDataForMapPopup(id, featureType) {
-    const assetType = ["bridge", "culvert"].includes(featureType) ? "structures" : "roads";
+    const assetType = ["BRDG", "CULV", "bridge", "culvert"].includes(featureType) ? "STRC" : "ROAD";
     if (assetType !== assetTypeName) {
         return [{ label: window.gettext("Asset Type"), value: featureType }];
     }
-    const asset = assetTypeName === "roads" ? roads[id] : structures[id];
+    const asset = assetTypeName === "ROAD" ? roads[id] : structures[id];
 
     if (!asset) {
         return [{ label: window.gettext("Loading"), value: "" }];
     }
 
-    const code = assetTypeName === "roads" ? asset.getRoadCode() : asset.getStructureCode();
-    const name = assetTypeName === "roads" ? asset.getRoadName() : asset.getStructureName();
+    const code = asset.code || asset.getRoadCode();
+    const name = asset.name;
 
     const mapPopupData = [];
     if (code) {
@@ -387,11 +388,11 @@ export function GetDataForMapPopup(id, featureType) {
     return mapPopupData;
 }
 
-function getTableData(mainTableType = "roads") {
-    const mainTableColumns = (mainTableType === "roads")
+function getTableData(mainTableType = "ROAD") {
+    const mainTableColumns = (mainTableType === "ROAD")
         ? estradaTableColumns
         : structuresTableColumns;
-    const mainTable = (mainTableType === "roads")
+    const mainTable = (mainTableType === "ROAD")
         ? roadsTable
         : structuresTable;
 
@@ -417,19 +418,19 @@ function getTableData(mainTableType = "roads") {
 }
 
 function exportRoadsTable() {
-    const tableData = getTableData("roads");
+    const tableData = getTableData("ROAD");
     exportCsv(tableData.headers, tableData.rows);
 }
 
 function exportStructuresTable() {
-    const structuresData = getTableData("structures");
+    const structuresData = getTableData("STRC");
     exportCsv(structuresData.headers, structuresData.rows);
 }
 
 // Filter functionality
 let idWhitelistMap = {};
 let currentFilter = (p) => {
-    return Object.keys(idWhitelistMap).length === 0 || idWhitelistMap[p.getId().toString()];
+    return Object.keys(idWhitelistMap).length === 0 || idWhitelistMap[p.id];
 }
 
 $.fn.dataTableExt.afnFiltering.push(
@@ -511,7 +512,7 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
                 })[0] || false;
             }).finally(() => {
                 // update the traffic details inventory modal tag with current data
-                document.dispatchEvent(new CustomEvent("inventory-traffic-level-table.updateTrafficData", {detail: {currentRowData: latestSurvey }}));
+                document.dispatchEvent(new CustomEvent("inventory-traffic-level-table.updateTrafficData", { detail: { currentRowData: latestSurvey } }));
             });
     } else {
         const reportDataTableId = attributeModalMapping[attr].reportDataTableId;
@@ -525,7 +526,7 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
                 primaryattribute: attr,
             };
 
-            if (assetTypeName === "roads") {
+            if (assetTypeName === "ROAD") {
                 if (assetData.getLinkStartChainage() && assetData.getLinkEndChainage()) {
                     filters.road_code = assetData.getRoadCode();
                     filters.chainagestart = assetData.getLinkStartChainage();
@@ -541,12 +542,12 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
                     filters.structure_id = assetData.id;
                 }
             }
-
+    
             return filters;
         };
 
         getAsset(assetId).then((assetData) => {
-            const filters = getAssetFilters(assetData)
+            const filters = getAssetFilters(assetData);
             getAssetReport(filters)
                 .then((reportData) => {
                     reportTable.clear(); // remove all rows in the table - again

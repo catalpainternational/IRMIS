@@ -61,21 +61,40 @@ export class EstradaStructures extends Structures {
 }
 
 export class EstradaBridge extends Bridge {
-
     get id() {
         return this.getId();
     }
 
-    get name() {
-        return this.getStructureName();
+    /** The asset's type - the prefix part of its Id */
+    get assetType() {
+        return "BRDG";
+    }
+
+    get assetTypeName() {
+        return window.gettext("Bridge");
+    }
+
+    /** Return just the asset's Id without the assetType prefix */
+    get assetId() {
+        return this.id.startsWith(this.assetType)
+            ? this.id.split("-")[1]
+            : this.id
     }
 
     get code() {
         return this.structureCode;
     }
 
+    get name() {
+        return this.structureName;
+    }
+
     get structureCode() {
         return this.getStructureCode();
+    }
+
+    get structureName() {
+        return this.getStructureName();
     }
 
     get roadCode() {
@@ -146,7 +165,6 @@ export class EstradaBridge extends Bridge {
         return choice_or_default(this.getProtectionDownstream(), STRUCTURE_DOWNSTREAM_PROTECTION_TYPE_CHOICES);
     }
 
-
     /** A Null or None in the protobuf is indicated by a negative value */
     getChainage() {
         const chainage = super.getChainage();
@@ -163,21 +181,40 @@ export class EstradaBridge extends Bridge {
 }
 
 export class EstradaCulvert extends Culvert {
-
     get id() {
         return this.getId();
     }
 
-    get name() {
-        return this.getStructureName();
+    /** The asset's type - the prefix part of its Id */
+    get assetType() {
+        return "CULV";
+    }
+
+    get assetTypeName() {
+        return window.gettext("Culvert");
+    }
+
+    /** Return just the asset's Id without the assetType prefix */
+    get assetId() {
+        return this.id.startsWith(this.assetType)
+            ? this.id.split("-")[1]
+            : this.id
     }
 
     get code() {
         return this.structureCode;
     }
 
+    get name() {
+        return this.structureName;
+    }
+
     get structureCode() {
         return this.getStructureCode();
+    }
+
+    get structureName() {
+        return this.getStructureName();
     }
 
     get roadCode() {
