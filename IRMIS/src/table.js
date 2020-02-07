@@ -373,15 +373,12 @@ export function GetDataForMapPopup(id, featureType) {
         return [{ label: window.gettext("Loading"), value: "" }];
     }
 
-    const code = assetTypeName === "roads" ? asset.getRoadCode() : asset.getStructureCode();
-    const name = assetTypeName === "roads" ? asset.getRoadName() : asset.getStructureName();
-
     const mapPopupData = [];
-    if (code) {
-        mapPopupData.push({ label: window.gettext("Code"), value: code });
+    if (asset.code) {
+        mapPopupData.push({ label: window.gettext("Code"), value: asset.code });
     }
-    if (name) {
-        mapPopupData.push({ label: window.gettext("Name"), value: name });
+    if (asset.name) {
+        mapPopupData.push({ label: window.gettext("Name"), value: asset.name });
     }
 
     return mapPopupData;
@@ -526,17 +523,17 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
             };
 
             if (assetTypeName === "roads") {
-                if (assetData.getLinkStartChainage() && assetData.getLinkEndChainage()) {
-                    filters.road_code = assetData.getRoadCode();
-                    filters.chainagestart = assetData.getLinkStartChainage();
-                    filters.chainageend = assetData.getLinkEndChainage();
+                if (assetData.linkStartChainage && assetData.linkEndChainage) {
+                    filters.road_code = assetData.roadCode;
+                    filters.chainagestart = assetData.linkStartChainage;
+                    filters.chainageend = assetData.linkEndChainage;
                 } else {
                     filters.road_id = assetData.id;
                 }
             } else {
-                if (assetData.getChainage()) {
-                    filters.structure_code = assetData.getStructureCode();
-                    filters.chainage = assetData.getChainage();
+                if (assetData.chainage) {
+                    filters.structure_code = assetData.structureCode;
+                    filters.chainage = assetData.chainage;
                 } else {
                     filters.structure_id = assetData.id;
                 }

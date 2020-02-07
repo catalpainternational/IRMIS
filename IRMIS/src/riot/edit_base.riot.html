@@ -55,7 +55,7 @@
             <div if="{ !state.loading }">
                 <header class="align-items-center d-flex">
                     <a class="caret-dark left image" onclick="{ goBack }"></a>
-                    <h1>{ state.editingRoad.getRoadCode() } { state.editingRoad.getRoadName() }</h1>
+                    <h1>{ state.editingRoad.code } { state.editingRoad.name }</h1>
                 </header>
 
                 <feedback_banner if="{ state.showFeedback }" close="{ closeFeedback }"
@@ -194,7 +194,8 @@
             },
             continueMounting() {
                 // Set up other data on editingRoad that is commonly used on the child tags
-                let roadDistance = this.state.editingRoad.getLinkEndChainage() - this.state.editingRoad.getLinkStartChainage();
+                let roadDistance = (this.state.editingRoad.linkEndChainage || 0)
+                    - (this.state.editingRoad.linkStartChainage || 0);
                 if (!roadDistance || roadDistance < 0) {
                     roadDistance = this.state.editingRoad.linkLength;
                 }
@@ -315,8 +316,8 @@
                 const filters = {
                     primaryattribute: primaryAttribute,
                     road_code: editingRoad.code,
-                    chainagestart: editingRoad.getLinkStartChainage(),
-                    chainageend: editingRoad.getLinkEndChainage(),
+                    chainagestart: editingRoad.linkStartChainage,
+                    chainageend: editingRoad.linkEndChainage,
                 };
 
                 getRoadReport(filters)

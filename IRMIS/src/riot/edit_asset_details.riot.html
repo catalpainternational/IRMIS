@@ -469,12 +469,12 @@
                 Edit_Stop_Alert, Edit_Modal,
             },
             onBeforeMount(props, state) {
-                state.linkCode = props.road.getLinkCode();
-                state.linkStartName = props.road.getLinkStartName();
-                state.linkEndName = props.road.getLinkEndName();
-                state.linkLength = props.road.getLinkLength().toFixed(3);
-                state.linkStartChainage = props.road.getLinkStartChainage();
-                state.linkEndChainage = props.road.getLinkEndChainage();
+                state.linkCode = props.road.linkCode;
+                state.linkStartName = props.road.linkStartName;
+                state.linkEndName = props.road.linkEndName;
+                state.linkLength = props.road.linkLength;
+                state.linkStartChainage = props.road.linkStartChainage;
+                state.linkEndChainage = props.road.linkEndChainage;
             },
             onMounted(props, state) {
                 state.loading = true;
@@ -1003,7 +1003,7 @@
                         this.state.survey.setDateSurveyed(dateSurveyed);
                         // set Survey road from state Road road_code
                         this.state.survey.setRoadId(this.state.road.getId());
-                        this.state.survey.setRoadCode(this.state.road.getRoadCode());
+                        this.state.survey.setRoadCode(this.state.road.code);
                         this.saveSurvey();
                     }
 
