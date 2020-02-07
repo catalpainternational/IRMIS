@@ -1,8 +1,9 @@
 import { Bridge, Culvert, Structures } from "../../protobuf/structure_pb";
-import { makeEstradaAudit } from "./models/audit";
+
 import { EstradaBridge, EstradaCulvert, EstradaStructures } from "./models/structures";
-import { ConfigAPI } from "./configAPI";
 import { makeEstradaObject } from "./protoBufUtilities";
+
+import { ConfigAPI } from "./configAPI";
 
 /** getStructuresMetadata
  *
@@ -27,7 +28,7 @@ export function getStructuresMetadata() {
  *
  * @returns a structure_object
  */
-export function getStructureMetadata(structureId) {
+export function getStructureMetadata(structureId: string) {
     const structureTypeUrlFragment = "protobuf_structure";
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${structureTypeUrlFragment}/${structureId}`;
 
@@ -49,7 +50,7 @@ export function getStructureMetadata(structureId) {
  *
  * @returns a map {id: bridge_object}
  */
-export function getRoadStructuresMetadata(roadId) {
+export function getRoadStructuresMetadata(roadId: string | number) {
     const structureTypeUrlFragment = "protobuf_road_structures";
     roadId = roadId || "";
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${structureTypeUrlFragment}/${roadId}`;
@@ -68,7 +69,7 @@ export function getRoadStructuresMetadata(roadId) {
  *
  * @returns 200 (success) or 400 (failure)
  */
-export function postStructureData(structure, structureType) {
+export function postStructureData(structure: EstradaBridge | EstradaCulvert, structureType: string) {
     const structureTypeUrlFragment = "structure_create";
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${structureTypeUrlFragment}`;
 
@@ -76,11 +77,11 @@ export function postStructureData(structure, structureType) {
     postAssetInit.body = structure.serializeBinary();
 
     return fetch(metadataUrl, postAssetInit)
-        .then(metadataResponse => {
+        .then((metadataResponse) => {
             if (metadataResponse.ok) { return metadataResponse.arrayBuffer(); }
             throw new Error(`Structure creation failed: ${metadataResponse.statusText}`);
         })
-        .then(protobufBytes => {
+        .then((protobufBytes) => {
             const uintArray = new Uint8Array(protobufBytes);
             if (structureType === "BRDG") {
                 return makeEstradaBridge(Bridge.deserializeBinary(uintArray));
@@ -96,7 +97,7 @@ export function postStructureData(structure, structureType) {
  *
  * @returns 200 (success) or 400 (failure)
  */
-export function putStructureData(structure, structureType) {
+export function putStructureData(structure: EstradaBridge | EstradaCulvert, structureType: string) {
     const structureTypeUrlFragment = "structure_update";
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${structureTypeUrlFragment}`;
 
@@ -104,11 +105,11 @@ export function putStructureData(structure, structureType) {
     postAssetInit.body = structure.serializeBinary();
 
     return fetch(metadataUrl, postAssetInit)
-        .then(metadataResponse => {
+        .then((metadataResponse) => {
             if (metadataResponse.ok) { return metadataResponse.arrayBuffer(); }
             throw new Error(`Structure creation failed: ${metadataResponse.statusText}`);
         })
-        .then(protobufBytes => {
+        .then((protobufBytes) => {
             const uintArray = new Uint8Array(protobufBytes);
             if (structureType === "BRDG") {
                 return makeEstradaBridge(Bridge.deserializeBinary(uintArray));
@@ -118,32 +119,14 @@ export function putStructureData(structure, structureType) {
         });
 }
 
-/** getStructureAuditData
- *
- * Retrieves the Audit changes data for a single structure from the server
- *
- * @returns a list of version objects
- */
-export function getStructureAuditData(structureId) {
-    const structureTypeUrlFragment = "protobuf_structure_audit";
-    const auditDataUrl = `${ConfigAPI.requestAssetUrl}/${structureTypeUrlFragment}/${structureId}`;
-
-    return fetch(auditDataUrl, ConfigAPI.requestInit())
-        .then((auditDataResponse) => (auditDataResponse.arrayBuffer()))
-        .then((protobufBytes) => {
-            const uintArray = new Uint8Array(protobufBytes);
-            return Versions.deserializeBinary(uintArray).getVersionsList().map(makeEstradaAudit);
-        });
+function makeEstradaStructures(pbstructures: { [name: string]: any }): EstradaStructures {
+    return makeEstradaObject(EstradaStructures, pbstructures) as EstradaStructures;
 }
 
-function makeEstradaStructures(pbstructures) {
-    return makeEstradaObject(EstradaStructures, pbstructures);
+function makeEstradaBridge(pbbridge: { [name: string]: any }): EstradaBridge {
+    return makeEstradaObject(EstradaBridge, pbbridge) as EstradaBridge;
 }
 
-function makeEstradaBridge(pbbridge) {
-    return makeEstradaObject(EstradaBridge, pbbridge);
-}
-
-function makeEstradaCulvert(pbculvert) {
-    return makeEstradaObject(EstradaCulvert, pbculvert);
+function makeEstradaCulvert(pbculvert: { [name: string]: any }): EstradaCulvert {
+    return makeEstradaObject(EstradaCulvert, pbculvert) as EstradaCulvert;
 }

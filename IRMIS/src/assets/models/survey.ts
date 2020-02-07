@@ -1,8 +1,8 @@
 import dayjs from "dayjs";
 
 import { Survey } from "../../../protobuf/survey_pb";
-import { PAVEMENT_CLASS_CHOICES, SURFACE_TYPE_CHOICES, TECHNICAL_CLASS_CHOICES, TERRAIN_CLASS_CHOICES, TRAFFIC_LEVEL_CHOICES } from "./road";
 import { ASSET_CONDITION_CHOICES } from "./asset";
+import { PAVEMENT_CLASS_CHOICES, SURFACE_TYPE_CHOICES, TECHNICAL_CLASS_CHOICES, TERRAIN_CLASS_CHOICES, TRAFFIC_LEVEL_CHOICES } from "./road";
 
 import { choice_or_default, getFieldName, getHelpText, makeEstradaObject } from "../protoBufUtilities";
 
@@ -11,6 +11,14 @@ import { choice_or_default, getFieldName, getHelpText, makeEstradaObject } from 
 const surveySchema = {};
 
 export class EstradaSurvey extends Survey {
+    public static getFieldName(field: string) {
+        return getFieldName(surveySchema, field);
+    }
+
+    public static getHelpText(field: string) {
+        return getHelpText(surveySchema, field);
+    }
+
     get id() {
         return this.getId();
     }
@@ -36,12 +44,11 @@ export class EstradaSurvey extends Survey {
     }
 
     get dateSurveyed() {
-        const pbufData = this.getDateSurveyed();
-        if (!pbufData || !pbufData.array) {
+        if (!this.hasDateSurveyed()) {
             return "";
         }
-        let date = dayjs(new Date(pbufData.array[0] * 1000));
-        return date.isValid() ? date.format('YYYY-MM-DD') : "";
+        const date = dayjs(new Date(this.getDateSurveyed()!.getSeconds() * 1000));
+        return date.isValid() ? date.format("YYYY-MM-DD") : "";
     }
 
     get source() {
@@ -51,11 +58,11 @@ export class EstradaSurvey extends Survey {
     // All of the `values` defined in 'make_road_surveys.py' should also be present
     // in the following `get` properties
     get assetCondition() {
-        const asset_condition = this.values.asset_condition
+        const assetCondition = this.values.asset_condition
             || this.values.surface_condition
             || this.values.structure_condition
             || undefined;
-        return choice_or_default(asset_condition, ASSET_CONDITION_CHOICES);     
+        return choice_or_default(assetCondition, ASSET_CONDITION_CHOICES);
     }
 
     get surfaceType() {
@@ -114,16 +121,8 @@ export class EstradaSurvey extends Survey {
         const jsonValues = this.getValues() || "{}";
         return JSON.parse(jsonValues);
     }
-
-    getFieldName(field) {
-        return getFieldName(surveySchema, field);
-    }
-
-    getHelpText(field) {
-        return getHelpText(surveySchema, field);
-    }
 }
 
-export function makeEstradaSurvey(pbsurvey) {
-    return makeEstradaObject(EstradaSurvey, pbsurvey);
+export function makeEstradaSurvey(pbsurvey: { [name: string]: any }): EstradaSurvey {
+    return makeEstradaObject(EstradaSurvey, pbsurvey) as EstradaSurvey;
 }
