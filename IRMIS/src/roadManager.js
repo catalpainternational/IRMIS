@@ -19,7 +19,7 @@ getRoadsMetadataChunks()
     });
 
 // when a filter is applied filter the roads
-document.addEventListener("estrada.roadTable.filter.apply", (data) => {
+document.addEventListener("estrada.road.filter.apply", (data) => {
     const filterState = data.detail.filterState;
     filterRoads(filterState);
 });
@@ -35,19 +35,19 @@ export function getRoad(id) {
 function addRoadMetadata(roadList) {
     roadList.reduce(
         (roadsLookup, roadMetadata) => {
-            roadsLookup[roadMetadata.getId()] = roadMetadata;
+            roadsLookup[roadMetadata.id] = roadMetadata;
             return roadsLookup;
         },
         roads,
     );
-    dispatch("estrada.roadManager.roadMetaDataAdded", { detail: { roadList } });
+    dispatch("estrada.road.assetMetaDataAdded", { detail: { assets: roadList } });
 }
 
 export function saveRoad(sourceRoad) {
     return Promise.resolve(putRoadMetadata(sourceRoad))
         .then((road) => {
-            roads[road.getId()] = road;
-            dispatch("estrada.roadTable.roadMetaDataUpdated", { detail: { road } });
+            roads[road.id] = road;
+            dispatch("estrada.road.assetMetaDataUpdated", { detail: { asset: road } });
             return road;
         });
 }
@@ -78,10 +78,11 @@ function filterRoads(filterState) {
     });
 
     // communicate the filter
-    let idMap = filteredRoads.reduce((idMap, road) => {
-        idMap[road.getId().toString()] = true;
+    const assetType = "ROAD";
+    const idMap = filteredRoads.reduce((idMap, road) => {
+        idMap[road.id] = true;
         return idMap;
     }, {});
 
-    dispatch("estrada.roadTable.filter.applied", { detail: { idMap } });
+    dispatch("estrada.road.filter.applied", { detail: { assetType, idMap } });
 }

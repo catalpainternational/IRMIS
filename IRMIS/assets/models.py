@@ -9,12 +9,12 @@ from django.core.validators import MinValueValidator
 from django.db.models import Count, Max
 
 import reversion
-from reversion.models import Version
 
 from protobuf.roads_pb2 import Roads as ProtoRoads
 from protobuf.roads_pb2 import Projection
 from protobuf.survey_pb2 import Surveys as ProtoSurveys
 from protobuf.structure_pb2 import Structures as ProtoStructures
+from protobuf.structure_pb2 import Point
 
 import json
 from google.protobuf.timestamp_pb2 import Timestamp
@@ -599,42 +599,58 @@ class BridgeQuerySet(models.QuerySet):
         # See sturcture.proto --> Structures --> Bridges --> Bridge
         structures_protobuf = ProtoStructures()
 
-        fields = dict(
-            id="id",
+        regular_fields = dict(
+            geojson_id="geojson_file_id",
             road_id="road_id",
-            date_created="date_created",
-            last_modified="last_modified",
+            road_code="road_code",
             structure_code="structure_code",
             structure_name="structure_name",
             asset_class="structure_class",
             administrative_area="administrative_area",
-            road_code="road_code",
-            construction_year="construction_year",
-            length="length",
-            width="width",
-            chainage="chainage",
             structure_type="structure_type",
             river_name="river_name",
-            number_spans="number_spans",
-            span_length="span_length",
             material="material",
             protection_upstream="protection_upstream",
             protection_downstream="protection_downstream",
         )
 
-        for bridge in self.values(*fields.values()):
-            bridge_protobuf = structures_protobuf.bridges.add()
+        datetime_fields = dict(
+            date_created="date_created", last_modified="last_modified",
+        )
 
-            for protobuf_key, query_key in fields.items():
-                if query_key == "id":
-                    setattr(
-                        bridge_protobuf, protobuf_key, "BRDG-" + str(bridge[query_key])
-                    )
-                elif bridge[query_key] and query_key not in [
-                    "date_created",
-                    "last_modified",
-                ]:
+        numeric_fields = dict(
+            length="length",
+            width="width",
+            chainage="chainage",
+            number_spans="number_spans",
+            span_length="span_length",
+            construction_year="construction_year",
+        )
+
+        bridges = (
+            self.order_by("id")
+            .annotate(to_wgs=models.functions.Transform("geom", 4326))
+            .values(
+                "id",
+                *regular_fields.values(),
+                *datetime_fields.values(),
+                *numeric_fields.values(),
+                "to_wgs"
+            )
+        )
+
+        for bridge in bridges:
+            bridge_protobuf = structures_protobuf.bridges.add()
+            bridge_protobuf.id = "BRDG-" + str(bridge["id"])
+
+            for protobuf_key, query_key in regular_fields.items():
+                if bridge[query_key]:
                     setattr(bridge_protobuf, protobuf_key, bridge[query_key])
+
+            for protobuf_key, query_key in numeric_fields.items():
+                raw_value = bridge.get(query_key)
+                if raw_value is not None:
+                    setattr(bridge_protobuf, protobuf_key, raw_value)
 
             if bridge["date_created"]:
                 ts = timestamp_from_datetime(bridge["date_created"])
@@ -643,6 +659,10 @@ class BridgeQuerySet(models.QuerySet):
             if bridge["last_modified"]:
                 ts = timestamp_from_datetime(bridge["last_modified"])
                 bridge_protobuf.last_modified.CopyFrom(ts)
+
+            if bridge["to_wgs"]:
+                pt = Point(x=bridge["to_wgs"].x, y=bridge["to_wgs"].y)
+                bridge_protobuf.geom_point.CopyFrom(pt)
 
         return structures_protobuf
 
@@ -834,42 +854,57 @@ class CulvertQuerySet(models.QuerySet):
         # See sturcture.proto --> Structures --> Culverts --> Culvert
         structures_protobuf = ProtoStructures()
 
-        fields = dict(
-            id="id",
+        regular_fields = dict(
+            geojson_id="geojson_file_id",
             road_id="road_id",
-            date_created="date_created",
-            last_modified="last_modified",
+            road_code="road_code",
             structure_code="structure_code",
             structure_name="structure_name",
             asset_class="structure_class",
             administrative_area="administrative_area",
-            road_code="road_code",
-            construction_year="construction_year",
-            length="length",
-            width="width",
-            chainage="chainage",
             structure_type="structure_type",
-            height="height",
-            number_cells="number_cells",
             material="material",
             protection_upstream="protection_upstream",
             protection_downstream="protection_downstream",
         )
 
-        for culvert in self.values(*fields.values()):
+        datetime_fields = dict(
+            date_created="date_created", last_modified="last_modified",
+        )
+
+        numeric_fields = dict(
+            length="length",
+            width="width",
+            chainage="chainage",
+            construction_year="construction_year",
+            height="height",
+            number_cells="number_cells",
+        )
+
+        culverts = (
+            self.order_by("id")
+            .annotate(to_wgs=models.functions.Transform("geom", 4326))
+            .values(
+                "id",
+                *regular_fields.values(),
+                *datetime_fields.values(),
+                *numeric_fields.values(),
+                "to_wgs"
+            )
+        )
+
+        for culvert in culverts:
             culvert_protobuf = structures_protobuf.culverts.add()
-            for protobuf_key, query_key in fields.items():
-                if query_key == "id":
-                    setattr(
-                        culvert_protobuf,
-                        protobuf_key,
-                        "CULV-" + str(culvert[query_key]),
-                    )
-                elif culvert[query_key] and query_key not in [
-                    "date_created",
-                    "last_modified",
-                ]:
+            culvert_protobuf.id = "CULV-" + str(culvert["id"])
+
+            for protobuf_key, query_key in regular_fields.items():
+                if culvert[query_key]:
                     setattr(culvert_protobuf, protobuf_key, culvert[query_key])
+
+            for protobuf_key, query_key in numeric_fields.items():
+                raw_value = culvert.get(query_key)
+                if raw_value is not None:
+                    setattr(culvert_protobuf, protobuf_key, raw_value)
 
             if culvert["date_created"]:
                 ts = timestamp_from_datetime(culvert["date_created"])
@@ -878,6 +913,10 @@ class CulvertQuerySet(models.QuerySet):
             if culvert["last_modified"]:
                 ts = timestamp_from_datetime(culvert["last_modified"])
                 culvert_protobuf.last_modified.CopyFrom(ts)
+
+            if culvert["to_wgs"]:
+                pt = Point(x=culvert["to_wgs"].x, y=culvert["to_wgs"].y)
+                culvert_protobuf.geom_point.CopyFrom(pt)
 
         return structures_protobuf
 

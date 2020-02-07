@@ -21,13 +21,13 @@ getStructuresMetadata()
         });
 
         // Let everyone know
-        const eventName = "estrada.structureManager.structureMetaDataAdded";
-        const eventDetail = { detail: { structures } };
+        const eventName = "estrada.structure.assetMetaDataAdded";
+        const eventDetail = { detail: { assets: structures } };
         dispatch(eventName, eventDetail);
     });
 
 // when a filter is applied filter the structures
-document.addEventListener("estrada.structureTable.filter.apply", (data) => {
+document.addEventListener("estrada.structure.filter.apply", (data) => {
     const filterState = data.detail.filterState;
     filterStructures(filterState);
 });
@@ -47,8 +47,8 @@ export function getRoadStructures(roadId, structureType) {
 export function createStructure(structure, structureType) {
     return Promise.resolve(postStructureData(structure, structureType))
         .then((structure) => {
-            structures[structure.getId()] = structure;
-            dispatch("estrada.structureTable.structureMetaDataCreated", { detail: { structure } });
+            structures[structure.id] = structure;
+            dispatch("estrada.structure.assetMetaDataCreated", { detail: { assets: structures } });
             return structure;
         });
 }
@@ -56,8 +56,8 @@ export function createStructure(structure, structureType) {
 export function updateStructure(structure, structureType) {
     return Promise.resolve(putStructureData(structure, structureType))
         .then((structure) => {
-            structures[structure.getId()] = structure;
-            dispatch("estrada.structureTable.structureMetaDataUpdated", { detail: { structure } });
+            structures[structure.id] = structure;
+            dispatch("estrada.structure.assetMetaDataUpdated", { detail: { asset: structure } });
             return structure;
         });
 }
@@ -88,10 +88,11 @@ function filterStructures(filterState) {
     });
 
     // communicate the filter
-    let idMap = filteredStructures.reduce((idMap, structure) => {
-        idMap[structure.getId().toString()] = true;
+    const assetType = "STRC";
+    const idMap = filteredStructures.reduce((idMap, structure) => {
+        idMap[structure.id] = true;
         return idMap;
     }, {});
 
-    dispatch("estrada.structureTable.filter.applied", { detail: { idMap } });
+    dispatch("estrada.structure.filter.applied", { detail: { assetType, idMap } });
 }

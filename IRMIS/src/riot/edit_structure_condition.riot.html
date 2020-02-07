@@ -139,6 +139,7 @@
 
                 this.deleteListener = (data) => {
                     const rowId = data.detail.rowId;
+                    // Won't work just yet - waiting for the showStopAlertModal function to be defined in this riot tag
                     this.showStopAlertModal("delete-alert", rowId);
                 };
 
@@ -182,7 +183,7 @@
                     [4, window.gettext("Bad")]
                 ]
             },
-            table_id: "structure-condition-table",
+            table_id: "asset-condition-table",
             table_columns_order: [[0, 'asc']],
             table_columns: [
                 {

@@ -10,8 +10,8 @@ import { assetTypeName } from "./side_menu";
  */
 export const estradaRoadTableEventListeners = {
     /** when the roadManager has new roads, add them to the table */
-    "estrada.roadManager.roadMetaDataAdded": (data, table, pendingRoads) => {
-        const roadList = data.detail.roadList;
+    "estrada.road.assetMetaDataAdded": (data, table, pendingRoads) => {
+        const roadList = data.detail.assets;
 
         // add the roads to a pending array ( in case the table is not initialised early enough )
         // Note we can't use array.concat here because concat returns a new array
@@ -23,50 +23,17 @@ export const estradaRoadTableEventListeners = {
             pendingRoads.length = 0;
         }
     },
-    "estrada.roadTable.roadMetaDataUpdated": (data, table) => {
-        const road = data.detail.road;
-        table.row(`#${road.id}`).data(road).draw();
-    },
-    /** when a filter is applied, update the filter id whitelist */
-    "estrada.roadTable.filter.applied": (data, table, pendingRows, idWhitelistMap) => {
-        Object.keys(idWhitelistMap).forEach((key) => { idWhitelistMap[key] = undefined; });
-
-        const idMap = data.detail.idMap;
-        Object.keys(idMap).forEach((key) => { idWhitelistMap[key] = idMap[key]; });
-
-        table.draw();
-    },
-    /** when the view changes adjust the table rows */
-    "estrada.roadTable.sideMenu.viewChanged": (data, table) => {
-        const viewName = data.detail ? data.detail.viewName : null;
-        if (viewName && viewName.indexOf('table') !== -1) {
-            const tableRows = (viewName === 'table') ? 20 : 10;
-            table.page.len(tableRows).draw('page');
-        }
-    },
-    /** select a row in the table by id */
-    "estrada.roadTable.table.rowSelected": (data, table) => {
-        const rowId = data.detail ? data.detail.rowId : null;
-        if (rowId) {
-            const featureType = data.detail ? data.detail.featureType : "";
-            const assetType = "roads";
-
-            table.rows().every(function (rowIdx, tableLoop, rowLoop) {
-                if (assetType !== assetTypeName || this.id() !== rowId) {
-                    this.node().classList.remove("selected");
-                } else {
-                    this.node().classList.add("selected");
-                    table.row(this.index()).show().draw(false);
-                }
-            });
-        }
-    }
+    "estrada.road.assetMetaDataUpdated": (data, table) => eventTableAssetMetaDataUpdated(data, table),
+    "estrada.road.filter.applied": (data, table, pendingRows, idWhitelistMap) => eventFilterApplied(data, table, pendingRows, idWhitelistMap),
+    "estrada.road.sideMenu.viewChanged": (data, table) => eventSideMenuViewChanged(data, table),
+    "estrada.roadTable.rowSelected": (data, table) => eventTableRowSelected(data, table),
 };
+
 export const estradaStructureTableEventListeners = {
     /** when the structureManager has new structures, add them to the table */
-    "estrada.structureManager.structureMetaDataAdded": (data, table, pendingStructures) => {
+    "estrada.structure.assetMetaDataAdded": (data, table, pendingStructures) => {
         // structures is a keyed object
-        const structures = data.detail.structures;
+        const structures = data.detail.assets;
 
         // add the structures to a pending array ( in case the table is not initialised early enough )
         // Note we can't use array.concat here because concat returns a new array
@@ -78,45 +45,60 @@ export const estradaStructureTableEventListeners = {
             pendingStructures.length = 0;
         }
     },
-    "estrada.structureTable.roadMetaDataUpdated": (data, table) => {
-        const road = data.detail.road;
-        table.row(`#${road.id}`).data(road).draw();
-    },
-    /** when a filter is applied, update the filter id whitelist */
-    "estrada.structureTable.filter.applied": (data, table, pendingRows, idWhitelistMap) => {
-        Object.keys(idWhitelistMap).forEach((key) => { idWhitelistMap[key] = undefined; });
-
-        const idMap = data.detail.idMap;
-        Object.keys(idMap).forEach((key) => { idWhitelistMap[key] = idMap[key]; });
-
-        table.draw();
-    },
-    /** when the view changes adjust the table rows */
-    "estrada.structureTable.sideMenu.viewChanged": (data, table) => {
-        const viewName = data.detail ? data.detail.viewName : null;
-        if (viewName && viewName.indexOf('table') !== -1) {
-            const tableRows = (viewName === 'table') ? 20 : 10;
-            table.page.len(tableRows).draw('page');
-        }
-    },
-    /** select a row in the table by id */
-    "estrada.structureTable.table.rowSelected": (data, table) => {
-        const rowId = data.detail ? data.detail.rowId : null;
-        if (rowId) {
-            const featureType = data.detail ? data.detail.featureType : "";
-            const assetType = "structures";
-
-            table.rows().every(function (rowIdx, tableLoop, rowLoop) {
-                if (assetType !== assetTypeName || this.id() !== rowId) {
-                    this.node().classList.remove("selected");
-                } else {
-                    this.node().classList.add("selected");
-                    table.row(this.index()).show().draw(false);
-                }
-            });
-        }
-    }
+    "estrada.structure.assetMetaDataUpdated": (data, table) => eventTableAssetMetaDataUpdated(data, table),
+    "estrada.structure.filter.applied": (data, table, pendingRows, idWhitelistMap) => eventFilterApplied(data, table, pendingRows, idWhitelistMap),
+    "estrada.structure.sideMenu.viewChanged": (data, table) => eventSideMenuViewChanged(data, table),
+    "estrada.structureTable.rowSelected": (data, table) => eventTableRowSelected(data, table),
 };
+
+// Common event handling functionality
+/* These are the general events that the main tables will respond to
+ *
+ * Note that the passed in values `pendingRoads` / `pendingStructures` and `idWhiteListMap`
+ * are carefully updated (as opposed to simply reassigned).
+ * This ensures that their 'update' is visible to the 'outside'.
+ */
+
+function eventTableAssetMetaDataUpdated(data, table) {
+    const asset = data.detail.asset;
+    table.row(`#${asset.id}`).data(asset).draw();
+}
+
+/** When a filter is applied, update the filter id whitelist */
+function eventFilterApplied(data, table, pendingRows, idWhitelistMap) {
+    Object.keys(idWhitelistMap).forEach((key) => { idWhitelistMap[key] = undefined; });
+
+    const idMap = data.detail.idMap;
+    Object.keys(idMap).forEach((key) => { idWhitelistMap[key] = idMap[key]; });
+
+    table.draw();
+}
+
+/** When the view changes adjust the table rows */
+function eventSideMenuViewChanged(data, table) {
+    const viewName = data.detail ? data.detail.viewName : null;
+    if (viewName && viewName.indexOf('table') !== -1) {
+        const tableRows = (viewName === 'table') ? 20 : 10;
+        table.page.len(tableRows).draw('page');
+    }
+}
+
+/** Select a row in the table by id */
+function eventTableRowSelected(data, table) {
+    const rowId = data.detail ? data.detail.rowId : null;
+    if (rowId) {
+        const assetType = data.detail.assetType;
+
+        table.rows().every(function (rowIdx, tableLoop, rowLoop) {
+            if (assetType !== assetTypeName || this.id() !== rowId) {
+                this.node().classList.remove("selected");
+            } else {
+                this.node().classList.add("selected");
+                table.row(this.index()).show().draw(false);
+            }
+        });
+    }
+}
 
 /** Defines the columns for the table on the Estrada main page */
 export const estradaTableColumns = [
@@ -330,206 +312,212 @@ export const estradaTableColumns = [
 export const structuresTableColumns = [
     {
         title: window.gettext("Structure"),
-        render: s => detectStructure(s),
+        render: s => getStructureTypeName(detectStructure(s)),
         data: null,
         className: "text-center",
     },
     {
-        title: getStructureFieldName("structure_code"),
+        title: window.gettext("Structure Code"),
         data: "structureCode",
         className: "text-center",
         defaultContent: "",
     },
     {
-        title: getStructureFieldName("structure_name"),
+        title: window.gettext("Structure Name"),
         data: "structureName",
+        className: "text-center",
+        defaultContent: window.gettext("unknown"),
+    },
+    {
+        title: window.gettext("River Name"),
+        data: "riverName",
+        className: "text-center",
+        defaultContent: "N/A",
+        visible: false,
+    },
+    {
+        title: window.gettext("Road Code"),
+        data: "roadCode",
         className: "text-center",
         defaultContent: "",
     },
     {
-        title: getStructureFieldName("river_name"),
-        data: "riverName",
+        title: window.gettext("Road_name"),
+        data: "roadName",
         className: "text-center",
         defaultContent: "",
         visible: false,
     },
     {
-        title: getStructureFieldName("road_code"),
-        data: "roadCode",
-        className: "text-center",
-        defaultContent: "",
-    },
-    // {
-    //     title: getStructureFieldName("road_name"),
-    //     data: "roadName",
-    //     className: "text-center",
-    //     defaultContent: "",
-    //     visible: false,
-    // },
-    {
-        title: getStructureFieldName("asset_class"),
+        title: window.gettext("Asset Class"),
         data: "assetClass",
         className: "text-center",
         defaultContent: "",
         visible: false,
     },
-    {
-        title: "GPS Longitude",
+        {
+        title: window.gettext("GPS Latitude"),
+        data: "dms",
+        render: (dms) => { return dms.split(" ")[0] || ""; },
         className: "text-right",
-        defaultContent: "43.599307°N",
+        defaultContent: "-",
         visible: false,
     },
     {
-        title: "GPS Latitude",
+        title: window.gettext("GPS Longitude"),
+        data: "dms",
+        render: (dms) => { return dms.split(" ")[1] || ""; },
         className: "text-right",
-        defaultContent: "1.438724°E",
+        defaultContent: "-",
         visible: false,
     },
     {
-        title: getStructureFieldName("chainage"),
+        title: window.gettext("Chainage"),
         data: "chainage",
         className: "text-right",
-        defaultContent: "",
+        defaultContent: "-",
     },
     {
-        title: getStructureFieldName("administrative_area"),
+        title: window.gettext("Municipality"),
         data: "administrativeArea",
         className: "text-center",
         defaultContent: "",
         visible: false,
     },
-    // {
-    //     title: "Type",
-    //     defaultContent: "New bridge",
-    // },
     {
-        title: getStructureFieldName("material"),
+        title: window.gettext("Material"),
         data: "material",
         className: "text-center",
-        defaultContent: "",
+        defaultContent: "-",
     },
     {
-        title: getStructureFieldName("structure_type"),
+        title: window.gettext("Structure Type"),
         data: "structureType",
         className: "text-center",
-        defaultContent: "N/A",
+        defaultContent: "-",
     },
     {
-        title: getStructureFieldName("length"),
+        title: window.gettext("Length"),
         data: "length",
+        render: (n) => { (n > 0) ? n : ""; },
         className: "text-right",
         defaultContent: "",
     },
     {
-        title: getStructureFieldName("width"),
+        title: window.gettext("Width"),
         data: "width",
+        render: (n) => { (n > 0) ? n : ""; },
         className: "text-right",
         defaultContent: "",
 
     },
     {
-        title: getStructureFieldName("height"),
+        title: window.gettext("Height"),
         data: "height",
         className: "text-right",
-        defaultContent: "",
+        defaultContent: "N/A",
         visible: false,
     },
     {
-        title: getStructureFieldName("number_spans"),
+        title: window.gettext("Number Spans"),
         data: "numberSpans",
         className: "text-right",
         defaultContent: "N/A",
         visible: false,
     },
     {
-        title: getStructureFieldName("number_cells"),
+        title: window.gettext("Number Cells"),
         data: "numberCells",
         className: "text-right",
         defaultContent: "N/A",
         visible: false,
     },
     {
-        title: getStructureFieldName("protection_upstream"),
+        title: window.gettext("Protection Upstream"),
         data: "protectionUpstream",
         className: "text-center",
         defaultContent: "",
         visible: false,
     },
     {
-        title: getStructureFieldName("protection_downstream"),
+        title: window.gettext("Protection Downstream"),
         data: "protectionDownstream",
         className: "text-center",
         defaultContent: "",
         visible: false,
     },
     {
-        title: getStructureFieldName("construction_year"),
+        title: window.gettext("Construction Year"),
         data: "constructionYear",
+        render: (n) => { (n > 0) ? n : ""; },
         className: "text-right",
         defaultContent: "",
         visible: false,
     },
     {
         title: "Structure Condition",
-        defaultContent: "",
-        className: "text-center",
-        render: r => buttonSegmentsTemplate("structure_condition", r),
         data: null,
+        render: r => buttonSegmentsTemplate("structure_condition", r),
+        className: "text-center",
+        defaultContent: "",
         visible: false,
     },
     {
         title: "Condition Description",
-        defaultContent: "",
-        className: "text-center",
-        render: r => buttonSegmentsTemplate("condition_description", r),
         data: null,
+        render: r => buttonSegmentsTemplate("structure_condition_description", r),
+        className: "text-center",
+        defaultContent: "",
         visible: false,
     },
     {
         title: "Inventory Photos",
-        defaultContent: "",
+        data: null,
+        render: r => buttonSegmentsTemplate("inventory_photos", r),
         className: "text-center",
-        render: r => buttonSegmentsTemplate("structure_photos", r),
-        data: null
+        defaultContent: "",
     },
 ];
 
 function detectStructure(structure) {
     switch (structure.constructor.name) {
         case "EstradaBridge":
-            return "Bridge";
+            return "BRDG";
         case "EstradaCulvert":
-            return "Culvert";
+            return "CULV";
         default:
             return null;
     }
 }
 
-function getStructureFieldName(field) {
-    try {
-        return EstradaBridge.getFieldName(field);
-    } catch (err) {
-        return EstradaCulvert.getFieldName(field);
-    }
+function getStructureTypeName(structureType) {
+    const structureTypeToName = {
+        "ROAD": "Road",
+        "BRDG": "Bridge",
+        "CULV": "Culvert",
+        "STRC": "Structure",
+    };
+
+    return window.gettext(structureTypeToName[structureType] || structureType);
 }
 
 // function getStructureFieldData(field, structure) { return null; }
 function buttonSegmentsTemplate(attrib, asset) {
     const assetStructureType = detectStructure(asset);
     const assetType = !assetStructureType
-        ? assetTypeName === "roads" ? "roads" : "structures"
-        : assetStructureType === "Bridge" ? "bridges" : "culverts";
+        ? assetTypeName === "ROAD" ? "ROAD" : "STRC"
+        : ["BRDG"].includes(assetStructureType) ? "BRDG" : "CULV";
 
-    const code = (assetType === "roads") ? asset.getLinkCode() : asset.getStructureCode();
+    const code = (assetType === "ROAD") ? asset.getLinkCode() : asset.getStructureCode();
     let getFieldName = (attrib) => (attrib);
     switch (assetType) {
-        case "roads":
+        case "ROAD":
             getFieldName = EstradaRoad.getFieldName;
             break;
-        case "bridges":
+        case "BRDG":
             getFieldName = EstradaBridge.getFieldName;
             break;
-        case "culverts":
+        case "CULV":
             getFieldName = EstradaCulvert.getFieldName;
             break;
         default:
@@ -539,6 +527,6 @@ function buttonSegmentsTemplate(attrib, asset) {
     return `<a data-toggle="modal"
         data-target="#inventory-segments-modal"
         data-code="${code}"
-        data-id="${asset.getId()}"
+        data-id="${asset.id}"
         data-attr="${attrib}">${window.gettext("View")} ${getFieldName(attrib)}</a>`;
 }

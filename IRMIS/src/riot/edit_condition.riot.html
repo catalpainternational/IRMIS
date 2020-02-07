@@ -343,7 +343,7 @@
                         if (this.state.currentRowData) {
                             this.state.survey = this.state.currentRowData;
                             this.state.survey.setId(rowId);
-                            this.state.survey.setRoadId(this.state.road.getId());
+                            this.state.survey.setRoadId(this.state.road.id);
                             this.state.survey.setValues(JSON.stringify({}));
                             this.saveSurvey();
                         }
@@ -395,8 +395,8 @@
                         this.state.survey.setDateSurveyed(dateSurveyed);
 
                         // set Survey road from state Road road_code
-                        this.state.survey.setRoadId(this.state.road.getId());
-                        this.state.survey.setRoadCode(this.state.road.getRoadCode());
+                        this.state.survey.setRoadId(this.state.road.id);
+                        this.state.survey.setRoadCode(this.state.road.code);
 
                         this.saveSurvey();
                     }

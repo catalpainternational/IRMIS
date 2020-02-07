@@ -61,21 +61,42 @@ export class EstradaStructures extends Structures {
 }
 
 export class EstradaBridge extends Bridge {
-
     get id() {
         return this.getId();
     }
 
+    /** The asset's type - the prefix part of its Id */
+    get assetType() {
+        return "BRDG";
+    }
+
+    get assetTypeName() {
+        return window.gettext("Bridge");
+    }
+
+    /** Return just the asset's Id without the assetType prefix */
+    get assetId() {
+        return this.id.startsWith(this.assetType)
+            ? this.id.split("-")[1]
+            : this.id
+    }
+
+    // generic version of the getStructureCode() function for Map use
+    get code() {
+        return this.getStructureCode();
+    }
+
+    // generic version of the getStructureName() function for Map use
     get name() {
         return this.getStructureName();
     }
 
-    get code() {
-        return this.structureCode;
-    }
-
     get structureCode() {
         return this.getStructureCode();
+    }
+
+    get structureName() {
+        return this.getStructureName();
     }
 
     get roadCode() {
@@ -86,8 +107,12 @@ export class EstradaBridge extends Bridge {
         return this.getUser() || "";
     }
 
+    get geomPoint() {
+        return this.getGeomPoint();
+    }
+
     get dms() {
-        return toDms(projToWGS84.forward(this.getProjectionStart().array));
+        return toDms(projToWGS84.forward(this.getGeomPoint().array));
     }
 
     get chainage() {
@@ -95,7 +120,8 @@ export class EstradaBridge extends Bridge {
     }
 
     get administrativeArea() {
-        return choice_or_default(parseInt(this.getAdministrativeArea()), ADMINISTRATIVE_AREA_CHOICES);
+        // return choice_or_default(parseInt(this.getAdministrativeArea()), ADMINISTRATIVE_AREA_CHOICES);
+        return this.getAdministrativeArea();
     }
 
     get constructionYear() {
@@ -146,7 +172,6 @@ export class EstradaBridge extends Bridge {
         return choice_or_default(this.getProtectionDownstream(), STRUCTURE_DOWNSTREAM_PROTECTION_TYPE_CHOICES);
     }
 
-
     /** A Null or None in the protobuf is indicated by a negative value */
     getChainage() {
         const chainage = super.getChainage();
@@ -163,21 +188,42 @@ export class EstradaBridge extends Bridge {
 }
 
 export class EstradaCulvert extends Culvert {
-
     get id() {
         return this.getId();
     }
 
+    /** The asset's type - the prefix part of its Id */
+    get assetType() {
+        return "CULV";
+    }
+
+    get assetTypeName() {
+        return window.gettext("Culvert");
+    }
+
+    /** Return just the asset's Id without the assetType prefix */
+    get assetId() {
+        return this.id.startsWith(this.assetType)
+            ? this.id.split("-")[1]
+            : this.id
+    }
+
+    // generic version of the getStructureCode() function for Map use
+    get code() {
+        return this.getStructureCode();
+    }
+
+    // generic version of the getStructureName() function for Map use
     get name() {
         return this.getStructureName();
     }
 
-    get code() {
-        return this.structureCode;
-    }
-
     get structureCode() {
         return this.getStructureCode();
+    }
+
+    get structureName() {
+        return this.getStructureName();
     }
 
     get roadCode() {
@@ -189,7 +235,7 @@ export class EstradaCulvert extends Culvert {
     }
 
     get dms() {
-        return toDms(projToWGS84.forward(this.getProjectionStart().array));
+        return toDms(projToWGS84.forward(this.getPointStart().array));
     }
 
     get chainage() {
@@ -197,7 +243,8 @@ export class EstradaCulvert extends Culvert {
     }
 
     get administrativeArea() {
-        return choice_or_default(parseInt(this.getAdministrativeArea()), ADMINISTRATIVE_AREA_CHOICES);
+        // return choice_or_default(parseInt(this.getAdministrativeArea()), ADMINISTRATIVE_AREA_CHOICES);
+        return this.getAdministrativeArea();
     }
 
     get constructionYear() {

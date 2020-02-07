@@ -223,15 +223,15 @@
                                         </div>
                                         <div class="align-items-center d-flex text-nowrap" data-column="6">
                                             <span class="checkbox image"></span>
-                                            {% trans "Class" %}
+                                            {% trans "Asset Class" %}
                                         </div>
                                         <div class="align-items-center d-flex text-nowrap" data-column="7">
                                             <span class="checkbox image"></span>
-                                            {% trans "GPS Longitude" %}
+                                            {% trans "GPS Latitude" %}
                                         </div>
                                         <div class="align-items-center d-flex text-nowrap" data-column="8">
                                             <span class="checkbox image"></span>
-                                            {% trans "GPS Latitude" %}
+                                            {% trans "GPS Longitude" %}
                                         </div>
                                         <div class="align-items-center d-flex text-nowrap" data-column="9"
                                             data-default="true">
@@ -247,49 +247,44 @@
                                         <div class="align-items-center d-flex text-nowrap" data-column="11"
                                             data-default="true">
                                             <span class="checkbox image selected"></span>
-                                            {% trans "Type" %}
+                                            {% trans "Material" %}
                                         </div>
                                         <div class="align-items-center d-flex text-nowrap" data-column="12"
                                             data-default="true">
                                             <span class="checkbox image selected"></span>
-                                            {% trans "Deck Material" %}
+                                            {% trans "Type" %}
                                         </div>
                                         <div class="align-items-center d-flex text-nowrap" data-column="13"
                                             data-default="true">
                                             <span class="checkbox image selected"></span>
-                                            {% trans "Material" %}
+                                            {% trans "Length" %}
                                         </div>
                                         <div class="align-items-center d-flex text-nowrap" data-column="14"
                                             data-default="true">
                                             <span class="checkbox image selected"></span>
-                                            {% trans "Length" %}
-                                        </div>
-                                        <div class="align-items-center d-flex text-nowrap" data-column="15"
-                                            data-default="true">
-                                            <span class="checkbox image selected"></span>
                                             {% trans "Width" %}
                                         </div>
-                                        <div class="align-items-center d-flex text-nowrap" data-column="16">
+                                        <div class="align-items-center d-flex text-nowrap" data-column="15">
                                             <span class="checkbox image"></span>
                                             {% trans "Height" %}
                                         </div>
-                                        <div class="align-items-center d-flex text-nowrap" data-column="17">
+                                        <div class="align-items-center d-flex text-nowrap" data-column="16">
                                             <span class="checkbox image"></span>
                                             {% trans "Number of Spans" %}
                                         </div>
-                                        <div class="align-items-center d-flex text-nowrap" data-column="18">
+                                        <div class="align-items-center d-flex text-nowrap" data-column="17">
                                             <span class="checkbox image"></span>
                                             {% trans "Number of Cells" %}
                                         </div>
-                                        <div class="align-items-center d-flex text-nowrap" data-column="19">
+                                        <div class="align-items-center d-flex text-nowrap" data-column="18">
                                             <span class="checkbox image"></span>
                                             {% trans "Protection Upstream" %}
                                         </div>
-                                        <div class="align-items-center d-flex text-nowrap" data-column="20">
+                                        <div class="align-items-center d-flex text-nowrap" data-column="19">
                                             <span class="checkbox image"></span>
                                             {% trans "Protection Downstream" %}
                                         </div>
-                                        <div class="align-items-center d-flex text-nowrap" data-column="21">
+                                        <div class="align-items-center d-flex text-nowrap" data-column="20">
                                             <span class="checkbox image"></span>
                                             {% trans "Construction Year" %}
                                         </div>
@@ -299,15 +294,15 @@
                             <div class="d-flex flex-column structure-condition-data">
                                 <h6>{% trans "Structure Condition Data" %}</h6>
                                 <div class="flex-grow-1">
-                                    <div class="align-items-center d-flex text-nowrap" data-column="22">
+                                    <div class="align-items-center d-flex text-nowrap" data-column="21">
                                         <span class="checkbox image"></span>
                                         {% trans "Structure Condition" %}
                                     </div>
-                                    <div class="align-items-center d-flex text-nowrap" data-column="23">
+                                    <div class="align-items-center d-flex text-nowrap" data-column="22">
                                         <span class="checkbox image"></span>
                                         {% trans "Condition Description" %}
                                     </div>
-                                    <div class="align-items-center d-flex text-nowrap" data-column="24"
+                                    <div class="align-items-center d-flex text-nowrap" data-column="23"
                                         data-default="true">
                                         <span class="checkbox image selected"></span>
                                         {% trans "Inventory Photos" %}
@@ -341,8 +336,10 @@
                     aria-hidden="true"></span>
             </div>
             <div class="modal-body">
+                {% comment %} Common table - for both surface_condition and structure_condition {% endcomment %}
                 <table id="inventory-asset-condition-table" class="d-block table table-bordered table-hover w-100">
                 </table>
+                {% comment %} ROAD COLUMN MODALS TABLES {% endcomment %}
                 <table id="inventory-surface-type-table" class="d-block table table-bordered table-hover w-100"></table>
                 <table id="inventory-technical-class-table" class="d-block table table-bordered table-hover w-100">
                 </table>
