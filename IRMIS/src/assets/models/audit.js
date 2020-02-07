@@ -1,6 +1,6 @@
 import { Version } from "../../../protobuf/version_pb";
 
-import { getFieldName, getHelpText } from "../protoBufUtilities";
+import { getFieldName, getHelpText, makeEstradaObject } from "../protoBufUtilities";
 
 const auditSchema = {
     id: { display: "Id" },
@@ -37,4 +37,8 @@ export class EstradaAudit extends Version {
     static getHelpText(field) {
         return getHelpText(auditSchema, field);
     }
+}
+
+export function makeEstradaAudit(pbversion) {
+    return makeEstradaObject(EstradaAudit, pbversion);
 }

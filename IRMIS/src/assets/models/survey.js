@@ -4,7 +4,7 @@ import { Survey } from "../../../protobuf/survey_pb";
 import { PAVEMENT_CLASS_CHOICES, SURFACE_TYPE_CHOICES, TECHNICAL_CLASS_CHOICES, TERRAIN_CLASS_CHOICES, TRAFFIC_LEVEL_CHOICES } from "./road";
 import { ASSET_CONDITION_CHOICES } from "./asset";
 
-import { choice_or_default, getFieldName, getHelpText } from "../protoBufUtilities";
+import { choice_or_default, getFieldName, getHelpText, makeEstradaObject } from "../protoBufUtilities";
 
 // We may need a survey schema - primarily for formatted field names
 // JSON.parse(document.getElementById('survey_schema').textContent);
@@ -122,4 +122,8 @@ export class EstradaSurvey extends Survey {
     getHelpText(field) {
         return getHelpText(surveySchema, field);
     }
+}
+
+export function makeEstradaSurvey(pbsurvey) {
+    return makeEstradaObject(EstradaSurvey, pbsurvey);
 }

@@ -66,6 +66,8 @@ export function humanizeChoices(
 
 /** Deep copy the supplied data to a new object
  *  Prefers to use protobuf .cloneMessage
+ *
+ *  Use copyEstradaObject derivative for any protobuf wrapper object in preference
  */
 export function cloneData(data: { [name: string]: any }): { [name: string]: any } {
     if (data.cloneMessage) {

@@ -38,12 +38,12 @@ export class EstradaStructures extends Structures {
 
     get bridges() {
         const bridgesListRaw = this.getBridgesList() || [];
-        return bridgesListRaw.map(this.makeEstradaBridge);
+        return bridgesListRaw.map(makeEstradaBridge);
     }
 
     get culverts() {
         const culvertsListRaw = this.getCulvertsList() || [];
-        return culvertsListRaw.map(this.makeEstradaCulvert);
+        return culvertsListRaw.map(makeEstradaCulvert);
     }
 
     public getObject() {
@@ -60,14 +60,6 @@ export class EstradaStructures extends Structures {
         });
 
         return structures;
-    }
-
-    public makeEstradaBridge(pbattribute: { [name: string]: any }): { [name: string]: any } {
-        return makeEstradaObject(EstradaBridge, pbattribute);
-    }
-
-    public makeEstradaCulvert(pbattribute: { [name: string]: any }): { [name: string]: any } {
-        return makeEstradaObject(EstradaCulvert, pbattribute);
     }
 }
 
@@ -331,4 +323,12 @@ export class EstradaCulvert extends Culvert {
         const chainage = super.getChainage();
         return (chainage >= 0 || this.isSerialising) ? chainage : null;
     }
+}
+
+export function makeEstradaBridge(pbattribute: { [name: string]: any }): EstradaBridge {
+    return makeEstradaObject(EstradaBridge, pbattribute) as EstradaBridge;
+}
+
+export function makeEstradaCulvert(pbattribute: { [name: string]: any }): EstradaCulvert {
+    return makeEstradaObject(EstradaCulvert, pbattribute) as EstradaCulvert;
 }

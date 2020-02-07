@@ -124,9 +124,11 @@
         import Stacked_Bar from "./stacked_bar.riot.html";
 
         import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
-        import {cloneData, toChainageFormat} from "../assets/protoBufUtilities";
+        import {toChainageFormat} from "../assets/protoBufUtilities";
         import {withinMaxDigits} from "../assets/utilities";
-        import {Survey} from "../../protobuf/survey_pb";
+
+        import { makeEstradaRoad } from "../assets/models/road";
+        import { EstradaSurvey, makeEstradaSurvey } from "../assets/models/survey";
 
         import $ from "jquery";
 
@@ -137,7 +139,7 @@
         export default {
             state: {
                 chainageDigits: 9,
-                baseSurvey: new Survey({}),
+                baseSurvey: new EstradaSurvey({}),
                 survey: {},
                 canSave: false,
                 errors: {},
@@ -147,7 +149,7 @@
                 reportRows: [],
                 viewAll: false,
                 editMode: false,
-                currentRowData: new Survey({}),
+                currentRowData: new EstradaSurvey({}),
             },
             components: {
                 Edit_Stop_Alert, Edit_Modal, Stacked_Bar
@@ -156,7 +158,7 @@
             // Condition Survey
             onMounted(props, state) {
                 state.loading = true;
-                state.road = cloneData(props.road);
+                state.road = makeEstradaRoad(props.road);
 
                 this.props.parent.updateReportAttributeSummary(state, "asset_condition", props.parent.emptyAttributes);
                 this.props.parent.refreshSurveysAndReports(state, this.all_data_table_id, "asset_condition", "assetConditions", this.current_data_table_id, this.stacked_bar_id);
@@ -195,7 +197,7 @@
                 // TODO:
                 // baseSurvey must be set to 'empty' for add.
                 // and the selected segment survey for edit.
-                this.state.survey = cloneData(this.state.baseSurvey);
+                this.state.survey = makeEstradaSurvey(this.state.baseSurvey);
                 this.state.errors = {};
 
                 this.showEditModal();
@@ -358,7 +360,7 @@
             discardChanges() {
                 $(`#${this.modal_id}`).modal("hide");
                 this.update({
-                    survey: cloneData(this.state.baseSurvey),
+                    survey: makeEstradaSurvey(this.state.baseSurvey),
                     errors: {},
                 });
             },
@@ -402,7 +404,7 @@
                     }
 
                     // Reset baseSurvey now that we're done.
-                    this.baseSurvey = new Survey({});
+                    this.baseSurvey = new EstradaSurvey({});
 
                     $(`#${this.modal_id}`).modal("hide");
                 }
@@ -426,7 +428,7 @@
                             this.stacked_bar_id
                         );
                         this.update({
-                            survey: new Survey({}), // clear input values
+                            survey: new EstradaSurvey({}), // clear input values
                         });
                         this.props.showFeedback();                           
                     })
@@ -438,7 +440,7 @@
                     });
 
                 // clear input values
-                this.state.survey = new Survey({});
+                this.state.survey = new EstradaSurvey({});
                 this.update();
             },
             canSave() {

@@ -6,6 +6,7 @@ import {
     getFieldName,
     getHelpText,
     humanizeChoices,
+    makeEstradaObject,
     projectionToCoordinates,
     toChainageFormat,
 } from "../protoBufUtilities";
@@ -276,4 +277,8 @@ export class EstradaRoad extends Road implements IAsset {
         }
         return value;
     }
+}
+
+export function makeEstradaRoad(pbattribute: { [name: string]: any }): EstradaRoad {
+    return makeEstradaObject(EstradaRoad, pbattribute) as EstradaRoad;
 }

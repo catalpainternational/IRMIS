@@ -1,7 +1,6 @@
 import { Survey, Surveys } from "../../protobuf/survey_pb";
-import { EstradaSurvey } from "./models/survey";
+import { makeEstradaSurvey } from "./models/survey";
 import { ConfigAPI } from "./configAPI";
-import { makeEstradaObject } from "./protoBufUtilities";
 
 /** getSurveysMetadata
  *
@@ -87,8 +86,4 @@ export function putSurveyData(survey) {
             const uintArray = new Uint8Array(protobufBytes);
             return makeEstradaSurvey(Survey.deserializeBinary(uintArray));
         });
-}
-
-function makeEstradaSurvey(pbsurvey) {
-    return makeEstradaObject(EstradaSurvey, pbsurvey);
 }

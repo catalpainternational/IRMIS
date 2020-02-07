@@ -105,14 +105,13 @@
         import * as riot from "riot";
         import $ from "jquery";
 
-        import {cloneData} from "../assets/protoBufUtilities";
         import {getRoadSurveys} from "../surveyManager";
         import {getRoadReport} from "../reportManager";
         import {updateReportAttributeSummary} from "../roadAttributes";
 
         // We really should NOT be importing road specific stuff here
         import {saveRoad} from "../roadManager";
-        import {EstradaRoad} from "../assets/models/road";
+        import {EstradaRoad, makeEstradaRoad} from "../assets/models/road";
 
         import Feedback_Banner from './feedback_banner.riot.html';
         import Edit_Stop_Alert from "./edit_stop_alert.riot.html";
@@ -176,7 +175,7 @@
                     updateReportAttributeSummary: updateReportAttributeSummary,
                 };
 
-                props.roadPromise.then(road => {
+                props.roadPromise.then((road) => {
                     $('#loading').modal('hide');
                     state.loading = false;
                     this.initRoad(road);
@@ -190,7 +189,7 @@
             },
             initRoad(road) {
                 this.state.baseRoad = road;
-                this.state.editingRoad = cloneData(this.state.baseRoad);
+                this.state.editingRoad = makeEstradaRoad(this.state.baseRoad);
             },
             continueMounting() {
                 // Set up other data on editingRoad that is commonly used on the child tags
@@ -259,7 +258,7 @@
                 $("#stop-alert").modal("show");
             },
             discardChanges() {
-                this.state.editingRoad = this.state.baseRoad.cloneMessage();
+                this.state.editingRoad = makeEstradaRoad(this.state.baseRoad);
                 window.location.hash = this.state.nextPage;
                 this.update();
             },
@@ -316,8 +315,9 @@
                 const filters = {
                     primaryattribute: primaryAttribute,
                     road_code: editingRoad.code,
-                    chainagestart: editingRoad.linkStartChainage,
-                    chainageend: editingRoad.linkEndChainage,
+                    // Use the raw chainage (not the formatted one)
+                    chainagestart: editingRoad.getLinkStartChainage(),
+                    chainageend: editingRoad.getLinkEndChainage(),
                 };
 
                 getRoadReport(filters)
