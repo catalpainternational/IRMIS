@@ -3,7 +3,12 @@ import "select2/dist/js/select2.full.min.js";
 
 import { dispatch } from "./assets/utilities";
 
-import { toggleFilter, clearFilter, clearAllFilters, filterDetail } from "./filter";
+import { toggleFilter, clearFilter, clearAllFilters, filterDetail, isFilterApplied } from "./filter";
+import { roads } from "./roadManager";
+import { structures } from "./structureManager";
+
+/** assetTypeName is the current selection of the Asset Type filter switch */
+export let assetTypeName = "ROAD"; // or "STRC" for structures, i.e. bridges and culverts
 
 let filterUIState = {};
 
@@ -26,7 +31,7 @@ $(document).ready(function(){
     $('#view a').click(change_view);
 
     // switch asset types
-    $('#assetType a').click(change_assetType);
+    $('#assetType a').click(toggleAssetType);
 
     // toggle filter open/close
     $('.filterToggle').click(toggleFilterOpen);
@@ -50,9 +55,9 @@ function collapse_side_menu() {
     sideMenu.hidden = true;
     collapsedSideMenu.classList.add("d-flex");
 
-    const eventName = (assetTypeName === "structures")
-        ? "estrada.roadTable.sideMenu.viewChanged"
-        : "estrada.structureTable.sideMenu.viewChanged";
+    const eventName = (assetTypeName === "STRC")
+        ? "estrada.road.sideMenu.viewChanged"
+        : "estrada.structure.sideMenu.viewChanged";
     dispatch(eventName, undefined);
 }
 
@@ -66,9 +71,9 @@ function expand_side_menu() {
     sideMenu.hidden = false;
     collapsedSideMenu.classList.remove("d-flex");
 
-    const eventName = (assetTypeName === "structures")
-        ? "estrada.roadTable.sideMenu.viewChanged"
-        : "estrada.structureTable.sideMenu.viewChanged";
+    const eventName = (assetTypeName === "STRC")
+        ? "estrada.road.sideMenu.viewChanged"
+        : "estrada.structure.sideMenu.viewChanged";
     dispatch(eventName, undefined);
 }
 
@@ -87,18 +92,17 @@ function change_view(e) {
     }
     e.currentTarget.classList.add("active");
 
-    const eventName = (assetTypeName === "structures")
-        ? "estrada.roadTable.sideMenu.viewChanged"
-        : "estrada.structureTable.sideMenu.viewChanged";
+    const eventName = (assetTypeName === "STRC")
+        ? "estrada.road.sideMenu.viewChanged"
+        : "estrada.structure.sideMenu.viewChanged";
     dispatch(eventName, { "detail": { viewName } });
 }
 
-/** assetTypeName is the current selection of the Asset Type filter switch */
-export let assetTypeName = "roads";
+function toggleAssetType(e) {
+    const fd = filterDetail(e);
+    assetTypeName = fd.element.attributes["data-option"].value;
 
-function change_assetType(e) {
-    assetTypeName = e.currentTarget.attributes['data-filtername'].value;
-    const siblings = document.getElementById("assetType").children;
+    const siblings = document.getElementById("assetType").getElementsByTagName("a");
     const filterSections = document.getElementsByClassName("filters-section");
 
     for (let index = 0; index < siblings.length; index++) {
@@ -123,7 +127,7 @@ function change_assetType(e) {
     const roadTable = document.getElementById("table-roads");
     const structureTable = document.getElementById("table-structures");
 
-    if (assetTypeName === "roads") {
+    if (assetTypeName === "ROAD") {
         roadTable.removeAttribute("hidden");
         structureTable.setAttribute("hidden", true);
     } else {
@@ -131,10 +135,21 @@ function change_assetType(e) {
         structureTable.removeAttribute("hidden");
     }
 
-    const eventName = (assetTypeName === "structures")
+    const eventName = (assetTypeName !== "STRC")
         ? "estrada.roadTable.sideMenu.assetTypeChanged"
         : "estrada.structureTable.sideMenu.assetTypeChanged";
     dispatch(eventName, { "detail": { assetTypeName } });
+
+    const idMap = {};
+    Object.keys(roads).forEach((roadId) => {
+        idMap[roadId] = (assetTypeName !== "STRC");
+    });
+    Object.keys(structures).forEach((structureId) => {
+        idMap[structureId] = (assetTypeName === "STRC");
+    });
+
+    // communicate this basic filter to the map
+    dispatch("estrada.map.idFilter.applied", { detail: { idMap } });
 }
 
 function toggleFilterSelect2(e) {

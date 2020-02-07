@@ -7,13 +7,13 @@ import { assetTypeName } from "./side_menu";
  * */
 let filterState = {};
 
-
 // we'll need to add more in here as we add more filters
 export const slugToPropertyGetter = {
     // Common
     administrative_area: "getAdministrativeArea",
     asset_class: "getAssetClass",
     asset_condition: "getAssetCondition",
+    asset_type: "getAssetType",
     // Common-ish
     road_code: "getRoadCode",
     structure_code: "getStructureCode",
@@ -64,9 +64,9 @@ export function clearAllFilters() {
 
 /** actually make the filter happen */
 export function applyFilter() {
-    const eventName = (assetTypeName !== "structures")
-        ? "estrada.roadTable.filter.apply"
-        : "estrada.structureTable.filter.apply";
+    const eventName = (assetTypeName !== "STRC")
+        ? "estrada.road.filter.apply"
+        : "estrada.structure.filter.apply";
     dispatch(eventName, { detail: { filterState } });
 }
 

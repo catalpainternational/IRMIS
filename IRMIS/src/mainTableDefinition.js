@@ -10,8 +10,8 @@ import { assetTypeName } from "./side_menu";
  */
 export const estradaRoadTableEventListeners = {
     /** when the roadManager has new roads, add them to the table */
-    "estrada.roadManager.roadMetaDataAdded": (data, table, pendingRoads) => {
-        const roadList = data.detail.roadList;
+    "estrada.road.assetMetaDataAdded": (data, table, pendingRoads) => {
+        const roadList = data.detail.assets;
 
         // add the roads to a pending array ( in case the table is not initialised early enough )
         // Note we can't use array.concat here because concat returns a new array
@@ -23,50 +23,17 @@ export const estradaRoadTableEventListeners = {
             pendingRoads.length = 0;
         }
     },
-    "estrada.roadTable.roadMetaDataUpdated": (data, table) => {
-        const road = data.detail.road;
-        table.row(`#${road.id}`).data(road).draw();
-    },
-    /** when a filter is applied, update the filter id whitelist */
-    "estrada.roadTable.filter.applied": (data, table, pendingRows, idWhitelistMap) => {
-        Object.keys(idWhitelistMap).forEach((key) => { idWhitelistMap[key] = undefined; });
-
-        const idMap = data.detail.idMap;
-        Object.keys(idMap).forEach((key) => { idWhitelistMap[key] = idMap[key]; });
-
-        table.draw();
-    },
-    /** when the view changes adjust the table rows */
-    "estrada.roadTable.sideMenu.viewChanged": (data, table) => {
-        const viewName = data.detail ? data.detail.viewName : null;
-        if (viewName && viewName.indexOf('table') !== -1) {
-            const tableRows = (viewName === 'table') ? 20 : 10;
-            table.page.len(tableRows).draw('page');
-        }
-    },
-    /** select a row in the table by id */
-    "estrada.roadTable.table.rowSelected": (data, table) => {
-        const rowId = data.detail ? data.detail.rowId : null;
-        if (rowId) {
-            const featureType = data.detail ? data.detail.featureType : "";
-            const assetType = "roads";
-
-            table.rows().every(function (rowIdx, tableLoop, rowLoop) {
-                if (assetType !== assetTypeName || this.id() !== rowId) {
-                    this.node().classList.remove("selected");
-                } else {
-                    this.node().classList.add("selected");
-                    table.row(this.index()).show().draw(false);
-                }
-            });
-        }
-    }
+    "estrada.road.assetMetaDataUpdated": (data, table) => eventTableAssetMetaDataUpdated(data, table),
+    "estrada.road.filter.applied": (data, table, pendingRows, idWhitelistMap) => eventFilterApplied(data, table, pendingRows, idWhitelistMap),
+    "estrada.road.sideMenu.viewChanged": (data, table) => eventSideMenuViewChanged(data, table),
+    "estrada.roadTable.rowSelected": (data, table) => eventTableRowSelected(data, table),
 };
+
 export const estradaStructureTableEventListeners = {
     /** when the structureManager has new structures, add them to the table */
-    "estrada.structureManager.structureMetaDataAdded": (data, table, pendingStructures) => {
+    "estrada.structure.assetMetaDataAdded": (data, table, pendingStructures) => {
         // structures is a keyed object
-        const structures = data.detail.structures;
+        const structures = data.detail.assets;
 
         // add the structures to a pending array ( in case the table is not initialised early enough )
         // Note we can't use array.concat here because concat returns a new array
@@ -78,45 +45,60 @@ export const estradaStructureTableEventListeners = {
             pendingStructures.length = 0;
         }
     },
-    "estrada.structureTable.roadMetaDataUpdated": (data, table) => {
-        const road = data.detail.road;
-        table.row(`#${road.id}`).data(road).draw();
-    },
-    /** when a filter is applied, update the filter id whitelist */
-    "estrada.structureTable.filter.applied": (data, table, pendingRows, idWhitelistMap) => {
-        Object.keys(idWhitelistMap).forEach((key) => { idWhitelistMap[key] = undefined; });
-
-        const idMap = data.detail.idMap;
-        Object.keys(idMap).forEach((key) => { idWhitelistMap[key] = idMap[key]; });
-
-        table.draw();
-    },
-    /** when the view changes adjust the table rows */
-    "estrada.structureTable.sideMenu.viewChanged": (data, table) => {
-        const viewName = data.detail ? data.detail.viewName : null;
-        if (viewName && viewName.indexOf('table') !== -1) {
-            const tableRows = (viewName === 'table') ? 20 : 10;
-            table.page.len(tableRows).draw('page');
-        }
-    },
-    /** select a row in the table by id */
-    "estrada.structureTable.table.rowSelected": (data, table) => {
-        const rowId = data.detail ? data.detail.rowId : null;
-        if (rowId) {
-            const featureType = data.detail ? data.detail.featureType : "";
-            const assetType = "structures";
-
-            table.rows().every(function (rowIdx, tableLoop, rowLoop) {
-                if (assetType !== assetTypeName || this.id() !== rowId) {
-                    this.node().classList.remove("selected");
-                } else {
-                    this.node().classList.add("selected");
-                    table.row(this.index()).show().draw(false);
-                }
-            });
-        }
-    }
+    "estrada.structure.assetMetaDataUpdated": (data, table) => eventTableAssetMetaDataUpdated(data, table),
+    "estrada.structure.filter.applied": (data, table, pendingRows, idWhitelistMap) => eventFilterApplied(data, table, pendingRows, idWhitelistMap),
+    "estrada.structure.sideMenu.viewChanged": (data, table) => eventSideMenuViewChanged(data, table),
+    "estrada.structureTable.rowSelected": (data, table) => eventTableRowSelected(data, table),
 };
+
+// Common event handling functionality
+/* These are the general events that the main tables will respond to
+ *
+ * Note that the passed in values `pendingRoads` / `pendingStructures` and `idWhiteListMap`
+ * are carefully updated (as opposed to simply reassigned).
+ * This ensures that their 'update' is visible to the 'outside'.
+ */
+
+function eventTableAssetMetaDataUpdated(data, table) {
+    const asset = data.detail.asset;
+    table.row(`#${asset.id}`).data(asset).draw();
+}
+
+/** When a filter is applied, update the filter id whitelist */
+function eventFilterApplied(data, table, pendingRows, idWhitelistMap) {
+    Object.keys(idWhitelistMap).forEach((key) => { idWhitelistMap[key] = undefined; });
+
+    const idMap = data.detail.idMap;
+    Object.keys(idMap).forEach((key) => { idWhitelistMap[key] = idMap[key]; });
+
+    table.draw();
+}
+
+/** When the view changes adjust the table rows */
+function eventSideMenuViewChanged(data, table) {
+    const viewName = data.detail ? data.detail.viewName : null;
+    if (viewName && viewName.indexOf('table') !== -1) {
+        const tableRows = (viewName === 'table') ? 20 : 10;
+        table.page.len(tableRows).draw('page');
+    }
+}
+
+/** Select a row in the table by id */
+function eventTableRowSelected(data, table) {
+    const rowId = data.detail ? data.detail.rowId : null;
+    if (rowId) {
+        const assetType = data.detail.assetType;
+
+        table.rows().every(function (rowIdx, tableLoop, rowLoop) {
+            if (assetType !== assetTypeName || this.id() !== rowId) {
+                this.node().classList.remove("selected");
+            } else {
+                this.node().classList.add("selected");
+                table.row(this.index()).show().draw(false);
+            }
+        });
+    }
+}
 
 /** Defines the columns for the table on the Estrada main page */
 export const estradaTableColumns = [
@@ -330,7 +312,7 @@ export const estradaTableColumns = [
 export const structuresTableColumns = [
     {
         title: window.gettext("Structure"),
-        render: s => detectStructure(s),
+        render: s => getStructureTypeName(detectStructure(s)),
         data: null,
         className: "text-center",
     },
@@ -398,10 +380,6 @@ export const structuresTableColumns = [
         defaultContent: "",
         visible: false,
     },
-    // {
-    //     title: "Type",
-    //     defaultContent: "New bridge",
-    // },
     {
         title: getStructureFieldName("material"),
         data: "material",
@@ -473,7 +451,7 @@ export const structuresTableColumns = [
         title: "Structure Condition",
         defaultContent: "",
         className: "text-center",
-        render: r => buttonSegmentsTemplate("structure_condition", r),
+        render: r => buttonSegmentsTemplate("asset_condition", r),
         data: null,
         visible: false,
     },
@@ -497,12 +475,23 @@ export const structuresTableColumns = [
 function detectStructure(structure) {
     switch (structure.constructor.name) {
         case "EstradaBridge":
-            return "Bridge";
+            return "BRDG";
         case "EstradaCulvert":
-            return "Culvert";
+            return "CULV";
         default:
             return null;
     }
+}
+
+function getStructureTypeName(structureType) {
+    const structureTypeToName = {
+        "ROAD": "Road",
+        "BRDG": "Bridge",
+        "CULV": "Culvert",
+        "STRC": "Structure",
+    };
+
+    return window.gettext(structureTypeToName[structureType] || structureType);
 }
 
 function getStructureFieldName(field) {
@@ -517,19 +506,19 @@ function getStructureFieldName(field) {
 function buttonSegmentsTemplate(attrib, asset) {
     const assetStructureType = detectStructure(asset);
     const assetType = !assetStructureType
-        ? assetTypeName === "roads" ? "roads" : "structures"
-        : assetStructureType === "Bridge" ? "bridges" : "culverts";
+        ? assetTypeName === "ROAD" ? "ROAD" : "STRC"
+        : ["BRDG"].includes(assetStructureType) ? "BRDG" : "CULV";
 
-    const code = (assetType === "roads") ? asset.linkCode : asset.structureCode;
+    const code = (assetType === "ROAD") ? asset.linkCode : asset.structureCode;
     let getFieldName = (attrib) => (attrib);
     switch (assetType) {
-        case "roads":
+        case "ROAD":
             getFieldName = EstradaRoad.getFieldName;
             break;
-        case "bridges":
+        case "BRDG":
             getFieldName = EstradaBridge.getFieldName;
             break;
-        case "culverts":
+        case "CULV":
             getFieldName = EstradaCulvert.getFieldName;
             break;
         default:
@@ -539,6 +528,6 @@ function buttonSegmentsTemplate(attrib, asset) {
     return `<a data-toggle="modal"
         data-target="#inventory-segments-modal"
         data-code="${code}"
-        data-id="${asset.getId()}"
+        data-id="${asset.id}"
         data-attr="${attrib}">${window.gettext("View")} ${getFieldName(attrib)}</a>`;
 }

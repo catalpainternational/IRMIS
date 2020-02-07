@@ -42,6 +42,22 @@ export class EstradaRoad extends Road implements IAsset {
         return this.getId().toString();
     }
 
+    /** The asset's type - the prefix part of its Id */
+    get assetType() {
+        return "ROAD";
+    }
+
+    get assetTypeName() {
+        return (window as any).gettext("Road");
+    }
+
+    /** Return just the asset's Id without the assetType prefix */
+    get assetId() {
+        return this.id.startsWith(this.assetType)
+            ? this.id.split("-")[1]
+            : this.id;
+    }
+
     get name() {
         return this.roadName;
     }

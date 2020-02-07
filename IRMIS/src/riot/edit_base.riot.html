@@ -4,7 +4,7 @@
             <div>
                 <ul class="navigation">
                     <li class="text-uppercase">{ window.gettext("Edit asset") }</li>
-                    <ul if="{ props.assetType === 'road' }">
+                    <ul if="{ props.assetType === 'ROAD' }">
                         <li class="{ state.page === 'location_type' ? 'active' : '' }" data-page="location_type"
                             onclick="{ selectPage }">{ window.gettext("Location & Type") }</li>
                         <li class="{ state.page === 'asset_details' ? 'active' : '' }" data-page="asset_details"
@@ -235,7 +235,7 @@
                 }
             },
             selectPage(e) {
-                const roadId = this.state.editingRoad.getId();
+                const roadId = this.state.editingRoad.id;
                 this.state.page = e.currentTarget.dataset.page;
                 this.state.nextPage = `#edit/${this.props.assetType}/${roadId}/${this.state.page}`;
                 if (this.hasChanges()) {
@@ -286,7 +286,7 @@
                 this.getRoadSurveyReports(state, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId);
             },
             getRoadSurveys(state, allDataTableId, primaryAttribute, reportAttribute) {
-                const roadId = state.road.getId();
+                const roadId = state.road.id;
 
                 getRoadSurveys(roadId, primaryAttribute)
                     .then((surveyData) => {

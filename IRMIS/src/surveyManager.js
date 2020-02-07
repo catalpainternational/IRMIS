@@ -18,7 +18,7 @@ export function getRoadSurveys(roadId, surveyAttribute) {
 export function createSurvey(survey) {
     return Promise.resolve(postSurveyData(survey))
         .then(survey => {
-            surveys[survey.getId()] = survey;
+            surveys[survey.id] = survey;
             return survey;
         });
 }
@@ -26,7 +26,7 @@ export function createSurvey(survey) {
 export function updateSurvey(survey) {
     return Promise.resolve(putSurveyData(survey))
         .then(survey => {
-            surveys[survey.getId()] = survey;
+            surveys[survey.id] = survey;
             return survey;
         });
 }
