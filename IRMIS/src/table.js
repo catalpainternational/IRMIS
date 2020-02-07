@@ -90,7 +90,7 @@ const attributeModalMapping = {
     },
     structure_condition: {
         columns: structureConditionColumns,
-        reportDataTableId: "inventory-asset-condition-table",
+        reportDataTableId: "inventory-structure-condition-table",
         reportTable: null,
         title: gettext("Structure Condition details"),
     },
