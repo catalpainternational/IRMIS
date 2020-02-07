@@ -1,6 +1,14 @@
 import { Bridge, Culvert, Structures } from "../../../protobuf/structure_pb";
 import { projToWGS84, toDms } from "../crsUtilities";
-import { choice_or_default, getFieldName, getHelpText, humanizeChoices, makeEstradaObject, toChainageFormat } from "../protoBufUtilities";
+import {
+    choice_or_default,
+    getFieldName,
+    getHelpText,
+    humanizeChoices,
+    makeEstradaObject,
+    projectionToCoordinates,
+    toChainageFormat,
+} from "../protoBufUtilities";
 
 import { ADMINISTRATIVE_AREA_CHOICES, ASSET_CLASS_CHOICES, ASSET_CONDITION_CHOICES } from "./asset";
 
@@ -99,12 +107,14 @@ export class EstradaBridge extends Bridge {
             : this.id;
     }
 
+    // generic version of the getStructureCode() function for Map use
     get code() {
-        return this.structureCode;
+        return this.getStructureCode();
     }
 
+    // generic version of the getStructureName() function for Map use
     get name() {
-        return this.structureName;
+        return this.getStructureName();
     }
 
     get structureCode() {
@@ -123,16 +133,22 @@ export class EstradaBridge extends Bridge {
     //     return this.getUser() || "";
     // }
 
-    // get dms() {
-    //     return toDms(projToWGS84.forward(this.getProjectionStart().array));
-    // }
+    get geomPoint() {
+        return this.getGeomPoint();
+    }
+
+    get dms() {
+        const point = this.getGeomPoint();
+        return point ? toDms(projToWGS84.forward(projectionToCoordinates(point))) : "";
+    }
 
     get chainage() {
         return toChainageFormat(this.getNullableChainage());
     }
 
     get administrativeArea() {
-        return choice_or_default(this.getAdministrativeArea(), ADMINISTRATIVE_AREA_CHOICES);
+        // return choice_or_default(this.getAdministrativeArea(), ADMINISTRATIVE_AREA_CHOICES);
+        return this.getAdministrativeArea();
     }
 
     get constructionYear() {
@@ -226,12 +242,14 @@ export class EstradaCulvert extends Culvert {
             : this.id;
     }
 
+    // generic version of the getStructureCode() function for Map use
     get code() {
-        return this.structureCode;
+        return this.getStructureCode();
     }
 
+    // generic version of the getStructureName() function for Map use
     get name() {
-        return this.structureName;
+        return this.getStructureName();
     }
 
     get structureCode() {
@@ -250,16 +268,18 @@ export class EstradaCulvert extends Culvert {
     //     return this.getUser() || "";
     // }
 
-    // get dms() {
-    //     return toDms(projToWGS84.forward(this.getProjectionStart().array));
-    // }
+    get dms() {
+        const point = this.getGeomPoint();
+        return point ? toDms(projToWGS84.forward(projectionToCoordinates(point))) : "";
+    }
 
     get chainage() {
         return toChainageFormat(this.getNullableChainage());
     }
 
     get administrativeArea() {
-        return choice_or_default(this.getAdministrativeArea(), ADMINISTRATIVE_AREA_CHOICES);
+        // return choice_or_default(this.getAdministrativeArea(), ADMINISTRATIVE_AREA_CHOICES);
+        return this.getAdministrativeArea();
     }
 
     get constructionYear() {

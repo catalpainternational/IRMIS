@@ -30,7 +30,7 @@ from rest_framework_condition import condition
 
 from google.protobuf.timestamp_pb2 import Timestamp
 
-from protobuf import roads_pb2, survey_pb2, report_pb2, structure_pb2
+from protobuf import roads_pb2, survey_pb2, report_pb2, structure_pb2, version_pb2
 from .report_query import ReportQuery
 
 
@@ -462,7 +462,7 @@ def protobuf_road_audit(request, pk):
     queryset = Road.objects.all()
     road = get_object_or_404(queryset, pk=pk)
     versions = Version.objects.get_for_object(road)
-    versions_protobuf = roads_pb2.Versions()
+    versions_protobuf = version_pb2.Versions()
 
     for version in versions:
         version_pb = versions_protobuf.versions.add()
@@ -898,7 +898,7 @@ def protobuf_structure_audit(request, pk):
     queryset = mapping["model"].objects.all()
     structure = get_object_or_404(queryset, pk=django_pk)
     versions = Version.objects.get_for_object(structure)
-    versions_protobuf = roads_pb2.Versions()
+    versions_protobuf = version_pb2.Versions()
 
     for version in versions:
         version_pb = versions_protobuf.versions.add()

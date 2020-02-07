@@ -317,158 +317,165 @@ export const structuresTableColumns = [
         className: "text-center",
     },
     {
-        title: getStructureFieldName("structure_code"),
+        title: window.gettext("Structure Code"),
         data: "structureCode",
         className: "text-center",
         defaultContent: "",
     },
     {
-        title: getStructureFieldName("structure_name"),
+        title: window.gettext("Structure Name"),
         data: "structureName",
+        className: "text-center",
+        defaultContent: window.gettext("unknown"),
+    },
+    {
+        title: window.gettext("River Name"),
+        data: "riverName",
+        className: "text-center",
+        defaultContent: "N/A",
+        visible: false,
+    },
+    {
+        title: window.gettext("Road Code"),
+        data: "roadCode",
         className: "text-center",
         defaultContent: "",
     },
     {
-        title: getStructureFieldName("river_name"),
-        data: "riverName",
+        title: window.gettext("Road_name"),
+        data: "roadName",
         className: "text-center",
         defaultContent: "",
         visible: false,
     },
     {
-        title: getStructureFieldName("road_code"),
-        data: "roadCode",
-        className: "text-center",
-        defaultContent: "",
-    },
-    // {
-    //     title: getStructureFieldName("road_name"),
-    //     data: "roadName",
-    //     className: "text-center",
-    //     defaultContent: "",
-    //     visible: false,
-    // },
-    {
-        title: getStructureFieldName("asset_class"),
+        title: window.gettext("Asset Class"),
         data: "assetClass",
         className: "text-center",
         defaultContent: "",
         visible: false,
     },
-    {
-        title: "GPS Longitude",
+        {
+        title: window.gettext("GPS Latitude"),
+        data: "dms",
+        render: (dms) => { return dms.split(" ")[0] || ""; },
         className: "text-right",
-        defaultContent: "43.599307°N",
+        defaultContent: "-",
         visible: false,
     },
     {
-        title: "GPS Latitude",
+        title: window.gettext("GPS Longitude"),
+        data: "dms",
+        render: (dms) => { return dms.split(" ")[1] || ""; },
         className: "text-right",
-        defaultContent: "1.438724°E",
+        defaultContent: "-",
         visible: false,
     },
     {
-        title: getStructureFieldName("chainage"),
+        title: window.gettext("Chainage"),
         data: "chainage",
         className: "text-right",
-        defaultContent: "",
+        defaultContent: "-",
     },
     {
-        title: getStructureFieldName("administrative_area"),
+        title: window.gettext("Municipality"),
         data: "administrativeArea",
         className: "text-center",
         defaultContent: "",
         visible: false,
     },
     {
-        title: getStructureFieldName("material"),
+        title: window.gettext("Material"),
         data: "material",
         className: "text-center",
-        defaultContent: "",
+        defaultContent: "-",
     },
     {
-        title: getStructureFieldName("structure_type"),
+        title: window.gettext("Structure Type"),
         data: "structureType",
         className: "text-center",
-        defaultContent: "N/A",
+        defaultContent: "-",
     },
     {
-        title: getStructureFieldName("length"),
+        title: window.gettext("Length"),
         data: "length",
+        render: (n) => { (n > 0) ? n : ""; },
         className: "text-right",
         defaultContent: "",
     },
     {
-        title: getStructureFieldName("width"),
+        title: window.gettext("Width"),
         data: "width",
+        render: (n) => { (n > 0) ? n : ""; },
         className: "text-right",
         defaultContent: "",
 
     },
     {
-        title: getStructureFieldName("height"),
+        title: window.gettext("Height"),
         data: "height",
         className: "text-right",
-        defaultContent: "",
+        defaultContent: "N/A",
         visible: false,
     },
     {
-        title: getStructureFieldName("number_spans"),
+        title: window.gettext("Number Spans"),
         data: "numberSpans",
         className: "text-right",
         defaultContent: "N/A",
         visible: false,
     },
     {
-        title: getStructureFieldName("number_cells"),
+        title: window.gettext("Number Cells"),
         data: "numberCells",
         className: "text-right",
         defaultContent: "N/A",
         visible: false,
     },
     {
-        title: getStructureFieldName("protection_upstream"),
+        title: window.gettext("Protection Upstream"),
         data: "protectionUpstream",
         className: "text-center",
         defaultContent: "",
         visible: false,
     },
     {
-        title: getStructureFieldName("protection_downstream"),
+        title: window.gettext("Protection Downstream"),
         data: "protectionDownstream",
         className: "text-center",
         defaultContent: "",
         visible: false,
     },
     {
-        title: getStructureFieldName("construction_year"),
+        title: window.gettext("Construction Year"),
         data: "constructionYear",
+        render: (n) => { (n > 0) ? n : ""; },
         className: "text-right",
         defaultContent: "",
         visible: false,
     },
     {
         title: "Structure Condition",
-        defaultContent: "",
-        className: "text-center",
-        render: r => buttonSegmentsTemplate("asset_condition", r),
         data: null,
+        render: r => buttonSegmentsTemplate("structure_condition", r),
+        className: "text-center",
+        defaultContent: "",
         visible: false,
     },
     {
         title: "Condition Description",
-        defaultContent: "",
-        className: "text-center",
-        render: r => buttonSegmentsTemplate("condition_description", r),
         data: null,
+        render: r => buttonSegmentsTemplate("structure_condition_description", r),
+        className: "text-center",
+        defaultContent: "",
         visible: false,
     },
     {
         title: "Inventory Photos",
-        defaultContent: "",
+        data: null,
+        render: r => buttonSegmentsTemplate("inventory_photos", r),
         className: "text-center",
-        render: r => buttonSegmentsTemplate("structure_photos", r),
-        data: null
+        defaultContent: "",
     },
 ];
 
@@ -492,14 +499,6 @@ function getStructureTypeName(structureType) {
     };
 
     return window.gettext(structureTypeToName[structureType] || structureType);
-}
-
-function getStructureFieldName(field) {
-    try {
-        return EstradaBridge.getFieldName(field);
-    } catch (err) {
-        return EstradaCulvert.getFieldName(field);
-    }
 }
 
 // function getStructureFieldData(field, structure) { return null; }

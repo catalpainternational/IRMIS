@@ -1,4 +1,5 @@
 import { Projection } from "../../protobuf/roads_pb";
+import { Point } from "../../protobuf/structure_pb";
 
 /** utility function to pick from choices if value is truthy, or return default string
  * the default for defaultValue is empty string ""
@@ -74,6 +75,6 @@ export function cloneData(data: { [name: string]: any }): { [name: string]: any 
     return JSON.parse(JSON.stringify(data));
 }
 
-export function projectionToCoordinates(proj: Projection): [number, number] {
+export function projectionToCoordinates(proj: Projection | Point): [number, number] {
     return [proj.getX(), proj.getY()];
 }

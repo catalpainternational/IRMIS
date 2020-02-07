@@ -1,4 +1,4 @@
-import { Version } from "../../../protobuf/roads_pb";
+import { Version } from "../../../protobuf/version_pb";
 
 import { getFieldName, getHelpText } from "../protoBufUtilities";
 
@@ -29,7 +29,7 @@ export class EstradaAudit extends Version {
     get comment() {
         return this.getComment();
     }
-        
+
     static getFieldName(field) {
         return getFieldName(auditSchema, field);
     }
