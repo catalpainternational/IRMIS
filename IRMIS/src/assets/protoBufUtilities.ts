@@ -31,7 +31,7 @@ export function toChainageFormat(value: any, thousandsSeparator = ",") {
 
 export function makeEstradaObject(
     estradaObjectType: { [name: string]: any },
-    protoBufSource: { [name: string]: any }
+    protoBufSource: { [name: string]: any },
 ): { [name: string]: any } {
     const estradaObject = Object.create(estradaObjectType.prototype);
     Object.assign(estradaObject, protoBufSource);
