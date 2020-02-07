@@ -492,7 +492,9 @@
                 this.validate(fieldName, input, testResult, errorText);
             },
             checkAssetCondition(e) {
-                this.state.survey.assetCondition = e.currentTarget.dataset.condition;
+                this.state.survey.setValues(JSON.stringify({
+                    asset_condition: this.state.survey.assetCondition
+                }));
                 this.canSave();
             },
             modal_id: "asset-condition-modal",
