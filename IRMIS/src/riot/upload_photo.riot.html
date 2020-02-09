@@ -1,9 +1,10 @@
 <upload_photo>
     <div>
+        <form action="/upload-target" id="testDropzone" class="dropzone">FORM</form>
         <div class="upload-box">
             <div class="cloud-box">
                 <div class="upload-cloud"></div>
-                <div class="upload-text">{ window.gettext("Click to upload") }</div>
+                <div class="upload-instructions">{ window.gettext("Click to upload") }</div>
                 <div>{ window.gettext("Maximum file size 500KB") }</div>
                 <div>{ window.gettext("Accepted file formats: JPEG, GIF, PNG, TIFF") }</div>
             </div>
@@ -19,10 +20,27 @@
         </div>
     </div>
     <script>
+        import Dropzone from "dropzone";
+        import $ from "jquery";
+
         export default {
             state: {
                 photo: '',
                 errors: {}
+            },
+            onMounted(props, state) {
+                Dropzone.autoDiscover = false;
+                // $('#testDropzone').Dropzone({
+                //     url: "{% url 'dashboard/import' %}",
+                //     addRemoveLinks: true,
+                //     success: (file, response) => {
+                //         console.log("Successfully uploaded");
+                //     },
+                //     error: (file, response) => {
+                //         console.log("something goes wrong");
+                //     }
+                // });
+                // $("div#testDropzone").Dropzone({ url: "/file/post" });
             },
             checkPhotoText(e) {
                 console.log(e.currentTarget.value)

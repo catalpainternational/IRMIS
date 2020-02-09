@@ -134,11 +134,11 @@ edit_structure_condition {
     }
 }
 
-// edit_photo {
-//     .photo-wrapper {
-//         margin-bottom: 30px;
-//     }
-// }
+edit_photo {
+    .button-spacer {
+        margin-top: 80px;
+    }
+}
 
 upload_photo {
     .upload-box { 
@@ -160,7 +160,7 @@ upload_photo {
         flex-direction: column;
         font-weight: 600;
 
-        div.upload-text {
+        div.upload-instructions {
             color: $green;
             margin-bottom: 30px;
             margin-top: 5px;

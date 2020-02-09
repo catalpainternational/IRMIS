@@ -72,6 +72,7 @@
 		"datatables.net": "^1.10.20",
 		"datatables.net-bs4": "^1.10.20",
 		"dayjs": "^1.8.16",
+		"dropzone": "^5.5.1",
 		"file-saver": "^2.0.2",
 		"geobuf": "^3.0.1",
 		"google-protobuf": "^3.10.0",
