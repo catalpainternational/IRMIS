@@ -8,10 +8,10 @@ const assetSchema = JSON.parse(document.getElementById("asset_schema").textConte
 
 export const STRUCTURE_UPSTREAM_PROTECTION_TYPE_CHOICES = humanizeChoices(assetSchema, 'protection_upstream', 'code', 'name');
 export const STRUCTURE_DOWNSTREAM_PROTECTION_TYPE_CHOICES = humanizeChoices(assetSchema, 'protection_downstream', 'code', 'name');
-export const STRUCTURE_TYPE_BRIDGE_CHOICES = humanizeChoices(assetSchema, 'structure_type', 'code', 'name');
-export const STRUCTURE_TYPE_CULVERT_CHOICES = humanizeChoices(assetSchema, 'structure_type', 'code', 'name');
-export const MATERIAL_TYPE_BRIDGE_CHOICES = humanizeChoices(assetSchema, 'material', 'code', 'name');
-export const MATERIAL_TYPE_CULVERT_CHOICES = humanizeChoices(assetSchema, 'material', 'code', 'name');
+export const STRUCTURE_TYPE_BRIDGE_CHOICES = humanizeChoices(assetSchema, 'structure_type_bridge', 'code', 'name');
+export const STRUCTURE_TYPE_CULVERT_CHOICES = humanizeChoices(assetSchema, 'structure_type_culvert', 'code', 'name');
+export const MATERIAL_TYPE_BRIDGE_CHOICES = humanizeChoices(assetSchema, 'material_bridge', 'code', 'name');
+export const MATERIAL_TYPE_CULVERT_CHOICES = humanizeChoices(assetSchema, 'material_culvert', 'code', 'name');
 
 // We may need a collection of Structure schemas - primarily for formatted field names
 // JSON.parse(document.getElementById('<structureType>_schema').textContent);

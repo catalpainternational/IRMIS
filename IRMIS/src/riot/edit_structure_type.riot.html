@@ -1,125 +1,78 @@
 <edit_structure_type>
-    <h5>{ window.gettext("Type") }</h5>
+    <h5>{ window.gettext("Structure Type") }</h5>
 
-    <!-- Bridge-specific fields -->
-    <div if="{ props.assetType === 'BRDG' }">
+    <div>
         <section>
             <div class="form-group">
-                <label>{ bridgeTypes.display }</label>
-                <select class="{ state.bridgeType ? '' : 'inactive' } form-control" onchange="{ checkBridgeType }">
-                    <option value="">{ bridgeTypes.default_value }</option>
-                    <option each="{ bridgeType in bridgeTypes.options }" value="{ bridgeType[0] }" selected="{ bridgeType[0] == state.bridgeType }">{ bridgeType[1] }</option>
+                <label>{ state.structureTypes.display }</label>
+                <select class="{ state.structureType ? '' : 'inactive' } form-control"
+                    onchange="{ checkStructureType }">
+                    <option value="">{ state.structureTypes.default_value }</option>
+                    <option each="{ structureType in state.structureTypes.options }" value="{ structureType.code }"
+                        selected="{ structureType.code == state.structureType }">{ structureType.name }</option>
                 </select>
             </div>
         </section>
 
         <section>
             <div class="form-group">
-                <label>{ bridgeMaterials.display }</label>
-                <select class="{ state.bridgeMaterial ? '' : 'inactive' } form-control" onchange="{ checkBridgeMaterial }">
-                    <option value="">{ bridgeMaterials.default_value }</option>
-                    <option each="{ material in bridgeMaterials.options }" value="{ material[0] }" selected="{ material[0] == state.bridgeMaterial }">{ material[1] }</option>
-                </select>
-            </div>
-        </section>
-    </div>
-
-    <!-- Culvert-specific fields -->
-    <div if="{ props.assetType === 'CULV' }">
-        <section>
-            <div class="form-group">
-                <label>{ culvertTypes.display }</label>
-                <select class="{ state.culvertType ? '' : 'inactive' } form-control" onchange="{ checkCulvertType }">
-                    <option value="">{ culvertTypes.default_value }</option>
-                    <option each="{ culvertType in culvertTypes.options }" value="{ culvertType[0] }" selected="{ culvertType[0] == state.culvertType }">{ culvertType[1] }</option>
-                </select>
-            </div>
-        </section>
-
-        <section>
-            <div class="form-group">
-                <label>{ culvertMaterials.display }</label>
-                <select class="{ state.culvertMaterial ? '' : 'inactive' } form-control" onchange="{ checkCulvertMaterial }">
-                    <option value="">{ culvertMaterials.default_value }</option>
-                    <option each="{ material in culvertMaterials.options }" value="{ material[0] }" selected="{ material[0] == state.culvertMaterial }">{ material[1] }</option>
+                <label>{ state.structureMaterials.display }</label>
+                <select class="{ state.material ? '' : 'inactive' } form-control" onchange="{ checkStructureMaterial }">
+                    <option value="">{ state.structureMaterials.default_value }</option>
+                    <option each="{ material in state.structureMaterials.options }" value="{ material.code }"
+                        selected="{ material.code == state.material }">{ material.name }</option>
                 </select>
             </div>
         </section>
     </div>
 
     <div class="button-wrapper d-flex justify-content-end">
-        <button class="btn btn-primary" onclick="{ save }" disabled="{ props.saving }">{ window.gettext("Save and continue") }</button>
+        <button class="btn btn-primary" onclick="{ save }" disabled="{ props.saving }">
+            { window.gettext("Save and continue") }
+        </button>
     </div>
 
     <script>
+        import Edit_Stop_Alert from "./edit_stop_alert.riot.html";
+
         export default {
+            state: {
+                canSave: false,
+                errors: {},
+            },
+            components: {
+                Edit_Stop_Alert
+            },
             onBeforeMount(props, state) {
-                state.bridgeType = null;
-                state.bridgeMaterial = null;
-                state.culvertType = null;
-                state.culvertMaterial = null;
+                state.loading = true;
+                state.structureType = props.structure.getStructureType();
+                state.material = props.structure.getMaterial();
+
+                if (props.assetType === 'BRDG') {
+                    state.structureTypes = this.structure_type_bridge;
+                    state.structureMaterials = this.material_bridge;
+                } else {
+                    state.structureTypes = this.structure_type_culvert;
+                    state.structureMaterials = this.material_culvert;
+                }
             },
             save(e) {
-                this.props.parent.save();
+                this.props.parent.saveStructure();
             },
-            checkBridgeType(e) {
-                this.state.bridgeType = e.currentTarget.value;
+            checkStructureType(e) {
+                this.state.structureType = e.currentTarget.value;
+                this.props.structure.setStructureType(this.state.structureType);
                 this.update();
             },
-            checkBridgeMaterial(e) {
-                this.state.bridgeMaterial = e.currentTarget.value;
+            checkStructureMaterial(e) {
+                this.state.material = e.currentTarget.value;
+                this.props.structure.setMaterial(this.state.material);
                 this.update();
             },
-            checkCulvertType(e) {
-                this.state.culvertType = e.currentTarget.value;
-                this.update();
-            },
-            checkCulvertMaterial(e) {
-                this.state.culvertMaterial = e.currentTarget.value;
-                this.update();
-            },
-            road_types: window.asset_schema.road_type,
-            bridgeTypes: {
-                display: window.gettext("Structure Type"),
-                default_value: window.gettext("Select structure type"),
-                options: [
-                    ["Beam", window.gettext("Beam")],
-                    ["Temporary", window.gettext("Temporary")],
-                    ["Truss", window.gettext("Truss")],
-                    ["Other", window.gettext("Other")]
-                ]
-            },
-            bridgeMaterials: {
-                display: window.gettext("Deck Material"),
-                default_value: window.gettext("Select deck material"),
-                options: [
-                    ["Steel", window.gettext("Steel")],
-                    ["Concrete", window.gettext("Concrete")],
-                    ["Wood", window.gettext("Wood")],
-                    ["Iron", window.gettext("Iron")],
-                    ["Plastic", window.gettext("Plastic")],
-                    ["Stone", window.gettext("Stone")]
-                ]
-            },
-            culvertTypes: {
-                display: window.gettext("Structure Type"),
-                default_value: window.gettext("Select structure type"),
-                options: [
-                    ["Box culvert", window.gettext("Box culvert")],
-                    ["Pipe culvert", window.gettext("Pipe culvert")]
-                ]
-            },
-            culvertMaterials: {
-                display: window.gettext("Material"),
-                default_value: window.gettext("Select material"),
-                options: [
-                    ["Concrete", window.gettext("Concrete")],
-                    ["Steel", window.gettext("Steel")],
-                    ["Aluminum", window.gettext("Aluminum")],
-                    ["Plastic", window.gettext("Plastic")],
-                    ["Other", window.gettext("Other")]
-                ]
-            },
+            structure_type_bridge: window.asset_schema.structure_type_bridge,
+            structure_type_culvert: window.asset_schema.structure_type_culvert,
+            material_bridge: window.asset_schema.material_bridge,
+            material_culvert: window.asset_schema.material_culvert,
         }
     </script>
 </edit_structure_type>

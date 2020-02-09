@@ -26,8 +26,12 @@ urlpatterns = [
     path("geojson_details", geojson_details, name="geojson_details"),
     path("road_chunks", road_chunks_set, name="road_chunks"),
     path("road_update", road_update, name="road_update"),
-    path("structure_create", structure_create, name="structure_create"),
-    path("structure_update", structure_update, name="structure_update"),
+    path(
+        "structure_create/<slug:structure_type>/",
+        structure_create,
+        name="structure_create",
+    ),
+    path("structure_update/<slug:pk>", structure_update, name="structure_update",),
     path("survey_create", survey_create, name="survey_create"),
     path("survey_update", survey_update, name="survey_update"),
     path(

@@ -600,7 +600,6 @@ class BridgeQuerySet(models.QuerySet):
         structures_protobuf = ProtoStructures()
 
         regular_fields = dict(
-            geojson_id="geojson_file_id",
             road_id="road_id",
             road_code="road_code",
             structure_code="structure_code",
@@ -632,6 +631,7 @@ class BridgeQuerySet(models.QuerySet):
             .annotate(to_wgs=models.functions.Transform("geom", 4326))
             .values(
                 "id",
+                "geojson_file_id",
                 *regular_fields.values(),
                 *datetime_fields.values(),
                 *numeric_fields.values(),
@@ -642,10 +642,11 @@ class BridgeQuerySet(models.QuerySet):
         for bridge in bridges:
             bridge_protobuf = structures_protobuf.bridges.add()
             bridge_protobuf.id = "BRDG-" + str(bridge["id"])
+            bridge_protobuf.geojson_id = int(bridge["geojson_file_id"])
 
             for protobuf_key, query_key in regular_fields.items():
                 if bridge[query_key]:
-                    setattr(bridge_protobuf, protobuf_key, bridge[query_key])
+                    setattr(bridge_protobuf, protobuf_key, str(bridge[query_key]))
 
             for protobuf_key, query_key in numeric_fields.items():
                 raw_value = bridge.get(query_key)
@@ -855,7 +856,6 @@ class CulvertQuerySet(models.QuerySet):
         structures_protobuf = ProtoStructures()
 
         regular_fields = dict(
-            geojson_id="geojson_file_id",
             road_id="road_id",
             road_code="road_code",
             structure_code="structure_code",
@@ -886,6 +886,7 @@ class CulvertQuerySet(models.QuerySet):
             .annotate(to_wgs=models.functions.Transform("geom", 4326))
             .values(
                 "id",
+                "geojson_file_id",
                 *regular_fields.values(),
                 *datetime_fields.values(),
                 *numeric_fields.values(),
@@ -896,10 +897,11 @@ class CulvertQuerySet(models.QuerySet):
         for culvert in culverts:
             culvert_protobuf = structures_protobuf.culverts.add()
             culvert_protobuf.id = "CULV-" + str(culvert["id"])
+            culvert_protobuf.geojson_id = int(culvert["geojson_file_id"])
 
             for protobuf_key, query_key in regular_fields.items():
                 if culvert[query_key]:
-                    setattr(culvert_protobuf, protobuf_key, culvert[query_key])
+                    setattr(culvert_protobuf, protobuf_key, str(culvert[query_key]))
 
             for protobuf_key, query_key in numeric_fields.items():
                 raw_value = culvert.get(query_key)

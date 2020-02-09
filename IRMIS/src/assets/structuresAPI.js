@@ -70,7 +70,7 @@ export function getRoadStructuresMetadata(roadId) {
  */
 export function postStructureData(structure, structureType) {
     const structureTypeUrlFragment = "structure_create";
-    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${structureTypeUrlFragment}`;
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${structureTypeUrlFragment}/${structureType}/`;
 
     const postAssetInit = ConfigAPI.requestInit("POST");
     postAssetInit.body = structure.serializeBinary();
@@ -96,23 +96,23 @@ export function postStructureData(structure, structureType) {
  *
  * @returns 200 (success) or 400 (failure)
  */
-export function putStructureData(structure, structureType) {
+export function putStructureData(structure) {
     const structureTypeUrlFragment = "structure_update";
-    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${structureTypeUrlFragment}`;
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${structureTypeUrlFragment}/${structure.id}`;
 
-    const postAssetInit = ConfigAPI.requestInit("PUT");
-    postAssetInit.body = structure.serializeBinary();
+    const putAssetInit = ConfigAPI.requestInit("PUT");
+    putAssetInit.body = structure.serializeBinary();
 
-    return fetch(metadataUrl, postAssetInit)
+    return fetch(metadataUrl, putAssetInit)
         .then(metadataResponse => {
             if (metadataResponse.ok) { return metadataResponse.arrayBuffer(); }
             throw new Error(`Structure creation failed: ${metadataResponse.statusText}`);
         })
         .then(protobufBytes => {
             const uintArray = new Uint8Array(protobufBytes);
-            if (structureType === "BRDG") {
+            try {
                 return makeEstradaBridge(Bridge.deserializeBinary(uintArray));
-            } else {
+            } catch (err) {
                 return makeEstradaCulvert(Culvert.deserializeBinary(uintArray));
             }
         });

@@ -26,6 +26,7 @@ import { Map } from "./map/map";
 export const estradaMap = new Map();
 
 import "./dayjs/dayjs";
+import {getStructure} from "./structureManager";
 
 riot.register("top_menu", Top_Menu);
 riot.mount("top_menu");
@@ -89,10 +90,16 @@ function hashCheck() {
     let editHash = /#edit\/(\w+)\/(\d*)\/(\w+)/.exec(location.hash);
 
     if (editHash !== null && !editBase) {
-        const roadPromise = getRoad(editHash[2]);
         if (planningBase) riot.unmount("planning_base", true);
         if (reportsBase) riot.unmount("reports_base", true);
-        riot.mount("edit_base", { roadPromise: roadPromise, assetType: editHash[1], page: editHash[3] });
+        if (editHash[1] === "BRDG" || editHash[1] === "CULV") {
+            const globalId = editHash[1] + "-" + editHash[2];
+            const structurePromise = getStructure(globalId);
+            riot.mount("edit_base", { structurePromise: structurePromise, assetType: editHash[1], page: editHash[3] });
+        } else {
+            const roadPromise = getRoad(editHash[2]);
+            riot.mount("edit_base", { roadPromise: roadPromise, assetType: editHash[1], page: editHash[3] });
+        }
         mainContent.hidden = true;
     } else if (reportsHash !== null && !reportsBase) {
         if (planningBase) riot.unmount("planning_base", true);
