@@ -38,7 +38,7 @@ def field_name_standardisation(field_name, common_names, type_suffix):
         return "asset_class"
     elif field_name == "surface_condition" or field_name == "structure_condition":
         return "asset_condition"
-    
+
     if len(common_names) == 0 or (not field_name in common_names):
         return field_name
 
@@ -92,7 +92,9 @@ def get_schema_data():
     structures_common_yet_different_fields = ["material", "structure_type"]
 
     for x in bridge_fields:
-        field_name = field_name_standardisation(x.name, structures_common_yet_different_fields, "bridge")
+        field_name = field_name_standardisation(
+            x.name, structures_common_yet_different_fields, "bridge"
+        )
         print(x.name, field_name)
         if not field_name in asset_schema:
             asset_schema[field_name] = {
@@ -101,7 +103,9 @@ def get_schema_data():
                 "help_text": x.help_text,
             }
     for x in culvert_fields:
-        field_name = field_name_standardisation(x.name, structures_common_yet_different_fields, "culvert")
+        field_name = field_name_standardisation(
+            x.name, structures_common_yet_different_fields, "culvert"
+        )
         print(x.name, field_name)
         if not field_name in asset_schema:
             asset_schema[field_name] = {
