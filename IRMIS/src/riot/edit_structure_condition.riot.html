@@ -7,8 +7,8 @@
             </button>
         </div>
 
-        <data_table table_id="{table_id}" columns="{table_columns}"
-            columnSortOrder="{table_columns_order}" candelete=true>
+        <data_table table_id="{table_id}" columns="{table_columns}" columnSortOrder="{table_columns_order}"
+            candelete=true>
         </data_table>
     </div>
 
@@ -67,7 +67,9 @@
                             <li>{ state.errors.description }.</li>
                         </ul>
                     </div>
-                    <small class="form-text text-muted">{window.gettext("Enter a description on the structure condition")}</small>
+                    <small class="form-text text-muted">
+                        {window.gettext("Enter a description on the structurecondition")}
+                    </small>
                 </div>
             </section>
             <section>
@@ -80,8 +82,7 @@
                         <div>{ window.gettext("Accepted file formats: JPEG, GIF, PNG, TIFF") }</div>
                     </div>
                 </div>
-                <input
-                    class="{ state.errors.photo1 ? 'danger' : null } { state.photo1 ? '' : 'inactive' } form-control"
+                <input class="{ state.errors.photo1 ? 'danger' : null } { state.photo1 ? '' : 'inactive' } form-control"
                     type="text" maxlength="500" placeholder="Enter a description of the photo" value="{ state.photo1 }"
                     oninput="{ checkPhotoText }">
                 <div if="{state.errors.photo1}" class="invalid-tooltip">
@@ -97,8 +98,7 @@
                         <div>{ window.gettext("Accepted file formats: JPEG, GIF, PNG, TIFF") }</div>
                     </div>
                 </div>
-                <input
-                    class="{ state.errors.photo2 ? 'danger' : null } { state.photo2 ? '' : 'inactive' } form-control"
+                <input class="{ state.errors.photo2 ? 'danger' : null } { state.photo2 ? '' : 'inactive' } form-control"
                     type="text" maxlength="500" placeholder="Enter a description of the photo" value="{ state.photo2 }"
                     oninput="{ checkPhotoText }">
                 <div if="{state.errors.photo2}" class="invalid-tooltip">
@@ -178,7 +178,7 @@
                 this.structurePhotos = e.currentTarget.value;
             },
             canSave() {
-                if (this.state.surveyDate == '' || this.state.structureCondition == '') { 
+                if (this.state.surveyDate == '' || this.state.structureCondition == '') {
                     this.state.canSave = false;
                 } else {
                     this.state.canSave = true;
