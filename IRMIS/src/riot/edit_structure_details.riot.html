@@ -39,7 +39,8 @@
                         class="{ state.errors.riverName ? 'danger' : null } { state.riverName ? '' : 'inactive' } form-control"
                         type="text" maxlength="25" placeholder="Kuluhun" value="{ state.riverName }"
                         oninput="{ checkRiverName }">
-                    <small class="form-text text-muted">{ window.gettext("Enter the name of the river where the structure is located") }</small>
+                    <small class="form-text text-muted">
+                        { window.gettext("Enter the name of the river where the structure is located") }</small>
                     <div if="{ state.errors.riverName }" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.riverName }.</li>
@@ -52,7 +53,7 @@
                 <label>{ window.gettext("Construction Year") }</label>
                 <input
                     class="{ state.errors.constructionYear ? 'danger' : null } { state.constructionYear ? '' : 'inactive' } form-control"
-                    type="number" maxlength="4" placeholder="1970" value="{ state.constructionYear }"  min="0"
+                    type="number" maxlength="4" placeholder="1970" value="{ state.constructionYear }" min="0"
                     oninput="{ checkConstructionYear }">
                 <small class="form-text text-muted">{ window.gettext("Enter structure's construction year") }</small>
                 <div if="{ state.errors.constructionYear }" class="invalid-tooltip">
@@ -64,28 +65,24 @@
 
             <div class="form-group">
                 <label>{ window.gettext("Length (meters)") }</label>
-                <input
-                    class="{ state.errors.structureLength ? 'danger' : null } { state.structureLength ? '' : 'inactive' } form-control"
-                    type="number" maxlength="25" placeholder="6" value="{ state.structureLength }"
-                    oninput="{ checkStructureLength }">
-                <small class="form-text text-muted">{ window.gettext("Enter the structure length in meters") }</small>
-                <div if="{ state.errors.structureLength }" class="invalid-tooltip">
+                <input class="{ state.errors.length ? 'danger' : null } { state.length ? '' : 'inactive' } form-control"
+                    type="number" maxlength="25" placeholder="6" value="{ state.length }" oninput="{ checkLength }">
+                <small class="form-text text-muted">{ window.gettext("Enter the structure's length in meters") }</small>
+                <div if="{ state.errors.length }" class="invalid-tooltip">
                     <ul>
-                        <li>{ state.errors.structureLength }.</li>
+                        <li>{ state.errors.length }.</li>
                     </ul>
                 </div>
             </div>
 
             <div class="form-group">
                 <label>{ window.gettext("Width (meters)") }</label>
-                <input
-                    class="{ state.errors.structureWidth ? 'danger' : null } { state.structureWidth ? '' : 'inactive' } form-control"
-                    type="number" maxlength="25" placeholder="6" value="{ state.structureWidth }"
-                    oninput="{ checkStructureWidth }">
-                <small class="form-text text-muted">{ window.gettext("Enter the structure width in meters") }</small>
-                <div if="{ state.errors.structureWidth }" class="invalid-tooltip">
+                <input class="{ state.errors.width ? 'danger' : null } { state.width ? '' : 'inactive' } form-control"
+                    type="number" maxlength="25" placeholder="6" value="{ state.width }" oninput="{ checkWidth }">
+                <small class="form-text text-muted">{ window.gettext("Enter the structure's width in meters") }</small>
+                <div if="{ state.errors.width }" class="invalid-tooltip">
                     <ul>
-                        <li>{ state.errors.structureWidth }.</li>
+                        <li>{ state.errors.width }.</li>
                     </ul>
                 </div>
             </div>
@@ -95,13 +92,14 @@
                 <div class="form-group">
                     <label>{ window.gettext("Height (meters)") }</label>
                     <input
-                        class="{ state.errors.structureHeight ? 'danger' : null } { state.structureHeight ? '' : 'inactive' } form-control"
-                        type="number" maxlength="25" placeholder="6" value="{ state.structureHeight }"
-                        oninput="{ checkStructureHeight }">
-                    <small class="form-text text-muted">{ window.gettext("Enter the structure height in meters") }</small>
-                    <div if="{ state.errors.structureHeight }" class="invalid-tooltip">
+                        class="{ state.errors.height ? 'danger' : null } { state.height ? '' : 'inactive' } form-control"
+                        type="number" maxlength="25" placeholder="6" value="{ state.height }" oninput="{ checkHeight }">
+                    <small class="form-text text-muted">
+                        { window.gettext("Enter the structure's height in meters") }
+                    </small>
+                    <div if="{ state.errors.height }" class="invalid-tooltip">
                         <ul>
-                            <li>{ state.errors.structureHeight }.</li>
+                            <li>{ state.errors.height }.</li>
                         </ul>
                     </div>
                 </div>
@@ -111,8 +109,10 @@
                     <input
                         class="{ state.errors.structureCells ? 'danger' : null } { state.structureCells ? '' : 'inactive' } form-control"
                         type="number" maxlength="25" placeholder="2" value="{ state.structureCells }"
-                        oninput="{ checkStructureCells }">
-                    <small class="form-text text-muted">{ window.gettext("Enter the number of cells in the structure") }</small>
+                        oninput="{ checkNumberCells }">
+                    <small class="form-text text-muted">
+                        { window.gettext("Enter the number of cells in the structure") }
+                    </small>
                     <div if="{ state.errors.structureCells }" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.structureCells }.</li>
@@ -126,13 +126,30 @@
                 <div class="form-group">
                     <label>{ window.gettext("Number of spans") }</label>
                     <input
-                        class="{ state.errors.structureSpans ? 'danger' : null } { state.structureSpans ? '' : 'inactive' } form-control"
-                        type="number" maxlength="25" placeholder="1" value="{ state.structureSpans }"
-                        oninput="{ checkStructureSpans }">
-                    <small class="form-text text-muted">{ window.gettext("Enter the number of spans in the structure") }</small>
-                    <div if="{ state.errors.structureSpans }" class="invalid-tooltip">
+                        class="{ state.errors.numberSpans ? 'danger' : null } { state.numberSpans ? '' : 'inactive' } form-control"
+                        type="number" maxlength="25" placeholder="1" value="{ state.numberSpans }"
+                        oninput="{ checkNumberSpans }">
+                    <small class="form-text text-muted">
+                        { window.gettext("Enter the number of spans in the structure") }
+                    </small>
+                    <div if="{ state.errors.numberSpans }" class="invalid-tooltip">
                         <ul>
-                            <li>{ state.errors.structureSpans }.</li>
+                            <li>{ state.errors.numberSpans }.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>{ window.gettext("Span Length") }</label>
+                    <input
+                        class="{ state.errors.spanLength ? 'danger' : null } { state.spanLength ? '' : 'inactive' } form-control"
+                        type="number" maxlength="25" placeholder="1" value="{ state.spanLength }"
+                        oninput="{ checkSpanLength }">
+                    <small class="form-text text-muted">
+                        { window.gettext("Enter the span length for the structure") }
+                    </small>
+                    <div if="{ state.errors.spanLength }" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.spanLength }.</li>
                         </ul>
                     </div>
                 </div>
@@ -140,61 +157,91 @@
         </section>
 
         <div class="button-wrapper d-flex justify-content-end">
-            <button class="btn btn-primary" onclick="{ save }" disabled="{ props.saving }">{ window.gettext("Save and continue") }</button>
+            <button class="btn btn-primary" onclick="{ save }" disabled="{ props.saving }">
+                { window.gettext("Save and continue") }
+            </button>
         </div>
     </div>
 
     <script>
+        import Edit_Stop_Alert from "./edit_stop_alert.riot.html";
+
         export default {
+            state: {
+                canSave: false,
+                errors: {},
+            },
+            components: {
+                Edit_Stop_Alert
+            },
             onBeforeMount(props, state) {
-                state.structureCode = null;
-                state.structureName = null;
-                state.riverName = null;
-                state.constructionYear = null;
-                state.structureLength = null;
-                state.structureWidth = null;
-                state.structureHeight = null;
-                state.structureCells = null;
-                state.structureSpans = null;
-                state.errors = {};
+                state.loading = true;
+                state.structureCode = props.structure.getStructureCode();
+                state.structureName = props.structure.getStructureName();
+                state.constructionYear = props.structure.getConstructionYear();
+                state.length = props.structure.getLength();
+                state.width = props.structure.getWidth();
+
+                if (props.assetType === 'BRDG') {
+                    state.riverName = props.structure.getRiverName();
+                    state.numberSpans = props.structure.getNumberSpans();
+                    state.spanLength = props.structure.getSpanLength();
+                } else {
+                    state.height = props.structure.getHeight();
+                    state.numberCells = props.structure.getNumberCells();
+                }
             },
             save(e) {
-                this.props.parent.save();
+                this.props.parent.saveStructure();
             },
             checkStructureCode(e) {
                 this.state.structureCode = e.currentTarget.value;
+                this.props.structure.setStructureCode(this.state.structureCode);
                 this.update();
             },
             checkStructureName(e) {
                 this.state.structureName = e.currentTarget.value;
+                this.props.structure.setStructureName(this.state.structureName);
                 this.update();
             },
             checkRiverName(e) {
                 this.state.riverName = e.currentTarget.value;
+                this.props.structure.setRiverName(this.state.riverName);
                 this.update();
             },
             checkConstructionYear(e) {
                 this.state.constructionYear = e.currentTarget.value;
+                this.props.structure.setConstructionYear(this.state.constructionYear);
                 this.update();
             },
-            checkStructureLength(e) {
-                this.state.structureLength = e.currentTarget.value;
+            checkLength(e) {
+                this.state.length = e.currentTarget.value;
+                this.props.structure.setLength(this.state.length);
                 this.update();
             },
-            checkStructureWidth(e) {
-                this.state.structureWidth = e.currentTarget.value;
+            checkWidth(e) {
+                this.state.width = e.currentTarget.value;
+                this.props.structure.setWidth(this.state.width);
                 this.update();
             },
-            checkStructureHeight(e) {
+            checkHeight(e) {
                 this.state.structureHeight = e.currentTarget.value;
+                this.props.structure.setHeight(this.state.height);
                 this.update();
             },
-            checkStructureCells(e) {
+            checkNumberCells(e) {
                 this.state.structureCells = e.currentTarget.value;
+                this.props.structure.setNumberCells(this.state.numberCells);
                 this.update();
             },
-            checkStructureSpans(e) {
-                this.state.structureSpans = e.currentTarget.value;
+            checkNumberSpans(e) {
+                this.state.numberSpans = e.currentTarget.value;
+                this.props.structure.setNumberSpans(this.state.numberSpans);
+                this.update();
+            },
+            checkSpanLength(e) {
+                this.state.spanLength = e.currentTarget.value;
+                this.props.structure.setSpanLength(this.state.spanLength);
                 this.update();
             },
         }

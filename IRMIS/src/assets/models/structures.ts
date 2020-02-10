@@ -10,17 +10,17 @@ import {
     toChainageFormat,
 } from "../protoBufUtilities";
 
-import { ADMINISTRATIVE_AREA_CHOICES, ASSET_CLASS_CHOICES, ASSET_CONDITION_CHOICES, IEstrada, IAsset } from "./estradaBase";
+import { ADMINISTRATIVE_AREA_CHOICES, ASSET_CLASS_CHOICES, ASSET_CONDITION_CHOICES, IAsset, IEstrada } from "./estradaBase";
 
 const assetSchema = JSON.parse(document.getElementById("asset_schema")?.textContent || "");
 
 export const STRUCTURE_UPSTREAM_PROTECTION_TYPE_CHOICES = humanizeChoices(assetSchema, "protection_upstream", "code", "name");
 export const STRUCTURE_DOWNSTREAM_PROTECTION_TYPE_CHOICES
     = humanizeChoices(assetSchema, "protection_downstream", "code", "name");
-export const STRUCTURE_TYPE_BRIDGE_CHOICES = humanizeChoices(assetSchema, "structure_type", "code", "name");
-export const STRUCTURE_TYPE_CULVERT_CHOICES = humanizeChoices(assetSchema, "structure_type", "code", "name");
-export const MATERIAL_TYPE_BRIDGE_CHOICES = humanizeChoices(assetSchema, "material", "code", "name");
-export const MATERIAL_TYPE_CULVERT_CHOICES = humanizeChoices(assetSchema, "material", "code", "name");
+export const STRUCTURE_TYPE_BRIDGE_CHOICES = humanizeChoices(assetSchema, "structure_type_bridge", "code", "name");
+export const STRUCTURE_TYPE_CULVERT_CHOICES = humanizeChoices(assetSchema, "structure_type_culvert", "code", "name");
+export const MATERIAL_TYPE_BRIDGE_CHOICES = humanizeChoices(assetSchema, "material_bridge", "code", "name");
+export const MATERIAL_TYPE_CULVERT_CHOICES = humanizeChoices(assetSchema, "material_culvert", "code", "name");
 
 // tslint:disable: max-classes-per-file
 
@@ -327,6 +327,10 @@ export class EstradaCulvert extends Culvert implements IAsset {
         const chainage = super.getChainage();
         return (chainage >= 0 || this.isSerialising) ? chainage : null;
     }
+}
+
+export function makeEstradaStructures(pbstructures: { [name: string]: any }): EstradaStructures {
+    return makeEstradaObject(EstradaStructures, pbstructures) as EstradaStructures;
 }
 
 export function makeEstradaBridge(pbattribute: { [name: string]: any }): EstradaBridge {

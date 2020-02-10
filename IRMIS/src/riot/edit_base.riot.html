@@ -27,12 +27,13 @@
                             onclick="{ selectPage }">{ window.gettext("Type") }</li>
                         <li class="{ state.page === 'structure_details' ? 'active' : '' }" data-page="structure_details"
                             onclick="{ selectPage }">{ window.gettext("Asset Details") }</li>
-                        <li if="{ props.assetType === 'BRDG' }" class="{ state.page === 'protection' ? 'active' : '' }" data-page="protection"
-                            onclick="{ selectPage }">{ window.gettext("Protection") }</li>
+                        <li if="{ props.assetType === 'BRDG' }" class="{ state.page === 'protection' ? 'active' : '' }"
+                            data-page="protection" onclick="{ selectPage }">{ window.gettext("Protection") }</li>
                         <li class="{ state.page === 'photo' ? 'active' : '' }" data-page="photo"
                             onclick="{ selectPage }">{ window.gettext("Photos") }</li>
-                        <li class="{ state.page === 'structure_condition' ? 'active' : '' }" data-page="structure_condition"
-                            onclick="{ selectPage }">{ window.gettext("Condition") }</li>
+                        <li class="{ state.page === 'structure_condition' ? 'active' : '' }"
+                            data-page="structure_condition" onclick="{ selectPage }">{ window.gettext("Condition") }
+                        </li>
                     </ul>
                 </ul>
                 <ul class="navigation">
@@ -55,7 +56,10 @@
             <div if="{ !state.loading }">
                 <header class="align-items-center d-flex">
                     <a class="caret-dark left image" onclick="{ goBack }"></a>
-                    <h1>{ state.editingRoad.code } { state.editingRoad.name }</h1>
+                    <h1 if={state.editingRoad}>{ state.editingRoad.getRoadCode() } { state.editingRoad.getRoadName() }
+                    </h1>
+                    <h1 if={state.editingStructure}>{ state.editingStructure.getStructureCode() }
+                        { state.editingStructure.getStructureName() }</h1>
                 </header>
 
                 <feedback_banner if="{ state.showFeedback }" close="{ closeFeedback }"
@@ -63,34 +67,41 @@
                     errorMessage="{ window.gettext('Something went wrong') }" error="{ state.error }">
                 </feedback_banner>
 
-                <edit_location_type if="{ state.page === 'location_type' }" road="{ state.editingRoad }" 
+                <edit_location_type if="{ state.page === 'location_type' }" road="{ state.editingRoad }"
                     saving="{ state.saving }" parent="{parentFunctions}"></edit_location_type>
-                <edit_asset_details if="{ state.page === 'asset_details' }" road="{ state.editingRoad }" 
-                    saving="{ state.saving }" showFeedback="{ showFeedback }" parent="{parentFunctions}"></edit_asset_details>
-                <edit_pavement if="{ state.page === 'pavement' }" road="{ state.editingRoad }" 
-                    saving="{ state.saving }" showFeedback="{ showFeedback }" parent="{parentFunctions}"></edit_pavement>
-                <edit_project if="{ state.page === 'project' }" road="{ state.editingRoad }" 
-                    saving="{ state.saving }" parent="{parentFunctions}"></edit_project>
-                <edit_condition if="{ state.page === 'condition' }" road="{ state.editingRoad }" 
+                <edit_asset_details if="{ state.page === 'asset_details' }" road="{ state.editingRoad }"
+                    saving="{ state.saving }" showFeedback="{ showFeedback }" parent="{parentFunctions}">
+                </edit_asset_details>
+                <edit_pavement if="{ state.page === 'pavement' }" road="{ state.editingRoad }" saving="{ state.saving }"
+                    showFeedback="{ showFeedback }" parent="{parentFunctions}"></edit_pavement>
+                <edit_project if="{ state.page === 'project' }" road="{ state.editingRoad }" saving="{ state.saving }"
+                    parent="{parentFunctions}"></edit_project>
+                <edit_condition if="{ state.page === 'condition' }" road="{ state.editingRoad }"
                     showFeedback="{ showFeedback }" parent="{parentFunctions}"></edit_condition>
-                <edit_traffic if="{ state.page === 'traffic' }" road="{ state.editingRoad }" 
+                <edit_traffic if="{ state.page === 'traffic' }" road="{ state.editingRoad }"
                     showFeedback="{ showFeedback }" parent="{parentFunctions}"></edit_traffic>
-                <edit_maintenance if="{ state.page === 'maintenance' }" road="{ state.editingRoad }" 
+                <edit_maintenance if="{ state.page === 'maintenance' }" road="{ state.editingRoad }"
                     saving="{ state.saving }" parent="{parentFunctions}"></edit_maintenance>
-                <edit_environment if="{ state.page === 'environment' }" road="{ state.editingRoad }" 
-                    saving="{ state.saving }" showFeedback="{ showFeedback }" parent="{parentFunctions}"></edit_environment>
-                <edit_history if="{ state.page === 'history' }" road="{ state.baseRoad }" 
-                    parent="{parentFunctions}"></edit_history>
-                <edit_structure_type if="{ state.page === 'structure_type' }" road="{ state.editingRoad }"
-                    assetType="{ props.assetType }"></edit_structure_type>
-                <edit_structure_details if="{ state.page === 'structure_details' }" road="{ state.editingRoad }"
-                    assetType="{ props.assetType }" saving="{ state.saving }" parent="{parentFunctions}"></edit_structure_details>
-                <edit_protection if="{ state.page === 'protection' }" road="{ state.editingRoad }"
-                    saving="{ state.saving }" parent="{parentFunctions}"></edit_protection>
-                <edit_photo if="{ state.page === 'photo' }" road="{ state.editingRoad }"
+                <edit_environment if="{ state.page === 'environment' }" road="{ state.editingRoad }"
+                    saving="{ state.saving }" showFeedback="{ showFeedback }" parent="{parentFunctions}">
+                </edit_environment>
+                <edit_history if="{ state.page === 'history' }" road="{ state.baseRoad }" parent="{parentFunctions}">
+                </edit_history>
+                <edit_structure_type if="{ state.page === 'structure_type' }" structure="{ state.editingStructure }"
+                    assetType="{ props.assetType }" saving="{ state.saving }" parent="{parentFunctions}">
+                </edit_structure_type>
+                <edit_structure_details if="{ state.page === 'structure_details' }"
+                    structure="{ state.editingStructure }" assetType="{ props.assetType }" saving="{ state.saving }"
+                    parent="{parentFunctions}">
+                </edit_structure_details>
+                <edit_structure_protection if="{ state.page === 'protection' }" structure="{ state.editingStructure }"
+                    saving="{ state.saving }" parent="{parentFunctions}"></edit_structure_protection>
+                <edit_structure_condition if="{ state.page === 'structure_condition' }"
+                    structure="{ state.editingStructure }" saving="{ state.saving }" showFeedback="{ showFeedback }"
+                    parent="{parentFunctions}">
+                </edit_structure_condition>
+                <edit_photo if="{ state.page === 'photo' }" structure="{ state.editingStructure }"
                     saving="{ state.saving }" parent="{parentFunctions}"></edit_photo>
-                <edit_structure_condition if="{ state.page === 'structure_condition' }" road="{ state.editingRoad }" 
-                    saving="{ state.saving }" showFeedback="{ showFeedback }" parent="{parentFunctions}"></edit_structure_condition>
             </div>
             <footer>
                 <small>República Democrática de Timor-Leste / Ministério das Obras Públicas</small>
@@ -112,11 +123,14 @@
         // We really should NOT be importing road specific stuff here
         import {saveRoad} from "../roadManager";
         import {EstradaRoad, makeEstradaRoad} from "../assets/models/road";
+        import {EstradaStructure, makeEstradaStructures} from "../assets/models/structures";
+        import {updateStructure} from "../structureManager";
 
         import Feedback_Banner from './feedback_banner.riot.html';
         import Edit_Stop_Alert from "./edit_stop_alert.riot.html";
         import Loading from "./loading.riot.html";
 
+        // ASSETS EDIT TAGS
         import Edit_Location_Type from "./edit_location_type.riot.html";
         import Edit_Asset_Details from "./edit_asset_details.riot.html";
         import Edit_Pavement from "./edit_pavement.riot.html";
@@ -125,9 +139,11 @@
         import Edit_Condition from "./edit_condition.riot.html";
         import Edit_Maintenance from "./edit_maintenance.riot.html";
         import Edit_Environment from "./edit_environment.riot.html";
+
+        // STRUCTURES EDIT TAGS
         import Edit_Structure_Type from "./edit_structure_type.riot.html";
         import Edit_Structure_Details from "./edit_structure_details.riot.html";
-        import Edit_Protection from "./edit_protection.riot.html";
+        import Edit_Structure_Protection from "./edit_structure_protection.riot.html";
         import Edit_Photo from "./edit_photo.riot.html";
         import Edit_Structure_Condition from "./edit_structure_condition.riot.html";
 
@@ -141,6 +157,10 @@
                 editingRoad: null,
                 /** baseRoad is the original object */
                 baseRoad: null,
+                /** editingStructure is the object to actually make changes **/
+                editingStructure: null,
+                /** baseStructure is the original object **/
+                baseStructure: null,
                 error: false,
                 page: "location_type",
                 nextPage: null,
@@ -151,7 +171,7 @@
             components: {
                 Feedback_Banner, Edit_Stop_Alert, Loading,
                 Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Environment, Edit_Project, Edit_Traffic, Edit_Condition, Edit_Maintenance,
-                Edit_History, Edit_Structure_Type, Edit_Structure_Details, Edit_Protection, Edit_Photo, Edit_Structure_Condition,
+                Edit_History, Edit_Structure_Type, Edit_Structure_Details, Edit_Structure_Protection, Edit_Photo, Edit_Structure_Condition,
             },
             onBeforeMount(props, state) {
                 state.page = props.page;
@@ -170,26 +190,44 @@
                 this.parentFunctions = {
                     getHelpText: this.getHelpText,
                     save: this.save,
+                    saveStructure: this.saveStructure,
                     getRoadSurveys: this.getRoadSurveys,
                     refreshSurveysAndReports: this.refreshSurveysAndReports,
                     updateReportAttributeSummary: updateReportAttributeSummary,
                 };
 
-                props.roadPromise.then((road) => {
-                    $('#loading').modal('hide');
-                    state.loading = false;
-                    this.initRoad(road);
-                    this.continueMounting();
-                }).catch(err => {
-                    state.error = err;
-                }).finally((r) => {
-                    $('#loading').modal('hide');
-                    this.update();
-                });
+                if (props.roadPromise) {
+                    props.roadPromise.then(road => {
+                        $('#loading').modal('hide');
+                        state.loading = false;
+                        this.initRoad(road);
+                        this.continueMounting();
+                    }).catch(err => {
+                        state.error = err;
+                    }).finally((r) => {
+                        $('#loading').modal('hide');
+                        this.update();
+                    });
+                } else if (props.structurePromise) {
+                    props.structurePromise.then(structure => {
+                        $('#loading').modal('hide');
+                        state.loading = false;
+                        this.initStructure(structure);
+                    }).catch(err => {
+                        state.error = err;
+                    }).finally((r) => {
+                        $('#loading').modal('hide');
+                        this.update();
+                    });
+                }
             },
             initRoad(road) {
                 this.state.baseRoad = road;
                 this.state.editingRoad = makeEstradaRoad(this.state.baseRoad);
+            },
+            initStructure(structure) {
+                this.state.baseStructure = structure;
+                this.state.editingStructure = cloneData(this.state.baseStructure);
             },
             continueMounting() {
                 // Set up other data on editingRoad that is commonly used on the child tags
@@ -222,7 +260,26 @@
                     this.showFeedback(this.state.error);
                 });
             },
+            saveStructure() {
+                this.update({saving: true});
+                updateStructure(this.state.editingStructure).then((structure) => {
+                    if (structure) {
+                        this.state.error = false;
+                        this.initStructure(structure);
+                    } else {
+                        this.state.error = true;
+                    }
+                }).catch(err => {
+                    this.state.error = true;
+                }).finally((r) => {
+                    this.update({saving: false});
+                    this.showFeedback(this.state.error);
+                });
+            },
             hasChanges() {
+                if (this.props.assetType === "BRDG" || this.props.assetType === "CULV") {
+                    return this.state.baseStructure.toString() !== this.state.editingStructure.toString();
+                }
                 return this.state.baseRoad.toString() !== this.state.editingRoad.toString();
             },
             goBack(e) {
@@ -234,9 +291,9 @@
                 }
             },
             selectPage(e) {
-                const roadId = this.state.editingRoad.id;
+                const assetId = (this.state.editingRoad) ? this.state.editingRoad.id : this.state.editingStructure.id.split("-")[1];
                 this.state.page = e.currentTarget.dataset.page;
-                this.state.nextPage = `#edit/${this.props.assetType}/${roadId}/${this.state.page}`;
+                this.state.nextPage = `#edit/${this.props.assetType}/${assetId}/${this.state.page}`;
                 if (this.hasChanges()) {
                     this.modalHandler();
                 } else {
@@ -258,7 +315,13 @@
                 $("#stop-alert").modal("show");
             },
             discardChanges() {
-                this.state.editingRoad = makeEstradaRoad(this.state.baseRoad);
+                if (this.state.editingRoad) {
+                    this.state.editingRoad = makeEstradaRoad(this.state.baseRoad);
+                } else {
+                    this.state.editingStructure = makeEstradaStructures(this.state.baseStructure);
+                    // Was
+                    // this.state.editingStructure = this.state.baseStructure.cloneMessage();
+                }
                 window.location.hash = this.state.nextPage;
                 this.update();
             },

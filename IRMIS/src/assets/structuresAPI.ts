@@ -1,6 +1,6 @@
 import { Bridge, Culvert, Structures } from "../../protobuf/structure_pb";
 
-import { EstradaBridge, EstradaCulvert, EstradaStructures } from "./models/structures";
+import { EstradaBridge, EstradaCulvert, makeEstradaBridge, makeEstradaCulvert, makeEstradaStructures } from "./models/structures";
 import { makeEstradaObject } from "./protoBufUtilities";
 
 import { ConfigAPI } from "./configAPI";
@@ -71,7 +71,7 @@ export function getRoadStructuresMetadata(roadId: string | number) {
  */
 export function postStructureData(structure: EstradaBridge | EstradaCulvert, structureType: string) {
     const structureTypeUrlFragment = "structure_create";
-    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${structureTypeUrlFragment}`;
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${structureTypeUrlFragment}/${structureType}/`;
 
     const postAssetInit = ConfigAPI.requestInit("POST");
     postAssetInit.body = structure.serializeBinary();
@@ -97,36 +97,24 @@ export function postStructureData(structure: EstradaBridge | EstradaCulvert, str
  *
  * @returns 200 (success) or 400 (failure)
  */
-export function putStructureData(structure: EstradaBridge | EstradaCulvert, structureType: string) {
+export function putStructureData(structure: EstradaBridge | EstradaCulvert) {
     const structureTypeUrlFragment = "structure_update";
-    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${structureTypeUrlFragment}`;
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${structureTypeUrlFragment}/${structure.id}`;
 
-    const postAssetInit = ConfigAPI.requestInit("PUT");
-    postAssetInit.body = structure.serializeBinary();
+    const putAssetInit = ConfigAPI.requestInit("PUT");
+    putAssetInit.body = structure.serializeBinary();
 
-    return fetch(metadataUrl, postAssetInit)
+    return fetch(metadataUrl, putAssetInit)
         .then((metadataResponse) => {
             if (metadataResponse.ok) { return metadataResponse.arrayBuffer(); }
             throw new Error(`Structure creation failed: ${metadataResponse.statusText}`);
         })
         .then((protobufBytes) => {
             const uintArray = new Uint8Array(protobufBytes);
-            if (structureType === "BRDG") {
+            try {
                 return makeEstradaBridge(Bridge.deserializeBinary(uintArray));
-            } else {
+            } catch (err) {
                 return makeEstradaCulvert(Culvert.deserializeBinary(uintArray));
             }
         });
-}
-
-function makeEstradaStructures(pbstructures: { [name: string]: any }): EstradaStructures {
-    return makeEstradaObject(EstradaStructures, pbstructures) as EstradaStructures;
-}
-
-function makeEstradaBridge(pbbridge: { [name: string]: any }): EstradaBridge {
-    return makeEstradaObject(EstradaBridge, pbbridge) as EstradaBridge;
-}
-
-function makeEstradaCulvert(pbculvert: { [name: string]: any }): EstradaCulvert {
-    return makeEstradaObject(EstradaCulvert, pbculvert) as EstradaCulvert;
 }
