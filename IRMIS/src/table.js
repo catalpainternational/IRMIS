@@ -526,15 +526,16 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
             if (assetTypeName === "ROAD") {
                 if (assetData.linkStartChainage && assetData.linkEndChainage) {
                     filters.road_code = assetData.roadCode;
-                    filters.chainagestart = assetData.linkStartChainage;
-                    filters.chainageend = assetData.linkEndChainage;
+                    // Use the protobuf object get members here, because we want chainage unformatted
+                    filters.chainagestart = assetData.getLinkStartChainage();
+                    filters.chainageend = assetData.getLinkEndChainage();
                 } else {
                     filters.road_id = assetData.id;
                 }
             } else {
                 if (assetData.chainage) {
                     filters.structure_code = assetData.structureCode;
-                    filters.chainage = assetData.chainage;
+                    filters.chainage = assetData.getChainage();
                 } else {
                     filters.structure_id = assetData.id;
                 }
