@@ -56,10 +56,8 @@
             <div if="{ !state.loading }">
                 <header class="align-items-center d-flex">
                     <a class="caret-dark left image" onclick="{ goBack }"></a>
-                    <h1 if={state.editingRoad}>{ state.editingRoad.getRoadCode() } { state.editingRoad.getRoadName() }
-                    </h1>
-                    <h1 if={state.editingStructure}>{ state.editingStructure.getStructureCode() }
-                        { state.editingStructure.getStructureName() }</h1>
+                    <h1 if={state.editingRoad}>{ state.editingRoad.code } { state.editingRoad.name }</h1>
+                    <h1 if={state.editingStructure}>{ state.editingStructure.code } { state.editingStructure.name }</h1>
                 </header>
 
                 <feedback_banner if="{ state.showFeedback }" close="{ closeFeedback }"
@@ -116,14 +114,14 @@
         import * as riot from "riot";
         import $ from "jquery";
 
-        import {cloneData} from "../assets/protoBufUtilities";
-        import {getRoadSurveys, getStructureSurveys} from "../surveyManager";
-        import {getRoadReport} from "../reportManager";
+        import {getAssetSurveys, getStructureSurveys} from "../surveyManager";
+        import {getAssetReport} from "../reportManager";
         import {updateReportAttributeSummary} from "../roadAttributes";
 
         // We really should NOT be importing road specific stuff here
         import {saveRoad} from "../roadManager";
-        import {EstradaRoad} from "../assets/models/road";
+        import {EstradaRoad, makeEstradaRoad} from "../assets/models/road";
+        import {makeEstradaBridge, makeEstradaCulvert} from "../assets/models/structures";
         import {updateStructure} from "../structureManager";
 
         import Feedback_Banner from './feedback_banner.riot.html';
@@ -191,7 +189,7 @@
                     getHelpText: this.getHelpText,
                     save: this.save,
                     saveStructure: this.saveStructure,
-                    getRoadSurveys: this.getRoadSurveys,
+                    getAssetSurveys: this.getAssetSurveys,
                     getStructureSurveys: this.getStructureSurveys,
                     refreshSurveysAndReports: this.refreshSurveysAndReports,
                     updateReportAttributeSummary: updateReportAttributeSummary,
@@ -224,15 +222,18 @@
             },
             initRoad(road) {
                 this.state.baseRoad = road;
-                this.state.editingRoad = cloneData(this.state.baseRoad);
+                this.state.editingRoad = makeEstradaRoad(this.state.baseRoad);
             },
             initStructure(structure) {
                 this.state.baseStructure = structure;
-                this.state.editingStructure = cloneData(this.state.baseStructure);
+                this.state.editingStructure = this.state.baseStructure.assetType === "BRDG"
+                    ? makeEstradaBridge(this.state.baseStructure)
+                    : makeEstradaCulvert(this.state.baseStructure);
             },
             continueMounting() {
                 // Set up other data on editingRoad that is commonly used on the child tags
-                let roadDistance = this.state.editingRoad.getLinkEndChainage() - this.state.editingRoad.getLinkStartChainage();
+                let roadDistance = (this.state.editingRoad.linkEndChainage || 0)
+                    - (this.state.editingRoad.linkStartChainage || 0);
                 if (!roadDistance || roadDistance < 0) {
                     roadDistance = this.state.editingRoad.linkLength;
                 }
@@ -316,9 +317,11 @@
             },
             discardChanges() {
                 if (this.state.editingRoad) {
-                    this.state.editingRoad = this.state.baseRoad.cloneMessage();
+                    this.state.editingRoad = makeEstradaRoad(this.state.baseRoad);
                 } else {
-                    this.state.editingStructure = this.state.baseStructure.cloneMessage();
+                    this.state.editingStructure = this.state.baseStructure.assetType === "BRDG"
+                        ? makeEstradaBridge(this.state.baseStructure)
+                        : makeEstradaCulvert(this.state.baseStructure);
                 }
                 window.location.hash = this.state.nextPage;
                 this.update();
@@ -342,8 +345,8 @@
                 }
             },
             refreshSurveysAndReports(state, allDataTableId, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId = null) {
-                this.getRoadSurveys(state, allDataTableId, primaryAttribute, reportAttribute);
-                this.getRoadSurveyReports(state, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId);
+                this.getAssetSurveys(state, allDataTableId, primaryAttribute, reportAttribute);
+                this.getAssetSurveyReports(state, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId);
             },
             getStructureSurveys(state, allDataTableId, primaryAttribute, reportAttribute) {
                 const structureId = state.structure.id;
@@ -371,10 +374,10 @@
                         this.update();
                     });
             },
-            getRoadSurveys(state, allDataTableId, primaryAttribute, reportAttribute) {
+            getAssetSurveys(state, allDataTableId, primaryAttribute, reportAttribute) {
                 const roadId = state.road.id;
 
-                getRoadSurveys(roadId, primaryAttribute)
+                getAssetSurveys(roadId, primaryAttribute)
                     .then((surveyData) => {
                         if (surveyData) {
                             state.pendingRows = surveyData.map((data) => {
@@ -397,16 +400,17 @@
                         this.update();
                     });
             },
-            getRoadSurveyReports(state, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId) {
+            getAssetSurveyReports(state, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId) {
                 const editingRoad = state.editingRoad || state.road;
                 const filters = {
                     primaryattribute: primaryAttribute,
                     road_code: editingRoad.code,
+                    // Use the raw chainage (not the formatted one)
                     chainagestart: editingRoad.getLinkStartChainage(),
                     chainageend: editingRoad.getLinkEndChainage(),
                 };
 
-                getRoadReport(filters)
+                getAssetReport(filters)
                     .then((surveyReportData) => {
                         if (surveyReportData) {
                             const haveLengths = !!surveyReportData.lengths;

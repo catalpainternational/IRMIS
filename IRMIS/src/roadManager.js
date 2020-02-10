@@ -1,5 +1,5 @@
 import { slugToPropertyGetter } from "./filter";
-import { getRoadAuditData, getRoadMetadata, getRoadsMetadata, getRoadsMetadataChunks, putRoadMetadata } from "./assets/assetsAPI";
+import { getRoadMetadata, getRoadsMetadata, getRoadsMetadataChunks, putRoadMetadata } from "./assets/assetsAPI";
 import { dispatch } from "./assets/utilities";
 
 export const roads = {};
@@ -49,14 +49,6 @@ export function saveRoad(sourceRoad) {
             roads[road.id] = road;
             dispatch("estrada.road.assetMetaDataUpdated", { detail: { asset: road } });
             return road;
-        });
-}
-
-export function getRoadAudit(roadId) {
-    return Promise.resolve(getRoadAuditData(roadId))
-        .then((auditList) => {
-            // dispatch("estrada.auditTable.roadAuditDataAdded", { detail: { auditList } });
-            return auditList;
         });
 }
 

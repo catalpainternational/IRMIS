@@ -132,7 +132,7 @@ export const estradaTableColumns = [
         data: "linkLength",
         defaultContent: "",
         className: "text-right",
-        render: linkLength => linkLength / 1000,
+        render: linkLength => (linkLength / 1000).toFixed(2),
     },
     {
         title: EstradaRoad.getFieldName("link_start_name"),
@@ -515,7 +515,7 @@ function buttonSegmentsTemplate(attrib, asset) {
         ? assetTypeName === "ROAD" ? "ROAD" : "STRC"
         : ["BRDG"].includes(assetStructureType) ? "BRDG" : "CULV";
 
-    const code = (assetType === "ROAD") ? asset.getLinkCode() : asset.getStructureCode();
+    const code = (assetType === "ROAD") ? asset.linkCode : asset.structureCode;
     let getFieldName = (attrib) => (attrib);
     switch (assetType) {
         case "ROAD":
