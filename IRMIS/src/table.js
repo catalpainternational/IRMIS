@@ -25,8 +25,8 @@ import { datatableTranslations } from "./datatableTranslations";
 import { getRoad, roads } from "./roadManager";
 import { getStructure, structures } from "./structureManager";
 
-import { getRoadReport as getAssetReport } from "./reportManager";
-import { getRoadSurveys as getAssetSurveys } from "./surveyManager";
+import { getAssetReport } from "./reportManager";
+import { getAssetSurveys } from "./surveyManager";
 
 let roadsTable = null;
 let structuresTable = null;

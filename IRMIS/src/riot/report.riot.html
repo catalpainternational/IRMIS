@@ -196,8 +196,10 @@
         import {
             SURFACE_TYPE_CHOICES // surface_type
         } from "../assets/models/road";
+        import { makeEstradaNetworkSurveyReport } from "../assets/models/surveyReport";
 
-        import { getRoadReport, reportBarIds, reportColumns, reportContent, reportTableIds } from "../reportManager";
+        import { getAssetReport } from "../reportManager";
+        import { reportBarIds, reportColumns, reportContent, reportTableIds } from "../reportTableDefinitions";
         import { updateReportAttributeSummary } from "../roadAttributes";
         import { toChainageFormat } from "../assets/protoBufUtilities";
 
@@ -303,7 +305,7 @@
                 terrainClass: () => SetTitleColumn("terrain_class"),
             },
             reportContent() {
-                // For the definitions of the reports themselves see reportContent in reportManager.js
+                // For the definitions of the reports themselves see reportContent in reportTableDefinitions
                 const reportId = this.props.id;
                 return reportContent[reportId];
             },
@@ -666,9 +668,9 @@
                     return;
                 }
 
-                const getRoadReports = filters.map((f) => { return getRoadReport(f); });
+                const getAssetReports = filters.map((f) => { return getAssetReport(f); });
 
-                Promise.all(getRoadReports)
+                Promise.all(getAssetReports)
                     .then((surveyReportData) => {
                         switch (surveyReportData.length) {
                             case 0:
@@ -682,7 +684,7 @@
                             default:
                                 // A report with secondaryattributes defined
                                 // it will need 'assembling'
-                                const assembledReportData = copyData(surveyReportData[0]);
+                                const assembledReportData = makeEstradaNetworkSurveyReport(surveyReportData[0]);
                                 assembledReportData.clearFilter();
                                 assembledReportData.setLengths(JSON.stringify({}));
                                 assembledReportData.clearAttributesList();

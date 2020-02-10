@@ -1,7 +1,6 @@
 import { Bridge, Culvert, Structures } from "../../protobuf/structure_pb";
 
 import { EstradaBridge, EstradaCulvert, makeEstradaBridge, makeEstradaCulvert, makeEstradaStructures } from "./models/structures";
-import { makeEstradaObject } from "./protoBufUtilities";
 
 import { ConfigAPI } from "./configAPI";
 

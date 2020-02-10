@@ -333,7 +333,7 @@
             onMounted(props, state) {
                 state.loading = true;
                 state.road = makeEstradaRoad(props.road);
-                this.props.parent.getRoadSurveys(state, this.table_id, "trafficType");
+                this.props.parent.getAssetSurveys(state, this.table_id, "trafficType");
                 // If we're not still loading, then we assume that we want to replace all rows
                 const eventName = `${this.table_id}.dataAdded`;
                 const eventDetail = {detail: {pendingRows: this.state.pendingRows, clearRows: true}}
@@ -506,7 +506,7 @@
                 if (!this.state.editMode) {
                     createSurvey(this.state.survey)
                         .then((surveyData) => {
-                            this.props.parent.getRoadSurveys(this.state, this.table_id, "trafficType");
+                            this.props.parent.getAssetSurveys(this.state, this.table_id, "trafficType");
                             this.update();
                             this.props.showFeedback();
                         })
@@ -519,7 +519,7 @@
                 } else {
                     updateSurvey(this.state.survey)
                         .then((surveyData) => {
-                            this.props.parent.getRoadSurveys(this.state, this.table_id, "trafficType");
+                            this.props.parent.getAssetSurveys(this.state, this.table_id, "trafficType");
                             this.update();
                             this.props.showFeedback();
                         })

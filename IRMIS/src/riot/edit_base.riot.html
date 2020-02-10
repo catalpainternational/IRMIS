@@ -114,8 +114,8 @@
         import * as riot from "riot";
         import $ from "jquery";
 
-        import {getRoadSurveys} from "../surveyManager";
-        import {getRoadReport} from "../reportManager";
+        import {getAssetSurveys} from "../surveyManager";
+        import {getAssetReport} from "../reportManager";
         import {updateReportAttributeSummary} from "../roadAttributes";
 
         // We really should NOT be importing road specific stuff here
@@ -189,7 +189,7 @@
                     getHelpText: this.getHelpText,
                     save: this.save,
                     saveStructure: this.saveStructure,
-                    getRoadSurveys: this.getRoadSurveys,
+                    getAssetSurveys: this.getAssetSurveys,
                     refreshSurveysAndReports: this.refreshSurveysAndReports,
                     updateReportAttributeSummary: updateReportAttributeSummary,
                 };
@@ -344,13 +344,13 @@
                 }
             },
             refreshSurveysAndReports(state, allDataTableId, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId = null) {
-                this.getRoadSurveys(state, allDataTableId, primaryAttribute, reportAttribute);
-                this.getRoadSurveyReports(state, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId);
+                this.getAssetSurveys(state, allDataTableId, primaryAttribute, reportAttribute);
+                this.getAssetSurveyReports(state, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId);
             },
-            getRoadSurveys(state, allDataTableId, primaryAttribute, reportAttribute) {
+            getAssetSurveys(state, allDataTableId, primaryAttribute, reportAttribute) {
                 const roadId = state.road.id;
 
-                getRoadSurveys(roadId, primaryAttribute)
+                getAssetSurveys(roadId, primaryAttribute)
                     .then((surveyData) => {
                         if (surveyData) {
                             state.pendingRows = surveyData.map((data) => {
@@ -373,7 +373,7 @@
                         this.update();
                     });
             },
-            getRoadSurveyReports(state, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId) {
+            getAssetSurveyReports(state, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId) {
                 const editingRoad = state.editingRoad || state.road;
                 const filters = {
                     primaryattribute: primaryAttribute,
@@ -383,7 +383,7 @@
                     chainageend: editingRoad.getLinkEndChainage(),
                 };
 
-                getRoadReport(filters)
+                getAssetReport(filters)
                     .then((surveyReportData) => {
                         if (surveyReportData) {
                             const haveLengths = !!surveyReportData.lengths;
