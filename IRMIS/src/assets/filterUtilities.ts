@@ -7,7 +7,7 @@ export function filterAssets(
     assets: { [name: string]: any },
     eventName: string,
 ): any[] {
-    const filteredStructures = Object.values(assets).filter((asset) => {
+    const filteredAssets = Object.values(assets).filter((asset) => {
         // every filter state must match
         return filter.filters().every(([slug, values]) => {
             // empty array means all match
@@ -34,12 +34,10 @@ export function filterAssets(
     });
 
     // communicate the filter
-    const idMap = filteredStructures.reduce((idMap, structure) => {
-        idMap[structure.id] = true;
-        return idMap;
-    }, {});
+    const idMap: { [name: string]: boolean } = {};
+    filteredAssets.forEach((asset) => { idMap[asset.id] = true; });
 
     dispatch(eventName, { detail: { assetType: filter.assetType, idMap } });
 
-    return filteredStructures;
+    return filteredAssets;
 }
