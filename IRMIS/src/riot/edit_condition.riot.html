@@ -278,7 +278,8 @@
                     orderable: false,
                     render: (data, type) => {
                         return (type === 'display') ? choice_or_default(data, ASSET_CONDITION_CHOICES) : data;
-                    },                },
+                    },
+                },
                 {
                     title: window.gettext("Survey date"),
                     data: "dateSurveyed",
@@ -495,7 +496,7 @@
                 this.validate(fieldName, input, testResult, errorText);
             },
             checkAssetCondition(e) {
-                this.state.survey.assetCondition = e.currentTarget.value;
+                this.state.survey.assetCondition = e.currentTarget.dataset.condition;
                 this.canSave();
             },
             modal_id: "asset-condition-modal",
