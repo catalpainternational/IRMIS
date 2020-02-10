@@ -226,9 +226,10 @@
         import Data_Table from "./data_table.riot.html";
 
         import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
-        import {cloneData} from "../assets/protoBufUtilities";
         import {withinMaxDigits} from "../assets/utilities";
-        import {Survey} from "../../protobuf/survey_pb";
+
+        import { makeEstradaRoad } from "../assets/models/road";
+        import { EstradaSurvey, makeEstradaSurvey } from "../assets/models/survey";
 
         import $ from "jquery";
 
@@ -238,7 +239,7 @@
 
         export default {
             state: {
-                baseSurvey: new Survey({}),
+                baseSurvey: new EstradaSurvey({}),
                 survey: {},
                 canSave: false,
                 errors: {},
@@ -246,7 +247,7 @@
                 editMode: false,
                 loading: false,
                 maxCountDigits: 6,
-                currentRowData: new Survey({}),
+                currentRowData: new EstradaSurvey({}),
             },
             components: {
                 Edit_Modal, Edit_Stop_Alert, Data_Table
@@ -331,8 +332,8 @@
             ],
             onMounted(props, state) {
                 state.loading = true;
-                state.road = cloneData(props.road);
-                this.props.parent.getRoadSurveys(state, this.table_id, "trafficType");
+                state.road = makeEstradaRoad(props.road);
+                this.props.parent.getAssetSurveys(state, this.table_id, "trafficType");
                 // If we're not still loading, then we assume that we want to replace all rows
                 const eventName = `${this.table_id}.dataAdded`;
                 const eventDetail = {detail: {pendingRows: this.state.pendingRows, clearRows: true}}
@@ -391,12 +392,12 @@
             discardChanges() {
                 $(`#${this.modal_id}`).modal("hide");
                 this.update({
-                    survey: cloneData(this.state.baseSurvey),
+                    survey: makeEstradaSurvey(this.state.baseSurvey),
                     errors: {},
                 });
             },
             addEditTraffic(e) {
-                this.state.survey = cloneData(this.state.baseSurvey);
+                this.state.survey = makeEstradaSurvey(this.state.baseSurvey);
                 this.state.errors = {};
 
                 this.showEditModal();
@@ -494,7 +495,7 @@
                     }
 
                     // Reset baseSurvey now that we're done.
-                    this.baseSurvey = new Survey({});
+                    this.baseSurvey = new EstradaSurvey({});
 
                     $(`#${this.modal_id}`).modal("hide");
                 }
@@ -505,7 +506,7 @@
                 if (!this.state.editMode) {
                     createSurvey(this.state.survey)
                         .then((surveyData) => {
-                            this.props.parent.getRoadSurveys(this.state, this.table_id, "trafficType");
+                            this.props.parent.getAssetSurveys(this.state, this.table_id, "trafficType");
                             this.update();
                             this.props.showFeedback();
                         })
@@ -518,7 +519,7 @@
                 } else {
                     updateSurvey(this.state.survey)
                         .then((surveyData) => {
-                            this.props.parent.getRoadSurveys(this.state, this.table_id, "trafficType");
+                            this.props.parent.getAssetSurveys(this.state, this.table_id, "trafficType");
                             this.update();
                             this.props.showFeedback();
                         })
@@ -530,8 +531,8 @@
                         });
                 }
                 // clear input values
-                this.state.survey = new Survey({}); 
-                this.state.currentRowData = new Survey({});
+                this.state.survey = new EstradaSurvey({}); 
+                this.state.currentRowData = new EstradaSurvey({});
                 
                 this.update();
             },
@@ -618,7 +619,7 @@
                 this.canSave();
             },
             clearDetailsData() {
-                this.state.survey = new Survey({});
+                this.state.survey = new EstradaSurvey({});
                 $("#traffic-segments-modal").modal("hide");
                 this.update();
             },
@@ -628,7 +629,12 @@
                 });
             },
             parseVehicleCount(vehicleType) {
-                return JSON.parse(this.state.currentRowData.values.counts.replace(/\'/g, '"'))[vehicleType];
+                const surveyValues = this.state.currentRowData.values
+                    ? this.state.currentRowData.values.counts || ""
+                    : "";
+                return surveyValues 
+                    ? JSON.parse(surveyValues.replace(/\'/g, '"'))[vehicleType]
+                    : 0;
             },
             modal_id: "traffic-modal",
             max_date: () => new Date().toISOString().substring(0, 10),

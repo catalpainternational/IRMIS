@@ -6,13 +6,13 @@
             <div class="form-group">
                 <label>{ window.gettext("Structure Code") }</label>
                 <input
-                    class="{ state.errors.structureCode ? 'danger' : null } { state.structureCode ? '' : 'inactive' } form-control"
-                    type="text" maxlength="25" placeholder="DI-001" value="{ state.structureCode }"
-                    oninput="{ checkStructureCode }">
+                    class="{ state.errors.code ? 'danger' : null } { state.code ? '' : 'inactive' } form-control"
+                    type="text" maxlength="25" placeholder="DI-001" value="{ state.code }"
+                    oninput="{ checkCode }">
                 <small class="form-text text-muted">{ window.gettext("Enter the code of the structure") }</small>
-                <div if="{ state.errors.structureCode }" class="invalid-tooltip">
+                <div if="{ state.errors.code }" class="invalid-tooltip">
                     <ul>
-                        <li>{ state.errors.structureCode }.</li>
+                        <li>{ state.errors.code }.</li>
                     </ul>
                 </div>
             </div>
@@ -20,13 +20,13 @@
             <div class="form-group">
                 <label>{ window.gettext("Structure Name") }</label>
                 <input
-                    class="{ state.errors.structureName ? 'danger' : null } { state.structureName ? '' : 'inactive' } form-control"
-                    type="text" maxlength="25" placeholder="Kuluhun" value="{ state.structureName }"
-                    oninput="{ checkStructureName }">
+                    class="{ state.errors.name ? 'danger' : null } { state.name ? '' : 'inactive' } form-control"
+                    type="text" maxlength="25" placeholder="Kuluhun" value="{ state.name }"
+                    oninput="{ checkName }">
                 <small class="form-text text-muted">{ window.gettext("Enter the name of the structure") }</small>
-                <div if="{ state.errors.structureName }" class="invalid-tooltip">
+                <div if="{ state.errors.name }" class="invalid-tooltip">
                     <ul>
-                        <li>{ state.errors.structureName }.</li>
+                        <li>{ state.errors.name }.</li>
                     </ul>
                 </div>
             </div>
@@ -176,8 +176,8 @@
             },
             onBeforeMount(props, state) {
                 state.loading = true;
-                state.structureCode = props.structure.getStructureCode();
-                state.structureName = props.structure.getStructureName();
+                state.code = props.structure.code;
+                state.name = props.structure.name;
                 state.constructionYear = props.structure.getConstructionYear();
                 state.length = props.structure.getLength();
                 state.width = props.structure.getWidth();
@@ -194,14 +194,14 @@
             save(e) {
                 this.props.parent.saveStructure();
             },
-            checkStructureCode(e) {
-                this.state.structureCode = e.currentTarget.value;
-                this.props.structure.setStructureCode(this.state.structureCode);
+            checkCode(e) {
+                this.state.code = e.currentTarget.value;
+                this.props.structure.setStructureCode(this.state.code);
                 this.update();
             },
-            checkStructureName(e) {
-                this.state.structureName = e.currentTarget.value;
-                this.props.structure.setStructureName(this.state.structureName);
+            checkName(e) {
+                this.state.name = e.currentTarget.value;
+                this.props.structure.setStructureName(this.state.name);
                 this.update();
             },
             checkRiverName(e) {
