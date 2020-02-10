@@ -1,6 +1,6 @@
-import { slugToPropertyGetter } from "./filter";
 import { getRoadMetadata, getRoadsMetadata, getRoadsMetadataChunks, putRoadMetadata } from "./assets/assetsAPI";
 import { dispatch } from "./assets/utilities";
+import { filterAssets } from "./assets/filterUtilities";
 
 export const roads = {};
 let filteredRoads = {};
@@ -21,7 +21,7 @@ getRoadsMetadataChunks()
 // when a filter is applied filter the roads
 document.addEventListener("estrada.road.filter.apply", (data) => {
     const filterState = data.detail.filterState;
-    filterRoads(filterState);
+    filteredRoads = filterAssets(filterState, roads, "estrada.road.filter.applied", "ROAD");
 });
 
 export function getRoad(id) {
@@ -50,41 +50,4 @@ export function saveRoad(sourceRoad) {
             dispatch("estrada.road.assetMetaDataUpdated", { detail: { asset: road } });
             return road;
         });
-}
-
-function filterRoads(filterState) {
-    filteredRoads = Object.values(roads).filter( road => {
-        // every filter state must match
-        return Object.entries(filterState).every(([slug, values]) => {
-            // empty array means all match
-            if (!values.length) {
-                return true;
-            }
-
-            // or some values of one state must match
-            return values.some(value => {
-                const propertyGetter = slugToPropertyGetter[slug];
-                const propertyGetterType = typeof road[propertyGetter];
-                switch (propertyGetterType) {
-                    case "function":
-                        return road[propertyGetter]() === value;
-                    case "undefined":
-                        // This indicates a programming error,
-                        // but we're returning everything in this case
-                        return true;
-                    default:
-                        return road[propertyGetter] === value;
-                }
-            });
-        });
-    });
-
-    // communicate the filter
-    const assetType = "ROAD";
-    const idMap = filteredRoads.reduce((idMap, road) => {
-        idMap[road.id] = true;
-        return idMap;
-    }, {});
-
-    dispatch("estrada.road.filter.applied", { detail: { assetType, idMap } });
 }
