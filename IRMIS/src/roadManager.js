@@ -63,8 +63,18 @@ function filterRoads(filterState) {
 
             // or some values of one state must match
             return values.some(value => {
-                let propertyGetter = slugToPropertyGetter[slug];
-                return road[propertyGetter]() === value;
+                const propertyGetter = slugToPropertyGetter[slug];
+                const propertyGetterType = typeof road[propertyGetter];
+                switch (propertyGetterType) {
+                    case "function":
+                        return road[propertyGetter]() === value;
+                    case "undefined":
+                        // This indicates a programming error,
+                        // but we're returning everything in this case
+                        return true;
+                    default:
+                        return road[propertyGetter] === value;
+                }
             });
         });
     });

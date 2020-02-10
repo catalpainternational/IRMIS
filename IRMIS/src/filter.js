@@ -21,7 +21,7 @@ export const slugToPropertyGetter = {
     surface_type: "getSurfaceType",
     road_status: "getRoadStatus",
     // Structure
-    structure_type: "getStructureType",
+    asset_type: "assetType",
 };
 
 /** applies or unapplies the value to the slug filter */

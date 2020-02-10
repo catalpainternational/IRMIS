@@ -81,8 +81,18 @@ function filterStructures(filterState) {
 
             // or some values of one state must match
             return values.some(value => {
-                let propertyGetter = slugToPropertyGetter[slug];
-                return structure[propertyGetter]() === value;
+                const propertyGetter = slugToPropertyGetter[slug];
+                const propertyGetterType = typeof structure[propertyGetter];
+                switch (propertyGetterType) {
+                    case "function":
+                        return structure[propertyGetter]() === value;
+                    case "undefined":
+                        // This indicates a programming error,
+                        // but we're returning everything in this case
+                        return true;
+                    default:
+                        return structure[propertyGetter] === value;
+                }
             });
         });
     });
