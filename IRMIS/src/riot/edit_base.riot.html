@@ -121,7 +121,7 @@
         // We really should NOT be importing road specific stuff here
         import {saveRoad} from "../roadManager";
         import {EstradaRoad, makeEstradaRoad} from "../assets/models/road";
-        import {EstradaStructure, makeEstradaBridge, makeEstradaCulvert, makeEstradaStructures} from "../assets/models/structures";
+        import {makeEstradaBridge, makeEstradaCulvert} from "../assets/models/structures";
         import {updateStructure} from "../structureManager";
 
         import Feedback_Banner from './feedback_banner.riot.html';
@@ -318,9 +318,9 @@
                 if (this.state.editingRoad) {
                     this.state.editingRoad = makeEstradaRoad(this.state.baseRoad);
                 } else {
-                    this.state.editingStructure = makeEstradaStructures(this.state.baseStructure);
-                    // Was
-                    // this.state.editingStructure = this.state.baseStructure.cloneMessage();
+                    this.state.editingStructure = this.state.baseStructure.assetType === "BRDG"
+                        ? makeEstradaBridge(this.state.baseStructure)
+                        : makeEstradaCulvert(this.state.baseStructure);
                 }
                 window.location.hash = this.state.nextPage;
                 this.update();
