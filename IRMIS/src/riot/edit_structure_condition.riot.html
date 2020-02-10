@@ -23,9 +23,9 @@
                     <small class="form-text text-muted">{props.parent.getHelpText("survey_date")}</small>
                     <!-- It would be preferable to use the 'datetime-local' input type, however Firefox currently does not support it -->
                     <input
-                        class="{state.errors.surveyDate ? 'danger' : null } { state.surveyDate ? '' : 'inactive' } form-control"
-                        type="date" name="surveyDate" placeholder="Date" value="{state.surveyDate}"
-                        oninput="{checkSurveyDate}" required pattern="\d{4}-\d{2}-\d{2}">
+                        class="{state.errors.surveyDate ? 'danger' : null } { state.survey.surveyDate ? '' : 'inactive' } form-control"
+                        type="date" name="surveyDate" placeholder="Date" value="{state.survey.surveyDate}"
+                        oninput="{checkSurveyDate}" required pattern="\d{4}-\d{2}-\d{2}" max="{max_date()}">
                     <div if="{state.errors.surveyDate}" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.surveyDate }.</li>
@@ -49,7 +49,7 @@
                         <li each="{condition in conditions.options}" data-condition="{condition[0]}"
                             onclick="{checkStructureCondition}">
                             <span
-                                class="{ condition[0] == state.structureCondition ? 'active' : ''  } radio image"></span>
+                                class="{ condition[0] == state.survey.structureCondition ? 'active' : ''  } radio image"></span>
                             { condition[1] }
                         </li>
                     </ul>
@@ -59,12 +59,12 @@
                 <div class="form-group">
                     <label>{ window.gettext("Condition Description") }</label>
                     <input
-                        class="{ state.errors.description ? 'danger' : null } { state.description ? '' : 'inactive' } form-control"
-                        type="text" maxlength="500" placeholder="E.g." value="{ state.description }"
+                        class="{ state.errors.structureDescription ? 'danger' : null } { state.survey.conditionDescription ? '' : 'inactive' } form-control"
+                        type="text" maxlength="500" placeholder="E.g." value="{ state.survey.conditionDescription }"
                         oninput="{ checkDescription }">
-                    <div if="{state.errors.description}" class="invalid-tooltip">
+                    <div if="{state.errors.conditionDescription}" class="invalid-tooltip">
                         <ul>
-                            <li>{ state.errors.description }.</li>
+                            <li>{ state.errors.conditionDescription }.</li>
                         </ul>
                     </div>
                     <small class="form-text text-muted">
@@ -98,7 +98,8 @@
                         <div>{ window.gettext("Accepted file formats: JPEG, GIF, PNG, TIFF") }</div>
                     </div>
                 </div>
-                <input class="{ state.errors.photo2 ? 'danger' : null } { state.photo2 ? '' : 'inactive' } form-control"
+                <input
+                    class="{ state.errors.photo2 ? 'danger' : null } { state.survey.photos.photo2 ? '' : 'inactive' } form-control"
                     type="text" maxlength="500" placeholder="Enter a description of the photo" value="{ state.photo2 }"
                     oninput="{ checkPhotoText }">
                 <div if="{state.errors.photo2}" class="invalid-tooltip">
@@ -127,21 +128,21 @@
         import Edit_Modal from "./edit_modal.riot.html";
 
         import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
-        import {cloneData} from "../assets/protoBufUtilities";
+        import {EstradaSurvey, makeEstradaSurvey} from "../assets/models/survey";
         import {Survey} from "../../protobuf/survey_pb";
 
         import $ from "jquery";
 
         export default {
             state: {
-                baseSurvey: new Survey({}),
+                baseSurvey: new EstradaSurvey({}),
                 survey: {},
                 canSave: false,
                 errors: {},
                 pendingRows: [],
                 assetConditions: [{key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading")}],
                 editMode: false,
-                currentRowData: new Survey({}),
+                currentRowData: new EstradaSurvey({}),
                 photos: {
                     "1": null,
                     "2": null,
@@ -151,10 +152,11 @@
                 Edit_Stop_Alert, Edit_Modal
             },
 
+
             // Structure Condition Survey
             onMounted(props, state) {
                 state.loading = true;
-                state.structure = cloneData(props.structure);
+                state.structure = props.structure;
 
                 this.props.parent.getStructureSurveys(state, this.data_table_id, "asset_condition", "assetConditions");
 
@@ -284,7 +286,7 @@
             discardChanges() {
                 $(`#${this.modal_id}`).modal("hide");
                 this.update({
-                    survey: cloneData(this.state.baseSurvey),
+                    survey: new EstradaSurvey({}),
                     errors: {},
                 });
             },
@@ -380,7 +382,7 @@
             },
             /** Compare the selected fields between baseSurvey and survey.
                 * `source` and `user` are deliberately not compared
-                */
+            */
             hasChanges() {
                 const compareFieldNames = requiredFieldNames + ["photo1", "photo2"];
                 const surveyBase = compareFieldNames.map((fieldName) => {return this.state.baseSurvey[fieldName] || "";}).join("|||");
@@ -397,7 +399,6 @@
                 }
                 this.canSave();
             },
-
             // Structure Condition Survey
             checkSurveyDate(e) {
                 const fieldName = e.currentTarget.name;
@@ -428,6 +429,7 @@
                 this.props.save()
                 $(`#${this.modal_id}`).modal("hide");
             },
+            max_date: () => new Date().toISOString().substring(0, 10),
         }
     </script>
 </edit_structure_condition>

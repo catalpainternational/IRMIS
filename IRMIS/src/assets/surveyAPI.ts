@@ -28,7 +28,7 @@ export function getSurveysMetadata(roadId: string, surveyAttribute: string) {
  *
  * @returns a map {id: survey_object}
  */
-export function getStructureSurveysMetadata(structureId, surveyAttribute) {
+export function getStructureSurveysMetadata(structureId: string, surveyAttribute: string) {
     const surveyTypeUrlFragment = "protobuf_structure_surveys";
     structureId = structureId || "";
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${surveyTypeUrlFragment}/${structureId}/${surveyAttribute}`;
