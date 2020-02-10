@@ -1,4 +1,4 @@
-import { getSurveyMetadata, getSurveysMetadata, postSurveyData, putSurveyData } from "./assets/surveyAPI";
+import { getStructureSurveysMetadata, getSurveyMetadata, getSurveysMetadata, postSurveyData, putSurveyData } from "./assets/surveyAPI";
 
 let surveys = {}
 
@@ -10,6 +10,13 @@ export function getSurvey(id) {
 
 export function getRoadSurveys(roadId, surveyAttribute) {
     return Promise.resolve(getSurveysMetadata(roadId, surveyAttribute))
+        .then(surveys => {
+            return surveys;
+        });
+}
+
+export function getStructureSurveys(structureId, surveyAttribute) {
+    return Promise.resolve(getStructureSurveysMetadata(structureId, surveyAttribute))
         .then(surveys => {
             return surveys;
         });
