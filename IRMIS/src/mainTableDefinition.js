@@ -426,6 +426,13 @@ export const structuresTableColumns = [
         visible: false,
     },
     {
+        title: window.gettext("Span Length"),
+        data: "spanLength",
+        className: "text-right",
+        defaultContent: "N/A",
+        visible: false,
+    },
+    {
         title: window.gettext("Number Cells"),
         data: "numberCells",
         className: "text-right",
