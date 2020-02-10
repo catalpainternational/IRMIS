@@ -399,14 +399,14 @@ export const structuresTableColumns = [
     {
         title: window.gettext("Length"),
         data: "length",
-        render: (n) => { (n > 0) ? n : ""; },
+        render: (n) => { return (n > 0) ? n : ""; },
         className: "text-right",
         defaultContent: "",
     },
     {
         title: window.gettext("Width"),
         data: "width",
-        render: (n) => { (n > 0) ? n : ""; },
+        render: (n) => { return (n > 0) ? n : ""; },
         className: "text-right",
         defaultContent: "",
 
@@ -449,7 +449,7 @@ export const structuresTableColumns = [
     {
         title: window.gettext("Construction Year"),
         data: "constructionYear",
-        render: (n) => { (n > 0) ? n : ""; },
+        render: (n) => { return (n > 0) ? n : ""; },
         className: "text-right",
         defaultContent: "",
         visible: false,
