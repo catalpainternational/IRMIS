@@ -113,10 +113,12 @@ export class EstradaBridge extends Bridge implements IAsset {
         return this.getStructureName();
     }
 
+    /** Please use `code` in preference to `structureCode` */
     get structureCode() {
         return this.getStructureCode();
     }
 
+    /** Please use `name` in preference to `structureName` */
     get structureName() {
         return this.getStructureName();
     }
@@ -248,10 +250,12 @@ export class EstradaCulvert extends Culvert implements IAsset {
         return this.getStructureName();
     }
 
+    /** Please use `code` in preference to `structureCode` */
     get structureCode() {
         return this.getStructureCode();
     }
 
+    /** Please use `name` in preference to `structureName` */
     get structureName() {
         return this.getStructureName();
     }

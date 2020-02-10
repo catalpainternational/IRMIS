@@ -67,10 +67,12 @@ export class EstradaRoad extends Road implements IAsset {
         return this.roadCode;
     }
 
+    /** Please use `name` in preference to `roadName` */
     get roadName() {
         return this.getRoadName();
     }
 
+    /** Please use `code` in preference to `roadCode` */
     get roadCode() {
         return this.getRoadCode();
     }
