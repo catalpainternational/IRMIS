@@ -67,19 +67,6 @@ export function humanizeChoices(
     return values;
 }
 
-/** Deep copy the supplied data to a new object
- *  Prefers to use protobuf .cloneMessage
- *
- *  Use copyEstradaObject derivative for any protobuf wrapper object in preference
- */
-export function cloneData(data: { [name: string]: any }): { [name: string]: any } {
-    if (data.cloneMessage) {
-        return data.cloneMessage();
-    }
-
-    return JSON.parse(JSON.stringify(data));
-}
-
 export function projectionToCoordinates(proj: Projection | Point): [number, number] {
     return [proj.getX(), proj.getY()];
 }

@@ -199,7 +199,7 @@
 
         import { getRoadReport, reportBarIds, reportColumns, reportContent, reportTableIds } from "../reportManager";
         import { updateReportAttributeSummary } from "../roadAttributes";
-        import { cloneData, toChainageFormat } from "../assets/protoBufUtilities";
+        import { toChainageFormat } from "../assets/protoBufUtilities";
 
         import $ from "jquery";
         import "select2/dist/js/select2.full.min.js";
@@ -250,13 +250,17 @@
 
         function SetTitleColumn(titleColumnName) {
             if (titleColumnMapping[titleColumnName]) {
-                const titleColumn = cloneData(reportColumns.title);
+                const titleColumn = copyData(reportColumns.title);
                 titleColumn.title = GetTitleTranslation(titleColumnName);
                 columnSets[titleColumnName][0] = titleColumn;
             }
 
             return columnSets[titleColumnName];
         }
+
+        /** Deep copy the supplied data to a new object
+         */
+        function copyData(data) { return JSON.parse(JSON.stringify(data)); };
 
         export default {
             state: {
@@ -493,7 +497,7 @@
                 return toChainageFormat(value);
             },
             assembleFilterSet() {
-                const filterSet = cloneData(this.reportContent().fixedFilter);
+                const filterSet = copyData(this.reportContent().fixedFilter);
 
                 // Handle the select filters
                 this.state.filterDefinitions.forEach((filterDefinition) => {
@@ -585,7 +589,7 @@
                             // plus the secondary attributes that relate to the expanded primary
                             const newPrimaryAttributes = [].concat(revisedPrimary, filterSet.secondaryattribute[expandedPrimary]);
                             expandedPrimaries[expandedPrimary].forEach((ep) => {
-                                const newFilterSet = cloneData(filterSet);
+                                const newFilterSet = copyData(filterSet);
                                 newFilterSet.primaryattribute = newPrimaryAttributes;
                                 newFilterSet[expandedPrimary] = [ep];
                                 delete newFilterSet.secondaryattribute;
@@ -678,7 +682,7 @@
                             default:
                                 // A report with secondaryattributes defined
                                 // it will need 'assembling'
-                                const assembledReportData = cloneData(surveyReportData[0]);
+                                const assembledReportData = copyData(surveyReportData[0]);
                                 assembledReportData.clearFilter();
                                 assembledReportData.setLengths(JSON.stringify({}));
                                 assembledReportData.clearAttributesList();
