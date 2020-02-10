@@ -150,23 +150,6 @@ function toggleAssetType(e) {
 
     // communicate this basic filter to the map
     dispatch("estrada.map.idFilter.applied", { detail: { idMap } });
-
-    // const roadValues = ["Road"];
-    // const structureValues = ["Structure", "bridge", "culvert"];
-
-    // const onValues = (assetTypeName !== "STRC") ? roadValues : structureValues;
-    // const offValues = (assetTypeName !== "STRC") ? structureValues : roadValues;
-
-    // onValues.forEach((on) => {
-    //     if (!isFilterApplied(fd.slug, on)) {
-    //         toggleFilter(fd.slug, on);
-    //     }
-    // });
-    // offValues.forEach((off) => {
-    //     if (isFilterApplied(fd.slug, off)) {
-    //         toggleFilter(fd.slug, off);
-    //     }
-    // });
 }
 
 function toggleFilterSelect2(e) {

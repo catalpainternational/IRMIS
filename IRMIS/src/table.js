@@ -25,8 +25,8 @@ import { datatableTranslations } from "./datatableTranslations";
 import { getRoad, roads } from "./roadManager";
 import { getStructure, structures } from "./structureManager";
 
-import { getRoadReport as getAssetReport } from "./reportManager";
-import { getRoadSurveys as getAssetSurveys } from "./surveyManager";
+import { getAssetReport } from "./reportManager";
+import { getAssetSurveys } from "./surveyManager";
 
 let roadsTable = null;
 let structuresTable = null;
@@ -374,15 +374,12 @@ export function GetDataForMapPopup(id, featureType) {
         return [{ label: window.gettext("Loading"), value: "" }];
     }
 
-    const code = asset.code || asset.getRoadCode();
-    const name = asset.name;
-
     const mapPopupData = [];
-    if (code) {
-        mapPopupData.push({ label: window.gettext("Code"), value: code });
+    if (asset.code) {
+        mapPopupData.push({ label: window.gettext("Code"), value: asset.code });
     }
-    if (name) {
-        mapPopupData.push({ label: window.gettext("Name"), value: name });
+    if (asset.name) {
+        mapPopupData.push({ label: window.gettext("Name"), value: asset.name });
     }
 
     return mapPopupData;
@@ -520,23 +517,24 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
         modal.find(".modal-title").text(`${assetCode} ${attributeModalMapping[attr].title}`);
         reportTable.clear(); // remove all rows in the table
 
-        const getAsset = assetTypeName === "roads" ? getRoad : getStructure;
+        const getAsset = assetTypeName === "ROAD" ? getRoad : getStructure;
         const getAssetFilters = (assetData) => {
             let filters = {
                 primaryattribute: attr,
             };
 
             if (assetTypeName === "ROAD") {
-                if (assetData.getLinkStartChainage() && assetData.getLinkEndChainage()) {
-                    filters.road_code = assetData.getRoadCode();
+                if (assetData.linkStartChainage && assetData.linkEndChainage) {
+                    filters.road_code = assetData.roadCode;
+                    // Use the protobuf object get members here, because we want chainage unformatted
                     filters.chainagestart = assetData.getLinkStartChainage();
                     filters.chainageend = assetData.getLinkEndChainage();
                 } else {
                     filters.road_id = assetData.id;
                 }
             } else {
-                if (assetData.getChainage()) {
-                    filters.structure_code = assetData.getStructureCode();
+                if (assetData.chainage) {
+                    filters.structure_code = assetData.structureCode;
                     filters.chainage = assetData.getChainage();
                 } else {
                     filters.structure_id = assetData.id;

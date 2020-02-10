@@ -4,7 +4,7 @@
     <section>
         <div class="form-group">
             <label>{ funding_source.display }</label>
-            <input class="{ props.road.getFundingSource() ? '' : 'inactive' } form-control" type="text" maxlength="50" placeholder="{ window.gettext ('E.g. IF') }" value="{ props.road.getFundingSource() }" oninput="{ checkFundingSource }">
+            <input class="{ props.road.fundingSource ? '' : 'inactive' } form-control" type="text" maxlength="50" placeholder="{ window.gettext ('E.g. IF') }" value="{ props.road.fundingSource }" oninput="{ checkFundingSource }">
             <small class="form-text text-muted">{ props.parent.getHelpText("funding_source") }</small>
         </div>
         <div class="form-group">
@@ -19,7 +19,7 @@
         </div>
         <div class="form-group">
             <label>{ project.display }</label>
-            <input class="{ props.road.getProject() ? '' : 'inactive' } form-control" type="text" maxlength="150" placeholder="{ window.gettext ('E.g. DBHP 2016-2022') }" value="{ props.road.getProject() }" oninput="{ checkProject }">
+            <input class="{ props.road.project ? '' : 'inactive' } form-control" type="text" maxlength="150" placeholder="{ window.gettext ('E.g. DBHP 2016-2022') }" value="{ props.road.project }" oninput="{ checkProject }">
             <small class="form-text text-muted">{ props.parent.getHelpText("project") }</small>
         </div>
     </section>

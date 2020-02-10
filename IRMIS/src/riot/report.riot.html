@@ -138,32 +138,32 @@
         <data_table hidden="{ !state.reportData.municipality || !hasDataTable(reportTableIds.municipality) }"
             table_id="{reportTableIds.municipality}" title="{ window.gettext('Municipality') }"
             columns="{columns.municipality()}" columnSortOrder="{baseColumnSortOrder}"
-            paging="false" canExport showTotal>
+            paging="false" canexport showTotal>
         </data_table>
         <data_table hidden="{ !state.reportData.assetClass || !hasDataTable(reportTableIds.assetClass) }"
             table_id="{reportTableIds.assetClass}" title="{ window.gettext('Road Class') }"
             columns="{columns.assetClass()}" columnSortOrder="{baseColumnSortOrder}"
-            paging="false" canExport showTotal>
+            paging="false" canexport showTotal>
         </data_table>
         <data_table hidden="{ !state.reportData.surfaceType || !hasDataTable(reportTableIds.surfaceType) }"
             table_id="{reportTableIds.surfaceType}" title="{ window.gettext('Surface Type') }"
             columns="{columns.surfaceType()}" columnSortOrder="{baseColumnSortOrder}"
-            paging="false" canExport showTotal>
+            paging="false" canexport showTotal>
         </data_table>
         <data_table hidden="{ !state.reportData.roadStatus || !hasDataTable(reportTableIds.roadStatus) }"
             table_id="{reportTableIds.roadStatus}" title="{ window.gettext('Road Status') }"
             columns="{columns.roadStatus()}" columnSortOrder="{baseColumnSortOrder}"
-            paging="false" canExport showTotal>
+            paging="false" canexport showTotal>
         </data_table>
         <data_table hidden="{ !state.reportData.technicalClass || !hasDataTable(reportTableIds.technicalClass) }"
             table_id="{reportTableIds.technicalClass}" title="{ window.gettext('Technical Class') }"
             columns="{columns.technicalClass()}" columnSortOrder="{baseColumnSortOrder}"
-            paging="false" canExport showTotal>
+            paging="false" canexport showTotal>
         </data_table>
         <data_table hidden="{ !state.reportData.assetCondition || !hasDataTable(reportTableIds.assetCondition) }"
             table_id="{reportTableIds.assetCondition}" title="{ window.gettext('Surface Condition (SDI)') }"
             columns="{columns.assetCondition()}" columnSortOrder="{baseColumnSortOrder}"
-            paging="false" canExport>
+            paging="false" canexport>
         </data_table>
     </div>
 
@@ -192,14 +192,16 @@
             ADMINISTRATIVE_AREA_CHOICES, // municipality
             ASSET_CLASS_CHOICES, // asset_class - previously road_class / road_type, structure_class
             ASSET_CONDITION_CHOICES, // asset_condition - previously surface_condition, structure_condition
-        } from "../assets/models/asset";
+        } from "../assets/models/estradaBase";
         import {
             SURFACE_TYPE_CHOICES // surface_type
         } from "../assets/models/road";
+        import { makeEstradaNetworkSurveyReport } from "../assets/models/surveyReport";
 
-        import { getRoadReport, reportBarIds, reportColumns, reportContent, reportTableIds } from "../reportManager";
+        import { getAssetReport } from "../reportManager";
+        import { reportBarIds, reportColumns, reportContent, reportTableIds } from "../reportTableDefinitions";
         import { updateReportAttributeSummary } from "../roadAttributes";
-        import { cloneData, toChainageFormat } from "../assets/protoBufUtilities";
+        import { toChainageFormat } from "../assets/protoBufUtilities";
 
         import $ from "jquery";
         import "select2/dist/js/select2.full.min.js";
@@ -250,13 +252,17 @@
 
         function SetTitleColumn(titleColumnName) {
             if (titleColumnMapping[titleColumnName]) {
-                const titleColumn = cloneData(reportColumns.title);
+                const titleColumn = copyData(reportColumns.title);
                 titleColumn.title = GetTitleTranslation(titleColumnName);
                 columnSets[titleColumnName][0] = titleColumn;
             }
 
             return columnSets[titleColumnName];
         }
+
+        /** Deep copy the supplied data to a new object
+         */
+        function copyData(data) { return JSON.parse(JSON.stringify(data)); };
 
         export default {
             state: {
@@ -299,7 +305,7 @@
                 terrainClass: () => SetTitleColumn("terrain_class"),
             },
             reportContent() {
-                // For the definitions of the reports themselves see reportContent in reportManager.js
+                // For the definitions of the reports themselves see reportContent in reportTableDefinitions
                 const reportId = this.props.id;
                 return reportContent[reportId];
             },
@@ -493,7 +499,7 @@
                 return toChainageFormat(value);
             },
             assembleFilterSet() {
-                const filterSet = cloneData(this.reportContent().fixedFilter);
+                const filterSet = copyData(this.reportContent().fixedFilter);
 
                 // Handle the select filters
                 this.state.filterDefinitions.forEach((filterDefinition) => {
@@ -585,7 +591,7 @@
                             // plus the secondary attributes that relate to the expanded primary
                             const newPrimaryAttributes = [].concat(revisedPrimary, filterSet.secondaryattribute[expandedPrimary]);
                             expandedPrimaries[expandedPrimary].forEach((ep) => {
-                                const newFilterSet = cloneData(filterSet);
+                                const newFilterSet = copyData(filterSet);
                                 newFilterSet.primaryattribute = newPrimaryAttributes;
                                 newFilterSet[expandedPrimary] = [ep];
                                 delete newFilterSet.secondaryattribute;
@@ -662,9 +668,9 @@
                     return;
                 }
 
-                const getRoadReports = filters.map((f) => { return getRoadReport(f); });
+                const getAssetReports = filters.map((f) => { return getAssetReport(f); });
 
-                Promise.all(getRoadReports)
+                Promise.all(getAssetReports)
                     .then((surveyReportData) => {
                         switch (surveyReportData.length) {
                             case 0:
@@ -678,7 +684,7 @@
                             default:
                                 // A report with secondaryattributes defined
                                 // it will need 'assembling'
-                                const assembledReportData = cloneData(surveyReportData[0]);
+                                const assembledReportData = makeEstradaNetworkSurveyReport(surveyReportData[0]);
                                 assembledReportData.clearFilter();
                                 assembledReportData.setLengths(JSON.stringify({}));
                                 assembledReportData.clearAttributesList();
