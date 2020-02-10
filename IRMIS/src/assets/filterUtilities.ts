@@ -1,15 +1,15 @@
 import { slugToPropertyGetter } from "../filterSlugs";
+import { Filter } from "./models/filter";
 import { dispatch } from "./utilities";
 
 export function filterAssets(
-    filterState: { [name: string]: any },
+    filter: Filter,
     assets: { [name: string]: any },
     eventName: string,
-    assetType: string,
 ): any[] {
     const filteredStructures = Object.values(assets).filter((asset) => {
         // every filter state must match
-        return Object.entries(filterState).every(([slug, values]) => {
+        return filter.filters().every(([slug, values]) => {
             // empty array means all match
             if (!values.length) {
                 return true;
@@ -39,7 +39,7 @@ export function filterAssets(
         return idMap;
     }, {});
 
-    dispatch(eventName, { detail: { assetType, idMap } });
+    dispatch(eventName, { detail: { assetType: filter.assetType, idMap } });
 
     return filteredStructures;
 }

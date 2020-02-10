@@ -240,10 +240,10 @@ export class EstradaNetworkSurveyReport extends Report implements IEstrada {
             }
         }
 
-        const currentFilter = this.filter;
-        currentFilter[key] = values;
+        const currentReportFilter = this.filter;
+        currentReportFilter[key] = values;
 
-        this.setFilter(JSON.stringify(currentFilter));
+        this.setFilter(JSON.stringify(currentReportFilter));
     }
 
     /** Adds a value to the list that is in the filter key
@@ -259,11 +259,11 @@ export class EstradaNetworkSurveyReport extends Report implements IEstrada {
             return;
         }
 
-        const currentFilter = this.filter;
-        currentFilter[key] = currentFilter[key] || [];
-        if (!currentFilter[key].includes(value)) {
-            currentFilter[key].push(value);
-            this.setFilter(JSON.stringify(currentFilter));
+        const currentReportFilter = this.filter;
+        currentReportFilter[key] = currentReportFilter[key] || [];
+        if (!currentReportFilter[key].includes(value)) {
+            currentReportFilter[key].push(value);
+            this.setFilter(JSON.stringify(currentReportFilter));
         }
     }
 

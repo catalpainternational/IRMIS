@@ -11,6 +11,8 @@
         import {datatableTranslations} from "../datatableTranslations";
         import {exportCsv} from "../exportCsv";
 
+        import { currentFilter } from "../side_menu";
+
         import "bootstrap/js/dist/modal";
         import $ from "jquery";
 
@@ -54,7 +56,7 @@
             const optionColumns = state.columns.filter((column) => (column.name && column.name === "Option"));
 
             if (state.canEdit) {
-                const firstEditPage = assetTypeName === "STRC" ? "structure_type" : "location_type";
+                const firstEditPage = currentFilter.assetType === "STRC" ? "structure_type" : "location_type";
                 state.columns.unshift({
                     title: "",
                     data: null,

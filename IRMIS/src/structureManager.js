@@ -28,8 +28,8 @@ getStructuresMetadata()
 
 // when a filter is applied filter the structures
 document.addEventListener("estrada.structure.filter.apply", (data) => {
-    const filterState = data.detail.filterState;
-    filteredStructures = filterAssets(filterState, structures, "estrada.structure.filter.applied", "STRC");
+    const filterState = data.detail.filter;
+    filteredStructures = filterAssets(filterState, structures, "estrada.structure.filter.applied");
 });
 
 export function getStructure(id) {

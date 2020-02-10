@@ -20,8 +20,8 @@ getRoadsMetadataChunks()
 
 // when a filter is applied filter the roads
 document.addEventListener("estrada.road.filter.apply", (data) => {
-    const filterState = data.detail.filterState;
-    filteredRoads = filterAssets(filterState, roads, "estrada.road.filter.applied", "ROAD");
+    const filterState = data.detail.filter;
+    filteredRoads = filterAssets(filterState, roads, "estrada.road.filter.applied");
 });
 
 export function getRoad(id) {
