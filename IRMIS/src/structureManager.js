@@ -1,6 +1,6 @@
 import { getRoadStructuresMetadata, getStructureMetadata, getStructuresMetadata, postStructureData, putStructureData } from "./assets/structuresAPI";
 import { dispatch } from "./assets/utilities";
-import { slugToPropertyGetter } from "./filter";
+import { filterAssets } from "./assets/filterUtilities";
 
 export const structures = {};
 let filteredStructures = {};
@@ -28,8 +28,8 @@ getStructuresMetadata()
 
 // when a filter is applied filter the structures
 document.addEventListener("estrada.structure.filter.apply", (data) => {
-    const filterState = data.detail.filterState;
-    filterStructures(filterState);
+    const filterState = data.detail.filter;
+    filteredStructures = filterAssets(filterState, structures, "estrada.structure.filter.applied");
 });
 
 export function getStructure(id) {
@@ -68,31 +68,4 @@ export function getStructureAudit(structureId) {
             // dispatch("estrada.auditTable.structureAuditDataAdded", { detail: { auditList } });
             return auditList;
         });
-}
-
-function filterStructures(filterState) {
-    filteredStructures = Object.values(structures).filter( structure => {
-        // every filter state must match
-        return Object.entries(filterState).every(([slug, values]) => {
-            // empty array means all match
-            if (!values.length) {
-                return true;
-            }
-
-            // or some values of one state must match
-            return values.some(value => {
-                let propertyGetter = slugToPropertyGetter[slug];
-                return structure[propertyGetter]() === value;
-            });
-        });
-    });
-
-    // communicate the filter
-    const assetType = "STRC";
-    const idMap = filteredStructures.reduce((idMap, structure) => {
-        idMap[structure.id] = true;
-        return idMap;
-    }, {});
-
-    dispatch("estrada.structure.filter.applied", { detail: { assetType, idMap } });
 }
