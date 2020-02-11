@@ -40,16 +40,16 @@
                     <label>{conditions.display}</label>
                     <span class="required">*</span>
                     <small class="form-text text-muted">{window.gettext("Choose the structure condition")}</small>
-                    <div if="{state.errors.structureCondition}" class="invalid-tooltip">
+                    <div if="{state.errors.assetCondition}" class="invalid-tooltip">
                         <ul>
-                            <li>{ state.errors.structureCondition }.</li>
+                            <li>{ state.errors.assetCondition }.</li>
                         </ul>
                     </div>
                     <ul>
                         <li each="{condition in conditions.options}" data-condition="{condition[0]}"
-                            onclick="{checkStructureCondition}">
+                            onclick="{checkAssetCondition}">
                             <span
-                                class="{ condition[0] == state.survey.structureCondition ? 'active' : ''  } radio image"></span>
+                                class="{ condition[0] == state.survey.assetCondition ? 'active' : ''  } radio image"></span>
                             { condition[1] }
                         </li>
                     </ul>
@@ -230,7 +230,7 @@
 
 
             // Survey Modal
-            requiredFieldNames: ["surveyDate", "structureCondition", "conditionDescription"],
+            requiredFieldNames: ["surveyDate", "assetCondition",],
             showEditModal() {
                 document.addEventListener(`${this.modal_id}.result`, (data) => {
                     const modalResult = data.detail.result;
@@ -412,8 +412,8 @@
 
                 this.validate(fieldName, input, testResult, errorText);
             },
-            checkStructureCondition(e) {
-                this.state.survey.structureCondition = e.currentTarget.dataset.condition;
+            checkAssetCondition(e) {
+                this.state.survey.assetCondition = e.currentTarget.dataset.condition;
                 this.canSave();
             },
             checkDescription(e) {
