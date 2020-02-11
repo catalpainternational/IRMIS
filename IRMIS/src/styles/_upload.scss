@@ -1,14 +1,4 @@
 upload_photo {
-    .upload-box { 
-        box-sizing: border-box;
-        height: 230px;
-        border: 1px solid $light-gray;
-        border-radius: 4px;
-        margin-bottom: 20px;
-        margin-top: 30px;
-        max-width: 500px;
-    }
-
     .cloud-box {
         margin: 70px 85px 20px 85px;
         font-size: 12px;
@@ -17,6 +7,7 @@ upload_photo {
         display: flex;
         flex-direction: column;
         font-weight: 600;
+        z-index: -10;
 
         div.upload-instructions {
             color: $green;

@@ -1,13 +1,11 @@
 <upload_photo>
     <div>
         <form action="/upload-target" class="dropzone">
-            <div class="upload-box">
-                <div class="cloud-box">
-                    <div class="upload-cloud"></div>
-                    <div class="upload-instructions">{ window.gettext("Click to upload") }</div>
-                    <div>{ window.gettext("Maximum file size 500KB") }</div>
-                    <div>{ window.gettext("Accepted file formats: JPEG, GIF, PNG, TIFF") }</div>
-                </div>
+            <div class="cloud-box">
+                <div class="upload-cloud"></div>
+                <div class="upload-instructions">{ window.gettext("Click to upload") }</div>
+                <div>{ window.gettext("Maximum file size 500KB") }</div>
+                <div>{ window.gettext("Accepted file formats: JPEG, GIF, PNG") }</div>
             </div>
         </form>
         <input
@@ -30,7 +28,20 @@
             },
             onMounted(props, state) {
                 Dropzone.autoDiscover = false;
-                const myDropzone = new Dropzone(this.$('form'), { url: "/file/post"});
+                const myDropzone = new Dropzone(this.$('form'), {
+                    url: "/file/post",
+                    maxFilesize: 0.5, // MB
+                    acceptedFiles: '.jpeg,.jpg,.gif,.png',
+                    dictDefaultMessage: '',
+                    dictInvalidFileType: 'Not a valid image, please submit a JPEG, GIF, or PNG',
+                    accept: (file, done) => {
+                        if (file.name == "image.jpg") {
+                            done();
+                        } else { 
+                            done(); 
+                        }
+                    }
+                });
             },
             checkPhotoText(e) {
                 console.log(e.currentTarget.value)
