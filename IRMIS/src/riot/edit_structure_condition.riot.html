@@ -84,7 +84,7 @@
                 </div>
                 <input class="{ state.errors.photo1 ? 'danger' : null } { state.photo1 ? '' : 'inactive' } form-control"
                     type="text" maxlength="500" placeholder="Enter a description of the photo" value="{ state.photo1 }"
-                    oninput="{ checkPhotoText }">
+                    oninput="{ checkPhoto1Text }">
                 <div if="{state.errors.photo1}" class="invalid-tooltip">
                     <ul>
                         <li>{ state.errors.photo1 }.</li>
@@ -98,10 +98,9 @@
                         <div>{ window.gettext("Accepted file formats: JPEG, GIF, PNG, TIFF") }</div>
                     </div>
                 </div>
-                <input
-                    class="{ state.errors.photo2 ? 'danger' : null } { state.survey.photos.photo2 ? '' : 'inactive' } form-control"
+                <input class="{ state.errors.photo2 ? 'danger' : null } { state.photo2 ? '' : 'inactive' } form-control"
                     type="text" maxlength="500" placeholder="Enter a description of the photo" value="{ state.photo2 }"
-                    oninput="{ checkPhotoText }">
+                    oninput="{ checkPhoto2Text }">
                 <div if="{state.errors.photo2}" class="invalid-tooltip">
                     <ul>
                         <li>{ state.errors.photo2 }.</li>
@@ -132,6 +131,10 @@
         import {Survey} from "../../protobuf/survey_pb";
 
         import $ from "jquery";
+
+        function checkRequiredFields(fieldNames, data, errors) {
+            return fieldNames.filter((fieldName) => {return !data[fieldName];});
+        }
 
         export default {
             state: {
@@ -384,7 +387,7 @@
                 * `source` and `user` are deliberately not compared
             */
             hasChanges() {
-                const compareFieldNames = requiredFieldNames + ["photo1", "photo2"];
+                const compareFieldNames = this.requiredFieldNames + ["photo1", "photo2"];
                 const surveyBase = compareFieldNames.map((fieldName) => {return this.state.baseSurvey[fieldName] || "";}).join("|||");
                 const surveyResult = compareFieldNames.map((fieldName) => {return this.state.survey[fieldName] || "";}).join("|||");
 
@@ -399,7 +402,6 @@
                 }
                 this.canSave();
             },
-            // Structure Condition Survey
             checkSurveyDate(e) {
                 const fieldName = e.currentTarget.name;
                 const input = e.currentTarget.value;
@@ -409,25 +411,18 @@
                 this.validate(fieldName, input, testResult, errorText);
             },
             checkStructureCondition(e) {
-                this.state.structureCondition = e.currentTarget.dataset.condition;
+                this.state.survey.structureCondition = e.currentTarget.dataset.condition;
                 this.canSave();
             },
-            showEditModal() {
-                $(`#${this.modal_id}`).modal("show");
+            checkDescription(e) {
+                this.state.survey.structureCondition = e.currentTarget.value;
+                this.canSave();
             },
-            checkPhotoText(e) {
-                this.structurePhotos = e.currentTarget.value;
+            checkPhoto1Text(e) {
+                this.state.photo1 = e.currentTarget.value;
             },
-            canSave() {
-                if (this.state.surveyDate == '' || this.state.structureCondition == '') {
-                    this.state.canSave = false;
-                } else {
-                    this.state.canSave = true;
-                }
-            },
-            save(e) {
-                this.props.save()
-                $(`#${this.modal_id}`).modal("hide");
+            checkPhoto2Text(e) {
+                this.state.photo2 = e.currentTarget.value;
             },
             max_date: () => new Date().toISOString().substring(0, 10),
         }
