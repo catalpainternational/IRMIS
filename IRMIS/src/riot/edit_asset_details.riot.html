@@ -231,7 +231,7 @@
                     <small class="form-text text-muted">{ props.parent.getHelpText("carriageway_width") }</small>
                     <input
                         class="{ state.errors.carriagewayWidth ? 'danger' : null } { state.survey.carriagewayWidth ? '' : 'inactive' } form-control"
-                        type="number" placeholder="5.0" value="{ state.survey.carriagewayWidth }"
+                        type="number" name="carriagewayWidth" placeholder="5.0" value="{ state.survey.carriagewayWidth }"
                         oninput="{ checkCarriagewayWidth }" min="0" max="91" step="0.1" required>
                     <div if="{ state.errors.carriagewayWidth }" class="invalid-tooltip">
                         <ul>
@@ -391,7 +391,7 @@
                     <small class="form-text text-muted">{ props.parent.getHelpText("number_lanes") }</small>
                     <input
                         class="{ state.errors.numberLanes ? 'danger' : null } { state.survey.numberLanes ? '' : 'inactive' } form-control"
-                        type="number" placeholder="5" value="{ state.survey.numberLanes }"
+                        type="number" name="numberLanes" placeholder="5" value="{ state.survey.numberLanes }"
                         oninput="{ checkNumberLanes }" min="0" max="99" step="1" required>
                     <div if="{ state.errors.numberLanes }" class="invalid-tooltip">
                         <ul>
@@ -475,8 +475,8 @@
                 state.linkStartName = props.road.linkStartName;
                 state.linkEndName = props.road.linkEndName;
                 state.linkLength = props.road.linkLength;
-                state.linkStartChainage = props.road.linkStartChainage;
-                state.linkEndChainage = props.road.linkEndChainage;
+                state.linkStartChainage = props.road.getLinkStartChainage();
+                state.linkEndChainage = props.road.getLinkEndChainage();
             },
             onMounted(props, state) {
                 state.loading = true;
@@ -1180,31 +1180,25 @@
             link_end_chainage: window.asset_schema.link_end_chainage,
 
             checkCarriagewayWidth(e) {
-                let value = e.currentTarget.value;
-                if (!withinMaxDigits(value, this.state.carriagewayWidthDigits, this.state.carriagewayWidthDecimals)) {
-                    this.state.errors.carriagewayWidth = window.interpolate(
-                        window.gettext('Carriage width cannot contain more than %s digits, of which %s are decimals'),
-                        [this.state.carriagewayWidthDigits, this.state.carriagewayWidthDecimals]
-                    );
-                } else {
-                    delete this.state.errors.carriagewayWidth;
-                    this.state.survey.carriagewayWidth = value;
-                    this.canSave();
-                }
+                const fieldName = e.currentTarget.name;
+                const input = e.currentTarget.value;
+                const testResult = withinMaxDigits(input, this.state.carriagewayWidthDigits, this.state.carriagewayWidthDecimals);
+                const errorText = window.interpolate(
+                    window.gettext('Carriage width cannot contain more than %s digits, of which %s are decimals'),
+                    [this.state.carriagewayWidthDigits, this.state.carriagewayWidthDecimals]
+                );
+                this.validate(fieldName, input, testResult, errorText);
             },
             checkTechnicalClass(e) {
                 this.state.survey.technicalClass = e.currentTarget.dataset.technical;
                 this.canSave();
             },
             checkNumberLanes(e) {
-                let value = e.currentTarget.value;
-                if (!withinMaxDigits(value, this.state.numberLanesDigits)) {
-                    this.state.errors.numberLanes = window.gettext(`Number of lanes cannot contain more than ${this.state.numberLanesDigits} digits and value shouldn't contain decimals`);
-                } else {
-                    delete this.state.errors.numberLanes;
-                    this.state.survey.numberLanes = value;
-                    this.canSave();
-                }
+                const fieldName = e.currentTarget.name;
+                const input = e.currentTarget.value;
+                const testResult = withinMaxDigits(input, this.state.numberLanesDigits);
+                const errorText = window.gettext(`Number of lanes cannot contain more than ${this.state.numberLanesDigits} digits and value shouldn't contain decimals`);
+                this.validate(fieldName, input, testResult, errorText);
             },
             max_date: () => new Date().toISOString().substring(0, 10),
         };
