@@ -59,7 +59,7 @@
                 <div class="form-group">
                     <label>{ window.gettext("Condition Description") }</label>
                     <input
-                        class="{ state.errors.structureDescription ? 'danger' : null } { state.survey.conditionDescription ? '' : 'inactive' } form-control"
+                        class="{ state.errors.conditionDescription ? 'danger' : null } { state.survey.conditionDescription ? '' : 'inactive' } form-control"
                         type="text" maxlength="500" placeholder="E.g." value="{ state.survey.conditionDescription }"
                         oninput="{ checkDescription }">
                     <div if="{state.errors.conditionDescription}" class="invalid-tooltip">
@@ -139,7 +139,7 @@
         export default {
             state: {
                 baseSurvey: new EstradaSurvey({}),
-                survey: {},
+                survey: new EstradaSurvey({}),
                 canSave: false,
                 errors: {},
                 pendingRows: [],
@@ -230,7 +230,7 @@
 
 
             // Survey Modal
-            requiredFieldNames: ["surveyDate", "assetCondition", "conditionDescription"],
+            requiredFieldNames: ["surveyDate", "structureCondition", "conditionDescription"],
             showEditModal() {
                 document.addEventListener(`${this.modal_id}.result`, (data) => {
                     const modalResult = data.detail.result;
@@ -289,7 +289,7 @@
             discardChanges() {
                 $(`#${this.modal_id}`).modal("hide");
                 this.update({
-                    survey: new EstradaSurvey({}),
+                    survey: makeEstradaSurvey(this.state.baseSurvey),
                     errors: {},
                 });
             },
@@ -313,10 +313,11 @@
                         // Complete the survey
                         this.state.survey.setUser($("#user_welcome").data("userId") || 0);
                         this.state.survey.setSource("Estrada");
-                        this.state.survey.setChainageStart(this.state.survey.startChainage);
-                        this.state.survey.setChainageEnd(this.state.survey.endChainage);
+                        this.state.survey.setChainageStart(0);
+                        this.state.survey.setChainageEnd(0);
                         this.state.survey.setValues(JSON.stringify({
-                            asset_condition: this.state.survey.assetCondition
+                            asset_condition: this.state.survey.assetCondition,
+                            condition_description: this.state.survey.conditionDescription,
                         }));
                         // If we're here we will have a user entered surveyDate, even so Date.now() is still used as a fall back
                         const dateSurveyed = new proto.google.protobuf.Timestamp();
@@ -387,7 +388,7 @@
                 * `source` and `user` are deliberately not compared
             */
             hasChanges() {
-                const compareFieldNames = this.requiredFieldNames + ["photo1", "photo2"];
+                const compareFieldNames = this.requiredFieldNames; // + ["photo1", "photo2"];
                 const surveyBase = compareFieldNames.map((fieldName) => {return this.state.baseSurvey[fieldName] || "";}).join("|||");
                 const surveyResult = compareFieldNames.map((fieldName) => {return this.state.survey[fieldName] || "";}).join("|||");
 
@@ -415,7 +416,7 @@
                 this.canSave();
             },
             checkDescription(e) {
-                this.state.survey.structureCondition = e.currentTarget.value;
+                this.state.survey.conditionDescription = e.currentTarget.value;
                 this.canSave();
             },
             checkPhoto1Text(e) {
