@@ -24,23 +24,36 @@ class ReportQuery:
                 "SELECT attr\n"
                 " FROM (SELECT DISTINCT skeys(values) attr FROM assets_survey) attrs\n"
             ),
-            "roads_to_use": (
-                # This is a template for "roads_to_chart"
-                # Note that the road_id and road_code are only returned as asset_id and asset_code
-                # and that the returned 'road_id' and 'road_code' are deliberately set to NULL
+            "assets_to_use": (
+                # This is a template for "assets_to_chart"
+                # Note that the road_id and road_code are only returned for Bridges and Culverts
+                # i.e. they refer to the road associated with the Bridge or Culvert
+                "SELECT asset_type_prefix, asset_id, asset_code, geom_chainage, road_id, road_code\n"
+                "FROM ("
                 "SELECT DISTINCT 'ROAD-' AS asset_type_prefix, s.road_id AS asset_id, s.road_code AS asset_code,\n"
-                " r.geom_end_chainage AS geom_chainage, NULL AS road_id, NULL AS road_code\n"
+                " r.geom_end_chainage AS geom_chainage, NULL::INTEGER AS road_id, NULL AS road_code\n"
                 " FROM assets_survey s, assets_road r\n"
                 " WHERE s.road_id = r.id\n"
-            ),
-            "structures_to_use": (
-                # This is a template for "structures_to_chart"
-                # Note that the structure_id and structure_code are only returned as asset_id and asset_code
-                # and that the returned 'structure_id' and 'strcuture_code' are deliberately set to NULL
-                "SELECT DISTINCT LEFT(s.structure_id, 5) AS asset_type_prefix, s.structure_id AS asset_id, s.road_code AS asset_code,\n"
-                " r.geom_end_chainage AS geom_chainage, NULL AS structure_id, NULL AS structure_code\n"
-                " FROM assets_survey s, assets_structure r\n"
-                " WHERE s.structure_id = r.id\n"
+                "UNION\n"
+                "SELECT DISTINCT bc.asset_type_prefix, bc.Id AS asset_id, bc.asset_code, bc.geom_chainage,\n"
+                " CASE\n"
+                "  WHEN COALESCE(bc.road_id, 0) = 0 THEN NULL\n"
+                "  ELSE bc.road_id\n"
+                " END AS road_id,\n"
+                " CASE\n"
+                "  WHEN COALESCE(bc.road_code, '') = '' THEN NULL\n"
+                "  ELSE bc.road_code\n"
+                " END AS road_code,\n"
+                " NULL AS structure_id, NULL AS structure_code\n"
+                " FROM assets_survey s, (\n"
+                "  SELECT 'BRDG-' AS asset_type_prefix, Id, structure_code AS asset_code, chainage AS geom_chainage, road_id, road_code\n"
+                "  FROM assets_bridge\n"
+                "  UNION\n"
+                "  SELECT 'CULV-' AS asset_type_prefix, Id, structure_code AS asset_code, chainage AS geom_chainage, road_id, road_code\n"
+                "  FROM assets_culvert\n"
+                " ) bc\n"
+                " WHERE s.structure_id = CONCAT(bc.asset_type_prefix, CAST(bc.Id AS TEXT))\n"
+                ") a"
             ),
             "usernames": (
                 "SELECT id AS user_id,\n"
@@ -376,7 +389,7 @@ class ReportQuery:
                     filter_name = "surface_condition"
                 elif filter_key == "surface_type":
                     filter_name = "surface_type_id"
-                road_clause = "CAST(r." + filter_name + " AS TEXT)=ANY(%s)\n"
+                asset_clause = "CAST(r." + filter_name + " AS TEXT)=ANY(%s)\n"
                 road_filter_clauses.append(road_clause)
                 road_filter_cases.append(list(self.filters[filter_key]))
 
@@ -385,10 +398,10 @@ class ReportQuery:
                 attribute_clauses.append(filter_name + "=ANY(%s)\n")
                 attribute_cases.append(list(self.filters[filter_key]))
 
-        self.report_clauses["roads_to_chart"] = self.report_clauses["roads_to_use"]
+        self.report_clauses["assets_to_chart"] = self.report_clauses["assets_to_use"]
         if len(road_filter_clauses) > 0:
-            # "roads_to_chart" already includes an initial `WHERE` clause
-            self.report_clauses["roads_to_chart"] += " AND " + " AND ".join(
+            # "assets_to_chart" already includes an initial `WHERE` clause
+            self.report_clauses["assets_to_chart"] += " AND " + " AND ".join(
                 road_filter_clauses
             )
             self.filter_cases.extend(road_filter_cases)
@@ -419,7 +432,7 @@ class ReportQuery:
         self.reportSQL = "WITH "
         self.add_report_clause("values_to_chart")
         self.add_report_clause("values_to_exclude")
-        self.add_report_clause("roads_to_chart")
+        self.add_report_clause("assets_to_chart")
         self.add_report_clause("usernames")
         self.add_report_clause("su")
         self.add_report_clause("breakpoints")
