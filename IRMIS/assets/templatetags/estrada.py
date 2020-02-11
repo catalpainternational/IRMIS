@@ -95,7 +95,6 @@ def get_schema_data():
         field_name = field_name_standardisation(
             x.name, structures_common_yet_different_fields, "bridge"
         )
-        print(x.name, field_name)
         if not field_name in asset_schema:
             asset_schema[field_name] = {
                 "display": x.verbose_name,
@@ -106,7 +105,6 @@ def get_schema_data():
         field_name = field_name_standardisation(
             x.name, structures_common_yet_different_fields, "culvert"
         )
-        print(x.name, field_name)
         if not field_name in asset_schema:
             asset_schema[field_name] = {
                 "display": x.verbose_name,
@@ -152,6 +150,20 @@ def get_schema_data():
 
     # Structure Specific Schema Values (Bridges & Culverts)
     # Schemas that are common to both types
+    asset_schema["structure_code"].update(
+        {
+            "options": list(
+                Bridge.objects.all()
+                .distinct("structure_code")
+                .values("structure_code")
+                .union(
+                    Culvert.objects.all()
+                    .distinct("structure_code")
+                    .values("structure_code")
+                )
+            )
+        }
+    )
     asset_schema["protection_upstream"].update(
         {"options": list(StructureProtectionType.objects.all().values())}
     )
