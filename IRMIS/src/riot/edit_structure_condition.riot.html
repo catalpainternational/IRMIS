@@ -322,9 +322,9 @@
 
                         this.state.survey.setDateSurveyed(dateSurveyed);
 
-                        // set Survey road from state Road road_code
-                        this.state.survey.setRoadId(this.state.road.id);
-                        this.state.survey.setRoadCode(this.state.road.code);
+                        // set Survey structure/road information from state Structure
+                        this.state.survey.setStructureId(this.state.structure.id);
+                        this.state.survey.setRoadCode(this.state.structure.road_code || "");
 
                         this.saveSurvey();
                     }

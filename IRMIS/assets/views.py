@@ -962,11 +962,8 @@ def protobuf_structure_audit(request, pk):
 @login_required
 def protobuf_structure_surveys(request, pk, survey_attribute=None):
     """ returns a protobuf object with the set of surveys for a particular structure pk"""
-    # get the Structure requested
-    django_pk, mapping = get_structure_mapping(pk)
-    structure = get_object_or_404(mapping["model"].objects.all(), pk=django_pk)
-    # pull any Surveys that cover the Structure's Road Code above
-    queryset = Survey.objects.filter(road_code=structure.road_code)
+    # pull any Surveys that cover the requested Structure - based on PK
+    queryset = Survey.objects.filter(structure_id=pk)
 
     filter_attribute = survey_attribute
     if survey_attribute == "asset_condition":
