@@ -335,7 +335,7 @@
                     }
 
                     // Reset baseSurvey now that we're done.
-                    this.baseSurvey = new Survey({});
+                    this.baseSurvey = new EstradaSurvey({});
 
                     $(`#${this.modal_id}`).modal("hide");
                 }
@@ -357,7 +357,7 @@
                             "assetConditions",
                         );
                         this.update({
-                            survey: new Survey({}), // clear input values
+                            survey: new EstradaSurvey({}), // clear input values
                         });
                         this.props.showFeedback();
                     })
@@ -369,7 +369,7 @@
                     });
 
                 // clear input values
-                this.state.survey = new Survey({});
+                this.state.survey = new EstradaSurvey({});
                 this.update();
             },
             canSave() {
