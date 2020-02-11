@@ -968,18 +968,12 @@ def protobuf_structure_surveys(request, pk, survey_attribute=None):
     # pull any Surveys that cover the requested Structure - based on PK
     queryset = Survey.objects.filter(structure_id=pk)
 
-    filter_attribute = survey_attribute
-    if survey_attribute == "asset_condition":
-        filter_attribute = "structure_condition"
-    elif survey_attribute == "asset_class":
-        filter_attribute = "structure_type"
-
     if survey_attribute:
         queryset = queryset.filter(values__has_key=filter_attribute).exclude(
             **{"values__" + filter_attribute + "__isnull": True}
         )
 
-    queryset.order_by("road_code", "chainage_start", "chainage_end", "-date_updated")
+    queryset.order_by("-date_updated")
     surveys_protobuf = queryset.to_protobuf()
 
     return HttpResponse(
