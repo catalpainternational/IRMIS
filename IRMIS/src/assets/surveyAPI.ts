@@ -31,7 +31,7 @@ export function getSurveysMetadata(roadId: string, surveyAttribute: string) {
 export function getStructureSurveysMetadata(structureId: string, surveyAttribute: string) {
     const surveyTypeUrlFragment = "protobuf_structure_surveys";
     structureId = structureId || "";
-    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${surveyTypeUrlFragment}/${structureId}/${surveyAttribute}`;
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${surveyTypeUrlFragment}/${structureId}/${surveyAttribute}/`;
 
     return fetch(metadataUrl, ConfigAPI.requestInit())
         .then((metadataResponse) => (metadataResponse.arrayBuffer()))

@@ -295,34 +295,6 @@ def protobuf_road_surveys(request, pk, survey_attribute=None):
     )
 
 
-@login_required
-def protobuf_structure_surveys(request, pk, survey_attribute=None):
-    """ returns a protobuf object with the set of surveys for a particular structure pk"""
-    # get the Structure requested
-    django_pk, mapping = get_structure_mapping(pk)
-    structure = get_object_or_404(mapping["model"].objects.all(), pk=django_pk)
-    # pull any Surveys that cover the Structure's Road Code above
-    queryset = Survey.objects.filter(road_code=structure.road_code)
-
-    filter_attribute = survey_attribute
-    if survey_attribute == "asset_condition":
-        filter_attribute = "structure_condition"
-    elif survey_attribute == "asset_class":
-        filter_attribute = "structure_type"
-
-    if survey_attribute:
-        queryset = queryset.filter(values__has_key=filter_attribute).exclude(
-            **{"values__" + filter_attribute + "__isnull": True}
-        )
-
-    queryset.order_by("road_code", "chainage_start", "chainage_end", "-date_updated")
-    surveys_protobuf = queryset.to_protobuf()
-
-    return HttpResponse(
-        surveys_protobuf.SerializeToString(), content_type="application/octet-stream"
-    )
-
-
 def pbtimestamp_to_pydatetime(pb_stamp):
     """ Take a Protobuf Timestamp as single input and outputs a
     time zone aware, Python Datetime object (UTC). Attempts to parse
@@ -984,6 +956,34 @@ def protobuf_structure_audit(request, pk):
         version_pb.date_created.CopyFrom(ts)
     return HttpResponse(
         versions_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )
+
+
+@login_required
+def protobuf_structure_surveys(request, pk, survey_attribute=None):
+    """ returns a protobuf object with the set of surveys for a particular structure pk"""
+    # get the Structure requested
+    django_pk, mapping = get_structure_mapping(pk)
+    structure = get_object_or_404(mapping["model"].objects.all(), pk=django_pk)
+    # pull any Surveys that cover the Structure's Road Code above
+    queryset = Survey.objects.filter(road_code=structure.road_code)
+
+    filter_attribute = survey_attribute
+    if survey_attribute == "asset_condition":
+        filter_attribute = "structure_condition"
+    elif survey_attribute == "asset_class":
+        filter_attribute = "structure_type"
+
+    if survey_attribute:
+        queryset = queryset.filter(values__has_key=filter_attribute).exclude(
+            **{"values__" + filter_attribute + "__isnull": True}
+        )
+
+    queryset.order_by("road_code", "chainage_start", "chainage_end", "-date_updated")
+    surveys_protobuf = queryset.to_protobuf()
+
+    return HttpResponse(
+        surveys_protobuf.SerializeToString(), content_type="application/octet-stream"
     )
 
 

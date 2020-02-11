@@ -66,7 +66,7 @@ urlpatterns = [
         name="protobuf_structure_audit",
     ),
     path(
-        "protobuf_structure_surveys/<int:pk>/<slug:survey_attribute>",
+        "protobuf_structure_surveys/<slug:pk>/<slug:survey_attribute>/",
         protobuf_structure_surveys,
         name="protobuf_structure_surveys",
     ),
