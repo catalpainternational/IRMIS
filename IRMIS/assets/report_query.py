@@ -33,6 +33,15 @@ class ReportQuery:
                 " FROM assets_survey s, assets_road r\n"
                 " WHERE s.road_id = r.id\n"
             ),
+            "structures_to_use": (
+                # This is a template for "structures_to_chart"
+                # Note that the structure_id and structure_code are only returned as asset_id and asset_code
+                # and that the returned 'structure_id' and 'strcuture_code' are deliberately set to NULL
+                "SELECT DISTINCT LEFT(s.structure_id, 5) AS asset_type_prefix, s.structure_id AS asset_id, s.road_code AS asset_code,\n"
+                " r.geom_end_chainage AS geom_chainage, NULL AS structure_id, NULL AS structure_code\n"
+                " FROM assets_survey s, assets_structure r\n"
+                " WHERE s.structure_id = r.id\n"
+            ),
             "usernames": (
                 "SELECT id AS user_id,\n"
                 " CASE\n"
@@ -236,6 +245,7 @@ class ReportQuery:
             "road_type",  # Actually asset_class
             "road_status",
             "asset_condition",
+            "structure_condition",
             "surface_type",
             "terrain_class",
             "traffic_level",

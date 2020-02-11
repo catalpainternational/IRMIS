@@ -708,6 +708,7 @@ def protobuf_reports(request):
     if (structure_id or structure_code or road_id or road_code) and chainage:
         final_filters["chainage"] = chainage
 
+    print(final_filters)
     # Initialise the Report
     asset_report = ReportQuery(final_filters)
     final_lengths = asset_report.compile_summary_stats(
