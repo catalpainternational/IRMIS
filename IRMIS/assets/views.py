@@ -334,10 +334,10 @@ def survey_create(request):
     req_values = road_survey_values(req_pb.values)
 
     # check that Protobuf parsed
-    if not req_pb.road_id or not req_pb.structure_id:
+    if not req_pb.road_id and not req_pb.structure_id:
         return HttpResponse(status=400)
 
-    if req_pb.road_id and not req_pb.structure_id:
+    if req_pb.road_id:
         # check there's a road to attach this survey to
         survey_road = get_object_or_404(Road.objects.filter(pk=req_pb.road_id))
 
