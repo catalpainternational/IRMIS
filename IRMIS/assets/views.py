@@ -334,21 +334,23 @@ def survey_create(request):
     req_values = road_survey_values(req_pb.values)
 
     # check that Protobuf parsed
-    if not req_pb.road_id:
+    if not req_pb.road_id or not req_pb.structure_id:
         return HttpResponse(status=400)
 
-    # check there's a road to attach this survey to
-    survey_road = get_object_or_404(Road.objects.filter(pk=req_pb.road_id))
-    # and default the road_code if none was provided
-    if not req_pb.road_code:
-        req_pb.road_code = survey_road.road_code
-    elif survey_road.road_code != req_pb.road_code:
-        # or check it for basic data integrity problem
-        return HttpResponse(
-            req_pb.SerializeToString(),
-            status=400,
-            content_type="application/octet-stream",
-        )
+    if req_pb.road_id and not req_pb.structure_id:
+        # check there's a road to attach this survey to
+        survey_road = get_object_or_404(Road.objects.filter(pk=req_pb.road_id))
+
+        # and default the road_code if none was provided
+        if not req_pb.road_code:
+            req_pb.road_code = survey_road.road_code
+        elif survey_road.road_code != req_pb.road_code:
+            # or check it for basic data integrity problem
+            return HttpResponse(
+                req_pb.SerializeToString(),
+                status=400,
+                content_type="application/octet-stream",
+            )
 
     try:
         with reversion.create_revision():
@@ -356,6 +358,7 @@ def survey_create(request):
                 **{
                     "road_id": req_pb.road_id,
                     "road_code": req_pb.road_code,
+                    "structure_id": req_pb.structure_id,
                     "user": get_user_model().objects.get(pk=req_pb.user),
                     "chainage_start": req_pb.chainage_start,
                     "chainage_end": req_pb.chainage_end,
