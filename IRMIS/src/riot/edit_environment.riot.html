@@ -774,7 +774,7 @@
                 const fieldName = e.currentTarget.name;
                 const input = e.currentTarget.value;
                 const testResult = withinMaxDigits(input, this.state.rainfallDigits);
-                const errorText = window.gettext(`Rainfall cannot contain more than ${this.state.chainageDigits} digits and value shouldn't contain decimals`);
+                const errorText = window.gettext(`Rainfall cannot contain more than ${this.state.rainfallDigits} digits and value shouldn't contain decimals`);
                 this.validate(fieldName, input, testResult, errorText);
             },
             max_date: () => new Date().toISOString().substring(0, 10),
