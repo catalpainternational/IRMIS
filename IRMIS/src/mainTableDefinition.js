@@ -1,6 +1,6 @@
 import { EstradaBridge, EstradaCulvert } from "./assets/models/structures";
 import { EstradaRoad } from "./assets/models/road";
-import { assetTypeName } from "./side_menu";
+import { currentFilter } from "./side_menu";
 
 /** Define the general events that the main tables will respond to
  *
@@ -90,7 +90,7 @@ function eventTableRowSelected(data, table) {
         const assetType = data.detail.assetType;
 
         table.rows().every(function (rowIdx, tableLoop, rowLoop) {
-            if (assetType !== assetTypeName || this.id() !== rowId) {
+            if (assetType !== currentFilter.assetType || this.id() !== rowId) {
                 this.node().classList.remove("selected");
             } else {
                 this.node().classList.add("selected");
@@ -505,7 +505,7 @@ function getStructureTypeName(structureType) {
 function buttonSegmentsTemplate(attrib, asset) {
     const assetStructureType = detectStructure(asset);
     const assetType = !assetStructureType
-        ? assetTypeName === "ROAD" ? "ROAD" : "STRC"
+        ? currentFilter.assetType === "ROAD" ? "ROAD" : "STRC"
         : ["BRDG"].includes(assetStructureType) ? "BRDG" : "CULV";
 
     const code = (assetType === "ROAD") ? asset.linkCode : asset.structureCode;

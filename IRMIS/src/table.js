@@ -4,8 +4,7 @@ import $ from "jquery";
 import { dispatch } from "./assets/utilities";
 
 import { exportCsv } from "./exportCsv";
-import { applyFilter } from "./filter";
-import { assetTypeName } from "./side_menu";
+import { currentFilter } from "./side_menu";
 import { estradaTableColumns, estradaRoadTableEventListeners, estradaStructureTableEventListeners, structuresTableColumns } from "./mainTableDefinition";
 import {
     carriagewayWidthColumns,
@@ -195,7 +194,7 @@ function initializeDataTable() {
 
     if (pendingRoads.length) {
         // add any rows the road manager has delivered before initialization
-        if (assetTypeName === "ROAD") {
+        if (currentFilter.assetType === "ROAD") {
             roadsTable.rows.add(pendingRoads).draw();
 
             pendingRoads = [];
@@ -204,7 +203,7 @@ function initializeDataTable() {
 
     if (pendingStructures.length) {
         // add any rows the structure manager has delivered before initialization
-        if (assetTypeName !== "ROAD") {
+        if (currentFilter.assetType !== "ROAD") {
             structuresTable.rows.add(pendingStructures).draw();
 
             pendingStructures = [];
@@ -332,7 +331,7 @@ function setupTableEventHandlers() {
 
             mainTable.selectionProcessing = undefined;
             // reset to the previously selected filters
-            applyFilter();
+            currentFilter.apply();
         } else {
             mainTable.$("tr.selected").removeClass("selected");
             clickedRow.addClass("selected");
@@ -365,10 +364,10 @@ function applyTableSelectionToMap(rowId) {
  */
 export function GetDataForMapPopup(id, featureType) {
     const assetType = ["BRDG", "CULV", "bridge", "culvert"].includes(featureType) ? "STRC" : "ROAD";
-    if (assetType !== assetTypeName) {
+    if (assetType !== currentFilter.assetType) {
         return [{ label: window.gettext("Asset Type"), value: featureType }];
     }
-    const asset = assetTypeName === "ROAD" ? roads[id] : structures[id];
+    const asset = currentFilter.assetType === "ROAD" ? roads[id] : structures[id];
 
     if (!asset) {
         return [{ label: window.gettext("Loading"), value: "" }];
@@ -426,14 +425,14 @@ function exportStructuresTable() {
 
 // Filter functionality
 let idWhitelistMap = {};
-let currentFilter = (p) => {
+let currentIdFilter = (p) => {
     return Object.keys(idWhitelistMap).length === 0 || idWhitelistMap[p.id];
 }
 
 $.fn.dataTableExt.afnFiltering.push(
     function (oSettings, aData, iDataIndex) {
         let asset = oSettings.aoData[iDataIndex]._aData;
-        return currentFilter(asset);
+        return currentIdFilter(asset);
     }
 );
 
@@ -517,13 +516,13 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
         modal.find(".modal-title").text(`${assetCode} ${attributeModalMapping[attr].title}`);
         reportTable.clear(); // remove all rows in the table
 
-        const getAsset = assetTypeName === "ROAD" ? getRoad : getStructure;
+        const getAsset = currentFilter.assetType === "ROAD" ? getRoad : getStructure;
         const getAssetFilters = (assetData) => {
             let filters = {
                 primaryattribute: attr,
             };
 
-            if (assetTypeName === "ROAD") {
+            if (currentFilter.assetType === "ROAD") {
                 if (assetData.linkStartChainage && assetData.linkEndChainage) {
                     filters.road_code = assetData.roadCode;
                     // Use the protobuf object get members here, because we want chainage unformatted
