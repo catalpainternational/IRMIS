@@ -318,8 +318,9 @@ export const structuresTableColumns = [
     },
     {
         title: window.gettext("Structure Code"),
-        data: "structureCode",
+        data: "code",
         className: "text-center",
+        type: "structureCode",
         defaultContent: "",
     },
     {
