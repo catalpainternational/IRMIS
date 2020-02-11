@@ -68,6 +68,14 @@
         transform: rotate(90deg);
     }
 
+    &.error-tooltip-date {
+        margin-left: 110px;
+    }
+    
+    &.error-tooltip-vehicle {
+        margin-left: 210px;
+    }
+
     ul {
         margin-bottom: 0;
         padding-left: 0;
