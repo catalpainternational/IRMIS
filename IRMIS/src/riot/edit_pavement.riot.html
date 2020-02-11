@@ -87,11 +87,11 @@
                 <div class="form-group">
                     <label>{ window.gettext("Chainage start") } (m)</label>
                     <span class="required">*</span>
+                    <small class="form-text text-muted">{ props.parent.getHelpText("start_chainage") }</small>
                     <input
                         class="{ state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
                         type="number" name="startChainage" placeholder="1000" value="{ state.survey.startChainage }"
                         oninput="{ checkChainage }" min="0" max="999999999" step="1" required>
-                    <small class="form-text text-muted">{ props.parent.getHelpText("start_chainage") }</small>
                     <div if="{ state.errors.startChainage }" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.startChainage }.</li>
@@ -101,11 +101,11 @@
                 <div class="form-group">
                     <label>{ window.gettext("Chainage end") } (m)</label>
                     <span class="required">*</span>
+                    <small class="form-text text-muted">{ props.parent.getHelpText("end_chainage") }</small>
                     <input
                         class="{ state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
                         type="number" name="endChainage" placeholder="62410" value="{ state.survey.endChainage }"
                         oninput="{ checkChainage }" min="0" max="999999999" step="1" required>
-                    <small class="form-text text-muted">{ props.parent.getHelpText("end_chainage") }</small>
                     <div if="{ state.errors.endChainage }" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.endChainage }.</li>
@@ -119,18 +119,18 @@
                 <div class="form-group">
                     <label>{ surfaces.display }</label>
                     <span class="required">*</span>
-                    <div if="{ state.errors.surfaceType }" class="invalid-tooltip">
-                        <ul>
-                            <li>{ state.errors.surfaceType }.</li>
-                        </ul>
-                    </div>
+                    <small class="form-text text-muted">{ props.parent.getHelpText("surface_type") }</small>
                     <select class="{ state.survey.surfaceType ? '' : 'inactive' } form-control"
                         onchange="{ checkSurfaceType }" name="surfaceType">
                         <option value="">{ window.gettext("Select a Surface Type") }</option>
                         <option each="{ surface in surfaces.options }" value="{ surface.code }"
                             selected="{ surface.code == state.survey.surfaceType }">{ surface.name }</option>
                     </select>
-                    <small class="form-text text-muted">{ props.parent.getHelpText("surface_type") }</small>
+                    <div if="{ state.errors.surfaceType }" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.surfaceType }.</li>
+                        </ul>
+                    </div>
                 </div>
             </section>
 
@@ -167,11 +167,11 @@
                 <div class="form-group">
                     <label>{ window.gettext("Chainage start") } (m)</label>
                     <span class="required">*</span>
+                    <small class="form-text text-muted">{ props.parent.getHelpText("start_chainage") }</small>
                     <input
                         class="{ state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
                         type="number" name="startChainage" placeholder="1000" value="{ state.survey.startChainage }"
                         oninput="{ checkChainage }" min="0" max="999999999" step="1" required>
-                    <small class="form-text text-muted">{ props.parent.getHelpText("start_chainage") }</small>
                     <div if="{ state.errors.startChainage }" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.startChainage }.</li>
@@ -181,11 +181,11 @@
                 <div class="form-group">
                     <label>{ window.gettext("Chainage end") } (m)</label>
                     <span class="required">*</span>
+                    <small class="form-text text-muted">{ props.parent.getHelpText("end_chainage") }</small>
                     <input
                         class="{ state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
                         type="number" name="endChainage" placeholder="62410" value="{ state.survey.endChainage }"
                         oninput="{ checkChainage }" min="0" max="999999999" step="1" required>
-                    <small class="form-text text-muted">{ props.parent.getHelpText("end_chainage") }</small>
                     <div if="{ state.errors.endChainage }" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.endChainage }.</li>
@@ -200,11 +200,6 @@
                     <label>{ pavements.display }</label>
                     <span class="required">*</span>
                     <small class="form-text text-muted">{ props.parent.getHelpText("pavement_class") }</small>
-                    <div if="{ state.errors.pavementClass }" class="invalid-tooltip">
-                        <ul>
-                            <li>{ state.errors.pavementClass }.</li>
-                        </ul>
-                    </div>
                     <ul class="pavement-classes" name="pavementClass">
                         <li each="{ pavement in pavements.options }" data-pavement="{ pavement.code }"
                             onclick="{ checkPavementClass }">
@@ -213,6 +208,11 @@
                             { pavement.name }
                         </li>
                     </ul>
+                    <div if="{ state.errors.pavementClass }" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.pavementClass }.</li>
+                        </ul>
+                    </div>
                 </div>
             </section>
 
