@@ -969,8 +969,8 @@ def protobuf_structure_surveys(request, pk, survey_attribute=None):
     queryset = Survey.objects.filter(structure_id=pk)
 
     if survey_attribute:
-        queryset = queryset.filter(values__has_key=filter_attribute).exclude(
-            **{"values__" + filter_attribute + "__isnull": True}
+        queryset = queryset.filter(values__has_key=survey_attribute).exclude(
+            **{"values__" + survey_attribute + "__isnull": True}
         )
 
     queryset.order_by("-date_updated")
