@@ -299,7 +299,8 @@ def protobuf_road_surveys(request, pk, survey_attribute=None):
 def protobuf_structure_surveys(request, pk, survey_attribute=None):
     """ returns a protobuf object with the set of surveys for a particular structure pk"""
     # get the Structure requested
-    structure = get_object_or_404(Structure.objects.all(), pk=pk)
+    django_pk, mapping = get_structure_mapping(pk)
+    structure = get_object_or_404(mapping["model"].objects.all(), pk=django_pk)
     # pull any Surveys that cover the Structure's Road Code above
     queryset = Survey.objects.filter(road_code=structure.road_code)
 
