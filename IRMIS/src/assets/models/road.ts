@@ -107,7 +107,7 @@ export class EstradaRoad extends Road implements IAsset {
             return linkLength;
         }
 
-        return (linkLength * 1000).toFixed(3);
+        return linkLength.toFixed(3);
     }
 
     get status() {
