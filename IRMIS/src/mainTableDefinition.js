@@ -132,7 +132,9 @@ export const estradaTableColumns = [
         data: "linkLength",
         defaultContent: "",
         className: "text-right",
-        render: linkLength => (linkLength / 1000).toFixed(2),
+        render: (data, type) => {
+            return (type === "display" && data) ? parseFloat(data).toFixed(2) : data;
+        },
     },
     {
         title: EstradaRoad.getFieldName("link_start_name"),
@@ -318,8 +320,9 @@ export const structuresTableColumns = [
     },
     {
         title: window.gettext("Structure Code"),
-        data: "structureCode",
+        data: "code",
         className: "text-center",
+        type: "structureCode",
         defaultContent: "",
     },
     {

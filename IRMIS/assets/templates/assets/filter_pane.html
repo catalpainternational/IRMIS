@@ -244,23 +244,23 @@
             <div data-slug="{{ slug }}" class="filter">
                 <div class="d-flex header justify-content-between">
                     <div class="align-items-center d-flex">
-                        <label>Structure Code</label>
+                        <label>{{ asset_schema.structure_code.display }}</label>
                     </div>
                     <div class="align-items-center d-flex">
                         <span class="clear-select2" hidden>{% trans "Clear" %}</span>
                         <span class="plus image filterToggle"></span>
                     </div>
                 </div>
-                <div class="options" hidden> 
+                <div class="options" hidden>
                     <select class="filter_select2" multiple="true">
-                        <option value="a01">A01</option>
-                        <option value="a04">A04</option>
-                        <option value="b10">B10</option>
+                        {% for option in asset_schema.structure_code.options %}
+                        <option value="{{ option.structure_code }}">{{ option.structure_code }}</option>
+                        {% endfor %}
                     </select>
                 </div>
             </div>
+            {% endwith %}
         </div>
-        {% endwith %}
 
         {% comment %} SECTION - STRUCTURE CONDITION {% endcomment %}
         <div class="filters-section STRC" hidden>
