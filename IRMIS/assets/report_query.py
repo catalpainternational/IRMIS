@@ -449,6 +449,9 @@ class ReportQuery:
                 attribute_clauses.append(filter_name + "=ANY(%s)\n")
                 attribute_cases.append(list(self.filters[filter_key]))
 
+        print (asset_filter_clauses)
+        print (asset_filter_cases)
+
         self.report_clauses["assets_to_chart"] = self.report_clauses["assets_to_use"]
         if len(asset_filter_clauses) > 0:
             # "assets_to_chart" already includes an initial `WHERE` clause
