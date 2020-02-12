@@ -1,14 +1,13 @@
 import { Report } from "../../protobuf/report_pb";
-import { EstradaRoadSurveyReport } from "./models/surveyReport";
 
 import { ConfigAPI } from "./configAPI";
-import { makeEstradaObject } from "./protoBufUtilities";
+import { makeEstradaNetworkSurveyReport } from "./models/surveyReport";
 
 /** getRoadReports
  *
  * Retrieves the road report data from the server
  */
-export function getRoadReports(filters) {
+export function getRoadReports(filters: { [name: string]: any }) {
     const filterParams = ConfigAPI.objectToQueryString(filters);
     const reportUrl = `${ConfigAPI.requestReportUrl}${filterParams}`;
 
@@ -25,15 +24,11 @@ export function getRoadReports(filters) {
         })
         .then((protobufBytes) => {
             if (typeof protobufBytes === "undefined") {
-                // return an empty EstradaSurveyReport
-                return makeEstradaSurveyReport();
+                // return an empty EstradaNetworkSurveyReport
+                return makeEstradaNetworkSurveyReport();
             }
 
             const uintArray = new Uint8Array(protobufBytes);
-            return makeEstradaSurveyReport(Report.deserializeBinary(uintArray));
+            return makeEstradaNetworkSurveyReport(Report.deserializeBinary(uintArray));
         });
-}
-
-function makeEstradaSurveyReport(pbsurveyreport) {
-    return makeEstradaObject(EstradaRoadSurveyReport, pbsurveyreport);
 }

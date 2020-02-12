@@ -232,9 +232,11 @@
         import Stacked_Bar from "./stacked_bar.riot.html";
 
         import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
-        import {cloneData, toChainageFormat} from "../assets/protoBufUtilities";
+        import { choice_or_default, toChainageFormat } from "../assets/protoBufUtilities";
         import {withinMaxDigits} from "../assets/utilities";
-        import {Survey} from "../../protobuf/survey_pb";
+
+        import { makeEstradaRoad, TERRAIN_CLASS_CHOICES } from "../assets/models/road";
+        import { EstradaSurvey, makeEstradaSurvey } from "../assets/models/survey";
 
         import $ from "jquery";
 
@@ -246,7 +248,7 @@
             state: {
                 chainageDigits: 9,
                 rainfallDigits: 4,
-                baseSurvey: new Survey({}),
+                baseSurvey: new EstradaSurvey({}),
                 survey: {},
                 canSave: false,
                 errors: {},
@@ -268,7 +270,7 @@
                 currentModalId: false,
                 currentRequiredFieldNames: [],
                 currentEditing: false,
-                currentRowData: new Survey({}),
+                currentRowData: new EstradaSurvey({}),
             },
             components: {
                 Edit_Stop_Alert, Edit_Modal, Stacked_Bar
@@ -277,7 +279,7 @@
             // Condition Survey
             onMounted(props, state) {
                 state.loading = true;
-                state.road = cloneData(props.road);
+                state.road = makeEstradaRoad(props.road);
 
                 this.props.parent.updateReportAttributeSummary(state, "terrain_class", props.parent.emptyAttributes);
                 this.props.parent.updateReportAttributeSummary(state, "rainfall", props.parent.emptyAttributes);
@@ -343,7 +345,7 @@
                 }
             },
             addEditRainfall(e) {
-                this.state.survey = cloneData(this.state.baseSurvey);
+                this.state.survey = makeEstradaSurvey(this.state.baseSurvey);
                 this.state.errors = {};
                 this.state.currentEditing = "rainfall";
                 this.state.currentModalId = this.rainfall_modal_id;
@@ -351,7 +353,7 @@
                 this.showEditModal();
             },
             addEditTerrain(e) {
-                this.state.survey = cloneData(this.state.baseSurvey);
+                this.state.survey = makeEstradaSurvey(this.state.baseSurvey);
                 this.state.errors = {};
                 this.state.currentEditing = "terrainClass";
                 this.state.currentModalId = this.terrain_modal_id;
@@ -441,7 +443,9 @@
                     defaultContent: "",
                     className: "text-center",
                     orderable: false,
-                },
+                    render: (data, type) => {
+                        return (type === 'display') ? choice_or_default(data, TERRAIN_CLASS_CHOICES) : data;
+                    },                },
                 {
                     title: window.gettext("Survey date"),
                     data: "dateSurveyed",
@@ -621,7 +625,7 @@
             discardChanges() {
                 $(`#${this.state.currentModalId}`).modal("hide");
                 this.update({
-                    survey: cloneData(this.state.baseSurvey),
+                    survey: makeEstradaSurvey(this.state.baseSurvey),
                     errors: {},
                     currentEditing: false,
                     currentModalId: false,
@@ -669,7 +673,7 @@
                     }
 
                     // Reset baseSurvey now that we're done.
-                    this.baseSurvey = new Survey({});
+                    this.baseSurvey = new EstradaSurvey({});
                     $(`#${this.state.currentModalId}`).modal("hide");
                 }
             },
@@ -686,7 +690,7 @@
                                 this.props.parent.refreshSurveysAndReports(this.state, this.terrain_all_data_table_id, "terrain_class", "terrainClasses", this.terrain_current_data_table_id, this.terrain_stacked_bar_id);
                             }
                             this.update({
-                                survey: new Survey({}), // clear input values
+                                survey: new EstradaSurvey({}), // clear input values
                             });
                             this.props.showFeedback();
                         })
@@ -702,7 +706,7 @@
                             this.props.parent.refreshSurveysAndReports(this.state, this.rainfall_all_data_table_id, "rainfall", "rainfalls", this.rainfall_current_data_table_id, this.rainfall_stacked_bar_id);
                             this.props.parent.refreshSurveysAndReports(this.state, this.terrain_all_data_table_id, "terrain_class", "terrainClasses", this.terrain_current_data_table_id, this.terrain_stacked_bar_id);
                             this.update({
-                                survey: new Survey({}), // clear input values
+                                survey: new EstradaSurvey({}), // clear input values
                             });
                             this.props.showFeedback();
                         })
@@ -714,7 +718,7 @@
                         });
                 }
                 // clear input values
-                this.state.survey = new Survey({});
+                this.state.survey = new EstradaSurvey({});
                 this.state.errors = {};
                 this.update();
             },

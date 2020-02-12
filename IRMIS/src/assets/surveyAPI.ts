@@ -1,18 +1,37 @@
 import { Survey, Surveys } from "../../protobuf/survey_pb";
-import { EstradaSurvey } from "./models/survey";
+import { EstradaSurvey, makeEstradaSurvey } from "./models/survey";
+
 import { ConfigAPI } from "./configAPI";
-import { makeEstradaObject } from "./protoBufUtilities";
 
 /** getSurveysMetadata
  *
- * Retrieves the survey metadata from the server
+ * Retrieves the Road survey metadata from the server
  *
  * @returns a map {id: survey_object}
  */
-export function getSurveysMetadata(roadId, surveyAttribute) {
+export function getSurveysMetadata(roadId: string, surveyAttribute: string) {
     const surveyTypeUrlFragment = "protobuf_road_surveys";
     roadId = roadId || "";
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${surveyTypeUrlFragment}/${roadId}/${surveyAttribute}`;
+
+    return fetch(metadataUrl, ConfigAPI.requestInit())
+        .then((metadataResponse) => (metadataResponse.arrayBuffer()))
+        .then((protobufBytes) => {
+            const uintArray = new Uint8Array(protobufBytes);
+            return Surveys.deserializeBinary(uintArray).getSurveysList().map(makeEstradaSurvey);
+        });
+}
+
+/** getSurveysMetadata
+ *
+ * Retrieves the Road survey metadata from the server
+ *
+ * @returns a map {id: survey_object}
+ */
+export function getStructureSurveysMetadata(structureId: string, surveyAttribute: string) {
+    const surveyTypeUrlFragment = "protobuf_structure_surveys";
+    structureId = structureId || "";
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${surveyTypeUrlFragment}/${structureId}/${surveyAttribute}/`;
 
     return fetch(metadataUrl, ConfigAPI.requestInit())
         .then((metadataResponse) => (metadataResponse.arrayBuffer()))
@@ -28,7 +47,7 @@ export function getSurveysMetadata(roadId, surveyAttribute) {
  *
  * @returns a survey_object
  */
-export function getSurveyMetadata(surveyId) {
+export function getSurveyMetadata(surveyId: string | number) {
     const surveyTypeUrlFragment = "protobuf_survey";
 
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${surveyTypeUrlFragment}/${surveyId}`;
@@ -47,7 +66,7 @@ export function getSurveyMetadata(surveyId) {
  *
  * @returns 200 (success) or 400 (failure)
  */
-export function postSurveyData(survey) {
+export function postSurveyData(survey: EstradaSurvey) {
     const assetTypeUrlFragment = "survey_create";
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}`;
 
@@ -55,11 +74,11 @@ export function postSurveyData(survey) {
     postAssetInit.body = survey.serializeBinary();
 
     return fetch(metadataUrl, postAssetInit)
-        .then(metadataResponse => {
+        .then((metadataResponse) => {
             if (metadataResponse.ok) { return metadataResponse.arrayBuffer(); }
             throw new Error(`Survey creation failed: ${metadataResponse.statusText}`);
         })
-        .then(protobufBytes => {
+        .then((protobufBytes) => {
             const uintArray = new Uint8Array(protobufBytes);
             return makeEstradaSurvey(Survey.deserializeBinary(uintArray));
         });
@@ -71,7 +90,7 @@ export function postSurveyData(survey) {
  *
  * @returns 200 (success) or 400 (failure)
  */
-export function putSurveyData(survey) {
+export function putSurveyData(survey: EstradaSurvey) {
     const assetTypeUrlFragment = "survey_update";
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}`;
 
@@ -79,16 +98,12 @@ export function putSurveyData(survey) {
     postAssetInit.body = survey.serializeBinary();
 
     return fetch(metadataUrl, postAssetInit)
-        .then(metadataResponse => {
+        .then((metadataResponse) => {
             if (metadataResponse.ok) { return metadataResponse.arrayBuffer(); }
             throw new Error(`Survey creation failed: ${metadataResponse.statusText}`);
         })
-        .then(protobufBytes => {
+        .then((protobufBytes) => {
             const uintArray = new Uint8Array(protobufBytes);
             return makeEstradaSurvey(Survey.deserializeBinary(uintArray));
         });
-}
-
-function makeEstradaSurvey(pbsurvey) {
-    return makeEstradaObject(EstradaSurvey, pbsurvey);
 }

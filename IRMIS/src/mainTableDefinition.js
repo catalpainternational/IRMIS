@@ -1,6 +1,6 @@
 import { EstradaBridge, EstradaCulvert } from "./assets/models/structures";
 import { EstradaRoad } from "./assets/models/road";
-import { assetTypeName } from "./side_menu";
+import { currentFilter } from "./side_menu";
 
 /** Define the general events that the main tables will respond to
  *
@@ -90,7 +90,7 @@ function eventTableRowSelected(data, table) {
         const assetType = data.detail.assetType;
 
         table.rows().every(function (rowIdx, tableLoop, rowLoop) {
-            if (assetType !== assetTypeName || this.id() !== rowId) {
+            if (assetType !== currentFilter.assetType || this.id() !== rowId) {
                 this.node().classList.remove("selected");
             } else {
                 this.node().classList.add("selected");
@@ -132,7 +132,9 @@ export const estradaTableColumns = [
         data: "linkLength",
         defaultContent: "",
         className: "text-right",
-        render: linkLength => linkLength / 1000,
+        render: (data, type) => {
+            return (type === "display" && data) ? parseFloat(data).toFixed(2) : data;
+        },
     },
     {
         title: EstradaRoad.getFieldName("link_start_name"),
@@ -318,8 +320,9 @@ export const structuresTableColumns = [
     },
     {
         title: window.gettext("Structure Code"),
-        data: "structureCode",
+        data: "code",
         className: "text-center",
+        type: "structureCode",
         defaultContent: "",
     },
     {
@@ -399,14 +402,14 @@ export const structuresTableColumns = [
     {
         title: window.gettext("Length"),
         data: "length",
-        render: (n) => { (n > 0) ? n : ""; },
+        render: (n) => { return (n > 0) ? n : ""; },
         className: "text-right",
         defaultContent: "",
     },
     {
         title: window.gettext("Width"),
         data: "width",
-        render: (n) => { (n > 0) ? n : ""; },
+        render: (n) => { return (n > 0) ? n : ""; },
         className: "text-right",
         defaultContent: "",
 
@@ -421,6 +424,13 @@ export const structuresTableColumns = [
     {
         title: window.gettext("Number Spans"),
         data: "numberSpans",
+        className: "text-right",
+        defaultContent: "N/A",
+        visible: false,
+    },
+    {
+        title: window.gettext("Span Length"),
+        data: "spanLength",
         className: "text-right",
         defaultContent: "N/A",
         visible: false,
@@ -449,7 +459,7 @@ export const structuresTableColumns = [
     {
         title: window.gettext("Construction Year"),
         data: "constructionYear",
-        render: (n) => { (n > 0) ? n : ""; },
+        render: (n) => { return (n > 0) ? n : ""; },
         className: "text-right",
         defaultContent: "",
         visible: false,
@@ -465,7 +475,7 @@ export const structuresTableColumns = [
     {
         title: "Condition Description",
         data: null,
-        render: r => buttonSegmentsTemplate("structure_condition_description", r),
+        render: r => buttonSegmentsTemplate("condition_description", r),
         className: "text-center",
         defaultContent: "",
         visible: false,
@@ -505,10 +515,10 @@ function getStructureTypeName(structureType) {
 function buttonSegmentsTemplate(attrib, asset) {
     const assetStructureType = detectStructure(asset);
     const assetType = !assetStructureType
-        ? assetTypeName === "ROAD" ? "ROAD" : "STRC"
+        ? currentFilter.assetType === "ROAD" ? "ROAD" : "STRC"
         : ["BRDG"].includes(assetStructureType) ? "BRDG" : "CULV";
 
-    const code = (assetType === "ROAD") ? asset.getLinkCode() : asset.getStructureCode();
+    const code = (assetType === "ROAD") ? asset.linkCode : asset.structureCode;
     let getFieldName = (attrib) => (attrib);
     switch (assetType) {
         case "ROAD":

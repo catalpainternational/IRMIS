@@ -4,8 +4,7 @@ import $ from "jquery";
 import { dispatch } from "./assets/utilities";
 
 import { exportCsv } from "./exportCsv";
-import { applyFilter } from "./filter";
-import { assetTypeName } from "./side_menu";
+import { currentFilter } from "./side_menu";
 import { estradaTableColumns, estradaRoadTableEventListeners, estradaStructureTableEventListeners, structuresTableColumns } from "./mainTableDefinition";
 import {
     carriagewayWidthColumns,
@@ -25,8 +24,8 @@ import { datatableTranslations } from "./datatableTranslations";
 import { getRoad, roads } from "./roadManager";
 import { getStructure, structures } from "./structureManager";
 
-import { getRoadReport as getAssetReport } from "./reportManager";
-import { getRoadSurveys as getAssetSurveys } from "./surveyManager";
+import { getAssetReport } from "./reportManager";
+import { getAssetSurveys, getStructureSurveys } from "./surveyManager";
 
 let roadsTable = null;
 let structuresTable = null;
@@ -94,11 +93,11 @@ const attributeModalMapping = {
         reportTable: null,
         title: gettext("Structure Condition details"),
     },
-    structure_condition_description: {
+    condition_description: {
         columns: structureConditionDescriptionColumns,
         reportDataTableId: "inventory-structure-condition-description-table",
         reportTable: null,
-        title: gettext("Structure Condition Description details"),
+        title: gettext("Condition Description details"),
     },
     structure_photos: {
         columns: structurePhotosColumns,
@@ -195,7 +194,7 @@ function initializeDataTable() {
 
     if (pendingRoads.length) {
         // add any rows the road manager has delivered before initialization
-        if (assetTypeName === "ROAD") {
+        if (currentFilter.assetType === "ROAD") {
             roadsTable.rows.add(pendingRoads).draw();
 
             pendingRoads = [];
@@ -204,7 +203,7 @@ function initializeDataTable() {
 
     if (pendingStructures.length) {
         // add any rows the structure manager has delivered before initialization
-        if (assetTypeName !== "ROAD") {
+        if (currentFilter.assetType !== "ROAD") {
             structuresTable.rows.add(pendingStructures).draw();
 
             pendingStructures = [];
@@ -228,7 +227,7 @@ function setupTableEventHandlers() {
     // Setup column selection and column click handlers
     setupColumnEventHandlers("ROAD");
     setupColumnEventHandlers("STRC");
-   
+
     function setupColumnEventHandlers(mainTableType = "ROAD") {
         const selectId = (mainTableType === "ROAD")
             ? "select-road-data"
@@ -243,7 +242,7 @@ function setupTableEventHandlers() {
         const mainTable = (mainTableType === "ROAD")
             ? roadsTable
             : structuresTable;
-        
+
         const restoreColumnDefaults = (mainTableType === "ROAD")
             ? document.getElementsByClassName("restore-road").item(0)
             : document.getElementsByClassName("restore-structure").item(0);
@@ -332,13 +331,13 @@ function setupTableEventHandlers() {
 
             mainTable.selectionProcessing = undefined;
             // reset to the previously selected filters
-            applyFilter();
+            currentFilter.apply();
         } else {
             mainTable.$("tr.selected").removeClass("selected");
             clickedRow.addClass("selected");
 
             mainTable.selectionProcessing = clickedRowId;
-    
+
             applyTableSelectionToMap(mainTable.selectionProcessing);
         }
     }
@@ -365,24 +364,21 @@ function applyTableSelectionToMap(rowId) {
  */
 export function GetDataForMapPopup(id, featureType) {
     const assetType = ["BRDG", "CULV", "bridge", "culvert"].includes(featureType) ? "STRC" : "ROAD";
-    if (assetType !== assetTypeName) {
+    if (assetType !== currentFilter.assetType) {
         return [{ label: window.gettext("Asset Type"), value: featureType }];
     }
-    const asset = assetTypeName === "ROAD" ? roads[id] : structures[id];
+    const asset = currentFilter.assetType === "ROAD" ? roads[id] : structures[id];
 
     if (!asset) {
         return [{ label: window.gettext("Loading"), value: "" }];
     }
 
-    const code = asset.code || asset.getRoadCode();
-    const name = asset.name;
-
     const mapPopupData = [];
-    if (code) {
-        mapPopupData.push({ label: window.gettext("Code"), value: code });
+    if (asset.code) {
+        mapPopupData.push({ label: window.gettext("Code"), value: asset.code });
     }
-    if (name) {
-        mapPopupData.push({ label: window.gettext("Name"), value: name });
+    if (asset.name) {
+        mapPopupData.push({ label: window.gettext("Name"), value: asset.name });
     }
 
     return mapPopupData;
@@ -429,14 +425,14 @@ function exportStructuresTable() {
 
 // Filter functionality
 let idWhitelistMap = {};
-let currentFilter = (p) => {
+let currentIdFilter = (p) => {
     return Object.keys(idWhitelistMap).length === 0 || idWhitelistMap[p.id];
 }
 
 $.fn.dataTableExt.afnFiltering.push(
     function (oSettings, aData, iDataIndex) {
         let asset = oSettings.aoData[iDataIndex]._aData;
-        return currentFilter(asset);
+        return currentIdFilter(asset);
     }
 );
 
@@ -514,35 +510,50 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
                 // update the traffic details inventory modal tag with current data
                 document.dispatchEvent(new CustomEvent("inventory-traffic-level-table.updateTrafficData", { detail: { currentRowData: latestSurvey } }));
             });
+    } else if (["structure_condition", "condition_description"].indexOf(attr) >= 0) {
+        const reportDataTableId = attributeModalMapping[attr].reportDataTableId;
+        const reportTable = attributeModalMapping[attr].reportTable;
+        modal.find(".modal-title").text(`${assetCode} ${attributeModalMapping[attr].title}`);
+        reportTable.clear(); // remove all rows in the table
+
+        getStructureSurveys(assetId, attr)
+            .then((surveyData) => {
+                reportTable.clear(); // remove all rows in the table - again
+                reportTable.rows.add(surveyData);
+            }).finally(() => {
+                reportTable.draw();
+                $(`#${reportDataTableId}_wrapper`).show();
+            });
     } else {
         const reportDataTableId = attributeModalMapping[attr].reportDataTableId;
         const reportTable = attributeModalMapping[attr].reportTable;
         modal.find(".modal-title").text(`${assetCode} ${attributeModalMapping[attr].title}`);
         reportTable.clear(); // remove all rows in the table
 
-        const getAsset = assetTypeName === "roads" ? getRoad : getStructure;
+        const getAsset = currentFilter.assetType === "ROAD" ? getRoad : getStructure;
         const getAssetFilters = (assetData) => {
             let filters = {
                 primaryattribute: attr,
             };
 
-            if (assetTypeName === "ROAD") {
-                if (assetData.getLinkStartChainage() && assetData.getLinkEndChainage()) {
-                    filters.road_code = assetData.getRoadCode();
+            if (currentFilter.assetType === "ROAD") {
+                if (assetData.linkStartChainage && assetData.linkEndChainage) {
+                    filters.road_code = assetData.roadCode;
+                    // Use the protobuf object get members here, because we want chainage unformatted
                     filters.chainagestart = assetData.getLinkStartChainage();
                     filters.chainageend = assetData.getLinkEndChainage();
                 } else {
                     filters.road_id = assetData.id;
                 }
             } else {
-                if (assetData.getChainage()) {
-                    filters.structure_code = assetData.getStructureCode();
+                if (assetData.chainage) {
+                    filters.structure_code = assetData.structureCode;
                     filters.chainage = assetData.getChainage();
                 } else {
                     filters.structure_id = assetData.id;
                 }
             }
-    
+
             return filters;
         };
 

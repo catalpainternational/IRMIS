@@ -4,71 +4,65 @@ import { isArray } from "util";
 import { Timestamp } from "google-protobuf/google/protobuf/timestamp_pb";
 import { Attribute, Report } from "../../../protobuf/report_pb";
 
+import { reportColumns } from "../../reportTableDefinitions";
 import { choice_or_default, getFieldName, getHelpText, invertChoices, makeEstradaObject } from "../protoBufUtilities";
-import { reportColumns } from "../../reportManager";
 
-import { ASSET_CLASS_CHOICES, ASSET_CONDITION_CHOICES } from "./asset";
+import { ADMINISTRATIVE_AREA_CHOICES, ASSET_CLASS_CHOICES, ASSET_CONDITION_CHOICES, IEstrada } from "./estradaBase";
 import {
-    ROAD_STATUS_CHOICES, SURFACE_TYPE_CHOICES,
-    TECHNICAL_CLASS_CHOICES, TRAFFIC_LEVEL_CHOICES,
-    PAVEMENT_CLASS_CHOICES, TERRAIN_CLASS_CHOICES
+    PAVEMENT_CLASS_CHOICES, ROAD_STATUS_CHOICES, SURFACE_TYPE_CHOICES,
+    TECHNICAL_CLASS_CHOICES,
+    TERRAIN_CLASS_CHOICES, TRAFFIC_LEVEL_CHOICES,
 } from "./road";
 
+// tslint:disable: object-literal-sort-keys
+// tslint:disable: max-classes-per-file
+
 // All Ids in the following schemas are generated
-const networkReportSchema = {
+const networkReportSchema: { [name: string]: any } = {
     id: { display: "Id" },
-    filter: { display: gettext("Filter") },
-    lengths: { display: gettext("Lengths") },
+    filter: { display: (window as any).gettext("Filter") },
+    lengths: { display: (window as any).gettext("Lengths") },
 };
 
-const roadReportSchema = {
+const roadReportSchema: { [name: string]: any } = {
     id: { display: "Id" },
-    roadCode: { display: gettext("Road Code") },
-    reportChainageStart: { display: gettext("Chainage Start") },
-    reportChainageEnd: { display: gettext("Chainage End") },
-    lengths: { display: gettext("Lengths") },
-    attributeTableList: { display: gettext("Attribute Tables") },
+    roadCode: { display: (window as any).gettext("Road Code") },
+    reportChainageStart: { display: (window as any).gettext("Chainage Start") },
+    reportChainageEnd: { display: (window as any).gettext("Chainage End") },
+    lengths: { display: (window as any).gettext("Lengths") },
+    attributeTableList: { display: (window as any).gettext("Attribute Tables") },
 };
 
-const attributeSchema = {
-    roadId: { display: gettext("Road Id") },
-    roadCode: { display: gettext("Road Code") },
-    primaryAttribute: { display: gettext("Attribute") },
-    chainageStart: { display: gettext("Chainage Start") },
-    chainageEnd: { display: gettext("Chainage End") },
+const attributeSchema: { [name: string]: any } = {
+    roadId: { display: (window as any).gettext("Road Id") },
+    roadCode: { display: (window as any).gettext("Road Code") },
+    primaryAttribute: { display: (window as any).gettext("Attribute") },
+    chainageStart: { display: (window as any).gettext("Chainage Start") },
+    chainageEnd: { display: (window as any).gettext("Chainage End") },
     surveyId: { display: "Survey Id" },
     userId: { display: "User Id" },
-    dateSurveyed: { display: gettext("Survey Date") },
-    addedBy: { display: gettext("Added By") },
-    value: { display: gettext("Value") },
+    dateSurveyed: { display: (window as any).gettext("Survey Date") },
+    addedBy: { display: (window as any).gettext("Added By") },
+    value: { display: (window as any).gettext("Value") },
 };
-
-function AdminAreaChoices() {
-    const adminAreaChoices = {};
-    window.asset_schema.administrative_area.options.forEach((option) => {
-        adminAreaChoices[option.id] = option.name || option.id;
-    });
-
-    return adminAreaChoices;
-}
 
 // These are the response filters returned from reports.py and views.py
-const filterTitles = {
-    road_id: { display: gettext("Road Id") },
-    asset_class: { display: gettext("Asset Class"), choices: ASSET_CLASS_CHOICES },
-    asset_condition: { display: gettext("Surface Condition"), choices: ASSET_CONDITION_CHOICES },
-    surface_type: { display: gettext("Surface Type"), choices: SURFACE_TYPE_CHOICES },
-    municipality: { display: gettext("Municipality"), choices: AdminAreaChoices() },
-    pavement_class: { display: gettext("Pavement Class"), choices: PAVEMENT_CLASS_CHOICES },
-    date_surveyed: { display: gettext("Date Surveyed") },
+const filterTitles: { [name: string]: any } = {
+    road_id: { display: (window as any).gettext("Road Id") },
+    asset_class: { display: (window as any).gettext("Asset Class"), choices: ASSET_CLASS_CHOICES },
+    asset_condition: { display: (window as any).gettext("Surface Condition"), choices: ASSET_CONDITION_CHOICES },
+    surface_type: { display: (window as any).gettext("Surface Type"), choices: SURFACE_TYPE_CHOICES },
+    municipality: { display: (window as any).gettext("Municipality"), choices: ADMINISTRATIVE_AREA_CHOICES },
+    pavement_class: { display: (window as any).gettext("Pavement Class"), choices: PAVEMENT_CLASS_CHOICES },
+    date_surveyed: { display: (window as any).gettext("Date Surveyed") },
     // The following filters are handled 'specially'
-    // primary_attribute: { display: gettext("Attribute") },
-    // road_code: { display: gettext("Road Code") },
-    // report_chainage: { display: gettext("Report Chainage") },
+    // primary_attribute: { display: (window as any).gettext("Attribute") },
+    // road_code: { display: (window as any).gettext("Road Code") },
+    // report_chainage: { display: (window as any).gettext("Report Chainage") },
 };
 
-const lengthTypeChoices = {
-    municipality: AdminAreaChoices(),
+const lengthTypeChoices: { [name: string]: any } = {
+    municipality: ADMINISTRATIVE_AREA_CHOICES,
     number_lanes: {},
     pavement_class: PAVEMENT_CLASS_CHOICES,
     rainfall: {},
@@ -81,12 +75,12 @@ const lengthTypeChoices = {
     traffic_level: TRAFFIC_LEVEL_CHOICES,
 };
 
-export function testKeyIsReal(key) {
+export function testKeyIsReal(key: any): boolean {
     return ["0", "none", "unknown", "nan", "null", "undefined", "false"].indexOf(`${key}`.toLowerCase()) === -1;
 }
 
 /** Define a new report column based on the supplied title and columnData */
-function defineReportColumn(title, columnData) {
+function defineReportColumn(title: string, columnData: string): void {
     if (reportColumns[columnData]) {
         return;
     }
@@ -98,7 +92,7 @@ function defineReportColumn(title, columnData) {
         defaultContent: "",
         className: "text-right",
         orderable: false,
-        render: (data, type) => {
+        render: (data: any, type: string) => {
             return (type === "display" && typeof data === "number")
                 ? (data / 1000).toFixed(2)
                 : data;
@@ -107,14 +101,14 @@ function defineReportColumn(title, columnData) {
     reportColumns[columnData] = newColumn;
 }
 
-function extractTitle(lengthKey, choices, useLengthKeyAsDefault) {
+function extractTitle(lengthKey: string, choices: { [name: string]: any }, useLengthKeyAsDefault = false) {
     let title = choice_or_default(lengthKey, choices, useLengthKeyAsDefault ? lengthKey : "Unknown").toLowerCase();
 
     if (title === "unknown") {
         // check if we've actually received the title instead of the key
         const invertedChoices = invertChoices(choices);
-        let alternateTitle = choice_or_default(lengthKey, invertedChoices, "Unknown").toLowerCase();
-        let lengthKeyHasValue = testKeyIsReal(lengthKey);
+        const alternateTitle = choice_or_default(lengthKey, invertedChoices, "Unknown").toLowerCase();
+        const lengthKeyHasValue = testKeyIsReal(lengthKey);
         if (alternateTitle !== "unknown") {
             title = lengthKey;
             lengthKey = alternateTitle;
@@ -128,22 +122,26 @@ function extractTitle(lengthKey, choices, useLengthKeyAsDefault) {
     return [title, lengthKey];
 }
 
-function extractCountData(allLengths, primary_attribute, useLengthKeyAsDefault = false) {
-    const lengths = [];
-    const lengthsForType = allLengths[primary_attribute] || [];
-    const choices = lengthTypeChoices[primary_attribute] || {};
+function extractCountData(
+    allLengths: { [name: string]: any },
+    primaryAttribute: string,
+    useLengthKeyAsDefault = false,
+): any[] {
+    const lengths: any[] = [];
+    const lengthsForType = allLengths[primaryAttribute] || [];
+    const choices = lengthTypeChoices[primaryAttribute] || {};
     if (lengthsForType && Object.keys(lengthsForType).length) {
         Object.keys(lengthsForType).forEach((key) => {
-            let lengthKeyHasValue = testKeyIsReal(key);
-            let [title, lengthKey] = extractTitle(key, choices, useLengthKeyAsDefault);
+            const lengthKeyHasValue = testKeyIsReal(key);
+            const [title, lengthKey] = extractTitle(key, choices, useLengthKeyAsDefault);
 
             if (typeof lengthsForType[key] === "number") {
-                lengthsForType[key] = { "value": lengthsForType[key]}
+                lengthsForType[key] = { value: lengthsForType[key] };
             }
             const distance = lengthsForType[key].value;
 
-            // Start building the new 'length' ready for reporting 
-            const newLength = { key: lengthKeyHasValue ? lengthKey : 0, title, distance };
+            // Start building the new 'length' ready for reporting
+            const newLength: { [name: string]: any } = { key: lengthKeyHasValue ? lengthKey : 0, title, distance };
             Object.keys(lengthsForType[key]).forEach((attrKey) => {
                 if (attrKey === "value") {
                     // Skip the primary attribute value
@@ -151,7 +149,7 @@ function extractCountData(allLengths, primary_attribute, useLengthKeyAsDefault =
                 }
                 const attrChoices = lengthTypeChoices[attrKey] || {};
                 Object.keys(lengthsForType[key][attrKey]).forEach((attrTerm) => {
-                    let [attrTermTitle, attrLengthKey] = extractTitle(attrTerm, attrChoices, useLengthKeyAsDefault);
+                    const [attrTermTitle, attrLengthKey] = extractTitle(attrTerm, attrChoices, useLengthKeyAsDefault);
                     const fullAttrTerm = `${attrKey}|${attrTermTitle}`;
                     newLength[fullAttrTerm] = lengthsForType[key][attrKey][attrTerm];
                     defineReportColumn(attrTermTitle, fullAttrTerm);
@@ -164,7 +162,7 @@ function extractCountData(allLengths, primary_attribute, useLengthKeyAsDefault =
     return lengths;
 }
 
-function getAssetConditionName(lengths) {
+function getAssetConditionName(lengths: { [name: string]: any }) {
     const assetConditionNames = ["asset_condition", "surface_condition", "structure_condition"];
     let assetConditionName = "asset_condition";
 
@@ -182,15 +180,23 @@ function getAssetConditionName(lengths) {
     return assetConditionName;
 }
 
-export class EstradaNetworkSurveyReport extends Report {
-    getId() {
+export class EstradaNetworkSurveyReport extends Report implements IEstrada {
+    public static getFieldName(field: string) {
+        return getFieldName(roadReportSchema, field);
+    }
+
+    public static getHelpText(field: string) {
+        return getHelpText(roadReportSchema, field);
+    }
+
+    public getId() {
         if (this.roadCodes.length === 1) {
             return `${this.roadCodes}_${this.reportChainage[0]}-${this.reportChainage[1]}`;
         }
 
         return (this.assetClasses && this.assetClasses.length > 0)
             ? `${this.assetClasses.join(",")}`
-            : null;
+            : "";
     }
 
     get id() {
@@ -206,8 +212,8 @@ export class EstradaNetworkSurveyReport extends Report {
     }
 
     /** Clears the filter, leaving it with a 'primary_attribute' member with an empty list */
-    clearFilter() {
-        this.setFilter(JSON.stringify({"primary_attribute": []}));
+    public clearFilter() {
+        this.setFilter(JSON.stringify({primary_attribute: []}));
     }
 
     /** Sets a key (member) in the filter to a specific list of values
@@ -216,7 +222,7 @@ export class EstradaNetworkSurveyReport extends Report {
      *  - then it will be converted to an array with a single value
      * If key is "secondary_attribute" we assume value is OK if it's an object or undefined
      */
-    setFilterKey(key, values) {
+    public setFilterKey(key: any, values: any) {
         // Verify/correct input parameters
         const hasKey = (key || key === 0);
         if (!hasKey) {
@@ -224,7 +230,7 @@ export class EstradaNetworkSurveyReport extends Report {
             return;
         }
         if (key === "secondary_attribute") {
-            let hasValidSecondaryValues = typeof values === "object" && values !== null;
+            const hasValidSecondaryValues = typeof values === "object" && values !== null;
             if (!hasValidSecondaryValues) {
                 return;
             }
@@ -234,17 +240,17 @@ export class EstradaNetworkSurveyReport extends Report {
             }
         }
 
-        const currentFilter = this.filter;
-        currentFilter[key] = values;
-        
-        this.setFilter(JSON.stringify(currentFilter));
+        const currentReportFilter = this.filter;
+        currentReportFilter[key] = values;
+
+        this.setFilter(JSON.stringify(currentReportFilter));
     }
 
     /** Adds a value to the list that is in the filter key
-     * 
+     *
      * Note: this does NOT support "secondary_attribute" filters, use setFilterKey instead
      */
-    filterKeyAddItem(key, value) {
+    public filterKeyAddItem(key: any, value: any) {
         // Verify/correct input parameters
         const hasKey = (key || key === 0) && key !== "secondary_attribute";
         const hasValue = (typeof value === "string" || typeof value === "number");
@@ -253,15 +259,15 @@ export class EstradaNetworkSurveyReport extends Report {
             return;
         }
 
-        const currentFilter = this.filter;
-        currentFilter[key] = currentFilter[key] || [];
-        if (!currentFilter[key].includes(value)) {
-            currentFilter[key].push(value);
-            this.setFilter(JSON.stringify(currentFilter));
+        const currentReportFilter = this.filter;
+        currentReportFilter[key] = currentReportFilter[key] || [];
+        if (!currentReportFilter[key].includes(value)) {
+            currentReportFilter[key].push(value);
+            this.setFilter(JSON.stringify(currentReportFilter));
         }
     }
 
-    get formattedFilters() {
+    get formattedFilters(): any[] {
         const rawFilters = this.filter;
 
         const filterKeys = Object.keys(rawFilters);
@@ -269,10 +275,10 @@ export class EstradaNetworkSurveyReport extends Report {
             return [];
         }
 
-        const formattedFilters = [];
+        const formattedFilters: any[] = [];
         filterKeys.forEach((key) => {
             let values = rawFilters[key];
-            let filterTitle = filterTitles[key];
+            const filterTitle: { [name: string]: any } = filterTitles[key];
             if (values && values.length > 0 && filterTitle) {
                 if (!isArray(values)) {
                     values = [values];
@@ -280,7 +286,7 @@ export class EstradaNetworkSurveyReport extends Report {
                 const title = filterTitle.display;
                 if (title) {
                     if (filterTitle.choices) {
-                        values = values.map((value) => (choice_or_default(value, filterTitle.choices || [])));
+                        values = values.map((value: any) => (choice_or_default(value, filterTitle.choices || [])));
                     }
                     formattedFilters.push({ key, title, values });
                 }
@@ -293,7 +299,7 @@ export class EstradaNetworkSurveyReport extends Report {
     /** lengths is an object(dict) of term:value pairs where value is an object of the form:
      * - {"value": numeric} for simple reports (no secondary attribute)
      * - {"value": numeric, "secondary_attribute": {"term": numeric}}
-    */
+     */
     get lengths() {
         let lengths = "";
 
@@ -323,56 +329,18 @@ export class EstradaNetworkSurveyReport extends Report {
     }
 
     /** Clears the lengths */
-    clearLengths() {
+    public clearLengths() {
         this.setLengths(JSON.stringify({}));
     }
 
-    /** Sets a key (member) in the lengths specified object of term:value pairs
-     * If termValues is undefined - then the key will be deleted
-     */
-    setLengthsKey(key, termValues = undefined) {
-        // Verify/correct input parameters
-        const hasKey = (key || key === 0);
-        let hasValidTermValues = typeof termValues === "object" && termValues !== null;
-        if (hasValidTermValues) {
-            const tempTermValues = {};
-            Object.keys(termValues).forEach((term) => {
-                if (typeof termValues[term] === "number") {
-                    tempTermValues[term] = { "value": termValues[term] };
-                } else if (termValues[term] && typeof termValues[term].value === "number") {
-                    tempTermValues[term] = termValues[term];
-                }
-            });
-            termValues = tempTermValues;
-            // Reassess whether we have valid term:value pairs
-            hasValidTermValues = Object.keys(termValues).length > 0;
-        } else if (typeof termValues === "undefined") {
-            // "undefined" termValues is a valid termValues
-            hasValidTermValues = true;
-        }
-        if (!hasKey || !hasValidTermValues) {
-            // no supplied key and/or no valid termValues - so nothing to do
-            return;
-        }
-        
-        const currentLengths = this.lengths;
-        const keyExists = currentLengths[key];
-        if (!keyExists && typeof termValues === "undefined") {
-            // nothing to do
-            return;
-        }
-        currentLengths[key] = termValues;
-        
-        this.setLengths(JSON.stringify(currentLengths));
-    }
-
     /** Sets a term:value pair in the lengths[key]
-     * If value is undefined or not numeric, or not an object that at least specifies {value: numeric} then nothing is done
+     * If value is undefined or not numeric, or not an object that at least specifies {value: numeric}
+     *    then nothing is done
      * If value is numeric or {value: numeric} then the term:value pair is set/appended in lengths[key]
      * If value is undefined then the term is removed from lengths[key]
      * If lengths[key] has no more terms then the key is removed from lengths
      */
-    lengthsKeyAddItem(key, term, value = undefined) {
+    public lengthsKeyAddItem(key: any, term: any, value?: any) {
         // Verify/correct input parameters
         const hasKey = (key || key === 0);
         const hasTerm = (term || term === 0);
@@ -382,7 +350,7 @@ export class EstradaNetworkSurveyReport extends Report {
             return;
         }
         if (typeof value === "number") {
-            value = { "value": value };
+            value = { value };
         }
 
         const currentLengths = this.lengths;
@@ -423,65 +391,11 @@ export class EstradaNetworkSurveyReport extends Report {
         return this.filter.report_chainage || [];
     }
 
-    get municipalities() {
-        return extractCountData(this.lengths, "municipality");
-    }
-
-    get numberLanes() {
-        return extractCountData(this.lengths, "number_lanes");
-    }
-
-    get pavementClasses() {
-        return extractCountData(this.lengths, "pavement_class");
-    }
-
-    get rainfall() {
-        return extractCountData(this.lengths, "rainfall");
-    }
-
-    get assetClasses() {
-        return extractCountData(this.lengths, "asset_class");
-    }
-
-    get roadStatuses() {
-        return extractCountData(this.lengths, "road_status");
-    }
-
-    get assetConditions() {
-        const assetConditionName = getAssetConditionName(this.lengths);
-        return extractCountData(this.lengths, assetConditionName);
-    }
-
-    get surfaceTypes() {
-        return extractCountData(this.lengths, "surface_type");
-    }
-
-    get technicalClasses() {
-        return extractCountData(this.lengths, "technical_class");
-    }
-
-    get terrainClasses() {
-        return extractCountData(this.lengths, "terrain_class");
-    }
-
-    get trafficLevels() {
-        return extractCountData(this.lengths, "traffic_level");
-    }
-
-    static getFieldName(field) {
-        return getFieldName(networkReportSchema, field);
-    }
-
-    static getHelpText(field) {
-        return getHelpText(networkReportSchema, field);
-    }
-}
-
-export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
-    /// 'v2' of the reports proto
+    // ==================
+    // from here on is 'v2' of the reports proto
     get attributesList() {
         const attributesRaw = this.getAttributesList();
-        return attributesRaw.map(this.makeEstradaSurveyAttribute);
+        return attributesRaw.map(makeEstradaSurveyAttribute);
     }
 
     get municipalities() {
@@ -531,18 +445,26 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
 
     /** Returns one or more collections of attributes matching the criteria
      * @param {string} primaryAttribute The primaryAttribute (within all of the attributes) to search for
-     * @param {Timestamp} [date_surveyed=null] All attributes up to and including this date are acceptable (null = take them all)
-     * @param {boolean} [returnAllDates=false] Return all matching attributes, false means only return the most recent
-     * @param {boolean} [returnAllEntries=false] Return all entries, false means return nothing if there are only 'generated' entries
+     * @param {Timestamp} [dateSurveyed=null] All attributes up to and including this date are acceptable
+     *     (null = take them all)
+     * @param {boolean} [returnAllDates=false] Return all matching attributes,
+     *     false means only return the most recent
+     * @param {boolean} [returnAllEntries=false] Return all entries,
+     *     false means return nothing if there are only 'generated' entries
      * @return {object[]} An array of simplified attribute objects
      */
-    attributes(primaryAttribute, date_surveyed = null, returnAllDates = false, returnAllEntries = false) {
+    public attributes(
+        primaryAttribute: string,
+        dateSurveyed?: Timestamp,
+        returnAllDates = false,
+        returnAllEntries = false,
+    ) {
         let filteredAttributes = this.attributesList.filter((attribute) => {
             return attribute.primaryAttribute === primaryAttribute;
         });
 
         if (filteredAttributes.length === 0) {
-            return {date_surveyed: null, attributeEntries: []};
+            return makeEstradaSurveyAttribute({date_surveyed: undefined, attributeEntries: []});
         }
 
         // Descending sort most recent dateSurveyed, down to null dateSurveyed
@@ -561,13 +483,13 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
             return 0;
         });
 
-        if (date_surveyed) {
+        if (dateSurveyed) {
             filteredAttributes = filteredAttributes.filter((attribute) => {
-                if (!attribute.dateSurveyed) {
-                    return true;
-                }
+                const attributeDateSurveyed = attribute.getDateSurveyed();
 
-                return (attribute.dateSurveyed <= date_surveyed);
+                return !attributeDateSurveyed
+                    ? true
+                    : (attributeDateSurveyed <= dateSurveyed);
             });
         }
 
@@ -586,31 +508,24 @@ export class EstradaRoadSurveyReport extends EstradaNetworkSurveyReport {
             }
         }
 
-        return {
-            date_surveyed: date_surveyed,
-            attributeEntries: filteredAttributes
-        };
+        return makeEstradaSurveyAttribute({date_surveyed: dateSurveyed, attributeEntries: filteredAttributes });
     }
 
-    static getFieldName(field) {
-        return getFieldName(roadReportSchema, field);
-    }
-
-    static getHelpText(field) {
-        return getHelpText(roadReportSchema, field);
-    }
-
-    makeSpecificLengths(primary_attribute, useLengthKeyAsDefault = false) {
-        return extractCountData(this.lengths, primary_attribute, useLengthKeyAsDefault);
-    }
-
-    makeEstradaSurveyAttribute(pbattribute) {
-        return makeEstradaObject(EstradaSurveyAttribute, pbattribute);
+    private makeSpecificLengths(primaryAttribute: string, useLengthKeyAsDefault = false) {
+        return extractCountData(this.lengths, primaryAttribute, useLengthKeyAsDefault);
     }
 }
 
-export class EstradaSurveyAttribute extends Attribute {
-    getId() {
+export class EstradaSurveyAttribute extends Attribute implements IEstrada {
+    public static getFieldName(field: string) {
+        return getFieldName(attributeSchema, field);
+    }
+
+    public static getHelpText(field: string) {
+        return getHelpText(attributeSchema, field);
+    }
+
+    public getId() {
         return `${this.roadId}_${this.primaryAttribute}-${this.surveyId}`;
     }
 
@@ -625,11 +540,11 @@ export class EstradaSurveyAttribute extends Attribute {
     get roadCode() {
         return this.getRoadCode();
     }
-        
+
     get primaryAttribute() {
         return this.getPrimaryAttribute() || "";
     }
-        
+
     get chainageStart() {
         return this.getChainageStart() || 0;
     }
@@ -645,7 +560,7 @@ export class EstradaSurveyAttribute extends Attribute {
     get userId() {
         return this.getUserId();
     }
-    
+
     get dateSurveyed() {
         const pbufData = this.getDateSurveyed();
         if (!pbufData || !pbufData.getSeconds()) {
@@ -668,83 +583,89 @@ export class EstradaSurveyAttribute extends Attribute {
     }
 
     get municipality() {
-        return this.primaryAttribute === "municipality" ? this.value || gettext("Unknown") : gettext("Unknown");
+        return this.primaryAttribute === "municipality"
+            ? this.value || (window as any).gettext("Unknown")
+            : (window as any).gettext("Unknown");
     }
 
     get carriagewayWidth() {
-        return this.primaryAttribute === "carriageway_width" ? this.value || gettext("Unknown") : gettext("Unknown");
+        return this.primaryAttribute === "carriageway_width"
+            ? this.value || (window as any).gettext("Unknown")
+            : (window as any).gettext("Unknown");
     }
 
     get numberLanes() {
-        return this.primaryAttribute === "number_lanes" ? this.value || gettext("Unknown") : gettext("Unknown");
+        return this.primaryAttribute === "number_lanes"
+            ? this.value || (window as any).gettext("Unknown")
+            : (window as any).gettext("Unknown");
     }
 
     get pavementClass() {
         return this.primaryAttribute === "pavement_class"
-            ? gettext(choice_or_default(this.value, PAVEMENT_CLASS_CHOICES, "Unknown"))
-            : gettext("Unknown");
+            ? (window as any).gettext(choice_or_default(this.value, PAVEMENT_CLASS_CHOICES, "Unknown"))
+            : (window as any).gettext("Unknown");
     }
 
     get rainfall() {
         return this.primaryAttribute === "rainfall"
-            ? gettext(this.value || "Unknown")
-            : gettext("Unknown");
+            ? (window as any).gettext(this.value || "Unknown")
+            : (window as any).gettext("Unknown");
     }
 
-    get trafficCounts() {
-        return this.values.counts || {};
+    get trafficCounts(): { [name: string]: any }  {
+        return this.value ? JSON.parse(this.value).counts : {} || {};
     }
 
-    get trafficCountTotal() {
-        return this.values.countTotal || 0;
+    get trafficCountTotal(): number {
+        return this.value ? JSON.parse(this.value).countTotal : 0 || 0;
     }
 
-    get trafficDataType() {
-        return this.values.trafficType || "Unknown";
+    get trafficDataType(): string {
+        return this.value ? JSON.parse(this.value).trafficType : "Unknown" || "Unknown";
     }
 
     get assetClass() {
         // "structure_class", "road_class", "road_type" have all been deprecated
         return this.primaryAttribute === "asset_class"
-            ? gettext(choice_or_default(this.value, ASSET_CLASS_CHOICES, "Unknown"))
-            : gettext("Unknown");        
+            ? (window as any).gettext(choice_or_default(this.value, ASSET_CLASS_CHOICES, "Unknown"))
+            : (window as any).gettext("Unknown");
     }
 
     get assetCondition() {
         return ["asset_condition", "surface_condition", "structure_condition"].includes(this.primaryAttribute)
-            ? gettext(choice_or_default(this.value, ASSET_CONDITION_CHOICES, "Unknown"))
-            : gettext("Unknown");
+            ? (window as any).gettext(choice_or_default(this.value, ASSET_CONDITION_CHOICES, "Unknown"))
+            : (window as any).gettext("Unknown");
     }
 
     get surfaceType() {
         return this.primaryAttribute === "surface_type"
-            ? gettext(choice_or_default(this.value, SURFACE_TYPE_CHOICES, "Unknown"))
-            : gettext("Unknown");
+            ? (window as any).gettext(choice_or_default(this.value, SURFACE_TYPE_CHOICES, "Unknown"))
+            : (window as any).gettext("Unknown");
     }
 
     get technicalClass() {
         return this.primaryAttribute === "technical_class"
-            ? gettext(choice_or_default(this.value, TECHNICAL_CLASS_CHOICES, "Unknown"))
-            : gettext("Unknown");
+            ? (window as any).gettext(choice_or_default(this.value, TECHNICAL_CLASS_CHOICES, "Unknown"))
+            : (window as any).gettext("Unknown");
     }
 
     get terrainClass() {
         return this.primaryAttribute === "terrain_class"
-            ? gettext(choice_or_default(this.value, TERRAIN_CLASS_CHOICES, "Unknown"))
-            : gettext("Unknown");
+            ? (window as any).gettext(choice_or_default(this.value, TERRAIN_CLASS_CHOICES, "Unknown"))
+            : (window as any).gettext("Unknown");
     }
 
     get trafficLevel() {
         return this.primaryAttribute === "traffic_level"
-            ? gettext(choice_or_default(this.value, TRAFFIC_LEVEL_CHOICES, "Unknown"))
-            : gettext("Unknown");
+            ? (window as any).gettext(choice_or_default(this.value, TRAFFIC_LEVEL_CHOICES, "Unknown"))
+            : (window as any).gettext("Unknown");
     }
+}
 
-    static getFieldName(field) {
-        return getFieldName(attributeSchema, field);
-    }
+export function makeEstradaNetworkSurveyReport(pbsurveyreport?: { [name: string]: any }) {
+    return makeEstradaObject(EstradaNetworkSurveyReport, pbsurveyreport) as EstradaNetworkSurveyReport;
+}
 
-    static getHelpText(field) {
-        return getHelpText(attributeSchema, field);
-    }
+export function makeEstradaSurveyAttribute(pbattribute: { [name: string]: any }) {
+    return makeEstradaObject(EstradaSurveyAttribute, pbattribute) as EstradaSurveyAttribute;
 }

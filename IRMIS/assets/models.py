@@ -78,6 +78,7 @@ class SurveyQuerySet(models.QuerySet):
 
         fields = dict(
             id="id",
+            structure_id="structure_id",
             road_id="road_id",
             road_code="road_code",
             user="user__id",
@@ -137,6 +138,14 @@ class Survey(models.Model):
     road_id = models.IntegerField(verbose_name=_("Road Id"), blank=True, null=True)
     road_code = models.CharField(
         verbose_name=_("Road Code"), validators=[no_spaces], max_length=25
+    )
+    # Global ID for a structure the survey links to (ex. BRDG-42)
+    structure_id = models.CharField(
+        verbose_name=_("Structure Id"),
+        blank=True,
+        null=True,
+        validators=[no_spaces],
+        max_length=15,
     )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -600,18 +609,17 @@ class BridgeQuerySet(models.QuerySet):
         structures_protobuf = ProtoStructures()
 
         regular_fields = dict(
-            geojson_id="geojson_file_id",
             road_id="road_id",
             road_code="road_code",
             structure_code="structure_code",
             structure_name="structure_name",
             asset_class="structure_class",
             administrative_area="administrative_area",
-            structure_type="structure_type",
+            structure_type="structure_type__code",
             river_name="river_name",
-            material="material",
-            protection_upstream="protection_upstream",
-            protection_downstream="protection_downstream",
+            material="material__code",
+            protection_upstream="protection_upstream__code",
+            protection_downstream="protection_downstream__code",
         )
 
         datetime_fields = dict(
@@ -632,6 +640,7 @@ class BridgeQuerySet(models.QuerySet):
             .annotate(to_wgs=models.functions.Transform("geom", 4326))
             .values(
                 "id",
+                "geojson_file_id",
                 *regular_fields.values(),
                 *datetime_fields.values(),
                 *numeric_fields.values(),
@@ -642,6 +651,7 @@ class BridgeQuerySet(models.QuerySet):
         for bridge in bridges:
             bridge_protobuf = structures_protobuf.bridges.add()
             bridge_protobuf.id = "BRDG-" + str(bridge["id"])
+            bridge_protobuf.geojson_id = int(bridge["geojson_file_id"])
 
             for protobuf_key, query_key in regular_fields.items():
                 if bridge[query_key]:
@@ -855,17 +865,16 @@ class CulvertQuerySet(models.QuerySet):
         structures_protobuf = ProtoStructures()
 
         regular_fields = dict(
-            geojson_id="geojson_file_id",
             road_id="road_id",
             road_code="road_code",
             structure_code="structure_code",
             structure_name="structure_name",
             asset_class="structure_class",
             administrative_area="administrative_area",
-            structure_type="structure_type",
-            material="material",
-            protection_upstream="protection_upstream",
-            protection_downstream="protection_downstream",
+            structure_type="structure_type__code",
+            material="material__code",
+            protection_upstream="protection_upstream__code",
+            protection_downstream="protection_downstream__code",
         )
 
         datetime_fields = dict(
@@ -886,6 +895,7 @@ class CulvertQuerySet(models.QuerySet):
             .annotate(to_wgs=models.functions.Transform("geom", 4326))
             .values(
                 "id",
+                "geojson_file_id",
                 *regular_fields.values(),
                 *datetime_fields.values(),
                 *numeric_fields.values(),
@@ -896,6 +906,7 @@ class CulvertQuerySet(models.QuerySet):
         for culvert in culverts:
             culvert_protobuf = structures_protobuf.culverts.add()
             culvert_protobuf.id = "CULV-" + str(culvert["id"])
+            culvert_protobuf.geojson_id = int(culvert["geojson_file_id"])
 
             for protobuf_key, query_key in regular_fields.items():
                 if culvert[query_key]:

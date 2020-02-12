@@ -188,7 +188,7 @@
         <div class="filters-section STRC" hidden>
             <span class="subtitle">{% trans "Asset" %}</span>
             {% comment %} STRUCTURE {% endcomment %}
-            {% with slug=asset_schema.administrative_area.slug %}
+            {% with slug=asset_schema.asset_type.slug %}
             <div data-slug="{{ slug }}" class="filter">
                 <div class="d-flex header justify-content-between">
                     <div class="align-items-center d-flex">
@@ -201,13 +201,13 @@
                 </div>
                 <div class="options" hidden>
                     <ul>
-                        <li class="align-items-center d-flex optionToggle" data-option="bridge">
+                        <li class="align-items-center d-flex optionToggle" data-option="BRDG">
                             <span class="checkbox image"></span>
-                            Bridges
+                            {% trans "Bridges" %}
                         </li>
-                        <li class="align-items-center d-flex optionToggle" data-option="culvert">
+                        <li class="align-items-center d-flex optionToggle" data-option="CULV">
                             <span class="checkbox image"></span>
-                            Culverts
+                            {% trans "Culverts" %}
                         </li>
                     </ul>
                 </div>
@@ -215,7 +215,7 @@
             {% endwith %}
 
             {% comment %} ASSET CLASS {% endcomment %}
-            {% with slug=asset_schema.road_code.slug %}
+            {% with slug=asset_schema.asset_class.slug %}
             <div data-slug="{{ slug }}" class="filter">
                 <div class="d-flex header justify-content-between">
                     <div class="align-items-center d-flex">
@@ -240,32 +240,32 @@
             {% endwith %}
 
             {% comment %} STRUCTURE CODE {% endcomment %}
-            {% with slug=asset_schema.road_code.slug %}
+            {% with slug=asset_schema.structure_code.slug %}
             <div data-slug="{{ slug }}" class="filter">
                 <div class="d-flex header justify-content-between">
                     <div class="align-items-center d-flex">
-                        <label>Structure Code</label>
+                        <label>{{ asset_schema.structure_code.display }}</label>
                     </div>
                     <div class="align-items-center d-flex">
                         <span class="clear-select2" hidden>{% trans "Clear" %}</span>
                         <span class="plus image filterToggle"></span>
                     </div>
                 </div>
-                <div class="options" hidden> 
+                <div class="options" hidden>
                     <select class="filter_select2" multiple="true">
-                        <option value="a01">A01</option>
-                        <option value="a04">A04</option>
-                        <option value="b10">B10</option>
+                        {% for option in asset_schema.structure_code.options %}
+                        <option value="{{ option.structure_code }}">{{ option.structure_code }}</option>
+                        {% endfor %}
                     </select>
                 </div>
             </div>
+            {% endwith %}
         </div>
-        {% endwith %}
 
         {% comment %} SECTION - STRUCTURE CONDITION {% endcomment %}
         <div class="filters-section STRC" hidden>
             <span class="subtitle">{% trans "Asset condition" %}</span>
-            {% with slug=asset_schema.administrative_area.slug %}
+            {% with slug=asset_schema.asset_condition.slug %}
             {% comment %} STRUCTURE CONDITION {% endcomment %}
             <div data-slug="{{ slug }}" class="filter">
                 <div class="d-flex header justify-content-between">

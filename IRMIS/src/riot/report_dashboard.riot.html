@@ -46,7 +46,8 @@
     <script>
         import Stacked_Bar from "./stacked_bar.riot.html";
 
-        import { getRoadReport, reportBarIds } from "../reportManager";
+        import { getAssetReport } from "../reportManager";
+        import { reportBarIds } from "../reportTableDefinitions";
         import { updateReportAttributeSummary } from "../roadAttributes";
 
         import $ from "jquery";
@@ -101,7 +102,7 @@
 
                 const filter = { primaryattribute: this.stackedBars.map((stackedBar) => stackedBar.filterName) };
 
-                getRoadReport(filter)
+                getAssetReport(filter)
                     .then((surveyReportData) => {
                         if (surveyReportData) {
                             this.state.reportData = {
