@@ -83,7 +83,8 @@
                 <edit_environment if="{ state.page === 'environment' }" road="{ state.editingRoad }"
                     saving="{ state.saving }" showFeedback="{ showFeedback }" parent="{parentFunctions}">
                 </edit_environment>
-                <edit_history if="{ state.page === 'history' }" road="{ state.baseRoad }" parent="{parentFunctions}">
+                <edit_history if="{ state.page === 'history' }" road="{ state.baseRoad }"
+                    structure="{ state.editingStructure }" parent="{parentFunctions}">
                 </edit_history>
                 <edit_structure_type if="{ state.page === 'structure_type' }" structure="{ state.editingStructure }"
                     assetType="{ props.assetType }" saving="{ state.saving }" parent="{parentFunctions}">
@@ -114,7 +115,7 @@
         import * as riot from "riot";
         import $ from "jquery";
 
-        import {getAssetSurveys} from "../surveyManager";
+        import {getAssetSurveys, getStructureSurveys} from "../surveyManager";
         import {getAssetReport} from "../reportManager";
         import {updateReportAttributeSummary} from "../roadAttributes";
 
@@ -190,6 +191,7 @@
                     save: this.save,
                     saveStructure: this.saveStructure,
                     getAssetSurveys: this.getAssetSurveys,
+                    getStructureSurveys: this.getStructureSurveys,
                     refreshSurveysAndReports: this.refreshSurveysAndReports,
                     updateReportAttributeSummary: updateReportAttributeSummary,
                 };
@@ -347,6 +349,32 @@
             refreshSurveysAndReports(state, allDataTableId, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId = null) {
                 this.getAssetSurveys(state, allDataTableId, primaryAttribute, reportAttribute);
                 this.getAssetSurveyReports(state, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId);
+            },
+            getStructureSurveys(state, allDataTableId, primaryAttribute, reportAttribute) {
+                const structureId = state.structure.id;
+
+                getStructureSurveys(structureId, primaryAttribute)
+                    .then((surveyData) => {
+                        if (surveyData) {
+                            state.pendingRows = surveyData.map((data) => {
+                                data.title = data[reportAttribute] || data.values[primaryAttribute] || "";
+                                return data;
+                            });
+
+                            const eventName = `${allDataTableId}.dataAdded`;
+                            const eventDetail = {detail: {pendingRows: state.pendingRows, clearRows: true}};
+                            document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+
+                            state.error = false;
+                        } else {
+                            state.error = true;
+                        }
+                    }).catch(err => {
+                        state.error = true;
+                    }).finally((r) => {
+                        state.loading = false;
+                        this.update();
+                    });
             },
             getAssetSurveys(state, allDataTableId, primaryAttribute, reportAttribute) {
                 const roadId = state.road.id;

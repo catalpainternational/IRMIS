@@ -127,6 +127,10 @@ export class EstradaBridge extends Bridge implements IAsset {
         return this.getRoadCode();
     }
 
+    get roadId() {
+        return this.getRoadId();
+    }
+
     // get user() {
     //     return this.getUser() || "";
     // }
@@ -262,6 +266,10 @@ export class EstradaCulvert extends Culvert implements IAsset {
 
     get roadCode() {
         return this.getRoadCode();
+    }
+
+    get roadId() {
+        return this.getRoadId();
     }
 
     // get user() {

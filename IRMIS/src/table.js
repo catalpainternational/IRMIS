@@ -25,7 +25,7 @@ import { getRoad, roads } from "./roadManager";
 import { getStructure, structures } from "./structureManager";
 
 import { getAssetReport } from "./reportManager";
-import { getAssetSurveys } from "./surveyManager";
+import { getAssetSurveys, getStructureSurveys } from "./surveyManager";
 
 let roadsTable = null;
 let structuresTable = null;
@@ -93,11 +93,11 @@ const attributeModalMapping = {
         reportTable: null,
         title: gettext("Structure Condition details"),
     },
-    structure_condition_description: {
+    condition_description: {
         columns: structureConditionDescriptionColumns,
         reportDataTableId: "inventory-structure-condition-description-table",
         reportTable: null,
-        title: gettext("Structure Condition Description details"),
+        title: gettext("Condition Description details"),
     },
     structure_photos: {
         columns: structurePhotosColumns,
@@ -227,7 +227,7 @@ function setupTableEventHandlers() {
     // Setup column selection and column click handlers
     setupColumnEventHandlers("ROAD");
     setupColumnEventHandlers("STRC");
-   
+
     function setupColumnEventHandlers(mainTableType = "ROAD") {
         const selectId = (mainTableType === "ROAD")
             ? "select-road-data"
@@ -242,7 +242,7 @@ function setupTableEventHandlers() {
         const mainTable = (mainTableType === "ROAD")
             ? roadsTable
             : structuresTable;
-        
+
         const restoreColumnDefaults = (mainTableType === "ROAD")
             ? document.getElementsByClassName("restore-road").item(0)
             : document.getElementsByClassName("restore-structure").item(0);
@@ -337,7 +337,7 @@ function setupTableEventHandlers() {
             clickedRow.addClass("selected");
 
             mainTable.selectionProcessing = clickedRowId;
-    
+
             applyTableSelectionToMap(mainTable.selectionProcessing);
         }
     }
@@ -510,6 +510,20 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
                 // update the traffic details inventory modal tag with current data
                 document.dispatchEvent(new CustomEvent("inventory-traffic-level-table.updateTrafficData", { detail: { currentRowData: latestSurvey } }));
             });
+    } else if (["structure_condition", "condition_description"].indexOf(attr) >= 0) {
+        const reportDataTableId = attributeModalMapping[attr].reportDataTableId;
+        const reportTable = attributeModalMapping[attr].reportTable;
+        modal.find(".modal-title").text(`${assetCode} ${attributeModalMapping[attr].title}`);
+        reportTable.clear(); // remove all rows in the table
+
+        getStructureSurveys(assetId, attr)
+            .then((surveyData) => {
+                reportTable.clear(); // remove all rows in the table - again
+                reportTable.rows.add(surveyData);
+            }).finally(() => {
+                reportTable.draw();
+                $(`#${reportDataTableId}_wrapper`).show();
+            });
     } else {
         const reportDataTableId = attributeModalMapping[attr].reportDataTableId;
         const reportTable = attributeModalMapping[attr].reportTable;
@@ -539,7 +553,7 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
                     filters.structure_id = assetData.id;
                 }
             }
-    
+
             return filters;
         };
 

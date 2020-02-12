@@ -13,10 +13,10 @@
                         </ul>
                     </div>
                     <ul class="protection-upstream">
-                        <li each="{protector in upstream_protections.options}" data-condition="{protector[0]}"
+                        <li each="{protector in upstream_protections.options}" data-condition="{protector.code}"
                             onclick="{checkUpstream}">
-                            <span class="{protector[0] == state.upstream ? 'active' : ''  } radio image"></span>
-                            { protector[1] }
+                            <span class="{ protector.code == state.upstream ? 'active' : '' } radio image"></span>
+                            { protector.name }
                         </li>
                     </ul>
                 </div>
@@ -32,10 +32,10 @@
                         </ul>
                     </div>
                     <ul class="protection-upstream">
-                        <li each="{protector in downstream_protections.options}" data-condition="{protector[0]}"
+                        <li each="{protector in downstream_protections.options}" data-condition="{protector.code}"
                             onclick="{checkDownstream}">
-                            <span class="{protector[0] == state.upstream ? 'active' : ''  } radio image"></span>
-                            { protector[1] }
+                            <span class="{ protector.code == state.downstream ? 'active' : '' } radio image"></span>
+                            { protector.name }
                         </li>
                     </ul>
                 </div>
@@ -69,12 +69,12 @@
                 this.props.parent.saveStructure();
             },
             checkUpstream(e) {
-                this.state.upstream = e.currentTarget.value;
+                this.state.upstream = e.currentTarget.dataset.condition;
                 this.props.structure.setProtectionUpstream(this.state.upstream);
                 this.update();
             },
             checkDownstream(e) {
-                this.state.downstream = e.currentTarget.value;
+                this.state.downstream = e.currentTarget.dataset.condition;
                 this.props.structure.setProtectionDownstream(this.state.downstream);
                 this.update();
             },

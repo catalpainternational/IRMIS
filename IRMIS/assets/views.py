@@ -307,158 +307,14 @@ def pbtimestamp_to_pydatetime(pb_stamp):
     return pytz.utc.localize(pb_date)
 
 
-def road_survey_values(req_pb_values):
+def road_survey_values(req_values):
     """ convert the json and do any required key manipulation """
-    req_values = json.loads(req_pb_values)
     if "asset_class" in req_values:
         req_values["road_type"] = req_values.pop("asset_class")
     if "asset_condition" in req_values:
         req_values["surface_condition"] = req_values.pop("asset_condition")
 
     return req_values
-
-
-@login_required
-@user_passes_test(user_can_edit)
-def survey_create(request):
-    if request.method != "POST":
-        raise MethodNotAllowed(request.method)
-    elif request.content_type != "application/octet-stream":
-        return HttpResponse(status=400)
-
-    # parse Survey from protobuf in request body
-    req_pb = survey_pb2.Survey()
-    req_pb = req_pb.FromString(request.body)
-
-    # convert the json and do any required key manipulation
-    req_values = road_survey_values(req_pb.values)
-
-    # check that Protobuf parsed
-    if not req_pb.road_id:
-        return HttpResponse(status=400)
-
-    # check there's a road to attach this survey to
-    survey_road = get_object_or_404(Road.objects.filter(pk=req_pb.road_id))
-    # and default the road_code if none was provided
-    if not req_pb.road_code:
-        req_pb.road_code = survey_road.road_code
-    elif survey_road.road_code != req_pb.road_code:
-        # or check it for basic data integrity problem
-        return HttpResponse(
-            req_pb.SerializeToString(),
-            status=400,
-            content_type="application/octet-stream",
-        )
-
-    try:
-        with reversion.create_revision():
-            survey = Survey.objects.create(
-                **{
-                    "road_id": req_pb.road_id,
-                    "road_code": req_pb.road_code,
-                    "user": get_user_model().objects.get(pk=req_pb.user),
-                    "chainage_start": req_pb.chainage_start,
-                    "chainage_end": req_pb.chainage_end,
-                    "date_surveyed": pbtimestamp_to_pydatetime(req_pb.date_surveyed),
-                    "source": req_pb.source,
-                    "values": req_values,
-                }
-            )
-
-            # store the user who made the changes
-            reversion.set_user(request.user)
-
-        response = HttpResponse(
-            req_pb.SerializeToString(),
-            status=200,
-            content_type="application/octet-stream",
-        )
-
-        return response
-    except Exception as err:
-        return HttpResponse(status=400)
-
-
-@login_required
-@user_passes_test(user_can_edit)
-def survey_update(request):
-    if request.method != "PUT":
-        raise MethodNotAllowed(request.method)
-    elif request.content_type != "application/octet-stream":
-        return HttpResponse(status=400)
-
-    # parse Survey from protobuf in request body
-    req_pb = survey_pb2.Survey()
-    req_pb = req_pb.FromString(request.body)
-
-    # check that Protobuf parsed
-    if not req_pb.id:
-        return HttpResponse(status=400)
-
-    # assert Survey ID given exists in the DB & there are changes to make
-    survey = get_object_or_404(Survey.objects.filter(pk=req_pb.id))
-
-    # check that the survey has a user assigned, if not, do not allow updating
-    if not survey.user:
-        return HttpResponse(
-            req_pb.SerializeToString(),
-            status=400,
-            content_type="application/octet-stream",
-        )
-
-    # check there's a road to attach this survey to
-    survey_road = get_object_or_404(Road.objects.filter(pk=req_pb.road_id))
-    # and default the road_code if none was provided
-    if not req_pb.road_code:
-        req_pb.road_code = survey_road.road_code
-    elif survey_road.road_code != req_pb.road_code:
-        # or check it for basic data integrity problem
-        return HttpResponse(
-            req_pb.SerializeToString(),
-            status=400,
-            content_type="application/octet-stream",
-        )
-
-    # if there are no changes between the DB survey and the protobuf survey return 200
-    if Survey.objects.filter(pk=req_pb.id).to_protobuf().surveys[0] == req_pb:
-        return HttpResponse(
-            req_pb.SerializeToString(),
-            status=200,
-            content_type="application/octet-stream",
-        )
-
-    # if the new values are empty delete the record and return 200
-    req_values = road_survey_values(req_pb.values)
-    if req_values == {}:
-        with reversion.create_revision():
-            survey.delete()
-            # store the user who made the changes
-            reversion.set_user(request.user)
-        return HttpResponse(
-            req_pb.SerializeToString(),
-            status=200,
-            content_type="application/octet-stream",
-        )
-
-    # update the Survey instance from PB fields
-    survey.road_id = req_pb.road_id
-    survey.road_code = req_pb.road_code
-    survey.user = get_user_model().objects.get(pk=req_pb.user)
-    survey.chainage_start = req_pb.chainage_start
-    survey.chainage_end = req_pb.chainage_end
-    survey.date_surveyed = pbtimestamp_to_pydatetime(req_pb.date_surveyed)
-    survey.source = req_pb.source
-    survey.values = req_values
-
-    with reversion.create_revision():
-        survey.save()
-        # store the user who made the changes
-        reversion.set_user(request.user)
-
-    response = HttpResponse(
-        req_pb.SerializeToString(), status=200, content_type="application/octet-stream"
-    )
-    return response
 
 
 @login_required
@@ -960,6 +816,29 @@ def protobuf_structure_audit(request, pk):
 
 
 @login_required
+def protobuf_structure_surveys(request, pk, survey_attribute=None):
+    """ returns a protobuf object with the set of surveys for a particular structure pk"""
+    # pull any Surveys that cover the requested Structure - based on PK
+    queryset = Survey.objects.filter(structure_id=pk)
+
+    filter_attribute = survey_attribute
+    if survey_attribute == "structure_condition":
+        filter_attribute = "asset_condition"
+
+    if filter_attribute:
+        queryset = queryset.filter(values__has_key=filter_attribute).exclude(
+            **{"values__" + filter_attribute + "__isnull": True}
+        )
+
+    queryset.order_by("-date_updated")
+    surveys_protobuf = queryset.to_protobuf()
+
+    return HttpResponse(
+        surveys_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )
+
+
+@login_required
 def protobuf_structures(request):
     """ returns a protobuf Structures object with sets of all available structure types """
     structures_protobuf = structure_pb2.Structures()
@@ -1099,6 +978,179 @@ def structure_update(request, pk):
         )
 
     versions = Version.objects.get_for_object(structure)
+    response = HttpResponse(
+        req_pb.SerializeToString(), status=200, content_type="application/octet-stream"
+    )
+    return response
+
+
+@login_required
+@user_passes_test(user_can_edit)
+def survey_create(request):
+    if request.method != "POST":
+        raise MethodNotAllowed(request.method)
+    elif request.content_type != "application/octet-stream":
+        return HttpResponse(status=400)
+
+    # parse Survey from protobuf in request body
+    req_pb = survey_pb2.Survey()
+    req_pb = req_pb.FromString(request.body)
+
+    # check that Protobuf parsed
+    if not req_pb.road_id and not req_pb.structure_id:
+        return HttpResponse(status=400)
+
+    req_values = json.loads(req_pb.values)
+    # convert the json and do any required key manipulation
+    if not req_pb.structure_id:
+        req_values = road_survey_values(req_values)
+
+    # check there's a road/structure to attach this survey to
+    if req_pb.road_id:
+        survey_asset = get_object_or_404(Road.objects.filter(pk=req_pb.road_id))
+    elif req_pb.structure_id:
+        django_pk, mapping = get_structure_mapping(req_pb.structure_id)
+        survey_asset = get_object_or_404(mapping["model"].objects.filter(pk=django_pk))
+    else:
+        # basic data integrity problem
+        return HttpResponse(
+            req_pb.SerializeToString(),
+            status=400,
+            content_type="application/octet-stream",
+        )
+
+    # and default the road_code if none was provided
+    if not req_pb.road_code:
+        req_pb.road_code = survey_asset.road_code
+    elif survey_asset.road_code != req_pb.road_code:
+        # or check it for basic data integrity problem
+        return HttpResponse(
+            req_pb.SerializeToString(),
+            status=400,
+            content_type="application/octet-stream",
+        )
+
+    try:
+        with reversion.create_revision():
+            survey = Survey.objects.create(
+                **{
+                    "road_id": req_pb.road_id,
+                    "road_code": req_pb.road_code,
+                    "structure_id": req_pb.structure_id,
+                    "user": get_user_model().objects.get(pk=req_pb.user),
+                    "chainage_start": req_pb.chainage_start,
+                    "chainage_end": req_pb.chainage_end,
+                    "date_surveyed": pbtimestamp_to_pydatetime(req_pb.date_surveyed),
+                    "source": req_pb.source,
+                    "values": req_values,
+                }
+            )
+
+            # store the user who made the changes
+            reversion.set_user(request.user)
+
+        response = HttpResponse(
+            req_pb.SerializeToString(),
+            status=200,
+            content_type="application/octet-stream",
+        )
+
+        return response
+    except Exception as err:
+        return HttpResponse(status=400)
+
+
+@login_required
+@user_passes_test(user_can_edit)
+def survey_update(request):
+    if request.method != "PUT":
+        raise MethodNotAllowed(request.method)
+    elif request.content_type != "application/octet-stream":
+        return HttpResponse(status=400)
+
+    # parse Survey from protobuf in request body
+    req_pb = survey_pb2.Survey()
+    req_pb = req_pb.FromString(request.body)
+
+    # check that Protobuf parsed
+    if not req_pb.id:
+        return HttpResponse(status=400)
+
+    # assert Survey ID given exists in the DB & there are changes to make
+    survey = get_object_or_404(Survey.objects.filter(pk=req_pb.id))
+
+    # check that the survey has a user assigned, if not, do not allow updating
+    if not survey.user:
+        return HttpResponse(
+            req_pb.SerializeToString(),
+            status=400,
+            content_type="application/octet-stream",
+        )
+
+    # check there's a road/structure to attach this survey to
+    if req_pb.road_id:
+        survey_asset = get_object_or_404(Road.objects.filter(pk=req_pb.road_id))
+    elif req_pb.structure_id:
+        django_pk, mapping = get_structure_mapping(req_pb.structure_id)
+        survey_asset = get_object_or_404(mapping["model"].objects.filter(pk=django_pk))
+    else:
+        # basic data integrity problem
+        return HttpResponse(
+            req_pb.SerializeToString(),
+            status=400,
+            content_type="application/octet-stream",
+        )
+
+    # and default the road_code if none was provided
+    if not req_pb.road_code:
+        req_pb.road_code = survey_asset.road_code
+    elif survey_asset.road_code != req_pb.road_code:
+        # or check it for basic data integrity problem
+        return HttpResponse(
+            req_pb.SerializeToString(),
+            status=400,
+            content_type="application/octet-stream",
+        )
+
+    # if there are no changes between the DB survey and the protobuf survey return 200
+    if Survey.objects.filter(pk=req_pb.id).to_protobuf().surveys[0] == req_pb:
+        return HttpResponse(
+            req_pb.SerializeToString(),
+            status=200,
+            content_type="application/octet-stream",
+        )
+
+    req_values = json.loads(req_pb.values)
+    if not req_pb.structure_id:
+        req_values = road_survey_values(req_values)
+
+    # if the new values are empty delete the record and return 200
+    if req_values == {}:
+        with reversion.create_revision():
+            survey.delete()
+            # store the user who made the changes
+            reversion.set_user(request.user)
+        return HttpResponse(
+            req_pb.SerializeToString(),
+            status=200,
+            content_type="application/octet-stream",
+        )
+
+    # update the Survey instance from PB fields
+    survey.road_id = req_pb.road_id
+    survey.road_code = req_pb.road_code
+    survey.user = get_user_model().objects.get(pk=req_pb.user)
+    survey.chainage_start = req_pb.chainage_start
+    survey.chainage_end = req_pb.chainage_end
+    survey.date_surveyed = pbtimestamp_to_pydatetime(req_pb.date_surveyed)
+    survey.source = req_pb.source
+    survey.values = req_values
+
+    with reversion.create_revision():
+        survey.save()
+        # store the user who made the changes
+        reversion.set_user(request.user)
+
     response = HttpResponse(
         req_pb.SerializeToString(), status=200, content_type="application/octet-stream"
     )

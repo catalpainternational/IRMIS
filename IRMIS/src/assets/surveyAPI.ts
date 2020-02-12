@@ -5,7 +5,7 @@ import { ConfigAPI } from "./configAPI";
 
 /** getSurveysMetadata
  *
- * Retrieves the survey metadata from the server
+ * Retrieves the Road survey metadata from the server
  *
  * @returns a map {id: survey_object}
  */
@@ -13,6 +13,25 @@ export function getSurveysMetadata(roadId: string, surveyAttribute: string) {
     const surveyTypeUrlFragment = "protobuf_road_surveys";
     roadId = roadId || "";
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${surveyTypeUrlFragment}/${roadId}/${surveyAttribute}`;
+
+    return fetch(metadataUrl, ConfigAPI.requestInit())
+        .then((metadataResponse) => (metadataResponse.arrayBuffer()))
+        .then((protobufBytes) => {
+            const uintArray = new Uint8Array(protobufBytes);
+            return Surveys.deserializeBinary(uintArray).getSurveysList().map(makeEstradaSurvey);
+        });
+}
+
+/** getSurveysMetadata
+ *
+ * Retrieves the Road survey metadata from the server
+ *
+ * @returns a map {id: survey_object}
+ */
+export function getStructureSurveysMetadata(structureId: string, surveyAttribute: string) {
+    const surveyTypeUrlFragment = "protobuf_structure_surveys";
+    structureId = structureId || "";
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${surveyTypeUrlFragment}/${structureId}/${surveyAttribute}/`;
 
     return fetch(metadataUrl, ConfigAPI.requestInit())
         .then((metadataResponse) => (metadataResponse.arrayBuffer()))

@@ -4,6 +4,7 @@ from .views import (
     geojson_details,
     protobuf_structure,
     protobuf_structure_audit,
+    protobuf_structure_surveys,
     protobuf_structures,
     protobuf_reports,
     protobuf_road,
@@ -63,6 +64,16 @@ urlpatterns = [
         "protobuf_structure_audit/<slug:pk>",
         protobuf_structure_audit,
         name="protobuf_structure_audit",
+    ),
+    path(
+        "protobuf_structure_surveys/<slug:pk>/",
+        protobuf_structure_surveys,
+        name="protobuf_structure_surveys",
+    ),
+    path(
+        "protobuf_structure_surveys/<slug:pk>/<slug:survey_attribute>/",
+        protobuf_structure_surveys,
+        name="protobuf_structure_surveys",
     ),
     path("reports/", protobuf_reports, name="protobuf_reports"),
 ]

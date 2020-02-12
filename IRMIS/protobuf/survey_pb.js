@@ -91,6 +91,7 @@ proto.assets.Survey.prototype.toObject = function(opt_includeInstance) {
 proto.assets.Survey.toObject = function(includeInstance, msg) {
   var f, obj = {
     id: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    structureId: jspb.Message.getFieldWithDefault(msg, 13, ""),
     roadId: jspb.Message.getFieldWithDefault(msg, 12, 0),
     roadCode: jspb.Message.getFieldWithDefault(msg, 2, ""),
     user: jspb.Message.getFieldWithDefault(msg, 3, 0),
@@ -140,6 +141,10 @@ proto.assets.Survey.deserializeBinaryFromReader = function(msg, reader) {
     case 1:
       var value = /** @type {number} */ (reader.readUint32());
       msg.setId(value);
+      break;
+    case 13:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setStructureId(value);
       break;
     case 12:
       var value = /** @type {number} */ (reader.readUint32());
@@ -216,6 +221,13 @@ proto.assets.Survey.serializeBinaryToWriter = function(message, writer) {
   if (f !== 0) {
     writer.writeUint32(
       1,
+      f
+    );
+  }
+  f = message.getStructureId();
+  if (f.length > 0) {
+    writer.writeString(
+      13,
       f
     );
   }
@@ -309,6 +321,24 @@ proto.assets.Survey.prototype.getId = function() {
  */
 proto.assets.Survey.prototype.setId = function(value) {
   return jspb.Message.setProto3IntField(this, 1, value);
+};
+
+
+/**
+ * optional string structure_id = 13;
+ * @return {string}
+ */
+proto.assets.Survey.prototype.getStructureId = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 13, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assets.Survey} returns this
+ */
+proto.assets.Survey.prototype.setStructureId = function(value) {
+  return jspb.Message.setProto3StringField(this, 13, value);
 };
 
 

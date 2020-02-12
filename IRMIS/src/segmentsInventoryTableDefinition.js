@@ -1,4 +1,5 @@
-import { toChainageFormat } from "./assets/protoBufUtilities";
+import { choice_or_default, toChainageFormat } from "./assets/protoBufUtilities";
+import {ASSET_CONDITION_CHOICES} from "./assets/models/estradaBase";
 
 /** Defines base columns needed in all segments modal tables **/
 const baseSegmentColumns = [
@@ -26,13 +27,11 @@ const baseSegmentColumns = [
 /** Defines base columns needed in all details modal tables **/
 const baseDetailColumns = [
     {
-        title: window.gettext("Chainage"),
-        data: "chainage",
+        title: window.gettext("Survey date"),
+        data: "dateSurveyed",
         defaultContent: "",
-        className: "text-right",
-        render: (data, type) => {
-            return (type === 'display') ? toChainageFormat(data) : data;
-        },
+        className: "text-center",
+        orderable: false,
     },
 ];
 
@@ -124,13 +123,17 @@ export const structureConditionColumns = baseDetailColumns.concat([
         title: window.gettext("Structure condition"),
         data: "assetCondition",
         defaultContent: "",
+        className: "text-center",
         orderable: false,
+        render: (data, type) => {
+            return (type === 'display') ? choice_or_default(data, ASSET_CONDITION_CHOICES) : data;
+        },
     },
 ]);
 
 export const structureConditionDescriptionColumns = baseDetailColumns.concat([
     {
-        title: window.gettext("Structure condition description"),
+        title: window.gettext("Condition description"),
         data: "conditionDescription",
         defaultContent: "",
         orderable: false,

@@ -78,6 +78,7 @@ class SurveyQuerySet(models.QuerySet):
 
         fields = dict(
             id="id",
+            structure_id="structure_id",
             road_id="road_id",
             road_code="road_code",
             user="user__id",
@@ -137,6 +138,14 @@ class Survey(models.Model):
     road_id = models.IntegerField(verbose_name=_("Road Id"), blank=True, null=True)
     road_code = models.CharField(
         verbose_name=_("Road Code"), validators=[no_spaces], max_length=25
+    )
+    # Global ID for a structure the survey links to (ex. BRDG-42)
+    structure_id = models.CharField(
+        verbose_name=_("Structure Id"),
+        blank=True,
+        null=True,
+        validators=[no_spaces],
+        max_length=15,
     )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -606,11 +615,11 @@ class BridgeQuerySet(models.QuerySet):
             structure_name="structure_name",
             asset_class="structure_class",
             administrative_area="administrative_area",
-            structure_type="structure_type",
+            structure_type="structure_type__code",
             river_name="river_name",
-            material="material",
-            protection_upstream="protection_upstream",
-            protection_downstream="protection_downstream",
+            material="material__code",
+            protection_upstream="protection_upstream__code",
+            protection_downstream="protection_downstream__code",
         )
 
         datetime_fields = dict(
@@ -646,7 +655,7 @@ class BridgeQuerySet(models.QuerySet):
 
             for protobuf_key, query_key in regular_fields.items():
                 if bridge[query_key]:
-                    setattr(bridge_protobuf, protobuf_key, str(bridge[query_key]))
+                    setattr(bridge_protobuf, protobuf_key, bridge[query_key])
 
             for protobuf_key, query_key in numeric_fields.items():
                 raw_value = bridge.get(query_key)
@@ -862,10 +871,10 @@ class CulvertQuerySet(models.QuerySet):
             structure_name="structure_name",
             asset_class="structure_class",
             administrative_area="administrative_area",
-            structure_type="structure_type",
-            material="material",
-            protection_upstream="protection_upstream",
-            protection_downstream="protection_downstream",
+            structure_type="structure_type__code",
+            material="material__code",
+            protection_upstream="protection_upstream__code",
+            protection_downstream="protection_downstream__code",
         )
 
         datetime_fields = dict(
@@ -901,7 +910,7 @@ class CulvertQuerySet(models.QuerySet):
 
             for protobuf_key, query_key in regular_fields.items():
                 if culvert[query_key]:
-                    setattr(culvert_protobuf, protobuf_key, str(culvert[query_key]))
+                    setattr(culvert_protobuf, protobuf_key, culvert[query_key])
 
             for protobuf_key, query_key in numeric_fields.items():
                 raw_value = culvert.get(query_key)

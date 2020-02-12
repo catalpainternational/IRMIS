@@ -64,6 +64,14 @@ export class EstradaSurvey extends Survey implements IEstrada {
         return assetCondition;
     }
 
+    get conditionDescription() {
+        return this.values.condition_description;
+    }
+
+    set conditionDescription(value: string) {
+        this.setValue(value, "condition_description");
+    }
+
     set assetCondition(value: string) {
         this.setValue(value, "surface_condition");
         this.setValue(value, "structure_condition");
