@@ -1,10 +1,15 @@
-import { getRoadAuditData } from "./assets/auditAPI";
-// import { dispatch } from "./assets/utilities";
+import { getRoadAuditData, getStructureAuditData } from "./assets/auditAPI";
 
 export function getRoadAudit(roadId) {
     return Promise.resolve(getRoadAuditData(roadId))
         .then((auditList) => {
-            // dispatch("estrada.auditTable.roadAuditDataAdded", { detail: { auditList } });
+            return auditList;
+        });
+}
+
+export function getStructureAudit(structureId) {
+    return Promise.resolve(getStructureAuditData(structureId))
+        .then((auditList) => {
             return auditList;
         });
 }
