@@ -118,7 +118,8 @@ class ReportQuery:
                 "  FROM assets_culvert\n"
                 " ) bc\n"
                 " WHERE s.structure_id = CONCAT(bc.asset_type_prefix, CAST(bc.Id AS TEXT))\n"
-                ") a"
+                ") a\n"
+                "WHERE asset_id = a.asset_id\n"
             ),
             "usernames": (
                 "SELECT id AS user_id,\n"
