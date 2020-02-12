@@ -475,8 +475,9 @@
                 state.linkStartName = props.road.linkStartName;
                 state.linkEndName = props.road.linkEndName;
                 state.linkLength = props.road.linkLength;
-                state.linkStartChainage = props.road.linkStartChainage;
-                state.linkEndChainage = props.road.linkEndChainage;
+                // Use the protobuf object get members here, because we want chainage unformatted
+                state.linkStartChainage = props.road.getLinkStartChainage();
+                state.linkEndChainage = props.road.getLinkEndChainage();
             },
             onMounted(props, state) {
                 state.loading = true;
