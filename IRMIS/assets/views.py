@@ -307,9 +307,8 @@ def pbtimestamp_to_pydatetime(pb_stamp):
     return pytz.utc.localize(pb_date)
 
 
-def road_survey_values(req_pb_values):
+def road_survey_values(req_values):
     """ convert the json and do any required key manipulation """
-    req_values = json.loads(req_pb_values)
     if "asset_class" in req_values:
         req_values["road_type"] = req_values.pop("asset_class")
     if "asset_condition" in req_values:
@@ -330,12 +329,14 @@ def survey_create(request):
     req_pb = survey_pb2.Survey()
     req_pb = req_pb.FromString(request.body)
 
-    # convert the json and do any required key manipulation
-    req_values = road_survey_values(req_pb.values)
-
     # check that Protobuf parsed
     if not req_pb.road_id and not req_pb.structure_id:
         return HttpResponse(status=400)
+
+    req_values = json.loads(req_pb.values)
+    # convert the json and do any required key manipulation
+    if not req_pb.structure_id:
+        req_values = road_survey_values(req_values)
 
     if req_pb.road_id:
         # check there's a road to attach this survey to
@@ -430,8 +431,11 @@ def survey_update(request):
             content_type="application/octet-stream",
         )
 
+    req_values = json.loads(req_pb.values)
+    if not req_pb.structure_id:
+        req_values = road_survey_values(req_values)
+
     # if the new values are empty delete the record and return 200
-    req_values = road_survey_values(req_pb.values)
     if req_values == {}:
         with reversion.create_revision():
             survey.delete()
@@ -969,9 +973,13 @@ def protobuf_structure_surveys(request, pk, survey_attribute=None):
     # pull any Surveys that cover the requested Structure - based on PK
     queryset = Survey.objects.filter(structure_id=pk)
 
-    if survey_attribute:
-        queryset = queryset.filter(values__has_key=survey_attribute).exclude(
-            **{"values__" + survey_attribute + "__isnull": True}
+    filter_attribute = survey_attribute
+    if survey_attribute == "structure_condition":
+        filter_attribute = "asset_condition"
+
+    if filter_attribute:
+        queryset = queryset.filter(values__has_key=filter_attribute).exclude(
+            **{"values__" + filter_attribute + "__isnull": True}
         )
 
     queryset.order_by("-date_updated")

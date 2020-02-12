@@ -126,6 +126,8 @@
         import Data_Table from "./data_table.riot.html";
         import Edit_Modal from "./edit_modal.riot.html";
 
+        import {choice_or_default} from "../assets/protoBufUtilities";
+        import {ASSET_CONDITION_CHOICES} from "../assets/models/estradaBase";
         import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
         import {EstradaSurvey, makeEstradaSurvey} from "../assets/models/survey";
         import {Survey} from "../../protobuf/survey_pb";
@@ -191,6 +193,9 @@
                     defaultContent: "",
                     className: "text-center",
                     orderable: false,
+                    render: (data, type) => {
+                        return (type === 'display') ? choice_or_default(data, ASSET_CONDITION_CHOICES) : data;
+                    },
                 },
                 {
                     title: window.gettext("Description"),
@@ -202,11 +207,11 @@
                 {
                     title: window.gettext("Photos"),
                     data: "photos",
-                    defaultContent: "photo icons",
+                    defaultContent: "",
                     render: (photos) => {
-                        return photos.forEach((p) => {
+                        return (photos) ? photos.forEach((p) => {
                             return `<a class="image" href="${p.url}"></a>`;
-                        });
+                        }) : "";
                     },
                     className: "text-center",
                     orderable: false,
@@ -274,7 +279,8 @@
                         if (this.state.currentRowData) {
                             this.state.survey = this.state.currentRowData;
                             this.state.survey.setId(rowId);
-                            this.state.survey.setRoadId(this.state.road.id);
+                            this.state.survey.setRoadId(this.state.structure.roadId);
+                            this.state.survey.setStructureId(this.state.structure.id);
                             this.state.survey.setValues(JSON.stringify({}));
                             this.saveSurvey();
                         }

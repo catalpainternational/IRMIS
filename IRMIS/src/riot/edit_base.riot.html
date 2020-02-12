@@ -232,8 +232,9 @@
             },
             continueMounting() {
                 // Set up other data on editingRoad that is commonly used on the child tags
-                let roadDistance = (this.state.editingRoad.linkEndChainage || 0)
-                    - (this.state.editingRoad.linkStartChainage || 0);
+                // Use the protobuf object get members here, because we want chainage unformatted
+                let roadDistance = (this.state.editingRoad.getLinkEndChainage() || 0)
+                    - (this.state.editingRoad.getLinkStartChainage() || 0);
                 if (!roadDistance || roadDistance < 0) {
                     roadDistance = this.state.editingRoad.linkLength;
                 }

@@ -26,13 +26,11 @@ const baseSegmentColumns = [
 /** Defines base columns needed in all details modal tables **/
 const baseDetailColumns = [
     {
-        title: window.gettext("Chainage"),
-        data: "chainage",
+        title: window.gettext("Survey date"),
+        data: "dateSurveyed",
         defaultContent: "",
-        className: "text-right",
-        render: (data, type) => {
-            return (type === 'display') ? toChainageFormat(data) : data;
-        },
+        className: "text-center",
+        orderable: false,
     },
 ];
 
@@ -130,7 +128,7 @@ export const structureConditionColumns = baseDetailColumns.concat([
 
 export const structureConditionDescriptionColumns = baseDetailColumns.concat([
     {
-        title: window.gettext("Structure condition description"),
+        title: window.gettext("Condition description"),
         data: "conditionDescription",
         defaultContent: "",
         orderable: false,
