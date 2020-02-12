@@ -7,6 +7,7 @@ import { dispatch } from "./assets/utilities";
 import { roads } from "./roadManager";
 import { structures } from "./structureManager";
 
+let viewName;
 let roadFilter = new Filter("ROAD");
 let structureFilter = new Filter("STRC");
 export let currentFilter = roadFilter;
@@ -66,7 +67,7 @@ function collapse_side_menu() {
     sideMenu.hidden = true;
     collapsedSideMenu.classList.add("d-flex");
 
-    const eventName = (currentFilter.assetType === "STRC")
+    const eventName = (currentFilter.assetType !== "STRC")
         ? "estrada.road.sideMenu.viewChanged"
         : "estrada.structure.sideMenu.viewChanged";
     dispatch(eventName, undefined);
@@ -82,16 +83,17 @@ function expand_side_menu() {
     sideMenu.hidden = false;
     collapsedSideMenu.classList.remove("d-flex");
 
-    const eventName = (currentFilter.assetType === "STRC")
+    const eventName = (currentFilter.assetType !== "STRC")
         ? "estrada.road.sideMenu.viewChanged"
         : "estrada.structure.sideMenu.viewChanged";
     dispatch(eventName, undefined);
 }
 
 function change_view(e) {
-    const viewName = e.currentTarget.attributes['data-viewname'].value;
     const mapTable = document.getElementById("map-table-irmis");
     const siblings = document.getElementById("view").children;
+    
+    viewName = e.currentTarget.attributes['data-viewname'].value;
 
     mapTable.className = viewName;
 
@@ -103,7 +105,7 @@ function change_view(e) {
     }
     e.currentTarget.classList.add("active");
 
-    const eventName = (currentFilter.assetType === "STRC")
+    const eventName = (currentFilter.assetType !== "STRC")
         ? "estrada.road.sideMenu.viewChanged"
         : "estrada.structure.sideMenu.viewChanged";
     dispatch(eventName, { "detail": { viewName } });
@@ -150,9 +152,9 @@ function toggleAssetType(e) {
     }
 
     const eventName = (currentFilter.assetType !== "STRC")
-        ? "estrada.roadTable.sideMenu.assetTypeChanged"
-        : "estrada.structureTable.sideMenu.assetTypeChanged";
-    dispatch(eventName, { "detail": { assetType: currentFilter.assetType } });
+        ? "estrada.road.sideMenu.viewChanged"
+        : "estrada.structure.sideMenu.viewChanged";
+    dispatch(eventName, { "detail": { viewName } });
 
     const idMap = {};
     Object.keys(roads).forEach((roadId) => {
