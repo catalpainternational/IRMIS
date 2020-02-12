@@ -1,28 +1,20 @@
 // DataTables general styling
 #map-table-irmis {
-    &.map:not(.table) #table-roads {
+    &.map:not(.table) #table-roads, &.map:not(.table) #table-structures {
         display: none;
     }
 
-    &.table:not(.map) #all-data-table {
+    &.table:not(.map) #all-data-table, &.table:not(.map) #structures-data-table {
         max-height: calc(100vh - #{$top-menu-height} - 5px - 31px - 6px - 37px - #{$footer-height});
     }
 
-    &.table.map #all-data-table {
+    &.table.map #all-data-table, &.table.map #structures-data-table {
         max-height: calc(60vh - #{$top-menu-height} - 5px - 10px - 31px - 6px - 37px - #{$footer-height});
     }
 
     #all-data-table, #structures-data-table {
         margin-top: 0 !important;
         overflow: auto;
-    }
-
-    &.table:not(.map) #structures-data-table {
-        max-height: calc(100vh - #{$top-menu-height} - 5px - 31px - 6px - 37px - #{$footer-height});
-    }
-
-    &.table.map #structures-data-table {
-        max-height: calc(60vh - #{$top-menu-height} - 5px - 10px - 31px - 6px - 37px - #{$footer-height});
     }
 }
 
