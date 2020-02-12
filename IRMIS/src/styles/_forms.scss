@@ -45,7 +45,7 @@
 
 .form-text {
     margin-bottom: 5px;
-    margin-top: 5px;
+    margin-top: 0;
 }
 
 .invalid-tooltip {
@@ -56,7 +56,6 @@
     max-width: 225px;
     display: block;
     left: 10px;
-    top: 67px;
 
     &::after {
         content: "";
@@ -67,6 +66,14 @@
         border-bottom-color: $red;
         margin-top: -10px;
         transform: rotate(90deg);
+    }
+
+    &.error-tooltip-date {
+        margin-left: 110px;
+    }
+    
+    &.error-tooltip-vehicle {
+        margin-left: 210px;
     }
 
     ul {

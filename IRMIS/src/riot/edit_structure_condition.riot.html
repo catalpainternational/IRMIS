@@ -37,7 +37,7 @@
             <section>
                 <h6>{ window.gettext("Condition") }</h6>
                 <div class="form-group">
-                    <label>{conditions.display}</label>
+                    <label>{ window.gettext("Structure Conditions") }</label>
                     <span class="required">*</span>
                     <small class="form-text text-muted">{window.gettext("Choose the structure condition")}</small>
                     <div if="{state.errors.assetCondition}" class="invalid-tooltip">
@@ -279,7 +279,9 @@
                         if (this.state.currentRowData) {
                             this.state.survey = this.state.currentRowData;
                             this.state.survey.setId(rowId);
-                            this.state.survey.setRoadId(this.state.structure.roadId);
+                            if (this.state.structure.roadId && this.state.structure.roadId == !0) {
+                                this.state.survey.setRoadId(this.state.structure.roadId);
+                            }
                             this.state.survey.setStructureId(this.state.structure.id);
                             this.state.survey.setValues(JSON.stringify({}));
                             this.saveSurvey();

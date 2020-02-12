@@ -615,11 +615,11 @@ class BridgeQuerySet(models.QuerySet):
             structure_name="structure_name",
             asset_class="structure_class",
             administrative_area="administrative_area",
-            structure_type="structure_type",
+            structure_type="structure_type__code",
             river_name="river_name",
-            material="material",
-            protection_upstream="protection_upstream",
-            protection_downstream="protection_downstream",
+            material="material__code",
+            protection_upstream="protection_upstream__code",
+            protection_downstream="protection_downstream__code",
         )
 
         datetime_fields = dict(
@@ -655,7 +655,7 @@ class BridgeQuerySet(models.QuerySet):
 
             for protobuf_key, query_key in regular_fields.items():
                 if bridge[query_key]:
-                    setattr(bridge_protobuf, protobuf_key, str(bridge[query_key]))
+                    setattr(bridge_protobuf, protobuf_key, bridge[query_key])
 
             for protobuf_key, query_key in numeric_fields.items():
                 raw_value = bridge.get(query_key)
@@ -871,10 +871,10 @@ class CulvertQuerySet(models.QuerySet):
             structure_name="structure_name",
             asset_class="structure_class",
             administrative_area="administrative_area",
-            structure_type="structure_type",
-            material="material",
-            protection_upstream="protection_upstream",
-            protection_downstream="protection_downstream",
+            structure_type="structure_type__code",
+            material="material__code",
+            protection_upstream="protection_upstream__code",
+            protection_downstream="protection_downstream__code",
         )
 
         datetime_fields = dict(
@@ -910,7 +910,7 @@ class CulvertQuerySet(models.QuerySet):
 
             for protobuf_key, query_key in regular_fields.items():
                 if culvert[query_key]:
-                    setattr(culvert_protobuf, protobuf_key, str(culvert[query_key]))
+                    setattr(culvert_protobuf, protobuf_key, culvert[query_key])
 
             for protobuf_key, query_key in numeric_fields.items():
                 raw_value = culvert.get(query_key)

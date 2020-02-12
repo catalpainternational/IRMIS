@@ -56,11 +56,11 @@
                 <div class="form-group">
                     <label>{ window.gettext("Chainage start") } (m)</label>
                     <span class="required">*</span>
+                    <small class="form-text text-muted">{ props.parent.getHelpText("start_chainage") }</small>
                     <input
                         class="{state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
                         type="number" name="startChainage" placeholder="1000" value="{state.survey.startChainage}"
                         oninput="{checkChainage}" min="0" max="999999999" step="1" required>
-                    <small class="form-text text-muted">{ props.parent.getHelpText("start_chainage") }</small>
                     <div if="{state.errors.startChainage}" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.startChainage }.</li>
@@ -70,11 +70,11 @@
                 <div class="form-group">
                     <label>{ window.gettext("Chainage end") } (m)</label>
                     <span class="required">*</span>
+                    <small class="form-text text-muted">{ props.parent.getHelpText("end_chainage") }</small>
                     <input
                         class="{state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
                         type="number" name="endChainage" placeholder="62410" value="{state.survey.endChainage}"
                         oninput="{checkChainage}" min="0" max="999999999" step="1" required>
-                    <small class="form-text text-muted">{ props.parent.getHelpText("end_chainage") }</small>
                     <div if="{state.errors.endChainage}" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.endChainage }.</li>
@@ -89,11 +89,6 @@
                     <label>{conditions.display}</label>
                     <span class="required">*</span>
                     <small class="form-text text-muted">{props.parent.getHelpText("asset_condition")}</small>
-                    <div if="{state.errors.assetCondition}" class="invalid-tooltip">
-                        <ul>
-                            <li>{ state.errors.assetCondition }.</li>
-                        </ul>
-                    </div>
                     <ul class="asset-condition">
                         <li each="{condition in conditions.options}" data-condition="{condition[0]}"
                             onclick="{checkAssetCondition}">
@@ -102,6 +97,11 @@
                             { condition[1] }
                         </li>
                     </ul>
+                    <div if="{state.errors.assetCondition}" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.assetCondition }.</li>
+                        </ul>
+                    </div>
                 </div>
             </section>
 

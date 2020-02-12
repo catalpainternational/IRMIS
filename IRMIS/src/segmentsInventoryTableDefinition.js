@@ -1,4 +1,5 @@
-import { toChainageFormat } from "./assets/protoBufUtilities";
+import { choice_or_default, toChainageFormat } from "./assets/protoBufUtilities";
+import {ASSET_CONDITION_CHOICES} from "./assets/models/estradaBase";
 
 /** Defines base columns needed in all segments modal tables **/
 const baseSegmentColumns = [
@@ -122,7 +123,11 @@ export const structureConditionColumns = baseDetailColumns.concat([
         title: window.gettext("Structure condition"),
         data: "assetCondition",
         defaultContent: "",
+        className: "text-center",
         orderable: false,
+        render: (data, type) => {
+            return (type === 'display') ? choice_or_default(data, ASSET_CONDITION_CHOICES) : data;
+        },
     },
 ]);
 

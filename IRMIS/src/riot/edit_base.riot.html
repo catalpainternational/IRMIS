@@ -83,7 +83,8 @@
                 <edit_environment if="{ state.page === 'environment' }" road="{ state.editingRoad }"
                     saving="{ state.saving }" showFeedback="{ showFeedback }" parent="{parentFunctions}">
                 </edit_environment>
-                <edit_history if="{ state.page === 'history' }" road="{ state.baseRoad }" parent="{parentFunctions}">
+                <edit_history if="{ state.page === 'history' }" road="{ state.baseRoad }"
+                    structure="{ state.editingStructure }" parent="{parentFunctions}">
                 </edit_history>
                 <edit_structure_type if="{ state.page === 'structure_type' }" structure="{ state.editingStructure }"
                     assetType="{ props.assetType }" saving="{ state.saving }" parent="{parentFunctions}">
