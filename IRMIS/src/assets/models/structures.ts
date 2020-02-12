@@ -1,4 +1,4 @@
-import { Bridge, Culvert, Structures } from "../../../protobuf/structure_pb";
+import { Bridge, Culvert, Point, Structures } from "../../../protobuf/structure_pb";
 import { projToWGS84, toDms } from "../crsUtilities";
 import {
     choice_or_default,
@@ -136,12 +136,12 @@ export class EstradaBridge extends Bridge implements IAsset {
     // }
 
     get geomPoint() {
-        return this.getGeomPoint();
+        const geomPointRaw = this.getGeomPoint();
+        return geomPointRaw ? makeEstradaPoint(geomPointRaw) : geomPointRaw;
     }
 
     get dms() {
-        const point = this.getGeomPoint();
-        return point ? toDms(projToWGS84.forward(projectionToCoordinates(point))) : "";
+        return this.geomPoint ? this.geomPoint.dms : "";
     }
 
     get chainage() {
@@ -276,9 +276,13 @@ export class EstradaCulvert extends Culvert implements IAsset {
     //     return this.getUser() || "";
     // }
 
+    get geomPoint() {
+        const geomPointRaw = this.getGeomPoint();
+        return geomPointRaw ? makeEstradaPoint(geomPointRaw) : geomPointRaw;
+    }
+
     get dms() {
-        const point = this.getGeomPoint();
-        return point ? toDms(projToWGS84.forward(projectionToCoordinates(point))) : "";
+        return this.geomPoint ? this.geomPoint.dms : "";
     }
 
     get chainage() {
@@ -341,6 +345,20 @@ export class EstradaCulvert extends Culvert implements IAsset {
     }
 }
 
+export class EstradaPoint extends Point {
+    get x() {
+        return this.getX();
+    }
+
+    get y() {
+        return this.getY();
+    }
+
+    get dms() {
+        return toDms(projToWGS84.forward(projectionToCoordinates(this)));
+    }
+}
+
 export function makeEstradaStructures(pbstructures: { [name: string]: any }): EstradaStructures {
     return makeEstradaObject(EstradaStructures, pbstructures) as EstradaStructures;
 }
@@ -351,4 +369,8 @@ export function makeEstradaBridge(pbattribute: { [name: string]: any }): Estrada
 
 export function makeEstradaCulvert(pbattribute: { [name: string]: any }): EstradaCulvert {
     return makeEstradaObject(EstradaCulvert, pbattribute) as EstradaCulvert;
+}
+
+export function makeEstradaPoint(pbpoint: { [name: string]: any }): EstradaPoint {
+    return makeEstradaObject(EstradaPoint, pbpoint) as EstradaPoint;
 }
