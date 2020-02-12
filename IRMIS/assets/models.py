@@ -78,6 +78,7 @@ class SurveyQuerySet(models.QuerySet):
 
         fields = dict(
             id="id",
+            structure_id="structure_id",
             road_id="road_id",
             road_code="road_code",
             user="user__id",
@@ -137,6 +138,14 @@ class Survey(models.Model):
     road_id = models.IntegerField(verbose_name=_("Road Id"), blank=True, null=True)
     road_code = models.CharField(
         verbose_name=_("Road Code"), validators=[no_spaces], max_length=25
+    )
+    # Global ID for a structure the survey links to (ex. BRDG-42)
+    structure_id = models.CharField(
+        verbose_name=_("Structure Id"),
+        blank=True,
+        null=True,
+        validators=[no_spaces],
+        max_length=15,
     )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,

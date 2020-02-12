@@ -402,14 +402,14 @@ export const structuresTableColumns = [
     {
         title: window.gettext("Length"),
         data: "length",
-        render: (n) => { (n > 0) ? n : ""; },
+        render: (n) => { return (n > 0) ? n : ""; },
         className: "text-right",
         defaultContent: "",
     },
     {
         title: window.gettext("Width"),
         data: "width",
-        render: (n) => { (n > 0) ? n : ""; },
+        render: (n) => { return (n > 0) ? n : ""; },
         className: "text-right",
         defaultContent: "",
 
@@ -424,6 +424,13 @@ export const structuresTableColumns = [
     {
         title: window.gettext("Number Spans"),
         data: "numberSpans",
+        className: "text-right",
+        defaultContent: "N/A",
+        visible: false,
+    },
+    {
+        title: window.gettext("Span Length"),
+        data: "spanLength",
         className: "text-right",
         defaultContent: "N/A",
         visible: false,
@@ -452,7 +459,7 @@ export const structuresTableColumns = [
     {
         title: window.gettext("Construction Year"),
         data: "constructionYear",
-        render: (n) => { (n > 0) ? n : ""; },
+        render: (n) => { return (n > 0) ? n : ""; },
         className: "text-right",
         defaultContent: "",
         visible: false,
@@ -468,7 +475,7 @@ export const structuresTableColumns = [
     {
         title: "Condition Description",
         data: null,
-        render: r => buttonSegmentsTemplate("structure_condition_description", r),
+        render: r => buttonSegmentsTemplate("condition_description", r),
         className: "text-center",
         defaultContent: "",
         visible: false,

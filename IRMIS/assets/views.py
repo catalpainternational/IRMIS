@@ -307,9 +307,8 @@ def pbtimestamp_to_pydatetime(pb_stamp):
     return pytz.utc.localize(pb_date)
 
 
-def road_survey_values(req_pb_values):
+def road_survey_values(req_values):
     """ convert the json and do any required key manipulation """
-    req_values = json.loads(req_pb_values)
     if "asset_class" in req_values:
         req_values["road_type"] = req_values.pop("asset_class")
     if "asset_condition" in req_values:
@@ -330,25 +329,29 @@ def survey_create(request):
     req_pb = survey_pb2.Survey()
     req_pb = req_pb.FromString(request.body)
 
-    # convert the json and do any required key manipulation
-    req_values = road_survey_values(req_pb.values)
-
     # check that Protobuf parsed
-    if not req_pb.road_id:
+    if not req_pb.road_id and not req_pb.structure_id:
         return HttpResponse(status=400)
 
-    # check there's a road to attach this survey to
-    survey_road = get_object_or_404(Road.objects.filter(pk=req_pb.road_id))
-    # and default the road_code if none was provided
-    if not req_pb.road_code:
-        req_pb.road_code = survey_road.road_code
-    elif survey_road.road_code != req_pb.road_code:
-        # or check it for basic data integrity problem
-        return HttpResponse(
-            req_pb.SerializeToString(),
-            status=400,
-            content_type="application/octet-stream",
-        )
+    req_values = json.loads(req_pb.values)
+    # convert the json and do any required key manipulation
+    if not req_pb.structure_id:
+        req_values = road_survey_values(req_values)
+
+    if req_pb.road_id:
+        # check there's a road to attach this survey to
+        survey_road = get_object_or_404(Road.objects.filter(pk=req_pb.road_id))
+
+        # and default the road_code if none was provided
+        if not req_pb.road_code:
+            req_pb.road_code = survey_road.road_code
+        elif survey_road.road_code != req_pb.road_code:
+            # or check it for basic data integrity problem
+            return HttpResponse(
+                req_pb.SerializeToString(),
+                status=400,
+                content_type="application/octet-stream",
+            )
 
     try:
         with reversion.create_revision():
@@ -356,6 +359,7 @@ def survey_create(request):
                 **{
                     "road_id": req_pb.road_id,
                     "road_code": req_pb.road_code,
+                    "structure_id": req_pb.structure_id,
                     "user": get_user_model().objects.get(pk=req_pb.user),
                     "chainage_start": req_pb.chainage_start,
                     "chainage_end": req_pb.chainage_end,
@@ -427,8 +431,11 @@ def survey_update(request):
             content_type="application/octet-stream",
         )
 
+    req_values = json.loads(req_pb.values)
+    if not req_pb.structure_id:
+        req_values = road_survey_values(req_values)
+
     # if the new values are empty delete the record and return 200
-    req_values = road_survey_values(req_pb.values)
     if req_values == {}:
         with reversion.create_revision():
             survey.delete()
@@ -956,6 +963,29 @@ def protobuf_structure_audit(request, pk):
         version_pb.date_created.CopyFrom(ts)
     return HttpResponse(
         versions_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )
+
+
+@login_required
+def protobuf_structure_surveys(request, pk, survey_attribute=None):
+    """ returns a protobuf object with the set of surveys for a particular structure pk"""
+    # pull any Surveys that cover the requested Structure - based on PK
+    queryset = Survey.objects.filter(structure_id=pk)
+
+    filter_attribute = survey_attribute
+    if survey_attribute == "structure_condition":
+        filter_attribute = "asset_condition"
+
+    if filter_attribute:
+        queryset = queryset.filter(values__has_key=filter_attribute).exclude(
+            **{"values__" + filter_attribute + "__isnull": True}
+        )
+
+    queryset.order_by("-date_updated")
+    surveys_protobuf = queryset.to_protobuf()
+
+    return HttpResponse(
+        surveys_protobuf.SerializeToString(), content_type="application/octet-stream"
     )
 
 
