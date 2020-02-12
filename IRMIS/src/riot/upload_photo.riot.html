@@ -18,6 +18,25 @@
             </ul>
         </div>
     </div>
+    
+    <!-- Temporary element placement -->
+    <div>
+        <!-- Delete Photo button -->
+        <button class="btn-secondary btn-tertiary btn-delete" onclick="{ deletePhoto }" disabled="{ props.saving }">{ window.gettext("Delete Photo") }</button>
+
+        <!-- Edit Caption button -->
+        <button class="btn-secondary btn-tertiary btn-caption" onclick="{ editCaption }" disabled="{ props.saving }">
+            <div class="image pencil button"></div>
+            { window.gettext("Edit Caption") }
+        </button>
+
+        <!-- Editing caption text -->
+        <div class="upload-text { state.editingCaption ? 'edit-caption' : null } ">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        </div>
+    </div>
+
     <script>
         import Dropzone from "dropzone";
 
@@ -25,6 +44,7 @@
             state: {
                 photo: '',
                 errors: {},
+                editingCaption: false,
             },
             onMounted(props, state) {
                 Dropzone.autoDiscover = false;
@@ -42,6 +62,12 @@
                         }
                     }
                 });
+            },
+            deletePhoto(e) {
+
+            },
+            editCaption(e) {
+
             },
             checkPhotoText(e) {
                 console.log(e.currentTarget.value)
