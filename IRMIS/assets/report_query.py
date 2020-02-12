@@ -26,55 +26,74 @@ class ReportQuery:
             ),
             "assets_to_use": (
                 # This is a template for "assets_to_chart"
-                # Note that the road_id and road_code are only returned for Bridges and Culverts
-                # i.e. they refer to the road associated with the Bridge or Culvert
-                "SELECT asset_type_prefix, asset_id, asset_code, geom_chainage, road_id, road_code\n"
-                "FROM ("
+                # Notes:
+                # * road_id and road_code are only returned for Bridges and Culverts
+                #   i.e. they refer to the road associated with the Bridge or Culvert
+                # * asset_condition for Bridges and Culverts will have to come
+                #   from the structure_condition survey
+                # * material_id and structure_type_id have different meanings for bridge and culvert
+                "SELECT asset_type_prefix, asset_id, asset_code, asset_name,\n"
+                " asset_condition, asset_class,\n"
+                " geom_chainage, municipality,\n"
+                " geojson_file,\n"
+                " carriageway_width, number_lanes,\n"
+                " rainfall, terrain_class,\n"
+                " population, traffic_level,\n"
+                " project, funding_source,\n"
+                " geom_length, core,\n"
+                " pavement_class,\n"
+                " surface_type, technical_class,\n"
+                " maintenance_need, road_status,\n"
+                " construction_year, length, width,\n"
+                " height, span_length,\n"
+                " number_cells, number_spans,\n"
+                " river_name,\n"
+                " protection_downstream, protection_upstream,\n"
+                " material, structure_type,\n"
+                " road_id, road_code\n"
+                "FROM (\n"
                 "SELECT DISTINCT 'ROAD-' AS asset_type_prefix, s.road_id AS asset_id,\n"
-                " s.road_code AS asset_code, r.road_name AS asset_name,\n",
-                " r.surface_condition AS asset_condition, r.road_type AS asset_class,\n",
-                " r.geom_end_chainage AS geom_chainage, r.administrative_area AS municipality,\n",
-                " r.geojson_file_id AS geojson_file,\n",
-                " r.carriageway_width AS carriageway_width, r.number_lanes AS number_lanes,\n",
-                " r.rainfall, r.terrain_class,\n",
-                " r.population, r.traffic_level,\n",
-                " r.project, r.funding_source,\n",
-                " r.geom_length, r.core,\n",
-                " r.pavement_class_id AS pavement_class,\n",
-                " r.surface_type_id AS surface_type, r.technical_class_id AS technical_class,\n",
-                " r.maintenance_need_id AS maintenance_need, r.road_status_id AS road_status,\n",
-                # Not mapping: dates 
-                " NULL::INTEGER AS construction_year, NULL::DECIMAL AS length, NULL::DECIMAL AS width,\n",
-                " NULL::DECIMAL AS height, NULL::DECIMAL AS span_length,\n",
-                " NULL::INTEGER AS number_cells, NULL::INTEGER AS number_spans,\n",
-                " NULL AS river_name,\n",
-                " NULL::INTEGER AS protection_downstream, NULL::INTEGER AS protection_upstream,\n",
-                " NULL::INTEGER AS material, NULL::INTEGER AS structure_type,\n",
-                " -- road_id and road_code are only returned for bridge and culvert\n"
+                " s.road_code AS asset_code, r.road_name AS asset_name,\n"
+                " r.surface_condition AS asset_condition, r.road_type AS asset_class,\n"
+                " r.geom_end_chainage AS geom_chainage, r.administrative_area AS municipality,\n"
+                " r.geojson_file_id AS geojson_file,\n"
+                " r.carriageway_width, r.number_lanes,\n"
+                " r.rainfall, r.terrain_class,\n"
+                " r.population, r.traffic_level,\n"
+                " r.project, r.funding_source,\n"
+                " r.geom_length, r.core,\n"
+                " r.pavement_class_id AS pavement_class,\n"
+                " r.surface_type_id AS surface_type, r.technical_class_id AS technical_class,\n"
+                " r.maintenance_need_id AS maintenance_need, r.road_status_id AS road_status,\n"
+                " NULL::INTEGER AS construction_year, NULL::DECIMAL AS length, NULL::DECIMAL AS width,\n"
+                " NULL::DECIMAL AS height, NULL::DECIMAL AS span_length,\n"
+                " NULL::INTEGER AS number_cells, NULL::INTEGER AS number_spans,\n"
+                " NULL AS river_name,\n"
+                " NULL::INTEGER AS protection_downstream, NULL::INTEGER AS protection_upstream,\n"
+                " NULL::INTEGER AS material, NULL::INTEGER AS structure_type,\n"
                 " NULL::INTEGER AS road_id, NULL AS road_code\n"
                 " FROM assets_survey s, assets_road r\n"
                 " WHERE s.road_id = r.id\n"
                 "UNION\n"
                 "SELECT DISTINCT bc.asset_type_prefix, bc.asset_id,\n"
                 " bc.asset_code, bc.asset_name,\n"
-                " bc.asset_condition, bc.asset_class,\n",
-                " bc.geom_chainage, bc.municipality,\n",
-                " bc.geojson_file,\n",
-                " NULL::DECIMAL AS carriageway_width, NULL::INTEGER AS number_lanes,\n",
-                " NULL::INTEGER AS rainfall, NULL::INTEGER AS terrain_class,\n",
-                " NULL::INTEGER AS population, NULL AS traffic_level,\n",
-                " NULL AS project, NULL AS funding_source,\n",
-                " NULL::DECIMAL AS geom_length, NULL::BOOLEAN AS core,\n",
-                " NULL::INTEGER AS pavement_class,\n",
-                " NULL::INTEGER AS surface_type, NULL::INTEGER AS technical_class,\n",
-                " NULL::INTEGER AS maintenance_need, NULL::INTEGER AS road_status,\n",
-                " bc.construction_year, bc.length, bc.width,\n",
-                " bc.height, bc.span_length,\n",
-                " bc.number_cells, bc.number_spans,\n",
-                " bc.river_name,\n",
-                " bc.protection_downstream, bc.protection_upstream,\n",
-                " -- Note: material_id and structure_type_id have different meanings for bridge and culvert\n"
-                " bc.material, bc.structure_type,\n",
+                " bc.asset_condition, bc.asset_class,\n"
+                " bc.geom_chainage, bc.municipality,\n"
+                " bc.geojson_file,\n"
+                " NULL::DECIMAL AS carriageway_width, NULL::INTEGER AS number_lanes,\n"
+                " NULL::INTEGER AS rainfall, NULL::INTEGER AS terrain_class,\n"
+                " NULL::INTEGER AS population, NULL AS traffic_level,\n"
+                " NULL AS project, NULL AS funding_source,\n"
+                " NULL::DECIMAL AS geom_length, NULL::BOOLEAN AS core,\n"
+                " NULL::INTEGER AS pavement_class,\n"
+                " NULL::INTEGER AS surface_type, NULL::INTEGER AS technical_class,\n"
+                " NULL::INTEGER AS maintenance_need, NULL::INTEGER AS road_status,\n"
+                " bc.construction_year, bc.length, bc.width,\n"
+                " bc.height, bc.span_length,\n"
+                " bc.number_cells, bc.number_spans,\n"
+                " bc.river_name,\n"
+                " bc.protection_downstream, bc.protection_upstream,\n"
+                " bc.material, bc.structure_type,\n"
                 " CASE\n"
                 "  WHEN COALESCE(bc.road_id, 0) = 0 THEN NULL\n"
                 "  ELSE bc.road_id\n"
@@ -82,44 +101,37 @@ class ReportQuery:
                 " CASE\n"
                 "  WHEN COALESCE(bc.road_code, '') = '' THEN NULL\n"
                 "  ELSE bc.road_code\n"
-                " END AS road_code,\n"
-                " NULL AS structure_id, NULL AS structure_code\n"
+                " END AS road_code\n"
                 " FROM assets_survey s, (\n"
                 "  SELECT 'BRDG-' AS asset_type_prefix, id AS asset_id,\n"
                 "  structure_code AS asset_code, structure_name AS asset_name,\n"
-                #  asset_condition will have to come from the structure_condition survey
-                "  NULL::INTEGER AS asset_condition, r.structure_class AS asset_class,\n",
-                "  chainage AS geom_chainage, administrative_area AS municipality,\n",
-                "  geojson_file_id AS geojson_file,\n",
-                "  construction_year, length, width,\n",
-                "  NULL::DECIMAL AS height, span_length,\n",
-                "  NULL::INTEGER AS number_cells, number_spans,\n",
-                "  river_name,\n",
-                "  protection_downstream_id AS protection_downstream, protection_upstream_id AS protection_upstream,\n",
-                "  material_id AS material, structure_type_id AS structure_type,\n",
+                "  NULL AS asset_condition, structure_class AS asset_class,\n"
+                "  chainage AS geom_chainage, administrative_area AS municipality,\n"
+                "  geojson_file_id AS geojson_file,\n"
+                "  construction_year, length, width,\n"
+                "  NULL::DECIMAL AS height, span_length,\n"
+                "  NULL::INTEGER AS number_cells, number_spans,\n"
+                "  river_name,\n"
+                "  protection_downstream_id AS protection_downstream, protection_upstream_id AS protection_upstream,\n"
+                "  material_id AS material, structure_type_id AS structure_type,\n"
                 "  road_id, road_code\n"
-                #  Not mapping: any of the dates 
                 "  FROM assets_bridge\n"
                 "  UNION\n"
                 "  SELECT 'CULV-' AS asset_type_prefix, id AS asset_id,\n"
                 "  structure_code AS asset_code, structure_name AS asset_name,\n"
-                #  asset_condition will have to come from the structure_condition survey
-                "  NULL::INTEGER AS asset_condition, r.structure_class AS asset_class,\n",
-                "  chainage AS geom_chainage, administrative_area AS municipality,\n",
-                "  geojson_file_id AS geojson_file,\n",
-                "  construction_year, length, width,\n",
-                "  height, NULL::DECIMAL AS span_length,\n",
-                "  number_cells, NULL::INTEGER AS number_spans,\n",
-                "  NULL AS river_name,\n",
-                "  protection_downstream_id AS protection_downstream, protection_upstream_id AS protection_upstream,\n",
-                "  material_id AS material, structure_type_id AS structure_type,\n",
+                "  NULL AS asset_condition, structure_class AS asset_class,\n"
+                "  chainage AS geom_chainage, administrative_area AS municipality,\n"
+                "  geojson_file_id AS geojson_file,\n"
+                "  construction_year, length, width,\n"
+                "  height, NULL::DECIMAL AS span_length,\n"
+                "  number_cells, NULL::INTEGER AS number_spans,\n"
+                "  NULL AS river_name,\n"
+                "  protection_downstream_id AS protection_downstream, protection_upstream_id AS protection_upstream,\n"
+                "  material_id AS material, structure_type_id AS structure_type,\n"
                 "  road_id, road_code\n"
-                #  Not mapping: any of the dates 
                 "  FROM assets_culvert\n"
                 " ) bc\n"
-                " WHERE s.structure_id = CONCAT(bc.asset_type_prefix, CAST(bc.Id AS TEXT))\n"
                 ") a\n"
-                "WHERE asset_id = a.asset_id\n"
             ),
             "usernames": (
                 "SELECT id AS user_id,\n"
@@ -145,7 +157,7 @@ class ReportQuery:
                 " s.user_id, vtc.attr,\n"
                 " s.values - (SELECT ARRAY(SELECT attr FROM values_to_exclude)) AS values\n"
                 " FROM assets_survey s\n"
-                " JOIN assets_to_chart atc ON s.road_id = rtc.asset_id\n"
+                " JOIN assets_to_chart atc ON s.road_id = atc.asset_id\n"
                 " JOIN values_to_chart vtc ON s.values ? vtc.attr\n"
                 " LEFT OUTER JOIN usernames u ON s.user_id = u.user_id\n"
                 " WHERE s.chainage_start != s.chainage_end\n"
@@ -450,30 +462,23 @@ class ReportQuery:
                 attribute_clauses.append(filter_name + "=ANY(%s)\n")
                 attribute_cases.append(list(self.filters[filter_key]))
 
-        print (asset_filter_clauses)
-        print (asset_filter_cases)
-
         self.report_clauses["assets_to_chart"] = self.report_clauses["assets_to_use"]
         if len(asset_filter_clauses) > 0:
-            # "assets_to_chart" already includes an initial `WHERE` clause
-            self.report_clauses["assets_to_chart"] += " AND " + " AND ".join(
-                asset_filter_clauses
-            )
+            where_clauses = " WHERE " + " AND ".join(asset_filter_clauses)
+            self.report_clauses["assets_to_chart"] += where_clauses
             self.filter_cases.extend(asset_filter_cases)
 
         # only one of these queries will be performed, depending on get_all_surveys value
         if get_all_surveys:
             self.report_clauses["get_all"] = self.report_clauses["retrieve_all"]
-            self.report_clauses["get_all"] += " WHERE " + " AND ".join(
-                attribute_clauses
-            )
+            where_clauses = " WHERE " + " AND ".join(attribute_clauses)
+            self.report_clauses["get_all"] +=where_clauses
         else:
             self.report_clauses["get_aggregate_select"] = self.report_clauses[
                 "retrieve_aggregate_select"
             ]
-            self.report_clauses["get_aggregate_select"] += " AND " + " AND ".join(
-                attribute_clauses
-            )
+            and_clauses = " AND " + " AND ".join(attribute_clauses)
+            self.report_clauses["get_aggregate_select"] += and_clauses
         self.filter_cases.extend(attribute_cases)
 
     def add_report_clause(self, clause_name):
