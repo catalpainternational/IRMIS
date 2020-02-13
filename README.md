@@ -43,10 +43,10 @@ This entire sequence must be performed to completion before users are allowed to
 2. `./manage.py import_csv ../../path/to/the/data-sources/repo/csv`
   - copies road attributes from the csv ( from program excel files )
 
-3. `./manage.py set_road_municipalities`
-   `./manage.py set_bridge_municipalities`
-   `./manage.py set_culvert_municipalities`
-  - sets the administrative areas for each asset based the centroids of their respective geometries
+3. `./manage.py set_municipalities <optional: ["road", "bridge", "culvert"]>`
+  - sets the administrative areas for each asset/structure, based the centroids of their respective geometries
+  - Takes an optional argument to restrict the municipalities getting set to objects of a single type
+  - If no argument is given ALL assets/structures will have their municipalities set from their geometries
 
 4. `./manage.py collate_geometries`
   - you have edited roads, bridges, culverts so re-collate
