@@ -3,7 +3,7 @@ from django.db import connection
 import reversion
 
 from assets.models import Bridge, Culvert, Road
-from assets.tasks import set_road_municipalites, set_structure_municipalites
+from assets.tasks import set_road_municipalities, set_structure_municipalities
 
 
 class Command(BaseCommand):
@@ -13,16 +13,16 @@ class Command(BaseCommand):
         parser.add_argument(
             "asset",
             default=None,
-            help="Restrict municipalities set to those of a single object type. Options: road, bridge, culvert.",
+            help="Restrict municipalities set to those of a single object type. Options: all, road, bridge, culvert.",
         )
 
     def handle(self, *args, **options):
-        if not options["asset"]:
+        if options["asset"] == "all":
             # run all assets & structures municipalities updates
-            set_road_municipalites()
-            set_structure_municipalites("bridge")
-            set_structure_municipalites("culvert")
+            set_road_municipalities()
+            set_structure_municipalities("bridge")
+            set_structure_municipalities("culvert")
         elif options["asset"] == "road":
-            set_road_municipalites()
+            set_road_municipalities()
         elif options["asset"] in ["bridge", "culvert"]:
-            set_structure_municipalites(options["asset"])
+            set_structure_municipalities(options["asset"])

@@ -432,14 +432,15 @@ def set_unknown_road_codes():
         road.save()
 
 
-def set_road_municipalites():
+def set_road_municipalities():
     with connection.cursor() as cursor:
         # Two roads with centroids in the sea!
-        coastal_1 = Road.objects.get(link_code="A03-03")
-        coastal_1.administrative_area = 4
-        with reversion.create_revision():
-            coastal_1.save()
-            reversion.set_comment("Administrative area set from geometry")
+        coastal_1 = Road.objects.filter(link_code="A03-03").all()
+        if len(coastal_1) > 0:
+            coastal_1.administrative_area = 4
+            with reversion.create_revision():
+                coastal_1.save()
+                reversion.set_comment("Administrative area set from geometry")
         coastal_2 = Road.objects.get(road_code="C09")
         coastal_2.administrative_area = 6
         with reversion.create_revision():
@@ -454,7 +455,7 @@ def set_road_municipalites():
             row = cursor.fetchone()
             if row is None:
                 break
-            if row[0] == coastal_1.pk or row[0] == coastal_2.pk:
+            if (len(coastal_1) and row[0] == coastal_1.pk) or row[0] == coastal_2.pk:
                 continue
             road = Road.objects.get(pk=row[0])
             road.administrative_area = row[1]
@@ -463,7 +464,7 @@ def set_road_municipalites():
                 reversion.set_comment("Administrative area set from geometry")
 
 
-def set_structure_municipalites(structure_type):
+def set_structure_municipalities(structure_type):
     if structure_type == "bridge":
         structure_model = Bridge
     elif structure_type == "culvert":
