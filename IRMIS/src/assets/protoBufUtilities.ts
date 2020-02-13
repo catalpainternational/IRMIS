@@ -1,5 +1,7 @@
 import { Projection } from "../../protobuf/roads_pb";
 import { Point } from "../../protobuf/structure_pb";
+import { EstradaProjection } from "./models/road";
+import { EstradaPoint } from "./models/structures";
 
 /** utility function to pick from choices if value is truthy, or return default string
  * the default for defaultValue is empty string ""
@@ -36,10 +38,24 @@ export function makeEstradaObject(
 ): { [name: string]: any } {
     const estradaObject = Object.create(estradaObjectType.prototype);
     if (protoBufSource) {
-        Object.assign(estradaObject, protoBufSource);
+        const protoBufDeepClone = JSON.parse(JSON.stringify(protoBufSource));
+        Object.assign(estradaObject, protoBufDeepClone);
     }
 
     return estradaObject;
+}
+
+/** This compares two objects assumed to be protobuf type objects for data equivalence
+ *
+ * Note: This only compares the `array` member of each object (assuming they have one)
+ * If they do not have an `array` member then a dummy array is compared which will result
+ * in a false being returned for the comparison
+ */
+export function compareProtoBufObjects(a: { [name: string]: any }, b: { [name: string]: any }) {
+    const aJson = JSON.stringify(JSON.parse(JSON.stringify(a)).array || ["a"]);
+    const bJson = JSON.stringify(JSON.parse(JSON.stringify(b)).array || ["b"]);
+
+    return aJson !== bJson;
 }
 
 export function getFieldName(schema: { [name: string]: any }, field: string): string {
@@ -69,6 +85,7 @@ export function humanizeChoices(
     return values;
 }
 
-export function projectionToCoordinates(proj: Projection | Point): [number, number] {
+export function projectionToCoordinates(
+    proj: Projection | Point | EstradaProjection | EstradaPoint): [number, number] {
     return [proj.getX(), proj.getY()];
 }

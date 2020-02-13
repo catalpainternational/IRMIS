@@ -1,4 +1,5 @@
-import { Bridge, Culvert, Structures } from "../../../protobuf/structure_pb";
+import * as jspb from "google-protobuf";
+import { Bridge, Culvert, Point, Structures } from "../../../protobuf/structure_pb";
 import { projToWGS84, toDms } from "../crsUtilities";
 import {
     choice_or_default,
@@ -136,12 +137,12 @@ export class EstradaBridge extends Bridge implements IAsset {
     // }
 
     get geomPoint() {
-        return this.getGeomPoint();
+        const geomPointRaw = this.getGeomPoint();
+        return geomPointRaw ? makeEstradaPoint(geomPointRaw) : geomPointRaw;
     }
 
     get dms() {
-        const point = this.getGeomPoint();
-        return point ? toDms(projToWGS84.forward(projectionToCoordinates(point))) : "";
+        return this.geomPoint ? this.geomPoint.dms : "";
     }
 
     get chainage() {
@@ -275,9 +276,13 @@ export class EstradaCulvert extends Culvert implements IAsset {
     //     return this.getUser() || "";
     // }
 
+    get geomPoint() {
+        const geomPointRaw = this.getGeomPoint();
+        return geomPointRaw ? makeEstradaPoint(geomPointRaw) : geomPointRaw;
+    }
+
     get dms() {
-        const point = this.getGeomPoint();
-        return point ? toDms(projToWGS84.forward(projectionToCoordinates(point))) : "";
+        return this.geomPoint ? this.geomPoint.dms : "";
     }
 
     get chainage() {
@@ -339,6 +344,20 @@ export class EstradaCulvert extends Culvert implements IAsset {
     }
 }
 
+export class EstradaPoint extends Point {
+    get x() {
+        return this.getX();
+    }
+
+    get y() {
+        return this.getY();
+    }
+
+    get dms() {
+        return toDms(projToWGS84.forward(projectionToCoordinates(this)));
+    }
+}
+
 export function makeEstradaStructures(pbstructures: { [name: string]: any }): EstradaStructures {
     return makeEstradaObject(EstradaStructures, pbstructures) as EstradaStructures;
 }
@@ -350,3 +369,38 @@ export function makeEstradaBridge(pbattribute: { [name: string]: any }): Estrada
 export function makeEstradaCulvert(pbattribute: { [name: string]: any }): EstradaCulvert {
     return makeEstradaObject(EstradaCulvert, pbattribute) as EstradaCulvert;
 }
+
+export function makeEstradaPoint(pbpoint: { [name: string]: any }): EstradaPoint {
+    return makeEstradaObject(EstradaPoint, pbpoint) as EstradaPoint;
+}
+
+// Monkey-Patching follows
+// Please review if protoc is updated from v3.11.2
+
+/**
+ * Serializes the given message data (not object) to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.assets.Point} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+function serializePointBinaryToWriter(message: Point | any, writer: jspb.BinaryWriter): void {
+    let f: number | undefined;
+    f = message.getX ? message.getX() : message.array[0];
+    if (f !== 0.0) {
+        writer.writeFloat(
+            1,
+            f,
+        );
+    }
+    f = message.getY ? message.getY() : message.array[1];
+    if (f !== 0.0) {
+        writer.writeFloat(
+            2,
+            f,
+        );
+    }
+}
+
+// Here's the actual monkey-patch
+(window as any).proto.assets.Point.serializeBinaryToWriter = serializePointBinaryToWriter;
