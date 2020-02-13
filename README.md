@@ -44,10 +44,12 @@ This entire sequence must be performed to completion before users are allowed to
   - copies road attributes from the csv ( from program excel files )
 
 3. `./manage.py set_road_municipalities`
-  - sets road administrative areas from the road centroids
+   `./manage.py set_bridge_municipalities`
+   `./manage.py set_culvert_municipalities`
+  - sets the administrative areas for each asset based the centroids of their respective geometries
 
 4. `./manage.py collate_geometries`
-  - you have edited roads so re-collate
+  - you have edited roads, bridges, culverts so re-collate
 
 5. `./manage.py make_road_surveys`
   - create Surveys from the Road data
