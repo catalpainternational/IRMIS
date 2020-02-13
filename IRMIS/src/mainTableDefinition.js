@@ -480,13 +480,13 @@ export const structuresTableColumns = [
         defaultContent: "",
         visible: false,
     },
-    {
-        title: "Inventory Photos",
-        data: null,
-        render: r => buttonSegmentsTemplate("inventory_photos", r),
-        className: "text-center",
-        defaultContent: "",
-    },
+    // {
+    //     title: "Inventory Photos",
+    //     data: null,
+    //     render: r => buttonSegmentsTemplate("inventory_photos", r),
+    //     className: "text-center",
+    //     defaultContent: "",
+    // },
 ];
 
 function detectStructure(structure) {
