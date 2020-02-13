@@ -149,8 +149,7 @@ export class EstradaBridge extends Bridge implements IAsset {
     }
 
     get administrativeArea() {
-        // return choice_or_default(this.getAdministrativeArea(), ADMINISTRATIVE_AREA_CHOICES);
-        return this.getAdministrativeArea();
+        return choice_or_default(this.getAdministrativeArea(), ADMINISTRATIVE_AREA_CHOICES);
     }
 
     get constructionYear() {
@@ -286,8 +285,7 @@ export class EstradaCulvert extends Culvert implements IAsset {
     }
 
     get administrativeArea() {
-        // return choice_or_default(this.getAdministrativeArea(), ADMINISTRATIVE_AREA_CHOICES);
-        return this.getAdministrativeArea();
+        return choice_or_default(this.getAdministrativeArea(), ADMINISTRATIVE_AREA_CHOICES);
     }
 
     get constructionYear() {

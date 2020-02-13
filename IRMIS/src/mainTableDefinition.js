@@ -185,6 +185,7 @@ export const estradaTableColumns = [
     {
         title: EstradaRoad.getFieldName("administrative_area"),
         data: "administrativeArea",
+        className: "text-center",
         defaultContent: "",
     },
     {
