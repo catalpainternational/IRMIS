@@ -72,42 +72,6 @@
                     </small>
                 </div>
             </section>
-            <section>
-                <h6>{ window.gettext("Upload photos") }</h6>
-                <div class="upload-box">
-                    <div class="cloud-box">
-                        <div class="upload-cloud"></div>
-                        <div class="upload-text">{ window.gettext("Click to upload") }</div>
-                        <div>{ window.gettext("Maximum file size 500KB") }</div>
-                        <div>{ window.gettext("Accepted file formats: JPEG, GIF, PNG, TIFF") }</div>
-                    </div>
-                </div>
-                <input class="{ state.errors.photo1 ? 'danger' : null } { state.photo1 ? '' : 'inactive' } form-control"
-                    type="text" maxlength="500" placeholder="Enter a description of the photo" value="{ state.photo1 }"
-                    oninput="{ checkPhoto1Text }">
-                <div if="{state.errors.photo1}" class="invalid-tooltip">
-                    <ul>
-                        <li>{ state.errors.photo1 }.</li>
-                    </ul>
-                </div>
-                <div class="upload-box">
-                    <div class="cloud-box">
-                        <div class="upload-cloud"></div>
-                        <div class="upload-text">{ window.gettext("Click to upload") }</div>
-                        <div>{ window.gettext("Maximum file size 500KB") }</div>
-                        <div>{ window.gettext("Accepted file formats: JPEG, GIF, PNG, TIFF") }</div>
-                    </div>
-                </div>
-                <input class="{ state.errors.photo2 ? 'danger' : null } { state.photo2 ? '' : 'inactive' } form-control"
-                    type="text" maxlength="500" placeholder="Enter a description of the photo" value="{ state.photo2 }"
-                    oninput="{ checkPhoto2Text }">
-                <div if="{state.errors.photo2}" class="invalid-tooltip">
-                    <ul>
-                        <li>{ state.errors.photo2 }.</li>
-                    </ul>
-                </div>
-            </section>
-
             <div class="d-flex justify-content-end">
                 <span>[</span><span class="required">*</span><span>]: Mandatory</span>
             </div>
@@ -148,10 +112,6 @@
                 assetConditions: [{key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading")}],
                 editMode: false,
                 currentRowData: new EstradaSurvey({}),
-                photos: {
-                    "1": null,
-                    "2": null,
-                },
             },
             components: {
                 Edit_Stop_Alert, Edit_Modal
@@ -204,18 +164,18 @@
                     className: "text-center",
                     orderable: false,
                 },
-                {
-                    title: window.gettext("Photos"),
-                    data: "photos",
-                    defaultContent: "",
-                    render: (photos) => {
-                        return (photos) ? photos.forEach((p) => {
-                            return `<a class="image" href="${p.url}"></a>`;
-                        }) : "";
-                    },
-                    className: "text-center",
-                    orderable: false,
-                },
+                // {
+                //     title: window.gettext("Photos"),
+                //     data: "photos",
+                //     defaultContent: "",
+                //     render: (photos) => {
+                //         return (photos) ? photos.forEach((p) => {
+                //             return `<a class="image" href="${p.url}"></a>`;
+                //         }) : "";
+                //     },
+                //     className: "text-center",
+                //     orderable: false,
+                // },
                 {
                     title: window.gettext("Added by"),
                     data: "addedBy",
