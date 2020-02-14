@@ -117,14 +117,14 @@ export const pavementClassColumns = baseSegmentColumns.concat([
     },
 ]);
 
-// export const structurePhotosColumns = baseDetailColumns.concat([
-//     {
-//         title: window.gettext("Inventory photos"),
-//         data: "structurePhotos", // This should probably be a link to the document/photo
-//         defaultContent: "",
-//         orderable: false,
-//     },
-// ]);
+export const structurePhotosColumns = baseDetailColumns.concat([
+    {
+        title: window.gettext("Inventory photos"),
+        data: "structurePhotos", // This should probably be a link to the document/photo
+        defaultContent: "",
+        orderable: false,
+    },
+]);
 
 /** Defines the columns for the Structure (Asset) Condition segments table on the inventory page */
 export const structureConditionColumns = baseDetailColumns.concat([

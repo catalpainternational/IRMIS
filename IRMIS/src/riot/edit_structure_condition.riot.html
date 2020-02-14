@@ -170,18 +170,18 @@
                     className: "text-center",
                     orderable: false,
                 },
-                // {
-                //     title: window.gettext("Photos"),
-                //     data: "photos",
-                //     defaultContent: "",
-                //     render: (photos) => {
-                //         return (photos) ? photos.forEach((p) => {
-                //             return `<a class="image" href="${p.url}"></a>`;
-                //         }) : "";
-                //     },
-                //     className: "text-center",
-                //     orderable: false,
-                // },
+                {
+                    title: window.gettext("Photos"),
+                    data: "photos",
+                    defaultContent: "",
+                    render: (photos) => {
+                        return (photos) ? photos.forEach((p) => {
+                            return `<a class="image" href="${p.url}"></a>`;
+                        }) : "";
+                    },
+                    className: "text-center",
+                    orderable: false,
+                },
                 {
                     title: window.gettext("Added by"),
                     data: "addedBy",
