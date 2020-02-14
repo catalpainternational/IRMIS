@@ -8,6 +8,7 @@ from collections import Counter, defaultdict
 import pytz
 
 from django.contrib.auth import get_user_model
+from django.contrib.gis.db import models
 from django.shortcuts import get_object_or_404
 from django.http import (
     HttpResponse,
@@ -20,7 +21,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Value, CharField
+from django.db.models import Value, CharField, OuterRef, Subquery
+from django.db.models.functions import Cast, Substr
+
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.exceptions import MethodNotAllowed, ValidationError
 from rest_framework.permissions import IsAuthenticated
@@ -765,12 +768,13 @@ STRUCTURE_PREFIXES_MAPPING = {
 
 
 def get_structure_mapping(pk):
-    """ Take in a globally unique protobuf PK and splits out the Strucutre prefix to get
+    """ Take in a globally unique protobuf PK and splits out the Structure prefix to get
     lookup the specific Structure's mapping, along with the Django DB PK to access it."""
     split = pk.split("-")
+    prefix = split[0]
     django_pk = int(split[1])
-    mapping = STRUCTURE_PREFIXES_MAPPING[split[0]]
-    return django_pk, mapping
+    mapping = STRUCTURE_PREFIXES_MAPPING[prefix]
+    return prefix, django_pk, mapping
 
 
 @login_required
@@ -779,8 +783,18 @@ def protobuf_structure(request, pk):
     if request.method != "GET":
         return HttpResponse(status=405)
 
-    django_pk, mapping = get_structure_mapping(pk)
-    structure = mapping["model"].objects.filter(pk=django_pk)
+    prefix, django_pk, mapping = get_structure_mapping(pk)
+    survey = (Survey.objects.filter(structure_id__startswith=prefix+"-")
+        .annotate(struct_id=Cast(Substr("structure_id", 6), models.IntegerField()))
+        .filter(struct_id=OuterRef("id"))
+        .order_by("-date_surveyed")
+    )
+    structure = (mapping["model"].objects.filter(pk=django_pk)
+        .annotate(
+            asset_condition=Subquery(survey.values("values__asset_condition")[:1])
+        )
+    )
+
     if not structure.exists():
         return HttpResponseNotFound()
 
