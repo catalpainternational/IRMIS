@@ -181,9 +181,10 @@ export class EstradaBridge extends Bridge implements IAsset {
         return choice_or_default(this.getAssetClass(), ASSET_CLASS_CHOICES);
     }
 
-    // get assetCondition() {
-    //     return choice_or_default(this.getAssetCondition(), ASSET_CONDITION_CHOICES);
-    // }
+    /** assetCondition is the most recent structure condition from the surveys */
+    get assetCondition() {
+        return choice_or_default(this.getAssetCondition(), ASSET_CONDITION_CHOICES);
+    }
 
     get structureType() {
         return choice_or_default(this.getStructureType(), STRUCTURE_TYPE_BRIDGE_CHOICES );
@@ -317,9 +318,10 @@ export class EstradaCulvert extends Culvert implements IAsset {
         return choice_or_default(this.getAssetClass(), ASSET_CLASS_CHOICES);
     }
 
-    // get assetCondition() {
-    //     return choice_or_default(this.getAssetCondition(), ASSET_CONDITION_CHOICES);
-    // }
+    /** assetCondition is the most recent structure condition from the surveys */
+    get assetCondition() {
+        return choice_or_default(this.getAssetCondition(), ASSET_CONDITION_CHOICES);
+    }
 
     get structureType() {
         return choice_or_default(this.getStructureType(), STRUCTURE_TYPE_CULVERT_CHOICES );
