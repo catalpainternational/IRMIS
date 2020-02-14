@@ -1,4 +1,5 @@
-import { Road } from "../../../protobuf/roads_pb";
+import * as jspb from "google-protobuf";
+import { Projection, Road } from "../../../protobuf/roads_pb";
 
 import { projToWGS84, toDms, toUtm } from "../crsUtilities";
 import {
@@ -12,6 +13,8 @@ import {
 } from "../protoBufUtilities";
 
 import { ADMINISTRATIVE_AREA_CHOICES, ASSET_CLASS_CHOICES, ASSET_CONDITION_CHOICES, IAsset } from "./estradaBase";
+
+// tslint:disable: max-classes-per-file
 
 const assetSchema = JSON.parse(document.getElementById("asset_schema")?.textContent || "");
 
@@ -167,36 +170,34 @@ export class EstradaRoad extends Road implements IAsset {
         return choice_or_default(this.getTrafficLevel(), TRAFFIC_LEVEL_CHOICES);
     }
 
-    get projectionStart() {
-        return this.getProjectionStart();
-    }
-
     get rainfall() {
         return this.getNullableRainfall();
     }
 
+    get projectionStart() {
+        const projectionStartRaw = this.getProjectionStart();
+        return projectionStartRaw ? makeEstradaProjection(projectionStartRaw) : projectionStartRaw;
+    }
+
     get projectionEnd() {
-        return this.getProjectionEnd();
+        const projectionEndRaw = this.getProjectionEnd();
+        return projectionEndRaw ? makeEstradaProjection(projectionEndRaw) : projectionEndRaw;
     }
 
     get startDMS() {
-        const projection = this.getProjectionStart();
-        return projection ? toDms(projToWGS84.forward(projectionToCoordinates(projection))) : "";
+        return this.projectionStart ? this.projectionStart.dms : "";
     }
 
     get endDMS() {
-        const projection = this.getProjectionEnd();
-        return projection ? toDms(projToWGS84.forward(projectionToCoordinates(projection))) : "";
+        return this.projectionEnd ? this.projectionEnd.dms : "";
     }
 
     get startUTM() {
-        const projection = this.getProjectionStart();
-        return projection ? toUtm(projToWGS84.forward(projectionToCoordinates(projection))) : "";
+        return this.projectionStart ? this.projectionStart.utm : "";
     }
 
     get endUTM() {
-        const projection = this.getProjectionEnd();
-        return projection ? toUtm(projToWGS84.forward(projectionToCoordinates(projection))) : "";
+        return this.projectionEnd ? this.projectionEnd.utm : "";
     }
 
     get numberLanes() {
@@ -281,6 +282,59 @@ export class EstradaRoad extends Road implements IAsset {
     }
 }
 
+export class EstradaProjection extends Projection {
+    get x() {
+        return this.getX();
+    }
+
+    get y() {
+        return this.getY();
+    }
+
+    get dms() {
+        return toDms(projToWGS84.forward(projectionToCoordinates(this)));
+    }
+
+    get utm() {
+        return toUtm(projToWGS84.forward(projectionToCoordinates(this)));
+    }
+}
+
 export function makeEstradaRoad(pbattribute: { [name: string]: any }): EstradaRoad {
     return makeEstradaObject(EstradaRoad, pbattribute) as EstradaRoad;
 }
+
+export function makeEstradaProjection(pbprojection: { [name: string]: any }): EstradaProjection {
+    return makeEstradaObject(EstradaProjection, pbprojection) as EstradaProjection;
+}
+
+// Monkey-Patching follows
+// Please review if protoc is updated from v3.11.2
+
+/**
+ * Serializes the given message data (not object) to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.assets.Projection} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+function serializeProjectionBinaryToWriter(message: Projection | any, writer: jspb.BinaryWriter): void {
+    let f: number | undefined;
+    f = message.getX ? message.getX() : message.array[0];
+    if (f !== 0.0) {
+        writer.writeFloat(
+            1,
+            f,
+        );
+    }
+    f = message.getY ? message.getY() : message.array[1];
+    if (f !== 0.0) {
+        writer.writeFloat(
+            2,
+            f,
+        );
+    }
+}
+
+// Here's the actual monkey-patch
+(window as any).proto.assets.Projection.serializeBinaryToWriter = serializeProjectionBinaryToWriter;

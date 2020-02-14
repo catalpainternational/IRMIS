@@ -443,7 +443,7 @@ export class EstradaNetworkSurveyReport extends Report implements IEstrada {
         return this.makeSpecificLengths("traffic_level");
     }
 
-    /** Returns one or more collections of attributes matching the criteria
+    /** Returns a collection of attributes matching the criteria
      * @param {string} primaryAttribute The primaryAttribute (within all of the attributes) to search for
      * @param {Timestamp} [dateSurveyed=null] All attributes up to and including this date are acceptable
      *     (null = take them all)
@@ -458,13 +458,16 @@ export class EstradaNetworkSurveyReport extends Report implements IEstrada {
         dateSurveyed?: Timestamp,
         returnAllDates = false,
         returnAllEntries = false,
-    ) {
+    ): {
+        date_surveyed: Timestamp | undefined;
+        attributeEntries: EstradaSurveyAttribute[];
+    } {
         let filteredAttributes = this.attributesList.filter((attribute) => {
             return attribute.primaryAttribute === primaryAttribute;
         });
 
         if (filteredAttributes.length === 0) {
-            return makeEstradaSurveyAttribute({date_surveyed: undefined, attributeEntries: []});
+            return {date_surveyed: undefined, attributeEntries: []};
         }
 
         // Descending sort most recent dateSurveyed, down to null dateSurveyed
@@ -508,7 +511,10 @@ export class EstradaNetworkSurveyReport extends Report implements IEstrada {
             }
         }
 
-        return makeEstradaSurveyAttribute({date_surveyed: dateSurveyed, attributeEntries: filteredAttributes });
+        return {
+            date_surveyed: dateSurveyed,
+            attributeEntries: filteredAttributes,
+        };
     }
 
     private makeSpecificLengths(primaryAttribute: string, useLengthKeyAsDefault = false) {
@@ -562,11 +568,12 @@ export class EstradaSurveyAttribute extends Attribute implements IEstrada {
     }
 
     get dateSurveyed() {
-        const pbufData = this.getDateSurveyed();
-        if (!pbufData || !pbufData.getSeconds()) {
+        // Note getDateSurveyed doesn't actually return a proper Timestamp object
+        const pbufData = this.getDateSurveyed() as ({ [name: string]: any } | undefined);
+        if (!pbufData || !pbufData.array || !pbufData.array.length) {
             return "";
         }
-        const date = dayjs(new Date(pbufData.getSeconds() * 1000));
+        const date = dayjs(new Date(pbufData.array[0] * 1000));
         return date.isValid() ? date.format("YYYY-MM-DD") : "";
     }
 
@@ -582,34 +589,33 @@ export class EstradaSurveyAttribute extends Attribute implements IEstrada {
         return this.chainageEnd - this.chainageStart;
     }
 
-    get municipality() {
-        return this.primaryAttribute === "municipality"
-            ? this.value || (window as any).gettext("Unknown")
-            : (window as any).gettext("Unknown");
+    get municipality(): string {
+        return this.primaryAttribute === "municipality" && this.value
+            ? this.value : this.unknownI8n();
     }
 
-    get carriagewayWidth() {
-        return this.primaryAttribute === "carriageway_width"
-            ? this.value || (window as any).gettext("Unknown")
-            : (window as any).gettext("Unknown");
+    get carriagewayWidth(): number | string {
+        const numericValue = parseFloat(this.value);
+        return this.primaryAttribute === "carriageway_width" && numericValue
+            ? numericValue.toFixed(1) : this.unknownI8n();
     }
 
-    get numberLanes() {
-        return this.primaryAttribute === "number_lanes"
-            ? this.value || (window as any).gettext("Unknown")
-            : (window as any).gettext("Unknown");
+    get numberLanes(): number | string {
+        const numericValue = parseInt(this.value, 10);
+        return this.primaryAttribute === "number_lanes" && numericValue
+            ? numericValue.toFixed(0) : this.unknownI8n();
     }
 
-    get pavementClass() {
+    get pavementClass(): string {
         return this.primaryAttribute === "pavement_class"
-            ? (window as any).gettext(choice_or_default(this.value, PAVEMENT_CLASS_CHOICES, "Unknown"))
-            : (window as any).gettext("Unknown");
+            ? (window as any).gettext(choice_or_default(this.value, PAVEMENT_CLASS_CHOICES, "Unknown")) as string
+            : this.unknownI8n();
     }
 
-    get rainfall() {
-        return this.primaryAttribute === "rainfall"
-            ? (window as any).gettext(this.value || "Unknown")
-            : (window as any).gettext("Unknown");
+    get rainfall(): number | string {
+        const numericValue = parseInt(this.value, 10);
+        return this.primaryAttribute === "rainfall" && numericValue
+            ? numericValue.toFixed(0) : this.unknownI8n();
     }
 
     get trafficCounts(): { [name: string]: any }  {
@@ -621,44 +627,50 @@ export class EstradaSurveyAttribute extends Attribute implements IEstrada {
     }
 
     get trafficDataType(): string {
-        return this.value ? JSON.parse(this.value).trafficType : "Unknown" || "Unknown";
+        return this.value
+            ? JSON.parse(this.value).trafficType
+            : this.unknownI8n() || this.unknownI8n();
     }
 
-    get assetClass() {
+    get assetClass(): string {
         // "structure_class", "road_class", "road_type" have all been deprecated
         return this.primaryAttribute === "asset_class"
-            ? (window as any).gettext(choice_or_default(this.value, ASSET_CLASS_CHOICES, "Unknown"))
-            : (window as any).gettext("Unknown");
+            ? (window as any).gettext(choice_or_default(this.value, ASSET_CLASS_CHOICES, "Unknown")) as string
+            : this.unknownI8n();
     }
 
-    get assetCondition() {
+    get assetCondition(): string {
         return ["asset_condition", "surface_condition", "structure_condition"].includes(this.primaryAttribute)
-            ? (window as any).gettext(choice_or_default(this.value, ASSET_CONDITION_CHOICES, "Unknown"))
-            : (window as any).gettext("Unknown");
+            ? (window as any).gettext(choice_or_default(this.value, ASSET_CONDITION_CHOICES, "Unknown")) as string
+            : this.unknownI8n();
     }
 
-    get surfaceType() {
+    get surfaceType(): string {
         return this.primaryAttribute === "surface_type"
-            ? (window as any).gettext(choice_or_default(this.value, SURFACE_TYPE_CHOICES, "Unknown"))
-            : (window as any).gettext("Unknown");
+            ? (window as any).gettext(choice_or_default(this.value, SURFACE_TYPE_CHOICES, "Unknown")) as string
+            : this.unknownI8n();
     }
 
-    get technicalClass() {
+    get technicalClass(): string {
         return this.primaryAttribute === "technical_class"
-            ? (window as any).gettext(choice_or_default(this.value, TECHNICAL_CLASS_CHOICES, "Unknown"))
-            : (window as any).gettext("Unknown");
+            ? (window as any).gettext(choice_or_default(this.value, TECHNICAL_CLASS_CHOICES, "Unknown")) as string
+            : this.unknownI8n();
     }
 
-    get terrainClass() {
+    get terrainClass(): string {
         return this.primaryAttribute === "terrain_class"
-            ? (window as any).gettext(choice_or_default(this.value, TERRAIN_CLASS_CHOICES, "Unknown"))
-            : (window as any).gettext("Unknown");
+            ? (window as any).gettext(choice_or_default(this.value, TERRAIN_CLASS_CHOICES, "Unknown")) as string
+            : this.unknownI8n();
     }
 
-    get trafficLevel() {
+    get trafficLevel(): string {
         return this.primaryAttribute === "traffic_level"
-            ? (window as any).gettext(choice_or_default(this.value, TRAFFIC_LEVEL_CHOICES, "Unknown"))
-            : (window as any).gettext("Unknown");
+            ? (window as any).gettext(choice_or_default(this.value, TRAFFIC_LEVEL_CHOICES, "Unknown")) as string
+            : this.unknownI8n();
+    }
+
+    private unknownI8n(): string {
+        return (window as any).gettext("Unknown") as string;
     }
 }
 

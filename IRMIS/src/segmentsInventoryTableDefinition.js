@@ -9,7 +9,7 @@ const baseSegmentColumns = [
         defaultContent: "",
         className: "text-right",
         render: (data, type) => {
-            return (type === 'display') ? toChainageFormat(data) : data;
+            return (type === "display" && typeof data === "number") ? toChainageFormat(data) : data;
         },
     },
     {
@@ -19,7 +19,7 @@ const baseSegmentColumns = [
         className: "text-right",
         orderable: false,
         render: (data, type) => {
-            return (type === 'display') ? toChainageFormat(data) : data;
+            return (type === "display" && typeof data === "number") ? toChainageFormat(data) : data;
         },
     },
 ];
@@ -69,6 +69,9 @@ export const numberLanesColumns = baseSegmentColumns.concat([
         data: "numberLanes",
         defaultContent: "",
         orderable: false,
+        render: (data, type) => {
+            return (type === "display" && typeof data === "number") ? data.toFixed(0) : data;
+        },
     },
 ]);
 
@@ -78,6 +81,9 @@ export const carriagewayWidthColumns = baseSegmentColumns.concat([
         data: "carriagewayWidth",
         defaultContent: "",
         orderable: false,
+        render: (data, type) => {
+            return (type === "display" && typeof data === "number") ? data.toFixed(1) : data;
+        },
     },
 ]);
 
@@ -87,6 +93,9 @@ export const rainfallColumns = baseSegmentColumns.concat([
         data: "rainfall",
         defaultContent: "",
         orderable: false,
+        render: (data, type) => {
+            return (type === "display" && typeof data === "number") ? data.toFixed(0) : data;
+        },
     },
 ]);
 
@@ -108,14 +117,14 @@ export const pavementClassColumns = baseSegmentColumns.concat([
     },
 ]);
 
-export const structurePhotosColumns = baseDetailColumns.concat([
-    {
-        title: window.gettext("Inventory photos"),
-        data: "structurePhotos", // This should probably be a link to the document/photo
-        defaultContent: "",
-        orderable: false,
-    },
-]);
+// export const structurePhotosColumns = baseDetailColumns.concat([
+//     {
+//         title: window.gettext("Inventory photos"),
+//         data: "structurePhotos", // This should probably be a link to the document/photo
+//         defaultContent: "",
+//         orderable: false,
+//     },
+// ]);
 
 /** Defines the columns for the Structure (Asset) Condition segments table on the inventory page */
 export const structureConditionColumns = baseDetailColumns.concat([
