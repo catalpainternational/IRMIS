@@ -110,6 +110,10 @@
     vertical-align: middle;
     height: 16px;
     width: 15px;
+
+    &.button {
+        margin-right: 10px;
+    }
 }
 
 tr.selected .pencil {

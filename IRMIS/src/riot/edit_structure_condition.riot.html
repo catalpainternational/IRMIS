@@ -72,6 +72,11 @@
                     </small>
                 </div>
             </section>
+            <section>
+                <h6>{ window.gettext("Upload photos") }</h6>
+                <upload_photo></upload_photo>
+                <upload_photo></upload_photo>
+            </section>
             <div class="d-flex justify-content-end">
                 <span>[</span><span class="required">*</span><span>]: Mandatory</span>
             </div>
@@ -89,6 +94,7 @@
         import Edit_Stop_Alert from "./edit_stop_alert.riot.html";
         import Data_Table from "./data_table.riot.html";
         import Edit_Modal from "./edit_modal.riot.html";
+        import Upload_Photo from "./upload_photo.riot.html";
 
         import {choice_or_default} from "../assets/protoBufUtilities";
         import {ASSET_CONDITION_CHOICES} from "../assets/models/estradaBase";
@@ -114,7 +120,7 @@
                 currentRowData: new EstradaSurvey({}),
             },
             components: {
-                Edit_Stop_Alert, Edit_Modal
+                Edit_Stop_Alert, Edit_Modal, Data_Table, Upload_Photo
             },
 
 

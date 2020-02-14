@@ -1,0 +1,77 @@
+<upload_photo>
+    <div>
+        <form action="/upload-target" class="dropzone">
+            <div class="cloud-box">
+                <div class="upload-cloud"></div>
+                <div class="upload-instructions">{ window.gettext("Click to upload") }</div>
+                <div>{ window.gettext("Maximum file size 500KB") }</div>
+                <div>{ window.gettext("Accepted file formats: JPEG, GIF, PNG") }</div>
+            </div>
+        </form>
+        <input
+            class="{ state.errors.photo ? 'danger' : null } { state.photo ? '' : 'inactive' } form-control upload-text"
+            type="text" maxlength="500" placeholder="Enter a description of the photo" value="{ state.photo }"
+            oninput="{ checkPhotoText }">
+        <div if="{state.errors.photo}" class="invalid-tooltip">
+            <ul>
+                <li>{ state.errors.photo }.</li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- Temporary element placement -->
+    <div>
+        <!-- Delete Photo button -->
+        <button class="btn-secondary btn-tertiary btn-delete" onclick="{ deletePhoto }" disabled="{ props.saving }">{ window.gettext("Delete Photo") }</button>
+
+        <!-- Edit Caption button -->
+        <button class="btn-secondary btn-tertiary btn-caption" onclick="{ editCaption }" disabled="{ props.saving }">
+            <div class="image pencil button"></div>
+            { window.gettext("Edit Caption") }
+        </button>
+
+        <!-- Editing caption text -->
+        <div class="upload-text { state.editingCaption ? 'edit-caption' : null } ">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        </div>
+    </div>
+
+    <script>
+        import Dropzone from "dropzone";
+
+        export default {
+            state: {
+                photo: '',
+                errors: {},
+                editingCaption: false,
+            },
+            onMounted(props, state) {
+                Dropzone.autoDiscover = false;
+                const myDropzone = new Dropzone(this.$('form'), {
+                    url: "/file/post",
+                    maxFilesize: 0.5, // MB
+                    acceptedFiles: '.jpeg,.jpg,.gif,.png',
+                    dictDefaultMessage: '',
+                    dictInvalidFileType: 'Not a valid image, please submit a JPEG, GIF, or PNG',
+                    accept: (file, done) => {
+                        if (file.name == "image.jpg") {
+                            done();
+                        } else { 
+                            done(); 
+                        }
+                    }
+                });
+            },
+            deletePhoto(e) {
+
+            },
+            editCaption(e) {
+
+            },
+            checkPhotoText(e) {
+                console.log(e.currentTarget.value)
+            }
+        }
+    </script>
+</upload_photo>

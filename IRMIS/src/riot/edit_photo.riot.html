@@ -1,14 +1,20 @@
 <edit_photo>
     <div class="content-wrapper">
-        <h5>{ window.gettext("Photos") }</h5>
-
-        <div class="button-wrapper d-flex justify-content-end">
+        <h5>{ window.gettext("Inventory Photos") }</h5>
+        <upload_photo></upload_photo>
+        <upload_photo></upload_photo>
+        <div class="button-wrapper d-flex justify-content-end button-spacer">
             <button class="btn btn-primary" onclick="{ save }" disabled="{ props.saving }">{ window.gettext("Save and continue") }</button>
         </div>
     </div>
 
     <script>
+        import Upload_Photo from "./upload_photo.riot.html";
+
         export default {
+            components: {
+                Upload_Photo
+            },
             onBeforeMount(props, state) {
             },
             save(e) {
