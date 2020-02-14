@@ -784,12 +784,15 @@ def protobuf_structure(request, pk):
         return HttpResponse(status=405)
 
     prefix, django_pk, mapping = get_structure_mapping(pk)
-    survey = (Survey.objects.filter(structure_id__startswith=prefix+"-")
+    survey = (
+        Survey.objects.filter(structure_id__startswith=prefix + "-")
         .annotate(struct_id=Cast(Substr("structure_id", 6), models.IntegerField()))
         .filter(struct_id=OuterRef("id"))
         .order_by("-date_surveyed")
     )
-    structure = (mapping["model"].objects.filter(pk=django_pk)
+    structure = (
+        mapping["model"]
+        .objects.filter(pk=django_pk)
         .annotate(
             asset_condition=Subquery(survey.values("values__asset_condition")[:1])
         )

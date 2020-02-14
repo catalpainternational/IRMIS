@@ -636,7 +636,8 @@ class BridgeQuerySet(models.QuerySet):
             construction_year="construction_year",
         )
 
-        survey = (Survey.objects.filter(structure_id__startswith="BRDG-")
+        survey = (
+            Survey.objects.filter(structure_id__startswith="BRDG-")
             .annotate(bridge_id=Cast(Substr("structure_id", 6), models.IntegerField()))
             .filter(bridge_id=OuterRef("id"))
             .order_by("-date_surveyed")
@@ -645,7 +646,7 @@ class BridgeQuerySet(models.QuerySet):
             self.order_by("id")
             .annotate(
                 to_wgs=models.functions.Transform("geom", 4326),
-                asset_condition=Subquery(survey.values("values__asset_condition")[:1])
+                asset_condition=Subquery(survey.values("values__asset_condition")[:1]),
             )
             .values(
                 "id",
@@ -903,7 +904,8 @@ class CulvertQuerySet(models.QuerySet):
             number_cells="number_cells",
         )
 
-        survey = (Survey.objects.filter(structure_id__startswith="CULV-")
+        survey = (
+            Survey.objects.filter(structure_id__startswith="CULV-")
             .annotate(culvert_id=Cast(Substr("structure_id", 6), models.IntegerField()))
             .filter(culvert_id=OuterRef("id"))
             .order_by("-date_surveyed")
@@ -918,7 +920,7 @@ class CulvertQuerySet(models.QuerySet):
                 *datetime_fields.values(),
                 *numeric_fields.values(),
                 "to_wgs",
-                asset_condition=Subquery(survey.values("values__asset_condition")[:1])
+                asset_condition=Subquery(survey.values("values__asset_condition")[:1]),
             )
         )
 
