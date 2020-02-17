@@ -932,7 +932,6 @@ class CulvertQuerySet(models.QuerySet):
             # else:
             # Raise a warning to go into the logs that collate_geometries
             # functionality requires executing
-                
 
             for protobuf_key, query_key in regular_fields.items():
                 if culvert[query_key]:
