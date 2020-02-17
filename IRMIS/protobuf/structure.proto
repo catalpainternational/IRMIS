@@ -35,6 +35,9 @@ message Bridge {
     string protection_downstream = 17;
     Point geom_point = 18;
     uint32 geojson_id = 19;
+    // structure_condition has been renamed to asset_condition
+    // it comes from the surveys - NOT from the bridge
+    string asset_condition = 20;
     // NON-SHARED FIELDS (#26 and onwards)
     string river_name = 28;
     int32 number_spans = 29;
@@ -63,6 +66,9 @@ message Culvert {
     string protection_downstream = 17;
     Point geom_point = 18;
     uint32 geojson_id = 19;
+    // structure_condition has been renamed to asset_condition
+    // it comes from the surveys - NOT from the culvert
+    string asset_condition = 20;
     // NON-SHARED FIELDS (#26 and onwards)
     float height = 28;
     int32 number_cells = 29;

@@ -154,35 +154,6 @@
             {% endwith %}
         </div>
 
-        {% comment %} SECTION - ASSET CONDITION {% endcomment %}
-        <div class="filters-section ROAD">
-            <span class="subtitle">{% trans "Asset condition" %}</span>
-            {% comment %} ASSET CONDITION {% endcomment %}
-            {% with slug=asset_schema.asset_condition.slug %}
-            <div data-slug="{{ slug }}" class="filter">
-                <div class="d-flex header justify-content-between">
-                    <div class="align-items-center d-flex">
-                        <label>{{ asset_schema.asset_condition.display }}</label>
-                    </div>
-                    <div class="align-items-center d-flex">
-                        <span class="clear-filter" hidden>{% trans "Clear" %}</span>
-                        <span class="plus image filterToggle"></span>
-                    </div>
-                </div>
-                <div class="options" hidden>
-                    <ul>
-                        {% for option in asset_schema.asset_condition.options %}
-                        <li class="align-items-center d-flex optionToggle" data-option="{{ option.0 }}">
-                            <span class="checkbox image"></span>
-                            {{ option.1 }}
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-            {% endwith %}
-        </div>
-
         <!-- Structure Filters -->
         {% comment %} SECTION - STRUCTURE {% endcomment %}
         <div class="filters-section STRC" hidden>
@@ -262,15 +233,17 @@
             {% endwith %}
         </div>
 
-        {% comment %} SECTION - STRUCTURE CONDITION {% endcomment %}
-        <div class="filters-section STRC" hidden>
+        <!-- Road / Structure condition Filter -->
+        {% comment %} SECTION - SURFACE / STRUCTURE CONDITION {% endcomment %}
+        <div class="filters-section ROAD STRC">
             <span class="subtitle">{% trans "Asset condition" %}</span>
-            {% with slug=asset_schema.asset_condition.slug %}
             {% comment %} STRUCTURE CONDITION {% endcomment %}
+            {% with slug=asset_schema.asset_condition.slug %}
             <div data-slug="{{ slug }}" class="filter">
                 <div class="d-flex header justify-content-between">
                     <div class="align-items-center d-flex">
-                        <label>Structure Condition</label>
+                        <label class="filters-title ROAD">{{ asset_schema.asset_condition.display }}</label>
+                        <label class="filters-title STRC" hidden>{% trans "Structure Condition" %}</label>
                     </div>
                     <div class="align-items-center d-flex">
                         <span class="clear-filter" hidden>{% trans "Clear" %}</span>
