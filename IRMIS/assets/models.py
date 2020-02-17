@@ -6,7 +6,8 @@ from django.contrib.postgres.fields import HStoreField
 from django.utils.translation import get_language, ugettext, ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
-from django.db.models import Count, Max
+from django.db.models import Count, Max, OuterRef, Subquery
+from django.db.models.functions import Cast, Substr
 
 import reversion
 
@@ -605,7 +606,7 @@ class BridgeMaterialType(models.Model):
 class BridgeQuerySet(models.QuerySet):
     def to_protobuf(self):
         """ returns a Structure protobuf object from the queryset with a Bridges list """
-        # See sturcture.proto --> Structures --> Bridges --> Bridge
+        # See structure.proto --> Structures --> Bridges --> Bridge
         structures_protobuf = ProtoStructures()
 
         regular_fields = dict(
@@ -635,16 +636,26 @@ class BridgeQuerySet(models.QuerySet):
             construction_year="construction_year",
         )
 
+        survey = (
+            Survey.objects.filter(structure_id__startswith="BRDG-")
+            .annotate(bridge_id=Cast(Substr("structure_id", 6), models.IntegerField()))
+            .filter(bridge_id=OuterRef("id"))
+            .order_by("-date_surveyed")
+        )
         bridges = (
             self.order_by("id")
-            .annotate(to_wgs=models.functions.Transform("geom", 4326))
+            .annotate(
+                to_wgs=models.functions.Transform("geom", 4326),
+                asset_condition=Subquery(survey.values("values__asset_condition")[:1]),
+            )
             .values(
                 "id",
                 "geojson_file_id",
                 *regular_fields.values(),
                 *datetime_fields.values(),
                 *numeric_fields.values(),
-                "to_wgs"
+                "to_wgs",
+                "asset_condition",
             )
         )
 
@@ -673,6 +684,9 @@ class BridgeQuerySet(models.QuerySet):
             if bridge["to_wgs"]:
                 pt = Point(x=bridge["to_wgs"].x, y=bridge["to_wgs"].y)
                 bridge_protobuf.geom_point.CopyFrom(pt)
+
+            if bridge["asset_condition"]:
+                bridge_protobuf.asset_condition = bridge["asset_condition"]
 
         return structures_protobuf
 
@@ -890,6 +904,12 @@ class CulvertQuerySet(models.QuerySet):
             number_cells="number_cells",
         )
 
+        survey = (
+            Survey.objects.filter(structure_id__startswith="CULV-")
+            .annotate(culvert_id=Cast(Substr("structure_id", 6), models.IntegerField()))
+            .filter(culvert_id=OuterRef("id"))
+            .order_by("-date_surveyed")
+        )
         culverts = (
             self.order_by("id")
             .annotate(to_wgs=models.functions.Transform("geom", 4326))
@@ -899,7 +919,8 @@ class CulvertQuerySet(models.QuerySet):
                 *regular_fields.values(),
                 *datetime_fields.values(),
                 *numeric_fields.values(),
-                "to_wgs"
+                "to_wgs",
+                asset_condition=Subquery(survey.values("values__asset_condition")[:1]),
             )
         )
 
@@ -928,6 +949,9 @@ class CulvertQuerySet(models.QuerySet):
             if culvert["to_wgs"]:
                 pt = Point(x=culvert["to_wgs"].x, y=culvert["to_wgs"].y)
                 culvert_protobuf.geom_point.CopyFrom(pt)
+
+            if culvert["asset_condition"]:
+                bridge_protobuf.asset_condition = culvert["asset_condition"]
 
         return structures_protobuf
 

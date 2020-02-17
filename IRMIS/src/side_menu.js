@@ -120,6 +120,7 @@ function toggleAssetType(e) {
 
     const siblings = document.getElementById("assetType").getElementsByTagName("a");
     const filterSections = document.getElementsByClassName("filters-section");
+    const filterTitles = document.getElementsByClassName("filters-title");
 
     for (let index = 0; index < siblings.length; index++) {
         const sibling = siblings[index];
@@ -136,6 +137,15 @@ function toggleAssetType(e) {
             filterSection.removeAttribute("hidden");
         } else {
             filterSection.setAttribute("hidden", true)
+        }
+    }
+    for (let index = 0; index < filterTitles.length; index++) {
+        const filterTitle = filterTitles[index];
+        const titleClasses = filterTitle.classList;
+        if (titleClasses.contains(currentFilter.assetType)) {
+            filterTitle.removeAttribute("hidden");
+        } else {
+            filterTitle.setAttribute("hidden", true)
         }
     }
 
