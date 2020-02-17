@@ -927,7 +927,12 @@ class CulvertQuerySet(models.QuerySet):
         for culvert in culverts:
             culvert_protobuf = structures_protobuf.culverts.add()
             culvert_protobuf.id = "CULV-" + str(culvert["id"])
-            culvert_protobuf.geojson_id = int(culvert["geojson_file_id"])
+            if culvert["geojson_file_id"]:
+                culvert_protobuf.geojson_id = int(culvert["geojson_file_id"])
+            # else:
+            # Raise a warning to go into the logs that collate_geometries
+            # functionality requires executing
+                
 
             for protobuf_key, query_key in regular_fields.items():
                 if culvert[query_key]:

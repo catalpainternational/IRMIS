@@ -491,14 +491,14 @@ export const structuresTableColumns = [
 ];
 
 function detectStructure(structure) {
-    switch (structure.constructor.name) {
-        case "EstradaBridge":
-            return "BRDG";
-        case "EstradaCulvert":
-            return "CULV";
-        default:
-            return null;
+    const processableId = "-" + structure.id;
+    const structureId = processableId.split("-").filter((idPart) => { return idPart; });
+
+    if (structureId.length === 1) {
+        structureId.unshift("ROAD");
     }
+
+    return structureId[0];
 }
 
 function getStructureTypeName(structureType) {
