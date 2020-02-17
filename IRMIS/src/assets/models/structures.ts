@@ -1,4 +1,3 @@
-import * as jspb from "google-protobuf";
 import { Bridge, Culvert, Point, Structures } from "../../../protobuf/structure_pb";
 import { projToWGS84, toDms } from "../crsUtilities";
 import {
@@ -373,34 +372,3 @@ export function makeEstradaCulvert(pbattribute: { [name: string]: any }): Estrad
 export function makeEstradaPoint(pbpoint: { [name: string]: any }): EstradaPoint {
     return makeEstradaObject(EstradaPoint, pbpoint) as EstradaPoint;
 }
-
-// Monkey-Patching follows
-// Please review if protoc is updated from v3.11.2
-
-/**
- * Serializes the given message data (not object) to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.assets.Point} message
- * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
- */
-function serializePointBinaryToWriter(message: Point | any, writer: jspb.BinaryWriter): void {
-    let f: number | undefined;
-    f = message.getX ? message.getX() : message.array[0];
-    if (f !== 0.0) {
-        writer.writeFloat(
-            1,
-            f,
-        );
-    }
-    f = message.getY ? message.getY() : message.array[1];
-    if (f !== 0.0) {
-        writer.writeFloat(
-            2,
-            f,
-        );
-    }
-}
-
-// Here's the actual monkey-patch
-(window as any).proto.assets.Point.serializeBinaryToWriter = serializePointBinaryToWriter;
