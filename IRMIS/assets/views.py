@@ -811,7 +811,7 @@ def protobuf_structure(request, pk):
 @login_required
 def protobuf_structure_audit(request, pk):
     """ returns a protobuf object with the set of all audit history items for a Structure """
-    django_pk, mapping = get_structure_mapping(pk)
+    prefix, django_pk, mapping = get_structure_mapping(pk)
 
     queryset = mapping["model"].objects.all()
     structure = get_object_or_404(queryset, pk=django_pk)
@@ -901,7 +901,7 @@ def structure_create(request, structure_type):
     elif request.content_type != "application/octet-stream":
         return HttpResponse(status=400)
 
-    django_pk, mapping = get_structure_mapping(structure_type)
+    prefix, django_pk, mapping = get_structure_mapping(structure_type)
 
     # parse Bridge from protobuf in request body
     req_pb = structure_pb2.Bridge()
@@ -950,7 +950,7 @@ def structure_update(request, pk):
     elif request.content_type != "application/octet-stream":
         return HttpResponse(status=400)
 
-    django_pk, mapping = get_structure_mapping(pk)
+    prefix, django_pk, mapping = get_structure_mapping(pk)
 
     # parse Structure from protobuf in request body
     req_pb = mapping["proto"]
@@ -1026,7 +1026,7 @@ def survey_create(request):
     if req_pb.road_id:
         survey_asset = get_object_or_404(Road.objects.filter(pk=req_pb.road_id))
     elif req_pb.structure_id:
-        django_pk, mapping = get_structure_mapping(req_pb.structure_id)
+        prefix, django_pk, mapping = get_structure_mapping(req_pb.structure_id)
         survey_asset = get_object_or_404(mapping["model"].objects.filter(pk=django_pk))
     else:
         # basic data integrity problem
@@ -1108,7 +1108,7 @@ def survey_update(request):
     if req_pb.road_id:
         survey_asset = get_object_or_404(Road.objects.filter(pk=req_pb.road_id))
     elif req_pb.structure_id:
-        django_pk, mapping = get_structure_mapping(req_pb.structure_id)
+        prefix, django_pk, mapping = get_structure_mapping(req_pb.structure_id)
         survey_asset = get_object_or_404(mapping["model"].objects.filter(pk=django_pk))
     else:
         # basic data integrity problem
