@@ -3,6 +3,8 @@ import "core-js/stable";
 import "regenerator-runtime/runtime";
 import "./polyfills/array_from";
 import "./polyfills/nodelist_foreach";
+
+import "./dayjs/dayjs";
 import * as riot from "riot";
 
 import Planning_Base from "./riot/planning_base.riot.html";
@@ -12,21 +14,24 @@ import Edit_Base from "./riot/edit_base.riot.html";
 import Top_Menu from "./riot/top_menu.riot.html";
 import TrafficDataDetails from "./riot/traffic_data_details.riot.html";
 
-import "./styles/estrada.scss";
-import "./styles/vendor.scss";
-
 import { getGeoJsonDetails, getGeoJsonDetail } from "./assets/geoJsonAPI.js";
 
 import { getRoad } from "./roadManager";
+import { getStructure } from "./structureManager";
+
 import "./table";
 import "./side_menu";
 import "./top_menu";
 import { Map } from "./map/map";
 
-export const estradaMap = new Map();
+import "./styles/estrada.scss";
+import "./styles/vendor.scss";
 
-import "./dayjs/dayjs";
-import {getStructure} from "./structureManager";
+// Import the monkey patches for the protobuf definitions
+// Whenever updating protoc, please review the need for these monkey patches
+import "./assets/models/monkeyPatch";
+
+export const estradaMap = new Map();
 
 riot.register("top_menu", Top_Menu);
 riot.mount("top_menu");
