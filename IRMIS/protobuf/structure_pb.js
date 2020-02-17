@@ -526,6 +526,7 @@ proto.assets.Bridge.toObject = function(includeInstance, msg) {
     protectionDownstream: jspb.Message.getFieldWithDefault(msg, 17, ""),
     geomPoint: (f = msg.getGeomPoint()) && proto.assets.Point.toObject(includeInstance, f),
     geojsonId: jspb.Message.getFieldWithDefault(msg, 19, 0),
+    assetCondition: jspb.Message.getFieldWithDefault(msg, 20, ""),
     riverName: jspb.Message.getFieldWithDefault(msg, 28, ""),
     numberSpans: jspb.Message.getFieldWithDefault(msg, 29, 0),
     spanLength: jspb.Message.getFloatingPointFieldWithDefault(msg, 30, 0.0)
@@ -643,6 +644,10 @@ proto.assets.Bridge.deserializeBinaryFromReader = function(msg, reader) {
     case 19:
       var value = /** @type {number} */ (reader.readUint32());
       msg.setGeojsonId(value);
+      break;
+    case 20:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setAssetCondition(value);
       break;
     case 28:
       var value = /** @type {string} */ (reader.readString());
@@ -818,6 +823,13 @@ proto.assets.Bridge.serializeBinaryToWriter = function(message, writer) {
   if (f !== 0) {
     writer.writeUint32(
       19,
+      f
+    );
+  }
+  f = message.getAssetCondition();
+  if (f.length > 0) {
+    writer.writeString(
+      20,
       f
     );
   }
@@ -1245,6 +1257,24 @@ proto.assets.Bridge.prototype.setGeojsonId = function(value) {
 
 
 /**
+ * optional string asset_condition = 20;
+ * @return {string}
+ */
+proto.assets.Bridge.prototype.getAssetCondition = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 20, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assets.Bridge} returns this
+ */
+proto.assets.Bridge.prototype.setAssetCondition = function(value) {
+  return jspb.Message.setProto3StringField(this, 20, value);
+};
+
+
+/**
  * optional string river_name = 28;
  * @return {string}
  */
@@ -1349,6 +1379,7 @@ proto.assets.Culvert.toObject = function(includeInstance, msg) {
     protectionDownstream: jspb.Message.getFieldWithDefault(msg, 17, ""),
     geomPoint: (f = msg.getGeomPoint()) && proto.assets.Point.toObject(includeInstance, f),
     geojsonId: jspb.Message.getFieldWithDefault(msg, 19, 0),
+    assetCondition: jspb.Message.getFieldWithDefault(msg, 20, ""),
     height: jspb.Message.getFloatingPointFieldWithDefault(msg, 28, 0.0),
     numberCells: jspb.Message.getFieldWithDefault(msg, 29, 0)
   };
@@ -1465,6 +1496,10 @@ proto.assets.Culvert.deserializeBinaryFromReader = function(msg, reader) {
     case 19:
       var value = /** @type {number} */ (reader.readUint32());
       msg.setGeojsonId(value);
+      break;
+    case 20:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setAssetCondition(value);
       break;
     case 28:
       var value = /** @type {number} */ (reader.readFloat());
@@ -1636,6 +1671,13 @@ proto.assets.Culvert.serializeBinaryToWriter = function(message, writer) {
   if (f !== 0) {
     writer.writeUint32(
       19,
+      f
+    );
+  }
+  f = message.getAssetCondition();
+  if (f.length > 0) {
+    writer.writeString(
+      20,
       f
     );
   }
@@ -2052,6 +2094,24 @@ proto.assets.Culvert.prototype.getGeojsonId = function() {
  */
 proto.assets.Culvert.prototype.setGeojsonId = function(value) {
   return jspb.Message.setProto3IntField(this, 19, value);
+};
+
+
+/**
+ * optional string asset_condition = 20;
+ * @return {string}
+ */
+proto.assets.Culvert.prototype.getAssetCondition = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 20, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assets.Culvert} returns this
+ */
+proto.assets.Culvert.prototype.setAssetCondition = function(value) {
+  return jspb.Message.setProto3StringField(this, 20, value);
 };
 
 
