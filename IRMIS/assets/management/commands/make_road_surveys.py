@@ -20,11 +20,52 @@ from assets.models import (
 )
 
 
+def str_transform(sv, road, mapping):
+    value_id = mapping["value_id"]
+    if "field_id" not in mapping:
+        mapping["field_id"] = mapping["value_id"]
+    road_field = getattr(road, mapping["field_id"])
+    sv[value_id] = str(road_field) if road_field else None
+    return sv
+
+
+def code_value_transform(sv, road, mapping):
+    value_id = mapping["value_id"]
+    if "field_id" not in mapping:
+        mapping["field_id"] = mapping["value_id"]
+    road_field = getattr(road, mapping["field_id"])
+    sv[value_id] = str(road_field.code) if road_field and road_field.code else None
+    return sv
+
+
 class Command(BaseCommand):
     help = "Create Surveys from the existing Road Links"
 
-    road_survey_value_mapping = [
-        {}
+    ## All of the following 'values' must also be referenced in the `survey.js` protobuf wrapper
+    ROAD_SURVEY_VALUE_MAPPINGS = [
+        {"value_id": "funding_source", "action": str_transform,},
+        {"value_id": "project", "action": str_transform},
+        # The value_id "road_type", should be changed to "asset_class"
+        {"value_id": "road_type", "action": str_transform},
+        # These are actually numeric values but are stored as strings
+        {"value_id": "carriageway_width", "action": str_transform,},
+        {"value_id": "number_lanes", "action": str_transform,},
+        {"value_id": "rainfall", "action": str_transform},
+        # These are actually FK Ids
+        {
+            "value_id": "municipality",
+            "field_id": "administrative_area",
+            "action": str_transform,
+        },
+        {"value_id": "surface_condition", "action": str_transform,},
+        {"value_id": "traffic_level", "action": str_transform,},
+        {"value_id": "terrain_class", "action": str_transform,},
+        # Get the corresponding code to use (in preference)
+        {"value_id": "maintenance_need", "action": code_value_transform,},
+        {"value_id": "pavement_class", "action": code_value_transform,},
+        {"value_id": "road_status", "action": code_value_transform,},
+        {"value_id": "surface_type", "action": code_value_transform,},
+        {"value_id": "technical_class", "action": code_value_transform,},
     ]
 
     def delete_redundant_surveys(self):
@@ -151,62 +192,8 @@ class Command(BaseCommand):
                 }
 
                 sv = survey_data["values"]
-
-                ## All of the following 'values' must also be referenced in the `survey.js` protobuf wrapper
-                ## Road Link attributes
-                sv["municipality"] = (
-                    str(road.administrative_area) if road.administrative_area else None
-                )
-                sv["carriageway_width"] = (
-                    str(road.carriageway_width) if road.carriageway_width else None
-                )
-                sv["funding_source"] = (
-                    str(road.funding_source) if road.funding_source else None
-                )
-                sv["project"] = str(road.project) if road.project else None
-                sv["number_lanes"] = (
-                    str(road.number_lanes) if road.number_lanes else None
-                )
-                sv["road_type"] = str(road.road_type) if road.road_type else None
-                sv["rainfall"] = str(road.rainfall) if road.rainfall else None
-
-                ## Choices-based attributes
-                sv["surface_condition"] = (
-                    str(road.surface_condition) if road.surface_condition else None
-                )
-                sv["traffic_level"] = (
-                    str(road.traffic_level) if road.traffic_level else None
-                )
-                sv["terrain_class"] = (
-                    str(road.terrain_class) if road.terrain_class else None
-                )
-
-                ## Model-based attributes (assign code value)
-                sv["maintenance_need"] = (
-                    str(road.maintenance_need.code)
-                    if road.maintenance_need and road.maintenance_need.code
-                    else None
-                )
-                sv["pavement_class"] = (
-                    str(road.pavement_class.code)
-                    if road.pavement_class and road.pavement_class.code
-                    else None
-                )
-                sv["road_status"] = (
-                    str(road.road_status.code)
-                    if road.road_status and road.road_status.code
-                    else None
-                )
-                sv["surface_type"] = (
-                    str(road.surface_type.code)
-                    if road.surface_type and road.surface_type.code
-                    else None
-                )
-                sv["technical_class"] = (
-                    str(road.technical_class.code)
-                    if road.technical_class and road.technical_class.code
-                    else None
-                )
+                for mapping in self.ROAD_SURVEY_VALUE_MAPPINGS:
+                    sv = mapping["action"](sv, road, mapping)
 
                 # check that values is not empty before saving survey
                 if len(sv.keys()) > 0:
@@ -250,7 +237,12 @@ class Command(BaseCommand):
             None,
         )
         if not road_survey:
-            print ("Problems with user entered Survey Id:", survey.id, "Chainage Start:", survey.chainage_start)
+            print(
+                "Problems with user entered Survey Id:",
+                survey.id,
+                "Chainage Start:",
+                survey.chainage_start,
+            )
             return updated
 
         # Test if this survey exists wholly within the road link
@@ -272,7 +264,12 @@ class Command(BaseCommand):
 
         # This survey spans more than one road link
         # So 'split' it and create a new survey for the rest
-        print("User entered survey spans multiple road links for road:", rc, " Survey Id:", survey.id)
+        print(
+            "User entered survey spans multiple road links for road:",
+            rc,
+            " Survey Id:",
+            survey.id,
+        )
         prev_chainage_end = survey.chainage_end
         with reversion.create_revision():
             survey.road_id = road_survey.id
@@ -287,7 +284,9 @@ class Command(BaseCommand):
 
         return self.update_non_programmatic_surveys(survey, roads) + 1
 
-    def refresh_surveys_by_road_code(self, rc, ):
+    def refresh_surveys_by_road_code(
+        self, rc,
+    ):
         # counters for surveys created or updated
         created = 0
         updated = 0
@@ -308,12 +307,9 @@ class Command(BaseCommand):
         if len(surveys) > 0:
             print("Refreshing user entered surveys for:", rc)
             for survey in surveys:
-                updated += self.update_non_programmatic_surveys(
-                    survey, roads
-                )
+                updated += self.update_non_programmatic_surveys(survey, roads)
 
         return created, updated
-
 
     def handle(self, *args, **options):
         # counters for surveys created or updated
