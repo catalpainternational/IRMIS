@@ -95,7 +95,9 @@ class Command(BaseCommand):
 
     def delete_programmatic_surveys(self, rc):
         # delete all previously created "programmatic" source surveys
-        Survey.objects.filter(source="programmatic", road_code=rc).delete()
+        Survey.objects.filter(source="programmatic").exclude(
+            values__has_key="trafficType"
+        ).delete()
         # delete revisions associated with the now deleted "programmatic" surveys
         Version.objects.get_deleted(Survey).delete()
 
@@ -119,7 +121,12 @@ class Command(BaseCommand):
             or not road.geom_length
             or road.geom_length != link_length
         ):
-            print("'Correcting' road chainage values for:", road.road_code, " link:", road.link_code)
+            print(
+                "'Correcting' road chainage values for:",
+                road.road_code,
+                " link:",
+                road.link_code,
+            )
             with reversion.create_revision():
                 road.geom_start_chainage = link_start
                 road.geom_end_chainage = link_end
