@@ -23,6 +23,10 @@ from assets.models import (
 class Command(BaseCommand):
     help = "Create Surveys from the existing Road Links"
 
+    road_survey_value_mapping = [
+        {}
+    ]
+
     def delete_redundant_surveys(self):
         """ delete redundant surveys """
         # start and end chainage are the same
