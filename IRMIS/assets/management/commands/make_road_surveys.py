@@ -119,6 +119,7 @@ class Command(BaseCommand):
             or not road.geom_length
             or road.geom_length != link_length
         ):
+            print("'Correcting' road chainage values for:", road.road_code, " link:", road.link_code)
             with reversion.create_revision():
                 road.geom_start_chainage = link_start
                 road.geom_end_chainage = link_end
@@ -294,7 +295,6 @@ class Command(BaseCommand):
         roads = self.get_roads_by_road_code(rc)
 
         # Refresh the road chainage values
-        print("Assessing (and correcting) road chainage values for:", rc)
         self.assess_road_geometries(roads, rc == "A03")
 
         # Recreate all of the programmatic surveys
