@@ -99,12 +99,12 @@ const attributeModalMapping = {
         reportTable: null,
         title: gettext("Condition Description details"),
     },
-    structure_photos: {
-        columns: structurePhotosColumns,
-        reportDataTableId: "inventory-structure-photos-table",
-        reportTable: null,
-        title: gettext("Inventory Photos details"),
-    },
+    // structure_photos: {
+    //     columns: structurePhotosColumns,
+    //     reportDataTableId: "inventory-structure-photos-table",
+    //     reportTable: null,
+    //     title: gettext("Inventory Photos details"),
+    // },
 }
 
 function initializeDataTable() {

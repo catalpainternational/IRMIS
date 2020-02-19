@@ -185,6 +185,7 @@ export const estradaTableColumns = [
     {
         title: EstradaRoad.getFieldName("administrative_area"),
         data: "administrativeArea",
+        className: "text-center",
         defaultContent: "",
     },
     {
@@ -480,24 +481,24 @@ export const structuresTableColumns = [
         defaultContent: "",
         visible: false,
     },
-    {
-        title: "Inventory Photos",
-        data: null,
-        render: r => buttonSegmentsTemplate("inventory_photos", r),
-        className: "text-center",
-        defaultContent: "",
-    },
+    // {
+    //     title: "Inventory Photos",
+    //     data: null,
+    //     render: r => buttonSegmentsTemplate("inventory_photos", r),
+    //     className: "text-center",
+    //     defaultContent: "",
+    // },
 ];
 
 function detectStructure(structure) {
-    switch (structure.constructor.name) {
-        case "EstradaBridge":
-            return "BRDG";
-        case "EstradaCulvert":
-            return "CULV";
-        default:
-            return null;
+    const processableId = "-" + structure.id;
+    const structureId = processableId.split("-").filter((idPart) => { return idPart; });
+
+    if (structureId.length === 1) {
+        structureId.unshift("ROAD");
     }
+
+    return structureId[0];
 }
 
 function getStructureTypeName(structureType) {

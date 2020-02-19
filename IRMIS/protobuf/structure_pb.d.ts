@@ -120,6 +120,9 @@ export class Bridge extends jspb.Message {
   getGeojsonId(): number;
   setGeojsonId(value: number): void;
 
+  getAssetCondition(): string;
+  setAssetCondition(value: string): void;
+
   getRiverName(): string;
   setRiverName(value: string): void;
 
@@ -160,6 +163,7 @@ export namespace Bridge {
     protectionDownstream: string,
     geomPoint?: Point.AsObject,
     geojsonId: number,
+    assetCondition: string,
     riverName: string,
     numberSpans: number,
     spanLength: number,
@@ -230,6 +234,9 @@ export class Culvert extends jspb.Message {
   getGeojsonId(): number;
   setGeojsonId(value: number): void;
 
+  getAssetCondition(): string;
+  setAssetCondition(value: string): void;
+
   getHeight(): number;
   setHeight(value: number): void;
 
@@ -267,6 +274,7 @@ export namespace Culvert {
     protectionDownstream: string,
     geomPoint?: Point.AsObject,
     geojsonId: number,
+    assetCondition: string,
     height: number,
     numberCells: number,
   }

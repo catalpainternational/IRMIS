@@ -29,8 +29,8 @@
                             onclick="{ selectPage }">{ window.gettext("Asset Details") }</li>
                         <li if="{ props.assetType === 'BRDG' }" class="{ state.page === 'protection' ? 'active' : '' }"
                             data-page="protection" onclick="{ selectPage }">{ window.gettext("Protection") }</li>
-                        <li class="{ state.page === 'photo' ? 'active' : '' }" data-page="photo"
-                            onclick="{ selectPage }">{ window.gettext("Photos") }</li>
+                        <!-- <li class="{ state.page === 'photo' ? 'active' : '' }" data-page="photo"
+                            onclick="{ selectPage }">{ window.gettext("Photos") }</li> -->
                         <li class="{ state.page === 'structure_condition' ? 'active' : '' }"
                             data-page="structure_condition" onclick="{ selectPage }">{ window.gettext("Condition") }
                         </li>
@@ -99,8 +99,8 @@
                     structure="{ state.editingStructure }" saving="{ state.saving }" showFeedback="{ showFeedback }"
                     parent="{parentFunctions}">
                 </edit_structure_condition>
-                <edit_photo if="{ state.page === 'photo' }" structure="{ state.editingStructure }"
-                    saving="{ state.saving }" parent="{parentFunctions}"></edit_photo>
+                <!-- <edit_photo if="{ state.page === 'photo' }" structure="{ state.editingStructure }"
+                    saving="{ state.saving }" parent="{parentFunctions}"></edit_photo> -->
             </div>
             <footer>
                 <small>República Democrática de Timor-Leste / Ministério das Obras Públicas</small>
@@ -124,6 +124,8 @@
         import {EstradaRoad, makeEstradaRoad} from "../assets/models/road";
         import {makeEstradaBridge, makeEstradaCulvert} from "../assets/models/structures";
         import {updateStructure} from "../structureManager";
+
+        import {compareProtoBufObjects} from "../assets/protoBufUtilities";
 
         import Feedback_Banner from './feedback_banner.riot.html';
         import Edit_Stop_Alert from "./edit_stop_alert.riot.html";
@@ -280,10 +282,9 @@
                 });
             },
             hasChanges() {
-                if (this.props.assetType === "BRDG" || this.props.assetType === "CULV") {
-                    return this.state.baseStructure.toString() !== this.state.editingStructure.toString();
-                }
-                return this.state.baseRoad.toString() !== this.state.editingRoad.toString();
+                return (this.props.assetType === "BRDG" || this.props.assetType === "CULV")
+                    ? compareProtoBufObjects(this.state.baseStructure, this.state.editingStructure)
+                    : compareProtoBufObjects(this.state.baseRoad, this.state.editingRoad);
             },
             goBack(e) {
                 this.state.nextPage = "#";
