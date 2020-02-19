@@ -40,12 +40,6 @@ class Command(BaseCommand):
         surveys_to_keep = [s["minid"] for s in surveys]
         Survey.objects.exclude(id__in=surveys_to_keep).delete()
 
-    def delete_programmatic_surveys(self):
-        # delete all previously created "programmatic" source surveys
-        Survey.objects.filter(source="programmatic").delete()
-        # delete revisions associated with the now deleted "programmatic" surveys
-        Version.objects.get_deleted(Survey).delete()
-
     def get_current_road_codes(self):
         return [
             rc["road_code"]
@@ -53,6 +47,12 @@ class Command(BaseCommand):
             .exclude(road_code="Unknown")
             .values("road_code")
         ]
+
+    def delete_programmatic_surveys(self, rc):
+        # delete all previously created "programmatic" source surveys
+        Survey.objects.filter(source="programmatic", road_code=rc).delete()
+        # delete revisions associated with the now deleted "programmatic" surveys
+        Version.objects.get_deleted(Survey).delete()
 
     def get_roads_by_road_code(self, rc):
         """ pull all road links for a given road code """
@@ -83,15 +83,19 @@ class Command(BaseCommand):
                     "Road Link start/end chainages & length updated from its geometry"
                 )
 
-    def create_programmatic_surveys(self, roads):
-        created = 0  # counter for surveys created for the supplied roads
+    def assess_road_geometries(self, roads, reset_chainage):
         start_chainage = -1
-        current_tz = timezone.get_current_timezone()
 
         for road in roads:
             # Note that the 'link_' values from Road are considered highly unreliable
 
             try:
+                if reset_chainage:
+                    # Force the chainage to be recalculated
+                    road.geom_start_chainage = None
+                    road.geom_end_chainage = None
+                    road.geom_length = None
+
                 # Work up a set of data that we consider acceptable
                 geometry_length = decimal.Decimal(road.geom[0].length)
                 link_length = round(geometry_length, 0)
@@ -108,11 +112,34 @@ class Command(BaseCommand):
 
                 self.update_road_geometry_data(road, link_start, link_end, link_length)
 
+                # carry over the start chainage for the next link in the road
+                start_chainage = link_end
+
+            except IntegrityError:
+                print(
+                    "Survey Skipped: Road(%s) missing Road Code(%s) OR Chainage Start(%s)/End(%s)"
+                    % (
+                        road.pk,
+                        road.road_code,
+                        road.link_start_chainage,
+                        road.link_end_chainage,
+                    )
+                )
+
+    def create_programmatic_surveys(self, roads):
+        created = 0  # counter for surveys created for the supplied roads
+        current_tz = timezone.get_current_timezone()
+
+        for road in roads:
+            # Note that the 'link_' values from Road are considered highly unreliable
+
+            try:
+                # Work up a set of data that we consider acceptable
                 survey_data = {
                     "road_id": road.id,
                     "road_code": road.road_code,
-                    "chainage_start": link_start,
-                    "chainage_end": link_end,
+                    "chainage_start": road.geom_start_chainage,
+                    "chainage_end": road.geom_end_chainage,
                     "source": "programmatic",
                     "values": {},
                     "date_created": datetime.datetime(1970, 1, 1),
@@ -187,8 +214,6 @@ class Command(BaseCommand):
                     # update created surveys counter
                     created += 1
 
-                # carry over the start chainage for the next link in the road
-                start_chainage = link_end
             except IntegrityError:
                 print(
                     "Survey Skipped: Road(%s) missing Road Code(%s) OR Chainage Start(%s)/End(%s)"
@@ -221,6 +246,7 @@ class Command(BaseCommand):
             None,
         )
         if not road_survey:
+            print ("Problems with user entered Survey Id:", survey.id, "Chainage Start:", survey.chainage_start)
             return updated
 
         # Test if this survey exists wholly within the road link
@@ -242,6 +268,7 @@ class Command(BaseCommand):
 
         # This survey spans more than one road link
         # So 'split' it and create a new survey for the rest
+        print("User entered survey spans multiple road links for road:", rc, " Survey Id:", survey.id)
         prev_chainage_end = survey.chainage_end
         with reversion.create_revision():
             survey.road_id = road_survey.id
@@ -256,29 +283,50 @@ class Command(BaseCommand):
 
         return self.update_non_programmatic_surveys(survey, roads) + 1
 
+    def refresh_surveys_by_road_code(self, rc, ):
+        # counters for surveys created or updated
+        created = 0
+        updated = 0
+
+        roads = self.get_roads_by_road_code(rc)
+
+        # Refresh the road chainage values
+        print("Assessing (and correcting) road chainage values for:", rc)
+        self.assess_road_geometries(roads, rc == "A03")
+
+        # Recreate all of the programmatic surveys
+        print("Recreating programmatic surveys for:", rc)
+        self.delete_programmatic_surveys(rc)
+        created += self.create_programmatic_surveys(roads)
+
+        # Refresh all of the non-programmatic surveys
+        surveys = self.get_non_programmatic_surveys(rc)
+        if len(surveys) > 0:
+            print("Refreshing user entered surveys for:", rc)
+            for survey in surveys:
+                updated += self.update_non_programmatic_surveys(
+                    survey, roads
+                )
+
+        return created, updated
+
+
     def handle(self, *args, **options):
         # counters for surveys created or updated
         programmatic_created = 0
         programmatic_updated = 0
 
+        print("Deleting redundant surveys")
         self.delete_redundant_surveys()
-        self.delete_programmatic_surveys()
 
+        print("Retrieving current road codes")
         road_codes = self.get_current_road_codes()
 
-        # Recreate all of the programmatic surveys
+        # Refresh the surveys
         for rc in road_codes:
-            # pull all road links for a given road code
-            roads = self.get_roads_by_road_code(rc)
-
-            programmatic_created += self.create_programmatic_surveys(roads)
-
-            # Refresh all of the non-programmatic surveys
-            surveys = self.get_non_programmatic_surveys(rc)
-            for survey in surveys:
-                programmatic_updated += self.update_non_programmatic_surveys(
-                    survey, roads
-                )
+            created, updated = self.refresh_surveys_by_road_code(rc)
+            programmatic_created += created
+            programmatic_updated += updated
 
         print(
             "~~~ COMPLETE: Created %s, and Updated %s Surveys from initial Road Links ~~~ "
