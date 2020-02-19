@@ -336,7 +336,8 @@ class ReportQuery:
             "road_type",  # Actually asset_class
             "road_status",
             "asset_condition",
-            "structure_condition",
+            "surface_condition",  # Actually asset_condition
+            "structure_condition",  # Actually asset_condition
             "surface_type",
             "terrain_class",
             "traffic_level",
@@ -535,7 +536,7 @@ class ReportQuery:
         # * substitute the plain text (no quotes) of each set of filter_cases
         #   within the corresponding {} part of each of the ANY clauses
         # then you'll be able to run the query in any tool that can handle SQL (recommend LINQPad)
-        # print(self.reportSQL.replace(r"ANY(%s)", r"ANY('{}'::text[])"), "\n-- ", self.filter_cases)
+        print(self.reportSQL.replace(r"ANY(%s)", r"ANY('{}'::text[])"), "\n-- ", self.filter_cases)
 
         with connection.cursor() as cursor:
             cursor.execute(self.reportSQL, self.filter_cases)
