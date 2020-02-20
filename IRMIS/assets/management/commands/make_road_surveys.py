@@ -42,7 +42,9 @@ class Command(BaseCommand):
 
     def delete_programmatic_surveys(self):
         # delete all previously created "programmatic" source surveys
-        Survey.objects.filter(source="programmatic").delete()
+        Survey.objects.filter(source="programmatic").exclude(
+            values__has_key="trafficType"
+        ).delete()
         # delete revisions associated with the now deleted "programmatic" surveys
         Version.objects.get_deleted(Survey).delete()
 
