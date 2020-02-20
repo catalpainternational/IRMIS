@@ -1,6 +1,11 @@
 from django.core.management.base import BaseCommand
 
-import data_cleaning_utils
+from assets.data_cleaning_utils import (
+    delete_redundant_surveys,
+    get_current_road_codes,
+    refresh_roads,
+    refresh_surveys_by_road_code,
+)
 
 
 class Command(BaseCommand):
@@ -8,9 +13,13 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # counters for data cleansing
-        roads_updated = refresh_roads()
         programmatic_created = 0
-        programmatic_updated = 0
+        user_entered_updated = 0
+
+        print("~~~ Starting road survey refresh ~~~ ")
+
+        print("Refreshing road links")
+        roads_updated = refresh_roads()
 
         print("~~~ Updated %s Road Links ~~~ " % roads_updated)
 
@@ -24,9 +33,9 @@ class Command(BaseCommand):
         for rc in road_codes:
             created, updated = refresh_surveys_by_road_code(rc)
             programmatic_created += created
-            programmatic_updated += updated
+            user_entered_updated += updated
 
         print(
-            "~~~ COMPLETE: Created %s and Updated %s programmatic Surveys ~~~ "
-            % (programmatic_created, programmatic_updated),
+            "~~~ COMPLETE: Created %s programmatic Surveys and Updated %s user entered Surveys ~~~ "
+            % (programmatic_created, user_entered_updated),
         )
