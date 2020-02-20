@@ -1,10 +1,6 @@
 from django.core.management.base import BaseCommand
-from django.db import IntegrityError
-from django.utils.timezone import make_aware
 
-import datetime
 import csv
-import reversion
 
 from assets.data_cleaning_utils import (
     create_programmatic_survey_for_traffic_csv,
