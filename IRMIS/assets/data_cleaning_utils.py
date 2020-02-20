@@ -27,13 +27,16 @@ def ignore_exception(exception=Exception, default_val=None):
 
         int_try_parse = ignore_exception(ValueError)(int)
     """
+
     def decorator(function):
         def wrapper(*args, **kwargs):
             try:
                 return function(*args, **kwargs)
             except exception:
                 return default_val
+
         return wrapper
+
     return decorator
 
 
@@ -49,11 +52,7 @@ ROAD_CODE_FORCE_REFRESH = ["A03", "AL003"]
 
 # Identifies erroneous road links
 # "None" is usd for when there is no link code
-ROAD_LINK_ERRATA = {
-    "AL003": {
-        "None": {"reason": "Duplicate"},
-    }
-}
+ROAD_LINK_ERRATA = {"AL003": {"None": {"reason": "Duplicate"},}}
 
 
 def get_current_road_codes():
@@ -75,7 +74,11 @@ def get_roads_from_errata(rc):
             else:
                 road_link_codes.append("%s|||%s" % (road_code, link_code))
 
-    return Road.objects.filter(road_code=rc).annotate(rlc=Concat("road_code", Value("|||"), "link_code")).filter(rlc__in=road_link_codes)
+    return (
+        Road.objects.filter(road_code=rc)
+        .annotate(rlc=Concat("road_code", Value("|||"), "link_code"))
+        .filter(rlc__in=road_link_codes)
+    )
 
 
 def get_roads_by_road_code(rc):
@@ -92,18 +95,19 @@ def get_roads_by_road_code(rc):
             .exclude(link_code__in=road_link_codes)
             .order_by("link_code", "geom_start_chainage", "link_start_chainage")
         )
-        if ("None" in road_link_codes):
+        if "None" in road_link_codes:
             roads = roads.exclude(link_code__isnull=True)
 
         return roads
 
-    return (
-        Road.objects.filter(road_code=rc)
-        .order_by("link_code", "geom_start_chainage", "link_start_chainage")
+    return Road.objects.filter(road_code=rc).order_by(
+        "link_code", "geom_start_chainage", "link_start_chainage"
     )
 
 
-def update_road_geometry_data(road, link_start, link_end, link_length, reset_geom = False):
+def update_road_geometry_data(
+    road, link_start, link_end, link_length, reset_geom=False
+):
     """ update the road link start/end chainage & length from its geometry
     
     returns 1 if the geom_ fields were updated, 0 if they were not """
@@ -131,11 +135,7 @@ def update_road_geometry_data(road, link_start, link_end, link_length, reset_geo
 def clear_road_geometries(roads):
     """ clears the geom_ fields from the roads """
     for road in roads:
-        if (
-            road.geom_start_chainage
-            or road.geom_end_chainage
-            or road.geom_length
-        ):
+        if road.geom_start_chainage or road.geom_end_chainage or road.geom_length:
             with reversion.create_revision():
                 road.geom_start_chainage = None
                 road.geom_end_chainage = None
@@ -179,7 +179,9 @@ def assess_road_geometries(roads, reset_geom):
 
             link_end = link_start + link_length
 
-            updated += update_road_geometry_data(road, link_start, link_end, link_length, reset_geom)
+            updated += update_road_geometry_data(
+                road, link_start, link_end, link_length, reset_geom
+            )
 
             # carry over the start chainage for the next link in the road
             start_chainage = link_end
@@ -198,7 +200,7 @@ def assess_road_geometries(roads, reset_geom):
     return updated
 
 
-def refresh_roads_by_road_code(rc, reset_geom = False):
+def refresh_roads_by_road_code(rc, reset_geom=False):
     """ Assess all road links for a given road code and identify corrections to be made
     
     returns a count of the total number of road links that were updated """
@@ -209,6 +211,7 @@ def refresh_roads_by_road_code(rc, reset_geom = False):
 
     roads = get_roads_by_road_code(rc)
     return assess_road_geometries(roads, reset_geom)
+
 
 def refresh_roads():
     # counters for data cleansing
@@ -235,7 +238,7 @@ def get_data_field(data, field_id):
     if not field_id:
         return None
 
-    if (type(data) == list):
+    if type(data) == list:
         return data[field_id]
     else:
         return getattr(data, field_id)
@@ -270,14 +273,22 @@ def int_transform(sv, data, value_id, field_id):
 def date_soy_transform(sv, data, value_id, field_id):
     """ accepts a value as a year, and creates a 'start of year' date value from it """
     data_field = get_data_field(data, field_id)
-    data_value = make_aware(datetime.datetime(int(data_field), 1, 1)).isoformat() if data_field else None
+    data_value = (
+        make_aware(datetime.datetime(int(data_field), 1, 1)).isoformat()
+        if data_field
+        else None
+    )
     set_value_in_hierarchy(sv, value_id, data_value)
 
 
 def date_eoy_transform(sv, data, value_id, field_id):
     """ accepts a value as a year, and creates an 'end of year' date value from it """
     data_field = get_data_field(data, field_id)
-    data_value = make_aware(datetime.datetime(int(data_field), 12, 31)).isoformat() if data_field else None
+    data_value = (
+        make_aware(datetime.datetime(int(data_field), 12, 31)).isoformat()
+        if data_field
+        else None
+    )
     set_value_in_hierarchy(sv, value_id, data_value)
 
 
@@ -325,7 +336,7 @@ TRAFFIC_CSV_VALUE_MAPPINGS = [
     ("counts.lightTruckCount", 11, int_transform),
     ("counts.mediumTruckCount", 12, int_transform),
     ("counts.largeTruckCount", 13, int_transform),
-    ("counts.ufoCount", None, int_transform), # This will end up as 0
+    ("counts.ufoCount", None, int_transform),  # This will end up as 0
 ]
 
 
@@ -336,7 +347,7 @@ def get_non_programmatic_surveys_by_road_code(rc):
         .exclude(source="programmatic")
         .order_by("chainage_start")
     )
-    
+
 
 def delete_redundant_surveys():
     """ deletes redundant surveys, where:
@@ -344,7 +355,7 @@ def delete_redundant_surveys():
     Start and End Chainage are the same,
     
     Surveys are duplicated (all fields excluding ids) """
-    
+
     # start and end chainage are the same
     Survey.objects.filter(chainage_start=F("chainage_end")).delete()
     # delete revisions associated with the deleted surveys
@@ -368,9 +379,9 @@ def delete_redundant_surveys():
 
 def delete_programmatic_surveys_for_road_by_road_code(rc):
     """ deletes programmatic surveys generated from road link records for a given road code """
-    Survey.objects.filter(
-        source="programmatic", road_code=rc
-    ).exclude(values__has_key="trafficType").delete()
+    Survey.objects.filter(source="programmatic", road_code=rc).exclude(
+        values__has_key="trafficType"
+    ).delete()
     # delete revisions associated with the now deleted "programmatic" surveys
     Version.objects.get_deleted(Survey).delete()
 
@@ -386,7 +397,8 @@ def delete_programmatic_surveys_for_traffic_surveys_by_road_code(rc):
 
 def create_programmatic_survey_values(sv, data, mapping_set):
     for value_id, field_id, action in mapping_set:
-        action(sv, data, value_id, field_id)    
+        action(sv, data, value_id, field_id)
+
 
 def create_programmatic_surveys_for_roads(roads):
     """ creates programmatic surveys from traffic csv rows 
@@ -410,7 +422,9 @@ def create_programmatic_surveys_for_roads(roads):
                 "date_updated": make_aware(datetime.datetime(1970, 1, 1)),
             }
 
-            create_programmatic_survey_values(survey_data["values"], road, ROAD_SURVEY_VALUE_MAPPINGS) 
+            create_programmatic_survey_values(
+                survey_data["values"], road, ROAD_SURVEY_VALUE_MAPPINGS
+            )
 
             # check that values is not empty before saving survey
             if len(survey_data["values"].keys()) > 0:
@@ -455,15 +469,15 @@ def create_programmatic_survey_for_traffic_csv(data, road=None):
             "date_surveyed": make_aware(datetime.datetime(int(data[3]), 1, 1)),
         }
 
-        create_programmatic_survey_values(survey_data["values"], data, TRAFFIC_CSV_VALUE_MAPPINGS) 
+        create_programmatic_survey_values(
+            survey_data["values"], data, TRAFFIC_CSV_VALUE_MAPPINGS
+        )
 
         # check that values is not empty before saving survey
         if len(survey_data["values"].keys()) > 0:
             with reversion.create_revision():
                 Survey.objects.create(**survey_data)
-                reversion.set_comment(
-                    "Survey created programmatically from Road Link"
-                )
+                reversion.set_comment("Survey created programmatically from Road Link")
             # update created surveys counter
             created += 1
 
@@ -508,9 +522,7 @@ def update_non_programmatic_surveys_by_road_code(survey, rc, updated=0):
         if not survey.road_id or survey.road_id != road_survey.id:
             reversion_comment = "Survey road_id updated programmatically"
             if survey.id:
-                reversion_comment = (
-                    "Survey split and road_id updated programmatically"
-                )
+                reversion_comment = "Survey split and road_id updated programmatically"
             with reversion.create_revision():
                 survey.road_id = road_survey.id
                 survey.save()

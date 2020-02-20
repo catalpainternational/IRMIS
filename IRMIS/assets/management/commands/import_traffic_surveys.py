@@ -61,7 +61,9 @@ class Command(BaseCommand):
                     print("Survey Skipped: Road Code provided was not valid ~~~ ")
 
                 if len(roads) != 1:
-                    programmatic_created += create_programmatic_survey_for_traffic_csv(line)
+                    programmatic_created += create_programmatic_survey_for_traffic_csv(
+                        line
+                    )
                     if road_code != "" or link_code != "":
                         print(
                             "Survey has been added, but couldn't find unique road for Road Code:",
