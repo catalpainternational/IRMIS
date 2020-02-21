@@ -20,33 +20,63 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument("file")
-        parser.add_argument("--no-road-refresh", action="store_const", const=False, default=False, help="Don't refresh road links before the import")
+        parser.add_argument(
+            "--no-road-refresh",
+            action="store_const",
+            const=False,
+            default=False,
+            help="Don't refresh road links before the import",
+        )
 
     def handle(self, *args, **options):
         file_path = options["file"]
 
         if not path.exists(file_path):
-            self.stderr.write(self.style.ERROR("Error: the source file '%s' was not found" % file_path))
+            self.stderr.write(
+                self.style.ERROR(
+                    "Error: the source file '%s' was not found" % file_path
+                )
+            )
             return
         if not path.isfile(file_path):
-            self.stderr.write(self.style.ERROR("Error: the source file '%s' was a folder not a file" % file_path))
+            self.stderr.write(
+                self.style.ERROR(
+                    "Error: the source file '%s' was a folder not a file" % file_path
+                )
+            )
             return
 
-        self.stdout.write(self.style.MIGRATE_HEADING("~~~ Starting traffic survey refresh ~~~ "))
+        self.stdout.write(
+            self.style.MIGRATE_HEADING("~~~ Starting traffic survey refresh ~~~ ")
+        )
 
         if not "no-road-refresh" in options or not options["no-road-refresh"]:
-            self.stdout.write(self.style.MIGRATE_HEADING("Refreshing road links before importing traffic surveys"))
+            self.stdout.write(
+                self.style.MIGRATE_HEADING(
+                    "Refreshing road links before importing traffic surveys"
+                )
+            )
             roads_updated = refresh_roads()
-            self.stdout.write(self.style.SUCCESS("~~~ Updated %s Road Links ~~~ " % roads_updated))
+            self.stdout.write(
+                self.style.SUCCESS("~~~ Updated %s Road Links ~~~ " % roads_updated)
+            )
 
         programmatic_created = 0
 
         # Delete the current programmatic surveys
-        self.stdout.write(self.style.MIGRATE_HEADING("Deleting programmatic surveys for traffic surveys"))
+        self.stdout.write(
+            self.style.MIGRATE_HEADING(
+                "Deleting programmatic surveys for traffic surveys"
+            )
+        )
         for rc in get_current_road_codes():
             delete_programmatic_surveys_for_traffic_surveys_by_road_code(rc)
 
-        self.stdout.write(self.style.MIGRATE_HEADING("Adding programmatic surveys for traffic surveys"))
+        self.stdout.write(
+            self.style.MIGRATE_HEADING(
+                "Adding programmatic surveys for traffic surveys"
+            )
+        )
         with open(file_path, "r") as csv_file:
             next(csv_file)  # skip the header row
             reader = csv.reader(csv_file, delimiter=",")
@@ -73,16 +103,26 @@ class Command(BaseCommand):
                             if link_code != "":
                                 roads = Road.objects.filter(link_code=link_code).all()
                 except Exception:
-                    self.stderr.write(self.style.ERROR("Survey Skipped: Road Code provided was not valid ~~~ "))
+                    self.stderr.write(
+                        self.style.ERROR(
+                            "Survey Skipped: Road Code provided was not valid ~~~ "
+                        )
+                    )
 
                 programmatic_created += create_programmatic_survey_for_traffic_csv(
                     self, line, roads
                 )
                 if len(roads) == 0:
-                    self.stderr.write(self.style.NOTICE(
-                        "Survey has been added, but couldn't find a road for '%s' %s. Is the road code correct?" % (road_code, link_code)
-                    ))
+                    self.stderr.write(
+                        self.style.NOTICE(
+                            "Survey has been added, but couldn't find a road for '%s' %s. Is the road code correct?"
+                            % (road_code, link_code)
+                        )
+                    )
 
-        self.stdout.write(self.style.SUCCESS(
-            "~~~ COMPLETE: Created %s Surveys from CSV data ~~~ " % programmatic_created
-        ))
+        self.stdout.write(
+            self.style.SUCCESS(
+                "~~~ COMPLETE: Created %s Surveys from CSV data ~~~ "
+                % programmatic_created
+            )
+        )

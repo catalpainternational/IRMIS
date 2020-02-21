@@ -12,19 +12,33 @@ class Command(BaseCommand):
     help = "Create / Update Surveys for the existing Road Links"
 
     def add_arguments(self, parser):
-        parser.add_argument("--no-road-refresh", action="store_const", const=False, default=False, help="Don't refresh road links before the import")
+        parser.add_argument(
+            "--no-road-refresh",
+            action="store_const",
+            const=False,
+            default=False,
+            help="Don't refresh road links before the import",
+        )
 
     def handle(self, *args, **options):
         # counters for data cleansing
         programmatic_created = 0
         user_entered_updated = 0
 
-        self.stdout.write(self.style.MIGRATE_HEADING("~~~ Starting road survey refresh ~~~ "))
+        self.stdout.write(
+            self.style.MIGRATE_HEADING("~~~ Starting road survey refresh ~~~ ")
+        )
 
         if not "no-road-refresh" in options or not options["no-road-refresh"]:
-            self.stdout.write(self.style.MIGRATE_HEADING("Refreshing road links before refreshing road surveys"))
+            self.stdout.write(
+                self.style.MIGRATE_HEADING(
+                    "Refreshing road links before refreshing road surveys"
+                )
+            )
             roads_updated = refresh_roads()
-            self.stdout.write(self.style.SUCCESS("~~~ Updated %s Road Links ~~~ " % roads_updated))
+            self.stdout.write(
+                self.style.SUCCESS("~~~ Updated %s Road Links ~~~ " % roads_updated)
+            )
 
         self.stdout.write(self.style.MIGRATE_HEADING("Deleting redundant surveys"))
         delete_redundant_surveys()
@@ -39,7 +53,9 @@ class Command(BaseCommand):
             programmatic_created += created
             user_entered_updated += updated
 
-        self.stdout.write(self.style.SUCCESS(
-            "~~~ COMPLETE: Created %s programmatic Surveys and Updated %s user entered Surveys ~~~ "
-            % (programmatic_created, user_entered_updated),
-        ))
+        self.stdout.write(
+            self.style.SUCCESS(
+                "~~~ COMPLETE: Created %s programmatic Surveys and Updated %s user entered Surveys ~~~ "
+                % (programmatic_created, user_entered_updated),
+            )
+        )
