@@ -74,6 +74,7 @@ INSTALLED_APPS = [
     "reversion",
     # CATALPA UTILS
     "catalpa_django_apps.google_analytics",
+    "topology",
 ]
 
 MIDDLEWARE = [
