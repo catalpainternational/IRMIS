@@ -157,45 +157,32 @@ def assess_road_geometries(roads, reset_geom):
 
     for road in roads:
         # Note that the 'link_' values from Road are considered highly unreliable
+        if reset_geom:
+            # Force the chainage to be recalculated
+            road.geom_start_chainage = None
+            road.geom_end_chainage = None
+            road.geom_length = None
 
-        try:
-            if reset_geom:
-                # Force the chainage to be recalculated
-                road.geom_start_chainage = None
-                road.geom_end_chainage = None
-                road.geom_length = None
+        # Work up a set of data that we consider acceptable
+        geometry_length = decimal.Decimal(road.geom[0].length)
+        link_length = round(geometry_length, 0)
 
-            # Work up a set of data that we consider acceptable
-            geometry_length = decimal.Decimal(road.geom[0].length)
-            link_length = round(geometry_length, 0)
+        # If this is the first link - then allow for non-0 link_start_chainage
+        if start_chainage == -1:
+            link_start = 0
+            if road.link_start_chainage:
+                link_start = road.link_start_chainage
+            start_chainage = link_start
+        link_start = start_chainage
 
-            # If this is the first link - then allow for non-0 link_start_chainage
-            if start_chainage == -1:
-                link_start = 0
-                if road.link_start_chainage:
-                    link_start = road.link_start_chainage
-                start_chainage = link_start
-            link_start = start_chainage
+        link_end = link_start + link_length
 
-            link_end = link_start + link_length
+        updated += update_road_geometry_data(
+            road, link_start, link_end, link_length, reset_geom
+        )
 
-            updated += update_road_geometry_data(
-                road, link_start, link_end, link_length, reset_geom
-            )
-
-            # carry over the start chainage for the next link in the road
-            start_chainage = link_end
-
-        except IntegrityError:
-            print(
-                "Survey Skipped: Road(%s) missing Road Code(%s) OR Chainage Start(%s)/End(%s)"
-                % (
-                    road.pk,
-                    road.road_code,
-                    road.link_start_chainage,
-                    road.link_end_chainage,
-                )
-            )
+        # carry over the start chainage for the next link in the road
+        start_chainage = link_end
 
     return updated
 
@@ -400,7 +387,49 @@ def create_programmatic_survey_values(sv, data, mapping_set):
         action(sv, data, value_id, field_id)
 
 
-def create_programmatic_surveys_for_roads(roads):
+def create_programmatic_survey(management_command, data, mappings, audit_source_name):
+    """ creates programmatic surveys from source data
+    
+    returns a count of the total number of surveys that were created """
+    created = 0
+    # Note that the 'link_' values from Road are considered highly unreliable
+
+    try:
+        # Work up a set of data that we consider acceptable
+        survey_data = {
+            "road_id": data["asset_id"] if "asset_id" in data else None,
+            "road_code": data["asset_code"] if "asset_code" in data else None,
+            "chainage_start": data["geom_start_chainage"] if "geom_start_chainage" in data else None,
+            "chainage_end": data["geom_end_chainage"] if "geom_end_chainage" in data else None,
+            "source": "programmatic",
+            "values": {},
+            "date_created": make_aware(datetime.datetime(1970, 1, 1)),
+            "date_updated": make_aware(datetime.datetime(1970, 1, 1)),
+            "date_surveyed": data["date_surveyed"] if "date_surveyed" in data else make_aware(datetime.datetime(1970, 1, 1)),
+        }
+
+        create_programmatic_survey_values(
+            survey_data["values"], data["values"], mappings
+        )
+
+        # check that values is not empty before saving survey
+        if len(survey_data["values"].keys()) > 0:
+            with reversion.create_revision():
+                Survey.objects.create(**survey_data)
+                reversion.set_comment(
+                    "Survey created programmatically from %s" % audit_source_name
+                )
+            # update created surveys counter
+            created += 1
+
+    except IntegrityError:
+        management_command.stderr.write(management_command.style.ERROR(
+            "Error: programmatic survey for road '%s' could not be created, required data was missing from %s" % (rc, audit_source_name)
+        ))
+
+    return created
+
+def create_programmatic_surveys_for_roads(management_command, roads):
     """ creates programmatic surveys from traffic csv rows 
     
     returns a count of the total number of surveys that were created """
@@ -408,86 +437,56 @@ def create_programmatic_surveys_for_roads(roads):
 
     for road in roads:
         # Note that the 'link_' values from Road are considered highly unreliable
+        survey_data = {
+            "asset_id": road.id,
+            "asset_code": road.road_code,
+            "chainage_start": road.geom_start_chainage,
+            "chainage_end": road.geom_end_chainage,
+            "values": road,
+        }
 
-        try:
-            # Work up a set of data that we consider acceptable
-            survey_data = {
-                "road_id": road.id,
-                "road_code": road.road_code,
-                "chainage_start": road.geom_start_chainage,
-                "chainage_end": road.geom_end_chainage,
-                "source": "programmatic",
-                "values": {},
-                "date_created": make_aware(datetime.datetime(1970, 1, 1)),
-                "date_updated": make_aware(datetime.datetime(1970, 1, 1)),
-            }
-
-            create_programmatic_survey_values(
-                survey_data["values"], road, ROAD_SURVEY_VALUE_MAPPINGS
-            )
-
-            # check that values is not empty before saving survey
-            if len(survey_data["values"].keys()) > 0:
-                with reversion.create_revision():
-                    Survey.objects.create(**survey_data)
-                    reversion.set_comment(
-                        "Survey created programmatically from Road Link"
-                    )
-                # update created surveys counter
-                created += 1
-
-        except IntegrityError:
-            print(
-                "Survey Skipped: Road(%s) missing Road Code(%s) OR Chainage Start(%s)/End(%s)"
-                % (
-                    road.pk,
-                    road.road_code,
-                    road.link_start_chainage,
-                    road.link_end_chainage,
-                )
-            )
+        created += create_programmatic_survey(
+            management_command, survey_data, ROAD_SURVEY_VALUE_MAPPINGS, "Road Link"
+        )
 
     return created
 
 
-def create_programmatic_survey_for_traffic_csv(data, road=None):
+def create_programmatic_survey_for_traffic_csv(management_command, data, roads):
     """ creates a programmatic survey from a traffic csv row
     
     returns a count of the total number of surveys that were created """
     created = 0
 
-    try:
+    surveys_data = []
+    if len(roads) == 0:
         survey_data = {
-            "road_id": road.id if road else None,
-            "road_code": road.road_code if road else data[0],
-            "chainage_start": road.geom_start_chainage if road else None,
-            "chainage_end": road.geom_end_chainage if road else None,
-            "source": "programmatic",
-            "values": {},
-            "date_created": make_aware(datetime.datetime(1970, 1, 1)),
-            "date_updated": make_aware(datetime.datetime(1970, 1, 1)),
+            "asset_code": data[0],
+            "values": data,
             "date_surveyed": make_aware(datetime.datetime(int(data[3]), 1, 1)),
         }
+        surveys_data.append(survey_data)
+    else:
+        for road in roads:
+            survey_data = {
+                "asset_id": road.id,
+                "asset_code": road.road_code,
+                "chainage_start": road.geom_start_chainage,
+                "chainage_end": road.geom_end_chainage,
+                "values": data,
+                "date_surveyed": make_aware(datetime.datetime(int(data[3]), 1, 1)),
+            }
+            surveys_data.append(survey_data)
 
-        create_programmatic_survey_values(
-            survey_data["values"], data, TRAFFIC_CSV_VALUE_MAPPINGS
+    for survey_data in surveys_data:
+        created += create_programmatic_survey(
+            management_command, survey_data, TRAFFIC_CSV_VALUE_MAPPINGS, "the imported Traffic Survey data"
         )
-
-        # check that values is not empty before saving survey
-        if len(survey_data["values"].keys()) > 0:
-            with reversion.create_revision():
-                Survey.objects.create(**survey_data)
-                reversion.set_comment("Survey created programmatically from Road Link")
-            # update created surveys counter
-            created += 1
-
-    except IntegrityError:
-        print("Survey Skipped: Required data was missing from the CSV row")
 
     return created
 
 
-def update_non_programmatic_surveys_by_road_code(survey, rc, updated=0):
+def update_non_programmatic_surveys_by_road_code(management_command, survey, rc, updated=0):
     """ updates all non-programmatic surveys for a given set of road links
 
     This assumes that all the supplied road links are for the same road code,
@@ -509,12 +508,9 @@ def update_non_programmatic_surveys_by_road_code(survey, rc, updated=0):
         None,
     )
     if not road_survey:
-        print(
-            "Problems with user entered Survey Id:",
-            survey.id,
-            "Chainage Start:",
-            survey.chainage_start,
-        )
+        management_command.stderr.write(management_command.style.ERROR(
+            "Error: User entered survey Id:%s for road '%s' has problems" % (survey.id, rc)
+        ))
         return updated
 
     # Test if this survey exists wholly within the road link
@@ -534,12 +530,9 @@ def update_non_programmatic_surveys_by_road_code(survey, rc, updated=0):
 
     # This survey spans more than one road link
     # So 'split' it and create a new survey for the rest
-    print(
-        "User entered survey spans multiple road links for road:",
-        rc,
-        " Survey Id:",
-        survey.id,
-    )
+    management_command.stderr.write(management_command.style.NOTICE(
+        "User entered survey Id:%s spans multiple road links for road '%s'" % (survey.id, rc)
+    ))
     prev_chainage_end = survey.chainage_end
     with reversion.create_revision():
         survey.road_id = road_survey.id
@@ -552,10 +545,10 @@ def update_non_programmatic_surveys_by_road_code(survey, rc, updated=0):
     survey.chainage_start = road_survey.geom_end_chainage
     survey.chainage_end = prev_chainage_end
 
-    return update_non_programmatic_surveys_by_road_code(survey, rc, updated + 1)
+    return update_non_programmatic_surveys_by_road_code(management_command, survey, rc, updated + 1)
 
 
-def refresh_surveys_by_road_code(rc):
+def refresh_surveys_by_road_code(management_command, rc):
     """ Refresh programmatic and user entered Surveys for each road code
 
     This assumes that the Road Link geom_ fields have already been cleaned
@@ -565,23 +558,21 @@ def refresh_surveys_by_road_code(rc):
     created = 0
     updated = 0
 
-    print("Processing surveys for road code:", rc)
-
-    # For a blow-by-blow account uncomment the print statements below
+    # For a blow-by-blow account uncomment the management_command.stdout.write statements below
 
     # Recreate all of the programmatic surveys
     delete_programmatic_surveys_for_road_by_road_code(rc)
-    # print("  deleted programmatic surveys")
+    # management_command.stdout.write(management_command.style.MIGRATE_HEADING("  deleted programmatic surveys for '%s'" % rc))
     roads = get_roads_by_road_code(rc)
-    # print("  got roads")
-    created += create_programmatic_surveys_for_roads(roads)
-    # print("  created programmatic surveys")
+    # management_command.stdout.write(management_command.style.MIGRATE_HEADING("  got road links for '%s'" % rc))
+    created += create_programmatic_surveys_for_roads(management_command, roads)
+    # management_command.stdout.write(management_command.style.MIGRATE_HEADING("  created programmatic surveys for '%s'" % rc))
 
     # Refresh all of the non-programmatic surveys
     surveys = get_non_programmatic_surveys_by_road_code(rc)
     if len(surveys) > 0:
         for survey in surveys:
-            updated += update_non_programmatic_surveys_by_road_code(survey, rc)
-        # print("  refreshed", len(surveys), "user entered surveys")
+            updated += update_non_programmatic_surveys_by_road_code(management_command, survey, rc)
+        # management_command.stdout.write(management_command.style.MIGRATE_HEADING("  refreshed %s user entered surveys" % len(surveys)))
 
     return created, updated

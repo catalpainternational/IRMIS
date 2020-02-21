@@ -1,6 +1,8 @@
 from django.core.management.base import BaseCommand
 
 import csv
+import os.path
+from os import path
 
 from assets.data_cleaning_utils import (
     create_programmatic_survey_for_traffic_csv,
@@ -18,20 +20,34 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument("file")
+        parser.add_argument("--no-road-refresh", action="store_const", const=False, default=False, help="Don't refresh road links before the import")
 
     def handle(self, *args, **options):
-        # counters for data cleansing / survey creation
-        print("Refreshing road links before importing traffic surveys")
-        roads_updated = refresh_roads()
+        file_path = options["file"]
+
+        if not path.exists(file_path):
+            self.stderr.write(self.style.ERROR("Error: the source file '%s' was not found" % file_path))
+            return
+        if not path.isfile(file_path):
+            self.stderr.write(self.style.ERROR("Error: the source file '%s' was a folder not a file" % file_path))
+            return
+
+        self.stdout.write(self.style.MIGRATE_HEADING("~~~ Starting traffic survey refresh ~~~ "))
+
+        if not "no-road-refresh" in options or not options["no-road-refresh"]:
+            self.stdout.write(self.style.MIGRATE_HEADING("Refreshing road links before importing traffic surveys"))
+            roads_updated = refresh_roads()
+            self.stdout.write(self.style.SUCCESS("~~~ Updated %s Road Links ~~~ " % roads_updated))
+
         programmatic_created = 0
 
-        print("~~~ Updated %s Road Links ~~~ " % roads_updated)
-
         # Delete the current programmatic surveys
+        self.stdout.write(self.style.MIGRATE_HEADING("Deleting programmatic surveys for traffic surveys"))
         for rc in get_current_road_codes():
             delete_programmatic_surveys_for_traffic_surveys_by_road_code(rc)
 
-        with open(options["file"], "r") as csv_file:
+        self.stdout.write(self.style.MIGRATE_HEADING("Adding programmatic surveys for traffic surveys"))
+        with open(file_path, "r") as csv_file:
             next(csv_file)  # skip the header row
             reader = csv.reader(csv_file, delimiter=",")
             for i, line in enumerate(reader):
@@ -42,36 +58,31 @@ class Command(BaseCommand):
                 # all cars will become line[15]
                 line.append(int_try_parse(line[6]) + int_try_parse(line[7]))
 
-                try:
-                    if road_code == "" and link_code == "":
-                        roads = []
-                    elif road_code != "" and link_code != "":
-                        roads = Road.objects.filter(
-                            road_code=road_code, link_code=link_code
-                        ).all()
-                    elif road_code != "":
-                        roads = Road.objects.filter(road_code=road_code).all()
-                    else:
-                        roads = Road.objects.filter(link_code=link_code).all()
-                except Exception:
-                    print("Survey Skipped: Road Code provided was not valid ~~~ ")
+                roads = Road.objects.none()
 
-                if len(roads) != 1:
-                    programmatic_created += create_programmatic_survey_for_traffic_csv(
-                        line
-                    )
+                try:
                     if road_code != "" or link_code != "":
-                        print(
-                            "Survey has been added, but couldn't find unique road for Road Code:",
-                            road_code,
-                            " Link Code:",
-                            link_code,
-                        )
-                else:
-                    # exact road match
-                    programmatic_created += create_programmatic_survey_for_traffic_csv(
-                        line, roads[0]
-                    )
-        print(
+                        if road_code != "" and link_code != "":
+                            roads = Road.objects.filter(
+                                road_code=road_code, link_code=link_code
+                            ).all()
+                        if len(roads) == 0:
+                            if road_code != "":
+                                roads = Road.objects.filter(road_code=road_code).all()
+                        if len(roads) == 0:
+                            if link_code != "":
+                                roads = Road.objects.filter(link_code=link_code).all()
+                except Exception:
+                    self.stderr.write(self.style.ERROR("Survey Skipped: Road Code provided was not valid ~~~ "))
+
+                programmatic_created += create_programmatic_survey_for_traffic_csv(
+                    self, line, roads
+                )
+                if len(roads) == 0:
+                    self.stderr.write(self.style.NOTICE(
+                        "Survey has been added, but couldn't find a road for '%s' %s. Is the road code correct?" % (road_code, link_code)
+                    ))
+
+        self.stdout.write(self.style.SUCCESS(
             "~~~ COMPLETE: Created %s Surveys from CSV data ~~~ " % programmatic_created
-        )
+        ))
