@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 import { Version } from "../../../protobuf/version_pb";
 
 import { getFieldName, getHelpText, makeEstradaObject } from "../protoBufUtilities";
@@ -28,9 +30,12 @@ export class EstradaAudit extends Version implements IEstrada {
     }
 
     get dateCreated() {
-        return this.hasDateCreated()
-            ? new Date(this.getDateCreated()!.getSeconds() * 1000)
-            : undefined;
+        const pbufData = this.getDateCreated() as ({ [name: string]: any } | undefined);
+        if (!pbufData || !pbufData.array || !pbufData.array.length) {
+            return "";
+        }
+        const date = dayjs(new Date(pbufData.array[0] * 1000));
+        return date.isValid() ? date.format("YYYY-MM-DD HH:mm:ss") : "";
     }
 
     get user() {
