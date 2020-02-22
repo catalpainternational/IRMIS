@@ -4,15 +4,17 @@ from django.contrib.gis.db import models
 from assets import models as assets
 
 
-class RoadCorrection(models.Model):
+class RoadCorrectionSegment(models.Model):
     """
-    Contains "fixes" for poor geometries found in the
-    estrada roads import models
+    Second-generation fixes
+    Contains the diffs only for the geometries
     """
 
-    id = models.OneToOneField(assets.Road, on_delete=models.CASCADE, primary_key=True)
     road_code = models.TextField(null=True, blank=True)
-    geom = models.MultiLineStringField(srid=32751, dim=2, blank=True, null=True)
+    geom = models.LineStringField(srid=32751, dim=2, blank=True, null=True)
+    deletion = models.BooleanField(
+        help_text="True if this is a Delete. False if this is an Addition."
+    )
 
 
 class TopoRoad(models.Model):

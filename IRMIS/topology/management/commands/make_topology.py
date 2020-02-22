@@ -51,12 +51,42 @@ class SqlQueries:
                 road_type = 'HIGH'
             ) AND NOT
                 (road_code = ANY (ARRAY['AL001', 'AL003', 'XX004', 'XX009']) --Bad roads
-                    OR "id"  IN (select "id_id" from topology_roadcorrection) -- Roads which we have hacked geometries
                     OR ID = ANY (ARRAY[142]) -- Duplicated road
                 )
-            UNION SELECT road_code, (ST_DUMP(geom)).geom FROM topology_roadcorrection
         );
         """
+
+    # Apply fixes to the geometries from the topology_roadcorrectionsegment deletions
+    apply_deletions = """
+    CREATE OR REPLACE FUNCTION update_topo_roadcorrection() RETURNS void AS
+        $BODY$
+        DECLARE
+            drop_geom RECORD;
+        BEGIN
+            FOR drop_geom IN
+                SELECT * FROM topology_roadcorrectionsegment WHERE deletion IS TRUE
+            LOOP
+                UPDATE singlepart_dump sp
+                SET geom = ST_DIFFERENCE(sp.geom, drop_geom.geom)
+                WHERE ST_INTERSECTS(drop_geom.geom, sp.geom)
+                AND ST_GEOMETRYTYPE(ST_INTERSECTion(drop_geom.geom, sp.geom)) != 'ST_Point'
+                AND drop_geom.road_code = sp.road_code;
+            END LOOP;
+            RETURN;
+        END;
+        $BODY$
+        LANGUAGE plpgsql;
+    SELECT update_topo_roadcorrection();
+
+    -- That function may have left us with multipart geometries to handle
+    INSERT INTO singlepart_dump(road_code, geom) SELECT road_code, (ST_DUMP(geom)).geom FROM singlepart_dump WHERE ST_GeometryType(geom) = 'ST_MultiLineString';
+    DELETE FROM singlepart_dump WHERE ST_GeometryType(geom) = 'ST_MultiLineString';
+    """
+
+    apply_additions = """
+    INSERT INTO singlepart_dump(road_code, geom)
+        SELECT road_code, geom FROM topology_roadcorrectionsegment WHERE deletion IS FALSE
+    """
 
     # Merge the single parts to multiparts, and re-export as single parts according to their road code
     # In a perfect world this makes one linestring per road code
@@ -105,12 +135,16 @@ class Command(BaseCommand):
     def handle(self, *args, **option):
 
         with connection.cursor() as cursor:
-            # cursor.execute(SqlQueries.drop_table, SqlQueries.attrs)
-            # cursor.execute(SqlQueries.drop_topology, SqlQueries.attrs)
+            cursor.execute(SqlQueries.drop_table, SqlQueries.attrs)
+            cursor.execute(SqlQueries.drop_topology, SqlQueries.attrs)
             cursor.execute(SqlQueries.create_topology, SqlQueries.attrs)
             cursor.execute(SqlQueries.create_table, SqlQueries.attrs)
 
             cursor.execute(SqlQueries.create_dump, SqlQueries.attrs)
+
+            cursor.execute(SqlQueries.apply_deletions, SqlQueries.attrs)
+            cursor.execute(SqlQueries.apply_additions, SqlQueries.attrs)
+
             cursor.execute(SqlQueries.merge_multipart, SqlQueries.attrs)
             cursor.execute(SqlQueries.populate_topo, SqlQueries.attrs)
             cursor.execute(SqlQueries.update_table_geom, SqlQueries.attrs)
