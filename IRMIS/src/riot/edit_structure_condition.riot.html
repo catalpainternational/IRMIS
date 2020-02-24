@@ -60,6 +60,9 @@
             <section>
                 <div class="form-group">
                     <label>{ window.gettext("Condition Description") }</label>
+                    <small class="form-text text-muted">
+                        {window.gettext("Enter a description on the structurecondition")}
+                    </small>
                     <input
                         class="{ state.errors.conditionDescription ? 'danger' : null } { state.survey.conditionDescription ? '' : 'inactive' } form-control"
                         type="text" maxlength="500" placeholder="E.g." value="{ state.survey.conditionDescription }"
@@ -69,9 +72,6 @@
                             <li>{ state.errors.conditionDescription }.</li>
                         </ul>
                     </div>
-                    <small class="form-text text-muted">
-                        {window.gettext("Enter a description on the structurecondition")}
-                    </small>
                 </div>
             </section>
             <div class="d-flex justify-content-end">
