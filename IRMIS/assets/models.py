@@ -820,7 +820,7 @@ class Bridge(models.Model):
         help_text=_("Enter number of spans"),
     )
     span_length = models.DecimalField(
-        verbose_name=_("Structure Width (m)"),
+        verbose_name=_("Span Length (m)"),
         max_digits=8,
         decimal_places=3,
         blank=True,
