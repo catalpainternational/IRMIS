@@ -422,7 +422,7 @@
 
         import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
         import {choice_or_default, toChainageFormat} from "../assets/protoBufUtilities";
-        import {withinMaxDigits} from "../assets/utilities";
+        import { containsWhiteSpaces, withinMaxDigits } from "../assets/utilities";
 
         import {makeEstradaRoad, TECHNICAL_CLASS_CHOICES} from "../assets/models/road";
         import {EstradaSurvey, makeEstradaSurvey} from "../assets/models/survey";
@@ -1205,9 +1205,5 @@
             },
             max_date: () => new Date().toISOString().substring(0, 10),
         };
-
-        function containsWhiteSpaces(text) {
-            return /\s/.test(text);
-        }
     </script>
 </edit_asset_details>
