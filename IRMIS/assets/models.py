@@ -672,6 +672,9 @@ class BridgeQuerySet(models.QuerySet):
                 raw_value = bridge.get(query_key)
                 if raw_value is not None:
                     setattr(bridge_protobuf, protobuf_key, raw_value)
+                else:
+                    # No value available, so use -ve as a substitute for None
+                    setattr(bridge_protobuf, protobuf_key, -1)
 
             if bridge["date_created"]:
                 ts = timestamp_from_datetime(bridge["date_created"])
@@ -941,6 +944,9 @@ class CulvertQuerySet(models.QuerySet):
                 raw_value = culvert.get(query_key)
                 if raw_value is not None:
                     setattr(culvert_protobuf, protobuf_key, raw_value)
+                else:
+                    # No value available, so use -ve as a substitute for None
+                    setattr(culvert_protobuf, protobuf_key, -1)
 
             if culvert["date_created"]:
                 ts = timestamp_from_datetime(culvert["date_created"])

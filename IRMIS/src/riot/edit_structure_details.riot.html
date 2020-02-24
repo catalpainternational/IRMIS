@@ -54,8 +54,9 @@
                 <label>{ window.gettext("Construction Year") }</label>
                 <small class="form-text text-muted">{ window.gettext("Enter structure's construction year") }</small>
                 <input
-                    class="{ state.errors.constructionYear ? 'danger' : null } { state.constructionYear ? '' : 'inactive' } form-control"
-                    type="number" maxlength="4" placeholder="1970" value="{ state.constructionYear }" min="0"
+                    class="{ state.errors.constructionYear ? 'danger' : null } { state.constructionYear !== -1 && state.constructionYear !== '' ? '' : 'inactive' } form-control"
+                    type="number" maxlength="4" placeholder="1970"
+                    value="{ state.constructionYear !== -1 ? state.constructionYear : '' }" min="0"
                     oninput="{ checkConstructionYear }">
                 <div if="{ state.errors.constructionYear }" class="invalid-tooltip">
                     <ul>
@@ -69,8 +70,10 @@
             <div class="form-group">
                 <label>{ window.gettext("Length (meters)") }</label>
                 <small class="form-text text-muted">{ window.gettext("Enter the structure's length in meters") }</small>
-                <input class="{ state.errors.length ? 'danger' : null } { state.length ? '' : 'inactive' } form-control"
-                    type="number" maxlength="25" placeholder="6" value="{ state.length }" oninput="{ checkLength }">
+                <input
+                    class="{ state.errors.length ? 'danger' : null } { state.length !== -1 && state.length !== '' ? '' : 'inactive' } form-control"
+                    type="number" maxlength="25" placeholder="6" value="{ state.length !== -1 ? state.length : '' }"
+                    oninput="{ checkLength }">
                 <div if="{ state.errors.length }" class="invalid-tooltip">
                     <ul>
                         <li>{ state.errors.length }.</li>
@@ -83,8 +86,10 @@
             <div class="form-group">
                 <label>{ window.gettext("Width (meters)") }</label>
                 <small class="form-text text-muted">{ window.gettext("Enter the structure's width in meters") }</small>
-                <input class="{ state.errors.width ? 'danger' : null } { state.width ? '' : 'inactive' } form-control"
-                    type="number" maxlength="25" placeholder="6" value="{ state.width }" oninput="{ checkWidth }">
+                <input
+                    class="{ state.errors.width ? 'danger' : null } { state.width !== -1 && state.width !== '' ? '' : 'inactive' } form-control"
+                    type="number" maxlength="25" placeholder="6" value="{ state.width !== -1 ? state.width : '' }"
+                    oninput="{ checkWidth }">
                 <div if="{ state.errors.width }" class="invalid-tooltip">
                     <ul>
                         <li>{ state.errors.width }.</li>
@@ -102,8 +107,9 @@
                         { window.gettext("Enter the structure's height in meters") }
                     </small>
                     <input
-                        class="{ state.errors.height ? 'danger' : null } { state.height ? '' : 'inactive' } form-control"
-                        type="number" maxlength="25" placeholder="6" value="{ state.height }" oninput="{ checkHeight }">
+                        class="{ state.errors.height ? 'danger' : null } { state.height !== -1 && state.height !== '' ? '' : 'inactive' } form-control"
+                        type="number" maxlength="25" placeholder="6" value="{ state.height !== -1 ? state.height : '' }"
+                        oninput="{ checkHeight }">
                     <div if="{ state.errors.height }" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.height }.</li>
@@ -119,8 +125,9 @@
                         { window.gettext("Enter the number of cells in the structure") }
                     </small>
                     <input
-                        class="{ state.errors.structureCells ? 'danger' : null } { state.structureCells ? '' : 'inactive' } form-control"
-                        type="number" maxlength="25" placeholder="2" value="{ state.structureCells }"
+                        class="{ state.errors.structureCells ? 'danger' : null } { state.structureCells !== -1 && state.structureCells !== '' ? '' : 'inactive' } form-control"
+                        type="number" maxlength="25" placeholder="2"
+                        value="{ state.structureCells !== -1 ? state.structureCells : '' }"
                         oninput="{ checkNumberCells }">
                     <div if="{ state.errors.structureCells }" class="invalid-tooltip">
                         <ul>
@@ -140,9 +147,9 @@
                         { window.gettext("Enter the number of spans in the structure") }
                     </small>
                     <input
-                        class="{ state.errors.numberSpans ? 'danger' : null } { state.numberSpans ? '' : 'inactive' } form-control"
-                        type="number" maxlength="25" placeholder="1" value="{ state.numberSpans }"
-                        oninput="{ checkNumberSpans }">
+                        class="{ state.errors.numberSpans ? 'danger' : null } { state.numberSpans !== -1 && state.numberSpans !== '' ? '' : 'inactive' } form-control"
+                        type="number" maxlength="25" placeholder="1"
+                        value="{ state.numberSpans !== -1 ? state.numberSpans : '' }" oninput="{ checkNumberSpans }">
                     <div if="{ state.errors.numberSpans }" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.numberSpans }.</li>
@@ -158,9 +165,9 @@
                         { window.gettext("Enter the span length for the structure") }
                     </small>
                     <input
-                        class="{ state.errors.spanLength ? 'danger' : null } { state.spanLength ? '' : 'inactive' } form-control"
-                        type="number" maxlength="25" placeholder="1" value="{ state.spanLength }"
-                        oninput="{ checkSpanLength }">
+                        class="{ state.errors.spanLength ? 'danger' : null } { state.spanLength !== -1 && state.spanLength !== '' ? '' : 'inactive' } form-control"
+                        type="number" maxlength="25" placeholder="1"
+                        value="{ state.spanLength !== -1 ? state.spanLength : '' }" oninput="{ checkSpanLength }">
                     <div if="{ state.errors.spanLength }" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.spanLength }.</li>
