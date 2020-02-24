@@ -52,7 +52,7 @@ class ReportQuery:
                 " material, structure_type,\n"
                 " road_id, road_code\n"
                 "FROM (\n"
-                "SELECT DISTINCT 'ROAD-' AS asset_type_prefix, s.road_id AS asset_id,\n"
+                "SELECT DISTINCT 'ROAD-' AS asset_type_prefix, r.id AS asset_id,\n"
                 " s.road_code AS asset_code, r.road_name AS asset_name,\n"
                 " r.surface_condition AS asset_condition, r.road_type AS asset_class,\n"
                 " r.geom_end_chainage AS geom_chainage, r.administrative_area AS municipality,\n"
@@ -73,7 +73,7 @@ class ReportQuery:
                 " NULL::INTEGER AS material, NULL::INTEGER AS structure_type,\n"
                 " NULL::INTEGER AS road_id, NULL AS road_code\n"
                 " FROM assets_survey s, assets_road r\n"
-                " WHERE s.road_id = r.id\n"
+                " WHERE s.asset_id = CONCAT('ROAD-', r.id::text)\n"
                 "UNION\n"
                 "SELECT DISTINCT bc.asset_type_prefix, bc.asset_id,\n"
                 " bc.asset_code, bc.asset_name,\n"
@@ -143,7 +143,7 @@ class ReportQuery:
                 " END AS username\n"
                 " FROM auth_user\n"
             ),
-            # Surveys which match the given values and roads
+            # Surveys which match the given values and assets
             "su": (
                 "SELECT s.id, atc.asset_type_prefix, s.road_id AS asset_id, s.road_code AS asset_code,\n"
                 " s.date_created, s.date_updated, s.date_surveyed,\n"
@@ -157,7 +157,7 @@ class ReportQuery:
                 " s.user_id, vtc.attr,\n"
                 " s.values - (SELECT ARRAY(SELECT attr FROM values_to_exclude)) AS values\n"
                 " FROM assets_survey s\n"
-                " JOIN assets_to_chart atc ON s.road_id = atc.asset_id\n"
+                " JOIN assets_to_chart atc ON s.asset_id = CONCAT(atc.asset_type_prefix, atc.asset_id::text)\n"
                 " JOIN values_to_chart vtc ON s.values ? vtc.attr\n"
                 " LEFT OUTER JOIN usernames u ON s.user_id = u.user_id\n"
                 " WHERE s.chainage_start != s.chainage_end\n"
@@ -195,6 +195,7 @@ class ReportQuery:
             ),
             # If the survey is actually the end value we NULLify the value
             # rather than using the attribute, we use this in final_results below
+            # also road_id and road_code will only have values if the result relates to a Bridge or a Culvert
             "results": (
                 "SELECT survey_id, rank, asset_type_prefix, asset_id, asset_code, c, break_attr, geom_chainage,\n"
                 " CASE\n"
@@ -213,7 +214,9 @@ class ReportQuery:
                 "SELECT *,\n"
                 " rank() over (\n"
                 "  PARTITION\n"
-                "  BY survey_id, asset_type_prefix, asset_id, asset_code, break_attr, value, user_id, added_by, date_surveyed\n"
+                "    BY survey_id, asset_type_prefix, asset_id, asset_code,\n"
+                "    break_attr, value, user_id, added_by, date_surveyed,\n"
+                "    road_id, road_code\n"
                 "  ORDER BY c\n"
                 " ) AS filtered\n"
                 " FROM results\n"

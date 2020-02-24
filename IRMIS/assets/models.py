@@ -279,7 +279,7 @@ class RoadQuerySet(models.QuerySet):
         # some_survey_value=Subquery(survey.values("values__some_survey_value")[:1]),
         roads = (
             self.order_by("id")
-            .annotate(annotations)
+            .annotate(**annotations)
             .values(
                 "id", *regular_fields.values(), *numeric_fields.values(), *annotations
             )
