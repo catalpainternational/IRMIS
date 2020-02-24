@@ -5,6 +5,7 @@
         <section>
             <div class="form-group">
                 <label>{ state.structureTypes.display }</label>
+                <small class="form-text text-muted">{ state.structureTypes.help_text }</small>
                 <select class="{ state.structureType ? '' : 'inactive' } form-control"
                     onchange="{ checkStructureType }">
                     <option value="">{ state.structureTypes.default_value }</option>
@@ -17,6 +18,7 @@
         <section>
             <div class="form-group">
                 <label>{ state.structureMaterials.display }</label>
+                <small class="form-text text-muted">{ state.structureMaterials.help_text }</small>
                 <select class="{ state.material ? '' : 'inactive' } form-control" onchange="{ checkStructureMaterial }">
                     <option value="">{ state.structureMaterials.default_value }</option>
                     <option each="{ material in state.structureMaterials.options }" value="{ material.code }"
