@@ -14,7 +14,9 @@
                     </ul>
                 </div>
             </div>
+        </section>
 
+        <section>
             <div class="form-group">
                 <label>{ window.gettext("Structure Name") }</label>
                 <small class="form-text text-muted">{ window.gettext("Enter the name of the structure") }</small>
@@ -26,26 +28,28 @@
                     </ul>
                 </div>
             </div>
+        </section>
 
-            <!-- Bridge-specific field -->
-            <div if="{ props.assetType === 'BRDG' }">
-                <div class="form-group">
-                    <label>{ window.gettext("River Name") }</label>
-                    <small class="form-text text-muted">
-                        { window.gettext("Enter the name of the river where the structure is located") }
-                    </small>
-                    <input
-                        class="{ state.errors.riverName ? 'danger' : null } { state.riverName ? '' : 'inactive' } form-control"
-                        type="text" maxlength="25" placeholder="Kuluhun" value="{ state.riverName }"
-                        oninput="{ checkRiverName }">
-                    <div if="{ state.errors.riverName }" class="invalid-tooltip">
-                        <ul>
-                            <li>{ state.errors.riverName }.</li>
-                        </ul>
-                    </div>
+        <!-- Bridge-specific field -->
+        <section if="{ props.assetType === 'BRDG' }">
+            <div class="form-group">
+                <label>{ window.gettext("River Name") }</label>
+                <small class="form-text text-muted">
+                    { window.gettext("Enter the name of the river where the structure is located") }
+                </small>
+                <input
+                    class="{ state.errors.riverName ? 'danger' : null } { state.riverName ? '' : 'inactive' } form-control"
+                    type="text" maxlength="25" placeholder="Kuluhun" value="{ state.riverName }"
+                    oninput="{ checkRiverName }">
+                <div if="{ state.errors.riverName }" class="invalid-tooltip">
+                    <ul>
+                        <li>{ state.errors.riverName }.</li>
+                    </ul>
                 </div>
             </div>
+        </section>
 
+        <section>
             <div class="form-group">
                 <label>{ window.gettext("Construction Year") }</label>
                 <small class="form-text text-muted">{ window.gettext("Enter structure's construction year") }</small>
@@ -59,7 +63,9 @@
                     </ul>
                 </div>
             </div>
+        </section>
 
+        <section>
             <div class="form-group">
                 <label>{ window.gettext("Length (meters)") }</label>
                 <small class="form-text text-muted">{ window.gettext("Enter the structure's length in meters") }</small>
@@ -71,7 +77,9 @@
                     </ul>
                 </div>
             </div>
+        </section>
 
+        <section>
             <div class="form-group">
                 <label>{ window.gettext("Width (meters)") }</label>
                 <small class="form-text text-muted">{ window.gettext("Enter the structure's width in meters") }</small>
@@ -83,9 +91,11 @@
                     </ul>
                 </div>
             </div>
+        </section>
 
-            <!-- Culvert-specific fields -->
-            <div if="{ props.assetType === 'CULV' }">
+        <!-- Culvert-specific fields -->
+        <template if="{ props.assetType === 'CULV' }">
+            <section>
                 <div class="form-group">
                     <label>{ window.gettext("Height (meters)") }</label>
                     <small class="form-text text-muted">
@@ -100,7 +110,9 @@
                         </ul>
                     </div>
                 </div>
+            </section>
 
+            <section>
                 <div class="form-group">
                     <label>{ window.gettext("Number of cells") }</label>
                     <small class="form-text text-muted">
@@ -116,10 +128,12 @@
                         </ul>
                     </div>
                 </div>
-            </div>
+            </section>
+        </template>
 
-            <!-- Bridge-specific field -->
-            <div if="{ props.assetType === 'BRDG' }">
+        <!-- Bridge-specific field -->
+        <template if="{ props.assetType === 'BRDG' }">
+            <section>
                 <div class="form-group">
                     <label>{ window.gettext("Number of spans") }</label>
                     <small class="form-text text-muted">
@@ -135,6 +149,9 @@
                         </ul>
                     </div>
                 </div>
+            </section>
+
+            <section>
                 <div class="form-group">
                     <label>{ window.gettext("Span Length") }</label>
                     <small class="form-text text-muted">
@@ -150,8 +167,8 @@
                         </ul>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </template>
 
         <div class="button-wrapper d-flex justify-content-end">
             <button class="btn btn-primary" onclick="{ save }" disabled="{ props.saving }">
