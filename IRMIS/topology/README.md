@@ -9,7 +9,9 @@ This app includes a table of "fixes" for geometries which are terribly bad and s
 (dumpdata from some source where already ran):
 
 ```
-./manage.py loaddata estradaroad.json
+./manage.py migrate
+./manage.py loaddata topology_estradaroad.json
+./manage.py dbshell < topology/management/commands/topology_functions.sql
 ```
 
 ## Recreate Topology
@@ -18,10 +20,7 @@ This app includes a management command to "make topology". This will probably no
 
 ```
 ./manage.py migrate
-./manage.py loaddata roadcorrection.json
+./manage.py loaddata topology_inputroad.json
+./manage.py loaddata topology_roadcorrectionsegment.json
 ./manage.py make_topology
 ```
-
-## To Do
-
--   Move exclusion IDs from the SQL into a separate table

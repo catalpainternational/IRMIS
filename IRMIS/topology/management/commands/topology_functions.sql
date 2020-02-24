@@ -1,12 +1,12 @@
-CREATE INDEX IF NOT EXISTS toporoad_geom_idx ON topology_toporoad USING GIST(geom);
+CREATE INDEX IF NOT EXISTS toporoad_geom_idx ON topology_estradaroad USING GIST(geom);
 
 DROP FUNCTION IF EXISTS point_to_chainage(geometry);
 
 CREATE OR REPLACE FUNCTION closest_roadcode_to_point(IN inputpoint geometry, OUT roadcode text, OUT linefraction float)
 AS $$
 WITH index_query AS (
-	SELECT st_distance(geom, inputpoint) as d, topology_toporoad.*
-		FROM topology_toporoad
+	SELECT st_distance(geom, inputpoint) as d, topology_estradaroad.*
+		FROM topology_estradaroad
 		ORDER BY geom <-> inputpoint limit 4 -- Choose the four "best" candidates
 ) SELECT
 	road_code,
@@ -22,8 +22,8 @@ AS $$
  SELECT
 	road_code,
 	ST_LineLocatePoint(geom, inputpoint) linefraction
-FROM topology_toporoad 
-WHERE topology_toporoad.road_code = in_roadcode
+FROM topology_estradaroad 
+WHERE topology_estradaroad.road_code = in_roadcode
 LIMIT 1
 $$ LANGUAGE SQL;
 
@@ -37,8 +37,8 @@ WITH index_query AS (
 ) SELECT 
 	index_query.linefraction * ST_Length(geom) AS chainage, 
 	road_code
-FROM index_query, topology_toporoad 
-    WHERE topology_toporoad.road_code = index_query.roadcode LIMIT 1
+FROM index_query, topology_estradaroad 
+    WHERE topology_estradaroad.road_code = index_query.roadcode LIMIT 1
 $$
 LANGUAGE SQL;
 
@@ -52,8 +52,8 @@ WITH index_query AS (
 ) SELECT 
 	index_query.linefraction * ST_Length(geom) AS chainage, 
 	road_code
-FROM index_query, topology_toporoad 
-    WHERE topology_toporoad.road_code = chainage_road_code LIMIT 1
+FROM index_query, topology_estradaroad 
+    WHERE topology_estradaroad.road_code = chainage_road_code LIMIT 1
 $$
 LANGUAGE SQL;
 
@@ -68,7 +68,7 @@ ST_LineInterpolatePoint(
 	geom, 
 	chainage / ST_LENGTH(geom) -- This is the "fraction" along the line
 )
-FROM topology_toporoad WHERE road_code = chainage_road_code
+FROM topology_estradaroad WHERE road_code = chainage_road_code
 $$ LANGUAGE SQL;
 
 COMMENT ON FUNCTION chainage_to_point(float, text) IS 'Given an input chainage and road code, return the point along that line for the chainage';

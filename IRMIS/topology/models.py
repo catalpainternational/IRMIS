@@ -1,4 +1,5 @@
 from django.contrib.gis.db import models
+from django.contrib.gis.db.models import Transform
 
 # Create your models here.
 from assets import models as assets

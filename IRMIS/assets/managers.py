@@ -1,5 +1,6 @@
 from django.contrib.gis.db import models
-from django.db.models import Func, FloatField, CharField, DateTimeField
+from django.db.models import Func, FloatField, CharField, DateTimeField, F
+from django.contrib.gis.db.models.functions import Transform
 
 
 class RoughnessRoadCode(Func):
@@ -29,6 +30,7 @@ class RoughnessLinkCode(Func):
     """
     Django Func implementation to extract link code from roughness csv json
     """
+
     template = "(data::json->>'Link Code')"
     output_field = CharField()
     default_alias = "link_code"
@@ -38,6 +40,7 @@ class Roughness(Func):
     """
     Django Func implementation to extract roughness as a float from roughness csv json
     """
+
     template = "(data::json->>'roughness')::numeric"
     output_field = FloatField()
     default_alias = "roughness"
@@ -47,6 +50,7 @@ class RoughnessDate(Func):
     """
     Django Func implementation to extract and parse timestamp from roughness csv json
     """
+
     template = (
         "to_timestamp((data::json->>'Survey date and time'), 'HH24:MI:SS YYY-Month-DD')"
     )
@@ -58,7 +62,8 @@ class RoughnessStartPoint(Func):
     """
     Django Func implementation to extract start point from roughness csv json
     """
-    template = "ST_Point((data::json->>'interval_start_latitude')::numeric, (data::json->>'interval_start_longitude')::numeric)"
+
+    template = "ST_SETSRID(ST_Point((data::json->>'interval_start_longitude')::numeric, (data::json->>'interval_start_latitude')::numeric), 4326)"
     output_field = models.PointField()
     default_alias = "start"
 
@@ -67,9 +72,17 @@ class RoughnessEndPoint(Func):
     """
     Django Func implementation to extract end point from roughness csv json
     """
-    template = "ST_Point((data::json->>'interval_end_latitude')::numeric, (data::json->>'interval_end_longitude')::numeric)"
+
+    template = "ST_SETSRID(ST_Point((data::json->>'interval_end_longitude')::numeric, (data::json->>'interval_end_latitude')::numeric), 4326)"
     output_field = models.PointField()
     default_alias = "end"
+
+
+class Chainage(Func):
+    template = "(%(function)s(%(expressions)s)).chainage"
+    function = "point_to_chainage"
+    output_field = models.FloatField()
+    default_alias = "chainage"
 
 
 class CsvSurveyQueryset(models.QuerySet):
@@ -77,13 +90,22 @@ class CsvSurveyQueryset(models.QuerySet):
 
     def roughness(self):
         """ returns all roughness survey csv data annotated with typed fields  """
-        return self.filter(source__data_type="roughness").annotate(
-            RoughnessRoadCode(),
-            RoughnessLinkCode(),
-            Roughness(),
-            RoughnessDate(),
-            RoughnessStartPoint(),
-            RoughnessEndPoint(),
+        return (
+            self.filter(source__data_type="roughness")
+            .annotate(
+                RoughnessRoadCode(),
+                RoughnessLinkCode(),
+                Roughness(),
+                RoughnessDate(),
+                RoughnessStartPoint(),
+                RoughnessEndPoint(),
+            )
+            .annotate(
+                start_utm=Transform(F("start"), srid=32751),
+                end_utm=Transform(F("end"), srid=32751),
+            )
+            .annotate(start_chainage=Chainage(F("start_utm")))
+            .annotate(end_chainage=Chainage(F("end_utm")))
         )
 
 
