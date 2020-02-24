@@ -4,6 +4,45 @@ from django.core.management.base import BaseCommand
 from django.db import connection
 from psycopg2 import sql
 
+from assets.models import Road
+from django.db.models.functions import Coalesce, Cast
+from django.db.models import F, TextField, Func
+from django.contrib.gis.db.models import LineStringField
+
+
+class GeomDump(Func):
+    function = "ST_DUMP"
+    template = "(%(function)s(%(expressions)s)).geom"
+
+    def as_sql(
+        self,
+        compiler,
+        connection,
+        function=None,
+        template=None,
+        arg_joiner=None,
+        **extra_context
+    ):
+        connection.ops.check_expression_support(self)
+        sql_parts = []
+        params = []
+        for arg in self.source_expressions:
+            arg_sql, arg_params = compiler.compile(arg)
+            sql_parts.append(arg_sql)
+            params.extend(arg_params)
+        data = {**self.extra, **extra_context}
+        # Use the first supplied value in this order: the parameter to this
+        # method, a value supplied in __init__()'s **extra (the value in
+        # `data`), or the value defined on the class.
+        if function is not None:
+            data["function"] = function
+        else:
+            data.setdefault("function", self.function)
+        template = template or data.get("template", self.template)
+        arg_joiner = arg_joiner or data.get("arg_joiner", self.arg_joiner)
+        data["expressions"] = data["field"] = arg_joiner.join(sql_parts)
+        return template % data, params
+
 
 class SqlQueries:
 
@@ -36,47 +75,33 @@ class SqlQueries:
     )
 
     # Create a table of single parts from our multipart line strings
-    create_dump = """ 
-        DROP TABLE IF EXISTS singlepart_dump;
-        CREATE TABLE singlepart_dump AS (
-            SELECT
-                CASE WHEN id = 149
-                    THEN 'A03-mota-ain' ELSE road_code END AS road_code,
-                (ST_DUMP(geom)).geom FROM "public"."assets_road"
-            WHERE (
-                road_type = 'NAT'
-                OR
-                road_type = 'MUN'
-                OR
-                road_type = 'HIGH'
-            ) AND NOT
-                (road_code = ANY (ARRAY['AL001', 'AL003', 'XX004', 'XX009']) --Bad roads
-                    OR ID = ANY (ARRAY[142]) -- Duplicated road
-                )
-        );
-        """
+    # This input for this is approximately
+    # Road.objects.filter(inputroad__blacklist=False).annotate(code=Coalesce('inputroad__road_code', 'road_code', output_field=models.TextField())).values('code', 'geom')
+
+    create_dump = (
+        Road.objects.filter(inputroad__blacklist=False)
+        .annotate(
+            code=Coalesce("inputroad__road_code", "road_code", output_field=TextField())
+        )
+        .annotate(geom_part=GeomDump(F("geom")))
+        .values("geom_part", "code")
+    )
 
     # Apply fixes to the geometries from the topology_roadcorrectionsegment deletions
     apply_deletions = """
-    CREATE OR REPLACE FUNCTION update_topo_roadcorrection() RETURNS void AS
-        $BODY$
-        DECLARE
+        DO $$ DECLARE
             drop_geom RECORD;
         BEGIN
             FOR drop_geom IN
-                SELECT * FROM topology_roadcorrectionsegment WHERE deletion IS TRUE
+                SELECT * FROM topology_roadcorrectionsegment WHERE patch IS NOT NULL
             LOOP
                 UPDATE singlepart_dump sp
-                SET geom = ST_DIFFERENCE(sp.geom, drop_geom.geom)
-                WHERE ST_INTERSECTS(drop_geom.geom, sp.geom)
-                AND ST_GEOMETRYTYPE(ST_INTERSECTion(drop_geom.geom, sp.geom)) != 'ST_Point'
+                SET geom = ST_DIFFERENCE(sp.geom, drop_geom.patch)
+                WHERE ST_INTERSECTS(sp.geom, drop_geom.patch)
                 AND drop_geom.road_code = sp.road_code;
             END LOOP;
             RETURN;
-        END;
-        $BODY$
-        LANGUAGE plpgsql;
-    SELECT update_topo_roadcorrection();
+        END$$ LANGUAGE plpgsql;
 
     -- That function may have left us with multipart geometries to handle
     INSERT INTO singlepart_dump(road_code, geom) SELECT road_code, (ST_DUMP(geom)).geom FROM singlepart_dump WHERE ST_GeometryType(geom) = 'ST_MultiLineString';
@@ -85,7 +110,7 @@ class SqlQueries:
 
     apply_additions = """
     INSERT INTO singlepart_dump(road_code, geom)
-        SELECT road_code, geom FROM topology_roadcorrectionsegment WHERE deletion IS FALSE
+        SELECT road_code, geom FROM topology_roadcorrectionsegment
     """
 
     # Merge the single parts to multiparts, and re-export as single parts according to their road code
@@ -95,6 +120,17 @@ class SqlQueries:
         CREATE TABLE multipart_join AS (SELECT road_code, ST_LINEMERGE(ST_COLLECT(geom)) AS g FROM singlepart_dump GROUP BY road_code);
         DROP TABLE IF EXISTS multipart_join_dumpagain;
         CREATE TABLE multipart_join_dumpagain AS SELECT road_code, (ST_DUMP(g)).geom  FROM multipart_join;
+        ALTER TABLE multipart_join_dumpagain ADD COLUMN id SERIAL PRIMARY KEY;
+        CREATE INDEX IF NOT EXISTS multipart_join_dumpagain_geom_id ON multipart_join_dumpagain USING gist(geom);
+
+        ALTER TABLE multipart_join_dumpagain ADD COLUMN geom_count int;
+        UPDATE multipart_join_dumpagain a SET geom_count = (SELECT SUM(st_numgeometries(geom)) FROM multipart_join_dumpagain d WHERE a.road_code = d.road_code);
+
+        BEGIN;
+        SELECT setval(pg_get_serial_sequence('"topology_roadcorrectionsegment"','id'), coalesce(max("id"), 1), max("id") IS NOT null) FROM "topology_roadcorrectionsegment";
+        SELECT setval(pg_get_serial_sequence('"topology_intersection"','id'), coalesce(max("id"), 1), max("id") IS NOT null) FROM "topology_intersection";
+        COMMIT;
+
         """
 
     # This loads the linestrings to the topology_toporoad table
@@ -109,6 +145,31 @@ class SqlQueries:
         sql.Identifier(attrs["public"]),
         sql.Identifier(attrs["table_name"]),
         sql.Identifier(attrs["column_name"]),
+    )
+
+    populate_topo_loop = sql.SQL(
+        """
+        DO $$DECLARE r record;
+        BEGIN
+        FOR r IN SELECT road_code, (ST_DUMP(geom)).geom FROM multipart_join_dumpagain LOOP
+            BEGIN
+            RAISE NOTICE 'Loading of road code % starts', r.road_code;
+             INSERT INTO {public}.{table_name} (road_code, {column_name})
+                SELECT r.road_code, 
+                topology.toTopoGeom(r.geom, 'tl_roads_topo'::varchar, 1, {prec});
+            EXCEPTION
+            WHEN OTHERS THEN
+                RAISE WARNING 'Loading of road code % failed: %', r.road_code, SQLERRM;
+            END;
+        END LOOP;
+        END$$;
+
+        """
+    ).format(
+        public=sql.Identifier(attrs["public"]),
+        table_name=sql.Identifier(attrs["table_name"]),
+        column_name=sql.Identifier(attrs["column_name"]),
+        prec=sql.Literal(attrs["prec"]),
     )
 
     update_table_geom = sql.SQL(
@@ -140,11 +201,22 @@ class Command(BaseCommand):
             cursor.execute(SqlQueries.create_topology, SqlQueries.attrs)
             cursor.execute(SqlQueries.create_table, SqlQueries.attrs)
 
-            cursor.execute(SqlQueries.create_dump, SqlQueries.attrs)
+            # Our "create dump" command is a Django queryset. It needs to be a table for the following processing.
+            qs, params = SqlQueries.create_dump.query.sql_with_params()
+
+            # Django SQL writer does terrible things by deciding we want bytea field. We don't
+            qs = qs.replace("::bytea", "")
+            qs = """
+                DROP TABLE IF EXISTS "singlepart_dump";
+                CREATE TABLE "singlepart_dump" AS (
+                    SELECT code road_code, geom_part AS geom FROM ({}) AS "i")""".format(
+                qs
+            )
+            cursor.execute(qs, params)
 
             cursor.execute(SqlQueries.apply_deletions, SqlQueries.attrs)
             cursor.execute(SqlQueries.apply_additions, SqlQueries.attrs)
 
             cursor.execute(SqlQueries.merge_multipart, SqlQueries.attrs)
-            cursor.execute(SqlQueries.populate_topo, SqlQueries.attrs)
-            cursor.execute(SqlQueries.update_table_geom, SqlQueries.attrs)
+
+            # cursor.execute(SqlQueries.populate_topo_loop)

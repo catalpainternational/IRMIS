@@ -11,10 +11,35 @@ class RoadCorrectionSegment(models.Model):
     """
 
     road_code = models.TextField(null=True, blank=True)
+    patch = models.PolygonField(srid=32751, dim=2, blank=True, null=True)
     geom = models.LineStringField(srid=32751, dim=2, blank=True, null=True)
-    deletion = models.BooleanField(
-        help_text="True if this is a Delete. False if this is an Addition."
+
+
+class InputRoad(models.Model):
+    """
+    Whitelisted and blacklisted roads
+    """
+
+    road = models.OneToOneField(assets.Road, on_delete=models.CASCADE, primary_key=True)
+    blacklist = models.BooleanField(
+        default=False,
+        help_text="True if this is a Blacklisted, never-include-road. False if this is a road to include in Topology creation.",
     )
+    road_code = models.TextField(
+        blank=True,
+        null=True,
+        help_text="Override the road_code from the assets table where required",
+    )
+
+
+class Intersection(models.Model):
+    """
+    Mark out "valid" and "invalid" intersections for topology fixes
+    """
+
+    road_id_a = models.IntegerField()
+    road_id_b = models.IntegerField()
+    intersection = models.PointField(srid=32751, dim=2)
 
 
 class TopoRoad(models.Model):
