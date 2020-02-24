@@ -30,6 +30,10 @@ class InputRoad(models.Model):
         null=True,
         help_text="Override the road_code from the assets table where required",
     )
+    disabled = models.BooleanField(
+        default=False,
+        help_text="True if this code is not to be included now. Like blacklist but temporary.",
+    )
 
 
 class Intersection(models.Model):

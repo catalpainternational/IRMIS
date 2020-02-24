@@ -70,6 +70,10 @@ class SqlQueries:
         """
     ).format(sql.Identifier(attrs["public"]), sql.Identifier(attrs["table_name"]),)
 
+    drop_field = """
+            SELECT topology.DropTopoGeometryColumn(%(public)s, %(table_name)s, %(column_name)s);
+        """
+
     drop_table = sql.SQL("""DROP TABLE IF EXISTS {}.{}""").format(
         sql.Identifier(attrs["public"]), sql.Identifier(attrs["table_name"]),
     )
@@ -79,7 +83,7 @@ class SqlQueries:
     # Road.objects.filter(inputroad__blacklist=False).annotate(code=Coalesce('inputroad__road_code', 'road_code', output_field=models.TextField())).values('code', 'geom')
 
     create_dump = (
-        Road.objects.filter(inputroad__blacklist=False)
+        Road.objects.filter(inputroad__blacklist=False, inputroad__disabled=False)
         .annotate(
             code=Coalesce("inputroad__road_code", "road_code", output_field=TextField())
         )
@@ -93,7 +97,7 @@ class SqlQueries:
             drop_geom RECORD;
         BEGIN
             FOR drop_geom IN
-                SELECT * FROM topology_roadcorrectionsegment WHERE patch IS NOT NULL
+                SELECT * FROM topology_roadcorrectionsegment
             LOOP
                 UPDATE singlepart_dump sp
                 SET geom = ST_DIFFERENCE(sp.geom, drop_geom.patch)
@@ -196,27 +200,30 @@ class Command(BaseCommand):
     def handle(self, *args, **option):
 
         with connection.cursor() as cursor:
-            cursor.execute(SqlQueries.drop_table, SqlQueries.attrs)
+            # cursor.execute(SqlQueries.drop_table, SqlQueries.attrs)
+            # cursor.execute(SqlQueries.drop_topology, SqlQueries.attrs)
+            # cursor.execute(SqlQueries.create_topology, SqlQueries.attrs)
+            # cursor.execute(SqlQueries.create_table, SqlQueries.attrs)
+
+            # # Our "create dump" command is a Django queryset. It needs to be a table for the following processing.
+            # qs, params = SqlQueries.create_dump.query.sql_with_params()
+
+            # # Django SQL writer does terrible things by deciding we want bytea field. We don't
+            # qs = qs.replace("::bytea", "")
+            # qs = """
+            #     DROP TABLE IF EXISTS "singlepart_dump";
+            #     CREATE TABLE "singlepart_dump" AS (
+            #         SELECT code road_code, geom_part AS geom FROM ({}) AS "i")""".format(
+            #     qs
+            # )
+            # cursor.execute(qs, params)
+
+            # cursor.execute(SqlQueries.apply_deletions, SqlQueries.attrs)
+            # cursor.execute(SqlQueries.apply_additions, SqlQueries.attrs)
+
+            # cursor.execute(SqlQueries.merge_multipart, SqlQueries.attrs)
+
+            # cursor.execute(SqlQueries.populate_topo, SqlQueries.attrs)
+            # cursor.execute(SqlQueries.update_table_geom, SqlQueries.attrs)
+            cursor.execute(SqlQueries.drop_field, SqlQueries.attrs)
             cursor.execute(SqlQueries.drop_topology, SqlQueries.attrs)
-            cursor.execute(SqlQueries.create_topology, SqlQueries.attrs)
-            cursor.execute(SqlQueries.create_table, SqlQueries.attrs)
-
-            # Our "create dump" command is a Django queryset. It needs to be a table for the following processing.
-            qs, params = SqlQueries.create_dump.query.sql_with_params()
-
-            # Django SQL writer does terrible things by deciding we want bytea field. We don't
-            qs = qs.replace("::bytea", "")
-            qs = """
-                DROP TABLE IF EXISTS "singlepart_dump";
-                CREATE TABLE "singlepart_dump" AS (
-                    SELECT code road_code, geom_part AS geom FROM ({}) AS "i")""".format(
-                qs
-            )
-            cursor.execute(qs, params)
-
-            cursor.execute(SqlQueries.apply_deletions, SqlQueries.attrs)
-            cursor.execute(SqlQueries.apply_additions, SqlQueries.attrs)
-
-            cursor.execute(SqlQueries.merge_multipart, SqlQueries.attrs)
-
-            # cursor.execute(SqlQueries.populate_topo_loop)
