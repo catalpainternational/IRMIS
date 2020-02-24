@@ -492,7 +492,7 @@ class Road(models.Model):
         help_text=_("Enter road link project name"),
     )
     traffic_level = models.CharField(
-        verbose_name=_("Traffic Level"),
+        verbose_name=_("Traffic Data"),
         max_length=1,
         choices=TRAFFIC_LEVEL_CHOICES,
         blank=True,
