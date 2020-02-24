@@ -95,6 +95,12 @@
     margin-top: 25px;
 }
 
+tfoot th, tfoot td {
+    vertical-align: middle !important;
+    padding: 0 20px !important;
+    height: 30px;
+}
+
 
 // Override DataTables.net styles
 div.dataTables_wrapper {

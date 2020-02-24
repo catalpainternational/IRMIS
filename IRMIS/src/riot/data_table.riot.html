@@ -147,9 +147,9 @@
             // Inject a footer if a "footerCallback" is defined in the dataTableConfig
             if (newTable && state.dataTableConfig.footerCallback) {
                 const colCount = state.dataTableConfig.columns.length;
-                let emptyFooter = "<tfoot><tr>";
-                for (let ix = 0; ix < colCount; ix++) {
-                    emptyFooter += "<th></th>";
+                let emptyFooter = "<tfoot><tr role='row'><th></th>";
+                for (let ix = 1; ix < colCount; ix++) {
+                    emptyFooter += "<td></td>";
                 }
                 emptyFooter += "</tr></tfoot>";
                 $(`#${state.id}`).append(emptyFooter);
