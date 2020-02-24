@@ -79,7 +79,8 @@ class SurveyQuerySet(models.QuerySet):
 
         fields = dict(
             id="id",
-            structure_id="structure_id",
+            asset_id="asset_id",
+            asset_code="asset_code",
             road_id="road_id",
             road_code="road_code",
             user="user__id",
@@ -135,18 +136,29 @@ class Survey(models.Model):
 
     objects = SurveyManager()
 
-    # a disconnected reference to the road record this survey relates to
-    road_id = models.IntegerField(verbose_name=_("Road Id"), blank=True, null=True)
-    road_code = models.CharField(
-        verbose_name=_("Road Code"), validators=[no_spaces], max_length=25
+    # Global ID for an asset the survey links to (ex. BRDG-42)
+    asset_id = models.CharField(
+        verbose_name=_("Asset Id"), validators=[no_spaces], max_length=15,
     )
-    # Global ID for a structure the survey links to (ex. BRDG-42)
-    structure_id = models.CharField(
-        verbose_name=_("Structure Id"),
+    asset_code = models.CharField(
+        verbose_name=_("Asset Code"), validators=[no_spaces], max_length=25
+    )
+    # a disconnected reference to the road record this survey relates to
+    # for a survey connected to a road, this is the same as asset_*
+    # for a survey connected to a structure, this is the road that that structure is on
+    road_id = models.CharField(
+        verbose_name=_("Road Id"),
+        validators=[no_spaces],
         blank=True,
         null=True,
-        validators=[no_spaces],
         max_length=15,
+    )
+    road_code = models.CharField(
+        verbose_name=_("Road Code"),
+        validators=[no_spaces],
+        blank=True,
+        null=True,
+        max_length=25,
     )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -262,7 +274,17 @@ class RoadQuerySet(models.QuerySet):
             rainfall="rainfall",
         )
 
-        annotations = start_end_point_annos("geom")
+        survey = (
+            Survey.objects.filter(asset_id__startswith="ROAD-")
+            .annotate(road_id=Cast(Substr("road_id", 6), models.IntegerField()))
+            .filter(road_id=OuterRef("id"))
+            .order_by("-date_surveyed")
+        )
+        annotations = (
+            start_end_point_annos("geom"),
+            # Add stuff from the survey here
+            # some_survey_value=Subquery(survey.values("values__some_survey_value")[:1]),
+        )
         roads = (
             self.order_by("id")
             .annotate(**annotations)
@@ -292,6 +314,10 @@ class RoadQuerySet(models.QuerySet):
             end = Projection(x=road["end_x"], y=road["end_y"])
             road_protobuf.projection_start.CopyFrom(start)
             road_protobuf.projection_end.CopyFrom(end)
+
+            # add stuff from the survey here
+            # if road["some_survey_value"]:
+            #     road_protobuf.some_survey_value = road["some_survey_value"]
 
         return roads_protobuf
 
@@ -637,8 +663,8 @@ class BridgeQuerySet(models.QuerySet):
         )
 
         survey = (
-            Survey.objects.filter(structure_id__startswith="BRDG-")
-            .annotate(bridge_id=Cast(Substr("structure_id", 6), models.IntegerField()))
+            Survey.objects.filter(asset_id__startswith="BRDG-")
+            .annotate(bridge_id=Cast(Substr("asset_id", 6), models.IntegerField()))
             .filter(bridge_id=OuterRef("id"))
             .order_by("-date_surveyed")
         )
@@ -905,8 +931,8 @@ class CulvertQuerySet(models.QuerySet):
         )
 
         survey = (
-            Survey.objects.filter(structure_id__startswith="CULV-")
-            .annotate(culvert_id=Cast(Substr("structure_id", 6), models.IntegerField()))
+            Survey.objects.filter(asset_id__startswith="CULV-")
+            .annotate(culvert_id=Cast(Substr("asset_id", 6), models.IntegerField()))
             .filter(culvert_id=OuterRef("id"))
             .order_by("-date_surveyed")
         )

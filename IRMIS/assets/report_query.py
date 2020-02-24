@@ -363,7 +363,7 @@ class ReportQuery:
             # most of the asset.* fields will be mapped from the relevant road.*, bridge.*, culvert.*
             # in the query above
             # Mapped fields
-            "asset_type_prefix", # relevant for the query
+            "asset_type_prefix",  # relevant for the query
             "asset_id",
             "asset_code",
             "asset_name",
@@ -371,7 +371,7 @@ class ReportQuery:
             "asset_class",
             "geom_chainage",
             "municipality",
-            "geojson_file", # this is FK reference
+            "geojson_file",  # this is FK reference
             # Road specific
             "carriageway_width",
             "number_lanes",
@@ -439,12 +439,20 @@ class ReportQuery:
 
         has_asset_id = "asset_id" in value_filter_keys
         has_road_id = "road_id" in value_filter_keys
-        if has_asset_id and has_road_id and self.filters["asset_id"] == self.filters["road_id"]:
+        if (
+            has_asset_id
+            and has_road_id
+            and self.filters["asset_id"] == self.filters["road_id"]
+        ):
             # remove the superfluous road_id key
             value_filter_keys.remove("road_id")
         has_asset_code = "asset_code" in value_filter_keys
         has_road_code = "road_code" in value_filter_keys
-        if has_asset_code and has_road_code and self.filters["asset_code"] == self.filters["road_code"]:
+        if (
+            has_asset_code
+            and has_road_code
+            and self.filters["asset_code"] == self.filters["road_code"]
+        ):
             # remove the superfluous road_code key
             value_filter_keys.remove("road_code")
 
@@ -473,7 +481,7 @@ class ReportQuery:
         if get_all_surveys:
             self.report_clauses["get_all"] = self.report_clauses["retrieve_all"]
             where_clauses = " WHERE " + " AND ".join(attribute_clauses)
-            self.report_clauses["get_all"] +=where_clauses
+            self.report_clauses["get_all"] += where_clauses
         else:
             self.report_clauses["get_aggregate_select"] = self.report_clauses[
                 "retrieve_aggregate_select"
@@ -536,7 +544,11 @@ class ReportQuery:
         # * substitute the plain text (no quotes) of each set of filter_cases
         #   within the corresponding {} part of each of the ANY clauses
         # then you'll be able to run the query in any tool that can handle SQL (recommend LINQPad)
-        print(self.reportSQL.replace(r"ANY(%s)", r"ANY('{}'::text[])"), "\n-- ", self.filter_cases)
+        print(
+            self.reportSQL.replace(r"ANY(%s)", r"ANY('{}'::text[])"),
+            "\n-- ",
+            self.filter_cases,
+        )
 
         with connection.cursor() as cursor:
             cursor.execute(self.reportSQL, self.filter_cases)

@@ -8,11 +8,14 @@ export class Survey extends jspb.Message {
   getId(): number;
   setId(value: number): void;
 
-  getStructureId(): string;
-  setStructureId(value: string): void;
+  getAssetId(): string;
+  setAssetId(value: string): void;
 
-  getRoadId(): number;
-  setRoadId(value: number): void;
+  getAssetCode(): string;
+  setAssetCode(value: string): void;
+
+  getRoadId(): string;
+  setRoadId(value: string): void;
 
   getRoadCode(): string;
   setRoadCode(value: string): void;
@@ -58,8 +61,9 @@ export class Survey extends jspb.Message {
 export namespace Survey {
   export type AsObject = {
     id: number,
-    structureId: string,
-    roadId: number,
+    assetId: string,
+    assetCode: string,
+    roadId: string,
     roadCode: string,
     user: number,
     source: string,
