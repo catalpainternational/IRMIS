@@ -55,9 +55,9 @@
                 <small class="form-text text-muted">{ window.gettext("Enter structure's construction year") }</small>
                 <input
                     class="{ state.errors.constructionYear ? 'danger' : null } { state.constructionYear !== -1 && state.constructionYear !== '' ? '' : 'inactive' } form-control"
-                    type="number" maxlength="4" placeholder="1970"
-                    value="{ state.constructionYear !== -1 ? state.constructionYear : '' }" min="0"
-                    oninput="{ checkConstructionYear }">
+                    type="number" placeholder="1970"
+                    value="{ state.constructionYear !== -1 ? state.constructionYear : '' }" min="1970"
+                    max="{ new Date() }" oninput="{ checkConstructionYear }">
                 <div if="{ state.errors.constructionYear }" class="invalid-tooltip">
                     <ul>
                         <li>{ state.errors.constructionYear }.</li>
@@ -72,8 +72,8 @@
                 <small class="form-text text-muted">{ window.gettext("Enter the structure's length in meters") }</small>
                 <input
                     class="{ state.errors.length ? 'danger' : null } { state.length !== -1 && state.length !== '' ? '' : 'inactive' } form-control"
-                    type="number" maxlength="25" placeholder="6" value="{ state.length !== -1 ? state.length : '' }"
-                    oninput="{ checkLength }">
+                    type="number" placeholder="5" value="{ state.length !== -1 ? state.length : '' }" min="0"
+                    step="0.01" oninput="{ checkLength }">
                 <div if="{ state.errors.length }" class="invalid-tooltip">
                     <ul>
                         <li>{ state.errors.length }.</li>
@@ -88,8 +88,8 @@
                 <small class="form-text text-muted">{ window.gettext("Enter the structure's width in meters") }</small>
                 <input
                     class="{ state.errors.width ? 'danger' : null } { state.width !== -1 && state.width !== '' ? '' : 'inactive' } form-control"
-                    type="number" maxlength="25" placeholder="6" value="{ state.width !== -1 ? state.width : '' }"
-                    oninput="{ checkWidth }">
+                    type="number" placeholder="4" value="{ state.width !== -1 ? state.width : '' }" min="0" max="99.99"
+                    step="0.01" oninput="{ checkWidth }">
                 <div if="{ state.errors.width }" class="invalid-tooltip">
                     <ul>
                         <li>{ state.errors.width }.</li>
@@ -108,8 +108,8 @@
                     </small>
                     <input
                         class="{ state.errors.height ? 'danger' : null } { state.height !== -1 && state.height !== '' ? '' : 'inactive' } form-control"
-                        type="number" maxlength="25" placeholder="6" value="{ state.height !== -1 ? state.height : '' }"
-                        oninput="{ checkHeight }">
+                        type="number" placeholder="42" value="{ state.height !== -1 ? state.height : '' }" min="0.1"
+                        step="0.01" oninput="{ checkHeight }">
                     <div if="{ state.errors.height }" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.height }.</li>
@@ -126,8 +126,8 @@
                     </small>
                     <input
                         class="{ state.errors.structureCells ? 'danger' : null } { state.structureCells !== -1 && state.structureCells !== '' ? '' : 'inactive' } form-control"
-                        type="number" maxlength="25" placeholder="2"
-                        value="{ state.structureCells !== -1 ? state.structureCells : '' }"
+                        type="number" placeholder="2"
+                        value="{ state.structureCells !== -1 ? state.structureCells : '' }" min="0" max="99"
                         oninput="{ checkNumberCells }">
                     <div if="{ state.errors.structureCells }" class="invalid-tooltip">
                         <ul>
@@ -148,8 +148,8 @@
                     </small>
                     <input
                         class="{ state.errors.numberSpans ? 'danger' : null } { state.numberSpans !== -1 && state.numberSpans !== '' ? '' : 'inactive' } form-control"
-                        type="number" maxlength="25" placeholder="1"
-                        value="{ state.numberSpans !== -1 ? state.numberSpans : '' }" oninput="{ checkNumberSpans }">
+                        type="number" placeholder="1" value="{ state.numberSpans !== -1 ? state.numberSpans : '' }"
+                        min="1" max="999" oninput="{ checkNumberSpans }">
                     <div if="{ state.errors.numberSpans }" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.numberSpans }.</li>
@@ -166,8 +166,8 @@
                     </small>
                     <input
                         class="{ state.errors.spanLength ? 'danger' : null } { state.spanLength !== -1 && state.spanLength !== '' ? '' : 'inactive' } form-control"
-                        type="number" maxlength="25" placeholder="1"
-                        value="{ state.spanLength !== -1 ? state.spanLength : '' }" oninput="{ checkSpanLength }">
+                        type="number" placeholder="1.5" value="{ state.spanLength !== -1 ? state.spanLength : '' }"
+                        min="0.1" step="0.01" oninput="{ checkSpanLength }">
                     <div if="{ state.errors.spanLength }" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.spanLength }.</li>
@@ -187,8 +187,18 @@
     <script>
         import Edit_Stop_Alert from "./edit_stop_alert.riot.html";
 
+        import { containsWhiteSpaces, withinMaxDigits } from "../assets/utilities";
+
         export default {
             state: {
+                constructionYearDigits: 4,
+                lengthDecimals: 2,
+                widthDigits: 4,
+                widthDecimals: 2,
+                heightDecimals: 2,
+                numberCellsDigits: 2,
+                numberSpansDigits: 3,
+                spanLengthDecimals: 2,
                 canSave: false,
                 errors: {},
             },
@@ -216,8 +226,14 @@
                 this.props.parent.saveStructure();
             },
             checkCode(e) {
-                this.state.code = e.currentTarget.value;
-                this.props.structure.setStructureCode(this.state.code);
+                const value = e.currentTarget.value;
+                if (containsWhiteSpaces(value)) {
+                    this.state.errors.code = window.gettext('Code cannot contain white spaces');
+                } else {
+                    delete this.state.errors.code;
+                    this.state.code = value;
+                    this.props.structure.setStructureCode(value);
+                }
                 this.update();
             },
             checkName(e) {
@@ -231,38 +247,82 @@
                 this.update();
             },
             checkConstructionYear(e) {
-                this.state.constructionYear = e.currentTarget.value;
-                this.props.structure.setConstructionYear(this.state.constructionYear);
+                const value = e.currentTarget.value;
+                if (!withinMaxDigits(value, this.state.constructionYearDigits)) {
+                    this.state.errors.constructionYear = window.gettext(`Construction year cannot contain more than ${this.state.constructionYearDigits} digits and value shouldn't contain decimals`);
+                } else {
+                    delete this.state.errors.constructionYear;
+                    this.state.constructionYear = value;
+                    this.props.structure.setConstructionYear(value);
+                }
                 this.update();
             },
             checkLength(e) {
-                this.state.length = e.currentTarget.value;
-                this.props.structure.setLength(this.state.length);
+                const value = e.currentTarget.value;
+                if (!withinMaxDigits(value, 19, this.state.lengthDecimals)) {
+                    this.state.errors.length = window.gettext(`Length cannot contain more than ${this.state.lengthDecimals} decimals`);
+                } else {
+                    delete this.state.errors.length;
+                    this.state.length = value;
+                    this.props.structure.setLength(value);
+                }
                 this.update();
             },
             checkWidth(e) {
-                this.state.width = e.currentTarget.value;
-                this.props.structure.setWidth(this.state.width);
+                const value = e.currentTarget.value;
+                if (!withinMaxDigits(value, this.state.widthDigits, this.state.widthDecimals)) {
+                    this.state.errors.width = window.interpolate(
+                        window.gettext('Width cannot contain more than %s digits, of which %s are decimals'),
+                        [this.state.widthDigits, this.state.widthDecimals]
+                    );
+                } else {
+                    delete this.state.errors.width;
+                    this.state.width = value;
+                    this.props.structure.setWidth(value);
+                }
                 this.update();
             },
             checkHeight(e) {
-                this.state.structureHeight = e.currentTarget.value;
-                this.props.structure.setHeight(this.state.height);
+                const value = e.currentTarget.value;
+                if (!withinMaxDigits(value, 19, this.state.heightDecimals)) {
+                    this.state.errors.height = window.gettext(`Height cannot contain more than ${this.state.heightDecimals} decimals`);
+                } else {
+                    delete this.state.errors.height;
+                    this.state.structureHeight = value;
+                    this.props.structure.setHeight(value);
+                }
                 this.update();
             },
             checkNumberCells(e) {
-                this.state.structureCells = e.currentTarget.value;
-                this.props.structure.setNumberCells(this.state.numberCells);
+                const value = e.currentTarget.value;
+                if (!withinMaxDigits(value, this.state.numberCellsDigits)) {
+                    this.state.errors.structureCells = window.gettext(`Number of cells cannot contain more than ${this.state.numberCellsDigits} digits and value shouldn't contain decimals`);
+                } else {
+                    delete this.state.errors.structureCells;
+                    this.state.structureCells = value;
+                    this.props.structure.setNumberCells(value);
+                }
                 this.update();
             },
             checkNumberSpans(e) {
-                this.state.numberSpans = e.currentTarget.value;
-                this.props.structure.setNumberSpans(this.state.numberSpans);
-                this.update();
+                const value = e.currentTarget.value;
+                if (!withinMaxDigits(value, this.state.numberSpansDigits)) {
+                    this.state.errors.numberSpans = window.gettext(`Number of spans cannot contain more than ${this.state.numberSpansDigits} digits and value shouldn't contain decimals`);
+                } else {
+                    delete this.state.errors.numberSpans;
+                    this.state.numberSpans = value;
+                    this.props.structure.setNumberSpans(value);
+                }
             },
             checkSpanLength(e) {
-                this.state.spanLength = e.currentTarget.value;
-                this.props.structure.setSpanLength(this.state.spanLength);
+                const value = e.currentTarget.value;
+                if (!withinMaxDigits(value, 19, this.state.spanLengthDecimals)) {
+                    this.state.errors.spanLength = window.gettext(`Span length cannot contain more than ${this.state.heightDecimals} decimals`);
+                } else {
+                    delete this.state.errors.spanLength;
+                    this.state.spanLength = value;
+                    this.props.structure.setSpanLength(value);
+                }
                 this.update();
             },
         }
