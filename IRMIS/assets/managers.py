@@ -104,8 +104,10 @@ class CsvSurveyQueryset(models.QuerySet):
                 start_utm=Transform(F("start"), srid=32751),
                 end_utm=Transform(F("end"), srid=32751),
             )
-            .annotate(start_chainage=Chainage(F("start_utm")))
-            .annotate(end_chainage=Chainage(F("end_utm")))
+            .annotate(
+                start_chainage=Chainage(F("start_utm")),
+                end_chainage=Chainage(F("end_utm")),
+            )
         )
 
 
