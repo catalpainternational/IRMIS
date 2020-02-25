@@ -159,7 +159,11 @@ def assess_road_geometries(roads, reset_geom):
     # then we must recalculate them for all roads, i.e. we must turn on reset_geom
     if not reset_geom:
         for road in roads:
-            if road.geom_start_chainage == None or road.geom_end_chainage == None or road.geom_length == None:
+            if (
+                road.geom_start_chainage == None
+                or road.geom_end_chainage == None
+                or road.geom_length == None
+            ):
                 reset_geom = True
                 break
 
@@ -410,9 +414,7 @@ def create_programmatic_survey(management_command, data, mappings, audit_source_
             "chainage_start": data["chainage_start"]
             if "chainage_start" in data
             else None,
-            "chainage_end": data["chainage_end"]
-            if "chainage_end" in data
-            else None,
+            "chainage_end": data["chainage_end"] if "chainage_end" in data else None,
             "source": "programmatic",
             "values": {},
             "date_created": make_aware(datetime.datetime(1970, 1, 1)),
