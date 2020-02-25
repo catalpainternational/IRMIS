@@ -511,7 +511,7 @@ function buttonSegmentsTemplate(attrib, asset) {
 
     return `<a data-toggle="modal"
         data-target="#inventory-segments-modal"
-        data-code="${code}"
+        data-code="${asset.code}"
         data-id="${asset.id}"
         data-attr="${attrib}">${window.gettext("View")} ${getFieldName(attrib)}</a>`;
 }
