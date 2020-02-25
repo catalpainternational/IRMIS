@@ -32,6 +32,7 @@ class ReportQuery:
                 # * asset_condition for Bridges and Culverts will have to come
                 #   from the structure_condition survey
                 # * material_id and structure_type_id have different meanings for bridge and culvert
+                # * asset_code (relative to a road) may not be set properly and requires special handling
                 "SELECT asset_type_prefix, asset_id, asset_code, asset_name,\n"
                 " asset_condition, asset_class,\n"
                 " geom_chainage, municipality,\n"
@@ -53,7 +54,13 @@ class ReportQuery:
                 " road_id, road_code\n"
                 "FROM (\n"
                 "SELECT DISTINCT 'ROAD-' AS asset_type_prefix, r.id AS asset_id,\n"
-                " s.road_code AS asset_code, r.road_name AS asset_name,\n"
+                " CASE\n"
+                " WHEN s.asset_code IS NOT NULL THEN s.asset_code\n"
+                " WHEN s.asset_code IS NULL AND s.road_code IS NOT NULL THEN s.road_code\n"
+                " WHEN r.road_code IS NOT NULL THEN r.road_code\n"
+                " ELSE NULL\n"
+                " END AS asset_code,\n"
+                " r.road_name AS asset_name,\n"
                 " r.surface_condition AS asset_condition, r.road_type AS asset_class,\n"
                 " r.geom_end_chainage AS geom_chainage, r.administrative_area AS municipality,\n"
                 " r.geojson_file_id AS geojson_file,\n"
@@ -145,7 +152,7 @@ class ReportQuery:
             ),
             # Surveys which match the given values and assets
             "su": (
-                "SELECT s.id, atc.asset_type_prefix, s.road_id AS asset_id, s.road_code AS asset_code,\n"
+                "SELECT s.id, atc.asset_type_prefix, atc.asset_id, atc.asset_code,\n"
                 " s.date_created, s.date_updated, s.date_surveyed,\n"
                 " s.chainage_start, s.chainage_end, atc.geom_chainage,\n"
                 " atc.road_id, atc.road_code,\n"
