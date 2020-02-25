@@ -534,9 +534,13 @@ class ReportQuery:
         # If you need to understand the generated query then please:
         # * uncomment the following print statement
         # * substitute the plain text (no quotes) of each set of filter_cases
-        #   within the corresponding {} part of each of the ANY clauses
+        #   within the corresponding {} part in each of the ANY clauses
         # then you'll be able to run the query in any tool that can handle SQL (recommend LINQPad)
-        # print(self.reportSQL.replace(r"ANY(%s)", r"ANY('{}'::text[])"), "\n-- ", self.filter_cases)
+        # print(
+        #     self.reportSQL.replace(r"ANY(%s)", r"ANY('{}'::text[])"),
+        #     "\n-- ",
+        #     self.filter_cases,
+        # )
 
         with connection.cursor() as cursor:
             cursor.execute(self.reportSQL, self.filter_cases)
@@ -552,13 +556,13 @@ class ReportQuery:
         # If you need to understand the generated query then please:
         # * uncomment the following print statement
         # * substitute the plain text (no quotes) of each set of filter_cases
-        #   within the corresponding {} part of each of the ANY clauses
+        #   within the corresponding {} part in each of the ANY clauses
         # then you'll be able to run the query in any tool that can handle SQL (recommend LINQPad)
-        print(
-            self.reportSQL.replace(r"ANY(%s)", r"ANY('{}'::text[])"),
-            "\n-- ",
-            self.filter_cases,
-        )
+        # print(
+        #     self.reportSQL.replace(r"ANY(%s)", r"ANY('{}'::text[])"),
+        #     "\n-- ",
+        #     self.filter_cases,
+        # )
 
         with connection.cursor() as cursor:
             cursor.execute(self.reportSQL, self.filter_cases)

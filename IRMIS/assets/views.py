@@ -277,7 +277,9 @@ def protobuf_road_surveys(request, pk, survey_attribute=None):
     # get the Road link requested
     road = get_object_or_404(Road.objects.all(), pk=pk)
     # pull any Surveys that cover the Road Code above
-    queryset = Survey.objects.filter(road_code=road.road_code)
+    # note: road_* fields in the surveys are ONLY relevant for Bridges or Culverts
+    # the asset_* fields in a survey correspond to the road_* fields in a Road
+    queryset = Survey.objects.filter(asset_code=road.road_code)
 
     filter_attribute = survey_attribute
     if survey_attribute == "asset_condition":
@@ -290,7 +292,7 @@ def protobuf_road_surveys(request, pk, survey_attribute=None):
             **{"values__" + filter_attribute + "__isnull": True}
         )
 
-    queryset.order_by("road_code", "chainage_start", "chainage_end", "-date_updated")
+    queryset.order_by("asset_code", "chainage_start", "chainage_end", "-date_updated")
     surveys_protobuf = queryset.to_protobuf()
 
     return HttpResponse(
