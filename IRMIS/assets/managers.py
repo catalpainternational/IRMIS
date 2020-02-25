@@ -126,8 +126,12 @@ class RoughnessManager(models.Manager):
     def get_queryset(self):
         return CsvSurveyQueryset(self.model, using=self._db).roughness()
 
-    def as_surveys(self):
+    def as_surveys(self, username):
+        """
+        Convert "CSV Roughness" row to a "Survey" row
+        """
         model = apps.get_model("assets", "survey")
+        user = apps.get_model("auth", "User").objects.get(username=username)
         return model.objects.bulk_create(
             [
                 model(
@@ -136,7 +140,7 @@ class RoughnessManager(models.Manager):
                     chainage_end=from_row.chainage_end,
                     values={"roughness": from_row.roughness},
                     road_id=from_row.road_id,
-                    added_by=User.objects.get(username="josh"),
+                    added_by=user,
                 )
                 for from_row in self.get_queryset()
             ]
