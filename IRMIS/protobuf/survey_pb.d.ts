@@ -14,8 +14,8 @@ export class Survey extends jspb.Message {
   getAssetCode(): string;
   setAssetCode(value: string): void;
 
-  getRoadId(): string;
-  setRoadId(value: string): void;
+  getRoadId(): number;
+  setRoadId(value: number): void;
 
   getRoadCode(): string;
   setRoadCode(value: string): void;
@@ -63,7 +63,7 @@ export namespace Survey {
     id: number,
     assetId: string,
     assetCode: string,
-    roadId: string,
+    roadId: number,
     roadCode: string,
     user: number,
     source: string,

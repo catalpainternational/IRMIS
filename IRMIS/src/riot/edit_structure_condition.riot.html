@@ -244,7 +244,11 @@
                             if (this.state.structure.roadId && this.state.structure.roadId == !0) {
                                 this.state.survey.setRoadId(this.state.structure.roadId);
                             }
-                            this.state.survey.setStructureId(this.state.structure.id);
+                            if (this.state.structure.roadCode) {
+                                this.state.survey.setRoadCode(this.state.structure.roadCode);
+                            }
+                            this.state.survey.setAssetId("ROAD-" + this.state.structure.id);
+                            this.state.survey.setAssetCode(this.state.structure.code);
                             this.state.survey.setValues(JSON.stringify({}));
                             this.saveSurvey();
                         }

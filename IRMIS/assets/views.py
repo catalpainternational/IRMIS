@@ -318,6 +318,14 @@ def road_survey_values(req_values):
         req_values["road_type"] = req_values.pop("asset_class")
     if "asset_condition" in req_values:
         req_values["surface_condition"] = req_values.pop("asset_condition")
+    if "road_id" in req_values:
+        # road_id is NOT relevant for road surveys (use asset_id instead)
+        # it MUST be removed
+        req_values.pop("road_id", None)
+    if "road_code" in req_values:
+        # road_code is NOT relevant for road surveys (use asset_code instead)
+        # it MUST be removed
+        req_values.pop("road_code", None)
 
     return req_values
 
@@ -1067,6 +1075,7 @@ def survey_create(request):
 
         return response
     except Exception as err:
+        print(err)
         return HttpResponse(status=400)
 
 

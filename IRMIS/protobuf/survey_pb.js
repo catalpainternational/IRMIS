@@ -93,7 +93,7 @@ proto.assets.Survey.toObject = function(includeInstance, msg) {
     id: jspb.Message.getFieldWithDefault(msg, 1, 0),
     assetId: jspb.Message.getFieldWithDefault(msg, 13, ""),
     assetCode: jspb.Message.getFieldWithDefault(msg, 10, ""),
-    roadId: jspb.Message.getFieldWithDefault(msg, 12, ""),
+    roadId: jspb.Message.getFieldWithDefault(msg, 12, 0),
     roadCode: jspb.Message.getFieldWithDefault(msg, 2, ""),
     user: jspb.Message.getFieldWithDefault(msg, 3, 0),
     source: jspb.Message.getFieldWithDefault(msg, 9, ""),
@@ -152,7 +152,7 @@ proto.assets.Survey.deserializeBinaryFromReader = function(msg, reader) {
       msg.setAssetCode(value);
       break;
     case 12:
-      var value = /** @type {string} */ (reader.readString());
+      var value = /** @type {number} */ (reader.readUint32());
       msg.setRoadId(value);
       break;
     case 2:
@@ -244,8 +244,8 @@ proto.assets.Survey.serializeBinaryToWriter = function(message, writer) {
     );
   }
   f = message.getRoadId();
-  if (f.length > 0) {
-    writer.writeString(
+  if (f !== 0) {
+    writer.writeUint32(
       12,
       f
     );
@@ -373,20 +373,20 @@ proto.assets.Survey.prototype.setAssetCode = function(value) {
 
 
 /**
- * optional string road_id = 12;
- * @return {string}
+ * optional uint32 road_id = 12;
+ * @return {number}
  */
 proto.assets.Survey.prototype.getRoadId = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 12, ""));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 12, 0));
 };
 
 
 /**
- * @param {string} value
+ * @param {number} value
  * @return {!proto.assets.Survey} returns this
  */
 proto.assets.Survey.prototype.setRoadId = function(value) {
-  return jspb.Message.setProto3StringField(this, 12, value);
+  return jspb.Message.setProto3IntField(this, 12, value);
 };
 
 

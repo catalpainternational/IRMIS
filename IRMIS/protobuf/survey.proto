@@ -13,7 +13,7 @@ message Survey {
   string asset_code = 10;
   // road_id and road_code are only relevant if this survey references a structure
   // They are NOT relevant if this survey references a road
-  string road_id = 12;
+  uint32 road_id = 12;
   string road_code = 2; // This was just 'road' before - it still has the same meaning now
   uint32 user = 3;
   string source = 9;
