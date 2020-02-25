@@ -197,23 +197,35 @@ div.dataTables_wrapper {
     }
 }
 
+#all-data-table,
+#structures-data-table {
+    thead th:not(.edit-col), tbody td:not(.edit-col) {
+        width: 100%;
+    }
+
+    thead th.edit-col, tbody td.edit-col {
+        width: 15px;
+    }
+}
+
 // Override Bootstrap table styles
 table.table {
     thead th, tbody td {
-        white-space: nowrap;
         width: 1%;
     }
 
     thead th {
         position: sticky !important;
         background-color: $white;
-        top: 0;
+        white-space: nowrap;
         padding-left: 20px;
         padding-right: 20px;
+        top: 0;
     }
 
     tbody td {
         vertical-align: middle;
+        white-space: nowrap;
         padding: 0 20px;
         height: 30px;
     }

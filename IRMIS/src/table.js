@@ -127,6 +127,7 @@ function initializeDataTable() {
 
     roadsTable = $("#all-data-table").DataTable({
         columns: estradaTableColumns,
+        autoWidth: false,
         rowId: ".id",
         // default order is ascending by: road code, link code, & link start chainage
         order: window.canEdit ? [[1, 'asc'], [3, 'asc'], [7, 'asc']] : [[0, 'asc'], [2, 'asc'], [6, 'asc']],
