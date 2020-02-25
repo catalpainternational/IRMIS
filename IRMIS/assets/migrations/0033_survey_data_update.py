@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
         # The clause `WHEN a.structure_id IS NULL AND a.road_id IS NULL THEN NULL`
         # is handling a possible error condition - this should be checked on after running the migration
         migrations.RunSQL(
-            [("UPDATE assets_survey "
+            "UPDATE assets_survey "
             "SET asset_id=s.asset_id, asset_code=s.asset_code, road_id=s.road_id, road_code=s.road_code "
             "FROM ( "
             "SELECT a.id "
@@ -40,6 +40,33 @@ class Migration(migrations.Migration):
             "LEFT OUTER JOIN assets_bridge AS b ON a.asset_id = CONCAT('BRDG-', b.id::text) "
             "LEFT OUTER JOIN assets_culvert AS c ON a.asset_id = CONCAT('CULV-', c.id::text) "
             ") s "
-            "WHERE assets_survey.id = s.id", None)]
+            "WHERE assets_survey.id = s.id",
+            "UPDATE assets_survey "
+            "SET asset_id=s.asset_id, asset_code=s.asset_code, road_id=s.road_id, road_code=s.road_code "
+            "FROM ( "
+            "SELECT a.id "
+            ", CASE "
+            "  WHEN a.road_id IS NOT NULL THEN a.asset_id "
+            "  ELSE NULL "
+            "  END AS asset_id "
+            ", CASE "
+            "  WHEN a.road_code IS NOT NULL THEN a.asset_code "
+            "  ELSE NULL "
+            "  END AS asset_code "
+            ", CASE "
+            "  WHEN a.road_id IS NOT NULL THEN a.road_id "
+            "  WHEN LEFT(a.asset_id, 5) = 'ROAD-' THEN split_part(a.asset_id, '-', 2)::int "
+            "  ELSE NULL "
+            "  END AS road_id "
+            ", CASE "
+            "  WHEN a.road_code IS NOT NULL THEN a.road_code "
+            "  WHEN a.asset_code IS NOT NULL THEN a.asset_code "
+            "  ELSE NULL "
+            "  END AS road_code "
+            "FROM assets_survey AS a "
+            "LEFT OUTER JOIN assets_bridge AS b ON a.asset_id = CONCAT('BRDG-', b.id::text) "
+            "LEFT OUTER JOIN assets_culvert AS c ON a.asset_id = CONCAT('CULV-', c.id::text) "
+            ") s "
+            "WHERE assets_survey.id = s.id"
         )
     ]
