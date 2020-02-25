@@ -318,14 +318,8 @@ function setupTableEventHandlers() {
 
         const cellChildren = e.currentTarget.children;
         const cellChildrenLength = cellChildren.length;
-        if (cellChildrenLength > 0) {
-            for (let ix = 0; ix < cellChildrenLength; ix++) {
-                const cellChild = cellChildren.item(ix);
-                if (cellChild.classList.contains("image")) {
-                    return;
-                }
-            }
-        }
+
+        if (cellChildrenLength > 0) return;
 
         if (clickedRow.hasClass("selected")) {
             clickedRow.removeClass("selected");
