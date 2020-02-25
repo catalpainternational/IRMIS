@@ -127,6 +127,7 @@ function initializeDataTable() {
 
     roadsTable = $("#all-data-table").DataTable({
         columns: estradaTableColumns,
+        autoWidth: false,
         rowId: ".id",
         // default order is ascending by: road code, link code, & link start chainage
         order: window.canEdit ? [[1, 'asc'], [3, 'asc'], [7, 'asc']] : [[0, 'asc'], [2, 'asc'], [6, 'asc']],
@@ -317,14 +318,8 @@ function setupTableEventHandlers() {
 
         const cellChildren = e.currentTarget.children;
         const cellChildrenLength = cellChildren.length;
-        if (cellChildrenLength > 0) {
-            for (let ix = 0; ix < cellChildrenLength; ix++) {
-                const cellChild = cellChildren.item(ix);
-                if (cellChild.classList.contains("image")) {
-                    return;
-                }
-            }
-        }
+
+        if (cellChildrenLength > 0) return;
 
         if (clickedRow.hasClass("selected")) {
             clickedRow.removeClass("selected");

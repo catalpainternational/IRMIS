@@ -37,9 +37,9 @@
                 <label>{ link_length.display }</label>
                 <small class="form-text text-muted">{ props.parent.getHelpText("link_length") }</small>
                 <input
-                    class="{ state.errors.linkLength ? 'danger' : null } { state.linkLength != null && state.linkLength !== '' ? '' : 'inactive' } form-control"
-                    type="number" placeholder="58.7" value="{ state.linkLength }" oninput="{ checkLinkLength }" min="0"
-                    max="99999.999" step="0.001">
+                    class="{ state.errors.linkLength ? 'danger' : null } { state.linkLength !== -1 && state.linkLength !== '' ? '' : 'inactive' } form-control"
+                    type="number" placeholder="58.7" value="{ state.linkLength !== -1 ? state.linkLength : '' }"
+                    oninput="{ checkLinkLength }" min="0" max="99999.999" step="0.001">
                 <div if="{ state.errors.linkLength }" class="invalid-tooltip">
                     <ul>
                         <li>{ state.errors.linkLength }.</li>
@@ -54,8 +54,9 @@
                 <label>{ link_start_chainage.display } (m)</label>
                 <small class="form-text text-muted">{ props.parent.getHelpText("link_start_chainage") }</small>
                 <input
-                    class="{ state.errors.linkStartChainage ? 'danger' : null } { state.linkStartChainage != null && state.linkStartChainage !== '' ? '' : 'inactive' } form-control"
-                    type="number" placeholder="0" value="{ state.linkStartChainage }"
+                    class="{ state.errors.linkStartChainage ? 'danger' : null } { state.linkStartChainage !== -1 && state.linkStartChainage !== '' ? '' : 'inactive' } form-control"
+                    type="number" placeholder="0"
+                    value="{ state.linkStartChainage !== -1 ? state.linkStartChainage : '' }"
                     oninput="{ checkLinkStartChainage }" min="0" max="999999999" step="1">
                 <div if="{ state.errors.linkStartChainage }" class="invalid-tooltip">
                     <ul>
@@ -67,8 +68,9 @@
                 <label>{ link_end_chainage.display } (m)</label>
                 <small class="form-text text-muted">{ props.parent.getHelpText("link_end_chainage") }</small>
                 <input
-                    class="{ state.errors.linkEndChainage ? 'danger' : null } { state.linkEndChainage != null && state.linkEndChainage !== '' ? '' : 'inactive' } form-control"
-                    type="number" placeholder="62410" value="{ state.linkEndChainage }"
+                    class="{ state.errors.linkEndChainage ? 'danger' : null } { state.linkEndChainage !== -1 && state.linkEndChainage !== '' ? '' : 'inactive' } form-control"
+                    type="number" placeholder="62410"
+                    value="{ state.linkEndChainage !== -1 ? state.linkEndChainage : '' }"
                     oninput="{ checkLinkEndChainage }" min="0" max="999999999" step="1">
                 <div if="{ state.errors.linkEndChainage }" class="invalid-tooltip">
                     <ul>
@@ -420,7 +422,7 @@
 
         import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
         import {choice_or_default, toChainageFormat} from "../assets/protoBufUtilities";
-        import {withinMaxDigits} from "../assets/utilities";
+        import { containsWhiteSpaces, withinMaxDigits } from "../assets/utilities";
 
         import {makeEstradaRoad, TECHNICAL_CLASS_CHOICES} from "../assets/models/road";
         import {EstradaSurvey, makeEstradaSurvey} from "../assets/models/survey";
@@ -1203,9 +1205,5 @@
             },
             max_date: () => new Date().toISOString().substring(0, 10),
         };
-
-        function containsWhiteSpaces(text) {
-            return /\s/.test(text);
-        }
     </script>
 </edit_asset_details>

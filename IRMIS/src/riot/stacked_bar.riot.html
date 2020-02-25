@@ -62,9 +62,9 @@
                 newEntries.forEach((entry) => {
                     const entryTitle = window.gettext(entry.title[0].toUpperCase() + entry.title.substring(1));
                     if (totalDistance > 0) {
-                        entry.percent = Math.round((entry.distance / totalDistance) * 10000) / 100;
+                        entry.percent = ((entry.distance / totalDistance) * 100).toFixed(1);
                         // the calculated label shows distance in km
-                        entry.label = `${entryTitle} (${entry.distance / 1000}km/${entry.percent}%)`;
+                        entry.label = `${entryTitle} (${(entry.distance / 1000).toFixed(1)}km/${entry.percent}%)`;
                     } else {
                         // 100% of 0km - but this won't appear in the label
                         entry.percent = 100;

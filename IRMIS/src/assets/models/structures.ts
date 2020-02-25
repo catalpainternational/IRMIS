@@ -153,15 +153,15 @@ export class EstradaBridge extends Bridge implements IAsset {
     }
 
     get constructionYear() {
-        return this.getConstructionYear();
+        return this.getNullableConstructionYear();
     }
 
     get length() {
-        return this.getLength();
+        return this.getNullableLength();
     }
 
     get width() {
-        return this.getWidth();
+        return this.getNullableWidth();
     }
 
     get riverName() {
@@ -169,11 +169,11 @@ export class EstradaBridge extends Bridge implements IAsset {
     }
 
     get numberSpans() {
-        return this.getNumberSpans();
+        return this.getNullableNumberSpans();
     }
 
     get spanLength() {
-        return this.getSpanLength();
+        return this.getNullableSpanLength();
     }
 
     get assetClass() {
@@ -186,7 +186,7 @@ export class EstradaBridge extends Bridge implements IAsset {
     }
 
     get structureType() {
-        return choice_or_default(this.getStructureType(), STRUCTURE_TYPE_BRIDGE_CHOICES );
+        return choice_or_default(this.getStructureType(), STRUCTURE_TYPE_BRIDGE_CHOICES);
     }
 
     get material() {
@@ -205,6 +205,36 @@ export class EstradaBridge extends Bridge implements IAsset {
     public getNullableChainage() {
         const chainage = super.getChainage();
         return (chainage >= 0 || this.isSerialising) ? chainage : null;
+    }
+
+    /** A Null or None in the protobuf is indicated by a negative value */
+    public getNullableConstructionYear() {
+        const constructionYear = super.getConstructionYear();
+        return (constructionYear >= 0 || this.isSerialising) ? constructionYear : null;
+    }
+
+    /** A Null or None in the protobuf is indicated by a negative value */
+    public getNullableLength() {
+        const length = super.getLength();
+        return (length >= 0 || this.isSerialising) ? length : null;
+    }
+
+    /** A Null or None in the protobuf is indicated by a negative value */
+    public getNullableWidth() {
+        const width = super.getWidth();
+        return (width >= 0 || this.isSerialising) ? width : null;
+    }
+
+    /** A Null or None in the protobuf is indicated by a negative value */
+    public getNullableNumberSpans() {
+        const numberSpans = super.getNumberSpans();
+        return (numberSpans >= 0 || this.isSerialising) ? numberSpans : null;
+    }
+
+    /** A Null or None in the protobuf is indicated by a negative value */
+    public getNullableSpanLength() {
+        const spanLength = super.getSpanLength();
+        return (spanLength >= 0 || this.isSerialising) ? spanLength : null;
     }
 }
 
@@ -294,23 +324,23 @@ export class EstradaCulvert extends Culvert implements IAsset {
     }
 
     get constructionYear() {
-        return this.getConstructionYear();
+        return this.getNullableConstructionYear();
     }
 
     get length() {
-        return this.getLength();
+        return this.getNullableLength();
     }
 
     get width() {
-        return this.getWidth();
+        return this.getNullableWidth();
     }
 
     get height() {
-        return this.getHeight();
+        return this.getNullableHeight();
     }
 
     get numberCells() {
-        return this.getNumberCells();
+        return this.getNullableNumberCells();
     }
 
     get assetClass() {
@@ -323,7 +353,7 @@ export class EstradaCulvert extends Culvert implements IAsset {
     }
 
     get structureType() {
-        return choice_or_default(this.getStructureType(), STRUCTURE_TYPE_CULVERT_CHOICES );
+        return choice_or_default(this.getStructureType(), STRUCTURE_TYPE_CULVERT_CHOICES);
     }
 
     get material() {
@@ -342,6 +372,36 @@ export class EstradaCulvert extends Culvert implements IAsset {
     public getNullableChainage() {
         const chainage = super.getChainage();
         return (chainage >= 0 || this.isSerialising) ? chainage : null;
+    }
+
+    /** A Null or None in the protobuf is indicated by a negative value */
+    public getNullableConstructionYear() {
+        const constructionYear = super.getConstructionYear();
+        return (constructionYear >= 0 || this.isSerialising) ? constructionYear : null;
+    }
+
+    /** A Null or None in the protobuf is indicated by a negative value */
+    public getNullableLength() {
+        const length = super.getLength();
+        return (length >= 0 || this.isSerialising) ? length : null;
+    }
+
+    /** A Null or None in the protobuf is indicated by a negative value */
+    public getNullableWidth() {
+        const width = super.getWidth();
+        return (width >= 0 || this.isSerialising) ? width : null;
+    }
+
+    /** A Null or None in the protobuf is indicated by a negative value */
+    public getNullableHeight() {
+        const height = super.getHeight();
+        return (height >= 0 || this.isSerialising) ? height : null;
+    }
+
+    /** A Null or None in the protobuf is indicated by a negative value */
+    public getNullableNumberCells() {
+        const numberCells = super.getNumberCells();
+        return (numberCells >= 0 || this.isSerialising) ? numberCells : null;
     }
 }
 
