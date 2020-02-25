@@ -6,11 +6,11 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('assets', '0033_survey_add_asset_code'),
+        ("assets", "0034_survey_add_asset_code"),
     ]
 
     operations = [
-        # The clause `WHEN a.structure_id IS NULL AND a.road_id IS NULL THEN NULL`
+        # The clause `WHEN a.asset_id IS NULL AND a.road_id IS NULL THEN NULL`
         # is handling a possible error condition - this should be checked on after running the migration
         migrations.RunSQL(
             "UPDATE assets_survey "
@@ -67,6 +67,6 @@ class Migration(migrations.Migration):
             "LEFT OUTER JOIN assets_bridge AS b ON a.asset_id = CONCAT('BRDG-', b.id::text) "
             "LEFT OUTER JOIN assets_culvert AS c ON a.asset_id = CONCAT('CULV-', c.id::text) "
             ") s "
-            "WHERE assets_survey.id = s.id"
+            "WHERE assets_survey.id = s.id",
         )
     ]
