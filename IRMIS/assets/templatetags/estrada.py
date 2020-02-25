@@ -173,18 +173,30 @@ def get_schema_data():
 
     # Bridge specific schema values
     asset_schema["structure_type_bridge"].update(
-        {"options": list(BridgeClass.objects.all().values())}
+        {
+            "options": list(BridgeClass.objects.all().values()),
+            "default_value": _("Select the type"),
+        }
     )
     asset_schema["material_bridge"].update(
-        {"options": list(BridgeMaterialType.objects.all().values())}
+        {
+            "options": list(BridgeMaterialType.objects.all().values()),
+            "default_value": _("Select the Deck Material"),
+        }
     )
 
     # Culvert specific schema values
     asset_schema["structure_type_culvert"].update(
-        {"options": list(CulvertClass.objects.all().values())}
+        {
+            "options": list(CulvertClass.objects.all().values()),
+            "default_value": _("Select the type"),
+        }
     )
     asset_schema["material_culvert"].update(
-        {"options": list(CulvertMaterialType.objects.all().values())}
+        {
+            "options": list(CulvertMaterialType.objects.all().values()),
+            "default_value": _("Select the Material"),
+        }
     )
 
     return asset_schema

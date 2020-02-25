@@ -12,16 +12,6 @@
                 </li>
             </ul>
         </div>
-        <div class="form-group">
-            <label>{ traffic_data.display }</label>
-            <small class="form-text text-muted">{ props.parent.getHelpText("traffic_level") }</small>
-            <ul class="traffic-data">
-                <li each="{ traffic in traffic_data.options }" data-traffic="{ traffic[0] }" onclick="{ checkTrafficData }">
-                    <span class="{ traffic[0] === props.road.getTrafficLevel() ? 'active' : ''  } radio image"></span>
-                    { traffic[1] }
-                </li>
-            </ul>
-        </div>
     </section>
 
     <div class="button-wrapper d-flex justify-content-end">
@@ -37,12 +27,7 @@
                 this.props.road.setMaintenanceNeed(e.currentTarget.dataset.maintenance);
                 this.update();
             },
-            checkTrafficData(e) {
-                this.props.road.setTrafficLevel(e.currentTarget.dataset.traffic);
-                this.update();
-            },
             maintenance_needs: window.asset_schema.maintenance_need,
-            traffic_data: window.asset_schema.traffic_level,
         }
     </script>
 </edit_maintenance>

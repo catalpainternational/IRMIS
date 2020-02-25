@@ -36,3 +36,10 @@ export function withinMaxDigits(text: string, limit: number, decimals: number = 
     }
     return (new RegExp(`^\\d{0,${(limit - decimals)}}(\\.\\d{0,${decimals}})?$`).test(text));
 }
+
+/** Test the supplied string meets the requirements
+ * @param {string} text - the supplied string to test
+ */
+export function containsWhiteSpaces(text: string) {
+    return /\s/.test(text);
+}

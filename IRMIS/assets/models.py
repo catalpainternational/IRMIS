@@ -510,7 +510,7 @@ class Road(models.Model):
         help_text=_("Enter road link project name"),
     )
     traffic_level = models.CharField(
-        verbose_name=_("Traffic Level"),
+        verbose_name=_("Traffic Data"),
         max_length=1,
         choices=TRAFFIC_LEVEL_CHOICES,
         blank=True,
@@ -690,6 +690,9 @@ class BridgeQuerySet(models.QuerySet):
                 raw_value = bridge.get(query_key)
                 if raw_value is not None:
                     setattr(bridge_protobuf, protobuf_key, raw_value)
+                else:
+                    # No value available, so use -ve as a substitute for None
+                    setattr(bridge_protobuf, protobuf_key, -1)
 
             if bridge["date_created"]:
                 ts = timestamp_from_datetime(bridge["date_created"])
@@ -962,6 +965,9 @@ class CulvertQuerySet(models.QuerySet):
                 raw_value = culvert.get(query_key)
                 if raw_value is not None:
                     setattr(culvert_protobuf, protobuf_key, raw_value)
+                else:
+                    # No value available, so use -ve as a substitute for None
+                    setattr(culvert_protobuf, protobuf_key, -1)
 
             if culvert["date_created"]:
                 ts = timestamp_from_datetime(culvert["date_created"])
