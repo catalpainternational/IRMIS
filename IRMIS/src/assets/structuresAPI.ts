@@ -29,16 +29,17 @@ export function getStructuresMetadata() {
  */
 export function getStructureMetadata(structureId: string) {
     const structureTypeUrlFragment = "protobuf_structure";
-    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${structureTypeUrlFragment}/${structureId}`;
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${structureTypeUrlFragment}/${structureId}/`;
 
     return fetch(metadataUrl, ConfigAPI.requestInit())
         .then((metadataResponse) => (metadataResponse.arrayBuffer()))
         .then((protobufBytes) => {
             const uintArray = new Uint8Array(protobufBytes);
+            const structures = makeEstradaStructures(Structures.deserializeBinary(uintArray));
             if (structureId.includes("BRDG")) {
-                return makeEstradaBridge(Bridge.deserializeBinary(uintArray));
+                return structures.bridges[0];
             } else {
-                return makeEstradaCulvert(Culvert.deserializeBinary(uintArray));
+                return structures.culverts[0];
             }
         });
 }
