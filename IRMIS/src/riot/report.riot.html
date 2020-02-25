@@ -12,22 +12,13 @@
         </div>
     </div>
 
-    <header>
-        <div>
-            <a class="caret-dark left image" onclick="{ backToReports }"></a>
-        </div>
-        <div class="d-flex flex-column">
-            <div class="align-items-center d-flex">
-                <span class="paper image"></span>
-                <h6>{ reportContent().title }</h6>
-            </div>
-            <div>
-                <p>{ reportContent().description }.</p>
-            </div>
-        </div>
+    <header class="align-items-center d-flex">
+        <a class="caret-dark left image" onclick="{ backToReports }"></a>
+        <h1>{ reportContent().title }</h1>
     </header>
 
     <div class="content-wrapper report-criteria">
+        <p class="report-description">{ reportContent().description }.</p>
         <h6>{ window.gettext("Select report criteria") }</h6>
         <div class="d-flex justify-content-between">
             <div class="d-flex flex-wrap">

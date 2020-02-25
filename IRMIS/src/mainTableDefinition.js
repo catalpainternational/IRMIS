@@ -107,7 +107,6 @@ export const estradaTableColumns = [
         data: "code",
         defaultContent: "",
         type: "roadCode",
-        className: "text-center",
     },
     {
         title: EstradaRoad.getFieldName("road_name"),
@@ -119,7 +118,6 @@ export const estradaTableColumns = [
         title: EstradaRoad.getFieldName("link_code"),
         data: "linkCode",
         defaultContent: "",
-        className: "text-center",
     },
     {
         title: window.gettext("Link Name"),
@@ -164,14 +162,12 @@ export const estradaTableColumns = [
         defaultContent: "",
         render: r => buttonSegmentsTemplate("surface_type", r),
         orderable: false,
-        className: "text-center",
     },
     {
         title: EstradaRoad.getFieldName("pavement_class"),
         data: null,
         defaultContent: "",
         render: r => buttonSegmentsTemplate("pavement_class", r),
-        className: "text-center",
         orderable: false,
     },
     {
@@ -179,13 +175,11 @@ export const estradaTableColumns = [
         data: null,
         defaultContent: "",
         render: r => buttonSegmentsTemplate("carriageway_width", r),
-        className: "text-center",
         orderable: false,
     },
     {
         title: EstradaRoad.getFieldName("administrative_area"),
         data: "administrativeArea",
-        className: "text-center",
         defaultContent: "",
     },
     {
@@ -194,7 +188,6 @@ export const estradaTableColumns = [
         data: "type",
         defaultContent: "",
         visible: false,
-        className: "text-center",
     },
     {
         title: EstradaRoad.getFieldName("technical_class"),
@@ -203,7 +196,6 @@ export const estradaTableColumns = [
         render: r => buttonSegmentsTemplate("technical_class", r),
         visible: false,
         orderable: false,
-        className: "text-center",
     },
     {
         title: EstradaRoad.getFieldName("funding_source"),
@@ -216,7 +208,6 @@ export const estradaTableColumns = [
         data: "status",
         defaultContent: "",
         visible: false,
-        className: "text-center",
     },
     {
         title: EstradaRoad.getFieldName("project"),
@@ -229,42 +220,36 @@ export const estradaTableColumns = [
         data: "startDMS",
         defaultContent: "",
         visible: false,
-        className: "text-center",
     },
     {
         title: window.gettext("End Point (DMS)"),
         data: "endDMS",
         defaultContent: "",
         visible: false,
-        className: "text-center",
     },
     {
         title: window.gettext("Start Point (UTM)"),
         data: "startUTM",
         defaultContent: "",
         visible: false,
-        className: "text-center",
     },
     {
         title: window.gettext("End Point (UTM)"),
         data: "endUTM",
         defaultContent: "",
         visible: false,
-        className: "text-center",
     },
     {
         title: window.gettext("Roughness (IRI)"),
         data: "",
         defaultContent: "",
         visible: false,
-        className: "text-center",
     },
     {
         title: EstradaRoad.getFieldName("asset_condition"),
         data: null,
         defaultContent: "",
         render: r => buttonSegmentsTemplate("asset_condition", r),
-        className: "text-center",
         orderable: false,
     },
     {
@@ -272,7 +257,6 @@ export const estradaTableColumns = [
         data: "maintenanceNeed",
         defaultContent: "",
         visible: false,
-        className: "text-center",
     },
     {
         title: window.gettext("Traffic data"),
@@ -280,7 +264,6 @@ export const estradaTableColumns = [
         defaultContent: "",
         render: r => buttonSegmentsTemplate("traffic_level", r),
         visible: false,
-        className: "text-center",
     },
     {
         title: EstradaRoad.getFieldName("number_lanes"),
@@ -288,7 +271,6 @@ export const estradaTableColumns = [
         defaultContent: "",
         render: r => buttonSegmentsTemplate("number_lanes", r),
         visible: false,
-        className: "text-center",
         orderable: false,
     },
     {
@@ -297,7 +279,6 @@ export const estradaTableColumns = [
         defaultContent: "",
         render: r => buttonSegmentsTemplate("rainfall", r),
         visible: false,
-        className: "text-center",
         orderable: false,
     },
     {
@@ -306,14 +287,13 @@ export const estradaTableColumns = [
         defaultContent: "",
         render: r => buttonSegmentsTemplate("terrain_class", r),
         visible: false,
-        className: "text-center",
         orderable: false,
     },
 ];
 
 /** Defines the columns for the Structures table on the Estrada main page
  * In many cases Bridge and Culvert use the same field names and are interchangeable
- * 
+ *
  * For those that don't we'll use the simpler title
  */
 export const structuresTableColumns = [
@@ -321,45 +301,38 @@ export const structuresTableColumns = [
         title: window.gettext("Structure"),
         render: s => getStructureTypeName(detectStructure(s)),
         data: null,
-        className: "text-center",
     },
     {
         title: EstradaBridge.getFieldName("structure_code"),
         data: "code",
-        className: "text-center",
         type: "structureCode",
         defaultContent: "",
     },
     {
         title: EstradaBridge.getFieldName("structure_name"),
         data: "structureName",
-        className: "text-center",
         defaultContent: window.gettext("unknown"),
     },
     {
         title: EstradaBridge.getFieldName("river_name"),
         data: "riverName",
-        className: "text-center",
         defaultContent: "N/A",
         visible: false,
     },
     {
         title: EstradaBridge.getFieldName("road_code"),
         data: "roadCode",
-        className: "text-center",
         defaultContent: "",
     },
     {
         title: EstradaBridge.getFieldName("road_name"),
         data: "roadName",
-        className: "text-center",
         defaultContent: "",
         visible: false,
     },
     {
         title: EstradaBridge.getFieldName("asset_class"),
         data: "assetClass",
-        className: "text-center",
         defaultContent: "",
         visible: false,
     },
@@ -388,7 +361,6 @@ export const structuresTableColumns = [
     {
         title: EstradaBridge.getFieldName("administrative_area"),
         data: "administrativeArea",
-        className: "text-center",
         defaultContent: "",
         visible: false,
     },
@@ -398,7 +370,6 @@ export const structuresTableColumns = [
         // so we'll use the simpler title
         title: window.gettext("Material"),
         data: "material",
-        className: "text-center",
         defaultContent: "-",
     },
     {
@@ -407,7 +378,6 @@ export const structuresTableColumns = [
         // so we'll use the common title "Structure Type"
         title: window.gettext("Structure Type"),
         data: "structureType",
-        className: "text-center",
         defaultContent: "-",
     },
     {
@@ -456,14 +426,12 @@ export const structuresTableColumns = [
     {
         title: EstradaBridge.getFieldName("protection_upstream"),
         data: "protectionUpstream",
-        className: "text-center",
         defaultContent: "",
         visible: false,
     },
     {
         title: EstradaBridge.getFieldName("protection_downstream"),
         data: "protectionDownstream",
-        className: "text-center",
         defaultContent: "",
         visible: false,
     },
@@ -478,15 +446,13 @@ export const structuresTableColumns = [
     {
         title: window.gettext("Structure Condition"),
         data: null,
-        render: r => buttonSegmentsTemplate("structure_condition", r),
-        className: "text-center",
+        render: r => buttonSegmentsTemplate("asset_condition", r),
         defaultContent: "",
     },
     {
         title: window.gettext("Condition Description"),
         data: null,
         render: r => buttonSegmentsTemplate("condition_description", r),
-        className: "text-center",
         defaultContent: "",
         visible: false,
     },
@@ -546,7 +512,7 @@ function buttonSegmentsTemplate(attrib, asset) {
 
     return `<a data-toggle="modal"
         data-target="#inventory-segments-modal"
-        data-code="${code}"
+        data-code="${asset.code}"
         data-id="${asset.id}"
         data-attr="${attrib}">${window.gettext("View")} ${getFieldName(attrib)}</a>`;
 }

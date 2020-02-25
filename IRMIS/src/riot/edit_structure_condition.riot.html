@@ -7,9 +7,11 @@
             </button>
         </div>
 
-        <data_table table_id="{data_table_id}" columns="{data_table_columns}"
-            columnSortOrder="{data_table_columns_order}" candelete=true>
-        </data_table>
+        <div class="table-spacing">
+            <data_table table_id="{data_table_id}" columns="{data_table_columns}"
+                columnSortOrder="{data_table_columns_order}" candelete=true>
+            </data_table>
+        </div>
     </div>
 
     <edit_modal modal_id="{modal_id}" disableSave="{!state.canSave}">
@@ -58,6 +60,9 @@
             <section>
                 <div class="form-group">
                     <label>{ window.gettext("Condition Description") }</label>
+                    <small class="form-text text-muted">
+                        {window.gettext("Enter a description on the structurecondition")}
+                    </small>
                     <input
                         class="{ state.errors.conditionDescription ? 'danger' : null } { state.survey.conditionDescription ? '' : 'inactive' } form-control"
                         type="text" maxlength="500" placeholder="E.g." value="{ state.survey.conditionDescription }"
@@ -67,9 +72,6 @@
                             <li>{ state.errors.conditionDescription }.</li>
                         </ul>
                     </div>
-                    <small class="form-text text-muted">
-                        {window.gettext("Enter a description on the structurecondition")}
-                    </small>
                 </div>
             </section>
             <section>

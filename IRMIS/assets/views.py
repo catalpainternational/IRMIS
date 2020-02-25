@@ -801,6 +801,8 @@ def protobuf_structure(request, pk):
     if not structure.exists():
         return HttpResponseNotFound()
 
+    # Note that we're returning a structure here,
+    # which is a container for the Bridge or Culvert that we want
     structure_protobuf = structure.to_protobuf()
 
     return HttpResponse(
