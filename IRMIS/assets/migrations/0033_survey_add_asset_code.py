@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('assets', '0031_survey_structure_info'),
+        ('assets', '0032_fix_span_length_title'),
     ]
 
     operations = [

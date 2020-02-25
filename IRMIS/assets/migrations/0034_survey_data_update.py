@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('assets', '0032_survey_add_asset_code'),
+        ('assets', '0033_survey_add_asset_code'),
     ]
 
     operations = [
