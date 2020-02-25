@@ -645,15 +645,8 @@ class Road(models.Model):
     def __str__(self,):
         return "%s(%s) %s" % (self.road_code, self.link_code, self.road_name)
 
-
-class RoadFeatureAttributes(models.Model):
-    """
-    Original data fields of the Road model shapefiles
-    """
-
-    road = models.OneToOneField("Road", on_delete=models.CASCADE)
-    attributes = JSONField()
-
+    class Meta:
+        indexes = [GistIndex(fields=("geom",))]
 
 class CollatedGeoJsonFile(models.Model):
     """ FeatureCollection GeoJson(srid=4326) files made up of collated geometries """
