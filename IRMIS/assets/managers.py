@@ -86,6 +86,13 @@ class Chainage(Func):
     default_alias = "chainage"
 
 
+class NearestAssetRoadId(Func):
+    template = "%(function)s(%(expressions)s)"
+    function = "closest_roadid_to_point"
+    output_field = models.IntegerField()
+    default_alias = "road_id"
+
+
 class CsvSurveyQueryset(models.QuerySet):
     """ provides typed and filtered access to CSV data """
 
@@ -108,6 +115,7 @@ class CsvSurveyQueryset(models.QuerySet):
             .annotate(
                 chainage_start=Chainage(F("start_utm")),
                 chainage_end=Chainage(F("end_utm")),
+                road_id=NearestAssetRoadId(F("start_utm"), F("road_code")),
             )
         )
 
@@ -127,6 +135,8 @@ class RoughnessManager(models.Manager):
                     chainage_start=from_row.chainage_start,
                     chainage_end=from_row.chainage_end,
                     values={"roughness": from_row.roughness},
+                    road_id=from_row.road_id,
+                    added_by=User.objects.get(username="josh"),
                 )
                 for from_row in self.get_queryset()
             ]

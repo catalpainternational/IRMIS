@@ -338,6 +338,7 @@ class ReportQuery:
             "span_length",
             "structure_type",
             "width",
+            "roughness",
         ]
 
         # Ideally for these asset filters we'd drill down (in time) through the surveys instead
