@@ -29,7 +29,13 @@ class Command(BaseCommand):
             self.style.MIGRATE_HEADING("~~~ Starting road survey refresh ~~~ ")
         )
 
-        if not "no-road-refresh" in options or not options["no-road-refresh"]:
+        if "no_road_refresh" in options:
+            self.stdout.write(
+                self.style.MIGRATE_HEADING(
+                    "Skipping refreshing of road links before refreshing road surveys"
+                )
+            )
+        else:
             self.stdout.write(
                 self.style.MIGRATE_HEADING(
                     "Refreshing road links before refreshing road surveys"
