@@ -1,6 +1,7 @@
 from django.contrib.gis.db import models
 from django.db.models import Func, FloatField, CharField, DateTimeField, F
 from django.contrib.gis.db.models.functions import Transform
+from django.apps import apps
 
 
 class RoughnessRoadCode(Func):
@@ -105,8 +106,8 @@ class CsvSurveyQueryset(models.QuerySet):
                 end_utm=Transform(F("end"), srid=32751),
             )
             .annotate(
-                start_chainage=Chainage(F("start_utm")),
-                end_chainage=Chainage(F("end_utm")),
+                chainage_start=Chainage(F("start_utm")),
+                chainage_end=Chainage(F("end_utm")),
             )
         )
 
@@ -116,3 +117,17 @@ class RoughnessManager(models.Manager):
 
     def get_queryset(self):
         return CsvSurveyQueryset(self.model, using=self._db).roughness()
+
+    def as_surveys(self):
+        model = apps.get_model("assets", "survey")
+        return model.objects.bulk_create(
+            [
+                model(
+                    road_code=from_row.road_code,
+                    chainage_start=from_row.chainage_start,
+                    chainage_end=from_row.chainage_end,
+                    values={"roughness": from_row.roughness},
+                )
+                for from_row in self.get_queryset()
+            ]
+        )
