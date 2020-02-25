@@ -311,7 +311,11 @@ export const estradaTableColumns = [
     },
 ];
 
-/** Defines the columns for the Structures table on the Estrada main page */
+/** Defines the columns for the Structures table on the Estrada main page
+ * In many cases Bridge and Culvert use the same field names and are interchangeable
+ * 
+ * For those that don't we'll use the simpler title
+ */
 export const structuresTableColumns = [
     {
         title: window.gettext("Structure"),
@@ -320,46 +324,46 @@ export const structuresTableColumns = [
         className: "text-center",
     },
     {
-        title: window.gettext("Structure Code"),
+        title: EstradaBridge.getFieldName("structure_code"),
         data: "code",
         className: "text-center",
         type: "structureCode",
         defaultContent: "",
     },
     {
-        title: window.gettext("Structure Name"),
+        title: EstradaBridge.getFieldName("structure_name"),
         data: "structureName",
         className: "text-center",
         defaultContent: window.gettext("unknown"),
     },
     {
-        title: window.gettext("River Name"),
+        title: EstradaBridge.getFieldName("river_name"),
         data: "riverName",
         className: "text-center",
         defaultContent: "N/A",
         visible: false,
     },
     {
-        title: window.gettext("Road Code"),
+        title: EstradaBridge.getFieldName("road_code"),
         data: "roadCode",
         className: "text-center",
         defaultContent: "",
     },
     {
-        title: window.gettext("Road_name"),
+        title: EstradaBridge.getFieldName("road_name"),
         data: "roadName",
         className: "text-center",
         defaultContent: "",
         visible: false,
     },
     {
-        title: window.gettext("Asset Class"),
+        title: EstradaBridge.getFieldName("asset_class"),
         data: "assetClass",
         className: "text-center",
         defaultContent: "",
         visible: false,
     },
-        {
+    {
         title: window.gettext("GPS Latitude"),
         data: "dms",
         render: (dms) => { return dms.split(" ")[0] || ""; },
@@ -376,39 +380,45 @@ export const structuresTableColumns = [
         visible: false,
     },
     {
-        title: window.gettext("Chainage"),
+        title: EstradaBridge.getFieldName("chainage"),
         data: "chainage",
         className: "text-right",
         defaultContent: "-",
     },
     {
-        title: window.gettext("Municipality"),
+        title: EstradaBridge.getFieldName("administrative_area"),
         data: "administrativeArea",
         className: "text-center",
         defaultContent: "",
         visible: false,
     },
     {
+        // Bridges "Deck Material", Culverts "Material"
+        // however we show both together
+        // so we'll use the simpler title
         title: window.gettext("Material"),
         data: "material",
         className: "text-center",
         defaultContent: "-",
     },
     {
+        // Bridges "Bridge Type", Culverts "Culvert Type"
+        // however we show both together
+        // so we'll use the common title "Structure Type"
         title: window.gettext("Structure Type"),
         data: "structureType",
         className: "text-center",
         defaultContent: "-",
     },
     {
-        title: window.gettext("Length"),
+        title: EstradaBridge.getFieldName("length"),
         data: "length",
         render: (n) => { return (n > 0) ? n : ""; },
         className: "text-right",
         defaultContent: "",
     },
     {
-        title: window.gettext("Width"),
+        title: EstradaBridge.getFieldName("width"),
         data: "width",
         render: (n) => { return (n > 0) ? n : ""; },
         className: "text-right",
@@ -416,49 +426,49 @@ export const structuresTableColumns = [
 
     },
     {
-        title: window.gettext("Height"),
+        title: EstradaCulvert.getFieldName("height"),
         data: "height",
         className: "text-right",
         defaultContent: "N/A",
         visible: false,
     },
     {
-        title: window.gettext("Number Spans"),
+        title: EstradaBridge.getFieldName("number_spans"),
         data: "numberSpans",
         className: "text-right",
         defaultContent: "N/A",
         visible: false,
     },
     {
-        title: window.gettext("Span Length"),
+        title: EstradaBridge.getFieldName("span_length"),
         data: "spanLength",
         className: "text-right",
         defaultContent: "N/A",
         visible: false,
     },
     {
-        title: window.gettext("Number Cells"),
+        title: EstradaCulvert.getFieldName("number_cells"),
         data: "numberCells",
         className: "text-right",
         defaultContent: "N/A",
         visible: false,
     },
     {
-        title: window.gettext("Protection Upstream"),
+        title: EstradaBridge.getFieldName("protection_upstream"),
         data: "protectionUpstream",
         className: "text-center",
         defaultContent: "",
         visible: false,
     },
     {
-        title: window.gettext("Protection Downstream"),
+        title: EstradaBridge.getFieldName("protection_downstream"),
         data: "protectionDownstream",
         className: "text-center",
         defaultContent: "",
         visible: false,
     },
     {
-        title: window.gettext("Construction Year"),
+        title: EstradaBridge.getFieldName("construction_year"),
         data: "constructionYear",
         render: (n) => { return (n > 0) ? n : ""; },
         className: "text-right",
@@ -466,15 +476,14 @@ export const structuresTableColumns = [
         visible: false,
     },
     {
-        title: "Structure Condition",
+        title: window.gettext("Structure Condition"),
         data: null,
         render: r => buttonSegmentsTemplate("structure_condition", r),
         className: "text-center",
         defaultContent: "",
-        visible: false,
     },
     {
-        title: "Condition Description",
+        title: window.gettext("Condition Description"),
         data: null,
         render: r => buttonSegmentsTemplate("condition_description", r),
         className: "text-center",
