@@ -420,9 +420,7 @@ def create_programmatic_survey(management_command, data, mappings, audit_source_
             "chainage_start": data["chainage_start"]
             if "chainage_start" in data
             else None,
-            "chainage_end": data["chainage_end"]
-            if "chainage_end" in data
-            else None,
+            "chainage_end": data["chainage_end"] if "chainage_end" in data else None,
             "chainage_end": data["chainage_end"] if "chainage_end" in data else None,
             "source": "programmatic",
             "values": {},

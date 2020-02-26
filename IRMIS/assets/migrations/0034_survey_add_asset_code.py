@@ -47,4 +47,22 @@ class Migration(migrations.Migration):
                 verbose_name="Road Code",
             ),
         ),
+        migrations.AlterField(
+            model_name="road",
+            name="road_type",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("NAT", "National"),
+                    ("HIGH", "Highway"),
+                    ("MUN", "Municipal"),
+                    ("URB", "Urban"),
+                    ("RUR", "Rural"),
+                ],
+                help_text="Choose the asset class",
+                max_length=4,
+                null=True,
+                verbose_name="Asset Class",
+            ),
+        ),
     ]

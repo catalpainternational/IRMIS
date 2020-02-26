@@ -138,10 +138,18 @@ class Survey(models.Model):
 
     # Global ID for an asset the survey links to (ex. BRDG-42)
     asset_id = models.CharField(
-        verbose_name=_("Asset Id"), validators=[no_spaces], blank=True, null=True, max_length=15,
+        verbose_name=_("Asset Id"),
+        validators=[no_spaces],
+        blank=True,
+        null=True,
+        max_length=15,
     )
     asset_code = models.CharField(
-        verbose_name=_("Asset Code"), validators=[no_spaces], blank=True, null=True, max_length=25
+        verbose_name=_("Asset Code"),
+        validators=[no_spaces],
+        blank=True,
+        null=True,
+        max_length=25,
     )
     # a disconnected reference to the road record this survey relates to
     # for a survey connected to a road, this will be null and the actual value will be in asset_*
