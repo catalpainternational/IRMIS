@@ -154,18 +154,17 @@ def road_update(request):
     ]
     changed_fields = []
     for field in regular_fields:
-        field_name = field
         request_value = getattr(req_pb, field)
         if getattr(old_road_pb, field) != request_value:
+            # add field to list of changes fields
+            changed_fields.append(field)
             # handle mapping over changed field names
             if field == "asset_class":
-                field_name = "road_type"
+                field = "road_type"
             elif field == "asset_condition":
-                field_name = "surface_condition"
+                field = "surface_condition"
             # set attribute on road
-            setattr(road, field_name, request_value)
-            # add field to list of changes fields
-            changed_fields.append(field_name)
+            setattr(road, field, request_value)
 
     # Nullable Numeric attributes
     for field in numeric_fields:
@@ -175,6 +174,9 @@ def road_update(request):
         # -ve request_values indicate that the supplied value is actually meant to be None
         if request_value < 0:
             request_value = None
+
+        if existing_value < 0:
+            existing_value = None
 
         if existing_value != request_value:
             # set attribute on road
@@ -655,24 +657,57 @@ def culvert_create(req_pb):
     )
 
 
-def bridge_update(bridge, req_pb):
+def bridge_update(bridge, req_pb, db_pb):
     """ Update the Bridge instance from PB fields """
     changed_fields = []
+
     # Char/Text Input Fields
-    bridge.road_id = req_pb.road_id
-    bridge.road_code = req_pb.road_code
-    bridge.structure_code = req_pb.structure_code
-    bridge.structure_name = req_pb.structure_name
-    bridge.structure_class = req_pb.asset_class
-    bridge.administrative_area = req_pb.administrative_area
-    bridge.river_name = req_pb.river_name
+    regular_fields = [
+        "road_id",
+        "road_code",
+        "structure_code",
+        "structure_name",
+        "administrative_area",
+        "river_name",
+        "asset_class",
+    ]
+    for field in regular_fields:
+        request_value = getattr(req_pb, field)
+        if getattr(db_pb, field) != request_value:
+            # add field to list of changes fields
+            changed_fields.append(field)
+            # handle field name differences
+            if field == "asset_class":
+                field = "structure_class"
+            # set attribute on bridge
+            setattr(bridge, field, request_value)
+
     # Numeric Input Fields
-    bridge.construction_year = req_pb.construction_year
-    bridge.length = req_pb.length
-    bridge.width = req_pb.width
-    bridge.chainage = req_pb.chainage
-    bridge.number_spans = req_pb.number_spans
-    bridge.span_length = req_pb.span_length
+    numeric_fields = [
+        "construction_year",
+        "length",
+        "width",
+        "number_spans",
+        "span_length",
+        "chainage",
+    ]
+    for field in numeric_fields:
+        existing_value = getattr(db_pb, field)
+        request_value = getattr(req_pb, field)
+
+        # -ve request_values indicate that the supplied value is actually meant to be None
+        if request_value < 0:
+            request_value = None
+
+        if existing_value < 0:
+            existing_value = None
+
+        if existing_value != request_value:
+            # set attribute on bridge
+            setattr(bridge, field, request_value)
+            # add field to list of changes fields
+            changed_fields.append(field)
+
     # Foreign Key Fields
     fks = [
         (BridgeClass, "structure_type"),
@@ -685,7 +720,7 @@ def bridge_update(bridge, req_pb):
         field = fk[1]
         model = fk[0]
         request_value = getattr(req_pb, field, None)
-        if getattr(bridge, field) != request_value:
+        if getattr(db_pb, field, None) != request_value:
             if request_value:
                 try:
                     fk_obj = model.objects.filter(code=request_value).get()
@@ -694,28 +729,64 @@ def bridge_update(bridge, req_pb):
             else:
                 fk_obj = None
             setattr(bridge, field, fk_obj)
+            # handle field name differences
+            if field in ["structure_type", "material"]:
+                field += "_bridge"
             changed_fields.append(field)
 
     return bridge, changed_fields
 
 
-def culvert_update(culvert, req_pb):
+def culvert_update(culvert, req_pb, db_pb):
     """ Update the Culvert instance from PB fields """
     changed_fields = []
+
     # Char/Text Input Fields
-    culvert.road_id = req_pb.road_id
-    culvert.road_code = req_pb.road_code
-    culvert.structure_code = req_pb.structure_code
-    culvert.structure_name = req_pb.structure_name
-    culvert.structure_class = req_pb.asset_class
-    culvert.administrative_area = req_pb.administrative_area
+    regular_fields = [
+        "road_id",
+        "road_code",
+        "structure_code",
+        "structure_name",
+        "administrative_area",
+        "asset_class",
+    ]
+    for field in regular_fields:
+        request_value = getattr(req_pb, field)
+        if getattr(db_pb, field) != request_value:
+            # add field to list of changes fields
+            changed_fields.append(field)
+            # handle mapping over changed field names
+            if field == "asset_class":
+                field = "structure_class"
+            # set attribute on culvert
+            setattr(culvert, field, request_value)
+
     # Numeric Input Fields
-    culvert.construction_year = req_pb.construction_year
-    culvert.length = req_pb.length
-    culvert.width = req_pb.width
-    culvert.chainage = req_pb.chainage
-    culvert.height = req_pb.height
-    culvert.number_cells = req_pb.number_cells
+    numeric_fields = [
+        "construction_year",
+        "length",
+        "width",
+        "height",
+        "number_cells",
+        "chainage",
+    ]
+    for field in numeric_fields:
+        existing_value = getattr(db_pb, field)
+        request_value = getattr(req_pb, field)
+
+        # -ve request_values indicate that the supplied value is actually meant to be None
+        if request_value < 0:
+            request_value = None
+
+        if existing_value < 0:
+            existing_value = None
+
+        if existing_value != request_value:
+            # set attribute on culvert
+            setattr(culvert, field, request_value)
+            # add field to list of changes fields
+            changed_fields.append(field)
+
     # Foreign Key Fields
     fks = [
         (CulvertClass, "structure_type"),
@@ -728,7 +799,7 @@ def culvert_update(culvert, req_pb):
         field = fk[1]
         model = fk[0]
         request_value = getattr(req_pb, field, None)
-        if getattr(old_road_pb, field) != request_value:
+        if getattr(db_pb, field, None) != request_value:
             if request_value:
                 try:
                     fk_obj = model.objects.filter(code=request_value).get()
@@ -737,6 +808,9 @@ def culvert_update(culvert, req_pb):
             else:
                 fk_obj = None
             setattr(culvert, field, fk_obj)
+            # handle field name differences
+            if field in ["structure_type", "material"]:
+                field += "_culvert"
             changed_fields.append(field)
 
     return culvert, changed_fields
@@ -975,7 +1049,7 @@ def structure_update(request, pk):
         )
 
     structure = mapping["model"].objects.filter(pk=django_pk).get()
-    structure, changed_fields = mapping["update"](structure, req_pb)
+    structure, changed_fields = mapping["update"](structure, req_pb, db_pb)
 
     with reversion.create_revision():
         structure.save()
