@@ -284,10 +284,10 @@ def protobuf_road_surveys(request, pk, survey_attribute=None):
     queryset = Survey.objects.filter(asset_code=road.road_code)
 
     filter_attribute = survey_attribute
-    if survey_attribute == "asset_condition":
-        filter_attribute = "surface_condition"
-    elif survey_attribute == "asset_class":
-        filter_attribute = "road_type"
+    if survey_attribute == "surface_condition":
+        filter_attribute = "asset_condition"
+    elif survey_attribute == "road_type":
+        filter_attribute = "asset_class"
 
     if survey_attribute:
         queryset = queryset.filter(values__has_key=filter_attribute).exclude(
@@ -316,10 +316,6 @@ def pbtimestamp_to_pydatetime(pb_stamp):
 
 def road_survey_values(req_values):
     """ convert the json and do any required key manipulation """
-    if "asset_class" in req_values:
-        req_values["road_type"] = req_values.pop("asset_class")
-    if "asset_condition" in req_values:
-        req_values["surface_condition"] = req_values.pop("asset_condition")
     if "road_id" in req_values:
         # road_id is NOT relevant for road surveys (use asset_id instead)
         # it MUST be removed
@@ -563,6 +559,7 @@ def protobuf_reports(request):
         asset_report.execute_aggregate_query()
     )
 
+    # These replacements *should* be unnecessary, but we'll leave them in place for now
     filtered_filters = (
         json.dumps(final_filters)
         .replace("""road_type""", """asset_class""")

@@ -61,7 +61,7 @@ class ReportQuery:
                 " ELSE NULL\n"
                 " END AS asset_code,\n"
                 " r.road_name AS asset_name,\n"
-                " r.surface_condition AS asset_condition, r.road_type AS asset_class,\n"
+                " r.asset_condition, r.asset_class,\n"
                 " r.geom_end_chainage AS geom_chainage, r.administrative_area AS municipality,\n"
                 " r.geojson_file_id AS geojson_file,\n"
                 " r.carriageway_width, r.number_lanes,\n"
@@ -249,13 +249,7 @@ class ReportQuery:
             ),
             "final_results": (
                 "SELECT CONCAT(asset_type_prefix, asset_id::text) AS asset_id, asset_code,\n"
-                " CASE\n"
-                "  WHEN break_attr = 'road_type' THEN 'asset_class'\n"
-                "  WHEN break_attr = 'structure_class' THEN 'asset_class'\n"
-                "  WHEN break_attr = 'surface_condition' THEN 'asset_condition'\n"
-                "  WHEN break_attr = 'structure_condition' THEN 'asset_condition'\n"
-                "  ELSE break_attr\n"
-                " END AS attribute,\n"
+                " break_attr AS attribute,\n"
                 " start_chainage,\n"
                 " CASE\n"
                 "  WHEN end_chainage IS NULL THEN geom_chainage\n"
@@ -334,6 +328,7 @@ class ReportQuery:
         value_filters = [
             # Common
             "asset_class",
+            "asset_condition",
             "municipality",
             # Maybe Common from Road
             "carriageway_width",
@@ -343,11 +338,7 @@ class ReportQuery:
             "pavement_class",
             "project",
             "rainfall",
-            "road_type",  # Actually asset_class
             "road_status",
-            "asset_condition",
-            "surface_condition",  # Actually asset_condition
-            "structure_condition",  # Actually asset_condition
             "surface_type",
             "terrain_class",
             "traffic_level",
@@ -363,7 +354,6 @@ class ReportQuery:
             "protection_upstream",
             "river_name",
             "span_length",
-            "structure_class",  # Actually asset_class
             "structure_type",
             "width",
         ]

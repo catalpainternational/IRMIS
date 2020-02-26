@@ -95,8 +95,8 @@ def get_roads_by_road_code(rc):
             .exclude(link_code__in=road_link_codes)
             .order_by("geom_start_chainage", "link_code", "link_start_chainage")
         )
-        # if "None" in road_link_codes:
-        #     roads = roads.exclude(link_code__isnull=True)
+        if "None" in road_link_codes:
+            roads = roads.exclude(link_code__isnull=True)
 
         return roads
 
@@ -304,15 +304,16 @@ def code_value_transform(sv, data, value_id, field_id):
 ROAD_SURVEY_VALUE_MAPPINGS = [
     ("funding_source", "funding_source", str_transform),
     ("project", "project", str_transform),
-    # The value_id "road_type", should be changed to "asset_class"
-    ("asset_class", "road_type", str_transform),
+    # The value_id "road_type", was changed to "asset_class" in the surveys
+    ("asset_class", "asset_class", str_transform),
     # These are actually numeric values but are stored as strings
     ("carriageway_width", "carriageway_width", str_transform),
     ("number_lanes", "number_lanes", str_transform),
     ("rainfall", "rainfall", str_transform),
     # These are actually FK Ids
     ("municipality", "administrative_area", str_transform),
-    ("asset_condition", "surface_condition", str_transform),
+    # The value_id "surface_condition", was changed to "asset_condition" in the surveys
+    ("asset_condition", "asset_condition", str_transform),
     ("traffic_level", "traffic_level", str_transform),
     ("terrain_class", "terrain_class", str_transform),
     # Get the corresponding code to use (in preference)
