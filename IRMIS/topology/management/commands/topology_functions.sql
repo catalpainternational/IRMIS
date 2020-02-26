@@ -37,6 +37,7 @@ AS $$
 WITH index_query AS (
 	SELECT st_distance(geom, inputpoint) as d, assets_road.*
 		FROM assets_road
+		WHERE assets_road.road_code = roadcode
 		ORDER BY geom <-> inputpoint limit 4 -- Choose the four "best" candidates
 ) SELECT
 	id

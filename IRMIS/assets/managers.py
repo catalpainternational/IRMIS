@@ -1,12 +1,20 @@
-from django.contrib.gis.db import models
-from django.db.models import Func, FloatField, CharField, DateTimeField, F
-from django.contrib.gis.db.models.functions import Transform
 from django.apps import apps
+from django.contrib.gis.db import models
+from django.contrib.gis.db.models.functions import Transform
 from django.contrib.postgres.fields import HStoreField
-from django.db.models import Subquery, OuterRef
-from django.db.models import Q, When, Case, Value
-
-from django.db.models.functions import Cast
+from django.db.models import (
+    Case,
+    CharField,
+    DateTimeField,
+    F,
+    FloatField,
+    Func,
+    OuterRef,
+    Q,
+    Subquery,
+    Value,
+    When,
+)
 
 
 class RoughnessRoadCode(Func):
@@ -102,10 +110,10 @@ def road_field_subquery(
     road_model_field: str, annotation_field_name: str = None
 ) -> dict[str, Subquery]:
     """
-    For models with a pseudo-foreign-key to a Road ID, fetch a relevant field on the 
+    For models with a pseudo-foreign-key to a Road ID, fetch a relevant field on the
     road model
 
-    >>> Survey.objects.annotate(**road_field_subquery('road_type')).values('road_id', 'road_road_type')                                                                             
+    >>> Survey.objects.annotate(**road_field_subquery('road_type')).values('road_id', 'road_road_type')
     <SurveyQuerySet [... {'road_id': 133, 'road_road_type': 'MUN'}, {'road_id': 133, 'road_road_type': 'MUN'},...']>
     """
 
@@ -133,7 +141,7 @@ def update_roughness_survey_values():
         A CASE statement generator for road roughness
         """
         roughness_field_name = "values__source_roughness"
-        road_type_name = "road_road_type"  #  Assumes that .annotate(**road_field_subquery("road_type")) has been added to your Survey qs
+        road_type_name = "road_road_type"  # Assumes that .annotate(**road_field_subquery("road_type")) has been added to your Survey qs
 
         mun = Q(**{road_type_name: "MUN"})
         nat = Q(**{road_type_name: "NAT"})
