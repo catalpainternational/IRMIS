@@ -200,30 +200,31 @@ class Command(BaseCommand):
     def handle(self, *args, **option):
 
         with connection.cursor() as cursor:
-            # cursor.execute(SqlQueries.drop_table, SqlQueries.attrs)
-            # cursor.execute(SqlQueries.drop_topology, SqlQueries.attrs)
-            # cursor.execute(SqlQueries.create_topology, SqlQueries.attrs)
-            # cursor.execute(SqlQueries.create_table, SqlQueries.attrs)
-
-            # # Our "create dump" command is a Django queryset. It needs to be a table for the following processing.
-            # qs, params = SqlQueries.create_dump.query.sql_with_params()
-
-            # # Django SQL writer does terrible things by deciding we want bytea field. We don't
-            # qs = qs.replace("::bytea", "")
-            # qs = """
-            #     DROP TABLE IF EXISTS "singlepart_dump";
-            #     CREATE TABLE "singlepart_dump" AS (
-            #         SELECT code road_code, geom_part AS geom FROM ({}) AS "i")""".format(
-            #     qs
-            # )
-            # cursor.execute(qs, params)
-
-            # cursor.execute(SqlQueries.apply_deletions, SqlQueries.attrs)
-            # cursor.execute(SqlQueries.apply_additions, SqlQueries.attrs)
-
-            # cursor.execute(SqlQueries.merge_multipart, SqlQueries.attrs)
-
-            # cursor.execute(SqlQueries.populate_topo, SqlQueries.attrs)
-            # cursor.execute(SqlQueries.update_table_geom, SqlQueries.attrs)
-            cursor.execute(SqlQueries.drop_field, SqlQueries.attrs)
+            cursor.execute(SqlQueries.drop_table, SqlQueries.attrs)
             cursor.execute(SqlQueries.drop_topology, SqlQueries.attrs)
+            cursor.execute(SqlQueries.create_topology, SqlQueries.attrs)
+            cursor.execute(SqlQueries.create_table, SqlQueries.attrs)
+
+            # Our "create dump" command is a Django queryset. It needs to be a table for the following processing.
+            qs, params = SqlQueries.create_dump.query.sql_with_params()
+
+            # Django SQL writer does terrible things by deciding we want bytea field. We don't
+            qs = qs.replace("::bytea", "")
+            qs = """
+                DROP TABLE IF EXISTS "singlepart_dump";
+                CREATE TABLE "singlepart_dump" AS (
+                    SELECT code road_code, geom_part AS geom FROM ({}) AS "i")""".format(
+                qs
+            )
+            cursor.execute(qs, params)
+
+            cursor.execute(SqlQueries.apply_deletions, SqlQueries.attrs)
+            cursor.execute(SqlQueries.apply_additions, SqlQueries.attrs)
+
+            cursor.execute(SqlQueries.merge_multipart, SqlQueries.attrs)
+
+            cursor.execute(SqlQueries.populate_topo, SqlQueries.attrs)
+            cursor.execute(SqlQueries.update_table_geom, SqlQueries.attrs)
+            # cursor.execute(SqlQueries.drop_field, SqlQueries.attrs)
+            # cursor.execute(SqlQueries.drop_topology, SqlQueries.attrs)
+            cursor.execute(SqlQueries.update_table_geom, SqlQueries.attrs)
