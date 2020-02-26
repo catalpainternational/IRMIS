@@ -76,7 +76,7 @@ const lengthTypeChoices: { [name: string]: any } = {
 };
 
 export function testKeyIsReal(key: any): boolean {
-    return ["0", "none", "unknown", "nan", "null", "undefined", "false"].indexOf(`${key}`.toLowerCase()) === -1;
+    return ["0", "none", "unknown", "nan", "null", "undefined", "false", ""].indexOf(`${key}`.toLowerCase()) === -1;
 }
 
 /** Define a new report column based on the supplied title and columnData */
@@ -104,7 +104,7 @@ function defineReportColumn(title: string, columnData: string): void {
 function extractTitle(lengthKey: string, choices: { [name: string]: any }, useLengthKeyAsDefault = false) {
     let title = choice_or_default(lengthKey, choices, useLengthKeyAsDefault ? lengthKey : "Unknown").toLowerCase();
 
-    if (!title || title === "unknown") {
+    if (title === "unknown") {
         // check if we've actually received the title instead of the key
         const invertedChoices = invertChoices(choices);
         const alternateTitle = choice_or_default(lengthKey, invertedChoices, "Unknown").toLowerCase();
