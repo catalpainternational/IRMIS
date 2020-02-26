@@ -55,11 +55,13 @@ This entire sequence must be performed to completion before users are allowed to
   - Refresh the calculated Road record geometry data (unless you specify --no-road-refresh)
   - Then from those Road records recreate all of the 'programmatic' Surveys for Roads, and
   - Refresh all user entered Surveys for Roads
+  
   Note: Refreshing the programmatic Surveys relies on completeness of the Road record geometry data.  Therefore it is recommended to not use the `--no-road-refresh` option unless you've literally just run `make_road_surveys` or `import_traffic_surveys` immediately before.
 
-5. `./manage.py import_traffic_surveys ../../path/to/the/traffic/survey/csv <optional: --no-road-refresh>` 
+6. `./manage.py import_traffic_surveys ../../path/to/the/traffic/survey/csv <optional: --no-road-refresh>` 
   - Refresh the calculated Road record geometry data (unless you specify --no-road-refresh)
   - Then recreate the programmatic traffic surveys from the csv file
+  
   Note: Refreshing the programmatic traffic Surveys relies on completeness of the Road record geometry data.  Therefore it is recommended to not use the `--no-road-refresh` option unless you've literally just run `make_road_surveys` or `import_traffic_surveys` immediately before.
 
 ## Pre-Commit (Black formatter)
