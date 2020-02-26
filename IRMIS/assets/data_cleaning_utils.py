@@ -93,7 +93,7 @@ def get_roads_by_road_code(rc):
         roads = (
             Road.objects.filter(road_code=rc)
             .exclude(link_code__in=road_link_codes)
-            .order_by("link_code", "geom_start_chainage", "link_start_chainage")
+            .order_by("geom_start_chainage", "link_code", "link_start_chainage")
         )
         if "None" in road_link_codes:
             roads = roads.exclude(link_code__isnull=True)
@@ -101,7 +101,7 @@ def get_roads_by_road_code(rc):
         return roads
 
     return Road.objects.filter(road_code=rc).order_by(
-        "link_code", "geom_start_chainage", "link_start_chainage"
+        "geom_start_chainage", "link_code", "link_start_chainage"
     )
 
 
@@ -154,6 +154,18 @@ def assess_road_geometries(roads, reset_geom):
     returns a count of the total number of road links that were updated """
     start_chainage = -1
     updated = 0
+
+    # if any one of the geom_ values are not set for any road,
+    # then we must recalculate them for all roads, i.e. we must turn on reset_geom
+    if not reset_geom:
+        for road in roads:
+            if (
+                road.geom_start_chainage == None
+                or road.geom_end_chainage == None
+                or road.geom_length == None
+            ):
+                reset_geom = True
+                break
 
     for road in roads:
         # Note that the 'link_' values from Road are considered highly unreliable
@@ -399,12 +411,10 @@ def create_programmatic_survey(management_command, data, mappings, audit_source_
         survey_data = {
             "road_id": data["asset_id"] if "asset_id" in data else None,
             "road_code": data["asset_code"] if "asset_code" in data else None,
-            "chainage_start": data["geom_start_chainage"]
-            if "geom_start_chainage" in data
+            "chainage_start": data["chainage_start"]
+            if "chainage_start" in data
             else None,
-            "chainage_end": data["geom_end_chainage"]
-            if "geom_end_chainage" in data
-            else None,
+            "chainage_end": data["chainage_end"] if "chainage_end" in data else None,
             "source": "programmatic",
             "values": {},
             "date_created": make_aware(datetime.datetime(1970, 1, 1)),
