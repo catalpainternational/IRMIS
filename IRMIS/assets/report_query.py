@@ -61,7 +61,7 @@ class ReportQuery:
                 " ELSE NULL\n"
                 " END AS asset_code,\n"
                 " r.road_name AS asset_name,\n"
-                " r.asset_condition, r.asset_class,\n"
+                " r.surface_condition AS asset_condition, r.road_type AS asset_class,\n"
                 " r.geom_end_chainage AS geom_chainage, r.administrative_area AS municipality,\n"
                 " r.geojson_file_id AS geojson_file,\n"
                 " r.carriageway_width, r.number_lanes,\n"

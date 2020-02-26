@@ -104,7 +104,7 @@ function defineReportColumn(title: string, columnData: string): void {
 function extractTitle(lengthKey: string, choices: { [name: string]: any }, useLengthKeyAsDefault = false) {
     let title = choice_or_default(lengthKey, choices, useLengthKeyAsDefault ? lengthKey : "Unknown").toLowerCase();
 
-    if (title === "unknown") {
+    if (!title || title === "unknown") {
         // check if we've actually received the title instead of the key
         const invertedChoices = invertChoices(choices);
         const alternateTitle = choice_or_default(lengthKey, invertedChoices, "Unknown").toLowerCase();
@@ -117,7 +117,9 @@ function extractTitle(lengthKey: string, choices: { [name: string]: any }, useLe
             title = lengthKey.toLowerCase();
         }
     }
-    title = title[0].toUpperCase() + title.substring(1);
+    title = title.length > 1
+        ? title[0].toUpperCase() + title.substring(1)
+        : title;
 
     return [title, lengthKey];
 }

@@ -492,7 +492,7 @@ class Road(models.Model):
         choices=Asset.ASSET_CLASS_CHOICES,
         blank=True,
         null=True,
-        help_text=_("Choose the road class"),
+        help_text=_("Choose the asset class"),
     )
     road_status = models.ForeignKey(
         "RoadStatus",

@@ -284,6 +284,7 @@ def protobuf_road_surveys(request, pk, survey_attribute=None):
     queryset = Survey.objects.filter(asset_code=road.road_code)
 
     filter_attribute = survey_attribute
+    # These replacements *should* be unnecessary, but we'll leave them in place for now
     if survey_attribute == "surface_condition":
         filter_attribute = "asset_condition"
     elif survey_attribute == "road_type":
@@ -451,12 +452,12 @@ def protobuf_reports(request):
 
     culvert_classes = request.GET.getlist("culvert_class", [])
     bridge_classes = request.GET.get("bridge_class", [])
-    road_types = request.GET.getlist("road_type", [])  # road_type=X
+    road_classes = request.GET.getlist("road_class", [])
     asset_classes = filter_consistency(
         request.GET.getlist("asset_class", []),
         culvert_classes,
         bridge_classes,
-        road_types,
+        road_classes,
     )
 
     # handle the other [array] filters
