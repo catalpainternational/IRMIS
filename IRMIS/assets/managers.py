@@ -2,6 +2,11 @@ from django.contrib.gis.db import models
 from django.db.models import Func, FloatField, CharField, DateTimeField, F
 from django.contrib.gis.db.models.functions import Transform
 from django.apps import apps
+from django.contrib.postgres.fields import HStoreField
+from django.db.models import Subquery, OuterRef
+from django.db.models import Q, When, Case, Value
+
+from django.db.models.functions import Cast
 
 
 class RoughnessRoadCode(Func):
@@ -93,6 +98,95 @@ class NearestAssetRoadId(Func):
     default_alias = "road_id"
 
 
+def road_field_subquery(
+    road_model_field: str, annotation_field_name: str = None
+) -> dict[str, Subquery]:
+    """
+    For models with a pseudo-foreign-key to a Road ID, fetch a relevant field on the 
+    road model
+
+    >>> Survey.objects.annotate(**road_field_subquery('road_type')).values('road_id', 'road_road_type')                                                                             
+    <SurveyQuerySet [... {'road_id': 133, 'road_road_type': 'MUN'}, {'road_id': 133, 'road_road_type': 'MUN'},...']>
+    """
+
+    # When it's not defined, the returned annotation field is generated below
+    field_name = annotation_field_name or "road_%s" + road_model_field
+
+    road_model = apps.get_model("assets", "road")
+    return {
+        field_name: Subquery(
+            road_model.objects.filter(pk=OuterRef("road_id")).values(road_model_field)
+        )
+    }
+
+
+def update_roughness_survey_values():
+    """
+    This absolutely ridiculous excuse for an UPDATE
+    shows the power of Django being used in unholy ways
+    It will add or update a 'roughness' parameter on "Survey.values"
+    based on the road class and our approximate class breaks for good, bad, and ugly
+    """
+
+    def road_roughness_q() -> Case:
+        """
+        A CASE statement generator for road roughness
+        """
+        roughness_field_name = "values__source_roughness"
+        road_type_name = "road_road_type"  #  Assumes that .annotate(**road_field_subquery("road_type")) has been added to your Survey qs
+
+        mun = Q(**{road_type_name: "MUN"})
+        nat = Q(**{road_type_name: "NAT"})
+
+        def roughness_range(start: int = None, end: int = None) -> Q:
+            """
+            Returns a Django Conditional statement, or Q, to find a value
+            given input of two other fields
+            """
+            if start and end:
+                return Q(
+                    **{
+                        roughness_field_name + "__gte": start,
+                        roughness_field_name + "__lt": end,
+                    }
+                )
+            elif end:
+                return Q(**{roughness_field_name + "__gte": end})
+            elif start:
+                return Q(**{roughness_field_name + "__lt": start})
+
+        whens = [
+            When(condition, then=Value(label))
+            for label, condition in (
+                ("good", roughness_range(None, 4) & nat),
+                ("fair", roughness_range(4, 6) & nat),
+                ("poor", roughness_range(6, 10) & nat),
+                ("verypoor", roughness_range(10, None) & nat),
+                ("good", roughness_range(None, 6) & mun),
+                ("fair", roughness_range(6, 10) & mun),
+                ("poor", roughness_range(10, 14) & mun),
+                ("verypoor", roughness_range(14, None) & mun),
+            )
+        ]
+
+        return Case(*whens, default=None, output_field=models.TextField())
+
+    return (
+        apps.get_model("assets", "Survey")
+        .objects.filter(values__has_key="source_roughness")
+        .annotate(**road_field_subquery("road_type"))
+        .annotate(
+            new_values=Func(
+                road_roughness_q(),  # CASE statement generating road roughness
+                template="""values || hstore(ARRAY['roughness',%(expressions)s])""",  # CASE output is appended to the values array as 'roughness'
+                output_field=HStoreField(),
+            )
+        )
+        .exclude(values=F("new_values"))  # Skip any which won't change
+        .update(values=F("new_values"))  # Replace values
+    )
+
+
 class CsvSurveyQueryset(models.QuerySet):
     """ provides typed and filtered access to CSV data """
 
@@ -126,22 +220,35 @@ class RoughnessManager(models.Manager):
     def get_queryset(self):
         return CsvSurveyQueryset(self.model, using=self._db).roughness()
 
-    def as_surveys(self, username):
+    def make_surveys(self, username):
         """
         Convert "CSV Roughness" row to a "Survey" row
         """
         model = apps.get_model("assets", "survey")
         user = apps.get_model("auth", "User").objects.get(username=username)
-        return model.objects.bulk_create(
+        # Creating "survey" instances from "csv row" instances
+        # This takes a while
+        # Mainly because the "road_id" bit is a bit slow
+        model.objects.bulk_create(
             [
                 model(
                     road_code=from_row.road_code,
                     chainage_start=from_row.chainage_start,
                     chainage_end=from_row.chainage_end,
-                    values={"roughness": from_row.roughness},
+                    values={"source_roughness": from_row.roughness},
                     road_id=from_row.road_id,
-                    added_by=user,
+                    user=user,
                 )
-                for from_row in self.get_queryset()
+                for from_row in self.get_queryset()[:100]
             ]
         )
+
+        # Update the surveys table with "roughness" parameter
+        update_roughness_survey_values()
+
+    def clear_surveys(self):
+        """
+        Clear all "Roughness" surveys, use with caution
+        """
+        model = apps.get_model("assets", "survey")
+        model.objects.filter(values__has_key="source_roughness").delete()
