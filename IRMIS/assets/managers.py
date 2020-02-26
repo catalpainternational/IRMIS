@@ -2,6 +2,7 @@ from django.apps import apps
 from django.contrib.gis.db import models
 from django.contrib.gis.db.models.functions import Transform
 from django.contrib.postgres.fields import HStoreField
+from typing import Dict
 from django.db.models import (
     Case,
     CharField,
@@ -108,7 +109,7 @@ class NearestAssetRoadId(Func):
 
 def road_field_subquery(
     road_model_field: str, annotation_field_name: str = None
-) -> dict[str, Subquery]:
+) -> Dict[str, Subquery]:
     """
     For models with a pseudo-foreign-key to a Road ID, fetch a relevant field on the
     road model
