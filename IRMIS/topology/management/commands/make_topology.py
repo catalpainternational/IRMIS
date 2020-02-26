@@ -178,9 +178,12 @@ class SqlQueries:
 
     update_table_geom = sql.SQL(
         """
-        TRUNCATE {0}.{1};
-        INSERT INTO {0}.{1} 
-        SELECT "road_code", ST_GEOMETRYN(topology.geometry({2}), 1) FROM {0}.{3}
+    TRUNCATE {0}.{1};
+
+    INSERT INTO {0}.{1} 
+    SELECT "road_code", ST_GEOMETRYN(topology.geometry({2}), 1) FROM {0}.{3}
+    WHERE "road_code" IN ( SELECT "road_code" FROM ( SELECT "road_code", COUNT("road_code") FROM {0}.{3} GROUP BY "road_code") AS first_query WHERE count = 1 )
+        
     """
     ).format(
         sql.Identifier(attrs["public"]),
@@ -194,37 +197,109 @@ class Command(BaseCommand):
     help = "My shiny new management command."
 
     def add_arguments(self, parser):
-        pass
-        # parser.add_argument("sample", nargs="+")
+        parser.add_argument(
+            "-r",
+            "--recreate",
+            action="store_false",
+            help="Create topology and topo_geom field",
+        )
+        parser.add_argument(
+            "-d",
+            "--drop",
+            action="store_false",
+            help="Drop topology and topo_geom field after completion",
+        )
+        parser.add_argument(
+            "--cleanup",
+            action="store_false",
+            help="Drop temporary geometry tables after completion",
+        )
 
-    def handle(self, *args, **option):
+    def _drop(self, cursor: connection.cursor, continue_on_exception=True):
+        self.stdout.write("Topo: drop field from toporoad")
+        try:
+            cursor.execute(SqlQueries.drop_field, SqlQueries.attrs)
+        except Exception as E:
+            self.stderr.write("%s" % (E,))
+        self.stdout.write("Topo: drop schema tl_roads_topo")
+
+        self.stdout.write("Topo: drop table toporoad")
+        try:
+            cursor.execute(SqlQueries.drop_table, SqlQueries.attrs)
+        except Exception as E:
+            self.stderr.write("%s" % (E,))
+        self.stdout.write("Topo: drop schema tl_roads_topo")
+
+        try:
+            cursor.execute(SqlQueries.drop_topology, SqlQueries.attrs)
+        except Exception as E:
+            self.stderr.write("%s" % (E,))
+
+    def _create(self, cursor: connection.cursor, continue_on_exception=True):
+        self.stdout.write("Topo: create topology topo_road")
+        cursor.execute(SqlQueries.create_topology, SqlQueries.attrs)
+        self.stdout.write("Topo: create table and add topology column")
+        cursor.execute(SqlQueries.create_table, SqlQueries.attrs)
+
+    def _create_sp_table(self, cursor: connection.cursor):
+        # Our "create dump" command is a Django queryset. It needs to be a table for the following processing.
+        qs, params = SqlQueries.create_dump.query.sql_with_params()
+
+        # Django SQL writer does terrible things by deciding we want bytea field. We don't want bytea fields.
+        qs = qs.replace("::bytea", "")
+        qs = """CREATE TABLE "singlepart_dump" AS (SELECT code road_code, geom_part AS geom FROM ({}) AS "i")""".format(
+            qs
+        )
+        cursor.execute("""DROP TABLE IF EXISTS "singlepart_dump";""")
+
+        self.stdout.write("Topo: create singlepart table")
+        cursor.execute(qs, params)
+
+    def handle(self, *args, **options):
 
         with connection.cursor() as cursor:
-            cursor.execute(SqlQueries.drop_table, SqlQueries.attrs)
-            cursor.execute(SqlQueries.drop_topology, SqlQueries.attrs)
-            cursor.execute(SqlQueries.create_topology, SqlQueries.attrs)
-            cursor.execute(SqlQueries.create_table, SqlQueries.attrs)
+            if options["recreate"]:
+                try:
+                    self._drop(cursor)
+                except:
+                    raise
+                try:
+                    self._create(cursor)
+                except:
+                    raise
 
-            # Our "create dump" command is a Django queryset. It needs to be a table for the following processing.
-            qs, params = SqlQueries.create_dump.query.sql_with_params()
+            self._create_sp_table(cursor)
 
-            # Django SQL writer does terrible things by deciding we want bytea field. We don't
-            qs = qs.replace("::bytea", "")
-            qs = """
-                DROP TABLE IF EXISTS "singlepart_dump";
-                CREATE TABLE "singlepart_dump" AS (
-                    SELECT code road_code, geom_part AS geom FROM ({}) AS "i")""".format(
-                qs
+            self.stdout.write(
+                'Geometry deletions are applied from the "RoadCorrectionSegment" model'
             )
-            cursor.execute(qs, params)
-
             cursor.execute(SqlQueries.apply_deletions, SqlQueries.attrs)
+            self.stdout.write(
+                'Geometry additions are applied from the "RoadCorrectionSegment" model'
+            )
             cursor.execute(SqlQueries.apply_additions, SqlQueries.attrs)
 
+            self.stdout.write("Multipart geometries are being merged")
             cursor.execute(SqlQueries.merge_multipart, SqlQueries.attrs)
-
+            self.stdout.write("Topology populating (this will take some time)")
             cursor.execute(SqlQueries.populate_topo, SqlQueries.attrs)
+
+            self.stdout.write(
+                'Populate the "{table_name} table"'.format(**SqlQueries.attrs)
+            )
+            self.stdout.write(
+                "%s"
+                % cursor.mogrify(
+                    SqlQueries.update_table_geom, SqlQueries.attrs
+                ).decode()
+            )
             cursor.execute(SqlQueries.update_table_geom, SqlQueries.attrs)
-            # cursor.execute(SqlQueries.drop_field, SqlQueries.attrs)
-            # cursor.execute(SqlQueries.drop_topology, SqlQueries.attrs)
-            cursor.execute(SqlQueries.update_table_geom, SqlQueries.attrs)
+
+            if options["cleanup"]:
+                self.stdout.write("Dropping temporary tables")
+                cursor.execute("DROP TABLE multipart_join;")
+                cursor.execute("DROP TABLE singlepart_dump;")
+                cursor.execute("DROP TABLE multipart_join_dumpagain;")
+
+            if options["drop"]:
+                self._drop(cursor)
