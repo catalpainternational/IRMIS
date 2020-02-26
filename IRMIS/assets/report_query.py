@@ -286,7 +286,7 @@ class ReportQuery:
                 "  SELECT SUM(end_chainage - start_chainage)\n"
                 "  FROM final_results\n"
                 "  WHERE attribute = 'rainfall'\n"
-                "  AND CAST(value AS INTEGER) BETWEEN r_from AND r_to\n"
+                "  AND CAST(CEIL(CAST(value AS FLOAT)) AS INTEGER) BETWEEN r_from AND r_to\n"
                 " ) AS total_length\n"
                 " FROM rainfall_range\n"
                 " UNION\n"
