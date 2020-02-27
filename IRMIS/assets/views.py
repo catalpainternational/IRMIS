@@ -365,11 +365,11 @@ def clean_id_filter(id_value, prefix):
 
 def id_filter_consistency(primary_id, culvert_id, bridge_id, road_id=None):
     if primary_id != None:
-        if culvert_id != None and "CULV-" + str(asset_id) == culvert_id:
+        if culvert_id != None and "CULV-" + str(primary_id) == culvert_id:
             primary_id = culvert_id
-        if bridge_id != None and "BRDG-" + str(asset_id) == bridge_id:
+        if bridge_id != None and "BRDG-" + str(primary_id) == bridge_id:
             primary_id = bridge_id
-        if road_id != None and "ROAD-" + str(asset_id) == road_id:
+        if road_id != None and "ROAD-" + str(primary_id) == road_id:
             primary_id = road_id
 
     return primary_id
