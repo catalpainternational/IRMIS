@@ -7,41 +7,13 @@ from psycopg2 import sql
 from assets.models import Road
 from django.db.models.functions import Coalesce, Cast
 from django.db.models import F, TextField, Func
-from django.contrib.gis.db.models import LineStringField
+from django.contrib.gis.db.models import LineStringField, GeometryField
 
 
 class GeomDump(Func):
     function = "ST_DUMP"
     template = "(%(function)s(%(expressions)s)).geom"
-
-    def as_sql(
-        self,
-        compiler,
-        connection,
-        function=None,
-        template=None,
-        arg_joiner=None,
-        **extra_context
-    ):
-        connection.ops.check_expression_support(self)
-        sql_parts = []
-        params = []
-        for arg in self.source_expressions:
-            arg_sql, arg_params = compiler.compile(arg)
-            sql_parts.append(arg_sql)
-            params.extend(arg_params)
-        data = {**self.extra, **extra_context}
-        # Use the first supplied value in this order: the parameter to this
-        # method, a value supplied in __init__()'s **extra (the value in
-        # `data`), or the value defined on the class.
-        if function is not None:
-            data["function"] = function
-        else:
-            data.setdefault("function", self.function)
-        template = template or data.get("template", self.template)
-        arg_joiner = arg_joiner or data.get("arg_joiner", self.arg_joiner)
-        data["expressions"] = data["field"] = arg_joiner.join(sql_parts)
-        return template % data, params
+    output_field = LineStringField()
 
 
 class SqlQueries:
@@ -134,7 +106,6 @@ class SqlQueries:
         SELECT setval(pg_get_serial_sequence('"topology_roadcorrectionsegment"','id'), coalesce(max("id"), 1), max("id") IS NOT null) FROM "topology_roadcorrectionsegment";
         SELECT setval(pg_get_serial_sequence('"topology_intersection"','id'), coalesce(max("id"), 1), max("id") IS NOT null) FROM "topology_intersection";
         COMMIT;
-
         """
 
     # This loads the linestrings to the topology_toporoad table
@@ -142,8 +113,8 @@ class SqlQueries:
         """
     INSERT INTO {}.{} (road_code, {})
         SELECT road_code, 
-        topology.toTopoGeom(ST_Union(geom), 'tl_roads_topo'::varchar, 1, %(prec)s)
-        FROM multipart_join_dumpagain GROUP BY road_code;
+        topology.toTopoGeom(ST_Union(g), 'tl_roads_topo'::varchar, 1, %(prec)s)
+        FROM multipart_join GROUP BY road_code;
     """
     ).format(
         sql.Identifier(attrs["public"]),
@@ -183,7 +154,6 @@ class SqlQueries:
     INSERT INTO {0}.{1} 
     SELECT "road_code", ST_GEOMETRYN(topology.geometry({2}), 1) FROM {0}.{3}
     WHERE "road_code" IN ( SELECT "road_code" FROM ( SELECT "road_code", COUNT("road_code") FROM {0}.{3} GROUP BY "road_code") AS first_query WHERE count = 1 )
-        
     """
     ).format(
         sql.Identifier(attrs["public"]),
@@ -194,7 +164,7 @@ class SqlQueries:
 
 
 class Command(BaseCommand):
-    help = "My shiny new management command."
+    help = """Populate the 'estraroad' model with 'superroads': single-linestring, single-roadcode entities."""
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -204,18 +174,26 @@ class Command(BaseCommand):
             help="Create topology and topo_geom field",
         )
         parser.add_argument(
-            "-d",
-            "--drop",
-            action="store_false",
+            "--no_drop",
+            action="store_true",
             help="Drop topology and topo_geom field after completion",
         )
         parser.add_argument(
-            "--cleanup",
-            action="store_false",
+            "--no_cleanup",
+            action="store_true",
             help="Drop temporary geometry tables after completion",
+        )
+        parser.add_argument(
+            "--use_loop",
+            action="store_true",
+            help="Use the slower per-row topology import",
         )
 
     def _drop(self, cursor: connection.cursor, continue_on_exception=True):
+        """
+        Drop the "topology" field on the topology_toporoad model, then
+        drop the tl_roads_topo schema
+        """
         self.stdout.write("Topo: drop field from toporoad")
         try:
             cursor.execute(SqlQueries.drop_field, SqlQueries.attrs)
@@ -236,12 +214,20 @@ class Command(BaseCommand):
             self.stderr.write("%s" % (E,))
 
     def _create(self, cursor: connection.cursor, continue_on_exception=True):
+        """
+        Create a topology, create the toporoad table if necessary and
+        add the new Topology column
+        """
         self.stdout.write("Topo: create topology topo_road")
         cursor.execute(SqlQueries.create_topology, SqlQueries.attrs)
         self.stdout.write("Topo: create table and add topology column")
         cursor.execute(SqlQueries.create_table, SqlQueries.attrs)
 
     def _create_sp_table(self, cursor: connection.cursor):
+        """
+        Create a single-geometry-parts "estradaroads" copy from "assets_roads"
+        which are neither "blacklisted" or "disabled" in the inputroad table
+        """
         # Our "create dump" command is a Django queryset. It needs to be a table for the following processing.
         qs, params = SqlQueries.create_dump.query.sql_with_params()
 
@@ -282,7 +268,14 @@ class Command(BaseCommand):
             self.stdout.write("Multipart geometries are being merged")
             cursor.execute(SqlQueries.merge_multipart, SqlQueries.attrs)
             self.stdout.write("Topology populating (this will take some time)")
-            cursor.execute(SqlQueries.populate_topo, SqlQueries.attrs)
+            if options["use_loop"]:
+                self.stdout.write(
+                    "Loop method over tooplogies is slower but less prone to disaster"
+                )
+                cursor.execute(SqlQueries.populate_topo_loop)
+            else:
+                self.stdout.write("If you experience a crash here try --use_loop")
+                cursor.execute(SqlQueries.populate_topo, SqlQueries.attrs)
 
             self.stdout.write(
                 'Populate the "{table_name} table"'.format(**SqlQueries.attrs)
@@ -295,11 +288,11 @@ class Command(BaseCommand):
             )
             cursor.execute(SqlQueries.update_table_geom, SqlQueries.attrs)
 
-            if options["cleanup"]:
+            if not options["no_cleanup"]:
                 self.stdout.write("Dropping temporary tables")
-                cursor.execute("DROP TABLE multipart_join;")
-                cursor.execute("DROP TABLE singlepart_dump;")
-                cursor.execute("DROP TABLE multipart_join_dumpagain;")
+                cursor.execute("DROP TABLE IF EXISTS multipart_join;")
+                cursor.execute("DROP TABLE IF EXISTS singlepart_dump;")
+                cursor.execute("DROP TABLE IF EXISTS multipart_join_dumpagain;")
 
-            if options["drop"]:
+            if not options["no_drop"]:
                 self._drop(cursor)
