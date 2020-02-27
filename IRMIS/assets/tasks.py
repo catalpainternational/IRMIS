@@ -262,11 +262,7 @@ def populate_road_rrpmis(road, feature):
     road.carriageway_width = feature.get("cway_w")
     road.road_code = feature.get("rdcode_cn")
     asset_condition = feature.get("pvment_con")
-    if (
-        asset_condition
-        and asset_condition != "0"
-        and asset_condition != "Unlined"
-    ):
+    if asset_condition and asset_condition != "0" and asset_condition != "Unlined":
         road.asset_condition = SURFACE_COND_MAPPING_RRMPIS[feature.get("pvment_con")]
     surface_type = feature.get("pvment_typ")
     if surface_type and surface_type != "0":
