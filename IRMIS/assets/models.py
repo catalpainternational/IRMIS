@@ -244,7 +244,7 @@ class RoadQuerySet(models.QuerySet):
             link_start_name="link_start_name",
             link_end_name="link_end_name",
             surface_type="surface_type__code",
-            asset_condition="surface_condition",
+            asset_condition="asset_condition",
             pavement_class="pavement_class__code",
             administrative_area="administrative_area",
             technical_class="technical_class__code",
@@ -498,7 +498,7 @@ class Road(models.Model):
         null=True,
         help_text=_("Choose the traffic volume for the road link"),
     )
-    surface_condition = models.CharField(
+    asset_condition = models.CharField(
         verbose_name=_("Surface Condition (SDI)"),
         max_length=1,
         choices=Asset.ASSET_CONDITION_CHOICES,

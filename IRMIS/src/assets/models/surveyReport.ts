@@ -163,7 +163,7 @@ function extractCountData(
 }
 
 function getAssetConditionName(lengths: { [name: string]: any }) {
-    const assetConditionNames = ["asset_condition", "surface_condition", "structure_condition"];
+    const assetConditionNames = ["asset_condition", "structure_condition"];
     let assetConditionName = "asset_condition";
 
     if (!lengths) {
@@ -639,7 +639,7 @@ export class EstradaSurveyAttribute extends Attribute implements IEstrada {
     }
 
     get assetCondition(): string {
-        return ["asset_condition", "surface_condition", "structure_condition"].includes(this.primaryAttribute)
+        return ["asset_condition", "structure_condition"].includes(this.primaryAttribute)
             ? (window as any).gettext(choice_or_default(this.value, ASSET_CONDITION_CHOICES, "Unknown")) as string
             : this.unknownI8n();
     }

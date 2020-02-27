@@ -140,7 +140,6 @@ class ReportQuery:
             "final_results": (
                 "SELECT CONCAT(asset_type_prefix, asset_id::text) AS asset_id, asset_code,\n"
                 " CASE\n"
-                "  WHEN break_attr = 'surface_condition' THEN 'asset_condition'\n"
                 "  WHEN break_attr = 'structure_condition' THEN 'asset_condition'\n"
                 "  ELSE break_attr\n"
                 " END AS attribute,\n"
@@ -328,13 +327,6 @@ class ReportQuery:
                 value_filter_keys.append(filter_key)
         value_filter_keys = list(set(value_filter_keys).intersection(value_filters))
 
-        has_asset_condition = "asset_condition" in value_filter_keys
-        has_surface_condition = "surface_condition" in value_filter_keys
-        # has_structure_condition = "structure_condition" in value_filter_keys
-        if has_asset_condition and not has_surface_condition:
-            value_filter_keys.remove("asset_condition")
-            value_filter_keys.append("surface_condition")
-
         # Note the deliberate double appending of these values (because they're used twice)
         self.filter_cases.append(value_filter_keys)
         self.filter_cases.append(value_filter_keys)
@@ -349,8 +341,6 @@ class ReportQuery:
                     filter_name = "id"
                 elif filter_key == "asset_code":
                     filter_name = "road_code"
-                elif filter_key == "asset_condition":
-                    filter_name = "surface_condition"
                 elif filter_key == "surface_type":
                     filter_name = "surface_type_id"
                 road_clause = "CAST(r." + filter_name + " AS TEXT)=ANY(%s)\n"

@@ -308,7 +308,7 @@ ROAD_SURVEY_VALUE_MAPPINGS = [
     ("rainfall", "rainfall", str_transform),
     # These are actually FK Ids
     ("municipality", "administrative_area", str_transform),
-    ("surface_condition", "surface_condition", str_transform),
+    ("asset_condition", "asset_condition", str_transform),
     ("traffic_level", "traffic_level", str_transform),
     ("terrain_class", "terrain_class", str_transform),
     # Get the corresponding code to use (in preference)

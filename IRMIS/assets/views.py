@@ -158,9 +158,6 @@ def road_update(request):
         if getattr(old_road_pb, field) != request_value:
             # add field to list of changes fields
             changed_fields.append(field)
-            # handle mapping over changed field names
-            elif field == "asset_condition":
-                field = "surface_condition"
             # set attribute on road
             setattr(road, field, request_value)
 
@@ -280,8 +277,6 @@ def protobuf_road_surveys(request, pk, survey_attribute=None):
     queryset = Survey.objects.filter(road_code=road.road_code)
 
     filter_attribute = survey_attribute
-    if survey_attribute == "asset_condition":
-        filter_attribute = "surface_condition"
 
     if survey_attribute:
         queryset = queryset.filter(values__has_key=filter_attribute).exclude(
@@ -310,9 +305,6 @@ def pbtimestamp_to_pydatetime(pb_stamp):
 
 def road_survey_values(req_values):
     """ convert the json and do any required key manipulation """
-    if "asset_condition" in req_values:
-        req_values["surface_condition"] = req_values.pop("asset_condition")
-
     return req_values
 
 
@@ -568,7 +560,6 @@ def protobuf_reports(request):
 
     filtered_filters = (
         json.dumps(final_filters)
-        .replace("""surface_condition""", """asset_condition""")
         .replace("""structure_condition""", """asset_condition""")
     )
     report_protobuf.filter = filtered_filters

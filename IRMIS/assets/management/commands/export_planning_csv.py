@@ -49,7 +49,7 @@ class Command(BaseCommand):
                 round((survey.chainage_end - survey.chainage_start) / 1000, 3),
                 survey.values.get("surface_type", ""),
                 TERRAIN_DISPLAY[survey.values.get("terrain_class", "")],
-                ASSET_CONDITION_DISPLAY[survey.values.get("surface_condition", "")],
+                ASSET_CONDITION_DISPLAY[survey.values.get("asset_condition", "")],
                 rural_road_populations[survey.road],
             ]
             for survey in surveys

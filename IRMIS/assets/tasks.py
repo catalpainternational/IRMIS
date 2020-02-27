@@ -218,7 +218,7 @@ def populate_road_municipal(road, feature):
     road.road_name = feature.get("descriptio")
     road.road_code = feature.get("name")
     road.link_length = feature.get("lenkm")
-    road.surface_condition = SURFACE_COND_MAPPING_MUNI[feature.get("condi")]
+    road.asset_condition = SURFACE_COND_MAPPING_MUNI[feature.get("condi")]
 
 
 def populate_road_highway(road, feature):
@@ -261,13 +261,13 @@ def populate_road_rrpmis(road, feature):
     road.administrative_area = feature.get("distname")
     road.carriageway_width = feature.get("cway_w")
     road.road_code = feature.get("rdcode_cn")
-    surface_condition = feature.get("pvment_con")
+    asset_condition = feature.get("pvment_con")
     if (
-        surface_condition
-        and surface_condition != "0"
-        and surface_condition != "Unlined"
+        asset_condition
+        and asset_condition != "0"
+        and asset_condition != "Unlined"
     ):
-        road.surface_condition = SURFACE_COND_MAPPING_RRMPIS[feature.get("pvment_con")]
+        road.asset_condition = SURFACE_COND_MAPPING_RRMPIS[feature.get("pvment_con")]
     surface_type = feature.get("pvment_typ")
     if surface_type and surface_type != "0":
         surface_code = SURFACE_TYPE_MAPPING_RRMPIS[surface_type]

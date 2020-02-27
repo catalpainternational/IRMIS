@@ -34,9 +34,7 @@ def filter_pane():
 
 
 def field_name_standardisation(field_name, common_names, type_suffix):
-    if field_name == "structure_class":
-        return "asset_class"
-    elif field_name == "surface_condition" or field_name == "structure_condition":
+    if field_name == "structure_condition":
         return "asset_condition"
 
     if len(common_names) == 0 or (not field_name in common_names):
