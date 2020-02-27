@@ -559,7 +559,7 @@ def update_non_programmatic_surveys_by_road_code(
             if survey.id:
                 reversion_comment = "Survey split and asset_id updated programmatically"
             with reversion.create_revision():
-                survey.asset_id = road_survey.id
+                survey.asset_id = "ROAD-%s" % road_survey.id
                 survey.save()
                 reversion.set_comment(reversion_comment)
             return updated + 1
@@ -577,7 +577,7 @@ def update_non_programmatic_surveys_by_road_code(
     )
     prev_chainage_end = survey.chainage_end
     with reversion.create_revision():
-        survey.asset_id = road_survey.id
+        survey.asset_id = "ROAD-%s" % road_survey.id
         survey.chainage_end = road_survey.geom_end_chainage
         survey.save()
         reversion.set_comment("Survey split and road_id updated programmatically")
