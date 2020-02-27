@@ -12,6 +12,13 @@ class RoadCorrectionSegment(models.Model):
     """
 
     road_code = models.TextField(null=True, blank=True)
+    road = models.ForeignKey(
+        "assets.Road",
+        null=True,
+        blank=True,
+        help_text="A reference to a particular Assets road ID which the patch applies to",
+        on_delete=models.CASCADE,
+    )
     patch = models.PolygonField(srid=32751, dim=2, blank=True, null=True)
     geom = models.LineStringField(srid=32751, dim=2, blank=True, null=True)
 
