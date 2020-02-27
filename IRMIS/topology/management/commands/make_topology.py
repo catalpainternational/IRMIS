@@ -21,7 +21,7 @@ class SqlQueries:
     attrs = {
         "topology_schema_name": "tl_roads_topo",
         "srid": 32751,
-        "prec": 10,
+        "prec": 7.5,
         "table_name": "topology_toporoad",
         "public": "public",
         "column_name": "topo_geom",
@@ -60,7 +60,7 @@ class SqlQueries:
             code=Coalesce("inputroad__road_code", "road_code", output_field=TextField())
         )
         .annotate(geom_part=GeomDump(F("geom")))
-        .values("geom_part", "code")
+        .values("geom_part", "code", "id")
     )
 
     # Apply fixes to the geometries from the topology_roadcorrectionsegment deletions
@@ -74,7 +74,7 @@ class SqlQueries:
                 UPDATE singlepart_dump sp
                 SET geom = ST_DIFFERENCE(sp.geom, drop_geom.patch)
                 WHERE ST_INTERSECTS(sp.geom, drop_geom.patch)
-                AND drop_geom.road_code = sp.road_code;
+                AND (drop_geom.road_code = sp.road_code OR drop_geom.road_id = sp.id);
             END LOOP;
             RETURN;
         END$$ LANGUAGE plpgsql;
@@ -86,7 +86,12 @@ class SqlQueries:
 
     apply_additions = """
     INSERT INTO singlepart_dump(road_code, geom)
-        SELECT road_code, geom FROM topology_roadcorrectionsegment
+        SELECT road_code, geom FROM topology_roadcorrectionsegment;
+
+    INSERT INTO singlepart_dump(road_code, geom)
+        SELECT assets_road.road_code, topology_roadcorrectionsegment.geom FROM topology_roadcorrectionsegment, assets_road 
+        WHERE topology_roadcorrectionsegment.road_id = assets_road.id
+        AND topology_roadcorrectionsegment.road_code IS NULL;
     """
 
     # Merge the single parts to multiparts, and re-export as single parts according to their road code
@@ -126,7 +131,7 @@ class SqlQueries:
         """
         DO $$DECLARE r record;
         BEGIN
-        FOR r IN SELECT road_code, (ST_DUMP(geom)).geom FROM multipart_join_dumpagain LOOP
+        FOR r IN SELECT road_code, geom FROM multipart_join_dumpagain LOOP
             BEGIN
             RAISE NOTICE 'Loading of road code % starts', r.road_code;
              INSERT INTO {public}.{table_name} (road_code, {column_name})
@@ -153,7 +158,9 @@ class SqlQueries:
 
     INSERT INTO {0}.{1} 
     SELECT "road_code", ST_GEOMETRYN(topology.geometry({2}), 1) FROM {0}.{3}
-    WHERE "road_code" IN ( SELECT "road_code" FROM ( SELECT "road_code", COUNT("road_code") FROM {0}.{3} GROUP BY "road_code") AS first_query WHERE count = 1 )
+    WHERE "road_code" IN (
+        SELECT "road_code" FROM ( SELECT "road_code", COUNT("road_code") FROM {0}.{3} GROUP BY "road_code") AS first_query WHERE count = 1
+    )
     """
     ).format(
         sql.Identifier(attrs["public"]),
@@ -169,8 +176,8 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument(
             "-r",
-            "--recreate",
-            action="store_false",
+            "--no_recreate",
+            action="store_true",
             help="Create topology and topo_geom field",
         )
         parser.add_argument(
@@ -187,6 +194,11 @@ class Command(BaseCommand):
             "--use_loop",
             action="store_true",
             help="Use the slower per-row topology import",
+        )
+        parser.add_argument(
+            "--prepare_only",
+            action="store_true",
+            help="Don't actually run topo, just prepare the tables",
         )
 
     def _drop(self, cursor: connection.cursor, continue_on_exception=True):
@@ -233,7 +245,7 @@ class Command(BaseCommand):
 
         # Django SQL writer does terrible things by deciding we want bytea field. We don't want bytea fields.
         qs = qs.replace("::bytea", "")
-        qs = """CREATE TABLE "singlepart_dump" AS (SELECT code road_code, geom_part AS geom FROM ({}) AS "i")""".format(
+        qs = """CREATE TABLE "singlepart_dump" AS (SELECT code road_code, geom_part AS geom, id FROM ({}) AS "i")""".format(
             qs
         )
         cursor.execute("""DROP TABLE IF EXISTS "singlepart_dump";""")
@@ -244,7 +256,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         with connection.cursor() as cursor:
-            if options["recreate"]:
+            if not options["no_recreate"]:
                 try:
                     self._drop(cursor)
                 except:
@@ -266,7 +278,13 @@ class Command(BaseCommand):
             cursor.execute(SqlQueries.apply_additions, SqlQueries.attrs)
 
             self.stdout.write("Multipart geometries are being merged")
+
             cursor.execute(SqlQueries.merge_multipart, SqlQueries.attrs)
+
+            if options["prepare_only"]:
+                self.stdout.write("Returning")
+                return
+
             self.stdout.write("Topology populating (this will take some time)")
             if options["use_loop"]:
                 self.stdout.write(
