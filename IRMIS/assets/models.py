@@ -197,10 +197,10 @@ class SurveyQuerySet(models.QuerySet):
             for photo in photos:
                 photo_protobuf = survey_protobuf.photos.add()
                 setattr(photo_protobuf, "id", photo.id)
+                setattr(photo_protobuf, "url", photo.file.url)
+                setattr(photo_protobuf, "fk_link", "SURV-" + str(photo.object_id))
                 if photo.description:
                     setattr(photo_protobuf, "description", photo.description)
-                if photo.file:
-                    setattr(photo_protobuf, "url", photo.file.url)
 
         return surveys_protobuf
 
@@ -790,8 +790,10 @@ class BridgeQuerySet(models.QuerySet):
             for photo in photos:
                 photo_protobuf = bridge_protobuf.photos.add()
                 setattr(photo_protobuf, "id", photo.id)
-                setattr(photo_protobuf, "description", photo.description)
                 setattr(photo_protobuf, "url", photo.file.url)
+                setattr(photo_protobuf, "fk_link", "BRDG-" + str(photo.object_id))
+                if photo.description:
+                    setattr(photo_protobuf, "description", photo.description)
 
         return structures_protobuf
 
@@ -1079,8 +1081,10 @@ class CulvertQuerySet(models.QuerySet):
             for photo in photos:
                 photo_protobuf = culvert_protobuf.photos.add()
                 setattr(photo_protobuf, "id", photo.id)
-                setattr(photo_protobuf, "description", photo.description)
                 setattr(photo_protobuf, "url", photo.file.url)
+                setattr(photo_protobuf, "fk_link", "CULV-" + str(photo.object_id))
+                if photo.description:
+                    setattr(photo_protobuf, "description", photo.description)
 
         return structures_protobuf
 
