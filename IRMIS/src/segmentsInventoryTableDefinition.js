@@ -89,7 +89,7 @@ export const carriagewayWidthColumns = baseSegmentColumns.concat([
 
 export const rainfallColumns = baseSegmentColumns.concat([
     {
-        title: window.gettext("Rainfall"),
+        title: window.gettext("Rainfall (mm)"),
         data: "rainfall",
         defaultContent: "",
         orderable: false,
