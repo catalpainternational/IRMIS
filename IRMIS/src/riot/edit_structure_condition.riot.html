@@ -289,7 +289,8 @@
                         this.state.survey.setSource("Estrada");
                         this.state.survey.setChainageStart(0);
                         this.state.survey.setChainageEnd(0);
-                        this.state.survey.setStructureId(this.props.structure.id);
+                        this.state.survey.setAssetId(this.props.structure.id);
+                        this.state.survey.setAssetCode(this.props.structure.code);
                         this.state.survey.setValues(JSON.stringify({
                             asset_condition: this.state.survey.assetCondition,
                             condition_description: this.state.survey.conditionDescription,
@@ -302,8 +303,8 @@
                         this.state.survey.setDateSurveyed(dateSurveyed);
 
                         // set Survey structure/road information from state Structure
-                        this.state.survey.setStructureId(this.state.structure.id);
-                        this.state.survey.setRoadCode(this.state.structure.road_code || "");
+                        this.state.survey.setRoadId(this.state.structure.roadId);
+                        this.state.survey.setRoadCode(this.state.structure.roadCode || "");
 
                         this.saveSurvey();
                     }
