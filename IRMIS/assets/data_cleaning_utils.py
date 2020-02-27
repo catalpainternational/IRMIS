@@ -549,12 +549,6 @@ def update_non_programmatic_surveys_by_road_code(
     # Test if this survey exists wholly within the road link
     if survey.chainage_end <= road_survey.geom_end_chainage:
         if not survey.asset_id or survey.asset_id != road_survey.id:
-            management_command.stderr.write(
-                management_command.style.NOTICE(
-                    "User entered survey Id:%s setting asset_id to:%s for asset_code '%s'"
-                    % (survey.id, road_survey.id, rc)
-                )
-            )
             reversion_comment = "Survey asset_id updated programmatically"
             if survey.id:
                 reversion_comment = "Survey split and asset_id updated programmatically"
