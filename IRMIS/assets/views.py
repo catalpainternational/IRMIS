@@ -1418,5 +1418,5 @@ def photo_delete(request):
         reversion.set_user(request.user)
 
     return HttpResponse(
-        req_pb.SerializeToString(), status=200, content_type="application/octet-stream",
+        photo_pb2.Photo().SerializeToString(), status=200, content_type="application/octet-stream",
     )

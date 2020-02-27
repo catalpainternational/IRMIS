@@ -17,6 +17,11 @@
             },
             state: {},
             onBeforeMount(props, state) {
+                if (props.structure) {
+                    state.photos = props.structure.photos.map(makeEstradaPhoto);
+                } else {
+                    state.photos = props.asset.photos.map(makeEstradaPhoto);
+                }
                 state.photos = props.structure.photos.map(makeEstradaPhoto);
                 if (state.photos && state.photos.length > 0) {
                     state.photo1 = state.photos[0] ? state.photos[0] : undefined;

@@ -1,5 +1,5 @@
 <upload_photo>
-    <div show="{!state.photo.url || state.photo.url == ''}" class="photo-upload-area">
+    <div show="{state.photo.url == state.basePhoto.url}" class="photo-upload-area">
         <form class="dropzone">
             <div class="cloud-box">
                 <div class="upload-cloud"></div>
@@ -9,7 +9,8 @@
             </div>
         </form>
     </div>
-    <div show="{state.photo.url}" class="photo-management-area">
+    <div show="{state.photo.url != state.basePhoto.url}" class="photo-management-area">
+        <img src="{state.photo.url}" style="max-width: 400px;">
         <input
             class="{ state.errors.description ? 'danger' : null } { state.photo.description ? '' : 'inactive' } form-control upload-text"
             type="text" maxlength="500" placeholder="Enter a description of the photo"
@@ -28,6 +29,7 @@
                 errors: {},
             },
             onBeforeMount(props, state) {
+                state.basePhoto = new EstradaPhoto();
                 state.photo = props.photo || new EstradaPhoto();
             },
             onMounted(props, state) {
@@ -40,7 +42,6 @@
                     maxFiles: 1,
                     maxFilesize: 0.5, // MB
                     acceptedFiles: '.jpeg,.jpg,.gif,.png',
-                    addRemoveLinks: true,
                     dictDefaultMessage: '',
                     dictInvalidFileType: 'Not a valid image, please submit a JPEG, GIF, or PNG',
                     accept: (file, done) => {done();}
@@ -52,6 +53,8 @@
                     state.photo.setUrl(res.url);
                     state.photo.setFkLink(res.fk_link);
                 });
+
+                this.update();
             },
             updatePhoto(description) {
                 putPhotoData(this.state.photo)
@@ -67,8 +70,7 @@
             deletePhoto(e) {
                 deletePhotoData(this.state.photo)
                     .then((data) => {
-                        this.state.photo = makeEstradaPhoto({});
-                        myDropzone.enable();
+                        this.state.photo = new EstradaPhoto();
                         this.props.showFeedback();
                     }).catch((err) => {
                         this.props.showFeedback(true);
