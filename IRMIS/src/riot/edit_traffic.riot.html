@@ -226,8 +226,10 @@
         import Data_Table from "./data_table.riot.html";
 
         import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
-        import {cloneData} from "../assets/protoBufUtilities";
-        import {Survey} from "../../protobuf/survey_pb";
+        import {withinMaxDigits} from "../assets/utilities";
+
+        import { makeEstradaRoad } from "../assets/models/road";
+        import { EstradaSurvey, makeEstradaSurvey } from "../assets/models/survey";
 
         import $ from "jquery";
 
@@ -235,21 +237,17 @@
             return fieldNames.filter((fieldName) => {return !data[fieldName];});
         }
 
-        function withinMaxDigits(text, limit, decimals) {
-            return (new RegExp(`^\\d{0,${(limit - decimals)}}(\\.\\d{0,${decimals}})?$`).test(text));
-        }
-
         export default {
             state: {
-                baseSurvey: new Survey({}),
+                baseSurvey: new EstradaSurvey({}),
                 survey: {},
                 canSave: false,
                 errors: {},
                 pendingRows: [],
                 editMode: false,
                 loading: false,
-                maxCountDigits: 6,
-                currentRowData: new Survey({}),
+                maxCountDigits: 9,
+                currentRowData: new EstradaSurvey({}),
             },
             components: {
                 Edit_Modal, Edit_Stop_Alert, Data_Table
@@ -312,7 +310,7 @@
                     defaultContent: "",
                     className: "text-right",
                     render: (data, type, row) => {
-                        return `<a onclick="document.dispatchEvent(new CustomEvent('traffic-table.trafficDetails',{detail:{rowId:${row.getId()}}}))">${data}</a>`;
+                        return `<a onclick="document.dispatchEvent(new CustomEvent('traffic-table.trafficDetails',{detail:{rowId:${row.id}}}))">${data}</a>`;
                     }
                 },
                 {
@@ -334,8 +332,8 @@
             ],
             onMounted(props, state) {
                 state.loading = true;
-                state.road = cloneData(props.road);
-                this.props.parent.getRoadSurveys(state, this.table_id, "trafficType");
+                state.road = makeEstradaRoad(props.road);
+                this.props.parent.getAssetSurveys(state, this.table_id, "trafficType");
                 // If we're not still loading, then we assume that we want to replace all rows
                 const eventName = `${this.table_id}.dataAdded`;
                 const eventDetail = {detail: {pendingRows: this.state.pendingRows, clearRows: true}}
@@ -343,7 +341,8 @@
 
                 this.deleteListener = (data) => {
                     const rowId = data.detail.rowId;
-                    this.showStopAlertModal("delete-alert", rowId);
+                    const tableId = data.detail.tableId;
+                    this.showStopAlertModal("delete-alert", rowId, tableId);
                 };
                 document.addEventListener(`${this.table_id}.deleteRow`, this.deleteListener);
 
@@ -358,7 +357,7 @@
                 document.removeEventListener(`${this.table_id}.deleteRow`, this.deleteListener);
                 document.removeEventListener(`${this.table_id}.trafficDetails`, this.trafficDetailsListener);
             },
-            showStopAlertModal(modalId, rowId) {
+            showStopAlertModal(modalId, rowId, tableId) {
                 const eventName = `edit.${modalId}.result`;
 
                 document.addEventListener(eventName, (data) => {
@@ -369,9 +368,16 @@
                         this.discardChanges();
                     } else if (stopAlertResult === "delete") {
                         this.state.editMode = true;
-                        document.dispatchEvent(new CustomEvent(`${this.table_id}.getRowData`, {detail: {rowId: rowId, state: this.state}}));
+                        // Coming out of the stop-alert modal we want to re-establish the data-table
+                        const eventName = `${tableId}.getRowData`;
+                        const eventDetail = {detail: {rowId: rowId, state: this.state}};
+                        document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+
+                        // void the survey asset_condition value and save
                         if (this.state.currentRowData) {
                             this.state.survey = this.state.currentRowData;
+                            this.state.survey.setId(rowId);
+                            this.state.survey.setRoadId(this.state.road.id);
                             this.state.survey.setValues(JSON.stringify({}));
                             this.saveSurvey();
                         }
@@ -386,12 +392,12 @@
             discardChanges() {
                 $(`#${this.modal_id}`).modal("hide");
                 this.update({
-                    survey: cloneData(this.state.baseSurvey),
+                    survey: makeEstradaSurvey(this.state.baseSurvey),
                     errors: {},
                 });
             },
             addEditTraffic(e) {
-                this.state.survey = cloneData(this.state.baseSurvey);
+                this.state.survey = makeEstradaSurvey(this.state.baseSurvey);
                 this.state.errors = {};
 
                 this.showEditModal();
@@ -482,14 +488,14 @@
                         this.state.survey.setDateSurveyed(dateSurveyed);
 
                         // set Survey road from state Road road_code
-                        this.state.survey.setRoadId(this.state.road.getId());
-                        this.state.survey.setRoadCode(this.state.road.getRoadCode());
+                        this.state.survey.setRoadId(this.state.road.id);
+                        this.state.survey.setRoadCode(this.state.road.code);
 
                         this.saveSurvey();
                     }
 
                     // Reset baseSurvey now that we're done.
-                    this.baseSurvey = new Survey({});
+                    this.baseSurvey = new EstradaSurvey({});
 
                     $(`#${this.modal_id}`).modal("hide");
                 }
@@ -500,7 +506,7 @@
                 if (!this.state.editMode) {
                     createSurvey(this.state.survey)
                         .then((surveyData) => {
-                            this.props.parent.getRoadSurveys(this.state, this.table_id, "trafficType");
+                            this.props.parent.getAssetSurveys(this.state, this.table_id, "trafficType");
                             this.update();
                             this.props.showFeedback();
                         })
@@ -513,7 +519,7 @@
                 } else {
                     updateSurvey(this.state.survey)
                         .then((surveyData) => {
-                            this.props.parent.getRoadSurveys(this.state, this.table_id, "trafficType");
+                            this.props.parent.getAssetSurveys(this.state, this.table_id, "trafficType");
                             this.update();
                             this.props.showFeedback();
                         })
@@ -525,8 +531,8 @@
                         });
                 }
                 // clear input values
-                this.state.survey = new Survey({}); 
-                this.state.currentRowData = new Survey({});
+                this.state.survey = new EstradaSurvey({}); 
+                this.state.currentRowData = new EstradaSurvey({});
                 
                 this.update();
             },
@@ -613,7 +619,7 @@
                 this.canSave();
             },
             clearDetailsData() {
-                this.state.survey = new Survey({});
+                this.state.survey = new EstradaSurvey({});
                 $("#traffic-segments-modal").modal("hide");
                 this.update();
             },
@@ -623,7 +629,12 @@
                 });
             },
             parseVehicleCount(vehicleType) {
-                return JSON.parse(this.state.currentRowData.values.counts.replace(/\'/g, '"'))[vehicleType];
+                const surveyValues = this.state.currentRowData.values
+                    ? this.state.currentRowData.values.counts || ""
+                    : "";
+                return surveyValues 
+                    ? JSON.parse(surveyValues.replace(/\'/g, '"'))[vehicleType]
+                    : 0;
             },
             modal_id: "traffic-modal",
             max_date: () => new Date().toISOString().substring(0, 10),

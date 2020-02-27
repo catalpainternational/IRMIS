@@ -28,6 +28,15 @@
             components: {
                 Plan,
             },
+            onBeforeMount(props, state) {
+                window.goBack = this.goBack;
+            },
+            onBeforeUnmount() {
+                window.goBack = () => {};
+            },
+            goBack() {
+                window.location.hash = "#";
+            },
         }
     </script>
 </planning_base>

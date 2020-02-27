@@ -5,7 +5,7 @@ from io import StringIO
 
 from django.core.files.base import ContentFile
 from django.core.serializers import serialize
-from django.contrib.gis.geos import GEOSGeometry, LineString, MultiLineString
+from django.contrib.gis.geos import GEOSGeometry, LineString, MultiLineString, Point
 from django.contrib.gis.gdal import DataSource, GDALException, OGRGeometry
 from django.core.management import call_command
 from django.db import connection
@@ -13,9 +13,17 @@ from django.db.models import Q
 
 import geobuf
 import reversion
-from reversion.models import Revision
+from reversion.models import Version
 
-from .models import CollatedGeoJsonFile, Road, RoadStatus, SurfaceType, MaintenanceNeed
+from .models import (
+    Bridge,
+    Culvert,
+    CollatedGeoJsonFile,
+    Road,
+    RoadStatus,
+    SurfaceType,
+    MaintenanceNeed,
+)
 
 SURFACE_COND_MAPPING_MUNI = {"G": "1", "F": "2", "P": "3", "VP": "4"}
 SURFACE_COND_MAPPING_RRMPIS = {"Good": "1", "Fair": "2", "Poor": "3", "Bad": "4"}
@@ -86,13 +94,20 @@ def update_from_shapefiles(shape_file_folder):
     print("updated", Road.objects.all().count(), "roads")
 
 
-def import_shapefiles(shape_file_folder):
+def import_shapefiles(shape_file_folder, asset="road"):
     """ creates Road models from source shapefiles """
 
-    # delete all exisiting roads and revisions
-    Road.objects.all().delete()
-    Revision.objects.all().delete()
-    CollatedGeoJsonFile.objects.all().delete()
+    if asset == "road":
+        asset_model = Road
+    elif asset == "bridge":
+        asset_model = Bridge
+    elif asset == "culvert":
+        asset_model = Culvert
+
+    # delete appropriate exisiting DB objects and their revisions
+    asset_model.objects.all().delete()
+    Version.objects.get_deleted(asset_model).delete()
+    CollatedGeoJsonFile.objects.filter(asset_type=asset).all().delete()
 
     # reset sequence values
     reset_out = StringIO()
@@ -101,55 +116,90 @@ def import_shapefiles(shape_file_folder):
     with connection.cursor() as cursor:
         cursor.execute(reset_sql)
 
-    database_srid = Road._meta.fields[1].srid
+    if asset == "road":
+        database_srid = Road._meta.fields[1].srid
+        sources = (
+            ("National_Road.shp", "NAT", populate_road_national),
+            ("Highway_Suai.shp", "HIGH", populate_road_highway),
+            ("Municipal_Road.shp", "MUN", populate_road_municipal),
+            ("Rural_Road_R4D_Timor_Leste.shp", "RUR", populate_road_r4d),
+            ("RRMPIS_2014.shp", "RUR", populate_road_rrpmis),
+        )
+    elif asset == "bridge":
+        database_srid = Bridge._meta.fields[1].srid
+        sources = (("Bridge.shp", "bridge", populate_bridge),)
+    elif asset == "culvert":
+        database_srid = Culvert._meta.fields[1].srid
+        # no sources for culverts...yet
+        sources = ()
+    else:
+        print("No or bad asset argument given!")
+        exit(0)
 
-    sources = (
-        ("Rural_Road_R4D_Timor_Leste.shp", "RUR", populate_road_r4d),
-        ("National_Road.shp", "NAT", populate_road_national),
-        ("Municipal_Road.shp", "MUN", populate_road_municipal),
-        ("RRMPIS_2014.shp", "RUR", populate_road_rrpmis),
-        ("Highway_Suai.shp", "HIGH", populate_road_highway),
-    )
-
-    for file_name, road_type, populate in sources:
+    for file_name, asset_type, populate in sources:
         shp_path = str(Path(shape_file_folder) / file_name)
         shp_file = DataSource(shp_path)
 
         # iterate over the shape file features
         for feature in shp_file[0]:
-
-            # check the geometry is a multiline string and convert it if it is not
             try:
-                if isinstance(feature.geom.geos, LineString):
-                    # print("LineString - converting to MultiLineString")
-                    multi_line_string = MultiLineString(feature.geom.geos)
-                elif isinstance(feature.geom.geos, MultiLineString):
-                    # print("MultiLineString - using as is")
-                    multi_line_string = feature.geom.geos
+                if asset == "road":
+                    # check the geometry is a multiline string and convert it if it is not
+                    if isinstance(feature.geom.geos, LineString):
+                        print("LineString - converting to MultiLineString")
+                        geom = MultiLineString(feature.geom.geos)
+                    elif isinstance(feature.geom.geos, MultiLineString):
+                        print("MultiLineString - using as is")
+                        geom = feature.geom.geos
+                else:
+                    # structure's geometry should be a Point
+                    if isinstance(feature.geom.geos, Point):
+                        print("Point - using as is")
+                        point = feature.geom.clone()
+                        point.coord_dim = 2
+                        geom = point.geos
+                    else:
+                        print("Not a Point geom - skipping")
             except GDALException as ex:
                 # print and continue if we have a invalid geometry
                 print("GDAL Exception - ignoring", feature.fid, "from", shp_path)
                 continue
 
             # convert the geometry to the database srid
-            road_geometry = GEOSGeometry(multi_line_string, srid=feature.geom.srid)
+            asset_geometry = GEOSGeometry(geom, srid=feature.geom.srid)
             if feature.geom.srid != database_srid:
-                road_geometry.transform(database_srid)
+                asset_geometry.transform(database_srid)
 
-            # create the unsaved road
-            road = Road(geom=road_geometry.wkt, road_type=road_type)
+            # create the unsaved Asset object
+            if asset == "road":
+                asset_obj = Road(geom=asset_geometry.wkt, road_type=asset_type)
+            elif asset == "bridge":
+                asset_obj = Bridge(geom=asset_geometry.wkt)
+            elif asset == "culvert":
+                asset_obj = Culvert(geom=asset_geometry.wkt)
 
-            # populate the road from shapefile properties
-            populate(road, feature)
+            # populate the asset object from shapefile properties
+            populate(asset_obj, feature)
 
-            # save the road with a revision comment
+            # save the asset object with a revision comment
             with reversion.create_revision():
-                road.save()
+                asset_obj.save()
                 reversion.set_comment(
                     "Imported - {} - feature id({})".format(file_name, feature.fid)
                 )
 
-    print("imported", Road.objects.all().count(), "roads")
+    if asset == "road":
+        print("imported", Road.objects.all().count(), "roads")
+    elif asset == "bridge":
+        print("imported", Bridge.objects.all().count(), "bridges")
+    elif asset == "culvert":
+        print("imported", Culvert.objects.all().count(), "culverts")
+
+
+def populate_bridge(bridge, feature):
+    """ populates a bridge from the shapefile """
+    bridge.structure_name = feature.get("nam")
+    bridge.administrative_area = feature.get("sheet_name")
 
 
 def populate_road_national(road, feature):
@@ -230,8 +280,6 @@ def populate_road_rrpmis(road, feature):
 
 
 # CSV IMPORT
-
-
 def import_csv(csv_folder):
     """ updates existing roads with data from csv files """
 
@@ -342,6 +390,8 @@ def collate_geometries():
         municipal=Road.objects.filter(road_type="MUN"),
         urban=Road.objects.filter(road_type="URB"),
         rural=Road.objects.filter(road_type="RUR"),
+        bridge=Bridge.objects.all(),
+        culvert=Culvert.objects.all(),
     )
 
     for key, geometry_set in geometry_sets.items():
@@ -353,6 +403,10 @@ def collate_geometries():
         content = ContentFile(geobuf_bytes)
         collated_geojson.geobuf_file.save("geom.pbf", content)
         geometry_set.update(geojson_file_id=collated_geojson.id)
+
+        # set asset_type field (defaults to 'road')
+        if key in ["bridge", "culvert"]:
+            collated_geojson.asset_type = key
 
 
 def make_geojson(*args, **kwargs):
@@ -376,3 +430,59 @@ def set_unknown_road_codes():
     for index, road in enumerate(roads):
         road.road_code = "XX{:>03}".format(index + 1)
         road.save()
+
+
+def set_road_municipalities():
+    with connection.cursor() as cursor:
+        # Two roads with centroids in the sea!
+        coastal_1 = Road.objects.filter(link_code="A03-03").all()
+        if len(coastal_1) > 0:
+            coastal_1.administrative_area = 4
+            with reversion.create_revision():
+                coastal_1.save()
+                reversion.set_comment("Administrative area set from geometry")
+        coastal_2 = Road.objects.get(road_code="C09")
+        coastal_2.administrative_area = 6
+        with reversion.create_revision():
+            coastal_2.save()
+            reversion.set_comment("Administrative area set from geometry")
+
+        # all the other roads
+        cursor.execute(
+            "SELECT r.id, m.id FROM basemap_municipality m, assets_road r WHERE ST_WITHIN(ST_CENTROID(r.geom), m.geom)"
+        )
+        while True:
+            row = cursor.fetchone()
+            if row is None:
+                break
+            if (len(coastal_1) and row[0] == coastal_1.pk) or row[0] == coastal_2.pk:
+                continue
+            road = Road.objects.get(pk=row[0])
+            road.administrative_area = row[1]
+            with reversion.create_revision():
+                road.save()
+                reversion.set_comment("Administrative area set from geometry")
+
+
+def set_structure_municipalities(structure_type):
+    if structure_type == "bridge":
+        structure_model = Bridge
+    elif structure_type == "culvert":
+        structure_model = Culvert
+
+    with connection.cursor() as cursor:
+        # all the structures
+        cursor.execute(
+            "SELECT b.id, m.id FROM basemap_municipality m, assets_{} b WHERE ST_WITHIN(ST_CENTROID(b.geom), m.geom)".format(
+                structure_type
+            )
+        )
+        while True:
+            row = cursor.fetchone()
+            if row is None:
+                break
+            structure = structure_model.objects.get(pk=row[0])
+            structure.administrative_area = row[1]
+            with reversion.create_revision():
+                structure.save()
+                reversion.set_comment("Administrative area set from geometry")

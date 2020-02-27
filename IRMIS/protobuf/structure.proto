@@ -1,0 +1,75 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+package assets;
+
+message Point {
+    float x = 1;
+    float y = 2;
+}
+
+message Structures {
+    repeated Bridge bridges = 1;
+    repeated Culvert culverts = 2;
+}
+
+message Bridge {
+    /* Note that field Id numbers once used, are fixed. */
+    // SHARED FIELDS BETWEEN ALL STRUCTURES (#1 - 25 are reserved for this)
+    string id = 1;
+    uint32 road_id = 2;
+    google.protobuf.Timestamp date_created = 3;
+    google.protobuf.Timestamp last_modified = 4;
+    string structure_code = 5;
+    string structure_name = 6;
+    string asset_class = 7; // structure_class has been renamed
+    string administrative_area = 8;
+    string road_code = 9;
+    int32 construction_year = 10;
+    float length = 11;
+    float width = 12;
+    float chainage = 13;
+    string structure_type = 14;
+    string material = 15;
+    string protection_upstream = 16;
+    string protection_downstream = 17;
+    Point geom_point = 18;
+    uint32 geojson_id = 19;
+    // structure_condition has been renamed to asset_condition
+    // it comes from the surveys - NOT from the bridge
+    string asset_condition = 20;
+    // NON-SHARED FIELDS (#26 and onwards)
+    string river_name = 28;
+    int32 number_spans = 29;
+    float span_length = 30;
+}
+
+message Culvert {
+    /* Note that field Id numbers once used, are fixed. */
+    // SHARED FIELDS BETWEEN ALL STRUCTURES (#1 - 25 are reserved for this)
+    string id = 1;
+    uint32 road_id = 2;
+    google.protobuf.Timestamp date_created = 3;
+    google.protobuf.Timestamp last_modified = 4;
+    string structure_code = 5;
+    string structure_name = 6;
+    string asset_class = 7; // structure_class has been renamed
+    string administrative_area = 8;
+    string road_code = 9;
+    int32 construction_year = 10;
+    float length = 11;
+    float width = 12;
+    float chainage = 13;
+    string structure_type = 14;
+    string material = 15;
+    string protection_upstream = 16;
+    string protection_downstream = 17;
+    Point geom_point = 18;
+    uint32 geojson_id = 19;
+    // structure_condition has been renamed to asset_condition
+    // it comes from the surveys - NOT from the culvert
+    string asset_condition = 20;
+    // NON-SHARED FIELDS (#26 and onwards)
+    float height = 28;
+    int32 number_cells = 29;
+}

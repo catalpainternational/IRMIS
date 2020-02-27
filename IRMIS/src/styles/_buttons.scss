@@ -60,6 +60,10 @@
         color: $darker-gray !important;
         cursor: pointer;
     }
+
+    &:focus {
+        color: $darker-gray;
+    }
 }
 
 .btn-danger {

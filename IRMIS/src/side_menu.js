@@ -1,11 +1,28 @@
 import $ from "jquery";
 import "select2/dist/js/select2.full.min.js";
 
+import { Filter } from "./assets/models/filter";
 import { dispatch } from "./assets/utilities";
 
-import { toggleFilter, clearFilter, clearAllFilters, filterDetail } from "./filter";
+import { roads } from "./roadManager";
+import { structures } from "./structureManager";
+
+let viewName;
+let roadFilter = new Filter("ROAD");
+let structureFilter = new Filter("STRC");
+export let currentFilter = roadFilter;
 
 let filterUIState = {};
+
+/** Get the common filter details from the event */
+function filterDetail(e) {
+    const element = e.currentTarget;
+    const filter = element.closest('.filter');
+    const slug = filter.attributes['data-slug'].value;
+    const header = filter.querySelector('.header');
+
+    return { element, filter, slug, header };
+}
 
 $(document).ready(function(){
     // setup road_code and administrative_area filters with select2
@@ -26,7 +43,7 @@ $(document).ready(function(){
     $('#view a').click(change_view);
 
     // switch asset types
-    $('#assetType a').click(change_assetType);
+    $('#assetType a').click(toggleAssetType);
 
     // toggle filter open/close
     $('.filterToggle').click(toggleFilterOpen);
@@ -49,7 +66,11 @@ function collapse_side_menu() {
     mapTable.style.flex = "0 0 100%";
     sideMenu.hidden = true;
     collapsedSideMenu.classList.add("d-flex");
-    dispatch("estrada.sideMenu.viewChanged", undefined);
+
+    const eventName = (currentFilter.assetType !== "STRC")
+        ? "estrada.road.sideMenu.viewChanged"
+        : "estrada.structure.sideMenu.viewChanged";
+    dispatch(eventName, undefined);
 }
 
 function expand_side_menu() {
@@ -61,13 +82,18 @@ function expand_side_menu() {
     mapTable.style.removeProperty('flex');
     sideMenu.hidden = false;
     collapsedSideMenu.classList.remove("d-flex");
-    dispatch("estrada.sideMenu.viewChanged", undefined);
+
+    const eventName = (currentFilter.assetType !== "STRC")
+        ? "estrada.road.sideMenu.viewChanged"
+        : "estrada.structure.sideMenu.viewChanged";
+    dispatch(eventName, undefined);
 }
 
 function change_view(e) {
-    const viewName = e.currentTarget.attributes['data-viewname'].value;
     const mapTable = document.getElementById("map-table-irmis");
     const siblings = document.getElementById("view").children;
+    
+    viewName = e.currentTarget.attributes['data-viewname'].value;
 
     mapTable.className = viewName;
 
@@ -79,13 +105,22 @@ function change_view(e) {
     }
     e.currentTarget.classList.add("active");
 
-    dispatch("estrada.sideMenu.viewChanged", { "detail": { viewName } });
+    const eventName = (currentFilter.assetType !== "STRC")
+        ? "estrada.road.sideMenu.viewChanged"
+        : "estrada.structure.sideMenu.viewChanged";
+    dispatch(eventName, { "detail": { viewName } });
 }
 
-function change_assetType(e) {
-    const assetTypeName = e.currentTarget.attributes['data-filtername'].value;
-    const siblings = document.getElementById("assetType").children;
+function toggleAssetType(e) {
+    const fd = filterDetail(e);
+
+    // Swap which filter we use
+    currentFilter = fd.element.attributes["data-option"].value === "STRC"
+        ? structureFilter : roadFilter;
+
+    const siblings = document.getElementById("assetType").getElementsByTagName("a");
     const filterSections = document.getElementsByClassName("filters-section");
+    const filterTitles = document.getElementsByClassName("filters-title");
 
     for (let index = 0; index < siblings.length; index++) {
         const sibling = siblings[index];
@@ -98,14 +133,49 @@ function change_assetType(e) {
     for (let index = 0; index < filterSections.length; index++) {
         const filterSection = filterSections[index];
         const sectionClasses = filterSection.classList;
-        if (sectionClasses.contains(assetTypeName)) {
+        if (sectionClasses.contains(currentFilter.assetType)) {
             filterSection.removeAttribute("hidden");
         } else {
             filterSection.setAttribute("hidden", true)
         }
     }
+    for (let index = 0; index < filterTitles.length; index++) {
+        const filterTitle = filterTitles[index];
+        const titleClasses = filterTitle.classList;
+        if (titleClasses.contains(currentFilter.assetType)) {
+            filterTitle.removeAttribute("hidden");
+        } else {
+            filterTitle.setAttribute("hidden", true)
+        }
+    }
 
-    dispatch("estrada.sideMenu.assetTypeChanged", { "detail": { assetTypeName } });
+    // Swap road and structures table
+    const roadTable = document.getElementById("table-roads");
+    const structureTable = document.getElementById("table-structures");
+
+    if (currentFilter.assetType === "ROAD") {
+        roadTable.removeAttribute("hidden");
+        structureTable.setAttribute("hidden", true);
+    } else {
+        roadTable.setAttribute("hidden", true);
+        structureTable.removeAttribute("hidden");
+    }
+
+    const eventName = (currentFilter.assetType !== "STRC")
+        ? "estrada.road.sideMenu.viewChanged"
+        : "estrada.structure.sideMenu.viewChanged";
+    dispatch(eventName, { "detail": { viewName } });
+
+    const idMap = {};
+    Object.keys(roads).forEach((roadId) => {
+        idMap[roadId] = (currentFilter.assetType !== "STRC");
+    });
+    Object.keys(structures).forEach((structureId) => {
+        idMap[structureId] = (currentFilter.assetType === "STRC");
+    });
+
+    // communicate this basic filter to the map
+    dispatch("estrada.map.idFilter.applied", { detail: { idMap } });
 }
 
 function toggleFilterSelect2(e) {
@@ -121,7 +191,7 @@ function toggleFilterSelect2(e) {
         clear.hidden = true;
     }
 
-    toggleFilter(fd.slug, value);
+    currentFilter.toggle(fd.slug, value);
 }
 
 function toggleFilterOption(e) {
@@ -140,7 +210,7 @@ function toggleFilterOption(e) {
         clear.hidden = true;
     }
 
-    toggleFilter(fd.slug, value);
+    currentFilter.toggle(fd.slug, value);
 }
 
 function toggleFilterOpen(e) {
@@ -167,7 +237,7 @@ function clear_filter(e) {
     }
     fd.header.classList.remove("active");
     clear.item(0).hidden = true;
-    clearFilter(fd.slug);
+    currentFilter.clear(fd.slug);
 }
 
 function clear_select2(e) {
@@ -179,7 +249,7 @@ function clear_select2(e) {
 
     fd.header.classList.remove("active");
     clear.hidden = true;
-    clearFilter(fd.slug);
+    currentFilter.clear(fd.slug);
 }
 
 function clear_all_filters() {
@@ -189,7 +259,7 @@ function clear_all_filters() {
     $(".filters .clear-select2").attr("hidden", true);
     $(".filters .optionToggle span").removeClass("selected");
 
-    clearAllFilters();
+    currentFilter.clearAll();
 }
 
 function isFilterOpen(elementId) {
@@ -198,11 +268,12 @@ function isFilterOpen(elementId) {
 }
 
 function initFilterUIState(elementId) {
-    if( !filterUIState.hasOwnProperty(elementId) ) filterUIState[elementId] = false;
+    if (!filterUIState.hasOwnProperty(elementId)) {
+        filterUIState[elementId] = false;
+    }
 }
 
 function toggleFilterUIState(slug) {
     initFilterUIState(slug);
     filterUIState[slug] = !filterUIState[slug];
 }
-

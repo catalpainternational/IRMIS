@@ -307,7 +307,8 @@ table {
 
 // Override DataTable.net styles for the main table
 
-#table-roads {
+#table-roads, 
+#table-structures {
     .dataTables_info {
         color: $white;
     }

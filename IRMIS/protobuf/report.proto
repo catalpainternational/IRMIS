@@ -15,8 +15,8 @@ message Report {
 }
 
 message Attribute {
-    uint32 road_id = 1; // road_id + primary_attribute + survey_id = unique key for this data
-    string road_code = 2;
+    string asset_id = 1; // asset_id + primary_attribute + survey_id = unique key for this data
+    string asset_code = 2;
     string primary_attribute = 3;
     float chainage_start = 4;
     float chainage_end = 5;
@@ -25,4 +25,6 @@ message Attribute {
     google.protobuf.Timestamp date_surveyed = 8;
     string added_by = 9; // The full name of the user who added the original survey for the primary_attribute
     string value = 10;
+    uint32 road_id = 11;
+    string road_code = 12;
 }

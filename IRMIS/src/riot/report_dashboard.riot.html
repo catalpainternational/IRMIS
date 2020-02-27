@@ -12,10 +12,8 @@
         </div>
     </div>
 
-    <header>
-        <div class="d-flex flex-column">
-            <h6>{ window.gettext("Road Network Overview") }</h6>
-        </div>
+    <header class="align-items-center d-flex">
+        <h1>{ window.gettext("Road Network Overview") }</h1>
     </header>
 
     <div class="content-wrapper report-content">
@@ -25,10 +23,10 @@
             <h1 if="{state.reportData.totalLength}" class="highlight">{ (state.reportData.totalLength / 1000).toFixed(2) } km</h1>
         </div>
 
-        <div if="{state.reportData.totalLength && state.road_type}" class="d-flex">
-            <div class="d-flex flex-column total-length" each="{ roadClass in state.road_type }">
-                <p>{roadClass.title} </p>
-                <h1>{roadClass.distance / 1000} km</h1>
+        <div if="{state.reportData.totalLength && state.asset_class}" class="d-flex">
+            <div class="d-flex flex-column total-length" each="{ assetClass in state.asset_class }">
+                <p>{assetClass.title} </p>
+                <h1>{assetClass.distance / 1000} km</h1>
             </div>
         </div>
 
@@ -46,7 +44,8 @@
     <script>
         import Stacked_Bar from "./stacked_bar.riot.html";
 
-        import { getRoadReport, reportBarIds } from "../reportManager";
+        import { getAssetReport } from "../reportManager";
+        import { reportBarIds } from "../reportTableDefinitions";
         import { updateReportAttributeSummary } from "../roadAttributes";
 
         import $ from "jquery";
@@ -57,18 +56,18 @@
         export default {
             state: {
                 reportData: {},
-                road_type: emptyEntries,
+                asset_class: emptyEntries,
                 road_status: emptyEntries,
-                surface_condition: emptyEntries,
+                asset_condition: emptyEntries,
                 pavement_class: emptyEntries,
             },
             components: {
                 Stacked_Bar
             },
             stackedBars: [
-                { id: reportBarIds.roadClass, title: window.gettext("Road Class"), filterName: "road_type" },
+                { id: reportBarIds.assetClass, title: window.gettext("Asset Class"), filterName: "asset_class" },
                 { id: reportBarIds.roadStatus, title: window.gettext("Road Status"), filterName: "road_status" },
-                { id: reportBarIds.surfaceCondition, title: window.gettext("Surface Condition (SDI)"), filterName: "surface_condition" },
+                { id: reportBarIds.assetCondition, title: window.gettext("Surface Condition (SDI)"), filterName: "asset_condition" },
                 { id: reportBarIds.pavementClass, title: window.gettext("Pavement Class"), filterName: "pavement_class" },
             ],
             onMounted(props, state) {
@@ -101,14 +100,14 @@
 
                 const filter = { primaryattribute: this.stackedBars.map((stackedBar) => stackedBar.filterName) };
 
-                getRoadReport(filter)
+                getAssetReport(filter)
                     .then((surveyReportData) => {
                         if (surveyReportData) {
                             this.state.reportData = {
                                 totalLength: 0,
-                                road_type: surveyReportData.roadClasses,
+                                asset_class: surveyReportData.assetClasses,
                                 road_status: surveyReportData.roadStatuses,
-                                surface_condition: surveyReportData.surfaceConditions,
+                                asset_condition: surveyReportData.assetConditions,
                                 pavement_class: surveyReportData.pavementClasses,
                                 dateCreated: () => dayjs(new Date()).format('DD MMMM YYYY [at] HH:mm'),
                             };

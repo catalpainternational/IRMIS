@@ -6,11 +6,11 @@
             <h6>{ window.gettext("Link code and name") }</h6>
             <div class="form-group">
                 <label>{ link_code.display }</label>
+                <small class="form-text text-muted">{ props.parent.getHelpText("link_code") }</small>
                 <input
                     class="{ state.errors.linkCode ? 'danger' : null } { state.linkCode ? '' : 'inactive' } form-control"
                     type="text" maxlength="25" placeholder="A01-01" value="{ state.linkCode }"
                     oninput="{ checkLinkCode }">
-                <small class="form-text text-muted">{ props.parent.getHelpText("link_code") }</small>
                 <div if="{ state.errors.linkCode }" class="invalid-tooltip">
                     <ul>
                         <li>{ state.errors.linkCode }.</li>
@@ -19,27 +19,27 @@
             </div>
             <div class="form-group">
                 <label>{ link_start_name.display }</label>
+                <small class="form-text text-muted">{ props.parent.getHelpText("link_start_name") }</small>
                 <input class="{ state.linkStartName ? '' : 'inactive' } form-control" type="text" maxlength="150"
                     placeholder="Dili" value="{ state.linkStartName }" oninput="{ checkLinkStartName }">
-                <small class="form-text text-muted">{ props.parent.getHelpText("link_start_name") }</small>
             </div>
             <div class="form-group">
                 <label>{ link_end_name.display }</label>
+                <small class="form-text text-muted">{ props.parent.getHelpText("link_end_name") }</small>
                 <input class="{ state.linkEndName ? '' : 'inactive' } form-control" type="text" maxlength="150"
                     placeholder="Manatuto" value="{ state.linkEndName }" oninput="{ checkLinkEndName }">
-                <small class="form-text text-muted">{ props.parent.getHelpText("link_end_name") }</small>
             </div>
         </section>
 
         <section>
-            <h6>{ window.gettext("Link width and length") }</h6>
+            <h6>{ window.gettext("Link length") }</h6>
             <div class="form-group">
                 <label>{ link_length.display }</label>
-                <input
-                    class="{ state.errors.linkLength ? 'danger' : null } { state.linkLength != null && state.linkLength !== '' ? '' : 'inactive' } form-control"
-                    type="number" placeholder="58.7" value="{ state.linkLength }" oninput="{ checkLinkLength }" min="0"
-                    max="99999.999" step="0.001">
                 <small class="form-text text-muted">{ props.parent.getHelpText("link_length") }</small>
+                <input
+                    class="{ state.errors.linkLength ? 'danger' : null } { state.linkLength !== -1 && state.linkLength !== '' ? '' : 'inactive' } form-control"
+                    type="number" placeholder="58.7" value="{ state.linkLength !== -1 ? state.linkLength : '' }"
+                    oninput="{ checkLinkLength }" min="0" max="99999.999" step="0.001">
                 <div if="{ state.errors.linkLength }" class="invalid-tooltip">
                     <ul>
                         <li>{ state.errors.linkLength }.</li>
@@ -52,11 +52,12 @@
             <h6>{ window.gettext("Link chainage") }</h6>
             <div class="form-group">
                 <label>{ link_start_chainage.display } (m)</label>
-                <input
-                    class="{ state.errors.linkStartChainage ? 'danger' : null } { state.linkStartChainage != null && state.linkStartChainage !== '' ? '' : 'inactive' } form-control"
-                    type="number" placeholder="0" value="{ state.linkStartChainage }"
-                    oninput="{ checkLinkStartChainage }" min="0" max="999999999" step="1">
                 <small class="form-text text-muted">{ props.parent.getHelpText("link_start_chainage") }</small>
+                <input
+                    class="{ state.errors.linkStartChainage ? 'danger' : null } { state.linkStartChainage !== -1 && state.linkStartChainage !== '' ? '' : 'inactive' } form-control"
+                    type="number" placeholder="0"
+                    value="{ state.linkStartChainage !== -1 ? state.linkStartChainage : '' }"
+                    oninput="{ checkLinkStartChainage }" min="0" max="999999999" step="1">
                 <div if="{ state.errors.linkStartChainage }" class="invalid-tooltip">
                     <ul>
                         <li>{ state.errors.linkStartChainage }.</li>
@@ -65,11 +66,12 @@
             </div>
             <div class="form-group">
                 <label>{ link_end_chainage.display } (m)</label>
-                <input
-                    class="{ state.errors.linkEndChainage ? 'danger' : null } { state.linkEndChainage != null && state.linkEndChainage !== '' ? '' : 'inactive' } form-control"
-                    type="number" placeholder="62410" value="{ state.linkEndChainage }"
-                    oninput="{ checkLinkEndChainage }" min="0" max="999999999" step="1">
                 <small class="form-text text-muted">{ props.parent.getHelpText("link_end_chainage") }</small>
+                <input
+                    class="{ state.errors.linkEndChainage ? 'danger' : null } { state.linkEndChainage !== -1 && state.linkEndChainage !== '' ? '' : 'inactive' } form-control"
+                    type="number" placeholder="62410"
+                    value="{ state.linkEndChainage !== -1 ? state.linkEndChainage : '' }"
+                    oninput="{ checkLinkEndChainage }" min="0" max="999999999" step="1">
                 <div if="{ state.errors.linkEndChainage }" class="invalid-tooltip">
                     <ul>
                         <li>{ state.errors.linkEndChainage }.</li>
@@ -196,11 +198,11 @@
                 <div class="form-group">
                     <label>{ window.gettext("Chainage start") } (m)</label>
                     <span class="required">*</span>
+                    <small class="form-text text-muted">{ props.parent.getHelpText("start_chainage") }</small>
                     <input
                         class="{state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
                         type="number" name="startChainage" placeholder="1000" value="{state.survey.startChainage}"
                         oninput="{checkChainage}" min="0" max="999999999" step="1" required>
-                    <small class="form-text text-muted">{ props.parent.getHelpText("start_chainage") }</small>
                     <div if="{state.errors.startChainage}" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.startChainage }.</li>
@@ -210,11 +212,11 @@
                 <div class="form-group">
                     <label>{ window.gettext("Chainage end") } (m)</label>
                     <span class="required">*</span>
+                    <small class="form-text text-muted">{ props.parent.getHelpText("end_chainage") }</small>
                     <input
                         class="{state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
                         type="number" name="endChainage" placeholder="62410" value="{state.survey.endChainage}"
                         oninput="{checkChainage}" min="0" max="999999999" step="1" required>
-                    <small class="form-text text-muted">{ props.parent.getHelpText("end_chainage") }</small>
                     <div if="{state.errors.endChainage}" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.endChainage }.</li>
@@ -228,16 +230,16 @@
                 <div class="form-group">
                     <label>{ window.gettext("Carriageway width") }</label>
                     <span class="required">*</span>
+                    <small class="form-text text-muted">{ props.parent.getHelpText("carriageway_width") }</small>
+                    <input
+                        class="{ state.errors.carriagewayWidth ? 'danger' : null } { state.survey.carriagewayWidth ? '' : 'inactive' } form-control"
+                        type="number" name="carriagewayWidth" placeholder="5.0" value="{ state.survey.carriagewayWidth }"
+                        oninput="{ checkCarriagewayWidth }" min="0" max="91" step="0.1" required>
                     <div if="{ state.errors.carriagewayWidth }" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.carriagewayWidth }.</li>
                         </ul>
                     </div>
-                    <input
-                        class="{ state.errors.carriagewayWidth ? 'danger' : null } { state.survey.carriagewayWidth ? '' : 'inactive' } form-control"
-                        type="number" placeholder="5.0" value="{ state.survey.carriagewayWidth }"
-                        oninput="{ checkCarriagewayWidth }" min="0" max="91" step="0.1" required>
-                    <small class="form-text text-muted">{ props.parent.getHelpText("carriageway_width") }</small>
                 </div>
             </section>
 
@@ -274,11 +276,11 @@
                 <div class="form-group">
                     <label>{ window.gettext("Chainage start") } (m)</label>
                     <span class="required">*</span>
+                    <small class="form-text text-muted">{ props.parent.getHelpText("start_chainage") }</small>
                     <input
                         class="{state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
                         type="number" name="startChainage" placeholder="1000" value="{state.survey.startChainage}"
                         oninput="{checkChainage}" min="0" max="999999999" step="1" required>
-                    <small class="form-text text-muted">{ props.parent.getHelpText("start_chainage") }</small>
                     <div if="{state.errors.startChainage}" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.startChainage }.</li>
@@ -288,11 +290,11 @@
                 <div class="form-group">
                     <label>{ window.gettext("Chainage end") } (m)</label>
                     <span class="required">*</span>
+                    <small class="form-text text-muted">{ props.parent.getHelpText("end_chainage") }</small>
                     <input
                         class="{state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
                         type="number" name="endChainage" placeholder="62410" value="{state.survey.endChainage}"
                         oninput="{checkChainage}" min="0" max="999999999" step="1" required>
-                    <small class="form-text text-muted">{ props.parent.getHelpText("end_chainage") }</small>
                     <div if="{state.errors.endChainage}" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.endChainage }.</li>
@@ -306,11 +308,7 @@
                 <div class="form-group">
                     <label>{ window.gettext("Technical class") }</label>
                     <span class="required">*</span>
-                    <div if="{ state.errors.technicalClass }" class="invalid-tooltip">
-                        <ul>
-                            <li>{ state.errors.technicalClass }.</li>
-                        </ul>
-                    </div>
+                    <small class="form-text text-muted">{ props.parent.getHelpText("technical_class") }</small>
                     <ul class="technical-class">
                         <li each="{ technical in technicalClasses.options }" data-technical="{ technical.code }"
                             onclick="{ checkTechnicalClass }">
@@ -319,7 +317,11 @@
                             { technical.name }
                         </li>
                     </ul>
-                    <small class="form-text text-muted">{ props.parent.getHelpText("technical_class") }</small>
+                    <div if="{ state.errors.technicalClass }" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.technicalClass }.</li>
+                        </ul>
+                    </div>
                 </div>
             </section>
 
@@ -356,11 +358,11 @@
                 <div class="form-group">
                     <label>{ window.gettext("Chainage start") } (m)</label>
                     <span class="required">*</span>
+                    <small class="form-text text-muted">{ props.parent.getHelpText("start_chainage") }</small>
                     <input
                         class="{state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
                         type="number" name="startChainage" placeholder="1000" value="{state.survey.startChainage}"
                         oninput="{checkChainage}" min="0" max="999999999" step="1" required>
-                    <small class="form-text text-muted">{ props.parent.getHelpText("start_chainage") }</small>
                     <div if="{state.errors.startChainage}" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.startChainage }.</li>
@@ -370,11 +372,11 @@
                 <div class="form-group">
                     <label>{ window.gettext("Chainage end") } (m)</label>
                     <span class="required">*</span>
+                    <small class="form-text text-muted">{ props.parent.getHelpText("end_chainage") }</small>
                     <input
                         class="{state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
                         type="number" name="endChainage" placeholder="62410" value="{state.survey.endChainage}"
                         oninput="{checkChainage}" min="0" max="999999999" step="1" required>
-                    <small class="form-text text-muted">{ props.parent.getHelpText("end_chainage") }</small>
                     <div if="{state.errors.endChainage}" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.endChainage }.</li>
@@ -388,16 +390,16 @@
                 <div class="form-group">
                     <label>{ window.gettext("Number lanes") }</label>
                     <span class="required">*</span>
+                    <small class="form-text text-muted">{ props.parent.getHelpText("number_lanes") }</small>
+                    <input
+                        class="{ state.errors.numberLanes ? 'danger' : null } { state.survey.numberLanes ? '' : 'inactive' } form-control"
+                        type="number" name="numberLanes" placeholder="5" value="{ state.survey.numberLanes }"
+                        oninput="{ checkNumberLanes }" min="0" max="99" step="1" required>
                     <div if="{ state.errors.numberLanes }" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.numberLanes }.</li>
                         </ul>
                     </div>
-                    <input
-                        class="{ state.errors.numberLanes ? 'danger' : null } { state.survey.numberLanes ? '' : 'inactive' } form-control"
-                        type="number" placeholder="5" value="{ state.survey.numberLanes }"
-                        oninput="{ checkNumberLanes }" min="0" max="99" step="1" required>
-                    <small class="form-text text-muted">{ props.parent.getHelpText("number_lanes") }</small>
                 </div>
             </section>
 
@@ -419,9 +421,11 @@
         import Edit_Modal from "./edit_modal.riot.html";
 
         import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
-        import {cloneData, toChainageFormat} from "../assets/protoBufUtilities";
-        import {withinMaxDigits} from "../assets/utilities";
-        import {Survey, Report} from "../../protobuf/survey_pb";
+        import {choice_or_default, toChainageFormat} from "../assets/protoBufUtilities";
+        import { containsWhiteSpaces, withinMaxDigits } from "../assets/utilities";
+
+        import {makeEstradaRoad, TECHNICAL_CLASS_CHOICES} from "../assets/models/road";
+        import {EstradaSurvey, makeEstradaSurvey} from "../assets/models/survey";
 
         import $ from "jquery";
 
@@ -437,7 +441,7 @@
                 carriagewayWidthDecimals: 1,
                 carriagewayWidthDigits: 3,
                 numberLanesDigits: 2,
-                baseSurvey: new Survey({}),
+                baseSurvey: new EstradaSurvey({}),
                 survey: {},
                 canSave: false,
                 errors: {},
@@ -463,22 +467,23 @@
                 currentModalId: false,
                 currentRequiredFieldNames: [],
                 currentEditing: false,
-                currentRowData: new Survey({}),
+                currentRowData: new EstradaSurvey({}),
             },
             components: {
                 Edit_Stop_Alert, Edit_Modal,
             },
             onBeforeMount(props, state) {
-                state.linkCode = props.road.getLinkCode();
-                state.linkStartName = props.road.getLinkStartName();
-                state.linkEndName = props.road.getLinkEndName();
-                state.linkLength = props.road.getLinkLength().toFixed(3);
+                state.linkCode = props.road.linkCode;
+                state.linkStartName = props.road.linkStartName;
+                state.linkEndName = props.road.linkEndName;
+                state.linkLength = props.road.linkLength;
+                // Use the protobuf object get members here, because we want chainage unformatted
                 state.linkStartChainage = props.road.getLinkStartChainage();
                 state.linkEndChainage = props.road.getLinkEndChainage();
             },
             onMounted(props, state) {
                 state.loading = true;
-                state.road = cloneData(props.road);
+                state.road = makeEstradaRoad(props.road);
 
                 this.props.parent.updateReportAttributeSummary(state, "carriageway_width", props.parent.emptyAttributes);
                 this.props.parent.updateReportAttributeSummary(state, "technical_class", props.parent.emptyAttributes);
@@ -570,7 +575,7 @@
                 }
             },
             addEditCarriageway(e) {
-                this.state.survey = cloneData(this.state.baseSurvey);
+                this.state.survey = makeEstradaSurvey(this.state.baseSurvey);
                 this.state.errors = {};
                 this.state.currentEditing = "carriagewayWidth";
                 this.state.currentModalId = this.carriageway_modal_id;
@@ -578,7 +583,7 @@
                 this.showEditModal();
             },
             addEditTechnical(e) {
-                this.state.survey = cloneData(this.state.baseSurvey);
+                this.state.survey = makeEstradaSurvey(this.state.baseSurvey);
                 this.state.errors = {};
                 this.state.currentEditing = "technicalClass";
                 this.state.currentModalId = this.technical_modal_id;
@@ -586,7 +591,7 @@
                 this.showEditModal();
             },
             addEditLanes(e) {
-                this.state.survey = cloneData(this.state.baseSurvey);
+                this.state.survey = makeEstradaSurvey(this.state.baseSurvey);
                 this.state.errors = {};
                 this.state.currentEditing = "numberLanes";
                 this.state.currentModalId = this.lanes_modal_id;
@@ -773,6 +778,9 @@
                     defaultContent: "",
                     className: "text-center",
                     orderable: false,
+                    render: (data, type) => {
+                        return (type === 'display') ? choice_or_default(data, TECHNICAL_CLASS_CHOICES) : data;
+                    },
                 },
                 {
                     title: window.gettext("Survey date"),
@@ -932,11 +940,16 @@
                         this.discardChanges();
                     } else if (stopAlertResult === "delete") {
                         this.state.editMode = true;
-                        // void the survey attribute value and save
-                        document.dispatchEvent(new CustomEvent(`${tableId}.getRowData`, {detail: {rowId: rowId, state: this.state}}));
+                        // Coming out of the stop-alert modal we want to re-establish the data-table
+                        const eventName = `${tableId}.getRowData`;
+                        const eventDetail = {detail: {rowId: rowId, state: this.state}};
+                        document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+
+                        // void the survey asset_condition value and save
                         if (this.state.currentRowData) {
                             this.state.survey = this.state.currentRowData;
-                            this.state.survey.setRoadId(this.state.road.getId());
+                            this.state.survey.setId(rowId);
+                            this.state.survey.setRoadId(this.state.road.id);
                             this.state.survey.setValues(JSON.stringify({}));
                             this.saveSurvey();
                         }
@@ -951,7 +964,7 @@
             discardChanges() {
                 $(`#${this.state.currentModalId}`).modal("hide");
                 this.update({
-                    survey: cloneData(this.state.baseSurvey),
+                    survey: makeEstradaSurvey(this.state.baseSurvey),
                     errors: {},
                     currentEditing: false,
                     currentModalId: false,
@@ -997,13 +1010,13 @@
                         dateSurveyed.fromDate(surveyDate);
                         this.state.survey.setDateSurveyed(dateSurveyed);
                         // set Survey road from state Road road_code
-                        this.state.survey.setRoadId(this.state.road.getId());
-                        this.state.survey.setRoadCode(this.state.road.getRoadCode());
+                        this.state.survey.setRoadId(this.state.road.id);
+                        this.state.survey.setRoadCode(this.state.road.code);
                         this.saveSurvey();
                     }
 
                     // Reset baseSurvey now that we're done.
-                    this.baseSurvey = new Survey({});
+                    this.baseSurvey = new EstradaSurvey({});
                     $(`#${this.state.currentModalId}`).modal("hide");
                 }
             },
@@ -1022,7 +1035,7 @@
                                 this.props.parent.refreshSurveysAndReports(this.state, this.lanes_all_data_table_id, "number_lanes", "numberLanes", this.lanes_current_data_table_id);
                             }
                             this.update({
-                                survey: new Survey({}), // clear input values
+                                survey: new EstradaSurvey({}), // clear input values
                             });
                             this.props.showFeedback();
                         })
@@ -1039,7 +1052,7 @@
                             this.props.parent.refreshSurveysAndReports(this.state, this.carriageway_all_data_table_id, "carriageway_width", "carriagewayWidth", this.carriageway_current_data_table_id);
                             this.props.parent.refreshSurveysAndReports(this.state, this.lanes_all_data_table_id, "number_lanes", "numberLanes", this.lanes_current_data_table_id);
                             this.update({
-                                survey: new Survey({}), // clear input values
+                                survey: new EstradaSurvey({}), // clear input values
                             });
                             this.props.showFeedback();
                         })
@@ -1051,7 +1064,7 @@
                         });
                 }
                 // clear input values
-                this.state.survey = new Survey({});
+                this.state.survey = new EstradaSurvey({});
                 this.state.errors = {};
                 this.update();
             },
@@ -1170,37 +1183,27 @@
             link_end_chainage: window.asset_schema.link_end_chainage,
 
             checkCarriagewayWidth(e) {
-                let value = e.currentTarget.value;
-                if (!withinMaxDigits(value, this.state.carriagewayWidthDigits, this.state.carriagewayWidthDecimals)) {
-                    this.state.errors.carriagewayWidth = window.interpolate(
-                        window.gettext('Carriage width cannot contain more than %s digits, of which %s are decimals'),
-                        [this.state.carriagewayWidthDigits, this.state.carriagewayWidthDecimals]
-                    );
-                } else {
-                    delete this.state.errors.carriagewayWidth;
-                }
-                this.state.survey.carriagewayWidth = value;
-                this.canSave();
+                const fieldName = e.currentTarget.name;
+                const input = e.currentTarget.value;
+                const testResult = withinMaxDigits(input, this.state.carriagewayWidthDigits, this.state.carriagewayWidthDecimals);
+                const errorText = window.interpolate(
+                    window.gettext('Carriage width cannot contain more than %s digits, of which %s are decimals'),
+                    [this.state.carriagewayWidthDigits, this.state.carriagewayWidthDecimals]
+                );
+                this.validate(fieldName, input, testResult, errorText);
             },
             checkTechnicalClass(e) {
                 this.state.survey.technicalClass = e.currentTarget.dataset.technical;
                 this.canSave();
             },
             checkNumberLanes(e) {
-                let value = e.currentTarget.value;
-                if (!withinMaxDigits(value, this.state.numberLanesDigits)) {
-                    this.state.errors.numberLanes = window.gettext(`Number of lanes cannot contain more than ${this.state.numberLanesDigits} digits and value shouldn't contain decimals`);
-                } else {
-                    delete this.state.errors.numberLanes;
-                }
-                this.state.survey.numberLanes = value;
-                this.canSave();
+                const fieldName = e.currentTarget.name;
+                const input = e.currentTarget.value;
+                const testResult = withinMaxDigits(input, this.state.numberLanesDigits);
+                const errorText = window.gettext(`Number of lanes cannot contain more than ${this.state.numberLanesDigits} digits and value shouldn't contain decimals`);
+                this.validate(fieldName, input, testResult, errorText);
             },
             max_date: () => new Date().toISOString().substring(0, 10),
         };
-
-        function containsWhiteSpaces(text) {
-            return /\s/.test(text);
-        }
     </script>
 </edit_asset_details>

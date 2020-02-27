@@ -13,9 +13,14 @@
 
     <div class="asset-type position-relative">
         <h6>{% trans "Asset Type" %}</h6>
-        <div id="assetType" class="d-flex">
-            <a class="active align-items-center d-flex justify-content-center text-center" data-filtername="roads">{% trans "Roads" %}</a>
-            <a class="align-items-center d-flex justify-content-center text-center" data-filtername="structures">{% trans "Structures" %}</a>
+        {% comment %} ASSET TYPE {% endcomment %}
+        <div id="assetType" class="filters-section ROAD STRC">
+            {% with slug=asset_schema.asset_type.slug %}
+            <div data-slug="{{ slug }}" class="d-flex filter">
+                <a class="active align-items-center d-flex justify-content-center text-center" data-option="ROAD">{% trans "Roads" %}</a>
+                <a class="align-items-center d-flex justify-content-center text-center" data-option="STRC">{% trans "Structures" %}</a>
+            </div>
+            {% endwith %}
         </div>
     </div>
 
@@ -23,7 +28,7 @@
         <h6>{% trans "Filters" %}</h6>
         <span class="clear-all-filters position-absolute">{% trans "Clear all filters" %}</span>
         {% comment %} SECTION - LOCATION {% endcomment %}
-        <div class="filters-section roads structures">
+        <div class="filters-section ROAD STRC">
             <span class="subtitle">{% trans "Location" %}</span>
             {% comment %} ADMINISTRATIVE AREA {% endcomment %}
             {% with slug=asset_schema.administrative_area.slug %}
@@ -49,14 +54,14 @@
         </div>
 
         {% comment %} SECTION - ASSET {% endcomment %}
-        <div class="filters-section roads">
+        <div class="filters-section ROAD">
             <span class="subtitle">{% trans "Asset" %}</span>
-            {% comment %} ROAD TYPE {% endcomment %}
-            {% with slug=asset_schema.road_type.slug %}
+            {% comment %} ASSET CLASS {% endcomment %}
+            {% with slug=asset_schema.asset_class.slug %}
             <div data-slug="{{ slug }}" class="filter">
                 <div class="d-flex header justify-content-between">
                     <div class="align-items-center d-flex">
-                        <label>{{ asset_schema.road_type.display }}</label>
+                        <label>{{ asset_schema.asset_class.display }}</label>
                     </div>
                     <div class="align-items-center d-flex">
                         <span class="clear-filter" hidden>{% trans "Clear" %}</span>
@@ -65,7 +70,7 @@
                 </div>
                 <div class="options" hidden>
                     <ul>
-                        {% for option in asset_schema.road_type.options %}
+                        {% for option in asset_schema.asset_class.options %}
                         <li class="align-items-center d-flex optionToggle" data-option="{{ option.0 }}">
                             <span class="checkbox image"></span>
                             {{ option.1 }}
@@ -149,15 +154,16 @@
             {% endwith %}
         </div>
 
-        {% comment %} SECTION - ASSET CONDITION {% endcomment %}
-        <div class="filters-section roads">
-            <span class="subtitle">{% trans "Asset condition" %}</span>
-            {% comment %} SURFACE CONDITION {% endcomment %}
-            {% with slug=asset_schema.surface_condition.slug %}
+        <!-- Structure Filters -->
+        {% comment %} SECTION - STRUCTURE {% endcomment %}
+        <div class="filters-section STRC" hidden>
+            <span class="subtitle">{% trans "Asset" %}</span>
+            {% comment %} STRUCTURE {% endcomment %}
+            {% with slug=asset_schema.asset_type.slug %}
             <div data-slug="{{ slug }}" class="filter">
                 <div class="d-flex header justify-content-between">
                     <div class="align-items-center d-flex">
-                        <label>{{ asset_schema.surface_condition.display }}</label>
+                        <label>Structure</label>
                     </div>
                     <div class="align-items-center d-flex">
                         <span class="clear-filter" hidden>{% trans "Clear" %}</span>
@@ -166,7 +172,87 @@
                 </div>
                 <div class="options" hidden>
                     <ul>
-                        {% for option in asset_schema.surface_condition.options %}
+                        <li class="align-items-center d-flex optionToggle" data-option="BRDG">
+                            <span class="checkbox image"></span>
+                            {% trans "Bridges" %}
+                        </li>
+                        <li class="align-items-center d-flex optionToggle" data-option="CULV">
+                            <span class="checkbox image"></span>
+                            {% trans "Culverts" %}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            {% endwith %}
+
+            {% comment %} ASSET CLASS {% endcomment %}
+            {% with slug=asset_schema.asset_class.slug %}
+            <div data-slug="{{ slug }}" class="filter">
+                <div class="d-flex header justify-content-between">
+                    <div class="align-items-center d-flex">
+                        <label>Structure Class</label>
+                    </div>
+                    <div class="align-items-center d-flex">
+                        <span class="clear-filter" hidden>{% trans "Clear" %}</span>
+                        <span class="plus image filterToggle"></span>
+                    </div>
+                </div>
+                <div class="options" hidden>
+                    <ul>
+                        {% for option in asset_schema.asset_class.options %}
+                        <li class="align-items-center d-flex optionToggle" data-option="{{ option.0 }}">
+                            <span class="checkbox image"></span>
+                            {{ option.1 }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endwith %}
+
+            {% comment %} STRUCTURE CODE {% endcomment %}
+            {% with slug=asset_schema.structure_code.slug %}
+            <div data-slug="{{ slug }}" class="filter">
+                <div class="d-flex header justify-content-between">
+                    <div class="align-items-center d-flex">
+                        <label>{{ asset_schema.structure_code.display }}</label>
+                    </div>
+                    <div class="align-items-center d-flex">
+                        <span class="clear-select2" hidden>{% trans "Clear" %}</span>
+                        <span class="plus image filterToggle"></span>
+                    </div>
+                </div>
+                <div class="options" hidden>
+                    <select class="filter_select2" multiple="true">
+                        {% for option in asset_schema.structure_code.options %}
+                        <option value="{{ option.structure_code }}">{{ option.structure_code }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            {% endwith %}
+        </div>
+
+        <!-- Road / Structure condition Filter -->
+        {% comment %} SECTION - SURFACE / STRUCTURE CONDITION {% endcomment %}
+        <div class="filters-section ROAD STRC">
+            <span class="subtitle">{% trans "Asset condition" %}</span>
+            {% comment %} STRUCTURE CONDITION {% endcomment %}
+            {% with slug=asset_schema.asset_condition.slug %}
+            <div data-slug="{{ slug }}" class="filter">
+                <div class="d-flex header justify-content-between">
+                    <div class="align-items-center d-flex">
+                        <label class="filters-title ROAD">{{ asset_schema.asset_condition.display }}</label>
+                        <label class="filters-title STRC" hidden>{% trans "Structure Condition" %}</label>
+                    </div>
+                    <div class="align-items-center d-flex">
+                        <span class="clear-filter" hidden>{% trans "Clear" %}</span>
+                        <span class="plus image filterToggle"></span>
+                    </div>
+                </div>
+                <div class="options" hidden>
+                    <ul>
+                        {% for option in asset_schema.asset_condition.options %}
                         <li class="align-items-center d-flex optionToggle" data-option="{{ option.0 }}">
                             <span class="checkbox image"></span>
                             {{ option.1 }}

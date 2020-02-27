@@ -1,9 +1,7 @@
-import { Road, Roads, Versions } from "../../protobuf/roads_pb";
-import { EstradaRoad } from "./models/road";
-import { EstradaAudit } from "./models/audit";
+import { Road, Roads } from "../../protobuf/roads_pb";
+import { EstradaRoad, makeEstradaRoad } from "./models/road";
 
 import { ConfigAPI } from "./configAPI";
-import { makeEstradaObject } from "./protoBufUtilities";
 
 /** getRoadsMetadataChunks
  *
@@ -25,7 +23,7 @@ export function getRoadsMetadataChunks() {
  *
  * @returns a map {id: road_object}
  */
-export function getRoadsMetadata(chunkName) {
+export function getRoadsMetadata(chunkName?: string) {
     const assetTypeUrlFragment = "protobuf_roads";
     chunkName = chunkName || "";
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${chunkName}`;
@@ -44,7 +42,7 @@ export function getRoadsMetadata(chunkName) {
  *
  * @returns a road_object
  */
-export function getRoadMetadata(roadId) {
+export function getRoadMetadata(roadId: string | number) {
     const assetTypeUrlFragment = "protobuf_road";
 
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${roadId}`;
@@ -63,7 +61,7 @@ export function getRoadMetadata(roadId) {
  *
  * @returns 200 (success) or 400 (failure)
  */
-export function putRoadMetadata(road) {
+export function putRoadMetadata(road: EstradaRoad) {
     const assetTypeUrlFragment = "road_update";
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}`;
 
@@ -71,39 +69,12 @@ export function putRoadMetadata(road) {
     postAssetInit.body = road.serializeBinary();
 
     return fetch(metadataUrl, postAssetInit)
-        .then(metadataResponse => {
+        .then((metadataResponse) => {
             if (metadataResponse.ok) { return metadataResponse.arrayBuffer(); }
             throw new Error(`Road update failed: ${metadataResponse.statusText}`);
         })
-        .then(protobufBytes => {
+        .then((protobufBytes) => {
             const uintArray = new Uint8Array(protobufBytes);
             return makeEstradaRoad(Road.deserializeBinary(uintArray));
         });
-}
-
-/** getRoadAuditData
- *
- * Retrieves the Audit changes data for a single road from the server
- *
- * @returns a list of version objects
- */
-export function getRoadAuditData(roadId) {
-    const assetTypeUrlFragment = "protobuf_road_audit";
-
-    const auditDataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${roadId}`;
-
-    return fetch(auditDataUrl, ConfigAPI.requestInit())
-        .then((auditDataResponse) => (auditDataResponse.arrayBuffer()))
-        .then((protobufBytes) => {
-            const uintArray = new Uint8Array(protobufBytes);
-            return Versions.deserializeBinary(uintArray).getVersionsList().map(makeEstradaAudit);
-        });
-}
-
-function makeEstradaRoad(pbroad) {
-    return makeEstradaObject(EstradaRoad, pbroad);
-}
-
-function makeEstradaAudit(pbversion) {
-    return makeEstradaObject(EstradaAudit, pbversion);
 }

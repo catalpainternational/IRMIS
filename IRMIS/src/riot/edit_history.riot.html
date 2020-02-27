@@ -1,15 +1,14 @@
 <edit_history>
     <h5>{ window.gettext ("History") }</h5>
 
-    <data_table table_id="{this.table_id}" columns="{this.table_columns}" columnSortOrder="{this.columnSortOrder}" pageLength="{this.pageLength}" getHelpText="{props.parent.getHelpText}"></data_table>
+    <data_table table_id="{this.table_id}" columns="{this.table_columns}" columnSortOrder="{this.columnSortOrder}"
+        pageLength="{this.pageLength}" getHelpText="{props.parent.getHelpText}"></data_table>
 
     <script>
         import Data_Table from "./data_table.riot.html";
 
-        import { EstradaRoad } from "../assets/models/road";
-        import { getRoadAudit } from "../roadManager";
-
-        // import { Versions } from "../../protobuf/roads_pb";
+        import {EstradaRoad} from "../assets/models/road";
+        import {getRoadAudit, getStructureAudit} from "../auditManager";
 
         import dayjs from "dayjs";
         import $ from "jquery";
@@ -18,6 +17,7 @@
             state: {
                 loading: true,
                 road: null,
+                structure: null,
                 error: false,
                 pendingRows: [],
             },
@@ -31,8 +31,8 @@
                     data: "dateCreated",
                     defaultContent: "",
                     orderable: false,
-                    render: function ( data, type, row, meta ) {
-                        return type === "display" && data 
+                    render: function(data, type, row, meta) {
+                        return type === "display" && data
                             ? dayjs(data).format("D MMMM YYYY hh:mm:ss")
                             : data;
                     }
@@ -48,16 +48,23 @@
                     data: "comment",
                     defaultContent: "",
                     orderable: false,
-                    render: function ( data, type, row, meta ) {
+                    render: function(data, type, row, meta) {
                         if (type !== "display") {
                             return data;
                         }
                         try {
                             const json = JSON.parse(data);
                             const fields = json[0].changed.fields;
-                            const fieldDisplay = fields.map(EstradaRoad.getFieldName).join(", ");
+                            const fieldDisplay = fields.map((f) => {
+                                // check for previously added road type changes, prior to fix of names used for saving
+                                if (f == "road_type") {
+                                    return window.asset_schema["asset_class"].display
+                                } else {
+                                    return window.asset_schema[f].display
+                                }
+                            }).join(", ");
                             return `${window.gettext('Changed')}: ${fieldDisplay}`;
-                        } catch(error) {
+                        } catch (error) {
                             return data;
                         }
                     }
@@ -67,24 +74,42 @@
             pageLength: 15,
             onMounted(props, state) {
                 state.loading = true;
-                state.road = props.road;
-                this.getRoadAudit();
+                if (props.road) {
+                    state.road = props.road;
+                    this.getRoadAudit();
+                } else if (props.structure) {
+                    state.structure = props.structure;
+                    this.getStructureAudit();
+                }
+            },
+            processAuditData(auditData) {
+                if (auditData) {
+                    this.state.pendingRows = auditData;
+                    const eventName = `${this.table_id}.dataAdded`;
+                    const eventDetail = {detail: {pendingRows: this.state.pendingRows, clearRows: true}}
+                    document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+                    this.state.error = false;
+                } else {
+                    this.state.error = true;
+                }
             },
             getRoadAudit() {
                 const roadId = this.state.road.id;
                 getRoadAudit(roadId)
                     .then((auditData) => {
-                        if (auditData) {
-                            this.state.pendingRows = auditData;
-
-                            const eventName = `${this.table_id}.dataAdded`;
-                            const eventDetail = { detail: { pendingRows: this.state.pendingRows, clearRows: true }}
-                            document.dispatchEvent(new CustomEvent(eventName, eventDetail));
-
-                            this.state.error = false;
-                        } else {
-                            this.state.error = true;
-                        }
+                        this.processAuditData(auditData);
+                    }).catch(err => {
+                        this.state.error = true;
+                    }).finally((r) => {
+                        this.state.loading = false;
+                        this.update();
+                    });
+            },
+            getStructureAudit() {
+                const structureId = this.state.structure.id;
+                getStructureAudit(structureId)
+                    .then((auditData) => {
+                        this.processAuditData(auditData);
                     }).catch(err => {
                         this.state.error = true;
                     }).finally((r) => {

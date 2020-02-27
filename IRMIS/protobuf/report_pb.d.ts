@@ -35,11 +35,11 @@ export namespace Report {
 }
 
 export class Attribute extends jspb.Message {
-  getRoadId(): number;
-  setRoadId(value: number): void;
+  getAssetId(): string;
+  setAssetId(value: string): void;
 
-  getRoadCode(): string;
-  setRoadCode(value: string): void;
+  getAssetCode(): string;
+  setAssetCode(value: string): void;
 
   getPrimaryAttribute(): string;
   setPrimaryAttribute(value: string): void;
@@ -67,6 +67,12 @@ export class Attribute extends jspb.Message {
   getValue(): string;
   setValue(value: string): void;
 
+  getRoadId(): number;
+  setRoadId(value: number): void;
+
+  getRoadCode(): string;
+  setRoadCode(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Attribute.AsObject;
   static toObject(includeInstance: boolean, msg: Attribute): Attribute.AsObject;
@@ -79,8 +85,8 @@ export class Attribute extends jspb.Message {
 
 export namespace Attribute {
   export type AsObject = {
-    roadId: number,
-    roadCode: string,
+    assetId: string,
+    assetCode: string,
     primaryAttribute: string,
     chainageStart: number,
     chainageEnd: number,
@@ -89,6 +95,8 @@ export namespace Attribute {
     dateSurveyed?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     addedBy: string,
     value: string,
+    roadId: number,
+    roadCode: string,
   }
 }
 

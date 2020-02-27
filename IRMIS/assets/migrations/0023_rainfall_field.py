@@ -6,13 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('assets', '0022_extra_road_fields'),
+        ("assets", "0022_extra_road_fields"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='road',
-            name='rainfall',
-            field=models.IntegerField(blank=True, help_text='Enter the amount of rainfall', null=True, verbose_name='Rainfall'),
+            model_name="road",
+            name="rainfall",
+            field=models.IntegerField(
+                blank=True,
+                help_text="Enter the amount of rainfall",
+                null=True,
+                verbose_name="Rainfall",
+            ),
         ),
     ]

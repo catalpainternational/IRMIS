@@ -62,7 +62,7 @@
             window.logout_url = '{% url "logout" %}';
         </script>
 
-        {{ languages|json_script:"languages" }};
+        {{ languages|json_script:"languages" }}
 
         {% block extra_js %}
             {# Override this in templates to add extra javascript #}

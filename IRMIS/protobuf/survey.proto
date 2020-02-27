@@ -1,5 +1,4 @@
 syntax = "proto3";
-
 import "google/protobuf/timestamp.proto";
 
 package assets;
@@ -10,6 +9,7 @@ package assets;
 message Survey {
   /* Note that field Id numbers once used, are fixed. */
   uint32 id = 1;
+  string structure_id = 13;
   uint32 road_id = 12;
   string road_code = 2; // This was just 'road' before - it still has the same meaning now
   uint32 user = 3;

@@ -58,7 +58,11 @@ edit_base {
 }
 
 edit_location_type,
+edit_structure_type,
 edit_asset_details,
+edit_structure_details,
+edit_structure_protection,
+edit_structure_condition,
 edit_pavement,
 edit_project,
 edit_condition,
@@ -99,6 +103,7 @@ edit_traffic {
 }
 
 edit_location_type,
+edit_structure_type,
 edit_project,
 edit_maintenance,
 edit_history {
@@ -113,10 +118,44 @@ edit_history {
 }
 
 edit_asset_details,
+edit_structure_details,
+edit_structure_protection,
+edit_structure_condition,
 edit_pavement,
 edit_condition {
     h5 {
         margin-bottom: 0;
+    }
+}
+
+edit_structure_condition {
+    section {
+        min-width: 450px;
+    }
+
+    .upload-box { 
+        box-sizing: border-box;
+        height: 230px;
+        border: 1px solid $light-gray;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        margin-top: 30px;
+    }
+
+    .cloud-box {
+        margin: 70px 85px 20px 85px;
+        font-size: 12px;
+        line-height: 14px;
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        font-weight: 600;
+
+        div.upload-text {
+            color: $green;
+            margin-bottom: 30px;
+            margin-top: 5px;
+        }
     }
 }
 
@@ -149,7 +188,17 @@ feedback_banner {
     }
 }
 
-edit_traffic {
+#inventory-traffic-level-table_wrapper {
+    border-top: 1px solid #CFD1D6;
+    padding-top: 30px;
+
+    section {
+        margin-bottom: 25px;
+    }
+}
+
+edit_traffic,
+traffic_data_details {
     .survey-field-height {
         height: 30px;
         align-items: flex-end;
@@ -183,10 +232,6 @@ edit_traffic {
     .vehicle-input {
         height: 28px; 
         margin: 0 36px 0 16px;
-    }
-
-    .table-spacing {
-        margin-top: 25px;
     }
 
     .details-modal-type-spacing {
@@ -242,18 +287,6 @@ edit_traffic {
         font-size: 18px;
         width: 100px;
         text-align: right;
-    }
-
-    .error-tooltip-date {
-        position: absolute;
-        margin-left: 110px;
-        margin-top: -32px;
-    }
-
-    .error-tooltip-vehicle {
-        position: aboslute;
-        margin-left: 210px;
-        margin-top: -30px;
     }
 
     .contains-tooltip {

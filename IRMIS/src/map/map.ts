@@ -15,7 +15,7 @@ import { getFeatureType } from "./utilities/propertiesGeoJSON";
 
 import { FallbackLayerStyle, FixLayerStyleDefaults, styleGeometry, stylePoint } from "./utilities/leaflet-style";
 
-import { roadPopup } from "../roadManager";
+import { GetDataForMapPopup } from "../table";
 
 import { dispatch } from "../assets/utilities";
 
@@ -49,15 +49,23 @@ export class Map {
         this.currentLayer = bl[Config.preferredBaseLayerName];
         this.currentLayer.addTo(this.lMap);
 
-        document.addEventListener("estrada.sideMenu.viewChanged", () => {
+        document.addEventListener("estrada.road.sideMenu.viewChanged", () => {
             this.lMap.invalidateSize();
         });
 
-        document.addEventListener("estrada.filter.applied", (data: Event) => {
+        document.addEventListener("estrada.structure.sideMenu.viewChanged", () => {
+            this.lMap.invalidateSize();
+        });
+
+        document.addEventListener("estrada.road.filter.applied", (data: Event) => {
             this.handleFilter(data);
         });
 
-        document.addEventListener("estrada.idFilter.applied", (data: Event) => {
+        document.addEventListener("estrada.structure.filter.applied", (data: Event) => {
+            this.handleFilter(data);
+        });
+
+        document.addEventListener("estrada.map.idFilter.applied", (data: Event) => {
             this.handleFilter(data);
         });
 
@@ -81,7 +89,7 @@ export class Map {
         const featureZoomSet: FeatureCollection = { type: "FeatureCollection", features: [] };
         const featureTypeSet: any = {};
         Object.values(featureLookup).forEach((feature: any) => {
-            const featureId: string = feature.properties.pk.toString();
+            const featureId: string = feature.properties.id;
             const geoLayer = layerLookup[featureId] as L.GeoJSON;
 
             const switchStyle = !!(data as CustomEvent).detail.idMap[featureId];
@@ -110,11 +118,12 @@ export class Map {
     }
 
     private registerFeature(feature: Feature<Geometry, any>, layer: L.Layer) {
-        featureLookup[feature.properties.pk] = feature;
-        layerLookup[feature.properties.pk] = layer;
+        featureLookup[feature.properties.id] = feature;
+        layerLookup[feature.properties.id] = layer;
         layer.on("click", (e) => {
             const clickedFeature = e.target.feature;
-            const featureId: string = clickedFeature.properties.pk.toString();
+            const featureId = clickedFeature.properties.id;
+            const featureType = clickedFeature.properties.featureType || "";
 
             if (typeof clickedFeature.properties.switchStyle === "undefined") {
                 clickedFeature.properties.switchStyle = true;
@@ -122,7 +131,11 @@ export class Map {
 
             if (clickedFeature.properties.switchStyle) {
                 // This feature will be in the table
-                dispatch("estrada.table.rowSelected", { detail: { rowId: featureId } });
+                const assetType = ["bridge", "culvert"].includes(featureType) ? "STRC" : "ROAD";
+                const eventName = assetType === "STRC"
+                    ? "estrada.structureTable.rowSelected"
+                    : "estrada.roadTable.rowSelected";
+                dispatch(eventName, { detail: { rowId: featureId, featureType, assetType } });
             }
         });
     }
@@ -170,7 +183,20 @@ export class Map {
     }
 
     private getPopup(layer: any): string {
-        const id = parseInt(layer.feature.properties.pk, 10);
-        return roadPopup(id);
+        const id = layer.feature.properties.id;
+        const featureType = layer.feature.properties.featureType || "";
+
+        const popupData = GetDataForMapPopup(id, featureType);
+
+        let html = "";
+
+        popupData.forEach((popupDetail) => {
+            html = `<span class="popup"><span class="popup label">${popupDetail.label}`;
+            html += popupDetail.value
+                ? `: </span><span class="popup value">${popupDetail.value}</span></span>`
+                : "</span></span>";
+        });
+
+        return html;
     }
 }
