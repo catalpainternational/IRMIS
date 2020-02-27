@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("contenttypes", "0002_remove_content_type_name"),
-        ("assets", "0033_traffic_verbose_name"),
+        ("assets", "0035_non_ascii_fix"),
     ]
 
     operations = [
