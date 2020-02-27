@@ -1,16 +1,17 @@
-import { Bridge, Culvert, Point, Structures } from "../../../protobuf/structure_pb";
-import { projToWGS84, toDms } from "../crsUtilities";
+import { Bridge, Culvert, Structures } from "../../../protobuf/structure_pb";
+import { EstradaPhoto, makeEstradaPhoto } from "./photo";
+import { makeEstradaProjection } from "./road";
 import {
     choice_or_default,
     getFieldName,
     getHelpText,
     humanizeChoices,
     makeEstradaObject,
-    projectionToCoordinates,
     toChainageFormat,
 } from "../protoBufUtilities";
 
 import { ADMINISTRATIVE_AREA_CHOICES, ASSET_CLASS_CHOICES, ASSET_CONDITION_CHOICES, IAsset, IEstrada } from "./estradaBase";
+import { Photo } from "../../../protobuf/photo_pb";
 
 const assetSchema = JSON.parse(document.getElementById("asset_schema")?.textContent || "");
 
@@ -137,7 +138,7 @@ export class EstradaBridge extends Bridge implements IAsset {
 
     get geomPoint() {
         const geomPointRaw = this.getGeomPoint();
-        return geomPointRaw ? makeEstradaPoint(geomPointRaw) : geomPointRaw;
+        return geomPointRaw ? makeEstradaProjection(geomPointRaw) : geomPointRaw;
     }
 
     get dms() {
@@ -199,6 +200,15 @@ export class EstradaBridge extends Bridge implements IAsset {
 
     get protectionDownstream() {
         return choice_or_default(this.getProtectionDownstream(), STRUCTURE_DOWNSTREAM_PROTECTION_TYPE_CHOICES);
+    }
+
+    get photos(): EstradaPhoto[] | undefined {
+        const photosListRaw = this.getPhotosList();
+        return photosListRaw ? photosListRaw.map(makeEstradaPhoto) : photosListRaw;
+    }
+
+    set photos(values: EstradaPhoto[] | undefined) {
+        this.setPhotosList(values as Photo[]);
     }
 
     /** A Null or None in the protobuf is indicated by a negative value */
@@ -308,7 +318,7 @@ export class EstradaCulvert extends Culvert implements IAsset {
 
     get geomPoint() {
         const geomPointRaw = this.getGeomPoint();
-        return geomPointRaw ? makeEstradaPoint(geomPointRaw) : geomPointRaw;
+        return geomPointRaw ? makeEstradaProjection(geomPointRaw) : geomPointRaw;
     }
 
     get dms() {
@@ -368,6 +378,15 @@ export class EstradaCulvert extends Culvert implements IAsset {
         return choice_or_default(this.getProtectionDownstream(), STRUCTURE_DOWNSTREAM_PROTECTION_TYPE_CHOICES);
     }
 
+    get photos(): EstradaPhoto[] | undefined {
+        const photosListRaw = this.getPhotosList();
+        return photosListRaw ? photosListRaw.map(makeEstradaPhoto) : photosListRaw;
+    }
+
+    set photos(values: EstradaPhoto[] | undefined) {
+        this.setPhotosList(values as Photo[]);
+    }
+
     /** A Null or None in the protobuf is indicated by a negative value */
     public getNullableChainage() {
         const chainage = super.getChainage();
@@ -405,20 +424,6 @@ export class EstradaCulvert extends Culvert implements IAsset {
     }
 }
 
-export class EstradaPoint extends Point {
-    get x() {
-        return this.getX();
-    }
-
-    get y() {
-        return this.getY();
-    }
-
-    get dms() {
-        return toDms(projToWGS84.forward(projectionToCoordinates(this)));
-    }
-}
-
 export function makeEstradaStructures(pbstructures: { [name: string]: any }): EstradaStructures {
     return makeEstradaObject(EstradaStructures, pbstructures) as EstradaStructures;
 }
@@ -429,8 +434,4 @@ export function makeEstradaBridge(pbattribute: { [name: string]: any }): Estrada
 
 export function makeEstradaCulvert(pbattribute: { [name: string]: any }): EstradaCulvert {
     return makeEstradaObject(EstradaCulvert, pbattribute) as EstradaCulvert;
-}
-
-export function makeEstradaPoint(pbpoint: { [name: string]: any }): EstradaPoint {
-    return makeEstradaObject(EstradaPoint, pbpoint) as EstradaPoint;
 }

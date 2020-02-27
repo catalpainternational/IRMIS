@@ -99,8 +99,10 @@
                     structure="{ state.editingStructure }" saving="{ state.saving }" showFeedback="{ showFeedback }"
                     parent="{parentFunctions}">
                 </edit_structure_condition>
-                <edit_photo if="{ state.page === 'photo' }" structure="{ state.editingStructure }"
-                    saving="{ state.saving }" parent="{parentFunctions}"></edit_photo>
+                <edit_photo if="{ state.page === 'photo' }" fkLink="{ state.editingStructure.id }"
+                    showFeedback="{ showFeedback }" structure="{ state.editingStructure }" saving="{ state.saving }"
+                    parent="{parentFunctions}">
+                </edit_photo>
             </div>
             <footer>
                 <small>República Democrática de Timor-Leste / Ministério das Obras Públicas</small>

@@ -3,30 +3,8 @@
 
 import * as jspb from "google-protobuf";
 import * as google_protobuf_timestamp_pb from "google-protobuf/google/protobuf/timestamp_pb";
-
-export class Point extends jspb.Message {
-  getX(): number;
-  setX(value: number): void;
-
-  getY(): number;
-  setY(value: number): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): Point.AsObject;
-  static toObject(includeInstance: boolean, msg: Point): Point.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: Point, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): Point;
-  static deserializeBinaryFromReader(message: Point, reader: jspb.BinaryReader): Point;
-}
-
-export namespace Point {
-  export type AsObject = {
-    x: number,
-    y: number,
-  }
-}
+import * as photo_pb from "./photo_pb";
+import * as roads_pb from "./roads_pb";
 
 export class Structures extends jspb.Message {
   clearBridgesList(): void;
@@ -114,14 +92,19 @@ export class Bridge extends jspb.Message {
 
   hasGeomPoint(): boolean;
   clearGeomPoint(): void;
-  getGeomPoint(): Point | undefined;
-  setGeomPoint(value?: Point): void;
+  getGeomPoint(): roads_pb.Projection | undefined;
+  setGeomPoint(value?: roads_pb.Projection): void;
 
   getGeojsonId(): number;
   setGeojsonId(value: number): void;
 
   getAssetCondition(): string;
   setAssetCondition(value: string): void;
+
+  clearPhotosList(): void;
+  getPhotosList(): Array<photo_pb.Photo>;
+  setPhotosList(value: Array<photo_pb.Photo>): void;
+  addPhotos(value?: photo_pb.Photo, index?: number): photo_pb.Photo;
 
   getRiverName(): string;
   setRiverName(value: string): void;
@@ -161,9 +144,10 @@ export namespace Bridge {
     material: string,
     protectionUpstream: string,
     protectionDownstream: string,
-    geomPoint?: Point.AsObject,
+    geomPoint?: roads_pb.Projection.AsObject,
     geojsonId: number,
     assetCondition: string,
+    photosList: Array<photo_pb.Photo.AsObject>,
     riverName: string,
     numberSpans: number,
     spanLength: number,
@@ -228,14 +212,19 @@ export class Culvert extends jspb.Message {
 
   hasGeomPoint(): boolean;
   clearGeomPoint(): void;
-  getGeomPoint(): Point | undefined;
-  setGeomPoint(value?: Point): void;
+  getGeomPoint(): roads_pb.Projection | undefined;
+  setGeomPoint(value?: roads_pb.Projection): void;
 
   getGeojsonId(): number;
   setGeojsonId(value: number): void;
 
   getAssetCondition(): string;
   setAssetCondition(value: string): void;
+
+  clearPhotosList(): void;
+  getPhotosList(): Array<photo_pb.Photo>;
+  setPhotosList(value: Array<photo_pb.Photo>): void;
+  addPhotos(value?: photo_pb.Photo, index?: number): photo_pb.Photo;
 
   getHeight(): number;
   setHeight(value: number): void;
@@ -272,9 +261,10 @@ export namespace Culvert {
     material: string,
     protectionUpstream: string,
     protectionDownstream: string,
-    geomPoint?: Point.AsObject,
+    geomPoint?: roads_pb.Projection.AsObject,
     geojsonId: number,
     assetCondition: string,
+    photosList: Array<photo_pb.Photo.AsObject>,
     height: number,
     numberCells: number,
   }

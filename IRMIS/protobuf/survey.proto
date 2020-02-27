@@ -1,5 +1,6 @@
 syntax = "proto3";
 import "google/protobuf/timestamp.proto";
+import "photo.proto";
 
 package assets;
 
@@ -21,6 +22,7 @@ message Survey {
   string values = 7;
   // uint32 last_revision_id = 10;
   string added_by = 11;
+  repeated Photo photos = 14;
 }
 
 message Surveys {

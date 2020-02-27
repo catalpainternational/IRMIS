@@ -1,4 +1,3 @@
-// source: report.proto
 /**
  * @fileoverview
  * @enhanceable
@@ -70,15 +69,13 @@ proto.assets.Report.repeatedFields_ = [4];
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
 /**
- * Creates an object representation of this proto.
+ * Creates an object representation of this proto suitable for use in Soy templates.
  * Field names that are reserved in JavaScript and will be renamed to pb_name.
- * Optional fields that are not set will be set to undefined.
  * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
  * For the list of reserved names please see:
- *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
- * @param {boolean=} opt_includeInstance Deprecated. whether to include the
- *     JSPB instance for transitional soy proto support:
- *     http://goto/soy-param-migration
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
  * @return {!Object}
  */
 proto.assets.Report.prototype.toObject = function(opt_includeInstance) {
@@ -88,8 +85,8 @@ proto.assets.Report.prototype.toObject = function(opt_includeInstance) {
 
 /**
  * Static version of the {@see toObject} method.
- * @param {boolean|undefined} includeInstance Deprecated. Whether to include
- *     the JSPB instance for transitional soy proto support:
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
  *     http://goto/soy-param-migration
  * @param {!proto.assets.Report} msg The msg instance to transform.
  * @return {!Object}
@@ -213,12 +210,9 @@ proto.assets.Report.prototype.getFilter = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Report} returns this
- */
+/** @param {string} value */
 proto.assets.Report.prototype.setFilter = function(value) {
-  return jspb.Message.setProto3StringField(this, 1, value);
+  jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -231,12 +225,9 @@ proto.assets.Report.prototype.getLengths = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Report} returns this
- */
+/** @param {string} value */
 proto.assets.Report.prototype.setLengths = function(value) {
-  return jspb.Message.setProto3StringField(this, 2, value);
+  jspb.Message.setProto3StringField(this, 2, value);
 };
 
 
@@ -250,12 +241,9 @@ proto.assets.Report.prototype.getAttributesList = function() {
 };
 
 
-/**
- * @param {!Array<!proto.assets.Attribute>} value
- * @return {!proto.assets.Report} returns this
-*/
+/** @param {!Array<!proto.assets.Attribute>} value */
 proto.assets.Report.prototype.setAttributesList = function(value) {
-  return jspb.Message.setRepeatedWrapperField(this, 4, value);
+  jspb.Message.setRepeatedWrapperField(this, 4, value);
 };
 
 
@@ -271,10 +259,9 @@ proto.assets.Report.prototype.addAttributes = function(opt_value, opt_index) {
 
 /**
  * Clears the list making it empty but non-null.
- * @return {!proto.assets.Report} returns this
  */
 proto.assets.Report.prototype.clearAttributesList = function() {
-  return this.setAttributesList([]);
+  this.setAttributesList([]);
 };
 
 
@@ -283,15 +270,13 @@ proto.assets.Report.prototype.clearAttributesList = function() {
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
 /**
- * Creates an object representation of this proto.
+ * Creates an object representation of this proto suitable for use in Soy templates.
  * Field names that are reserved in JavaScript and will be renamed to pb_name.
- * Optional fields that are not set will be set to undefined.
  * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
  * For the list of reserved names please see:
- *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
- * @param {boolean=} opt_includeInstance Deprecated. whether to include the
- *     JSPB instance for transitional soy proto support:
- *     http://goto/soy-param-migration
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
  * @return {!Object}
  */
 proto.assets.Attribute.prototype.toObject = function(opt_includeInstance) {
@@ -301,8 +286,8 @@ proto.assets.Attribute.prototype.toObject = function(opt_includeInstance) {
 
 /**
  * Static version of the {@see toObject} method.
- * @param {boolean|undefined} includeInstance Deprecated. Whether to include
- *     the JSPB instance for transitional soy proto support:
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
  *     http://goto/soy-param-migration
  * @param {!proto.assets.Attribute} msg The msg instance to transform.
  * @return {!Object}
@@ -313,8 +298,8 @@ proto.assets.Attribute.toObject = function(includeInstance, msg) {
     assetId: jspb.Message.getFieldWithDefault(msg, 1, ""),
     assetCode: jspb.Message.getFieldWithDefault(msg, 2, ""),
     primaryAttribute: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    chainageStart: jspb.Message.getFloatingPointFieldWithDefault(msg, 4, 0.0),
-    chainageEnd: jspb.Message.getFloatingPointFieldWithDefault(msg, 5, 0.0),
+    chainageStart: +jspb.Message.getFieldWithDefault(msg, 4, 0.0),
+    chainageEnd: +jspb.Message.getFieldWithDefault(msg, 5, 0.0),
     surveyId: jspb.Message.getFieldWithDefault(msg, 6, 0),
     userId: jspb.Message.getFieldWithDefault(msg, 7, 0),
     dateSurveyed: (f = msg.getDateSurveyed()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
@@ -533,12 +518,9 @@ proto.assets.Attribute.prototype.getAssetId = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Attribute} returns this
- */
+/** @param {string} value */
 proto.assets.Attribute.prototype.setAssetId = function(value) {
-  return jspb.Message.setProto3StringField(this, 1, value);
+  jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -551,12 +533,9 @@ proto.assets.Attribute.prototype.getAssetCode = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Attribute} returns this
- */
+/** @param {string} value */
 proto.assets.Attribute.prototype.setAssetCode = function(value) {
-  return jspb.Message.setProto3StringField(this, 2, value);
+  jspb.Message.setProto3StringField(this, 2, value);
 };
 
 
@@ -569,12 +548,9 @@ proto.assets.Attribute.prototype.getPrimaryAttribute = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Attribute} returns this
- */
+/** @param {string} value */
 proto.assets.Attribute.prototype.setPrimaryAttribute = function(value) {
-  return jspb.Message.setProto3StringField(this, 3, value);
+  jspb.Message.setProto3StringField(this, 3, value);
 };
 
 
@@ -583,16 +559,13 @@ proto.assets.Attribute.prototype.setPrimaryAttribute = function(value) {
  * @return {number}
  */
 proto.assets.Attribute.prototype.getChainageStart = function() {
-  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 4, 0.0));
+  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 4, 0.0));
 };
 
 
-/**
- * @param {number} value
- * @return {!proto.assets.Attribute} returns this
- */
+/** @param {number} value */
 proto.assets.Attribute.prototype.setChainageStart = function(value) {
-  return jspb.Message.setProto3FloatField(this, 4, value);
+  jspb.Message.setProto3FloatField(this, 4, value);
 };
 
 
@@ -601,16 +574,13 @@ proto.assets.Attribute.prototype.setChainageStart = function(value) {
  * @return {number}
  */
 proto.assets.Attribute.prototype.getChainageEnd = function() {
-  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 5, 0.0));
+  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 5, 0.0));
 };
 
 
-/**
- * @param {number} value
- * @return {!proto.assets.Attribute} returns this
- */
+/** @param {number} value */
 proto.assets.Attribute.prototype.setChainageEnd = function(value) {
-  return jspb.Message.setProto3FloatField(this, 5, value);
+  jspb.Message.setProto3FloatField(this, 5, value);
 };
 
 
@@ -623,12 +593,9 @@ proto.assets.Attribute.prototype.getSurveyId = function() {
 };
 
 
-/**
- * @param {number} value
- * @return {!proto.assets.Attribute} returns this
- */
+/** @param {number} value */
 proto.assets.Attribute.prototype.setSurveyId = function(value) {
-  return jspb.Message.setProto3IntField(this, 6, value);
+  jspb.Message.setProto3IntField(this, 6, value);
 };
 
 
@@ -641,12 +608,9 @@ proto.assets.Attribute.prototype.getUserId = function() {
 };
 
 
-/**
- * @param {number} value
- * @return {!proto.assets.Attribute} returns this
- */
+/** @param {number} value */
 proto.assets.Attribute.prototype.setUserId = function(value) {
-  return jspb.Message.setProto3IntField(this, 7, value);
+  jspb.Message.setProto3IntField(this, 7, value);
 };
 
 
@@ -660,21 +624,17 @@ proto.assets.Attribute.prototype.getDateSurveyed = function() {
 };
 
 
-/**
- * @param {?proto.google.protobuf.Timestamp|undefined} value
- * @return {!proto.assets.Attribute} returns this
-*/
+/** @param {?proto.google.protobuf.Timestamp|undefined} value */
 proto.assets.Attribute.prototype.setDateSurveyed = function(value) {
-  return jspb.Message.setWrapperField(this, 8, value);
+  jspb.Message.setWrapperField(this, 8, value);
 };
 
 
 /**
  * Clears the message field making it undefined.
- * @return {!proto.assets.Attribute} returns this
  */
 proto.assets.Attribute.prototype.clearDateSurveyed = function() {
-  return this.setDateSurveyed(undefined);
+  this.setDateSurveyed(undefined);
 };
 
 
@@ -696,12 +656,9 @@ proto.assets.Attribute.prototype.getAddedBy = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Attribute} returns this
- */
+/** @param {string} value */
 proto.assets.Attribute.prototype.setAddedBy = function(value) {
-  return jspb.Message.setProto3StringField(this, 9, value);
+  jspb.Message.setProto3StringField(this, 9, value);
 };
 
 
@@ -714,12 +671,9 @@ proto.assets.Attribute.prototype.getValue = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Attribute} returns this
- */
+/** @param {string} value */
 proto.assets.Attribute.prototype.setValue = function(value) {
-  return jspb.Message.setProto3StringField(this, 10, value);
+  jspb.Message.setProto3StringField(this, 10, value);
 };
 
 
@@ -732,12 +686,9 @@ proto.assets.Attribute.prototype.getRoadId = function() {
 };
 
 
-/**
- * @param {number} value
- * @return {!proto.assets.Attribute} returns this
- */
+/** @param {number} value */
 proto.assets.Attribute.prototype.setRoadId = function(value) {
-  return jspb.Message.setProto3IntField(this, 11, value);
+  jspb.Message.setProto3IntField(this, 11, value);
 };
 
 
@@ -750,12 +701,9 @@ proto.assets.Attribute.prototype.getRoadCode = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Attribute} returns this
- */
+/** @param {string} value */
 proto.assets.Attribute.prototype.setRoadCode = function(value) {
-  return jspb.Message.setProto3StringField(this, 12, value);
+  jspb.Message.setProto3StringField(this, 12, value);
 };
 
 

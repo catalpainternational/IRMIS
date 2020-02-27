@@ -1,6 +1,6 @@
 <upload_photo>
-    <div>
-        <form action="/upload-target" class="dropzone">
+    <div show="{!state.photo.url || state.photo.url == ''}" class="photo-upload-area">
+        <form class="dropzone">
             <div class="cloud-box">
                 <div class="upload-cloud"></div>
                 <div class="upload-instructions">{ window.gettext("Click to upload") }</div>
@@ -8,70 +8,80 @@
                 <div>{ window.gettext("Accepted file formats: JPEG, GIF, PNG") }</div>
             </div>
         </form>
-        <input
-            class="{ state.errors.photo ? 'danger' : null } { state.photo ? '' : 'inactive' } form-control upload-text"
-            type="text" maxlength="500" placeholder="Enter a description of the photo" value="{ state.photo }"
-            oninput="{ checkPhotoText }">
-        <div if="{state.errors.photo}" class="invalid-tooltip">
-            <ul>
-                <li>{ state.errors.photo }.</li>
-            </ul>
-        </div>
     </div>
-    
-    <!-- Temporary element placement -->
-    <div>
-        <!-- Delete Photo button -->
-        <button class="btn-secondary btn-tertiary btn-delete" onclick="{ deletePhoto }" disabled="{ props.saving }">{ window.gettext("Delete Photo") }</button>
-
-        <!-- Edit Caption button -->
-        <button class="btn-secondary btn-tertiary btn-caption" onclick="{ editCaption }" disabled="{ props.saving }">
-            <div class="image pencil button"></div>
-            { window.gettext("Edit Caption") }
-        </button>
-
-        <!-- Editing caption text -->
-        <div class="upload-text { state.editingCaption ? 'edit-caption' : null } ">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-        </div>
+    <div show="{state.photo.url}" class="photo-management-area">
+        <input
+            class="{ state.errors.description ? 'danger' : null } { state.photo.description ? '' : 'inactive' } form-control upload-text"
+            type="text" maxlength="500" placeholder="Enter a description of the photo"
+            value="{ state.photo.description }" onblur="{updateDescription}">
+        <button class="btn btn-md btn-danger" onclick="{deletePhoto}">Delete Photo</button>
     </div>
 
     <script>
         import Dropzone from "dropzone";
+        import {ConfigAPI} from "../assets/configAPI";
+        import {putPhotoData, deletePhotoData} from "../assets/photoAPI";
+        import {EstradaPhoto} from "../assets/models/photo";
 
         export default {
             state: {
-                photo: '',
                 errors: {},
-                editingCaption: false,
+            },
+            onBeforeMount(props, state) {
+                state.photo = props.photo || new EstradaPhoto();
             },
             onMounted(props, state) {
                 Dropzone.autoDiscover = false;
-                const myDropzone = new Dropzone(this.$('form'), {
-                    url: "/file/post",
+                const myDropzone = new Dropzone(this.$('form.dropzone'), {
+                    url: `${ConfigAPI.requestAssetUrl}/photo_create`,
+                    method: "post",
+                    headers: {'X-CSRFToken': document.cookie.replace(/(?:(?:^|.*;\s*)csrftoken\s*\=\s*([^;]*).*$)|^.*$/, "$1")},
+                    params: {fk_link: props.fkLink},
+                    maxFiles: 1,
                     maxFilesize: 0.5, // MB
                     acceptedFiles: '.jpeg,.jpg,.gif,.png',
+                    addRemoveLinks: true,
                     dictDefaultMessage: '',
                     dictInvalidFileType: 'Not a valid image, please submit a JPEG, GIF, or PNG',
-                    accept: (file, done) => {
-                        if (file.name == "image.jpg") {
-                            done();
-                        } else { 
-                            done(); 
-                        }
-                    }
+                    accept: (file, done) => {done();}
+                });
+
+                myDropzone.on("success", function(file, res) {
+                    myDropzone.disable();
+                    state.photo.setId(res.id);
+                    state.photo.setUrl(res.url);
+                    state.photo.setFkLink(res.fk_link);
                 });
             },
+            updatePhoto(description) {
+                putPhotoData(this.state.photo)
+                    .then((data) => {
+                        this.state.photo.setDescription(description);
+                        this.props.showFeedback();
+                    }).catch((err) => {
+                        this.props.showFeedback(true);
+                    }).finally((r) => {
+                        this.update();
+                    });
+            },
             deletePhoto(e) {
-
+                deletePhotoData(this.state.photo)
+                    .then((data) => {
+                        this.state.photo = makeEstradaPhoto({});
+                        myDropzone.enable();
+                        this.props.showFeedback();
+                    }).catch((err) => {
+                        this.props.showFeedback(true);
+                    }).finally((r) => {
+                        this.update();
+                    });
             },
-            editCaption(e) {
-
+            updateDescription(e) {
+                const description = e.currentTarget.value;
+                if (description != "" && this.state.photo.description != description) {
+                    this.updatePhoto(description);
+                }
             },
-            checkPhotoText(e) {
-                console.log(e.currentTarget.value)
-            }
         }
     </script>
 </upload_photo>

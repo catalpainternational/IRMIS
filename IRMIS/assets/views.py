@@ -33,7 +33,14 @@ from rest_framework_condition import condition
 
 from google.protobuf.timestamp_pb2 import Timestamp
 
-from protobuf import roads_pb2, survey_pb2, report_pb2, structure_pb2, version_pb2
+from protobuf import (
+    photo_pb2,
+    report_pb2,
+    roads_pb2,
+    structure_pb2,
+    survey_pb2,
+    version_pb2,
+)
 from .report_query import ReportQuery
 
 
@@ -48,6 +55,7 @@ from .models import (
     display_user,
     MaintenanceNeed,
     PavementClass,
+    Photo,
     Road,
     RoadStatus,
     StructureProtectionType,
@@ -825,29 +833,33 @@ def culvert_update(culvert, req_pb, db_pb):
     return culvert, changed_fields
 
 
-STRUCTURE_PREFIXES_MAPPING = {
+PREFIXES_MAPPING = {
     "BRDG": {
+        "name": "bridge",
         "model": Bridge,
         "update": bridge_update,
         "create": bridge_create,
         "proto": structure_pb2.Bridge,
     },
     "CULV": {
+        "name": "culvert",
         "model": Culvert,
         "update": culvert_update,
         "create": culvert_create,
         "proto": structure_pb2.Culvert,
     },
+    "SURV": {"name": "survey", "model": Survey, "proto": survey_pb2.Survey},
+    "ROAD": {"name": "road", "model": Road, "proto": roads_pb2.Road},
 }
 
 
-def get_structure_mapping(pk):
-    """ Take in a globally unique protobuf PK and splits out the Structure prefix to get
+def get_mapping(pk):
+    """ Take in a globally unique protobuf PK and splits out the Strucutre prefix to get
     lookup the specific Structure's mapping, along with the Django DB PK to access it."""
     split = pk.split("-")
     prefix = split[0]
     django_pk = int(split[1])
-    mapping = STRUCTURE_PREFIXES_MAPPING[prefix]
+    mapping = PREFIXES_MAPPING[prefix]
     return prefix, django_pk, mapping
 
 
@@ -857,7 +869,8 @@ def protobuf_structure(request, pk):
     if request.method != "GET":
         return HttpResponse(status=405)
 
-    prefix, django_pk, mapping = get_structure_mapping(pk)
+    prefix, django_pk, mapping = get_mapping(pk)
+    structure = mapping["model"].objects.filter(pk=django_pk)
     survey = (
         Survey.objects.filter(structure_id__startswith=prefix + "-")
         .annotate(struct_id=Cast(Substr("structure_id", 6), models.IntegerField()))
@@ -887,7 +900,7 @@ def protobuf_structure(request, pk):
 @login_required
 def protobuf_structure_audit(request, pk):
     """ returns a protobuf object with the set of all audit history items for a Structure """
-    prefix, django_pk, mapping = get_structure_mapping(pk)
+    prefix, django_pk, mapping = get_mapping(pk)
 
     queryset = mapping["model"].objects.all()
     structure = get_object_or_404(queryset, pk=django_pk)
@@ -977,7 +990,7 @@ def structure_create(request, structure_type):
     elif request.content_type != "application/octet-stream":
         return HttpResponse(status=400)
 
-    prefix, django_pk, mapping = get_structure_mapping(structure_type)
+    prefix, django_pk, mapping = get_mapping(structure_type)
 
     # parse Bridge from protobuf in request body
     req_pb = structure_pb2.Bridge()
@@ -1026,7 +1039,7 @@ def structure_update(request, pk):
     elif request.content_type != "application/octet-stream":
         return HttpResponse(status=400)
 
-    prefix, django_pk, mapping = get_structure_mapping(pk)
+    prefix, django_pk, mapping = get_mapping(pk)
 
     # parse Structure from protobuf in request body
     req_pb = mapping["proto"]
@@ -1102,7 +1115,7 @@ def survey_create(request):
     if req_pb.road_id:
         survey_asset = get_object_or_404(Road.objects.filter(pk=req_pb.road_id))
     elif req_pb.structure_id:
-        prefix, django_pk, mapping = get_structure_mapping(req_pb.structure_id)
+        prefix, django_pk, mapping = get_mapping(req_pb.structure_id)
         survey_asset = get_object_or_404(mapping["model"].objects.filter(pk=django_pk))
     else:
         # basic data integrity problem
@@ -1184,7 +1197,7 @@ def survey_update(request):
     if req_pb.road_id:
         survey_asset = get_object_or_404(Road.objects.filter(pk=req_pb.road_id))
     elif req_pb.structure_id:
-        prefix, django_pk, mapping = get_structure_mapping(req_pb.structure_id)
+        prefix, django_pk, mapping = get_mapping(req_pb.structure_id)
         survey_asset = get_object_or_404(mapping["model"].objects.filter(pk=django_pk))
     else:
         # basic data integrity problem
@@ -1248,3 +1261,162 @@ def survey_update(request):
         req_pb.SerializeToString(), status=200, content_type="application/octet-stream"
     )
     return response
+
+
+@login_required
+def protobuf_photo(request, pk):
+    """ returns a protobuf object with the set of all audit history items for a Structure """
+
+    if request.method != "GET":
+        return HttpResponse(status=405)
+
+    photo = Photo.objects.filter(pk=pk)
+    if not photo.exists():
+        return HttpResponseNotFound()
+
+    photo_protobuf = photo.to_protobuf()
+
+    return HttpResponse(
+        photo_protobuf.photos[0].SerializeToString(),
+        content_type="application/octet-stream",
+    )
+
+
+@login_required
+def protobuf_photos(request, pk):
+    """ returns a list of protobuf serialized Photo objects for a given Structure/Asset/Survey PK """
+
+    if request.method != "GET":
+        return HttpResponse(status=405)
+
+    # check there's a model instance to attach this photo to
+    prefix, django_pk, mapping = get_mapping(pk)
+    linked_obj = get_object_or_404(mapping["model"].objects.filter(pk=django_pk))
+    content_type = ContentType.objects.get_for_model(linked_obj)
+
+    photos = Photo.objects.filter(object_id=linked_obj.id, content_type=content_type)
+    if not photos.exists():
+        return HttpResponseNotFound()
+
+    photos_protobuf = photos.to_protobuf()
+
+    return HttpResponse(
+        photos_protobuf.photo[0].SerializeToString(),
+        content_type="application/octet-stream",
+    )
+
+
+@login_required
+def photo_create(request):
+    if request.method != "POST":
+        raise MethodNotAllowed(request.method)
+    elif request.content_type != "multipart/form-data":
+        return HttpResponse(status=400)
+
+    # check that required form data was passed: Photo
+    if not request.FILES:
+        return HttpResponse(status=400)
+
+    data = {"file": request.FILES["file"]}
+
+    if request.POST["fk_link"] and request.POST["fk_link"] not in ["", "undefined"]:
+        # check there's a model instance to attach this photo to
+        prefix, django_pk, mapping = get_mapping(request.POST["fk_link"])
+
+        linked_obj = get_object_or_404(mapping["model"].objects.filter(pk=django_pk))
+        data["object_id"] = linked_obj.id
+
+        content_type = ContentType.objects.get_for_model(linked_obj)
+        data["content_type"] = content_type
+
+    try:
+        with reversion.create_revision():
+            photo = Photo.objects.create(**data)
+            # store the user who created the photo
+            reversion.set_user(request.user)
+
+        return JsonResponse(
+            {
+                "id": photo.id,
+                "url": photo.file.url,
+                "fk_link": str(photo.object_id) if photo.object_id else "",
+            }
+        )
+    except Exception as err:
+        return HttpResponse(status=400)
+
+
+@login_required
+def photo_update(request):
+    if request.method != "PUT":
+        raise MethodNotAllowed(request.method)
+    elif request.content_type != "application/octet-stream":
+        return HttpResponse(status=400)
+
+    # parse Photo from protobuf in request body
+    req_pb = photo_pb2.Photo()
+    req_pb = req_pb.FromString(request.body)
+
+    # check that Protobuf parsed
+    if not req_pb.id:
+        return HttpResponse(status=400)
+
+    try:
+        # assert Photo ID given exists in the DB & there are changes to make
+        photo = get_object_or_404(Photo.objects.filter(pk=req_pb.id))
+        # update the Photo instance from PB fields
+        photo.description = req_pb.description
+
+        if req_pb.fk_link:
+            # check there's a model instance to attach this photo to
+            prefix, django_pk, mapping = get_mapping(req_pb.fk_link)
+
+            linked_obj = get_object_or_404(
+                mapping["model"].objects.filter(pk=django_pk)
+            )
+            data["object_id"] = linked_obj.id
+
+            content_type = ContentType.objects.get_for_model(linked_obj)
+            data["content_type"] = content_type
+
+        with reversion.create_revision():
+            photo.save()
+            # store the user who made the changes
+            reversion.set_user(request.user)
+    except Exception:
+        return HttpResponse(
+            req_pb.SerializeToString(),
+            status=400,
+            content_type="application/octet-stream",
+        )
+    return HttpResponse(
+        req_pb.SerializeToString(), status=200, content_type="application/octet-stream",
+    )
+
+
+@login_required
+def photo_delete(request):
+    if request.method != "DELETE":
+        raise MethodNotAllowed(request.method)
+    elif request.content_type != "application/octet-stream":
+        return HttpResponse(status=400)
+
+    # parse Photos from protobuf in request body
+    req_pb = photo_pb2.Photo()
+    req_pb = req_pb.FromString(request.body)
+
+    # check that protobuf parsed
+    if not req_pb.id:
+        return HttpResponse(status=400)
+
+    # assert Photo ID given exists in the DB
+    photo = get_object_or_404(Photo.objects.filter(pk=req_pb.id))
+
+    with reversion.create_revision():
+        photo.delete()
+        # store the user who made the changes
+        reversion.set_user(request.user)
+
+    return HttpResponse(
+        req_pb.SerializeToString(), status=200, content_type="application/octet-stream",
+    )

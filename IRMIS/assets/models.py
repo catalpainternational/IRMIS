@@ -1,12 +1,12 @@
 from django.conf import settings
 from django.contrib.gis.db import models
-from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import HStoreField
 from django.utils.translation import get_language, ugettext, ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
-from django.db.models import Count, Max, OuterRef, Subquery
+from django.db.models import Count, Max, OuterRef, Prefetch, Subquery
 from django.db.models.functions import Cast, Substr
 
 import reversion
@@ -15,7 +15,7 @@ from protobuf.roads_pb2 import Roads as ProtoRoads
 from protobuf.roads_pb2 import Projection
 from protobuf.survey_pb2 import Surveys as ProtoSurveys
 from protobuf.structure_pb2 import Structures as ProtoStructures
-from protobuf.structure_pb2 import Point
+from protobuf.photo_pb2 import Photos as ProtoPhotos
 
 import json
 from google.protobuf.timestamp_pb2 import Timestamp
@@ -70,6 +70,78 @@ class TechnicalClass(models.Model):
         return self.name
 
 
+class PhotoQuerySet(models.QuerySet):
+    def to_protobuf(self):
+        """ returns a protobuf object from the queryset with a Photos list """
+        # See photos.proto
+        photos_protobuf = ProtoPhotos()
+
+        regular_fields = dict(id="id", description="description")
+
+        datetime_fields = dict(
+            date_created="date_created", last_modified="last_modified",
+        )
+
+        photos = self.order_by("id")
+
+        for photo in photos:
+            photo_protobuf = photos_protobuf.photos.add()
+
+            for protobuf_key, query_key in regular_fields.items():
+                if getattr(photo, query_key, None):
+                    setattr(
+                        photo_protobuf, protobuf_key, getattr(photo, query_key, None)
+                    )
+
+            if getattr(photo, "file", None):
+                setattr(photo_protobuf, "url", photo.file.url)
+
+            if getattr(photo, "date_created", None):
+                ts = timestamp_from_datetime(photo.date_created)
+                photo_protobuf.date_created.CopyFrom(ts)
+
+            if getattr(photo, "last_modified", None):
+                ts = timestamp_from_datetime(photo.last_modified)
+                photo_protobuf.last_modified.CopyFrom(ts)
+
+        return photos_protobuf
+
+
+class PhotoManager(models.Manager):
+    def get_queryset(self):
+        return PhotoQuerySet(self.model, using=self._db)
+
+    def to_protobuf(self):
+        """ returns a photos protobuf object from the manager """
+        return self.get_queryset().to_protobuf()
+
+
+@reversion.register()
+class Photo(models.Model):
+    """ Generic Photo model """
+
+    objects = PhotoManager()
+
+    date_created = models.DateTimeField(
+        verbose_name=_("Date Created"), auto_now_add=True
+    )
+    last_modified = models.DateTimeField(verbose_name=_("last modified"), auto_now=True)
+    file = models.ImageField(upload_to="photos/")
+    description = models.CharField(
+        max_length=140, verbose_name=_("Description"), default="", blank=True,
+    )
+    # photos generic fk links back to the various models
+    content_type = models.ForeignKey(
+        ContentType,
+        related_name="content_type_photos",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+    )
+    object_id = models.PositiveIntegerField(blank=True, null=True)
+    content_object = GenericForeignKey("content_type", "object_id")
+
+
 class SurveyQuerySet(models.QuerySet):
     def to_protobuf(self):
         """ returns a roads survey protobuf object from the queryset """
@@ -82,41 +154,53 @@ class SurveyQuerySet(models.QuerySet):
             structure_id="structure_id",
             road_id="road_id",
             road_code="road_code",
-            user="user__id",
-            date_updated="date_updated",
-            date_surveyed="date_surveyed",
             chainage_start="chainage_start",
             chainage_end="chainage_end",
-            values="values",
             source="source",
-            added_by="user__username",
         )
 
-        for survey in self.values(*fields.values()):
+        photos_prefetch = Prefetch(
+            "photos", queryset=Photo.objects.filter(survey__id__in=self.values("id"))
+        )
+
+        surveys = self.order_by("id").prefetch_related(photos_prefetch)
+
+        for survey in surveys:
             survey_protobuf = surveys_protobuf.surveys.add()
             for protobuf_key, query_key in fields.items():
-                if (
-                    survey[query_key]
-                    and query_key not in ["date_updated", "date_surveyed"]
-                    and query_key != "values"
-                ):
-                    setattr(survey_protobuf, protobuf_key, survey[query_key])
+                if getattr(survey, query_key, None):
+                    setattr(
+                        survey_protobuf, protobuf_key, getattr(survey, query_key, None)
+                    )
 
-            if survey["date_updated"]:
-                ts = timestamp_from_datetime(survey["date_updated"])
+            if survey.date_updated:
+                ts = timestamp_from_datetime(survey.date_updated)
                 survey_protobuf.date_updated.CopyFrom(ts)
 
-            if survey["date_surveyed"]:
-                ts = timestamp_from_datetime(survey["date_surveyed"])
+            if survey.date_surveyed:
+                ts = timestamp_from_datetime(survey.date_surveyed)
                 survey_protobuf.date_surveyed.CopyFrom(ts)
 
-            if survey["values"]:
+            if survey.user:
+                setattr(survey_protobuf, "user", survey.user.id)
+                setattr(survey_protobuf, "added_by", survey.user.username)
+
+            if survey.values:
                 # Dump the survey values as a json string
                 # Because these are not likely to get large,
                 # zipping them will probably not be optimal
                 survey_protobuf.values = json.dumps(
-                    survey["values"], separators=(",", ":")
+                    survey.values, separators=(",", ":")
                 )
+
+            photos = survey.photos.all()
+            for photo in photos:
+                photo_protobuf = survey_protobuf.photos.add()
+                setattr(photo_protobuf, "id", photo.id)
+                if photo.description:
+                    setattr(photo_protobuf, "description", photo.description)
+                if photo.file:
+                    setattr(photo_protobuf, "url", photo.file.url)
 
         return surveys_protobuf
 
@@ -182,6 +266,7 @@ class Survey(models.Model):
         help_text=_("Choose the source of the survey"),
     )
     values = HStoreField()
+    photos = GenericRelation(Photo, related_query_name="survey")
 
     def __str__(self,):
         return "%s(%s - %s) %s" % (
@@ -555,7 +640,7 @@ class Road(models.Model):
         null=True,
         help_text=_("Enter the number of lanes of the road"),
     )
-
+    photos = GenericRelation(Photo, related_query_name="road")
     # a reference to the collated geojson file this road's geometry is in
     geojson_file = models.ForeignKey(
         "CollatedGeoJsonFile", on_delete=models.DO_NOTHING, blank=True, null=True
@@ -616,11 +701,11 @@ class BridgeQuerySet(models.QuerySet):
             structure_name="structure_name",
             asset_class="structure_class",
             administrative_area="administrative_area",
-            structure_type="structure_type__code",
+            structure_type="structure_type",
             river_name="river_name",
-            material="material__code",
-            protection_upstream="protection_upstream__code",
-            protection_downstream="protection_downstream__code",
+            material="material",
+            protection_upstream="protection_upstream",
+            protection_downstream="protection_downstream",
         )
 
         datetime_fields = dict(
@@ -636,60 +721,77 @@ class BridgeQuerySet(models.QuerySet):
             construction_year="construction_year",
         )
 
+        photos_prefetch = Prefetch(
+            "photos", queryset=Photo.objects.filter(bridge__id__in=self.values("id"))
+        )
+
         survey = (
             Survey.objects.filter(structure_id__startswith="BRDG-")
             .annotate(bridge_id=Cast(Substr("structure_id", 6), models.IntegerField()))
             .filter(bridge_id=OuterRef("id"))
             .order_by("-date_surveyed")
         )
+
         bridges = (
             self.order_by("id")
             .annotate(
                 to_wgs=models.functions.Transform("geom", 4326),
                 asset_condition=Subquery(survey.values("values__asset_condition")[:1]),
             )
-            .values(
-                "id",
-                "geojson_file_id",
-                *regular_fields.values(),
-                *datetime_fields.values(),
-                *numeric_fields.values(),
-                "to_wgs",
-                "asset_condition",
-            )
+            .prefetch_related(photos_prefetch)
         )
 
         for bridge in bridges:
             bridge_protobuf = structures_protobuf.bridges.add()
-            bridge_protobuf.id = "BRDG-" + str(bridge["id"])
-            bridge_protobuf.geojson_id = int(bridge["geojson_file_id"])
+            bridge_protobuf.id = "BRDG-" + str(bridge.id)
+            bridge_protobuf.geojson_id = int(bridge.geojson_file_id)
 
             for protobuf_key, query_key in regular_fields.items():
-                if bridge[query_key]:
-                    setattr(bridge_protobuf, protobuf_key, bridge[query_key])
+                if getattr(bridge, query_key, None):
+                    attr = getattr(bridge, query_key, None)
+                    # check if it is a special "code" field
+                    if protobuf_key in [
+                        "structure_type",
+                        "material",
+                        "protection_upstream",
+                        "protection_downstream",
+                    ]:
+                        setattr(bridge_protobuf, protobuf_key, attr.code)
+                    else:
+                        setattr(bridge_protobuf, protobuf_key, attr)
 
             for protobuf_key, query_key in numeric_fields.items():
-                raw_value = bridge.get(query_key)
+                raw_value = getattr(bridge, query_key, None)
                 if raw_value is not None:
                     setattr(bridge_protobuf, protobuf_key, raw_value)
                 else:
                     # No value available, so use -ve as a substitute for None
                     setattr(bridge_protobuf, protobuf_key, -1)
 
-            if bridge["date_created"]:
-                ts = timestamp_from_datetime(bridge["date_created"])
+            if getattr(bridge, "date_created", None):
+                ts = timestamp_from_datetime(bridge.date_created)
                 bridge_protobuf.date_created.CopyFrom(ts)
 
-            if bridge["last_modified"]:
-                ts = timestamp_from_datetime(bridge["last_modified"])
+            if getattr(bridge, "last_modified", None):
+                ts = timestamp_from_datetime(bridge.last_modified)
                 bridge_protobuf.last_modified.CopyFrom(ts)
 
-            if bridge["to_wgs"]:
-                pt = Point(x=bridge["to_wgs"].x, y=bridge["to_wgs"].y)
+            if getattr(bridge, "to_wgs", None):
+                wgs = getattr(bridge, "to_wgs", None)
+                pt = Projection(x=wgs.x, y=wgs.y)
                 bridge_protobuf.geom_point.CopyFrom(pt)
 
-            if bridge["asset_condition"]:
-                bridge_protobuf.asset_condition = bridge["asset_condition"]
+            if getattr(bridge, "asset_condition", None):
+                bridge_protobuf.asset_condition = getattr(
+                    bridge, "asset_condition", None
+                )
+
+            photos = bridge.photos.all()
+            for photo in photos:
+                photo_protobuf = bridge_protobuf.photos.add()
+                setattr(photo_protobuf, "id", photo.id)
+                setattr(photo_protobuf, "description", photo.description)
+                setattr(photo_protobuf, "url", photo.file.url)
 
         return structures_protobuf
 
@@ -854,6 +956,7 @@ class Bridge(models.Model):
         null=True,
         help_text=_("Choose the downstream protection type"),
     )
+    photos = GenericRelation(Photo, related_query_name="bridge")
 
     def __str__(self,):
         return "%s(%s)" % (self.structure_name, self.pk)
@@ -888,10 +991,10 @@ class CulvertQuerySet(models.QuerySet):
             structure_name="structure_name",
             asset_class="structure_class",
             administrative_area="administrative_area",
-            structure_type="structure_type__code",
-            material="material__code",
-            protection_upstream="protection_upstream__code",
-            protection_downstream="protection_downstream__code",
+            structure_type="structure_type",
+            material="material",
+            protection_upstream="protection_upstream",
+            protection_downstream="protection_downstream",
         )
 
         datetime_fields = dict(
@@ -907,61 +1010,77 @@ class CulvertQuerySet(models.QuerySet):
             number_cells="number_cells",
         )
 
+        photos_prefetch = Prefetch(
+            "photos", queryset=Photo.objects.filter(culvert__id__in=self.values("id"))
+        )
+
         survey = (
             Survey.objects.filter(structure_id__startswith="CULV-")
             .annotate(culvert_id=Cast(Substr("structure_id", 6), models.IntegerField()))
             .filter(culvert_id=OuterRef("id"))
             .order_by("-date_surveyed")
         )
+
         culverts = (
             self.order_by("id")
-            .annotate(to_wgs=models.functions.Transform("geom", 4326))
-            .values(
-                "id",
-                "geojson_file_id",
-                *regular_fields.values(),
-                *datetime_fields.values(),
-                *numeric_fields.values(),
-                "to_wgs",
+            .annotate(
+                to_wgs=models.functions.Transform("geom", 4326),
                 asset_condition=Subquery(survey.values("values__asset_condition")[:1]),
             )
+            .prefetch_related(photos_prefetch)
         )
 
         for culvert in culverts:
             culvert_protobuf = structures_protobuf.culverts.add()
-            culvert_protobuf.id = "CULV-" + str(culvert["id"])
-            if culvert["geojson_file_id"]:
-                culvert_protobuf.geojson_id = int(culvert["geojson_file_id"])
-            # else:
-            # Raise a warning to go into the logs that collate_geometries
-            # functionality requires executing
+            culvert_protobuf.id = "CULV-" + str(culvert.id)
+            culvert_protobuf.geojson_id = int(culvert.geojson_file_id)
 
             for protobuf_key, query_key in regular_fields.items():
-                if culvert[query_key]:
-                    setattr(culvert_protobuf, protobuf_key, culvert[query_key])
+                if getattr(culvert, query_key, None):
+                    attr = getattr(culvert, query_key, None)
+                    # check if it is a special "code" field
+                    if protobuf_key in [
+                        "structure_type",
+                        "material",
+                        "protection_upstream",
+                        "protection_downstream",
+                    ]:
+                        setattr(culvert_protobuf, protobuf_key, attr.code)
+                    else:
+                        setattr(culvert_protobuf, protobuf_key, attr)
 
             for protobuf_key, query_key in numeric_fields.items():
-                raw_value = culvert.get(query_key)
+                raw_value = getattr(culvert, query_key, None)
                 if raw_value is not None:
                     setattr(culvert_protobuf, protobuf_key, raw_value)
                 else:
                     # No value available, so use -ve as a substitute for None
                     setattr(culvert_protobuf, protobuf_key, -1)
 
-            if culvert["date_created"]:
-                ts = timestamp_from_datetime(culvert["date_created"])
+            if getattr(culvert, "date_created", None):
+                ts = timestamp_from_datetime(culvert.date_created)
                 culvert_protobuf.date_created.CopyFrom(ts)
 
-            if culvert["last_modified"]:
-                ts = timestamp_from_datetime(culvert["last_modified"])
+            if getattr(culvert, "last_modified", None):
+                ts = timestamp_from_datetime(culvert.last_modified)
                 culvert_protobuf.last_modified.CopyFrom(ts)
 
-            if culvert["to_wgs"]:
-                pt = Point(x=culvert["to_wgs"].x, y=culvert["to_wgs"].y)
+            if getattr(culvert, "to_wgs", None):
+                wgs = getattr(culvert, "to_wgs", None)
+                pt = Projection(x=wgs.x, y=wgs.y)
                 culvert_protobuf.geom_point.CopyFrom(pt)
 
-            if culvert["asset_condition"]:
-                bridge_protobuf.asset_condition = culvert["asset_condition"]
+            if getattr(culvert, "asset_condition", None):
+                culvert_protobuf.asset_condition = getattr(
+                    culvert, "asset_condition", None
+                )
+
+            photos = culvert.photos.all()
+            for photo in photos:
+                photo_protobuf = culvert_protobuf.photos.add()
+                setattr(photo_protobuf, "id", photo.id)
+                setattr(photo_protobuf, "description", photo.description)
+                setattr(photo_protobuf, "url", photo.file.url)
 
         return structures_protobuf
 
@@ -1118,6 +1237,7 @@ class Culvert(models.Model):
         null=True,
         help_text=_("Choose the downstream protection type"),
     )
+    photos = GenericRelation(Photo, related_query_name="culvert")
 
     def __str__(self,):
         return "%s(%s)" % (self.structure_name, self.pk)
