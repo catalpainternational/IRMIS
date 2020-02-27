@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("assets", "0033_traffic_verbose_name"),
+        ("assets", "0034_carriageway_width_verbose_name"),
     ]
 
     operations = [
