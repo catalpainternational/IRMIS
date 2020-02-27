@@ -96,6 +96,18 @@ class PhotoQuerySet(models.QuerySet):
             if getattr(photo, "file", None):
                 setattr(photo_protobuf, "url", photo.file.url)
 
+            if getattr(photo, "content_object", None):
+                model = photo.content_type.model
+                if model == "bridge":
+                    prefix = "BRDG-"
+                elif model == "culvert":
+                    prefix = "CULV-"
+                elif model == "survey":
+                    prefix = "SURV-"
+                elif model == "road":
+                    prefix = "ROAD-"
+                setattr(photo_protobuf, "fk_link", prefix + str(photo.object_id))
+
             if getattr(photo, "date_created", None):
                 ts = timestamp_from_datetime(photo.date_created)
                 photo_protobuf.date_created.CopyFrom(ts)
