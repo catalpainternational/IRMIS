@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-27 02:09+0000\n"
+"POT-Creation-Date: 2020-02-27 05:43+0000\n"
 "PO-Revision-Date: 2019-10-11 00:57+0000\n"
 "Last-Translator: b'  <juliana@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -84,6 +84,9 @@ msgid "Chainage end"
 msgstr ""
 
 msgid "Carriageway width"
+msgstr ""
+
+msgid "Carriageway width (m)"
 msgstr ""
 
 msgid "Add Technical Class Information"
@@ -242,6 +245,16 @@ msgstr "Condição"
 msgid "Add Terrain Class Information"
 msgstr ""
 
+#, fuzzy
+#| msgid "Link chainage"
+msgid "Chainage start (m)"
+msgstr "Chainage da secção"
+
+#, fuzzy
+#| msgid "Link chainage"
+msgid "Chainage end (m)"
+msgstr "Chainage da secção"
+
 msgid "Terrain Class"
 msgstr ""
 
@@ -252,6 +265,9 @@ msgid "Rainfall"
 msgstr ""
 
 msgid "Terrain class"
+msgstr ""
+
+msgid "Rainfall (mm)"
 msgstr ""
 
 msgid "Changed"
@@ -864,16 +880,6 @@ msgstr "Nome da secção"
 
 #~ msgid "User"
 #~ msgstr "Utilizador"
-
-#, fuzzy
-#~| msgid "Link chainage"
-#~ msgid "Chainage Start"
-#~ msgstr "Chainage da secção"
-
-#, fuzzy
-#~| msgid "Link chainage"
-#~ msgid "Chainage End"
-#~ msgstr "Chainage da secção"
 
 #~ msgid "Link start chainage cannot contain more than %s digits, of which %s are decimals"
 #~ msgstr "O valor da chainage não pode conter mais de %s dígitos, dos quais %s saã0 decimais"

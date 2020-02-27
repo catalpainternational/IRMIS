@@ -506,7 +506,7 @@ class Road(models.Model):
         blank=True,
         null=True,
         help_text=_(
-            "Choose road link surface condition according to the Surface Distress Index (SDI): Good (SDI≤2), fair (2<SDI≤3), poor (3<SDI≤4) or bad (SDI>4)"
+            "Choose road link surface condition according to the Surface Distress Index (SDI): Good (SDI<=2), fair (2<SDI<=3), poor (3<SDI<=4) or bad (SDI>4)"
         ),
     )
     maintenance_need = models.ForeignKey(
