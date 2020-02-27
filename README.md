@@ -118,3 +118,12 @@ riot4 tags should use window.gettext('') to access translations
 We've been asked for a simple geojson exports, the `make_geojson` management command is here to help
 It currently accepts a mandatory municipality name and outputs geojson on the standard out
 usage : `./manage.py make_geojson ainaro > ainaro.json`
+
+## Periodic / Conditional Tasks
+
+### Set Bridge Fields
+
+This command updates certain fields on the Bridge model which relate to the road the bridge is closest to. This is necessary as 'bridge' has a weak reference to a Road ID. This command does a nearest neighbour search and sets `road_id` `structure_class` and `road_code` based on the nearest matching road.
+```
+./manage.py set_bridge_fields
+```
