@@ -183,8 +183,9 @@ export const estradaTableColumns = [
         defaultContent: "",
     },
     {
-        title: EstradaRoad.getFieldName("asset_class"),
-        data: "type",
+        // 'road_type' field name has been deprecated is replaced with 'asset_class'
+        title: EstradaRoad.getFieldName("asset_class") || window.gettext("Asset Class"),
+        data: "assetClass",
         defaultContent: "",
         visible: false,
     },

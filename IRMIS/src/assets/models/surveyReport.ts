@@ -76,7 +76,7 @@ const lengthTypeChoices: { [name: string]: any } = {
 };
 
 export function testKeyIsReal(key: any): boolean {
-    return ["0", "none", "unknown", "nan", "null", "undefined", "false"].indexOf(`${key}`.toLowerCase()) === -1;
+    return ["0", "none", "unknown", "nan", "null", "undefined", "false", ""].indexOf(`${key}`.toLowerCase()) === -1;
 }
 
 /** Define a new report column based on the supplied title and columnData */
@@ -117,7 +117,9 @@ function extractTitle(lengthKey: string, choices: { [name: string]: any }, useLe
             title = lengthKey.toLowerCase();
         }
     }
-    title = title[0].toUpperCase() + title.substring(1);
+    title = title.length > 1
+        ? title[0].toUpperCase() + title.substring(1)
+        : title;
 
     return [title, lengthKey];
 }

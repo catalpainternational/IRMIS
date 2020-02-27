@@ -256,8 +256,8 @@ def test_survey_create(client, django_user_model):
     # build protobuf to send new survey
     pb = survey_pb2.Survey()
     pb.user = user.pk
-    pb.road_id = road.id
-    pb.road_code = road_code
+    pb.asset_id = "ROAD-%s" % road.id
+    pb.asset_code = road_code
     pb.chainage_start = 6000.0
     pb.chainage_end = 7000.0
     pb.values = json.dumps({"traffic_level": "None", "asset_condition": "2"})
@@ -288,8 +288,8 @@ def test_survey_edit_update(client, django_user_model):
     with reversion.create_revision():
         survey = Survey.objects.create(
             **{
-                "road_id": road.id,
-                "road_code": road_code,
+                "asset_id": "ROAD-%s" % road.id,
+                "asset_code": road_code,
                 "user": user,
                 "chainage_start": 600.0,
                 "chainage_end": 700.25,
@@ -369,8 +369,8 @@ def test_survey_delete(client, django_user_model):
     with reversion.create_revision():
         survey = Survey.objects.create(
             **{
-                "road_id": road.id,
-                "road_code": road_code,
+                "asset_id": "ROAD-%s" % road.id,
+                "asset_code": road_code,
                 "user": user,
                 "chainage_start": 600.0,
                 "chainage_end": 700.25,
@@ -381,7 +381,7 @@ def test_survey_delete(client, django_user_model):
         # store the user who made the changes
         reversion.set_user(user)
 
-    # void the surface condition attribute & make Protobuf to send
+    # void the asset condition attribute & make Protobuf to send
     pb = Survey.objects.filter(id=survey.id).to_protobuf().surveys[0]
     pb.values = json.dumps({"asset_condition": None, "traffic_level": "L"})
 

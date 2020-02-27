@@ -237,8 +237,11 @@ def get_data_field(data, field_id):
     if not field_id:
         return None
 
-    if type(data) == list:
-        return data[field_id]
+    if type(data) == list or type(data) == dict:
+        if field_id in data:
+            return data[field_id]
+        else:
+            return None
     else:
         return getattr(data, field_id)
 
@@ -361,7 +364,7 @@ def delete_redundant_surveys():
 
     # duplicated surveys (keep the oldest only)
     surveys = Survey.objects.values(
-        "road_code",
+        "asset_code",
         "chainage_start",
         "chainage_end",
         "values",
@@ -377,7 +380,7 @@ def delete_redundant_surveys():
 
 def delete_programmatic_surveys_for_road_by_road_code(rc):
     """ deletes programmatic surveys generated from road link records for a given road code """
-    Survey.objects.filter(source="programmatic", road_code=rc).exclude(
+    Survey.objects.filter(source="programmatic", asset_code=rc).exclude(
         values__has_key="trafficType"
     ).delete()
     # delete revisions associated with the now deleted "programmatic" surveys
@@ -387,7 +390,7 @@ def delete_programmatic_surveys_for_road_by_road_code(rc):
 def delete_programmatic_surveys_for_traffic_surveys_by_road_code(rc):
     """ deletes programmatic surveys generated from traffic surveys for a given road code """
     Survey.objects.filter(
-        source="programmatic", road_code=rc, values__has_key="trafficType"
+        source="programmatic", asset_code=rc, values__has_key="trafficType"
     ).delete()
     # delete revisions associated with the now deleted "programmatic" surveys
     Version.objects.get_deleted(Survey).delete()
@@ -408,11 +411,14 @@ def create_programmatic_survey(management_command, data, mappings, audit_source_
     try:
         # Work up a set of data that we consider acceptable
         survey_data = {
-            "road_id": data["asset_id"] if "asset_id" in data else None,
-            "road_code": data["asset_code"] if "asset_code" in data else None,
+            "asset_id": data["asset_id"] if "asset_id" in data else None,
+            "asset_code": data["asset_code"] if "asset_code" in data else None,
+            "road_id": data["road_id"] if "road_id" in data else None,
+            "road_code": data["road_code"] if "road_code" in data else None,
             "chainage_start": data["chainage_start"]
             if "chainage_start" in data
             else None,
+            "chainage_end": data["chainage_end"] if "chainage_end" in data else None,
             "chainage_end": data["chainage_end"] if "chainage_end" in data else None,
             "source": "programmatic",
             "values": {},
@@ -457,7 +463,7 @@ def create_programmatic_surveys_for_roads(management_command, roads):
     for road in roads:
         # Note that the 'link_' values from Road are considered highly unreliable
         survey_data = {
-            "asset_id": road.id,
+            "asset_id": "ROAD-%s" % road.id,
             "asset_code": road.road_code,
             "chainage_start": road.geom_start_chainage,
             "chainage_end": road.geom_end_chainage,
@@ -488,7 +494,7 @@ def create_programmatic_survey_for_traffic_csv(management_command, data, roads):
     else:
         for road in roads:
             survey_data = {
-                "asset_id": road.id,
+                "asset_id": "ROAD-%s" % road.id,
                 "asset_code": road.road_code,
                 "chainage_start": road.geom_start_chainage,
                 "chainage_end": road.geom_end_chainage,

@@ -24,14 +24,121 @@ class ReportQuery:
                 "SELECT attr\n"
                 " FROM (SELECT DISTINCT skeys(values) attr FROM assets_survey) attrs\n"
             ),
-            "roads_to_use": (
-                # This is a template for "roads_to_chart"
-                # Note that the road_id and road_code are only returned as asset_id and asset_code
-                # and that the returned 'road_id' and 'road_code' are deliberately set to NULL
-                "SELECT DISTINCT 'ROAD-' AS asset_type_prefix, s.road_id AS asset_id, s.road_code AS asset_code,\n"
-                " r.geom_end_chainage AS geom_chainage, NULL AS road_id, NULL AS road_code\n"
+            "assets_to_use": (
+                # This is a template for "assets_to_chart"
+                # Notes:
+                # * road_id and road_code are only returned for Bridges and Culverts
+                #   i.e. they refer to the road associated with the Bridge or Culvert
+                # * asset_condition for Bridges and Culverts will have to come
+                #   from the structure_condition survey
+                # * material_id and structure_type_id have different meanings for bridge and culvert
+                # * asset_code (relative to a road) may not be set properly and requires special handling
+                "SELECT asset_type_prefix, asset_id, asset_code, asset_name,\n"
+                " asset_condition, asset_class,\n"
+                " geom_chainage, municipality,\n"
+                " geojson_file,\n"
+                " carriageway_width, number_lanes,\n"
+                " rainfall, terrain_class,\n"
+                " population, traffic_level,\n"
+                " project, funding_source,\n"
+                " geom_length, core,\n"
+                " pavement_class,\n"
+                " surface_type, technical_class,\n"
+                " maintenance_need, road_status,\n"
+                " construction_year, length, width,\n"
+                " height, span_length,\n"
+                " number_cells, number_spans,\n"
+                " river_name,\n"
+                " protection_downstream, protection_upstream,\n"
+                " material, structure_type,\n"
+                " road_id, road_code\n"
+                "FROM (\n"
+                "SELECT DISTINCT 'ROAD-' AS asset_type_prefix, r.id AS asset_id,\n"
+                " CASE\n"
+                " WHEN s.asset_code IS NOT NULL THEN s.asset_code\n"
+                " WHEN s.asset_code IS NULL AND s.road_code IS NOT NULL THEN s.road_code\n"
+                " WHEN r.road_code IS NOT NULL THEN r.road_code\n"
+                " ELSE NULL\n"
+                " END AS asset_code,\n"
+                " r.road_name AS asset_name,\n"
+                " r.surface_condition AS asset_condition, r.road_type AS asset_class,\n"
+                " r.geom_end_chainage AS geom_chainage, r.administrative_area AS municipality,\n"
+                " r.geojson_file_id AS geojson_file,\n"
+                " r.carriageway_width, r.number_lanes,\n"
+                " r.rainfall, r.terrain_class,\n"
+                " r.population, r.traffic_level,\n"
+                " r.project, r.funding_source,\n"
+                " r.geom_length, r.core,\n"
+                " r.pavement_class_id AS pavement_class,\n"
+                " r.surface_type_id AS surface_type, r.technical_class_id AS technical_class,\n"
+                " r.maintenance_need_id AS maintenance_need, r.road_status_id AS road_status,\n"
+                " NULL::INTEGER AS construction_year, NULL::DECIMAL AS length, NULL::DECIMAL AS width,\n"
+                " NULL::DECIMAL AS height, NULL::DECIMAL AS span_length,\n"
+                " NULL::INTEGER AS number_cells, NULL::INTEGER AS number_spans,\n"
+                " NULL AS river_name,\n"
+                " NULL::INTEGER AS protection_downstream, NULL::INTEGER AS protection_upstream,\n"
+                " NULL::INTEGER AS material, NULL::INTEGER AS structure_type,\n"
+                " NULL::INTEGER AS road_id, NULL AS road_code\n"
                 " FROM assets_survey s, assets_road r\n"
-                " WHERE s.road_id = r.id\n"
+                " WHERE s.asset_id = CONCAT('ROAD-', r.id::text)\n"
+                "UNION\n"
+                "SELECT DISTINCT bc.asset_type_prefix, bc.asset_id,\n"
+                " bc.asset_code, bc.asset_name,\n"
+                " bc.asset_condition, bc.asset_class,\n"
+                " bc.geom_chainage, bc.municipality,\n"
+                " bc.geojson_file,\n"
+                " NULL::DECIMAL AS carriageway_width, NULL::INTEGER AS number_lanes,\n"
+                " NULL::INTEGER AS rainfall, NULL::INTEGER AS terrain_class,\n"
+                " NULL::INTEGER AS population, NULL AS traffic_level,\n"
+                " NULL AS project, NULL AS funding_source,\n"
+                " NULL::DECIMAL AS geom_length, NULL::BOOLEAN AS core,\n"
+                " NULL::INTEGER AS pavement_class,\n"
+                " NULL::INTEGER AS surface_type, NULL::INTEGER AS technical_class,\n"
+                " NULL::INTEGER AS maintenance_need, NULL::INTEGER AS road_status,\n"
+                " bc.construction_year, bc.length, bc.width,\n"
+                " bc.height, bc.span_length,\n"
+                " bc.number_cells, bc.number_spans,\n"
+                " bc.river_name,\n"
+                " bc.protection_downstream, bc.protection_upstream,\n"
+                " bc.material, bc.structure_type,\n"
+                " CASE\n"
+                "  WHEN COALESCE(bc.road_id, 0) = 0 THEN NULL\n"
+                "  ELSE bc.road_id\n"
+                " END AS road_id,\n"
+                " CASE\n"
+                "  WHEN COALESCE(bc.road_code, '') = '' THEN NULL\n"
+                "  ELSE bc.road_code\n"
+                " END AS road_code\n"
+                " FROM assets_survey s, (\n"
+                "  SELECT 'BRDG-' AS asset_type_prefix, id AS asset_id,\n"
+                "  structure_code AS asset_code, structure_name AS asset_name,\n"
+                "  NULL AS asset_condition, structure_class AS asset_class,\n"
+                "  chainage AS geom_chainage, administrative_area AS municipality,\n"
+                "  geojson_file_id AS geojson_file,\n"
+                "  construction_year, length, width,\n"
+                "  NULL::DECIMAL AS height, span_length,\n"
+                "  NULL::INTEGER AS number_cells, number_spans,\n"
+                "  river_name,\n"
+                "  protection_downstream_id AS protection_downstream, protection_upstream_id AS protection_upstream,\n"
+                "  material_id AS material, structure_type_id AS structure_type,\n"
+                "  road_id, road_code\n"
+                "  FROM assets_bridge\n"
+                "  UNION\n"
+                "  SELECT 'CULV-' AS asset_type_prefix, id AS asset_id,\n"
+                "  structure_code AS asset_code, structure_name AS asset_name,\n"
+                "  NULL AS asset_condition, structure_class AS asset_class,\n"
+                "  chainage AS geom_chainage, administrative_area AS municipality,\n"
+                "  geojson_file_id AS geojson_file,\n"
+                "  construction_year, length, width,\n"
+                "  height, NULL::DECIMAL AS span_length,\n"
+                "  number_cells, NULL::INTEGER AS number_spans,\n"
+                "  NULL AS river_name,\n"
+                "  protection_downstream_id AS protection_downstream, protection_upstream_id AS protection_upstream,\n"
+                "  material_id AS material, structure_type_id AS structure_type,\n"
+                "  road_id, road_code\n"
+                "  FROM assets_culvert\n"
+                " ) bc\n"
+                ") a\n"
             ),
             "usernames": (
                 "SELECT id AS user_id,\n"
@@ -43,12 +150,12 @@ class ReportQuery:
                 " END AS username\n"
                 " FROM auth_user\n"
             ),
-            # Surveys which match the given values and roads
+            # Surveys which match the given values and assets
             "su": (
-                "SELECT s.id, rtc.asset_type_prefix, s.road_id AS asset_id, s.road_code AS asset_code,\n"
+                "SELECT s.id, atc.asset_type_prefix, atc.asset_id, atc.asset_code,\n"
                 " s.date_created, s.date_updated, s.date_surveyed,\n"
-                " s.chainage_start, s.chainage_end, rtc.geom_chainage,\n"
-                " rtc.road_id, rtc.road_code,\n"
+                " s.chainage_start, s.chainage_end, atc.geom_chainage,\n"
+                " atc.road_id, atc.road_code,\n"
                 " CASE\n"
                 "  WHEN s.user_id IS NULL THEN TRIM(FROM s.source)\n"
                 "  WHEN TRIM(FROM u.username) != '' THEN u.username\n"
@@ -57,7 +164,7 @@ class ReportQuery:
                 " s.user_id, vtc.attr,\n"
                 " s.values - (SELECT ARRAY(SELECT attr FROM values_to_exclude)) AS values\n"
                 " FROM assets_survey s\n"
-                " JOIN roads_to_chart rtc ON s.road_id = rtc.asset_id\n"
+                " JOIN assets_to_chart atc ON s.asset_id = CONCAT(atc.asset_type_prefix, atc.asset_id::text)\n"
                 " JOIN values_to_chart vtc ON s.values ? vtc.attr\n"
                 " LEFT OUTER JOIN usernames u ON s.user_id = u.user_id\n"
                 " WHERE s.chainage_start != s.chainage_end\n"
@@ -95,6 +202,7 @@ class ReportQuery:
             ),
             # If the survey is actually the end value we NULLify the value
             # rather than using the attribute, we use this in final_results below
+            # also road_id and road_code will only have values if the result relates to a Bridge or a Culvert
             "results": (
                 "SELECT survey_id, rank, asset_type_prefix, asset_id, asset_code, c, break_attr, geom_chainage,\n"
                 " CASE\n"
@@ -113,7 +221,9 @@ class ReportQuery:
                 "SELECT *,\n"
                 " rank() over (\n"
                 "  PARTITION\n"
-                "  BY survey_id, asset_type_prefix, asset_id, asset_code, break_attr, value, user_id, added_by, date_surveyed\n"
+                "    BY survey_id, asset_type_prefix, asset_id, asset_code,\n"
+                "    break_attr, value, user_id, added_by, date_surveyed,\n"
+                "    road_id, road_code\n"
                 "  ORDER BY c\n"
                 " ) AS filtered\n"
                 " FROM results\n"
@@ -139,10 +249,7 @@ class ReportQuery:
             ),
             "final_results": (
                 "SELECT CONCAT(asset_type_prefix, asset_id::text) AS asset_id, asset_code,\n"
-                " CASE\n"
-                "  WHEN break_attr = 'structure_condition' THEN 'asset_condition'\n"
-                "  ELSE break_attr\n"
-                " END AS attribute,\n"
+                " break_attr AS attribute,\n"
                 " start_chainage,\n"
                 " CASE\n"
                 "  WHEN end_chainage IS NULL THEN geom_chainage\n"
@@ -179,7 +286,7 @@ class ReportQuery:
                 "  SELECT SUM(end_chainage - start_chainage)\n"
                 "  FROM final_results\n"
                 "  WHERE attribute = 'rainfall'\n"
-                "  AND CAST(value AS INTEGER) BETWEEN r_from AND r_to\n"
+                "  AND CAST(CEIL(CAST(value AS FLOAT)) AS INTEGER) BETWEEN r_from AND r_to\n"
                 " ) AS total_length\n"
                 " FROM rainfall_range\n"
                 " UNION\n"
@@ -221,6 +328,7 @@ class ReportQuery:
         value_filters = [
             # Common
             "asset_class",
+            "asset_condition",
             "municipality",
             # Maybe Common from Road
             "carriageway_width",
@@ -231,7 +339,6 @@ class ReportQuery:
             "project",
             "rainfall",
             "road_status",
-            "asset_condition",
             "surface_type",
             "terrain_class",
             "traffic_level",
@@ -251,65 +358,58 @@ class ReportQuery:
             "width",
         ]
 
-        # Ideally for these road filters we'd drill down (in time) through the surveys instead
-        road_filters = [
-            "asset_id",  # will be mapped to road.*
+        # Ideally for these asset filters we'd drill down (in time) through the surveys instead
+        asset_filters = [
+            # most of the asset.* fields will be mapped from the relevant road.*, bridge.*, culvert.*
+            # in the query above
+            # Mapped fields
+            "asset_type_prefix",  # relevant for the query
+            "asset_id",
             "asset_code",
-            "asset_class",
-            "carriageway_width",
-            "funding_source",
-            "maintenance_need",
-            "municipality",
-            "number_lanes",
-            "pavement_class",
-            "project",
-            "rainfall",
-            "road_status",
+            "asset_name",
             "asset_condition",
-            "surface_type",
-            "terrain_class",
-            "traffic_level",
-            "technical_class",
-        ]
-        road_filter_clauses = []
-        road_filter_cases = []
-
-        # Ideally for these structure filters we'd drill down (in time) through the surveys instead
-        structure_filters = [
-            "structure_id",  # will be mapped to *.id
-            "structure_code",
             "asset_class",
-            "structure_name",
-            "road_id",  # Only used for the relationship to roads for bridge or culvert
-            "road_code",
+            "geom_chainage",
             "municipality",
+            "geojson_file",  # this is FK reference
+            # Road specific
+            "carriageway_width",
+            "number_lanes",
+            "rainfall",
+            "terrain_class",
+            "population",
+            "traffic_level",
+            "project",
+            "funding_source",
+            "geom_length",
+            "core",
+            # these are FK references
+            "pavement_class",
+            "surface_type",
+            "technical_class",
+            "maintenance_need",
+            "road_statusn",
+            # Structure specific - some are specific to only bridge or only culvert
+            "construction_year",
             "length",
             "width",
             "height",
-            "construction_year",
-            "structure_type",
-            "material",
-            "protection_upstream",
-            "protection_downstream",
-            "number_cells",
-            "river_name",
-            "number_spans",
             "span_length",
-            # Left overs from roads - don't know yet if we need them
-            "maintenance_need",
-            "number_lanes",
-            "pavement_class",
-            "project",
-            "rainfall",
-            "road_status",
-            "asset_condition",
-            "surface_type",
-            "terrain_class",
-            "traffic_level",
-            "technical_class",
+            "number_cells",
+            "number_spans",
+            "river_name",
+            # these are FK references
+            "protection_downstream",
+            "protection_upstream",
+            "material",
+            "structure_type",
+            # Only used for the relationship of a road to bridge, culvert
+            # NOT used by road
+            "road_id",
+            "road_code",
         ]
-        structure_filter_clauses = []
-        structure_filter_cases = []
+        asset_filter_clauses = []
+        asset_filter_cases = []
 
         attribute_clauses = []
         attribute_cases = []
@@ -327,52 +427,67 @@ class ReportQuery:
                 value_filter_keys.append(filter_key)
         value_filter_keys = list(set(value_filter_keys).intersection(value_filters))
 
+        # Remove any superfluous filter keys to make things work
+        if "bridge_id" in value_filter_keys:
+            value_filter_keys.remove("bridge_id")
+        if "bridge_code" in value_filter_keys:
+            value_filter_keys.remove("bridge_code")
+        if "culvert_id" in value_filter_keys:
+            value_filter_keys.remove("culvert_id")
+        if "culvert_code" in value_filter_keys:
+            value_filter_keys.remove("culvert_code")
+
+        has_asset_id = "asset_id" in value_filter_keys
+        has_road_id = "road_id" in value_filter_keys
+        if (
+            has_asset_id
+            and has_road_id
+            and self.filters["asset_id"] == self.filters["road_id"]
+        ):
+            # remove the superfluous road_id key
+            value_filter_keys.remove("road_id")
+        has_asset_code = "asset_code" in value_filter_keys
+        has_road_code = "road_code" in value_filter_keys
+        if (
+            has_asset_code
+            and has_road_code
+            and self.filters["asset_code"] == self.filters["road_code"]
+        ):
+            # remove the superfluous road_code key
+            value_filter_keys.remove("road_code")
+
         # Note the deliberate double appending of these values (because they're used twice)
         self.filter_cases.append(value_filter_keys)
         self.filter_cases.append(value_filter_keys)
 
         for filter_key in self.filters.keys():
             filter_name = filter_key
-            if filter_key in road_filters:
-                # deal with the 'special' cases
-                if filter_key == "municipality":
-                    filter_name = "administrative_area"
-                elif filter_key == "asset_id" or filter_key == "road_id":
-                    filter_name = "id"
-                elif filter_key == "asset_code":
-                    filter_name = "road_code"
-                elif filter_key == "surface_type":
-                    filter_name = "surface_type_id"
-                road_clause = "CAST(r." + filter_name + " AS TEXT)=ANY(%s)\n"
-                road_filter_clauses.append(road_clause)
-                road_filter_cases.append(list(self.filters[filter_key]))
-
+            if filter_key in asset_filters:
+                asset_clause = "CAST(a." + filter_name + " AS TEXT)=ANY(%s)\n"
+                asset_filter_clauses.append(asset_clause)
+                asset_filter_cases.append(list(self.filters[filter_key]))
             elif filter_key == "primary_attribute":
                 filter_name = "attribute"
                 attribute_clauses.append(filter_name + "=ANY(%s)\n")
                 attribute_cases.append(list(self.filters[filter_key]))
 
-        self.report_clauses["roads_to_chart"] = self.report_clauses["roads_to_use"]
-        if len(road_filter_clauses) > 0:
-            # "roads_to_chart" already includes an initial `WHERE` clause
-            self.report_clauses["roads_to_chart"] += " AND " + " AND ".join(
-                road_filter_clauses
-            )
-            self.filter_cases.extend(road_filter_cases)
+        self.report_clauses["assets_to_chart"] = self.report_clauses["assets_to_use"]
+        if len(asset_filter_clauses) > 0:
+            where_clauses = " WHERE " + " AND ".join(asset_filter_clauses)
+            self.report_clauses["assets_to_chart"] += where_clauses
+            self.filter_cases.extend(asset_filter_cases)
 
         # only one of these queries will be performed, depending on get_all_surveys value
         if get_all_surveys:
             self.report_clauses["get_all"] = self.report_clauses["retrieve_all"]
-            self.report_clauses["get_all"] += " WHERE " + " AND ".join(
-                attribute_clauses
-            )
+            where_clauses = " WHERE " + " AND ".join(attribute_clauses)
+            self.report_clauses["get_all"] += where_clauses
         else:
             self.report_clauses["get_aggregate_select"] = self.report_clauses[
                 "retrieve_aggregate_select"
             ]
-            self.report_clauses["get_aggregate_select"] += " AND " + " AND ".join(
-                attribute_clauses
-            )
+            and_clauses = " AND " + " AND ".join(attribute_clauses)
+            self.report_clauses["get_aggregate_select"] += and_clauses
         self.filter_cases.extend(attribute_cases)
 
     def add_report_clause(self, clause_name):
@@ -386,7 +501,7 @@ class ReportQuery:
         self.reportSQL = "WITH "
         self.add_report_clause("values_to_chart")
         self.add_report_clause("values_to_exclude")
-        self.add_report_clause("roads_to_chart")
+        self.add_report_clause("assets_to_chart")
         self.add_report_clause("usernames")
         self.add_report_clause("su")
         self.add_report_clause("breakpoints")
@@ -409,9 +524,13 @@ class ReportQuery:
         # If you need to understand the generated query then please:
         # * uncomment the following print statement
         # * substitute the plain text (no quotes) of each set of filter_cases
-        #   within the corresponding {} part of each of the ANY clauses
+        #   within the corresponding {} part in each of the ANY clauses
         # then you'll be able to run the query in any tool that can handle SQL (recommend LINQPad)
-        # print(self.reportSQL.replace(r"ANY(%s)", r"ANY('{}'::text[])"), "\n-- ", self.filter_cases)
+        # print(
+        #     self.reportSQL.replace(r"ANY(%s)", r"ANY('{}'::text[])"),
+        #     "\n-- ",
+        #     self.filter_cases,
+        # )
 
         with connection.cursor() as cursor:
             cursor.execute(self.reportSQL, self.filter_cases)
@@ -427,9 +546,13 @@ class ReportQuery:
         # If you need to understand the generated query then please:
         # * uncomment the following print statement
         # * substitute the plain text (no quotes) of each set of filter_cases
-        #   within the corresponding {} part of each of the ANY clauses
+        #   within the corresponding {} part in each of the ANY clauses
         # then you'll be able to run the query in any tool that can handle SQL (recommend LINQPad)
-        # print(self.reportSQL.replace(r"ANY(%s)", r"ANY('{}'::text[])"), "\n-- ", self.filter_cases)
+        # print(
+        #     self.reportSQL.replace(r"ANY(%s)", r"ANY('{}'::text[])"),
+        #     "\n-- ",
+        #     self.filter_cases,
+        # )
 
         with connection.cursor() as cursor:
             cursor.execute(self.reportSQL, self.filter_cases)
