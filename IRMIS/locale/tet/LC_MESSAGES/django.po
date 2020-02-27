@@ -356,7 +356,7 @@ msgstr "Haruka"
 #~ msgid "Surface Condition (SDI)"
 #~ msgstr "Kondisaun Surface (SDI)"
 
-#~ msgid "Choose road link surface condition according to the Surface Distress Index (SDI): Good (SDI≤2), fair (2<SDI≤3), poor (3<SDI≤4) or bad (SDI>4)"
+#~ msgid "Choose road link surface condition according to the Surface Distress Index (SDI): Good (SDI<=2), fair (2<SDI<=3), poor (3<SDI<=4) or bad (SDI>4)"
 #~ msgstr "Hili linha estrada nia kondisaun surface tuir Surface Distress Index "
 
 #~ msgid "Maintenance Needs"
