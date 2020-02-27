@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("assets", "0033_traffic_verbose_name"),
+        ("assets", "0035_non_ascii_fix"),
     ]
 
     operations = [
