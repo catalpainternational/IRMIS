@@ -10,6 +10,19 @@ from django.db.models import F, TextField, Func
 from django.contrib.gis.db.models import LineStringField, GeometryField
 
 
+"""
+The "definitive" topology builder for TL Roads
+As of now, works with 7.5m precision, the "--use_loop" option and the fixtures dropped to "topology2020-02-27T23:46:56+09:00.json"
+
+To do: 
+  - Fix up the dangling road ends
+  - Find and fix the buggy geometry which forces the --use_loop
+  - Try simplification to see where snapping is off
+  - See if this can be protobuff'ed to reduce our download weight
+  - Communicate the changes back upstream including duplicate road codes which we've found (how to handle them?)
+"""
+
+
 class GeomDump(Func):
     function = "ST_DUMP"
     template = "(%(function)s(%(expressions)s)).geom"
