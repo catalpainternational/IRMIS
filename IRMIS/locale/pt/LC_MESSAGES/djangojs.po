@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-13 08:10+0000\n"
+"POT-Creation-Date: 2020-02-27 05:43+0000\n"
 "PO-Revision-Date: 2019-10-11 00:57+0000\n"
 "Last-Translator: b'  <juliana@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,13 +22,18 @@ msgstr ""
 msgid "Export table"
 msgstr ""
 
+msgid "Total"
+msgstr ""
+
 msgid "Asset"
 msgstr "Infra-estrutura"
 
 msgid "Link code and name"
 msgstr "Código e nome da secção"
 
-msgid "Link width and length"
+#, fuzzy
+#| msgid "Link width and length"
+msgid "Link length"
 msgstr "Extensão e largura da secção"
 
 msgid "Link chainage"
@@ -79,6 +84,9 @@ msgid "Chainage end"
 msgstr ""
 
 msgid "Carriageway width"
+msgstr ""
+
+msgid "Carriageway width (m)"
 msgstr ""
 
 msgid "Add Technical Class Information"
@@ -158,6 +166,17 @@ msgstr ""
 msgid "Environment"
 msgstr ""
 
+msgid "Type"
+msgstr ""
+
+#, fuzzy
+#| msgid "Location"
+msgid "Protection"
+msgstr "Localização"
+
+msgid "Photos"
+msgstr ""
+
 msgid "History"
 msgstr "Histórico"
 
@@ -226,6 +245,16 @@ msgstr "Condição"
 msgid "Add Terrain Class Information"
 msgstr ""
 
+#, fuzzy
+#| msgid "Link chainage"
+msgid "Chainage start (m)"
+msgstr "Chainage da secção"
+
+#, fuzzy
+#| msgid "Link chainage"
+msgid "Chainage end (m)"
+msgstr "Chainage da secção"
+
 msgid "Terrain Class"
 msgstr ""
 
@@ -236,6 +265,9 @@ msgid "Rainfall"
 msgstr ""
 
 msgid "Terrain class"
+msgstr ""
+
+msgid "Rainfall (mm)"
 msgstr ""
 
 msgid "Changed"
@@ -249,7 +281,7 @@ msgstr ""
 
 #, fuzzy
 #| msgid "Select a Road Type"
-msgid "Select a Road Class"
+msgid "Select an Asset Class"
 msgstr "Seleccione o Tipo de Estrada"
 
 msgid "Close"
@@ -263,7 +295,7 @@ msgstr ""
 
 #, fuzzy
 #| msgid "Select a Surface Type"
-msgid "Surface Type Data (SDI)"
+msgid "Surface Type Data"
 msgstr "Seleccione o Tipo de Pavimento"
 
 #, fuzzy
@@ -310,6 +342,114 @@ msgstr "Seleccione o Tipo de Pavimento"
 msgid "Pavement class"
 msgstr "Pavimento"
 
+#, fuzzy
+#| msgid "Condition"
+msgid "Structure Condition"
+msgstr "Condição"
+
+#, fuzzy
+#| msgid "Select a Surface Type"
+msgid "Add Structure Condition Information"
+msgstr "Seleccione o Tipo de Pavimento"
+
+#, fuzzy
+#| msgid "Condition"
+msgid "Structure Conditions"
+msgstr "Condição"
+
+#, fuzzy
+#| msgid "Condition"
+msgid "Choose the structure condition"
+msgstr "Condição"
+
+#, fuzzy
+#| msgid "Description"
+msgid "Condition Description"
+msgstr "Descrição"
+
+msgid "Enter a description on the structurecondition"
+msgstr ""
+
+msgid "Description"
+msgstr "Descrição"
+
+msgid "Structure Code"
+msgstr ""
+
+msgid "Enter the code of the structure"
+msgstr ""
+
+msgid "Structure Name"
+msgstr ""
+
+msgid "Enter the name of the structure"
+msgstr ""
+
+#, fuzzy
+#| msgid "Link Name"
+msgid "River Name"
+msgstr "Nome da secção"
+
+msgid "Enter the name of the river where the structure is located"
+msgstr ""
+
+msgid "Construction Year"
+msgstr ""
+
+msgid "Enter structure's construction year"
+msgstr ""
+
+msgid "Length (meters)"
+msgstr ""
+
+msgid "Enter the structure's length in meters"
+msgstr ""
+
+msgid "Width (meters)"
+msgstr ""
+
+msgid "Enter the structure's width in meters"
+msgstr ""
+
+msgid "Height (meters)"
+msgstr ""
+
+msgid "Enter the structure's height in meters"
+msgstr ""
+
+msgid "Number of cells"
+msgstr ""
+
+msgid "Enter the number of cells in the structure"
+msgstr ""
+
+msgid "Number of spans"
+msgstr ""
+
+msgid "Enter the number of spans in the structure"
+msgstr ""
+
+msgid "Span Length"
+msgstr ""
+
+msgid "Enter the span length for the structure"
+msgstr ""
+
+#, fuzzy
+#| msgid "Link code cannot contain white spaces"
+msgid "Code cannot contain white spaces"
+msgstr "O código da secção não pode contar espaços em branco"
+
+#, fuzzy, javascript-format
+#| msgid "Link length cannot contain more than %s digits, of which %s are decimals"
+msgid "Width cannot contain more than %s digits, of which %s are decimals"
+msgstr "A extensão da secção não pode conter mais do que %s dígitos, dos quais %s são decimais"
+
+#, fuzzy
+#| msgid "Select a Surface Type"
+msgid "Structure Type"
+msgstr "Seleccione o Tipo de Pavimento"
+
 msgid "Add Traffic Data"
 msgstr ""
 
@@ -325,8 +465,19 @@ msgstr ""
 msgid "Forecast Year"
 msgstr ""
 
+msgid "Select forecast year"
+msgstr ""
+
 msgid "Total Count per Vehicle Type"
 msgstr ""
+
+msgid "Total Vehicles Breakdown"
+msgstr ""
+
+#, fuzzy
+#| msgid "Select a Surface Type"
+msgid "Survey Type"
+msgstr "Seleccione o Tipo de Pavimento"
 
 msgid "Traffic Data Type"
 msgstr ""
@@ -358,13 +509,13 @@ msgstr ""
 msgid "Motorcycle"
 msgstr ""
 
-msgid "2 axels, 2 wheels"
+msgid "2 axles, 2 wheels"
 msgstr ""
 
 msgid "Passenger Car"
 msgstr ""
 
-msgid "2 axels, 4 wheels"
+msgid "2 axles, 4 wheels"
 msgstr ""
 
 msgid "Pickup/4WD"
@@ -376,7 +527,7 @@ msgstr ""
 msgid "Large Bus"
 msgstr ""
 
-msgid "2-3 axels, 6-10 wheels"
+msgid "2-3 axles, 6-10 wheels"
 msgstr ""
 
 msgid "Light Truck"
@@ -388,10 +539,19 @@ msgstr ""
 msgid "Large Truck"
 msgstr ""
 
-msgid "5 axels, 18 wheels"
+msgid "5 axles, 18 wheels"
 msgstr ""
 
 msgid "Non Defined"
+msgstr ""
+
+msgid "Data type"
+msgstr ""
+
+msgid "Total vehicles"
+msgstr ""
+
+msgid "Survey TO date cannot be less than Survey FROM date"
 msgstr ""
 
 msgid "Success"
@@ -425,9 +585,6 @@ msgid "Periodic Maintenance"
 msgstr ""
 
 msgid "Rehabilitation"
-msgstr ""
-
-msgid "Total"
 msgstr ""
 
 msgid "5 Year Plan"
@@ -484,9 +641,6 @@ msgstr ""
 msgid "Surface Condition (SDI)"
 msgstr ""
 
-msgid "Exported from Estrada on"
-msgstr ""
-
 msgid "Municipality"
 msgstr ""
 
@@ -495,10 +649,54 @@ msgstr ""
 msgid "Road Class"
 msgstr "Seleccione o Tipo de Estrada"
 
+msgid "Exported from Estrada on"
+msgstr ""
+
+msgid "Road Network Overview"
+msgstr ""
+
+msgid "Total Length of Road Network"
+msgstr ""
+
+#, fuzzy
+#| msgid "Asset Details"
+msgid "Asset Class"
+msgstr "Detalhes da infra-estrutura"
+
+msgid "unknown"
+msgstr ""
+
+msgid "Dashboard"
+msgstr ""
+
 msgid "Reports"
 msgstr ""
 
+msgid "Reports Builder"
+msgstr ""
+
+#, fuzzy
+#| msgid "You have successfully saved"
+msgid "Report successfully created"
+msgstr "As suas alterações foram gravadas com sucesso"
+
+#, fuzzy
+#| msgid "Condition"
+msgid "Creating Report"
+msgstr "Condição"
+
+msgid "We are preparing your report. Please wait!"
+msgstr ""
+
 msgid "Road Network Report"
+msgstr ""
+
+#, fuzzy
+#| msgid "Condition"
+msgid "Road Condition Report"
+msgstr "Condição"
+
+msgid "Road Network Reports by Road Class"
 msgstr ""
 
 msgid "Road Network Length"
@@ -507,15 +705,7 @@ msgstr ""
 msgid "Road Network Length Breakdown"
 msgstr ""
 
-#, fuzzy
-#| msgid "Condition"
-msgid "Road Condition Report"
-msgstr "Condição"
-
 msgid "IRI Roughness"
-msgstr ""
-
-msgid "Road Network Reports by Road Class"
 msgstr ""
 
 msgid "Road Network Length - National Class"
@@ -531,19 +721,6 @@ msgid "Road Network Length - Highway Class"
 msgstr ""
 
 msgid "Road Network Length - Urban Class"
-msgstr ""
-
-#, fuzzy
-#| msgid "You have successfully saved"
-msgid "Report successfully created"
-msgstr "As suas alterações foram gravadas com sucesso"
-
-#, fuzzy
-#| msgid "Condition"
-msgid "Creating Report"
-msgstr "Condição"
-
-msgid "We are preparing your report. Please wait!"
 msgstr ""
 
 msgid "Asset Manager"
@@ -563,55 +740,7 @@ msgstr "Registro de alterações"
 msgid "Log out"
 msgstr ""
 
-msgid "Date"
-msgstr "Data"
-
-msgid "User"
-msgstr "Utilizador"
-
-msgid "Description"
-msgstr "Descrição"
-
-msgid "Filter"
-msgstr ""
-
-msgid "Lengths"
-msgstr ""
-
-msgid "Road Code"
-msgstr ""
-
-#, fuzzy
-#| msgid "Link chainage"
-msgid "Chainage Start"
-msgstr "Chainage da secção"
-
-#, fuzzy
-#| msgid "Link chainage"
-msgid "Chainage End"
-msgstr "Chainage da secção"
-
-msgid "Attribute Tables"
-msgstr ""
-
-msgid "Attribute"
-msgstr ""
-
-msgid "Other Attributes"
-msgstr ""
-
-msgid "Added By"
-msgstr ""
-
-msgid "Road Id"
-msgstr ""
-
-#, fuzzy
-#| msgid "Condition"
-msgid "Surface Condition"
-msgstr "Condição"
-
-msgid "Date Surveyed"
+msgid "Counting Method"
 msgstr ""
 
 msgid "No matching records found"
@@ -646,156 +775,122 @@ msgstr "Próximo"
 msgid "Last"
 msgstr "Último"
 
+msgid "Link Name"
+msgstr "Nome da secção"
+
+msgid "Start Point (DMS)"
+msgstr "Ponto Inicial (DMS)"
+
+msgid "End Point (DMS)"
+msgstr "Ponto final (DMS)"
+
+msgid "Start Point (UTM)"
+msgstr "Ponto Inicial (UTM)"
+
+msgid "End Point (UTM)"
+msgstr "Ponto final (UTM)"
+
+msgid "Roughness (IRI)"
+msgstr ""
+
+msgid "Traffic data"
+msgstr ""
+
+msgid "Structure"
+msgstr ""
+
+msgid "GPS Latitude"
+msgstr ""
+
+msgid "GPS Longitude"
+msgstr ""
+
+msgid "Material"
+msgstr ""
+
 msgid "View"
-msgstr ""
-
-msgid "Title"
-msgstr ""
-
-msgid "Length (km)"
-msgstr ""
-
-msgid "Percentages (%)"
-msgstr ""
-
-msgid "A report on the total length of the road network. The report provides total length in kilometers and percentages according to Road Status and Technical Class. A number of filters can be selected in order to generate a length report according to the required criteria"
-msgstr ""
-
-msgid "Click on Create Report button to access the Road Network Length report"
-msgstr ""
-
-msgid "The report will be shown in this area and will provide you with detailed Road Network Length information. You can use filters to generate a customized report"
-msgstr ""
-
-msgid "Sorry, data for the road network is not available yet"
-msgstr ""
-
-msgid "A breakdown report on the total length of the road network. The report provides information on total length in kilometers and percentages as well as Road Status and Technical Class, according to a breakdown by Municipality, Road Class and Surface Type"
-msgstr ""
-
-msgid "Click on Create Report button to access the Road Network Length Breakdown report"
-msgstr ""
-
-msgid "The report will be shown in this area and will provide you with detailed Road Network Length Breakdown information. You can use filters to generate a customized report"
-msgstr ""
-
-msgid "A report on Road Surface Condition. This report provides detailed Surface Condition information per segment"
-msgstr ""
-
-msgid "Please select a road above to view Surface Condition reports"
-msgstr ""
-
-msgid "The report will be shown in this area and will provide you with detailed Surface Condition information per segment of the selected road"
-msgstr ""
-
-msgid "Sorry, Surface Condition data is not available for the selected road"
-msgstr ""
-
-msgid "A report on Road IRI data. This report provides detailed information on a Road's Roughness per segment"
-msgstr ""
-
-msgid "Please select a road above to view IRI Roughness reports"
-msgstr ""
-
-msgid "The report will be shown in this area and will provide you with detailed IRI Roughness information per segment of the selected road"
-msgstr ""
-
-msgid "Sorry, IRI Roughness data is not available for the selected road"
-msgstr ""
-
-msgid "A report on the total length of National Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for National Roads"
-msgstr ""
-
-msgid "Click on Create Report button to access the Road Network Length report for National roads"
-msgstr ""
-
-msgid "The report will be shown in this area and will provide you with detailed Road Network Length information for National class roads"
-msgstr ""
-
-msgid "Sorry, data for National Class roads is not available yet"
-msgstr ""
-
-msgid "A report on the total length of Municipal Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Municipal Roads"
-msgstr ""
-
-msgid "Click on Create Report button to access the Road Network Length report for Municipal roads"
-msgstr ""
-
-msgid "The report will be shown in this area and will provide you with detailed Road Network Length information for Municipal class roads"
-msgstr ""
-
-msgid "Sorry, data for Municipal Class roads is not available yet"
-msgstr ""
-
-msgid "A report on the total length of Rural Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Rural Roads"
-msgstr ""
-
-msgid "Click on Create Report button to access the Road Network Length report for Rural roads"
-msgstr ""
-
-msgid "The report will be shown in this area and will provide you with detailed Road Network Length information for Rural class roads"
-msgstr ""
-
-msgid "Sorry, data for Rural Class roads is not available yet"
-msgstr ""
-
-msgid "A report on the total length of Highways. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Highways"
-msgstr ""
-
-msgid "Click on Create Report button to access the Road Network Length report for Highways"
-msgstr ""
-
-msgid "The report will be shown in this area and will provide you with detailed Road Network Length information for Highway class roads"
-msgstr ""
-
-msgid "Sorry, data for Highway Class roads is not available yet"
-msgstr ""
-
-msgid "A report on the total length of Urban Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Urban Roads"
-msgstr ""
-
-msgid "Click on Create Report button to access the Road Network Length report for Urban roads"
-msgstr ""
-
-msgid "The report will be shown in this area and will provide you with detailed Road Network Length information for Urban class roads"
-msgstr ""
-
-msgid "Sorry, data for Urban Class roads is not available yet"
-msgstr ""
-
-msgid "Code"
 msgstr ""
 
 msgid "Number of lanes"
 msgstr ""
 
-#, javascript-format
+#, fuzzy
+#| msgid "Condition"
+msgid "Structure condition"
+msgstr "Condição"
+
+#, fuzzy
+#| msgid "Continue editing"
+msgid "Condition description"
+msgstr "Continuar a editar"
+
+#, fuzzy
+#| msgid "Condition"
+msgid "Surface Condition segments"
+msgstr "Condição"
+
+#, fuzzy
+#| msgid "Select a Surface Type"
+msgid "Surface Type segments"
+msgstr "Seleccione o Tipo de Pavimento"
+
+msgid "Technical Class segments"
+msgstr ""
+
+msgid "Number of Lanes segments"
+msgstr ""
+
+msgid "Carriageway Width segments"
+msgstr ""
+
+msgid "Rainfall segments"
+msgstr ""
+
+msgid "Terrain Class segments"
+msgstr ""
+
+#, fuzzy
+#| msgid "Pavement"
+msgid "Pavement Class segments"
+msgstr "Pavimento"
+
+#, fuzzy
+#| msgid "Condition"
+msgid "Structure Condition details"
+msgstr "Condição"
+
+msgid "Condition Description details"
+msgstr ""
+
+#, fuzzy
+#| msgid "Asset"
+msgid "Asset Type"
+msgstr "Infra-estrutura"
+
+msgid "Code"
+msgstr ""
+
+#, fuzzy
+#| msgid "Link Name"
+msgid "Name"
+msgstr "Nome da secção"
+
+#~ msgid "Date"
+#~ msgstr "Data"
+
+#~ msgid "User"
+#~ msgstr "Utilizador"
+
 #~ msgid "Link start chainage cannot contain more than %s digits, of which %s are decimals"
 #~ msgstr "O valor da chainage não pode conter mais de %s dígitos, dos quais %s saã0 decimais"
 
-#, javascript-format
 #~ msgid "Link end chainage cannot contain more than %s digits, of which %s are decimals"
 #~ msgstr "O valor da chainage não pode conter mais de %s dígitos, dos quais %s saã0 decimais"
 
-#, fuzzy, javascript-format
+#, fuzzy
 #~| msgid "Carriage width cannot contain more than %s digits, of which %s are decimals"
 #~ msgid "Chainage cannot contain more than %s digits, of which %s are decimals"
 #~ msgstr "A largura da faixa de rodagem não pode conter mais do que %s dígitos, dos quais %s são decimais"
-
-#~ msgid "Link Name"
-#~ msgstr "Nome da secção"
-
-#~ msgid "Start Point (DMS)"
-#~ msgstr "Ponto Inicial (DMS)"
-
-#~ msgid "End Point (DMS)"
-#~ msgstr "Ponto final (DMS)"
-
-#~ msgid "Start Point (UTM)"
-#~ msgstr "Ponto Inicial (UTM)"
-
-#~ msgid "End Point (UTM)"
-#~ msgstr "Ponto final (UTM)"
 
 #~ msgid "Select an Administrative Area"
 #~ msgstr "Seleccione a Área Administrativa"

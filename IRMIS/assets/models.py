@@ -544,7 +544,7 @@ class Road(models.Model):
         help_text=_("Choose the pavement class of the road"),
     )
     carriageway_width = models.DecimalField(
-        verbose_name=_("Carriageway Width (m)"),
+        verbose_name=_("Carriageway Width"),
         validators=[MinValueValidator(0)],
         max_digits=5,
         decimal_places=3,
@@ -591,7 +591,7 @@ class Road(models.Model):
         blank=True,
         null=True,
         help_text=_(
-            "Choose road link surface condition according to the Surface Distress Index (SDI): Good (SDI≤2), fair (2<SDI≤3), poor (3<SDI≤4) or bad (SDI>4)"
+            "Choose road link surface condition according to the Surface Distress Index (SDI): Good (SDI<=2), fair (2<SDI<=3), poor (3<SDI<=4) or bad (SDI>4)"
         ),
     )
     maintenance_need = models.ForeignKey(
