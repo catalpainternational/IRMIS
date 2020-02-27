@@ -485,7 +485,7 @@ class Road(models.Model):
         help_text=_("Choose the pavement class of the road"),
     )
     carriageway_width = models.DecimalField(
-        verbose_name=_("Carriageway Width (m)"),
+        verbose_name=_("Carriageway Width"),
         validators=[MinValueValidator(0)],
         max_digits=5,
         decimal_places=3,
