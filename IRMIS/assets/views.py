@@ -1396,7 +1396,7 @@ def photo_update(request):
 
 @login_required
 def photo_delete(request):
-    if request.method != "DELETE":
+    if request.method != "PUT":
         raise MethodNotAllowed(request.method)
     elif request.content_type != "application/octet-stream":
         return HttpResponse(status=400)
@@ -1418,5 +1418,5 @@ def photo_delete(request):
         reversion.set_user(request.user)
 
     return HttpResponse(
-        photo_pb2.Photo().SerializeToString(), status=200, content_type="application/octet-stream",
+        req_pb.SerializeToString(), status=200, content_type="application/octet-stream",
     )

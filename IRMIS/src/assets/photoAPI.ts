@@ -101,7 +101,7 @@ export function deletePhotoData(photo: EstradaPhoto) {
     const assetTypeUrlFragment = "photo_delete";
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}`;
 
-    const postAssetInit = ConfigAPI.requestInit("DELETE");
+    const postAssetInit = ConfigAPI.requestInit("PUT");
     postAssetInit.body = photo.serializeBinary();
 
     return fetch(metadataUrl, postAssetInit)
