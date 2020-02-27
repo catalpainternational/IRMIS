@@ -523,12 +523,12 @@ def protobuf_reports(request):
         structure_classes,
         "structure_id",
         "structure_code",
-        "structure_class",
+        "asset_class",
     )
     if (
         final_filters["structure_id"] != None
         or final_filters["structure_code"] != None
-        or final_filters["structure_class"] != None
+        or final_filters["asset_class"] != None
     ):
         filter_priority(
             final_filters,
@@ -568,7 +568,6 @@ def protobuf_reports(request):
 
     filtered_filters = (
         json.dumps(final_filters)
-        .replace("""structure_class""", """asset_class""")
         .replace("""surface_condition""", """asset_condition""")
         .replace("""structure_condition""", """asset_condition""")
     )
@@ -618,7 +617,7 @@ def bridge_create(req_pb):
             "user": get_user_model().objects.get(pk=req_pb.user),
             "structure_code": req_pb.structure_code,
             "structure_name": req_pb.structure_name,
-            "structure_class": req_pb.asset_class,
+            "asset_class": req_pb.asset_class,
             "administrative_area": req_pb.administrative_area,
             "construction_year": req_pb.construction_year,
             "length": req_pb.length,
@@ -643,7 +642,7 @@ def culvert_create(req_pb):
             "user": get_user_model().objects.get(pk=req_pb.user),
             "structure_code": req_pb.structure_code,
             "structure_name": req_pb.structure_name,
-            "structure_class": req_pb.asset_class,
+            "asset_class": req_pb.asset_class,
             "administrative_area": req_pb.administrative_area,
             "construction_year": req_pb.construction_year,
             "length": req_pb.length,
@@ -678,9 +677,6 @@ def bridge_update(bridge, req_pb, db_pb):
         if getattr(db_pb, field) != request_value:
             # add field to list of changes fields
             changed_fields.append(field)
-            # handle field name differences
-            if field == "asset_class":
-                field = "structure_class"
             # set attribute on bridge
             setattr(bridge, field, request_value)
 
@@ -757,9 +753,6 @@ def culvert_update(culvert, req_pb, db_pb):
         if getattr(db_pb, field) != request_value:
             # add field to list of changes fields
             changed_fields.append(field)
-            # handle mapping over changed field names
-            if field == "asset_class":
-                field = "structure_class"
             # set attribute on culvert
             setattr(culvert, field, request_value)
 

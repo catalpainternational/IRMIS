@@ -613,7 +613,7 @@ class BridgeQuerySet(models.QuerySet):
             road_code="road_code",
             structure_code="structure_code",
             structure_name="structure_name",
-            asset_class="structure_class",
+            asset_class="asset_class",
             administrative_area="administrative_area",
             structure_type="structure_type__code",
             river_name="river_name",
@@ -739,7 +739,7 @@ class Bridge(models.Model):
     structure_name = models.CharField(
         verbose_name=_("Name"), max_length=100, blank=True, null=True
     )
-    structure_class = models.CharField(
+    asset_class = models.CharField(
         verbose_name=_("Structure Class"),
         max_length=4,
         choices=Asset.ASSET_CLASS_CHOICES,
@@ -885,7 +885,7 @@ class CulvertQuerySet(models.QuerySet):
             road_code="road_code",
             structure_code="structure_code",
             structure_name="structure_name",
-            asset_class="structure_class",
+            asset_class="asset_class",
             administrative_area="administrative_area",
             structure_type="structure_type__code",
             material="material__code",
@@ -1011,7 +1011,7 @@ class Culvert(models.Model):
     structure_name = models.CharField(
         verbose_name=_("Name"), max_length=100, blank=True, null=True
     )
-    structure_class = models.CharField(
+    asset_class = models.CharField(
         verbose_name=_("Structure Class"),
         max_length=4,
         choices=Asset.ASSET_CLASS_CHOICES,

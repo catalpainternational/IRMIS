@@ -328,7 +328,6 @@ class ReportQuery:
                 value_filter_keys.append(filter_key)
         value_filter_keys = list(set(value_filter_keys).intersection(value_filters))
 
-        # has_structure_class = "structure_class" in value_filter_keys
         has_asset_condition = "asset_condition" in value_filter_keys
         has_surface_condition = "surface_condition" in value_filter_keys
         # has_structure_condition = "structure_condition" in value_filter_keys
