@@ -342,9 +342,9 @@ TRAFFIC_CSV_VALUE_MAPPINGS = [
 
 
 def get_non_programmatic_surveys_by_road_code(rc):
-    """ Get all of the non-programmatic surveys for a road code """
+    """ Get all of the non-programmatic surveys for a road by the road code (asset_code) """
     return (
-        Survey.objects.filter(road_code=rc)
+        Survey.objects.filter(asset_code=rc)
         .exclude(source="programmatic")
         .order_by("chainage_start")
     )
@@ -548,12 +548,18 @@ def update_non_programmatic_surveys_by_road_code(
 
     # Test if this survey exists wholly within the road link
     if survey.chainage_end <= road_survey.geom_end_chainage:
-        if not survey.road_id or survey.road_id != road_survey.id:
-            reversion_comment = "Survey road_id updated programmatically"
+        if not survey.asset_id or survey.asset_id != road_survey.id:
+            management_command.stderr.write(
+                management_command.style.NOTICE(
+                    "User entered survey Id:%s setting asset_id to:%s for asset_code '%s'"
+                    % (survey.id, road_survey.id, rc)
+                )
+            )
+            reversion_comment = "Survey asset_id updated programmatically"
             if survey.id:
-                reversion_comment = "Survey split and road_id updated programmatically"
+                reversion_comment = "Survey split and asset_id updated programmatically"
             with reversion.create_revision():
-                survey.road_id = road_survey.id
+                survey.asset_id = road_survey.id
                 survey.save()
                 reversion.set_comment(reversion_comment)
             return updated + 1
@@ -571,7 +577,7 @@ def update_non_programmatic_surveys_by_road_code(
     )
     prev_chainage_end = survey.chainage_end
     with reversion.create_revision():
-        survey.road_id = road_survey.id
+        survey.asset_id = road_survey.id
         survey.chainage_end = road_survey.geom_end_chainage
         survey.save()
         reversion.set_comment("Survey split and road_id updated programmatically")
