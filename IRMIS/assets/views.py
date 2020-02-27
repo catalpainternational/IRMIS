@@ -536,12 +536,7 @@ def protobuf_reports(request):
         asset_report.execute_aggregate_query()
     )
 
-    # These replacements *should* be unnecessary, but we'll leave them in place for now
-    filtered_filters = (
-        json.dumps(final_filters)
-        .replace("""structure_condition""", """asset_condition""")
-    )
-    report_protobuf.filter = filtered_filters
+    report_protobuf.filter = json.dumps(final_filters)
     report_protobuf.lengths = json.dumps(final_lengths)
 
     if asset_id or asset_code:
@@ -876,13 +871,9 @@ def protobuf_structure_surveys(request, pk, survey_attribute=None):
     # pull any Surveys that cover the requested Structure - based on PK
     queryset = Survey.objects.filter(asset_id=pk)
 
-    filter_attribute = survey_attribute
-    if survey_attribute == "structure_condition":
-        filter_attribute = "asset_condition"
-
-    if filter_attribute:
-        queryset = queryset.filter(values__has_key=filter_attribute).exclude(
-            **{"values__" + filter_attribute + "__isnull": True}
+    if survey_attribute:
+        queryset = queryset.filter(values__has_key=survey_attribute).exclude(
+            **{"values__" + survey_attribute + "__isnull": True}
         )
 
     queryset.order_by("-date_updated")

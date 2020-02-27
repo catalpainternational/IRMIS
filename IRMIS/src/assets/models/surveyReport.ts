@@ -164,24 +164,6 @@ function extractCountData(
     return lengths;
 }
 
-function getAssetConditionName(lengths: { [name: string]: any }) {
-    const assetConditionNames = ["asset_condition", "structure_condition"];
-    let assetConditionName = "asset_condition";
-
-    if (!lengths) {
-        return assetConditionName;
-    }
-
-    for (let ix = 0; ix < assetConditionNames.length; ix++) {
-        if (lengths[assetConditionNames[ix]]) {
-            assetConditionName = assetConditionNames[ix];
-            break;
-        }
-    }
-
-    return assetConditionName;
-}
-
 export class EstradaNetworkSurveyReport extends Report implements IEstrada {
     public static getFieldName(field: string) {
         return getFieldName(roadReportSchema, field);
@@ -425,8 +407,7 @@ export class EstradaNetworkSurveyReport extends Report implements IEstrada {
     }
 
     get assetConditions() {
-        const assetConditionName = getAssetConditionName(this.lengths);
-        return this.makeSpecificLengths(assetConditionName);
+        return this.makeSpecificLengths("asset_condition");
     }
 
     get surfaceTypes() {
@@ -641,7 +622,7 @@ export class EstradaSurveyAttribute extends Attribute implements IEstrada {
     }
 
     get assetCondition(): string {
-        return ["asset_condition", "structure_condition"].includes(this.primaryAttribute)
+        return this.primaryAttribute === "asset_condition"
             ? (window as any).gettext(choice_or_default(this.value, ASSET_CONDITION_CHOICES, "Unknown")) as string
             : this.unknownI8n();
     }

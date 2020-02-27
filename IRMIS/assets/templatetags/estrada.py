@@ -34,9 +34,6 @@ def filter_pane():
 
 
 def field_name_standardisation(field_name, common_names, type_suffix):
-    if field_name == "structure_condition":
-        return "asset_condition"
-
     if len(common_names) == 0 or (not field_name in common_names):
         return field_name
 
