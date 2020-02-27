@@ -77,7 +77,7 @@ export const numberLanesColumns = baseSegmentColumns.concat([
 
 export const carriagewayWidthColumns = baseSegmentColumns.concat([
     {
-        title: window.gettext("Carriageway width"),
+        title: window.gettext("Carriageway width (m)"),
         data: "carriagewayWidth",
         defaultContent: "",
         orderable: false,
