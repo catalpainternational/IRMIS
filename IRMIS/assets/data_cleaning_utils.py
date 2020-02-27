@@ -301,8 +301,7 @@ def code_value_transform(sv, data, value_id, field_id):
 ROAD_SURVEY_VALUE_MAPPINGS = [
     ("funding_source", "funding_source", str_transform),
     ("project", "project", str_transform),
-    # The value_id "road_type", should be changed to "asset_class"
-    ("road_type", "road_type", str_transform),
+    ("asset_class", "asset_class", str_transform),
     # These are actually numeric values but are stored as strings
     ("carriageway_width", "carriageway_width", str_transform),
     ("number_lanes", "number_lanes", str_transform),

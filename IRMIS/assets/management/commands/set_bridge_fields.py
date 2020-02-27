@@ -24,7 +24,7 @@ SET road_id = (
 UPDATE assets_bridge SET road_code = (SELECT road_code FROM assets_road WHERE assets_road.id = assets_bridge.road_id);
 """,
     "structure_class": """
-UPDATE assets_bridge SET structure_class = (SELECT road_type FROM assets_road WHERE assets_road.id = assets_bridge.road_id);
+UPDATE assets_bridge SET structure_class = (SELECT asset_class FROM assets_road WHERE assets_road.id = assets_bridge.road_id);
 """,
 }
 

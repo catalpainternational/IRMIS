@@ -65,7 +65,7 @@ def update_from_shapefiles(shape_file_folder):
         ("RRMPIS_2014.shp", "RUR", update_road_rrpmis),
     )
     update_count = 0
-    for file_name, road_type, update in sources:
+    for file_name, asset_class, update in sources:
         shp_path = str(Path(shape_file_folder) / file_name)
         shp_file = DataSource(shp_path)
 
@@ -136,7 +136,7 @@ def import_shapefiles(shape_file_folder, asset="road"):
         print("No or bad asset argument given!")
         exit(0)
 
-    for file_name, asset_type, populate in sources:
+    for file_name, asset_class, populate in sources:
         shp_path = str(Path(shape_file_folder) / file_name)
         shp_file = DataSource(shp_path)
 
@@ -172,7 +172,7 @@ def import_shapefiles(shape_file_folder, asset="road"):
 
             # create the unsaved Asset object
             if asset == "road":
-                asset_obj = Road(geom=asset_geometry.wkt, road_type=asset_type)
+                asset_obj = Road(geom=asset_geometry.wkt, asset_class=asset_class)
             elif asset == "bridge":
                 asset_obj = Bridge(geom=asset_geometry.wkt)
             elif asset == "culvert":
@@ -385,11 +385,11 @@ def collate_geometries():
     """
 
     geometry_sets = dict(
-        highway=Road.objects.filter(road_type="HIGH"),
-        national=Road.objects.filter(road_type="NAT"),
-        municipal=Road.objects.filter(road_type="MUN"),
-        urban=Road.objects.filter(road_type="URB"),
-        rural=Road.objects.filter(road_type="RUR"),
+        highway=Road.objects.filter(asset_class="HIGH"),
+        national=Road.objects.filter(asset_class="NAT"),
+        municipal=Road.objects.filter(asset_class="MUN"),
+        urban=Road.objects.filter(asset_class="URB"),
+        rural=Road.objects.filter(asset_class="RUR"),
         bridge=Bridge.objects.all(),
         culvert=Culvert.objects.all(),
     )

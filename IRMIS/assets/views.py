@@ -128,7 +128,7 @@ def road_update(request):
     regular_fields = [
         "road_name",
         "road_code",
-        "asset_class",  # was road_type, specially handled below
+        "asset_class",
         "link_code",
         "link_start_name",
         "link_end_name",
@@ -159,8 +159,6 @@ def road_update(request):
             # add field to list of changes fields
             changed_fields.append(field)
             # handle mapping over changed field names
-            if field == "asset_class":
-                field = "road_type"
             elif field == "asset_condition":
                 field = "surface_condition"
             # set attribute on road
@@ -264,7 +262,7 @@ def protobuf_road_set(request, chunk_name=None):
     """ returns a protobuf object with the set of all Roads """
     roads = Road.objects.all()
     if chunk_name:
-        roads = roads.filter(road_type=chunk_name)
+        roads = roads.filter(asset_class=chunk_name)
 
     roads_protobuf = roads.to_protobuf()
 
@@ -284,8 +282,6 @@ def protobuf_road_surveys(request, pk, survey_attribute=None):
     filter_attribute = survey_attribute
     if survey_attribute == "asset_condition":
         filter_attribute = "surface_condition"
-    elif survey_attribute == "asset_class":
-        filter_attribute = "road_type"
 
     if survey_attribute:
         queryset = queryset.filter(values__has_key=filter_attribute).exclude(
@@ -314,8 +310,6 @@ def pbtimestamp_to_pydatetime(pb_stamp):
 
 def road_survey_values(req_values):
     """ convert the json and do any required key manipulation """
-    if "asset_class" in req_values:
-        req_values["road_type"] = req_values.pop("asset_class")
     if "asset_condition" in req_values:
         req_values["surface_condition"] = req_values.pop("asset_condition")
 
@@ -427,7 +421,7 @@ def protobuf_reports(request):
             _("'primaryattribute' must contain at least one reportable attribute")
         )
 
-    # handle all of the id, code and asset_class (road_type) permutations
+    # handle all of the id, code and asset_class permutations
     # asset_* will be set to something, if bridge_*, culvert_*, road_* is set
     # structure_* will be set if either bridge_* or culvert_* is set
     culvert_id = clean_id_filter(request.GET.get("culvert_id", None), "CULV-")
@@ -454,11 +448,11 @@ def protobuf_reports(request):
 
     culvert_classes = request.GET.getlist("culvert_class", [])
     bridge_classes = request.GET.get("bridge_class", [])
-    road_types = request.GET.getlist("road_type", [])  # road_type=X
+    road_classes = request.GET.getlist("road_class", [])
     asset_classes = request.GET.getlist("asset_class", [])
     structure_classes = request.GET.getlist("structure_class", [])
     asset_classes, structure_classes = filter_consistency(
-        asset_classes, structure_classes, culvert_classes, bridge_classes, road_types
+        asset_classes, structure_classes, culvert_classes, bridge_classes, road_classes
     )
 
     # handle the other [array] filters
@@ -540,10 +534,10 @@ def protobuf_reports(request):
             final_filters,
             road_id,
             road_code,
-            road_types,
+            road_classes,
             "road_id",
             "road_code",
-            "road_type",
+            "asset_class",
         )
 
     # Asset level attribute
@@ -574,7 +568,6 @@ def protobuf_reports(request):
 
     filtered_filters = (
         json.dumps(final_filters)
-        .replace("""road_type""", """asset_class""")
         .replace("""structure_class""", """asset_class""")
         .replace("""surface_condition""", """asset_condition""")
         .replace("""structure_condition""", """asset_condition""")

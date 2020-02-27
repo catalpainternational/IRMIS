@@ -633,7 +633,6 @@ export class EstradaSurveyAttribute extends Attribute implements IEstrada {
     }
 
     get assetClass(): string {
-        // "structure_class", "road_class", "road_type" have all been deprecated
         return this.primaryAttribute === "asset_class"
             ? (window as any).gettext(choice_or_default(this.value, ASSET_CLASS_CHOICES, "Unknown")) as string
             : this.unknownI8n();

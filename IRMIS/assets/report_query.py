@@ -140,8 +140,6 @@ class ReportQuery:
             "final_results": (
                 "SELECT CONCAT(asset_type_prefix, asset_id::text) AS asset_id, asset_code,\n"
                 " CASE\n"
-                "  WHEN break_attr = 'road_type' THEN 'asset_class'\n"
-                "  WHEN break_attr = 'structure_class' THEN 'asset_class'\n"
                 "  WHEN break_attr = 'surface_condition' THEN 'asset_condition'\n"
                 "  WHEN break_attr = 'structure_condition' THEN 'asset_condition'\n"
                 "  ELSE break_attr\n"
@@ -233,7 +231,6 @@ class ReportQuery:
             "pavement_class",
             "project",
             "rainfall",
-            "road_type",  # Actually asset_class
             "road_status",
             "asset_condition",
             "surface_type",
@@ -251,7 +248,6 @@ class ReportQuery:
             "protection_upstream",
             "river_name",
             "span_length",
-            "structure_class",  # Actually asset_class
             "structure_type",
             "width",
         ]
@@ -332,16 +328,10 @@ class ReportQuery:
                 value_filter_keys.append(filter_key)
         value_filter_keys = list(set(value_filter_keys).intersection(value_filters))
 
-        # do any field name mapping to make things work
-        has_asset_class = "asset_class" in value_filter_keys
-        has_road_type = "road_type" in value_filter_keys
         # has_structure_class = "structure_class" in value_filter_keys
         has_asset_condition = "asset_condition" in value_filter_keys
         has_surface_condition = "surface_condition" in value_filter_keys
         # has_structure_condition = "structure_condition" in value_filter_keys
-        if has_asset_class and not has_road_type:
-            value_filter_keys.remove("asset_class")
-            value_filter_keys.append("road_type")
         if has_asset_condition and not has_surface_condition:
             value_filter_keys.remove("asset_condition")
             value_filter_keys.append("surface_condition")
@@ -360,8 +350,6 @@ class ReportQuery:
                     filter_name = "id"
                 elif filter_key == "asset_code":
                     filter_name = "road_code"
-                elif filter_key == "asset_class":
-                    filter_name = "road_type"
                 elif filter_key == "asset_condition":
                     filter_name = "surface_condition"
                 elif filter_key == "surface_type":
