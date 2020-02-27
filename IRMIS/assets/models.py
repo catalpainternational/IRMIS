@@ -645,8 +645,6 @@ class Road(models.Model):
     def __str__(self,):
         return "%s(%s) %s" % (self.road_code, self.link_code, self.road_name)
 
-    class Meta:
-        indexes = [GistIndex(fields=("geom",))]
 
 class CollatedGeoJsonFile(models.Model):
     """ FeatureCollection GeoJson(srid=4326) files made up of collated geometries """
