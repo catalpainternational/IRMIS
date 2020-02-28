@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
     package="assets",
     syntax="proto3",
     serialized_options=None,
-    serialized_pb=b'\n\x0fstructure.proto\x12\x06\x61ssets\x1a\x1fgoogle/protobuf/timestamp.proto"\x1d\n\x05Point\x12\t\n\x01x\x18\x01 \x01(\x02\x12\t\n\x01y\x18\x02 \x01(\x02"P\n\nStructures\x12\x1f\n\x07\x62ridges\x18\x01 \x03(\x0b\x32\x0e.assets.Bridge\x12!\n\x08\x63ulverts\x18\x02 \x03(\x0b\x32\x0f.assets.Culvert"\xc0\x04\n\x06\x42ridge\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0f\n\x07road_id\x18\x02 \x01(\r\x12\x30\n\x0c\x64\x61te_created\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\rlast_modified\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x16\n\x0estructure_code\x18\x05 \x01(\t\x12\x16\n\x0estructure_name\x18\x06 \x01(\t\x12\x13\n\x0b\x61sset_class\x18\x07 \x01(\t\x12\x1b\n\x13\x61\x64ministrative_area\x18\x08 \x01(\t\x12\x11\n\troad_code\x18\t \x01(\t\x12\x19\n\x11\x63onstruction_year\x18\n \x01(\x05\x12\x0e\n\x06length\x18\x0b \x01(\x02\x12\r\n\x05width\x18\x0c \x01(\x02\x12\x10\n\x08\x63hainage\x18\r \x01(\x02\x12\x16\n\x0estructure_type\x18\x0e \x01(\t\x12\x10\n\x08material\x18\x0f \x01(\t\x12\x1b\n\x13protection_upstream\x18\x10 \x01(\t\x12\x1d\n\x15protection_downstream\x18\x11 \x01(\t\x12!\n\ngeom_point\x18\x12 \x01(\x0b\x32\r.assets.Point\x12\x12\n\ngeojson_id\x18\x13 \x01(\r\x12\x17\n\x0f\x61sset_condition\x18\x14 \x01(\t\x12\x12\n\nriver_name\x18\x1c \x01(\t\x12\x14\n\x0cnumber_spans\x18\x1d \x01(\x05\x12\x13\n\x0bspan_length\x18\x1e \x01(\x02"\xa8\x04\n\x07\x43ulvert\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0f\n\x07road_id\x18\x02 \x01(\r\x12\x30\n\x0c\x64\x61te_created\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\rlast_modified\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x16\n\x0estructure_code\x18\x05 \x01(\t\x12\x16\n\x0estructure_name\x18\x06 \x01(\t\x12\x13\n\x0b\x61sset_class\x18\x07 \x01(\t\x12\x1b\n\x13\x61\x64ministrative_area\x18\x08 \x01(\t\x12\x11\n\troad_code\x18\t \x01(\t\x12\x19\n\x11\x63onstruction_year\x18\n \x01(\x05\x12\x0e\n\x06length\x18\x0b \x01(\x02\x12\r\n\x05width\x18\x0c \x01(\x02\x12\x10\n\x08\x63hainage\x18\r \x01(\x02\x12\x16\n\x0estructure_type\x18\x0e \x01(\t\x12\x10\n\x08material\x18\x0f \x01(\t\x12\x1b\n\x13protection_upstream\x18\x10 \x01(\t\x12\x1d\n\x15protection_downstream\x18\x11 \x01(\t\x12!\n\ngeom_point\x18\x12 \x01(\x0b\x32\r.assets.Point\x12\x12\n\ngeojson_id\x18\x13 \x01(\r\x12\x17\n\x0f\x61sset_condition\x18\x14 \x01(\t\x12\x0e\n\x06height\x18\x1c \x01(\x02\x12\x14\n\x0cnumber_cells\x18\x1d \x01(\x05\x62\x06proto3',
+    serialized_pb=b'\n\x0fstructure.proto\x12\x06\x61ssets\x1a\x1fgoogle/protobuf/timestamp.proto"\x1d\n\x05Point\x12\t\n\x01x\x18\x01 \x01(\x02\x12\t\n\x01y\x18\x02 \x01(\x02"P\n\nStructures\x12\x1f\n\x07\x62ridges\x18\x01 \x03(\x0b\x32\x0e.assets.Bridge\x12!\n\x08\x63ulverts\x18\x02 \x03(\x0b\x32\x0f.assets.Culvert"\xdf\x04\n\x06\x42ridge\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0f\n\x07road_id\x18\x02 \x01(\r\x12\x30\n\x0c\x64\x61te_created\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\rlast_modified\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x16\n\x0estructure_code\x18\x05 \x01(\t\x12\x16\n\x0estructure_name\x18\x06 \x01(\t\x12\x13\n\x0b\x61sset_class\x18\x07 \x01(\t\x12\x1b\n\x13\x61\x64ministrative_area\x18\x08 \x01(\t\x12\x11\n\troad_code\x18\t \x01(\t\x12\x19\n\x11\x63onstruction_year\x18\n \x01(\x05\x12\x0e\n\x06length\x18\x0b \x01(\x02\x12\r\n\x05width\x18\x0c \x01(\x02\x12\x10\n\x08\x63hainage\x18\r \x01(\x02\x12\x16\n\x0estructure_type\x18\x0e \x01(\t\x12\x10\n\x08material\x18\x0f \x01(\t\x12\x1b\n\x13protection_upstream\x18\x10 \x01(\t\x12\x1d\n\x15protection_downstream\x18\x11 \x01(\t\x12!\n\ngeom_point\x18\x12 \x01(\x0b\x32\r.assets.Point\x12\x12\n\ngeojson_id\x18\x13 \x01(\r\x12\x17\n\x0f\x61sset_condition\x18\x14 \x01(\t\x12\x1d\n\x15\x63ondition_description\x18\x15 \x01(\t\x12\x12\n\nriver_name\x18\x1c \x01(\t\x12\x14\n\x0cnumber_spans\x18\x1d \x01(\x05\x12\x13\n\x0bspan_length\x18\x1e \x01(\x02"\xc7\x04\n\x07\x43ulvert\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0f\n\x07road_id\x18\x02 \x01(\r\x12\x30\n\x0c\x64\x61te_created\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\rlast_modified\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x16\n\x0estructure_code\x18\x05 \x01(\t\x12\x16\n\x0estructure_name\x18\x06 \x01(\t\x12\x13\n\x0b\x61sset_class\x18\x07 \x01(\t\x12\x1b\n\x13\x61\x64ministrative_area\x18\x08 \x01(\t\x12\x11\n\troad_code\x18\t \x01(\t\x12\x19\n\x11\x63onstruction_year\x18\n \x01(\x05\x12\x0e\n\x06length\x18\x0b \x01(\x02\x12\r\n\x05width\x18\x0c \x01(\x02\x12\x10\n\x08\x63hainage\x18\r \x01(\x02\x12\x16\n\x0estructure_type\x18\x0e \x01(\t\x12\x10\n\x08material\x18\x0f \x01(\t\x12\x1b\n\x13protection_upstream\x18\x10 \x01(\t\x12\x1d\n\x15protection_downstream\x18\x11 \x01(\t\x12!\n\ngeom_point\x18\x12 \x01(\x0b\x32\r.assets.Point\x12\x12\n\ngeojson_id\x18\x13 \x01(\r\x12\x17\n\x0f\x61sset_condition\x18\x14 \x01(\t\x12\x1d\n\x15\x63ondition_description\x18\x15 \x01(\t\x12\x0e\n\x06height\x18\x1c \x01(\x02\x12\x14\n\x0cnumber_cells\x18\x1d \x01(\x05\x62\x06proto3',
     dependencies=[google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,],
 )
 
@@ -507,9 +507,27 @@ _BRIDGE = _descriptor.Descriptor(
             file=DESCRIPTOR,
         ),
         _descriptor.FieldDescriptor(
+            name="condition_description",
+            full_name="assets.Bridge.condition_description",
+            index=20,
+            number=21,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+        ),
+        _descriptor.FieldDescriptor(
             name="river_name",
             full_name="assets.Bridge.river_name",
-            index=20,
+            index=21,
             number=28,
             type=9,
             cpp_type=9,
@@ -527,7 +545,7 @@ _BRIDGE = _descriptor.Descriptor(
         _descriptor.FieldDescriptor(
             name="number_spans",
             full_name="assets.Bridge.number_spans",
-            index=21,
+            index=22,
             number=29,
             type=5,
             cpp_type=1,
@@ -545,7 +563,7 @@ _BRIDGE = _descriptor.Descriptor(
         _descriptor.FieldDescriptor(
             name="span_length",
             full_name="assets.Bridge.span_length",
-            index=22,
+            index=23,
             number=30,
             type=2,
             cpp_type=6,
@@ -570,7 +588,7 @@ _BRIDGE = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[],
     serialized_start=174,
-    serialized_end=750,
+    serialized_end=781,
 )
 
 
@@ -942,9 +960,27 @@ _CULVERT = _descriptor.Descriptor(
             file=DESCRIPTOR,
         ),
         _descriptor.FieldDescriptor(
+            name="condition_description",
+            full_name="assets.Culvert.condition_description",
+            index=20,
+            number=21,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+        ),
+        _descriptor.FieldDescriptor(
             name="height",
             full_name="assets.Culvert.height",
-            index=20,
+            index=21,
             number=28,
             type=2,
             cpp_type=6,
@@ -962,7 +998,7 @@ _CULVERT = _descriptor.Descriptor(
         _descriptor.FieldDescriptor(
             name="number_cells",
             full_name="assets.Culvert.number_cells",
-            index=21,
+            index=22,
             number=29,
             type=5,
             cpp_type=1,
@@ -986,8 +1022,8 @@ _CULVERT = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=753,
-    serialized_end=1305,
+    serialized_start=784,
+    serialized_end=1367,
 )
 
 _STRUCTURES.fields_by_name["bridges"].message_type = _BRIDGE

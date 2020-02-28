@@ -613,6 +613,85 @@ class StructureProtectionType(models.Model):
         return self.name
 
 
+def get_structures_with_survey_data(
+    self_structure, asset_type, regular_fields, datetime_fields, numeric_fields
+):
+    """ Get the structures (Bridges or Culverts) with the survey data that we're interested in"""
+    survey = (
+        Survey.objects.filter(
+            asset_id__startswith="%s-" % asset_type, values__has_key="asset_condition"
+        )
+        .annotate(parent_id=Cast(Substr("asset_id", 6), models.IntegerField()))
+        .filter(parent_id=OuterRef("id"))
+        .order_by("-date_surveyed")
+    )
+    structures = (
+        self_structure.order_by("id")
+        .annotate(
+            to_wgs=models.functions.Transform("geom", 4326),
+            asset_condition=Subquery(survey.values("values__asset_condition")[:1]),
+            condition_description=Subquery(
+                survey.values("values__condition_description")[:1]
+            ),
+        )
+        .values(
+            "id",
+            "geojson_file_id",
+            *regular_fields.values(),
+            *datetime_fields.values(),
+            *numeric_fields.values(),
+            "to_wgs",
+            "asset_condition",
+            "condition_description",
+        )
+    )
+
+    return structures
+
+
+def structure_to_protobuf(
+    structure, structure_protobuf, asset_type, regular_fields, numeric_fields
+):
+    """ Take an individual structure (Bridge or Culvert)
+    and use it to fill in an empty corresponding protobuf object """
+    structure_protobuf.id = "%s-%s" % (asset_type, structure["id"])
+    if structure["geojson_file_id"]:
+        structure_protobuf.geojson_id = int(structure["geojson_file_id"])
+    # else:
+    # Raise a warning to go into the logs that collate_geometries
+    # functionality requires executing
+
+    for protobuf_key, query_key in regular_fields.items():
+        if structure[query_key]:
+            setattr(structure_protobuf, protobuf_key, structure[query_key])
+
+    for protobuf_key, query_key in numeric_fields.items():
+        raw_value = structure.get(query_key)
+        if raw_value is not None:
+            setattr(structure_protobuf, protobuf_key, raw_value)
+        else:
+            # No value available, so use -ve as a substitute for None
+            setattr(structure_protobuf, protobuf_key, -1)
+
+    if structure["date_created"]:
+        ts = timestamp_from_datetime(structure["date_created"])
+        structure_protobuf.date_created.CopyFrom(ts)
+
+    if structure["last_modified"]:
+        ts = timestamp_from_datetime(structure["last_modified"])
+        structure_protobuf.last_modified.CopyFrom(ts)
+
+    if structure["to_wgs"]:
+        pt = Point(x=structure["to_wgs"].x, y=structure["to_wgs"].y)
+        structure_protobuf.geom_point.CopyFrom(pt)
+
+    if structure["asset_condition"]:
+        structure_protobuf.asset_condition = structure["asset_condition"]
+
+    if structure["condition_description"]:
+        structure_protobuf.condition_description = structure["condition_description"]
+
+
 class BridgeClass(models.Model):
     code = models.CharField(max_length=3, unique=True, verbose_name=_("Code"))
     name = models.CharField(max_length=50, verbose_name=_("Name"))
@@ -662,60 +741,20 @@ class BridgeQuerySet(models.QuerySet):
             construction_year="construction_year",
         )
 
-        survey = (
-            Survey.objects.filter(asset_id__startswith="BRDG-")
-            .annotate(parent_id=Cast(Substr("asset_id", 6), models.IntegerField()))
-            .filter(parent_id=OuterRef("id"))
-            .order_by("-date_surveyed")
-        )
-        bridges = (
-            self.order_by("id")
-            .annotate(
-                to_wgs=models.functions.Transform("geom", 4326),
-                asset_condition=Subquery(survey.values("values__asset_condition")[:1]),
-            )
-            .values(
-                "id",
-                "geojson_file_id",
-                *regular_fields.values(),
-                *datetime_fields.values(),
-                *numeric_fields.values(),
-                "to_wgs",
-                "asset_condition",
-            )
+        asset_type = "BRDG"
+        structures = get_structures_with_survey_data(
+            self, asset_type, regular_fields, datetime_fields, numeric_fields
         )
 
-        for bridge in bridges:
-            bridge_protobuf = structures_protobuf.bridges.add()
-            bridge_protobuf.id = "BRDG-" + str(bridge["id"])
-            bridge_protobuf.geojson_id = int(bridge["geojson_file_id"])
-
-            for protobuf_key, query_key in regular_fields.items():
-                if bridge[query_key]:
-                    setattr(bridge_protobuf, protobuf_key, bridge[query_key])
-
-            for protobuf_key, query_key in numeric_fields.items():
-                raw_value = bridge.get(query_key)
-                if raw_value is not None:
-                    setattr(bridge_protobuf, protobuf_key, raw_value)
-                else:
-                    # No value available, so use -ve as a substitute for None
-                    setattr(bridge_protobuf, protobuf_key, -1)
-
-            if bridge["date_created"]:
-                ts = timestamp_from_datetime(bridge["date_created"])
-                bridge_protobuf.date_created.CopyFrom(ts)
-
-            if bridge["last_modified"]:
-                ts = timestamp_from_datetime(bridge["last_modified"])
-                bridge_protobuf.last_modified.CopyFrom(ts)
-
-            if bridge["to_wgs"]:
-                pt = Point(x=bridge["to_wgs"].x, y=bridge["to_wgs"].y)
-                bridge_protobuf.geom_point.CopyFrom(pt)
-
-            if bridge["asset_condition"]:
-                bridge_protobuf.asset_condition = bridge["asset_condition"]
+        for structure in structures:
+            structure_protobuf = structures_protobuf.bridges.add()
+            structure_to_protobuf(
+                structure,
+                structure_protobuf,
+                asset_type,
+                regular_fields,
+                numeric_fields,
+            )
 
         return structures_protobuf
 
@@ -933,64 +972,20 @@ class CulvertQuerySet(models.QuerySet):
             number_cells="number_cells",
         )
 
-        survey = (
-            Survey.objects.filter(asset_id__startswith="CULV-")
-            .annotate(parent_id=Cast(Substr("asset_id", 6), models.IntegerField()))
-            .filter(parent_id=OuterRef("id"))
-            .order_by("-date_surveyed")
-        )
-        culverts = (
-            self.order_by("id")
-            .annotate(
-                to_wgs=models.functions.Transform("geom", 4326),
-                asset_condition=Subquery(survey.values("values__asset_condition")[:1]),
-            )
-            .values(
-                "id",
-                "geojson_file_id",
-                *regular_fields.values(),
-                *datetime_fields.values(),
-                *numeric_fields.values(),
-                "to_wgs",
-                asset_condition=Subquery(survey.values("values__asset_condition")[:1]),
-            )
+        asset_type = "CULV"
+        structures = get_structures_with_survey_data(
+            self, asset_type, regular_fields, datetime_fields, numeric_fields
         )
 
-        for culvert in culverts:
-            culvert_protobuf = structures_protobuf.culverts.add()
-            culvert_protobuf.id = "CULV-" + str(culvert["id"])
-            if culvert["geojson_file_id"]:
-                culvert_protobuf.geojson_id = int(culvert["geojson_file_id"])
-            # else:
-            # Raise a warning to go into the logs that collate_geometries
-            # functionality requires executing
-
-            for protobuf_key, query_key in regular_fields.items():
-                if culvert[query_key]:
-                    setattr(culvert_protobuf, protobuf_key, culvert[query_key])
-
-            for protobuf_key, query_key in numeric_fields.items():
-                raw_value = culvert.get(query_key)
-                if raw_value is not None:
-                    setattr(culvert_protobuf, protobuf_key, raw_value)
-                else:
-                    # No value available, so use -ve as a substitute for None
-                    setattr(culvert_protobuf, protobuf_key, -1)
-
-            if culvert["date_created"]:
-                ts = timestamp_from_datetime(culvert["date_created"])
-                culvert_protobuf.date_created.CopyFrom(ts)
-
-            if culvert["last_modified"]:
-                ts = timestamp_from_datetime(culvert["last_modified"])
-                culvert_protobuf.last_modified.CopyFrom(ts)
-
-            if culvert["to_wgs"]:
-                pt = Point(x=culvert["to_wgs"].x, y=culvert["to_wgs"].y)
-                culvert_protobuf.geom_point.CopyFrom(pt)
-
-            if culvert["asset_condition"]:
-                bridge_protobuf.asset_condition = culvert["asset_condition"]
+        for structure in structures:
+            structure_protobuf = structures_protobuf.culverts.add()
+            structure_to_protobuf(
+                structure,
+                structure_protobuf,
+                asset_type,
+                regular_fields,
+                numeric_fields,
+            )
 
         return structures_protobuf
 
