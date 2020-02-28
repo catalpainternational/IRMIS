@@ -119,7 +119,7 @@ def road_field_subquery(
     """
 
     # When it's not defined, the returned annotation field is generated below
-    field_name = annotation_field_name or "road_%s" + road_model_field
+    field_name = annotation_field_name or "road_%s" % (road_model_field,)
 
     road_model = apps.get_model("assets", "road")
     return {
@@ -261,3 +261,42 @@ class RoughnessManager(models.Manager):
         """
         model = apps.get_model("assets", "survey")
         model.objects.filter(values__has_key="source_roughness").delete()
+
+
+def survey_map():
+
+    """
+    Let's do GIS!
+    This is here as an example of how to generate geospatial data from our Survey models
+    """
+
+    # Surveys as Chainages are not mappable
+    # But given a topographically valid road with a road code matching chainage, we can make magic happen
+
+    makeline = Func(
+        F("chainage_start"),
+        F("chainage_end"),
+        F("road_code"),
+        function="chainages_to_line",  # This is a special function which maps road code and chainages
+        output_field=models.LineStringField(),
+    )
+
+    query = (
+        apps.get_model("assets", "Survey")
+        .objects.exclude(chainage_start__gt=F("chainage_end"))
+        .annotate(makeline=makeline)
+    )
+
+    # Monkeypatching the query
+
+    sql, params = query.query.sql_with_params()
+    from django.db import connection
+
+    sql = sql.replace("::bytea", "")  # Django brainlessness in handling PointField
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "DROP TABLE IF EXISTS surveys_map; CREATE TABLE surveys_map AS (SELECT makeline AS geom, id, values -> 'roughness' AS value FROM ({}) innerq);".format(
+                sql
+            ),
+            params,
+        )

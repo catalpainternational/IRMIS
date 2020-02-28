@@ -81,11 +81,37 @@ DROP FUNCTION IF EXISTS chainage_to_point(float, text);
 CREATE OR REPLACE FUNCTION chainage_to_point(in chainage float, in chainage_road_code text, out point geometry)
 AS $$
 SELECT 
-ST_LineInterpolatePoint(
-	geom, 
-	chainage / ST_LENGTH(geom) -- This is the "fraction" along the line
-)
+CASE WHEN
+	chainage > ST_LENGTH(geom)
+	THEN NULL
+ELSE 
+	ST_LineInterpolatePoint(
+		geom, 
+		chainage / ST_LENGTH(geom)-- This is the "fraction" along the line
+	)
+END AS point
 FROM topology_estradaroad WHERE road_code = chainage_road_code
 $$ LANGUAGE SQL;
 
 COMMENT ON FUNCTION chainage_to_point(float, text) IS 'Given an input chainage and road code, return the point along that line for the chainage';
+
+
+DROP FUNCTION IF EXISTS chainages_to_line(float, float, text);
+CREATE OR REPLACE FUNCTION chainages_to_line(in chainage_start float, in chainage_end float, in chainage_road_code text, out line_substring geometry)
+AS $$
+SELECT 
+CASE WHEN
+	(chainage_start > ST_LENGTH(geom)
+	OR chainage_end > ST_LENGTH(geom))
+	THEN NULL
+ELSE 
+	ST_Line_Substring(
+		geom, 
+		chainage_start / ST_LENGTH(geom), -- This is the "fraction" along the line,
+		chainage_end / ST_LENGTH(geom) -- This is the "fraction" along the line
+	)
+END AS line_substring
+FROM topology_estradaroad WHERE road_code = chainage_road_code
+$$ LANGUAGE SQL;
+
+COMMENT ON FUNCTION chainages_to_line(float, float, text) IS 'Given an input chainage, end chainage and road code, return the road geometry clipped to that chainage';

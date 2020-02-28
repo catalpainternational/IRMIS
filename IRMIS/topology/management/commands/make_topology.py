@@ -34,7 +34,7 @@ class SqlQueries:
     attrs = {
         "topology_schema_name": "tl_roads_topo",
         "srid": 32751,
-        "prec": 7.5,
+        "prec": 10,
         "table_name": "topology_toporoad",
         "public": "public",
         "column_name": "topo_geom",
