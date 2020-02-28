@@ -448,6 +448,7 @@ export const structuresTableColumns = [
         data: "conditionDescription",
         defaultContent: "",
         visible: false,
+        className: "clip-text-ellipsis",
     },
     // {
     //     title: "Inventory Photos",
