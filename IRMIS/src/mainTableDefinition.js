@@ -326,12 +326,6 @@ export const structuresTableColumns = [
         defaultContent: "",
     },
     {
-        title: EstradaBridge.getFieldName("road_name"),
-        data: "roadName",
-        defaultContent: "",
-        visible: false,
-    },
-    {
         title: EstradaBridge.getFieldName("asset_class"),
         data: "assetClass",
         defaultContent: "",
