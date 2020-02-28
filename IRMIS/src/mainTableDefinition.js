@@ -446,14 +446,12 @@ export const structuresTableColumns = [
     },
     {
         title: window.gettext("Structure Condition"),
-        data: null,
-        render: r => buttonSegmentsTemplate("asset_condition", r),
+        data: "assetCondition",
         defaultContent: "",
     },
     {
         title: window.gettext("Condition Description"),
-        data: null,
-        render: r => buttonSegmentsTemplate("condition_description", r),
+        data: "conditionDescription",
         defaultContent: "",
         visible: false,
     },

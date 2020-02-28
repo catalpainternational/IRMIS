@@ -38,6 +38,7 @@ message Bridge {
     // structure_condition has been renamed to asset_condition
     // it comes from the surveys - NOT from the bridge
     string asset_condition = 20;
+    string condition_description = 21;
     // NON-SHARED FIELDS (#26 and onwards)
     string river_name = 28;
     int32 number_spans = 29;
@@ -69,6 +70,7 @@ message Culvert {
     // structure_condition has been renamed to asset_condition
     // it comes from the surveys - NOT from the culvert
     string asset_condition = 20;
+    string condition_description = 21;
     // NON-SHARED FIELDS (#26 and onwards)
     float height = 28;
     int32 number_cells = 29;

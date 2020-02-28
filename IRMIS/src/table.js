@@ -87,18 +87,6 @@ const attributeModalMapping = {
         reportTable: null,
         title: gettext("Pavement Class segments"),
     },
-    structure_condition: {
-        columns: structureConditionColumns,
-        reportDataTableId: "inventory-structure-condition-table",
-        reportTable: null,
-        title: gettext("Structure Condition details"),
-    },
-    condition_description: {
-        columns: structureConditionDescriptionColumns,
-        reportDataTableId: "inventory-structure-condition-description-table",
-        reportTable: null,
-        title: gettext("Condition Description details"),
-    },
     // structure_photos: {
     //     columns: structurePhotosColumns,
     //     reportDataTableId: "inventory-structure-photos-table",
