@@ -131,8 +131,8 @@ class SqlQueries:
         """
     INSERT INTO {}.{} (road_code, {})
         SELECT road_code, 
-        topology.toTopoGeom(ST_Union(g), 'tl_roads_topo'::varchar, 1, %(prec)s)
-        FROM multipart_join GROUP BY road_code;
+        topology.toTopoGeom(r.geom, 'tl_roads_topo'::varchar, 1, %(prec)s)
+        FROM multipart_join_dumpagain r;
     """
     ).format(
         sql.Identifier(attrs["public"]),
@@ -146,7 +146,7 @@ class SqlQueries:
         BEGIN
         FOR r IN SELECT road_code, geom FROM multipart_join_dumpagain LOOP
             BEGIN
-            RAISE NOTICE 'Loading of road code % starts', r.road_code;
+                RAISE NOTICE 'Loading of road code % starts', r.road_code;
              INSERT INTO {public}.{table_name} (road_code, {column_name})
                 SELECT r.road_code, 
                 topology.toTopoGeom(r.geom, 'tl_roads_topo'::varchar, 1, {prec});
@@ -156,7 +156,6 @@ class SqlQueries:
             END;
         END LOOP;
         END$$;
-
         """
     ).format(
         public=sql.Identifier(attrs["public"]),
