@@ -236,7 +236,7 @@ msgstr ""
 msgid "Choose the pavement class of the road"
 msgstr ""
 
-msgid "Carriageway Width (m)"
+msgid "Carriageway Width"
 msgstr ""
 
 msgid "Enter the width of the link carriageway"
@@ -269,7 +269,7 @@ msgstr ""
 msgid "Surface Condition (SDI)"
 msgstr ""
 
-msgid "Choose road link surface condition according to the Surface Distress Index (SDI): Good (SDI2), fair (2<SDI3), poor (3<SDI4) or bad (SDI>4)"
+msgid "Choose road link surface condition according to the Surface Distress Index (SDI): Good (SDI<=2), fair (2<SDI<=3), poor (3<SDI<=4) or bad (SDI>4)"
 msgstr ""
 
 msgid "Maintenance Needs"
