@@ -297,8 +297,9 @@ proto.assets.Road.toObject = function(includeInstance, msg) {
     projectionEnd: (f = msg.getProjectionEnd()) && proto.assets.Projection.toObject(includeInstance, f),
     numberLanes: jspb.Message.getFieldWithDefault(msg, 27, 0),
     rainfall: jspb.Message.getFieldWithDefault(msg, 28, 0),
-    population: jspb.Message.getFieldWithDefault(msg, 30, 0),
-    core: jspb.Message.getFieldWithDefault(msg, 31, 0)
+    constructionYear: jspb.Message.getFieldWithDefault(msg, 30, 0),
+    population: jspb.Message.getFieldWithDefault(msg, 31, 0),
+    core: jspb.Message.getFieldWithDefault(msg, 32, 0)
   };
 
   if (includeInstance) {
@@ -447,9 +448,13 @@ proto.assets.Road.deserializeBinaryFromReader = function(msg, reader) {
       break;
     case 30:
       var value = /** @type {number} */ (reader.readInt32());
-      msg.setPopulation(value);
+      msg.setConstructionYear(value);
       break;
     case 31:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setPopulation(value);
+      break;
+    case 32:
       var value = /** @type {number} */ (reader.readInt32());
       msg.setCore(value);
       break;
@@ -673,17 +678,24 @@ proto.assets.Road.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
-  f = message.getPopulation();
+  f = message.getConstructionYear();
   if (f !== 0) {
     writer.writeInt32(
       30,
       f
     );
   }
-  f = message.getCore();
+  f = message.getPopulation();
   if (f !== 0) {
     writer.writeInt32(
       31,
+      f
+    );
+  }
+  f = message.getCore();
+  if (f !== 0) {
+    writer.writeInt32(
+      32,
       f
     );
   }
@@ -1215,10 +1227,10 @@ proto.assets.Road.prototype.setRainfall = function(value) {
 
 
 /**
- * optional int32 population = 30;
+ * optional int32 construction_year = 30;
  * @return {number}
  */
-proto.assets.Road.prototype.getPopulation = function() {
+proto.assets.Road.prototype.getConstructionYear = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 30, 0));
 };
 
@@ -1227,16 +1239,16 @@ proto.assets.Road.prototype.getPopulation = function() {
  * @param {number} value
  * @return {!proto.assets.Road} returns this
  */
-proto.assets.Road.prototype.setPopulation = function(value) {
+proto.assets.Road.prototype.setConstructionYear = function(value) {
   return jspb.Message.setProto3IntField(this, 30, value);
 };
 
 
 /**
- * optional int32 core = 31;
+ * optional int32 population = 31;
  * @return {number}
  */
-proto.assets.Road.prototype.getCore = function() {
+proto.assets.Road.prototype.getPopulation = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 31, 0));
 };
 
@@ -1245,8 +1257,26 @@ proto.assets.Road.prototype.getCore = function() {
  * @param {number} value
  * @return {!proto.assets.Road} returns this
  */
-proto.assets.Road.prototype.setCore = function(value) {
+proto.assets.Road.prototype.setPopulation = function(value) {
   return jspb.Message.setProto3IntField(this, 31, value);
+};
+
+
+/**
+ * optional int32 core = 32;
+ * @return {number}
+ */
+proto.assets.Road.prototype.getCore = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 32, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.assets.Road} returns this
+ */
+proto.assets.Road.prototype.setCore = function(value) {
+  return jspb.Message.setProto3IntField(this, 32, value);
 };
 
 

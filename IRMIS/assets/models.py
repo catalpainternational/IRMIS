@@ -281,20 +281,28 @@ class RoadQuerySet(models.QuerySet):
             core="core",
         )
 
+        asset_type = "ROAD"
         survey = (
-            Survey.objects.filter(asset_id__startswith="ROAD-")
-            .annotate(parent_id=Cast(Substr("road_id", 6), models.IntegerField()))
+            Survey.objects.filter(
+                asset_id__startswith="%s-" % asset_type, values__has_key="total_width"
+            )
+            .annotate(parent_id=Cast(Substr("asset_id", 6), models.IntegerField()))
             .filter(parent_id=OuterRef("id"))
             .order_by("-date_surveyed")
         )
         annotations = start_end_point_annos("geom")
-        # Add stuff from the survey to the annotations above
-        # some_survey_value=Subquery(survey.values("values__some_survey_value")[:1]),
         roads = (
             self.order_by("id")
-            .annotate(**annotations)
+            .annotate(
+                **annotations,
+                total_width=Subquery(survey.values("values__total_width")[:1]),
+            )
             .values(
-                "id", *regular_fields.values(), *numeric_fields.values(), *annotations
+                "id",
+                *regular_fields.values(),
+                *numeric_fields.values(),
+                *annotations,
+                "total_width",
             )
         )
 
@@ -314,15 +322,20 @@ class RoadQuerySet(models.QuerySet):
                     # No value available, so use -ve as a substitute for None
                     setattr(road_protobuf, protobuf_key, -1)
 
+            # Add the total_width from the survey
+            if road["total_width"]:
+                raw_value = road.get("total_width")
+                if raw_value is not None:
+                    setattr(road_protobuf, "total_width", raw_value)
+                else:
+                    # No value available, so use -ve as a substitute for None
+                    setattr(road_protobuf, "total_width", -1)
+
             # set Protobuf with with start/end projection points
             start = Projection(x=road["start_x"], y=road["start_y"])
             end = Projection(x=road["end_x"], y=road["end_y"])
             road_protobuf.projection_start.CopyFrom(start)
             road_protobuf.projection_end.CopyFrom(end)
-
-            # add stuff from the survey here
-            # if road["some_survey_value"]:
-            #     road_protobuf.some_survey_value = road["some_survey_value"]
 
         return roads_protobuf
 

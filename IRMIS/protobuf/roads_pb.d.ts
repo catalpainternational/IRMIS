@@ -113,6 +113,9 @@ export class Road extends jspb.Message {
   getRainfall(): number;
   setRainfall(value: number): void;
 
+  getConstructionYear(): number;
+  setConstructionYear(value: number): void;
+
   getPopulation(): number;
   setPopulation(value: number): void;
 
@@ -158,6 +161,7 @@ export namespace Road {
     projectionEnd?: Projection.AsObject,
     numberLanes: number,
     rainfall: number,
+    constructionYear: number,
     population: number,
     core: number,
   }

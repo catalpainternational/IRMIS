@@ -44,9 +44,10 @@ message Road {
   // number_lanes is u unit -we use int32 so that we can set it to -ve to indicate when it is null / None
   int32 number_lanes = 27;
   int32 rainfall = 28;
-  int32 population = 30;
+  int32 construction_year = 30;
+  int32 population = 31;
   // core is a nullable boolean - we use int32 so that we can set it to -ve to indicate when it is null / None
-  int32 core = 31;
+  int32 core = 32;
 }
 
 message Roads {
