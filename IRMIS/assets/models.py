@@ -259,7 +259,7 @@ def prepare_protobuf_nullable_int(raw_value):
             nullable = raw_value
 
     return nullable
-    
+
 
 class RoadQuerySet(models.QuerySet):
     def to_chunks(self):
@@ -355,7 +355,9 @@ class RoadQuerySet(models.QuerySet):
 
             # Add the total_width from the survey
             if road["total_width"]:
-                nullable_value = prepare_protobuf_nullable_float(road.get("total_width"))
+                nullable_value = prepare_protobuf_nullable_float(
+                    road.get("total_width")
+                )
                 setattr(road_protobuf, "total_width", nullable_value)
 
             # set Protobuf with with start/end projection points
@@ -661,7 +663,12 @@ class StructureProtectionType(models.Model):
 
 
 def get_structures_with_survey_data(
-    self_structure, asset_type, regular_fields, datetime_fields, float_fields, int_fields
+    self_structure,
+    asset_type,
+    regular_fields,
+    datetime_fields,
+    float_fields,
+    int_fields,
 ):
     """ Get the structures (Bridges or Culverts) with the survey data that we're interested in"""
     survey = (
@@ -788,8 +795,7 @@ class BridgeQuerySet(models.QuerySet):
         )
 
         int_fields = dict(
-            number_spans="number_spans",
-            construction_year="construction_year",
+            number_spans="number_spans", construction_year="construction_year",
         )
 
         asset_type = "BRDG"
@@ -1016,15 +1022,11 @@ class CulvertQuerySet(models.QuerySet):
         )
 
         float_fields = dict(
-            length="length",
-            width="width",
-            chainage="chainage",
-            height="height",
+            length="length", width="width", chainage="chainage", height="height",
         )
 
         int_fields = dict(
-            construction_year="construction_year",
-            number_cells="number_cells",
+            construction_year="construction_year", number_cells="number_cells",
         )
 
         asset_type = "CULV"
