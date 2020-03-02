@@ -15,13 +15,13 @@ class Command(BaseCommand):
         }
         rural_road_municipalities = {
             road["road_code"]: int(road["administrative_area"])
-            for road in Road.objects.filter(road_type="RUR").values(
+            for road in Road.objects.filter(asset_class="RUR").values(
                 "road_code", "administrative_area"
             )
         }
         rural_road_populations = {
             road["road_code"]: road["population"]
-            for road in Road.objects.filter(road_type="RUR").values(
+            for road in Road.objects.filter(asset_class="RUR").values(
                 "road_code", "population"
             )
         }
@@ -33,7 +33,7 @@ class Command(BaseCommand):
         ASSET_CONDITION_DISPLAY[""] = ""
 
         # only include core rural roads
-        rural_road_ids = Road.objects.filter(road_type="RUR", core=True).values_list(
+        rural_road_ids = Road.objects.filter(asset_class="RUR", core=True).values_list(
             "road_code", flat=True
         )
         surveys = Survey.objects.filter(road__in=rural_road_ids).order_by(
@@ -49,7 +49,7 @@ class Command(BaseCommand):
                 round((survey.chainage_end - survey.chainage_start) / 1000, 3),
                 survey.values.get("surface_type", ""),
                 TERRAIN_DISPLAY[survey.values.get("terrain_class", "")],
-                ASSET_CONDITION_DISPLAY[survey.values.get("surface_condition", "")],
+                ASSET_CONDITION_DISPLAY[survey.values.get("asset_condition", "")],
                 rural_road_populations[survey.road],
             ]
             for survey in surveys

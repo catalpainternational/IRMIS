@@ -23,8 +23,8 @@ from .models import (
 
 @admin.register(Road)
 class RoadAdmin(VersionAdmin, admin.OSMGeoAdmin):
-    list_display = ["road_code", "road_name", "road_type", "link_code"]
-    list_filter = ("road_type",)  # Actually asset_class
+    list_display = ["road_code", "road_name", "asset_class", "link_code"]
+    list_filter = ("asset_class",)  # Was road_type
     search_fields = ["road_name", "road_code"]
     exclude = ["geojson_file"]
 
@@ -35,8 +35,8 @@ class RoadAdmin(VersionAdmin, admin.OSMGeoAdmin):
 
 @admin.register(Bridge, Culvert)
 class StructureAdmin(VersionAdmin, admin.OSMGeoAdmin):
-    list_display = ["structure_code", "structure_name", "structure_class"]
-    list_filter = ["structure_class"]  # Actually asset_class
+    list_display = ["structure_code", "structure_name", "asset_class"]
+    list_filter = ["asset_class"]  # was structure_class
     search_fields = ["structure_code", "structure_name", "road_code"]
 
     def reversion_register(self, model, **options):
