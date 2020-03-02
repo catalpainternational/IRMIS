@@ -237,8 +237,11 @@ def get_data_field(data, field_id):
     if not field_id:
         return None
 
-    if type(data) == list:
-        return data[field_id]
+    if type(data) == list or type(data) == dict:
+        if field_id in data:
+            return data[field_id]
+        else:
+            return None
     else:
         return getattr(data, field_id)
 
@@ -301,15 +304,16 @@ def code_value_transform(sv, data, value_id, field_id):
 ROAD_SURVEY_VALUE_MAPPINGS = [
     ("funding_source", "funding_source", str_transform),
     ("project", "project", str_transform),
-    # The value_id "road_type", should be changed to "asset_class"
-    ("road_type", "road_type", str_transform),
+    # The value_id "road_type", was changed to "asset_class" in the surveys
+    ("asset_class", "road_type", str_transform),
     # These are actually numeric values but are stored as strings
     ("carriageway_width", "carriageway_width", str_transform),
     ("number_lanes", "number_lanes", str_transform),
     ("rainfall", "rainfall", str_transform),
     # These are actually FK Ids
     ("municipality", "administrative_area", str_transform),
-    ("surface_condition", "surface_condition", str_transform),
+    # The value_id "surface_condition", was changed to "asset_condition" in the surveys
+    ("asset_condition", "surface_condition", str_transform),
     ("traffic_level", "traffic_level", str_transform),
     ("terrain_class", "terrain_class", str_transform),
     # Get the corresponding code to use (in preference)
@@ -340,9 +344,9 @@ TRAFFIC_CSV_VALUE_MAPPINGS = [
 
 
 def get_non_programmatic_surveys_by_road_code(rc):
-    """ Get all of the non-programmatic surveys for a road code """
+    """ Get all of the non-programmatic surveys for a road by the road code (asset_code) """
     return (
-        Survey.objects.filter(road_code=rc)
+        Survey.objects.filter(asset_code=rc)
         .exclude(source="programmatic")
         .order_by("chainage_start")
     )
@@ -362,7 +366,7 @@ def delete_redundant_surveys():
 
     # duplicated surveys (keep the oldest only)
     surveys = Survey.objects.values(
-        "road_code",
+        "asset_code",
         "chainage_start",
         "chainage_end",
         "values",
@@ -378,7 +382,7 @@ def delete_redundant_surveys():
 
 def delete_programmatic_surveys_for_road_by_road_code(rc):
     """ deletes programmatic surveys generated from road link records for a given road code """
-    Survey.objects.filter(source="programmatic", road_code=rc).exclude(
+    Survey.objects.filter(source="programmatic", asset_code=rc).exclude(
         values__has_key="trafficType"
     ).delete()
     # delete revisions associated with the now deleted "programmatic" surveys
@@ -388,7 +392,7 @@ def delete_programmatic_surveys_for_road_by_road_code(rc):
 def delete_programmatic_surveys_for_traffic_surveys_by_road_code(rc):
     """ deletes programmatic surveys generated from traffic surveys for a given road code """
     Survey.objects.filter(
-        source="programmatic", road_code=rc, values__has_key="trafficType"
+        source="programmatic", asset_code=rc, values__has_key="trafficType"
     ).delete()
     # delete revisions associated with the now deleted "programmatic" surveys
     Version.objects.get_deleted(Survey).delete()
@@ -409,11 +413,14 @@ def create_programmatic_survey(management_command, data, mappings, audit_source_
     try:
         # Work up a set of data that we consider acceptable
         survey_data = {
-            "road_id": data["asset_id"] if "asset_id" in data else None,
-            "road_code": data["asset_code"] if "asset_code" in data else None,
+            "asset_id": data["asset_id"] if "asset_id" in data else None,
+            "asset_code": data["asset_code"] if "asset_code" in data else None,
+            "road_id": data["road_id"] if "road_id" in data else None,
+            "road_code": data["road_code"] if "road_code" in data else None,
             "chainage_start": data["chainage_start"]
             if "chainage_start" in data
             else None,
+            "chainage_end": data["chainage_end"] if "chainage_end" in data else None,
             "chainage_end": data["chainage_end"] if "chainage_end" in data else None,
             "source": "programmatic",
             "values": {},
@@ -458,7 +465,7 @@ def create_programmatic_surveys_for_roads(management_command, roads):
     for road in roads:
         # Note that the 'link_' values from Road are considered highly unreliable
         survey_data = {
-            "asset_id": road.id,
+            "asset_id": "ROAD-%s" % road.id,
             "asset_code": road.road_code,
             "chainage_start": road.geom_start_chainage,
             "chainage_end": road.geom_end_chainage,
@@ -489,7 +496,7 @@ def create_programmatic_survey_for_traffic_csv(management_command, data, roads):
     else:
         for road in roads:
             survey_data = {
-                "asset_id": road.id,
+                "asset_id": "ROAD-%s" % road.id,
                 "asset_code": road.road_code,
                 "chainage_start": road.geom_start_chainage,
                 "chainage_end": road.geom_end_chainage,
@@ -543,12 +550,12 @@ def update_non_programmatic_surveys_by_road_code(
 
     # Test if this survey exists wholly within the road link
     if survey.chainage_end <= road_survey.geom_end_chainage:
-        if not survey.road_id or survey.road_id != road_survey.id:
-            reversion_comment = "Survey road_id updated programmatically"
+        if not survey.asset_id or survey.asset_id != road_survey.id:
+            reversion_comment = "Survey asset_id updated programmatically"
             if survey.id:
-                reversion_comment = "Survey split and road_id updated programmatically"
+                reversion_comment = "Survey split and asset_id updated programmatically"
             with reversion.create_revision():
-                survey.road_id = road_survey.id
+                survey.asset_id = "ROAD-%s" % road_survey.id
                 survey.save()
                 reversion.set_comment(reversion_comment)
             return updated + 1
@@ -566,10 +573,10 @@ def update_non_programmatic_surveys_by_road_code(
     )
     prev_chainage_end = survey.chainage_end
     with reversion.create_revision():
-        survey.road_id = road_survey.id
+        survey.asset_id = "ROAD-%s" % road_survey.id
         survey.chainage_end = road_survey.geom_end_chainage
         survey.save()
-        reversion.set_comment("Survey split and road_id updated programmatically")
+        reversion.set_comment("Survey split and asset_id updated programmatically")
 
     # do the 'split'
     survey.id = None

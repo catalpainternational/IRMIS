@@ -183,9 +183,10 @@ export const estradaTableColumns = [
         defaultContent: "",
     },
     {
-        // 'road_type' name has been deprecated and will be replaced with 'asset_class'
-        title: EstradaRoad.getFieldName("road_type"),
-        data: "type",
+        // 'road_type' name has been deprecated is replaced with 'asset_class'
+        // everywhere except the model definition itself
+        title: EstradaRoad.getFieldName("road_type") || window.gettext("Asset Class"),
+        data: "assetClass",
         defaultContent: "",
         visible: false,
     },
@@ -325,12 +326,6 @@ export const structuresTableColumns = [
         defaultContent: "",
     },
     {
-        title: EstradaBridge.getFieldName("road_name"),
-        data: "roadName",
-        defaultContent: "",
-        visible: false,
-    },
-    {
         title: EstradaBridge.getFieldName("asset_class"),
         data: "assetClass",
         defaultContent: "",
@@ -445,16 +440,15 @@ export const structuresTableColumns = [
     },
     {
         title: window.gettext("Structure Condition"),
-        data: null,
-        render: r => buttonSegmentsTemplate("asset_condition", r),
+        data: "assetCondition",
         defaultContent: "",
     },
     {
         title: window.gettext("Condition Description"),
-        data: null,
-        render: r => buttonSegmentsTemplate("condition_description", r),
+        data: "conditionDescription",
         defaultContent: "",
         visible: false,
+        className: "clip-text-ellipsis",
     },
     // {
     //     title: "Inventory Photos",
