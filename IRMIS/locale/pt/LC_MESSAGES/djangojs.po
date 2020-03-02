@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-27 05:43+0000\n"
+"POT-Creation-Date: 2020-03-02 05:01+0000\n"
 "PO-Revision-Date: 2019-10-11 00:57+0000\n"
 "Last-Translator: b'  <juliana@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -645,9 +645,9 @@ msgid "Municipality"
 msgstr ""
 
 #, fuzzy
-#| msgid "Select a Road Type"
-msgid "Road Class"
-msgstr "Seleccione o Tipo de Estrada"
+#| msgid "Asset Details"
+msgid "Asset Class"
+msgstr "Detalhes da infra-estrutura"
 
 msgid "Exported from Estrada on"
 msgstr ""
@@ -657,11 +657,6 @@ msgstr ""
 
 msgid "Total Length of Road Network"
 msgstr ""
-
-#, fuzzy
-#| msgid "Asset Details"
-msgid "Asset Class"
-msgstr "Detalhes da infra-estrutura"
 
 msgid "unknown"
 msgstr ""
@@ -855,14 +850,6 @@ msgid "Pavement Class segments"
 msgstr "Pavimento"
 
 #, fuzzy
-#| msgid "Condition"
-msgid "Structure Condition details"
-msgstr "Condição"
-
-msgid "Condition Description details"
-msgstr ""
-
-#, fuzzy
 #| msgid "Asset"
 msgid "Asset Type"
 msgstr "Infra-estrutura"
@@ -874,6 +861,16 @@ msgstr ""
 #| msgid "Link Name"
 msgid "Name"
 msgstr "Nome da secção"
+
+#, fuzzy
+#~| msgid "Select a Road Type"
+#~ msgid "Road Class"
+#~ msgstr "Seleccione o Tipo de Estrada"
+
+#, fuzzy
+#~| msgid "Condition"
+#~ msgid "Structure Condition details"
+#~ msgstr "Condição"
 
 #~ msgid "Date"
 #~ msgstr "Data"

@@ -397,7 +397,7 @@ gettext('Total road chainage');
 gettext('Surface Condition (SDI)');
 gettext('Total road chainage');
 gettext('Municipality');
-gettext('Road Class');
+gettext('Asset Class');
 gettext('Surface Type');
 gettext('Road Status');
 gettext('Technical Class');
