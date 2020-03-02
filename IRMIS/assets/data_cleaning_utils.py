@@ -574,7 +574,7 @@ def update_non_programmatic_surveys_by_road_code(
         survey.asset_id = "ROAD-%s" % road_survey.id
         survey.chainage_end = road_survey.geom_end_chainage
         survey.save()
-        reversion.set_comment("Survey split and road_id updated programmatically")
+        reversion.set_comment("Survey split and asset_id updated programmatically")
 
     # do the 'split'
     survey.id = None

@@ -816,7 +816,9 @@ def protobuf_structure(request, pk):
 
     prefix, django_pk, mapping = get_asset_mapping(pk)
     survey = (
-        Survey.objects.filter(asset_id__startswith=prefix + "-")
+        Survey.objects.filter(
+            asset_id__startswith=prefix + "-", values__has_key="asset_condition"
+        )
         .annotate(struct_id=Cast(Substr("asset_id", 6), models.IntegerField()))
         .filter(struct_id=OuterRef("id"))
         .order_by("-date_surveyed")
@@ -825,7 +827,10 @@ def protobuf_structure(request, pk):
         mapping["model"]
         .objects.filter(pk=django_pk)
         .annotate(
-            asset_condition=Subquery(survey.values("values__asset_condition")[:1])
+            asset_condition=Subquery(survey.values("values__asset_condition")[:1]),
+            condition_description=Subquery(
+                survey.values("values__condition_description")[:1]
+            ),
         )
     )
 
