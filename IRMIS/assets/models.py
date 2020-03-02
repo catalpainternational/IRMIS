@@ -272,8 +272,13 @@ class RoadQuerySet(models.QuerySet):
             link_end_chainage="link_end_chainage",
             link_length="link_length",
             carriageway_width="carriageway_width",
+            total_width="total_width",
             number_lanes="number_lanes",
             rainfall="rainfall",
+            population="population",
+            construction_year="construction_year",
+            # `core` is a nullable boolean
+            core="core",
         )
 
         survey = (
@@ -561,6 +566,9 @@ class Road(models.Model):
         verbose_name=_("Population Served"),
         null=True,
         help_text=_("Set the size of population served by this road"),
+    )
+    construction_year = models.IntegerField(
+        verbose_name=_("Road Construction Year"), blank=True, null=True
     )
     terrain_class = models.PositiveSmallIntegerField(
         verbose_name=_("Terrain class"),

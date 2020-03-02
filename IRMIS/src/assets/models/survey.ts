@@ -131,6 +131,14 @@ export class EstradaSurvey extends Survey implements IEstrada {
         this.setValue(value, "carriageway_width");
     }
 
+    get totalWidth() {
+        return this.values.total_width as number;
+    }
+
+    set totalWidth(value: number) {
+        this.setValue(value, "total_width");
+    }
+
     get rainfall() {
         return this.values.rainfall as number;
     }

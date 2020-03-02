@@ -69,6 +69,12 @@ const attributeModalMapping = {
         reportTable: null,
         title: gettext("Carriageway Width segments"),
     },
+    total_width: {
+        columns: carriagewayWidthColumns,
+        reportDataTableId: "inventory-total-width-table",
+        reportTable: null,
+        title: gettext("Total Width segments"),
+    },    
     rainfall: {
         columns: rainfallColumns,
         reportDataTableId: "inventory-rainfall-table",

@@ -76,6 +76,9 @@ export class Road extends jspb.Message {
   getCarriagewayWidth(): number;
   setCarriagewayWidth(value: number): void;
 
+  getTotalWidth(): number;
+  setTotalWidth(value: number): void;
+
   getAdministrativeArea(): string;
   setAdministrativeArea(value: string): void;
 
@@ -110,6 +113,12 @@ export class Road extends jspb.Message {
   getRainfall(): number;
   setRainfall(value: number): void;
 
+  getPopulation(): number;
+  setPopulation(value: number): void;
+
+  getCore(): number;
+  setCore(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Road.AsObject;
   static toObject(includeInstance: boolean, msg: Road): Road.AsObject;
@@ -138,6 +147,7 @@ export namespace Road {
     assetCondition: string,
     pavementClass: string,
     carriagewayWidth: number,
+    totalWidth: number,
     administrativeArea: string,
     project: string,
     fundingSource: string,
@@ -148,6 +158,8 @@ export namespace Road {
     projectionEnd?: Projection.AsObject,
     numberLanes: number,
     rainfall: number,
+    population: number,
+    core: number,
   }
 }
 

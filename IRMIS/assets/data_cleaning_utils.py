@@ -307,6 +307,7 @@ ROAD_SURVEY_VALUE_MAPPINGS = [
     ("asset_class", "asset_class", str_transform),
     # These are actually numeric values but are stored as strings
     ("carriageway_width", "carriageway_width", str_transform),
+    ("total_width", "total_width", str_transform),
     ("number_lanes", "number_lanes", str_transform),
     ("rainfall", "rainfall", str_transform),
     # These are actually FK Ids

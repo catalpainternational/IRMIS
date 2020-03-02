@@ -178,6 +178,14 @@ export const estradaTableColumns = [
         orderable: false,
     },
     {
+        title: EstradaRoad.getFieldName("total_width"),
+        data: null,
+        defaultContent: "",
+        render: r => buttonSegmentsTemplate("total_width", r),
+        orderable: false,
+        visible: false,
+    },
+    {
         title: EstradaRoad.getFieldName("administrative_area"),
         data: "administrativeArea",
         defaultContent: "",
@@ -212,6 +220,24 @@ export const estradaTableColumns = [
     {
         title: EstradaRoad.getFieldName("project"),
         data: "project",
+        defaultContent: "",
+        visible: false,
+    },
+    {
+        title: EstradaRoad.getFieldName("population"),
+        data: "population",
+        defaultContent: "",
+        visible: false,
+    },
+    {
+        title: EstradaRoad.getFieldName("construction_year"),
+        data: "constructionYear",
+        defaultContent: "",
+        visible: false,
+    },
+    {
+        title: EstradaRoad.getFieldName("core"),
+        data: "core",
         defaultContent: "",
         visible: false,
     },

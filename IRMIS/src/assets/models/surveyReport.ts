@@ -583,6 +583,12 @@ export class EstradaSurveyAttribute extends Attribute implements IEstrada {
             ? numericValue.toFixed(1) : this.unknownI8n();
     }
 
+    get totalWidth(): number | string {
+        const numericValue = parseFloat(this.value);
+        return this.primaryAttribute === "total_width" && numericValue
+            ? numericValue.toFixed(1) : this.unknownI8n();
+    }
+
     get numberLanes(): number | string {
         const numericValue = parseInt(this.value, 10);
         return this.primaryAttribute === "number_lanes" && numericValue
