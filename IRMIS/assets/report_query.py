@@ -228,7 +228,7 @@ class ReportQuery:
             "total_width_series": "SELECT generate_series(0.0, 99.0, 1.0) AS r_from\n",
             "total_width_range": (
                 "SELECT r_from, (r_from + 0.9) AS r_to, 'm' AS units\n"
-                " FROM totalwidth_series\n"
+                " FROM total_width_series\n"
             ),
             # The "retrieve_" queries are templates for corresponding "get_" queries
             "retrieve_all": "SELECT * FROM final_results\n",

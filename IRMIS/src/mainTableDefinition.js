@@ -178,6 +178,8 @@ export const estradaTableColumns = [
         orderable: false,
     },
     {
+        // note: `total_width` is NOT actually part of EstradaRoad,
+        // but EstradaRoad.getFieldName explicitly supports it
         title: EstradaRoad.getFieldName("total_width"),
         data: null,
         defaultContent: "",
@@ -510,9 +512,8 @@ function buttonSegmentsTemplate(attrib, asset) {
     const assetStructureType = detectStructure(asset);
     const assetType = !assetStructureType
         ? currentFilter.assetType === "ROAD" ? "ROAD" : "STRC"
-        : ["BRDG"].includes(assetStructureType) ? "BRDG" : "CULV";
+        : ["ROAD", "BRDG", "CULV"].includes(assetStructureType) ? assetStructureType : "ROAD";
 
-    const code = (assetType === "ROAD") ? asset.linkCode : asset.structureCode;
     let getFieldName = (attrib) => (attrib);
     switch (assetType) {
         case "ROAD":
