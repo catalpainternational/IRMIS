@@ -9,7 +9,7 @@ import { makeEstradaNetworkSurveyReport } from "./models/surveyReport";
  */
 export function getRoadReports(filters: { [name: string]: any }) {
     const filterParams = ConfigAPI.objectToQueryString(filters);
-    const reportUrl = `${ConfigAPI.requestReportUrl}${filterParams}`;
+    const reportUrl = `${ConfigAPI.requestReportUrl}/${filterParams}`;
 
     const request = ConfigAPI.requestInit();
 
