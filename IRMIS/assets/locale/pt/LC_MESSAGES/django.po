@@ -71,13 +71,16 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
+msgid "Asset Id"
+msgstr ""
+
+msgid "Asset Code"
+msgstr ""
+
 msgid "Road Id"
 msgstr ""
 
 msgid "Road Code"
-msgstr ""
-
-msgid "Structure Id"
 msgstr ""
 
 msgid "User"
@@ -245,7 +248,7 @@ msgstr ""
 msgid "Asset Class"
 msgstr ""
 
-msgid "Choose the road class"
+msgid "Choose the asset class"
 msgstr ""
 
 msgid "Road Status"
@@ -464,7 +467,7 @@ msgstr ""
 msgid "Carriageway width"
 msgstr ""
 
-msgid "Road class"
+msgid "Asset class"
 msgstr ""
 
 msgid "Technical class"
@@ -525,9 +528,6 @@ msgid "Structure"
 msgstr ""
 
 msgid "Structure Name"
-msgstr ""
-
-msgid "Road Name"
 msgstr ""
 
 msgid "GPS Latitude"
