@@ -237,6 +237,12 @@ class ReportQuery:
                 "SELECT r_from, (r_from + 0.9) AS r_to, 'm' AS units\n"
                 " FROM carriageway_width_series\n"
             ),
+            # Max total width bracket is 99.0-99.9 m
+            "total_width_series": "SELECT generate_series(0.0, 99.0, 1.0) AS r_from\n",
+            "total_width_range": (
+                "SELECT r_from, (r_from + 0.9) AS r_to, 'm' AS units\n"
+                " FROM total_width_series\n"
+            ),
             # The "retrieve_" queries are templates for corresponding "get_" queries
             "retrieve_all": "SELECT * FROM final_results\n",
             "retrieve_aggregate_select": (
@@ -262,15 +268,25 @@ class ReportQuery:
                 " ) AS total_length\n"
                 " FROM carriageway_width_range\n"
                 " UNION\n"
+                " SELECT 'total_width' AS attribute,\n"
+                " CONCAT(r_from, '-', r_to, ' ', units) AS value,\n"
+                " (\n"
+                "  SELECT SUM(end_chainage - start_chainage)\n"
+                "  FROM final_results\n"
+                "  WHERE attribute = 'total_width'\n"
+                "  AND CAST(value AS FLOAT) BETWEEN r_from AND r_to\n"
+                " ) AS total_length\n"
+                " FROM total_width_range\n"
+                " UNION\n"
                 " SELECT attribute, value, SUM(end_chainage - start_chainage) AS total_length\n"
                 " FROM final_results\n"
-                " WHERE attribute IN ('rainfall', 'carriageway_width')\n"
+                " WHERE attribute IN ('rainfall', 'carriageway_width', 'total_width')\n"
                 " AND value IS NULL\n"
                 " GROUP BY attribute, value\n"
                 " UNION\n"
                 " SELECT attribute, value, SUM(end_chainage - start_chainage) AS total_length\n"
                 " FROM final_results\n"
-                " WHERE attribute NOT IN ('rainfall', 'carriageway_width')\n"
+                " WHERE attribute NOT IN ('rainfall', 'carriageway_width', 'total_width')\n"
                 " GROUP BY attribute, value\n"
                 ") totals\n"
                 " WHERE total_length IS NOT NULL\n"
@@ -292,8 +308,10 @@ class ReportQuery:
             "asset_class",
             "asset_condition",
             "municipality",
+            "construction_year",
             # Maybe Common from Road
             "carriageway_width",
+            "total_width",
             "funding_source",
             "maintenance_need",
             "number_lanes",
@@ -306,6 +324,8 @@ class ReportQuery:
             "traffic_level",
             # Road Specific
             "technical_class",
+            "population",
+            "core",
             # Structure Specific
             "height",
             "length",
@@ -322,9 +342,8 @@ class ReportQuery:
 
         # Ideally for these asset filters we'd drill down (in time) through the surveys instead
         asset_filters = [
-            # most of the asset.* fields will be mapped from the relevant road.*, bridge.*, culvert.*
-            # in the query above
-            # Mapped fields
+            # road.*, bridge.*, culvert.* have several commonly named fields in the query above
+            # Common fields
             "asset_type_prefix",  # relevant for the query
             "asset_id",
             "asset_code",
@@ -333,9 +352,11 @@ class ReportQuery:
             "asset_class",
             "geom_chainage",
             "municipality",
+            "construction_year",
             "geojson_file",  # this is FK reference
             # Road specific
             "carriageway_width",
+            "total_width",
             "number_lanes",
             "rainfall",
             "terrain_class",
@@ -352,7 +373,6 @@ class ReportQuery:
             "maintenance_need",
             "road_statusn",
             # Structure specific - some are specific to only bridge or only culvert
-            "construction_year",
             "length",
             "width",
             "height",
@@ -476,6 +496,8 @@ class ReportQuery:
         self.add_report_clause("rainfall_range")
         self.add_report_clause("carriageway_width_series")
         self.add_report_clause("carriageway_width_range")
+        self.add_report_clause("total_width_series")
+        self.add_report_clause("total_width_range")
 
         # strip off the final trailling comma
         self.reportSQL = self.reportSQL[:-1]

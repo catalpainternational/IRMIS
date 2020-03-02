@@ -178,6 +178,16 @@ export const estradaTableColumns = [
         orderable: false,
     },
     {
+        // note: `total_width` is NOT actually part of EstradaRoad,
+        // but EstradaRoad.getFieldName explicitly supports it
+        title: EstradaRoad.getFieldName("total_width"),
+        data: null,
+        defaultContent: "",
+        render: r => buttonSegmentsTemplate("total_width", r),
+        orderable: false,
+        visible: false,
+    },
+    {
         title: EstradaRoad.getFieldName("administrative_area"),
         data: "administrativeArea",
         defaultContent: "",
@@ -212,6 +222,24 @@ export const estradaTableColumns = [
     {
         title: EstradaRoad.getFieldName("project"),
         data: "project",
+        defaultContent: "",
+        visible: false,
+    },
+    {
+        title: EstradaRoad.getFieldName("population"),
+        data: "population",
+        defaultContent: "",
+        visible: false,
+    },
+    {
+        title: EstradaRoad.getFieldName("construction_year"),
+        data: "constructionYear",
+        defaultContent: "",
+        visible: false,
+    },
+    {
+        title: EstradaRoad.getFieldName("core"),
+        data: "core",
         defaultContent: "",
         visible: false,
     },
@@ -484,9 +512,8 @@ function buttonSegmentsTemplate(attrib, asset) {
     const assetStructureType = detectStructure(asset);
     const assetType = !assetStructureType
         ? currentFilter.assetType === "ROAD" ? "ROAD" : "STRC"
-        : ["BRDG"].includes(assetStructureType) ? "BRDG" : "CULV";
+        : ["ROAD", "BRDG", "CULV"].includes(assetStructureType) ? assetStructureType : "ROAD";
 
-    const code = (assetType === "ROAD") ? asset.linkCode : asset.structureCode;
     let getFieldName = (attrib) => (attrib);
     switch (assetType) {
         case "ROAD":

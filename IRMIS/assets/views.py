@@ -143,7 +143,11 @@ def road_update(request):
         "link_end_chainage",
         "link_length",
         "carriageway_width",
+        "total_width",
         "number_lanes",
+        "population",
+        # `core` is a nullable boolean
+        "core",
     ]
     fks = [
         (MaintenanceNeed, "maintenance_need"),

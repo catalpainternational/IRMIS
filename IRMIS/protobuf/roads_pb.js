@@ -286,6 +286,7 @@ proto.assets.Road.toObject = function(includeInstance, msg) {
     assetCondition: jspb.Message.getFieldWithDefault(msg, 9, ""),
     pavementClass: jspb.Message.getFieldWithDefault(msg, 13, ""),
     carriagewayWidth: jspb.Message.getFloatingPointFieldWithDefault(msg, 14, 0.0),
+    totalWidth: jspb.Message.getFloatingPointFieldWithDefault(msg, 29, 0.0),
     administrativeArea: jspb.Message.getFieldWithDefault(msg, 15, ""),
     project: jspb.Message.getFieldWithDefault(msg, 18, ""),
     fundingSource: jspb.Message.getFieldWithDefault(msg, 19, ""),
@@ -295,7 +296,10 @@ proto.assets.Road.toObject = function(includeInstance, msg) {
     projectionStart: (f = msg.getProjectionStart()) && proto.assets.Projection.toObject(includeInstance, f),
     projectionEnd: (f = msg.getProjectionEnd()) && proto.assets.Projection.toObject(includeInstance, f),
     numberLanes: jspb.Message.getFieldWithDefault(msg, 27, 0),
-    rainfall: jspb.Message.getFieldWithDefault(msg, 28, 0)
+    rainfall: jspb.Message.getFieldWithDefault(msg, 28, 0),
+    constructionYear: jspb.Message.getFieldWithDefault(msg, 30, 0),
+    population: jspb.Message.getFieldWithDefault(msg, 31, 0),
+    core: jspb.Message.getFieldWithDefault(msg, 32, 0)
   };
 
   if (includeInstance) {
@@ -396,6 +400,10 @@ proto.assets.Road.deserializeBinaryFromReader = function(msg, reader) {
       var value = /** @type {number} */ (reader.readFloat());
       msg.setCarriagewayWidth(value);
       break;
+    case 29:
+      var value = /** @type {number} */ (reader.readFloat());
+      msg.setTotalWidth(value);
+      break;
     case 15:
       var value = /** @type {string} */ (reader.readString());
       msg.setAdministrativeArea(value);
@@ -437,6 +445,18 @@ proto.assets.Road.deserializeBinaryFromReader = function(msg, reader) {
     case 28:
       var value = /** @type {number} */ (reader.readInt32());
       msg.setRainfall(value);
+      break;
+    case 30:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setConstructionYear(value);
+      break;
+    case 31:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setPopulation(value);
+      break;
+    case 32:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setCore(value);
       break;
     default:
       reader.skipField();
@@ -579,6 +599,13 @@ proto.assets.Road.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
+  f = message.getTotalWidth();
+  if (f !== 0.0) {
+    writer.writeFloat(
+      29,
+      f
+    );
+  }
   f = message.getAdministrativeArea();
   if (f.length > 0) {
     writer.writeString(
@@ -648,6 +675,27 @@ proto.assets.Road.serializeBinaryToWriter = function(message, writer) {
   if (f !== 0) {
     writer.writeInt32(
       28,
+      f
+    );
+  }
+  f = message.getConstructionYear();
+  if (f !== 0) {
+    writer.writeInt32(
+      30,
+      f
+    );
+  }
+  f = message.getPopulation();
+  if (f !== 0) {
+    writer.writeInt32(
+      31,
+      f
+    );
+  }
+  f = message.getCore();
+  if (f !== 0) {
+    writer.writeInt32(
+      32,
       f
     );
   }
@@ -943,6 +991,24 @@ proto.assets.Road.prototype.setCarriagewayWidth = function(value) {
 
 
 /**
+ * optional float total_width = 29;
+ * @return {number}
+ */
+proto.assets.Road.prototype.getTotalWidth = function() {
+  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 29, 0.0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.assets.Road} returns this
+ */
+proto.assets.Road.prototype.setTotalWidth = function(value) {
+  return jspb.Message.setProto3FloatField(this, 29, value);
+};
+
+
+/**
  * optional string administrative_area = 15;
  * @return {string}
  */
@@ -1157,6 +1223,60 @@ proto.assets.Road.prototype.getRainfall = function() {
  */
 proto.assets.Road.prototype.setRainfall = function(value) {
   return jspb.Message.setProto3IntField(this, 28, value);
+};
+
+
+/**
+ * optional int32 construction_year = 30;
+ * @return {number}
+ */
+proto.assets.Road.prototype.getConstructionYear = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 30, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.assets.Road} returns this
+ */
+proto.assets.Road.prototype.setConstructionYear = function(value) {
+  return jspb.Message.setProto3IntField(this, 30, value);
+};
+
+
+/**
+ * optional int32 population = 31;
+ * @return {number}
+ */
+proto.assets.Road.prototype.getPopulation = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 31, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.assets.Road} returns this
+ */
+proto.assets.Road.prototype.setPopulation = function(value) {
+  return jspb.Message.setProto3IntField(this, 31, value);
+};
+
+
+/**
+ * optional int32 core = 32;
+ * @return {number}
+ */
+proto.assets.Road.prototype.getCore = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 32, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.assets.Road} returns this
+ */
+proto.assets.Road.prototype.setCore = function(value) {
+  return jspb.Message.setProto3IntField(this, 32, value);
 };
 
 
