@@ -102,6 +102,13 @@ tfoot th, tfoot td {
     height: 30px;
 }
 
+.clip-text-ellipsis {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 300px;
+    overflow: hidden;
+}
+
 
 // Override DataTables.net styles
 div.dataTables_wrapper {

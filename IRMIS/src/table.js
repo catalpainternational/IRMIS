@@ -87,18 +87,6 @@ const attributeModalMapping = {
         reportTable: null,
         title: gettext("Pavement Class segments"),
     },
-    structure_condition: {
-        columns: structureConditionColumns,
-        reportDataTableId: "inventory-structure-condition-table",
-        reportTable: null,
-        title: gettext("Structure Condition details"),
-    },
-    condition_description: {
-        columns: structureConditionDescriptionColumns,
-        reportDataTableId: "inventory-structure-condition-description-table",
-        reportTable: null,
-        title: gettext("Condition Description details"),
-    },
     // structure_photos: {
     //     columns: structurePhotosColumns,
     //     reportDataTableId: "inventory-structure-photos-table",
@@ -533,19 +521,29 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
 
             if (currentFilter.assetType === "ROAD") {
                 if (assetData.linkStartChainage && assetData.linkEndChainage) {
+                    // Both the generic 'asset' value and the specific 'road' value are set
+                    // This ensure correct interpretation of the filters
+                    // the 'road' value will be 'discarded' during report processing
+                    filters.asset_code = assetData.roadCode
                     filters.road_code = assetData.roadCode;
                     // Use the protobuf object get members here, because we want chainage unformatted
                     filters.chainagestart = assetData.getLinkStartChainage();
                     filters.chainageend = assetData.getLinkEndChainage();
                 } else {
+                    filters.asset_id = assetData.id;
                     filters.road_id = assetData.id;
                 }
             } else {
                 if (assetData.chainage) {
-                    filters.structure_code = assetData.structureCode;
+                    // Both the generic 'asset' value and the specific 'road' value are set
+                    // This ensure correct interpretation of the filters
+                    // the 'road' value will be 'retained' during report processing
+                    filters.asset_code = assetData.structureCode;
+                    filters.road_code = assetData.roadCode;
                     filters.chainage = assetData.getChainage();
                 } else {
-                    filters.structure_id = assetData.id;
+                    filters.asset_id = assetData.id;
+                    filters.road_id = assetData.roadId;
                 }
             }
 
