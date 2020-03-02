@@ -335,9 +335,9 @@ class RoadQuerySet(models.QuerySet):
         """ returns an object defining the available chunks from the roads queryset """
 
         return (
-            Road.objects.order_by("road_type")  # Actually asset_class
-            .values("road_type")
-            .annotate(Count("road_type"))
+            Road.objects.order_by("asset_class")
+            .values("asset_class")
+            .annotate(Count("asset_class"))
         )
 
     def to_protobuf(self):
@@ -349,13 +349,13 @@ class RoadQuerySet(models.QuerySet):
             geojson_id="geojson_file_id",
             road_code="road_code",
             road_name="road_name",
-            asset_class="road_type",
+            asset_class="asset_class",
             road_status="road_status__code",
             link_code="link_code",
             link_start_name="link_start_name",
             link_end_name="link_end_name",
             surface_type="surface_type__code",
-            asset_condition="surface_condition",
+            asset_condition="asset_condition",
             pavement_class="pavement_class__code",
             administrative_area="administrative_area",
             technical_class="technical_class__code",
@@ -590,8 +590,7 @@ class Road(models.Model):
         null=True,
         help_text=_("Enter the width of the link carriageway"),
     )
-    # Actually asset_class
-    road_type = models.CharField(
+    asset_class = models.CharField(
         verbose_name=_("Asset Class"),
         max_length=4,
         choices=Asset.ASSET_CLASS_CHOICES,
@@ -622,7 +621,7 @@ class Road(models.Model):
         null=True,
         help_text=_("Choose the traffic volume for the road link"),
     )
-    surface_condition = models.CharField(
+    asset_condition = models.CharField(
         verbose_name=_("Surface Condition (SDI)"),
         max_length=1,
         choices=Asset.ASSET_CONDITION_CHOICES,
@@ -831,7 +830,7 @@ class BridgeQuerySet(models.QuerySet):
             road_code="road_code",
             structure_code="structure_code",
             structure_name="structure_name",
-            asset_class="structure_class",
+            asset_class="asset_class",
             administrative_area="administrative_area",
             structure_type="structure_type",
             river_name="river_name",
@@ -917,7 +916,7 @@ class Bridge(models.Model):
     structure_name = models.CharField(
         verbose_name=_("Name"), max_length=100, blank=True, null=True
     )
-    structure_class = models.CharField(
+    asset_class = models.CharField(
         verbose_name=_("Structure Class"),
         max_length=4,
         choices=Asset.ASSET_CLASS_CHOICES,
@@ -1064,7 +1063,7 @@ class CulvertQuerySet(models.QuerySet):
             road_code="road_code",
             structure_code="structure_code",
             structure_name="structure_name",
-            asset_class="structure_class",
+            asset_class="asset_class",
             administrative_area="administrative_area",
             structure_type="structure_type",
             material="material",
@@ -1149,7 +1148,7 @@ class Culvert(models.Model):
     structure_name = models.CharField(
         verbose_name=_("Name"), max_length=100, blank=True, null=True
     )
-    structure_class = models.CharField(
+    asset_class = models.CharField(
         verbose_name=_("Structure Class"),
         max_length=4,
         choices=Asset.ASSET_CLASS_CHOICES,

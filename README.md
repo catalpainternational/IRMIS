@@ -123,7 +123,7 @@ usage : `./manage.py make_geojson ainaro > ainaro.json`
 
 ### Set Bridge Fields
 
-This command updates certain fields on the Bridge model which relate to the road the bridge is closest to. This is necessary as 'bridge' has a weak reference to a Road ID. This command does a nearest neighbour search and sets `road_id` `structure_class` and `road_code` based on the nearest matching road.
+This command updates certain fields on the Bridge model which relate to the road the bridge is closest to. This is necessary as 'bridge' has a weak reference to a Road ID. This command does a nearest neighbour search and sets `road_id`, `asset_class` and `road_code` based on the nearest matching road.
 ```
 ./manage.py set_bridge_fields
 ```

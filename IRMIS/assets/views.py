@@ -136,7 +136,7 @@ def road_update(request):
     regular_fields = [
         "road_name",
         "road_code",
-        "asset_class",  # was road_type, specially handled below
+        "asset_class",
         "link_code",
         "link_start_name",
         "link_end_name",
@@ -166,11 +166,6 @@ def road_update(request):
         if getattr(old_road_pb, field) != request_value:
             # add field to list of changes fields
             changed_fields.append(field)
-            # handle mapping over changed field names
-            if field == "asset_class":
-                field = "road_type"
-            elif field == "asset_condition":
-                field = "surface_condition"
             # set attribute on road
             setattr(road, field, request_value)
 
@@ -272,7 +267,7 @@ def protobuf_road_set(request, chunk_name=None):
     """ returns a protobuf object with the set of all Roads """
     roads = Road.objects.all()
     if chunk_name:
-        roads = roads.filter(road_type=chunk_name)
+        roads = roads.filter(asset_class=chunk_name)
 
     roads_protobuf = roads.to_protobuf()
 
@@ -292,11 +287,6 @@ def protobuf_road_surveys(request, pk, survey_attribute=None):
     queryset = Survey.objects.filter(asset_code=road.road_code)
 
     filter_attribute = survey_attribute
-    # These replacements *should* be unnecessary, but we'll leave them in place for now
-    if survey_attribute == "surface_condition":
-        filter_attribute = "asset_condition"
-    elif survey_attribute == "road_type":
-        filter_attribute = "asset_class"
 
     if survey_attribute:
         queryset = queryset.filter(values__has_key=filter_attribute).exclude(
@@ -321,20 +311,6 @@ def pbtimestamp_to_pydatetime(pb_stamp):
     except ValueError:
         pb_date = datetime.strptime(pb_stamp.ToJsonString(), "%Y-%m-%dT%H:%M:%S.%fZ")
     return pytz.utc.localize(pb_date)
-
-
-def road_survey_values(req_values):
-    """ convert the json and do any required key manipulation """
-    if "road_id" in req_values:
-        # road_id is NOT relevant for road surveys (use asset_id instead)
-        # it MUST be removed
-        req_values.pop("road_id", None)
-    if "road_code" in req_values:
-        # road_code is NOT relevant for road surveys (use asset_code instead)
-        # it MUST be removed
-        req_values.pop("road_code", None)
-
-    return req_values
 
 
 @login_required
@@ -442,7 +418,7 @@ def protobuf_reports(request):
             _("'primaryattribute' must contain at least one reportable attribute")
         )
 
-    # handle all of the id, code and asset_class (road_type) permutations
+    # handle all of the id, code and asset_class permutations
     # asset_* will be set to something, if bridge_*, culvert_*, road_* is set
     culvert_id = clean_id_filter(request.GET.get("culvert_id", None), "CULV-")
     bridge_id = clean_id_filter(request.GET.get("bridge_id", None), "BRDG-")
@@ -534,10 +510,10 @@ def protobuf_reports(request):
             final_filters,
             road_id,
             road_code,
-            road_types,
+            road_classes,
             "road_id",
             "road_code",
-            "road_type",
+            "asset_class",
         )
 
     # Asset level attribute
@@ -568,15 +544,7 @@ def protobuf_reports(request):
         asset_report.execute_aggregate_query()
     )
 
-    # These replacements *should* be unnecessary, but we'll leave them in place for now
-    filtered_filters = (
-        json.dumps(final_filters)
-        .replace("""road_type""", """asset_class""")
-        .replace("""structure_class""", """asset_class""")
-        .replace("""surface_condition""", """asset_condition""")
-        .replace("""structure_condition""", """asset_condition""")
-    )
-    report_protobuf.filter = filtered_filters
+    report_protobuf.filter = json.dumps(final_filters)
     report_protobuf.lengths = json.dumps(final_lengths)
 
     if asset_id or asset_code:
@@ -622,7 +590,7 @@ def bridge_create(req_pb):
             "user": get_user_model().objects.get(pk=req_pb.user),
             "structure_code": req_pb.structure_code,
             "structure_name": req_pb.structure_name,
-            "structure_class": req_pb.asset_class,
+            "asset_class": req_pb.asset_class,
             "administrative_area": req_pb.administrative_area,
             "construction_year": req_pb.construction_year,
             "length": req_pb.length,
@@ -647,7 +615,7 @@ def culvert_create(req_pb):
             "user": get_user_model().objects.get(pk=req_pb.user),
             "structure_code": req_pb.structure_code,
             "structure_name": req_pb.structure_name,
-            "structure_class": req_pb.asset_class,
+            "asset_class": req_pb.asset_class,
             "administrative_area": req_pb.administrative_area,
             "construction_year": req_pb.construction_year,
             "length": req_pb.length,
@@ -682,9 +650,6 @@ def bridge_update(bridge, req_pb, db_pb):
         if getattr(db_pb, field) != request_value:
             # add field to list of changes fields
             changed_fields.append(field)
-            # handle field name differences
-            if field == "asset_class":
-                field = "structure_class"
             # set attribute on bridge
             setattr(bridge, field, request_value)
 
@@ -761,9 +726,6 @@ def culvert_update(culvert, req_pb, db_pb):
         if getattr(db_pb, field) != request_value:
             # add field to list of changes fields
             changed_fields.append(field)
-            # handle mapping over changed field names
-            if field == "asset_class":
-                field = "structure_class"
             # set attribute on culvert
             setattr(culvert, field, request_value)
 
@@ -926,13 +888,9 @@ def protobuf_structure_surveys(request, pk, survey_attribute=None):
     # pull any Surveys that cover the requested Structure - based on PK
     queryset = Survey.objects.filter(asset_id=pk)
 
-    filter_attribute = survey_attribute
-    if survey_attribute == "structure_condition":
-        filter_attribute = "asset_condition"
-
-    if filter_attribute:
-        queryset = queryset.filter(values__has_key=filter_attribute).exclude(
-            **{"values__" + filter_attribute + "__isnull": True}
+    if survey_attribute:
+        queryset = queryset.filter(values__has_key=survey_attribute).exclude(
+            **{"values__" + survey_attribute + "__isnull": True}
         )
 
     queryset.order_by("-date_updated")
@@ -1109,9 +1067,6 @@ def survey_create(request):
         return HttpResponse(status=400)
 
     req_values = json.loads(req_pb.values)
-    # convert the json and do any required key manipulation
-    if req_pb.asset_id.startswith("ROAD-"):
-        req_values = road_survey_values(req_values)
 
     # check there's a road/structure to attach this survey to
     if req_pb.asset_id:
@@ -1227,8 +1182,6 @@ def survey_update(request):
         )
 
     req_values = json.loads(req_pb.values)
-    if req_pb.asset_id.startswith("ROAD-"):
-        req_values = road_survey_values(req_values)
 
     # if the new values are empty delete the record and return 200
     if req_values == {}:

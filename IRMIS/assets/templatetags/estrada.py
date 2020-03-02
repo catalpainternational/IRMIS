@@ -34,11 +34,6 @@ def filter_pane():
 
 
 def field_name_standardisation(field_name, common_names, type_suffix):
-    if field_name == "road_type" or field_name == "structure_class":
-        return "asset_class"
-    elif field_name == "surface_condition" or field_name == "structure_condition":
-        return "asset_condition"
-
     if len(common_names) == 0 or (not field_name in common_names):
         return field_name
 
@@ -122,7 +117,7 @@ def get_schema_data():
     )
 
     # Schemas that have the same values for both asset types
-    # Asset Class - AKA road_type or structure_class
+    # Asset Class - AKA structure_class
     asset_schema["asset_class"].update({"options": Asset.ASSET_CLASS_CHOICES})
     # Asset Condition - AKA surface_condition or structure_condition
     asset_schema["asset_condition"].update({"options": Asset.ASSET_CONDITION_CHOICES})

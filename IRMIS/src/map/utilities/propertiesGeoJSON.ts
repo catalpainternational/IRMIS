@@ -53,9 +53,7 @@ export function populateGeoJsonProperties(geoJson: GeoJSON, propertiesLookup: { 
 
         // Special handling for the mandatory property `featureType`
         if (!feature.properties.featureType) {
-            if (feature.properties.roadType) {
-                feature.properties.featureType = "Road";
-            }
+            feature.properties.featureType = "Road";
         }
     });
 }

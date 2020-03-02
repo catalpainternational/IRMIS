@@ -65,7 +65,7 @@ def update_from_shapefiles(shape_file_folder):
         ("RRMPIS_2014.shp", "RUR", update_road_rrpmis),
     )
     update_count = 0
-    for file_name, road_type, update in sources:
+    for file_name, asset_class, update in sources:
         shp_path = str(Path(shape_file_folder) / file_name)
         shp_file = DataSource(shp_path)
 
@@ -136,7 +136,7 @@ def import_shapefiles(shape_file_folder, asset="road"):
         print("No or bad asset argument given!")
         exit(0)
 
-    for file_name, asset_type, populate in sources:
+    for file_name, asset_class, populate in sources:
         shp_path = str(Path(shape_file_folder) / file_name)
         shp_file = DataSource(shp_path)
 
@@ -172,7 +172,7 @@ def import_shapefiles(shape_file_folder, asset="road"):
 
             # create the unsaved Asset object
             if asset == "road":
-                asset_obj = Road(geom=asset_geometry.wkt, road_type=asset_type)
+                asset_obj = Road(geom=asset_geometry.wkt, asset_class=asset_class)
             elif asset == "bridge":
                 asset_obj = Bridge(geom=asset_geometry.wkt)
             elif asset == "culvert":
@@ -218,7 +218,7 @@ def populate_road_municipal(road, feature):
     road.road_name = feature.get("descriptio")
     road.road_code = feature.get("name")
     road.link_length = feature.get("lenkm")
-    road.surface_condition = SURFACE_COND_MAPPING_MUNI[feature.get("condi")]
+    road.asset_condition = SURFACE_COND_MAPPING_MUNI[feature.get("condi")]
 
 
 def populate_road_highway(road, feature):
@@ -261,13 +261,9 @@ def populate_road_rrpmis(road, feature):
     road.administrative_area = feature.get("distname")
     road.carriageway_width = feature.get("cway_w")
     road.road_code = feature.get("rdcode_cn")
-    surface_condition = feature.get("pvment_con")
-    if (
-        surface_condition
-        and surface_condition != "0"
-        and surface_condition != "Unlined"
-    ):
-        road.surface_condition = SURFACE_COND_MAPPING_RRMPIS[feature.get("pvment_con")]
+    asset_condition = feature.get("pvment_con")
+    if asset_condition and asset_condition != "0" and asset_condition != "Unlined":
+        road.asset_condition = SURFACE_COND_MAPPING_RRMPIS[feature.get("pvment_con")]
     surface_type = feature.get("pvment_typ")
     if surface_type and surface_type != "0":
         surface_code = SURFACE_TYPE_MAPPING_RRMPIS[surface_type]
@@ -385,11 +381,11 @@ def collate_geometries():
     """
 
     geometry_sets = dict(
-        highway=Road.objects.filter(road_type="HIGH"),
-        national=Road.objects.filter(road_type="NAT"),
-        municipal=Road.objects.filter(road_type="MUN"),
-        urban=Road.objects.filter(road_type="URB"),
-        rural=Road.objects.filter(road_type="RUR"),
+        highway=Road.objects.filter(asset_class="HIGH"),
+        national=Road.objects.filter(asset_class="NAT"),
+        municipal=Road.objects.filter(asset_class="MUN"),
+        urban=Road.objects.filter(asset_class="URB"),
+        rural=Road.objects.filter(asset_class="RUR"),
         bridge=Bridge.objects.all(),
         culvert=Culvert.objects.all(),
     )

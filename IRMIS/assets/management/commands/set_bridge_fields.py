@@ -23,8 +23,8 @@ SET road_id = (
     "road_code": """
 UPDATE assets_bridge SET road_code = (SELECT road_code FROM assets_road WHERE assets_road.id = assets_bridge.road_id);
 """,
-    "structure_class": """
-UPDATE assets_bridge SET structure_class = (SELECT road_type FROM assets_road WHERE assets_road.id = assets_bridge.road_id);
+    "asset_class": """
+UPDATE assets_bridge SET asset_class = (SELECT asset_class FROM assets_road WHERE assets_road.id = assets_bridge.road_id);
 """,
 }
 
@@ -53,11 +53,11 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         def nullify(c: connection.cursor):
             """
-            Reset the fields which we write: road id, road code and structure class
+            Reset the fields which we write: road id, road code and asset class (structure class)
             """
             self.stdout.write("NULL all structures")
             inform_current_state(c)
-            c.execute("UPDATE assets_bridge SET structure_class=NULL;")
+            c.execute("UPDATE assets_bridge SET asset_class=NULL;")
             c.execute("UPDATE assets_bridge SET road_id=NULL;")
             c.execute("UPDATE assets_bridge SET road_code=NULL;")
 
@@ -74,7 +74,7 @@ class Command(BaseCommand):
             for r in results:
                 self.stdout.write("    {} : {}".format(*r))
             c.execute(
-                "SELECT structure_class, COUNT(road_code) FROM assets_bridge GROUP BY structure_class;"
+                "SELECT asset_class, COUNT(road_code) FROM assets_bridge GROUP BY asset_class;"
             )
             results = c.fetchall()
             self.stdout.write("Bridges by Structure Class")
@@ -90,9 +90,9 @@ class Command(BaseCommand):
                 pass
             else:
                 # When called with -s do no updates,
-                # by defautl update road_id road_code and structure_class
+                # by defautl update road_id road_code and asset_class
                 c.execute(sql["road_id"], [options["distance"]])
                 c.execute(sql["road_code"])
-                c.execute(sql["structure_class"])
+                c.execute(sql["asset_class"])
 
             inform_current_state(c)

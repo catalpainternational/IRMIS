@@ -183,9 +183,8 @@ export const estradaTableColumns = [
         defaultContent: "",
     },
     {
-        // 'road_type' name has been deprecated is replaced with 'asset_class'
-        // everywhere except the model definition itself
-        title: EstradaRoad.getFieldName("road_type") || window.gettext("Asset Class"),
+        // 'road_type' field name has been deprecated is replaced with 'asset_class'
+        title: EstradaRoad.getFieldName("asset_class") || window.gettext("Asset Class"),
         data: "assetClass",
         defaultContent: "",
         visible: false,

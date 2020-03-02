@@ -62,18 +62,12 @@ export class EstradaSurvey extends Survey implements IEstrada {
     // All of the `values` defined in 'make_road_surveys.py' should also be present
     // in the following `get` properties
     get assetCondition() {
-        const assetCondition = this.values.asset_condition
-            || this.values.surface_condition
-            || this.values.structure_condition
-            || undefined;
+        const assetCondition = this.values.asset_condition || undefined;
         return assetCondition;
     }
 
     set assetCondition(value: string) {
         this.setValue(value, "asset_condition");
-        // The following two are deprecated for surveys
-        this.setValue(value, "surface_condition");
-        this.setValue(value, "structure_condition");
     }
 
     get conditionDescription() {
