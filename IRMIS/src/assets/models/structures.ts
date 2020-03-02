@@ -181,11 +181,6 @@ export class EstradaBridge extends Bridge implements IAsset {
         return choice_or_default(this.getAssetClass(), ASSET_CLASS_CHOICES);
     }
 
-    /** assetCondition is the most recent structure condition from the surveys */
-    get assetCondition() {
-        return choice_or_default(this.getAssetCondition(), ASSET_CONDITION_CHOICES);
-    }
-
     get structureType() {
         return choice_or_default(this.getStructureType(), STRUCTURE_TYPE_BRIDGE_CHOICES);
     }
@@ -209,6 +204,16 @@ export class EstradaBridge extends Bridge implements IAsset {
 
     set photos(values: EstradaPhoto[] | undefined) {
         this.setPhotosList(values as Photo[]);
+    }
+
+    /** assetCondition is the most recent structure condition from the surveys */
+    get assetCondition() {
+        return choice_or_default(this.getAssetCondition(), ASSET_CONDITION_CHOICES);
+    }
+
+    /** conditionDescription is the most recent condition description from the surveys */
+    get conditionDescription() {
+        return this.getConditionDescription();
     }
 
     /** A Null or None in the protobuf is indicated by a negative value */
@@ -357,11 +362,6 @@ export class EstradaCulvert extends Culvert implements IAsset {
         return choice_or_default(this.getAssetClass(), ASSET_CLASS_CHOICES);
     }
 
-    /** assetCondition is the most recent structure condition from the surveys */
-    get assetCondition() {
-        return choice_or_default(this.getAssetCondition(), ASSET_CONDITION_CHOICES);
-    }
-
     get structureType() {
         return choice_or_default(this.getStructureType(), STRUCTURE_TYPE_CULVERT_CHOICES);
     }
@@ -385,6 +385,16 @@ export class EstradaCulvert extends Culvert implements IAsset {
 
     set photos(values: EstradaPhoto[] | undefined) {
         this.setPhotosList(values as Photo[]);
+    }
+
+    /** assetCondition is the most recent structure condition from the surveys */
+    get assetCondition() {
+        return choice_or_default(this.getAssetCondition(), ASSET_CONDITION_CHOICES);
+    }
+
+    /** conditionDescription is the most recent condition description from the surveys */
+    get conditionDescription() {
+        return this.getConditionDescription();
     }
 
     /** A Null or None in the protobuf is indicated by a negative value */

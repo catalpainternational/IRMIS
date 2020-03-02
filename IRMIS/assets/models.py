@@ -163,7 +163,8 @@ class SurveyQuerySet(models.QuerySet):
 
         fields = dict(
             id="id",
-            structure_id="structure_id",
+            asset_id="asset_id",
+            asset_code="asset_code",
             road_id="road_id",
             road_code="road_code",
             chainage_start="chainage_start",
@@ -231,18 +232,31 @@ class Survey(models.Model):
 
     objects = SurveyManager()
 
-    # a disconnected reference to the road record this survey relates to
-    road_id = models.IntegerField(verbose_name=_("Road Id"), blank=True, null=True)
-    road_code = models.CharField(
-        verbose_name=_("Road Code"), validators=[no_spaces], max_length=25
-    )
-    # Global ID for a structure the survey links to (ex. BRDG-42)
-    structure_id = models.CharField(
-        verbose_name=_("Structure Id"),
+    # Global ID for an asset the survey links to (ex. BRDG-42)
+    asset_id = models.CharField(
+        verbose_name=_("Asset Id"),
+        validators=[no_spaces],
         blank=True,
         null=True,
-        validators=[no_spaces],
         max_length=15,
+    )
+    asset_code = models.CharField(
+        verbose_name=_("Asset Code"),
+        validators=[no_spaces],
+        blank=True,
+        null=True,
+        max_length=25,
+    )
+    # a disconnected reference to the road record this survey relates to
+    # for a survey connected to a road, this will be null and the actual value will be in asset_*
+    # for a survey connected to a structure, this is the road that that structure is on
+    road_id = models.IntegerField(verbose_name=_("Road Id"), blank=True, null=True)
+    road_code = models.CharField(
+        verbose_name=_("Road Code"),
+        validators=[no_spaces],
+        blank=True,
+        null=True,
+        max_length=25,
     )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -359,7 +373,15 @@ class RoadQuerySet(models.QuerySet):
             rainfall="rainfall",
         )
 
+        survey = (
+            Survey.objects.filter(asset_id__startswith="ROAD-")
+            .annotate(parent_id=Cast(Substr("road_id", 6), models.IntegerField()))
+            .filter(parent_id=OuterRef("id"))
+            .order_by("-date_surveyed")
+        )
         annotations = start_end_point_annos("geom")
+        # Add stuff from the survey to the annotations above
+        # some_survey_value=Subquery(survey.values("values__some_survey_value")[:1]),
         roads = (
             self.order_by("id")
             .annotate(**annotations)
@@ -389,6 +411,10 @@ class RoadQuerySet(models.QuerySet):
             end = Projection(x=road["end_x"], y=road["end_y"])
             road_protobuf.projection_start.CopyFrom(start)
             road_protobuf.projection_end.CopyFrom(end)
+
+            # add stuff from the survey here
+            # if road["some_survey_value"]:
+            #     road_protobuf.some_survey_value = road["some_survey_value"]
 
         return roads_protobuf
 
@@ -571,7 +597,7 @@ class Road(models.Model):
         choices=Asset.ASSET_CLASS_CHOICES,
         blank=True,
         null=True,
-        help_text=_("Choose the road class"),
+        help_text=_("Choose the asset class"),
     )
     road_status = models.ForeignKey(
         "RoadStatus",
@@ -684,6 +710,100 @@ class StructureProtectionType(models.Model):
         return self.name
 
 
+def get_structures_with_survey_data(
+    self_structure, asset_type, regular_fields, datetime_fields, numeric_fields
+):
+    """ Get the structures (Bridges or Culverts) with the survey data that we're interested in"""
+
+    survey = (
+        Survey.objects.filter(
+            asset_id__startswith="%s-" % asset_type, values__has_key="asset_condition"
+        )
+        .annotate(parent_id=Cast(Substr("asset_id", 6), models.IntegerField()))
+        .filter(parent_id=OuterRef("id"))
+        .order_by("-date_surveyed")
+    )
+    structures = (
+        self_structure.order_by("id")
+        .annotate(
+            to_wgs=models.functions.Transform("geom", 4326),
+            asset_condition=Subquery(survey.values("values__asset_condition")[:1]),
+            condition_description=Subquery(
+                survey.values("values__condition_description")[:1]
+            ),
+        )
+        .prefetch_related(photos_prefetch)
+    )
+
+    return structures
+
+
+def structure_to_protobuf(
+    structure, structure_protobuf, asset_type, regular_fields, numeric_fields
+):
+    """ Take an individual structure (Bridge or Culvert)
+    and use it to fill in an empty corresponding protobuf object """
+
+    structure_id = "%s-%s" % (asset_type, structure.id)
+    structure_protobuf.id = structure_id
+    if getattr(structure, "geojson_file_id", None):
+        structure_protobuf.geojson_id = int(structure.geojson_file_id)
+    # else:
+    # Raise a warning to go into the logs that collate_geometries
+    # functionality requires executing
+
+    for protobuf_key, query_key in regular_fields.items():
+        attr = getattr(structure, query_key, None)
+        if attr:
+            # check if it is a special "code" field
+            if protobuf_key in [
+                "structure_type",
+                "material",
+                "protection_upstream",
+                "protection_downstream",
+            ]:
+                setattr(structure_protobuf, protobuf_key, attr.code)
+            else:
+                setattr(structure_protobuf, protobuf_key, attr)
+
+    for protobuf_key, query_key in numeric_fields.items():
+        raw_value = getattr(structure, query_key, None)
+        if raw_value is not None:
+            setattr(structure_protobuf, protobuf_key, raw_value)
+        else:
+            # No value available, so use -ve as a substitute for None
+            setattr(structure_protobuf, protobuf_key, -1)
+
+    if getattr(structure, "date_created", None):
+        ts = timestamp_from_datetime(structure.date_created)
+        structure_protobuf.date_created.CopyFrom(ts)
+
+    if getattr(structure, "last_modified", None):
+        ts = timestamp_from_datetime(structure.last_modified)
+        structure_protobuf.last_modified.CopyFrom(ts)
+
+    if getattr(structure, "to_wgs", None):
+        wgs = getattr(structure, "to_wgs", None)
+        pt = Projection(x=wgs.x, y=wgs.y)
+        structure_protobuf.geom_point.CopyFrom(pt)
+
+    if getattr(structure, "asset_condition", None):
+        structure_protobuf.asset_condition = getattr(structure, "asset_condition", None)
+
+    if getattr(structure, "condition_description", None):
+        structure_protobuf.condition_description = getattr(
+            structure, "condition_description", None
+        )
+
+    for photo in structure.photos.all():
+        photo_protobuf = bridge_protobuf.photos.add()
+        setattr(photo_protobuf, "id", photo.id)
+        setattr(photo_protobuf, "url", photo.file.url)
+        setattr(photo_protobuf, "fk_link", structure_id)
+        if photo.description:
+            setattr(photo_protobuf, "description", photo.description)
+
+
 class BridgeClass(models.Model):
     code = models.CharField(max_length=3, unique=True, verbose_name=_("Code"))
     name = models.CharField(max_length=50, verbose_name=_("Name"))
@@ -733,79 +853,20 @@ class BridgeQuerySet(models.QuerySet):
             construction_year="construction_year",
         )
 
-        photos_prefetch = Prefetch(
-            "photos", queryset=Photo.objects.filter(bridge__id__in=self.values("id"))
+        asset_type = "BRDG"
+        structures = get_structures_with_survey_data(
+            self, asset_type, regular_fields, datetime_fields, numeric_fields
         )
 
-        survey = (
-            Survey.objects.filter(structure_id__startswith="BRDG-")
-            .annotate(bridge_id=Cast(Substr("structure_id", 6), models.IntegerField()))
-            .filter(bridge_id=OuterRef("id"))
-            .order_by("-date_surveyed")
-        )
-
-        bridges = (
-            self.order_by("id")
-            .annotate(
-                to_wgs=models.functions.Transform("geom", 4326),
-                asset_condition=Subquery(survey.values("values__asset_condition")[:1]),
+        for structure in structures:
+            structure_protobuf = structures_protobuf.bridges.add()
+            structure_to_protobuf(
+                structure,
+                structure_protobuf,
+                asset_type,
+                regular_fields,
+                numeric_fields,
             )
-            .prefetch_related(photos_prefetch)
-        )
-
-        for bridge in bridges:
-            bridge_protobuf = structures_protobuf.bridges.add()
-            bridge_protobuf.id = "BRDG-" + str(bridge.id)
-            bridge_protobuf.geojson_id = int(bridge.geojson_file_id)
-
-            for protobuf_key, query_key in regular_fields.items():
-                if getattr(bridge, query_key, None):
-                    attr = getattr(bridge, query_key, None)
-                    # check if it is a special "code" field
-                    if protobuf_key in [
-                        "structure_type",
-                        "material",
-                        "protection_upstream",
-                        "protection_downstream",
-                    ]:
-                        setattr(bridge_protobuf, protobuf_key, attr.code)
-                    else:
-                        setattr(bridge_protobuf, protobuf_key, attr)
-
-            for protobuf_key, query_key in numeric_fields.items():
-                raw_value = getattr(bridge, query_key, None)
-                if raw_value is not None:
-                    setattr(bridge_protobuf, protobuf_key, raw_value)
-                else:
-                    # No value available, so use -ve as a substitute for None
-                    setattr(bridge_protobuf, protobuf_key, -1)
-
-            if getattr(bridge, "date_created", None):
-                ts = timestamp_from_datetime(bridge.date_created)
-                bridge_protobuf.date_created.CopyFrom(ts)
-
-            if getattr(bridge, "last_modified", None):
-                ts = timestamp_from_datetime(bridge.last_modified)
-                bridge_protobuf.last_modified.CopyFrom(ts)
-
-            if getattr(bridge, "to_wgs", None):
-                wgs = getattr(bridge, "to_wgs", None)
-                pt = Projection(x=wgs.x, y=wgs.y)
-                bridge_protobuf.geom_point.CopyFrom(pt)
-
-            if getattr(bridge, "asset_condition", None):
-                bridge_protobuf.asset_condition = getattr(
-                    bridge, "asset_condition", None
-                )
-
-            photos = bridge.photos.all()
-            for photo in photos:
-                photo_protobuf = bridge_protobuf.photos.add()
-                setattr(photo_protobuf, "id", photo.id)
-                setattr(photo_protobuf, "url", photo.file.url)
-                setattr(photo_protobuf, "fk_link", "BRDG-" + str(photo.object_id))
-                if photo.description:
-                    setattr(photo_protobuf, "description", photo.description)
 
         return structures_protobuf
 
@@ -1024,79 +1085,20 @@ class CulvertQuerySet(models.QuerySet):
             number_cells="number_cells",
         )
 
-        photos_prefetch = Prefetch(
-            "photos", queryset=Photo.objects.filter(culvert__id__in=self.values("id"))
+        asset_type = "CULV"
+        structures = get_structures_with_survey_data(
+            self, asset_type, regular_fields, datetime_fields, numeric_fields
         )
 
-        survey = (
-            Survey.objects.filter(structure_id__startswith="CULV-")
-            .annotate(culvert_id=Cast(Substr("structure_id", 6), models.IntegerField()))
-            .filter(culvert_id=OuterRef("id"))
-            .order_by("-date_surveyed")
-        )
-
-        culverts = (
-            self.order_by("id")
-            .annotate(
-                to_wgs=models.functions.Transform("geom", 4326),
-                asset_condition=Subquery(survey.values("values__asset_condition")[:1]),
+        for structure in structures:
+            structure_protobuf = structures_protobuf.culverts.add()
+            structure_to_protobuf(
+                structure,
+                structure_protobuf,
+                asset_type,
+                regular_fields,
+                numeric_fields,
             )
-            .prefetch_related(photos_prefetch)
-        )
-
-        for culvert in culverts:
-            culvert_protobuf = structures_protobuf.culverts.add()
-            culvert_protobuf.id = "CULV-" + str(culvert.id)
-            culvert_protobuf.geojson_id = int(culvert.geojson_file_id)
-
-            for protobuf_key, query_key in regular_fields.items():
-                if getattr(culvert, query_key, None):
-                    attr = getattr(culvert, query_key, None)
-                    # check if it is a special "code" field
-                    if protobuf_key in [
-                        "structure_type",
-                        "material",
-                        "protection_upstream",
-                        "protection_downstream",
-                    ]:
-                        setattr(culvert_protobuf, protobuf_key, attr.code)
-                    else:
-                        setattr(culvert_protobuf, protobuf_key, attr)
-
-            for protobuf_key, query_key in numeric_fields.items():
-                raw_value = getattr(culvert, query_key, None)
-                if raw_value is not None:
-                    setattr(culvert_protobuf, protobuf_key, raw_value)
-                else:
-                    # No value available, so use -ve as a substitute for None
-                    setattr(culvert_protobuf, protobuf_key, -1)
-
-            if getattr(culvert, "date_created", None):
-                ts = timestamp_from_datetime(culvert.date_created)
-                culvert_protobuf.date_created.CopyFrom(ts)
-
-            if getattr(culvert, "last_modified", None):
-                ts = timestamp_from_datetime(culvert.last_modified)
-                culvert_protobuf.last_modified.CopyFrom(ts)
-
-            if getattr(culvert, "to_wgs", None):
-                wgs = getattr(culvert, "to_wgs", None)
-                pt = Projection(x=wgs.x, y=wgs.y)
-                culvert_protobuf.geom_point.CopyFrom(pt)
-
-            if getattr(culvert, "asset_condition", None):
-                culvert_protobuf.asset_condition = getattr(
-                    culvert, "asset_condition", None
-                )
-
-            photos = culvert.photos.all()
-            for photo in photos:
-                photo_protobuf = culvert_protobuf.photos.add()
-                setattr(photo_protobuf, "id", photo.id)
-                setattr(photo_protobuf, "url", photo.file.url)
-                setattr(photo_protobuf, "fk_link", "CULV-" + str(photo.object_id))
-                if photo.description:
-                    setattr(photo_protobuf, "description", photo.description)
 
         return structures_protobuf
 

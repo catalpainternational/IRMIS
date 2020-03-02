@@ -7,7 +7,7 @@ import { EstradaPoint } from "./models/structures";
  * the default for defaultValue is empty string ""
  */
 export function choice_or_default(value: string, choices: { [name: string]: any }, defaultValue = ""): string {
-    return "" + (value ? choices[value] || defaultValue : defaultValue);
+    return ("" + (value ? choices[value] || defaultValue : defaultValue)).trim();
 }
 
 export function invertChoices(choices: { [name: string]: any }) {

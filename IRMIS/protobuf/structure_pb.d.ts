@@ -101,6 +101,9 @@ export class Bridge extends jspb.Message {
   getAssetCondition(): string;
   setAssetCondition(value: string): void;
 
+  getConditionDescription(): string;
+  setConditionDescription(value: string): void;
+
   clearPhotosList(): void;
   getPhotosList(): Array<photo_pb.Photo>;
   setPhotosList(value: Array<photo_pb.Photo>): void;
@@ -147,6 +150,7 @@ export namespace Bridge {
     geomPoint?: roads_pb.Projection.AsObject,
     geojsonId: number,
     assetCondition: string,
+    conditionDescription: string,
     photosList: Array<photo_pb.Photo.AsObject>,
     riverName: string,
     numberSpans: number,
@@ -221,6 +225,9 @@ export class Culvert extends jspb.Message {
   getAssetCondition(): string;
   setAssetCondition(value: string): void;
 
+  getConditionDescription(): string;
+  setConditionDescription(value: string): void;
+
   clearPhotosList(): void;
   getPhotosList(): Array<photo_pb.Photo>;
   setPhotosList(value: Array<photo_pb.Photo>): void;
@@ -264,6 +271,7 @@ export namespace Culvert {
     geomPoint?: roads_pb.Projection.AsObject,
     geojsonId: number,
     assetCondition: string,
+    conditionDescription: string,
     photosList: Array<photo_pb.Photo.AsObject>,
     height: number,
     numberCells: number,

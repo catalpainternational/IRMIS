@@ -287,20 +287,23 @@ def protobuf_road_surveys(request, pk, survey_attribute=None):
     # get the Road link requested
     road = get_object_or_404(Road.objects.all(), pk=pk)
     # pull any Surveys that cover the Road Code above
-    queryset = Survey.objects.filter(road_code=road.road_code)
+    # note: road_* fields in the surveys are ONLY relevant for Bridges or Culverts
+    # the asset_* fields in a survey correspond to the road_* fields in a Road
+    queryset = Survey.objects.filter(asset_code=road.road_code)
 
     filter_attribute = survey_attribute
-    if survey_attribute == "asset_condition":
-        filter_attribute = "surface_condition"
-    elif survey_attribute == "asset_class":
-        filter_attribute = "road_type"
+    # These replacements *should* be unnecessary, but we'll leave them in place for now
+    if survey_attribute == "surface_condition":
+        filter_attribute = "asset_condition"
+    elif survey_attribute == "road_type":
+        filter_attribute = "asset_class"
 
     if survey_attribute:
         queryset = queryset.filter(values__has_key=filter_attribute).exclude(
             **{"values__" + filter_attribute + "__isnull": True}
         )
 
-    queryset.order_by("road_code", "chainage_start", "chainage_end", "-date_updated")
+    queryset.order_by("asset_code", "chainage_start", "chainage_end", "-date_updated")
     surveys_protobuf = queryset.to_protobuf()
 
     return HttpResponse(
@@ -322,10 +325,14 @@ def pbtimestamp_to_pydatetime(pb_stamp):
 
 def road_survey_values(req_values):
     """ convert the json and do any required key manipulation """
-    if "asset_class" in req_values:
-        req_values["road_type"] = req_values.pop("asset_class")
-    if "asset_condition" in req_values:
-        req_values["surface_condition"] = req_values.pop("asset_condition")
+    if "road_id" in req_values:
+        # road_id is NOT relevant for road surveys (use asset_id instead)
+        # it MUST be removed
+        req_values.pop("road_id", None)
+    if "road_code" in req_values:
+        # road_code is NOT relevant for road surveys (use asset_code instead)
+        # it MUST be removed
+        req_values.pop("road_code", None)
 
     return req_values
 
@@ -366,29 +373,29 @@ def clean_id_filter(id_value, prefix):
 
 def id_filter_consistency(primary_id, culvert_id, bridge_id, road_id=None):
     if primary_id != None:
-        if culvert_id != None and "CULV-" + str(asset_id) == culvert_id:
+        if culvert_id != None and "CULV-" + str(primary_id) == culvert_id:
             primary_id = culvert_id
-        if bridge_id != None and "BRDG-" + str(asset_id) == bridge_id:
+        if bridge_id != None and "BRDG-" + str(primary_id) == bridge_id:
             primary_id = bridge_id
-        if road_id != None and "ROAD-" + str(asset_id) == road_id:
+        if road_id != None and "ROAD-" + str(primary_id) == road_id:
             primary_id = road_id
 
     return primary_id
 
 
-def filter_consistency(asset, structure, culvert, bridge, road):
-    if structure == None and (bridge != None or culvert != None):
-        if bridge != None:
-            structure = bridge
-        else:
-            structure = culvert
-    if asset == None and (structure != None or road != None):
-        if structure != None:
-            asset = structure
+def filter_consistency(asset, culvert, bridge, road):
+    """ If asset is not set, then it is set to a structure (bridge, culvert),
+    in preference to be set to a road value """
+    if asset == None and (bridge != None or culvert != None or road != None):
+        if bridge != None or culvert != None:
+            if bridge != None:
+                asset = bridge
+            else:
+                asset = culvert
         else:
             asset = road
 
-    return asset, structure
+    return asset
 
 
 def filters_consistency(assets, structures, culverts, bridges, roads):
@@ -437,36 +444,28 @@ def protobuf_reports(request):
 
     # handle all of the id, code and asset_class (road_type) permutations
     # asset_* will be set to something, if bridge_*, culvert_*, road_* is set
-    # structure_* will be set if either bridge_* or culvert_* is set
     culvert_id = clean_id_filter(request.GET.get("culvert_id", None), "CULV-")
     bridge_id = clean_id_filter(request.GET.get("bridge_id", None), "BRDG-")
     road_id = clean_id_filter(request.GET.get("road_id", None), "ROAD-")
     asset_id = id_filter_consistency(
         request.GET.get("asset_id", None), culvert_id, bridge_id, road_id
     )
-    structure_id = id_filter_consistency(
-        request.GET.get("structure_id", None), culvert_id, bridge_id
-    )
-    asset_id, structure_id = filter_consistency(
-        asset_id, structure_id, culvert_id, bridge_id, road_id
-    )
 
     culvert_code = request.GET.get("culvert_code", None)
     bridge_code = request.GET.get("bridge_code", None)
     road_code = request.GET.get("road_code", None)
-    asset_code = request.GET.get("asset_code", None)
-    structure_code = request.GET.get("structure_code", None)
-    asset_code, structure_code = filter_consistency(
-        asset_code, structure_code, culvert_code, bridge_code, road_code
+    asset_code = filter_consistency(
+        request.GET.get("asset_code", None), culvert_code, bridge_code, road_code
     )
 
     culvert_classes = request.GET.getlist("culvert_class", [])
     bridge_classes = request.GET.get("bridge_class", [])
-    road_types = request.GET.getlist("road_type", [])  # road_type=X
-    asset_classes = request.GET.getlist("asset_class", [])
-    structure_classes = request.GET.getlist("structure_class", [])
-    asset_classes, structure_classes = filter_consistency(
-        asset_classes, structure_classes, culvert_classes, bridge_classes, road_types
+    road_classes = request.GET.getlist("road_class", [])
+    asset_classes = filter_consistency(
+        request.GET.getlist("asset_class", []),
+        culvert_classes,
+        bridge_classes,
+        road_classes,
     )
 
     # handle the other [array] filters
@@ -492,7 +491,7 @@ def protobuf_reports(request):
         # chainage range is only valid if we've specified a road
         chainage_start = request.GET.get("chainagestart", None)
         chainage_end = request.GET.get("chainageend", None)
-    if structure_id or structure_code:
+    if bridge_id or bridge_code or culvert_id or culvert_code:
         # chainage is only valid if we've specified a bridge or culvert
         chainage = request.GET.get("chainage", None)
     # If chainage has been supplied, ensure it is clean
@@ -520,7 +519,7 @@ def protobuf_reports(request):
 
     # Set the final_filters for all of the various id, code and class values
     # Of the specific asset types only road_* may be included,
-    # and that's only if structure_* is specified
+    # and that's only if a bridge_* or culvert_* is specified
     filter_priority(
         final_filters,
         asset_id,
@@ -530,20 +529,7 @@ def protobuf_reports(request):
         "asset_code",
         "asset_class",
     )
-    filter_priority(
-        final_filters,
-        structure_id,
-        structure_code,
-        structure_classes,
-        "structure_id",
-        "structure_code",
-        "structure_class",
-    )
-    if (
-        final_filters["structure_id"] != None
-        or final_filters["structure_code"] != None
-        or final_filters["structure_class"] != None
-    ):
+    if bridge_id or bridge_code or culvert_id or culvert_code:
         filter_priority(
             final_filters,
             road_id,
@@ -571,7 +557,9 @@ def protobuf_reports(request):
     if (road_id or road_code) and chainage_start and chainage_end:
         final_filters["chainage_start"] = chainage_start
         final_filters["chainage_end"] = chainage_end
-    if (structure_id or structure_code or road_id or road_code) and chainage:
+    if (
+        bridge_id or bridge_code or culvert_id or culvert_code or road_id or road_code
+    ) and chainage:
         final_filters["chainage"] = chainage
 
     # Initialise the Report
@@ -580,6 +568,7 @@ def protobuf_reports(request):
         asset_report.execute_aggregate_query()
     )
 
+    # These replacements *should* be unnecessary, but we'll leave them in place for now
     filtered_filters = (
         json.dumps(final_filters)
         .replace("""road_type""", """asset_class""")
@@ -833,7 +822,13 @@ def culvert_update(culvert, req_pb, db_pb):
     return culvert, changed_fields
 
 
-PREFIXES_MAPPING = {
+ASSET_PREFIXES_MAPPING = {
+    "ROAD": {
+        "model": Road,
+        "update": road_update,
+        "create": None,
+        "proto": roads_pb2.Road,
+    },
     "BRDG": {
         "name": "bridge",
         "model": Bridge,
@@ -853,13 +848,13 @@ PREFIXES_MAPPING = {
 }
 
 
-def get_mapping(pk):
-    """ Take in a globally unique protobuf PK and splits out the Strucutre prefix to get
-    lookup the specific Structure's mapping, along with the Django DB PK to access it."""
+def get_asset_mapping(pk):
+    """ Take in a globally unique protobuf PK and splits out the Asset prefix to get
+    lookup the specific Asset's mapping, along with the Django DB PK to access it."""
     split = pk.split("-")
     prefix = split[0]
     django_pk = int(split[1])
-    mapping = PREFIXES_MAPPING[prefix]
+    mapping = ASSET_PREFIXES_MAPPING[prefix]
     return prefix, django_pk, mapping
 
 
@@ -869,11 +864,12 @@ def protobuf_structure(request, pk):
     if request.method != "GET":
         return HttpResponse(status=405)
 
-    prefix, django_pk, mapping = get_mapping(pk)
-    structure = mapping["model"].objects.filter(pk=django_pk)
+    prefix, django_pk, mapping = get_asset_mapping(pk)
     survey = (
-        Survey.objects.filter(structure_id__startswith=prefix + "-")
-        .annotate(struct_id=Cast(Substr("structure_id", 6), models.IntegerField()))
+        Survey.objects.filter(
+            asset_id__startswith=prefix + "-", values__has_key="asset_condition"
+        )
+        .annotate(struct_id=Cast(Substr("asset_id", 6), models.IntegerField()))
         .filter(struct_id=OuterRef("id"))
         .order_by("-date_surveyed")
     )
@@ -881,7 +877,10 @@ def protobuf_structure(request, pk):
         mapping["model"]
         .objects.filter(pk=django_pk)
         .annotate(
-            asset_condition=Subquery(survey.values("values__asset_condition")[:1])
+            asset_condition=Subquery(survey.values("values__asset_condition")[:1]),
+            condition_description=Subquery(
+                survey.values("values__condition_description")[:1]
+            ),
         )
     )
 
@@ -900,7 +899,7 @@ def protobuf_structure(request, pk):
 @login_required
 def protobuf_structure_audit(request, pk):
     """ returns a protobuf object with the set of all audit history items for a Structure """
-    prefix, django_pk, mapping = get_mapping(pk)
+    prefix, django_pk, mapping = get_asset_mapping(pk)
 
     queryset = mapping["model"].objects.all()
     structure = get_object_or_404(queryset, pk=django_pk)
@@ -923,9 +922,9 @@ def protobuf_structure_audit(request, pk):
 
 @login_required
 def protobuf_structure_surveys(request, pk, survey_attribute=None):
-    """ returns a protobuf object with the set of surveys for a particular structure pk"""
+    """ returns a protobuf object with the set of surveys for a particular structures pk"""
     # pull any Surveys that cover the requested Structure - based on PK
-    queryset = Survey.objects.filter(structure_id=pk)
+    queryset = Survey.objects.filter(asset_id=pk)
 
     filter_attribute = survey_attribute
     if survey_attribute == "structure_condition":
@@ -990,7 +989,10 @@ def structure_create(request, structure_type):
     elif request.content_type != "application/octet-stream":
         return HttpResponse(status=400)
 
-    prefix, django_pk, mapping = get_mapping(structure_type)
+    prefix, django_pk, mapping = get_asset_mapping(structure_type)
+
+    if prefix == "ROAD":
+        return HttpResponse(status=400)
 
     # parse Bridge from protobuf in request body
     req_pb = structure_pb2.Bridge()
@@ -1039,7 +1041,7 @@ def structure_update(request, pk):
     elif request.content_type != "application/octet-stream":
         return HttpResponse(status=400)
 
-    prefix, django_pk, mapping = get_mapping(pk)
+    prefix, django_pk, mapping = get_asset_mapping(pk)
 
     # parse Structure from protobuf in request body
     req_pb = mapping["proto"]
@@ -1103,19 +1105,17 @@ def survey_create(request):
     req_pb = req_pb.FromString(request.body)
 
     # check that Protobuf parsed
-    if not req_pb.road_id and not req_pb.structure_id:
+    if not req_pb.asset_id:
         return HttpResponse(status=400)
 
     req_values = json.loads(req_pb.values)
     # convert the json and do any required key manipulation
-    if not req_pb.structure_id:
+    if req_pb.asset_id.startswith("ROAD-"):
         req_values = road_survey_values(req_values)
 
     # check there's a road/structure to attach this survey to
-    if req_pb.road_id:
-        survey_asset = get_object_or_404(Road.objects.filter(pk=req_pb.road_id))
-    elif req_pb.structure_id:
-        prefix, django_pk, mapping = get_mapping(req_pb.structure_id)
+    if req_pb.asset_id:
+        prefix, django_pk, mapping = get_asset_mapping(req_pb.asset_id)
         survey_asset = get_object_or_404(mapping["model"].objects.filter(pk=django_pk))
     else:
         # basic data integrity problem
@@ -1140,9 +1140,10 @@ def survey_create(request):
         with reversion.create_revision():
             survey = Survey.objects.create(
                 **{
+                    "asset_id": req_pb.asset_id,
+                    "asset_code": req_pb.asset_code,
                     "road_id": req_pb.road_id,
                     "road_code": req_pb.road_code,
-                    "structure_id": req_pb.structure_id,
                     "user": get_user_model().objects.get(pk=req_pb.user),
                     "chainage_start": req_pb.chainage_start,
                     "chainage_end": req_pb.chainage_end,
@@ -1163,6 +1164,7 @@ def survey_create(request):
 
         return response
     except Exception as err:
+        print(err)
         return HttpResponse(status=400)
 
 
@@ -1194,10 +1196,8 @@ def survey_update(request):
         )
 
     # check there's a road/structure to attach this survey to
-    if req_pb.road_id:
-        survey_asset = get_object_or_404(Road.objects.filter(pk=req_pb.road_id))
-    elif req_pb.structure_id:
-        prefix, django_pk, mapping = get_mapping(req_pb.structure_id)
+    if req_pb.asset_id:
+        prefix, django_pk, mapping = get_asset_mapping(req_pb.asset_id)
         survey_asset = get_object_or_404(mapping["model"].objects.filter(pk=django_pk))
     else:
         # basic data integrity problem
@@ -1227,7 +1227,7 @@ def survey_update(request):
         )
 
     req_values = json.loads(req_pb.values)
-    if not req_pb.structure_id:
+    if req_pb.asset_id.startswith("ROAD-"):
         req_values = road_survey_values(req_values)
 
     # if the new values are empty delete the record and return 200
