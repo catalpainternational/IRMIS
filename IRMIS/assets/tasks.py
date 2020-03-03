@@ -80,8 +80,7 @@ def update_from_shapefiles(management_command, shape_file_folder):
                 # print and continue if we have a invalid geometry
                 management_command.stderr.write(
                     management_command.style.NOTICE(
-                        "GDAL Exception - ignoring %s from %s"
-                        % (feature.fid, shp_path)
+                        "GDAL Exception - ignoring %s from %s" % (feature.fid, shp_path)
                     )
                 )
                 continue
@@ -99,8 +98,7 @@ def update_from_shapefiles(management_command, shape_file_folder):
 
     management_command.stdout.write(
         management_command.style.SUCCESS(
-            "updated %s roads"
-            % Road.objects.all().count()
+            "updated %s roads" % Road.objects.all().count()
         )
     )
 
@@ -145,9 +143,7 @@ def import_shapefiles(management_command, shape_file_folder, asset="road"):
         sources = ()
     else:
         management_command.stderr.write(
-            management_command.style.ERROR(
-                "No asset or bad asset argument given!"
-            )
+            management_command.style.ERROR("No asset or bad asset argument given!")
         )
         exit(0)
 
@@ -178,9 +174,7 @@ def import_shapefiles(management_command, shape_file_folder, asset="road"):
                     # structure's geometry should be a Point
                     if isinstance(feature.geom.geos, Point):
                         management_command.stdout.write(
-                            management_command.style.NOTICE(
-                                "Point - using as is"
-                            )
+                            management_command.style.NOTICE("Point - using as is")
                         )
                         point = feature.geom.clone()
                         point.coord_dim = 2
@@ -190,13 +184,12 @@ def import_shapefiles(management_command, shape_file_folder, asset="road"):
                             management_command.style.NOTICE(
                                 "Not a Point geom - skipping"
                             )
-                        )                        
+                        )
             except GDALException as ex:
                 # print and continue if we have a invalid geometry
                 management_command.stderr.write(
                     management_command.style.NOTICE(
-                        "GDAL Exception - ignoring %s from %s"
-                        % (feature.fid, shp_path)
+                        "GDAL Exception - ignoring %s from %s" % (feature.fid, shp_path)
                     )
                 )
                 continue
@@ -230,22 +223,20 @@ def import_shapefiles(management_command, shape_file_folder, asset="road"):
         collate_geometries(asset)
         management_command.stdout.write(
             management_command.style.SUCCESS(
-                "imported %s roads"
-                % Road.objects.all().count()
+                "imported %s roads" % Road.objects.all().count()
             )
         )
         management_command.stdout.write(
             management_command.style.NOTICE(
                 "Please run `import_csv` to complete road data import"
             )
-        )        
+        )
     elif asset == "bridge":
         set_structure_municipalities(asset)
         collate_geometries(asset)
         management_command.stdout.write(
             management_command.style.SUCCESS(
-                "imported %s bridges"
-                % Bridge.objects.all().count()
+                "imported %s bridges" % Bridge.objects.all().count()
             )
         )
         management_command.stdout.write(
@@ -258,8 +249,7 @@ def import_shapefiles(management_command, shape_file_folder, asset="road"):
         collate_geometries(asset)
         management_command.stdout.write(
             management_command.style.SUCCESS(
-                "imported %s culverts"
-                % Culvert.objects.all().count()
+                "imported %s culverts" % Culvert.objects.all().count()
             )
         )
 
@@ -471,15 +461,15 @@ def collate_geometries(asset="all"):
     """
 
     geometry_sets = {}
-    if (asset == "all" or asset == "road"):
+    if asset == "all" or asset == "road":
         geometry_sets["highway"] = Road.objects.filter(asset_class="HIGH")
         geometry_sets["national"] = Road.objects.filter(asset_class="NAT")
         geometry_sets["municipal"] = Road.objects.filter(asset_class="MUN")
         geometry_sets["urban"] = Road.objects.filter(asset_class="URB")
         geometry_sets["rural"] = Road.objects.filter(asset_class="RUR")
-    if (asset == "all" or asset == "bridge"):
+    if asset == "all" or asset == "bridge":
         geometry_sets["bridge"] = Bridge.objects.all()
-    if (asset == "all" or asset == "culvert"):
+    if asset == "all" or asset == "culvert":
         geometry_sets["culvert"] = Culvert.objects.all()
 
     for key, geometry_set in geometry_sets.items():
