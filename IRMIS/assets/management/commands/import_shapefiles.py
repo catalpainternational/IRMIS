@@ -10,4 +10,4 @@ class Command(BaseCommand):
         parser.add_argument("asset")
 
     def handle(self, *args, **options):
-        import_shapefiles(options["folder"], options["asset"])
+        import_shapefiles(self, options["folder"], options["asset"])

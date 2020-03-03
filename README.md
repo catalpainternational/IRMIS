@@ -37,18 +37,21 @@ Clone this repository before performing import. It's README contains information
 **Important**
 This entire sequence must be performed to completion before users are allowed to edit the imported features (roads).
 
-1. `./manage.py import_shapefiles ../../path/to/the/data-sources/repo/shapefiles`
+1. `./manage.py import_shapefiles ../../path/to/the/data-sources/repo/shapefiles <asset_type>`
   - imports the shapefile geometries and copies properties across where useful
+  - `<asset_type>` is one of "road", "bridge", or "culvert"
+  - also calls `set_municipalities` and `collate_geometries` automatically
 
 2. `./manage.py import_csv ../../path/to/the/data-sources/repo/csv`
   - copies road attributes from the csv ( from program excel files )
 
 3. `./manage.py set_municipalities <optional: "all", "road", "bridge", or "culvert">`
-  - sets the administrative areas for each asset/structure, based the centroids of their respective geometries
+  - Done automatically for you if you've just imported the shapefiles
+  - Sets the administrative areas for each asset/structure, based the centroids of their respective geometries
   - Takes an optional argument to restrict the municipalities getting set to objects of a single type
   - If 'all' argument is given all of the assets/structures will have their municipalities set
 
-4. `./manage.py collate_geometries`
+4. `./manage.py collate_geometries <optional: "all", "road", "bridge", or "culvert">`
   - you have edited roads, bridges, culverts so re-collate
 
 5. `./manage.py make_road_surveys <optional: --no-road-refresh>` 
