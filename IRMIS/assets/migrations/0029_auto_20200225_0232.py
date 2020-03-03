@@ -11,10 +11,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddIndex(
-            model_name="road",
-            index=django.contrib.postgres.indexes.GistIndex(
-                fields=["geom"], name="assets_road_geom_8ade04_gist"
-            ),
-        ),
+        # migrations.AddIndex(
+        #     model_name="road",
+        #     index=django.contrib.postgres.indexes.GistIndex(
+        #         fields=["geom"], name="assets_road_geom_8ade04_gist"
+        #     ),
+        # ),
     ]

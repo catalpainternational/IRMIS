@@ -105,7 +105,7 @@ CASE WHEN
 	OR chainage_end > ST_LENGTH(geom))
 	THEN NULL
 ELSE 
-	ST_Line_Substring(
+	ST_Linesubstring(
 		geom, 
 		chainage_start / ST_LENGTH(geom), -- This is the "fraction" along the line,
 		chainage_end / ST_LENGTH(geom) -- This is the "fraction" along the line

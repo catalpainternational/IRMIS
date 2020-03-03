@@ -5,6 +5,28 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from ...models import CsvDataSource, CsvData
 
+"""
+# Importing roughness 
+
+Here's a short snippet which I use in Jupyter to import roughness from the `estrada-data-sources` csv files
+
+import os
+from django.core import management
+from pathlib import Path
+paths = []
+
+gitdir = ('/home/josh/github/catalpainternational/estrada-data-sources')
+
+for source_dir in [
+    Path(gitdir) / 'csv' / 'Roughness-Survey-2019-National-Roads',
+    Path(gitdir) / 'csv' / 'Roughness-Survey-2019-Municipal-Roads'
+]:
+    for  file_name in os.listdir(source_dir):
+        paths.append(source_dir / file_name)
+
+management.call_command('import_csv_source', 'roughness', *paths)
+"""
+
 
 class Command(BaseCommand):
     help = "imports data from source csvs"
@@ -23,6 +45,7 @@ class Command(BaseCommand):
         parser.add_argument("paths", nargs="*")
 
     def handle(self, *args, **options):
+
         data_type = options["data_type"]
         for path in options["paths"]:
             path = Path(path)

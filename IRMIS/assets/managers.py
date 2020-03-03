@@ -16,6 +16,7 @@ from django.db.models import (
     Value,
     When,
 )
+from django.db import connection
 
 
 class RoughnessRoadCode(Func):
@@ -98,6 +99,13 @@ class Chainage(Func):
     function = "point_to_chainage"
     output_field = models.FloatField()
     default_alias = "chainage"
+
+
+class chainage_to_point(Func):
+    template = "%(function)s(%(expressions)s)"
+    function = "chainage_to_point"
+    output_field = models.FloatField()
+    default_alias = "geom"
 
 
 class NearestAssetRoadId(Func):
@@ -196,6 +204,37 @@ def update_roughness_survey_values():
     )
 
 
+def update_roughness_chainage_values():
+    """
+    Emits a SQL statement which will cause surveys from the same CSV source with sequential numbers to align their
+    start and end chainages
+    """
+
+    sql = """
+    UPDATE assets_survey SET chainage_start =
+        assets_survey.chainage_start - ((assets_survey.chainage_start - inner_q.chainage_end) /2)
+        FROM assets_survey inner_q
+        WHERE (inner_q."values" -> 'csv_data_source_id')::integer = (assets_survey."values" ->'csv_data_source_id')::integer 
+        AND  (inner_q."values" -> 'csv_data_row_index')::integer = (assets_survey."values" ->'csv_data_row_index')::integer - (1 * (assets_survey."values" ->'csv_data_invert')::integer)
+        AND inner_q."values" ?& ARRAY['csv_data_source_id', 'csv_data_row_index', 'source_roughness']
+        AND assets_survey."values" ?& ARRAY['csv_data_source_id', 'csv_data_row_index', 'source_roughness']
+	;
+
+    UPDATE assets_survey SET chainage_end =
+        inner_q.chainage_start
+        FROM assets_survey inner_q
+        WHERE (inner_q."values" -> 'csv_data_source_id')::integer = (assets_survey."values" ->'csv_data_source_id')::integer 
+        AND   (inner_q."values" -> 'csv_data_row_index')::integer = (assets_survey."values" ->'csv_data_row_index')::integer + (1 * (assets_survey."values" ->'csv_data_invert')::integer)
+        AND inner_q."chainage_end" != assets_survey.chainage_start
+        AND inner_q."values" ?& ARRAY['csv_data_source_id', 'csv_data_row_index', 'source_roughness']
+        AND assets_survey."values" ?& ARRAY['csv_data_source_id', 'csv_data_row_index', 'source_roughness']
+    ;
+    """
+
+    with connection.cursor() as c:
+        c.execute(sql)
+
+
 class CsvSurveyQueryset(models.QuerySet):
     """ provides typed and filtered access to CSV data """
 
@@ -216,8 +255,8 @@ class CsvSurveyQueryset(models.QuerySet):
                 end_utm=Transform(F("end"), srid=32751),
             )
             .annotate(
-                chainage_start=Chainage(F("start_utm")),
-                chainage_end=Chainage(F("end_utm")),
+                chainage_start=Chainage(F("start_utm"), F("road_code")),
+                chainage_end=Chainage(F("end_utm"), F("road_code")),
                 road_id=NearestAssetRoadId(F("start_utm"), F("road_code")),
             )
         )
@@ -229,31 +268,58 @@ class RoughnessManager(models.Manager):
     def get_queryset(self):
         return CsvSurveyQueryset(self.model, using=self._db).roughness()
 
-    def make_surveys(self, username):
+    def make_surveys(self, username="survey_import", batch_size=1000):
         """
         Convert "CSV Roughness" row to a "Survey" row
         """
         model = apps.get_model("assets", "survey")
-        user = apps.get_model("auth", "User").objects.get(username=username)
+        usermodel = apps.get_model("auth", "User")
+        try:
+            user = usermodel.objects.get(username=username)
+        except usermodel.DoesNotExist:
+            if username == "survey_import":
+                user = usermodel.objects.create(username="survey_import")
+
         # Creating "survey" instances from "csv row" instances
         # This takes a while
         # Mainly because the "road_id" bit is a bit slow
+
+        objects = self.get_queryset()
+        objects = objects.filter(chainage_start__isnull=False).filter(
+            chainage_end__isnull=False
+        )
+
         model.objects.bulk_create(
             [
                 model(
                     road_code=from_row.road_code,
-                    chainage_start=from_row.chainage_start,
-                    chainage_end=from_row.chainage_end,
-                    values={"source_roughness": from_row.roughness},
+                    chainage_start=min(
+                        (from_row.chainage_start, from_row.chainage_end)
+                    ),
+                    chainage_end=max((from_row.chainage_start, from_row.chainage_end)),
+                    values={
+                        "source_roughness": from_row.roughness,
+                        "csv_data_source_id": from_row.source_id,
+                        "csv_data_row_index": from_row.row_index,
+                        "csv_data_invert": -1
+                        if from_row.chainage_start > from_row.chainage_end
+                        else 1,
+                    },
                     road_id=from_row.road_id,
                     user=user,
                 )
-                for from_row in self.get_queryset()[:100]
-            ]
+                for from_row in objects
+            ],
+            batch_size=batch_size,
         )
 
         # Update the surveys table with "roughness" parameter
-        update_roughness_survey_values()
+        # update_roughness_survey_values()
+        # Sometimes a roughness survey is run back-to-front, so we need to switch the chainage values
+
+        # update_roughness_chainage_values()
+
+        #  Match start/end survey chainages to prevent gaps forming during our snap to roads
 
     def clear_surveys(self):
         """
