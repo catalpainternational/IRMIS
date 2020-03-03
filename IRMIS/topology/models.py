@@ -75,3 +75,14 @@ class EstradaRoad(models.Model):
 
     road_code = models.TextField(primary_key=True)
     geom = models.LineStringField(srid=32751, dim=2, blank=True, null=True)
+
+
+class RoadAlternateCode(models.Model):
+    """
+    Where a road might have multiple codes, copy the geometry features in the singleparts
+    intermediary
+    """
+
+    src_road_code = models.TextField()
+    dest_road_code = models.TextField()
+    part = models.PolygonField(srid=32751, dim=2, blank=True, null=True)

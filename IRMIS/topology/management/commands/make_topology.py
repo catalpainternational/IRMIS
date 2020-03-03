@@ -107,6 +107,14 @@ class SqlQueries:
         AND topology_roadcorrectionsegment.road_code IS NULL;
     """
 
+    apply_alternates = """
+    INSERT INTO singlepart_dump(road_code, geom)
+        SELECT alt.dest_road_code, ST_INTERSECTION(alt.part, road.geom)
+        FROM    topology_roadalternatecode alt,
+                assets_road road
+        WHERE alt.src_road_code = road.road_code;
+    """
+
     # Merge the single parts to multiparts, and re-export as single parts according to their road code
     # In a perfect world this makes one linestring per road code
     merge_multipart = """
@@ -288,6 +296,11 @@ class Command(BaseCommand):
                 'Geometry additions are applied from the "RoadCorrectionSegment" model'
             )
             cursor.execute(SqlQueries.apply_additions, SqlQueries.attrs)
+
+            self.stdout.write(
+                'Geometry additions are applied from the "RoadAlternateCode" model'
+            )
+            cursor.execute(SqlQueries.apply_alternates, SqlQueries.attrs)
 
             self.stdout.write("Multipart geometries are being merged")
 
