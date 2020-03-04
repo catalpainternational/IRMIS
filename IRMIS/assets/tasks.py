@@ -524,7 +524,7 @@ def set_road_municipalities():
             row = cursor.fetchone()
             if row is None:
                 break
-            if (len(coastal_pks) > 0 and row[0] in coastal_pks):
+            if len(coastal_pks) > 0 and row[0] in coastal_pks:
                 continue
             with reversion.create_revision():
                 road = Road.objects.get(pk=row[0])
