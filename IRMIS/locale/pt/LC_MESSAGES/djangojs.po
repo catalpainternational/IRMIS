@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-04 06:26+0000\n"
+"POT-Creation-Date: 2020-03-04 08:28+0000\n"
 "PO-Revision-Date: 2019-10-11 00:57+0000\n"
 "Last-Translator: b'  <juliana@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -849,6 +849,21 @@ msgstr ""
 msgid "Pavement Class segments"
 msgstr "Pavimento"
 
+#, fuzzy
+#| msgid "Asset"
+msgid "Asset Type"
+msgstr "Infra-estrutura"
+
+#, fuzzy
+#| msgid "Select a Road Type"
+msgid "Code"
+msgstr "Seleccione o Tipo de Estrada"
+
+#, fuzzy
+#| msgid "Link Name"
+msgid "Name"
+msgstr "Nome da secção"
+
 #~ msgid "Date"
 #~ msgstr "Data"
 
@@ -859,11 +874,6 @@ msgstr "Pavimento"
 #~| msgid "Link width and length"
 #~ msgid "Lengths"
 #~ msgstr "Extensão e largura da secção"
-
-#, fuzzy
-#~| msgid "Select a Road Type"
-#~ msgid "Road Code"
-#~ msgstr "Seleccione o Tipo de Estrada"
 
 #, fuzzy
 #~| msgid "Link chainage"
@@ -879,16 +889,6 @@ msgstr "Pavimento"
 #~| msgid "Condition"
 #~ msgid "Surface Condition"
 #~ msgstr "Condição"
-
-#, fuzzy
-#~| msgid "Asset"
-#~ msgid "Asset Type"
-#~ msgstr "Infra-estrutura"
-
-#, fuzzy
-#~| msgid "Link Name"
-#~ msgid "Name"
-#~ msgstr "Nome da secção"
 
 #, fuzzy
 #~| msgid "Condition"
