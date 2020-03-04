@@ -272,8 +272,11 @@ class RoughnessManager(models.Manager):
         """
         Convert "CSV Roughness" row to a "Survey" row
         """
+        #  Using 'apps.get_model' here avoids potential future import woes
         model = apps.get_model("assets", "survey")
         usermodel = apps.get_model("auth", "User")
+
+        # Who do you want the surveys imported as? Default: "survey_import"
         try:
             user = usermodel.objects.get(username=username)
         except usermodel.DoesNotExist:
@@ -284,11 +287,14 @@ class RoughnessManager(models.Manager):
         # This takes a while
         # Mainly because the "road_id" bit is a bit slow
 
-        objects = self.get_queryset()
-        objects = objects.filter(chainage_start__isnull=False).filter(
-            chainage_end__isnull=False
+        # Chainage "null" values may occur when we can't match to a road code
+        objects = (
+            self.get_queryset()
+            .filter(chainage_start__isnull=False)
+            .filter(chainage_end__isnull=False)
         )
 
+        # Survey instance creation time!
         model.objects.bulk_create(
             [
                 model(
@@ -314,12 +320,10 @@ class RoughnessManager(models.Manager):
         )
 
         # Update the surveys table with "roughness" parameter
-        # update_roughness_survey_values()
-        # Sometimes a roughness survey is run back-to-front, so we need to switch the chainage values
-
-        # update_roughness_chainage_values()
+        update_roughness_survey_values()
 
         #  Match start/end survey chainages to prevent gaps forming during our snap to roads
+        update_roughness_chainage_values()
 
     def clear_surveys(self):
         """
