@@ -435,17 +435,21 @@ def set_unknown_road_codes():
 def set_road_municipalities():
     with connection.cursor() as cursor:
         # Two roads with centroids in the sea!
+        coastal_pks = []
         coastal_1 = Road.objects.filter(link_code="A03-03").all()
         if len(coastal_1) > 0:
-            coastal_1.administrative_area = 4
+            coastal_pks.extend(coastal_1.values_list("id", flat=True))
             with reversion.create_revision():
-                coastal_1.save()
+                coastal_1.administrative_area = "4"
+                coastal_1.update()
                 reversion.set_comment("Administrative area set from geometry")
-        coastal_2 = Road.objects.get(road_code="C09")
-        coastal_2.administrative_area = 6
-        with reversion.create_revision():
-            coastal_2.save()
-            reversion.set_comment("Administrative area set from geometry")
+        coastal_2 = Road.objects.filter(road_code="C09").all()
+        if len(coastal_2) > 0:
+            coastal_pks.extend(coastal_2.values_list("id", flat=True))
+            with reversion.create_revision():
+                coastal_2.administrative_area = "6"
+                coastal_2.update()
+                reversion.set_comment("Administrative area set from geometry")
 
         # all the other roads
         cursor.execute(
@@ -455,11 +459,11 @@ def set_road_municipalities():
             row = cursor.fetchone()
             if row is None:
                 break
-            if (len(coastal_1) and row[0] == coastal_1.pk) or row[0] == coastal_2.pk:
+            if len(coastal_pks) > 0 and row[0] in coastal_pks:
                 continue
-            road = Road.objects.get(pk=row[0])
-            road.administrative_area = row[1]
             with reversion.create_revision():
+                road = Road.objects.get(pk=row[0])
+                road.administrative_area = row[1]
                 road.save()
                 reversion.set_comment("Administrative area set from geometry")
 
@@ -481,8 +485,8 @@ def set_structure_municipalities(structure_type):
             row = cursor.fetchone()
             if row is None:
                 break
-            structure = structure_model.objects.get(pk=row[0])
-            structure.administrative_area = row[1]
             with reversion.create_revision():
+                structure = structure_model.objects.get(pk=row[0])
+                structure.administrative_area = row[1]
                 structure.save()
                 reversion.set_comment("Administrative area set from geometry")
