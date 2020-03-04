@@ -431,8 +431,8 @@ def protobuf_reports(request):
 
     # Ensure a minimum set of filters have been provided
     if len(primary_attributes) == 0:
-        raise HttpResponseBadRequest(
-            "'primaryattribute' must contain at least one reportable attribute"
+        return HttpResponseBadRequest(
+            "primaryattribute must contain at least one reportable attribute"
         )
 
     # handle all of the id, code and asset_class (road_type) permutations
