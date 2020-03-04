@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-02 05:01+0000\n"
+"POT-Creation-Date: 2020-03-04 02:48+0000\n"
 "PO-Revision-Date: 2019-10-09 05:39+0000\n"
 "Last-Translator: b'  <januario@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -737,6 +737,181 @@ msgstr ""
 msgid "Counting Method"
 msgstr ""
 
+msgid "Date"
+msgstr "Data"
+
+msgid "User"
+msgstr "Utilisador"
+
+msgid "Bridge"
+msgstr ""
+
+msgid "Culvert"
+msgstr ""
+
+msgid "Filter"
+msgstr ""
+
+#, fuzzy
+#| msgid "Link width and length"
+msgid "Lengths"
+msgstr "Linha nia luan no naruk"
+
+#, fuzzy
+#| msgid "Select a Road Type"
+msgid "Road Code"
+msgstr "Hili Tipu Estrada"
+
+#, fuzzy
+#| msgid "Link chainage"
+msgid "Chainage Start"
+msgstr "Linha estasaun"
+
+#, fuzzy
+#| msgid "Link chainage"
+msgid "Chainage End"
+msgstr "Linha estasaun"
+
+msgid "Attribute Tables"
+msgstr ""
+
+msgid "Road Id"
+msgstr ""
+
+msgid "Attribute"
+msgstr ""
+
+msgid "Added By"
+msgstr ""
+
+msgid "Value"
+msgstr ""
+
+#, fuzzy
+#| msgid "Condition"
+msgid "Surface Condition"
+msgstr "Kondisaun "
+
+msgid "Date Surveyed"
+msgstr ""
+
+msgid "Unknown"
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Length (km)"
+msgstr ""
+
+msgid "Percentages (%)"
+msgstr ""
+
+msgid "A report on the total length of the road network. The report provides total length in kilometers and percentages according to Road Status and Technical Class. A number of filters can be selected in order to generate a length report according to the required criteria"
+msgstr ""
+
+msgid "Click on Create Report button to access the Road Network Length report"
+msgstr ""
+
+msgid "The report will be shown in this area and will provide you with detailed Road Network Length information. You can use filters to generate a customized report"
+msgstr ""
+
+msgid "Sorry, data for the road network is not available yet"
+msgstr ""
+
+msgid "A breakdown report on the total length of the road network. The report provides information on total length in kilometers and percentages as well as Road Status and Technical Class, according to a breakdown by Municipality, Road Class and Surface Type"
+msgstr ""
+
+msgid "Click on Create Report button to access the Road Network Length Breakdown report"
+msgstr ""
+
+msgid "The report will be shown in this area and will provide you with detailed Road Network Length Breakdown information. You can use filters to generate a customized report"
+msgstr ""
+
+msgid "A report on Road Surface Condition. This report provides detailed Surface Condition information per segment"
+msgstr ""
+
+msgid "Please select a road above to view Surface Condition reports"
+msgstr ""
+
+msgid "The report will be shown in this area and will provide you with detailed Surface Condition information per segment of the selected road"
+msgstr ""
+
+msgid "Sorry, Surface Condition data is not available for the selected road"
+msgstr ""
+
+msgid "A report on Road IRI data. This report provides detailed information on a Road's Roughness per segment"
+msgstr ""
+
+msgid "Please select a road above to view IRI Roughness reports"
+msgstr ""
+
+msgid "The report will be shown in this area and will provide you with detailed IRI Roughness information per segment of the selected road"
+msgstr ""
+
+msgid "Sorry, IRI Roughness data is not available for the selected road"
+msgstr ""
+
+msgid "A report on the total length of National Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for National Roads"
+msgstr ""
+
+msgid "Click on Create Report button to access the Road Network Length report for National roads"
+msgstr ""
+
+msgid "The report will be shown in this area and will provide you with detailed Road Network Length information for National class roads"
+msgstr ""
+
+msgid "Sorry, data for National Class roads is not available yet"
+msgstr ""
+
+msgid "A report on the total length of Municipal Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Municipal Roads"
+msgstr ""
+
+msgid "Click on Create Report button to access the Road Network Length report for Municipal roads"
+msgstr ""
+
+msgid "The report will be shown in this area and will provide you with detailed Road Network Length information for Municipal class roads"
+msgstr ""
+
+msgid "Sorry, data for Municipal Class roads is not available yet"
+msgstr ""
+
+msgid "A report on the total length of Rural Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Rural Roads"
+msgstr ""
+
+msgid "Click on Create Report button to access the Road Network Length report for Rural roads"
+msgstr ""
+
+msgid "The report will be shown in this area and will provide you with detailed Road Network Length information for Rural class roads"
+msgstr ""
+
+msgid "Sorry, data for Rural Class roads is not available yet"
+msgstr ""
+
+msgid "A report on the total length of Highways. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Highways"
+msgstr ""
+
+msgid "Click on Create Report button to access the Road Network Length report for Highways"
+msgstr ""
+
+msgid "The report will be shown in this area and will provide you with detailed Road Network Length information for Highway class roads"
+msgstr ""
+
+msgid "Sorry, data for Highway Class roads is not available yet"
+msgstr ""
+
+msgid "A report on the total length of Urban Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Urban Roads"
+msgstr ""
+
+msgid "Click on Create Report button to access the Road Network Length report for Urban roads"
+msgstr ""
+
+msgid "The report will be shown in this area and will provide you with detailed Road Network Length information for Urban class roads"
+msgstr ""
+
+msgid "Sorry, data for Urban Class roads is not available yet"
+msgstr ""
+
 msgid "No matching records found"
 msgstr ""
 
@@ -849,33 +1024,19 @@ msgid "Pavement Class segments"
 msgstr "Pavimentu "
 
 #, fuzzy
-#| msgid "Asset"
-msgid "Asset Type"
-msgstr "Sasan (aset)"
-
-msgid "Code"
-msgstr ""
+#~| msgid "Asset"
+#~ msgid "Asset Type"
+#~ msgstr "Sasan (aset)"
 
 #, fuzzy
-#| msgid "Link Name"
-msgid "Name"
-msgstr "Naran Linha"
-
-#, fuzzy
-#~| msgid "Select a Road Type"
-#~ msgid "Road Class"
-#~ msgstr "Hili Tipu Estrada"
+#~| msgid "Link Name"
+#~ msgid "Name"
+#~ msgstr "Naran Linha"
 
 #, fuzzy
 #~| msgid "Condition"
 #~ msgid "Structure Condition details"
 #~ msgstr "Kondisaun "
-
-#~ msgid "Date"
-#~ msgstr "Data"
-
-#~ msgid "User"
-#~ msgstr "Utilisador"
 
 #~ msgid "Link start chainage cannot contain more than %s digits, of which %s are decimals"
 #~ msgstr "Linha estasaun komesa labele inklui liu %s numeru,nebe %s  mak decimais "
