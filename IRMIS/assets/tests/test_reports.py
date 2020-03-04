@@ -44,8 +44,8 @@ def test_report_protobuf_filter_check(client, django_user_model):
 
     # hit the reports api with POST, PATCH, PUT, DELETE
     url = reverse("protobuf_reports")
-    with pytest.raises(ValidationError):
-        response = client.get(url)
+    response = client.get(url)
+    assert response.status_code == 400
 
 
 @pytest.mark.django_db
