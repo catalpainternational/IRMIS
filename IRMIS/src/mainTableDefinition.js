@@ -4,7 +4,7 @@ import { currentFilter } from "./side_menu";
 
 /** Define the general events that the main tables will respond to
  *
- * Note that the passed in values `pendingRoads` / `pendingStructures` and `idWhiteListMap`
+ * Note that the passed in values 'pendingRoads' / 'pendingStructures' and 'idWhiteListMap'
  * are carefully updated (as opposed to simply reassigned).
  * This ensures that their 'update' is visible to the 'outside'.
  */
@@ -54,14 +54,14 @@ export const estradaStructureTableEventListeners = {
 // Common event handling functionality
 /* These are the general events that the main tables will respond to
  *
- * Note that the passed in values `pendingRoads` / `pendingStructures` and `idWhiteListMap`
+ * Note that the passed in values 'pendingRoads' / 'pendingStructures' and 'idWhiteListMap'
  * are carefully updated (as opposed to simply reassigned).
  * This ensures that their 'update' is visible to the 'outside'.
  */
 
 function eventTableAssetMetaDataUpdated(data, table) {
     const asset = data.detail.asset;
-    table.row(`#${asset.id}`).data(asset).draw();
+    table.row('#' + asset.id).data(asset).draw();
 }
 
 /** When a filter is applied, update the filter id whitelist */
@@ -294,7 +294,7 @@ export const estradaTableColumns = [
 
 /** Defines the columns for the Structures table on the Estrada main page
  * In many cases Bridge and Culvert use the same field names and are interchangeable
- * 
+ *
  * For those that don't we'll use the simpler title
  */
 export const structuresTableColumns = [
@@ -504,7 +504,7 @@ function buttonSegmentsTemplate(attrib, asset) {
     }
 
     // the template is assembled in this way because gettext_collected can't handle
-    // real strings "" or '', or angle brackets <> inside template strings ``
+    // real strings "" or '', or angle brackets <> inside template strings ''
     const data_toggle = ' data-toggle="modal"';
     const data_target = ' data-target="#inventory-segments-modal"';
     const data_code = ' data-code="' + asset.code + '"';
