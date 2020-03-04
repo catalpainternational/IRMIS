@@ -100,14 +100,14 @@ function initializeDataTable() {
         estradaTableColumns.unshift({
             title: "",
             data: null,
-            render: r => `<a class="image pencil" href="#edit/${r.assetType}/${r.assetId}/location_type"></a>`,
+            render: r => editButtonTemplate(r, "location_type"),
             orderable: false,
             className: "edit-col"
         });
         structuresTableColumns.unshift({
             title: "",
             data: null,
-            render: r => `<a class="image pencil" href="#edit/${r.assetType}/${r.assetId}/structure_type"></a>`,
+            render: r => editButtonTemplate(r, "structure_type"),
             orderable: false,
             className: "edit-col"
         });
@@ -198,6 +198,10 @@ function initializeDataTable() {
             pendingStructures = [];
         }
     }
+}
+
+function editButtonTemplate(asset, firstPage) {
+    return `<a class="image pencil" href="#edit/${asset.assetType}/${asset.assetId}/${firstPage}"></a>`;
 }
 
 function setupTableEventHandlers() {

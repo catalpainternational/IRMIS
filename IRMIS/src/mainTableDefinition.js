@@ -503,9 +503,14 @@ function buttonSegmentsTemplate(attrib, asset) {
             break;
     }
 
-    return `<a data-toggle="modal"
-        data-target="#inventory-segments-modal"
-        data-code="${asset.code}"
-        data-id="${asset.id}"
-        data-attr="${attrib}">${window.gettext("View")} ${getFieldName(attrib)}</a>`;
+    // the template is assembled in this way because gettext_collected can't handle
+    // real strings "" or '', or angle brackets <> inside template strings ``
+    const data_toggle = ' data-toggle="modal"';
+    const data_target = ' data-target="#inventory-segments-modal"';
+    const data_code = ' data-code="' + asset.code + '"';
+    const data_id = ' data-id="' + asset.id + '"';
+    const data_attr = ' data-id="' + attrib + '"';
+    const viewTitle = window.gettext("View") + " " + getFieldName(attrib);
+
+    return "<a" + data_toggle + data_target + data_code + data_id + data_attr + ">" + viewTitle + "</a>";
 }
