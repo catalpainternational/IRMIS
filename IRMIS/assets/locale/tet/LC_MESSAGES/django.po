@@ -622,6 +622,3 @@ msgstr ""
 
 msgid "Select the Material"
 msgstr ""
-
-msgid "'primaryattribute' must contain at least one reportable attribute"
-msgstr ""
