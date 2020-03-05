@@ -13,6 +13,7 @@ from django.shortcuts import get_object_or_404
 from django.http import (
     HttpResponse,
     HttpResponseForbidden,
+    HttpResponseBadRequest,
     JsonResponse,
     HttpResponseNotFound,
 )
@@ -25,7 +26,7 @@ from django.db.models import Value, CharField, OuterRef, Subquery
 from django.db.models.functions import Cast, Substr
 
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.exceptions import MethodNotAllowed, ValidationError
+from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
@@ -410,8 +411,8 @@ def protobuf_reports(request):
 
     # Ensure a minimum set of filters have been provided
     if len(primary_attributes) == 0:
-        raise ValidationError(
-            _("'primaryattribute' must contain at least one reportable attribute")
+        return HttpResponseBadRequest(
+            "primaryattribute must contain at least one reportable attribute"
         )
 
     # handle all of the id, code and asset_class permutations

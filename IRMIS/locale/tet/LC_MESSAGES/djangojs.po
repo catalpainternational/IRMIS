@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-02 05:01+0000\n"
+"POT-Creation-Date: 2020-03-05 01:57+0000\n"
 "PO-Revision-Date: 2019-10-09 05:39+0000\n"
 "Last-Translator: b'  <januario@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -853,29 +853,46 @@ msgstr "Pavimentu "
 msgid "Asset Type"
 msgstr "Sasan (aset)"
 
+#, fuzzy
+#| msgid "Select a Road Type"
 msgid "Code"
-msgstr ""
+msgstr "Hili Tipu Estrada"
 
 #, fuzzy
 #| msgid "Link Name"
 msgid "Name"
 msgstr "Naran Linha"
 
-#, fuzzy
-#~| msgid "Select a Road Type"
-#~ msgid "Road Class"
-#~ msgstr "Hili Tipu Estrada"
-
-#, fuzzy
-#~| msgid "Condition"
-#~ msgid "Structure Condition details"
-#~ msgstr "Kondisaun "
-
 #~ msgid "Date"
 #~ msgstr "Data"
 
 #~ msgid "User"
 #~ msgstr "Utilisador"
+
+#, fuzzy
+#~| msgid "Link width and length"
+#~ msgid "Lengths"
+#~ msgstr "Linha nia luan no naruk"
+
+#, fuzzy
+#~| msgid "Link chainage"
+#~ msgid "Chainage Start"
+#~ msgstr "Linha estasaun"
+
+#, fuzzy
+#~| msgid "Link chainage"
+#~ msgid "Chainage End"
+#~ msgstr "Linha estasaun"
+
+#, fuzzy
+#~| msgid "Condition"
+#~ msgid "Surface Condition"
+#~ msgstr "Kondisaun "
+
+#, fuzzy
+#~| msgid "Condition"
+#~ msgid "Structure Condition details"
+#~ msgstr "Kondisaun "
 
 #~ msgid "Link start chainage cannot contain more than %s digits, of which %s are decimals"
 #~ msgstr "Linha estasaun komesa labele inklui liu %s numeru,nebe %s  mak decimais "

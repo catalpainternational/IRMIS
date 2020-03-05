@@ -6,7 +6,7 @@ export const tetDaysLocale = {
   weekStart: 1,
   months: "Janeiru_Fevereiru_Marsu_Abril_Maiu_Juniu_Juliu_Augustu_Setembru_Outubru_Novembru_Dezembru".split("_"),
   monthsShort: "Jan_Fev_Mar_Abr_Mai_Jun_Jul_Aug_Set_Out_Nov_Dez".split("_"),
-  ordinal: n => `${n}º`, // ordinal Function (number) => return number + output
+  ordinal: n => n + "º", // ordinal Function (number) => return number + output
   formats: {
     // abbreviated format options allowing localization
     LTS: "h:mm:ss A",
