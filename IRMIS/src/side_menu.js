@@ -1,12 +1,31 @@
 import $ from "jquery";
 import "select2/dist/js/select2.full.min.js";
 
-import { toggleFilter, clearFilter, clearAllFilters} from './filter';
+import { Filter } from "./assets/models/filter";
+import { dispatch } from "./assets/utilities";
+
+import { roads } from "./roadManager";
+import { structures } from "./structureManager";
+
+let viewName;
+let roadFilter = new Filter("ROAD");
+let structureFilter = new Filter("STRC");
+export let currentFilter = roadFilter;
 
 let filterUIState = {};
 
+/** Get the common filter details from the event */
+function filterDetail(e) {
+    const element = e.currentTarget;
+    const filter = element.closest('.filter');
+    const slug = filter.attributes['data-slug'].value;
+    const header = filter.querySelector('.header');
+
+    return { element, filter, slug, header };
+}
+
 $(document).ready(function(){
-    // setup rode_code and administrative_area filters with select2
+    // setup road_code and administrative_area filters with select2
     $('.filter_select2').select2({
         width: "100%",
         containerCssClass: "filter-select2",
@@ -22,6 +41,9 @@ $(document).ready(function(){
 
     // switch map and table views
     $('#view a').click(change_view);
+
+    // switch asset types
+    $('#assetType a').click(toggleAssetType);
 
     // toggle filter open/close
     $('.filterToggle').click(toggleFilterOpen);
@@ -44,7 +66,11 @@ function collapse_side_menu() {
     mapTable.style.flex = "0 0 100%";
     sideMenu.hidden = true;
     collapsedSideMenu.classList.add("d-flex");
-    document.dispatchEvent(new CustomEvent("estrada.sideMenu.viewChanged"));
+
+    const eventName = (currentFilter.assetType !== "STRC")
+        ? "estrada.road.sideMenu.viewChanged"
+        : "estrada.structure.sideMenu.viewChanged";
+    dispatch(eventName, undefined);
 }
 
 function expand_side_menu() {
@@ -56,109 +82,174 @@ function expand_side_menu() {
     mapTable.style.removeProperty('flex');
     sideMenu.hidden = false;
     collapsedSideMenu.classList.remove("d-flex");
-    document.dispatchEvent(new CustomEvent("estrada.sideMenu.viewChanged"));
+
+    const eventName = (currentFilter.assetType !== "STRC")
+        ? "estrada.road.sideMenu.viewChanged"
+        : "estrada.structure.sideMenu.viewChanged";
+    dispatch(eventName, undefined);
 }
 
 function change_view(e) {
-    const viewName = e.currentTarget.attributes['data-viewname'].value;
     const mapTable = document.getElementById("map-table-irmis");
     const siblings = document.getElementById("view").children;
+    
+    viewName = e.currentTarget.attributes['data-viewname'].value;
 
     mapTable.className = viewName;
 
     for (let index = 0; index < siblings.length; index += 1) {
         const sibling = siblings[index];
-        if (sibling !== e.currentTarget) { sibling.classList.remove("active"); }
+        if (sibling !== e.currentTarget) {
+            sibling.classList.remove("active");
+        }
     }
     e.currentTarget.classList.add("active");
 
-    document.dispatchEvent(new CustomEvent("estrada.sideMenu.viewChanged", { "detail": { viewName } }));
+    const eventName = (currentFilter.assetType !== "STRC")
+        ? "estrada.road.sideMenu.viewChanged"
+        : "estrada.structure.sideMenu.viewChanged";
+    dispatch(eventName, { "detail": { viewName } });
+}
 
+function toggleAssetType(e) {
+    const fd = filterDetail(e);
+
+    // Swap which filter we use
+    currentFilter = fd.element.attributes["data-option"].value === "STRC"
+        ? structureFilter : roadFilter;
+
+    const siblings = document.getElementById("assetType").getElementsByTagName("a");
+    const filterSections = document.getElementsByClassName("filters-section");
+    const filterTitles = document.getElementsByClassName("filters-title");
+
+    for (let index = 0; index < siblings.length; index++) {
+        const sibling = siblings[index];
+        if (sibling !== e.currentTarget) {
+            sibling.classList.remove("active");
+        }
+    }
+    e.currentTarget.classList.add("active");
+
+    for (let index = 0; index < filterSections.length; index++) {
+        const filterSection = filterSections[index];
+        const sectionClasses = filterSection.classList;
+        if (sectionClasses.contains(currentFilter.assetType)) {
+            filterSection.removeAttribute("hidden");
+        } else {
+            filterSection.setAttribute("hidden", true)
+        }
+    }
+    for (let index = 0; index < filterTitles.length; index++) {
+        const filterTitle = filterTitles[index];
+        const titleClasses = filterTitle.classList;
+        if (titleClasses.contains(currentFilter.assetType)) {
+            filterTitle.removeAttribute("hidden");
+        } else {
+            filterTitle.setAttribute("hidden", true)
+        }
+    }
+
+    // Swap road and structures table
+    const roadTable = document.getElementById("table-roads");
+    const structureTable = document.getElementById("table-structures");
+
+    if (currentFilter.assetType === "ROAD") {
+        roadTable.removeAttribute("hidden");
+        structureTable.setAttribute("hidden", true);
+    } else {
+        roadTable.setAttribute("hidden", true);
+        structureTable.removeAttribute("hidden");
+    }
+
+    const eventName = (currentFilter.assetType !== "STRC")
+        ? "estrada.road.sideMenu.viewChanged"
+        : "estrada.structure.sideMenu.viewChanged";
+    dispatch(eventName, { "detail": { viewName } });
+
+    const idMap = {};
+    Object.keys(roads).forEach((roadId) => {
+        idMap[roadId] = (currentFilter.assetType !== "STRC");
+    });
+    Object.keys(structures).forEach((structureId) => {
+        idMap[structureId] = (currentFilter.assetType === "STRC");
+    });
+
+    // communicate this basic filter to the map
+    dispatch("estrada.map.idFilter.applied", { detail: { idMap } });
 }
 
 function toggleFilterSelect2(e) {
-    const element = e.currentTarget;
+    const fd = filterDetail(e);
     const value = e.params.data.id;
-    const filter = element.closest('.filter');
-    const slug = filter.attributes['data-slug'].value;
-    const header = filter.querySelector('.header');
-    const clear = filter.querySelector(".clear-select2");
+    const clear = fd.filter.querySelector(".clear-select2");
 
-    if (element.value !== "") {
-        header.classList.add("active");
+    if (fd.element.value !== "") {
+        fd.header.classList.add("active");
         clear.hidden = false;
     } else {
-        header.classList.remove("active");
+        fd.header.classList.remove("active");
         clear.hidden = true;
     }
 
-    toggleFilter(slug, value);
+    currentFilter.toggle(fd.slug, value);
 }
 
 function toggleFilterOption(e) {
-    const element = e.currentTarget;
-    const value = element.attributes['data-option'].value;
+    const fd = filterDetail(e);
+    const value = fd.element.attributes['data-option'].value;
+    const clear = fd.filter.querySelector(".clear-filter");
+    const checkbox = fd.element.querySelector("span");
 
-    const filter = element.closest('.filter');
-    const slug = filter.attributes['data-slug'].value;
-    const clear = filter.querySelector(".clear-filter");
-    const header = filter.querySelector('.header');
-
-    const checkbox = element.querySelector("span");
     checkbox.classList.toggle("selected");
 
-    if (filter.getElementsByClassName("selected").length > 0) {
-        header.classList.add("active");
+    if (fd.filter.getElementsByClassName("selected").length > 0) {
+        fd.header.classList.add("active");
         clear.hidden = false;
     } else {
-        header.classList.remove("active");
+        fd.header.classList.remove("active");
         clear.hidden = true;
     }
 
-    toggleFilter(slug, value);
+    currentFilter.toggle(fd.slug, value);
 }
 
 function toggleFilterOpen(e) {
-    const element = e.currentTarget;
-    const filter = element.closest('.filter');
-    const header = filter.querySelector('.header');
-    const options = filter.querySelector('.options');
-    const slug = filter.attributes['data-slug'].value;
+    const fd = filterDetail(e);
+    const options = fd.filter.querySelector('.options');
 
-    toggleFilterUIState(slug);
-    if (element.classList.contains("plus")) {
-        element.classList.replace("plus", "minus");
+    toggleFilterUIState(fd.slug);
+    if (fd.element.classList.contains("plus")) {
+        fd.element.classList.replace("plus", "minus");
     } else {
-        element.classList.replace("minus", "plus");
+        fd.element.classList.replace("minus", "plus");
     }
-    header.classList.toggle('open');
-    options.hidden = !isFilterOpen(slug);
+    fd.header.classList.toggle('open');
+    options.hidden = !isFilterOpen(fd.slug);
 }
 
 function clear_filter(e) {
-    const element = e.currentTarget;
-    const filter = element.closest('.filter');
-    const slug = filter.attributes['data-slug'].value;
-    const header = filter.querySelector('.header');
-    const checkboxes = filter.getElementsByClassName("selected");
+    const fd = filterDetail(e);
+    const clear = fd.filter.getElementsByClassName("clear-filter");
+    const checkboxes = fd.filter.getElementsByClassName("selected");
+
     while (checkboxes.length) {
         checkboxes[0].classList.remove("selected");
     }
-    header.classList.remove("active");
-    filter.getElementsByClassName("clear-filter").item(0).hidden = true;
-    clearFilter(slug);
+    fd.header.classList.remove("active");
+    clear.item(0).hidden = true;
+    currentFilter.clear(fd.slug);
 }
 
 function clear_select2(e) {
-    const element = e.currentTarget;
-    const filter = element.closest('.filter');
-    const slug = filter.attributes['data-slug'].value;
-    // trigger clearing of select2
-    $(".filter_select2", filter).val([]).trigger('change');
+    const fd = filterDetail(e);
+    const clear = fd.filter.querySelector(".clear-select2");
 
-    filter.querySelector(".header").classList.remove("active");
-    filter.querySelector(".clear-select2").hidden = true;
-    clearFilter(slug);
+    // trigger clearing of select2
+    $(".filter_select2", fd.filter).val([]).trigger('change');
+
+    fd.header.classList.remove("active");
+    clear.hidden = true;
+    currentFilter.clear(fd.slug);
 }
 
 function clear_all_filters() {
@@ -168,7 +259,7 @@ function clear_all_filters() {
     $(".filters .clear-select2").attr("hidden", true);
     $(".filters .optionToggle span").removeClass("selected");
 
-    clearAllFilters();
+    currentFilter.clearAll();
 }
 
 function isFilterOpen(elementId) {
@@ -177,11 +268,12 @@ function isFilterOpen(elementId) {
 }
 
 function initFilterUIState(elementId) {
-    if( !filterUIState.hasOwnProperty(elementId) ) filterUIState[elementId] = false;
+    if (!filterUIState.hasOwnProperty(elementId)) {
+        filterUIState[elementId] = false;
+    }
 }
 
 function toggleFilterUIState(slug) {
     initFilterUIState(slug);
     filterUIState[slug] = !filterUIState[slug];
 }
-

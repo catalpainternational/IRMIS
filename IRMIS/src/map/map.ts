@@ -15,7 +15,9 @@ import { getFeatureType } from "./utilities/propertiesGeoJSON";
 
 import { FallbackLayerStyle, FixLayerStyleDefaults, styleGeometry, stylePoint } from "./utilities/leaflet-style";
 
-import { roadPopup } from "../roadManager.js";
+import { GetDataForMapPopup } from "../table";
+
+import { dispatch } from "../assets/utilities";
 
 /** The collection of all GeoJSON elements currently added to the map,
  * organised by their featureType
@@ -39,20 +41,31 @@ export class Map {
         this.zoomControl = L.control.zoom({ position: "topright" });
         this.zoomControl.addTo(this.lMap);
 
+        // Set the minimum zoom level
+        this.lMap.setMinZoom(this.lMap.getZoom());
+
         // Set up the baseLayers and add the selected one to the map
         const bl = BaseLayers.baseLayers;
         this.currentLayer = bl[Config.preferredBaseLayerName];
         this.currentLayer.addTo(this.lMap);
 
-        document.addEventListener("estrada.sideMenu.viewChanged", () => {
+        document.addEventListener("estrada.road.sideMenu.viewChanged", () => {
             this.lMap.invalidateSize();
         });
 
-        document.addEventListener("estrada.filter.applied", (data: Event) => {
+        document.addEventListener("estrada.structure.sideMenu.viewChanged", () => {
+            this.lMap.invalidateSize();
+        });
+
+        document.addEventListener("estrada.road.filter.applied", (data: Event) => {
             this.handleFilter(data);
         });
 
-        document.addEventListener("estrada.idFilter.applied", (data: Event) => {
+        document.addEventListener("estrada.structure.filter.applied", (data: Event) => {
+            this.handleFilter(data);
+        });
+
+        document.addEventListener("estrada.map.idFilter.applied", (data: Event) => {
             this.handleFilter(data);
         });
 
@@ -73,11 +86,10 @@ export class Map {
     }
 
     private handleFilter(data: Event) {
-        const layerFilterStyles = getFilterStyles("Road");
-
         const featureZoomSet: FeatureCollection = { type: "FeatureCollection", features: [] };
+        const featureTypeSet: any = {};
         Object.values(featureLookup).forEach((feature: any) => {
-            const featureId: string = feature.properties.pk.toString();
+            const featureId: string = feature.properties.id;
             const geoLayer = layerLookup[featureId] as L.GeoJSON;
 
             const switchStyle = !!(data as CustomEvent).detail.idMap[featureId];
@@ -85,6 +97,12 @@ export class Map {
                 featureZoomSet.features.push(feature);
             }
 
+            const featureType: string = feature.properties.featureType || "Road";
+            if (!featureTypeSet[featureType]) {
+                featureTypeSet[featureType] = getFilterStyles(featureType);
+            }
+            const layerFilterStyles = featureTypeSet[featureType];
+            feature.properties.switchStyle = switchStyle;
             geoLayer.setStyle(switchStyle ? layerFilterStyles.styleOn : layerFilterStyles.styleOff);
         });
 
@@ -95,13 +113,31 @@ export class Map {
         }
 
         // Don't use flyToBounds
-        // - it sounds nice, but screws up tile and geoJSON alignment when the zoom level remains the ame
+        // - it sounds nice, but screws up tile and geoJSON alignment when the zoom level remains the same
         this.lMap.fitBounds(new L.LatLngBounds([bb[1], bb[0]], [bb[3], bb[2]]));
     }
 
     private registerFeature(feature: Feature<Geometry, any>, layer: L.Layer) {
-        featureLookup[feature.properties.pk] = feature;
-        layerLookup[feature.properties.pk] = layer;
+        featureLookup[feature.properties.id] = feature;
+        layerLookup[feature.properties.id] = layer;
+        layer.on("click", (e) => {
+            const clickedFeature = e.target.feature;
+            const featureId = clickedFeature.properties.id;
+            const featureType = clickedFeature.properties.featureType || "";
+
+            if (typeof clickedFeature.properties.switchStyle === "undefined") {
+                clickedFeature.properties.switchStyle = true;
+            }
+
+            if (clickedFeature.properties.switchStyle) {
+                // This feature will be in the table
+                const assetType = ["bridge", "culvert"].includes(featureType) ? "STRC" : "ROAD";
+                const eventName = assetType === "STRC"
+                    ? "estrada.structureTable.rowSelected"
+                    : "estrada.roadTable.rowSelected";
+                dispatch(eventName, { detail: { rowId: featureId, featureType, assetType } });
+            }
+        });
     }
 
     private displayGeoJSON(json: GeoJSON): Promise<any> {
@@ -147,7 +183,20 @@ export class Map {
     }
 
     private getPopup(layer: any): string {
-        const id = parseInt(layer.feature.properties.pk, 10);
-        return roadPopup(id);
+        const id = layer.feature.properties.id;
+        const featureType = layer.feature.properties.featureType || "";
+
+        const popupData = GetDataForMapPopup(id, featureType);
+
+        let html = "";
+
+        popupData.forEach((popupDetail) => {
+            html = `<span class="popup"><span class="popup label">${popupDetail.label}`;
+            html += popupDetail.value
+                ? `: </span><span class="popup value">${popupDetail.value}</span></span>`
+                : "</span></span>";
+        });
+
+        return html;
     }
 }

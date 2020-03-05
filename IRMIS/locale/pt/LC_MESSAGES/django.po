@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-22 08:13+0000\n"
+"POT-Creation-Date: 2020-03-05 01:57+0000\n"
 "PO-Revision-Date: 2019-10-09 01:05+0000\n"
 "Last-Translator: b'  <juliana@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,16 +22,68 @@ msgstr ""
 msgid "IRMIS"
 msgstr "IRMIS"
 
-#, fuzzy
-#| msgid "Hello there"
-msgid "Hello"
-msgstr "Viva"
+msgid "Gabion works"
+msgstr ""
 
-msgid "Change password"
-msgstr "Alterar palavra-passe"
+msgid "Masonry works"
+msgstr ""
 
-msgid "Log out"
-msgstr "Sair"
+msgid "RCC"
+msgstr ""
+
+msgid "PCC concrete wall"
+msgstr ""
+
+msgid "Beam"
+msgstr ""
+
+msgid "Temporary"
+msgstr ""
+
+msgid "Truss"
+msgstr ""
+
+msgid "Arch"
+msgstr ""
+
+msgid "Reinforced cement"
+msgstr ""
+
+msgid "Concrete (RCC)"
+msgstr ""
+
+msgid "Timber"
+msgstr ""
+
+msgid "Suspension"
+msgstr ""
+
+msgid "RCC box"
+msgstr ""
+
+msgid "RCC pipe"
+msgstr ""
+
+msgid "RCC slab"
+msgstr ""
+
+msgid "Steel pipe"
+msgstr ""
+
+msgid "Stone scupper"
+msgstr ""
+
+msgid "Wooden"
+msgstr ""
+
+msgid "Concrete"
+msgstr ""
+
+msgid "Steel"
+msgstr ""
+
+msgid "Stone"
+msgstr ""
 
 #, python-format
 msgid "%(value)s should not contain spaces"
@@ -42,6 +94,21 @@ msgstr "Código"
 
 msgid "Name"
 msgstr "Nome"
+
+#, fuzzy
+#| msgid "Asset"
+msgid "Asset Id"
+msgstr "Infra-estrutura"
+
+#, fuzzy
+#| msgid "Asset"
+msgid "Asset Code"
+msgstr "Infra-estrutura"
+
+#, fuzzy
+#| msgid "Road Code"
+msgid "Road Id"
+msgstr "Código de estrada"
 
 msgid "Road Code"
 msgstr "Código de estrada"
@@ -109,15 +176,6 @@ msgstr "Urbana"
 msgid "Rural"
 msgstr "Rural"
 
-msgid "Low"
-msgstr "Baixo"
-
-msgid "Medium"
-msgstr "Médio"
-
-msgid "High"
-msgstr "Alto"
-
 msgid "Good"
 msgstr "Bom"
 
@@ -129,6 +187,30 @@ msgstr "Fraco"
 
 msgid "Bad"
 msgstr "Mau"
+
+msgid "Bridge"
+msgstr ""
+
+msgid "Culvert"
+msgstr ""
+
+msgid "Low"
+msgstr "Baixo"
+
+msgid "Medium"
+msgstr "Médio"
+
+msgid "High"
+msgstr "Alto"
+
+msgid "Flat"
+msgstr ""
+
+msgid "Rolling"
+msgstr ""
+
+msgid "Mountainous"
+msgstr ""
 
 msgid "last modified"
 msgstr "última alteração"
@@ -193,6 +275,24 @@ msgstr "Extensão da secção"
 msgid "Enter road link length"
 msgstr "Introduza a extensão da secção da estrada (em Km)"
 
+#, fuzzy
+#| msgid "Link Length"
+msgid "Geometry Length (m)"
+msgstr "Extensão da secção"
+
+msgid "Do not edit"
+msgstr ""
+
+#, fuzzy
+#| msgid "Link start chainage"
+msgid "Geometry Start Chainage"
+msgstr "Chinage do início da secção"
+
+#, fuzzy
+#| msgid "Link end chainage"
+msgid "Geometry End Chainage"
+msgstr "Chainage do final da secção"
+
 msgid "Surface Type"
 msgstr "Tipo de pavimento"
 
@@ -206,8 +306,8 @@ msgid "Choose the pavement class of the road"
 msgstr "Escolha a classe de pavimento da estrada"
 
 #, fuzzy
-#| msgid "Carriageway Width"
-msgid "Carriageway Width (m)"
+#| msgid "Carriageway width"
+msgid "Carriageway Width"
 msgstr "Largura da faixa de rodagem"
 
 #, fuzzy
@@ -216,13 +316,13 @@ msgid "Enter the width of the link carriageway"
 msgstr "Introduza a largura (em metros) da faixa de rodagem da secção da estrada"
 
 #, fuzzy
-#| msgid "Road Status"
-msgid "Road Class"
-msgstr "Estrado da Estrada"
+#| msgid "Pavement Class"
+msgid "Asset Class"
+msgstr "Classe de Pavimento"
 
 #, fuzzy
 #| msgid "Choose the pavement class of the road"
-msgid "Choose the road class"
+msgid "Choose the asset class"
 msgstr "Escolha a classe de pavimento da estrada"
 
 msgid "Road Status"
@@ -237,7 +337,9 @@ msgstr "Nome do Projecto"
 msgid "Enter road link project name"
 msgstr "Introduza o nome do projecto da secção da estrada"
 
-msgid "Traffic Level"
+#, fuzzy
+#| msgid "Traffic data"
+msgid "Traffic Data"
 msgstr "Volume de trânsito"
 
 msgid "Choose the traffic volume for the road link"
@@ -246,8 +348,8 @@ msgstr "Escolha o volume de trânsito para a secção da estrada"
 msgid "Surface Condition (SDI)"
 msgstr "Condição do pavimento (SDI)"
 
-msgid "Choose road link surface condition according to the Surface Distress Index (SDI): Good (SDI≤2), fair (2<SDI≤3), poor (3<SDI≤4) or bad (SDI>4)"
-msgstr "Escolha a condição do pavimento para a secção da estrada de acordo com o Surface Distress Index:  Bom (SDI≤2), Razoável (2<SDI≤3), Fraco (3<SDI≤4) or Mau (SDI>4"
+msgid "Choose road link surface condition according to the Surface Distress Index (SDI): Good (SDI<=2), fair (2<SDI<=3), poor (3<SDI<=4) or bad (SDI>4)"
+msgstr "Escolha a condição do pavimento para a secção da estrada de acordo com o Surface Distress Index:  Bom (SDI<=2), Razoável (2<SDI<=3), Fraco (3<SDI<=4) or Mau (SDI>4"
 
 msgid "Maintenance Needs"
 msgstr "Tipo de Manutenção"
@@ -261,6 +363,34 @@ msgstr "Classe Técnica"
 msgid "Choose road link technical class according to the 2010 Road Geometric Design Standards, DRBFC standards"
 msgstr "Escolha o tipo de classe técnica de acordo com o \"2010 Road Geometric Design standards\" e os standards da DNEPCC"
 
+msgid "Core"
+msgstr ""
+
+msgid "Set if the road is a high priority `core` road"
+msgstr ""
+
+msgid "Population Served"
+msgstr ""
+
+msgid "Set the size of population served by this road"
+msgstr ""
+
+#, fuzzy
+#| msgid "Technical class"
+msgid "Terrain class"
+msgstr "Classe técnica"
+
+#, fuzzy
+#| msgid "Choose the administrative class of the road"
+msgid "Choose what terrain class the road runs through"
+msgstr "Escolha a classe administrativa da secção da estrada"
+
+msgid "Rainfall"
+msgstr ""
+
+msgid "Enter the amount of rainfall"
+msgstr ""
+
 msgid "Number of Lanes"
 msgstr ""
 
@@ -268,6 +398,142 @@ msgstr ""
 #| msgid "Enter the source funding for the road link"
 msgid "Enter the number of lanes of the road"
 msgstr "Adicione a fonte de financiamento para a secção da estrada"
+
+#, fuzzy
+#| msgid "Asset"
+msgid "Asset Type"
+msgstr "Infra-estrutura"
+
+msgid "Structure Code"
+msgstr ""
+
+msgid "Structure Class"
+msgstr ""
+
+#, fuzzy
+#| msgid "Choose the pavement class of the road"
+msgid "Choose the structure class"
+msgstr "Escolha a classe de pavimento da estrada"
+
+#, fuzzy
+#| msgid "Choose the pavement class of the road"
+msgid "Choose the municipality for the structure"
+msgstr "Escolha a classe de pavimento da estrada"
+
+msgid "Enter the Road Code associated with the structure"
+msgstr ""
+
+msgid "Structure Construction Year"
+msgstr ""
+
+#, fuzzy
+#| msgid "Link Length"
+msgid "Structure Length (m)"
+msgstr "Extensão da secção"
+
+#, fuzzy
+#| msgid "Enter road link length (in Km)"
+msgid "Enter structure length"
+msgstr "Introduza a extensão da secção da estrada (em Km)"
+
+#, fuzzy
+#| msgid "Carriageway Width"
+msgid "Structure Width (m)"
+msgstr "Largura da faixa de rodagem"
+
+msgid "Enter structure width"
+msgstr ""
+
+#, fuzzy
+#| msgid "Link End Chainage (Km)"
+msgid "Chainage"
+msgstr "Chainage do final da secção (Km)"
+
+#, fuzzy
+#| msgid "Enter chainage for link starting point"
+msgid "Enter chainage point for the structure"
+msgstr "Introduza a chainage do ponto inicial da secção"
+
+#, fuzzy
+#| msgid "Surface Type"
+msgid "Bridge Type"
+msgstr "Tipo de pavimento"
+
+#, fuzzy
+#| msgid "Choose the pavement class of the road"
+msgid "Choose the bridge type"
+msgstr "Escolha a classe de pavimento da estrada"
+
+msgid "River Name"
+msgstr ""
+
+msgid "Enter the name of the river the bridge crosses over"
+msgstr ""
+
+msgid "Number of Spans"
+msgstr ""
+
+#, fuzzy
+#| msgid "Enter the source funding for the road link"
+msgid "Enter number of spans"
+msgstr "Adicione a fonte de financiamento para a secção da estrada"
+
+#, fuzzy
+#| msgid "Link Length"
+msgid "Span Length (m)"
+msgstr "Extensão da secção"
+
+#, fuzzy
+#| msgid "Enter road link length (in Km)"
+msgid "Enter span length"
+msgstr "Introduza a extensão da secção da estrada (em Km)"
+
+msgid "Deck Material"
+msgstr ""
+
+#, fuzzy
+#| msgid "Choose the pavement class of the road"
+msgid "Choose the bridge deck material"
+msgstr "Escolha a classe de pavimento da estrada"
+
+msgid "Protection Upstream"
+msgstr ""
+
+#, fuzzy
+#| msgid "Choose the administrative area of the road"
+msgid "Choose the upstream protection type"
+msgstr "Escolha a área administrativa da estrada"
+
+msgid "Protection Downstream"
+msgstr ""
+
+#, fuzzy
+#| msgid "Choose the administrative area of the road"
+msgid "Choose the downstream protection type"
+msgstr "Escolha a área administrativa da estrada"
+
+msgid "Culvert Type"
+msgstr ""
+
+msgid "Choose the culvert type"
+msgstr ""
+
+msgid "Structure Height (m)"
+msgstr ""
+
+msgid "Enter structure height"
+msgstr ""
+
+msgid "Number of Cells"
+msgstr ""
+
+msgid "Material"
+msgstr ""
+
+#, fuzzy
+#| msgid "Choose the pavement class of the road"
+msgid "Choose the culvert material"
+msgstr "Escolha a classe de pavimento da estrada"
 
 msgid "Road Inventory"
 msgstr "Inventário de Estradas"
@@ -318,9 +584,9 @@ msgid "Carriageway width"
 msgstr "Largura da faixa de rodagem"
 
 #, fuzzy
-#| msgid "Road Status"
-msgid "Road class"
-msgstr "Estrado da Estrada"
+#| msgid "Pavement class"
+msgid "Asset class"
+msgstr "Classe do pavimento"
 
 msgid "Technical class"
 msgstr "Classe técnica"
@@ -349,6 +615,9 @@ msgstr "Ponto final - UTM"
 msgid "Road Condition Data"
 msgstr "Dados de Condição de Estrada"
 
+msgid "Roughness (IRI)"
+msgstr ""
+
 msgid "Surface condition"
 msgstr "Condição do pavimento"
 
@@ -361,8 +630,86 @@ msgstr "Volume de trânsito"
 msgid "Number of lanes"
 msgstr ""
 
+#, fuzzy
+#| msgid "Technical Class"
+msgid "Terrain Class"
+msgstr "Classe Técnica"
+
 msgid "Return to default selection"
 msgstr "Voltar à selecção inicial"
+
+#, fuzzy
+#| msgid "Road Inventory"
+msgid "Structure Inventory"
+msgstr "Inventário de Estradas"
+
+#, fuzzy
+#| msgid "Road Inventory Data"
+msgid "Structure Inventory Data"
+msgstr "Dados do Inventário de Estradas"
+
+msgid "Structure"
+msgstr ""
+
+#, fuzzy
+#| msgid "Link Start Name"
+msgid "Structure Name"
+msgstr "Nome do início da secção"
+
+msgid "GPS Latitude"
+msgstr ""
+
+msgid "GPS Longitude"
+msgstr ""
+
+#, fuzzy
+#| msgid "Road Type"
+msgid "Type"
+msgstr "Tipo de Estrada"
+
+#, fuzzy
+#| msgid "Link Length"
+msgid "Length"
+msgstr "Extensão da secção"
+
+msgid "Width"
+msgstr ""
+
+msgid "Height"
+msgstr ""
+
+#, fuzzy
+#| msgid "Link Length"
+msgid "Span Length"
+msgstr "Extensão da secção"
+
+msgid "Construction Year"
+msgstr ""
+
+#, fuzzy
+#| msgid "Road Condition Data"
+msgid "Structure Condition Data"
+msgstr "Dados de Condição de Estrada"
+
+#, fuzzy
+#| msgid "Surface condition"
+msgid "Structure Condition"
+msgstr "Condição do pavimento"
+
+#, fuzzy
+#| msgid "Road Condition Data"
+msgid "Condition Description"
+msgstr "Dados de Condição de Estrada"
+
+#, fuzzy
+#| msgid "Road Inventory Data"
+msgid "Inventory Photos"
+msgstr "Dados do Inventário de Estradas"
+
+#, fuzzy
+#| msgid "Designed & developed by Catalpa International"
+msgid "Created by Catalpa International"
+msgstr "Desenhado & desenvolvido por Catalpa International"
 
 msgid "View"
 msgstr "Ver"
@@ -379,6 +726,14 @@ msgstr "Mapa"
 msgid "Table"
 msgstr "Tabela"
 
+#, fuzzy
+#| msgid "Road Status"
+msgid "Roads"
+msgstr "Estrado da Estrada"
+
+msgid "Structures"
+msgstr ""
+
 msgid "Filters"
 msgstr "Filtros"
 
@@ -394,8 +749,27 @@ msgstr "Limpar"
 msgid "Asset"
 msgstr "Infra-estrutura"
 
+msgid "Bridges"
+msgstr ""
+
+msgid "Culverts"
+msgstr ""
+
 msgid "Asset condition"
 msgstr "Condição da infra-estrutura"
+
+#, fuzzy
+#| msgid "Select data"
+msgid "Select the type"
+msgstr "Selecção de dados"
+
+msgid "Select the Deck Material"
+msgstr ""
+
+#, fuzzy
+#| msgid "Select data"
+msgid "Select the Material"
+msgstr "Selecção de dados"
 
 msgid "Please enter a correct username and password. Note that both fields may be case-sensitive"
 msgstr "O nome de utilizar ou palavra-passe estão incorrectos. Confirme se está a usar correctamente as maiúsculas e minúsculas"
@@ -511,6 +885,25 @@ msgstr "Endereço de email"
 msgid "Send"
 msgstr "Enviar"
 
+#, fuzzy
+#~| msgid "Hello there"
+#~ msgid "Hello"
+#~ msgstr "Viva"
+
+#~ msgid "Change password"
+#~ msgstr "Alterar palavra-passe"
+
+#~ msgid "Log out"
+#~ msgstr "Sair"
+
+#~ msgid "Traffic Level"
+#~ msgstr "Volume de trânsito"
+
+#, fuzzy
+#~| msgid "Road Status"
+#~ msgid "Road class"
+#~ msgstr "Estrado da Estrada"
+
 #~ msgid "Link End Chainage (Km)"
 #~ msgstr "Chainage do final da secção (Km)"
 
@@ -519,15 +912,6 @@ msgstr "Enviar"
 
 #~ msgid "Administrative Area"
 #~ msgstr "Área administrativa"
-
-#~ msgid "Choose the administrative area of the road"
-#~ msgstr "Escolha a área administrativa da estrada"
-
-#~ msgid "Road Type"
-#~ msgstr "Tipo de Estrada"
-
-#~ msgid "Choose the administrative class of the road"
-#~ msgstr "Escolha a classe administrativa da secção da estrada"
 
 #~ msgid "Administrative area"
 #~ msgstr "Área administrativa"

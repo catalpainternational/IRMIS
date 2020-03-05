@@ -8,8 +8,17 @@ export class Survey extends jspb.Message {
   getId(): number;
   setId(value: number): void;
 
-  getRoad(): string;
-  setRoad(value: string): void;
+  getAssetId(): string;
+  setAssetId(value: string): void;
+
+  getAssetCode(): string;
+  setAssetCode(value: string): void;
+
+  getRoadId(): number;
+  setRoadId(value: number): void;
+
+  getRoadCode(): string;
+  setRoadCode(value: string): void;
 
   getUser(): number;
   setUser(value: number): void;
@@ -52,7 +61,10 @@ export class Survey extends jspb.Message {
 export namespace Survey {
   export type AsObject = {
     id: number,
-    road: string,
+    assetId: string,
+    assetCode: string,
+    roadId: number,
+    roadCode: string,
     user: number,
     source: string,
     dateUpdated?: google_protobuf_timestamp_pb.Timestamp.AsObject,

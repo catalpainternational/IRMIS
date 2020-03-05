@@ -5,7 +5,7 @@ edit_base {
     display: block;
 
     #edit-base {
-        height: calc(100vh - #{$top-menu-height} - 5px - 15px);
+        height: calc(100vh - #{$top-menu-height} - 5px);
         width: calc(100% - #{$side-menu-width});
         padding-right: 8px;
         overflow-y: auto;
@@ -58,10 +58,15 @@ edit_base {
 }
 
 edit_location_type,
+edit_structure_type,
 edit_asset_details,
+edit_structure_details,
+edit_structure_protection,
+edit_structure_condition,
 edit_pavement,
 edit_project,
 edit_condition,
+edit_traffic,
 edit_maintenance,
 edit_environment,
 edit_history {
@@ -91,7 +96,14 @@ edit_history {
     }
 }
 
+edit_traffic {
+    section {
+        max-width: inherit;
+    }
+}
+
 edit_location_type,
+edit_structure_type,
 edit_project,
 edit_maintenance,
 edit_history {
@@ -106,10 +118,44 @@ edit_history {
 }
 
 edit_asset_details,
+edit_structure_details,
+edit_structure_protection,
+edit_structure_condition,
 edit_pavement,
 edit_condition {
     h5 {
         margin-bottom: 0;
+    }
+}
+
+edit_structure_condition {
+    section {
+        min-width: 450px;
+    }
+
+    .upload-box { 
+        box-sizing: border-box;
+        height: 230px;
+        border: 1px solid $light-gray;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        margin-top: 30px;
+    }
+
+    .cloud-box {
+        margin: 70px 85px 20px 85px;
+        font-size: 12px;
+        line-height: 14px;
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        font-weight: 600;
+
+        div.upload-text {
+            color: $green;
+            margin-bottom: 30px;
+            margin-top: 5px;
+        }
     }
 }
 
@@ -139,5 +185,111 @@ feedback_banner {
         &.unsuccess {
             border-top-color: $red;
         }
+    }
+}
+
+#inventory-traffic-level-table_wrapper {
+    border-top: 1px solid #CFD1D6;
+    padding-top: 30px;
+
+    section {
+        margin-bottom: 25px;
+    }
+}
+
+edit_traffic,
+traffic_data_details {
+    .survey-field-height {
+        height: 30px;
+        align-items: flex-end;
+    }
+
+    .date-field-title {
+        font-size: 14px; 
+        width: 96px; 
+        margin-left: 10px; 
+        font-weight: 400;
+    }
+
+    .date-input-field {
+        width: 192px; 
+        height: 28px;
+    }
+
+    .traffic-width {
+        width: 480px;
+    }
+
+    .vehicle-field-height {
+        height: 40px;
+    }
+
+    .vehicle-name {
+        width: 144px; 
+        font-size: 14px;
+    }
+
+    .vehicle-input {
+        height: 28px; 
+        margin: 0 36px 0 16px;
+    }
+
+    .details-modal-type-spacing {
+        margin: 10px 0 0 10px; 
+        font-size: 14px;
+    }
+
+    .details-survey-type {
+        display: inline-block; 
+        width: 250px; 
+        border-right: 1px solid #CFD1D6; 
+        margin-right: 50px; 
+        margin-bottom: 10px;
+    }
+
+    .details-forecast-methods-block {
+        display: inline-block; 
+        margin-bottom: 10px;
+    }
+
+    .details-modal-date {
+        font-size: 14px; 
+        font-weight: 700;
+        margin-right: 32px;
+    }
+
+    .details-modal-date-spacing {
+        width: 56px;
+    }
+    
+    .details-vehicle-spacing {
+        margin-right: 88px; 
+        font-weight: 700;
+        width: 100px;
+    }
+    
+    .details-vehicle-count {
+        text-align: right;
+    }
+
+    .details-total {
+        padding-top: 20px; 
+        border-top: 1px solid #CFD1D6;
+    }
+
+    .details-total-title {
+        margin-left: 50px; 
+        font-size: 18px;
+    }
+
+    .details-total-number {
+        margin-left: 105px; 
+        font-size: 18px;
+        width: 100px;
+        text-align: right;
+    }
+
+    .contains-tooltip {
+        position: relative;
     }
 }

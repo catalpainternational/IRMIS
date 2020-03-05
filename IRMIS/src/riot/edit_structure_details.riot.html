@@ -1,0 +1,330 @@
+<edit_structure_details>
+    <div class="content-wrapper">
+        <h5>{ window.gettext("Asset Details") }</h5>
+
+        <section>
+            <div class="form-group">
+                <label>{ window.gettext("Structure Code") }</label>
+                <small class="form-text text-muted">{ window.gettext("Enter the code of the structure") }</small>
+                <input class="{ state.errors.code ? 'danger' : null } { state.code ? '' : 'inactive' } form-control"
+                    type="text" maxlength="25" placeholder="DI-001" value="{ state.code }" oninput="{ checkCode }">
+                <div if="{ state.errors.code }" class="invalid-tooltip">
+                    <ul>
+                        <li>{ state.errors.code }.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="form-group">
+                <label>{ window.gettext("Structure Name") }</label>
+                <small class="form-text text-muted">{ window.gettext("Enter the name of the structure") }</small>
+                <input class="{ state.errors.name ? 'danger' : null } { state.name ? '' : 'inactive' } form-control"
+                    type="text" maxlength="25" placeholder="Kuluhun" value="{ state.name }" oninput="{ checkName }">
+                <div if="{ state.errors.name }" class="invalid-tooltip">
+                    <ul>
+                        <li>{ state.errors.name }.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bridge-specific field -->
+        <section if="{ props.assetType === 'BRDG' }">
+            <div class="form-group">
+                <label>{ window.gettext("River Name") }</label>
+                <small class="form-text text-muted">
+                    { window.gettext("Enter the name of the river where the structure is located") }
+                </small>
+                <input
+                    class="{ state.errors.riverName ? 'danger' : null } { state.riverName ? '' : 'inactive' } form-control"
+                    type="text" maxlength="25" placeholder="Kuluhun" value="{ state.riverName }"
+                    oninput="{ checkRiverName }">
+                <div if="{ state.errors.riverName }" class="invalid-tooltip">
+                    <ul>
+                        <li>{ state.errors.riverName }.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="form-group">
+                <label>{ window.gettext("Construction Year") }</label>
+                <small class="form-text text-muted">{ window.gettext("Enter structure's construction year") }</small>
+                <input
+                    class="{ state.errors.constructionYear ? 'danger' : null } { state.constructionYear !== -1 && state.constructionYear !== '' ? '' : 'inactive' } form-control"
+                    type="number" placeholder="1970"
+                    value="{ state.constructionYear !== -1 ? state.constructionYear : '' }" min="1970"
+                    max="{ new Date() }" oninput="{ checkConstructionYear }">
+                <div if="{ state.errors.constructionYear }" class="invalid-tooltip">
+                    <ul>
+                        <li>{ state.errors.constructionYear }.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="form-group">
+                <label>{ window.gettext("Length (meters)") }</label>
+                <small class="form-text text-muted">{ window.gettext("Enter the structure's length in meters") }</small>
+                <input
+                    class="{ state.errors.length ? 'danger' : null } { state.length !== -1 && state.length !== '' ? '' : 'inactive' } form-control"
+                    type="number" placeholder="5" value="{ state.length !== -1 ? state.length : '' }" min="0"
+                    step="0.01" oninput="{ checkLength }">
+                <div if="{ state.errors.length }" class="invalid-tooltip">
+                    <ul>
+                        <li>{ state.errors.length }.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="form-group">
+                <label>{ window.gettext("Width (meters)") }</label>
+                <small class="form-text text-muted">{ window.gettext("Enter the structure's width in meters") }</small>
+                <input
+                    class="{ state.errors.width ? 'danger' : null } { state.width !== -1 && state.width !== '' ? '' : 'inactive' } form-control"
+                    type="number" placeholder="4" value="{ state.width !== -1 ? state.width : '' }" min="0" max="99.99"
+                    step="0.01" oninput="{ checkWidth }">
+                <div if="{ state.errors.width }" class="invalid-tooltip">
+                    <ul>
+                        <li>{ state.errors.width }.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Culvert-specific fields -->
+        <template if="{ props.assetType === 'CULV' }">
+            <section>
+                <div class="form-group">
+                    <label>{ window.gettext("Height (meters)") }</label>
+                    <small class="form-text text-muted">
+                        { window.gettext("Enter the structure's height in meters") }
+                    </small>
+                    <input
+                        class="{ state.errors.height ? 'danger' : null } { state.height !== -1 && state.height !== '' ? '' : 'inactive' } form-control"
+                        type="number" placeholder="42" value="{ state.height !== -1 ? state.height : '' }" min="0.1"
+                        step="0.01" oninput="{ checkHeight }">
+                    <div if="{ state.errors.height }" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.height }.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <div class="form-group">
+                    <label>{ window.gettext("Number of cells") }</label>
+                    <small class="form-text text-muted">
+                        { window.gettext("Enter the number of cells in the structure") }
+                    </small>
+                    <input
+                        class="{ state.errors.structureCells ? 'danger' : null } { state.structureCells !== -1 && state.structureCells !== '' ? '' : 'inactive' } form-control"
+                        type="number" placeholder="2"
+                        value="{ state.structureCells !== -1 ? state.structureCells : '' }" min="0" max="99"
+                        oninput="{ checkNumberCells }">
+                    <div if="{ state.errors.structureCells }" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.structureCells }.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </template>
+
+        <!-- Bridge-specific field -->
+        <template if="{ props.assetType === 'BRDG' }">
+            <section>
+                <div class="form-group">
+                    <label>{ window.gettext("Number of spans") }</label>
+                    <small class="form-text text-muted">
+                        { window.gettext("Enter the number of spans in the structure") }
+                    </small>
+                    <input
+                        class="{ state.errors.numberSpans ? 'danger' : null } { state.numberSpans !== -1 && state.numberSpans !== '' ? '' : 'inactive' } form-control"
+                        type="number" placeholder="1" value="{ state.numberSpans !== -1 ? state.numberSpans : '' }"
+                        min="1" max="999" oninput="{ checkNumberSpans }">
+                    <div if="{ state.errors.numberSpans }" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.numberSpans }.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <div class="form-group">
+                    <label>{ window.gettext("Span Length") }</label>
+                    <small class="form-text text-muted">
+                        { window.gettext("Enter the span length for the structure") }
+                    </small>
+                    <input
+                        class="{ state.errors.spanLength ? 'danger' : null } { state.spanLength !== -1 && state.spanLength !== '' ? '' : 'inactive' } form-control"
+                        type="number" placeholder="1.5" value="{ state.spanLength !== -1 ? state.spanLength : '' }"
+                        min="0.1" step="0.01" oninput="{ checkSpanLength }">
+                    <div if="{ state.errors.spanLength }" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.spanLength }.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </template>
+
+        <div class="button-wrapper d-flex justify-content-end">
+            <button class="btn btn-primary" onclick="{ save }" disabled="{ props.saving }">
+                { window.gettext("Save and continue") }
+            </button>
+        </div>
+    </div>
+
+    <script>
+        import Edit_Stop_Alert from "./edit_stop_alert.riot.html";
+
+        import { containsWhiteSpaces, withinMaxDigits } from "../assets/utilities";
+
+        export default {
+            state: {
+                constructionYearDigits: 4,
+                lengthDecimals: 2,
+                widthDigits: 4,
+                widthDecimals: 2,
+                heightDecimals: 2,
+                numberCellsDigits: 2,
+                numberSpansDigits: 3,
+                spanLengthDecimals: 2,
+                canSave: false,
+                errors: {},
+            },
+            components: {
+                Edit_Stop_Alert
+            },
+            onBeforeMount(props, state) {
+                state.loading = true;
+                state.code = props.structure.code;
+                state.name = props.structure.name;
+                state.constructionYear = props.structure.getConstructionYear();
+                state.length = props.structure.getLength();
+                state.width = props.structure.getWidth();
+
+                if (props.assetType === 'BRDG') {
+                    state.riverName = props.structure.getRiverName();
+                    state.numberSpans = props.structure.getNumberSpans();
+                    state.spanLength = props.structure.getSpanLength();
+                } else {
+                    state.height = props.structure.getHeight();
+                    state.numberCells = props.structure.getNumberCells();
+                }
+            },
+            save(e) {
+                this.props.parent.saveStructure();
+            },
+            checkCode(e) {
+                const value = e.currentTarget.value;
+                if (containsWhiteSpaces(value)) {
+                    this.state.errors.code = window.gettext('Code cannot contain white spaces');
+                } else {
+                    delete this.state.errors.code;
+                    this.state.code = value;
+                    this.props.structure.setStructureCode(value);
+                }
+                this.update();
+            },
+            checkName(e) {
+                this.state.name = e.currentTarget.value;
+                this.props.structure.setStructureName(this.state.name);
+                this.update();
+            },
+            checkRiverName(e) {
+                this.state.riverName = e.currentTarget.value;
+                this.props.structure.setRiverName(this.state.riverName);
+                this.update();
+            },
+            checkConstructionYear(e) {
+                const value = e.currentTarget.value;
+                if (!withinMaxDigits(value, this.state.constructionYearDigits)) {
+                    this.state.errors.constructionYear = window.gettext(`Construction year cannot contain more than ${this.state.constructionYearDigits} digits and value shouldn't contain decimals`);
+                } else {
+                    delete this.state.errors.constructionYear;
+                    this.state.constructionYear = value;
+                    this.props.structure.setConstructionYear(value);
+                }
+                this.update();
+            },
+            checkLength(e) {
+                const value = e.currentTarget.value;
+                if (!withinMaxDigits(value, 19, this.state.lengthDecimals)) {
+                    this.state.errors.length = window.gettext(`Length cannot contain more than ${this.state.lengthDecimals} decimals`);
+                } else {
+                    delete this.state.errors.length;
+                    this.state.length = value;
+                    this.props.structure.setLength(value);
+                }
+                this.update();
+            },
+            checkWidth(e) {
+                const value = e.currentTarget.value;
+                if (!withinMaxDigits(value, this.state.widthDigits, this.state.widthDecimals)) {
+                    this.state.errors.width = window.interpolate(
+                        window.gettext('Width cannot contain more than %s digits, of which %s are decimals'),
+                        [this.state.widthDigits, this.state.widthDecimals]
+                    );
+                } else {
+                    delete this.state.errors.width;
+                    this.state.width = value;
+                    this.props.structure.setWidth(value);
+                }
+                this.update();
+            },
+            checkHeight(e) {
+                const value = e.currentTarget.value;
+                if (!withinMaxDigits(value, 19, this.state.heightDecimals)) {
+                    this.state.errors.height = window.gettext(`Height cannot contain more than ${this.state.heightDecimals} decimals`);
+                } else {
+                    delete this.state.errors.height;
+                    this.state.structureHeight = value;
+                    this.props.structure.setHeight(value);
+                }
+                this.update();
+            },
+            checkNumberCells(e) {
+                const value = e.currentTarget.value;
+                if (!withinMaxDigits(value, this.state.numberCellsDigits)) {
+                    this.state.errors.structureCells = window.gettext(`Number of cells cannot contain more than ${this.state.numberCellsDigits} digits and value shouldn't contain decimals`);
+                } else {
+                    delete this.state.errors.structureCells;
+                    this.state.structureCells = value;
+                    this.props.structure.setNumberCells(value);
+                }
+                this.update();
+            },
+            checkNumberSpans(e) {
+                const value = e.currentTarget.value;
+                if (!withinMaxDigits(value, this.state.numberSpansDigits)) {
+                    this.state.errors.numberSpans = window.gettext(`Number of spans cannot contain more than ${this.state.numberSpansDigits} digits and value shouldn't contain decimals`);
+                } else {
+                    delete this.state.errors.numberSpans;
+                    this.state.numberSpans = value;
+                    this.props.structure.setNumberSpans(value);
+                }
+            },
+            checkSpanLength(e) {
+                const value = e.currentTarget.value;
+                if (!withinMaxDigits(value, 19, this.state.spanLengthDecimals)) {
+                    this.state.errors.spanLength = window.gettext(`Span length cannot contain more than ${this.state.heightDecimals} decimals`);
+                } else {
+                    delete this.state.errors.spanLength;
+                    this.state.spanLength = value;
+                    this.props.structure.setSpanLength(value);
+                }
+                this.update();
+            },
+        }
+    </script>
+</edit_structure_details>

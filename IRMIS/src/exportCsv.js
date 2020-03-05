@@ -2,11 +2,12 @@ import { LocalSave } from "./localFileAccess";
 
 export function exportCsv(headers, rows) {
     const date = new Date();
-    const title = `Estrada_${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-    const fileName = `${title}.csv`;
+    const month = date.getMonth() + 1;
+    const title = "Estrada_" + date.getFullYear() + "-" + month + "-" + date.getDate();
+    const fileName = title + ".csv";
 
     const csvDump = [];
-    csvDump.push(headers.map((h) => `"${h}"`).join(","));
+    csvDump.push(headers.map((h) => '"' + h + '"').join(","));
 
     rows.forEach((row) => {
         const rowCells = [];
@@ -19,7 +20,7 @@ export function exportCsv(headers, rows) {
             } else {
                 const cellNumber = Number(cell);
                 if (isNaN(cellNumber)) {
-                    rowCells.push(`"${cell}"`);
+                    rowCells.push('"' + cell + '"');
                 } else {
                     rowCells.push(cellNumber);
                 }

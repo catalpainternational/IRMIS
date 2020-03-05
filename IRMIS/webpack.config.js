@@ -4,7 +4,7 @@ const path = require('path');
 module.exports = {
     context: path.resolve(__dirname, './src'),
     entry: {
-        estrada: './estrada.js',
+        estrada: ['whatwg-fetch', './estrada.js'],
     },
     output: {
         filename: '[name].js',
@@ -17,29 +17,31 @@ module.exports = {
     module: {
         rules: [
             {
-                'test': /\.riot.html$/,
-                'exclude': /node_modules/,
-                'use': {
-                    'loader': '@riotjs/webpack-loader',
-                    'options': { 'type': 'es6' }
+                test: /\.riot.html$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: '@riotjs/webpack-loader',
+                    options: { type: 'es5' }
                 }
             },
             {
-                'test': /\.js$/,
-                'exclude': /node_modules/,
-                'use': {
-                    'loader': 'babel-loader',
-                    'options': {
-                        'presets': [ '@babel/preset-env' ]
+                test: /\.(ts|js)$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: [
+                            [
+                                "@babel/preset-env",
+                                {
+                                    "corejs": "3",
+                                    "useBuiltIns": "usage"
+                                }
+                            ],
+                            "@babel/preset-typescript"
+                        ]
                     }
                 }
-            },
-            {
-                test: /\.ts$/,
-                exclude: /node_modules/,
-                use: [
-                    { loader: 'ts-loader' },
-                ],
             },
             {
                 test: /\.scss$/,

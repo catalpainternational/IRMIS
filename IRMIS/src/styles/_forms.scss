@@ -26,6 +26,10 @@
         border: 1px solid $red;
     }
 
+    &:-moz-ui-invalid {
+        box-shadow: none;
+    }
+
     &:focus {
         box-shadow: 0 0 2px 1px rgba(16, 165, 150, 0.5);
         border: 1px solid $green;
@@ -41,7 +45,7 @@
 
 .form-text {
     margin-bottom: 5px;
-    margin-top: 5px;
+    margin-top: 0;
 }
 
 .invalid-tooltip {
@@ -52,7 +56,6 @@
     max-width: 225px;
     display: block;
     left: 10px;
-    top: 67px;
 
     &::after {
         content: "";
@@ -63,6 +66,14 @@
         border-bottom-color: $red;
         margin-top: -10px;
         transform: rotate(90deg);
+    }
+
+    &.error-tooltip-date {
+        margin-left: 110px;
+    }
+    
+    &.error-tooltip-vehicle {
+        margin-left: 210px;
     }
 
     ul {

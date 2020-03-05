@@ -13,9 +13,12 @@
 #number-lanes-modal,
 #terrain-type-modal,
 #surface-type-modal,
-#rainfall-class-modal,
+#traffic-modal,
+#traffic-segments-modal,
+#rainfall-modal,
 #pavement-class-modal,
-#surface-condition-modal {
+#structure-condition-modal,
+#asset-condition-modal {
     .modal-header {
         border-bottom: 1px solid $light-gray;
     }
@@ -43,7 +46,7 @@
 }
 
 .modal-lg {
-    max-width: 600px;
+    max-width: 675px;
 }
 
 .modal-header {

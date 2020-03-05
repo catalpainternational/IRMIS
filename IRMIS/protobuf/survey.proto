@@ -1,5 +1,4 @@
 syntax = "proto3";
-
 import "google/protobuf/timestamp.proto";
 
 package assets;
@@ -10,7 +9,12 @@ package assets;
 message Survey {
   /* Note that field Id numbers once used, are fixed. */
   uint32 id = 1;
-  string road = 2;
+  string asset_id = 13;
+  string asset_code = 10;
+  // road_id and road_code are only relevant if this survey references a structure
+  // They are NOT relevant if this survey references a road
+  uint32 road_id = 12;
+  string road_code = 2; // This was just 'road' before - it still has the same meaning now
   uint32 user = 3;
   string source = 9;
   google.protobuf.Timestamp date_updated = 4;
@@ -18,7 +22,6 @@ message Survey {
   float chainage_start = 5;
   float chainage_end = 6;
   string values = 7;
-  // uint32 last_revision_id = 10;
   string added_by = 11;
 }
 

@@ -1,22 +1,9 @@
 syntax = "proto3";
-import "google/protobuf/timestamp.proto";
 
 package assets;
 
 /* Remember to run `yarn protoc` after making any changes
  * to regenerate the javascript and python protobuf implementations */
-
-message Version {
-  uint32 pk = 1;
-  google.protobuf.Timestamp date_created = 2;
-  string user = 3;
-  string comment = 4;
-  /* string source = 5; */
-}
-
-message Versions {
-  repeated Version versions = 1;
-}
 
 message Projection {
   float x = 1;
@@ -31,7 +18,7 @@ message Road {
   uint32 geojson_id = 2;
   string road_code = 3;
   string road_name = 4;
-  string road_type = 10;
+  string asset_class = 10; // road_type has been renamed to asset_class
   string road_status = 20;
   string link_code = 5;
   /* string link_name = 6; */
@@ -41,7 +28,7 @@ message Road {
   float link_end_chainage = 12;
   float link_length = 7;
   string surface_type = 8;
-  string surface_condition = 9;
+  string asset_condition = 9; // surface_condition has been renamed to asset_condition
   string pavement_class = 13;
   float carriageway_width = 14;
   string administrative_area = 15;

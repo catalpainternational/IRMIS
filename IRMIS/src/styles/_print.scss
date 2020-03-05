@@ -22,7 +22,7 @@
         margin: 0;
     }
 
-    #reports {
+    #reports, #dashboard {
         overflow-y: unset;
         height: unset;
         width: unset;
@@ -31,6 +31,10 @@
     }
 
     header {
+        display: none !important;
+    }
+
+    footer {
         display: none !important;
     }
 
@@ -44,7 +48,7 @@
         }
     }
 
-    report {
+    report, report_dashboard {
         .report-criteria {
             display: none;
         }

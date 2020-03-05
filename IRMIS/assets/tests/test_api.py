@@ -250,15 +250,17 @@ def test_survey_create(client, django_user_model):
     group = Group.objects.get(name="Editors")
     user.groups.add(group)
     client.force_login(user)
+    # create a road
+    road_code = "A01"
+    road = Road.objects.create(**{"road_code": road_code})
     # build protobuf to send new survey
     pb = survey_pb2.Survey()
     pb.user = user.pk
-    group = Group.objects.get(name="Editors")
-    user.groups.add(group)
-    pb.road = "A01"
+    pb.asset_id = "ROAD-%s" % road.id
+    pb.asset_code = road_code
     pb.chainage_start = 6000.0
     pb.chainage_end = 7000.0
-    pb.values = json.dumps({"traffic_level": "None", "surface_condition": "2"})
+    pb.values = json.dumps({"traffic_level": "None", "asset_condition": "2"})
     ts = Timestamp()
     ts.FromDatetime(timezone.now())
     pb.date_surveyed.CopyFrom(ts)
@@ -279,16 +281,20 @@ def test_survey_edit_update(client, django_user_model):
     group = Group.objects.get(name="Editors")
     user.groups.add(group)
     client.force_login(user)
+    # create a road
+    road_code = "A01"
+    road = Road.objects.create(**{"road_code": road_code})
+    # create a survey
     with reversion.create_revision():
-        # create a survey
         survey = Survey.objects.create(
             **{
-                "road": "A01",
+                "asset_id": "ROAD-%s" % road.id,
+                "asset_code": road_code,
                 "user": user,
                 "chainage_start": 600.0,
                 "chainage_end": 700.25,
                 "date_surveyed": timezone.now(),
-                "values": {"surface_condition": "2", "traffic_level": "L"},
+                "values": {"asset_condition": "2", "traffic_level": "L"},
             }
         )
         # store the user who made the changes
@@ -356,24 +362,28 @@ def test_survey_delete(client, django_user_model):
     group = Group.objects.get(name="Editors")
     user.groups.add(group)
     client.force_login(user)
+    # create a road
+    road_code = "A01"
+    road = Road.objects.create(**{"road_code": road_code})
+    # create a survey
     with reversion.create_revision():
-        # create a survey
         survey = Survey.objects.create(
             **{
-                "road": "A01",
+                "asset_id": "ROAD-%s" % road.id,
+                "asset_code": road_code,
                 "user": user,
                 "chainage_start": 600.0,
                 "chainage_end": 700.25,
                 "date_surveyed": timezone.now(),
-                "values": {"surface_condition": "2", "traffic_level": "L"},
+                "values": {"asset_condition": "2", "traffic_level": "L"},
             }
         )
         # store the user who made the changes
         reversion.set_user(user)
 
-    # void the surface condition attribute & make Protobuf to send
+    # void the asset condition attribute & make Protobuf to send
     pb = Survey.objects.filter(id=survey.id).to_protobuf().surveys[0]
-    pb.values = json.dumps({"surface_condition": None, "traffic_level": "L"})
+    pb.values = json.dumps({"asset_condition": None, "traffic_level": "L"})
 
     # attempt to delete the survey
     url = reverse("survey_update")
@@ -384,5 +394,5 @@ def test_survey_delete(client, django_user_model):
     # check that DB not longer has the survey attribute that was deleted
     # but does have one that should not have been touched
     mod_survey = Survey.objects.filter(id=survey.id).get()
-    assert mod_survey.values["surface_condition"] == None
+    assert mod_survey.values["asset_condition"] == None
     assert mod_survey.values["traffic_level"] == survey.values["traffic_level"]

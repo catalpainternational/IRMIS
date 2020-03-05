@@ -1,4 +1,4 @@
-#settings, #columns-dropdown {
+#settings, #road-columns-dropdown, #structure-columns-dropdown {
     span.image {
         margin-right: 5px;
     }
@@ -10,11 +10,11 @@
     top: 30px;
 }
 
-#columns-dropdown {
+#road-columns-dropdown, #structure-columns-dropdown {
     padding: 20px 30px;
     top: 25px;
 
-    .road-inventory-data {
+    .asset-inventory-data {
         .left-pane {
             padding-right: 30px;
         }
@@ -25,7 +25,7 @@
         }
     }
 
-    .road-condition-data {
+    .asset-condition-data {
         padding-left: 15px;
     }
 }

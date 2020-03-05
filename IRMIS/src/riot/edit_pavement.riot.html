@@ -1,7 +1,7 @@
 <edit_pavement>
     <div class="content-wrapper">
         <div class="d-flex justify-content-between">
-            <h5>{ window.gettext("Surface Type Data (SDI)") }</h5>
+            <h5>{ window.gettext("Surface Type Data") }</h5>
             <button class="btn btn-primary" onclick="{ addEditSurface }" disabled="{ props.editing }">
                 { window.gettext("Add") }
             </button>
@@ -21,7 +21,7 @@
         </div>
         <data_table if="{ state.viewAllSurface }" table_id="{surface_all_data_table_id}"
             columns="{surface_all_data_table_columns}" columnSortOrder="{surface_all_data_table_columns_order}"
-            getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows['surface_type']}" canDelete=true>
+            getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows['surface_type']}" candelete=true>
         </data_table>
         <data_table if="{ !state.viewAllSurface }" table_id="{surface_current_data_table_id}"
             columns="{surface_current_data_table_columns}" columnSortOrder="{surface_current_data_table_columns_order}"
@@ -51,7 +51,7 @@
         </div>
         <data_table if="{ state.viewAllPavement }" table_id="{pavement_all_data_table_id}"
             columns="{pavement_all_data_table_columns}" columnSortOrder="{pavement_all_data_table_columns_order}"
-            getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows['pavement_class']}" canDelete=true>
+            getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows['pavement_class']}" candelete=true>
         </data_table>
         <data_table if="{ !state.viewAllPavement }" table_id="{pavement_current_data_table_id}"
             columns="{pavement_current_data_table_columns}"
@@ -87,11 +87,11 @@
                 <div class="form-group">
                     <label>{ window.gettext("Chainage start") } (m)</label>
                     <span class="required">*</span>
+                    <small class="form-text text-muted">{ props.parent.getHelpText("start_chainage") }</small>
                     <input
                         class="{ state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
                         type="number" name="startChainage" placeholder="1000" value="{ state.survey.startChainage }"
-                        oninput="{ checkChainage }" required>
-                    <small class="form-text text-muted">{ props.parent.getHelpText("start_chainage") }</small>
+                        oninput="{ checkChainage }" min="0" max="999999999" step="1" required>
                     <div if="{ state.errors.startChainage }" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.startChainage }.</li>
@@ -101,11 +101,11 @@
                 <div class="form-group">
                     <label>{ window.gettext("Chainage end") } (m)</label>
                     <span class="required">*</span>
+                    <small class="form-text text-muted">{ props.parent.getHelpText("end_chainage") }</small>
                     <input
                         class="{ state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
                         type="number" name="endChainage" placeholder="62410" value="{ state.survey.endChainage }"
-                        oninput="{ checkChainage }" required>
-                    <small class="form-text text-muted">{ props.parent.getHelpText("end_chainage") }</small>
+                        oninput="{ checkChainage }" min="0" max="999999999" step="1" required>
                     <div if="{ state.errors.endChainage }" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.endChainage }.</li>
@@ -119,18 +119,18 @@
                 <div class="form-group">
                     <label>{ surfaces.display }</label>
                     <span class="required">*</span>
+                    <small class="form-text text-muted">{ props.parent.getHelpText("surface_type") }</small>
+                    <select class="{ state.survey.surfaceType ? '' : 'inactive' } form-control"
+                        onchange="{ checkSurfaceType }" name="surfaceType">
+                        <option value="">{ window.gettext("Select a Surface Type") }</option>
+                        <option each="{ surface in surfaces.options }" value="{ surface.code }"
+                            selected="{ surface.code == state.survey.surfaceType }">{ surface.name }</option>
+                    </select>
                     <div if="{ state.errors.surfaceType }" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.surfaceType }.</li>
                         </ul>
                     </div>
-                    <select class="{ state.survey.surfaceType ? '' : 'inactive' } form-control" onchange="{ checkSurfaceType }"
-                        name="surfaceType">
-                        <option value="">{ window.gettext("Select a Surface Type") }</option>
-                        <option each="{ surface in surfaces.options }" value="{ surface.code }"
-                            selected="{ surface.code == state.survey.surfaceType }">{ surface.name }</option>
-                    </select>
-                    <small class="form-text text-muted">{ props.parent.getHelpText("surface_type") }</small>
                 </div>
             </section>
 
@@ -167,11 +167,11 @@
                 <div class="form-group">
                     <label>{ window.gettext("Chainage start") } (m)</label>
                     <span class="required">*</span>
+                    <small class="form-text text-muted">{ props.parent.getHelpText("start_chainage") }</small>
                     <input
                         class="{ state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
                         type="number" name="startChainage" placeholder="1000" value="{ state.survey.startChainage }"
-                        oninput="{ checkChainage }" required>
-                    <small class="form-text text-muted">{ props.parent.getHelpText("start_chainage") }</small>
+                        oninput="{ checkChainage }" min="0" max="999999999" step="1" required>
                     <div if="{ state.errors.startChainage }" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.startChainage }.</li>
@@ -181,11 +181,11 @@
                 <div class="form-group">
                     <label>{ window.gettext("Chainage end") } (m)</label>
                     <span class="required">*</span>
+                    <small class="form-text text-muted">{ props.parent.getHelpText("end_chainage") }</small>
                     <input
                         class="{ state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
                         type="number" name="endChainage" placeholder="62410" value="{ state.survey.endChainage }"
-                        oninput="{ checkChainage }" required>
-                    <small class="form-text text-muted">{ props.parent.getHelpText("end_chainage") }</small>
+                        oninput="{ checkChainage }" min="0" max="999999999" step="1" required>
                     <div if="{ state.errors.endChainage }" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.endChainage }.</li>
@@ -200,11 +200,6 @@
                     <label>{ pavements.display }</label>
                     <span class="required">*</span>
                     <small class="form-text text-muted">{ props.parent.getHelpText("pavement_class") }</small>
-                    <div if="{ state.errors.pavementClass }" class="invalid-tooltip">
-                        <ul>
-                            <li>{ state.errors.pavementClass }.</li>
-                        </ul>
-                    </div>
                     <ul class="pavement-classes" name="pavementClass">
                         <li each="{ pavement in pavements.options }" data-pavement="{ pavement.code }"
                             onclick="{ checkPavementClass }">
@@ -213,6 +208,11 @@
                             { pavement.name }
                         </li>
                     </ul>
+                    <div if="{ state.errors.pavementClass }" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.pavementClass }.</li>
+                        </ul>
+                    </div>
                 </div>
             </section>
 
@@ -235,8 +235,11 @@
         import Stacked_Bar from "./stacked_bar.riot.html";
 
         import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
-        import {cloneData, toChainageFormat} from "../assets/protoBufUtilities";
-        import {Survey, Report} from "../../protobuf/survey_pb";
+        import { choice_or_default, toChainageFormat } from "../assets/protoBufUtilities";
+        import {withinMaxDigits} from "../assets/utilities";
+
+        import { makeEstradaRoad, PAVEMENT_CLASS_CHOICES, SURFACE_TYPE_CHOICES } from "../assets/models/road";
+        import { EstradaSurvey, makeEstradaSurvey } from "../assets/models/survey";
 
         import $ from "jquery";
 
@@ -244,15 +247,10 @@
             return fieldNames.filter((fieldName) => {return !data[fieldName];});
         }
 
-        function withinMaxDigits(text, limit, decimals) {
-            return (new RegExp(`^\\d{0,${(limit - decimals)}}(\\.\\d{1,${decimals}})?$`).test(text));
-        }
-
         export default {
             state: {
-                chainageDecimals: 3,
                 chainageDigits: 9,
-                baseSurvey: new Survey({}),
+                baseSurvey: new EstradaSurvey({}),
                 survey: {},
                 canSave: false,
                 errors: {},
@@ -274,16 +272,18 @@
                 currentModalId: false,
                 currentRequiredFieldNames: [],
                 currentEditing: false,
+                currentRowData: new EstradaSurvey({}),
             },
             components: {
                 Edit_Stop_Alert, Edit_Modal, Stacked_Bar
             },
 
             // Condition Survey
-            onMounted(props, state) {
+            onBeforeMount(props, state) {
                 state.loading = true;
-                state.road = cloneData(props.road);
-
+                state.road = makeEstradaRoad(props.road);
+            },
+            onMounted(props, state) {
                 this.props.parent.updateReportAttributeSummary(state, "surface_type", props.parent.emptyAttributes);
                 this.props.parent.updateReportAttributeSummary(state, "pavement_class", props.parent.emptyAttributes);
 
@@ -291,8 +291,9 @@
                 this.props.parent.refreshSurveysAndReports(state, this.pavement_all_data_table_id, "pavement_class", "pavementClasses", this.pavement_current_data_table_id, this.pavement_stacked_bar_id);
 
                 this.deleteListener = (data) => {
+                    const tableId = data.detail.tableId;
                     const rowId = data.detail.rowId;
-                    this.showStopAlertModal("delete-alert", rowId);
+                    this.showStopAlertModal("delete-alert", rowId, tableId);
                 };
 
                 document.addEventListener(`${this.surface_all_data_table_id}.deleteRow`, this.deleteListener);
@@ -347,7 +348,7 @@
                 }
             },
             addEditPavement(e) {
-                this.state.survey = cloneData(this.state.baseSurvey);
+                this.state.survey = makeEstradaSurvey(this.state.baseSurvey);
                 this.state.errors = {};
                 this.state.currentEditing = "pavementClass";
                 this.state.currentModalId = this.pavement_modal_id;
@@ -355,7 +356,7 @@
                 this.showEditModal();
             },
             addEditSurface(e) {
-                this.state.survey = cloneData(this.state.baseSurvey);
+                this.state.survey = makeEstradaSurvey(this.state.baseSurvey);
                 this.state.errors = {};
                 this.state.currentEditing = "surfaceType";
                 this.state.currentModalId = this.surface_modal_id;
@@ -374,7 +375,7 @@
             pavement_modal_id: "pavement-class-modal",
 
             // Surface Type Table
-            surfaces: window.road_schema.surface_type,
+            surfaces: window.asset_schema.surface_type,
             surface_current_data_table_columns_order: [[0, 'asc']],
             surface_current_data_table_columns: [
                 {
@@ -445,6 +446,9 @@
                     defaultContent: "",
                     className: "text-center",
                     orderable: false,
+                    render: (data, type) => {
+                        return (type === 'display') ? choice_or_default(data, SURFACE_TYPE_CHOICES) : data;
+                    },
                 },
                 {
                     title: window.gettext("Survey date"),
@@ -469,7 +473,7 @@
                 },
             ],
             // Pavement Class Table
-            pavements: window.road_schema.pavement_class,
+            pavements: window.asset_schema.pavement_class,
             pavement_current_data_table_columns_order: [[0, 'asc']],
             pavement_current_data_table_columns: [
                 {
@@ -539,7 +543,9 @@
                     defaultContent: "",
                     className: "text-center",
                     orderable: false,
-                },
+                    render: (data, type) => {
+                        return (type === 'display') ? choice_or_default(data, PAVEMENT_CLASS_CHOICES) : data;
+                    },                },
                 {
                     title: window.gettext("Survey date"),
                     data: "dateSurveyed",
@@ -590,7 +596,7 @@
 
                 $(`#${this.state.currentModalId}`).modal("show");
             },
-            showStopAlertModal(modalId, rowId) {
+            showStopAlertModal(modalId, rowId, tableId) {
                 const eventName = `edit.${modalId}.result`;
 
                 document.addEventListener(eventName, (data) => {
@@ -601,15 +607,17 @@
                         this.discardChanges();
                     } else if (stopAlertResult === "delete") {
                         this.state.editMode = true;
-                        // void the survey attribute value and save
-                        let allSurveys = [];
-                        if (this.state.pendingRows['survey_type'] || this.state.pendingRows['pavement_class']) {
-                            allSurveys = this.state.pendingRows['survey_type'].concat(this.state.pendingRows['pavement_class']);
-                        } else {
-                            allSurveys = this.state.pendingRows;
-                        }
-                        this.state.survey = allSurveys.find((s) => {return s.id == rowId;});
-                        if (this.state.survey) {
+                        // Coming out of the stop-alert modal we want to re-establish the data-table
+                        const eventName = `${tableId}.getRowData`;
+                        const eventDetail = {detail: {rowId: rowId, state: this.state}};
+                        document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+
+                        // void the survey asset_condition value and save
+                        if (this.state.currentRowData) {
+                            this.state.survey = this.state.currentRowData;
+                            this.state.survey.setId(rowId);
+                            this.state.survey.setAssetId("ROAD-" + this.state.road.id);
+                            this.state.survey.setAssetCode(this.state.road.code);
                             this.state.survey.setValues(JSON.stringify({}));
                             this.saveSurvey();
                         }
@@ -624,7 +632,7 @@
             discardChanges() {
                 $(`#${this.state.currentModalId}`).modal("hide");
                 this.update({
-                    survey: cloneData(this.state.baseSurvey),
+                    survey: makeEstradaSurvey(this.state.baseSurvey),
                     errors: {},
                     currentEditing: false,
                     currentModalId: false,
@@ -666,12 +674,13 @@
                         dateSurveyed.fromDate(surveyDate);
                         this.state.survey.setDateSurveyed(dateSurveyed);
                         // set Survey road from state Road road_code
-                        this.state.survey.setRoad(this.state.road.getRoadCode());
+                        this.state.survey.setAssetId("ROAD-" + this.state.road.id);
+                        this.state.survey.setAssetCode(this.state.road.code);
                         this.saveSurvey();
                     }
 
                     // Reset baseSurvey now that we're done.
-                    this.baseSurvey = new Survey({});
+                    this.baseSurvey = new EstradaSurvey({});
                     $(`#${this.state.currentModalId}`).modal("hide");
                 }
             },
@@ -688,13 +697,15 @@
                                 this.props.parent.refreshSurveysAndReports(this.state, this.surface_all_data_table_id, "surface_type", "surfaceTypes", this.surface_current_data_table_id, this.surface_stacked_bar_id);
                             }
                             this.update({
-                                survey: new Survey({}), // clear input values
+                                survey: new EstradaSurvey({}), // clear input values
                             });
-                            $('#loading').modal('hide');
                             this.props.showFeedback();
                         })
                         .catch((err) => {
                             this.props.showFeedback(true);
+                        })
+                        .finally((r) => {
+                            $("#loading").modal("hide");
                         });
                 } else {
                     updateSurvey(this.state.survey)
@@ -702,17 +713,19 @@
                             this.props.parent.refreshSurveysAndReports(this.state, this.pavement_all_data_table_id, "pavement_class", "pavementClasses", this.pavement_current_data_table_id, this.pavement_stacked_bar_id);
                             this.props.parent.refreshSurveysAndReports(this.state, this.surface_all_data_table_id, "surface_type", "surfaceTypes", this.surface_current_data_table_id, this.surface_stacked_bar_id);
                             this.update({
-                                survey: new Survey({}), // clear input values
+                                survey: new EstradaSurvey({}), // clear input values
                             });
-                            $('#loading').modal('hide');
                             this.props.showFeedback();
                         })
                         .catch((err) => {
                             this.props.showFeedback(true);
+                        })
+                        .finally((r) => {
+                            $("#loading").modal("hide");
                         });
                 }
                 // clear input values
-                this.state.survey = new Survey({});
+                this.state.survey = new EstradaSurvey({});
                 this.state.errors = {};
                 this.update();
             },
@@ -756,13 +769,8 @@
             checkChainage(e) {
                 const fieldName = e.currentTarget.name;
                 const input = e.currentTarget.value;
-                const chainageDigits = this.state.chainageDigits;
-                const chainageDecimals = this.state.chainageDecimals;
-                const testResult = withinMaxDigits(input, chainageDigits, chainageDecimals);
-                const errorText = window.interpolate(
-                    window.gettext("Chainage cannot contain more than %s digits, of which %s are decimals"),
-                    [chainageDigits, chainageDecimals]);
-
+                const testResult = withinMaxDigits(input, this.state.chainageDigits);
+                const errorText = window.gettext(`Chainage cannot contain more than ${this.state.chainageDigits} digits and value shouldn't contain decimals`);
                 this.validate(fieldName, input, testResult, errorText);
             },
             checkSurfaceType(e) {

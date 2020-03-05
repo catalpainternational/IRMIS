@@ -43,14 +43,26 @@ This entire sequence must be performed to completion before users are allowed to
 2. `./manage.py import_csv ../../path/to/the/data-sources/repo/csv`
   - copies road attributes from the csv ( from program excel files )
 
-3. `./manage.py set_road_municipalities`
-  - sets road administrative areas from the road centroids
+3. `./manage.py set_municipalities <optional: "all", "road", "bridge", or "culvert">`
+  - sets the administrative areas for each asset/structure, based the centroids of their respective geometries
+  - Takes an optional argument to restrict the municipalities getting set to objects of a single type
+  - If 'all' argument is given all of the assets/structures will have their municipalities set
 
 4. `./manage.py collate_geometries`
-  - you have edited roads so re-collate
+  - you have edited roads, bridges, culverts so re-collate
 
-5. `./manage.py make_road_surveys`
-  - create Surveys from the Road data
+5. `./manage.py make_road_surveys <optional: --no-road-refresh>` 
+  - Refresh the calculated Road record geometry data (unless you specify --no-road-refresh)
+  - Then from those Road records recreate all of the 'programmatic' Surveys for Roads, and
+  - Refresh all user entered Surveys for Roads
+  
+  Note: Refreshing the programmatic Surveys relies on completeness of the Road record geometry data.  Therefore it is recommended to not use the `--no-road-refresh` option unless you've literally just run `make_road_surveys` or `import_traffic_surveys` immediately before.
+
+6. `./manage.py import_traffic_surveys ../../path/to/the/traffic/survey/csv <optional: --no-road-refresh>` 
+  - Refresh the calculated Road record geometry data (unless you specify --no-road-refresh)
+  - Then recreate the programmatic traffic surveys from the csv file
+  
+  Note: Refreshing the programmatic traffic Surveys relies on completeness of the Road record geometry data.  Therefore it is recommended to not use the `--no-road-refresh` option unless you've literally just run `make_road_surveys` or `import_traffic_surveys` immediately before.
 
 ## Pre-Commit (Black formatter)
 
@@ -106,3 +118,12 @@ riot4 tags should use window.gettext('') to access translations
 We've been asked for a simple geojson exports, the `make_geojson` management command is here to help
 It currently accepts a mandatory municipality name and outputs geojson on the standard out
 usage : `./manage.py make_geojson ainaro > ainaro.json`
+
+## Periodic / Conditional Tasks
+
+### Set Bridge Fields
+
+This command updates certain fields on the Bridge model which relate to the road the bridge is closest to. This is necessary as 'bridge' has a weak reference to a Road ID. This command does a nearest neighbour search and sets `road_id` `structure_class` and `road_code` based on the nearest matching road.
+```
+./manage.py set_bridge_fields
+```

@@ -12,72 +12,63 @@
         </div>
     </div>
 
-    <header>
-        <div>
-            <a class="caret-dark left image" onclick="{ backToReports }"></a>
-        </div>
-        <div class="d-flex flex-column">
-            <div class="align-items-center d-flex">
-                <span class="paper image"></span>
-                <h6>{ reportContent().title }</h6>
-            </div>
-            <div>
-                <p>{ reportContent().description }.</p>
-            </div>
-        </div>
+    <header class="align-items-center d-flex">
+        <a class="caret-dark left image" onclick="{ backToReports }"></a>
+        <h1>{ reportContent().title }</h1>
     </header>
 
     <div class="content-wrapper report-criteria">
+        <p class="report-description">{ reportContent().description }.</p>
         <h6>{ window.gettext("Select report criteria") }</h6>
         <div class="d-flex justify-content-between">
             <div class="d-flex flex-wrap">
                 <div if="{ reportContent().visibleFilters.municipality }" class="options">
                     <select id="municipality_area_select2" multiple="true">
-                        <option each="{ area in window.road_schema.administrative_area.options }" value="{ area.id }">{ area.name }</option>
+                        <option each="{ area in window.asset_schema.administrative_area.options }" value="{ area.id }">{ area.name }</option>
                     </select>
                 </div>
 
-                <div if="{ reportContent().visibleFilters.roadClass }" class="options">
-                    <select id="road_class_select2" multiple="true">
-                        <option each="{ road_class in window.road_schema.road_type.options }" value="{ road_class[0] }">{ road_class[1] }</option>
+                <div if="{ reportContent().visibleFilters.assetClass }" class="options">
+                    <select id="asset_class_select2" multiple="true">
+                        <option each="{ asset_class in window.asset_schema.asset_class.options }" value="{ asset_class[0] }">{ asset_class[1] }</option>
                     </select>
                 </div>
                 <!-- Optionally include the following to show the fixedFilter value (changing to the full option title) -->
-                <!-- <div if="{ reportContent().fixedFilter.roadtype }" class="options">
-                    <span>{ reportContent().fixedFilter.roadtype }</span>
+                <!-- <div if="{ reportContent().fixedFilter.asset_class }" class="options">
+                    <span>{ reportContent().fixedFilter.asset_class }</span>
                 </div> -->
 
                 <div if="{ reportContent().visibleFilters.surfaceType }" class="options">
                     <select id="surface_type_select2" multiple="true">
-                        <option each="{ surface_type in window.road_schema.surface_type.options }"
+                        <option each="{ surface_type in window.asset_schema.surface_type.options }"
                             value="{ surface_type.code }">{ surface_type.name }</option>
                     </select>
                 </div>
 
-                <div if="{ reportContent().visibleFilters.surfaceCondition }" class="options">
-                    <select id="surface_condition_select2" multiple="true">
-                        <option each="{ surface_condition in window.road_schema.surface_condition.options }"
-                            value="{ surface_condition[0] }">{ surface_condition[1] }</option>
+                <div if="{ reportContent().visibleFilters.assetCondition }" class="options">
+                    <select id="asset_condition_select2" multiple="true">
+                        <option each="{ asset_condition in window.asset_schema.asset_condition.options }"
+                            value="{ asset_condition[0] }">{ asset_condition[1] }</option>
                     </select>
                 </div>
 
                 <div if="{ reportContent().visibleFilters.roadCode }">
                     <div class="options">
                         <select id="road_code_select2" multiple="true">
-                            <option each="{ code in window.road_schema.road_code.options }"
+                            <option each="{ code in window.asset_schema.road_code.options }"
                                 value="{ code.road_code }">{ code.road_code }</option>
                         </select>
                     </div>
-                    <div class="d-flex flex-wrap">
-                        <div class="d-flex flex-column">
-                            <label>{ window.gettext("Chainage start") }</label>
+                    <div class="chainages d-flex flex-wrap">
+                        <div class="align-items-center d-flex flex-column justify-content-between">
+                            <label>{ window.gettext("Chainage start") } (m)</label>
                             <input class="{ state.reportStartChainage ? '' : 'inactive' } form-control form-control-sm"
-                                type="number" oninput="{ selectStartChainage }" placeholder="0">
+                                type="number" oninput="{ selectStartChainage }" placeholder="0" min="0" step="1">
                         </div>
-                        <div class="d-flex flex-column">
-                            <label>{ window.gettext("Chainage end") }</label>
+                        <div class="align-items-center d-flex flex-column justify-content-between">
+                            <label>{ window.gettext("Chainage end") } (m)</label>
                             <input class="{ state.reportEndChainage ? '' : 'inactive' } form-control form-control-sm"
-                                type="number" oninput="{ selectEndChainage }" placeholder="20000">
+                                type="number" oninput="{ selectEndChainage }" placeholder="20000" min="0" step="1">
                         </div>
                     </div>
                 </div>
@@ -107,19 +98,15 @@
 
         <span class="report-date" if="{ state.reportData.dateCreated }">{ window.gettext("Created on") } { state.reportData.dateCreated() }</span>
 
-        <!-- <div class="filters-applied" hidden="{ !hasFilters() }">
+        <div class="filters-applied" hidden="{ !hasFilters() || !state.reportData.formattedFilters || !state.reportData.formattedFilters.length }">
             <p>{ window.gettext("Filters applied") }</p>
             <div class="d-flex">
-                <div class="d-flex flex-column filter">
-                    <span>Municipality:</span>
-                    <span>Aileu, Dili</span>
-                </div>
-                <div class="d-flex flex-column filter">
-                    <span>Surface Type:</span>
-                    <span>Gravel</span>
+                <div class="d-flex flex-column filter" each="{ filter in state.reportData.formattedFilters }">
+                    <span>{filter.title}: </span>
+                    <span>{filter.values.join(", ")}</span>
                 </div>
             </div>
-        </div> -->
+        </div>
 
         <div if="{state.reportData.totalLength}" class="d-flex flex-column total-length" hidden="{ !hasTotalLength() }">
             <p>{ window.gettext("Total Length") }</p>
@@ -134,40 +121,40 @@
             id="{ stackedBarIds.technicalClass }" title="{ window.gettext('Technical Class') }"
             entries="{ state.technical_class }" total_title="{ window.gettext('Total road chainage') }">
         </stacked_bar>
-        <stacked_bar hidden="{ !state.surface_condition || !hasStackedBar(stackedBarIds.surfaceCondition) }" 
-            id="{ stackedBarIds.surfaceCondition }" title="{ window.gettext('Surface Condition (SDI)') }"
-            entries="{ state.surface_condition }" total_title="{ window.gettext('Total road chainage') }">
+        <stacked_bar hidden="{ !state.asset_condition || !hasStackedBar(stackedBarIds.assetCondition) }" 
+            id="{ stackedBarIds.assetCondition }" title="{ window.gettext('Surface Condition (SDI)') }"
+            entries="{ state.asset_condition }" total_title="{ window.gettext('Total road chainage') }">
         </stacked_bar>
 
-        <data_table hidden="{ !state.reportData.municipality || !hasDataTable(dataTableIds.municipality) }"
-            table_id="{dataTableIds.municipality}" tableName="Municipality"
+        <data_table hidden="{ !state.reportData.municipality || !hasDataTable(reportTableIds.municipality) }"
+            table_id="{reportTableIds.municipality}" title="{ window.gettext('Municipality') }"
             columns="{columns.municipality()}" columnSortOrder="{baseColumnSortOrder}"
-            paging="false" canExport>
+            paging="false" canexport showTotal>
         </data_table>
-        <data_table hidden="{ !state.reportData.roadClass || !hasDataTable(dataTableIds.roadClass) }"
-            table_id="{dataTableIds.roadClass}" tableName="Road Class"
-            columns="{columns.roadClass()}" columnSortOrder="{baseColumnSortOrder}"
-            paging="false" canExport>
+        <data_table hidden="{ !state.reportData.assetClass || !hasDataTable(reportTableIds.assetClass) }"
+            table_id="{reportTableIds.assetClass}" title="{ window.gettext('Asset Class') }"
+            columns="{columns.assetClass()}" columnSortOrder="{baseColumnSortOrder}"
+            paging="false" canexport showTotal>
         </data_table>
-        <data_table hidden="{ !state.reportData.surfaceType || !hasDataTable(dataTableIds.surfaceType) }"
-            table_id="{dataTableIds.surfaceType}" tableName="Surface Type"
+        <data_table hidden="{ !state.reportData.surfaceType || !hasDataTable(reportTableIds.surfaceType) }"
+            table_id="{reportTableIds.surfaceType}" title="{ window.gettext('Surface Type') }"
             columns="{columns.surfaceType()}" columnSortOrder="{baseColumnSortOrder}"
-            paging="false" canExport>
+            paging="false" canexport showTotal>
         </data_table>
-        <data_table hidden="{ !state.reportData.roadStatus || !hasDataTable(dataTableIds.roadStatus) }"
-            table_id="{dataTableIds.roadStatus}" tableName="Road Status"
+        <data_table hidden="{ !state.reportData.roadStatus || !hasDataTable(reportTableIds.roadStatus) }"
+            table_id="{reportTableIds.roadStatus}" title="{ window.gettext('Road Status') }"
             columns="{columns.roadStatus()}" columnSortOrder="{baseColumnSortOrder}"
-            paging="false" canExport>
+            paging="false" canexport showTotal>
         </data_table>
-        <data_table hidden="{ !state.reportData.technicalClass || !hasDataTable(dataTableIds.technicalClass) }"
-            table_id="{dataTableIds.technicalClass}" tableName="Technical Class"
+        <data_table hidden="{ !state.reportData.technicalClass || !hasDataTable(reportTableIds.technicalClass) }"
+            table_id="{reportTableIds.technicalClass}" title="{ window.gettext('Technical Class') }"
             columns="{columns.technicalClass()}" columnSortOrder="{baseColumnSortOrder}"
-            paging="false" canExport>
+            paging="false" canexport showTotal>
         </data_table>
-        <data_table hidden="{ !state.reportData.surfaceCondition || !hasDataTable(dataTableIds.surfaceCondition) }"
-            table_id="{dataTableIds.surfaceCondition}" tableName="Surface Condition"
-            columns="{columns.surfaceCondition()}" columnSortOrder="{baseColumnSortOrder}"
-            paging="false" canExport>
+        <data_table hidden="{ !state.reportData.assetCondition || !hasDataTable(reportTableIds.assetCondition) }"
+            table_id="{reportTableIds.assetCondition}" title="{ window.gettext('Surface Condition (SDI)') }"
+            columns="{columns.assetCondition()}" columnSortOrder="{baseColumnSortOrder}"
+            paging="false" canexport>
         </data_table>
     </div>
 
@@ -190,9 +177,22 @@
     <script>
         import Stacked_Bar from "./stacked_bar.riot.html";
 
-        import { getRoadReport } from "../reportManager";
+        // For each 'parent' primaryattribute of secondaryattribute values
+        // add their reference data here
+        import {
+            ADMINISTRATIVE_AREA_CHOICES, // municipality
+            ASSET_CLASS_CHOICES, // asset_class - previously road_class / road_type, structure_class
+            ASSET_CONDITION_CHOICES, // asset_condition - previously surface_condition, structure_condition
+        } from "../assets/models/estradaBase";
+        import {
+            SURFACE_TYPE_CHOICES // surface_type
+        } from "../assets/models/road";
+        import { makeEstradaNetworkSurveyReport } from "../assets/models/surveyReport";
+
+        import { getAssetReport } from "../reportManager";
+        import { reportBarIds, reportColumns, reportContent, reportTableIds } from "../reportTableDefinitions";
         import { updateReportAttributeSummary } from "../roadAttributes";
-        import { cloneData, toChainageFormat } from "../assets/protoBufUtilities";
+        import { toChainageFormat } from "../assets/protoBufUtilities";
 
         import $ from "jquery";
         import "select2/dist/js/select2.full.min.js";
@@ -200,111 +200,60 @@
 
         const baseColumnSortOrder = [[0, 'asc']];
 
-        const columnSource = {
-            title: {
-                // Title needs to be set per data type
-                title: window.gettext("Title"),
-                data: "title",
-                defaultContent: "",
-                orderable: false,
-            },
-            distance: {
-                title: window.gettext("Length (km)"),
-                data: "distance",
-                defaultContent: "",
-                className: "text-right",
-                orderable: false,
-                render: (data, type) => {
-                    return (type === 'display')
-                        ? (data / 1000).toFixed(2)
-                        : data;
-                },
-            },
-            percent: {
-                title: window.gettext("Percentages (%)"),
-                data: "percent",
-                defaultContent: "",
-                className: "text-right",
-                orderable: false,
-            },
-            chainageStart: {
-                title: window.gettext("Chainage Start"),
-                data: "chainageStart",
-                defaultContent: "",
-                className: "text-right",
-                orderable: false,
-                render: (data, type) => {
-                    return (type === 'display') ? toChainageFormat(data) : data;
-                },
-            },
-            chainageEnd: {
-                title: window.gettext("Chainage End"),
-                data: "chainageEnd",
-                defaultContent: "",
-                className: "text-right",
-                orderable: false,
-                render: (data, type) => {
-                    return (type === 'display') ? toChainageFormat(data) : data;
-                },
-            },
-            municipality: {
-                title: window.gettext("Municipality"),
-                data: "municipality",
-                defaultContent: "",
-                orderable: false,
-            },
-            roadClass: {
-                title: window.gettext("Road Class"),
-                data: "roadClass",
-                defaultContent: "",
-                orderable: false,
-            },
-            surfaceCondition: {
-                title: window.gettext("Surface Condition (SDI)"),
-                data: "surfaceCondition",
-                defaultContent: "",
-                orderable: false,
-            },
-            surfaceType: {
-                title: window.gettext("Surface Type"),
-                data: "surfaceType",
-                defaultContent: "",
-                orderable: false,
-            },
-            surveyDate: {
-                title: window.gettext("Survey Date"),
-                data: "dateSurveyed",
-                defaultContent: "",
-                orderable: false,
-            },
-        };
-
         // Ids of the report elements
-        const stackedBarIds = {
-            roadStatus: "report-road-status-bar",
-            technicalClass: "report-technical-class-bar",
-            surfaceCondition: "report-surface-condition-bar",
-        };
-        const dataTableIds = {
-            municipality: "report-municipality-table",
-            roadClass: "report-road-class-table",
-            surfaceType: "report-surface-type-table",
-            roadStatus: "report-road-status-table",
-            technicalClass: "report-technical-class-table",
-            surfaceCondition: "report-surface-condition-table",
-        };
-
         const allReportElements = {
-            stackedBars: [stackedBarIds.roadStatus, stackedBarIds.technicalClass, stackedBarIds.surfaceCondition],
+            stackedBars: [reportBarIds.roadStatus, reportBarIds.technicalClass, reportBarIds.assetCondition],
             tables: [
-                dataTableIds.municipality, 
-                dataTableIds.roadClass, 
-                dataTableIds.surfaceType,
-                dataTableIds.roadStatus, 
-                dataTableIds.technicalClass, 
-                dataTableIds.surfaceCondition,
+                reportTableIds.municipality,
+                reportTableIds.assetClass,
+                reportTableIds.surfaceType,
+                reportTableIds.roadStatus,
+                reportTableIds.technicalClass,
+                reportTableIds.assetCondition,
             ],
         };
+
+        // These are the default column sets for each report type,
+        // they are overriden for any report that specifies fixedFilter.secondaryattribute
+        // A column title is usually reset by the columns functions below
+        const columnSets = {
+            municipality: [reportColumns.title, reportColumns.distance, reportColumns.percent],
+            asset_class: [reportColumns.title, reportColumns.distance, reportColumns.percent],
+            road_status: [reportColumns.title, reportColumns.distance, reportColumns.percent],
+            asset_condition: [reportColumns.chainageStart, reportColumns.chainageEnd, reportColumns.assetCondition, reportColumns.surveyDate],
+            surface_type: [reportColumns.title, reportColumns.distance, reportColumns.percent],
+            technical_class: [reportColumns.title, reportColumns.distance, reportColumns.percent],
+            terrain_class: [reportColumns.title, reportColumns.distance, reportColumns.percent],
+        };
+        const titleColumnMapping = {
+            municipality: "Municipality",
+            asset_class: "Asset Class",
+            road_status: "Road Status",
+            // asset_condition: no title column for asset condition
+            surface_type: "Surface Type",
+            technical_class: "Technical Class",
+            terrain_class: "Terrain Class",
+        };
+
+        function GetTitleTranslation(titleColumnName) {
+            return (titleColumnMapping[titleColumnName])
+                ? window.gettext(titleColumnMapping[titleColumnName])
+                : titleColumnName;
+        }
+
+        function SetTitleColumn(titleColumnName) {
+            if (titleColumnMapping[titleColumnName]) {
+                const titleColumn = copyData(reportColumns.title);
+                titleColumn.title = GetTitleTranslation(titleColumnName);
+                columnSets[titleColumnName][0] = titleColumn;
+            }
+
+            return columnSets[titleColumnName];
+        }
+
+        /** Deep copy the supplied data to a new object
+         */
+        function copyData(data) { return JSON.parse(JSON.stringify(data)); };
 
         export default {
             state: {
@@ -312,208 +261,44 @@
                 noReportData: false,
                 filterDefinitions: [
                     { selectId: "municipality_area_select2", placeHolder: "Municipality", dataIn: "reportMunicipality", filterName: "municipality" },
-                    { selectId: "road_class_select2", placeHolder: "Road class", dataIn: "reportRoadClass", filterName: "roadtype" },
-                    { selectId: "surface_type_select2", placeHolder: "Surface type", dataIn: "reportSurfaceType", filterName: "surfacetype" },
-                    { selectId: "surface_condition_select2", placeHolder: "Surface condition", dataIn: "reportSurfaceCondition", filterName: "surfacecondition" },
-                    { selectId: "road_code_select2", placeHolder: "Road code", dataIn: "reportRoadCode", isSingle: true, filterName: "roadcode" },
+                    { selectId: "asset_class_select2", placeHolder: "Asset class", dataIn: "reportAssetClass", filterName: "asset_class" },
+                    { selectId: "surface_type_select2", placeHolder: "Surface type", dataIn: "reportSurfaceType", filterName: "surface_type" },
+                    { selectId: "asset_condition_select2", placeHolder: "Surface condition", dataIn: "reportAssetCondition", filterName: "asset_condition" },
+                    { selectId: "road_code_select2", placeHolder: "Road code", dataIn: "reportRoadCode", isSingle: true, filterName: "road_code" },
                 ],
                 reportMunicipality: [],
-                reportRoadClass: [],
+                reportAssetClass: [],
                 reportSurfaceType: [],
-                reportSurfaceCondition: [],
+                reportAssetCondition: [],
                 reportRoadCode: null,
                 reportStartChainage: null,
                 reportEndChainage: null,
                 reportDate: true,
-                reportContent: {
-                    0: {
-                        title: window.gettext("Road Network Length"),
-                        description: window.gettext("A report on the total length of the road network. The report provides total length in kilometers and percentages according to Road Status and Technical Class. A number of filters can be selected in order to generate a length report according to the required criteria"),
-                        noReportTitle: window.gettext("Click on Create Report button to access the Road Network Length report"),
-                        noReportDescription: window.gettext("The report will be shown in this area and will provide you with detailed Road Network Length information. You can use filters to generate a customized report"),
-                        noReportData: window.gettext("Sorry, data for the road network is not available yet"),
-                        fixedFilter: {
-                            primaryattribute: ["road_status", "technical_class"],
-                        },
-                        visibleFilters: {
-                            municipality: true,
-                            roadClass: true,
-                            surfaceType: true,
-                            surfaceCondition: true,
-                            reportDate: true,
-                        },
-                        reportElements: { filters: true, totalLength: true, dataTables: [dataTableIds.roadStatus, dataTableIds.technicalClass] },
-                    },
-                    1: {
-                        title: window.gettext("Road Network Length Breakdown"),
-                        description: window.gettext("A breakdown report on the total length of the road network. The report provides information on total length in kilometers and percentages as well as Road Status and Technical Class, according to a breakdown by Municipality, Road Class and Surface Type"),
-                        noReportTitle: window.gettext("Click on Create Report button to access the Road Network Length Breakdown report"),
-                        noReportDescription: window.gettext("The report will be shown in this area and will provide you with detailed Road Network Length Breakdown information. You can use filters to generate a customized report"),
-                        noReportData: window.gettext("Sorry, data for the road network is not available yet"),
-                        fixedFilter: {
-                            primaryattribute: ["municipality", "road_class", "surface_type"],
-                        },
-                        visibleFilters: {
-                            municipality: true,
-                            roadClass: true,
-                            surfaceType: true,
-                            surfaceCondition: true,
-                            reportDate: true,
-                        },
-                        reportElements: { filters: true, totalLength: true, dataTables: [dataTableIds.municipality, dataTableIds.roadClass, dataTableIds.surfaceType] },
-                    },
-                    2: {
-                        title: window.gettext("Surface Condition"),
-                        description: window.gettext("A report on Road Surface Condition. This report provides detailed Surface Condition information per segment"),
-                        noReportTitle: window.gettext("Please select a road above to view Surface Condition reports"),
-                        noReportDescription: window.gettext("The report will be shown in this area and will provide you with detailed Surface Condition information per segment of the selected road"),
-                        noReportData: window.gettext("Sorry, Surface Condition data is not available for the selected road"),
-                        fixedFilter: {
-                            primaryattribute: ["surface_condition"],
-                        },
-                        visibleFilters: {
-                            roadCode: true,
-                            reportDate: true,
-                        },
-                        reportElements: { roadCodeAndChainage: true, stackedBars: [stackedBarIds.surfaceCondition], dataTables: [dataTableIds.surfaceCondition] },
-                    },
-                    3: {
-                        title: window.gettext("IRI Roughness"),
-                        description: window.gettext("A report on Road IRI data. This report provides detailed information on a Road's Roughness per segment"),
-                        noReportTitle: window.gettext("Please select a road above to view IRI Roughness reports"),
-                        noReportDescription: window.gettext("The report will be shown in this area and will provide you with detailed IRI Roughness information per segment of the selected road"),
-                        noReportData: window.gettext("Sorry, IRI Roughness data is not available for the selected road"),
-                        fixedFilter: {},
-                        visibleFilters: {
-                            roadCode: true,
-                            reportDate: true,
-                        },
-                        reportElements: { roadCodeAndChainage: true },
-                    },
-                    4: {
-                        title: window.gettext("Road Network Length - National Class"),
-                        description: window.gettext("A report on the total length of National Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for National Roads"),
-                        noReportTitle: window.gettext("Click on Create Report button to access the Road Network Length report for National roads"),
-                        noReportDescription: window.gettext("The report will be shown in this area and will provide you with detailed Road Network Length information for National class roads"),
-                        noReportData: window.gettext("Sorry, data for National Class roads is not available yet"),
-                        fixedFilter: {
-                            primaryattribute: ["road_status", "technical_class"],
-                            roadtype: "NAT",
-                        },
-                        visibleFilters: {
-                            reportDate: true,
-                        },
-                        reportElements: { totalLength: true, dataTables: [dataTableIds.roadStatus, dataTableIds.technicalClass] },
-                    },
-                    5: {
-                        title: window.gettext("Road Network Length - Municipal Class"),
-                        description: window.gettext("A report on the total length of Municipal Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Municipal Roads"),
-                        noReportTitle: window.gettext("Click on Create Report button to access the Road Network Length report for Municipal roads"),
-                        noReportDescription: window.gettext("The report will be shown in this area and will provide you with detailed Road Network Length information for Municipal class roads"),
-                        noReportData: window.gettext("Sorry, data for Municipal Class roads is not available yet"),
-                        fixedFilter: {
-                            primaryattribute: ["road_status", "technical_class"],
-                            roadtype: "MUN",
-                        },
-                        visibleFilters: {
-                            reportDate: true,
-                        },
-                        reportElements: { totalLength: true, dataTables: [dataTableIds.roadStatus, dataTableIds.technicalClass] },
-                    },
-                    6: {
-                        title: window.gettext("Road Network Length - Rural Class"),
-                        description: window.gettext("A report on the total length of Rural Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Rural Roads"),
-                        noReportTitle: window.gettext("Click on Create Report button to access the Road Network Length report for Rural roads"),
-                        noReportDescription: window.gettext("The report will be shown in this area and will provide you with detailed Road Network Length information for Rural class roads"),
-                        noReportData: window.gettext("Sorry, data for Rural Class roads is not available yet"),
-                        fixedFilter: {
-                            primaryattribute: ["road_status", "technical_class"],
-                            roadtype: "RUR",
-                        },
-                        visibleFilters: {
-                            reportDate: true,
-                        },
-                        reportElements: { totalLength: true, dataTables: [dataTableIds.roadStatus, dataTableIds.technicalClass] },
-                    },
-                    7: {
-                        title: window.gettext("Road Network Length - Highway Class"),
-                        description: window.gettext("A report on the total length of Highways. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Highways"),
-                        noReportTitle: window.gettext("Click on Create Report button to access the Road Network Length report for Highways"),
-                        noReportDescription: window.gettext("The report will be shown in this area and will provide you with detailed Road Network Length information for Highway class roads"),
-                        noReportData: window.gettext("Sorry, data for Highway Class roads is not available yet"),
-                        fixedFilter: {
-                            primaryattribute: ["road_status", "technical_class"],
-                            roadtype: "HIGH",
-                        },
-                        visibleFilters: {
-                            reportDate: true,
-                        },
-                        reportElements: { totalLength: true, dataTables: [dataTableIds.roadStatus, dataTableIds.technicalClass] },
-                    },
-                    8: {
-                        title: window.gettext("Road Network Length - Urban Class"),
-                        description: window.gettext("A report on the total length of Urban Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Urban Roads"),
-                        noReportTitle: window.gettext("Click on Create Report button to access the Road Network Length report for Urban roads"),
-                        noReportDescription: window.gettext("The report will be shown in this area and will provide you with detailed Road Network Length information for Urban class roads"),
-                        noReportData: window.gettext("Sorry, data for Urban Class roads is not available yet"),
-                        fixedFilter: {
-                            primaryattribute: ["road_status", "technical_class"],
-                            roadtype: "URB",
-                        },
-                        visibleFilters: {
-                            reportDate: true,
-                        },
-                        reportElements: { totalLength: true, dataTables: [dataTableIds.roadStatus, dataTableIds.technicalClass] },
-                    },
-                },
                 reportData: {},
                 road_status: [{ key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
                 technical_class: [{ key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
-                surface_condition: [{ key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
+                asset_condition: [{ key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
             },
             components: {
                 Stacked_Bar
             },
-            stackedBarIds: stackedBarIds,
-            dataTableIds: dataTableIds,
+            stackedBarIds: reportBarIds,
+            // This just ensures we can see the reportTableIds from the HTML above
+            reportTableIds: reportTableIds,
+            // These functions define the actual columns used by each report
             columns: {
-                municipality() {
-                    const titleColumn = cloneData(columnSource.title);
-                    titleColumn.title = window.gettext("Municipality");
-
-                    return [titleColumn, columnSource.distance, columnSource.percent];
-                },
-                roadClass() {
-                    const titleColumn = cloneData(columnSource.title);
-                    titleColumn.title = window.gettext("Road Class");
-
-                    return [titleColumn, columnSource.distance, columnSource.percent];
-                },
-                surfaceType() {
-                    const titleColumn = cloneData(columnSource.title);
-                    titleColumn.title = window.gettext("Surface Type");
-
-                    return [titleColumn, columnSource.distance, columnSource.percent];
-                },
-                roadStatus() {
-                    const titleColumn = cloneData(columnSource.title);
-                    titleColumn.title = window.gettext("Road Status");
-
-                    return [titleColumn, columnSource.distance, columnSource.percent];
-                },
-                technicalClass() {
-                    const titleColumn = cloneData(columnSource.title);
-                    titleColumn.title = window.gettext("Technical Class");
-
-                    return [titleColumn, columnSource.distance, columnSource.percent];
-                },
-                surfaceCondition() {
-                    return [columnSource.chainageStart, columnSource.chainageEnd, columnSource.surfaceCondition, columnSource.surveyDate];
-                },
+                municipality: () => SetTitleColumn("municipality"),
+                assetClass: () => SetTitleColumn("asset_class"),
+                roadStatus: () => SetTitleColumn("road_status"),
+                assetCondition: () => SetTitleColumn("asset_condition"),
+                surfaceType: () => SetTitleColumn("surface_type"),
+                technicalClass: () => SetTitleColumn("technical_class"),
+                terrainClass: () => SetTitleColumn("terrain_class"),
             },
             reportContent() {
+                // For the definitions of the reports themselves see reportContent in reportTableDefinitions
                 const reportId = this.props.id;
-                return this.state.reportContent[reportId];
+                return reportContent[reportId];
             },
             reportElements() {
                 return this.reportContent().reportElements || allReportElements;
@@ -538,7 +323,7 @@
                     this.prepareSelects(filterDefinition);
                 });
 
-                this.prepareStackedBar(this.stackedBarIds.surfaceCondition, this.state.surfaceConditions, "surface_condition");
+                this.prepareStackedBar(this.stackedBarIds.assetCondition, this.state.assetConditions, "asset_condition");
             },
             prepareSelects(filterDefinition) {
                 const selectOptions = {
@@ -599,12 +384,73 @@
             toggleSingleSelect2(e) {
                 this.state[e.data] = e.currentTarget.value;
             },
-            prepareTableData(tableName, tableData, filterName) {
+            prepareTableData(reportTableId, tableData, filterName) {
                 const haveTableData = tableData.length > 0;
                 const fixedFilter = this.reportContent().fixedFilter;
                 const isFixedFilter = fixedFilter.primaryattribute
                     ? fixedFilter.primaryattribute.indexOf(filterName) !== -1
                     : false;
+                const hasSecondaryAttributes = fixedFilter.secondaryattribute
+                    ? fixedFilter.secondaryattribute[filterName] && this.reportElements().dataTables.includes(reportTableId)
+                    : false;
+
+                // Add in the extra columns needed by any secondaryattributes
+                // This assumes that the reportColumns definitions have been generated
+                // in the defineReportColumn in surveyReport.js
+                if (haveTableData && hasSecondaryAttributes) {
+                    // Initialise the new set of columns with the distance column (but not percent)
+                    const columnSet = {};
+                    columnSet[reportColumns.distance.data] = reportColumns.distance;
+                    
+                    // Build up the new title
+                    const newTitles = [GetTitleTranslation(filterName)];
+
+                    fixedFilter.secondaryattribute[filterName].forEach((secondaryattribute) => {
+                        const attrKey = secondaryattribute;
+                        newTitles.push(GetTitleTranslation(attrKey));
+
+                        tableData.forEach((entry) => {
+                            const fullAttrTerms = Object.keys(entry)
+                                .filter((entryKey) => { return entryKey.indexOf(`${attrKey}|`) === 0; });
+                            if (fullAttrTerms.length === 0) {
+                                return; // continue to next entry
+                            }
+
+                            fullAttrTerms.forEach((fullAttrTerm) => {
+                                if (!columnSet[fullAttrTerm] && reportColumns[fullAttrTerm]) {
+                                    columnSet[fullAttrTerm] = reportColumns[fullAttrTerm];
+                                }
+                            });
+                        });
+                    });
+
+                    // Only replace the 'title' if we've got something new defined
+                    if (newTitles.length > 1) {
+                        const eventName = `${reportTableId}.changedTitle`;
+                        const eventDetail = { detail: { title: newTitles.join(", ") } };
+                        document.dispatchEvent(new CustomEvent(eventName, eventDetail));                        
+                    }
+
+                    // Only replace the 'normal' columnSet if we actually have some new ones defined
+                    if (Object.keys(columnSet).length > 1) {
+                        // Take just the first column - the title column
+                        const newColumnSet = SetTitleColumn(filterName).slice(0, 1);
+                        // And add the rest generated from the data
+                        let prevAttrKey = "";
+                        Object.keys(columnSet).sort().forEach((fullAttrTerm) => {
+                            const attrTerms = fullAttrTerm.split("|");
+                            if (attrTerms.length > 1 && prevAttrKey !== attrTerms[0]) {
+                                columnSet[fullAttrTerm].className += " dark-left";
+                                prevAttrKey = attrTerms[0];
+                            }
+                            newColumnSet.push(columnSet[fullAttrTerm]);
+                        });
+
+                        const eventName = `${reportTableId}.changedColumns`;
+                        const eventDetail = { detail: { columns: newColumnSet } };
+                        document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+                    }
+                }
 
                 if (haveTableData || isFixedFilter) {
                     this.state.reportData.totalLength = this.state.reportData.totalLength || tableData.reduce((acc, cur) => acc += cur.distance || 0, 0);
@@ -618,7 +464,7 @@
                         entry.getId = () => { return entry.key; };
                         entry.title = window.gettext(entry.title || entry.key);
                     });
-                    const eventName = `${tableName}.dataAdded`;
+                    const eventName = `${reportTableId}.dataAdded`;
                     const eventDetail = { detail: { pendingRows: tableData, clearRows: true } };
                     document.dispatchEvent(new CustomEvent(eventName, eventDetail));
 
@@ -630,7 +476,9 @@
             prepareStackedBar(barName, barData, filterName) {
                 if (barData && barData.length) {
                     updateReportAttributeSummary(this.state, filterName, barData);
-                                    
+
+                    this.state.reportData.totalLength = this.state.reportData.totalLength || barData.reduce((acc, cur) => acc += cur.distance || 0, 0);
+
                     const eventName = `${barName}.dataUpdated`;
                     const eventDetail = { detail: { entries: this.state[filterName], barName } };
                     document.dispatchEvent(new CustomEvent(eventName, eventDetail));
@@ -641,17 +489,13 @@
             toChainageFormat(value) {
                 return toChainageFormat(value);
             },
-            createReport(e) {
-                $('#loading').modal('show');
+            assembleFilterSet() {
+                const filterSet = copyData(this.reportContent().fixedFilter);
 
-                const reportId = e.currentTarget.dataset.id;
-                const filters = cloneData(this.reportContent().fixedFilter);
-
-                const userFilters = {};
                 // Handle the select filters
                 this.state.filterDefinitions.forEach((filterDefinition) => {
                     const requestFilterName = filterDefinition.filterName || "";
-                    if (!requestFilterName || filters[requestFilterName]) {
+                    if (!requestFilterName || filterSet[requestFilterName]) {
                         // If the fixedFilters already defines this request filter
                         // then we will not accept this user defined one
                         return;
@@ -663,71 +507,228 @@
                     }
                     const selection = selectData.map((data) => { return data.id; });
 
-                    filters[requestFilterName] = selection;
+                    filterSet[requestFilterName] = selection;
                 });
                 // Check for the other filters
                 if (this.state.reportDate) {
-                    filters["reportdate"] = this.state.reportDate;
+                    filterSet["reportdate"] = this.state.reportDate;
                 }
                 if (this.state.reportStartChainage) {
-                    filters["reportstartchainage"] = this.state.reportStartChainage;
+                    filterSet["chainagestart"] = this.state.reportStartChainage;
                 }
                 if (this.state.reportEndChainage) {
-                    filters["reportendchainage"] = this.state.reportEndChainage;
+                    filterSet["chainageend"] = this.state.reportEndChainage;
                 }
 
-                if (!Object.keys(filters).length) {
+                return filterSet;
+            },
+            buildFilterSets(filterSet) {
+                let filters = [];
+
+                // Secondary Attributes are handled in a special way
+                // They result in multiple requests to the reports API
+                // In effect each 'parent' primaryattribute (the keys in secondaryattribute)
+                // is expanded out as a series of individual report requests
+                let parentPrimaries = [];
+                if (filterSet.secondaryattribute) {
+                    // Verify the secondaryAttributes are correctly refencing their 'parents'
+                    parentPrimaries = Object.keys(filterSet.secondaryattribute)
+                        .filter((secondaryattribute) => {
+                            return filterSet.primaryattribute.includes(secondaryattribute);
+                        });
+                }
+
+                if (parentPrimaries.length === 0) {
+                    // There were no secondary attributes or they didn't reference primaries properly
+                    filters = [filterSet];
+                    delete filterSet.secondaryattribute;
+                } else {
+                    // Build up the combinations of secondary attribute report filterSets
+                    // by expanding out the relevant primary attributes
+                    const expandedPrimaries = {};
+                    parentPrimaries.forEach((parentPrimary) => {
+                        // Check whether we have a relevant additional filter on a primary attribute
+                        if (filterSet[parentPrimary]) {
+                            expandedPrimaries[parentPrimary] = filterSet[parentPrimary];
+                        } else {
+                            let selectSource = "";
+                            // For each 'parent' primaryattribute of secondaryattribute values
+                            // add their reference data here
+                            switch (parentPrimary) {
+                                case "municipality": selectSource = ADMINISTRATIVE_AREA_CHOICES; break;
+                                case "asset_class": selectSource = ASSET_CLASS_CHOICES; break;
+                                case "asset_condition": selectSource = ASSET_CONDITION_CHOICES; break;
+                                case "surface_type": selectSource = SURFACE_TYPE_CHOICES; break;
+                            }
+                            if (selectSource) {
+                                expandedPrimaries[parentPrimary] = Object.keys(selectSource);
+                            }
+                        }
+                    });
+                    const expandedPrimaryKeys = Object.keys(expandedPrimaries);
+                    if (expandedPrimaryKeys.length === 0) {
+                        // Somehow none of our expanded primaries matched up
+                        // Have you (the programmer) made relevant code changes to support this secondaryattribute?
+                        filters = [filterSet];
+                        delete filterSet.secondaryattribute;
+                    } else {
+                        // The revised primary attributes will not included any that are 'expanded'
+                        const revisedPrimary = filterSet.primaryattribute.filter((primaryattribute) => {
+                            return !expandedPrimaryKeys.includes(primaryattribute);
+                        });
+                        // Build up a new collection of filterSets for every permutation we need
+                        expandedPrimaryKeys.forEach((expandedPrimary) => {
+                            // The new primary attributes will include the revised list
+                            // plus the secondary attributes that relate to the expanded primary
+                            const newPrimaryAttributes = [].concat(revisedPrimary, filterSet.secondaryattribute[expandedPrimary]);
+                            expandedPrimaries[expandedPrimary].forEach((ep) => {
+                                const newFilterSet = copyData(filterSet);
+                                newFilterSet.primaryattribute = newPrimaryAttributes;
+                                newFilterSet[expandedPrimary] = [ep];
+                                delete newFilterSet.secondaryattribute;
+                                filters.push(newFilterSet);
+                            });
+                        });
+                    }
+                }
+
+                return filters;
+            },
+            assembleSurveyReportData(surveyReportData) {
+                this.state.noReport = false;
+                const haveLengths = !!surveyReportData.lengths;
+
+                this.state.reportData = {
+                    totalLength: 0,
+                    roadCodes: (surveyReportData.roadCodes || []).sort(),
+                    reportChainage: (surveyReportData.reportChainage && surveyReportData.reportChainage.length === 2
+                        && (surveyReportData.reportChainage[0] + surveyReportData.reportChainage[1]))
+                        ? surveyReportData.reportChainage
+                        : undefined,
+                    dateCreated: () => dayjs(new Date()).format('DD MMMM YYYY [at] HH:mm'),
+                    formattedFilters: surveyReportData.formattedFilters
+                };
+
+                if (haveLengths) {
+                    this.state.reportData.municipality = this.prepareTableData(reportTableIds.municipality, surveyReportData.municipalities, "municipality");
+                    this.state.reportData.assetClass = this.prepareTableData(reportTableIds.assetClass, surveyReportData.assetClasses, "asset_class");
+                    this.state.reportData.surfaceType = this.prepareTableData(reportTableIds.surfaceType, surveyReportData.surfaceTypes, "surface_type");
+
+                    this.state.reportData.roadStatus = this.prepareTableData(reportTableIds.roadStatus, surveyReportData.roadStatuses, "road_status");
+                    this.state.reportData.technicalClass = this.prepareTableData(reportTableIds.technicalClass, surveyReportData.technicalClasses, "technical_class");
+                    const assetConditions = surveyReportData.attributes("asset_condition", null, false, true);
+                    const assetConditionAttributes = assetConditions ? assetConditions.attributeEntries || [] : [];
+                    this.state.reportData.assetCondition = this.prepareTableData(reportTableIds.assetCondition, assetConditionAttributes, "asset_condition");
+
+                    this.prepareStackedBar(this.stackedBarIds.roadStatus, surveyReportData.roadStatuses, "asset_class");
+                    this.prepareStackedBar(this.stackedBarIds.technicalClass, surveyReportData.technicalClasses, "technical_class");
+                    this.prepareStackedBar(this.stackedBarIds.assetCondition, surveyReportData.assetConditions, "asset_condition");
+
+                    const reportingTables = this.reportElements().dataTables;
+                    this.state.noReportData = true;
+                    if (reportingTables.includes(reportTableIds.municipality) && surveyReportData.municipalities.length ||
+                        reportingTables.includes(reportTableIds.assetClass) && surveyReportData.assetClasses.length ||
+                        reportingTables.includes(reportTableIds.surfaceType) && surveyReportData.surfaceTypes.length ||
+                        reportingTables.includes(reportTableIds.roadStatus) && surveyReportData.roadStatuses.length ||
+                        reportingTables.includes(reportTableIds.technicalClass) && surveyReportData.technicalClasses.length ||
+                        reportingTables.includes(reportTableIds.assetCondition) && surveyReportData.assetConditions.length) {
+                        this.state.noReportData = false;
+                    }
+                } else {
+                    this.state.noReportData = true;
+                }
+            },
+            mergeReports(assembledReportData, survey) {
+                Object.keys(survey.filter).forEach((filterKey) => {
+                    assembledReportData[filterKey] = assembledReportData[filterKey] || [];
+                    survey.filter[filterKey].forEach((filterValue) => {
+                        if (!assembledReportData[filterKey].includes(filterValue)) {
+                            assembledReportData[filterKey].push(filterValue);
+                        }
+                    });
+                });
+            },
+            createReport(e) {
+                $('#loading').modal('show');
+
+                const reportId = e.currentTarget.dataset.id;
+                const baseFilterSet = this.assembleFilterSet();
+                const filters = this.buildFilterSets(baseFilterSet);
+
+                if (filters.length === 0 || filters.filter((f) => {return Object.keys(f).length;}).length === 0) {
                     return;
                 }
 
-                getRoadReport(filters)
+                const getAssetReports = filters.map((f) => { return getAssetReport(f); });
+
+                Promise.all(getAssetReports)
                     .then((surveyReportData) => {
-                        if (surveyReportData) {
-                            this.state.noReport = false;
-                            const haveLengths = !!surveyReportData.lengths;
+                        switch (surveyReportData.length) {
+                            case 0:
+                                this.props.showFeedback(true);
+                                this.state.noReport = true;
+                                break;
+                            case 1:
+                                this.assembleSurveyReportData(surveyReportData[0]);
+                                this.props.showFeedback();
+                                break;
+                            default:
+                                // A report with secondaryattributes defined
+                                // it will need 'assembling'
+                                const assembledReportData = makeEstradaNetworkSurveyReport(surveyReportData[0]);
+                                assembledReportData.clearFilter();
+                                assembledReportData.setLengths(JSON.stringify({}));
+                                assembledReportData.clearAttributesList();
 
-                            this.state.reportData = {
-                                totalLength: 0,
-                                roadCodes: (surveyReportData.roadCodes || []).sort(),
-                                reportChainage: (surveyReportData.reportChainage && surveyReportData.reportChainage.length === 2 
-                                    && (surveyReportData.reportChainage[0] + surveyReportData.reportChainage[1])) 
-                                    ? surveyReportData.reportChainage 
-                                    : undefined,
-                                dateCreated: () => dayjs(new Date()).format('DD MMMM YYYY [at] HH:mm'),
-                            };
+                                baseFilterSet.primaryattribute.forEach((primaryattribute) => {
+                                    const filteredSurveys = surveyReportData.filter((survey) => {
+                                        return survey.filter[primaryattribute];
+                                    });
+                                    if (filteredSurveys.length === 1 && filteredSurveys[0].filter.primary_attribute.includes(primaryattribute)) {
+                                        // We didn't have any secondaryattributes for this primaryattribute
+                                        // so just merge it as-is
+                                        assembledReportData = this.mergeReports(assembledReportData, filteredSurveys[0]);
+                                    } else {
+                                        assembledReportData.filterKeyAddItem("primary_attribute", primaryattribute);
 
-                            if (haveLengths) {
-                                this.state.reportData.municipality = this.prepareTableData(this.dataTableIds.municipality, surveyReportData.municipalities, "municipality");
-                                this.state.reportData.roadClass = this.prepareTableData(this.dataTableIds.roadClass, surveyReportData.roadClasses, "road_class");
-                                this.state.reportData.surfaceType = this.prepareTableData(this.dataTableIds.surfaceType, surveyReportData.surfaceTypes, "surface_type");
+                                        filteredSurveys.forEach((survey) => {
+                                            // This survey's primary attributes are the original secondary attributes
+                                            const secondaryAttributes = survey.filter.primary_attribute;
+                                            const filterSecondary = assembledReportData.filter["secondary_attribute"] || {};
+                                            if (!Object.keys(filterSecondary).includes(primaryattribute)) {
+                                                filterSecondary[primaryattribute] = secondaryAttributes;
+                                                assembledReportData.setFilterKey("secondary_attribute", filterSecondary);
+                                            }
 
-                                this.state.reportData.roadStatus = this.prepareTableData(this.dataTableIds.roadStatus, surveyReportData.roadStatuses, "road_status");
-                                this.state.reportData.technicalClass = this.prepareTableData(this.dataTableIds.technicalClass, surveyReportData.technicalClasses, "technical_class");
-                                this.state.reportData.surfaceCondition = this.prepareTableData(this.dataTableIds.surfaceCondition, surveyReportData.attributeTable("surface_condition", true), "surface_condition");
+                                            const value = { "value": 0 };
+                                            secondaryAttributes.forEach((attribute) => {
+                                                const attributeLengths = survey.lengths[attribute];
+                                                value[attribute] = {};
+                                                if (attributeLengths) {
+                                                    Object.keys(attributeLengths).forEach((attrKey) => {
+                                                        const attrValue = typeof attributeLengths[attrKey] === "number"
+                                                            ? attributeLengths[attrKey]
+                                                            : attributeLengths[attrKey].value;
+                                                        value[attribute][attrKey] = attrValue;
+                                                    });
+                                                }
+                                                if (value.value || !attributeLengths) {
+                                                    return; // 'continue' out of the forEach
+                                                }
+                                                // Add up the primary value for this 'length' (only done once)
+                                                Object.keys(value[attribute]).forEach((term) => {
+                                                    value.value += value[attribute][term];
+                                                });
 
-                                this.prepareStackedBar(this.stackedBarIds.roadStatus, surveyReportData.roadStatuses, "road_status");
-                                this.prepareStackedBar(this.stackedBarIds.technicalClass, surveyReportData.technicalClasses, "technical_class");
-                                this.prepareStackedBar(this.stackedBarIds.surfaceCondition, surveyReportData.surfaceConditions, "surface_condition");
-
-                                const reportingTables = this.reportElements().dataTables;
-                                this.state.noReportData = true;
-                                if (reportingTables.includes(this.dataTableIds.municipality) && surveyReportData.municipalities.length ||
-                                    reportingTables.includes(this.dataTableIds.roadClass) && surveyReportData.roadClasses.length ||
-                                    reportingTables.includes(this.dataTableIds.surfaceType) && surveyReportData.surfaceTypes.length ||
-                                    reportingTables.includes(this.dataTableIds.roadStatus) && surveyReportData.roadStatuses.length ||
-                                    reportingTables.includes(this.dataTableIds.technicalClass) && surveyReportData.technicalClasses.length ||
-                                    reportingTables.includes(this.dataTableIds.surfaceCondition) && surveyReportData.attributeTable("surface_condition", true).length) {
-                                    this.state.noReportData = false;
-                                }
-                            } else {
-                                this.state.noReportData = true;
-                            }
-
-                            this.props.showFeedback();
-                        } else {
-                            // An id of null should tell us that there was an error fetching the data
-                            this.props.showFeedback(true);
-                            this.state.noReport = true;
+                                            });
+                                            assembledReportData.lengthsKeyAddItem(primaryattribute, survey.filter[primaryattribute], value);
+                                        });
+                                    }
+                                });
+                                
+                                this.assembleSurveyReportData(assembledReportData);
+                                this.props.showFeedback();
+                                break;
                         }
                     }).catch(err => {
                         this.props.showFeedback(true);

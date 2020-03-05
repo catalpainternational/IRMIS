@@ -1,125 +1,67 @@
 from django.core.management.base import BaseCommand
-from django.db import IntegrityError
-from django.utils import timezone
 
-import reversion
-from assets.models import (
-    MaintenanceNeed,
-    PavementClass,
-    Road,
-    RoadStatus,
-    SurfaceType,
-    Survey,
-    TechnicalClass,
+from assets.data_cleaning_utils import (
+    delete_redundant_surveys,
+    get_current_road_codes,
+    refresh_roads,
+    refresh_surveys_by_road_code,
 )
 
 
 class Command(BaseCommand):
-    help = "Create Surveys from the existing Road Links"
+    help = "Create / Update Surveys for the existing Road Links"
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "--no-road-refresh",
+            action="store_const",
+            const=False,
+            default=False,
+            help="Don't refresh road links before the import",
+        )
 
     def handle(self, *args, **options):
-        datetime_now_tz = timezone.now()
-        created = 0
+        # counters for data cleansing
+        programmatic_created = 0
+        user_entered_updated = 0
 
-        # delete all previously created "programmatic" source surveys
-        Survey.objects.filter(source="programmatic").delete()
+        self.stdout.write(
+            self.style.MIGRATE_HEADING("~~~ Starting road survey refresh ~~~ ")
+        )
 
-        road_codes = [
-            rc["road_code"]
-            for rc in Road.objects.distinct("road_code")
-            .exclude(road_code="Unknown")
-            .values("road_code")
-        ]
-
-        for rc in road_codes:
-            start_chainage = 0
-
-            # pull all road links for a given road code
-            roads = (
-                Road.objects.exclude(road_code="Unknown")
-                .order_by("link_code")
-                .filter(road_code=rc)
+        if "no_road_refresh" in options and options["no_road_refresh"]:
+            self.stdout.write(
+                self.style.MIGRATE_HEADING(
+                    "Skipping refreshing of road links before refreshing road surveys"
+                )
             )
-            for road in roads:
-                try:
-                    # calculate the end chainage from the geometry length
-                    end_chainage = start_chainage + road.geom[0].length
+        else:
+            self.stdout.write(
+                self.style.MIGRATE_HEADING(
+                    "Refreshing road links before refreshing road surveys"
+                )
+            )
+            roads_updated = refresh_roads()
+            self.stdout.write(
+                self.style.SUCCESS("~~~ Updated %s Road Links ~~~ " % roads_updated)
+            )
 
-                    # # update the road start/end chainage & length from its geometry
-                    # with reversion.create_revision():
-                    #     road.link_start_chainage = start_chainage
-                    #     road.link_end_chainage = end_chainage
-                    #     road.link_length = road.geom[0].length
-                    #     road.save()
-                    #     reversion.set_comment(
-                    #         "Road Link start/end chainages & length updated from its geometry"
-                    #     )
+        self.stdout.write(self.style.MIGRATE_HEADING("Deleting redundant surveys"))
+        delete_redundant_surveys()
 
-                    survey_data = {
-                        "road": road.road_code,
-                        "chainage_start": start_chainage,
-                        "chainage_end": end_chainage,
-                        "source": "programmatic",
-                        "values": {},
-                    }
+        self.stdout.write(self.style.MIGRATE_HEADING("Retrieving current road codes"))
+        road_codes = get_current_road_codes()
 
-                    sv = survey_data["values"]
+        # Refresh the roads and surveys
+        self.stdout.write(self.style.MIGRATE_HEADING("Processing surveys by road code"))
+        for rc in road_codes:
+            created, updated = refresh_surveys_by_road_code(self, rc)
+            programmatic_created += created
+            user_entered_updated += updated
 
-                    ## Road Link attributes
-                    if road.administrative_area:
-                        sv["municipality"] = str(road.administrative_area)
-                    if road.carriageway_width:
-                        sv["carriageway_width"] = str(road.carriageway_width)
-                    if road.funding_source:
-                        sv["funding_source"] = str(road.funding_source)
-                    if road.project:
-                        sv["project"] = str(road.project)
-                    if road.number_lanes:
-                        sv["number_lanes"] = str(road.number_lanes)
-                    if road.road_type:
-                        sv["road_type"] = str(road.road_type)
-
-                    ## Choices-based attributes
-                    if road.surface_condition:
-                        sv["surface_condition"] = str(road.surface_condition)
-                    if road.traffic_level:
-                        sv["traffic_level"] = str(road.traffic_level)
-                    if road.terrain_class:
-                        sv["terrain_class"] = str(road.terrain_class)
-
-                    ## Model-based attributes (assign code value)
-                    if road.maintenance_need:
-                        sv["maintenance_need"] = str(road.maintenance_need.code)
-                    if road.pavement_class:
-                        sv["pavement_class"] = str(road.pavement_class.code)
-                    if road.road_status:
-                        sv["road_status"] = str(road.road_status.code)
-                    if road.surface_type:
-                        sv["surface_type"] = str(road.surface_type.code)
-                    if road.technical_class:
-                        sv["technical_class"] = str(road.technical_class.code)
-
-                    # check that values is not empty before saving survey
-                    if len(sv.keys()) > 0:
-                        with reversion.create_revision():
-                            Survey.objects.create(**survey_data)
-                            reversion.set_comment(
-                                "Survey created programmatically from Road Link"
-                            )
-                        # update created surveys counter
-                        created += 1
-                except IntegrityError:
-                    print(
-                        "Survey Skipped: Road(%s) missing Road Code(%s) OR Chainage Start(%s)/End(%s)"
-                        % (
-                            road.pk,
-                            road.road_code,
-                            road.link_start_chainage,
-                            road.link_end_chainage,
-                        )
-                    )
-
-                # update the start chainage
-                start_chainage = end_chainage
-
-        print("~~~ COMPLETE: Created %s Surveys from initial Road Links ~~~ " % created)
+        self.stdout.write(
+            self.style.SUCCESS(
+                "~~~ COMPLETE: Created %s programmatic Surveys and Updated %s user entered Surveys ~~~ "
+                % (programmatic_created, user_entered_updated),
+            )
+        )

@@ -100,6 +100,8 @@ span {
 .entry-legend .total span {
     color: $darker-gray;
     line-height: 10px;
+    font-weight: 700;
+    font-size: 14px;
 }
 
 span.required {
@@ -176,7 +178,6 @@ footer small {
 
 input.form-control {
     color: $darker-gray;
-    line-height: 12px;
 
     &:focus {
         color: $darker-gray;
@@ -306,7 +307,8 @@ table {
 
 // Override DataTable.net styles for the main table
 
-#table-irmis {
+#table-roads, 
+#table-structures {
     .dataTables_info {
         color: $white;
     }

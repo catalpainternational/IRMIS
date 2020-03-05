@@ -20,6 +20,8 @@
     <script>
         import $ from "jquery";
 
+        import { testKeyIsReal } from "../assets/models/surveyReport";
+
         const emptyEntries = [{ key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }];
 
         export default {
@@ -58,11 +60,15 @@
 
                 // Then calculate everything else
                 newEntries.forEach((entry) => {
-                    const entryTitle = window.gettext(entry.title[0].toUpperCase() + entry.title.substring(1));
+                    const entryTitle = window.gettext(
+                        entry.title.length > 1 
+                            ? entry.title[0].toUpperCase() + entry.title.substring(1)
+                            : entry.title
+                        )
                     if (totalDistance > 0) {
-                        entry.percent = Math.round((entry.distance / totalDistance) * 10000) / 100;
+                        entry.percent = ((entry.distance / totalDistance) * 100).toFixed(1);
                         // the calculated label shows distance in km
-                        entry.label = `${entryTitle} (${entry.distance / 1000}km/${entry.percent}%)`;
+                        entry.label = `${entryTitle} (${(entry.distance / 1000).toFixed(1)}km/${entry.percent}%)`;
                     } else {
                         // 100% of 0km - but this won't appear in the label
                         entry.percent = 100;
@@ -72,7 +78,17 @@
                 });
 
                 this.state.entries = [];
-                newEntries.forEach((newEntry) => {this.state.entries.push(newEntry)});
+                // Add any 'unknown' entries first - so they appear last
+                newEntries.forEach((newEntry) => {
+                    if (testKeyIsReal(newEntry.key) || testKeyIsReal(newEntry.title)) {
+                        this.state.entries.push(newEntry)
+                    }
+                });
+                newEntries.forEach((newEntry) => {
+                    if (!testKeyIsReal(newEntry.key) && !testKeyIsReal(newEntry.title)) {
+                        this.state.entries.push(newEntry)
+                    }
+                });
 
                 this.update();
             },
@@ -85,7 +101,7 @@
 
             totalDisplay() {
                 const totalDistance = this.getTotalDistance(this.state.entries);
-                return `${this.state.total_title}:${totalDistance / 1000}km`;
+                return `${this.state.total_title}: ${totalDistance / 1000}km`;
             },
 
             getTotalDistance(entries) {

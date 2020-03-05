@@ -18,7 +18,7 @@ body {
 }
 
 #map-table-irmis {
-    height: calc(100% - #{$top-menu-height} - 5px - 15px);
+    height: calc(100% - #{$top-menu-height} - 5px);
     width: calc(100% - #{$side-menu-width});
     padding-right: 15px;
     margin-bottom: 0;

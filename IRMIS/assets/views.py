@@ -8,19 +8,25 @@ from collections import Counter, defaultdict
 import pytz
 
 from django.contrib.auth import get_user_model
+from django.contrib.gis.db import models
 from django.shortcuts import get_object_or_404
 from django.http import (
     HttpResponse,
     HttpResponseForbidden,
+    HttpResponseBadRequest,
     JsonResponse,
     HttpResponseNotFound,
 )
+from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Value, CharField, OuterRef, Subquery
+from django.db.models.functions import Cast, Substr
+
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.exceptions import MethodNotAllowed, ValidationError
+from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
@@ -28,20 +34,27 @@ from rest_framework_condition import condition
 
 from google.protobuf.timestamp_pb2 import Timestamp
 
-from protobuf import roads_pb2, survey_pb2, report_pb2
-from .reports import Report
+from protobuf import roads_pb2, survey_pb2, report_pb2, structure_pb2, version_pb2
+from .report_query import ReportQuery
 
 
 from .models import (
+    Bridge,
+    BridgeClass,
+    BridgeMaterialType,
     CollatedGeoJsonFile,
-    Road,
-    MaintenanceNeed,
-    TechnicalClass,
-    RoadStatus,
-    SurfaceType,
-    PavementClass,
-    Survey,
+    Culvert,
+    CulvertClass,
+    CulvertMaterialType,
     display_user,
+    MaintenanceNeed,
+    PavementClass,
+    Road,
+    RoadStatus,
+    StructureProtectionType,
+    SurfaceType,
+    Survey,
+    TechnicalClass,
 )
 from .serializers import RoadSerializer, RoadMetaOnlySerializer, RoadToWGSSerializer
 
@@ -95,7 +108,7 @@ def road_update(request):
 
     # parse Road from protobuf in request body
     req_pb = roads_pb2.Road()
-    req_pb.ParseFromString(request.body)
+    req_pb = req_pb.FromString(request.body)
 
     # check that Protobuf parsed
     if not req_pb.id:
@@ -116,11 +129,11 @@ def road_update(request):
     regular_fields = [
         "road_name",
         "road_code",
-        "road_type",
+        "asset_class",  # was road_type, specially handled below
         "link_code",
         "link_start_name",
         "link_end_name",
-        "surface_condition",
+        "asset_condition",  # was surface_condition, specially handled below
         "administrative_area",
         "project",
         "funding_source",
@@ -144,10 +157,15 @@ def road_update(request):
     for field in regular_fields:
         request_value = getattr(req_pb, field)
         if getattr(old_road_pb, field) != request_value:
-            # set attribute on road
-            setattr(road, field, request_value)
             # add field to list of changes fields
             changed_fields.append(field)
+            # handle mapping over changed field names
+            if field == "asset_class":
+                field = "road_type"
+            elif field == "asset_condition":
+                field = "surface_condition"
+            # set attribute on road
+            setattr(road, field, request_value)
 
     # Nullable Numeric attributes
     for field in numeric_fields:
@@ -157,6 +175,9 @@ def road_update(request):
         # -ve request_values indicate that the supplied value is actually meant to be None
         if request_value < 0:
             request_value = None
+
+        if existing_value < 0:
+            existing_value = None
 
         if existing_value != request_value:
             # set attribute on road
@@ -210,7 +231,7 @@ def road_update(request):
 @login_required
 def geojson_details(request):
     """ returns a JSON object with details of geoJSON geometry collections """
-    geojson_files = CollatedGeoJsonFile.objects.values("id", "geobuf_file")
+    geojson_files = CollatedGeoJsonFile.objects.values("id", "key", "geobuf_file")
     return JsonResponse(list(geojson_files), safe=False)
 
 
@@ -258,15 +279,24 @@ def protobuf_road_surveys(request, pk, survey_attribute=None):
     """ returns a protobuf object with the set of surveys for a particular road pk"""
     # get the Road link requested
     road = get_object_or_404(Road.objects.all(), pk=pk)
-    # pull any Surveys that cover the Road above
-    queryset = Survey.objects.filter(road=road.road_code)
+    # pull any Surveys that cover the Road Code above
+    # note: road_* fields in the surveys are ONLY relevant for Bridges or Culverts
+    # the asset_* fields in a survey correspond to the road_* fields in a Road
+    queryset = Survey.objects.filter(asset_code=road.road_code)
+
+    filter_attribute = survey_attribute
+    # These replacements *should* be unnecessary, but we'll leave them in place for now
+    if survey_attribute == "surface_condition":
+        filter_attribute = "asset_condition"
+    elif survey_attribute == "road_type":
+        filter_attribute = "asset_class"
 
     if survey_attribute:
-        queryset = queryset.filter(values__has_key=survey_attribute).exclude(
-            **{"values__" + survey_attribute + "__isnull": True}
+        queryset = queryset.filter(values__has_key=filter_attribute).exclude(
+            **{"values__" + filter_attribute + "__isnull": True}
         )
 
-    queryset.order_by("road", "chainage_start", "chainage_end", "-date_updated")
+    queryset.order_by("asset_code", "chainage_start", "chainage_end", "-date_updated")
     surveys_protobuf = queryset.to_protobuf()
 
     return HttpResponse(
@@ -286,35 +316,697 @@ def pbtimestamp_to_pydatetime(pb_stamp):
     return pytz.utc.localize(pb_date)
 
 
+def road_survey_values(req_values):
+    """ convert the json and do any required key manipulation """
+    if "road_id" in req_values:
+        # road_id is NOT relevant for road surveys (use asset_id instead)
+        # it MUST be removed
+        req_values.pop("road_id", None)
+    if "road_code" in req_values:
+        # road_code is NOT relevant for road surveys (use asset_code instead)
+        # it MUST be removed
+        req_values.pop("road_code", None)
+
+    return req_values
+
+
+@login_required
+def protobuf_road_audit(request, pk):
+    """ returns a protobuf object with the set of all audit history items for a Road """
+    queryset = Road.objects.all()
+    road = get_object_or_404(queryset, pk=pk)
+    versions = Version.objects.get_for_object(road)
+    versions_protobuf = version_pb2.Versions()
+
+    for version in versions:
+        version_pb = versions_protobuf.versions.add()
+        setattr(version_pb, "pk", version.pk)
+        setattr(version_pb, "user", display_user(version.revision.user))
+        setattr(version_pb, "comment", version.revision.comment)
+        # set datetime field
+        ts = Timestamp()
+        ts.FromDatetime(version.revision.date_created)
+        version_pb.date_created.CopyFrom(ts)
+    return HttpResponse(
+        versions_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )
+
+
+def clean_id_filter(id_value, prefix):
+    if id_value == None:
+        return id_value
+
+    if type(id_value) == int:
+        id_value = str(id_value)
+    if not id_value.startswith(prefix):
+        id_value = prefix + id_value
+
+    return id_value
+
+
+def id_filter_consistency(primary_id, culvert_id, bridge_id, road_id=None):
+    if primary_id != None:
+        if culvert_id != None and "CULV-" + str(primary_id) == culvert_id:
+            primary_id = culvert_id
+        if bridge_id != None and "BRDG-" + str(primary_id) == bridge_id:
+            primary_id = bridge_id
+        if road_id != None and "ROAD-" + str(primary_id) == road_id:
+            primary_id = road_id
+
+    return primary_id
+
+
+def filter_consistency(asset, culvert, bridge, road):
+    """ If asset is not set, then it is set to a structure (bridge, culvert),
+    in preference to be set to a road value """
+    if asset == None and (bridge != None or culvert != None or road != None):
+        if bridge != None or culvert != None:
+            if bridge != None:
+                asset = bridge
+            else:
+                asset = culvert
+        else:
+            asset = road
+
+    return asset
+
+
+def filters_consistency(assets, structures, culverts, bridges, roads):
+    if len(structures) == 0 and (len(bridges) > 0 or len(culverts) > 0):
+        if len(bridges) > 0:
+            structures = bridges
+        else:
+            structures = culverts
+    if len(assets) == 0 and (len(structures) > 0 or len(roads) > 0):
+        if len(structures) > 0:
+            assets = structures
+        else:
+            assets = roads
+
+    return assets, structures
+
+
+def filter_priority(final_filters, id, code, classes, id_name, code_name, classes_name):
+    """ Certain filters are mutually exclusive (for reporting) """
+    """ _id -> _code -> _classes """
+    if id:
+        final_filters[id_name] = [id]
+    elif code:
+        final_filters[code_name] = [code]
+    elif len(classes) > 0:
+        final_filters[classes_name] = classes
+
+
+@login_required
+def protobuf_reports(request):
+    """ returns a protobuf object with a report determined by the filter conditions supplied """
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+
+    if request.method != "GET":
+        raise MethodNotAllowed(request.method)
+
+    # get/initialise the Filters
+    primary_attributes = request.GET.getlist("primaryattribute", [])
+
+    # Ensure a minimum set of filters have been provided
+    if len(primary_attributes) == 0:
+        return HttpResponseBadRequest(
+            "primaryattribute must contain at least one reportable attribute"
+        )
+
+    # handle all of the id, code and asset_class (road_type) permutations
+    # asset_* will be set to something, if bridge_*, culvert_*, road_* is set
+    culvert_id = clean_id_filter(request.GET.get("culvert_id", None), "CULV-")
+    bridge_id = clean_id_filter(request.GET.get("bridge_id", None), "BRDG-")
+    road_id = clean_id_filter(request.GET.get("road_id", None), "ROAD-")
+    asset_id = id_filter_consistency(
+        request.GET.get("asset_id", None), culvert_id, bridge_id, road_id
+    )
+
+    culvert_code = request.GET.get("culvert_code", None)
+    bridge_code = request.GET.get("bridge_code", None)
+    road_code = request.GET.get("road_code", None)
+    asset_code = filter_consistency(
+        request.GET.get("asset_code", None), culvert_code, bridge_code, road_code
+    )
+
+    culvert_classes = request.GET.getlist("culvert_class", [])
+    bridge_classes = request.GET.get("bridge_class", [])
+    road_classes = request.GET.getlist("road_class", [])
+    asset_classes = filter_consistency(
+        request.GET.getlist("asset_class", []),
+        culvert_classes,
+        bridge_classes,
+        road_classes,
+    )
+
+    # handle the other [array] filters
+    surface_types = request.GET.getlist("surface_type", [])  # surface_type=X
+    pavement_classes = request.GET.getlist("pavement_class", [])  # pavement_class=X
+    municipalities = request.GET.getlist("municipality", [])  # municipality=X
+    asset_conditions = request.GET.getlist("asset_condition", [])  # asset_condition=X
+
+    # handle the (maximum) report date
+    report_date = request.GET.get("reportdate", None)  # reportdate=X
+    if (
+        report_date == "true"
+        or report_date == True
+        or report_date == datetime.today().strftime("%Y-%m-%d")
+    ):
+        report_date = None
+
+    # handle chainage filters
+    chainage_start = None
+    chainage_end = None
+    chainage = None
+    if road_id or road_code:
+        # chainage range is only valid if we've specified a road
+        chainage_start = request.GET.get("chainagestart", None)
+        chainage_end = request.GET.get("chainageend", None)
+    if bridge_id or bridge_code or culvert_id or culvert_code:
+        # chainage is only valid if we've specified a bridge or culvert
+        chainage = request.GET.get("chainage", None)
+    # If chainage has been supplied, ensure it is clean
+    if chainage != None:
+        chainage = float(chainage)
+    if chainage_start != None:
+        chainage_start = float(chainage_start)
+    if chainage_end != None:
+        chainage_end = float(chainage_end)
+    if (
+        chainage_start != None
+        and chainage_end != None
+        and chainage_start > chainage_end
+    ):
+        temp_chainage = chainage_start
+        chainage_start = chainage_end
+        chainage_end = temp_chainage
+
+    report_protobuf = report_pb2.Report()
+
+    final_filters = defaultdict(list)
+    final_lengths = defaultdict(Counter)
+
+    final_filters["primary_attribute"] = primary_attributes
+
+    # Set the final_filters for all of the various id, code and class values
+    # Of the specific asset types only road_* may be included,
+    # and that's only if a bridge_* or culvert_* is specified
+    filter_priority(
+        final_filters,
+        asset_id,
+        asset_code,
+        asset_classes,
+        "asset_id",
+        "asset_code",
+        "asset_class",
+    )
+    if bridge_id or bridge_code or culvert_id or culvert_code:
+        filter_priority(
+            final_filters,
+            road_id,
+            road_code,
+            road_types,
+            "road_id",
+            "road_code",
+            "road_type",
+        )
+
+    # Asset level attribute
+    if len(municipalities) > 0:
+        final_filters["municipality"] = municipalities
+
+    if len(surface_types) > 0:
+        final_filters["surface_type"] = surface_types
+    if len(pavement_classes) > 0:
+        final_filters["pavement_class"] = pavement_classes
+    if len(asset_conditions) > 0:
+        final_filters["asset_condition"] = asset_conditions
+
+    # Survey level attributes
+    # if report_date:
+    #     final_filters["report_date"] = report_date
+    if (road_id or road_code) and chainage_start and chainage_end:
+        final_filters["chainage_start"] = chainage_start
+        final_filters["chainage_end"] = chainage_end
+    if (
+        bridge_id or bridge_code or culvert_id or culvert_code or road_id or road_code
+    ) and chainage:
+        final_filters["chainage"] = chainage
+
+    # Initialise the Report
+    asset_report = ReportQuery(final_filters)
+    final_lengths = asset_report.compile_summary_stats(
+        asset_report.execute_aggregate_query()
+    )
+
+    # These replacements *should* be unnecessary, but we'll leave them in place for now
+    filtered_filters = (
+        json.dumps(final_filters)
+        .replace("""road_type""", """asset_class""")
+        .replace("""structure_class""", """asset_class""")
+        .replace("""surface_condition""", """asset_condition""")
+        .replace("""structure_condition""", """asset_condition""")
+    )
+    report_protobuf.filter = filtered_filters
+    report_protobuf.lengths = json.dumps(final_lengths)
+
+    if asset_id or asset_code:
+        report_surveys = asset_report.execute_main_query()
+        if len(report_surveys):
+            for report_survey in report_surveys:
+                report_attribute = report_pb2.Attribute()
+                report_attribute.asset_id = report_survey["asset_id"]
+                report_attribute.asset_code = report_survey["asset_code"]
+                report_attribute.primary_attribute = report_survey["attribute"]
+                report_attribute.chainage_start = report_survey["start_chainage"]
+                report_attribute.chainage_end = report_survey["end_chainage"]
+                report_attribute.survey_id = report_survey["survey_id"]
+                if report_survey["user_id"]:
+                    report_attribute.user_id = report_survey["user_id"]
+                if report_survey["date_surveyed"]:
+                    ts = Timestamp()
+                    ts.FromDatetime(report_survey["date_surveyed"])
+                    report_attribute.date_surveyed.CopyFrom(ts)
+                report_attribute.added_by = report_survey["added_by"]
+                if report_survey["value"]:
+                    report_attribute.value = report_survey["value"]
+                # road_id and road_code should only be present if required by a structure report
+                # i.e. they will NOT be present for a road report
+                # instead they'll be the values asset_id and asset_code
+                if report_survey["road_id"]:
+                    report_attribute.road_id = report_survey["road_id"]
+                if report_survey["road_code"]:
+                    report_attribute.road_code = report_survey["road_code"]
+
+                report_protobuf.attributes.append(report_attribute)
+
+    return HttpResponse(
+        report_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )
+
+
+def bridge_create(req_pb):
+    return Bridge.objects.create(
+        **{
+            "road_id": req_pb.road_id,
+            "road_code": req_pb.road_code,
+            "user": get_user_model().objects.get(pk=req_pb.user),
+            "structure_code": req_pb.structure_code,
+            "structure_name": req_pb.structure_name,
+            "structure_class": req_pb.asset_class,
+            "administrative_area": req_pb.administrative_area,
+            "construction_year": req_pb.construction_year,
+            "length": req_pb.length,
+            "width": req_pb.width,
+            "chainage": req_pb.chainage,
+            "structure_type": req_pb.structure_type,
+            "river_name": req_pb.river_name,
+            "number_spans": req_pb.number_spans,
+            "span_length": req_pb.span_length,
+            "material": req_pb.material,
+            "protection_upstream": req_pb.protection_upstream,
+            "protection_downstream": req_pb.protection_downstream,
+        }
+    )
+
+
+def culvert_create(req_pb):
+    return Culvert.objects.create(
+        **{
+            "road_id": req_pb.road_id,
+            "road_code": req_pb.road_code,
+            "user": get_user_model().objects.get(pk=req_pb.user),
+            "structure_code": req_pb.structure_code,
+            "structure_name": req_pb.structure_name,
+            "structure_class": req_pb.asset_class,
+            "administrative_area": req_pb.administrative_area,
+            "construction_year": req_pb.construction_year,
+            "length": req_pb.length,
+            "width": req_pb.width,
+            "chainage": req_pb.chainage,
+            "structure_type": req_pb.structure_type,
+            "height": req_pb.height,
+            "number_cells": req_pb.number_cells,
+            "material": req_pb.material,
+            "protection_upstream": req_pb.protection_upstream,
+            "protection_downstream": req_pb.protection_downstream,
+        }
+    )
+
+
+def bridge_update(bridge, req_pb, db_pb):
+    """ Update the Bridge instance from PB fields """
+    changed_fields = []
+
+    # Char/Text Input Fields
+    regular_fields = [
+        "road_id",
+        "road_code",
+        "structure_code",
+        "structure_name",
+        "administrative_area",
+        "river_name",
+        "asset_class",
+    ]
+    for field in regular_fields:
+        request_value = getattr(req_pb, field)
+        if getattr(db_pb, field) != request_value:
+            # add field to list of changes fields
+            changed_fields.append(field)
+            # handle field name differences
+            if field == "asset_class":
+                field = "structure_class"
+            # set attribute on bridge
+            setattr(bridge, field, request_value)
+
+    # Numeric Input Fields
+    numeric_fields = [
+        "construction_year",
+        "length",
+        "width",
+        "number_spans",
+        "span_length",
+        "chainage",
+    ]
+    for field in numeric_fields:
+        existing_value = getattr(db_pb, field)
+        request_value = getattr(req_pb, field)
+
+        # -ve request_values indicate that the supplied value is actually meant to be None
+        if request_value < 0:
+            request_value = None
+
+        if existing_value < 0:
+            existing_value = None
+
+        if existing_value != request_value:
+            # set attribute on bridge
+            setattr(bridge, field, request_value)
+            # add field to list of changes fields
+            changed_fields.append(field)
+
+    # Foreign Key Fields
+    fks = [
+        (BridgeClass, "structure_type"),
+        (BridgeMaterialType, "material"),
+        (StructureProtectionType, "protection_downstream"),
+        (StructureProtectionType, "protection_upstream"),
+    ]
+
+    for fk in fks:
+        field = fk[1]
+        model = fk[0]
+        request_value = getattr(req_pb, field, None)
+        if getattr(db_pb, field, None) != request_value:
+            if request_value:
+                try:
+                    fk_obj = model.objects.filter(code=request_value).get()
+                except model.DoesNotExist:
+                    return HttpResponse(status=400)
+            else:
+                fk_obj = None
+            setattr(bridge, field, fk_obj)
+            # handle field name differences
+            if field in ["structure_type", "material"]:
+                field += "_bridge"
+            changed_fields.append(field)
+
+    return bridge, changed_fields
+
+
+def culvert_update(culvert, req_pb, db_pb):
+    """ Update the Culvert instance from PB fields """
+    changed_fields = []
+
+    # Char/Text Input Fields
+    regular_fields = [
+        "road_id",
+        "road_code",
+        "structure_code",
+        "structure_name",
+        "administrative_area",
+        "asset_class",
+    ]
+    for field in regular_fields:
+        request_value = getattr(req_pb, field)
+        if getattr(db_pb, field) != request_value:
+            # add field to list of changes fields
+            changed_fields.append(field)
+            # handle mapping over changed field names
+            if field == "asset_class":
+                field = "structure_class"
+            # set attribute on culvert
+            setattr(culvert, field, request_value)
+
+    # Numeric Input Fields
+    numeric_fields = [
+        "construction_year",
+        "length",
+        "width",
+        "height",
+        "number_cells",
+        "chainage",
+    ]
+    for field in numeric_fields:
+        existing_value = getattr(db_pb, field)
+        request_value = getattr(req_pb, field)
+
+        # -ve request_values indicate that the supplied value is actually meant to be None
+        if request_value < 0:
+            request_value = None
+
+        if existing_value < 0:
+            existing_value = None
+
+        if existing_value != request_value:
+            # set attribute on culvert
+            setattr(culvert, field, request_value)
+            # add field to list of changes fields
+            changed_fields.append(field)
+
+    # Foreign Key Fields
+    fks = [
+        (CulvertClass, "structure_type"),
+        (CulvertMaterialType, "material"),
+        (StructureProtectionType, "protection_downstream"),
+        (StructureProtectionType, "protection_upstream"),
+    ]
+
+    for fk in fks:
+        field = fk[1]
+        model = fk[0]
+        request_value = getattr(req_pb, field, None)
+        if getattr(db_pb, field, None) != request_value:
+            if request_value:
+                try:
+                    fk_obj = model.objects.filter(code=request_value).get()
+                except model.DoesNotExist:
+                    return HttpResponse(status=400)
+            else:
+                fk_obj = None
+            setattr(culvert, field, fk_obj)
+            # handle field name differences
+            if field in ["structure_type", "material"]:
+                field += "_culvert"
+            changed_fields.append(field)
+
+    return culvert, changed_fields
+
+
+ASSET_PREFIXES_MAPPING = {
+    "ROAD": {
+        "model": Road,
+        "update": road_update,
+        "create": None,
+        "proto": roads_pb2.Road,
+    },
+    "BRDG": {
+        "model": Bridge,
+        "update": bridge_update,
+        "create": bridge_create,
+        "proto": structure_pb2.Bridge,
+    },
+    "CULV": {
+        "model": Culvert,
+        "update": culvert_update,
+        "create": culvert_create,
+        "proto": structure_pb2.Culvert,
+    },
+}
+
+
+def get_asset_mapping(pk):
+    """ Take in a globally unique protobuf PK and splits out the Asset prefix to get
+    lookup the specific Asset's mapping, along with the Django DB PK to access it."""
+    split = pk.split("-")
+    prefix = split[0]
+    django_pk = int(split[1])
+    mapping = ASSET_PREFIXES_MAPPING[prefix]
+    return prefix, django_pk, mapping
+
+
+@login_required
+def protobuf_structure(request, pk):
+    """ returns an protobuf serialized bytestring with a single protobuf Structure """
+    if request.method != "GET":
+        return HttpResponse(status=405)
+
+    prefix, django_pk, mapping = get_asset_mapping(pk)
+    survey = (
+        Survey.objects.filter(
+            asset_id__startswith=prefix + "-", values__has_key="asset_condition"
+        )
+        .annotate(struct_id=Cast(Substr("asset_id", 6), models.IntegerField()))
+        .filter(struct_id=OuterRef("id"))
+        .order_by("-date_surveyed")
+    )
+    structure = (
+        mapping["model"]
+        .objects.filter(pk=django_pk)
+        .annotate(
+            asset_condition=Subquery(survey.values("values__asset_condition")[:1]),
+            condition_description=Subquery(
+                survey.values("values__condition_description")[:1]
+            ),
+        )
+    )
+
+    if not structure.exists():
+        return HttpResponseNotFound()
+
+    # Note that we're returning a structure here,
+    # which is a container for the Bridge or Culvert that we want
+    structure_protobuf = structure.to_protobuf()
+
+    return HttpResponse(
+        structure_protobuf.SerializeToString(), content_type="application/octet-stream",
+    )
+
+
+@login_required
+def protobuf_structure_audit(request, pk):
+    """ returns a protobuf object with the set of all audit history items for a Structure """
+    prefix, django_pk, mapping = get_asset_mapping(pk)
+
+    queryset = mapping["model"].objects.all()
+    structure = get_object_or_404(queryset, pk=django_pk)
+    versions = Version.objects.get_for_object(structure)
+    versions_protobuf = version_pb2.Versions()
+
+    for version in versions:
+        version_pb = versions_protobuf.versions.add()
+        setattr(version_pb, "pk", version.pk)
+        setattr(version_pb, "user", display_user(version.revision.user))
+        setattr(version_pb, "comment", version.revision.comment)
+        # set datetime field
+        ts = Timestamp()
+        ts.FromDatetime(version.revision.date_created)
+        version_pb.date_created.CopyFrom(ts)
+    return HttpResponse(
+        versions_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )
+
+
+@login_required
+def protobuf_structure_surveys(request, pk, survey_attribute=None):
+    """ returns a protobuf object with the set of surveys for a particular structures pk"""
+    # pull any Surveys that cover the requested Structure - based on PK
+    queryset = Survey.objects.filter(asset_id=pk)
+
+    filter_attribute = survey_attribute
+    if survey_attribute == "structure_condition":
+        filter_attribute = "asset_condition"
+
+    if filter_attribute:
+        queryset = queryset.filter(values__has_key=filter_attribute).exclude(
+            **{"values__" + filter_attribute + "__isnull": True}
+        )
+
+    queryset.order_by("-date_updated")
+    surveys_protobuf = queryset.to_protobuf()
+
+    return HttpResponse(
+        surveys_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )
+
+
+@login_required
+def protobuf_structures(request):
+    """ returns a protobuf Structures object with sets of all available structure types """
+    structures_protobuf = structure_pb2.Structures()
+    structures_protobuf.bridges.extend(Bridge.objects.all().to_protobuf().bridges)
+    structures_protobuf.culverts.extend(Culvert.objects.all().to_protobuf().culverts)
+
+    return HttpResponse(
+        structures_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )
+
+
+@login_required
+def protobuf_road_structures(request, pk):
+    """ returns a protobuf Structures object with sets of structure types for a particular road pk"""
+    # get the Road link requested
+    road = get_object_or_404(Road.objects.all(), pk=pk)
+
+    # pull all Structures that cover the Road Code above
+    structures_protobuf = structure_pb2.Structures()
+    structures_protobuf.bridges.extend(
+        Bridge.objects.filter(road_code=road.road_code)
+        .order_by("chainage", "last_modified")
+        .to_protobuf()
+        .bridges
+    )
+    structures_protobuf.culverts.extend(
+        Culvert.objects.filter(road_code=road.road_code)
+        .order_by("chainage", "last_modified")
+        .to_protobuf()
+        .culverts
+    )
+
+    return HttpResponse(
+        structures_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )
+
+
 @login_required
 @user_passes_test(user_can_edit)
-def survey_create(request):
+def structure_create(request, structure_type):
     if request.method != "POST":
         raise MethodNotAllowed(request.method)
     elif request.content_type != "application/octet-stream":
         return HttpResponse(status=400)
 
-    # parse Survey from protobuf in request body
-    req_pb = survey_pb2.Survey()
-    req_pb.ParseFromString(request.body)
+    prefix, django_pk, mapping = get_asset_mapping(structure_type)
+
+    if prefix == "ROAD":
+        return HttpResponse(status=400)
+
+    # parse Bridge from protobuf in request body
+    req_pb = structure_pb2.Bridge()
+    req_pb = req_pb.FromString(request.body)
 
     # check that Protobuf parsed
-    if not req_pb.road:
+    if not req_pb.road_id:
         return HttpResponse(status=400)
+
+    # check there's a road to attach this structure to
+    structure_road = get_object_or_404(Road.objects.filter(pk=req_pb.road_id))
+    # and default the road_code if none was provided
+    if not req_pb.road_code:
+        req_pb.road_code = structure_road.road_code
+    elif structure_road.road_code != req_pb.road_code:
+        # or check it for basic data integrity problem
+        return HttpResponse(
+            req_pb.SerializeToString(),
+            status=400,
+            content_type="application/octet-stream",
+        )
 
     try:
         with reversion.create_revision():
-            survey = Survey.objects.create(
-                **{
-                    "road": req_pb.road,
-                    "user": get_user_model().objects.get(pk=req_pb.user),
-                    "chainage_start": req_pb.chainage_start,
-                    "chainage_end": req_pb.chainage_end,
-                    "date_surveyed": pbtimestamp_to_pydatetime(req_pb.date_surveyed),
-                    "source": req_pb.source,
-                    "values": json.loads(req_pb.values),
-                }
-            )
+            mapping["create"](req_pb)
 
             # store the user who made the changes
             reversion.set_user(request.user)
@@ -332,6 +1024,141 @@ def survey_create(request):
 
 @login_required
 @user_passes_test(user_can_edit)
+def structure_update(request, pk):
+    if request.method != "PUT":
+        raise MethodNotAllowed(request.method)
+    elif request.content_type != "application/octet-stream":
+        return HttpResponse(status=400)
+
+    prefix, django_pk, mapping = get_asset_mapping(pk)
+
+    # parse Structure from protobuf in request body
+    req_pb = mapping["proto"]
+    req_pb = req_pb.FromString(request.body)
+
+    # check that Protobuf parsed
+    if not req_pb.id:
+        return HttpResponse(status=400)
+
+    # if no changes between the DB's protobuf & request's protobuf return 200
+    if mapping["model"] == Bridge:
+        db_pb = mapping["model"].objects.filter(pk=django_pk).to_protobuf().bridges[0]
+    elif mapping["model"] == Culvert:
+        db_pb = mapping["model"].objects.filter(pk=django_pk).to_protobuf().culverts[0]
+    if db_pb == req_pb:
+        return HttpResponse(
+            req_pb.SerializeToString(),
+            status=200,
+            content_type="application/octet-stream",
+        )
+
+    structure = mapping["model"].objects.filter(pk=django_pk).get()
+    structure, changed_fields = mapping["update"](structure, req_pb, db_pb)
+
+    with reversion.create_revision():
+        structure.save()
+
+        # store the user who made the changes
+        reversion.set_user(request.user)
+
+        # construct a django admin log style change message and use that
+        # to create a revision comment and an admin log entry
+        change_message = [dict(changed=dict(fields=changed_fields))]
+        reversion.set_comment(json.dumps(change_message))
+        LogEntry.objects.log_action(
+            request.user.id,
+            ContentType.objects.get_for_model(mapping["model"]).pk,
+            structure.pk,
+            str(structure),
+            CHANGE,
+            change_message,
+        )
+
+    versions = Version.objects.get_for_object(structure)
+    response = HttpResponse(
+        req_pb.SerializeToString(), status=200, content_type="application/octet-stream"
+    )
+    return response
+
+
+@login_required
+@user_passes_test(user_can_edit)
+def survey_create(request):
+    if request.method != "POST":
+        raise MethodNotAllowed(request.method)
+    elif request.content_type != "application/octet-stream":
+        return HttpResponse(status=400)
+
+    # parse Survey from protobuf in request body
+    req_pb = survey_pb2.Survey()
+    req_pb = req_pb.FromString(request.body)
+
+    # check that Protobuf parsed
+    if not req_pb.asset_id:
+        return HttpResponse(status=400)
+
+    req_values = json.loads(req_pb.values)
+    # convert the json and do any required key manipulation
+    if req_pb.asset_id.startswith("ROAD-"):
+        req_values = road_survey_values(req_values)
+
+    # check there's a road/structure to attach this survey to
+    if req_pb.asset_id:
+        prefix, django_pk, mapping = get_asset_mapping(req_pb.asset_id)
+        survey_asset = get_object_or_404(mapping["model"].objects.filter(pk=django_pk))
+    else:
+        # basic data integrity problem
+        return HttpResponse(
+            req_pb.SerializeToString(),
+            status=400,
+            content_type="application/octet-stream",
+        )
+
+    # and default the road_code if none was provided
+    if not req_pb.road_code:
+        req_pb.road_code = survey_asset.road_code
+    elif survey_asset.road_code != req_pb.road_code:
+        # or check it for basic data integrity problem
+        return HttpResponse(
+            req_pb.SerializeToString(),
+            status=400,
+            content_type="application/octet-stream",
+        )
+
+    try:
+        with reversion.create_revision():
+            survey = Survey.objects.create(
+                **{
+                    "asset_id": req_pb.asset_id,
+                    "asset_code": req_pb.asset_code,
+                    "road_id": req_pb.road_id,
+                    "road_code": req_pb.road_code,
+                    "user": get_user_model().objects.get(pk=req_pb.user),
+                    "chainage_start": req_pb.chainage_start,
+                    "chainage_end": req_pb.chainage_end,
+                    "date_surveyed": pbtimestamp_to_pydatetime(req_pb.date_surveyed),
+                    "source": req_pb.source,
+                    "values": req_values,
+                }
+            )
+
+            # store the user who made the changes
+            reversion.set_user(request.user)
+
+        response = HttpResponse(
+            req_pb.SerializeToString(),
+            status=200,
+            content_type="application/octet-stream",
+        )
+
+        return response
+    except Exception as err:
+        print(err)
+        return HttpResponse(status=400)
+
+
+@login_required
+@user_passes_test(user_can_edit)
 def survey_update(request):
     if request.method != "PUT":
         raise MethodNotAllowed(request.method)
@@ -340,7 +1167,7 @@ def survey_update(request):
 
     # parse Survey from protobuf in request body
     req_pb = survey_pb2.Survey()
-    req_pb.ParseFromString(request.body)
+    req_pb = req_pb.FromString(request.body)
 
     # check that Protobuf parsed
     if not req_pb.id:
@@ -357,7 +1184,30 @@ def survey_update(request):
             content_type="application/octet-stream",
         )
 
-    # if there are not changes between the DB survey and the protobuf survey return 200
+    # check there's a road/structure to attach this survey to
+    if req_pb.asset_id:
+        prefix, django_pk, mapping = get_asset_mapping(req_pb.asset_id)
+        survey_asset = get_object_or_404(mapping["model"].objects.filter(pk=django_pk))
+    else:
+        # basic data integrity problem
+        return HttpResponse(
+            req_pb.SerializeToString(),
+            status=400,
+            content_type="application/octet-stream",
+        )
+
+    # and default the road_code if none was provided
+    if not req_pb.road_code:
+        req_pb.road_code = survey_asset.road_code
+    elif survey_asset.road_code != req_pb.road_code:
+        # or check it for basic data integrity problem
+        return HttpResponse(
+            req_pb.SerializeToString(),
+            status=400,
+            content_type="application/octet-stream",
+        )
+
+    # if there are no changes between the DB survey and the protobuf survey return 200
     if Survey.objects.filter(pk=req_pb.id).to_protobuf().surveys[0] == req_pb:
         return HttpResponse(
             req_pb.SerializeToString(),
@@ -365,9 +1215,12 @@ def survey_update(request):
             content_type="application/octet-stream",
         )
 
+    req_values = json.loads(req_pb.values)
+    if req_pb.asset_id.startswith("ROAD-"):
+        req_values = road_survey_values(req_values)
+
     # if the new values are empty delete the record and return 200
-    new_values = json.loads(req_pb.values)
-    if new_values == {}:
+    if req_values == {}:
         with reversion.create_revision():
             survey.delete()
             # store the user who made the changes
@@ -379,13 +1232,14 @@ def survey_update(request):
         )
 
     # update the Survey instance from PB fields
-    survey.road = req_pb.road
+    survey.road_id = req_pb.road_id
+    survey.road_code = req_pb.road_code
     survey.user = get_user_model().objects.get(pk=req_pb.user)
     survey.chainage_start = req_pb.chainage_start
     survey.chainage_end = req_pb.chainage_end
     survey.date_surveyed = pbtimestamp_to_pydatetime(req_pb.date_surveyed)
     survey.source = req_pb.source
-    survey.values = new_values
+    survey.values = req_values
 
     with reversion.create_revision():
         survey.save()
@@ -396,254 +1250,3 @@ def survey_update(request):
         req_pb.SerializeToString(), status=200, content_type="application/octet-stream"
     )
     return response
-
-
-@login_required
-def protobuf_road_audit(request, pk):
-    """ returns a protobuf object with the set of all audit history items for a Road """
-    queryset = Road.objects.all()
-    road = get_object_or_404(queryset, pk=pk)
-    versions = Version.objects.get_for_object(road)
-    versions_protobuf = roads_pb2.Versions()
-
-    for version in versions:
-        version_pb = versions_protobuf.versions.add()
-        setattr(version_pb, "pk", version.pk)
-        setattr(version_pb, "user", display_user(version.revision.user))
-        setattr(version_pb, "comment", version.revision.comment)
-        # set datetime field
-        ts = Timestamp()
-        ts.FromDatetime(version.revision.date_created)
-        version_pb.date_created.CopyFrom(ts)
-    return HttpResponse(
-        versions_protobuf.SerializeToString(), content_type="application/octet-stream"
-    )
-
-
-@login_required
-def protobuf_reports(request):
-    """ returns a protobuf object with a report determined by the filter conditions supplied """
-    if not request.user.is_authenticated:
-        return HttpResponseForbidden()
-
-    if request.method != "GET":
-        raise MethodNotAllowed(request.method)
-
-    # get/initialise the Filters
-    primary_attributes = request.GET.getlist("primaryattribute", ["surface_condition"])
-    road_id = request.GET.get("roadid", None)
-    road_code = request.GET.get("roadcode", None)
-    chainage_start = None
-    chainage_end = None
-    road_types = request.GET.getlist("roadtype", [])  # roadtype=X
-    surface_types = request.GET.getlist("surfacetype", [])  # surfacetype=X
-    pavement_classes = request.GET.getlist("pavementclass", [])  # pavementclass=X
-    municipalities = request.GET.getlist("municipality", [])  # municipality=X
-    surface_conditions = request.GET.getlist(
-        "surfacecondition", []
-    )  # surfacecondition=X
-    report_date = request.GET.get("reportdate", None)  # reportdate=X
-    if report_date == "true" or report_date == True:
-        report_date = None
-
-    if road_id or road_code:
-        # chainage is only valid if we've specified a road
-        chainage_start = request.GET.get("chainagestart", None)
-        chainage_end = request.GET.get("chainageend", None)
-
-    # If chainage has been supplied, ensure it is clean
-    if chainage_start != None:
-        chainage_start = float(chainage_start)
-    if chainage_end != None:
-        chainage_end = float(chainage_end)
-    if (
-        chainage_start != None
-        and chainage_end != None
-        and chainage_start > chainage_end
-    ):
-        temp_chainage = chainage_start
-        chainage_start = chainage_end
-        chainage_end = temp_chainage
-
-    report_protobuf = report_pb2.Report()
-    report_protobuf.lengths = json.dumps({})
-
-    final_filters = defaultdict(list)
-    final_lengths = defaultdict(Counter)
-
-    final_filters["primary_attribute"] = primary_attributes
-
-    # Certain filters are mutually exclusive (for reporting)
-    # road_id -> road_code -> road_type
-    if road_id:
-        roads = Road.objects.filter(pk=road_id)
-        final_filters["road_id"] = [road_id]
-        if len(roads) == 1:
-            final_filters["road_code"] = [roads[0].road_code]
-        else:
-            report_protobuf.filter = json.dumps(final_filters)
-            return HttpResponse(
-                report_protobuf.SerializeToString(),
-                content_type="application/octet-stream",
-            )
-    elif road_code:
-        roads = Road.objects.filter(road_code=road_code)
-        final_filters["road_code"] = [road_code]
-    elif road_types != []:
-        roads = Road.objects.filter(road_type__in=road_types)
-        final_filters["road_type"] = road_types
-    else:
-        roads = Road.objects.all()
-
-    # apply additional filters to Roads list, if provided
-    if surface_conditions != []:
-        roads = roads.filter(surface_condition__in=surface_conditions)
-        final_filters["surface_condition"] = surface_conditions
-    if surface_types != []:
-        roads = roads.filter(surface_type__in=surface_types)
-        final_filters["surface_type"] = surface_types
-    if municipalities != []:
-        roads = roads.filter(administrative_area__in=municipalities)
-        final_filters["municipality"] = municipalities
-    if pavement_classes != []:
-        roads = roads.filter(pavement_class__in=pavement_classes)
-        final_filters["pavement_class"] = pavement_classes
-
-    report_protobuf.filter = json.dumps(final_filters)
-
-    if len(roads) == 0:
-        # Return the empty protobuf, showing which filters were in use
-        return HttpResponse(
-            report_protobuf.SerializeToString(), content_type="application/octet-stream"
-        )
-
-    # Get the list of all relevant road_codes
-    road_codes = list(roads.values_list("road_code", flat=True).distinct())
-
-    # Compose the list of total chainages by road_code
-    road_chainages_list = (
-        roads.filter(road_code__in=road_codes)
-        .exclude(link_start_chainage__isnull=True)
-        .exclude(link_end_chainage__isnull=True)
-        .values("road_code", "link_start_chainage", "link_end_chainage")
-        .order_by("road_code", "link_start_chainage", "link_end_chainage")
-    )
-
-    road_chainages = []
-    prev_road_code = "Nada"
-    for road_chainage_set in road_chainages_list:
-        if (
-            road_chainage_set["link_start_chainage"]
-            == road_chainage_set["link_end_chainage"]
-        ):
-            continue
-
-        if road_chainage_set["road_code"] != prev_road_code:
-            road_chainage = {}
-            road_chainage["code"] = road_chainage_set["road_code"]
-            road_chainage["chainage_start"] = road_chainage_set["link_start_chainage"]
-            road_chainage["chainage_end"] = road_chainage_set["link_end_chainage"]
-            road_chainages.append(road_chainage)
-            prev_road_code = road_chainage["code"]
-        else:
-            road_chainage["chainage_end"] = road_chainage_set["link_end_chainage"]
-
-    # Handle chainage filtering for single road_codes
-    if len(road_chainages) == 1:
-        min_chainage = road_chainages[0]["chainage_start"]
-        max_chainage = road_chainages[0]["chainage_end"]
-
-        if (
-            chainage_start != None
-            and chainage_start > min_chainage
-            and chainage_start < max_chainage
-        ):
-            min_chainage = chainage_start
-
-        if (
-            chainage_end != None
-            and chainage_end > min_chainage
-            and chainage_end < max_chainage
-        ):
-            max_chainage = chainage_end
-
-        if min_chainage == None or max_chainage == None:
-            # Without valid chainage values nothing can be done
-            return HttpResponseNotFound()
-
-        road_chainages[0]["chainage_start"] = min_chainage
-        road_chainages[0]["chainage_end"] = max_chainage
-
-    if report_date is not None:
-        final_filters["date_surveyed"] = report_date
-        report_protobuf.filter = json.dumps(final_filters)
-
-    # Commence processing Reports by road_code
-    surveys = {}
-    for road_chainage in road_chainages:
-        primary_road_code = road_chainage["code"]
-
-        # pull any Surveys that cover the roads
-        for primary_attribute in primary_attributes:
-            surveys[primary_attribute] = (
-                Survey.objects.filter(road=primary_road_code)
-                .exclude(chainage_start__isnull=True)
-                .exclude(chainage_end__isnull=True)
-                .exclude(**{"values__" + primary_attribute + "__isnull": True})
-                .order_by("road", "chainage_start", "chainage_end", "-date_surveyed")
-                .distinct("road", "chainage_start", "chainage_end")
-            )
-
-            if report_date is not None:
-                surveys[primary_attribute] = surveys[primary_attribute].filter(
-                    date_surveyed__lte=report_date
-                )
-
-        # Generate the Report
-        # This is priority #2 for performance improvement
-        road_report = Report(
-            surveys,
-            len(road_codes) == 1,
-            primary_road_code,
-            road_chainage["chainage_start"],
-            road_chainage["chainage_end"],
-        )
-
-        if len(road_codes) == 1:
-            report_protobuf = road_report.to_protobuf()
-            # return early if only one road_code
-            return HttpResponse(
-                report_protobuf.SerializeToString(),
-                content_type="application/octet-stream",
-            )
-        else:
-            # Merge Protobuf Reports
-            # This is priority #1 for performance improvement
-            report_protobuf = road_report.to_protobuf()
-            report_filters = json.loads(report_protobuf.filter)
-            for x in set(report_filters).union(road_report.filters):
-                final_filters[x] = list(
-                    set(
-                        final_filters[x]
-                        + report_filters.get(x, [])
-                        + road_report.filters.get(x, [])
-                    )
-                )
-
-            report_lengths = json.loads(report_protobuf.lengths)
-            for x in set(report_lengths):
-                final_lengths[x] += Counter(report_lengths.get(x, {}))
-
-    # Chainage is only valid if there's only two values
-    if (
-        "report_chainage" in final_filters
-        and len(final_filters["report_chainage"]) != 2
-    ):
-        final_filters.pop("report_chainage")
-
-    report_protobuf.filter = json.dumps(final_filters)
-    report_protobuf.lengths = json.dumps(final_lengths)
-
-    return HttpResponse(
-        report_protobuf.SerializeToString(), content_type="application/octet-stream"
-    )

@@ -1,26 +1,40 @@
-import "babel-polyfill";
+// polyfills - babel-polyfill is core-js
+import "core-js/stable";
+import "regenerator-runtime/runtime";
+import "./polyfills/array_from";
+import "./polyfills/nodelist_foreach";
+
+import "./dayjs/dayjs";
 import * as riot from "riot";
 
 import Planning_Base from "./riot/planning_base.riot.html";
 import Reports_Base from "./riot/reports_base.riot.html";
 import Data_Table from "./riot/data_table.riot.html";
 import Edit_Base from "./riot/edit_base.riot.html";
-
-import "./styles/estrada.scss";
-import "./styles/vendor.scss";
+import Top_Menu from "./riot/top_menu.riot.html";
+import TrafficDataDetails from "./riot/traffic_data_details.riot.html";
 
 import { getGeoJsonDetails, getGeoJsonDetail } from "./assets/geoJsonAPI.js";
 
 import { getRoad } from "./roadManager";
+import { getStructure } from "./structureManager";
+
 import "./table";
 import "./side_menu";
 import "./top_menu";
 import { Map } from "./map/map";
 
+import "./styles/estrada.scss";
+import "./styles/vendor.scss";
+
+// Import the monkey patches for the protobuf definitions
+// Whenever updating protoc, please review the need for these monkey patches
+import "./assets/models/monkeyPatch";
+
 export const estradaMap = new Map();
 
-import "./dayjs/dayjs";
-
+riot.register("top_menu", Top_Menu);
+riot.mount("top_menu");
 
 window.addEventListener("load", () => {
     // Set up the map and table - but without any data for either
@@ -31,13 +45,17 @@ window.addEventListener("load", () => {
         .then(geoJsonDetails => {
             // for each chunk, download the geojson
             geoJsonDetails.forEach(geoJsonDetail => {
+                const featureType = geoJsonDetail.key || "Road";
                 getGeoJsonDetail(geoJsonDetail)
                     .then(geoJson => {
                         // add in road metadata to the GeoJSON that we'll need
                         // for filtering and for styling
                         geoJson.features.forEach((feature) => {
-                            feature.properties.id = Number(feature.properties.pk) || 0;
-                            feature.properties.featureType = "Road";
+                            feature.properties.featureType = featureType;
+                            const idPrefix = ["bridge", "culvert"].includes(featureType)
+                                ? featureType === "culvert" ? "CULV-" : "BRDG-"
+                                : "";
+                            feature.properties.id = idPrefix + (Number(feature.properties.pk) || 0);
                         });
 
                         // add to map
@@ -50,13 +68,11 @@ window.addEventListener("load", () => {
     riot.register("reports_base", Reports_Base);
     riot.register("data_table", Data_Table);
 
+    riot.register("traffic_data_details", TrafficDataDetails);
+    riot.mount("traffic_data_details");
+
     if (window.canEdit) {
         riot.register("edit_base", Edit_Base);
-        // add listener since editing is allowed
-        window.addEventListener("hashchange", () => {
-            hashCheck();
-        });
-        hashCheck();
     }
 
     window.goBack = () => {};
@@ -71,18 +87,24 @@ window.addEventListener("hashchange", () => {
 function hashCheck() {
     const mainContent = document.getElementById("view-content");
     const planningBase = document.getElementById("planning");
-    const reportsBase = document.getElementById("reports");
+    const reportsBase = document.getElementById("reports") || document.getElementById("dashboard");
     const editBase = document.getElementById("edit-base");
 
     let planningHash = /#planning/.exec(location.hash);
-    let reportsHash = /#reports\/(\d?)/.exec(location.hash);
-    let editHash = /#edit\/(\d*)\/(\w+)/.exec(location.hash);
+    let reportsHash = /#reports\/(.*)\/?/.exec(location.hash);
+    let editHash = /#edit\/(\w+)\/(\d*)\/(\w+)/.exec(location.hash);
 
     if (editHash !== null && !editBase) {
-        const roadPromise = getRoad(editHash[1]);
         if (planningBase) riot.unmount("planning_base", true);
         if (reportsBase) riot.unmount("reports_base", true);
-        riot.mount("edit_base", { roadPromise: roadPromise, page: editHash[2] });
+        if (editHash[1] === "BRDG" || editHash[1] === "CULV") {
+            const globalId = editHash[1] + "-" + editHash[2];
+            const structurePromise = getStructure(globalId);
+            riot.mount("edit_base", { structurePromise: structurePromise, assetType: editHash[1], page: editHash[3] });
+        } else {
+            const roadPromise = getRoad(editHash[2]);
+            riot.mount("edit_base", { roadPromise: roadPromise, assetType: editHash[1], page: editHash[3] });
+        }
         mainContent.hidden = true;
     } else if (reportsHash !== null && !reportsBase) {
         if (planningBase) riot.unmount("planning_base", true);
