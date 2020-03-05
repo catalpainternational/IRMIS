@@ -106,14 +106,14 @@ function initializeDataTable() {
         estradaTableColumns.unshift({
             title: "",
             data: null,
-            render: r => `<a class="image pencil" href="#edit/${r.assetType}/${r.assetId}/location_type"></a>`,
+            render: r => editButtonTemplate(r, "location_type"),
             orderable: false,
             className: "edit-col"
         });
         structuresTableColumns.unshift({
             title: "",
             data: null,
-            render: r => `<a class="image pencil" href="#edit/${r.assetType}/${r.assetId}/structure_type"></a>`,
+            render: r => editButtonTemplate(r, "structure_type"),
             orderable: false,
             className: "edit-col"
         });
@@ -170,7 +170,7 @@ function initializeDataTable() {
     setupTableEventHandlers();
 
     function setUpModalTable(tableId, columns) {
-        return $(`#${tableId}`).DataTable({
+        return $("#" + tableId).DataTable({
             columns: columns,
             rowId: ".id",
             dom: "<'row'<'col-sm-12'tr>>", // https://datatables.net/reference/option/dom#Styling
@@ -204,6 +204,10 @@ function initializeDataTable() {
             pendingStructures = [];
         }
     }
+}
+
+function editButtonTemplate(asset, firstPage) {
+    return '<a class="image pencil" href="#edit/' + asset.assetType + '/' + asset.assetId + '/' + firstPage + '"></a>';
 }
 
 function setupTableEventHandlers() {
@@ -308,7 +312,7 @@ function setupTableEventHandlers() {
             : structuresTable;
 
         const clickedRowId = e.currentTarget.parentNode.id;
-        const clickedRow = $(`tr#${clickedRowId}`);
+        const clickedRow = $("tr#" + clickedRowId);
 
         const cellChildren = e.currentTarget.children;
         const cellChildrenLength = cellChildren.length;
@@ -470,7 +474,7 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
         const repTable = attributeModalMapping[attribute].reportTable;
         if (repTable) {
             const repTableId = attributeModalMapping[attribute].reportDataTableId;
-            $(`#${repTableId}_wrapper`).hide();
+            $("#" + repTableId + "_wrapper").hide();
         }
     });
     // Hide special traffic data div
@@ -483,7 +487,7 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
     const modal = $(this);
 
     if (attr === "traffic_level") {
-        modal.find(".modal-title").text(`${assetCode} Traffic Data`);
+        modal.find(".modal-title").text(assetCode + " Traffic Data");
         let latestSurvey = false;
         getAssetSurveys(assetId, "trafficType")
             .then((surveyData) => {
@@ -502,7 +506,7 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
     } else if (["structure_condition", "condition_description"].indexOf(attr) >= 0) {
         const reportDataTableId = attributeModalMapping[attr].reportDataTableId;
         const reportTable = attributeModalMapping[attr].reportTable;
-        modal.find(".modal-title").text(`${assetCode} ${attributeModalMapping[attr].title}`);
+        modal.find(".modal-title").text(assetCode + " " + attributeModalMapping[attr].title);
         reportTable.clear(); // remove all rows in the table
 
         getStructureSurveys(assetId, attr)
@@ -511,12 +515,12 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
                 reportTable.rows.add(surveyData);
             }).finally(() => {
                 reportTable.draw();
-                $(`#${reportDataTableId}_wrapper`).show();
+                $("#" + reportDataTableId + "_wrapper").show();
             });
     } else {
         const reportDataTableId = attributeModalMapping[attr].reportDataTableId;
         const reportTable = attributeModalMapping[attr].reportTable;
-        modal.find(".modal-title").text(`${assetCode} ${attributeModalMapping[attr].title}`);
+        modal.find(".modal-title").text(assetCode + " " + attributeModalMapping[attr].title);
         reportTable.clear(); // remove all rows in the table
 
         const getAsset = currentFilter.assetType === "ROAD" ? getRoad : getStructure;
@@ -570,7 +574,7 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
                 })
                 .finally(() => {
                     reportTable.draw();
-                    $(`#${reportDataTableId}_wrapper`).show();
+                    $("#" + reportDataTableId + "_wrapper").show();
                 });
         });
     }
