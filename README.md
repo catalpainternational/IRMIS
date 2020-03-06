@@ -37,28 +37,39 @@ Clone this repository before performing import. It's README contains information
 **Important**
 This entire sequence must be performed to completion before users are allowed to edit the imported features (roads).
 
-1. `./manage.py import_shapefiles ../../path/to/the/data-sources/repo/shapefiles`
+1. `./manage.py import_shapefiles ../../path/to/the/data-sources/repo/shapefiles <asset_type>`
   - imports the shapefile geometries and copies properties across where useful
+  - `<asset_type>` is one of "road", "bridge", or "culvert"
+  - also calls `set_municipalities` and `collate_geometries` automatically
 
 2. `./manage.py import_csv ../../path/to/the/data-sources/repo/csv`
   - copies road attributes from the csv ( from program excel files )
 
-3. `./manage.py set_municipalities <optional: "all", "road", "bridge", or "culvert">`
-  - sets the administrative areas for each asset/structure, based the centroids of their respective geometries
-  - Takes an optional argument to restrict the municipalities getting set to objects of a single type
-  - If 'all' argument is given all of the assets/structures will have their municipalities set
+3. `./manage.py set_bridge_fields`
+  - determines the closest road to each bridge, and sets the bridge `road_id`, `road_code` and `asset_class` to match
 
-4. `./manage.py collate_geometries`
-  - you have edited roads, bridges, culverts so re-collate
+### Additional Steps - these are automatically performed after `import_shapefiles`
+  A. `./manage.py set_unknown_road_codes`
+    - Fixes roads with missing road codes, assigning these roads a unique `XX_` `road_code`.
 
-5. `./manage.py make_road_surveys <optional: --no-road-refresh>` 
+  B. `./manage.py set_municipalities <optional: "all", "road", "bridge", or "culvert">`
+    - Sets the administrative areas for each asset/structure, based the centroids of their respective geometries
+    - Takes an optional argument to restrict the municipalities getting set to objects of a single type
+    - If 'all' argument is given all of the assets/structures will have their municipalities set
+
+  C. `./manage.py collate_geometries <optional: "all", "road", "bridge", or "culvert">`
+    - you have edited roads, bridges, culverts so re-collate
+
+4. `./manage.py make_road_surveys <optional: --no-road-refresh>` 
   - Refresh the calculated Road record geometry data (unless you specify --no-road-refresh)
   - Then from those Road records recreate all of the 'programmatic' Surveys for Roads, and
   - Refresh all user entered Surveys for Roads
   
   Note: Refreshing the programmatic Surveys relies on completeness of the Road record geometry data.  Therefore it is recommended to not use the `--no-road-refresh` option unless you've literally just run `make_road_surveys` or `import_traffic_surveys` immediately before.
 
-6. `./manage.py import_traffic_surveys ../../path/to/the/traffic/survey/csv <optional: --no-road-refresh>` 
+  Note: This management command is SLOW.  It has to work road_code by road_code so it runs a LOT of queries.
+
+5. `./manage.py import_traffic_surveys ../../path/to/the/traffic/survey/csv <optional: --no-road-refresh>` 
   - Refresh the calculated Road record geometry data (unless you specify --no-road-refresh)
   - Then recreate the programmatic traffic surveys from the csv file
   
