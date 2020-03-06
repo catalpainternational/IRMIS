@@ -27,6 +27,12 @@ export const TERRAIN_CLASS_CHOICES = humanizeChoices(assetSchema, "terrain_class
 
 export class EstradaRoad extends Road implements IAsset {
     public static getFieldName(field: string) {
+        // handle survey only fields
+        switch (field) {
+            case "total_width":
+                return "Total Width";
+        }
+
         return getFieldName(assetSchema, field);
     }
 

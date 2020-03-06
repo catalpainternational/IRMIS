@@ -9,4 +9,4 @@ class Command(BaseCommand):
         parser.add_argument("folder")
 
     def handle(self, *args, **options):
-        import_csv(options["folder"])
+        import_csv(self, options["folder"])

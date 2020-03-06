@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0 VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-27 05:43+0000\n"
+"POT-Creation-Date: 2020-03-05 01:57+0000\n"
 "PO-Revision-Date: 2019-10-09 05:43+0000\n"
 "Last-Translator: b'  <januario@catalpa.io>'\n"
 "Language-Team: Catalpa International <info@catalpa.io>\n"
@@ -20,6 +20,755 @@ msgstr ""
 
 msgid "IRMIS"
 msgstr "IRMIS "
+
+msgid "Gabion works"
+msgstr ""
+
+msgid "Masonry works"
+msgstr ""
+
+msgid "RCC"
+msgstr ""
+
+msgid "PCC concrete wall"
+msgstr ""
+
+msgid "Beam"
+msgstr ""
+
+msgid "Temporary"
+msgstr ""
+
+msgid "Truss"
+msgstr ""
+
+msgid "Arch"
+msgstr ""
+
+msgid "Reinforced cement"
+msgstr ""
+
+msgid "Concrete (RCC)"
+msgstr ""
+
+msgid "Timber"
+msgstr ""
+
+msgid "Suspension"
+msgstr ""
+
+msgid "RCC box"
+msgstr ""
+
+msgid "RCC pipe"
+msgstr ""
+
+msgid "RCC slab"
+msgstr ""
+
+msgid "Steel pipe"
+msgstr ""
+
+msgid "Stone scupper"
+msgstr ""
+
+msgid "Wooden"
+msgstr ""
+
+msgid "Concrete"
+msgstr ""
+
+msgid "Steel"
+msgstr ""
+
+msgid "Stone"
+msgstr ""
+
+#, python-format
+msgid "%(value)s should not contain spaces"
+msgstr "%(value)s Labele inklui espasu "
+
+msgid "Code"
+msgstr "Kodigu "
+
+msgid "Name"
+msgstr "Naran "
+
+#, fuzzy
+#| msgid "Asset"
+msgid "Asset Id"
+msgstr "Sasan (aset)"
+
+#, fuzzy
+#| msgid "Asset"
+msgid "Asset Code"
+msgstr "Sasan (aset)"
+
+#, fuzzy
+#| msgid "Road Code"
+msgid "Road Id"
+msgstr "Kodigu Estrada "
+
+msgid "Road Code"
+msgstr "Kodigu Estrada "
+
+#, fuzzy
+#| msgid "Username"
+msgid "User"
+msgstr "Naran utilisador "
+
+#, fuzzy
+#| msgid "Date Created"
+msgid "Date Surveyed"
+msgstr "Data Kria"
+
+msgid "Date Created"
+msgstr "Data Kria"
+
+#, fuzzy
+#| msgid "Date Created"
+msgid "Date Updated"
+msgstr "Data Kria"
+
+#, fuzzy
+#| msgid "Link Start Chainage (Km)"
+msgid "Start Chainage (Km)"
+msgstr "Linha Estasaun Komesa (Km)"
+
+#, fuzzy
+#| msgid "Enter chainage for link starting point"
+msgid "Enter chainage for survey starting point"
+msgstr "Hatama estasaun ba linha nia pontu komesa"
+
+#, fuzzy
+#| msgid "Link End Chainage (Km)"
+msgid "End Chainage (Km)"
+msgstr "Linha Estasaun Ikus (Km)"
+
+#, fuzzy
+#| msgid "Enter chainage for link ending point"
+msgid "Enter chainage for survey ending point"
+msgstr "Hatama estasaun ba pontu linha ikus"
+
+#, fuzzy
+#| msgid "Funding Source"
+msgid "Source"
+msgstr "Fontes Orsamentu"
+
+#, fuzzy
+#| msgid "Choose the administrative area of the road"
+msgid "Choose the source of the survey"
+msgstr "Hili area administrativu husi estrada ne"
+
+msgid "National"
+msgstr "Nasional"
+
+msgid "Highway"
+msgstr "Vias Rapidas"
+
+msgid "Municipal"
+msgstr "Munisipiu "
+
+msgid "Urban"
+msgstr "Urbana"
+
+msgid "Rural"
+msgstr "Rural"
+
+msgid "Good"
+msgstr "Diak "
+
+msgid "Fair"
+msgstr "Justu "
+
+msgid "Poor"
+msgstr "Aat"
+
+msgid "Bad"
+msgstr "Aat Los"
+
+msgid "Bridge"
+msgstr ""
+
+msgid "Culvert"
+msgstr ""
+
+msgid "Low"
+msgstr "Kraik"
+
+msgid "Medium"
+msgstr " Médiu"
+
+msgid "High"
+msgstr "Aas"
+
+msgid "Flat"
+msgstr ""
+
+msgid "Rolling"
+msgstr ""
+
+msgid "Mountainous"
+msgstr ""
+
+msgid "last modified"
+msgstr "Modifika ikus"
+
+#, fuzzy
+#| msgid "Municipal"
+msgid "Municipality"
+msgstr "Munisipiu "
+
+#, fuzzy
+#| msgid "Choose the pavement class of the road"
+msgid "Choose the municipality for the road"
+msgstr "Hili klase pavimentu husi estrada"
+
+msgid "Funding Source"
+msgstr "Fontes Orsamentu"
+
+msgid "Enter the source funding for the road link"
+msgstr "Hatama fontes orsamentu ba linha estrada"
+
+msgid "Link Code"
+msgstr "Kodigu Linha"
+
+msgid "Enter link code according to DRBFC standard"
+msgstr "Hatama kodigu linha tuir DNEPCC nia padraun "
+
+msgid "Link Start Name"
+msgstr "Naran Linha Komesa"
+
+msgid "Enter the name of the link start location (municipal center, administrative post or nearest suco)"
+msgstr "Hatama naran husi fatin linha komesa (sentru munisipiu, postu administrativu ou suku nebe besik) "
+
+msgid "Link End Name"
+msgstr "Naran Linha Ikus "
+
+msgid "Enter the name of the link end location (municipal center, administrative post or nearest suco)"
+msgstr "Hatama naran husi fatin linha ikus (sentru munisipiu, postu administrativu ou suku nebe besik) "
+
+#, fuzzy
+#| msgid "Link end chainage"
+msgid "Link End Chainage"
+msgstr "Linha estasaun ikus"
+
+msgid "Enter chainage for link ending point"
+msgstr "Hatama estasaun ba pontu linha ikus"
+
+#, fuzzy
+#| msgid "Link start chainage"
+msgid "Link Start Chainage"
+msgstr "Linha estasaun komesa"
+
+msgid "Enter chainage for link starting point"
+msgstr "Hatama estasaun ba linha nia pontu komesa"
+
+#, fuzzy
+#| msgid "Link Length"
+msgid "Link Length (Km)"
+msgstr "Naruk Estasaun"
+
+#, fuzzy
+#| msgid "Enter road link length (in Km)"
+msgid "Enter road link length"
+msgstr "Hatama linha estrada nia naruk (iha Km) "
+
+#, fuzzy
+#| msgid "Link Length"
+msgid "Geometry Length (m)"
+msgstr "Naruk Estasaun"
+
+msgid "Do not edit"
+msgstr ""
+
+#, fuzzy
+#| msgid "Link start chainage"
+msgid "Geometry Start Chainage"
+msgstr "Linha estasaun komesa"
+
+#, fuzzy
+#| msgid "Link end chainage"
+msgid "Geometry End Chainage"
+msgstr "Linha estasaun ikus"
+
+msgid "Surface Type"
+msgstr "Tipu Pavimentu"
+
+msgid "Choose the type of surface of the road link carriageway"
+msgstr "Hili tipu pavimentu linha estrada nia carriageway "
+
+msgid "Pavement Class"
+msgstr "Klase Pavimentu "
+
+msgid "Choose the pavement class of the road"
+msgstr "Hili klase pavimentu husi estrada"
+
+#, fuzzy
+#| msgid "Carriageway width"
+msgid "Carriageway Width"
+msgstr "Luan carriageway "
+
+#, fuzzy
+#| msgid "Enter the width (in meters) of the link carriageway"
+msgid "Enter the width of the link carriageway"
+msgstr "Hatama luan (iha metru) husi linha Carriageaway"
+
+#, fuzzy
+#| msgid "Pavement Class"
+msgid "Asset Class"
+msgstr "Klase Pavimentu "
+
+#, fuzzy
+#| msgid "Choose the pavement class of the road"
+msgid "Choose the asset class"
+msgstr "Hili klase pavimentu husi estrada"
+
+msgid "Road Status"
+msgstr "Estatutu Estrada"
+
+msgid "Enter road link current status"
+msgstr "Hatama linha estrada nia estatutu atual"
+
+msgid "Project Name"
+msgstr "Naran Projetu"
+
+msgid "Enter road link project name"
+msgstr "Hatama naran projetu linha estrada"
+
+#, fuzzy
+#| msgid "Traffic data"
+msgid "Traffic Data"
+msgstr "Dadus trafiku"
+
+msgid "Choose the traffic volume for the road link"
+msgstr "Hili volume trafiku ba linha estrada"
+
+msgid "Surface Condition (SDI)"
+msgstr "Kondisaun Surface (SDI)"
+
+msgid "Choose road link surface condition according to the Surface Distress Index (SDI): Good (SDI<=2), fair (2<SDI<=3), poor (3<SDI<=4) or bad (SDI>4)"
+msgstr "Hili linha estrada nia kondisaun surface tuir Surface Distress Index "
+
+msgid "Maintenance Needs"
+msgstr "Persija Manutensaun "
+
+msgid "Choose the type of maintenace needs for the road link"
+msgstr "Hili tipu manutensaun nebe persija ba linha estrada "
+
+msgid "Technical Class"
+msgstr "Klase Tekniku "
+
+msgid "Choose road link technical class according to the 2010 Road Geometric Design Standards, DRBFC standards"
+msgstr "Hili linha estrada nia klase tekniku tuir Padraun Dezenhu Geometriku Estrada 2010 "
+
+msgid "Core"
+msgstr ""
+
+msgid "Set if the road is a high priority `core` road"
+msgstr ""
+
+msgid "Population Served"
+msgstr ""
+
+msgid "Set the size of population served by this road"
+msgstr ""
+
+#, fuzzy
+#| msgid "Technical class"
+msgid "Terrain class"
+msgstr "Klase tekniku"
+
+#, fuzzy
+#| msgid "Choose the administrative class of the road"
+msgid "Choose what terrain class the road runs through"
+msgstr "Hili klase administrativa husi estrada"
+
+msgid "Rainfall"
+msgstr ""
+
+msgid "Enter the amount of rainfall"
+msgstr ""
+
+msgid "Number of Lanes"
+msgstr ""
+
+#, fuzzy
+#| msgid "Enter the source funding for the road link"
+msgid "Enter the number of lanes of the road"
+msgstr "Hatama fontes orsamentu ba linha estrada"
+
+#, fuzzy
+#| msgid "Asset"
+msgid "Asset Type"
+msgstr "Sasan (aset)"
+
+msgid "Structure Code"
+msgstr ""
+
+msgid "Structure Class"
+msgstr ""
+
+#, fuzzy
+#| msgid "Choose the pavement class of the road"
+msgid "Choose the structure class"
+msgstr "Hili klase pavimentu husi estrada"
+
+#, fuzzy
+#| msgid "Choose the pavement class of the road"
+msgid "Choose the municipality for the structure"
+msgstr "Hili klase pavimentu husi estrada"
+
+msgid "Enter the Road Code associated with the structure"
+msgstr ""
+
+msgid "Structure Construction Year"
+msgstr ""
+
+#, fuzzy
+#| msgid "Link Length"
+msgid "Structure Length (m)"
+msgstr "Naruk Estasaun"
+
+#, fuzzy
+#| msgid "Enter road link length (in Km)"
+msgid "Enter structure length"
+msgstr "Hatama linha estrada nia naruk (iha Km) "
+
+#, fuzzy
+#| msgid "Carriageway Width"
+msgid "Structure Width (m)"
+msgstr "Carriageaway nia luan"
+
+msgid "Enter structure width"
+msgstr ""
+
+#, fuzzy
+#| msgid "Link End Chainage (Km)"
+msgid "Chainage"
+msgstr "Linha Estasaun Ikus (Km)"
+
+#, fuzzy
+#| msgid "Enter chainage for link starting point"
+msgid "Enter chainage point for the structure"
+msgstr "Hatama estasaun ba linha nia pontu komesa"
+
+#, fuzzy
+#| msgid "Surface Type"
+msgid "Bridge Type"
+msgstr "Tipu Pavimentu"
+
+#, fuzzy
+#| msgid "Choose the pavement class of the road"
+msgid "Choose the bridge type"
+msgstr "Hili klase pavimentu husi estrada"
+
+msgid "River Name"
+msgstr ""
+
+msgid "Enter the name of the river the bridge crosses over"
+msgstr ""
+
+msgid "Number of Spans"
+msgstr ""
+
+#, fuzzy
+#| msgid "Enter the source funding for the road link"
+msgid "Enter number of spans"
+msgstr "Hatama fontes orsamentu ba linha estrada"
+
+#, fuzzy
+#| msgid "Link Length"
+msgid "Span Length (m)"
+msgstr "Naruk Estasaun"
+
+#, fuzzy
+#| msgid "Enter road link length (in Km)"
+msgid "Enter span length"
+msgstr "Hatama linha estrada nia naruk (iha Km) "
+
+msgid "Deck Material"
+msgstr ""
+
+#, fuzzy
+#| msgid "Choose the pavement class of the road"
+msgid "Choose the bridge deck material"
+msgstr "Hili klase pavimentu husi estrada"
+
+msgid "Protection Upstream"
+msgstr ""
+
+#, fuzzy
+#| msgid "Choose the administrative area of the road"
+msgid "Choose the upstream protection type"
+msgstr "Hili area administrativu husi estrada ne"
+
+msgid "Protection Downstream"
+msgstr ""
+
+#, fuzzy
+#| msgid "Choose the administrative area of the road"
+msgid "Choose the downstream protection type"
+msgstr "Hili area administrativu husi estrada ne"
+
+msgid "Culvert Type"
+msgstr ""
+
+msgid "Choose the culvert type"
+msgstr ""
+
+msgid "Structure Height (m)"
+msgstr ""
+
+msgid "Enter structure height"
+msgstr ""
+
+msgid "Number of Cells"
+msgstr ""
+
+msgid "Material"
+msgstr ""
+
+#, fuzzy
+#| msgid "Choose the pavement class of the road"
+msgid "Choose the culvert material"
+msgstr "Hili klase pavimentu husi estrada"
+
+msgid "Road Inventory"
+msgstr "Inventoriu Estrada "
+
+msgid "Export all"
+msgstr "Esporta hotu "
+
+msgid "Select data"
+msgstr "Hili dadus "
+
+msgid "Road Inventory Data"
+msgstr "Dadus Inventoriu Estrada"
+
+msgid "Road code"
+msgstr "Kodigu estrada"
+
+msgid "Road name"
+msgstr "Naran Estrada"
+
+msgid "Link code"
+msgstr "Kodigu linha"
+
+msgid "Link name"
+msgstr "Naran linha"
+
+msgid "Link Length"
+msgstr "Naruk Estasaun"
+
+msgid "Link start name"
+msgstr "Naran linha komesa"
+
+msgid "Link start chainage"
+msgstr "Linha estasaun komesa"
+
+msgid "Link end name"
+msgstr "Naran linha ikus "
+
+msgid "Link end chainage"
+msgstr "Linha estasaun ikus"
+
+msgid "Surface type"
+msgstr "Tipu superfície"
+
+msgid "Pavement class"
+msgstr "klase pavimentu"
+
+msgid "Carriageway width"
+msgstr "Luan carriageway "
+
+#, fuzzy
+#| msgid "Pavement class"
+msgid "Asset class"
+msgstr "klase pavimentu"
+
+msgid "Technical class"
+msgstr "Klase tekniku"
+
+msgid "Funding source"
+msgstr "Fontes orsamentu"
+
+msgid "Road status"
+msgstr "Estatutu estrada "
+
+msgid "Project"
+msgstr "Projetu "
+
+msgid "Start Point - DMS"
+msgstr "Pontu Komesa - DMS"
+
+msgid "End Point - DMS"
+msgstr "Pontu Ikus - DMS"
+
+msgid "Start Point - UTM"
+msgstr "Pontu Komesa - UTM"
+
+msgid "End Point - UTM"
+msgstr "Pontu Ikus - UTM"
+
+msgid "Road Condition Data"
+msgstr "Dadus Kondisaun Estrada"
+
+msgid "Roughness (IRI)"
+msgstr ""
+
+msgid "Surface condition"
+msgstr "Kondisaun superfície"
+
+msgid "Maintenance needs"
+msgstr "Persija manutensaun"
+
+msgid "Traffic data"
+msgstr "Dadus trafiku"
+
+msgid "Number of lanes"
+msgstr ""
+
+#, fuzzy
+#| msgid "Technical Class"
+msgid "Terrain Class"
+msgstr "Klase Tekniku "
+
+msgid "Return to default selection"
+msgstr "Fila fali ba selesaun padraun "
+
+#, fuzzy
+#| msgid "Road Inventory"
+msgid "Structure Inventory"
+msgstr "Inventoriu Estrada "
+
+#, fuzzy
+#| msgid "Road Inventory Data"
+msgid "Structure Inventory Data"
+msgstr "Dadus Inventoriu Estrada"
+
+msgid "Structure"
+msgstr ""
+
+#, fuzzy
+#| msgid "Link Start Name"
+msgid "Structure Name"
+msgstr "Naran Linha Komesa"
+
+msgid "GPS Latitude"
+msgstr ""
+
+msgid "GPS Longitude"
+msgstr ""
+
+#, fuzzy
+#| msgid "Road Type"
+msgid "Type"
+msgstr "Typu Estrada"
+
+#, fuzzy
+#| msgid "Link Length"
+msgid "Length"
+msgstr "Naruk Estasaun"
+
+msgid "Width"
+msgstr ""
+
+msgid "Height"
+msgstr ""
+
+#, fuzzy
+#| msgid "Link Length"
+msgid "Span Length"
+msgstr "Naruk Estasaun"
+
+msgid "Construction Year"
+msgstr ""
+
+#, fuzzy
+#| msgid "Road Condition Data"
+msgid "Structure Condition Data"
+msgstr "Dadus Kondisaun Estrada"
+
+#, fuzzy
+#| msgid "Surface condition"
+msgid "Structure Condition"
+msgstr "Kondisaun superfície"
+
+#, fuzzy
+#| msgid "Road Condition Data"
+msgid "Condition Description"
+msgstr "Dadus Kondisaun Estrada"
+
+#, fuzzy
+#| msgid "Road Inventory Data"
+msgid "Inventory Photos"
+msgstr "Dadus Inventoriu Estrada"
+
+#, fuzzy
+#| msgid "Designed & developed by Catalpa International"
+msgid "Created by Catalpa International"
+msgstr "Dezenho & dezenvolve husi Catalpa International "
+
+msgid "View"
+msgstr "Visualizasaun"
+
+msgid "Fullscreen view"
+msgstr "Visualizasaun Kompletu"
+
+msgid "Map & Table"
+msgstr "Mapa & Tabela"
+
+msgid "Map"
+msgstr "Mapa"
+
+msgid "Table"
+msgstr "Tabela"
+
+#, fuzzy
+#| msgid "Road Status"
+msgid "Roads"
+msgstr "Estatutu Estrada"
+
+msgid "Structures"
+msgstr ""
+
+msgid "Filters"
+msgstr "Filtru"
+
+msgid "Clear all filters"
+msgstr "Hamos filtru hotu"
+
+msgid "Location"
+msgstr "Fatin"
+
+msgid "Clear"
+msgstr "Hamos"
+
+msgid "Asset"
+msgstr "Sasan (aset)"
+
+msgid "Bridges"
+msgstr ""
+
+msgid "Culverts"
+msgstr ""
+
+msgid "Asset condition"
+msgstr "Kondisaun sasan/aset"
+
+#, fuzzy
+#| msgid "Select data"
+msgid "Select the type"
+msgstr "Hili dadus "
+
+msgid "Select the Deck Material"
+msgstr ""
+
+#, fuzzy
+#| msgid "Select data"
+msgid "Select the Material"
+msgstr "Hili dadus "
 
 msgid "Please enter a correct username and password. Note that both fields may be case-sensitive"
 msgstr "Favor hatama naran utilisador ho seña nebe los. Nota Katak linha rua ne talvez sensitivu"
@@ -144,362 +893,13 @@ msgstr "Haruka"
 #~ msgid "Log out"
 #~ msgstr "Sai"
 
-#~ msgid "%(value)s should not contain spaces"
-#~ msgstr "%(value)s Labele inklui espasu "
-
-#~ msgid "Code"
-#~ msgstr "Kodigu "
-
-#~ msgid "Name"
-#~ msgstr "Naran "
-
-#~ msgid "Road Code"
-#~ msgstr "Kodigu Estrada "
-
-#, fuzzy
-#~| msgid "Username"
-#~ msgid "User"
-#~ msgstr "Naran utilisador "
-
-#, fuzzy
-#~| msgid "Date Created"
-#~ msgid "Date Surveyed"
-#~ msgstr "Data Kria"
-
-#~ msgid "Date Created"
-#~ msgstr "Data Kria"
-
-#, fuzzy
-#~| msgid "Date Created"
-#~ msgid "Date Updated"
-#~ msgstr "Data Kria"
-
-#, fuzzy
-#~| msgid "Link Start Chainage (Km)"
-#~ msgid "Start Chainage (Km)"
-#~ msgstr "Linha Estasaun Komesa (Km)"
-
-#, fuzzy
-#~| msgid "Enter chainage for link starting point"
-#~ msgid "Enter chainage for survey starting point"
-#~ msgstr "Hatama estasaun ba linha nia pontu komesa"
-
-#, fuzzy
-#~| msgid "Link End Chainage (Km)"
-#~ msgid "End Chainage (Km)"
-#~ msgstr "Linha Estasaun Ikus (Km)"
-
-#, fuzzy
-#~| msgid "Enter chainage for link ending point"
-#~ msgid "Enter chainage for survey ending point"
-#~ msgstr "Hatama estasaun ba pontu linha ikus"
-
-#, fuzzy
-#~| msgid "Funding Source"
-#~ msgid "Source"
-#~ msgstr "Fontes Orsamentu"
-
-#, fuzzy
-#~| msgid "Choose the administrative area of the road"
-#~ msgid "Choose the source of the survey"
-#~ msgstr "Hili area administrativu husi estrada ne"
-
-#~ msgid "National"
-#~ msgstr "Nasional"
-
-#~ msgid "Highway"
-#~ msgstr "Vias Rapidas"
-
-#~ msgid "Municipal"
-#~ msgstr "Munisipiu "
-
-#~ msgid "Urban"
-#~ msgstr "Urbana"
-
-#~ msgid "Rural"
-#~ msgstr "Rural"
-
-#~ msgid "Low"
-#~ msgstr "Kraik"
-
-#~ msgid "Medium"
-#~ msgstr " Médiu"
-
-#~ msgid "High"
-#~ msgstr "Aas"
-
-#~ msgid "Good"
-#~ msgstr "Diak "
-
-#~ msgid "Fair"
-#~ msgstr "Justu "
-
-#~ msgid "Poor"
-#~ msgstr "Aat"
-
-#~ msgid "Bad"
-#~ msgstr "Aat Los"
-
-#~ msgid "last modified"
-#~ msgstr "Modifika ikus"
-
-#, fuzzy
-#~| msgid "Municipal"
-#~ msgid "Municipality"
-#~ msgstr "Munisipiu "
-
-#, fuzzy
-#~| msgid "Choose the pavement class of the road"
-#~ msgid "Choose the municipality for the road"
-#~ msgstr "Hili klase pavimentu husi estrada"
-
-#~ msgid "Funding Source"
-#~ msgstr "Fontes Orsamentu"
-
-#~ msgid "Enter the source funding for the road link"
-#~ msgstr "Hatama fontes orsamentu ba linha estrada"
-
-#~ msgid "Link Code"
-#~ msgstr "Kodigu Linha"
-
-#~ msgid "Enter link code according to DRBFC standard"
-#~ msgstr "Hatama kodigu linha tuir DNEPCC nia padraun "
-
-#~ msgid "Link Start Name"
-#~ msgstr "Naran Linha Komesa"
-
-#~ msgid "Enter the name of the link start location (municipal center, administrative post or nearest suco)"
-#~ msgstr "Hatama naran husi fatin linha komesa (sentru munisipiu, postu administrativu ou suku nebe besik) "
-
-#~ msgid "Link End Name"
-#~ msgstr "Naran Linha Ikus "
-
-#~ msgid "Enter the name of the link end location (municipal center, administrative post or nearest suco)"
-#~ msgstr "Hatama naran husi fatin linha ikus (sentru munisipiu, postu administrativu ou suku nebe besik) "
-
-#, fuzzy
-#~| msgid "Link end chainage"
-#~ msgid "Link End Chainage"
-#~ msgstr "Linha estasaun ikus"
-
-#~ msgid "Enter chainage for link ending point"
-#~ msgstr "Hatama estasaun ba pontu linha ikus"
-
-#, fuzzy
-#~| msgid "Link start chainage"
-#~ msgid "Link Start Chainage"
-#~ msgstr "Linha estasaun komesa"
-
-#~ msgid "Enter chainage for link starting point"
-#~ msgstr "Hatama estasaun ba linha nia pontu komesa"
-
-#, fuzzy
-#~| msgid "Link Length"
-#~ msgid "Link Length (Km)"
-#~ msgstr "Naruk Estasaun"
-
-#, fuzzy
-#~| msgid "Enter road link length (in Km)"
-#~ msgid "Enter road link length"
-#~ msgstr "Hatama linha estrada nia naruk (iha Km) "
-
-#~ msgid "Surface Type"
-#~ msgstr "Tipu Pavimentu"
-
-#~ msgid "Choose the type of surface of the road link carriageway"
-#~ msgstr "Hili tipu pavimentu linha estrada nia carriageway "
-
-#~ msgid "Pavement Class"
-#~ msgstr "Klase Pavimentu "
-
-#~ msgid "Choose the pavement class of the road"
-#~ msgstr "Hili klase pavimentu husi estrada"
-
-#, fuzzy
-#~| msgid "Carriageway Width"
-#~ msgid "Carriageway Width (m)"
-#~ msgstr "Carriageaway nia luan"
-
-#, fuzzy
-#~| msgid "Enter the width (in meters) of the link carriageway"
-#~ msgid "Enter the width of the link carriageway"
-#~ msgstr "Hatama luan (iha metru) husi linha Carriageaway"
-
-#, fuzzy
-#~| msgid "Road Status"
-#~ msgid "Road Class"
-#~ msgstr "Estatutu Estrada"
-
-#, fuzzy
-#~| msgid "Choose the pavement class of the road"
-#~ msgid "Choose the road class"
-#~ msgstr "Hili klase pavimentu husi estrada"
-
-#~ msgid "Road Status"
-#~ msgstr "Estatutu Estrada"
-
-#~ msgid "Enter road link current status"
-#~ msgstr "Hatama linha estrada nia estatutu atual"
-
-#~ msgid "Project Name"
-#~ msgstr "Naran Projetu"
-
-#~ msgid "Enter road link project name"
-#~ msgstr "Hatama naran projetu linha estrada"
-
 #~ msgid "Traffic Level"
 #~ msgstr "Nivel Trafiku"
-
-#~ msgid "Choose the traffic volume for the road link"
-#~ msgstr "Hili volume trafiku ba linha estrada"
-
-#~ msgid "Surface Condition (SDI)"
-#~ msgstr "Kondisaun Surface (SDI)"
-
-#~ msgid "Choose road link surface condition according to the Surface Distress Index (SDI): Good (SDI<=2), fair (2<SDI<=3), poor (3<SDI<=4) or bad (SDI>4)"
-#~ msgstr "Hili linha estrada nia kondisaun surface tuir Surface Distress Index "
-
-#~ msgid "Maintenance Needs"
-#~ msgstr "Persija Manutensaun "
-
-#~ msgid "Choose the type of maintenace needs for the road link"
-#~ msgstr "Hili tipu manutensaun nebe persija ba linha estrada "
-
-#~ msgid "Technical Class"
-#~ msgstr "Klase Tekniku "
-
-#~ msgid "Choose road link technical class according to the 2010 Road Geometric Design Standards, DRBFC standards"
-#~ msgstr "Hili linha estrada nia klase tekniku tuir Padraun Dezenhu Geometriku Estrada 2010 "
-
-#, fuzzy
-#~| msgid "Enter the source funding for the road link"
-#~ msgid "Enter the number of lanes of the road"
-#~ msgstr "Hatama fontes orsamentu ba linha estrada"
-
-#~ msgid "Road Inventory"
-#~ msgstr "Inventoriu Estrada "
-
-#~ msgid "Export all"
-#~ msgstr "Esporta hotu "
-
-#~ msgid "Select data"
-#~ msgstr "Hili dadus "
-
-#~ msgid "Road Inventory Data"
-#~ msgstr "Dadus Inventoriu Estrada"
-
-#~ msgid "Road code"
-#~ msgstr "Kodigu estrada"
-
-#~ msgid "Road name"
-#~ msgstr "Naran Estrada"
-
-#~ msgid "Link code"
-#~ msgstr "Kodigu linha"
-
-#~ msgid "Link name"
-#~ msgstr "Naran linha"
-
-#~ msgid "Link Length"
-#~ msgstr "Naruk Estasaun"
-
-#~ msgid "Link start name"
-#~ msgstr "Naran linha komesa"
-
-#~ msgid "Link start chainage"
-#~ msgstr "Linha estasaun komesa"
-
-#~ msgid "Link end name"
-#~ msgstr "Naran linha ikus "
-
-#~ msgid "Link end chainage"
-#~ msgstr "Linha estasaun ikus"
-
-#~ msgid "Surface type"
-#~ msgstr "Tipu superfície"
-
-#~ msgid "Pavement class"
-#~ msgstr "klase pavimentu"
-
-#~ msgid "Carriageway width"
-#~ msgstr "Luan carriageway "
 
 #, fuzzy
 #~| msgid "Road Status"
 #~ msgid "Road class"
 #~ msgstr "Estatutu Estrada"
-
-#~ msgid "Technical class"
-#~ msgstr "Klase tekniku"
-
-#~ msgid "Funding source"
-#~ msgstr "Fontes orsamentu"
-
-#~ msgid "Road status"
-#~ msgstr "Estatutu estrada "
-
-#~ msgid "Project"
-#~ msgstr "Projetu "
-
-#~ msgid "Start Point - DMS"
-#~ msgstr "Pontu Komesa - DMS"
-
-#~ msgid "End Point - DMS"
-#~ msgstr "Pontu Ikus - DMS"
-
-#~ msgid "Start Point - UTM"
-#~ msgstr "Pontu Komesa - UTM"
-
-#~ msgid "End Point - UTM"
-#~ msgstr "Pontu Ikus - UTM"
-
-#~ msgid "Road Condition Data"
-#~ msgstr "Dadus Kondisaun Estrada"
-
-#~ msgid "Surface condition"
-#~ msgstr "Kondisaun superfície"
-
-#~ msgid "Maintenance needs"
-#~ msgstr "Persija manutensaun"
-
-#~ msgid "Traffic data"
-#~ msgstr "Dadus trafiku"
-
-#~ msgid "Return to default selection"
-#~ msgstr "Fila fali ba selesaun padraun "
-
-#~ msgid "View"
-#~ msgstr "Visualizasaun"
-
-#~ msgid "Fullscreen view"
-#~ msgstr "Visualizasaun Kompletu"
-
-#~ msgid "Map & Table"
-#~ msgstr "Mapa & Tabela"
-
-#~ msgid "Map"
-#~ msgstr "Mapa"
-
-#~ msgid "Table"
-#~ msgstr "Tabela"
-
-#~ msgid "Filters"
-#~ msgstr "Filtru"
-
-#~ msgid "Clear all filters"
-#~ msgstr "Hamos filtru hotu"
-
-#~ msgid "Location"
-#~ msgstr "Fatin"
-
-#~ msgid "Clear"
-#~ msgstr "Hamos"
-
-#~ msgid "Asset"
-#~ msgstr "Sasan (aset)"
-
-#~ msgid "Asset condition"
-#~ msgstr "Kondisaun sasan/aset"
 
 #~ msgid "Link End Chainage (Km)"
 #~ msgstr "Linha Estasaun Ikus (Km)"
@@ -509,15 +909,6 @@ msgstr "Haruka"
 
 #~ msgid "Administrative Area"
 #~ msgstr "Area Administrativu "
-
-#~ msgid "Choose the administrative area of the road"
-#~ msgstr "Hili area administrativu husi estrada ne"
-
-#~ msgid "Road Type"
-#~ msgstr "Typu Estrada"
-
-#~ msgid "Choose the administrative class of the road"
-#~ msgstr "Hili klase administrativa husi estrada"
 
 #~ msgid "Administrative area"
 #~ msgstr "Area administrativu "

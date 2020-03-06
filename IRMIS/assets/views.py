@@ -13,6 +13,7 @@ from django.shortcuts import get_object_or_404
 from django.http import (
     HttpResponse,
     HttpResponseForbidden,
+    HttpResponseBadRequest,
     JsonResponse,
     HttpResponseNotFound,
 )
@@ -25,7 +26,7 @@ from django.db.models import Value, CharField, OuterRef, Subquery
 from django.db.models.functions import Cast, Substr
 
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.exceptions import MethodNotAllowed, ValidationError
+from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
@@ -151,7 +152,11 @@ def road_update(request):
         "link_end_chainage",
         "link_length",
         "carriageway_width",
+        "total_width",
         "number_lanes",
+        "population",
+        # `core` is a nullable boolean
+        "core",
     ]
     fks = [
         (MaintenanceNeed, "maintenance_need"),
@@ -414,8 +419,8 @@ def protobuf_reports(request):
 
     # Ensure a minimum set of filters have been provided
     if len(primary_attributes) == 0:
-        raise ValidationError(
-            _("'primaryattribute' must contain at least one reportable attribute")
+        return HttpResponseBadRequest(
+            "primaryattribute must contain at least one reportable attribute"
         )
 
     # handle all of the id, code and asset_class permutations
@@ -1243,7 +1248,7 @@ def protobuf_photos(request, pk):
         return HttpResponse(status=405)
 
     # check there's a model instance to attach this photo to
-    prefix, django_pk, mapping = get_mapping(pk)
+    prefix, django_pk, mapping = get_asset_mapping(pk)
     linked_obj = get_object_or_404(mapping["model"].objects.filter(pk=django_pk))
     content_type = ContentType.objects.get_for_model(linked_obj)
 
@@ -1274,7 +1279,7 @@ def photo_create(request):
 
     if request.POST["fk_link"] and request.POST["fk_link"] not in ["", "undefined"]:
         # check there's a model instance to attach this photo to
-        prefix, django_pk, mapping = get_mapping(request.POST["fk_link"])
+        prefix, django_pk, mapping = get_asset_mapping(request.POST["fk_link"])
 
         linked_obj = get_object_or_404(mapping["model"].objects.filter(pk=django_pk))
         data["object_id"] = linked_obj.id
@@ -1322,15 +1327,15 @@ def photo_update(request):
 
         if req_pb.fk_link:
             # check there's a model instance to attach this photo to
-            prefix, django_pk, mapping = get_mapping(req_pb.fk_link)
+            prefix, django_pk, mapping = get_asset_mapping(req_pb.fk_link)
 
             linked_obj = get_object_or_404(
                 mapping["model"].objects.filter(pk=django_pk)
             )
-            data["object_id"] = linked_obj.id
+            photo.object_id = linked_obj.id
 
             content_type = ContentType.objects.get_for_model(linked_obj)
-            data["content_type"] = content_type
+            photo.content_type = content_type
 
         with reversion.create_revision():
             photo.save()

@@ -4,7 +4,7 @@ import { currentFilter } from "./side_menu";
 
 /** Define the general events that the main tables will respond to
  *
- * Note that the passed in values `pendingRoads` / `pendingStructures` and `idWhiteListMap`
+ * Note that the passed in values 'pendingRoads' / 'pendingStructures' and 'idWhiteListMap'
  * are carefully updated (as opposed to simply reassigned).
  * This ensures that their 'update' is visible to the 'outside'.
  */
@@ -54,14 +54,14 @@ export const estradaStructureTableEventListeners = {
 // Common event handling functionality
 /* These are the general events that the main tables will respond to
  *
- * Note that the passed in values `pendingRoads` / `pendingStructures` and `idWhiteListMap`
+ * Note that the passed in values 'pendingRoads' / 'pendingStructures' and 'idWhiteListMap'
  * are carefully updated (as opposed to simply reassigned).
  * This ensures that their 'update' is visible to the 'outside'.
  */
 
 function eventTableAssetMetaDataUpdated(data, table) {
     const asset = data.detail.asset;
-    table.row(`#${asset.id}`).data(asset).draw();
+    table.row('#' + asset.id).data(asset).draw();
 }
 
 /** When a filter is applied, update the filter id whitelist */
@@ -178,6 +178,16 @@ export const estradaTableColumns = [
         orderable: false,
     },
     {
+        // note: `total_width` is NOT actually part of EstradaRoad,
+        // but EstradaRoad.getFieldName explicitly supports it
+        title: EstradaRoad.getFieldName("total_width"),
+        data: null,
+        defaultContent: "",
+        render: r => buttonSegmentsTemplate("total_width", r),
+        orderable: false,
+        visible: false,
+    },
+    {
         title: EstradaRoad.getFieldName("administrative_area"),
         data: "administrativeArea",
         defaultContent: "",
@@ -212,6 +222,24 @@ export const estradaTableColumns = [
     {
         title: EstradaRoad.getFieldName("project"),
         data: "project",
+        defaultContent: "",
+        visible: false,
+    },
+    {
+        title: EstradaRoad.getFieldName("population"),
+        data: "population",
+        defaultContent: "",
+        visible: false,
+    },
+    {
+        title: EstradaRoad.getFieldName("construction_year"),
+        data: "constructionYear",
+        defaultContent: "",
+        visible: false,
+    },
+    {
+        title: EstradaRoad.getFieldName("core"),
+        data: "core",
         defaultContent: "",
         visible: false,
     },
@@ -485,9 +513,8 @@ function buttonSegmentsTemplate(attrib, asset) {
     const assetStructureType = detectStructure(asset);
     const assetType = !assetStructureType
         ? currentFilter.assetType === "ROAD" ? "ROAD" : "STRC"
-        : ["BRDG"].includes(assetStructureType) ? "BRDG" : "CULV";
+        : ["ROAD", "BRDG", "CULV"].includes(assetStructureType) ? assetStructureType : "ROAD";
 
-    const code = (assetType === "ROAD") ? asset.linkCode : asset.structureCode;
     let getFieldName = (attrib) => (attrib);
     switch (assetType) {
         case "ROAD":
@@ -503,9 +530,14 @@ function buttonSegmentsTemplate(attrib, asset) {
             break;
     }
 
-    return `<a data-toggle="modal"
-        data-target="#inventory-segments-modal"
-        data-code="${asset.code}"
-        data-id="${asset.id}"
-        data-attr="${attrib}">${window.gettext("View")} ${getFieldName(attrib)}</a>`;
+    // the template is assembled in this way because gettext_collected can't handle
+    // real strings "" or '', or angle brackets <> inside template strings ''
+    const data_toggle = ' data-toggle="modal"';
+    const data_target = ' data-target="#inventory-segments-modal"';
+    const data_code = ' data-code="' + asset.code + '"';
+    const data_id = ' data-id="' + asset.id + '"';
+    const data_attr = ' data-attr="' + attrib + '"';
+    const viewTitle = window.gettext("View") + " " + getFieldName(attrib);
+
+    return "<a" + data_toggle + data_target + data_code + data_id + data_attr + ">" + viewTitle + "</a>";
 }

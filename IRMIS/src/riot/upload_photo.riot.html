@@ -56,10 +56,9 @@
 
                 this.update();
             },
-            updatePhoto(description) {
+            updatePhoto() {
                 putPhotoData(this.state.photo)
                     .then((data) => {
-                        this.state.photo.setDescription(description);
                         this.props.showFeedback();
                     }).catch((err) => {
                         this.props.showFeedback(true);
@@ -79,9 +78,10 @@
                     });
             },
             updateDescription(e) {
-                const description = e.currentTarget.value;
+                const description = e.currentTarget.value.trim();
                 if (description != "" && this.state.photo.description != description) {
-                    this.updatePhoto(description);
+                    this.state.photo.setDescription(description);
+                    this.updatePhoto();
                 }
             },
         }

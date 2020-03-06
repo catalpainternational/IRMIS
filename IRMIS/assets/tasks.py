@@ -24,6 +24,7 @@ from .models import (
     SurfaceType,
     MaintenanceNeed,
 )
+from basemap.models import Municipality
 
 SURFACE_COND_MAPPING_MUNI = {"G": "1", "F": "2", "P": "3", "VP": "4"}
 SURFACE_COND_MAPPING_RRMPIS = {"Good": "1", "Fair": "2", "Poor": "3", "Bad": "4"}
@@ -55,7 +56,7 @@ TRAFFIC_LEVEL_MAPPING_EXCEL = {"Low": "L", "Medium": "M", "High": "H"}
 # IMPORT FROM SHAPEFILES
 
 
-def update_from_shapefiles(shape_file_folder):
+def update_from_shapefiles(management_command, shape_file_folder):
 
     # set all roads to core = True
     Road.objects.all().update(core=True)
@@ -77,7 +78,11 @@ def update_from_shapefiles(shape_file_folder):
                 road = Road.objects.exclude(pk=4332).get(geom=feature.geom.geos)
             except GDALException as ex:
                 # print and continue if we have a invalid geometry
-                print("GDAL Exception - ignoring", feature.fid, "from", shp_path)
+                management_command.stderr.write(
+                    management_command.style.NOTICE(
+                        "GDAL Exception - ignoring %s from %s" % (feature.fid, shp_path)
+                    )
+                )
                 continue
 
             # update the road from shapefile properties
@@ -91,10 +96,14 @@ def update_from_shapefiles(shape_file_folder):
                     "updated - {} - feature id({})".format(file_name, feature.fid)
                 )
 
-    print("updated", Road.objects.all().count(), "roads")
+    management_command.stdout.write(
+        management_command.style.SUCCESS(
+            "updated %s roads" % Road.objects.all().count()
+        )
+    )
 
 
-def import_shapefiles(shape_file_folder, asset="road"):
+def import_shapefiles(management_command, shape_file_folder, asset="road"):
     """ creates Road models from source shapefiles """
 
     if asset == "road":
@@ -133,7 +142,9 @@ def import_shapefiles(shape_file_folder, asset="road"):
         # no sources for culverts...yet
         sources = ()
     else:
-        print("No or bad asset argument given!")
+        management_command.stderr.write(
+            management_command.style.ERROR("No asset or bad asset argument given!")
+        )
         exit(0)
 
     for file_name, asset_class, populate in sources:
@@ -146,23 +157,28 @@ def import_shapefiles(shape_file_folder, asset="road"):
                 if asset == "road":
                     # check the geometry is a multiline string and convert it if it is not
                     if isinstance(feature.geom.geos, LineString):
-                        print("LineString - converting to MultiLineString")
                         geom = MultiLineString(feature.geom.geos)
                     elif isinstance(feature.geom.geos, MultiLineString):
-                        print("MultiLineString - using as is")
                         geom = feature.geom.geos
                 else:
                     # structure's geometry should be a Point
                     if isinstance(feature.geom.geos, Point):
-                        print("Point - using as is")
                         point = feature.geom.clone()
                         point.coord_dim = 2
                         geom = point.geos
                     else:
-                        print("Not a Point geom - skipping")
+                        management_command.stderr.write(
+                            management_command.style.NOTICE(
+                                "Not a Point geom - skipping"
+                            )
+                        )
             except GDALException as ex:
                 # print and continue if we have a invalid geometry
-                print("GDAL Exception - ignoring", feature.fid, "from", shp_path)
+                management_command.stderr.write(
+                    management_command.style.NOTICE(
+                        "GDAL Exception - ignoring %s from %s" % (feature.fid, shp_path)
+                    )
+                )
                 continue
 
             # convert the geometry to the database srid
@@ -189,17 +205,64 @@ def import_shapefiles(shape_file_folder, asset="road"):
                 )
 
     if asset == "road":
-        print("imported", Road.objects.all().count(), "roads")
+        set_unknown_road_codes()
+        set_road_municipalities()
+        collate_geometries(asset)
+        management_command.stdout.write(
+            management_command.style.SUCCESS(
+                "imported %s roads" % Road.objects.all().count()
+            )
+        )
+        management_command.stdout.write(
+            management_command.style.NOTICE(
+                "Please run `import_csv` to complete road data import"
+            )
+        )
     elif asset == "bridge":
-        print("imported", Bridge.objects.all().count(), "bridges")
+        set_structure_municipalities(asset)
+        collate_geometries(asset)
+        management_command.stdout.write(
+            management_command.style.SUCCESS(
+                "imported %s bridges" % Bridge.objects.all().count()
+            )
+        )
+        management_command.stdout.write(
+            management_command.style.NOTICE(
+                "Please run `set_bridge_fields` to complete bridge data import"
+            )
+        )
     elif asset == "culvert":
-        print("imported", Culvert.objects.all().count(), "culverts")
+        set_structure_municipalities(asset)
+        collate_geometries(asset)
+        management_command.stdout.write(
+            management_command.style.SUCCESS(
+                "imported %s culverts" % Culvert.objects.all().count()
+            )
+        )
 
 
 def populate_bridge(bridge, feature):
     """ populates a bridge from the shapefile """
+    had_bad_area = False
+
     bridge.structure_name = feature.get("nam")
-    bridge.administrative_area = feature.get("sheet_name")
+    # we need to map sheet_name to the administrative area Id (instead of its name)
+    area_name = feature.get("sheet_name").upper()
+    if area_name:
+        try:
+            municipality = Municipality.objects.get(name=area_name)
+        except Municipality.DoesNotExist:
+            municipality = None
+        if municipality:
+            bridge.administrative_area = municipality.id
+        else:
+            # Couldn't match administrative area, but we'll take what we can get
+            bridge.administrative_area = area_name
+            had_bad_area = True
+    else:
+        had_bad_area = True
+
+    return had_bad_area
 
 
 def populate_road_national(road, feature):
@@ -276,7 +339,7 @@ def populate_road_rrpmis(road, feature):
 
 
 # CSV IMPORT
-def import_csv(csv_folder):
+def import_csv(management_command, csv_folder):
     """ updates existing roads with data from csv files """
 
     # special fixups
@@ -323,7 +386,11 @@ def import_csv(csv_folder):
                     }
                     road = Road.objects.get(**filters)
                 except Road.DoesNotExist:
-                    print("Ignoring row - no road found for {}".format(filters))
+                    management_command.stderr.write(
+                        management_command.style.NOTICE(
+                            "Ignoring row - no road found for {}".format(filters)
+                        )
+                    )
                     continue
 
                 populate_from_csv(road, row)
@@ -373,22 +440,24 @@ def decimal_from_chainage(chainage):
     return int(chainage.replace("+", ""))
 
 
-def collate_geometries():
+def collate_geometries(asset="all"):
     """ Collate geometry models into geobuf files
 
     Groups geometry models into sets, builds GeoJson, encodes to geobuf
     Saves the files and adds foreign key links to the original geometry models
     """
 
-    geometry_sets = dict(
-        highway=Road.objects.filter(asset_class="HIGH"),
-        national=Road.objects.filter(asset_class="NAT"),
-        municipal=Road.objects.filter(asset_class="MUN"),
-        urban=Road.objects.filter(asset_class="URB"),
-        rural=Road.objects.filter(asset_class="RUR"),
-        bridge=Bridge.objects.all(),
-        culvert=Culvert.objects.all(),
-    )
+    geometry_sets = {}
+    if asset == "all" or asset == "road":
+        geometry_sets["highway"] = Road.objects.filter(asset_class="HIGH")
+        geometry_sets["national"] = Road.objects.filter(asset_class="NAT")
+        geometry_sets["municipal"] = Road.objects.filter(asset_class="MUN")
+        geometry_sets["urban"] = Road.objects.filter(asset_class="URB")
+        geometry_sets["rural"] = Road.objects.filter(asset_class="RUR")
+    if asset == "all" or asset == "bridge":
+        geometry_sets["bridge"] = Bridge.objects.all()
+    if asset == "all" or asset == "culvert":
+        geometry_sets["culvert"] = Culvert.objects.all()
 
     for key, geometry_set in geometry_sets.items():
         collated_geojson, created = CollatedGeoJsonFile.objects.get_or_create(key=key)
@@ -431,17 +500,21 @@ def set_unknown_road_codes():
 def set_road_municipalities():
     with connection.cursor() as cursor:
         # Two roads with centroids in the sea!
+        coastal_pks = []
         coastal_1 = Road.objects.filter(link_code="A03-03").all()
         if len(coastal_1) > 0:
-            coastal_1.administrative_area = 4
+            coastal_pks.extend(coastal_1.values_list("id", flat=True))
             with reversion.create_revision():
-                coastal_1.save()
+                coastal_1.administrative_area = "4"
+                coastal_1.update()
                 reversion.set_comment("Administrative area set from geometry")
-        coastal_2 = Road.objects.get(road_code="C09")
-        coastal_2.administrative_area = 6
-        with reversion.create_revision():
-            coastal_2.save()
-            reversion.set_comment("Administrative area set from geometry")
+        coastal_2 = Road.objects.filter(road_code="C09").all()
+        if len(coastal_2) > 0:
+            coastal_pks.extend(coastal_2.values_list("id", flat=True))
+            with reversion.create_revision():
+                coastal_2.administrative_area = "6"
+                coastal_2.update()
+                reversion.set_comment("Administrative area set from geometry")
 
         # all the other roads
         cursor.execute(
@@ -451,11 +524,11 @@ def set_road_municipalities():
             row = cursor.fetchone()
             if row is None:
                 break
-            if (len(coastal_1) and row[0] == coastal_1.pk) or row[0] == coastal_2.pk:
+            if len(coastal_pks) > 0 and row[0] in coastal_pks:
                 continue
-            road = Road.objects.get(pk=row[0])
-            road.administrative_area = row[1]
             with reversion.create_revision():
+                road = Road.objects.get(pk=row[0])
+                road.administrative_area = row[1]
                 road.save()
                 reversion.set_comment("Administrative area set from geometry")
 
@@ -477,8 +550,8 @@ def set_structure_municipalities(structure_type):
             row = cursor.fetchone()
             if row is None:
                 break
-            structure = structure_model.objects.get(pk=row[0])
-            structure.administrative_area = row[1]
             with reversion.create_revision():
+                structure = structure_model.objects.get(pk=row[0])
+                structure.administrative_area = row[1]
                 structure.save()
                 reversion.set_comment("Administrative area set from geometry")

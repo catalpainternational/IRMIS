@@ -330,6 +330,34 @@ class Asset:
     ]
 
 
+def prepare_protobuf_nullable_float(raw_value):
+    nullable = -1.0
+    if raw_value is not None:
+        if isinstance(raw_value, str):
+            if raw_value.isnumeric():
+                nullable = float(raw_value)
+        elif isinstance(raw_value, bool):
+            nullable = 1.0 if raw_value else 0.0
+        else:
+            nullable = raw_value
+
+    return nullable
+
+
+def prepare_protobuf_nullable_int(raw_value):
+    nullable = -1
+    if raw_value is not None:
+        if isinstance(raw_value, str):
+            if raw_value.isnumeric():
+                nullable = float(raw_value)
+        elif isinstance(raw_value, bool):
+            nullable = 1 if raw_value else 0
+        else:
+            nullable = raw_value
+
+    return nullable
+
+
 class RoadQuerySet(models.QuerySet):
     def to_chunks(self):
         """ returns an object defining the available chunks from the roads queryset """
@@ -364,57 +392,85 @@ class RoadQuerySet(models.QuerySet):
             maintenance_need="maintenance_need__code",
             traffic_level="traffic_level",
         )
-        numeric_fields = dict(
+        float_fields = dict(
             link_start_chainage="link_start_chainage",
             link_end_chainage="link_end_chainage",
             link_length="link_length",
             carriageway_width="carriageway_width",
+            # total_width comes from the survey
+        )
+        int_fields = dict(
             number_lanes="number_lanes",
             rainfall="rainfall",
+            population="population",
+            construction_year="construction_year",
+            # `core` is a nullable boolean
+            core="core",
         )
 
+        asset_type = "ROAD"
         survey = (
-            Survey.objects.filter(asset_id__startswith="ROAD-")
-            .annotate(parent_id=Cast(Substr("road_id", 6), models.IntegerField()))
+            Survey.objects.filter(
+                asset_id__startswith="%s-" % asset_type, values__has_key="total_width"
+            )
+            .annotate(parent_id=Cast(Substr("asset_id", 6), models.IntegerField()))
             .filter(parent_id=OuterRef("id"))
             .order_by("-date_surveyed")
         )
         annotations = start_end_point_annos("geom")
-        # Add stuff from the survey to the annotations above
-        # some_survey_value=Subquery(survey.values("values__some_survey_value")[:1]),
+        photos_prefetch = Prefetch(
+            "photos", queryset=Photo.objects.filter(road__id__in=self.values("id"))
+        )
         roads = (
             self.order_by("id")
-            .annotate(**annotations)
-            .values(
-                "id", *regular_fields.values(), *numeric_fields.values(), *annotations
+            .annotate(
+                **annotations,
+                total_width=Subquery(survey.values("values__total_width")[:1])
             )
+            .prefetch_related(photos_prefetch)
         )
 
         for road in roads:
             road_protobuf = roads_protobuf.roads.add()
-            road_protobuf.id = road["id"]
+            road_protobuf.id = road.id
 
             for protobuf_key, query_key in regular_fields.items():
-                if road[query_key]:
-                    setattr(road_protobuf, protobuf_key, road[query_key])
+                if getattr(road, query_key, None):
+                    setattr(road_protobuf, protobuf_key, getattr(road, query_key, None))
 
-            for protobuf_key, query_key in numeric_fields.items():
-                raw_value = road.get(query_key)
-                if raw_value is not None:
-                    setattr(road_protobuf, protobuf_key, raw_value)
-                else:
-                    # No value available, so use -ve as a substitute for None
-                    setattr(road_protobuf, protobuf_key, -1)
+            for protobuf_key, query_key in float_fields.items():
+                nullable_value = prepare_protobuf_nullable_float(
+                    getattr(road, query_key, None)
+                )
+                setattr(road_protobuf, protobuf_key, nullable_value)
+
+            for protobuf_key, query_key in int_fields.items():
+                nullable_value = prepare_protobuf_nullable_int(
+                    getattr(road, query_key, None)
+                )
+                setattr(road_protobuf, protobuf_key, nullable_value)
+
+            # Add the total_width from the survey
+            if getattr(road, "total_width", None):
+                nullable_value = prepare_protobuf_nullable_float(
+                    getattr(road, "total_width", None)
+                )
+                setattr(road_protobuf, "total_width", nullable_value)
 
             # set Protobuf with with start/end projection points
-            start = Projection(x=road["start_x"], y=road["start_y"])
-            end = Projection(x=road["end_x"], y=road["end_y"])
+            start = Projection(x=road.start_x, y=road.start_y)
+            end = Projection(x=road.end_x, y=road.end_y)
             road_protobuf.projection_start.CopyFrom(start)
             road_protobuf.projection_end.CopyFrom(end)
 
-            # add stuff from the survey here
-            # if road["some_survey_value"]:
-            #     road_protobuf.some_survey_value = road["some_survey_value"]
+            photos = road.photos.all()
+            for photo in photos:
+                photo_protobuf = road_protobuf.photos.add()
+                setattr(photo_protobuf, "id", photo.id)
+                setattr(photo_protobuf, "url", photo.file.url)
+                setattr(photo_protobuf, "fk_link", "ROAD-" + str(photo.object_id))
+                if photo.description:
+                    setattr(photo_protobuf, "description", photo.description)
 
         return roads_protobuf
 
@@ -659,6 +715,9 @@ class Road(models.Model):
         null=True,
         help_text=_("Set the size of population served by this road"),
     )
+    construction_year = models.IntegerField(
+        verbose_name=_("Road Construction Year"), blank=True, null=True
+    )
     terrain_class = models.PositiveSmallIntegerField(
         verbose_name=_("Terrain class"),
         null=True,
@@ -710,7 +769,12 @@ class StructureProtectionType(models.Model):
 
 
 def get_structures_with_survey_data(
-    self_structure, asset_type, regular_fields, datetime_fields, numeric_fields
+    self_structure,
+    asset_type,
+    regular_fields,
+    datetime_fields,
+    float_fields,
+    int_fields,
 ):
     """ Get the structures (Bridges or Culverts) with the survey data that we're interested in"""
 
@@ -722,6 +786,18 @@ def get_structures_with_survey_data(
         .filter(parent_id=OuterRef("id"))
         .order_by("-date_surveyed")
     )
+
+    if asset_type == "BRDG":
+        photos_prefetch = Prefetch(
+            "photos",
+            queryset=Photo.objects.filter(bridge__id__in=self_structure.values("id")),
+        )
+    elif asset_type == "CULV":
+        photos_prefetch = Prefetch(
+            "photos",
+            queryset=Photo.objects.filter(culvert__id__in=self_structure.values("id")),
+        )
+
     structures = (
         self_structure.order_by("id")
         .annotate(
@@ -738,7 +814,7 @@ def get_structures_with_survey_data(
 
 
 def structure_to_protobuf(
-    structure, structure_protobuf, asset_type, regular_fields, numeric_fields
+    structure, structure_protobuf, asset_type, regular_fields, float_fields, int_fields
 ):
     """ Take an individual structure (Bridge or Culvert)
     and use it to fill in an empty corresponding protobuf object """
@@ -765,13 +841,17 @@ def structure_to_protobuf(
             else:
                 setattr(structure_protobuf, protobuf_key, attr)
 
-    for protobuf_key, query_key in numeric_fields.items():
-        raw_value = getattr(structure, query_key, None)
-        if raw_value is not None:
-            setattr(structure_protobuf, protobuf_key, raw_value)
-        else:
-            # No value available, so use -ve as a substitute for None
-            setattr(structure_protobuf, protobuf_key, -1)
+    for protobuf_key, query_key in float_fields.items():
+        nullable_value = prepare_protobuf_nullable_float(
+            getattr(structure, query_key, None)
+        )
+        setattr(structure_protobuf, protobuf_key, nullable_value)
+
+    for protobuf_key, query_key in int_fields.items():
+        nullable_value = prepare_protobuf_nullable_int(
+            getattr(structure, query_key, None)
+        )
+        setattr(structure_protobuf, protobuf_key, nullable_value)
 
     if getattr(structure, "date_created", None):
         ts = timestamp_from_datetime(structure.date_created)
@@ -795,7 +875,7 @@ def structure_to_protobuf(
         )
 
     for photo in structure.photos.all():
-        photo_protobuf = bridge_protobuf.photos.add()
+        photo_protobuf = structure_protobuf.photos.add()
         setattr(photo_protobuf, "id", photo.id)
         setattr(photo_protobuf, "url", photo.file.url)
         setattr(photo_protobuf, "fk_link", structure_id)
@@ -843,18 +923,20 @@ class BridgeQuerySet(models.QuerySet):
             date_created="date_created", last_modified="last_modified",
         )
 
-        numeric_fields = dict(
+        float_fields = dict(
             length="length",
             width="width",
             chainage="chainage",
-            number_spans="number_spans",
             span_length="span_length",
-            construction_year="construction_year",
+        )
+
+        int_fields = dict(
+            number_spans="number_spans", construction_year="construction_year",
         )
 
         asset_type = "BRDG"
         structures = get_structures_with_survey_data(
-            self, asset_type, regular_fields, datetime_fields, numeric_fields
+            self, asset_type, regular_fields, datetime_fields, float_fields, int_fields
         )
 
         for structure in structures:
@@ -864,7 +946,8 @@ class BridgeQuerySet(models.QuerySet):
                 structure_protobuf,
                 asset_type,
                 regular_fields,
-                numeric_fields,
+                float_fields,
+                int_fields,
             )
 
         return structures_protobuf
@@ -1075,18 +1158,17 @@ class CulvertQuerySet(models.QuerySet):
             date_created="date_created", last_modified="last_modified",
         )
 
-        numeric_fields = dict(
-            length="length",
-            width="width",
-            chainage="chainage",
-            construction_year="construction_year",
-            height="height",
-            number_cells="number_cells",
+        float_fields = dict(
+            length="length", width="width", chainage="chainage", height="height",
+        )
+
+        int_fields = dict(
+            construction_year="construction_year", number_cells="number_cells",
         )
 
         asset_type = "CULV"
         structures = get_structures_with_survey_data(
-            self, asset_type, regular_fields, datetime_fields, numeric_fields
+            self, asset_type, regular_fields, datetime_fields, float_fields, int_fields
         )
 
         for structure in structures:

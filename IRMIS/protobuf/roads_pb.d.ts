@@ -2,6 +2,7 @@
 // file: roads.proto
 
 import * as jspb from "google-protobuf";
+import * as photo_pb from "./photo_pb";
 
 export class Projection extends jspb.Message {
   getX(): number;
@@ -76,6 +77,9 @@ export class Road extends jspb.Message {
   getCarriagewayWidth(): number;
   setCarriagewayWidth(value: number): void;
 
+  getTotalWidth(): number;
+  setTotalWidth(value: number): void;
+
   getAdministrativeArea(): string;
   setAdministrativeArea(value: string): void;
 
@@ -110,6 +114,20 @@ export class Road extends jspb.Message {
   getRainfall(): number;
   setRainfall(value: number): void;
 
+  getConstructionYear(): number;
+  setConstructionYear(value: number): void;
+
+  getPopulation(): number;
+  setPopulation(value: number): void;
+
+  getCore(): number;
+  setCore(value: number): void;
+
+  clearPhotosList(): void;
+  getPhotosList(): Array<photo_pb.Photo>;
+  setPhotosList(value: Array<photo_pb.Photo>): void;
+  addPhotos(value?: photo_pb.Photo, index?: number): photo_pb.Photo;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Road.AsObject;
   static toObject(includeInstance: boolean, msg: Road): Road.AsObject;
@@ -138,6 +156,7 @@ export namespace Road {
     assetCondition: string,
     pavementClass: string,
     carriagewayWidth: number,
+    totalWidth: number,
     administrativeArea: string,
     project: string,
     fundingSource: string,
@@ -148,6 +167,10 @@ export namespace Road {
     projectionEnd?: Projection.AsObject,
     numberLanes: number,
     rainfall: number,
+    constructionYear: number,
+    population: number,
+    core: number,
+    photosList: Array<photo_pb.Photo.AsObject>,
   }
 }
 

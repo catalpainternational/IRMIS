@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-27 05:43+0000\n"
+"POT-Creation-Date: 2020-03-05 01:57+0000\n"
 "PO-Revision-Date: 2019-10-11 00:57+0000\n"
 "Last-Translator: b'  <juliana@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -645,9 +645,9 @@ msgid "Municipality"
 msgstr ""
 
 #, fuzzy
-#| msgid "Select a Road Type"
-msgid "Road Class"
-msgstr "Seleccione o Tipo de Estrada"
+#| msgid "Asset Details"
+msgid "Asset Class"
+msgstr "Detalhes da infra-estrutura"
 
 msgid "Exported from Estrada on"
 msgstr ""
@@ -657,11 +657,6 @@ msgstr ""
 
 msgid "Total Length of Road Network"
 msgstr ""
-
-#, fuzzy
-#| msgid "Asset Details"
-msgid "Asset Class"
-msgstr "Detalhes da infra-estrutura"
 
 msgid "unknown"
 msgstr ""
@@ -855,20 +850,14 @@ msgid "Pavement Class segments"
 msgstr "Pavimento"
 
 #, fuzzy
-#| msgid "Condition"
-msgid "Structure Condition details"
-msgstr "Condição"
-
-msgid "Condition Description details"
-msgstr ""
-
-#, fuzzy
 #| msgid "Asset"
 msgid "Asset Type"
 msgstr "Infra-estrutura"
 
+#, fuzzy
+#| msgid "Select a Road Type"
 msgid "Code"
-msgstr ""
+msgstr "Seleccione o Tipo de Estrada"
 
 #, fuzzy
 #| msgid "Link Name"
@@ -880,6 +869,31 @@ msgstr "Nome da secção"
 
 #~ msgid "User"
 #~ msgstr "Utilizador"
+
+#, fuzzy
+#~| msgid "Link width and length"
+#~ msgid "Lengths"
+#~ msgstr "Extensão e largura da secção"
+
+#, fuzzy
+#~| msgid "Link chainage"
+#~ msgid "Chainage Start"
+#~ msgstr "Chainage da secção"
+
+#, fuzzy
+#~| msgid "Link chainage"
+#~ msgid "Chainage End"
+#~ msgstr "Chainage da secção"
+
+#, fuzzy
+#~| msgid "Condition"
+#~ msgid "Surface Condition"
+#~ msgstr "Condição"
+
+#, fuzzy
+#~| msgid "Condition"
+#~ msgid "Structure Condition details"
+#~ msgstr "Condição"
 
 #~ msgid "Link start chainage cannot contain more than %s digits, of which %s are decimals"
 #~ msgstr "O valor da chainage não pode conter mais de %s dígitos, dos quais %s saã0 decimais"

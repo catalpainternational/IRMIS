@@ -32,8 +32,11 @@ class ReportQuery:
                 # * material_id and structure_type_id have different meanings for bridge and culvert
                 # * asset_code (relative to a road) may not be set properly and requires special handling
                 "SELECT asset_type_prefix, asset_id, asset_code, asset_name,\n"
-                " geom_chainage, geojson_file,\n"
+                " asset_condition, asset_class,\n"
+                " geom_chainage, municipality,\n"
+                " geojson_file,\n"
                 " geom_length, core,\n"
+                " surface_type,\n"
                 " road_id, road_code\n"
                 "FROM (\n"
                 "SELECT DISTINCT 'ROAD-' AS asset_type_prefix, r.id AS asset_id,\n"
@@ -44,16 +47,22 @@ class ReportQuery:
                 " ELSE NULL\n"
                 " END AS asset_code,\n"
                 " r.road_name AS asset_name,\n"
-                " r.geom_end_chainage AS geom_chainage, r.geojson_file_id AS geojson_file,\n"
+                " r.asset_condition, r.asset_class,\n"
+                " r.geom_end_chainage AS geom_chainage, r.administrative_area AS municipality,\n"
+                " r.geojson_file_id AS geojson_file,\n"
                 " r.geom_length, r.core,\n"
+                " r.surface_type_id AS surface_type,\n"
                 " NULL::INTEGER AS road_id, NULL AS road_code\n"
                 " FROM assets_survey s, assets_road r\n"
                 " WHERE s.asset_id = CONCAT('ROAD-', r.id::text)\n"
                 "UNION\n"
                 "SELECT DISTINCT bc.asset_type_prefix, bc.asset_id,\n"
                 " bc.asset_code, bc.asset_name,\n"
-                " bc.geom_chainage, bc.geojson_file,\n"
+                " bc.asset_condition, bc.asset_class,\n"
+                " bc.geom_chainage, bc.municipality,\n"
+                " bc.geojson_file,\n"
                 " NULL::DECIMAL AS geom_length, NULL::BOOLEAN AS core,\n"
+                " NULL::INTEGER AS surface_type,\n"
                 " CASE\n"
                 "  WHEN COALESCE(bc.road_id, 0) = 0 THEN NULL\n"
                 "  ELSE bc.road_id\n"
@@ -65,7 +74,9 @@ class ReportQuery:
                 " FROM assets_survey s, (\n"
                 "  SELECT 'BRDG-' AS asset_type_prefix, id AS asset_id,\n"
                 "  structure_code AS asset_code, structure_name AS asset_name,\n"
-                "  chainage AS geom_chainage, geojson_file_id AS geojson_file,\n"
+                "  NULL AS asset_condition, asset_class,\n"
+                "  chainage AS geom_chainage, administrative_area AS municipality,\n"
+                "  geojson_file_id AS geojson_file,\n"
                 "  construction_year, length, width,\n"
                 "  NULL::DECIMAL AS height, span_length,\n"
                 "  NULL::INTEGER AS number_cells, number_spans,\n"
@@ -77,7 +88,9 @@ class ReportQuery:
                 "  UNION\n"
                 "  SELECT 'CULV-' AS asset_type_prefix, id AS asset_id,\n"
                 "  structure_code AS asset_code, structure_name AS asset_name,\n"
-                "  chainage AS geom_chainage, geojson_file_id AS geojson_file,\n"
+                "  NULL AS asset_condition, asset_class,\n"
+                "  chainage AS geom_chainage, administrative_area AS municipality,\n"
+                "  geojson_file_id AS geojson_file,\n"
                 "  construction_year, length, width,\n"
                 "  height, NULL::DECIMAL AS span_length,\n"
                 "  number_cells, NULL::INTEGER AS number_spans,\n"
@@ -224,6 +237,12 @@ class ReportQuery:
                 "SELECT r_from, (r_from + 0.9) AS r_to, 'm' AS units\n"
                 " FROM carriageway_width_series\n"
             ),
+            # Max total width bracket is 99.0-99.9 m
+            "total_width_series": "SELECT generate_series(0.0, 99.0, 1.0) AS r_from\n",
+            "total_width_range": (
+                "SELECT r_from, (r_from + 0.9) AS r_to, 'm' AS units\n"
+                " FROM total_width_series\n"
+            ),
             # The "retrieve_" queries are templates for corresponding "get_" queries
             "retrieve_all": "SELECT * FROM final_results\n",
             "retrieve_aggregate_select": (
@@ -249,15 +268,25 @@ class ReportQuery:
                 " ) AS total_length\n"
                 " FROM carriageway_width_range\n"
                 " UNION\n"
+                " SELECT 'total_width' AS attribute,\n"
+                " CONCAT(r_from, '-', r_to, ' ', units) AS value,\n"
+                " (\n"
+                "  SELECT SUM(end_chainage - start_chainage)\n"
+                "  FROM final_results\n"
+                "  WHERE attribute = 'total_width'\n"
+                "  AND CAST(value AS FLOAT) BETWEEN r_from AND r_to\n"
+                " ) AS total_length\n"
+                " FROM total_width_range\n"
+                " UNION\n"
                 " SELECT attribute, value, SUM(end_chainage - start_chainage) AS total_length\n"
                 " FROM final_results\n"
-                " WHERE attribute IN ('rainfall', 'carriageway_width')\n"
+                " WHERE attribute IN ('rainfall', 'carriageway_width', 'total_width')\n"
                 " AND value IS NULL\n"
                 " GROUP BY attribute, value\n"
                 " UNION\n"
                 " SELECT attribute, value, SUM(end_chainage - start_chainage) AS total_length\n"
                 " FROM final_results\n"
-                " WHERE attribute NOT IN ('rainfall', 'carriageway_width')\n"
+                " WHERE attribute NOT IN ('rainfall', 'carriageway_width', 'total_width')\n"
                 " GROUP BY attribute, value\n"
                 ") totals\n"
                 " WHERE total_length IS NOT NULL\n"
@@ -279,8 +308,10 @@ class ReportQuery:
             "asset_class",
             "asset_condition",
             "municipality",
+            "construction_year",
             # Maybe Common from Road
             "carriageway_width",
+            "total_width",
             "funding_source",
             "maintenance_need",
             "number_lanes",
@@ -293,6 +324,8 @@ class ReportQuery:
             "traffic_level",
             # Road Specific
             "technical_class",
+            "population",
+            "core",
             # Structure Specific
             "height",
             "length",
@@ -309,9 +342,8 @@ class ReportQuery:
 
         # Ideally for these asset filters we'd drill down (in time) through the surveys instead
         asset_filters = [
-            # most of the asset.* fields will be mapped from the relevant road.*, bridge.*, culvert.*
-            # in the query above
-            # Mapped fields
+            # road.*, bridge.*, culvert.* have several commonly named fields in the query above
+            # Common fields
             "asset_type_prefix",  # relevant for the query
             "asset_id",
             "asset_code",
@@ -320,9 +352,11 @@ class ReportQuery:
             "asset_class",
             "geom_chainage",
             "municipality",
+            "construction_year",
             "geojson_file",  # this is FK reference
             # Road specific
             "carriageway_width",
+            "total_width",
             "number_lanes",
             "rainfall",
             "terrain_class",
@@ -339,7 +373,6 @@ class ReportQuery:
             "maintenance_need",
             "road_statusn",
             # Structure specific - some are specific to only bridge or only culvert
-            "construction_year",
             "length",
             "width",
             "height",
@@ -463,6 +496,8 @@ class ReportQuery:
         self.add_report_clause("rainfall_range")
         self.add_report_clause("carriageway_width_series")
         self.add_report_clause("carriageway_width_range")
+        self.add_report_clause("total_width_series")
+        self.add_report_clause("total_width_range")
 
         # strip off the final trailling comma
         self.reportSQL = self.reportSQL[:-1]
