@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib.gis.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.postgres.fields import HStoreField
+from django.contrib.postgres.fields import HStoreField, JSONField
 from django.utils.translation import get_language, ugettext, ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
@@ -644,6 +644,15 @@ class Road(models.Model):
         return "%s(%s) %s" % (self.road_code, self.link_code, self.road_name)
 
 
+class RoadFeatureAttributes(models.Model):
+    """
+    Original data fields of the Road model shapefiles
+    """
+
+    road = models.OneToOneField("Road", on_delete=models.CASCADE)
+    attributes = JSONField()
+
+
 class CollatedGeoJsonFile(models.Model):
     """ FeatureCollection GeoJson(srid=4326) files made up of collated geometries """
 
@@ -917,7 +926,7 @@ class Bridge(models.Model):
     )
     # a reference to the collated geojson file this Structure's geometry is in
     geojson_file = models.ForeignKey(
-        "CollatedGeoJsonFile", on_delete=models.DO_NOTHING, blank=True, null=True
+        "CollatedGeoJsonFile", on_delete=models.SET_NULL, blank=True, null=True
     )
 
     structure_type = models.ForeignKey(
