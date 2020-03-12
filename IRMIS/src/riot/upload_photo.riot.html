@@ -44,22 +44,42 @@
                     acceptedFiles: '.jpeg,.jpg,.gif,.png',
                     dictDefaultMessage: '',
                     dictInvalidFileType: 'Not a valid image, please submit a JPEG, GIF, or PNG',
-                    accept: (file, done) => {done();}
+                    accept: (file, done) => {
+                        myDropzone.options.params["description"] = state.photo.description;
+                        done();
+                    }
                 });
+
+                this.photoCreationListener = (data) => {
+                    const photo = data.detail.photo;
+                    this.state.photo.setId(photo.id);
+                    this.state.photo.setUrl(photo.url);
+                    this.state.photo.setFkLink(photo.fk_link);
+                    this.state.photo.setDescription(photo.description);
+                    if (this.props.surveyPhoto) {
+                        // if a survey Photo, add it to the NeedsLinkingQueue
+                        document.dispatchEvent(new CustomEvent(`${props.photoId}.photoNeedsLinking`, {detail: {photo: this.state.photo}}));
+                    }
+                    this.update();
+                };
+
+                document.addEventListener(`${props.photoId}.photoCreated`, this.photoCreationListener);
 
                 myDropzone.on("success", function(file, res) {
-                    myDropzone.disable();
-                    state.photo.setId(res.id);
-                    state.photo.setUrl(res.url);
-                    state.photo.setFkLink(res.fk_link);
+                    myDropzone.removeAllFiles();
+                    document.dispatchEvent(new CustomEvent(`${props.photoId}.photoCreated`, {detail: {photo: res}}));
                 });
-
                 this.update();
             },
             updatePhoto() {
                 putPhotoData(this.state.photo)
                     .then((data) => {
-                        this.props.showFeedback();
+                        if (this.props.surveyPhoto) {
+                            // if a survey Photo, update it's data in the NeedsLinkingQueue
+                            document.dispatchEvent(new CustomEvent(`${this.props.photoId}.photoNeedsLinking`, {detail: {photo: this.state.photo}}));
+                        } else {
+                            this.props.showFeedback();
+                        }
                     }).catch((err) => {
                         this.props.showFeedback(true);
                     }).finally((r) => {
@@ -67,10 +87,16 @@
                     });
             },
             deletePhoto(e) {
+                e.preventDefault();
                 deletePhotoData(this.state.photo)
                     .then((data) => {
+                        // before resetting state.photo, check if a survey Photo and remove from the NeedsLinkingQueue, if present.
+                        if (this.props.surveyPhoto) {
+                            document.dispatchEvent(new CustomEvent(`${this.props.photoId}.photoNeedsRemoval`, {detail: {photo: this.state.photo}}));
+                        } else {
+                            this.props.showFeedback();
+                        }
                         this.state.photo = new EstradaPhoto();
-                        this.props.showFeedback();
                     }).catch((err) => {
                         this.props.showFeedback(true);
                     }).finally((r) => {
@@ -79,9 +105,12 @@
             },
             updateDescription(e) {
                 const description = e.currentTarget.value.trim();
-                if (description != "" && this.state.photo.description != description) {
+                if (this.state.photo.description != description) {
                     this.state.photo.setDescription(description);
-                    this.updatePhoto();
+                    // check that a photo is uploaded/present first before firing an update
+                    if (this.state.photo.url != this.state.basePhoto.url) {
+                        this.updatePhoto();
+                    }
                 }
             },
         }

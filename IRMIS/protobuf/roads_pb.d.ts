@@ -123,10 +123,15 @@ export class Road extends jspb.Message {
   getCore(): number;
   setCore(value: number): void;
 
-  clearPhotosList(): void;
-  getPhotosList(): Array<photo_pb.Photo>;
-  setPhotosList(value: Array<photo_pb.Photo>): void;
-  addPhotos(value?: photo_pb.Photo, index?: number): photo_pb.Photo;
+  clearInventoryPhotosList(): void;
+  getInventoryPhotosList(): Array<photo_pb.Photo>;
+  setInventoryPhotosList(value: Array<photo_pb.Photo>): void;
+  addInventoryPhotos(value?: photo_pb.Photo, index?: number): photo_pb.Photo;
+
+  clearSurveyPhotosList(): void;
+  getSurveyPhotosList(): Array<photo_pb.Photo>;
+  setSurveyPhotosList(value: Array<photo_pb.Photo>): void;
+  addSurveyPhotos(value?: photo_pb.Photo, index?: number): photo_pb.Photo;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Road.AsObject;
@@ -170,7 +175,8 @@ export namespace Road {
     constructionYear: number,
     population: number,
     core: number,
-    photosList: Array<photo_pb.Photo.AsObject>,
+    inventoryPhotosList: Array<photo_pb.Photo.AsObject>,
+    surveyPhotosList: Array<photo_pb.Photo.AsObject>,
   }
 }
 

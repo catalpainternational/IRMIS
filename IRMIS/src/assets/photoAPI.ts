@@ -83,7 +83,7 @@ export function putPhotoData(photo: EstradaPhoto) {
     return fetch(metadataUrl, postAssetInit)
         .then((metadataResponse) => {
             if (metadataResponse.ok) { return metadataResponse.arrayBuffer(); }
-            throw new Error(`Photo creation failed: ${metadataResponse.statusText}`);
+            throw new Error(`Photo update failed: ${metadataResponse.statusText}`);
         })
         .then((protobufBytes) => {
             const uintArray = new Uint8Array(protobufBytes);

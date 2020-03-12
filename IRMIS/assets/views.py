@@ -1116,8 +1116,21 @@ def survey_create(request):
             # store the user who made the changes
             reversion.set_user(request.user)
 
+        # link the orphan Photos up to the newly created Survey
+        survey_id = "SURV-" + str(survey.id)
+
+        for pb_photo in req_pb.photos:
+            # check there's a Photo instance first
+            photo = get_object_or_404(Photo.objects.filter(pk=pb_photo.id))
+            photo.object_id = survey.id
+            photo.content_type = ContentType.objects.get_for_model(survey)
+            photo.fk_link = survey_id
+            photo.save()
+
+        # return the full new survey
+        pb_survey = Survey.objects.filter(pk=survey.id).to_protobuf().surveys[0]
         response = HttpResponse(
-            req_pb.SerializeToString(),
+            pb_survey.SerializeToString(),
             status=200,
             content_type="application/octet-stream",
         )
@@ -1275,31 +1288,36 @@ def photo_create(request):
     if not request.FILES:
         return HttpResponse(status=400)
 
-    data = {"file": request.FILES["file"]}
-
+    photo_data = {
+        "file": request.FILES["file"],
+        "description": request.POST["description"]
+        if request.POST["description"]
+        and request.POST["description"] not in ["", "undefined"]
+        else "",
+    }
+    res_data = {}
     if request.POST["fk_link"] and request.POST["fk_link"] not in ["", "undefined"]:
         # check there's a model instance to attach this photo to
         prefix, django_pk, mapping = get_asset_mapping(request.POST["fk_link"])
 
         linked_obj = get_object_or_404(mapping["model"].objects.filter(pk=django_pk))
-        data["object_id"] = linked_obj.id
+        photo_data["object_id"] = linked_obj.id
 
         content_type = ContentType.objects.get_for_model(linked_obj)
-        data["content_type"] = content_type
+        photo_data["content_type"] = content_type
+        res_data["fk_link"] = request.POST["fk_link"]
+    else:
+        res_data["fk_link"] = ""
 
     try:
         with reversion.create_revision():
-            photo = Photo.objects.create(**data)
+            photo = Photo.objects.create(**photo_data)
             # store the user who created the photo
             reversion.set_user(request.user)
-
-        return JsonResponse(
-            {
-                "id": photo.id,
-                "url": photo.file.url,
-                "fk_link": str(photo.object_id) if photo.object_id else "",
-            }
-        )
+            res_data["id"] = photo.id
+            res_data["url"] = photo.file.url
+            res_data["description"] = photo.description
+        return JsonResponse(res_data)
     except Exception as err:
         return HttpResponse(status=400)
 

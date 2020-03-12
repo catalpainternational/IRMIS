@@ -197,13 +197,22 @@ export class EstradaBridge extends Bridge implements IAsset {
         return choice_or_default(this.getProtectionDownstream(), STRUCTURE_DOWNSTREAM_PROTECTION_TYPE_CHOICES);
     }
 
-    get photos(): EstradaPhoto[] | undefined {
-        const photosListRaw = this.getPhotosList();
-        return photosListRaw ? photosListRaw.map(makeEstradaPhoto) : photosListRaw;
+    get inventoryPhotos(): EstradaPhoto[] | undefined {
+        const inventoryPhotosListRaw = this.getInventoryPhotosList();
+        return inventoryPhotosListRaw ? inventoryPhotosListRaw.map(makeEstradaPhoto) : inventoryPhotosListRaw;
     }
 
-    set photos(values: EstradaPhoto[] | undefined) {
-        this.setPhotosList(values as Photo[]);
+    set inventoryPhotos(values: EstradaPhoto[] | undefined) {
+        this.setInventoryPhotosList(values as Photo[]);
+    }
+
+    get surveyPhotos(): EstradaPhoto[] | undefined {
+        const surveyPhotosListRaw = this.getSurveyPhotosList();
+        return surveyPhotosListRaw ? surveyPhotosListRaw.map(makeEstradaPhoto) : surveyPhotosListRaw;
+    }
+
+    set surveyPhotos(values: EstradaPhoto[] | undefined) {
+        this.setSurveyPhotosList(values as Photo[]);
     }
 
     /** assetCondition is the most recent structure condition from the surveys */
@@ -378,13 +387,22 @@ export class EstradaCulvert extends Culvert implements IAsset {
         return choice_or_default(this.getProtectionDownstream(), STRUCTURE_DOWNSTREAM_PROTECTION_TYPE_CHOICES);
     }
 
-    get photos(): EstradaPhoto[] | undefined {
-        const photosListRaw = this.getPhotosList();
-        return photosListRaw ? photosListRaw.map(makeEstradaPhoto) : photosListRaw;
+    get inventoryPhotos(): EstradaPhoto[] | undefined {
+        const inventoryPhotosListRaw = this.getInventoryPhotosList();
+        return inventoryPhotosListRaw ? inventoryPhotosListRaw.map(makeEstradaPhoto) : inventoryPhotosListRaw;
     }
 
-    set photos(values: EstradaPhoto[] | undefined) {
-        this.setPhotosList(values as Photo[]);
+    set inventoryPhotos(values: EstradaPhoto[] | undefined) {
+        this.setInventoryPhotosList(values as Photo[]);
+    }
+
+    get surveyPhotos(): EstradaPhoto[] | undefined {
+        const surveyPhotosListRaw = this.getSurveyPhotosList();
+        return surveyPhotosListRaw ? surveyPhotosListRaw.map(makeEstradaPhoto) : surveyPhotosListRaw;
+    }
+
+    set surveyPhotos(values: EstradaPhoto[] | undefined) {
+        this.setSurveyPhotosList(values as Photo[]);
     }
 
     /** assetCondition is the most recent structure condition from the surveys */

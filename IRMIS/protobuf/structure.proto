@@ -36,7 +36,8 @@ message Bridge {
     // it comes from the surveys - NOT from the bridge
     string asset_condition = 20;
     string condition_description = 21;
-    repeated Photo photos = 22;
+    repeated Photo inventory_photos = 22;
+    repeated Photo survey_photos = 23;
     // NON-SHARED FIELDS (#26 and onwards)
     string river_name = 28;
     int32 number_spans = 29;
@@ -69,7 +70,8 @@ message Culvert {
     // it comes from the surveys - NOT from the culvert
     string asset_condition = 20;
     string condition_description = 21;
-    repeated Photo photos = 22;
+    repeated Photo inventory_photos = 22;
+    repeated Photo survey_photos = 23;
     // NON-SHARED FIELDS (#26 and onwards)
     float height = 28;
     int32 number_cells = 29;

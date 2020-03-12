@@ -49,7 +49,8 @@ message Road {
   int32 population = 31;
   // core is a nullable boolean - we use int32 so that we can set it to -ve to indicate when it is null / None
   int32 core = 32;
-  repeated Photo photos = 33;
+  repeated Photo inventory_photos = 33;
+  repeated Photo survey_photos = 34;
 }
 
 message Roads {

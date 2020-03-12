@@ -21,6 +21,8 @@
                             onclick="{ selectPage }">{ window.gettext("Maintenance") }</li>
                         <li class="{ state.page === 'environment' ? 'active' : '' }" data-page="environment"
                             onclick="{ selectPage }">{ window.gettext("Environment") }</li>
+                        <li class="{ state.page === 'photo' ? 'active' : '' }" data-page="photo"
+                            onclick="{ selectPage }">{window.gettext("Photos") }</li>
                     </ul>
                     <ul if="{ props.assetType === 'BRDG' || props.assetType === 'CULV' }">
                         <li class="{ state.page === 'structure_type' ? 'active' : '' }" data-page="structure_type"
@@ -99,10 +101,9 @@
                     structure="{ state.editingStructure }" saving="{ state.saving }" showFeedback="{ showFeedback }"
                     parent="{parentFunctions}">
                 </edit_structure_condition>
-                <edit_photo if="{ state.page === 'photo' }" fkLink="{ state.editingStructure.id }"
-                    showFeedback="{ showFeedback }" structure="{ state.editingStructure }" saving="{ state.saving }"
-                    parent="{parentFunctions}">
-                </edit_photo>
+                <edit_photos if="{ state.page === 'photo' }" showFeedback="{ showFeedback }" saving="{ state.saving }"
+                    parent="{parentFunctions}" asset="{ state.editingRoad }" structure="{ state.editingStructure }">
+                </edit_photos>
             </div>
             <footer>
                 <small>República Democrática de Timor-Leste / Ministério das Obras Públicas</small>
@@ -147,7 +148,7 @@
         import Edit_Structure_Type from "./edit_structure_type.riot.html";
         import Edit_Structure_Details from "./edit_structure_details.riot.html";
         import Edit_Structure_Protection from "./edit_structure_protection.riot.html";
-        import Edit_Photo from "./edit_photo.riot.html";
+        import Edit_Photos from "./edit_photos.riot.html";
         import Edit_Structure_Condition from "./edit_structure_condition.riot.html";
 
         import Edit_History from "./edit_history.riot.html";
@@ -174,7 +175,7 @@
             components: {
                 Feedback_Banner, Edit_Stop_Alert, Loading,
                 Edit_Location_Type, Edit_Asset_Details, Edit_Pavement, Edit_Environment, Edit_Project, Edit_Traffic, Edit_Condition, Edit_Maintenance,
-                Edit_History, Edit_Structure_Type, Edit_Structure_Details, Edit_Structure_Protection, Edit_Photo, Edit_Structure_Condition,
+                Edit_History, Edit_Structure_Type, Edit_Structure_Details, Edit_Structure_Protection, Edit_Photos, Edit_Structure_Condition,
             },
             onBeforeMount(props, state) {
                 state.page = props.page;

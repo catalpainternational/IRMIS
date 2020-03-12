@@ -292,7 +292,7 @@ proto.assets.Structures.prototype.clearCulvertsList = function() {
  * @private {!Array<number>}
  * @const
  */
-proto.assets.Bridge.repeatedFields_ = [22];
+proto.assets.Bridge.repeatedFields_ = [22,23];
 
 
 
@@ -344,7 +344,9 @@ proto.assets.Bridge.toObject = function(includeInstance, msg) {
     geojsonId: jspb.Message.getFieldWithDefault(msg, 19, 0),
     assetCondition: jspb.Message.getFieldWithDefault(msg, 20, ""),
     conditionDescription: jspb.Message.getFieldWithDefault(msg, 21, ""),
-    photosList: jspb.Message.toObjectList(msg.getPhotosList(),
+    inventoryPhotosList: jspb.Message.toObjectList(msg.getInventoryPhotosList(),
+    photo_pb.Photo.toObject, includeInstance),
+    surveyPhotosList: jspb.Message.toObjectList(msg.getSurveyPhotosList(),
     photo_pb.Photo.toObject, includeInstance),
     riverName: jspb.Message.getFieldWithDefault(msg, 28, ""),
     numberSpans: jspb.Message.getFieldWithDefault(msg, 29, 0),
@@ -475,7 +477,12 @@ proto.assets.Bridge.deserializeBinaryFromReader = function(msg, reader) {
     case 22:
       var value = new photo_pb.Photo;
       reader.readMessage(value,photo_pb.Photo.deserializeBinaryFromReader);
-      msg.addPhotos(value);
+      msg.addInventoryPhotos(value);
+      break;
+    case 23:
+      var value = new photo_pb.Photo;
+      reader.readMessage(value,photo_pb.Photo.deserializeBinaryFromReader);
+      msg.addSurveyPhotos(value);
       break;
     case 28:
       var value = /** @type {string} */ (reader.readString());
@@ -668,10 +675,18 @@ proto.assets.Bridge.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
-  f = message.getPhotosList();
+  f = message.getInventoryPhotosList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
       22,
+      f,
+      photo_pb.Photo.serializeBinaryToWriter
+    );
+  }
+  f = message.getSurveyPhotosList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      23,
       f,
       photo_pb.Photo.serializeBinaryToWriter
     );
@@ -1070,17 +1085,17 @@ proto.assets.Bridge.prototype.setConditionDescription = function(value) {
 
 
 /**
- * repeated Photo photos = 22;
+ * repeated Photo inventory_photos = 22;
  * @return {!Array<!proto.assets.Photo>}
  */
-proto.assets.Bridge.prototype.getPhotosList = function() {
+proto.assets.Bridge.prototype.getInventoryPhotosList = function() {
   return /** @type{!Array<!proto.assets.Photo>} */ (
     jspb.Message.getRepeatedWrapperField(this, photo_pb.Photo, 22));
 };
 
 
 /** @param {!Array<!proto.assets.Photo>} value */
-proto.assets.Bridge.prototype.setPhotosList = function(value) {
+proto.assets.Bridge.prototype.setInventoryPhotosList = function(value) {
   jspb.Message.setRepeatedWrapperField(this, 22, value);
 };
 
@@ -1090,7 +1105,7 @@ proto.assets.Bridge.prototype.setPhotosList = function(value) {
  * @param {number=} opt_index
  * @return {!proto.assets.Photo}
  */
-proto.assets.Bridge.prototype.addPhotos = function(opt_value, opt_index) {
+proto.assets.Bridge.prototype.addInventoryPhotos = function(opt_value, opt_index) {
   return jspb.Message.addToRepeatedWrapperField(this, 22, opt_value, proto.assets.Photo, opt_index);
 };
 
@@ -1098,8 +1113,42 @@ proto.assets.Bridge.prototype.addPhotos = function(opt_value, opt_index) {
 /**
  * Clears the list making it empty but non-null.
  */
-proto.assets.Bridge.prototype.clearPhotosList = function() {
-  this.setPhotosList([]);
+proto.assets.Bridge.prototype.clearInventoryPhotosList = function() {
+  this.setInventoryPhotosList([]);
+};
+
+
+/**
+ * repeated Photo survey_photos = 23;
+ * @return {!Array<!proto.assets.Photo>}
+ */
+proto.assets.Bridge.prototype.getSurveyPhotosList = function() {
+  return /** @type{!Array<!proto.assets.Photo>} */ (
+    jspb.Message.getRepeatedWrapperField(this, photo_pb.Photo, 23));
+};
+
+
+/** @param {!Array<!proto.assets.Photo>} value */
+proto.assets.Bridge.prototype.setSurveyPhotosList = function(value) {
+  jspb.Message.setRepeatedWrapperField(this, 23, value);
+};
+
+
+/**
+ * @param {!proto.assets.Photo=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.assets.Photo}
+ */
+proto.assets.Bridge.prototype.addSurveyPhotos = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 23, opt_value, proto.assets.Photo, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ */
+proto.assets.Bridge.prototype.clearSurveyPhotosList = function() {
+  this.setSurveyPhotosList([]);
 };
 
 
@@ -1154,7 +1203,7 @@ proto.assets.Bridge.prototype.setSpanLength = function(value) {
  * @private {!Array<number>}
  * @const
  */
-proto.assets.Culvert.repeatedFields_ = [22];
+proto.assets.Culvert.repeatedFields_ = [22,23];
 
 
 
@@ -1206,7 +1255,9 @@ proto.assets.Culvert.toObject = function(includeInstance, msg) {
     geojsonId: jspb.Message.getFieldWithDefault(msg, 19, 0),
     assetCondition: jspb.Message.getFieldWithDefault(msg, 20, ""),
     conditionDescription: jspb.Message.getFieldWithDefault(msg, 21, ""),
-    photosList: jspb.Message.toObjectList(msg.getPhotosList(),
+    inventoryPhotosList: jspb.Message.toObjectList(msg.getInventoryPhotosList(),
+    photo_pb.Photo.toObject, includeInstance),
+    surveyPhotosList: jspb.Message.toObjectList(msg.getSurveyPhotosList(),
     photo_pb.Photo.toObject, includeInstance),
     height: +jspb.Message.getFieldWithDefault(msg, 28, 0.0),
     numberCells: jspb.Message.getFieldWithDefault(msg, 29, 0)
@@ -1336,7 +1387,12 @@ proto.assets.Culvert.deserializeBinaryFromReader = function(msg, reader) {
     case 22:
       var value = new photo_pb.Photo;
       reader.readMessage(value,photo_pb.Photo.deserializeBinaryFromReader);
-      msg.addPhotos(value);
+      msg.addInventoryPhotos(value);
+      break;
+    case 23:
+      var value = new photo_pb.Photo;
+      reader.readMessage(value,photo_pb.Photo.deserializeBinaryFromReader);
+      msg.addSurveyPhotos(value);
       break;
     case 28:
       var value = /** @type {number} */ (reader.readFloat());
@@ -1525,10 +1581,18 @@ proto.assets.Culvert.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
-  f = message.getPhotosList();
+  f = message.getInventoryPhotosList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
       22,
+      f,
+      photo_pb.Photo.serializeBinaryToWriter
+    );
+  }
+  f = message.getSurveyPhotosList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      23,
       f,
       photo_pb.Photo.serializeBinaryToWriter
     );
@@ -1920,17 +1984,17 @@ proto.assets.Culvert.prototype.setConditionDescription = function(value) {
 
 
 /**
- * repeated Photo photos = 22;
+ * repeated Photo inventory_photos = 22;
  * @return {!Array<!proto.assets.Photo>}
  */
-proto.assets.Culvert.prototype.getPhotosList = function() {
+proto.assets.Culvert.prototype.getInventoryPhotosList = function() {
   return /** @type{!Array<!proto.assets.Photo>} */ (
     jspb.Message.getRepeatedWrapperField(this, photo_pb.Photo, 22));
 };
 
 
 /** @param {!Array<!proto.assets.Photo>} value */
-proto.assets.Culvert.prototype.setPhotosList = function(value) {
+proto.assets.Culvert.prototype.setInventoryPhotosList = function(value) {
   jspb.Message.setRepeatedWrapperField(this, 22, value);
 };
 
@@ -1940,7 +2004,7 @@ proto.assets.Culvert.prototype.setPhotosList = function(value) {
  * @param {number=} opt_index
  * @return {!proto.assets.Photo}
  */
-proto.assets.Culvert.prototype.addPhotos = function(opt_value, opt_index) {
+proto.assets.Culvert.prototype.addInventoryPhotos = function(opt_value, opt_index) {
   return jspb.Message.addToRepeatedWrapperField(this, 22, opt_value, proto.assets.Photo, opt_index);
 };
 
@@ -1948,8 +2012,42 @@ proto.assets.Culvert.prototype.addPhotos = function(opt_value, opt_index) {
 /**
  * Clears the list making it empty but non-null.
  */
-proto.assets.Culvert.prototype.clearPhotosList = function() {
-  this.setPhotosList([]);
+proto.assets.Culvert.prototype.clearInventoryPhotosList = function() {
+  this.setInventoryPhotosList([]);
+};
+
+
+/**
+ * repeated Photo survey_photos = 23;
+ * @return {!Array<!proto.assets.Photo>}
+ */
+proto.assets.Culvert.prototype.getSurveyPhotosList = function() {
+  return /** @type{!Array<!proto.assets.Photo>} */ (
+    jspb.Message.getRepeatedWrapperField(this, photo_pb.Photo, 23));
+};
+
+
+/** @param {!Array<!proto.assets.Photo>} value */
+proto.assets.Culvert.prototype.setSurveyPhotosList = function(value) {
+  jspb.Message.setRepeatedWrapperField(this, 23, value);
+};
+
+
+/**
+ * @param {!proto.assets.Photo=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.assets.Photo}
+ */
+proto.assets.Culvert.prototype.addSurveyPhotos = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 23, opt_value, proto.assets.Photo, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ */
+proto.assets.Culvert.prototype.clearSurveyPhotosList = function() {
+  this.setSurveyPhotosList([]);
 };
 
 

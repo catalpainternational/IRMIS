@@ -317,6 +317,44 @@ export const estradaTableColumns = [
         visible: false,
         orderable: false,
     },
+    {
+        title: window.gettext("Inventory Photos"),
+        data: "inventoryPhotos",
+        defaultContent: "",
+        render: (photos) => {
+            if (photos) {
+                let links = [];
+                photos.forEach((p) => {
+                    links.push(`<a class="image" href="${p.url}" target="_blank">Photo</a>`);
+                });
+                return links.join(" ");
+            } else {
+                return "";
+            }
+        },
+        className: "text-center",
+        visible: false,
+        orderable: false,
+    },
+    {
+        title: window.gettext("Condition Photos"),
+        data: "surveyPhotos",
+        defaultContent: "",
+        render: (photos) => {
+            if (photos) {
+                let links = [];
+                photos.forEach((p) => {
+                    links.push(`<a class="image" href="${p.url}" target="_blank">Photo</a>`);
+                });
+                return links.join(" ");
+            } else {
+                return "";
+            }
+        },
+        className: "text-center",
+        visible: false,
+        orderable: false,
+    },
 ];
 
 /** Defines the columns for the Structures table on the Estrada main page
@@ -478,11 +516,42 @@ export const structuresTableColumns = [
         className: "clip-text-ellipsis",
     },
     {
-        title: "Inventory Photos",
-        data: null,
-        render: r => buttonSegmentsTemplate("inventory_photos", r),
-        className: "text-center",
+        title: window.gettext("Inventory Photos"),
+        data: "inventoryPhotos",
         defaultContent: "",
+        render: (photos) => {
+            if (photos) {
+                let links = [];
+                photos.forEach((p) => {
+                    links.push(`<a class="image" href="${p.url}" target="_blank">Photo</a>`);
+                });
+                return links.join(" ");
+            } else {
+                return "";
+            }
+        },
+        className: "text-center",
+        visible: false,
+        orderable: false,
+    },
+    {
+        title: window.gettext("Condition Photos"),
+        data: "surveyPhotos",
+        defaultContent: "",
+        render: (photos) => {
+            if (photos) {
+                let links = [];
+                photos.forEach((p) => {
+                    links.push(`<a class="image" href="${p.url}" target="_blank">Photo</a>`);
+                });
+                return links.join(" ");
+            } else {
+                return "";
+            }
+        },
+        className: "text-center",
+        visible: false,
+        orderable: false,
     },
 ];
 

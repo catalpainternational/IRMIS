@@ -211,7 +211,7 @@ class SurveyQuerySet(models.QuerySet):
                 photo_protobuf = survey_protobuf.photos.add()
                 setattr(photo_protobuf, "id", photo.id)
                 setattr(photo_protobuf, "url", photo.file.url)
-                setattr(photo_protobuf, "fk_link", "SURV-" + str(photo.object_id))
+                setattr(photo_protobuf, "fk_link", "SURV-" + str(survey.id))
                 if photo.description:
                     setattr(photo_protobuf, "description", photo.description)
 
@@ -463,12 +463,12 @@ class RoadQuerySet(models.QuerySet):
             road_protobuf.projection_start.CopyFrom(start)
             road_protobuf.projection_end.CopyFrom(end)
 
-            photos = road.photos.all()
+            photos = road.photos.order_by("-date_created").all()[:2]
             for photo in photos:
-                photo_protobuf = road_protobuf.photos.add()
+                photo_protobuf = road_protobuf.inventory_photos.add()
                 setattr(photo_protobuf, "id", photo.id)
                 setattr(photo_protobuf, "url", photo.file.url)
-                setattr(photo_protobuf, "fk_link", "ROAD-" + str(photo.object_id))
+                setattr(photo_protobuf, "fk_link", "ROAD-" + str(road.id))
                 if photo.description:
                     setattr(photo_protobuf, "description", photo.description)
 
@@ -786,7 +786,6 @@ def get_structures_with_survey_data(
         .filter(parent_id=OuterRef("id"))
         .order_by("-date_surveyed")
     )
-
     if asset_type == "BRDG":
         photos_prefetch = Prefetch(
             "photos",
@@ -809,7 +808,6 @@ def get_structures_with_survey_data(
         )
         .prefetch_related(photos_prefetch)
     )
-
     return structures
 
 
@@ -874,8 +872,21 @@ def structure_to_protobuf(
             structure, "condition_description", None
         )
 
-    for photo in structure.photos.all():
-        photo_protobuf = structure_protobuf.photos.add()
+    survey_photos = []
+    if getattr(structure, "survey_photo1", None):
+        survey_photos.append(json.load(getattr(structure, "survey_photo1", None)))
+    if getattr(structure, "survey_photo2", None):
+        survey_photos.append(json.load(getattr(structure, "survey_photo2", None)))
+    for photo in survey_photos:
+        photo_protobuf = structure_protobuf.survey_photos.add()
+        setattr(photo_protobuf, "id", photo.id)
+        setattr(photo_protobuf, "url", photo.file.url)
+        setattr(photo_protobuf, "fk_link", structure_id)
+        if photo.description:
+            setattr(photo_protobuf, "description", photo.description)
+
+    for photo in structure.photos.order_by("-date_created").all()[:2]:
+        photo_protobuf = structure_protobuf.inventory_photos.add()
         setattr(photo_protobuf, "id", photo.id)
         setattr(photo_protobuf, "url", photo.file.url)
         setattr(photo_protobuf, "fk_link", structure_id)

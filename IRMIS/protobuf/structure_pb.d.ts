@@ -104,10 +104,15 @@ export class Bridge extends jspb.Message {
   getConditionDescription(): string;
   setConditionDescription(value: string): void;
 
-  clearPhotosList(): void;
-  getPhotosList(): Array<photo_pb.Photo>;
-  setPhotosList(value: Array<photo_pb.Photo>): void;
-  addPhotos(value?: photo_pb.Photo, index?: number): photo_pb.Photo;
+  clearInventoryPhotosList(): void;
+  getInventoryPhotosList(): Array<photo_pb.Photo>;
+  setInventoryPhotosList(value: Array<photo_pb.Photo>): void;
+  addInventoryPhotos(value?: photo_pb.Photo, index?: number): photo_pb.Photo;
+
+  clearSurveyPhotosList(): void;
+  getSurveyPhotosList(): Array<photo_pb.Photo>;
+  setSurveyPhotosList(value: Array<photo_pb.Photo>): void;
+  addSurveyPhotos(value?: photo_pb.Photo, index?: number): photo_pb.Photo;
 
   getRiverName(): string;
   setRiverName(value: string): void;
@@ -151,7 +156,8 @@ export namespace Bridge {
     geojsonId: number,
     assetCondition: string,
     conditionDescription: string,
-    photosList: Array<photo_pb.Photo.AsObject>,
+    inventoryPhotosList: Array<photo_pb.Photo.AsObject>,
+    surveyPhotosList: Array<photo_pb.Photo.AsObject>,
     riverName: string,
     numberSpans: number,
     spanLength: number,
@@ -228,10 +234,15 @@ export class Culvert extends jspb.Message {
   getConditionDescription(): string;
   setConditionDescription(value: string): void;
 
-  clearPhotosList(): void;
-  getPhotosList(): Array<photo_pb.Photo>;
-  setPhotosList(value: Array<photo_pb.Photo>): void;
-  addPhotos(value?: photo_pb.Photo, index?: number): photo_pb.Photo;
+  clearInventoryPhotosList(): void;
+  getInventoryPhotosList(): Array<photo_pb.Photo>;
+  setInventoryPhotosList(value: Array<photo_pb.Photo>): void;
+  addInventoryPhotos(value?: photo_pb.Photo, index?: number): photo_pb.Photo;
+
+  clearSurveyPhotosList(): void;
+  getSurveyPhotosList(): Array<photo_pb.Photo>;
+  setSurveyPhotosList(value: Array<photo_pb.Photo>): void;
+  addSurveyPhotos(value?: photo_pb.Photo, index?: number): photo_pb.Photo;
 
   getHeight(): number;
   setHeight(value: number): void;
@@ -272,7 +283,8 @@ export namespace Culvert {
     geojsonId: number,
     assetCondition: string,
     conditionDescription: string,
-    photosList: Array<photo_pb.Photo.AsObject>,
+    inventoryPhotosList: Array<photo_pb.Photo.AsObject>,
+    surveyPhotosList: Array<photo_pb.Photo.AsObject>,
     height: number,
     numberCells: number,
   }

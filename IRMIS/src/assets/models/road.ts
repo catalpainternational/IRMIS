@@ -1,4 +1,5 @@
 import { Projection, Road } from "../../../protobuf/roads_pb";
+import { EstradaPhoto, makeEstradaPhoto } from "./photo";
 
 import { projToWGS84, toDms, toUtm } from "../crsUtilities";
 import {
@@ -12,7 +13,7 @@ import {
 } from "../protoBufUtilities";
 
 import { ADMINISTRATIVE_AREA_CHOICES, ASSET_CLASS_CHOICES, ASSET_CONDITION_CHOICES, IAsset } from "./estradaBase";
-
+import { Photo } from "../../../protobuf/photo_pb";
 // tslint:disable: max-classes-per-file
 
 const assetSchema = JSON.parse(document.getElementById("asset_schema")?.textContent || "");
@@ -207,6 +208,24 @@ export class EstradaRoad extends Road implements IAsset {
 
     get numberLanes() {
         return this.getNullableNumberLanes();
+    }
+
+    get inventoryPhotos(): EstradaPhoto[] | undefined {
+        const inventoryPhotosListRaw = this.getInventoryPhotosList();
+        return inventoryPhotosListRaw ? inventoryPhotosListRaw.map(makeEstradaPhoto) : inventoryPhotosListRaw;
+    }
+
+    set inventoryPhotos(values: EstradaPhoto[] | undefined) {
+        this.setInventoryPhotosList(values as Photo[]);
+    }
+
+    get surveyPhotos(): EstradaPhoto[] | undefined {
+        const surveyPhotosListRaw = this.getSurveyPhotosList();
+        return surveyPhotosListRaw ? surveyPhotosListRaw.map(makeEstradaPhoto) : surveyPhotosListRaw;
+    }
+
+    set surveyPhotos(values: EstradaPhoto[] | undefined) {
+        this.setSurveyPhotosList(values as Photo[]);
     }
 
     /** A Null or None in the protobuf is indicated by a negative value */

@@ -76,9 +76,11 @@
             </section>
             <section>
                 <h6>{ window.gettext("Upload photos") }</h6>
-                <upload_photo photo="{state.photo1}" fkLink="{props.fkLink}" showFeedback="{ props.showFeedback }">
+                <upload_photo photoId="{photoId1}" photo="{state.photo1}" fkLink="{props.fkLink}" surveyPhoto="{true}"
+                    showFeedback="{ props.showFeedback }">
                 </upload_photo>
-                <upload_photo photo="{state.photo2}" fkLink="{props.fkLink}" showFeedback="{ props.showFeedback }">
+                <upload_photo photoId="{photoId2}" photo="{state.photo2}" fkLink="{props.fkLink}" surveyPhoto="{true}"
+                    showFeedback="{ props.showFeedback }">
                 </upload_photo>
             </section>
             <div class="d-flex justify-content-end">
@@ -124,6 +126,7 @@
                 assetConditions: [{key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading")}],
                 editMode: false,
                 currentRowData: new EstradaSurvey({}),
+                photoLinkQueue: [],
             },
             components: {
                 Edit_Stop_Alert, Edit_Modal, Data_Table, Upload_Photo
@@ -144,17 +147,40 @@
 
                 this.props.parent.getStructureSurveys(state, this.data_table_id, "asset_condition", "assetConditions");
 
+                this.photoNeedsLinkingListener = (data) => {
+                    const newPhoto = data.detail.photo;
+                    this.state.photoLinkQueue = this.state.photoLinkQueue.filter(p => {
+                        if (p.getId() != newPhoto.getId()) {return p;};
+                    }).concat(newPhoto);
+                }
+                document.addEventListener(`${this.photoId1}.photoNeedsLinking`, this.photoNeedsLinkingListener);
+                document.addEventListener(`${this.photoId2}.photoNeedsLinking`, this.photoNeedsLinkingListener);
+
+                this.photoNeedsRemovalListener = (data) => {
+                    const oldPhoto = data.detail.photo;
+                    this.state.photoLinkQueue = this.state.photoLinkQueue.filter(p => {
+                        if (p.getId() != oldPhoto.getId()) {return p};
+                    });
+                }
+                document.addEventListener(`${this.photoId1}.photoNeedsRemoval`, this.photoNeedsRemovalListener);
+                document.addEventListener(`${this.photoId2}.photoNeedsRemoval`, this.photoNeedsRemovalListener);
+
                 this.deleteListener = (data) => {
                     const rowId = data.detail.rowId;
                     // Won't work just yet - waiting for the showStopAlertModal function to be defined in this riot tag
                     this.showStopAlertModal("delete-alert", rowId);
                 };
-
                 document.addEventListener(`${this.data_table_id}.deleteRow`, this.deleteListener);
             },
             onUnmount(props, state) {
                 document.removeEventListener(`${this.data_table_id}.deleteRow`, this.deleteListener);
+                document.removeEventListener(`${this.photoId1}.photoNeedsLinking`, this.photoNeedsLinkingListener);
+                document.removeEventListener(`${this.photoId2}.photoNeedsLinking`, this.photoNeedsLinkingListener);
+                document.removeEventListener(`${this.photoId1}.photoNeedsRemoval`, this.photoNeedsRemovalListener);
+                document.removeEventListener(`${this.photoId2}.photoNeedsRemoval`, this.photoNeedsRemovalListener);
             },
+            photoId1: "structureSurveyPhoto1",
+            photoId2: "structureSurveyPhoto2",
             conditions: window.asset_schema.asset_condition,
             modal_id: "structure-condition-modal",
             data_table_id: "structure-condition-table",
@@ -188,9 +214,11 @@
                     data: "photos",
                     defaultContent: "",
                     render: (photos) => {
-                        return (photos) ? photos.forEach((p) => {
-                            return `<a class="image" href="${p.url}"></a>`;
-                        }) : "";
+                        let links = [];
+                        photos.forEach((p) => {
+                            links.push(`<a class="image" href="${p.url}" target="_blank">Photo</a>`);
+                        });
+                        return links.join(" ");
                     },
                     className: "text-center",
                     orderable: false,
@@ -336,18 +364,13 @@
                 $(`#${this.modal_id}`).modal("hide");
                 $("#loading").modal("show");
 
+                this.state.survey.photos = this.state.photoLinkQueue;
                 const surveyPromise = (!this.state.editMode)
                     ? createSurvey(this.state.survey)
                     : updateSurvey(this.state.survey);
 
                 surveyPromise
                     .then((surveyData) => {
-                        // match the orphan photos up to the newly created survey
-                        const surveyId = surveyData.id;
-                        this.state.survey.photos.forEach((p) => {
-                            p.fkLink = surveyId;
-                            putPhotoData(p);
-                        });
                         this.props.parent.getStructureSurveys(
                             this.state,
                             this.data_table_id,
@@ -355,6 +378,7 @@
                             "assetConditions",
                         );
                         this.update({
+                            photoLinkQueue: [],
                             survey: new EstradaSurvey({}), // clear input values
                         });
                         this.props.showFeedback();
@@ -364,11 +388,8 @@
                     })
                     .finally((r) => {
                         $("#loading").modal("hide");
+                        this.update();
                     });
-
-                // clear input values
-                this.state.survey = new EstradaSurvey({});
-                this.update();
             },
             canSave() {
                 const missingFieldNames = checkRequiredFields(this.requiredFieldNames, this.state.survey);

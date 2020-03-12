@@ -11,9 +11,6 @@ import {
     numberLanesColumns,
     pavementClassColumns,
     rainfallColumns,
-    structureConditionColumns,
-    structureConditionDescriptionColumns,
-    structurePhotosColumns,
     surfaceConditionColumns,
     surfaceTypeColumns,
     technicalClassColumns,
@@ -74,7 +71,7 @@ const attributeModalMapping = {
         reportDataTableId: "inventory-total-width-table",
         reportTable: null,
         title: gettext("Total Width segments"),
-    },    
+    },
     rainfall: {
         columns: rainfallColumns,
         reportDataTableId: "inventory-rainfall-table",
@@ -92,12 +89,6 @@ const attributeModalMapping = {
         reportDataTableId: "inventory-pavement-class-table",
         reportTable: null,
         title: gettext("Pavement Class segments"),
-    },
-    structure_photos: {
-        columns: structurePhotosColumns,
-        reportDataTableId: "inventory-structure-photos-table",
-        reportTable: null,
-        title: gettext("Inventory Photos details"),
     },
 }
 

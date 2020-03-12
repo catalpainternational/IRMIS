@@ -180,6 +180,14 @@
                                         <span class="checkbox image"></span>
                                         {% trans "Terrain Class" %}
                                     </div>
+                                    <div class="align-items-center d-flex text-nowrap" data-column="33">
+                                        <span class="checkbox image"></span>
+                                        {% trans "Inventory Photos" %}
+                                    </div>
+                                    <div class="align-items-center d-flex text-nowrap" data-column="34">
+                                        <span class="checkbox image"></span>
+                                        {% trans "Condition Photos" %}
+                                    </div>
                                 </div>
                                 <button class="btn btn-sm btn-secondary restore-road text-nowrap">
                                     {% trans "Return to default selection" %}
@@ -320,11 +328,14 @@
                                         <span class="checkbox image"></span>
                                         {% trans "Condition Description" %}
                                     </div>
-                                    <!-- <div class="align-items-center d-flex text-nowrap" data-column="23"
-                                        data-default="true">
-                                        <span class="checkbox image selected"></span>
+                                    <div class="align-items-center d-flex text-nowrap" data-column="23">
+                                        <span class="checkbox image"></span>
+                                        {% trans "Condition Photos" %}
+                                    </div>
+                                    <div class="align-items-center d-flex text-nowrap" data-column="24">
+                                        <span class="checkbox image"></span>
                                         {% trans "Inventory Photos" %}
-                                    </div> -->
+                                    </div>
                                 </div>
                                 <button class="btn btn-sm btn-secondary restore-structure text-nowrap">
                                     {% trans "Return to default selection" %}
@@ -369,9 +380,6 @@
                 <table id="inventory-rainfall-table" class="d-block table table-bordered table-hover w-100"></table>
                 <table id="inventory-pavement-class-table" class="d-block table table-bordered table-hover w-100">
                 </table>
-                {% comment %} STRUCTURES COLUMN MODALS TABLES {% endcomment %}
-                <!-- <table id="inventory-structure-photos-table" class="d-block table table-bordered table-hover w-100">
-                </table> -->
                 {% comment %} Special Snowflake Traffic Data modal {% endcomment %}
                 <div id="inventory-traffic-level-table_wrapper">
                     <traffic_data_details></traffic_data_details>
