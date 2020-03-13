@@ -14,5 +14,12 @@ class Command(BaseCommand):
         with connection.cursor() as c:
             for statement in statements.split(";"):
                 if statement != "\n":
-                    self.stdout.write(statement)
+                    # self.stdout.write(statement)
+                    statement = statement.strip("\n")
                     c.execute(statement)
+                if "DROP" in statement:
+                    self.stdout.write(statement[:76] + "...")
+                elif "CREATE" in statement:
+                    self.stdout.write(statement.split("\n")[0][:76] + "...")
+                elif "COMMENT" in statement:
+                    self.stdout.write(statement[:76] + "...")

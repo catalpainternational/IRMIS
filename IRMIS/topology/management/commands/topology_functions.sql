@@ -1,5 +1,4 @@
-DROP FUNCTION IF EXISTS point_to_chainage(geometry);
-
+DROP FUNCTION IF EXISTS closest_roadcode_to_point(geometry);
 CREATE OR REPLACE FUNCTION closest_roadcode_to_point(IN inputpoint geometry, OUT roadcode text, OUT linefraction float)
 AS $$
 WITH index_query AS (
@@ -14,7 +13,7 @@ $$ LANGUAGE SQL;
 
 COMMENT ON FUNCTION closest_roadcode_to_point(geometry) IS 'Given an input point, return the nearest road code and the fraction along the line which the input point is closest to';
 
-
+DROP FUNCTION IF EXISTS closest_roadcode_to_point(geometry, text);
 CREATE OR REPLACE FUNCTION closest_roadcode_to_point(IN inputpoint geometry, IN in_roadcode text, OUT roadcode text, OUT linefraction float)
 AS $$
 WITH index_query AS (
@@ -32,6 +31,7 @@ $$ LANGUAGE SQL;
 COMMENT ON FUNCTION closest_roadcode_to_point(geometry, text) IS 'Given an input point and a road code, return the nearest road code and the fraction along the line which the input point is closest to';
 
 
+DROP FUNCTION IF EXISTS closest_roadid_to_point(geometry, text);
 CREATE OR REPLACE FUNCTION closest_roadid_to_point(IN inputpoint geometry, IN roadcode text, OUT road_id integer)
 AS $$
 WITH index_query AS (
@@ -46,7 +46,7 @@ $$ LANGUAGE SQL;
 
 COMMENT ON FUNCTION closest_roadid_to_point(geometry, text) IS 'Given an input point, and a specified road code, return the ID of the nearest "assets road"';
 
-
+DROP FUNCTION IF EXISTS point_to_chainage(geometry);
 CREATE OR REPLACE FUNCTION point_to_chainage(IN inputpoint geometry, OUT chainage float, OUT road_code text )
 AS $$
 WITH index_query AS (
@@ -62,6 +62,7 @@ LANGUAGE SQL;
 COMMENT ON FUNCTION point_to_chainage(geometry) IS 'Given an input point, return the closest point on a road, the chainage of that closest point, and the road code';
 
 
+DROP FUNCTION IF EXISTS point_to_chainage(geometry, text);
 CREATE OR REPLACE FUNCTION point_to_chainage(IN inputpoint geometry, IN chainage_road_code text, OUT chainage float, OUT road_code text )
 AS $$
 WITH index_query AS (
@@ -74,7 +75,7 @@ FROM index_query, topology_estradaroad
 $$
 LANGUAGE SQL;
 
-COMMENT ON FUNCTION point_to_chainage(geometry) IS 'Given an input point and a road code, return the closest point on a road, the chainage of that closest point, and the road code';
+COMMENT ON FUNCTION point_to_chainage(geometry, text) IS 'Given an input point and a road code, return the closest point on a road, the chainage of that closest point, and the road code';
 
 
 DROP FUNCTION IF EXISTS chainage_to_point(float, text);
