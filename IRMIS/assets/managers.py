@@ -115,6 +115,18 @@ class NearestAssetRoadId(Func):
     default_alias = "road_id"
 
 
+class ST_DWithin(Func):
+    """
+    Annotate if the geometries are within specified distance
+    Wrapper around PostGIS function
+    'boolean ST_DWithin(geometry g1, geometry g2, double precision distance_of_srid);'
+    """
+
+    function = "ST_DWithin"
+    output_field = models.BooleanField()
+    template = "%(function)s(%(expressions)s)"
+
+
 def road_field_subquery(
     road_model_field: str, annotation_field_name: str = None
 ) -> Dict[str, Subquery]:
