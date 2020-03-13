@@ -19,6 +19,16 @@ from django.db.models import (
 from django.db import connection
 
 
+class HstoreFieldAsFloat(Func):
+    """
+    Brain dead django tries to CAST the whole HSTORE field if you use CAST.
+    """
+
+    template = """(%(expressions)s -> '%(fieldname)s')::numeric"""
+    output_field = models.FloatField()
+    default_alias = "value"
+
+
 class RoughnessRoadCode(Func):
     """
     Django Func implementation to extract road code from roughness csv json
@@ -157,11 +167,10 @@ def update_roughness_survey_values():
     based on the road class and our approximate class breaks for good, bad, and ugly
     """
 
-    def road_roughness_q() -> Case:
+    def road_roughness_q(roughness_field_name: str = "roughness_as_float") -> Case:
         """
         A CASE statement generator for road roughness
         """
-        roughness_field_name = "values__source_roughness"
         road_asset_class = "road_asset_class"  # Assumes that .annotate(**road_field_subquery("asset_class")) has been added to your Survey qs
 
         mun = Q(**{road_asset_class: "MUN"})
@@ -180,9 +189,9 @@ def update_roughness_survey_values():
                     }
                 )
             elif end:
-                return Q(**{roughness_field_name + "__gte": end})
+                return Q(**{roughness_field_name + "__lt": end})
             elif start:
-                return Q(**{roughness_field_name + "__lt": start})
+                return Q(**{roughness_field_name + "__gte": start})
 
         whens = [
             When(condition, then=Value(label))
@@ -204,6 +213,11 @@ def update_roughness_survey_values():
         apps.get_model("assets", "Survey")
         .objects.filter(values__has_key="source_roughness")
         .annotate(**road_field_subquery("asset_class"))
+        .annotate(
+            roughness_as_float=HstoreFieldAsFloat(
+                F("values"), fieldname="source_roughness"
+            )
+        )
         .annotate(
             new_values=Func(
                 road_roughness_q(),  # CASE statement generating road roughness
