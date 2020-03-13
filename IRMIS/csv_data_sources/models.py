@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField, JSONField
+from django.contrib.postgres.indexes import GistIndex, GinIndex
 
 
 class CsvDataSource(models.Model):
@@ -17,6 +18,11 @@ class CsvDataSource(models.Model):
 
 
 class CsvData(models.Model):
+    class Meta:
+        indexes = [
+            GinIndex(fields=["data"]),
+        ]
+
     source = models.ForeignKey(
         CsvDataSource, on_delete=models.CASCADE, related_name="rows"
     )

@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.gis.db import models
+from django.contrib.postgres.indexes import GistIndex
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import HStoreField, JSONField
@@ -135,6 +136,10 @@ class SurveyManager(models.Manager):
 
 @reversion.register()
 class Survey(models.Model):
+    class Meta:
+        indexes = [
+            GistIndex(fields=["values"]),
+        ]
 
     objects = SurveyManager()
 
