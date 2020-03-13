@@ -230,6 +230,7 @@ def update_roughness_chainage_values():
         AND  (inner_q."values" -> 'csv_data_row_index')::integer = (assets_survey."values" ->'csv_data_row_index')::integer - (1 * (assets_survey."values" ->'csv_data_invert')::integer)
         AND inner_q."values" ?& ARRAY['csv_data_source_id', 'csv_data_row_index', 'source_roughness']
         AND assets_survey."values" ?& ARRAY['csv_data_source_id', 'csv_data_row_index', 'source_roughness']
+        AND ABS(assets_survey.chainage_start - inner_q.chainage_end) < 25
 	;
 
     UPDATE assets_survey SET chainage_end =
@@ -240,6 +241,7 @@ def update_roughness_chainage_values():
         AND inner_q."chainage_end" != assets_survey.chainage_start
         AND inner_q."values" ?& ARRAY['csv_data_source_id', 'csv_data_row_index', 'source_roughness']
         AND assets_survey."values" ?& ARRAY['csv_data_source_id', 'csv_data_row_index', 'source_roughness']
+        AND ABS(assets_survey.chainage_end - inner_q.chainage_start) < 25
     ;
     """
 
@@ -252,24 +254,26 @@ class CsvSurveyQueryset(models.QuerySet):
 
     def roughness(self):
         """ returns all roughness survey csv data annotated with typed fields  """
+
         return (
             self.filter(source__data_type="roughness")
             .annotate(
-                RoughnessRoadCode(),
-                RoughnessLinkCode(),
-                Roughness(),
-                RoughnessDate(),
-                RoughnessStartPoint(),
-                RoughnessEndPoint(),
+                RoughnessRoadCode(), RoughnessLinkCode(), Roughness(), RoughnessDate(),
             )
             .annotate(
-                start_utm=Transform(F("start"), srid=32751),
-                end_utm=Transform(F("end"), srid=32751),
+                start_utm=Transform(RoughnessStartPoint(), srid=32751),
+                end_utm=Transform(RoughnessEndPoint(), srid=32751),
             )
             .annotate(
                 chainage_start=Chainage(F("start_utm"), F("road_code")),
                 chainage_end=Chainage(F("end_utm"), F("road_code")),
                 road_id=NearestAssetRoadId(F("start_utm"), F("road_code")),
+            )
+            .annotate(
+                chainage_start_utm=chainage_to_point(
+                    F("chainage_start"), F("road_code")
+                ),
+                chainage_end_utm=chainage_to_point(F("chainage_end"), F("road_code")),
             )
         )
 
@@ -280,7 +284,12 @@ class RoughnessManager(models.Manager):
     def get_queryset(self):
         return CsvSurveyQueryset(self.model, using=self._db).roughness()
 
-    def make_surveys(self, username="survey_import", batch_size=1000):
+    def make_surveys(
+        self,
+        username: str = "survey_import",
+        batch_size: int = 1000,
+        tolerance: int = 50,
+    ):
         """
         Convert "CSV Roughness" row to a "Survey" row
         """
@@ -304,6 +313,15 @@ class RoughnessManager(models.Manager):
             self.get_queryset()
             .filter(chainage_start__isnull=False)
             .filter(chainage_end__isnull=False)
+            .annotate(
+                start_distance_check=ST_DWithin(
+                    F("chainage_start_utm"), F("start_utm"), tolerance
+                ),
+                end_distance_check=ST_DWithin(
+                    F("chainage_end_utm"), F("end_utm"), tolerance
+                ),
+            )
+            .filter(start_distance_check=True, end_distance_check=True)
         )
 
         # Survey instance creation time!
