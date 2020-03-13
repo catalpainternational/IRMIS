@@ -7,7 +7,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("csv_data_sources", "0001_initial"),
-        ("assets", "0027_auto_20200114_0742"),
+        ("assets", "0040_roadfeatureattributes_20200310_0313"),
     ]
 
     operations = [
