@@ -122,8 +122,8 @@ def road_field_subquery(
     For models with a pseudo-foreign-key to a Road ID, fetch a relevant field on the
     road model
 
-    >>> Survey.objects.annotate(**road_field_subquery('road_type')).values('road_id', 'road_road_type')
-    <SurveyQuerySet [... {'road_id': 133, 'road_road_type': 'MUN'}, {'road_id': 133, 'road_road_type': 'MUN'},...']>
+    >>> Survey.objects.annotate(**road_field_subquery('asset_class')).values('road_id', 'road_asset_class')
+    <SurveyQuerySet [... {'road_id': 133, 'road_asset_class': 'MUN'}, {'road_id': 133, 'road_asset_class': 'MUN'},...']>
     """
 
     # When it's not defined, the returned annotation field is generated below
@@ -150,10 +150,10 @@ def update_roughness_survey_values():
         A CASE statement generator for road roughness
         """
         roughness_field_name = "values__source_roughness"
-        road_type_name = "road_road_type"  # Assumes that .annotate(**road_field_subquery("road_type")) has been added to your Survey qs
+        road_asset_class = "road_asset_class"  # Assumes that .annotate(**road_field_subquery("asset_class")) has been added to your Survey qs
 
-        mun = Q(**{road_type_name: "MUN"})
-        nat = Q(**{road_type_name: "NAT"})
+        mun = Q(**{road_asset_class: "MUN"})
+        nat = Q(**{road_asset_class: "NAT"})
 
         def roughness_range(start: int = None, end: int = None) -> Q:
             """
@@ -191,7 +191,7 @@ def update_roughness_survey_values():
     return (
         apps.get_model("assets", "Survey")
         .objects.filter(values__has_key="source_roughness")
-        .annotate(**road_field_subquery("road_type"))
+        .annotate(**road_field_subquery("asset_class"))
         .annotate(
             new_values=Func(
                 road_roughness_q(),  # CASE statement generating road roughness
