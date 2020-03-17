@@ -316,7 +316,7 @@ class RoughnessManager(models.Manager):
             user = usermodel.objects.get(username=username)
         except usermodel.DoesNotExist:
             if username == "survey_import":
-                user = usermodel.objects.create(username="survey_import")
+                user = user_model.objects.create(username="survey_import")
 
         # Creating "survey" instances from "csv row" instances
         # This takes a while
