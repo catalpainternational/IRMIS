@@ -309,7 +309,7 @@ class RoughnessManager(models.Manager):
         """
         #  Using 'apps.get_model' here avoids potential future import woes
         model = apps.get_model("assets", "survey")
-        usermodel = apps.get_model("auth", "User")
+        user_model = apps.get_model("auth", "User")
 
         # Who do you want the surveys imported as? Default: "survey_import"
         try:
