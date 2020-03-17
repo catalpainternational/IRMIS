@@ -313,7 +313,7 @@ class RoughnessManager(models.Manager):
 
         # Who do you want the surveys imported as? Default: "survey_import"
         try:
-            user = usermodel.objects.get(username=username)
+            user = user_model.objects.get(username=username)
         except usermodel.DoesNotExist:
             if username == "survey_import":
                 user = user_model.objects.create(username="survey_import")
