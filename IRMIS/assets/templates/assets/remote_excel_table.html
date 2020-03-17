@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<body>
+    <table>
+        <thead>
+            <tr>
+                {% for th in data.headers %}
+                <th>{{th}}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for tr in data.data %}
+            <tr>
+                {% for td in tr %}
+                <td>{{td}}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>

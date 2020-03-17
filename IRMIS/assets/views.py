@@ -25,6 +25,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Value, CharField, OuterRef, Prefetch, Subquery
 from django.db.models.functions import Cast, Substr
+from django.views.generic import TemplateView
 
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.exceptions import MethodNotAllowed
@@ -1635,3 +1636,56 @@ def photo_delete(request):
     return HttpResponse(
         req_pb.SerializeToString(), status=200, content_type="application/octet-stream",
     )
+
+
+class ExcelDataSourceIqy(TemplateView):
+    """
+    Generate an .iqy file for Excel to use as a link to a datasource
+    """
+
+    content_type = "application/text"
+    template_name = "assets/iqy.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context.update(
+            {
+                "user": "iqy_query",
+                "password": "only-for-estrada-users-secret",
+                "slug": kwargs["slug"],
+            }
+        )
+
+        context.update(
+            {"scheme": self.request._get_scheme(), "host": self.request.get_host(),}
+        )
+        return context
+
+
+class ExcelDataSource(TemplateView):
+    """
+    Connection endpoint for an .iqy file generating an HTML table
+    """
+
+    template_name = "assets/remote_excel_table.html"
+
+    def post(self, *args, **kwargs):
+        # raise AssertionError('Check your username and password')
+        return super().post(*args, **kwargs)
+
+    def get(self, *args, **kwargs):
+        # raise AssertionError('POST to me')
+        return super().get(*args, **kwargs)
+
+    def get_context_data(self, *args, **kwargs):
+
+        context = super().get_context_data(*args, **kwargs)
+        context["data"] = {
+            "headers": ["foo", "bar"],
+            "data": [
+                ["foo one", "bar one",],
+                ["foo two", "bar two",],
+                ["foo 3", "bar 3",],
+            ],
+        }
+        return context

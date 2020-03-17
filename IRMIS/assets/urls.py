@@ -30,6 +30,8 @@ from .views import (
     plan_create,
     plan_delete,
     plan_update,
+    ExcelDataSource,
+    ExcelDataSourceIqy,
 )
 
 # Wire up our API using automatic URL routing.
@@ -115,4 +117,7 @@ urlpatterns = [
         protobuf_structure_surveys,
         name="protobuf_structure_surveys",
     ),
+    path("reports/", protobuf_reports, name="protobuf_reports"),
+    path("remote/<slug:slug>.iqy", ExcelDataSourceIqy.as_view()),
+    path("remote/<slug:slug>.html", ExcelDataSource.as_view(), name="exceldatasource"),
 ]
