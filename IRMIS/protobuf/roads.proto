@@ -41,13 +41,16 @@ message Road {
   // uint32 last_revision_id = 24;
   Projection projection_start = 25;
   Projection projection_end = 26;
-  // number_lanes is u unit -we use int32 so that we can set it to -ve to indicate when it is null / None
+  // number_lanes is uint - we use int32 so that we can set it to -ve to indicate when it is null / None
   int32 number_lanes = 27;
   int32 rainfall = 28;
   int32 construction_year = 30;
   int32 population = 31;
   // core is a nullable boolean - we use int32 so that we can set it to -ve to indicate when it is null / None
   int32 core = 32;
+  repeated int32 served_facilities = 33;
+  repeated int32 served_economic_areas = 34;
+  repeated int32 served_connection_types = 35;
 }
 
 message Roads {

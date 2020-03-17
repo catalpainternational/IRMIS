@@ -157,6 +157,30 @@ export const estradaTableColumns = [
         className: "text-right",
     },
     {
+        title: window.gettext("Start Point (DMS)"),
+        data: "startDMS",
+        defaultContent: "",
+        visible: false,
+    },
+    {
+        title: window.gettext("End Point (DMS)"),
+        data: "endDMS",
+        defaultContent: "",
+        visible: false,
+    },
+    {
+        title: window.gettext("Start Point (UTM)"),
+        data: "startUTM",
+        defaultContent: "",
+        visible: false,
+    },
+    {
+        title: window.gettext("End Point (UTM)"),
+        data: "endUTM",
+        defaultContent: "",
+        visible: false,
+    },
+    {
         title: EstradaRoad.getFieldName("surface_type"),
         data: null,
         defaultContent: "",
@@ -186,6 +210,14 @@ export const estradaTableColumns = [
         render: r => buttonSegmentsTemplate("total_width", r),
         orderable: false,
         visible: false,
+    },
+    {
+        title: EstradaRoad.getFieldName("number_lanes"),
+        data: null,
+        defaultContent: "",
+        render: r => buttonSegmentsTemplate("number_lanes", r),
+        visible: false,
+        orderable: false,
     },
     {
         title: EstradaRoad.getFieldName("administrative_area"),
@@ -244,30 +276,6 @@ export const estradaTableColumns = [
         visible: false,
     },
     {
-        title: window.gettext("Start Point (DMS)"),
-        data: "startDMS",
-        defaultContent: "",
-        visible: false,
-    },
-    {
-        title: window.gettext("End Point (DMS)"),
-        data: "endDMS",
-        defaultContent: "",
-        visible: false,
-    },
-    {
-        title: window.gettext("Start Point (UTM)"),
-        data: "startUTM",
-        defaultContent: "",
-        visible: false,
-    },
-    {
-        title: window.gettext("End Point (UTM)"),
-        data: "endUTM",
-        defaultContent: "",
-        visible: false,
-    },
-    {
         title: window.gettext("Roughness (IRI)"),
         data: "",
         defaultContent: "",
@@ -292,14 +300,6 @@ export const estradaTableColumns = [
         defaultContent: "",
         render: r => buttonSegmentsTemplate("traffic_level", r),
         visible: false,
-    },
-    {
-        title: EstradaRoad.getFieldName("number_lanes"),
-        data: null,
-        defaultContent: "",
-        render: r => buttonSegmentsTemplate("number_lanes", r),
-        visible: false,
-        orderable: false,
     },
     {
         title: EstradaRoad.getFieldName("rainfall"),

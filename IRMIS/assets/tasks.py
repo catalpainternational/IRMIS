@@ -264,6 +264,15 @@ def import_shapefiles(management_command, shape_file_folder, asset="road"):
         )
 
 
+def get_first_available_numeric_value(feature, field_names):
+    for field_name in field_names:
+        field = feature.get(field_name)
+        if field and field != 0:
+            return field
+
+    return None
+
+
 def populate_bridge(bridge, feature):
     """ populates a bridge from the shapefile """
     had_bad_area = False
@@ -338,7 +347,9 @@ def populate_road_rrpmis(road, feature):
     road.link_start_name = feature.get("suconame")
     road.link_end_name = feature.get("suconame")
     road.administrative_area = feature.get("distname")
-    road.carriageway_width = feature.get("cway_w")
+    road.carriageway_width = get_first_available_numeric_value(
+        feature, ["cway_w", "CWAY_W", "Cway_W_1"]
+    )
     road.road_code = feature.get("rdcode_cn")
     asset_condition = feature.get("pvment_con")
     if asset_condition and asset_condition != "0" and asset_condition != "Unlined":
@@ -367,25 +378,6 @@ def populate_road_rrpmis(road, feature):
 def import_csv(management_command, csv_folder):
     """ updates existing roads with data from csv files """
 
-    # special fixups
-    # address duplicate A02-06
-    zumalai_suai = Road.objects.get(
-        road_name="Zumalai (Junction A12) - Suai (Junction C21)"
-    )
-    if zumalai_suai.link_code != "A02-07":
-        zumalai_suai.link_code = "A02-07"
-        with reversion.create_revision():
-            zumalai_suai.save()
-            reversion.set_comment("Fixup - link code changed from A02-06 to A02-07")
-
-    # address mismatch in shapefiles and excel
-    same_betano = Road.objects.get(road_name="Same - Betano")
-    if same_betano.link_code != "A05-03":
-        same_betano.link_code = "A05-03"
-        with reversion.create_revision():
-            same_betano.save()
-            reversion.set_comment("Fixup - link code changed from A05-02 to A05-03")
-
     source_dir = Path(csv_folder)
     sources = (
         (
@@ -400,7 +392,6 @@ def import_csv(management_command, csv_folder):
     )
 
     for file_name, identifying_filters in sources:
-
         csv_path = str(source_dir / file_name)
         with open(csv_path, "r") as csvfile:
             reader = csv.DictReader(csvfile)

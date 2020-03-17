@@ -10,6 +10,9 @@ from .models import (
     PavementClass,
     MaintenanceNeed,
     TechnicalClass,
+    FacilityType,
+    EconomicArea,
+    ConnectionType,
     Survey,
     StructureProtectionType,
     Bridge,
@@ -49,6 +52,9 @@ admin.site.register(SurfaceType)
 admin.site.register(PavementClass)
 admin.site.register(MaintenanceNeed)
 admin.site.register(TechnicalClass)
+admin.site.register(FacilityType)
+admin.site.register(EconomicArea)
+admin.site.register(ConnectionType)
 admin.site.register(Survey)
 admin.site.register(StructureProtectionType)
 admin.site.register(BridgeClass)
