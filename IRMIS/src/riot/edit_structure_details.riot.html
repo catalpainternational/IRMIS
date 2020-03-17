@@ -50,20 +50,7 @@
         </section>
 
         <section>
-            <div class="form-group">
-                <label>{ window.gettext("Construction Year") }</label>
-                <small class="form-text text-muted">{ window.gettext("Enter structure's construction year") }</small>
-                <input
-                    class="{ state.errors.constructionYear ? 'danger' : null } { state.constructionYear !== -1 && state.constructionYear !== '' ? '' : 'inactive' } form-control"
-                    type="number" placeholder="1970"
-                    value="{ state.constructionYear !== -1 ? state.constructionYear : '' }" min="1970"
-                    max="{ new Date() }" oninput="{ checkConstructionYear }">
-                <div if="{ state.errors.constructionYear }" class="invalid-tooltip">
-                    <ul>
-                        <li>{ state.errors.constructionYear }.</li>
-                    </ul>
-                </div>
-            </div>
+            <edit_field_construction_year asset="{ props.structure }"></edit_field_construction_year>
         </section>
 
         <section>
@@ -186,12 +173,13 @@
 
     <script>
         import Edit_Stop_Alert from "./edit_stop_alert.riot.html";
+        // EDIT FIELD TAGS
+        import Edit_Field_Construction_Year from "./edit_field_construction_year.riot.html";
 
         import { containsWhiteSpaces, withinMaxDigits } from "../assets/utilities";
 
         export default {
             state: {
-                constructionYearDigits: 4,
                 lengthDecimals: 2,
                 widthDigits: 4,
                 widthDecimals: 2,
@@ -203,13 +191,12 @@
                 errors: {},
             },
             components: {
-                Edit_Stop_Alert
+                Edit_Field_Construction_Year, Edit_Stop_Alert
             },
             onBeforeMount(props, state) {
                 state.loading = true;
                 state.code = props.structure.code;
                 state.name = props.structure.name;
-                state.constructionYear = props.structure.getConstructionYear();
                 state.length = props.structure.getLength();
                 state.width = props.structure.getWidth();
 
@@ -244,17 +231,6 @@
             checkRiverName(e) {
                 this.state.riverName = e.currentTarget.value;
                 this.props.structure.setRiverName(this.state.riverName);
-                this.update();
-            },
-            checkConstructionYear(e) {
-                const value = e.currentTarget.value;
-                if (!withinMaxDigits(value, this.state.constructionYearDigits)) {
-                    this.state.errors.constructionYear = window.gettext(`Construction year cannot contain more than ${this.state.constructionYearDigits} digits and value shouldn't contain decimals`);
-                } else {
-                    delete this.state.errors.constructionYear;
-                    this.state.constructionYear = value;
-                    this.props.structure.setConstructionYear(value);
-                }
                 this.update();
             },
             checkLength(e) {

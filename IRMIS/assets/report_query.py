@@ -322,6 +322,10 @@ class ReportQuery:
             "surface_type",
             "terrain_class",
             "traffic_level",
+            # these are M-M references
+            "served_facilities",
+            "served_economic_areas",
+            "served_connection_types",
             # Road Specific
             "technical_class",
             "population",
@@ -371,7 +375,11 @@ class ReportQuery:
             "surface_type",
             "technical_class",
             "maintenance_need",
-            "road_statusn",
+            "road_status",
+            # these are M-M references
+            "served_facilities",
+            "served_economic_areas",
+            "served_connection_types",
             # Structure specific - some are specific to only bridge or only culvert
             "length",
             "width",

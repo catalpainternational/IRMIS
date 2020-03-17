@@ -87,6 +87,18 @@ export const carriagewayWidthColumns = baseSegmentColumns.concat([
     },
 ]);
 
+export const totalWidthColumns = baseSegmentColumns.concat([
+    {
+        title: window.gettext("Total width (m)"),
+        data: "totalWidth",
+        defaultContent: "",
+        orderable: false,
+        render: (data, type) => {
+            return (type === "display" && typeof data === "number") ? data.toFixed(1) : data;
+        },
+    },
+]);
+
 export const rainfallColumns = baseSegmentColumns.concat([
     {
         title: window.gettext("Rainfall (mm)"),

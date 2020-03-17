@@ -34,11 +34,18 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("attributes", django.contrib.postgres.fields.jsonb.JSONField()),
+                (
+                    "attributes",
+                    django.contrib.postgres.fields.jsonb.JSONField(
+                        verbose_name="Attributes"
+                    ),
+                ),
                 (
                     "road",
                     models.OneToOneField(
-                        on_delete=django.db.models.deletion.CASCADE, to="assets.Road"
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="assets.Road",
+                        verbose_name="Road",
                     ),
                 ),
             ],

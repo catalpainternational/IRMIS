@@ -29,6 +29,7 @@
 }
 
 #carriageway-width-table, #carriageway-width-report-table,
+#total-width-table, #total-width-report-table,
 #technical-class-table, #technical-class-report-table,
 #number-lanes-table, #number-lanes-report-table,
 #terrain-type-table, #terrain-type-report-table,
@@ -47,6 +48,7 @@
 #inventory-technical-class-table,
 #inventory-number-lanes-table,
 #inventory-carriageway-width-table,
+#inventory-total-width-table,
 #inventory-terrain-class-table,
 #inventory-rainfall-table,
 #inventory-pavement-class-table,
@@ -54,7 +56,6 @@
 #inventory-structure-photos-table,
 #inventory-structure-condition-table,
 #inventory-structure-condition-description-table {
-    border-bottom: 1px solid $light-gray;
     border-right: 1px solid $light-gray;
     border-left: 1px solid $light-gray;
     margin-bottom: 0 !important;

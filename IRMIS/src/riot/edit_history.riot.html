@@ -56,6 +56,12 @@
                             const json = JSON.parse(data);
                             const fields = json[0].changed.fields;
                             const fieldDisplay = fields.map((f) => {
+                                switch (f) {
+                                    case "served_facilities": f = "facility_type"; break;
+                                    case "served_economic_areas": f = "economic_area"; break;
+                                    case "served_connection_types": f = "connection_type"; break;
+                                    default: break;
+                                }
                                 return window.asset_schema[f].display
                             }).join(", ");
                             return `${window.gettext('Changed')}: ${fieldDisplay}`;
