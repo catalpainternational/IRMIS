@@ -398,6 +398,7 @@ ROAD_SURVEY_VALUE_MAPPINGS = [
     ("served_connection_types", "served_connection_types", codes_values_transform),
 ]
 
+
 TRAFFIC_CSV_VALUE_MAPPINGS = [
     ("forecastYear", 4, int_transform),
     ("surveyFromDate", 4, date_soy_transform),
@@ -564,7 +565,7 @@ def create_programmatic_surveys_for_roads(management_command, roads, attributes)
             "asset_code": road.road_code,
             "chainage_start": road.geom_start_chainage,
             "chainage_end": road.geom_end_chainage,
-            "values": road.__dict__,
+            "values": road,
         }
 
         # For each road get all of the numeric attributes that were imported with it
@@ -581,7 +582,7 @@ def create_programmatic_surveys_for_roads(management_command, roads, attributes)
                         road_attributes.attributes, source_attributes
                     )
                     if survey_value:
-                        survey_data["values"][survey_attribute] = survey_value
+                        survey_data["values"].__dict__[survey_attribute] = survey_value
 
         created += create_programmatic_survey(
             management_command, survey_data, ROAD_SURVEY_VALUE_MAPPINGS, "Road Link"
