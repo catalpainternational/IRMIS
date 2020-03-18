@@ -244,6 +244,13 @@ class Survey(models.Model):
     values = HStoreField()
 
     def __str__(self,):
+        if not self.asset_id:
+            return "(%s) %s %s - Bad Survey" % (
+                self.id,
+                self.asset_code,
+                self.date_updated,
+            )
+
         if self.asset_id.startswith("ROAD"):
             return "%s(%s - %s) %s" % (
                 self.asset_code,
