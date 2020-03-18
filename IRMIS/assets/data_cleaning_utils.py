@@ -522,6 +522,8 @@ def create_programmatic_surveys_for_roads(management_command, roads, attributes)
                     if survey_value:
                         survey_data["values"][survey_attribute] = survey_value
 
+            print(survey_data)
+
         created += create_programmatic_survey(
             management_command, survey_data, ROAD_SURVEY_VALUE_MAPPINGS, "Road Link"
         )
