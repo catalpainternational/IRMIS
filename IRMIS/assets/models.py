@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.gis.db import models
+from django.contrib.postgres.indexes import GistIndex
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.aggregates.general import ArrayAgg
@@ -22,6 +23,8 @@ import json
 from google.protobuf.timestamp_pb2 import Timestamp
 from google.protobuf.wrappers_pb2 import FloatValue, UInt32Value
 from .geodjango_utils import start_end_point_annos
+from csv_data_sources.models import CsvData
+from .managers import RoughnessManager
 
 
 def no_spaces(value):
@@ -172,6 +175,10 @@ class SurveyManager(models.Manager):
 
 @reversion.register()
 class Survey(models.Model):
+    class Meta:
+        indexes = [
+            GistIndex(fields=["values"]),
+        ]
 
     objects = SurveyManager()
 
@@ -1310,6 +1317,15 @@ class Culvert(models.Model):
 
     def __str__(self,):
         return "%s(%s)" % (self.structure_name, self.pk)
+
+
+class RoughnessSurvey(CsvData):
+    """ Proxy model to provide typed access to roughness CSV data """
+
+    class Meta:
+        proxy = True
+
+    objects = RoughnessManager()
 
 
 def timestamp_from_datetime(dt):

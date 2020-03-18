@@ -590,7 +590,7 @@ def protobuf_reports(request):
                     ts = Timestamp()
                     ts.FromDatetime(report_survey["date_surveyed"])
                     report_attribute.date_surveyed.CopyFrom(ts)
-                report_attribute.added_by = report_survey["added_by"]
+                report_attribute.added_by = report_survey["added_by"] or ""
                 if report_survey["value"]:
                     report_attribute.value = report_survey["value"]
                 # road_id and road_code should only be present if required by a structure report
