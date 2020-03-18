@@ -32,6 +32,7 @@ from .views import (
     plan_update,
     ExcelDataSource,
     ExcelDataSourceIqy,
+    SurveyExcelDataSource,
 )
 
 # Wire up our API using automatic URL routing.
@@ -119,5 +120,10 @@ urlpatterns = [
     ),
     path("reports/", protobuf_reports, name="protobuf_reports"),
     path("remote/<slug:slug>.iqy", ExcelDataSourceIqy.as_view()),
-    path("remote/<slug:slug>.html", ExcelDataSource.as_view(), name="exceldatasource"),
+    # path("remote/<slug:slug>.html", ExcelDataSource.as_view(), name="exceldatasource"),
+    path(
+        "remote/survey.html",
+        SurveyExcelDataSource.as_view(),
+        name="surveyexceldatasource",
+    ),
 ]

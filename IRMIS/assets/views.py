@@ -7,6 +7,7 @@ from datetime import datetime
 from collections import Counter, defaultdict
 import pytz
 
+from django.db import connection
 from django.contrib.auth import get_user_model
 from django.contrib.gis.db import models
 from django.core.files.base import ContentFile
@@ -25,7 +26,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Value, CharField, OuterRef, Prefetch, Subquery
 from django.db.models.functions import Cast, Substr
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
 
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.exceptions import MethodNotAllowed
@@ -46,6 +47,9 @@ from protobuf import (
     version_pb2,
 )
 from .report_query import ReportQuery
+
+
+from collections import namedtuple
 
 from .models import (
     Bridge,
@@ -79,6 +83,13 @@ def display_user(user):
         return ""
     user_display = user.get_full_name()
     return user_display or user.username
+
+
+def namedtuplefetchall(cursor):
+    "Return all rows from a cursor as a namedtuple"
+    desc = cursor.description
+    nt_result = namedtuple("Result", [col[0] for col in desc])
+    return [nt_result(*row) for row in cursor.fetchall()]
 
 
 def user_can_edit(user):
@@ -1678,14 +1689,77 @@ class ExcelDataSource(TemplateView):
         return super().get(*args, **kwargs)
 
     def get_context_data(self, *args, **kwargs):
-
+        headers = [
+            "id",
+            "asset_id",
+            "asset_code",
+            "road_id",
+            "road_code",
+            # "user",
+            "date_surveyed",
+            # "date_created",
+            # "date_updated",
+            "chainage_start",
+            "chainage_end",
+            "source",
+            "values__roughness",
+        ]
+        # headers = "id,date_created,link_code,road_code,surface_type".split(",")
+        data = list(Survey.objects.values_list(*headers))
         context = super().get_context_data(*args, **kwargs)
-        context["data"] = {
-            "headers": ["foo", "bar"],
-            "data": [
-                ["foo one", "bar one",],
-                ["foo two", "bar two",],
-                ["foo 3", "bar 3",],
-            ],
-        }
+        context["data"] = {"headers": headers, "data": data}
+        return context
+
+
+class SurveyExcelDataSource(TemplateView):
+
+    template_name = "assets/remote_excel_table.html"
+
+    awesome_template = """
+    WITH r AS (
+        SELECT 
+            assets_survey.id,
+            numrange(chainage_start, chainage_end) chainagerange,
+            chainage_start,
+            chainage_end,
+            road_code,
+            values -> %s AS val
+            FROM public.assets_survey 
+            WHERE values ? %s
+            AND road_code = %s
+            AND chainage_start < chainage_end
+            ORDER BY chainage_start ASC
+        ), b AS (
+        SELECT *, 
+            -- Hey, are you the next one in the link?
+            -- If you are, I'll be a NULL
+            lag(chainage_end) OVER (ORDER BY chainagerange) < chainage_start OR NULL AS step,
+            -- Hey, are you still the same value?
+            -- If you are, I'll be a NULL
+            lag(val) OVER (ORDER BY chainagerange) != val OR NULL AS val_changes
+        FROM   r
+        ), c AS (
+        SELECT *, 
+            count(step OR val_changes) OVER (ORDER BY chainagerange) AS grp
+            FROM   b
+        )
+        SELECT 
+            -- numrange(min(chainage_start), max(chainage_end)), 
+            -- grp,
+            val,
+            road_code,
+            min(chainage_start) chainage_start,
+            max(chainage_end) chainage_end
+        FROM c GROUP BY grp, val, road_code ORDER BY chainage_start;
+        """  # , [kwargs.val, kwargs.val, kwargs.road_code]
+
+    def get_context_data(self, *args, **kwargs):
+        query = self.awesome_template
+        road_code = self.request.GET.get("road_code") or "A01"
+        attribute = self.request.GET.get("val") or "roughness"
+        with connection.cursor() as c:
+            c.execute(query, [attribute, attribute, road_code])
+            objects = namedtuplefetchall(c)
+        context = super().get_context_data(*args, **kwargs)
+        context["objects"] = objects
         return context

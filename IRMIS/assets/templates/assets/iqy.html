@@ -1,4 +1,4 @@
 WEB {# First Line: Type of Query #} 
 1 {# Second Line: Version of Query #}
-{{scheme}}:/{{host}}/{% url 'exceldatasource' slug=slug %} {# Third Line: Uniform Resource Locator (URL) #}
+{{scheme}}:/{{host}}{% url 'exceldatasource' slug=slug %} {# Third Line: Uniform Resource Locator (URL) #}
 user={{user}}&password={{password}}

@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <body>
-    <table>
+    <table id="data">
         <thead>
             <tr>
-                {% for th in data.headers %}
-                <th>{{th}}</th>
-                {% endfor %}
+                <th>val</th>
+                <th>road_code</th>
+                <th>chainage_start</th>
+                <th>chainage_end</th>
             </tr>
         </thead>
         <tbody>
-            {% for tr in data.data %}
+            {% for o in objects %}
             <tr>
-                {% for td in tr %}
-                <td>{{td}}</td>
-                {% endfor %}
+                <td>{{o.val}}</td>
+                <td>{{o.road_code}}</td>
+                <td>{{o.chainage_start}}</td>
+                <td>{{o.chainage_end}}</td>
             </tr>
             {% endfor %}
         </tbody>
