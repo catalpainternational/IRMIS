@@ -11,19 +11,20 @@ from django.core.validators import MinValueValidator
 from django.db.models import Count, Max, OuterRef, Prefetch, Subquery
 from django.db.models.functions import Cast, Substr
 
+import json
 import reversion
 
-from protobuf.roads_pb2 import Roads as ProtoRoads
-from protobuf.roads_pb2 import Projection
-from protobuf.survey_pb2 import Surveys as ProtoSurveys
-from protobuf.structure_pb2 import Structures as ProtoStructures
-from protobuf.photo_pb2 import Photos as ProtoPhotos
+from csv_data_sources.models import CsvData
 
-import json
 from google.protobuf.timestamp_pb2 import Timestamp
 from google.protobuf.wrappers_pb2 import FloatValue, UInt32Value
+
+from protobuf.photo_pb2 import Photos as ProtoPhotos
+from protobuf.roads_pb2 import Roads as ProtoRoads, Projection
+from protobuf.survey_pb2 import Surveys as ProtoSurveys
+from protobuf.structure_pb2 import Structures as ProtoStructures
+
 from .geodjango_utils import start_end_point_annos
-from csv_data_sources.models import CsvData
 from .managers import RoughnessManager
 
 
