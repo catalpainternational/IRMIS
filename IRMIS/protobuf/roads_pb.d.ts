@@ -123,6 +123,21 @@ export class Road extends jspb.Message {
   getCore(): number;
   setCore(value: number): void;
 
+  clearServedFacilitiesList(): void;
+  getServedFacilitiesList(): Array<number>;
+  setServedFacilitiesList(value: Array<number>): void;
+  addServedFacilities(value: number, index?: number): number;
+
+  clearServedEconomicAreasList(): void;
+  getServedEconomicAreasList(): Array<number>;
+  setServedEconomicAreasList(value: Array<number>): void;
+  addServedEconomicAreas(value: number, index?: number): number;
+
+  clearServedConnectionTypesList(): void;
+  getServedConnectionTypesList(): Array<number>;
+  setServedConnectionTypesList(value: Array<number>): void;
+  addServedConnectionTypes(value: number, index?: number): number;
+
   clearInventoryPhotosList(): void;
   getInventoryPhotosList(): Array<photo_pb.Photo>;
   setInventoryPhotosList(value: Array<photo_pb.Photo>): void;
@@ -175,6 +190,9 @@ export namespace Road {
     constructionYear: number,
     population: number,
     core: number,
+    servedFacilitiesList: Array<number>,
+    servedEconomicAreasList: Array<number>,
+    servedConnectionTypesList: Array<number>,
     inventoryPhotosList: Array<photo_pb.Photo.AsObject>,
     surveyPhotosList: Array<photo_pb.Photo.AsObject>,
   }

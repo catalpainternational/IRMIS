@@ -15,6 +15,7 @@ import {
     surfaceTypeColumns,
     technicalClassColumns,
     terrainClassColumns,
+    totalWidthColumns,
 } from "./segmentsInventoryTableDefinition";
 import { datatableTranslations } from "./datatableTranslations";
 
@@ -67,11 +68,11 @@ const attributeModalMapping = {
         title: gettext("Carriageway Width segments"),
     },
     total_width: {
-        columns: carriagewayWidthColumns,
+        columns: totalWidthColumns,
         reportDataTableId: "inventory-total-width-table",
         reportTable: null,
         title: gettext("Total Width segments"),
-    },
+    },    
     rainfall: {
         columns: rainfallColumns,
         reportDataTableId: "inventory-rainfall-table",

@@ -10,6 +10,7 @@ from django.contrib.gis.gdal import DataSource, GDALException, OGRGeometry
 from django.core.management import call_command
 from django.db import connection
 from django.db.models import Q
+from django.core.serializers.json import DjangoJSONEncoder
 
 import geobuf
 import reversion
@@ -20,6 +21,7 @@ from .models import (
     Culvert,
     CollatedGeoJsonFile,
     Road,
+    RoadFeatureAttributes,
     RoadStatus,
     SurfaceType,
     MaintenanceNeed,
@@ -63,7 +65,7 @@ def update_from_shapefiles(management_command, shape_file_folder):
 
     sources = (
         ("Timor_Leste_RR_2019_Latest_Update_November.shp", "RUR", update_road_r4d),
-        ("RRMPIS_2014.shp", "RUR", update_road_rrpmis),
+        # ("RRMPIS_2014.shp", "RUR", update_road_rrpmis),
     )
     update_count = 0
     for file_name, asset_class, update in sources:
@@ -75,7 +77,11 @@ def update_from_shapefiles(management_command, shape_file_folder):
 
             # get the existing road
             try:
-                road = Road.objects.exclude(pk=4332).get(geom=feature.geom.geos)
+                # Feature 4182 from RRMPIS is a dupe of a municipal road
+                road = Road.objects.exclude(
+                    roadfeatureattributes__attributes__SOURCE_FILE_FID=4182,
+                    roadfeatureattributes__attributes__SOURCE_FILE="RRMPIS_2014.shp",
+                ).get(geom=feature.geom.geos)
             except GDALException as ex:
                 # print and continue if we have a invalid geometry
                 management_command.stderr.write(
@@ -84,6 +90,8 @@ def update_from_shapefiles(management_command, shape_file_folder):
                     )
                 )
                 continue
+            except Road.DoesNotExist:
+                print("Road does not exist, nothing to update")
 
             # update the road from shapefile properties
             update(road, feature)
@@ -204,6 +212,21 @@ def import_shapefiles(management_command, shape_file_folder, asset="road"):
                     "Imported - {} - feature id({})".format(file_name, feature.fid)
                 )
 
+            # populate the "original attributes" table
+            if asset == "road":
+                rfa = RoadFeatureAttributes(
+                    road=asset_obj,
+                    attributes={field: feature.get(field) for field in feature.fields},
+                )
+
+                rfa.attributes["SOURCE_FILE"] = file_name
+                rfa.attributes["SOURCE_FILE_FID"] = feature.fid
+
+                rfa.attributes = json.loads(
+                    json.dumps(rfa.attributes, cls=DjangoJSONEncoder)
+                )
+                rfa.save()
+
     if asset == "road":
         set_unknown_road_codes()
         set_road_municipalities()
@@ -239,6 +262,15 @@ def import_shapefiles(management_command, shape_file_folder, asset="road"):
                 "imported %s culverts" % Culvert.objects.all().count()
             )
         )
+
+
+def get_first_available_numeric_value(feature, field_names):
+    for field_name in field_names:
+        field = feature.get(field_name)
+        if field and field != 0:
+            return field
+
+    return None
 
 
 def populate_bridge(bridge, feature):
@@ -291,6 +323,9 @@ def populate_road_highway(road, feature):
 
 
 def update_road_r4d(road, feature):
+    """
+    Take selected attributes from the "Timor_Leste_RR_2019_Latest_Update_November" file
+    """
     road.road_name = feature.get("name")
     road.road_code = feature.get("r_code")
     road.link_length = feature.get("Lenght_Km")
@@ -303,16 +338,6 @@ def populate_road_r4d(road, feature):
     road.link_length = feature.get("Length__Km")
 
 
-def update_road_rrpmis(road, feature):
-    road.road_code = feature.get("RDIDFin")
-    road.core = feature.get("Note") == "Core"
-    population = feature.get("Population")
-    road.population = population if population > 0 else None
-    terrain_class = feature.get("Terr_class")
-    if terrain_class != "0" and terrain_class != "":
-        road.terrain_class = TERRAIN_CLASS_MAPPING[terrain_class]
-
-
 def populate_road_rrpmis(road, feature):
     """ populates a road from the rrmpis shapefile """
     road.link_code = feature.get("rdcode02")
@@ -322,7 +347,9 @@ def populate_road_rrpmis(road, feature):
     road.link_start_name = feature.get("suconame")
     road.link_end_name = feature.get("suconame")
     road.administrative_area = feature.get("distname")
-    road.carriageway_width = feature.get("cway_w")
+    road.carriageway_width = get_first_available_numeric_value(
+        feature, ["cway_w", "CWAY_W", "Cway_W_1"]
+    )
     road.road_code = feature.get("rdcode_cn")
     asset_condition = feature.get("pvment_con")
     if asset_condition and asset_condition != "0" and asset_condition != "Unlined":
@@ -337,29 +364,19 @@ def populate_road_rrpmis(road, feature):
         maint_code = MAINTENANCE_NEEDS_CHOICES_RRMPIS[maintenance_needs]
         road.maintenance_need = MaintenanceNeed.objects.get(code=maint_code)
 
+    # via def update_road_rrpmis(road, feature):
+    road.road_code = feature.get("RDIDFin")
+    road.core = feature.get("Note") == "Core"
+    population = feature.get("Population")
+    road.population = population if population > 0 else None
+    terrain_class = feature.get("Terr_class")
+    if terrain_class != "0" and terrain_class != "":
+        road.terrain_class = TERRAIN_CLASS_MAPPING[terrain_class]
+
 
 # CSV IMPORT
 def import_csv(management_command, csv_folder):
     """ updates existing roads with data from csv files """
-
-    # special fixups
-    # address duplicate A02-06
-    zumalai_suai = Road.objects.get(
-        road_name="Zumalai (Junction A12) - Suai (Junction C21)"
-    )
-    if zumalai_suai.link_code != "A02-07":
-        zumalai_suai.link_code = "A02-07"
-        with reversion.create_revision():
-            zumalai_suai.save()
-            reversion.set_comment("Fixup - link code changed from A02-06 to A02-07")
-
-    # address mismatch in shapefiles and excel
-    same_betano = Road.objects.get(road_name="Same - Betano")
-    if same_betano.link_code != "A05-03":
-        same_betano.link_code = "A05-03"
-        with reversion.create_revision():
-            same_betano.save()
-            reversion.set_comment("Fixup - link code changed from A05-02 to A05-03")
 
     source_dir = Path(csv_folder)
     sources = (
@@ -375,7 +392,6 @@ def import_csv(management_command, csv_folder):
     )
 
     for file_name, identifying_filters in sources:
-
         csv_path = str(source_dir / file_name)
         with open(csv_path, "r") as csvfile:
             reader = csv.DictReader(csvfile)

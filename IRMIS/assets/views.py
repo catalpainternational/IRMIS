@@ -53,7 +53,6 @@ from .models import (
     Culvert,
     CulvertClass,
     CulvertMaterialType,
-    display_user,
     MaintenanceNeed,
     PavementClass,
     Photo,
@@ -63,8 +62,19 @@ from .models import (
     SurfaceType,
     Survey,
     TechnicalClass,
+    FacilityType,
+    EconomicArea,
+    ConnectionType,
 )
 from .serializers import RoadSerializer, RoadMetaOnlySerializer, RoadToWGSSerializer
+
+
+def display_user(user):
+    """ returns the full username if populated, or the username, or "" """
+    if not user:
+        return ""
+    user_display = user.get_full_name()
+    return user_display or user.username
 
 
 def user_can_edit(user):
@@ -155,6 +165,7 @@ def road_update(request):
         "total_width",
         "number_lanes",
         "population",
+        "construction_year",
         # `core` is a nullable boolean
         "core",
     ]
@@ -164,6 +175,11 @@ def road_update(request):
         (RoadStatus, "road_status"),
         (SurfaceType, "surface_type"),
         (PavementClass, "pavement_class"),
+    ]
+    mtoms = [
+        (FacilityType, "served_facilities"),
+        (EconomicArea, "served_economic_areas"),
+        (ConnectionType, "served_connection_types"),
     ]
     changed_fields = []
     for field in regular_fields:
@@ -207,6 +223,19 @@ def road_update(request):
                 fk_obj = None
             setattr(road, field, fk_obj)
             # add field to list of changes fields
+            changed_fields.append(field)
+
+    # Many to Many attributes
+    for mtom in mtoms:
+        field = mtom[1]
+        model = mtom[0]
+        existing_value = set(list(getattr(old_road_pb, field)))
+        request_value = set(list(getattr(req_pb, field)))
+
+        differences = list(existing_value.symmetric_difference(request_value))
+        if differences != []:
+            reference_data = model.objects.filter(code__in=request_value)
+            getattr(road, field).set(reference_data)
             changed_fields.append(field)
 
     with reversion.create_revision():
@@ -569,7 +598,7 @@ def protobuf_reports(request):
                     ts = Timestamp()
                     ts.FromDatetime(report_survey["date_surveyed"])
                     report_attribute.date_surveyed.CopyFrom(ts)
-                report_attribute.added_by = report_survey["added_by"]
+                report_attribute.added_by = report_survey["added_by"] or ""
                 if report_survey["value"]:
                     report_attribute.value = report_survey["value"]
                 # road_id and road_code should only be present if required by a structure report

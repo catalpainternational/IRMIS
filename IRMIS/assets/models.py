@@ -1,8 +1,10 @@
 from django.conf import settings
 from django.contrib.gis.db import models
+from django.contrib.postgres.indexes import GistIndex
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.postgres.fields import HStoreField
+from django.contrib.postgres.aggregates.general import ArrayAgg
+from django.contrib.postgres.fields import HStoreField, JSONField
 from django.utils.translation import get_language, ugettext, ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
@@ -21,6 +23,8 @@ import json
 from google.protobuf.timestamp_pb2 import Timestamp
 from google.protobuf.wrappers_pb2 import FloatValue, UInt32Value
 from .geodjango_utils import start_end_point_annos
+from csv_data_sources.models import CsvData
+from .managers import RoughnessManager
 
 
 def no_spaces(value):
@@ -154,6 +158,30 @@ class Photo(models.Model):
     content_object = GenericForeignKey("content_type", "object_id")
 
 
+class FacilityType(models.Model):
+    code = models.CharField(max_length=3, unique=True, verbose_name=_("Code"))
+    name = models.CharField(max_length=50, verbose_name=_("Name"))
+
+    def __str__(self):
+        return self.name
+
+
+class EconomicArea(models.Model):
+    code = models.CharField(max_length=3, unique=True, verbose_name=_("Code"))
+    name = models.CharField(max_length=50, verbose_name=_("Name"))
+
+    def __str__(self):
+        return self.name
+
+
+class ConnectionType(models.Model):
+    code = models.CharField(max_length=3, unique=True, verbose_name=_("Code"))
+    name = models.CharField(max_length=50, verbose_name=_("Name"))
+
+    def __str__(self):
+        return self.name
+
+
 class SurveyQuerySet(models.QuerySet):
     def to_protobuf(self):
         """ returns a roads survey protobuf object from the queryset """
@@ -161,42 +189,50 @@ class SurveyQuerySet(models.QuerySet):
 
         surveys_protobuf = ProtoSurveys()
 
-        fields = dict(
+        regular_fields = dict(
             id="id",
             asset_id="asset_id",
             asset_code="asset_code",
             road_id="road_id",
             road_code="road_code",
+            user="user__id",
             chainage_start="chainage_start",
             chainage_end="chainage_end",
             source="source",
         )
 
+        # fields from User used to build the added_by field
+        name_fields = dict(
+            username="user__username",
+            last_name="user__last_name",
+            first_name="user__first_name",
+        )
+
+        date_fields = dict(date_updated="date_updated", date_surveyed="date_surveyed",)
+
         photos_prefetch = Prefetch(
             "photos", queryset=Photo.objects.filter(survey__id__in=self.values("id"))
         )
 
-        surveys = self.order_by("id").prefetch_related(photos_prefetch)
-
-        for survey in surveys:
+        for survey in (
+            self.order_by("id")
+            .prefetch_related(photos_prefetch)
+            .values(
+                *regular_fields.values(),
+                *name_fields.values(),
+                *date_fields.values(),
+                "values",
+            )
+        ):
             survey_protobuf = surveys_protobuf.surveys.add()
-            for protobuf_key, query_key in fields.items():
-                if getattr(survey, query_key, None):
-                    setattr(
-                        survey_protobuf, protobuf_key, getattr(survey, query_key, None)
-                    )
+            for protobuf_key, query_key in regular_fields.items():
+                if survey[query_key]:
+                    setattr(survey_protobuf, protobuf_key, survey[query_key])
 
-            if survey.date_updated:
-                ts = timestamp_from_datetime(survey.date_updated)
-                survey_protobuf.date_updated.CopyFrom(ts)
-
-            if survey.date_surveyed:
-                ts = timestamp_from_datetime(survey.date_surveyed)
-                survey_protobuf.date_surveyed.CopyFrom(ts)
-
-            if survey.user:
-                setattr(survey_protobuf, "user", survey.user.id)
-                setattr(survey_protobuf, "added_by", survey.user.username)
+            for protobuf_key, query_key in date_fields.items():
+                if survey[query_key]:
+                    ts = timestamp_from_datetime(survey[query_key])
+                    getattr(survey_protobuf, protobuf_key).CopyFrom(ts)
 
             if survey.values:
                 # Dump the survey values as a json string
@@ -215,6 +251,21 @@ class SurveyQuerySet(models.QuerySet):
                 if photo.description:
                     setattr(photo_protobuf, "description", photo.description)
 
+            if survey.user:
+                setattr(survey_protobuf, "user", survey.user.id)
+                setattr(survey_protobuf, "added_by", survey.user.username)
+
+            if survey["user__first_name"] and survey["user__last_name"]:
+                setattr(
+                    survey_protobuf,
+                    "added_by",
+                    "%s %s" % (survey["user__first_name"], survey["user__last_name"]),
+                )
+            elif survey["user__username"]:
+                setattr(survey_protobuf, "added_by", survey["user__username"])
+            else:
+                setattr(survey_protobuf, "added_by", "")
+
         return surveys_protobuf
 
 
@@ -229,6 +280,10 @@ class SurveyManager(models.Manager):
 
 @reversion.register()
 class Survey(models.Model):
+    class Meta:
+        indexes = [
+            GistIndex(fields=["values"]),
+        ]
 
     objects = SurveyManager()
 
@@ -295,12 +350,15 @@ class Survey(models.Model):
     photos = GenericRelation(Photo, related_query_name="survey")
 
     def __str__(self,):
-        return "%s(%s - %s) %s" % (
-            self.road_code,
-            self.chainage_start,
-            self.chainage_end,
-            self.date_updated,
-        )
+        if self.asset_id.startswith("ROAD"):
+            return "%s(%s - %s) %s" % (
+                self.asset_code,
+                self.chainage_start,
+                self.chainage_end,
+                self.date_updated,
+            )
+
+        return "%s %s" % (self.asset_code, self.date_updated,)
 
 
 class Asset:
@@ -324,10 +382,44 @@ class Asset:
     ]
 
     ASSET_TYPE_CHOICES = [
-        # ("ROAD", _("Road")),
+        ("ROAD", _("Road")),
         ("BRDG", _("Bridge")),
         ("CULV", _("Culvert")),
     ]
+
+    TRAFFIC_LEVEL_CHOICES = [("L", _("Low")), ("M", _("Medium")), ("H", _("High"))]
+
+    TERRAIN_CLASS_CHOICES = [(1, _("Flat")), (2, _("Rolling")), (3, _("Mountainous"))]
+
+    CORE_CHOICES = [(-1, _("Undefined")), (0, _("Non-core")), (1, _("Core"))]
+
+
+def prepare_protobuf_nullable_float(raw_value):
+    nullable = -1.0
+    if raw_value is not None:
+        if isinstance(raw_value, str):
+            if raw_value.isnumeric():
+                nullable = float(raw_value)
+        elif isinstance(raw_value, bool):
+            nullable = 1.0 if raw_value else 0.0
+        else:
+            nullable = raw_value
+
+    return nullable
+
+
+def prepare_protobuf_nullable_int(raw_value):
+    nullable = -1
+    if raw_value is not None:
+        if isinstance(raw_value, str):
+            if raw_value.isnumeric():
+                nullable = float(raw_value)
+        elif isinstance(raw_value, bool):
+            nullable = 1 if raw_value else 0
+        else:
+            nullable = raw_value
+
+    return nullable
 
 
 def prepare_protobuf_nullable_float(raw_value):
@@ -409,6 +501,9 @@ class RoadQuerySet(models.QuerySet):
         )
 
         asset_type = "ROAD"
+        # We're only taking the most recent total_width survey value
+        # we may need to change this to something that we find is more representative
+        # or that is more appropriate for sorting / filtering / processing purposes
         survey = (
             Survey.objects.filter(
                 asset_id__startswith="%s-" % asset_type, values__has_key="total_width"
@@ -423,11 +518,29 @@ class RoadQuerySet(models.QuerySet):
         )
         roads = (
             self.order_by("id")
-            .annotate(
-                **annotations,
-                total_width=Subquery(survey.values("values__total_width")[:1])
+            .prefetch_related(
+                "served_facilities", "served_economic_areas", "served_connection_types"
             )
             .prefetch_related(photos_prefetch)
+            .annotate(
+                **annotations,
+                total_width=Subquery(survey.values("values__total_width")[:1]),
+                facility_types=ArrayAgg("served_facilities"),
+                economic_areas=ArrayAgg("served_economic_areas"),
+                connection_types=ArrayAgg("served_connection_types"),
+            )
+            .values(
+                "id",
+                *regular_fields.values(),
+                *float_fields.values(),
+                *int_fields.values(),
+                *annotations,
+                "total_width",
+                "facility_types",
+                "economic_areas",
+                "connection_types",
+                "photos",
+            )
         )
 
         for road in roads:
@@ -439,12 +552,14 @@ class RoadQuerySet(models.QuerySet):
                     setattr(road_protobuf, protobuf_key, getattr(road, query_key, None))
 
             for protobuf_key, query_key in float_fields.items():
+                # nullable_value = prepare_protobuf_nullable_float(road.get(query_key))
                 nullable_value = prepare_protobuf_nullable_float(
                     getattr(road, query_key, None)
                 )
                 setattr(road_protobuf, protobuf_key, nullable_value)
 
             for protobuf_key, query_key in int_fields.items():
+                # nullable_value = prepare_protobuf_nullable_int(road.get(query_key))
                 nullable_value = prepare_protobuf_nullable_int(
                     getattr(road, query_key, None)
                 )
@@ -456,6 +571,20 @@ class RoadQuerySet(models.QuerySet):
                     getattr(road, "total_width", None)
                 )
                 setattr(road_protobuf, "total_width", nullable_value)
+
+            # Add any many to many fields
+            if "facility_types" in road:
+                mtom_ids = road["facility_types"]
+                if mtom_ids != None and len(mtom_ids) > 0 and mtom_ids[0] != None:
+                    road_protobuf.served_facilities[:] = mtom_ids
+            if "economic_areas" in road:
+                mtom_ids = road["economic_areas"]
+                if mtom_ids != None and len(mtom_ids) > 0 and mtom_ids[0] != None:
+                    road_protobuf.served_economic_areas[:] = mtom_ids
+            if "connection_types" in road:
+                mtom_ids = road["connection_types"]
+                if mtom_ids != None and len(mtom_ids) > 0 and mtom_ids[0] != None:
+                    road_protobuf.served_connection_types[:] = mtom_ids
 
             # set Protobuf with with start/end projection points
             start = Projection(x=road.start_x, y=road.start_y)
@@ -503,9 +632,6 @@ class RoadManager(models.Manager):
 class Road(models.Model):
 
     objects = RoadManager()
-
-    TRAFFIC_LEVEL_CHOICES = [("L", _("Low")), ("M", _("Medium")), ("H", _("High"))]
-    TERRAIN_CLASS_CHOICES = [(1, _("Flat")), (2, _("Rolling")), (3, _("Mountainous"))]
 
     geom = models.MultiLineStringField(srid=32751, dim=2, blank=True, null=True)
 
@@ -646,6 +772,7 @@ class Road(models.Model):
         null=True,
         help_text=_("Enter the width of the link carriageway"),
     )
+    # total_width is never stored in the Road - get it from the surveys
     asset_class = models.CharField(
         verbose_name=_("Asset Class"),
         max_length=4,
@@ -672,7 +799,7 @@ class Road(models.Model):
     traffic_level = models.CharField(
         verbose_name=_("Traffic Data"),
         max_length=1,
-        choices=TRAFFIC_LEVEL_CHOICES,
+        choices=Asset.TRAFFIC_LEVEL_CHOICES,
         blank=True,
         null=True,
         help_text=_("Choose the traffic volume for the road link"),
@@ -712,6 +839,7 @@ class Road(models.Model):
     )
     population = models.PositiveIntegerField(
         verbose_name=_("Population Served"),
+        blank=True,
         null=True,
         help_text=_("Set the size of population served by this road"),
     )
@@ -720,8 +848,9 @@ class Road(models.Model):
     )
     terrain_class = models.PositiveSmallIntegerField(
         verbose_name=_("Terrain class"),
+        blank=True,
         null=True,
-        choices=TERRAIN_CLASS_CHOICES,
+        choices=Asset.TERRAIN_CLASS_CHOICES,
         help_text=_("Choose what terrain class the road runs through"),
     )
     rainfall = models.IntegerField(
@@ -742,12 +871,46 @@ class Road(models.Model):
         "CollatedGeoJsonFile", on_delete=models.DO_NOTHING, blank=True, null=True
     )
 
+    # How this road link `serves`
+    served_facilities = models.ManyToManyField(
+        "FacilityType",
+        verbose_name=_("Facilities Served"),
+        related_name="roads",
+        blank=True,
+        help_text=_("Choose facilities served by this road"),
+    )
+    served_economic_areas = models.ManyToManyField(
+        "EconomicArea",
+        verbose_name=_("Economic Areas Served"),
+        related_name="roads",
+        blank=True,
+        help_text=_("Choose economic areas served by this road"),
+    )
+    served_connection_types = models.ManyToManyField(
+        "ConnectionType",
+        verbose_name=_("Connections Served"),
+        related_name="roads",
+        blank=True,
+        help_text=_("Choose the types of connections facilitated by this road"),
+    )
+
     @property
     def link_name(self):
         return self.link_start_name + " - " + self.link_end_name
 
     def __str__(self,):
         return "%s(%s) %s" % (self.road_code, self.link_code, self.road_name)
+
+
+class RoadFeatureAttributes(models.Model):
+    """
+    Original data fields of the Road model shapefiles
+    """
+
+    road = models.OneToOneField(
+        "Road", on_delete=models.CASCADE, verbose_name=_("Road")
+    )
+    attributes = JSONField(verbose_name=_("Attributes"))
 
 
 class CollatedGeoJsonFile(models.Model):
@@ -807,6 +970,17 @@ def get_structures_with_survey_data(
             ),
         )
         .prefetch_related(photos_prefetch)
+        .values(
+            "id",
+            "geojson_file_id",
+            *regular_fields.values(),
+            *datetime_fields.values(),
+            *float_fields.values(),
+            *int_fields.values(),
+            "to_wgs",
+            "asset_condition",
+            "condition_description",
+        )
     )
     return structures
 
@@ -840,12 +1014,14 @@ def structure_to_protobuf(
                 setattr(structure_protobuf, protobuf_key, attr)
 
     for protobuf_key, query_key in float_fields.items():
+        # nullable_value = prepare_protobuf_nullable_float(structure.get(query_key))
         nullable_value = prepare_protobuf_nullable_float(
             getattr(structure, query_key, None)
         )
         setattr(structure_protobuf, protobuf_key, nullable_value)
 
     for protobuf_key, query_key in int_fields.items():
+        # nullable_value = prepare_protobuf_nullable_int(structure.get(query_key))
         nullable_value = prepare_protobuf_nullable_int(
             getattr(structure, query_key, None)
         )
@@ -1064,7 +1240,7 @@ class Bridge(models.Model):
     )
     # a reference to the collated geojson file this Structure's geometry is in
     geojson_file = models.ForeignKey(
-        "CollatedGeoJsonFile", on_delete=models.DO_NOTHING, blank=True, null=True
+        "CollatedGeoJsonFile", on_delete=models.SET_NULL, blank=True, null=True
     )
 
     structure_type = models.ForeignKey(
@@ -1353,15 +1529,16 @@ class Culvert(models.Model):
         return "%s(%s)" % (self.structure_name, self.pk)
 
 
+class RoughnessSurvey(CsvData):
+    """ Proxy model to provide typed access to roughness CSV data """
+
+    class Meta:
+        proxy = True
+
+    objects = RoughnessManager()
+
+
 def timestamp_from_datetime(dt):
     ts = Timestamp()
     ts.FromDatetime(dt)
     return ts
-
-
-def display_user(user):
-    """ returns the full username if populated, or the username, or "" """
-    if not user:
-        return ""
-    user_display = user.get_full_name()
-    return user_display or user.username

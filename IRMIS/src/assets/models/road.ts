@@ -25,6 +25,10 @@ export const SURFACE_TYPE_CHOICES = humanizeChoices(assetSchema, "surface_type",
 export const TECHNICAL_CLASS_CHOICES = humanizeChoices(assetSchema, "technical_class", "code", "name");
 export const TRAFFIC_LEVEL_CHOICES = humanizeChoices(assetSchema, "traffic_level");
 export const TERRAIN_CLASS_CHOICES = humanizeChoices(assetSchema, "terrain_class");
+export const FACILITY_TYPE_CHOICES = humanizeChoices(assetSchema, "facility_type", "code", "name");
+export const ECONOMIC_AREA_CHOICES = humanizeChoices(assetSchema, "economic_area", "code", "name");
+export const CONNECTION_TYPE_CHOICES = humanizeChoices(assetSchema, "connection_type", "code", "name");
+export const CORE_CHOICES = humanizeChoices(assetSchema, "core");
 
 export class EstradaRoad extends Road implements IAsset {
     public static getFieldName(field: string) {
@@ -119,6 +123,15 @@ export class EstradaRoad extends Road implements IAsset {
         return linkLength.toFixed(3);
     }
 
+    get constructionYear() {
+        const constructionYear = this.getNullableConstructionYear();
+        if (constructionYear === null) {
+            return constructionYear;
+        }
+
+        return constructionYear.toFixed(0);
+    }
+
     get status() {
         return choice_or_default(this.getRoadStatus(), ROAD_STATUS_CHOICES);
     }
@@ -160,13 +173,13 @@ export class EstradaRoad extends Road implements IAsset {
         return this.getFundingSource();
     }
 
+    get core() {
+        return choice_or_default(this.getCore().toString(), CORE_CHOICES);
+    }
+
     get technicalClass() {
         return choice_or_default(this.getTechnicalClass(), TECHNICAL_CLASS_CHOICES);
     }
-
-    // get terrainClass() {
-    //     return choice_or_default(this.getTerrainClass(), TERRAIN_CLASS_CHOICES);
-    // }
 
     get maintenanceNeed() {
         return choice_or_default(this.getMaintenanceNeed(), MAINTENANCE_NEED_CHOICES);
@@ -174,6 +187,21 @@ export class EstradaRoad extends Road implements IAsset {
 
     get trafficLevel() {
         return choice_or_default(this.getTrafficLevel(), TRAFFIC_LEVEL_CHOICES);
+    }
+
+    get servedFacilities() {
+        return this.getServedFacilitiesList()
+            .map((id) => choice_or_default(id.toString(), FACILITY_TYPE_CHOICES));
+    }
+
+    get servedEconomicAreas() {
+        return this.getServedEconomicAreasList()
+            .map((id) => choice_or_default(id.toString(), ECONOMIC_AREA_CHOICES));
+    }
+
+    get servedConnectionTypes() {
+        return this.getServedConnectionTypesList()
+            .map((id) => choice_or_default(id.toString(), CONNECTION_TYPE_CHOICES));
     }
 
     get rainfall() {
@@ -228,10 +256,20 @@ export class EstradaRoad extends Road implements IAsset {
         this.setSurveyPhotosList(values as Photo[]);
     }
 
+    get population() {
+        return this.getNullablePopulation();
+    }
+
     /** A Null or None in the protobuf is indicated by a negative value */
     public getNullableRainfall() {
         const rainfall = super.getRainfall();
         return (rainfall >= 0 || this.isSerialising) ? rainfall : null;
+    }
+
+    /** A Null or None in the protobuf is indicated by a negative value */
+    public getNullablePopulation() {
+        const population = super.getPopulation();
+        return (population >= 0 || this.isSerialising) ? population : null;
     }
 
     /** A Null or None in the protobuf is indicated by a negative value */
@@ -250,6 +288,12 @@ export class EstradaRoad extends Road implements IAsset {
     public getNullableLinkLength() {
         const linkLength = super.getLinkLength();
         return (linkLength >= 0 || this.isSerialising) ? linkLength : null;
+    }
+
+    /** A Null or None in the protobuf is indicated by a negative value */
+    public getNullableConstructionYear() {
+        const constructionYear = super.getConstructionYear();
+        return (constructionYear >= 0 || this.isSerialising) ? constructionYear : null;
     }
 
     /** A Null or None in the protobuf is indicated by a negative value */

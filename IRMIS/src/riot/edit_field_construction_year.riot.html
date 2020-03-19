@@ -1,0 +1,43 @@
+<edit_field_construction_year>
+    <div class="form-group">
+        <label>{ window.gettext("Construction Year") }</label>
+        <small class="form-text text-muted">{ window.gettext("Enter the construction year") }</small>
+        <input
+            class="{ state.errors.constructionYear ? 'danger' : '' } { state.constructionYear != null && state.constructionYear !== '' ? '' : 'inactive' } form-control"
+            type="number" placeholder="1970" value="{ state.constructionYear != null ? state.constructionYear : '' }"
+            min="1970" max="{ new Date() }" oninput="{ checkConstructionYear }">
+        <div if="{ state.errors.constructionYear }" class="invalid-tooltip">
+            <ul>
+                <li>{ state.errors.constructionYear }.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        import { withinMaxDigits } from "../assets/utilities";
+
+        export default {
+            state: {
+                constructionYearDigits: 4,
+                errors: {
+                    constructionYear: ""
+                }
+            },
+            onBeforeMount(props, state) {
+                state.constructionYear = props.asset.constructionYear;
+                state.asset = props.asset;
+            },
+            checkConstructionYear(e) {
+                const value = e.currentTarget.value;
+                if (!withinMaxDigits(value, this.state.constructionYearDigits)) {
+                    this.state.errors.constructionYear = window.gettext(`Construction year cannot contain more than ${this.state.constructionYearDigits} digits and value shouldn't contain decimals`);
+                } else {
+                    delete this.state.errors.constructionYear;
+                    this.state.constructionYear = value;
+                    this.state.asset.setConstructionYear(this.state.constructionYear);
+                }
+                this.update();
+            },
+        }
+    </script>
+</edit_field_construction_year>

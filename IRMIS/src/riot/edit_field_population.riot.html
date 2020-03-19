@@ -1,0 +1,48 @@
+<edit_field_population>
+    <div class="form-group">
+        <label>{ population.display }</label>
+        <small class="form-text text-muted">{ population.help_text || "" }</small>
+        <input
+            class="{ state.errors.population ? 'danger' : null } { state.population ? '' : 'inactive' } form-control"
+            type="number" min="0" max="2000000" placeholder="0" value="{ state.population }"
+            oninput="{ checkPopulation }">
+        <div if="{ state.errors.population }" class="invalid-tooltip">
+            <ul>
+                <li>{ state.errors.population }.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        import { withinMaxDigits } from "../assets/utilities";
+        
+        /** constructor */
+        export default function EditFieldPopulation(){
+            // Return the initial state
+            return {
+                state: {
+                    populationDigits: 7,
+                    errors: {
+                        population: ""
+                    }
+                },
+                onBeforeMount(props, state) {
+                    state.population = props.asset.population;
+                    state.asset = props.asset;
+                },
+                checkPopulation(e) {
+                    const value = e.currentTarget.value;
+                    if (!withinMaxDigits(value, this.state.populationDigits)) {
+                        this.state.errors.population = window.gettext(`Population cannot contain more than ${this.state.populationDigits} digits and value shouldn't contain decimals`);
+                    } else {
+                        delete this.state.errors.population;
+                        this.state.population = Number(value);
+                        this.state.asset.setPopulation(this.state.population);
+                    }
+                    this.update();
+                },
+                population: window.asset_schema.population,
+            };
+        }
+    </script>
+</edit_field_population>

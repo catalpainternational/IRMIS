@@ -23,12 +23,22 @@
         </div>
     </section>
 
+    <section>
+        <edit_field_core asset="{ props.road }"></edit_field_core>
+    </section>    
+
     <div class="button-wrapper d-flex justify-content-end">
         <button class="btn btn-primary" onclick="{ save }" disabled="{ props.saving }">{ window.gettext("Save and continue") }</button>
     </div>
 
     <script>
+        // EDIT FIELD TAGS
+        import Edit_Field_Core from "./edit_field_core.riot.html";
+
         export default {
+            components: {
+                Edit_Field_Core,
+            },
             onBeforeMount(props, state) {
                 state.administrativeArea = props.road.getAdministrativeArea();
                 state.assetClass = props.road.getAssetClass();

@@ -31,7 +31,7 @@
                             <li>{ state.errors.protectionDownstream }.</li>
                         </ul>
                     </div>
-                    <ul class="protection-upstream">
+                    <ul class="protection-downstream">
                         <li each="{protector in downstream_protections.options}" data-condition="{protector.code}"
                             onclick="{checkDownstream}">
                             <span class="{ protector.code == state.downstream ? 'active' : '' } radio image"></span>
