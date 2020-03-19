@@ -6,9 +6,8 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('assets', '0042_surveys_gist_index'),
-        ('assets', '0043_connection_types_verbose_name'),
+        ("assets", "0042_surveys_gist_index"),
+        ("assets", "0043_connection_types_verbose_name"),
     ]
 
-    operations = [
-    ]
+    operations = []
