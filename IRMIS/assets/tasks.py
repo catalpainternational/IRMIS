@@ -378,6 +378,25 @@ def populate_road_rrpmis(road, feature):
 def import_csv(management_command, csv_folder):
     """ updates existing roads with data from csv files """
 
+    # special fixups
+    # address duplicate A02-06
+    zumalai_suai = Road.objects.get(
+        road_name="Zumalai (Junction A12) - Suai (Junction C21)"
+    )
+    if zumalai_suai.link_code != "A02-07":
+        zumalai_suai.link_code = "A02-07"
+        with reversion.create_revision():
+            zumalai_suai.save()
+            reversion.set_comment("Fixup - link code changed from A02-06 to A02-07")
+
+    # address mismatch in shapefiles and excel
+    same_betano = Road.objects.get(road_name="Same - Betano")
+    if same_betano.link_code != "A05-03":
+        same_betano.link_code = "A05-03"
+        with reversion.create_revision():
+            same_betano.save()
+            reversion.set_comment("Fixup - link code changed from A05-02 to A05-03")
+
     source_dir = Path(csv_folder)
     sources = (
         (
