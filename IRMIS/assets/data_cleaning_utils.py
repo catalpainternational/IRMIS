@@ -9,7 +9,7 @@ import reversion
 
 from reversion.models import Version
 
-from assets.models import Bridge, Culvert, Road, Road, RoadFeatureAttributes, Survey
+from assets.models import Bridge, Culvert, Road, RoadFeatureAttributes, Survey
 
 
 ## General purpose data cleansing functions
