@@ -215,25 +215,37 @@ class SurveyQuerySet(models.QuerySet):
             "photos", queryset=Photo.objects.filter(survey__id__in=self.values("id"))
         )
 
-        for survey in (
-            self.order_by("id")
-            .prefetch_related(photos_prefetch)
-            .values(
-                *regular_fields.values(),
-                *name_fields.values(),
-                *date_fields.values(),
-                "values",
-            )
-        ):
+        surveys = self.order_by("id").prefetch_related(photos_prefetch)
+
+        for survey in surveys:
             survey_protobuf = surveys_protobuf.surveys.add()
             for protobuf_key, query_key in regular_fields.items():
-                if survey[query_key]:
-                    setattr(survey_protobuf, protobuf_key, survey[query_key])
+                if getattr(survey, query_key, None):
+                    setattr(
+                        survey_protobuf, protobuf_key, getattr(survey, query_key, None)
+                    )
 
-            for protobuf_key, query_key in date_fields.items():
-                if survey[query_key]:
-                    ts = timestamp_from_datetime(survey[query_key])
-                    getattr(survey_protobuf, protobuf_key).CopyFrom(ts)
+            if survey.date_updated:
+                ts = timestamp_from_datetime(survey.date_updated)
+                survey_protobuf.date_updated.CopyFrom(ts)
+
+            if survey.date_surveyed:
+                ts = timestamp_from_datetime(survey.date_surveyed)
+                survey_protobuf.date_surveyed.CopyFrom(ts)
+
+            if survey.user:
+                setattr(survey_protobuf, "user", survey.user.id)
+
+                if survey.user.first_name and survey.user.last_name:
+                    setattr(
+                        survey_protobuf,
+                        "added_by",
+                        "%s %s" % (survey.user.first_name, survey.user.last_name),
+                    )
+                elif survey.user.username:
+                    setattr(survey_protobuf, "added_by", survey.user.username)
+            else:
+                setattr(survey_protobuf, "added_by", "")
 
             if survey.values:
                 # Dump the survey values as a json string
@@ -251,21 +263,6 @@ class SurveyQuerySet(models.QuerySet):
                 setattr(photo_protobuf, "fk_link", "SURV-" + str(survey.id))
                 if photo.description:
                     setattr(photo_protobuf, "description", photo.description)
-
-            if survey.user:
-                setattr(survey_protobuf, "user", survey.user.id)
-                setattr(survey_protobuf, "added_by", survey.user.username)
-
-            if survey["user__first_name"] and survey["user__last_name"]:
-                setattr(
-                    survey_protobuf,
-                    "added_by",
-                    "%s %s" % (survey["user__first_name"], survey["user__last_name"]),
-                )
-            elif survey["user__username"]:
-                setattr(survey_protobuf, "added_by", survey["user__username"])
-            else:
-                setattr(survey_protobuf, "added_by", "")
 
         return surveys_protobuf
 
