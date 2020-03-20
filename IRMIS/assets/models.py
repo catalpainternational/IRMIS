@@ -530,18 +530,6 @@ class RoadQuerySet(models.QuerySet):
                 economic_areas=ArrayAgg("served_economic_areas"),
                 connection_types=ArrayAgg("served_connection_types"),
             )
-            .values(
-                "id",
-                *regular_fields.values(),
-                *float_fields.values(),
-                *int_fields.values(),
-                *annotations,
-                "total_width",
-                "facility_types",
-                "economic_areas",
-                "connection_types",
-                "photos",
-            )
         )
 
         for road in roads:
@@ -574,16 +562,16 @@ class RoadQuerySet(models.QuerySet):
                 setattr(road_protobuf, "total_width", nullable_value)
 
             # Add any many to many fields
-            if "facility_types" in road:
-                mtom_ids = road["facility_types"]
+            if getattr(road, "facility_types", None):
+                mtom_ids = getattr(road, "facility_types", None)
                 if mtom_ids != None and len(mtom_ids) > 0 and mtom_ids[0] != None:
                     road_protobuf.served_facilities[:] = mtom_ids
-            if "economic_areas" in road:
-                mtom_ids = road["economic_areas"]
+            if getattr(road, "economic_areas", None):
+                mtom_ids = getattr(road, "economic_areas", None)
                 if mtom_ids != None and len(mtom_ids) > 0 and mtom_ids[0] != None:
                     road_protobuf.served_economic_areas[:] = mtom_ids
-            if "connection_types" in road:
-                mtom_ids = road["connection_types"]
+            if getattr(road, "connection_types", None):
+                mtom_ids = getattr(road, "connection_types", None)
                 if mtom_ids != None and len(mtom_ids) > 0 and mtom_ids[0] != None:
                     road_protobuf.served_connection_types[:] = mtom_ids
 
@@ -971,17 +959,6 @@ def get_structures_with_survey_data(
             ),
         )
         .prefetch_related(photos_prefetch)
-        .values(
-            "id",
-            "geojson_file_id",
-            *regular_fields.values(),
-            *datetime_fields.values(),
-            *float_fields.values(),
-            *int_fields.values(),
-            "to_wgs",
-            "asset_condition",
-            "condition_description",
-        )
     )
     return structures
 

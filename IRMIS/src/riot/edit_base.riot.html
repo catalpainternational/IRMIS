@@ -26,7 +26,7 @@
                                 onclick="{ selectPage }">{ window.gettext("Environment") }</li>
                             <li class="{ state.page === 'photo' ? 'active' : '' }" data-page="photo"
                                 onclick="{ selectPage }">{window.gettext("Photos") }</li>
-                            </ul>
+                        </ul>
                     </template>
                     <template if="{ props.assetType === 'BRDG' || props.assetType === 'CULV' }">
                         <li class="text-uppercase">{ window.gettext("Edit structure") }</li>
@@ -190,7 +190,7 @@
                 Edit_Environment, Edit_Project, Edit_Traffic,
                 Edit_Social_Economic, Edit_Condition, Edit_Maintenance,
                 Edit_History, Edit_Structure_Type, Edit_Structure_Details,
-                Edit_Structure_Protection, Edit_Photo, Edit_Structure_Condition,
+                Edit_Structure_Protection, Edit_Photos, Edit_Structure_Condition,
             },
             onBeforeMount(props, state) {
                 state.page = props.page;
