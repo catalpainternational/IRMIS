@@ -9,7 +9,7 @@ import reversion
 
 from reversion.models import Version
 
-from assets.models import Road, Survey
+from assets.models import Road, RoadFeatureAttributes, Survey
 
 
 ## General purpose data cleansing functions
@@ -103,6 +103,11 @@ def get_roads_by_road_code(rc):
     return Road.objects.filter(road_code=rc).order_by(
         "geom_start_chainage", "link_code", "link_start_chainage"
     )
+
+
+def get_attributes_by_road_ids(road_ids):
+    """ pull all of the attributes from the original shapefile import for these road ids """
+    return RoadFeatureAttributes.objects.filter(road_id__in=road_ids)
 
 
 def update_road_geometry_data(
@@ -243,7 +248,7 @@ def get_data_field(data, field_id):
         else:
             return None
     else:
-        return getattr(data, field_id)
+        return getattr(data, field_id, None)
 
 
 def set_value_in_hierarchy(sv, value_id, value):
@@ -300,6 +305,22 @@ def code_value_transform(sv, data, value_id, field_id):
     set_value_in_hierarchy(sv, value_id, data_value)
 
 
+def codes_values_transform(sv, data, value_id, field_id):
+    data_fields = get_data_field(data, field_id)
+    if data_fields and data_fields.all().count() > 0:
+        codes = []
+        for data_field in data_fields.all():
+            if data_field and data_field.code:
+                codes.append(str(data_field.code))
+
+        if len(codes) > 0:
+            set_value_in_hierarchy(sv, value_id, codes)
+
+
+ROAD_ATTRIBUTE_SURVEY_MAPPINGS = [
+    ("total_width", ["TOTWIDTH", "TotWidth_1"]),
+]
+
 ## All of the following 'values' must also be referenced in the `survey.js` protobuf wrapper
 ROAD_SURVEY_VALUE_MAPPINGS = [
     ("funding_source", "funding_source", str_transform),
@@ -307,7 +328,7 @@ ROAD_SURVEY_VALUE_MAPPINGS = [
     ("asset_class", "asset_class", str_transform),
     # These are actually numeric values but are stored as strings
     ("carriageway_width", "carriageway_width", str_transform),
-    ("total_width", "carriageway_width", str_transform),
+    ("total_width", "total_width", str_transform),
     ("number_lanes", "number_lanes", str_transform),
     ("rainfall", "rainfall", str_transform),
     # These are actually FK Ids
@@ -321,8 +342,11 @@ ROAD_SURVEY_VALUE_MAPPINGS = [
     ("road_status", "road_status", code_value_transform),
     ("surface_type", "surface_type", code_value_transform),
     ("technical_class", "technical_class", code_value_transform),
+    # These are Many-to-Many relationships via codes
+    ("served_facilities", "served_facilities", codes_values_transform),
+    ("served_economic_areas", "served_economic_areas", codes_values_transform),
+    ("served_connection_types", "served_connection_types", codes_values_transform),
 ]
-
 
 TRAFFIC_CSV_VALUE_MAPPINGS = [
     ("forecastYear", 4, int_transform),
@@ -455,8 +479,19 @@ def create_programmatic_survey(management_command, data, mappings, audit_source_
     return created
 
 
-def create_programmatic_surveys_for_roads(management_command, roads):
-    """ creates programmatic surveys from traffic csv rows 
+def get_first_available_numeric_value(feature, field_names):
+    field = None
+
+    for field_name in field_names:
+        field = feature[field_name] if field_name in feature else None
+        if field and field != 0:
+            break
+
+    return field
+
+
+def create_programmatic_surveys_for_roads(management_command, roads, attributes):
+    """ creates programmatic surveys from data sourced from the shapefiles
     
     returns a count of the total number of surveys that were created """
     created = 0  # counter for surveys created for the supplied roads
@@ -468,8 +503,24 @@ def create_programmatic_surveys_for_roads(management_command, roads):
             "asset_code": road.road_code,
             "chainage_start": road.geom_start_chainage,
             "chainage_end": road.geom_end_chainage,
-            "values": road,
+            "values": road.__dict__,
         }
+
+        # For each road get all of the numeric attributes that were imported with it
+        # Note that 'later' sets of attributes will override values from 'earlier' sets
+        # but ONLY if they have a value that's non-zero
+        road_attributes_set = [attr for attr in attributes if attr.road_id == road.id]
+        if road_attributes_set and len(road_attributes_set) > 0:
+            for road_attributes in road_attributes_set:
+                for (
+                    survey_attribute,
+                    source_attributes,
+                ) in ROAD_ATTRIBUTE_SURVEY_MAPPINGS:
+                    survey_value = get_first_available_numeric_value(
+                        road_attributes.attributes, source_attributes
+                    )
+                    if survey_value:
+                        survey_data["values"][survey_attribute] = survey_value
 
         created += create_programmatic_survey(
             management_command, survey_data, ROAD_SURVEY_VALUE_MAPPINGS, "Road Link"
@@ -604,7 +655,11 @@ def refresh_surveys_by_road_code(management_command, rc):
     # management_command.stdout.write(management_command.style.MIGRATE_HEADING("  deleted programmatic surveys for '%s'" % rc))
     roads = get_roads_by_road_code(rc)
     # management_command.stdout.write(management_command.style.MIGRATE_HEADING("  got road links for '%s'" % rc))
-    created += create_programmatic_surveys_for_roads(management_command, roads)
+    attributes = get_attributes_by_road_ids(roads.values_list("id", flat=True))
+    # management_command.stdout.write(management_command.style.MIGRATE_HEADING("  got associated attributes for '%s'" % rc))
+    created += create_programmatic_surveys_for_roads(
+        management_command, list(roads), list(attributes)
+    )
     # management_command.stdout.write(management_command.style.MIGRATE_HEADING("  created programmatic surveys for '%s'" % rc))
 
     # Refresh all of the non-programmatic surveys

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-05 01:57+0000\n"
+"POT-Creation-Date: 2020-03-18 01:43+0000\n"
 "PO-Revision-Date: 2019-10-09 01:05+0000\n"
 "Last-Translator: b'  <juliana@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -188,6 +188,11 @@ msgstr "Fraco"
 msgid "Bad"
 msgstr "Mau"
 
+#, fuzzy
+#| msgid "Road Status"
+msgid "Road"
+msgstr "Estrado da Estrada"
+
 msgid "Bridge"
 msgstr ""
 
@@ -210,6 +215,15 @@ msgid "Rolling"
 msgstr ""
 
 msgid "Mountainous"
+msgstr ""
+
+msgid "Undefined"
+msgstr ""
+
+msgid "Non-core"
+msgstr ""
+
+msgid "Core"
 msgstr ""
 
 msgid "last modified"
@@ -363,9 +377,6 @@ msgstr "Classe Técnica"
 msgid "Choose road link technical class according to the 2010 Road Geometric Design Standards, DRBFC standards"
 msgstr "Escolha o tipo de classe técnica de acordo com o \"2010 Road Geometric Design standards\" e os standards da DNEPCC"
 
-msgid "Core"
-msgstr ""
-
 msgid "Set if the road is a high priority `core` road"
 msgstr ""
 
@@ -374,6 +385,11 @@ msgstr ""
 
 msgid "Set the size of population served by this road"
 msgstr ""
+
+#, fuzzy
+#| msgid "Road Condition Data"
+msgid "Road Construction Year"
+msgstr "Dados de Condição de Estrada"
 
 #, fuzzy
 #| msgid "Technical class"
@@ -398,6 +414,31 @@ msgstr ""
 #| msgid "Enter the source funding for the road link"
 msgid "Enter the number of lanes of the road"
 msgstr "Adicione a fonte de financiamento para a secção da estrada"
+
+msgid "Facilities Served"
+msgstr ""
+
+#, fuzzy
+#| msgid "Choose the pavement class of the road"
+msgid "Choose facilities served by this road"
+msgstr "Escolha a classe de pavimento da estrada"
+
+msgid "Economic Areas Served"
+msgstr ""
+
+msgid "Choose economic areas served by this road"
+msgstr ""
+
+msgid "Connections Served"
+msgstr ""
+
+#, fuzzy
+#| msgid "Choose the type of maintenace needs for the road link"
+msgid "Choose the types of connections facilitated by this road"
+msgstr "Escolha o tipo de manutenção necessária para a secção da estrada"
+
+msgid "Attributes"
+msgstr ""
 
 #, fuzzy
 #| msgid "Asset"
@@ -559,7 +600,9 @@ msgstr "Código da secção da estrada"
 msgid "Link name"
 msgstr "Nome da secção da estrada"
 
-msgid "Link Length"
+#, fuzzy
+#| msgid "Link Length"
+msgid "Link length"
 msgstr "Extensão da secção"
 
 msgid "Link start name"
@@ -574,6 +617,18 @@ msgstr "Nome do fim da secção da estrada"
 msgid "Link end chainage"
 msgstr "Chainage do final da secção"
 
+msgid "Start Point - DMS"
+msgstr "Ponto inicial - DMS"
+
+msgid "End Point - DMS"
+msgstr "Ponto final - DMS"
+
+msgid "Start Point - UTM"
+msgstr "Ponto inicial - UTM"
+
+msgid "End Point - UTM"
+msgstr "Ponto final - UTM"
+
 msgid "Surface type"
 msgstr "Tipo de pavimento"
 
@@ -582,6 +637,12 @@ msgstr "Classe do pavimento"
 
 msgid "Carriageway width"
 msgstr "Largura da faixa de rodagem"
+
+msgid "Total width"
+msgstr ""
+
+msgid "Number of lanes"
+msgstr ""
 
 #, fuzzy
 #| msgid "Pavement class"
@@ -600,17 +661,8 @@ msgstr "Estado da estrada"
 msgid "Project"
 msgstr "Projecto"
 
-msgid "Start Point - DMS"
-msgstr "Ponto inicial - DMS"
-
-msgid "End Point - DMS"
-msgstr "Ponto final - DMS"
-
-msgid "Start Point - UTM"
-msgstr "Ponto inicial - UTM"
-
-msgid "End Point - UTM"
-msgstr "Ponto final - UTM"
+msgid "Construction Year"
+msgstr ""
 
 msgid "Road Condition Data"
 msgstr "Dados de Condição de Estrada"
@@ -626,9 +678,6 @@ msgstr "Tipo de manutenção"
 
 msgid "Traffic data"
 msgstr "Volume de trânsito"
-
-msgid "Number of lanes"
-msgstr ""
 
 #, fuzzy
 #| msgid "Technical Class"
@@ -682,9 +731,6 @@ msgstr ""
 #| msgid "Link Length"
 msgid "Span Length"
 msgstr "Extensão da secção"
-
-msgid "Construction Year"
-msgstr ""
 
 #, fuzzy
 #| msgid "Road Condition Data"

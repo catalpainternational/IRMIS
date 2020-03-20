@@ -9,3 +9,4 @@ geobuf
 protobuf
 django-reversion
 django-sendfile
+importlib_resources

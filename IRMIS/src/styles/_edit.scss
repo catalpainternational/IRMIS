@@ -67,6 +67,7 @@ edit_pavement,
 edit_project,
 edit_condition,
 edit_traffic,
+edit_social_economic,
 edit_maintenance,
 edit_environment,
 edit_history {
@@ -93,6 +94,10 @@ edit_history {
                 margin-right: 15px;
             }
         }
+    }
+
+    section.wide {
+        max-width: inherit;
     }
 }
 
