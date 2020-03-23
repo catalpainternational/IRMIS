@@ -108,6 +108,9 @@ export class Map {
 
         let bb = Config.tlBBox;
         if (featureZoomSet.features.length) {
+            const allCoords = featureZoomSet.features.forEach((feature) => {
+                feature.type
+            })
             const bounds = envelope(featureZoomSet as AllGeoJSON);
             bb = bbox(bounds) as number[];
         }

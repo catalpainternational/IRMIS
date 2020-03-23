@@ -7,7 +7,7 @@
             </button>
         </div>
         <div class="table-spacing">
-            <data_table table_id="{table_id}" columns="{table_columns}" columnSortOrder="{table_columns_order}"
+            <data_table table_id="{identifiers.traffic_type.allDataTableId}" columns="{table_columns}" columnSortOrder="{table_columns_order}"
                 getHelpText="{props.parent.getHelpText}" candelete=true>
             </data_table>
         </div>
@@ -252,6 +252,16 @@
             components: {
                 Edit_Modal, Edit_Stop_Alert, Data_Table
             },
+            identifiers: {
+                traffic_type:{
+                    allDataTableId: "traffic-table",
+                    primaryAttribute: "traffic_type",
+                    reportAttribute: "trafficType",
+                    reportDataTableId: null,
+                    stackedBarId: null
+                },
+            },
+
             // Data for title and options
             trafficTypes: {
                 display: window.gettext("Traffic Data Type"),
@@ -289,7 +299,6 @@
 
             requiredFieldNames: [],
 
-            table_id: "traffic-table",
             table_columns_order: [[0, 'desc']],
             table_columns: [
                 {
@@ -333,29 +342,37 @@
             onMounted(props, state) {
                 state.loading = true;
                 state.road = makeEstradaRoad(props.road);
-                this.props.parent.getAssetSurveys(state, this.table_id, "trafficType");
-                // If we're not still loading, then we assume that we want to replace all rows
-                const eventName = `${this.table_id}.dataAdded`;
-                const eventDetail = {detail: {pendingRows: this.state.pendingRows, clearRows: true}}
-                document.dispatchEvent(new CustomEvent(eventName, eventDetail));
 
                 this.deleteListener = (data) => {
-                    const rowId = data.detail.rowId;
                     const tableId = data.detail.tableId;
+                    const rowId = data.detail.rowId;
                     this.showStopAlertModal("delete-alert", rowId, tableId);
                 };
-                document.addEventListener(`${this.table_id}.deleteRow`, this.deleteListener);
+
+                const refreshPromise = this.props.parent.getAssetSurveys(state, this.identifiers["traffic_type"]);
+
+                refreshPromises.then((results) => {
+                    // If we're not still loading, then we assume that we want to replace all rows
+                    const deleteEventName = `${this.identifiers["traffic_type"].allDataTableId}.dataAdded`;
+                    const deleteEventDetail = {detail: {pendingRows: this.state.pendingRows, clearRows: true}};
+                    document.dispatchEvent(new CustomEvent(deleteEventName, deleteEventDetail));
+
+                    document.addEventListener(`${this.identifiers["traffic_type"].allDataTableId}.deleteRow`, this.deleteListener);
+                    this.update();
+                });
 
                 this.trafficDetailsListener = (data) => {
-                    document.dispatchEvent(new CustomEvent(`${this.table_id}.getRowData`, {detail: {rowId: data.detail.rowId, state: this.state}}));
+                    const getEventName = `${this.identifiers["traffic_type"].allDataTableId}.getRowData`;
+                    const getEventDetail = {detail: {rowId: data.detail.rowId, state: this.state}};
+                    document.dispatchEvent(new CustomEvent(getEventName, getEventDetail));
                     this.update();
                     $("#traffic-segments-modal").modal("show");
                 };
-                document.addEventListener(`${this.table_id}.trafficDetails`, this.trafficDetailsListener);
+                document.addEventListener(`${this.identifiers["traffic_type"].allDataTableId}.trafficDetails`, this.trafficDetailsListener);
             },
             onUnmount(props, state) {
-                document.removeEventListener(`${this.table_id}.deleteRow`, this.deleteListener);
-                document.removeEventListener(`${this.table_id}.trafficDetails`, this.trafficDetailsListener);
+                document.removeEventListener(`${this.identifiers["traffic_type"].allDataTableId}.deleteRow`, this.deleteListener);
+                document.removeEventListener(`${this.identifiers["traffic_type"].allDataTableId}.trafficDetails`, this.trafficDetailsListener);
             },
             showStopAlertModal(modalId, rowId, tableId) {
                 const eventName = `edit.${modalId}.result`;
@@ -507,9 +524,11 @@
                 if (!this.state.editMode) {
                     createSurvey(this.state.survey)
                         .then((surveyData) => {
-                            this.props.parent.getAssetSurveys(this.state, this.table_id, "trafficType");
-                            this.update();
-                            this.props.showFeedback();
+                            const refreshPromise = this.props.parent.getAssetSurveys(state, this.identifiers["traffic_type"]);
+                            refreshPromise.then((result) => {
+                                this.update();
+                                this.props.showFeedback();
+                            });
                         })
                         .catch((err) => {
                             this.props.showFeedback(true);
@@ -520,9 +539,11 @@
                 } else {
                     updateSurvey(this.state.survey)
                         .then((surveyData) => {
-                            this.props.parent.getAssetSurveys(this.state, this.table_id, "trafficType");
-                            this.update();
-                            this.props.showFeedback();
+                            const refreshPromise = this.props.parent.getAssetSurveys(state, this.identifiers["traffic_type"]);
+                            refreshPromise.then((result) => {
+                                this.update();
+                                this.props.showFeedback();
+                            });
                         })
                         .catch((err) => {
                             this.props.showFeedback(true);

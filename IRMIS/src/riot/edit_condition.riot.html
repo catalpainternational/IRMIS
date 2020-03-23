@@ -7,7 +7,7 @@
             </button>
         </div>
 
-        <stacked_bar id="{stacked_bar_id}" entries="{state.assetConditions}"
+        <stacked_bar id="{identifiers.asset_condition.stackedBarId}" entries="{state.assetConditions}"
             total_title="{window.gettext('Total road chainage')}">
         </stacked_bar>
 
@@ -19,11 +19,11 @@
                 { window.gettext("View all data entries") }
             </a>
         </div>
-        <data_table if="{state.viewAll}" table_id="{all_data_table_id}" columns="{all_data_table_columns}"
+        <data_table if="{state.viewAll}" table_id="{identifiers.asset_condition.allDataTableId}" columns="{all_data_table_columns}"
             columnSortOrder="{all_data_table_columns_order}" getHelpText="{props.parent.getHelpText}"
             pendingRows="{state.pendingRows}" candelete=true>
         </data_table>
-        <data_table if="{!state.viewAll}" table_id="{current_data_table_id}" columns="{current_data_table_columns}"
+        <data_table if="{!state.viewAll}" table_id="{identifiers.asset_condition.reportDataTableId}" columns="{current_data_table_columns}"
             columnSortOrder="{current_data_table_columns_order}" getHelpText="{props.parent.getHelpText}"
             pendingRows="{state.pendingRows}">
         </data_table>
@@ -155,43 +155,64 @@
             components: {
                 Edit_Stop_Alert, Edit_Modal, Stacked_Bar
             },
-
+            identifiers: {
+                asset_condition:{
+                    allDataTableId: "asset-condition-table",
+                    primaryAttribute: "asset_condition",
+                    reportAttribute: "assetConditions",
+                    reportDataTableId: "asset-condition-report-table",
+                    stackedBarId: "asset-condition-stacked-bar",
+                },
+            },
             // Condition Survey
             onMounted(props, state) {
                 state.loading = true;
                 state.road = makeEstradaRoad(props.road);
-
-                this.props.parent.updateReportAttributeSummary(state, "asset_condition", props.parent.emptyAttributes);
-                this.props.parent.refreshSurveysAndReports(state, this.all_data_table_id, "asset_condition", "assetConditions", this.current_data_table_id, this.stacked_bar_id);
 
                 this.deleteListener = (data) => {
                     const rowId = data.detail.rowId;
                     this.showStopAlertModal("delete-alert", rowId);
                 };
 
-                document.addEventListener(`${this.all_data_table_id}.deleteRow`, this.deleteListener);
+                const refreshPromises = [];
+                Object.keys(this.identifiers).forEach((idSet) => {
+                    refreshPromises.push(this.props.parent.refreshSurveysAndReports(state, this.identifiers[idSet]));
+                });
+
+                Promise.all(refreshPromises).then((results) => {
+                    Object.keys(this.identifiers).forEach((idSet) => {
+                        document.addEventListener(`${this.identifiers[idSet].allDataTableId}.deleteRow`, this.deleteListener);
+                    });
+                    this.update();
+                });
             },
             onUnmount(props, state) {
-                document.removeEventListener(`${this.all_data_table_id}.deleteRow`, this.deleteListener);
+                Object.keys(this.identifiers).forEach((idSet) => {
+                    document.removeEventListener(`${this.identifiers[idSet].allDataTableId}.deleteRow`, this.deleteListener)
+                });
             },
             viewAll(e) {
                 if (!this.state.viewAll) {
                     this.update({viewAll: true});
-                    this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "asset_condition", "assetConditions", this.current_data_table_id, this.stacked_bar_id);
-                    // If we're not still loading, then we assume that we want to replace all rows
-                    const eventName = `${this.all_data_table_id}.dataAdded`;
-                    const eventDetail = {detail: {pendingRows: this.state.pendingRows, clearRows: true}}
-                    document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+                    const identifierSet = this.identifiers["asset_condition"];
+                    this.props.parent.refreshSurveysAndReports(this.state, identifierSet).then((result) => {
+                        // If we're not still loading, then we assume that we want to replace all rows
+                        const eventName = `${identifierSet.allDataTableId}.dataAdded`;
+                        const eventDetail = {detail: {pendingRows: this.state.pendingRows[identifierSet.primaryAttribute], appendRows: this.state.loading}}
+                        document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+                    });
                 }
             },
             viewCurrent(e) {
                 if (this.state.viewAll) {
                     this.update({viewAll: false});
-                    this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "asset_condition", "assetConditions", this.current_data_table_id, this.stacked_bar_id);
-                    // If we're not still loading, then we assume that we want to replace all rows
-                    const eventName = `${this.current_data_table_id}.dataAdded`;
-                    const eventDetail = {detail: {pendingRows: this.state.reportRows, clearRows: true}}
-                    document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+                    const identifierSet = this.identifiers["asset_condition"];
+                    this.props.parent.refreshSurveysAndReports(this.state, identifierSet).then((result) => {
+                        // If we're not still loading, then we assume that we want to replace all rows
+                        const eventName = `${identifierSet.reportDataTableId}.dataAdded`;
+                        const eventDetail = {detail: {pendingRows: this.state.pendingRows[identifierSet.primaryAttribute], appendRows: this.state.loading}}
+                        document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+                    });
                 }
             },
             addEdit(e) {
@@ -203,9 +224,6 @@
 
                 this.showEditModal();
             },
-            conditions: window.asset_schema.asset_condition,
-            stacked_bar_id: "asset-condition-stacked-bar",
-            current_data_table_id: "asset-condition-report-table",
             current_data_table_columns_order: [[0, 'asc']],
             current_data_table_columns: [
                 {
@@ -248,7 +266,6 @@
                     orderable: false,
                 },
             ],
-            all_data_table_id: "asset-condition-table",
             all_data_table_columns_order: [[3, 'desc'], [0, 'asc']],
             all_data_table_columns: [
                 {
@@ -422,20 +439,16 @@
                     ? createSurvey(this.state.survey)
                     : updateSurvey(this.state.survey);
 
+                const identifierSet = this.identifiers["asset_condition"];
+
                 surveyPromise
                     .then((surveyData) => {
-                        this.props.parent.refreshSurveysAndReports(
-                            this.state, 
-                            this.all_data_table_id, 
-                            "asset_condition", 
-                            "assetConditions", 
-                            this.current_data_table_id, 
-                            this.stacked_bar_id
-                        );
-                        this.update({
-                            survey: new EstradaSurvey({}), // clear input values
-                        });
-                        this.props.showFeedback();                           
+                        this.props.parent.refreshSurveysAndReports(this.state, identifierSet).then((result) => {
+                            this.update({
+                                survey: new EstradaSurvey({}), // clear input values
+                            });
+                            this.props.showFeedback();
+                        });                         
                     })
                     .catch((err) => {
                         this.props.showFeedback(true);
