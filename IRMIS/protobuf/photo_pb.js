@@ -1,4 +1,3 @@
-// source: photo.proto
 /**
  * @fileoverview
  * @enhanceable
@@ -70,15 +69,13 @@ proto.assets.Photos.repeatedFields_ = [1];
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
 /**
- * Creates an object representation of this proto.
+ * Creates an object representation of this proto suitable for use in Soy templates.
  * Field names that are reserved in JavaScript and will be renamed to pb_name.
- * Optional fields that are not set will be set to undefined.
  * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
  * For the list of reserved names please see:
- *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
- * @param {boolean=} opt_includeInstance Deprecated. whether to include the
- *     JSPB instance for transitional soy proto support:
- *     http://goto/soy-param-migration
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
  * @return {!Object}
  */
 proto.assets.Photos.prototype.toObject = function(opt_includeInstance) {
@@ -88,8 +85,8 @@ proto.assets.Photos.prototype.toObject = function(opt_includeInstance) {
 
 /**
  * Static version of the {@see toObject} method.
- * @param {boolean|undefined} includeInstance Deprecated. Whether to include
- *     the JSPB instance for transitional soy proto support:
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
  *     http://goto/soy-param-migration
  * @param {!proto.assets.Photos} msg The msg instance to transform.
  * @return {!Object}
@@ -190,12 +187,9 @@ proto.assets.Photos.prototype.getPhotosList = function() {
 };
 
 
-/**
- * @param {!Array<!proto.assets.Photo>} value
- * @return {!proto.assets.Photos} returns this
-*/
+/** @param {!Array<!proto.assets.Photo>} value */
 proto.assets.Photos.prototype.setPhotosList = function(value) {
-  return jspb.Message.setRepeatedWrapperField(this, 1, value);
+  jspb.Message.setRepeatedWrapperField(this, 1, value);
 };
 
 
@@ -211,10 +205,9 @@ proto.assets.Photos.prototype.addPhotos = function(opt_value, opt_index) {
 
 /**
  * Clears the list making it empty but non-null.
- * @return {!proto.assets.Photos} returns this
  */
 proto.assets.Photos.prototype.clearPhotosList = function() {
-  return this.setPhotosList([]);
+  this.setPhotosList([]);
 };
 
 
@@ -223,15 +216,13 @@ proto.assets.Photos.prototype.clearPhotosList = function() {
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
 /**
- * Creates an object representation of this proto.
+ * Creates an object representation of this proto suitable for use in Soy templates.
  * Field names that are reserved in JavaScript and will be renamed to pb_name.
- * Optional fields that are not set will be set to undefined.
  * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
  * For the list of reserved names please see:
- *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
- * @param {boolean=} opt_includeInstance Deprecated. whether to include the
- *     JSPB instance for transitional soy proto support:
- *     http://goto/soy-param-migration
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
  * @return {!Object}
  */
 proto.assets.Photo.prototype.toObject = function(opt_includeInstance) {
@@ -241,8 +232,8 @@ proto.assets.Photo.prototype.toObject = function(opt_includeInstance) {
 
 /**
  * Static version of the {@see toObject} method.
- * @param {boolean|undefined} includeInstance Deprecated. Whether to include
- *     the JSPB instance for transitional soy proto support:
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
  *     http://goto/soy-param-migration
  * @param {!proto.assets.Photo} msg The msg instance to transform.
  * @return {!Object}
@@ -255,7 +246,9 @@ proto.assets.Photo.toObject = function(includeInstance, msg) {
     lastModified: (f = msg.getLastModified()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
     url: jspb.Message.getFieldWithDefault(msg, 4, ""),
     description: jspb.Message.getFieldWithDefault(msg, 5, ""),
-    fkLink: jspb.Message.getFieldWithDefault(msg, 6, "")
+    fkLink: jspb.Message.getFieldWithDefault(msg, 6, ""),
+    user: jspb.Message.getFieldWithDefault(msg, 7, 0),
+    addedBy: jspb.Message.getFieldWithDefault(msg, 8, "")
   };
 
   if (includeInstance) {
@@ -317,6 +310,14 @@ proto.assets.Photo.deserializeBinaryFromReader = function(msg, reader) {
     case 6:
       var value = /** @type {string} */ (reader.readString());
       msg.setFkLink(value);
+      break;
+    case 7:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setUser(value);
+      break;
+    case 8:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setAddedBy(value);
       break;
     default:
       reader.skipField();
@@ -391,6 +392,20 @@ proto.assets.Photo.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
+  f = message.getUser();
+  if (f !== 0) {
+    writer.writeUint32(
+      7,
+      f
+    );
+  }
+  f = message.getAddedBy();
+  if (f.length > 0) {
+    writer.writeString(
+      8,
+      f
+    );
+  }
 };
 
 
@@ -403,12 +418,9 @@ proto.assets.Photo.prototype.getId = function() {
 };
 
 
-/**
- * @param {number} value
- * @return {!proto.assets.Photo} returns this
- */
+/** @param {number} value */
 proto.assets.Photo.prototype.setId = function(value) {
-  return jspb.Message.setProto3IntField(this, 1, value);
+  jspb.Message.setProto3IntField(this, 1, value);
 };
 
 
@@ -422,21 +434,17 @@ proto.assets.Photo.prototype.getDateCreated = function() {
 };
 
 
-/**
- * @param {?proto.google.protobuf.Timestamp|undefined} value
- * @return {!proto.assets.Photo} returns this
-*/
+/** @param {?proto.google.protobuf.Timestamp|undefined} value */
 proto.assets.Photo.prototype.setDateCreated = function(value) {
-  return jspb.Message.setWrapperField(this, 2, value);
+  jspb.Message.setWrapperField(this, 2, value);
 };
 
 
 /**
  * Clears the message field making it undefined.
- * @return {!proto.assets.Photo} returns this
  */
 proto.assets.Photo.prototype.clearDateCreated = function() {
-  return this.setDateCreated(undefined);
+  this.setDateCreated(undefined);
 };
 
 
@@ -459,21 +467,17 @@ proto.assets.Photo.prototype.getLastModified = function() {
 };
 
 
-/**
- * @param {?proto.google.protobuf.Timestamp|undefined} value
- * @return {!proto.assets.Photo} returns this
-*/
+/** @param {?proto.google.protobuf.Timestamp|undefined} value */
 proto.assets.Photo.prototype.setLastModified = function(value) {
-  return jspb.Message.setWrapperField(this, 3, value);
+  jspb.Message.setWrapperField(this, 3, value);
 };
 
 
 /**
  * Clears the message field making it undefined.
- * @return {!proto.assets.Photo} returns this
  */
 proto.assets.Photo.prototype.clearLastModified = function() {
-  return this.setLastModified(undefined);
+  this.setLastModified(undefined);
 };
 
 
@@ -495,12 +499,9 @@ proto.assets.Photo.prototype.getUrl = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Photo} returns this
- */
+/** @param {string} value */
 proto.assets.Photo.prototype.setUrl = function(value) {
-  return jspb.Message.setProto3StringField(this, 4, value);
+  jspb.Message.setProto3StringField(this, 4, value);
 };
 
 
@@ -513,12 +514,9 @@ proto.assets.Photo.prototype.getDescription = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Photo} returns this
- */
+/** @param {string} value */
 proto.assets.Photo.prototype.setDescription = function(value) {
-  return jspb.Message.setProto3StringField(this, 5, value);
+  jspb.Message.setProto3StringField(this, 5, value);
 };
 
 
@@ -531,12 +529,39 @@ proto.assets.Photo.prototype.getFkLink = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Photo} returns this
- */
+/** @param {string} value */
 proto.assets.Photo.prototype.setFkLink = function(value) {
-  return jspb.Message.setProto3StringField(this, 6, value);
+  jspb.Message.setProto3StringField(this, 6, value);
+};
+
+
+/**
+ * optional uint32 user = 7;
+ * @return {number}
+ */
+proto.assets.Photo.prototype.getUser = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 7, 0));
+};
+
+
+/** @param {number} value */
+proto.assets.Photo.prototype.setUser = function(value) {
+  jspb.Message.setProto3IntField(this, 7, value);
+};
+
+
+/**
+ * optional string added_by = 8;
+ * @return {string}
+ */
+proto.assets.Photo.prototype.getAddedBy = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 8, ""));
+};
+
+
+/** @param {string} value */
+proto.assets.Photo.prototype.setAddedBy = function(value) {
+  jspb.Message.setProto3StringField(this, 8, value);
 };
 
 

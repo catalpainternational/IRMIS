@@ -147,6 +147,9 @@ class Photo(models.Model):
     description = models.CharField(
         max_length=140, verbose_name=_("Description"), default="", blank=True,
     )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, verbose_name=_("User"), on_delete=models.CASCADE,
+    )
     # photos generic fk links back to the various models
     content_type = models.ForeignKey(
         ContentType,
@@ -212,7 +215,10 @@ class SurveyQuerySet(models.QuerySet):
         date_fields = dict(date_updated="date_updated", date_surveyed="date_surveyed",)
 
         photos_prefetch = Prefetch(
-            "photos", queryset=Photo.objects.filter(survey__id__in=self.values("id"))
+            "photos",
+            queryset=Photo.objects.select_related("user").filter(
+                survey__id__in=self.values("id")
+            ),
         )
 
         surveys = self.order_by("id").prefetch_related(photos_prefetch)
@@ -263,6 +269,10 @@ class SurveyQuerySet(models.QuerySet):
                 setattr(photo_protobuf, "fk_link", "SURV-" + str(survey.id))
                 if photo.description:
                     setattr(photo_protobuf, "description", photo.description)
+                setattr(photo_protobuf, "added_by", photo.user.username)
+                # set the info for create / modified dates
+                ts = timestamp_from_datetime(photo.date_created)
+                photo_protobuf.date_created.CopyFrom(ts)
 
         return surveys_protobuf
 
@@ -517,7 +527,10 @@ class RoadQuerySet(models.QuerySet):
         )
         annotations = start_end_point_annos("geom")
         photos_prefetch = Prefetch(
-            "photos", queryset=Photo.objects.filter(road__id__in=self.values("id"))
+            "photos",
+            queryset=Photo.objects.select_related("user").filter(
+                road__id__in=self.values("id")
+            ),
         )
         roads = (
             self.order_by("id")
@@ -583,14 +596,17 @@ class RoadQuerySet(models.QuerySet):
             road_protobuf.projection_start.CopyFrom(start)
             road_protobuf.projection_end.CopyFrom(end)
 
-            photos = road.photos.order_by("-date_created").all()[:2]
-            for photo in photos:
+            for photo in road.photos.all()[:2]:
                 photo_protobuf = road_protobuf.inventory_photos.add()
                 setattr(photo_protobuf, "id", photo.id)
                 setattr(photo_protobuf, "url", photo.file.url)
                 setattr(photo_protobuf, "fk_link", "ROAD-" + str(road.id))
                 if photo.description:
                     setattr(photo_protobuf, "description", photo.description)
+                setattr(photo_protobuf, "added_by", photo.user.username)
+                # set the info for create / modified dates
+                ts = timestamp_from_datetime(photo.date_created)
+                photo_protobuf.date_created.CopyFrom(ts)
 
         return roads_protobuf
 
@@ -943,12 +959,16 @@ def get_structures_with_survey_data(
     if asset_type == "BRDG":
         photos_prefetch = Prefetch(
             "photos",
-            queryset=Photo.objects.filter(bridge__id__in=self_structure.values("id")),
+            queryset=Photo.objects.select_related("user").filter(
+                bridge__id__in=self_structure.values("id")
+            ),
         )
     elif asset_type == "CULV":
         photos_prefetch = Prefetch(
             "photos",
-            queryset=Photo.objects.filter(culvert__id__in=self_structure.values("id")),
+            queryset=Photo.objects.select_related("user").filter(
+                culvert__id__in=self_structure.values("id")
+            ),
         )
 
     structures = (
@@ -1028,26 +1048,17 @@ def structure_to_protobuf(
             structure, "condition_description", None
         )
 
-    survey_photos = []
-    if getattr(structure, "survey_photo1", None):
-        survey_photos.append(json.load(getattr(structure, "survey_photo1", None)))
-    if getattr(structure, "survey_photo2", None):
-        survey_photos.append(json.load(getattr(structure, "survey_photo2", None)))
-    for photo in survey_photos:
-        photo_protobuf = structure_protobuf.survey_photos.add()
-        setattr(photo_protobuf, "id", photo.id)
-        setattr(photo_protobuf, "url", photo.file.url)
-        setattr(photo_protobuf, "fk_link", structure_id)
-        if photo.description:
-            setattr(photo_protobuf, "description", photo.description)
-
-    for photo in structure.photos.order_by("-date_created").all()[:2]:
+    for photo in structure.photos.all()[:2]:
         photo_protobuf = structure_protobuf.inventory_photos.add()
         setattr(photo_protobuf, "id", photo.id)
         setattr(photo_protobuf, "url", photo.file.url)
         setattr(photo_protobuf, "fk_link", structure_id)
         if photo.description:
             setattr(photo_protobuf, "description", photo.description)
+        setattr(photo_protobuf, "added_by", photo.user.username)
+        # set the info for create / modified dates
+        ts = timestamp_from_datetime(photo.date_created)
+        photo_protobuf.date_created.CopyFrom(ts)
 
 
 class BridgeClass(models.Model):

@@ -131,21 +131,18 @@
             components: {
                 Edit_Stop_Alert, Edit_Modal, Data_Table, Upload_Photo
             },
-
-
             // Structure Condition Survey
-            onBeforeMount(props, state) {
-                state.survey.photos = state.survey.photos || [];
-                if (state.survey.photos.length > 0) {
-                    state.photo1 = state.survey.photos[0] ? state.survey.photos[0] : undefined;
-                    state.photo2 = state.survey.photos[1] ? state.survey.photos[1] : undefined;
-                }
-            },
             onMounted(props, state) {
                 state.loading = true;
                 state.structure = props.structure;
 
                 this.props.parent.getStructureSurveys(state, this.data_table_id, "asset_condition", "assetConditions");
+
+                state.survey.photos = state.survey.photos || [];
+                if (state.survey.photos.length > 0) {
+                    state.photo1 = state.survey.photos[0] ? state.survey.photos[0] : undefined;
+                    state.photo2 = state.survey.photos[1] ? state.survey.photos[1] : undefined;
+                }
 
                 this.photoNeedsLinkingListener = (data) => {
                     const newPhoto = data.detail.photo;
@@ -215,8 +212,8 @@
                     defaultContent: "",
                     render: (photos) => {
                         let links = [];
-                        photos.forEach((p) => {
-                            links.push(`<a class="image" href="${p.url}" target="_blank">Photo</a>`);
+                        photos.forEach((photo, i) => {
+                            links.push(`<a class="image" href="${photo.url}" target="_blank">Photo ${i + 1}</a>`);
                         });
                         return links.join(" ");
                     },
@@ -309,8 +306,10 @@
                 $(`#${this.modal_id}`).modal("hide");
                 this.update({
                     survey: makeEstradaSurvey(this.state.baseSurvey),
+                    photoLinkQueue: [],
                     errors: {},
                 });
+                this.clearPhotos();
             },
             save(e) {
                 const missingFieldNames = checkRequiredFields(this.requiredFieldNames, this.state.survey);
@@ -379,8 +378,9 @@
                         );
                         this.update({
                             photoLinkQueue: [],
-                            survey: new EstradaSurvey({}), // clear input values
+                            survey: makeEstradaSurvey(this.state.baseSurvey), // clear input values
                         });
+                        this.clearPhotos();
                         this.props.showFeedback();
                     })
                     .catch((err) => {
@@ -438,6 +438,10 @@
             checkDescription(e) {
                 this.state.survey.conditionDescription = e.currentTarget.value;
                 this.canSave();
+            },
+            clearPhotos() {
+                document.dispatchEvent(new CustomEvent(`${this.photoId1}.photoCleared`, {}));
+                document.dispatchEvent(new CustomEvent(`${this.photoId2}.photoCleared`, {}));
             },
             max_date: () => new Date().toISOString().substring(0, 10),
         }

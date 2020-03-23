@@ -1,4 +1,3 @@
-// source: structure.proto
 /**
  * @fileoverview
  * @enhanceable
@@ -96,15 +95,13 @@ proto.assets.Structures.repeatedFields_ = [1,2];
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
 /**
- * Creates an object representation of this proto.
+ * Creates an object representation of this proto suitable for use in Soy templates.
  * Field names that are reserved in JavaScript and will be renamed to pb_name.
- * Optional fields that are not set will be set to undefined.
  * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
  * For the list of reserved names please see:
- *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
- * @param {boolean=} opt_includeInstance Deprecated. whether to include the
- *     JSPB instance for transitional soy proto support:
- *     http://goto/soy-param-migration
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
  * @return {!Object}
  */
 proto.assets.Structures.prototype.toObject = function(opt_includeInstance) {
@@ -114,8 +111,8 @@ proto.assets.Structures.prototype.toObject = function(opt_includeInstance) {
 
 /**
  * Static version of the {@see toObject} method.
- * @param {boolean|undefined} includeInstance Deprecated. Whether to include
- *     the JSPB instance for transitional soy proto support:
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
  *     http://goto/soy-param-migration
  * @param {!proto.assets.Structures} msg The msg instance to transform.
  * @return {!Object}
@@ -231,12 +228,9 @@ proto.assets.Structures.prototype.getBridgesList = function() {
 };
 
 
-/**
- * @param {!Array<!proto.assets.Bridge>} value
- * @return {!proto.assets.Structures} returns this
-*/
+/** @param {!Array<!proto.assets.Bridge>} value */
 proto.assets.Structures.prototype.setBridgesList = function(value) {
-  return jspb.Message.setRepeatedWrapperField(this, 1, value);
+  jspb.Message.setRepeatedWrapperField(this, 1, value);
 };
 
 
@@ -252,10 +246,9 @@ proto.assets.Structures.prototype.addBridges = function(opt_value, opt_index) {
 
 /**
  * Clears the list making it empty but non-null.
- * @return {!proto.assets.Structures} returns this
  */
 proto.assets.Structures.prototype.clearBridgesList = function() {
-  return this.setBridgesList([]);
+  this.setBridgesList([]);
 };
 
 
@@ -269,12 +262,9 @@ proto.assets.Structures.prototype.getCulvertsList = function() {
 };
 
 
-/**
- * @param {!Array<!proto.assets.Culvert>} value
- * @return {!proto.assets.Structures} returns this
-*/
+/** @param {!Array<!proto.assets.Culvert>} value */
 proto.assets.Structures.prototype.setCulvertsList = function(value) {
-  return jspb.Message.setRepeatedWrapperField(this, 2, value);
+  jspb.Message.setRepeatedWrapperField(this, 2, value);
 };
 
 
@@ -290,10 +280,9 @@ proto.assets.Structures.prototype.addCulverts = function(opt_value, opt_index) {
 
 /**
  * Clears the list making it empty but non-null.
- * @return {!proto.assets.Structures} returns this
  */
 proto.assets.Structures.prototype.clearCulvertsList = function() {
-  return this.setCulvertsList([]);
+  this.setCulvertsList([]);
 };
 
 
@@ -309,15 +298,13 @@ proto.assets.Bridge.repeatedFields_ = [22,23];
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
 /**
- * Creates an object representation of this proto.
+ * Creates an object representation of this proto suitable for use in Soy templates.
  * Field names that are reserved in JavaScript and will be renamed to pb_name.
- * Optional fields that are not set will be set to undefined.
  * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
  * For the list of reserved names please see:
- *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
- * @param {boolean=} opt_includeInstance Deprecated. whether to include the
- *     JSPB instance for transitional soy proto support:
- *     http://goto/soy-param-migration
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
  * @return {!Object}
  */
 proto.assets.Bridge.prototype.toObject = function(opt_includeInstance) {
@@ -327,8 +314,8 @@ proto.assets.Bridge.prototype.toObject = function(opt_includeInstance) {
 
 /**
  * Static version of the {@see toObject} method.
- * @param {boolean|undefined} includeInstance Deprecated. Whether to include
- *     the JSPB instance for transitional soy proto support:
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
  *     http://goto/soy-param-migration
  * @param {!proto.assets.Bridge} msg The msg instance to transform.
  * @return {!Object}
@@ -346,9 +333,9 @@ proto.assets.Bridge.toObject = function(includeInstance, msg) {
     administrativeArea: jspb.Message.getFieldWithDefault(msg, 8, ""),
     roadCode: jspb.Message.getFieldWithDefault(msg, 9, ""),
     constructionYear: jspb.Message.getFieldWithDefault(msg, 10, 0),
-    length: jspb.Message.getFloatingPointFieldWithDefault(msg, 11, 0.0),
-    width: jspb.Message.getFloatingPointFieldWithDefault(msg, 12, 0.0),
-    chainage: jspb.Message.getFloatingPointFieldWithDefault(msg, 13, 0.0),
+    length: +jspb.Message.getFieldWithDefault(msg, 11, 0.0),
+    width: +jspb.Message.getFieldWithDefault(msg, 12, 0.0),
+    chainage: +jspb.Message.getFieldWithDefault(msg, 13, 0.0),
     structureType: jspb.Message.getFieldWithDefault(msg, 14, ""),
     material: jspb.Message.getFieldWithDefault(msg, 15, ""),
     protectionUpstream: jspb.Message.getFieldWithDefault(msg, 16, ""),
@@ -363,7 +350,7 @@ proto.assets.Bridge.toObject = function(includeInstance, msg) {
     photo_pb.Photo.toObject, includeInstance),
     riverName: jspb.Message.getFieldWithDefault(msg, 28, ""),
     numberSpans: jspb.Message.getFieldWithDefault(msg, 29, 0),
-    spanLength: jspb.Message.getFloatingPointFieldWithDefault(msg, 30, 0.0)
+    spanLength: +jspb.Message.getFieldWithDefault(msg, 30, 0.0)
   };
 
   if (includeInstance) {
@@ -737,12 +724,9 @@ proto.assets.Bridge.prototype.getId = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Bridge} returns this
- */
+/** @param {string} value */
 proto.assets.Bridge.prototype.setId = function(value) {
-  return jspb.Message.setProto3StringField(this, 1, value);
+  jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -755,12 +739,9 @@ proto.assets.Bridge.prototype.getRoadId = function() {
 };
 
 
-/**
- * @param {number} value
- * @return {!proto.assets.Bridge} returns this
- */
+/** @param {number} value */
 proto.assets.Bridge.prototype.setRoadId = function(value) {
-  return jspb.Message.setProto3IntField(this, 2, value);
+  jspb.Message.setProto3IntField(this, 2, value);
 };
 
 
@@ -774,21 +755,17 @@ proto.assets.Bridge.prototype.getDateCreated = function() {
 };
 
 
-/**
- * @param {?proto.google.protobuf.Timestamp|undefined} value
- * @return {!proto.assets.Bridge} returns this
-*/
+/** @param {?proto.google.protobuf.Timestamp|undefined} value */
 proto.assets.Bridge.prototype.setDateCreated = function(value) {
-  return jspb.Message.setWrapperField(this, 3, value);
+  jspb.Message.setWrapperField(this, 3, value);
 };
 
 
 /**
  * Clears the message field making it undefined.
- * @return {!proto.assets.Bridge} returns this
  */
 proto.assets.Bridge.prototype.clearDateCreated = function() {
-  return this.setDateCreated(undefined);
+  this.setDateCreated(undefined);
 };
 
 
@@ -811,21 +788,17 @@ proto.assets.Bridge.prototype.getLastModified = function() {
 };
 
 
-/**
- * @param {?proto.google.protobuf.Timestamp|undefined} value
- * @return {!proto.assets.Bridge} returns this
-*/
+/** @param {?proto.google.protobuf.Timestamp|undefined} value */
 proto.assets.Bridge.prototype.setLastModified = function(value) {
-  return jspb.Message.setWrapperField(this, 4, value);
+  jspb.Message.setWrapperField(this, 4, value);
 };
 
 
 /**
  * Clears the message field making it undefined.
- * @return {!proto.assets.Bridge} returns this
  */
 proto.assets.Bridge.prototype.clearLastModified = function() {
-  return this.setLastModified(undefined);
+  this.setLastModified(undefined);
 };
 
 
@@ -847,12 +820,9 @@ proto.assets.Bridge.prototype.getStructureCode = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Bridge} returns this
- */
+/** @param {string} value */
 proto.assets.Bridge.prototype.setStructureCode = function(value) {
-  return jspb.Message.setProto3StringField(this, 5, value);
+  jspb.Message.setProto3StringField(this, 5, value);
 };
 
 
@@ -865,12 +835,9 @@ proto.assets.Bridge.prototype.getStructureName = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Bridge} returns this
- */
+/** @param {string} value */
 proto.assets.Bridge.prototype.setStructureName = function(value) {
-  return jspb.Message.setProto3StringField(this, 6, value);
+  jspb.Message.setProto3StringField(this, 6, value);
 };
 
 
@@ -883,12 +850,9 @@ proto.assets.Bridge.prototype.getAssetClass = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Bridge} returns this
- */
+/** @param {string} value */
 proto.assets.Bridge.prototype.setAssetClass = function(value) {
-  return jspb.Message.setProto3StringField(this, 7, value);
+  jspb.Message.setProto3StringField(this, 7, value);
 };
 
 
@@ -901,12 +865,9 @@ proto.assets.Bridge.prototype.getAdministrativeArea = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Bridge} returns this
- */
+/** @param {string} value */
 proto.assets.Bridge.prototype.setAdministrativeArea = function(value) {
-  return jspb.Message.setProto3StringField(this, 8, value);
+  jspb.Message.setProto3StringField(this, 8, value);
 };
 
 
@@ -919,12 +880,9 @@ proto.assets.Bridge.prototype.getRoadCode = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Bridge} returns this
- */
+/** @param {string} value */
 proto.assets.Bridge.prototype.setRoadCode = function(value) {
-  return jspb.Message.setProto3StringField(this, 9, value);
+  jspb.Message.setProto3StringField(this, 9, value);
 };
 
 
@@ -937,12 +895,9 @@ proto.assets.Bridge.prototype.getConstructionYear = function() {
 };
 
 
-/**
- * @param {number} value
- * @return {!proto.assets.Bridge} returns this
- */
+/** @param {number} value */
 proto.assets.Bridge.prototype.setConstructionYear = function(value) {
-  return jspb.Message.setProto3IntField(this, 10, value);
+  jspb.Message.setProto3IntField(this, 10, value);
 };
 
 
@@ -951,16 +906,13 @@ proto.assets.Bridge.prototype.setConstructionYear = function(value) {
  * @return {number}
  */
 proto.assets.Bridge.prototype.getLength = function() {
-  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 11, 0.0));
+  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 11, 0.0));
 };
 
 
-/**
- * @param {number} value
- * @return {!proto.assets.Bridge} returns this
- */
+/** @param {number} value */
 proto.assets.Bridge.prototype.setLength = function(value) {
-  return jspb.Message.setProto3FloatField(this, 11, value);
+  jspb.Message.setProto3FloatField(this, 11, value);
 };
 
 
@@ -969,16 +921,13 @@ proto.assets.Bridge.prototype.setLength = function(value) {
  * @return {number}
  */
 proto.assets.Bridge.prototype.getWidth = function() {
-  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 12, 0.0));
+  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 12, 0.0));
 };
 
 
-/**
- * @param {number} value
- * @return {!proto.assets.Bridge} returns this
- */
+/** @param {number} value */
 proto.assets.Bridge.prototype.setWidth = function(value) {
-  return jspb.Message.setProto3FloatField(this, 12, value);
+  jspb.Message.setProto3FloatField(this, 12, value);
 };
 
 
@@ -987,16 +936,13 @@ proto.assets.Bridge.prototype.setWidth = function(value) {
  * @return {number}
  */
 proto.assets.Bridge.prototype.getChainage = function() {
-  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 13, 0.0));
+  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 13, 0.0));
 };
 
 
-/**
- * @param {number} value
- * @return {!proto.assets.Bridge} returns this
- */
+/** @param {number} value */
 proto.assets.Bridge.prototype.setChainage = function(value) {
-  return jspb.Message.setProto3FloatField(this, 13, value);
+  jspb.Message.setProto3FloatField(this, 13, value);
 };
 
 
@@ -1009,12 +955,9 @@ proto.assets.Bridge.prototype.getStructureType = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Bridge} returns this
- */
+/** @param {string} value */
 proto.assets.Bridge.prototype.setStructureType = function(value) {
-  return jspb.Message.setProto3StringField(this, 14, value);
+  jspb.Message.setProto3StringField(this, 14, value);
 };
 
 
@@ -1027,12 +970,9 @@ proto.assets.Bridge.prototype.getMaterial = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Bridge} returns this
- */
+/** @param {string} value */
 proto.assets.Bridge.prototype.setMaterial = function(value) {
-  return jspb.Message.setProto3StringField(this, 15, value);
+  jspb.Message.setProto3StringField(this, 15, value);
 };
 
 
@@ -1045,12 +985,9 @@ proto.assets.Bridge.prototype.getProtectionUpstream = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Bridge} returns this
- */
+/** @param {string} value */
 proto.assets.Bridge.prototype.setProtectionUpstream = function(value) {
-  return jspb.Message.setProto3StringField(this, 16, value);
+  jspb.Message.setProto3StringField(this, 16, value);
 };
 
 
@@ -1063,12 +1000,9 @@ proto.assets.Bridge.prototype.getProtectionDownstream = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Bridge} returns this
- */
+/** @param {string} value */
 proto.assets.Bridge.prototype.setProtectionDownstream = function(value) {
-  return jspb.Message.setProto3StringField(this, 17, value);
+  jspb.Message.setProto3StringField(this, 17, value);
 };
 
 
@@ -1082,21 +1016,17 @@ proto.assets.Bridge.prototype.getGeomPoint = function() {
 };
 
 
-/**
- * @param {?proto.assets.Projection|undefined} value
- * @return {!proto.assets.Bridge} returns this
-*/
+/** @param {?proto.assets.Projection|undefined} value */
 proto.assets.Bridge.prototype.setGeomPoint = function(value) {
-  return jspb.Message.setWrapperField(this, 18, value);
+  jspb.Message.setWrapperField(this, 18, value);
 };
 
 
 /**
  * Clears the message field making it undefined.
- * @return {!proto.assets.Bridge} returns this
  */
 proto.assets.Bridge.prototype.clearGeomPoint = function() {
-  return this.setGeomPoint(undefined);
+  this.setGeomPoint(undefined);
 };
 
 
@@ -1118,12 +1048,9 @@ proto.assets.Bridge.prototype.getGeojsonId = function() {
 };
 
 
-/**
- * @param {number} value
- * @return {!proto.assets.Bridge} returns this
- */
+/** @param {number} value */
 proto.assets.Bridge.prototype.setGeojsonId = function(value) {
-  return jspb.Message.setProto3IntField(this, 19, value);
+  jspb.Message.setProto3IntField(this, 19, value);
 };
 
 
@@ -1136,12 +1063,9 @@ proto.assets.Bridge.prototype.getAssetCondition = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Bridge} returns this
- */
+/** @param {string} value */
 proto.assets.Bridge.prototype.setAssetCondition = function(value) {
-  return jspb.Message.setProto3StringField(this, 20, value);
+  jspb.Message.setProto3StringField(this, 20, value);
 };
 
 
@@ -1154,12 +1078,9 @@ proto.assets.Bridge.prototype.getConditionDescription = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Bridge} returns this
- */
+/** @param {string} value */
 proto.assets.Bridge.prototype.setConditionDescription = function(value) {
-  return jspb.Message.setProto3StringField(this, 21, value);
+  jspb.Message.setProto3StringField(this, 21, value);
 };
 
 
@@ -1173,12 +1094,9 @@ proto.assets.Bridge.prototype.getInventoryPhotosList = function() {
 };
 
 
-/**
- * @param {!Array<!proto.assets.Photo>} value
- * @return {!proto.assets.Bridge} returns this
-*/
+/** @param {!Array<!proto.assets.Photo>} value */
 proto.assets.Bridge.prototype.setInventoryPhotosList = function(value) {
-  return jspb.Message.setRepeatedWrapperField(this, 22, value);
+  jspb.Message.setRepeatedWrapperField(this, 22, value);
 };
 
 
@@ -1194,10 +1112,9 @@ proto.assets.Bridge.prototype.addInventoryPhotos = function(opt_value, opt_index
 
 /**
  * Clears the list making it empty but non-null.
- * @return {!proto.assets.Bridge} returns this
  */
 proto.assets.Bridge.prototype.clearInventoryPhotosList = function() {
-  return this.setInventoryPhotosList([]);
+  this.setInventoryPhotosList([]);
 };
 
 
@@ -1211,12 +1128,9 @@ proto.assets.Bridge.prototype.getSurveyPhotosList = function() {
 };
 
 
-/**
- * @param {!Array<!proto.assets.Photo>} value
- * @return {!proto.assets.Bridge} returns this
-*/
+/** @param {!Array<!proto.assets.Photo>} value */
 proto.assets.Bridge.prototype.setSurveyPhotosList = function(value) {
-  return jspb.Message.setRepeatedWrapperField(this, 23, value);
+  jspb.Message.setRepeatedWrapperField(this, 23, value);
 };
 
 
@@ -1232,10 +1146,9 @@ proto.assets.Bridge.prototype.addSurveyPhotos = function(opt_value, opt_index) {
 
 /**
  * Clears the list making it empty but non-null.
- * @return {!proto.assets.Bridge} returns this
  */
 proto.assets.Bridge.prototype.clearSurveyPhotosList = function() {
-  return this.setSurveyPhotosList([]);
+  this.setSurveyPhotosList([]);
 };
 
 
@@ -1248,12 +1161,9 @@ proto.assets.Bridge.prototype.getRiverName = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Bridge} returns this
- */
+/** @param {string} value */
 proto.assets.Bridge.prototype.setRiverName = function(value) {
-  return jspb.Message.setProto3StringField(this, 28, value);
+  jspb.Message.setProto3StringField(this, 28, value);
 };
 
 
@@ -1266,12 +1176,9 @@ proto.assets.Bridge.prototype.getNumberSpans = function() {
 };
 
 
-/**
- * @param {number} value
- * @return {!proto.assets.Bridge} returns this
- */
+/** @param {number} value */
 proto.assets.Bridge.prototype.setNumberSpans = function(value) {
-  return jspb.Message.setProto3IntField(this, 29, value);
+  jspb.Message.setProto3IntField(this, 29, value);
 };
 
 
@@ -1280,16 +1187,13 @@ proto.assets.Bridge.prototype.setNumberSpans = function(value) {
  * @return {number}
  */
 proto.assets.Bridge.prototype.getSpanLength = function() {
-  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 30, 0.0));
+  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 30, 0.0));
 };
 
 
-/**
- * @param {number} value
- * @return {!proto.assets.Bridge} returns this
- */
+/** @param {number} value */
 proto.assets.Bridge.prototype.setSpanLength = function(value) {
-  return jspb.Message.setProto3FloatField(this, 30, value);
+  jspb.Message.setProto3FloatField(this, 30, value);
 };
 
 
@@ -1305,15 +1209,13 @@ proto.assets.Culvert.repeatedFields_ = [22,23];
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
 /**
- * Creates an object representation of this proto.
+ * Creates an object representation of this proto suitable for use in Soy templates.
  * Field names that are reserved in JavaScript and will be renamed to pb_name.
- * Optional fields that are not set will be set to undefined.
  * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
  * For the list of reserved names please see:
- *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
- * @param {boolean=} opt_includeInstance Deprecated. whether to include the
- *     JSPB instance for transitional soy proto support:
- *     http://goto/soy-param-migration
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
  * @return {!Object}
  */
 proto.assets.Culvert.prototype.toObject = function(opt_includeInstance) {
@@ -1323,8 +1225,8 @@ proto.assets.Culvert.prototype.toObject = function(opt_includeInstance) {
 
 /**
  * Static version of the {@see toObject} method.
- * @param {boolean|undefined} includeInstance Deprecated. Whether to include
- *     the JSPB instance for transitional soy proto support:
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
  *     http://goto/soy-param-migration
  * @param {!proto.assets.Culvert} msg The msg instance to transform.
  * @return {!Object}
@@ -1342,9 +1244,9 @@ proto.assets.Culvert.toObject = function(includeInstance, msg) {
     administrativeArea: jspb.Message.getFieldWithDefault(msg, 8, ""),
     roadCode: jspb.Message.getFieldWithDefault(msg, 9, ""),
     constructionYear: jspb.Message.getFieldWithDefault(msg, 10, 0),
-    length: jspb.Message.getFloatingPointFieldWithDefault(msg, 11, 0.0),
-    width: jspb.Message.getFloatingPointFieldWithDefault(msg, 12, 0.0),
-    chainage: jspb.Message.getFloatingPointFieldWithDefault(msg, 13, 0.0),
+    length: +jspb.Message.getFieldWithDefault(msg, 11, 0.0),
+    width: +jspb.Message.getFieldWithDefault(msg, 12, 0.0),
+    chainage: +jspb.Message.getFieldWithDefault(msg, 13, 0.0),
     structureType: jspb.Message.getFieldWithDefault(msg, 14, ""),
     material: jspb.Message.getFieldWithDefault(msg, 15, ""),
     protectionUpstream: jspb.Message.getFieldWithDefault(msg, 16, ""),
@@ -1357,7 +1259,7 @@ proto.assets.Culvert.toObject = function(includeInstance, msg) {
     photo_pb.Photo.toObject, includeInstance),
     surveyPhotosList: jspb.Message.toObjectList(msg.getSurveyPhotosList(),
     photo_pb.Photo.toObject, includeInstance),
-    height: jspb.Message.getFloatingPointFieldWithDefault(msg, 28, 0.0),
+    height: +jspb.Message.getFieldWithDefault(msg, 28, 0.0),
     numberCells: jspb.Message.getFieldWithDefault(msg, 29, 0)
   };
 
@@ -1721,12 +1623,9 @@ proto.assets.Culvert.prototype.getId = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Culvert} returns this
- */
+/** @param {string} value */
 proto.assets.Culvert.prototype.setId = function(value) {
-  return jspb.Message.setProto3StringField(this, 1, value);
+  jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -1739,12 +1638,9 @@ proto.assets.Culvert.prototype.getRoadId = function() {
 };
 
 
-/**
- * @param {number} value
- * @return {!proto.assets.Culvert} returns this
- */
+/** @param {number} value */
 proto.assets.Culvert.prototype.setRoadId = function(value) {
-  return jspb.Message.setProto3IntField(this, 2, value);
+  jspb.Message.setProto3IntField(this, 2, value);
 };
 
 
@@ -1758,21 +1654,17 @@ proto.assets.Culvert.prototype.getDateCreated = function() {
 };
 
 
-/**
- * @param {?proto.google.protobuf.Timestamp|undefined} value
- * @return {!proto.assets.Culvert} returns this
-*/
+/** @param {?proto.google.protobuf.Timestamp|undefined} value */
 proto.assets.Culvert.prototype.setDateCreated = function(value) {
-  return jspb.Message.setWrapperField(this, 3, value);
+  jspb.Message.setWrapperField(this, 3, value);
 };
 
 
 /**
  * Clears the message field making it undefined.
- * @return {!proto.assets.Culvert} returns this
  */
 proto.assets.Culvert.prototype.clearDateCreated = function() {
-  return this.setDateCreated(undefined);
+  this.setDateCreated(undefined);
 };
 
 
@@ -1795,21 +1687,17 @@ proto.assets.Culvert.prototype.getLastModified = function() {
 };
 
 
-/**
- * @param {?proto.google.protobuf.Timestamp|undefined} value
- * @return {!proto.assets.Culvert} returns this
-*/
+/** @param {?proto.google.protobuf.Timestamp|undefined} value */
 proto.assets.Culvert.prototype.setLastModified = function(value) {
-  return jspb.Message.setWrapperField(this, 4, value);
+  jspb.Message.setWrapperField(this, 4, value);
 };
 
 
 /**
  * Clears the message field making it undefined.
- * @return {!proto.assets.Culvert} returns this
  */
 proto.assets.Culvert.prototype.clearLastModified = function() {
-  return this.setLastModified(undefined);
+  this.setLastModified(undefined);
 };
 
 
@@ -1831,12 +1719,9 @@ proto.assets.Culvert.prototype.getStructureCode = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Culvert} returns this
- */
+/** @param {string} value */
 proto.assets.Culvert.prototype.setStructureCode = function(value) {
-  return jspb.Message.setProto3StringField(this, 5, value);
+  jspb.Message.setProto3StringField(this, 5, value);
 };
 
 
@@ -1849,12 +1734,9 @@ proto.assets.Culvert.prototype.getStructureName = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Culvert} returns this
- */
+/** @param {string} value */
 proto.assets.Culvert.prototype.setStructureName = function(value) {
-  return jspb.Message.setProto3StringField(this, 6, value);
+  jspb.Message.setProto3StringField(this, 6, value);
 };
 
 
@@ -1867,12 +1749,9 @@ proto.assets.Culvert.prototype.getAssetClass = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Culvert} returns this
- */
+/** @param {string} value */
 proto.assets.Culvert.prototype.setAssetClass = function(value) {
-  return jspb.Message.setProto3StringField(this, 7, value);
+  jspb.Message.setProto3StringField(this, 7, value);
 };
 
 
@@ -1885,12 +1764,9 @@ proto.assets.Culvert.prototype.getAdministrativeArea = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Culvert} returns this
- */
+/** @param {string} value */
 proto.assets.Culvert.prototype.setAdministrativeArea = function(value) {
-  return jspb.Message.setProto3StringField(this, 8, value);
+  jspb.Message.setProto3StringField(this, 8, value);
 };
 
 
@@ -1903,12 +1779,9 @@ proto.assets.Culvert.prototype.getRoadCode = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Culvert} returns this
- */
+/** @param {string} value */
 proto.assets.Culvert.prototype.setRoadCode = function(value) {
-  return jspb.Message.setProto3StringField(this, 9, value);
+  jspb.Message.setProto3StringField(this, 9, value);
 };
 
 
@@ -1921,12 +1794,9 @@ proto.assets.Culvert.prototype.getConstructionYear = function() {
 };
 
 
-/**
- * @param {number} value
- * @return {!proto.assets.Culvert} returns this
- */
+/** @param {number} value */
 proto.assets.Culvert.prototype.setConstructionYear = function(value) {
-  return jspb.Message.setProto3IntField(this, 10, value);
+  jspb.Message.setProto3IntField(this, 10, value);
 };
 
 
@@ -1935,16 +1805,13 @@ proto.assets.Culvert.prototype.setConstructionYear = function(value) {
  * @return {number}
  */
 proto.assets.Culvert.prototype.getLength = function() {
-  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 11, 0.0));
+  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 11, 0.0));
 };
 
 
-/**
- * @param {number} value
- * @return {!proto.assets.Culvert} returns this
- */
+/** @param {number} value */
 proto.assets.Culvert.prototype.setLength = function(value) {
-  return jspb.Message.setProto3FloatField(this, 11, value);
+  jspb.Message.setProto3FloatField(this, 11, value);
 };
 
 
@@ -1953,16 +1820,13 @@ proto.assets.Culvert.prototype.setLength = function(value) {
  * @return {number}
  */
 proto.assets.Culvert.prototype.getWidth = function() {
-  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 12, 0.0));
+  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 12, 0.0));
 };
 
 
-/**
- * @param {number} value
- * @return {!proto.assets.Culvert} returns this
- */
+/** @param {number} value */
 proto.assets.Culvert.prototype.setWidth = function(value) {
-  return jspb.Message.setProto3FloatField(this, 12, value);
+  jspb.Message.setProto3FloatField(this, 12, value);
 };
 
 
@@ -1971,16 +1835,13 @@ proto.assets.Culvert.prototype.setWidth = function(value) {
  * @return {number}
  */
 proto.assets.Culvert.prototype.getChainage = function() {
-  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 13, 0.0));
+  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 13, 0.0));
 };
 
 
-/**
- * @param {number} value
- * @return {!proto.assets.Culvert} returns this
- */
+/** @param {number} value */
 proto.assets.Culvert.prototype.setChainage = function(value) {
-  return jspb.Message.setProto3FloatField(this, 13, value);
+  jspb.Message.setProto3FloatField(this, 13, value);
 };
 
 
@@ -1993,12 +1854,9 @@ proto.assets.Culvert.prototype.getStructureType = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Culvert} returns this
- */
+/** @param {string} value */
 proto.assets.Culvert.prototype.setStructureType = function(value) {
-  return jspb.Message.setProto3StringField(this, 14, value);
+  jspb.Message.setProto3StringField(this, 14, value);
 };
 
 
@@ -2011,12 +1869,9 @@ proto.assets.Culvert.prototype.getMaterial = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Culvert} returns this
- */
+/** @param {string} value */
 proto.assets.Culvert.prototype.setMaterial = function(value) {
-  return jspb.Message.setProto3StringField(this, 15, value);
+  jspb.Message.setProto3StringField(this, 15, value);
 };
 
 
@@ -2029,12 +1884,9 @@ proto.assets.Culvert.prototype.getProtectionUpstream = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Culvert} returns this
- */
+/** @param {string} value */
 proto.assets.Culvert.prototype.setProtectionUpstream = function(value) {
-  return jspb.Message.setProto3StringField(this, 16, value);
+  jspb.Message.setProto3StringField(this, 16, value);
 };
 
 
@@ -2047,12 +1899,9 @@ proto.assets.Culvert.prototype.getProtectionDownstream = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Culvert} returns this
- */
+/** @param {string} value */
 proto.assets.Culvert.prototype.setProtectionDownstream = function(value) {
-  return jspb.Message.setProto3StringField(this, 17, value);
+  jspb.Message.setProto3StringField(this, 17, value);
 };
 
 
@@ -2066,21 +1915,17 @@ proto.assets.Culvert.prototype.getGeomPoint = function() {
 };
 
 
-/**
- * @param {?proto.assets.Projection|undefined} value
- * @return {!proto.assets.Culvert} returns this
-*/
+/** @param {?proto.assets.Projection|undefined} value */
 proto.assets.Culvert.prototype.setGeomPoint = function(value) {
-  return jspb.Message.setWrapperField(this, 18, value);
+  jspb.Message.setWrapperField(this, 18, value);
 };
 
 
 /**
  * Clears the message field making it undefined.
- * @return {!proto.assets.Culvert} returns this
  */
 proto.assets.Culvert.prototype.clearGeomPoint = function() {
-  return this.setGeomPoint(undefined);
+  this.setGeomPoint(undefined);
 };
 
 
@@ -2102,12 +1947,9 @@ proto.assets.Culvert.prototype.getGeojsonId = function() {
 };
 
 
-/**
- * @param {number} value
- * @return {!proto.assets.Culvert} returns this
- */
+/** @param {number} value */
 proto.assets.Culvert.prototype.setGeojsonId = function(value) {
-  return jspb.Message.setProto3IntField(this, 19, value);
+  jspb.Message.setProto3IntField(this, 19, value);
 };
 
 
@@ -2120,12 +1962,9 @@ proto.assets.Culvert.prototype.getAssetCondition = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Culvert} returns this
- */
+/** @param {string} value */
 proto.assets.Culvert.prototype.setAssetCondition = function(value) {
-  return jspb.Message.setProto3StringField(this, 20, value);
+  jspb.Message.setProto3StringField(this, 20, value);
 };
 
 
@@ -2138,12 +1977,9 @@ proto.assets.Culvert.prototype.getConditionDescription = function() {
 };
 
 
-/**
- * @param {string} value
- * @return {!proto.assets.Culvert} returns this
- */
+/** @param {string} value */
 proto.assets.Culvert.prototype.setConditionDescription = function(value) {
-  return jspb.Message.setProto3StringField(this, 21, value);
+  jspb.Message.setProto3StringField(this, 21, value);
 };
 
 
@@ -2157,12 +1993,9 @@ proto.assets.Culvert.prototype.getInventoryPhotosList = function() {
 };
 
 
-/**
- * @param {!Array<!proto.assets.Photo>} value
- * @return {!proto.assets.Culvert} returns this
-*/
+/** @param {!Array<!proto.assets.Photo>} value */
 proto.assets.Culvert.prototype.setInventoryPhotosList = function(value) {
-  return jspb.Message.setRepeatedWrapperField(this, 22, value);
+  jspb.Message.setRepeatedWrapperField(this, 22, value);
 };
 
 
@@ -2178,10 +2011,9 @@ proto.assets.Culvert.prototype.addInventoryPhotos = function(opt_value, opt_inde
 
 /**
  * Clears the list making it empty but non-null.
- * @return {!proto.assets.Culvert} returns this
  */
 proto.assets.Culvert.prototype.clearInventoryPhotosList = function() {
-  return this.setInventoryPhotosList([]);
+  this.setInventoryPhotosList([]);
 };
 
 
@@ -2195,12 +2027,9 @@ proto.assets.Culvert.prototype.getSurveyPhotosList = function() {
 };
 
 
-/**
- * @param {!Array<!proto.assets.Photo>} value
- * @return {!proto.assets.Culvert} returns this
-*/
+/** @param {!Array<!proto.assets.Photo>} value */
 proto.assets.Culvert.prototype.setSurveyPhotosList = function(value) {
-  return jspb.Message.setRepeatedWrapperField(this, 23, value);
+  jspb.Message.setRepeatedWrapperField(this, 23, value);
 };
 
 
@@ -2216,10 +2045,9 @@ proto.assets.Culvert.prototype.addSurveyPhotos = function(opt_value, opt_index) 
 
 /**
  * Clears the list making it empty but non-null.
- * @return {!proto.assets.Culvert} returns this
  */
 proto.assets.Culvert.prototype.clearSurveyPhotosList = function() {
-  return this.setSurveyPhotosList([]);
+  this.setSurveyPhotosList([]);
 };
 
 
@@ -2228,16 +2056,13 @@ proto.assets.Culvert.prototype.clearSurveyPhotosList = function() {
  * @return {number}
  */
 proto.assets.Culvert.prototype.getHeight = function() {
-  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 28, 0.0));
+  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 28, 0.0));
 };
 
 
-/**
- * @param {number} value
- * @return {!proto.assets.Culvert} returns this
- */
+/** @param {number} value */
 proto.assets.Culvert.prototype.setHeight = function(value) {
-  return jspb.Message.setProto3FloatField(this, 28, value);
+  jspb.Message.setProto3FloatField(this, 28, value);
 };
 
 
@@ -2250,12 +2075,9 @@ proto.assets.Culvert.prototype.getNumberCells = function() {
 };
 
 
-/**
- * @param {number} value
- * @return {!proto.assets.Culvert} returns this
- */
+/** @param {number} value */
 proto.assets.Culvert.prototype.setNumberCells = function(value) {
-  return jspb.Message.setProto3IntField(this, 29, value);
+  jspb.Message.setProto3IntField(this, 29, value);
 };
 
 

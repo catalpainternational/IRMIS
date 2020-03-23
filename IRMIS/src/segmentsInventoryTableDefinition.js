@@ -43,6 +43,20 @@ export const surfaceConditionColumns = baseSegmentColumns.concat([
         defaultContent: "",
         orderable: false,
     },
+    {
+        title: window.gettext("Photos"),
+        data: "photos",
+        defaultContent: "",
+        render: (photos) => {
+            let links = [];
+            photos.forEach((photo, i) => {
+                links.push(`<a class="image" href="${photo.url}" target="_blank">Photo ${i+1}</a>`);
+            });
+            return links.join(" ");
+        },
+        className: "text-center",
+        orderable: false,
+    },
 ]);
 
 export const surfaceTypeColumns = baseSegmentColumns.concat([

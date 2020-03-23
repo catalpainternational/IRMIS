@@ -38,7 +38,15 @@ export class EstradaRoad extends Road implements IAsset {
                 return "Total Width";
         }
 
+        if (assetSchema[`${field}_${EstradaRoad.assetType}`]) {
+            return assetSchema[`${field}_${EstradaRoad.assetType}`].display || "";
+        }
+
         return getFieldName(assetSchema, field);
+    }
+
+    public getFieldName(field: string) {
+        return EstradaRoad.getFieldName(field);
     }
 
     public static getHelpText(field: string) {
@@ -57,8 +65,12 @@ export class EstradaRoad extends Road implements IAsset {
     }
 
     /** The asset's type - the prefix part of its Id */
-    get assetType() {
+    static get assetType() {
         return "ROAD";
+    }
+
+    get assetType() {
+        return EstradaRoad.assetType;
     }
 
     get assetTypeName() {

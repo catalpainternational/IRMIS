@@ -24,8 +24,8 @@
                                 onclick="{ selectPage }">{ window.gettext("Maintenance") }</li>
                             <li class="{ state.page === 'environment' ? 'active' : '' }" data-page="environment"
                                 onclick="{ selectPage }">{ window.gettext("Environment") }</li>
-                            <li class="{ state.page === 'photo' ? 'active' : '' }" data-page="photo"
-                                onclick="{ selectPage }">{window.gettext("Photos") }</li>
+                            <li class="{ state.page === 'media' ? 'active' : '' }" data-page="media"
+                                onclick="{ selectPage }">{window.gettext("Media") }</li>
                         </ul>
                     </template>
                     <template if="{ props.assetType === 'BRDG' || props.assetType === 'CULV' }">
@@ -39,11 +39,11 @@
                             <li if="{ props.assetType === 'BRDG' }"
                                 class="{ state.page === 'protection' ? 'active' : '' }" data-page="protection"
                                 onclick="{ selectPage }">{ window.gettext("Protection") }</li>
-                            <li class="{ state.page === 'photo' ? 'active' : '' }" data-page="photo"
-                                onclick="{ selectPage }">{ window.gettext("Photos") }</li>
                             <li class="{ state.page === 'structure_condition' ? 'active' : '' }"
                                 data-page="structure_condition" onclick="{ selectPage }">{ window.gettext("Condition") }
                             </li>
+                            <li class="{ state.page === 'media' ? 'active' : '' }" data-page="media"
+                                onclick="{ selectPage }">{ window.gettext("Media") }</li>
                         </ul>
                     </template>
                 </ul>
@@ -112,9 +112,9 @@
                     structure="{ state.editingStructure }" saving="{ state.saving }" showFeedback="{ showFeedback }"
                     parent="{parentFunctions}">
                 </edit_structure_condition>
-                <edit_photos if="{ state.page === 'photo' }" showFeedback="{ showFeedback }" saving="{ state.saving }"
+                <edit_media if="{ state.page === 'media' }" showFeedback="{ showFeedback }" saving="{ state.saving }"
                     parent="{parentFunctions}" asset="{ state.editingRoad }" structure="{ state.editingStructure }">
-                </edit_photos>
+                </edit_media>
             </div>
             <footer>
                 <small>República Democrática de Timor-Leste / Ministério das Obras Públicas</small>
@@ -160,9 +160,10 @@
         import Edit_Structure_Type from "./edit_structure_type.riot.html";
         import Edit_Structure_Details from "./edit_structure_details.riot.html";
         import Edit_Structure_Protection from "./edit_structure_protection.riot.html";
-        import Edit_Photos from "./edit_photos.riot.html";
         import Edit_Structure_Condition from "./edit_structure_condition.riot.html";
 
+        // SHARED EDIT TAGS
+        import Edit_Media from "./edit_media.riot.html";
         import Edit_History from "./edit_history.riot.html";
 
         export default {
@@ -190,7 +191,7 @@
                 Edit_Environment, Edit_Project, Edit_Traffic,
                 Edit_Social_Economic, Edit_Condition, Edit_Maintenance,
                 Edit_History, Edit_Structure_Type, Edit_Structure_Details,
-                Edit_Structure_Protection, Edit_Photos, Edit_Structure_Condition,
+                Edit_Structure_Protection, Edit_Media, Edit_Structure_Condition,
             },
             onBeforeMount(props, state) {
                 state.page = props.page;

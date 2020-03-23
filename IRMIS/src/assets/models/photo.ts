@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 import { Photo } from "../../../protobuf/photo_pb";
 import { IEstrada } from "./estradaBase";
 import { getFieldName, getHelpText, makeEstradaObject } from "../protoBufUtilities";
@@ -29,6 +31,24 @@ export class EstradaPhoto extends Photo implements IEstrada {
 
     get fkLink() {
         return this.getFkLink() || "";
+    }
+
+    get user() {
+        return this.getUser() || "";
+    }
+
+    get addedBy() {
+        return this.getAddedBy() || "";
+    }
+
+    get dateCreated() {
+        // Note getDateCreated doesn't actually return a proper Timestamp object
+        const pbufData = this.getDateCreated() as ({ [name: string]: any } | undefined);
+        if (!pbufData || !pbufData.array || !pbufData.array.length) {
+            return "";
+        }
+        const date = dayjs(new Date(pbufData.array[0] * 1000));
+        return date.isValid() ? date.format("YYYY-MM-DD") : "";
     }
 }
 

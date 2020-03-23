@@ -15,4 +15,6 @@ message Photo {
     string description = 5;
     // FK Link (global ID) pointing back to any of the various models
     string fk_link = 6;
+    uint32 user = 7;
+    string added_by = 8;
 }

@@ -1,0 +1,92 @@
+<edit_media>
+    <div class="content-wrapper">
+        <h5>{ window.gettext("Inventory Photos") }</h5>
+        <upload_photo photoId="{photoId1}" photo="{state.photo1}" fkLink="{state.fkLink}"
+            showFeedback="{props.showFeedback}">
+        </upload_photo>
+        <upload_photo photoId="{photoId2}" photo="{state.photo2}" fkLink="{state.fkLink}"
+            showFeedback="{props.showFeedback}">
+        </upload_photo>
+        <div class="button-wrapper d-flex justify-content-end">
+            <button class="btn btn-primary" onclick="{ save }" disabled="{ props.saving }">
+                { window.gettext ("Save and continue") }
+            </button>
+        </div>
+    </div>
+
+    <script>
+        import Upload_Photo from "./upload_photo.riot.html";
+        import {makeEstradaPhoto} from "../assets/models/photo";
+
+        export default {
+            components: {
+                Upload_Photo
+            },
+            state: {
+                photos: [],
+                fkLink: undefined,
+            },
+            onBeforeMount(props, state) {
+                if (props.structure) {
+                    state.structure = props.structure;
+                    state.photos = props.structure.inventoryPhotos.map(makeEstradaPhoto);
+                    state.fkLink = props.structure.id;
+                } else if (props.asset) {
+                    state.asset = props.asset;
+                    state.photos = props.asset.inventoryPhotos.map(makeEstradaPhoto);
+                    state.fkLink = "ROAD-" + props.asset.id;
+                }
+                state.photo1 = state.photos[0] ? state.photos[0] : undefined;
+                state.photo2 = state.photos[1] ? state.photos[1] : undefined;
+            },
+            onMounted(props, state) {
+                this.photoNeedsLinkingListener = (data) => {
+                    const newPhoto = data.detail.photo;
+                    this.state.photos = this.state.photos.filter(p => {
+                        if (p.getId() != newPhoto.getId()) {return p;};
+                    }).concat(newPhoto);
+                    if (this.state.structure) {
+                        this.state.structure.setInventoryPhotosList(this.state.photos);
+                        document.dispatchEvent(new CustomEvent("estrada.structure.assetMetaDataUpdated", {detail: {asset: this.state.structure}}));
+                    } else if (this.state.asset) {
+                        this.state.asset.setInventoryPhotosList(this.state.photos);
+                        document.dispatchEvent(new CustomEvent("estrada.road.assetMetaDataUpdated", {detail: {asset: this.state.asset}}));
+                    }
+                }
+                document.addEventListener(`${this.photoId1}.photoNeedsLinking`, this.photoNeedsLinkingListener);
+                document.addEventListener(`${this.photoId2}.photoNeedsLinking`, this.photoNeedsLinkingListener);
+
+                this.photoNeedsRemovalListener = (data) => {
+                    const oldPhoto = data.detail.photo;
+                    this.state.photos = this.state.photos.filter(p => {
+                        if (p.getId() != oldPhoto.getId()) {return p};
+                    });
+                    if (this.state.structure) {
+                        this.state.structure.setInventoryPhotosList(this.state.photos);
+                        document.dispatchEvent(new CustomEvent("estrada.structure.assetMetaDataUpdated", {detail: {asset: this.state.structure}}));
+                    } else if (this.state.asset) {
+                        this.state.asset.setInventoryPhotosList(this.state.photos);
+                        document.dispatchEvent(new CustomEvent("estrada.road.assetMetaDataUpdated", {detail: {asset: this.state.asset}}));
+                    }
+                }
+                document.addEventListener(`${this.photoId1}.photoNeedsRemoval`, this.photoNeedsRemovalListener);
+                document.addEventListener(`${this.photoId2}.photoNeedsRemoval`, this.photoNeedsRemovalListener);
+            },
+            onUnmount(props, state) {
+                document.removeEventListener(`${this.photoId1}.photoNeedsLinking`, this.photoNeedsLinkingListener);
+                document.removeEventListener(`${this.photoId2}.photoNeedsLinking`, this.photoNeedsLinkingListener);
+                document.removeEventListener(`${this.photoId1}.photoNeedsRemoval`, this.photoNeedsRemovalListener);
+                document.removeEventListener(`${this.photoId2}.photoNeedsRemoval`, this.photoNeedsRemovalListener);
+            },
+            save(e) {
+                if (this.state.structure) {
+                    this.props.parent.saveStructure();
+                } else if (this.state.asset) {
+                    this.props.parent.save();
+                }
+            },
+            photoId1: "inventoryPhoto1",
+            photoId2: "inventoryPhoto2",
+        }
+    </script>
+</edit_media>

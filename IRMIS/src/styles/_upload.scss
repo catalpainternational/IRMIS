@@ -24,6 +24,12 @@ upload_photo {
     .edit-caption {
         border: 1px solid $light-gray;
         font-size: 14px;
+        max-width: 500px;
         padding: 7px 15px;
+        margin-top: 5px;
+    }
+
+    .photo-management-area {
+        margin-top: 35px;
     }
 }

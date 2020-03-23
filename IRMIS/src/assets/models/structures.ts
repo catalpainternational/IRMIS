@@ -18,10 +18,10 @@ const assetSchema = JSON.parse(document.getElementById("asset_schema")?.textCont
 export const STRUCTURE_UPSTREAM_PROTECTION_TYPE_CHOICES = humanizeChoices(assetSchema, "protection_upstream", "code", "name");
 export const STRUCTURE_DOWNSTREAM_PROTECTION_TYPE_CHOICES
     = humanizeChoices(assetSchema, "protection_downstream", "code", "name");
-export const STRUCTURE_TYPE_BRIDGE_CHOICES = humanizeChoices(assetSchema, "structure_type_bridge", "code", "name");
-export const STRUCTURE_TYPE_CULVERT_CHOICES = humanizeChoices(assetSchema, "structure_type_culvert", "code", "name");
-export const MATERIAL_TYPE_BRIDGE_CHOICES = humanizeChoices(assetSchema, "material_bridge", "code", "name");
-export const MATERIAL_TYPE_CULVERT_CHOICES = humanizeChoices(assetSchema, "material_culvert", "code", "name");
+export const STRUCTURE_TYPE_BRIDGE_CHOICES = humanizeChoices(assetSchema, "structure_type_BRDG", "code", "name");
+export const STRUCTURE_TYPE_CULVERT_CHOICES = humanizeChoices(assetSchema, "structure_type_CULV", "code", "name");
+export const MATERIAL_TYPE_BRIDGE_CHOICES = humanizeChoices(assetSchema, "material_BRDG", "code", "name");
+export const MATERIAL_TYPE_CULVERT_CHOICES = humanizeChoices(assetSchema, "material_CULV", "code", "name");
 
 // tslint:disable: max-classes-per-file
 
@@ -70,7 +70,14 @@ export class EstradaStructures extends Structures implements IEstrada {
 
 export class EstradaBridge extends Bridge implements IAsset {
     public static getFieldName(field: string) {
+        if (assetSchema[`${field}_${EstradaBridge.assetType}`]) {
+            return assetSchema[`${field}_${EstradaBridge.assetType}`].display || "";
+        }
         return getFieldName(assetSchema, field);
+    }
+
+    public getFieldName(field: string) {
+        return EstradaBridge.getFieldName(field);
     }
 
     public static getHelpText(field: string) {
@@ -89,8 +96,12 @@ export class EstradaBridge extends Bridge implements IAsset {
     }
 
     /** The asset's type - the prefix part of its Id */
-    get assetType() {
+    static get assetType() {
         return "BRDG";
+    }
+
+    get assetType() {
+        return EstradaBridge.assetType;
     }
 
     get assetTypeName() {
@@ -264,11 +275,14 @@ export class EstradaBridge extends Bridge implements IAsset {
 
 export class EstradaCulvert extends Culvert implements IAsset {
     public static getFieldName(field: string) {
+        if (assetSchema[`${field}_${EstradaCulvert.assetType}`]) {
+            return assetSchema[`${field}_${EstradaCulvert.assetType}`].display || "";
+        }
         return getFieldName(assetSchema, field);
     }
 
-    public static getHelpText(field: string) {
-        return getHelpText(assetSchema, field);
+    public getFieldName(field: string) {
+        return EstradaCulvert.getFieldName(field);
     }
 
     private isSerialising: boolean;
@@ -283,8 +297,12 @@ export class EstradaCulvert extends Culvert implements IAsset {
     }
 
     /** The asset's type - the prefix part of its Id */
-    get assetType() {
+    static get assetType() {
         return "CULV";
+    }
+
+    get assetType() {
+        return EstradaCulvert.assetType;
     }
 
     get assetTypeName() {

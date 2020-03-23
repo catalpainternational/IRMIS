@@ -22,7 +22,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Value, CharField, OuterRef, Subquery
+from django.db.models import Value, CharField, OuterRef, Prefetch, Subquery
 from django.db.models.functions import Cast, Substr
 
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
@@ -299,6 +299,7 @@ def road_chunks_set(request):
 @login_required
 def protobuf_road_set(request, chunk_name=None):
     """ returns a protobuf object with the set of all Roads """
+
     roads = Road.objects.all()
     if chunk_name:
         roads = roads.filter(asset_class=chunk_name)
@@ -608,6 +609,16 @@ def protobuf_reports(request):
                     report_attribute.road_id = report_survey["road_id"]
                 if report_survey["road_code"]:
                     report_attribute.road_code = report_survey["road_code"]
+                # check for survey photos to assign to the report
+                # we packed the photos data as a JSON string in the Custom Reports SQL query
+                # so the photos column will need to be unpacked first
+                if report_survey["photos"]:
+                    photos = json.loads(report_survey["photos"])
+                    for photo in photos:
+                        photo_protobuf = report_attribute.photos.add()
+                        setattr(photo_protobuf, "id", photo["id"])
+                        setattr(photo_protobuf, "url", photo["url"])
+                        setattr(photo_protobuf, "description", photo["description"])
 
                 report_protobuf.attributes.append(report_attribute)
 
@@ -736,7 +747,7 @@ def bridge_update(bridge, req_pb, db_pb):
             setattr(bridge, field, fk_obj)
             # handle field name differences
             if field in ["structure_type", "material"]:
-                field += "_bridge"
+                field += "_BRDG"
             changed_fields.append(field)
 
     return bridge, changed_fields
@@ -1301,8 +1312,7 @@ def protobuf_photos(request, pk):
     photos_protobuf = photos.to_protobuf()
 
     return HttpResponse(
-        photos_protobuf.photo[0].SerializeToString(),
-        content_type="application/octet-stream",
+        photos_protobuf.SerializeToString(), content_type="application/octet-stream",
     )
 
 
@@ -1319,6 +1329,7 @@ def photo_create(request):
 
     photo_data = {
         "file": request.FILES["file"],
+        "user": request.user,
         "description": request.POST["description"]
         if request.POST["description"]
         and request.POST["description"] not in ["", "undefined"]
@@ -1346,6 +1357,10 @@ def photo_create(request):
             res_data["id"] = photo.id
             res_data["url"] = photo.file.url
             res_data["description"] = photo.description
+            res_data["date_created"] = photo.date_created.strftime("%Y-%m-%d")
+            res_data["last_modified"] = photo.last_modified.strftime("%Y-%m-%d")
+            res_data["user"] = photo.user.id
+            res_data["added_by"] = photo.user.username
         return JsonResponse(res_data)
     except Exception as err:
         return HttpResponse(status=400)

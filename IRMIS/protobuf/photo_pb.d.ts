@@ -49,6 +49,12 @@ export class Photo extends jspb.Message {
   getFkLink(): string;
   setFkLink(value: string): void;
 
+  getUser(): number;
+  setUser(value: number): void;
+
+  getAddedBy(): string;
+  setAddedBy(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Photo.AsObject;
   static toObject(includeInstance: boolean, msg: Photo): Photo.AsObject;
@@ -67,6 +73,8 @@ export namespace Photo {
     url: string,
     description: string,
     fkLink: string,
+    user: number,
+    addedBy: string,
   }
 }
 

@@ -1,25 +1,27 @@
 <upload_photo>
-    <div show="{state.photo.url == state.basePhoto.url}" class="photo-upload-area">
-        <form class="dropzone">
-            <div class="cloud-box">
-                <div class="upload-cloud"></div>
-                <div class="upload-instructions">{ window.gettext("Click to upload") }</div>
-                <div>{ window.gettext("Maximum file size 500KB") }</div>
-                <div>{ window.gettext("Accepted file formats: JPEG, GIF, PNG") }</div>
-            </div>
-        </form>
-    </div>
-    <div show="{state.photo.url != state.basePhoto.url}" class="photo-management-area">
+    <form id="dropzone-{props.photoId}" class="dropzone">
+        <div class="cloud-box">
+            <div class="upload-cloud"></div>
+            <div class="upload-instructions">{ window.gettext("Click to upload") }</div>
+            <div>{ window.gettext("Maximum file size 500KB") }</div>
+            <div>{ window.gettext("Accepted file formats: JPEG, GIF, PNG") }</div>
+        </div>
+    </form>
+    <div if="{state.photo.url && state.photo.url != '' && state.photo.url != state.basePhoto.url}"
+        class="photo-management-area">
         <img src="{state.photo.url}" style="max-width: 400px;">
         <input
-            class="{ state.errors.description ? 'danger' : null } { state.photo.description ? '' : 'inactive' } form-control upload-text"
+            class="{ state.errors.description ? 'danger' : null } { state.photo.description ? 'active' : '' } form-control edit-caption"
             type="text" maxlength="500" placeholder="Enter a description of the photo"
             value="{ state.photo.description }" onblur="{updateDescription}">
-        <button class="btn btn-md btn-danger" onclick="{deletePhoto}">Delete Photo</button>
+        <p class="small">Uploaded by: { state.photo.getAddedBy() } on { state.photo.date_created ||
+            state.photo.dateCreated }</p>
+        <button class="btn btn-sm btn-danger" onclick="{deletePhoto}">Delete Photo</button>
     </div>
 
     <script>
         import Dropzone from "dropzone";
+        import dayjs from "dayjs";
         import {ConfigAPI} from "../assets/configAPI";
         import {putPhotoData, deletePhotoData} from "../assets/photoAPI";
         import {EstradaPhoto} from "../assets/models/photo";
@@ -50,23 +52,38 @@
                     }
                 });
 
+                // hide the dropzone on mount if there's a photo on hand to show
+                if (state.photo.url != state.basePhoto.url) {
+                    document.getElementById("dropzone-" + props.photoId).style.display = 'none';
+                }
+
                 this.photoCreationListener = (data) => {
                     const photo = data.detail.photo;
                     this.state.photo.setId(photo.id);
                     this.state.photo.setUrl(photo.url);
                     this.state.photo.setFkLink(photo.fk_link);
                     this.state.photo.setDescription(photo.description);
-                    if (this.props.surveyPhoto) {
-                        // if a survey Photo, add it to the NeedsLinkingQueue
-                        document.dispatchEvent(new CustomEvent(`${props.photoId}.photoNeedsLinking`, {detail: {photo: this.state.photo}}));
-                    }
+                    this.state.photo.setAddedBy(photo.added_by);
+                    this.state.photo.date_created = photo.date_created;
+
+                    // add it to the NeedsLinkingQueue
+                    document.dispatchEvent(new CustomEvent(`${props.photoId}.photoNeedsLinking`, {detail: {photo: this.state.photo}}));
+
                     this.update();
                 };
 
                 document.addEventListener(`${props.photoId}.photoCreated`, this.photoCreationListener);
 
+                this.photoClearedListener = (data) => {
+                    this.state.photo = new EstradaPhoto();
+                    this.update();
+                }
+                document.addEventListener(`${props.photoId}.photoCleared`, this.photoClearedListener);
+
                 myDropzone.on("success", function(file, res) {
                     myDropzone.removeAllFiles();
+                    // hide the dropzone
+                    document.getElementById("dropzone-" + props.photoId).style.display = 'none';
                     document.dispatchEvent(new CustomEvent(`${props.photoId}.photoCreated`, {detail: {photo: res}}));
                 });
                 this.update();
@@ -74,12 +91,7 @@
             updatePhoto() {
                 putPhotoData(this.state.photo)
                     .then((data) => {
-                        if (this.props.surveyPhoto) {
-                            // if a survey Photo, update it's data in the NeedsLinkingQueue
-                            document.dispatchEvent(new CustomEvent(`${this.props.photoId}.photoNeedsLinking`, {detail: {photo: this.state.photo}}));
-                        } else {
-                            this.props.showFeedback();
-                        }
+                        document.dispatchEvent(new CustomEvent(`${this.props.photoId}.photoNeedsLinking`, {detail: {photo: this.state.photo}}));
                     }).catch((err) => {
                         this.props.showFeedback(true);
                     }).finally((r) => {
@@ -90,13 +102,15 @@
                 e.preventDefault();
                 deletePhotoData(this.state.photo)
                     .then((data) => {
-                        // before resetting state.photo, check if a survey Photo and remove from the NeedsLinkingQueue, if present.
-                        if (this.props.surveyPhoto) {
-                            document.dispatchEvent(new CustomEvent(`${this.props.photoId}.photoNeedsRemoval`, {detail: {photo: this.state.photo}}));
-                        } else {
+                        // before resetting state.photo, remove from the NeedsLinkingQueue, if present.
+                        document.dispatchEvent(new CustomEvent(`${this.props.photoId}.photoNeedsRemoval`, {detail: {photo: this.state.photo}}));
+                        if (!this.props.surveyPhoto) {
+                            // only if NOT a survey Photo, show feedback
                             this.props.showFeedback();
                         }
                         this.state.photo = new EstradaPhoto();
+                        // show the dropzone
+                        document.getElementById("dropzone-" + props.photoId).style.display = 'inline-block';
                     }).catch((err) => {
                         this.props.showFeedback(true);
                     }).finally((r) => {

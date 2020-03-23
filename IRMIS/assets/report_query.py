@@ -112,12 +112,28 @@ class ReportQuery:
                 " END AS username\n"
                 " FROM auth_user\n"
             ),
+            "surveyphotos": (
+                " SELECT jp.object_id as object_id, CONCAT('[', string_agg(jp.photos_json::text, ','), ']') as photos\n"
+                " FROM (\n"
+                "     SELECT object_id, json_build_object(\n"
+                "         'id', id,\n"
+                "         'url', CONCAT('media/', file),\n"
+                "         'description', description,\n"
+                "         'date_created', date_created,\n"
+                "         'fk_link', CONCAT('SURV-', object_id)\n"
+                "     ) AS photos_json\n"
+                "     FROM assets_photo AS new_p\n"
+                "     WHERE object_id IS NOT NULL\n"
+                "     AND content_type_id = 42\n"
+                " ) jp\n"
+                " GROUP BY jp.object_id"
+            ),
             # Surveys which match the given values and assets
             "su": (
                 "SELECT s.id, atc.asset_type_prefix, atc.asset_id, atc.asset_code,\n"
                 " s.date_created, s.date_updated, s.date_surveyed,\n"
-                " s.chainage_start, s.chainage_end, atc.geom_chainage,\n"
-                " atc.road_id, atc.road_code,\n"
+                " s.chainage_start, s.chainage_end, p.photos,\n"
+                " atc.geom_chainage, atc.road_id, atc.road_code,\n"
                 " CASE\n"
                 "  WHEN s.user_id IS NULL THEN TRIM(FROM s.source)\n"
                 "  WHEN TRIM(FROM u.username) != '' THEN u.username\n"
@@ -129,6 +145,7 @@ class ReportQuery:
                 " JOIN assets_to_chart atc ON s.asset_id = CONCAT(atc.asset_type_prefix, atc.asset_id::text)\n"
                 " JOIN values_to_chart vtc ON s.values ? vtc.attr\n"
                 " LEFT OUTER JOIN usernames u ON s.user_id = u.user_id\n"
+                " LEFT OUTER JOIN surveyphotos p ON s.id = p.object_id\n"
                 " WHERE s.chainage_start != s.chainage_end\n"
             ),
             # Where these roads have a survey start or end point
@@ -172,6 +189,7 @@ class ReportQuery:
                 "  ELSE NULL\n"
                 " END AS value,\n"
                 " values,\n"
+                " photos,\n"
                 " user_id, added_by, date_surveyed,\n"
                 " road_id, road_code\n"
                 " FROM merge_breakpoints\n"
@@ -204,6 +222,7 @@ class ReportQuery:
                 " ) AS end_chainage,\n"
                 " geom_chainage,\n"
                 " value,\n"
+                " photos,\n"
                 " user_id, added_by, date_surveyed,\n"
                 " road_id, road_code\n"
                 " FROM with_unchanged\n"
@@ -218,6 +237,7 @@ class ReportQuery:
                 "  ELSE end_chainage\n"
                 " END AS end_chainage,\n"
                 " value, survey_id,\n"
+                " photos,\n"
                 " user_id, added_by, date_surveyed,\n"
                 " road_id, road_code\n"
                 " FROM with_lead_values\n"
@@ -494,6 +514,7 @@ class ReportQuery:
         self.add_report_clause("values_to_exclude")
         self.add_report_clause("assets_to_chart")
         self.add_report_clause("usernames")
+        self.add_report_clause("surveyphotos")
         self.add_report_clause("su")
         self.add_report_clause("breakpoints")
         self.add_report_clause("merge_breakpoints")
