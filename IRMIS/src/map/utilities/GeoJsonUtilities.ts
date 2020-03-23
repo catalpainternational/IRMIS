@@ -117,3 +117,31 @@ function bbox(coords: number[][]) {
 
     return result;
 }
+
+/** Get the first set of coordinates out of whatever type of GeoJSON we have.
+ * We can then use this for quick and dirty coordinate space checking
+ */
+export function getFlatCoords(geoJSON: GeoJSON): number[] {
+    switch (geoJSON.type) {
+        case "Feature":
+            return getFlatCoords((geoJSON as Feature).geometry);
+        case "FeatureCollection":
+            return getFlatCoords((geoJSON as FeatureCollection).features[0].geometry);
+        case "GeometryCollection":
+            return getFlatCoords((geoJSON as GeometryCollection).geometries[0]);
+        case "Point":
+            return (geoJSON as Point).coordinates;
+        case "MultiPoint":
+            return (geoJSON as MultiPoint).coordinates[0];
+        case "LineString":
+            return (geoJSON as LineString).coordinates[0];
+        case "MultiLineString":
+            return (geoJSON as MultiLineString).coordinates[0][0];
+        case "Polygon":
+            return (geoJSON as Polygon).coordinates[0][0];
+        case "MultiPolygon":
+            return (geoJSON as MultiPolygon).coordinates[0][0][0];
+    }
+
+    return [-1, -1];
+}
