@@ -12,20 +12,20 @@
         </stacked_bar>
 
         <div class="d-flex">
-            <a class="{!state.viewAll ? 'active' : '' } table-toggle" onclick="{viewCurrent}">
+            <a class="{!state.viewAllAssetCondition ? 'active' : '' } table-toggle" onclick="{viewCurrentAssetCondition}">
                 { window.gettext("Current surface condition") }
             </a>
-            <a class="{state.viewAll ? 'active' : '' } table-toggle" onclick="{viewAll}">
+            <a class="{state.viewAllAssetCondition ? 'active' : '' } table-toggle" onclick="{viewAllAssetCondition}">
                 { window.gettext("View all data entries") }
             </a>
         </div>
-        <data_table if="{state.viewAll}" table_id="{identifiers.asset_condition.allDataTableId}" columns="{all_data_table_columns}"
-            columnSortOrder="{all_data_table_columns_order}" getHelpText="{props.parent.getHelpText}"
-            pendingRows="{state.pendingRows}" candelete=true>
+        <data_table if="{state.viewAllAssetCondition}" table_id="{identifiers.asset_condition.allDataTableId}"
+            columns="{all_data_table_columns}" columnSortOrder="{all_data_table_columns_order}"
+            getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows}" candelete=true>
         </data_table>
-        <data_table if="{!state.viewAll}" table_id="{identifiers.asset_condition.reportDataTableId}" columns="{current_data_table_columns}"
-            columnSortOrder="{current_data_table_columns_order}" getHelpText="{props.parent.getHelpText}"
-            pendingRows="{state.pendingRows}">
+        <data_table if="{!state.viewAllAssetCondition}" table_id="{identifiers.asset_condition.reportDataTableId}"
+            columns="{current_data_table_columns}" columnSortOrder="{current_data_table_columns_order}"
+            getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows}">
         </data_table>
     </div>
 
@@ -124,6 +124,7 @@
         import Stacked_Bar from "./stacked_bar.riot.html";
 
         import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
+        import {surveysAndReportRefresh} from "../assets/editUtilities";
         import { choice_or_default, toChainageFormat } from "../assets/protoBufUtilities";
         import {withinMaxDigits} from "../assets/utilities";
 
@@ -148,7 +149,7 @@
                 assetConditions: [{key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading")}],
                 surveyTotalDistance: 0,
                 reportRows: [],
-                viewAll: false,
+                viewAllAssetCondition: false,
                 editMode: false,
                 currentRowData: new EstradaSurvey({}),
             },
@@ -176,7 +177,8 @@
 
                 const refreshPromises = [];
                 Object.keys(this.identifiers).forEach((idSet) => {
-                    refreshPromises.push(this.props.parent.refreshSurveysAndReports(state, this.identifiers[idSet]));
+                    this.identifiers[idSet].emptyAttributes = this.props.parent.emptyAttributes;
+                    refreshPromises.push(surveysAndReportRefresh(state, this.identifiers[idSet]));
                 });
 
                 Promise.all(refreshPromises).then((results) => {
@@ -191,28 +193,20 @@
                     document.removeEventListener(`${this.identifiers[idSet].allDataTableId}.deleteRow`, this.deleteListener)
                 });
             },
-            viewAll(e) {
-                if (!this.state.viewAll) {
-                    this.update({viewAll: true});
-                    const identifierSet = this.identifiers["asset_condition"];
-                    this.props.parent.refreshSurveysAndReports(this.state, identifierSet).then((result) => {
-                        // If we're not still loading, then we assume that we want to replace all rows
-                        const eventName = `${identifierSet.allDataTableId}.dataAdded`;
-                        const eventDetail = {detail: {pendingRows: this.state.pendingRows[identifierSet.primaryAttribute], appendRows: this.state.loading}}
-                        document.dispatchEvent(new CustomEvent(eventName, eventDetail));
-                    });
+            viewChange(identifierSet) {
+                this.update();
+                surveysAndReportRefresh(this.state, identifierSet);
+            },
+            viewAllAssetCondition(e) {
+                if (!this.state.viewAllAssetCondition) {
+                    this.state.viewAllAssetCondition = true;
+                    this.viewChange(this.identifiers["asset_condition"]);
                 }
             },
-            viewCurrent(e) {
-                if (this.state.viewAll) {
-                    this.update({viewAll: false});
-                    const identifierSet = this.identifiers["asset_condition"];
-                    this.props.parent.refreshSurveysAndReports(this.state, identifierSet).then((result) => {
-                        // If we're not still loading, then we assume that we want to replace all rows
-                        const eventName = `${identifierSet.reportDataTableId}.dataAdded`;
-                        const eventDetail = {detail: {pendingRows: this.state.pendingRows[identifierSet.primaryAttribute], appendRows: this.state.loading}}
-                        document.dispatchEvent(new CustomEvent(eventName, eventDetail));
-                    });
+            viewCurrentAssetCondition(e) {
+                if (this.state.viewAllAssetCondition) {
+                    this.state.viewAllAssetCondition = false;
+                    this.viewChange(this.identifiers["asset_condition"]);
                 }
             },
             addEdit(e) {
@@ -443,7 +437,7 @@
 
                 surveyPromise
                     .then((surveyData) => {
-                        this.props.parent.refreshSurveysAndReports(this.state, identifierSet).then((result) => {
+                        surveysAndReportRefresh(this.state, identifierSet).then((result) => {
                             this.update({
                                 survey: new EstradaSurvey({}), // clear input values
                             });

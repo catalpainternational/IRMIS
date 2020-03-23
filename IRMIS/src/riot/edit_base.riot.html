@@ -207,9 +207,7 @@
                     getHelpText: this.getHelpText,
                     save: this.save,
                     saveStructure: this.saveStructure,
-                    getAssetSurveys: this.getAssetSurveys,
                     getStructureSurveys: this.getStructureSurveys,
-                    refreshSurveysAndReports: this.refreshSurveysAndReports,
                 };
 
                 if (props.roadPromise) {
@@ -361,10 +359,6 @@
                     }, 300);
                 }
             },
-            refreshSurveysAndReports(state, identifiers) {
-                identifiers.emptyAttributes = this.parentFunctions.emptyAttributes;
-                surveysAndReportRefresh(state, identifiers);
-            },
             getStructureSurveys(state, allDataTableId, primaryAttribute, reportAttribute) {
                 const structureId = state.structure.id;
 
@@ -390,9 +384,6 @@
                         state.loading = false;
                         this.update();
                     });
-            },
-            getAssetSurveys(state, identifiers) {
-                return getSurveysForAsset(state, identifiers);
             },
             getHelpText(field) {
                 // TODO: Fix this, because it's specific to 'Roads'

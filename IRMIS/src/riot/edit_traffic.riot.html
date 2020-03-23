@@ -226,6 +226,7 @@
         import Data_Table from "./data_table.riot.html";
 
         import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
+        import {getSurveysForAsset} from "../assets/editUtilities";
         import {withinMaxDigits} from "../assets/utilities";
 
         import { makeEstradaRoad } from "../assets/models/road";
@@ -349,9 +350,9 @@
                     this.showStopAlertModal("delete-alert", rowId, tableId);
                 };
 
-                const refreshPromise = this.props.parent.getAssetSurveys(state, this.identifiers["traffic_type"]);
+                const refreshPromise = getSurveysForAsset(state, this.identifiers["traffic_type"]);
 
-                refreshPromises.then((results) => {
+                refreshPromise.then((results) => {
                     // If we're not still loading, then we assume that we want to replace all rows
                     const deleteEventName = `${this.identifiers["traffic_type"].allDataTableId}.dataAdded`;
                     const deleteEventDetail = {detail: {pendingRows: this.state.pendingRows, clearRows: true}};
@@ -524,7 +525,7 @@
                 if (!this.state.editMode) {
                     createSurvey(this.state.survey)
                         .then((surveyData) => {
-                            const refreshPromise = this.props.parent.getAssetSurveys(state, this.identifiers["traffic_type"]);
+                            const refreshPromise = getSurveysForAsset(this.state, this.identifiers["traffic_type"]);
                             refreshPromise.then((result) => {
                                 this.update();
                                 this.props.showFeedback();
@@ -539,7 +540,7 @@
                 } else {
                     updateSurvey(this.state.survey)
                         .then((surveyData) => {
-                            const refreshPromise = this.props.parent.getAssetSurveys(state, this.identifiers["traffic_type"]);
+                            const refreshPromise = getSurveysForAsset(this.state, this.identifiers["traffic_type"]);
                             refreshPromise.then((result) => {
                                 this.update();
                                 this.props.showFeedback();

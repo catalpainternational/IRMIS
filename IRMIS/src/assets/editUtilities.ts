@@ -26,10 +26,11 @@ export function getSurveysForAsset(
             } else {
                 state.error = true;
             }
-        }).catch(() => {
-            state.error = true;
-        }).finally(() => {
             state.loading = false;
+            return Promise.resolve(state.error);
+        }).catch(() => {
+            state.loading = false;
+            state.error = true;
             return Promise.resolve(state.error);
         });
 }
@@ -79,10 +80,11 @@ function getSurveyReportsForAsset(state: { [name: string]: any }, identifiers: {
             } else {
                 state.error = true;
             }
-        }).catch(() => {
-            state.error = true;
-        }).finally(() => {
             state.loading = false;
+            return Promise.resolve(state.error);
+        }).catch(() => {
+            state.loading = false;
+            state.error = true;
             return Promise.resolve(state.error);
         });
 }

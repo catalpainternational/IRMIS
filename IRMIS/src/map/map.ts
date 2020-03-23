@@ -1,9 +1,4 @@
-import bbox from "@turf/bbox";
-import envelope from "@turf/envelope";
-import { AllGeoJSON } from "@turf/helpers";
-import { FeatureCollection } from "geojson";
-
-import { Feature, GeoJSON, Geometry } from "geojson";
+import { Feature, FeatureCollection, GeoJSON, Geometry } from "geojson";
 import * as L from "leaflet";
 
 import { Config } from "./config";
@@ -11,6 +6,7 @@ import { Config } from "./config";
 import { BaseLayers } from "./layers/BaseLayers";
 import { KnownGeometries } from "./layers/KnownGeometries";
 import { getFilterStyles } from "./utilities/filterGeoJSON";
+import { buildBBox, getFlatCoords } from "./utilities/GeoJsonUtilities";
 import { getFeatureType } from "./utilities/propertiesGeoJSON";
 
 import { FallbackLayerStyle, FixLayerStyleDefaults, styleGeometry, stylePoint } from "./utilities/leaflet-style";
@@ -86,6 +82,7 @@ export class Map {
     }
 
     private handleFilter(data: Event) {
+        let bb = Config.tlBBox;
         const featureZoomSet: FeatureCollection = { type: "FeatureCollection", features: [] };
         const featureTypeSet: any = {};
         Object.values(featureLookup).forEach((feature: any) => {
@@ -106,13 +103,8 @@ export class Map {
             geoLayer.setStyle(switchStyle ? layerFilterStyles.styleOn : layerFilterStyles.styleOff);
         });
 
-        let bb = Config.tlBBox;
         if (featureZoomSet.features.length) {
-            const allCoords = featureZoomSet.features.forEach((feature) => {
-                feature.type
-            })
-            const bounds = envelope(featureZoomSet as AllGeoJSON);
-            bb = bbox(bounds) as number[];
+            bb = buildBBox(getFlatCoords(featureZoomSet));
         }
 
         // Don't use flyToBounds
