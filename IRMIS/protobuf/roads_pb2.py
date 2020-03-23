@@ -18,7 +18,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='assets',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=b'\n\x0broads.proto\x12\x06\x61ssets\"\"\n\nProjection\x12\t\n\x01x\x18\x01 \x01(\x02\x12\t\n\x01y\x18\x02 \x01(\x02\"\xfa\x04\n\x04Road\x12\n\n\x02id\x18\x01 \x01(\r\x12\x12\n\ngeojson_id\x18\x02 \x01(\r\x12\x11\n\troad_code\x18\x03 \x01(\t\x12\x11\n\troad_name\x18\x04 \x01(\t\x12\x13\n\x0b\x61sset_class\x18\n \x01(\t\x12\x13\n\x0broad_status\x18\x14 \x01(\t\x12\x11\n\tlink_code\x18\x05 \x01(\t\x12\x17\n\x0flink_start_name\x18\x10 \x01(\t\x12\x1b\n\x13link_start_chainage\x18\x0b \x01(\x02\x12\x15\n\rlink_end_name\x18\x11 \x01(\t\x12\x19\n\x11link_end_chainage\x18\x0c \x01(\x02\x12\x13\n\x0blink_length\x18\x07 \x01(\x02\x12\x14\n\x0csurface_type\x18\x08 \x01(\t\x12\x17\n\x0f\x61sset_condition\x18\t \x01(\t\x12\x16\n\x0epavement_class\x18\r \x01(\t\x12\x19\n\x11\x63\x61rriageway_width\x18\x0e \x01(\x02\x12\x1b\n\x13\x61\x64ministrative_area\x18\x0f \x01(\t\x12\x0f\n\x07project\x18\x12 \x01(\t\x12\x16\n\x0e\x66unding_source\x18\x13 \x01(\t\x12\x17\n\x0ftechnical_class\x18\x15 \x01(\t\x12\x18\n\x10maintenance_need\x18\x16 \x01(\t\x12\x15\n\rtraffic_level\x18\x17 \x01(\t\x12,\n\x10projection_start\x18\x19 \x01(\x0b\x32\x12.assets.Projection\x12*\n\x0eprojection_end\x18\x1a \x01(\x0b\x32\x12.assets.Projection\x12\x14\n\x0cnumber_lanes\x18\x1b \x01(\x05\x12\x10\n\x08rainfall\x18\x1c \x01(\x05\"$\n\x05Roads\x12\x1b\n\x05roads\x18\x01 \x03(\x0b\x32\x0c.assets.Roadb\x06proto3'
+  serialized_pb=b'\n\x0broads.proto\x12\x06\x61ssets\"\"\n\nProjection\x12\t\n\x01x\x18\x01 \x01(\x02\x12\t\n\x01y\x18\x02 \x01(\x02\"\xa7\x06\n\x04Road\x12\n\n\x02id\x18\x01 \x01(\r\x12\x12\n\ngeojson_id\x18\x02 \x01(\r\x12\x11\n\troad_code\x18\x03 \x01(\t\x12\x11\n\troad_name\x18\x04 \x01(\t\x12\x13\n\x0b\x61sset_class\x18\n \x01(\t\x12\x13\n\x0broad_status\x18\x14 \x01(\t\x12\x11\n\tlink_code\x18\x05 \x01(\t\x12\x17\n\x0flink_start_name\x18\x10 \x01(\t\x12\x1b\n\x13link_start_chainage\x18\x0b \x01(\x02\x12\x15\n\rlink_end_name\x18\x11 \x01(\t\x12\x19\n\x11link_end_chainage\x18\x0c \x01(\x02\x12\x13\n\x0blink_length\x18\x07 \x01(\x02\x12\x14\n\x0csurface_type\x18\x08 \x01(\t\x12\x17\n\x0f\x61sset_condition\x18\t \x01(\t\x12\x16\n\x0epavement_class\x18\r \x01(\t\x12\x19\n\x11\x63\x61rriageway_width\x18\x0e \x01(\x02\x12\x13\n\x0btotal_width\x18\x1d \x01(\x02\x12\x1b\n\x13\x61\x64ministrative_area\x18\x0f \x01(\t\x12\x0f\n\x07project\x18\x12 \x01(\t\x12\x16\n\x0e\x66unding_source\x18\x13 \x01(\t\x12\x17\n\x0ftechnical_class\x18\x15 \x01(\t\x12\x18\n\x10maintenance_need\x18\x16 \x01(\t\x12\x15\n\rtraffic_level\x18\x17 \x01(\t\x12,\n\x10projection_start\x18\x19 \x01(\x0b\x32\x12.assets.Projection\x12*\n\x0eprojection_end\x18\x1a \x01(\x0b\x32\x12.assets.Projection\x12\x14\n\x0cnumber_lanes\x18\x1b \x01(\x05\x12\x10\n\x08rainfall\x18\x1c \x01(\x05\x12\x19\n\x11\x63onstruction_year\x18\x1e \x01(\x05\x12\x12\n\npopulation\x18\x1f \x01(\x05\x12\x0c\n\x04\x63ore\x18  \x01(\x05\x12\x19\n\x11served_facilities\x18! \x03(\x05\x12\x1d\n\x15served_economic_areas\x18\" \x03(\x05\x12\x1f\n\x17served_connection_types\x18# \x03(\x05\"$\n\x05Roads\x12\x1b\n\x05roads\x18\x01 \x03(\x0b\x32\x0c.assets.Roadb\x06proto3'
 )
 
 
@@ -182,72 +182,121 @@ _ROAD = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='administrative_area', full_name='assets.Road.administrative_area', index=16,
+      name='total_width', full_name='assets.Road.total_width', index=16,
+      number=29, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='administrative_area', full_name='assets.Road.administrative_area', index=17,
       number=15, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='project', full_name='assets.Road.project', index=17,
+      name='project', full_name='assets.Road.project', index=18,
       number=18, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='funding_source', full_name='assets.Road.funding_source', index=18,
+      name='funding_source', full_name='assets.Road.funding_source', index=19,
       number=19, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='technical_class', full_name='assets.Road.technical_class', index=19,
+      name='technical_class', full_name='assets.Road.technical_class', index=20,
       number=21, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='maintenance_need', full_name='assets.Road.maintenance_need', index=20,
+      name='maintenance_need', full_name='assets.Road.maintenance_need', index=21,
       number=22, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='traffic_level', full_name='assets.Road.traffic_level', index=21,
+      name='traffic_level', full_name='assets.Road.traffic_level', index=22,
       number=23, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='projection_start', full_name='assets.Road.projection_start', index=22,
+      name='projection_start', full_name='assets.Road.projection_start', index=23,
       number=25, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='projection_end', full_name='assets.Road.projection_end', index=23,
+      name='projection_end', full_name='assets.Road.projection_end', index=24,
       number=26, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='number_lanes', full_name='assets.Road.number_lanes', index=24,
+      name='number_lanes', full_name='assets.Road.number_lanes', index=25,
       number=27, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='rainfall', full_name='assets.Road.rainfall', index=25,
+      name='rainfall', full_name='assets.Road.rainfall', index=26,
       number=28, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='construction_year', full_name='assets.Road.construction_year', index=27,
+      number=30, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='population', full_name='assets.Road.population', index=28,
+      number=31, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='core', full_name='assets.Road.core', index=29,
+      number=32, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='served_facilities', full_name='assets.Road.served_facilities', index=30,
+      number=33, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='served_economic_areas', full_name='assets.Road.served_economic_areas', index=31,
+      number=34, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='served_connection_types', full_name='assets.Road.served_connection_types', index=32,
+      number=35, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
@@ -264,7 +313,7 @@ _ROAD = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=60,
-  serialized_end=694,
+  serialized_end=867,
 )
 
 
@@ -294,8 +343,8 @@ _ROADS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=696,
-  serialized_end=732,
+  serialized_start=869,
+  serialized_end=905,
 )
 
 _ROAD.fields_by_name['projection_start'].message_type = _PROJECTION

@@ -31,6 +31,7 @@ message Road {
   string asset_condition = 9; // surface_condition has been renamed to asset_condition
   string pavement_class = 13;
   float carriageway_width = 14;
+  float total_width = 29;
   string administrative_area = 15;
   string project = 18;
   string funding_source = 19;
@@ -40,9 +41,16 @@ message Road {
   // uint32 last_revision_id = 24;
   Projection projection_start = 25;
   Projection projection_end = 26;
-  // number_lanes is an int32 - so that we can set it to -ve to indicate when it is null / None
+  // number_lanes is uint - we use int32 so that we can set it to -ve to indicate when it is null / None
   int32 number_lanes = 27;
   int32 rainfall = 28;
+  int32 construction_year = 30;
+  int32 population = 31;
+  // core is a nullable boolean - we use int32 so that we can set it to -ve to indicate when it is null / None
+  int32 core = 32;
+  repeated int32 served_facilities = 33;
+  repeated int32 served_economic_areas = 34;
+  repeated int32 served_connection_types = 35;
 }
 
 message Roads {

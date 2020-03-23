@@ -56,12 +56,13 @@
                             const json = JSON.parse(data);
                             const fields = json[0].changed.fields;
                             const fieldDisplay = fields.map((f) => {
-                                // check for previously added road type changes, prior to fix of names used for saving
-                                if (f == "road_type") {
-                                    return window.asset_schema["asset_class"].display
-                                } else {
-                                    return window.asset_schema[f].display
+                                switch (f) {
+                                    case "served_facilities": f = "facility_type"; break;
+                                    case "served_economic_areas": f = "economic_area"; break;
+                                    case "served_connection_types": f = "connection_type"; break;
+                                    default: break;
                                 }
+                                return window.asset_schema[f].display
                             }).join(", ");
                             return `${window.gettext('Changed')}: ${fieldDisplay}`;
                         } catch (error) {

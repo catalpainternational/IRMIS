@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-05 01:57+0000\n"
+"POT-Creation-Date: 2020-03-20 01:13+0000\n"
 "PO-Revision-Date: 2019-10-11 00:57+0000\n"
 "Last-Translator: b'  <juliana@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,13 +31,13 @@ msgstr "Infra-estrutura"
 msgid "Link code and name"
 msgstr "Código e nome da secção"
 
+msgid "Link chainage"
+msgstr "Chainage da secção"
+
 #, fuzzy
 #| msgid "Link width and length"
 msgid "Link length"
 msgstr "Extensão e largura da secção"
-
-msgid "Link chainage"
-msgstr "Chainage da secção"
 
 msgid "Save and continue"
 msgstr "Guardar e continuar"
@@ -54,16 +54,24 @@ msgstr ""
 msgid "View all data entries"
 msgstr ""
 
-msgid "Technical Class Data"
+msgid "Total Width Data"
 msgstr ""
 
-msgid "Current technical class"
-msgstr ""
+#, fuzzy
+#| msgid "Condition"
+msgid "Current total width"
+msgstr "Condição"
 
 msgid "Number of Lanes Data"
 msgstr ""
 
 msgid "Current number of lanes"
+msgstr ""
+
+msgid "Technical Class Data"
+msgstr ""
+
+msgid "Current technical class"
 msgstr ""
 
 msgid "Add Carriageway Width Information"
@@ -87,6 +95,17 @@ msgid "Carriageway width"
 msgstr ""
 
 msgid "Carriageway width (m)"
+msgstr ""
+
+#, fuzzy
+#| msgid "Select a Surface Type"
+msgid "Add Total Width Information"
+msgstr "Seleccione o Tipo de Pavimento"
+
+msgid "Total width"
+msgstr ""
+
+msgid "Total width (m)"
 msgstr ""
 
 msgid "Add Technical Class Information"
@@ -139,6 +158,11 @@ msgstr "A extensão da secção não pode conter mais do que %s dígitos, dos qu
 msgid "Carriage width cannot contain more than %s digits, of which %s are decimals"
 msgstr "A largura da faixa de rodagem não pode conter mais do que %s dígitos, dos quais %s são decimais"
 
+#, fuzzy, javascript-format
+#| msgid "Link length cannot contain more than %s digits, of which %s are decimals"
+msgid "Total width cannot contain more than %s digits, of which %s are decimals"
+msgstr "A extensão da secção não pode conter mais do que %s dígitos, dos quais %s são decimais"
+
 msgid "Edit asset"
 msgstr "Editar infra-estrutura"
 
@@ -157,6 +181,9 @@ msgstr "Projecto"
 msgid "Traffic"
 msgstr ""
 
+msgid "Social & Economic"
+msgstr ""
+
 msgid "Condition"
 msgstr "Condição"
 
@@ -164,6 +191,9 @@ msgid "Maintenance"
 msgstr ""
 
 msgid "Environment"
+msgstr ""
+
+msgid "Edit structure"
 msgstr ""
 
 msgid "Type"
@@ -270,6 +300,12 @@ msgstr ""
 msgid "Rainfall (mm)"
 msgstr ""
 
+msgid "Construction Year"
+msgstr ""
+
+msgid "Enter the construction year"
+msgstr ""
+
 msgid "Changed"
 msgstr "Alterações"
 
@@ -342,6 +378,18 @@ msgstr "Seleccione o Tipo de Pavimento"
 msgid "Pavement class"
 msgstr "Pavimento"
 
+msgid "Social and Economic Data"
+msgstr ""
+
+msgid "Social Data"
+msgstr ""
+
+msgid "Economic Data"
+msgstr ""
+
+msgid "Connections Data"
+msgstr ""
+
 #, fuzzy
 #| msgid "Condition"
 msgid "Structure Condition"
@@ -367,8 +415,10 @@ msgstr "Condição"
 msgid "Condition Description"
 msgstr "Descrição"
 
-msgid "Enter a description on the structurecondition"
-msgstr ""
+#, fuzzy
+#| msgid "Condition"
+msgid "Enter a description of the structure's condition"
+msgstr "Condição"
 
 msgid "Description"
 msgstr "Descrição"
@@ -391,12 +441,6 @@ msgid "River Name"
 msgstr "Nome da secção"
 
 msgid "Enter the name of the river where the structure is located"
-msgstr ""
-
-msgid "Construction Year"
-msgstr ""
-
-msgid "Enter structure's construction year"
 msgstr ""
 
 msgid "Length (meters)"
@@ -836,6 +880,9 @@ msgid "Number of Lanes segments"
 msgstr ""
 
 msgid "Carriageway Width segments"
+msgstr ""
+
+msgid "Total Width segments"
 msgstr ""
 
 msgid "Rainfall segments"

@@ -4,19 +4,22 @@ from django.utils.translation import ugettext_lazy as _
 from basemap.models import Municipality
 from ..models import (
     Asset,
-    Road,
     Bridge,
-    Culvert,
-    RoadStatus,
-    SurfaceType,
-    PavementClass,
-    MaintenanceNeed,
-    TechnicalClass,
-    StructureProtectionType,
     BridgeClass,
-    CulvertClass,
     BridgeMaterialType,
+    ConnectionType,
+    Culvert,
+    CulvertClass,
     CulvertMaterialType,
+    EconomicArea,
+    FacilityType,
+    MaintenanceNeed,
+    PavementClass,
+    Road,
+    RoadStatus,
+    StructureProtectionType,
+    SurfaceType,
+    TechnicalClass,
 )
 
 register = template.Library()
@@ -33,16 +36,28 @@ def filter_pane():
     return {"asset_schema": get_schema_data()}
 
 
-def field_name_standardisation(field_name, common_names, type_suffix):
-    if field_name == "road_type" or field_name == "structure_class":
-        return "asset_class"
-    elif field_name == "surface_condition" or field_name == "structure_condition":
-        return "asset_condition"
+def field_name_standardisation(field_name, mtom_names, shared_names, type_suffix):
+    is_shared_name = len(shared_names) > 0 and (field_name in shared_names)
+    is_mtom_name = len(mtom_names) > 0 and (field_name in mtom_names)
 
-    if len(common_names) == 0 or (not field_name in common_names):
+    if (not is_shared_name) and (not is_mtom_name):
         return field_name
 
-    # common_names are field names that are common to different tables,
+    # mtom_names are field names of many to many relationships,
+    # so they are intentionally different from what they reference
+    if is_mtom_name:
+        if field_name == "served_facilities":
+            return "facility_type"
+        if field_name == "served_economic_areas":
+            return "economic_area"
+        if field_name == "served_connection_types":
+            return "connection_type"
+
+        # Getting here is a programming / metadata error
+        # in which case we'll return what was provided
+        return field_name
+
+    # shared_names are field names that are common to different tables,
     # but that have different 'meanings' so we append a type suffix for that table
     return field_name + "_" + type_suffix
 
@@ -52,9 +67,15 @@ def get_schema_data():
         filter(
             lambda x: (
                 x.name
-                not in ["id", "geom", "properties_content_type", "properties_object_id"]
+                not in [
+                    "id",
+                    "geom",
+                    "properties_content_type",
+                    "properties_object_id",
+                    "roadfeatureattributes",
+                ]
             ),
-            Road._meta.fields,
+            Road._meta.get_fields(),
         )
     )
     bridge_fields = list(
@@ -81,8 +102,15 @@ def get_schema_data():
         "display": _("Asset Type"),
         "slug": "asset_type",
     }
+
+    roads_mtom_fields = [
+        "served_facilities",
+        "served_economic_areas",
+        "served_connection_types",
+    ]
+
     for x in road_fields:
-        field_name = field_name_standardisation(x.name, [], "")
+        field_name = field_name_standardisation(x.name, roads_mtom_fields, [], "")
         asset_schema[field_name] = {
             "display": x.verbose_name,
             "slug": field_name,
@@ -93,7 +121,7 @@ def get_schema_data():
 
     for x in bridge_fields:
         field_name = field_name_standardisation(
-            x.name, structures_common_yet_different_fields, "bridge"
+            x.name, [], structures_common_yet_different_fields, "bridge"
         )
         if not field_name in asset_schema:
             asset_schema[field_name] = {
@@ -103,7 +131,7 @@ def get_schema_data():
             }
     for x in culvert_fields:
         field_name = field_name_standardisation(
-            x.name, structures_common_yet_different_fields, "culvert"
+            x.name, [], structures_common_yet_different_fields, "culvert"
         )
         if not field_name in asset_schema:
             asset_schema[field_name] = {
@@ -122,7 +150,7 @@ def get_schema_data():
     )
 
     # Schemas that have the same values for both asset types
-    # Asset Class - AKA road_type or structure_class
+    # Asset Class - AKA structure_class
     asset_schema["asset_class"].update({"options": Asset.ASSET_CLASS_CHOICES})
     # Asset Condition - AKA surface_condition or structure_condition
     asset_schema["asset_condition"].update({"options": Asset.ASSET_CONDITION_CHOICES})
@@ -139,14 +167,25 @@ def get_schema_data():
     asset_schema["pavement_class"].update(
         {"options": list(PavementClass.objects.all().values())}
     )
-    asset_schema["traffic_level"].update({"options": Road.TRAFFIC_LEVEL_CHOICES})
+    asset_schema["traffic_level"].update({"options": Asset.TRAFFIC_LEVEL_CHOICES})
     asset_schema["maintenance_need"].update(
         {"options": list(MaintenanceNeed.objects.all().values())}
     )
     asset_schema["technical_class"].update(
         {"options": list(TechnicalClass.objects.all().values())}
     )
-    asset_schema["terrain_class"].update({"options": Road.TERRAIN_CLASS_CHOICES})
+    asset_schema["core"].update({"options": Asset.CORE_CHOICES})
+    asset_schema["terrain_class"].update({"options": Asset.TERRAIN_CLASS_CHOICES})
+    # Road M-M definitions
+    asset_schema["facility_type"].update(
+        {"options": list(FacilityType.objects.all().values())}
+    )
+    asset_schema["economic_area"].update(
+        {"options": list(EconomicArea.objects.all().values())}
+    )
+    asset_schema["connection_type"].update(
+        {"options": list(ConnectionType.objects.all().values())}
+    )
 
     # Structure Specific Schema Values (Bridges & Culverts)
     # Schemas that are common to both types

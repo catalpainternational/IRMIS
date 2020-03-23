@@ -47,7 +47,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.assets.Road = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.assets.Road.repeatedFields_, null);
 };
 goog.inherits(proto.assets.Road, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -239,6 +239,13 @@ proto.assets.Projection.prototype.setY = function(value) {
 
 
 
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.assets.Road.repeatedFields_ = [33,34,35];
+
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -286,6 +293,7 @@ proto.assets.Road.toObject = function(includeInstance, msg) {
     assetCondition: jspb.Message.getFieldWithDefault(msg, 9, ""),
     pavementClass: jspb.Message.getFieldWithDefault(msg, 13, ""),
     carriagewayWidth: jspb.Message.getFloatingPointFieldWithDefault(msg, 14, 0.0),
+    totalWidth: jspb.Message.getFloatingPointFieldWithDefault(msg, 29, 0.0),
     administrativeArea: jspb.Message.getFieldWithDefault(msg, 15, ""),
     project: jspb.Message.getFieldWithDefault(msg, 18, ""),
     fundingSource: jspb.Message.getFieldWithDefault(msg, 19, ""),
@@ -295,7 +303,13 @@ proto.assets.Road.toObject = function(includeInstance, msg) {
     projectionStart: (f = msg.getProjectionStart()) && proto.assets.Projection.toObject(includeInstance, f),
     projectionEnd: (f = msg.getProjectionEnd()) && proto.assets.Projection.toObject(includeInstance, f),
     numberLanes: jspb.Message.getFieldWithDefault(msg, 27, 0),
-    rainfall: jspb.Message.getFieldWithDefault(msg, 28, 0)
+    rainfall: jspb.Message.getFieldWithDefault(msg, 28, 0),
+    constructionYear: jspb.Message.getFieldWithDefault(msg, 30, 0),
+    population: jspb.Message.getFieldWithDefault(msg, 31, 0),
+    core: jspb.Message.getFieldWithDefault(msg, 32, 0),
+    servedFacilitiesList: (f = jspb.Message.getRepeatedField(msg, 33)) == null ? undefined : f,
+    servedEconomicAreasList: (f = jspb.Message.getRepeatedField(msg, 34)) == null ? undefined : f,
+    servedConnectionTypesList: (f = jspb.Message.getRepeatedField(msg, 35)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -396,6 +410,10 @@ proto.assets.Road.deserializeBinaryFromReader = function(msg, reader) {
       var value = /** @type {number} */ (reader.readFloat());
       msg.setCarriagewayWidth(value);
       break;
+    case 29:
+      var value = /** @type {number} */ (reader.readFloat());
+      msg.setTotalWidth(value);
+      break;
     case 15:
       var value = /** @type {string} */ (reader.readString());
       msg.setAdministrativeArea(value);
@@ -437,6 +455,30 @@ proto.assets.Road.deserializeBinaryFromReader = function(msg, reader) {
     case 28:
       var value = /** @type {number} */ (reader.readInt32());
       msg.setRainfall(value);
+      break;
+    case 30:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setConstructionYear(value);
+      break;
+    case 31:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setPopulation(value);
+      break;
+    case 32:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setCore(value);
+      break;
+    case 33:
+      var value = /** @type {!Array<number>} */ (reader.readPackedInt32());
+      msg.setServedFacilitiesList(value);
+      break;
+    case 34:
+      var value = /** @type {!Array<number>} */ (reader.readPackedInt32());
+      msg.setServedEconomicAreasList(value);
+      break;
+    case 35:
+      var value = /** @type {!Array<number>} */ (reader.readPackedInt32());
+      msg.setServedConnectionTypesList(value);
       break;
     default:
       reader.skipField();
@@ -579,6 +621,13 @@ proto.assets.Road.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
+  f = message.getTotalWidth();
+  if (f !== 0.0) {
+    writer.writeFloat(
+      29,
+      f
+    );
+  }
   f = message.getAdministrativeArea();
   if (f.length > 0) {
     writer.writeString(
@@ -648,6 +697,48 @@ proto.assets.Road.serializeBinaryToWriter = function(message, writer) {
   if (f !== 0) {
     writer.writeInt32(
       28,
+      f
+    );
+  }
+  f = message.getConstructionYear();
+  if (f !== 0) {
+    writer.writeInt32(
+      30,
+      f
+    );
+  }
+  f = message.getPopulation();
+  if (f !== 0) {
+    writer.writeInt32(
+      31,
+      f
+    );
+  }
+  f = message.getCore();
+  if (f !== 0) {
+    writer.writeInt32(
+      32,
+      f
+    );
+  }
+  f = message.getServedFacilitiesList();
+  if (f.length > 0) {
+    writer.writePackedInt32(
+      33,
+      f
+    );
+  }
+  f = message.getServedEconomicAreasList();
+  if (f.length > 0) {
+    writer.writePackedInt32(
+      34,
+      f
+    );
+  }
+  f = message.getServedConnectionTypesList();
+  if (f.length > 0) {
+    writer.writePackedInt32(
+      35,
       f
     );
   }
@@ -943,6 +1034,24 @@ proto.assets.Road.prototype.setCarriagewayWidth = function(value) {
 
 
 /**
+ * optional float total_width = 29;
+ * @return {number}
+ */
+proto.assets.Road.prototype.getTotalWidth = function() {
+  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 29, 0.0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.assets.Road} returns this
+ */
+proto.assets.Road.prototype.setTotalWidth = function(value) {
+  return jspb.Message.setProto3FloatField(this, 29, value);
+};
+
+
+/**
  * optional string administrative_area = 15;
  * @return {string}
  */
@@ -1157,6 +1266,171 @@ proto.assets.Road.prototype.getRainfall = function() {
  */
 proto.assets.Road.prototype.setRainfall = function(value) {
   return jspb.Message.setProto3IntField(this, 28, value);
+};
+
+
+/**
+ * optional int32 construction_year = 30;
+ * @return {number}
+ */
+proto.assets.Road.prototype.getConstructionYear = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 30, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.assets.Road} returns this
+ */
+proto.assets.Road.prototype.setConstructionYear = function(value) {
+  return jspb.Message.setProto3IntField(this, 30, value);
+};
+
+
+/**
+ * optional int32 population = 31;
+ * @return {number}
+ */
+proto.assets.Road.prototype.getPopulation = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 31, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.assets.Road} returns this
+ */
+proto.assets.Road.prototype.setPopulation = function(value) {
+  return jspb.Message.setProto3IntField(this, 31, value);
+};
+
+
+/**
+ * optional int32 core = 32;
+ * @return {number}
+ */
+proto.assets.Road.prototype.getCore = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 32, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.assets.Road} returns this
+ */
+proto.assets.Road.prototype.setCore = function(value) {
+  return jspb.Message.setProto3IntField(this, 32, value);
+};
+
+
+/**
+ * repeated int32 served_facilities = 33;
+ * @return {!Array<number>}
+ */
+proto.assets.Road.prototype.getServedFacilitiesList = function() {
+  return /** @type {!Array<number>} */ (jspb.Message.getRepeatedField(this, 33));
+};
+
+
+/**
+ * @param {!Array<number>} value
+ * @return {!proto.assets.Road} returns this
+ */
+proto.assets.Road.prototype.setServedFacilitiesList = function(value) {
+  return jspb.Message.setField(this, 33, value || []);
+};
+
+
+/**
+ * @param {number} value
+ * @param {number=} opt_index
+ * @return {!proto.assets.Road} returns this
+ */
+proto.assets.Road.prototype.addServedFacilities = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 33, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.assets.Road} returns this
+ */
+proto.assets.Road.prototype.clearServedFacilitiesList = function() {
+  return this.setServedFacilitiesList([]);
+};
+
+
+/**
+ * repeated int32 served_economic_areas = 34;
+ * @return {!Array<number>}
+ */
+proto.assets.Road.prototype.getServedEconomicAreasList = function() {
+  return /** @type {!Array<number>} */ (jspb.Message.getRepeatedField(this, 34));
+};
+
+
+/**
+ * @param {!Array<number>} value
+ * @return {!proto.assets.Road} returns this
+ */
+proto.assets.Road.prototype.setServedEconomicAreasList = function(value) {
+  return jspb.Message.setField(this, 34, value || []);
+};
+
+
+/**
+ * @param {number} value
+ * @param {number=} opt_index
+ * @return {!proto.assets.Road} returns this
+ */
+proto.assets.Road.prototype.addServedEconomicAreas = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 34, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.assets.Road} returns this
+ */
+proto.assets.Road.prototype.clearServedEconomicAreasList = function() {
+  return this.setServedEconomicAreasList([]);
+};
+
+
+/**
+ * repeated int32 served_connection_types = 35;
+ * @return {!Array<number>}
+ */
+proto.assets.Road.prototype.getServedConnectionTypesList = function() {
+  return /** @type {!Array<number>} */ (jspb.Message.getRepeatedField(this, 35));
+};
+
+
+/**
+ * @param {!Array<number>} value
+ * @return {!proto.assets.Road} returns this
+ */
+proto.assets.Road.prototype.setServedConnectionTypesList = function(value) {
+  return jspb.Message.setField(this, 35, value || []);
+};
+
+
+/**
+ * @param {number} value
+ * @param {number=} opt_index
+ * @return {!proto.assets.Road} returns this
+ */
+proto.assets.Road.prototype.addServedConnectionTypes = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 35, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.assets.Road} returns this
+ */
+proto.assets.Road.prototype.clearServedConnectionTypesList = function() {
+  return this.setServedConnectionTypesList([]);
 };
 
 

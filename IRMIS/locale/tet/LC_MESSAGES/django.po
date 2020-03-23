@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0 VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-05 01:57+0000\n"
+"POT-Creation-Date: 2020-03-20 01:13+0000\n"
 "PO-Revision-Date: 2019-10-09 05:43+0000\n"
 "Last-Translator: b'  <januario@catalpa.io>'\n"
 "Language-Team: Catalpa International <info@catalpa.io>\n"
@@ -82,6 +82,60 @@ msgid "Steel"
 msgstr ""
 
 msgid "Stone"
+msgstr ""
+
+msgid "Health facility"
+msgstr ""
+
+msgid "School"
+msgstr ""
+
+msgid "Police/security station"
+msgstr ""
+
+msgid "Fire station"
+msgstr ""
+
+msgid "Recreational area"
+msgstr ""
+
+msgid "Fishing"
+msgstr ""
+
+msgid "Farming"
+msgstr ""
+
+msgid "Market"
+msgstr ""
+
+msgid "Tourism"
+msgstr ""
+
+msgid "Commercial"
+msgstr ""
+
+msgid "Industrial"
+msgstr ""
+
+msgid "Cash crops"
+msgstr ""
+
+msgid "Connects municipalities"
+msgstr ""
+
+msgid "Connects Dili to municipal centers"
+msgstr ""
+
+msgid "Connects administrative posts"
+msgstr ""
+
+msgid "Connects to land border"
+msgstr ""
+
+msgid "Connects to seaport"
+msgstr ""
+
+msgid "Connects to airport"
 msgstr ""
 
 #, python-format
@@ -187,6 +241,11 @@ msgstr "Aat"
 msgid "Bad"
 msgstr "Aat Los"
 
+#, fuzzy
+#| msgid "Road Status"
+msgid "Road"
+msgstr "Estatutu Estrada"
+
 msgid "Bridge"
 msgstr ""
 
@@ -209,6 +268,15 @@ msgid "Rolling"
 msgstr ""
 
 msgid "Mountainous"
+msgstr ""
+
+msgid "Undefined"
+msgstr ""
+
+msgid "Non-core"
+msgstr ""
+
+msgid "Core"
 msgstr ""
 
 msgid "last modified"
@@ -362,9 +430,6 @@ msgstr "Klase Tekniku "
 msgid "Choose road link technical class according to the 2010 Road Geometric Design Standards, DRBFC standards"
 msgstr "Hili linha estrada nia klase tekniku tuir Padraun Dezenhu Geometriku Estrada 2010 "
 
-msgid "Core"
-msgstr ""
-
 msgid "Set if the road is a high priority `core` road"
 msgstr ""
 
@@ -373,6 +438,11 @@ msgstr ""
 
 msgid "Set the size of population served by this road"
 msgstr ""
+
+#, fuzzy
+#| msgid "Road Condition Data"
+msgid "Road Construction Year"
+msgstr "Dadus Kondisaun Estrada"
 
 #, fuzzy
 #| msgid "Technical class"
@@ -397,6 +467,31 @@ msgstr ""
 #| msgid "Enter the source funding for the road link"
 msgid "Enter the number of lanes of the road"
 msgstr "Hatama fontes orsamentu ba linha estrada"
+
+msgid "Facilities Served"
+msgstr ""
+
+#, fuzzy
+#| msgid "Choose the pavement class of the road"
+msgid "Choose facilities served by this road"
+msgstr "Hili klase pavimentu husi estrada"
+
+msgid "Economic Areas Served"
+msgstr ""
+
+msgid "Choose economic areas served by this road"
+msgstr ""
+
+msgid "Connections Served"
+msgstr ""
+
+#, fuzzy
+#| msgid "Choose the type of maintenace needs for the road link"
+msgid "Choose the types of connections facilitated by this road"
+msgstr "Hili tipu manutensaun nebe persija ba linha estrada "
+
+msgid "Attributes"
+msgstr ""
 
 #, fuzzy
 #| msgid "Asset"
@@ -558,7 +653,9 @@ msgstr "Kodigu linha"
 msgid "Link name"
 msgstr "Naran linha"
 
-msgid "Link Length"
+#, fuzzy
+#| msgid "Link Length"
+msgid "Link length"
 msgstr "Naruk Estasaun"
 
 msgid "Link start name"
@@ -573,6 +670,18 @@ msgstr "Naran linha ikus "
 msgid "Link end chainage"
 msgstr "Linha estasaun ikus"
 
+msgid "Start Point - DMS"
+msgstr "Pontu Komesa - DMS"
+
+msgid "End Point - DMS"
+msgstr "Pontu Ikus - DMS"
+
+msgid "Start Point - UTM"
+msgstr "Pontu Komesa - UTM"
+
+msgid "End Point - UTM"
+msgstr "Pontu Ikus - UTM"
+
 msgid "Surface type"
 msgstr "Tipu superfície"
 
@@ -581,6 +690,12 @@ msgstr "klase pavimentu"
 
 msgid "Carriageway width"
 msgstr "Luan carriageway "
+
+msgid "Total width"
+msgstr ""
+
+msgid "Number of lanes"
+msgstr ""
 
 #, fuzzy
 #| msgid "Pavement class"
@@ -599,17 +714,8 @@ msgstr "Estatutu estrada "
 msgid "Project"
 msgstr "Projetu "
 
-msgid "Start Point - DMS"
-msgstr "Pontu Komesa - DMS"
-
-msgid "End Point - DMS"
-msgstr "Pontu Ikus - DMS"
-
-msgid "Start Point - UTM"
-msgstr "Pontu Komesa - UTM"
-
-msgid "End Point - UTM"
-msgstr "Pontu Ikus - UTM"
+msgid "Construction Year"
+msgstr ""
 
 msgid "Road Condition Data"
 msgstr "Dadus Kondisaun Estrada"
@@ -625,9 +731,6 @@ msgstr "Persija manutensaun"
 
 msgid "Traffic data"
 msgstr "Dadus trafiku"
-
-msgid "Number of lanes"
-msgstr ""
 
 #, fuzzy
 #| msgid "Technical Class"
@@ -681,9 +784,6 @@ msgstr ""
 #| msgid "Link Length"
 msgid "Span Length"
 msgstr "Naruk Estasaun"
-
-msgid "Construction Year"
-msgstr ""
 
 #, fuzzy
 #| msgid "Road Condition Data"

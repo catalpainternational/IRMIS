@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from assets.tasks import import_shapefiles
+from assets.tasks import import_shapefiles, update_from_shapefiles
 
 
 class Command(BaseCommand):
@@ -10,4 +10,5 @@ class Command(BaseCommand):
         parser.add_argument("asset")
 
     def handle(self, *args, **options):
-        import_shapefiles(options["folder"], options["asset"])
+        import_shapefiles(self, options["folder"], options["asset"])
+        update_from_shapefiles(self, options["folder"])

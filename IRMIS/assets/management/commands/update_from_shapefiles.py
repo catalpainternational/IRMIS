@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
-from assets.tasks import update_from_shapefiles
+
+# from assets.tasks import update_from_shapefiles
 
 
 class Command(BaseCommand):
@@ -9,4 +10,6 @@ class Command(BaseCommand):
         parser.add_argument("folder")
 
     def handle(self, *args, **options):
-        update_from_shapefiles(options["folder"])
+        raise DeprecationWarning("This is moved to import_shapefiles script")
+        return
+        # update_from_shapefiles(options["folder"])

@@ -38,8 +38,9 @@
 
 .checkbox {
     background-image: url("../images/checkbox.svg");
-    height: 14px;
-    width: 15px;
+    vertical-align: middle;
+    height: 15px;
+    width: 14px;
 
     &.selected {
         background-image: url("../images/checkbox_active.svg");

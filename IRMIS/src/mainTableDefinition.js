@@ -157,6 +157,30 @@ export const estradaTableColumns = [
         className: "text-right",
     },
     {
+        title: window.gettext("Start Point (DMS)"),
+        data: "startDMS",
+        defaultContent: "",
+        visible: false,
+    },
+    {
+        title: window.gettext("End Point (DMS)"),
+        data: "endDMS",
+        defaultContent: "",
+        visible: false,
+    },
+    {
+        title: window.gettext("Start Point (UTM)"),
+        data: "startUTM",
+        defaultContent: "",
+        visible: false,
+    },
+    {
+        title: window.gettext("End Point (UTM)"),
+        data: "endUTM",
+        defaultContent: "",
+        visible: false,
+    },
+    {
         title: EstradaRoad.getFieldName("surface_type"),
         data: null,
         defaultContent: "",
@@ -178,14 +202,31 @@ export const estradaTableColumns = [
         orderable: false,
     },
     {
+        // note: `total_width` is NOT actually part of EstradaRoad,
+        // but EstradaRoad.getFieldName explicitly supports it
+        title: EstradaRoad.getFieldName("total_width"),
+        data: null,
+        defaultContent: "",
+        render: r => buttonSegmentsTemplate("total_width", r),
+        orderable: false,
+        visible: false,
+    },
+    {
+        title: EstradaRoad.getFieldName("number_lanes"),
+        data: null,
+        defaultContent: "",
+        render: r => buttonSegmentsTemplate("number_lanes", r),
+        visible: false,
+        orderable: false,
+    },
+    {
         title: EstradaRoad.getFieldName("administrative_area"),
         data: "administrativeArea",
         defaultContent: "",
     },
     {
-        // 'road_type' name has been deprecated is replaced with 'asset_class'
-        // everywhere except the model definition itself
-        title: EstradaRoad.getFieldName("road_type") || window.gettext("Asset Class"),
+        // 'road_type' field name has been deprecated is replaced with 'asset_class'
+        title: EstradaRoad.getFieldName("asset_class") || window.gettext("Asset Class"),
         data: "assetClass",
         defaultContent: "",
         visible: false,
@@ -217,26 +258,20 @@ export const estradaTableColumns = [
         visible: false,
     },
     {
-        title: window.gettext("Start Point (DMS)"),
-        data: "startDMS",
+        title: EstradaRoad.getFieldName("population"),
+        data: "population",
         defaultContent: "",
         visible: false,
     },
     {
-        title: window.gettext("End Point (DMS)"),
-        data: "endDMS",
+        title: EstradaRoad.getFieldName("construction_year"),
+        data: "constructionYear",
         defaultContent: "",
         visible: false,
     },
     {
-        title: window.gettext("Start Point (UTM)"),
-        data: "startUTM",
-        defaultContent: "",
-        visible: false,
-    },
-    {
-        title: window.gettext("End Point (UTM)"),
-        data: "endUTM",
+        title: EstradaRoad.getFieldName("core"),
+        data: "core",
         defaultContent: "",
         visible: false,
     },
@@ -265,14 +300,6 @@ export const estradaTableColumns = [
         defaultContent: "",
         render: r => buttonSegmentsTemplate("traffic_level", r),
         visible: false,
-    },
-    {
-        title: EstradaRoad.getFieldName("number_lanes"),
-        data: null,
-        defaultContent: "",
-        render: r => buttonSegmentsTemplate("number_lanes", r),
-        visible: false,
-        orderable: false,
     },
     {
         title: EstradaRoad.getFieldName("rainfall"),
@@ -485,9 +512,8 @@ function buttonSegmentsTemplate(attrib, asset) {
     const assetStructureType = detectStructure(asset);
     const assetType = !assetStructureType
         ? currentFilter.assetType === "ROAD" ? "ROAD" : "STRC"
-        : ["BRDG"].includes(assetStructureType) ? "BRDG" : "CULV";
+        : ["ROAD", "BRDG", "CULV"].includes(assetStructureType) ? assetStructureType : "ROAD";
 
-    const code = (assetType === "ROAD") ? asset.linkCode : asset.structureCode;
     let getFieldName = (attrib) => (attrib);
     switch (assetType) {
         case "ROAD":

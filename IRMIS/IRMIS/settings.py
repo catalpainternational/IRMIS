@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     # IRMIS
     "IRMIS_wagtail",
     "assets",
+    "csv_data_sources",
     "protected_downloads",
     "basemap",
     "rest_framework",
@@ -74,6 +75,7 @@ INSTALLED_APPS = [
     "reversion",
     # CATALPA UTILS
     "catalpa_django_apps.google_analytics",
+    "topology",
 ]
 
 MIDDLEWARE = [

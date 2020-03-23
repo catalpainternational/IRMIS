@@ -14,9 +14,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument(
             "--no-road-refresh",
-            action="store_const",
-            const=False,
-            default=False,
+            action="store_true",
             help="Don't refresh road links before the import",
         )
 
