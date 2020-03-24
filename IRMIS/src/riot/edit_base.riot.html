@@ -126,9 +126,9 @@
         import * as riot from "riot";
         import $ from "jquery";
 
-        import {getAssetSurveys, getStructureSurveys} from "../surveyManager";
-        import {getAssetReport} from "../reportManager";
-        import {updateReportAttributeSummary} from "../roadAttributes";
+        import {getStructureSurveys} from "../surveyManager";
+
+        import {getSurveysForAsset, surveysAndReportRefresh} from "../assets/editUtilities";
 
         // We really should NOT be importing road specific stuff here
         import {saveRoad} from "../roadManager";
@@ -207,10 +207,7 @@
                     getHelpText: this.getHelpText,
                     save: this.save,
                     saveStructure: this.saveStructure,
-                    getAssetSurveys: this.getAssetSurveys,
                     getStructureSurveys: this.getStructureSurveys,
-                    refreshSurveysAndReports: this.refreshSurveysAndReports,
-                    updateReportAttributeSummary: updateReportAttributeSummary,
                 };
 
                 if (props.roadPromise) {
@@ -362,10 +359,6 @@
                     }, 300);
                 }
             },
-            refreshSurveysAndReports(state, allDataTableId, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId = null) {
-                this.getAssetSurveys(state, allDataTableId, primaryAttribute, reportAttribute);
-                this.getAssetSurveyReports(state, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId);
-            },
             getStructureSurveys(state, allDataTableId, primaryAttribute, reportAttribute) {
                 const structureId = state.structure.id;
 
@@ -381,81 +374,6 @@
                             const eventDetail = {detail: {pendingRows: state.pendingRows, clearRows: true}};
                             document.dispatchEvent(new CustomEvent(eventName, eventDetail));
 
-                            state.error = false;
-                        } else {
-                            state.error = true;
-                        }
-                    }).catch(err => {
-                        state.error = true;
-                    }).finally((r) => {
-                        state.loading = false;
-                        this.update();
-                    });
-            },
-            getAssetSurveys(state, allDataTableId, primaryAttribute, reportAttribute) {
-                const roadId = state.road.id;
-
-                getAssetSurveys(roadId, primaryAttribute)
-                    .then((surveyData) => {
-                        if (surveyData) {
-                            state.pendingRows = surveyData.map((data) => {
-                                data.title = data[reportAttribute] || data.values[primaryAttribute] || "";
-                                return data;
-                            });
-
-                            const eventName = `${allDataTableId}.dataAdded`;
-                            const eventDetail = {detail: {pendingRows: state.pendingRows, clearRows: true}};
-                            document.dispatchEvent(new CustomEvent(eventName, eventDetail));
-
-                            state.error = false;
-                        } else {
-                            state.error = true;
-                        }
-                    }).catch(err => {
-                        state.error = true;
-                    }).finally((r) => {
-                        state.loading = false;
-                        this.update();
-                    });
-            },
-            getAssetSurveyReports(state, primaryAttribute, reportAttribute, reportDataTableId, stackedBarId) {
-                const editingRoad = state.editingRoad || state.road;
-                const filters = {
-                    primaryattribute: primaryAttribute,
-                    asset_code: editingRoad.code,
-                    // Use the raw chainage (not the formatted one)
-                    chainagestart: editingRoad.getLinkStartChainage(),
-                    chainageend: editingRoad.getLinkEndChainage(),
-                };
-
-                getAssetReport(filters)
-                    .then((surveyReportData) => {
-                        if (surveyReportData) {
-                            const haveLengths = !!surveyReportData.lengths;
-                            let reportAttributes = surveyReportData[reportAttribute];
-                            if (!reportAttributes || !reportAttributes.length) {
-                                reportAttributes = this.parentFunctions.emptyAttributes;
-                            }
-
-                            if (haveLengths && reportAttributes.length) {
-                                updateReportAttributeSummary(state, reportAttribute, reportAttributes);
-
-                                if (stackedBarId) {
-                                    document.dispatchEvent(new CustomEvent(`${stackedBarId}.dataUpdated`, {detail: {entries: state[reportAttribute]}}));
-                                }
-
-                                state.reportRows = surveyReportData.attributes(primaryAttribute).attributeEntries;
-
-                                const eventName = `${reportDataTableId}.dataAdded`;
-                                const eventDetail = {detail: {pendingRows: state.reportRows, clearRows: true}};
-                                document.dispatchEvent(new CustomEvent(eventName, eventDetail));
-
-                                if (surveyReportData.id === null) {
-                                    // An id of null should tell us that there was an error fetching the data
-                                    state.error = true;
-                                    this.showFeedback(true);
-                                }
-                            }
                             state.error = false;
                         } else {
                             state.error = true;
