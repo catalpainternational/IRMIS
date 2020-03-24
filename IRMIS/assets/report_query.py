@@ -489,15 +489,33 @@ class ReportQuery:
             self.filter_cases.extend(asset_filter_cases)
 
         # Check for valid chainage values (because we're bypassing some SQL validation checks)
-        has_chainage_start = "chainage_start" in self.filters and isinstance(self.filters["chainage_start"], Number)
-        has_chainage_end = "chainage_end" in self.filters and isinstance(self.filters["chainage_end"], Number)
-        if has_chainage_start and has_chainage_end:
-            start_c = self.filters["chainage_start"]
-            end_c = self.filters["chainage_end"]
+        has_chainage_start = "chainage_start" in self.filters and isinstance(
+            self.filters["chainage_start"], Number
+        )
+        has_chainage_end = "chainage_end" in self.filters and isinstance(
+            self.filters["chainage_end"], Number
+        )
+        if has_chainage_start or has_chainage_end:
             road_test = " WHEN atc.asset_type = 'ROAD' "
-            self.report_clauses["suc"] = self.report_clauses["suc"].replace("%sTHEN s.chainage_start\n" % road_test, "%sAND s.chainage_start < %s THEN %s\n%sTHEN s.chainage_start\n" % (road_test, start_c, start_c, road_test))
-            self.report_clauses["suc"] = self.report_clauses["suc"].replace("%sTHEN s.chainage_end\n" % road_test, "%sAND s.chainage_end > %s THEN %s\n%sTHEN s.chainage_end\n" % (road_test, end_c, end_c, road_test))
-            self.report_clauses["suc"] = self.report_clauses["suc"].replace("%sTHEN atc.geom_chainage\n" % road_test, "%sAND atc.geom_chainage > %s THEN %s\n%sTHEN atc.geom_chainage\n" % (road_test, end_c, end_c, road_test))
+            if has_chainage_start:
+                start_c = self.filters["chainage_start"]
+                self.report_clauses["suc"] = self.report_clauses["suc"].replace(
+                    "%sTHEN s.chainage_start\n" % road_test,
+                    "%sAND s.chainage_start < %s THEN %s\n%sTHEN s.chainage_start\n"
+                    % (road_test, start_c, start_c, road_test),
+                )
+            if has_chainage_end:
+                end_c = self.filters["chainage_end"]
+                self.report_clauses["suc"] = self.report_clauses["suc"].replace(
+                    "%sTHEN s.chainage_end\n" % road_test,
+                    "%sAND s.chainage_end > %s THEN %s\n%sTHEN s.chainage_end\n"
+                    % (road_test, end_c, end_c, road_test),
+                )
+                self.report_clauses["suc"] = self.report_clauses["suc"].replace(
+                    "%sTHEN atc.geom_chainage\n" % road_test,
+                    "%sAND atc.geom_chainage > %s THEN %s\n%sTHEN atc.geom_chainage\n"
+                    % (road_test, end_c, end_c, road_test),
+                )
 
         # only one of these queries will be performed, depending on get_all_surveys value
         if get_all_surveys:
