@@ -1,5 +1,7 @@
 import json
 
+from numbers import Number
+
 from django.db import connection
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotFound
 
@@ -112,7 +114,9 @@ class ReportQuery:
                 " END AS username\n"
                 " FROM auth_user\n"
             ),
+            # This is a template for "suc"
             # Surveys which match the given values and assets
+            # Chainages for Roads are manipulated if start and end chainage values are supplied
             # Chainages for structure surveys are manipulated to make the rest of the query still work
             "su": (
                 "SELECT s.id, atc.asset_type, atc.asset_id, atc.asset_code,\n"
@@ -148,33 +152,33 @@ class ReportQuery:
             "breakpoints": (
                 "SELECT DISTINCT * FROM (\n"
                 "  SELECT id AS survey_id, attr, asset_type, asset_id, asset_code, chainage_start c\n"
-                "  FROM su\n"
+                "  FROM suc\n"
                 " UNION\n"
                 "  SELECT id AS survey_id, attr, asset_type, asset_id, asset_code, chainage_end c\n"
-                "  FROM su\n"
+                "  FROM suc\n"
                 " ) xxxx\n"
             ),
             # merge and rank breakpoints (by date)
             "merge_breakpoints": (
-                "SELECT bp.survey_id, bp.attr AS break_attr, bp.c, su.*,\n"
-                " bp.c = su.chainage_end AS isend,\n"
+                "SELECT bp.survey_id, bp.attr AS break_attr, bp.c, suc.*,\n"
+                " bp.c = suc.chainage_end AS isend,\n"
                 " RANK() OVER (\n"
                 "  PARTITION BY bp.asset_type, bp.asset_id, bp.asset_code, bp.c, bp.attr\n"
                 "  ORDER BY\n"
                 "  CASE\n"
-                "   WHEN bp.c = su.chainage_end THEN 1\n"
+                "   WHEN bp.c = suc.chainage_end THEN 1\n"
                 "   ELSE 0\n"
                 "  END,\n"
                 "  date_surveyed DESC NULLS LAST\n"
                 " )\n"
-                " FROM breakpoints bp, su\n"
-                " WHERE bp.asset_type = su.asset_type\n"
-                " AND bp.asset_id = su.asset_id\n"
-                " AND bp.attr = su.attr\n"
-                " AND bp.c >= su.chainage_start\n"
-                " AND bp.c <= su.chainage_end\n"
-                " AND ((su.asset_type = 'ROAD' AND su.chainage_start != su.chainage_end)\n"
-                " OR (su.asset_type <> 'ROAD'))\n"
+                " FROM breakpoints bp, suc\n"
+                " WHERE bp.asset_type = suc.asset_type\n"
+                " AND bp.asset_id = suc.asset_id\n"
+                " AND bp.attr = suc.attr\n"
+                " AND bp.c >= suc.chainage_start\n"
+                " AND bp.c <= suc.chainage_end\n"
+                " AND ((suc.asset_type = 'ROAD' AND suc.chainage_start != suc.chainage_end)\n"
+                " OR (suc.asset_type <> 'ROAD'))\n"
             ),
             # If the survey is actually the end value we NULLify the value
             # rather than using the attribute, we use this in final_results below
@@ -413,6 +417,7 @@ class ReportQuery:
             "road_id",
             "road_code",
         ]
+
         asset_filter_clauses = []
         asset_filter_cases = []
 
@@ -423,6 +428,7 @@ class ReportQuery:
         self.report_clauses["values_to_exclude"] = self.report_clauses["values_to_use"]
         self.report_clauses["values_to_chart"] += " WHERE attr=ANY(%s)\n"
         self.report_clauses["values_to_exclude"] += " WHERE NOT (attr=ANY(%s))\n"
+        self.report_clauses["suc"] = self.report_clauses["su"]
 
         # handle the filtering of the 'values' attributes
         for filter_key in self.filters.keys():
@@ -482,6 +488,17 @@ class ReportQuery:
             self.report_clauses["assets_to_chart"] += where_clauses
             self.filter_cases.extend(asset_filter_cases)
 
+        # Check for valid chainage values (because we're bypassing some SQL validation checks)
+        has_chainage_start = "chainage_start" in self.filters and isinstance(self.filters["chainage_start"], Number)
+        has_chainage_end = "chainage_end" in self.filters and isinstance(self.filters["chainage_end"], Number)
+        if has_chainage_start and has_chainage_end:
+            start_c = self.filters["chainage_start"]
+            end_c = self.filters["chainage_end"]
+            road_test = " WHEN atc.asset_type = 'ROAD' "
+            self.report_clauses["suc"] = self.report_clauses["suc"].replace("%sTHEN s.chainage_start\n" % road_test, "%sAND s.chainage_start < %s THEN %s\n%sTHEN s.chainage_start\n" % (road_test, start_c, start_c, road_test))
+            self.report_clauses["suc"] = self.report_clauses["suc"].replace("%sTHEN s.chainage_end\n" % road_test, "%sAND s.chainage_end > %s THEN %s\n%sTHEN s.chainage_end\n" % (road_test, end_c, end_c, road_test))
+            self.report_clauses["suc"] = self.report_clauses["suc"].replace("%sTHEN atc.geom_chainage\n" % road_test, "%sAND atc.geom_chainage > %s THEN %s\n%sTHEN atc.geom_chainage\n" % (road_test, end_c, end_c, road_test))
+
         # only one of these queries will be performed, depending on get_all_surveys value
         if get_all_surveys:
             self.report_clauses["get_all"] = self.report_clauses["retrieve_all"]
@@ -508,7 +525,7 @@ class ReportQuery:
         self.add_report_clause("values_to_exclude")
         self.add_report_clause("assets_to_chart")
         self.add_report_clause("usernames")
-        self.add_report_clause("su")
+        self.add_report_clause("suc")
         self.add_report_clause("breakpoints")
         self.add_report_clause("merge_breakpoints")
         self.add_report_clause("results")
