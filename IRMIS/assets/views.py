@@ -1733,10 +1733,14 @@ class SurveyExcelDataSource(TemplateView):
         SELECT *, 
             -- Hey, are you the next one in the link?
             -- If you are, I'll be a NULL
+            -- This value is Truthy when the end chainage is NOT included in the range of the next chainage.
             lag(chainage_end) OVER (ORDER BY chainagerange) < chainage_start OR NULL AS step,
             -- Hey, are you still the same value?
             -- If you are, I'll be a NULL
-            lag(val) OVER (ORDER BY chainagerange) != val OR NULL AS val_changes
+            COALESCE(
+                lag(val) OVER (ORDER BY chainagerange) != val OR NULL
+                -- Add a few more "lags" here for more properties to group together?
+            ) AS val_changes
         FROM   r
         ), c AS (
         SELECT *, 
