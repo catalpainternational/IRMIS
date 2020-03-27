@@ -1,29 +1,29 @@
 <photos_details_box>
-    <template if="{!state.hidden}">
-        <template if="{state.errors.length}">
+    <template if="{ !state.hidden }">
+        <template if="{ state.errors.length }">
             <p class="small">{ window.gettext(state.errors[0]) }</p>
         </template>
-        <template if="{!state.errors.length && !state.currentPhotosData}">
+        <template if="{ !state.errors.length && !state.currentPhotosData }">
             <p class="small">{ window.gettext("Loading photos...") }</p>
         </template>
-        <div if="{!state.errors.length && state.currentPhotosData}" class="text-center">
-            <div if="{state.photo1_show}">
+        <div if="{ !state.errors.length && state.currentPhotosData }" class="text-center">
+            <div if="{ state.photo1_show }">
                 <img class="uploaded-photo" src="{ state.currentPhotosData[0].url }">
-                <p class="small">{ state.currentPhotosData[0].description }</p>
             </div>
-            <span if="{ state.currentPhotosData.length>1 }">
-                <div if="{state.photo2_show}">
+            <template if="{ state.currentPhotosData.length > 1 }">
+                <div if="{ state.photo2_show }">
                     <img class="uploaded-photo" src="{ state.currentPhotosData[1].url }">
-                    <p class="small">{ state.currentPhotosData[1].description }</p>
                 </div>
-                <div class="photos-toggle-btns">
-                    <button class="btn btn-sm btn-primary {state.photo1_show ? 'active' : ''}"
-                        style="margin-right: 10px;" onclick="{showPhoto1}">Photo 1</button>
-                    <button class="btn btn-sm btn-primary {state.photo2_show ? 'active' : ''}"
-                        style="margin-right: 10px;" onclick="{showPhoto2}">Photo 2</button>
-                </div>
-            </span>
+                <ul class="d-flex justify-content-center pagination">
+                    <li onclick="{ showPhoto1 }">{ window.gettext("Previous") }</li>
+                    <li class="{ state.photo1_show ? 'active' : '' }" onclick="{ showPhoto1 }">1</li>
+                    <li class="{ state.photo2_show ? 'active' : '' }" onclick="{ showPhoto2 }">2</li>
+                    <li onclick="{ showPhoto2 }">{ window.gettext("Next") }</li>
+                </ul>
+            </template>
         </div>
+        <p if="{ state.photo1_show }">{ state.currentPhotosData[0].description }</p>
+        <p if="{ state.photo2_show }">{ state.currentPhotosData[1].description }</p>
     </template>
 
     <script>

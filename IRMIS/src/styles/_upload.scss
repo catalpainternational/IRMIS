@@ -51,3 +51,24 @@ img.uploaded-photo {
     border-radius: 4px;
     max-width: 100%;
 }
+
+photos_details_box {
+    ul.pagination {
+        margin-bottom: 20px;
+        margin-top: 10px;
+
+        li {
+            border-radius: 4px;
+            padding: 8px 12px;
+
+            &.active {
+                background-color: #3D4758;
+                color: $white;
+            }
+        }
+    }
+
+    p {
+        margin-bottom: 0;
+    }
+}
