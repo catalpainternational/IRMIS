@@ -76,9 +76,11 @@
             </section>
             <section>
                 <h6>{ window.gettext("Upload photos") }</h6>
+                <label>{ window.gettext("Photo 1") }</label>
                 <upload_photo photoId="{photoId1}" photo="{state.photo1}" fkLink="{props.fkLink}" surveyPhoto="{true}"
                     showFeedback="{ props.showFeedback }">
                 </upload_photo>
+                <label>{ window.gettext("Photo 2") }</label>
                 <upload_photo photoId="{photoId2}" photo="{state.photo2}" fkLink="{props.fkLink}" surveyPhoto="{true}"
                     showFeedback="{ props.showFeedback }">
                 </upload_photo>
