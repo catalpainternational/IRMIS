@@ -21,15 +21,33 @@ upload_photo {
         font-size: 14px;
     }
 
-    .edit-caption {
-        border: 1px solid $light-gray;
-        font-size: 14px;
-        max-width: 500px;
-        padding: 7px 15px;
-        margin-top: 5px;
+    .photo-management-area {
+        margin-top: 30px;
+        max-width: 400px;
+
+        & > div {
+            text-align: center;
+            position: relative;
+
+            img {
+                border-radius: 4px;
+                max-width: 100%;
+            }
+
+            button {
+                position: absolute;
+                bottom: 10px;
+                right: 10px;
+            }
+        }
     }
 
-    .photo-management-area {
-        margin-top: 35px;
+    .edit-caption {
+        margin-top: 25px;
+    }
+
+    small.form-text {
+        margin-bottom: 0;
+        margin-top: 5px;
     }
 }

@@ -7,16 +7,18 @@
             <div>{ window.gettext("Accepted file formats: JPEG, GIF, PNG") }</div>
         </div>
     </form>
-    <div if="{state.photo.url && state.photo.url != '' && state.photo.url != state.basePhoto.url}"
-        class="photo-management-area">
-        <img src="{state.photo.url}" style="max-width: 400px;">
+    <div if="{ state.photo.url && state.photo.url != '' && state.photo.url != state.basePhoto.url }" class="photo-management-area">
+        <div>
+            <img src="{ state.photo.url }">
+            <button class="btn btn-sm btn-secondary" onclick="{ deletePhoto }">{ window.gettext("Delete Photo") }</button>
+        </div>
         <input
-            class="{ state.errors.description ? 'danger' : null } { state.photo.description ? 'active' : '' } form-control edit-caption"
-            type="text" maxlength="500" placeholder="Enter a description of the photo"
-            value="{ state.photo.description }" onblur="{updateDescription}">
-        <p class="small">Uploaded by: { state.photo.getAddedBy() } on { state.photo.date_created ||
-            state.photo.dateCreated }</p>
-        <button class="btn btn-sm btn-danger" onclick="{deletePhoto}">Delete Photo</button>
+            class="{ state.errors.description ? 'danger' : null } { !state.photo.description ? 'inactive' : '' } form-control edit-caption"
+            type="text" maxlength="500" placeholder="{ window.gettext('Enter a description of the photo') }"
+            value="{ state.photo.description }" onblur="{ updateDescription }">
+        <small class="form-text text-muted">
+            { window.gettext("Uploaded by") }: { state.photo.getAddedBy() } { window.gettext("on") } { state.photo.date_created || state.photo.dateCreated }
+        </small>
     </div>
 
     <script>
