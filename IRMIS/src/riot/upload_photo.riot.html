@@ -9,7 +9,7 @@
     </form>
     <div if="{ state.photo.url && state.photo.url != '' && state.photo.url != state.basePhoto.url }" class="photo-management-area">
         <div>
-            <img src="{ state.photo.url }">
+            <img class="uploaded-photo" src="{ state.photo.url }">
             <button class="btn btn-sm btn-secondary" onclick="{ deletePhoto }">{ window.gettext("Delete Photo") }</button>
         </div>
         <input

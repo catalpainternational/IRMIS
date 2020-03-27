@@ -1,19 +1,19 @@
 <photos_details_box>
-    <span if="{!state.hidden}">
-        <span if="{state.errors.length}">
+    <template if="{!state.hidden}">
+        <template if="{state.errors.length}">
             <p class="small">{ window.gettext(state.errors[0]) }</p>
-        </span>
-        <span if="{!state.errors.length && !state.currentPhotosData}">
+        </template>
+        <template if="{!state.errors.length && !state.currentPhotosData}">
             <p class="small">{ window.gettext("Loading photos...") }</p>
-        </span>
-        <span if="{!state.errors.length && state.currentPhotosData}" style="text-align: center;">
+        </template>
+        <div if="{!state.errors.length && state.currentPhotosData}" class="text-center">
             <div if="{state.photo1_show}">
-                <img src="{ state.currentPhotosData[0].url }" style="max-width: 500px;">
+                <img class="uploaded-photo" src="{ state.currentPhotosData[0].url }">
                 <p class="small">{ state.currentPhotosData[0].description }</p>
             </div>
             <span if="{ state.currentPhotosData.length>1 }">
                 <div if="{state.photo2_show}">
-                    <img src="{ state.currentPhotosData[1].url }" style="max-width: 500px;">
+                    <img class="uploaded-photo" src="{ state.currentPhotosData[1].url }">
                     <p class="small">{ state.currentPhotosData[1].description }</p>
                 </div>
                 <div class="photos-toggle-btns">
@@ -23,8 +23,8 @@
                         style="margin-right: 10px;" onclick="{showPhoto2}">Photo 2</button>
                 </div>
             </span>
-        </span>
-    </span>
+        </div>
+    </template>
 
     <script>
         export default {
