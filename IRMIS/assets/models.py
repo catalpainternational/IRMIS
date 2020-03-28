@@ -3,15 +3,22 @@ from django.contrib.gis.db import models
 from django.contrib.postgres.indexes import GistIndex
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.postgres.fields import HStoreField, JSONField, DecimalRangeField
+from django.contrib.postgres.indexes import GistIndex
 from django.contrib.postgres.aggregates.general import ArrayAgg
-from django.contrib.postgres.fields import HStoreField, JSONField
 from django.utils.translation import get_language, ugettext, ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
-from django.db.models import Count, Max, OuterRef, Prefetch, Subquery
+from django.db.models import Count, Max, OuterRef, Prefetch, Subquery, F, Value
 from django.db.models.functions import Cast, Substr
+from django.db import connection, OperationalError
+from psycopg2 import sql
 
 import json
+import logging
+
+logger = logging.getLogger(__name__)
+
 import reversion
 
 from protobuf.photo_pb2 import Photos as ProtoPhotos
@@ -1712,3 +1719,481 @@ def timestamp_from_datetime(dt):
     ts = Timestamp()
     ts.FromDatetime(dt)
     return ts
+
+
+def display_user(user):
+    """ returns the full username if populated, or the username, or "" """
+    if not user:
+        return ""
+    user_display = user.get_full_name()
+    return user_display or user.username
+
+
+class NumRange(models.Func):
+    function = "NumRange"
+    default_alias = "chainage_range"
+    output_field = DecimalRangeField()
+
+
+class SKeys(models.Func):
+    function = "SKEYS"
+    default_alias = "key"
+    output_field = models.TextField()
+
+
+class HstoreValue(models.Func):
+    template = "%(expressions)s %(function)s %(key)s"
+    function = "->"
+    default_alias = "value"
+
+
+class AssetSurveyBreakpoint(models.Model):
+    """
+    Break down the "Asset Survey" to individual key/value pairs
+    in order to identify spatial and temporal relationships between
+    surveys on the same road code and parameter
+    """
+
+    survey = models.ForeignKey(
+        "Survey", on_delete=models.CASCADE, null=True, blank=True
+    )
+    key = models.TextField()
+    date_surveyed = models.DateTimeField(_("Date Surveyed"), null=True)
+    value = models.TextField(null=True, blank=True)
+    chainage_range = DecimalRangeField()
+    asset_code = models.TextField()
+
+    class Meta:
+        indexes = [
+            GistIndex(fields=("chainage_range",)),
+            models.Index(fields=("asset_code", "key")),
+        ]
+
+    @classmethod
+    def refresh(cls):
+
+        fields = "survey_id key date_surveyed chainage_range asset_code".split()
+
+        def _survey_breakdown():
+            """
+            Annotate each key and chainage range 
+            for import into AssetSurveyBreakpoint table
+            The field names are consistent for clarity
+            """
+
+            return (
+                Survey.objects.all()
+                .order_by("id")
+                .filter(chainage_start__lte=F("chainage_end"))
+                .filter(asset_code__isnull=False)
+                .annotate(NumRange("chainage_start", "chainage_end"), SKeys("values"))
+                .annotate(survey_id=F("id"))
+            ).values(*fields, "values")
+
+        insert_fields = [sql.Identifier(f) for f in fields]
+        with connection.cursor() as cur:
+
+            cur.execute(
+                sql.SQL("TRUNCATE {};").format(sql.Identifier(cls._meta.db_table))
+            )
+
+            cur.execute(
+                sql.SQL(
+                    """SELECT setval(pg_get_serial_sequence('{}','id'), 
+                coalesce(max("id"), 1), max("id") IS NOT null) FROM {};"""
+                ).format(
+                    sql.Identifier(cls._meta.db_table),
+                    sql.Identifier(cls._meta.db_table),
+                )
+            )
+
+            statement = """insert into {table} ({survey_id}, {key}, {date_surveyed}, {chainage_range}, {asset_code}, {value}) 
+            
+            (SELECT {survey_id}, {key}, {date_surveyed}, {chainage_range}, {asset_code}, {values} -> key FROM ({subquery}) foo)"""
+            parameters = {
+                "table": sql.Identifier(cls._meta.db_table),
+                "values": sql.Identifier("values"),
+                **{k: sql.Identifier(k) for k in fields},
+                "value": sql.Identifier("value"),
+                "subquery": sql.SQL(
+                    cur.mogrify(*(_survey_breakdown().query.sql_with_params())).decode()
+                ),
+            }
+
+            cur.execute(sql.SQL(statement).format(**parameters))
+            cur.execute(
+                sql.SQL(
+                    """
+                INSERT INTO {table} ({survey_id}, {key}, {date_surveyed}, {chainage_range}, {asset_code})
+
+                SELECT DISTINCT ON (asset_code, key) 
+                    null AS {survey_id},
+                    {key},
+                    null AS {date_surveyed},
+                    numrange(
+                        min(lower({chainage_range})) OVER (PARTITION BY {asset_code}, {key}),
+                        max(upper({chainage_range})) OVER (PARTITION BY {asset_code}, {key})
+                    ) AS {chainage_range},
+                    {asset_code}
+                    FROM {table}"""
+                ).format(**parameters)
+            )
+
+
+class BreakpointRelationships(models.Model):
+    """
+    Meta data on how two surveys relate spatially / temporally
+    """
+
+    class Meta:
+        indexes = [
+            GistIndex(fields=("survey_first_range",)),
+            GistIndex(fields=("survey_second_range",)),
+            models.Index(fields=("asset_code", "key")),
+        ]
+
+    asset_code = models.TextField()
+    key = models.TextField()
+
+    survey_first = models.ForeignKey(
+        "Survey", on_delete=models.CASCADE, null=True, blank=True, related_name="+"
+    )
+
+    survey_second = models.ForeignKey(
+        "Survey", on_delete=models.CASCADE, null=True, blank=True, related_name="+"
+    )
+
+    survey_first_range = DecimalRangeField()
+    survey_second_range = DecimalRangeField()
+
+    survey_first_date = models.DateTimeField(_("Date of first Survey"), null=True)
+    survey_second_date = models.DateTimeField(_("Date of second Survey"), null=True)
+
+    survey_first_value = models.TextField(null=True, blank=True)
+    survey_second_value = models.TextField(null=True, blank=True)
+
+    newer = models.BooleanField()
+    is_adjacent = models.BooleanField()
+    extends_right = models.BooleanField()
+    extends_left = models.BooleanField()
+    is_contained_by = models.BooleanField()
+    contains = models.BooleanField()
+    range_intersection = DecimalRangeField()
+    strictly_left = models.BooleanField()
+
+    @classmethod
+    def refresh(cls):
+        """
+        Holds a lot of duplicate info but we need every millisecond, it's a
+        big ask for a small database
+        """
+        with connection.cursor() as cur:
+            cur.execute(
+                # print(
+                sql.SQL(
+                    """
+                INSERT INTO {relations}(
+                    
+                    asset_code,
+                    key,
+
+                    survey_first_id,
+                    survey_second_id,
+                    survey_first_range,
+                    survey_second_range,
+                    survey_first_date,
+                    survey_second_date,
+                    survey_first_value,
+                    survey_second_value,
+
+                    newer,
+                    is_adjacent,
+                    extends_right,
+                    extends_left,
+                    is_contained_by,
+                    contains,
+                    range_intersection ,
+                    strictly_left
+
+                )
+                SELECT
+
+                    bp_1.asset_code,
+                    bp_1.key,
+
+                    bp_1.survey_id survey_first_id, 
+                    bp_2.survey_id survey_second_id,
+
+                    bp_1.chainage_range survey_first_range,
+                    bp_2.chainage_range survey_second_range,
+                
+                    bp_1.date_surveyed survey_first_date,
+                    bp_2.date_surveyed survey_second_date,
+                    
+                    bp_1.value AS survey_first_value,
+                    bp_2.value AS survey_second_value,
+
+                    CASE 
+                        WHEN bp_2.date_surveyed IS NULL THEN FALSE
+                        WHEN bp_1.date_surveyed IS NULL THEN TRUE
+                    ELSE 
+                        bp_2.date_surveyed > bp_1.date_surveyed END 
+                    AS newer,
+
+                    bp_2.chainage_range -|- bp_1.chainage_range as is_adjacent,
+                    not(bp_2.chainage_range &< bp_1.chainage_range) as extends_right,
+                    not(bp_2.chainage_range &> bp_1.chainage_range) as extends_left,
+                    bp_2.chainage_range @> bp_1.chainage_range as is_contained_by,
+                    bp_2.chainage_range <@ bp_1.chainage_range as contains,
+                    bp_2.chainage_range * bp_1.chainage_range as range_intersection,
+                    bp_1.chainage_range << bp_2.chainage_range AS strictly_left
+
+                    FROM {breakpoints} bp_1 INNER JOIN {breakpoints} bp_2
+
+                    ON (bp_1.id != bp_2.id 
+                        OR ((bp_2.id IS NULL OR bp_1.id IS NULL) AND NOT (bp_2.id IS NULL AND bp_1.id IS NULL))
+                    )
+
+                    AND bp_1.asset_code = bp_2.asset_code
+
+                    AND
+                        bp_1.key = bp_2.key
+                        AND (bp_1.chainage_range && bp_2.chainage_range -- Overlap 
+                        OR (
+                            bp_1.chainage_range -|- bp_2.chainage_range  -- Next to each other
+                            AND NOT (bp_2.chainage_range &< bp_1.chainage_range)) -- And the first survey has the smallest chainage range
+                            )
+                ;
+
+
+                """
+                ).format(
+                    **{
+                        "relations": sql.Identifier(cls._meta.db_table),
+                        "breakpoints": sql.Identifier(
+                            AssetSurveyBreakpoint._meta.db_table
+                        ),
+                    }
+                )
+            )
+
+    @classmethod
+    def survey_report(
+        cls, asset_code: str, key: str, group_results: bool = True, prepare=True
+    ):
+        """
+        Fetch the surveys and the effective chainage (ie where it's the most
+        up to date value) along the length of a single road code
+        """
+
+        # Start by indicating to postgres that we'er using a recursive query
+
+        preamble = """WITH recursive cte AS ("""
+
+        # The initial query gives us the starting point for the desired parameter
+        # and asset code combinations
+        # Note that this can be extended to include an array of asset_codes and
+        # an array of parameters quite easily
+        # The ORDER is very important
+
+        initial_q = """
+            SELECT * FROM ( 
+                SELECT DISTINCT ON (key, asset_code) 
+                *, 1 AS lvl, CASE
+                WHEN newer THEN lower(survey_second_range)
+                ELSE upper(survey_first_range) 
+                END AS running_chainage FROM {table}
+
+                    WHERE key = {key}
+                    AND asset_code = {asset_code}
+                ORDER BY
+                    key, asset_code,
+                    lower(survey_first_range),
+                    survey_first_date DESC NULLS LAST,
+                    survey_second_date DESC NULLS LAST,
+                    lower(survey_second_range)
+            ) AS start_rows
+                """
+
+        # After the initial query, look for the  next matching one in the sequence
+        recursion_query = """
+            SELECT * FROM (
+            SELECT DISTINCT ON (br.key, br.asset_code)
+                br.*, 
+                cte.lvl + 1 AS lvl,
+                GREATEST(
+                    cte.running_chainage,
+                    CASE
+                        WHEN br.newer AND br.extends_left AND NOT br.extends_right THEN lower(br.survey_first_range)
+                        WHEN br.newer THEN lower(br.survey_second_range)
+                        -- Avoid skipping to the end especially for roughness surveys
+                        WHEN br.survey_first_id IS NULL THEN lower(br.survey_second_range) 
+                        ELSE upper(br.survey_first_range)
+                    END
+                )AS running_chainage
+                
+                FROM cte, {table} br
+                
+            WHERE
+
+                -- Additional "where" clauses here should match the
+                -- "where" clause of the original query
+                br.key = {key}
+                AND br.asset_code = {asset_code}
+
+                AND (
+                    (cte.survey_second_id = br.survey_first_id)
+                    OR 
+                    (cte.survey_second_id IS NULL AND br.survey_first_id IS NULL)
+                )
+                AND cte.key = br.key
+
+            -- Conditions on which we want to consider the "next" join
+            -- when the "next" is a greater chainage
+
+            -- Always keep moving forwards, don't go "backwards"
+
+            AND upper(br.survey_second_range) > cte.running_chainage
+            --AND lower(br.survey_second_range) <= cte.running_chainage
+                
+            -- Don't include older, overlapping, surveys
+            -- which end within the current suryey
+            AND (br.survey_second_date > br.survey_first_date 
+                OR upper(br.survey_second_range) > upper(br.survey_first_range)
+                OR br.survey_first_date IS NULL
+            ) --OR br.survey_second_date IS NULL
+                
+            ORDER BY br.key, br.asset_code,
+                -- Prefer a "forwards" rather than a "backwards"
+                br.survey_second_date DESC NULLS LAST,
+                br.survey_second_id DESC NULLS LAST,
+                -- If there are multiple NULL DATE options choose the closest one
+                upper(br.survey_second_range)
+            ) mynext
+            """
+
+        postamble = """
+            ) SELECT 
+
+                asset_code, 
+                key,
+                survey_first_value,
+                lvl, 
+                survey_first_id,
+                LAG(running_chainage) OVER (PARTITION BY asset_code, key ORDER BY lvl) start_chainage, 
+                running_chainage, key
+                FROM cte ORDER BY asset_code, key, lvl, running_chainage
+            """
+
+        postamble = """) SELECT asset_code, 
+                key,
+                survey_first_value,
+                lvl, 
+                survey_first_id,
+                LAG(running_chainage) OVER (PARTITION BY asset_code, key ORDER BY lvl) start_chainage,
+
+                CASE 
+                    WHEN
+                        LAG(asset_code) OVER (PARTITION BY asset_code, key ORDER BY lvl) != asset_code IS NULL 
+                    THEN TRUE
+                    ELSE
+                        COALESCE(LAG(survey_first_value) OVER (PARTITION BY asset_code, key ORDER BY lvl), '') != COALESCE(survey_first_value, '')
+                            OR
+                        LAG(asset_code) OVER (PARTITION BY asset_code, key ORDER BY lvl) != asset_code 
+                            OR
+                        LAG(key) OVER (PARTITION BY asset_code, key ORDER BY lvl) != key
+                END 
+                    AS some_changes,
+                
+                running_chainage
+                FROM cte ORDER BY asset_code, key, lvl, running_chainage
+            """
+
+        parameters = dict(
+            table=sql.Identifier(cls._meta.db_table),
+            key=sql.Placeholder("key"),
+            asset_code=sql.Placeholder("asset_code"),
+        )
+
+        if prepare:
+            parameters.update(dict(asset_code=sql.SQL("$1"), key=sql.SQL("$2"),))
+
+        query = (
+            sql.SQL(preamble)
+            + sql.SQL(initial_q).format(**parameters)
+            + sql.SQL("""UNION ALL""")
+            + sql.SQL(recursion_query).format(**parameters)
+            + sql.SQL(postamble)
+        )
+
+        if group_results:
+            # This additional "group" wrapper
+            # consolidates rows where the value does not change between rows
+
+            grouped_preamble = "WITH {grouped_preamble} AS ("
+            group_result = """), {grouped_postamble} AS (
+                    SELECT survey_first_id,
+                    lvl,
+                    survey_first_value, 
+                    some_changes,
+                    COUNT (CASE WHEN some_changes THEN 1 ELSE NULL END) OVER (PARTITION BY asset_code, key ORDER BY lvl) AS grp,
+                    start_chainage, 
+                    running_chainage FROM {grouped_preamble}
+                ) SELECT
+                    grp,
+                    MIN(survey_first_value),
+                    MAX(survey_first_value),
+                    MIN(start_chainage),
+                    MAX(running_chainage)
+                FROM {grouped_postamble}
+                    GROUP BY grp 
+                    ORDER BY 1
+                    """
+
+            parameters.update(
+                dict(
+                    grouped_preamble=sql.Identifier("grouped_preamble"),
+                    grouped_postamble=sql.Identifier("grouped_postamble"),
+                )
+            )
+            query = (
+                sql.SQL(grouped_preamble).format(**parameters)
+                + query
+                + sql.SQL(group_result).format(**parameters)
+            )
+
+        if prepare:
+            prepared_survey_name = "survey_report{}".format(
+                "_grp" if group_results else "", ""
+            )
+            query = (
+                sql.SQL(
+                    f"PREPARE {prepared_survey_name}(text, text) AS SELECT * FROM ("
+                )
+                + query
+                + sql.SQL(") AS foo")
+            )
+
+        query_vars = dict(key=key, asset_code=asset_code)
+
+        with connection.cursor() as cur:
+
+            if prepare:
+                try:
+                    cur.execute(
+                        f"""EXECUTE {prepared_survey_name}(%s, %s);""",
+                        [asset_code, key],
+                    )
+                except OperationalError as e:
+                    if (
+                        e.args[0]
+                        == f'prepared statement "{prepared_survey_name}" does not exist\n'
+                    ):
+                        cur.execute(query, query_vars)
+                        cur.execute(
+                            f"""EXECUTE {prepared_survey_name}(%s, %s);""",
+                            [asset_code, key],
+                        )
+            else:
+                cur.execute(query, query_vars)
+            return cur.fetchall()
