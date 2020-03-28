@@ -33,6 +33,7 @@ from .views import (
     ExcelDataSource,
     ExcelDataSourceIqy,
     SurveyExcelDataSource,
+    BreakpointRelationshipsReport,
 )
 
 # Wire up our API using automatic URL routing.
@@ -125,5 +126,10 @@ urlpatterns = [
         "remote/survey.html",
         SurveyExcelDataSource.as_view(),
         name="surveyexceldatasource",
+    ),
+    path(
+        "remote/testing_endpoint.html",
+        BreakpointRelationshipsReport.as_view(),
+        name="BreakpointRelationshipsReport",
     ),
 ]

@@ -73,6 +73,7 @@ from .models import (
     SurfaceType,
     Survey,
     TechnicalClass,
+    BreakpointRelationships,
 )
 from .serializers import RoadSerializer, RoadMetaOnlySerializer, RoadToWGSSerializer
 
@@ -1766,4 +1767,31 @@ class SurveyExcelDataSource(TemplateView):
             objects = namedtuplefetchall(c)
         context = super().get_context_data(*args, **kwargs)
         context["objects"] = objects
+        return context
+
+
+class BreakpointRelationshipsReport(TemplateView):
+    """
+    Returns the "raw" content of the BreakpointRelationships.survey_report function
+    """
+
+    template_name = "assets/named_tuple_table.html"
+
+    def get_context_data(self, *args, **kwargs):
+        asset_code = self.request.GET.get("asset_code") or "A01"
+        attribute = self.request.GET.get("val") or "roughness"
+        group_results = "groupresults" in self.request.GET
+
+        query, columnnames = BreakpointRelationships.survey_report(
+            asset_code=asset_code,
+            key=attribute,
+            group_results=group_results,
+            prepare=False,
+        )
+
+        nt_result = namedtuple("Result", columnnames)
+
+        context = super().get_context_data(*args, **kwargs)
+        context["objects"] = [nt_result(*row) for row in query]
+        context["fields"] = nt_result._fields
         return context

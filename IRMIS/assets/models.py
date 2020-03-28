@@ -2141,10 +2141,9 @@ class BreakpointRelationships(models.Model):
                     running_chainage FROM {grouped_preamble}
                 ) SELECT
                     grp,
-                    MIN(survey_first_value),
-                    MAX(survey_first_value),
-                    MIN(start_chainage),
-                    MAX(running_chainage)
+                    MIN(survey_first_value) AS value,
+                    MIN(start_chainage) AS start,
+                    MAX(running_chainage) AS end
                 FROM {grouped_postamble}
                     GROUP BY grp 
                     ORDER BY 1
@@ -2196,4 +2195,5 @@ class BreakpointRelationships(models.Model):
                         )
             else:
                 cur.execute(query, query_vars)
-            return cur.fetchall()
+
+            return cur.fetchall(), [column.name for column in cur.description]
