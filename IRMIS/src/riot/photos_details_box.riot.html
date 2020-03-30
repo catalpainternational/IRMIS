@@ -1,10 +1,10 @@
 <photos_details_box>
+    <template if="{ !state.errors.length && !state.currentPhotosData }">
+        <p class="small">{ window.gettext("Loading photos...") }</p>
+    </template>
     <template if="{ !state.hidden }">
         <template if="{ state.errors.length }">
             <p class="small">{ window.gettext(state.errors[0]) }</p>
-        </template>
-        <template if="{ !state.errors.length && !state.currentPhotosData }">
-            <p class="small">{ window.gettext("Loading photos...") }</p>
         </template>
         <div if="{ !state.errors.length && state.currentPhotosData }" class="text-center">
             <div if="{ state.photo1_show }">
@@ -38,13 +38,16 @@
             },
             onMounted(props, state) {
                 this.photosModalListener = (data) => {
-                    if (data.detail.currentPhotosData != []) {
+                    if (data.detail.currentPhotosData == undefined) {
+                        this.state.hidden = true;
+                    }
+                    else if (data.detail.currentPhotosData != []) {
                         this.state.currentPhotosData = data.detail.currentPhotosData;
-                        this.state.errors = [];
+                        this.state.hidden = false;
                     } else {
                         this.state.errors = ["No inventory photos to show"];
+                        this.state.hidden = false;
                     }
-                    this.state.hidden = false;
                     this.update();
                 };
                 document.addEventListener("photos-details-modal.updateModalData", this.photosModalListener);
