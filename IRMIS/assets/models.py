@@ -13,6 +13,7 @@ from django.db.models import Count, Max, OuterRef, Prefetch, Subquery, F, Value
 from django.db.models.functions import Cast, Substr
 from django.db import connection, OperationalError
 from psycopg2 import sql
+from typing import Iterable, Union
 
 import json
 import logging
@@ -1979,8 +1980,19 @@ class BreakpointRelationships(models.Model):
 
     @classmethod
     def survey_report(
-        cls, asset_code: str, key: str, group_results: bool = True, prepare=True
+        cls,
+        asset_code: Union[str, Iterable[str]],
+        key: Union[str, Iterable[str]],
+        group_results: bool = True,
+        prepare=True,
     ):
+
+        arrays = []
+        if not isinstance(asset_code, str):
+            arrays.append("asset_code")
+        if not isinstance(key, str):
+            arrays.append("key")
+
         """
         Fetch the surveys and the effective chainage (ie where it's the most
         up to date value) along the length of a single road code
@@ -1996,16 +2008,47 @@ class BreakpointRelationships(models.Model):
         # an array of parameters quite easily
         # The ORDER is very important
 
-        initial_q = """
+        # Common "conditions" shared between the initial CTE and the recursive part
+        # (when table_alias = 'br')
+        # This is not strictly necessary for the recursive part but provides a ~50% speedup
+        # by providing a simple initial filter for rows
+
+        # In future, we'll be able to add additional parameters here
+
+        def conditional_clause(table="{table}"):
+            """
+            By using the same clause we filter on the initial query and also
+            "pre-filter" the breakpoints table. It's not *always* required
+            for the UNION ALL bit but is "nice to have" as it can provide
+            a simple filter which is faster than comparing to the CTE query
+
+            Note that we might want to override this to include
+            date ranges, or any other parameter on the "breakpoints" table
+            """
+            clause = (
+                "{table}.key = ANY({{key}})"
+                if "key" in arrays
+                else "{table}.key = {{key}}"
+            )
+            clause += " AND "
+            clause += (
+                "{table}.asset_code = ANY({{asset_code}})"
+                if "asset_code" in arrays
+                else "{table}.asset_code = {{asset_code}}"
+            )
+            return clause.format(table=table)
+
+        initial_q = (
+            """
             SELECT * FROM ( 
                 SELECT DISTINCT ON (key, asset_code) 
                 *, 1 AS lvl, CASE
                 WHEN newer THEN lower(survey_second_range)
                 ELSE upper(survey_first_range) 
                 END AS running_chainage FROM {table}
-
-                    WHERE key = {key}
-                    AND asset_code = {asset_code}
+            WHERE """
+            + conditional_clause()
+            + """
                 ORDER BY
                     key, asset_code,
                     lower(survey_first_range),
@@ -2014,63 +2057,66 @@ class BreakpointRelationships(models.Model):
                     lower(survey_second_range)
             ) AS start_rows
                 """
+        )
 
         # After the initial query, look for the  next matching one in the sequence
-        recursion_query = """
+        recursion_query = (
+            """
             SELECT * FROM (
-            SELECT DISTINCT ON (br.key, br.asset_code)
-                br.*, 
+            SELECT DISTINCT ON ({table}.key, {table}.asset_code)
+                {table}.*, 
                 cte.lvl + 1 AS lvl,
                 GREATEST(
                     cte.running_chainage,
                     CASE
-                        WHEN br.newer AND br.extends_left AND NOT br.extends_right THEN lower(br.survey_first_range)
-                        WHEN br.newer THEN lower(br.survey_second_range)
+                        WHEN {table}.newer AND {table}.extends_left AND NOT {table}.extends_right THEN lower({table}.survey_first_range)
+                        WHEN {table}.newer THEN lower({table}.survey_second_range)
                         -- Avoid skipping to the end especially for roughness surveys
-                        WHEN br.survey_first_id IS NULL THEN lower(br.survey_second_range) 
-                        ELSE upper(br.survey_first_range)
+                        WHEN {table}.survey_first_id IS NULL THEN lower({table}.survey_second_range) 
+                        ELSE upper({table}.survey_first_range)
                     END
                 )AS running_chainage
                 
-                FROM cte, {table} br
+                FROM cte, {table}
                 
             WHERE
-
                 -- Additional "where" clauses here should match the
                 -- "where" clause of the original query
-                br.key = {key}
-                AND br.asset_code = {asset_code}
+                """
+            + conditional_clause()
+            + """
 
                 AND (
-                    (cte.survey_second_id = br.survey_first_id)
+                    (cte.survey_second_id = {table}.survey_first_id)
                     OR 
-                    (cte.survey_second_id IS NULL AND br.survey_first_id IS NULL)
+                    (cte.survey_second_id IS NULL AND {table}.survey_first_id IS NULL)
                 )
-                AND cte.key = br.key
+                AND cte.key = {table}.key
 
             -- Conditions on which we want to consider the "next" join
             -- when the "next" is a greater chainage
 
             -- Always keep moving forwards, don't go "backwards"
 
-            AND upper(br.survey_second_range) > cte.running_chainage
-            --AND lower(br.survey_second_range) <= cte.running_chainage
+            AND upper({table}.survey_second_range) > cte.running_chainage
+            --AND lower({table}.survey_second_range) <= cte.running_chainage
                 
             -- Don't include older, overlapping, surveys
             -- which end within the current suryey
-            AND (br.survey_second_date > br.survey_first_date 
-                OR upper(br.survey_second_range) > upper(br.survey_first_range)
-                OR br.survey_first_date IS NULL
-            ) --OR br.survey_second_date IS NULL
+            AND ({table}.survey_second_date > {table}.survey_first_date 
+                OR upper({table}.survey_second_range) > upper({table}.survey_first_range)
+                OR {table}.survey_first_date IS NULL
+            )
                 
-            ORDER BY br.key, br.asset_code,
+            ORDER BY {table}.key, {table}.asset_code,
                 -- Prefer a "forwards" rather than a "backwards"
-                br.survey_second_date DESC NULLS LAST,
-                br.survey_second_id DESC NULLS LAST,
+                {table}.survey_second_date DESC NULLS LAST,
+                {table}.survey_second_id DESC NULLS LAST,
                 -- If there are multiple NULL DATE options choose the closest one
-                upper(br.survey_second_range)
+                upper({table}.survey_second_range)
             ) mynext
             """
+        )
 
         postamble = """
             ) SELECT 
@@ -2133,6 +2179,8 @@ class BreakpointRelationships(models.Model):
             grouped_preamble = "WITH {grouped_preamble} AS ("
             group_result = """), {grouped_postamble} AS (
                     SELECT survey_first_id,
+                    asset_code,
+                    key,
                     lvl,
                     survey_first_value, 
                     some_changes,
@@ -2141,12 +2189,14 @@ class BreakpointRelationships(models.Model):
                     running_chainage FROM {grouped_preamble}
                 ) SELECT
                     grp,
+                    MIN(asset_code) AS asset_code,
+                    MIN(key) AS key,
                     MIN(survey_first_value) AS value,
                     MIN(start_chainage) AS start,
                     MAX(running_chainage) AS end
                 FROM {grouped_postamble}
-                    GROUP BY grp 
-                    ORDER BY 1
+                    GROUP BY asset_code, key, grp 
+                    ORDER BY asset_code, key, grp
                     """
 
             parameters.update(
@@ -2162,12 +2212,22 @@ class BreakpointRelationships(models.Model):
             )
 
         if prepare:
-            prepared_survey_name = "survey_report{}".format(
-                "_grp" if group_results else "", ""
+            # This ought to be a distinct name for whichever SQL gets generated.
+            # The SQL might change if for instance it's grouped; or on whether
+            # parameters or parameter types are included
+            prepared_survey_name = "survey_report{}{}_code{}_param".format(
+                "_grp" if group_results else "",
+                "",
+                "_array" if "asset_code" in arrays else "_single",
+                "_array" if "key" in arrays else "_single",
             )
+
+            code_type = "" if "asset_code" in arrays else "[]"
+            key_type = "" if "key" in arrays else "[]"
+
             query = (
                 sql.SQL(
-                    f"PREPARE {prepared_survey_name}(text, text) AS SELECT * FROM ("
+                    f"PREPARE {prepared_survey_name}(text{code_type}, text{key_type}) AS SELECT * FROM ("
                 )
                 + query
                 + sql.SQL(") AS foo")

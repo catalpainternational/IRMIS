@@ -1778,15 +1778,25 @@ class BreakpointRelationshipsReport(TemplateView):
     template_name = "assets/named_tuple_table.html"
 
     def get_context_data(self, *args, **kwargs):
-        asset_code = self.request.GET.get("asset_code") or "A01"
-        attribute = self.request.GET.get("val") or "roughness"
+
+        if "asset_code" in self.request.GET:
+            asset_code = self.request.GET.get("asset_code")
+        elif "asset_code[]" in self.request.GET:
+            asset_code = self.request.GET.get("asset_code[]").split(",")
+        else:
+            raise AssertionError("Required: asset_code or asset_code[]")
+
+        if "key" in self.request.GET:
+            key = self.request.GET.get("key")
+        elif "key[]" in self.request.GET:
+            key = self.request.GET.get("key[]").split(",")
+        else:
+            raise AssertionError("Required: key or key[]")
+
         group_results = "groupresults" in self.request.GET
 
         query, columnnames = BreakpointRelationships.survey_report(
-            asset_code=asset_code,
-            key=attribute,
-            group_results=group_results,
-            prepare=False,
+            asset_code=asset_code, key=key, group_results=group_results, prepare=False,
         )
 
         nt_result = namedtuple("Result", columnnames)
