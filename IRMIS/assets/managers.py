@@ -240,7 +240,7 @@ def update_roughness_chainage_values():
     UPDATE assets_survey SET chainage_start =
         assets_survey.chainage_start - ((assets_survey.chainage_start - inner_q.chainage_end) /2)
         FROM assets_survey inner_q
-        WHERE (inner_q."values" -> 'csv_data_source_id')::integer = (assets_survey."values" ->'csv_data_source_id')::integer 
+        WHERE (inner_q."values" -> 'csv_data_source_id')::integer = (assets_survey."values" ->'csv_data_source_id')::integer
         AND  (inner_q."values" -> 'csv_data_row_index')::integer = (assets_survey."values" ->'csv_data_row_index')::integer - (1 * (assets_survey."values" ->'csv_data_invert')::integer)
         AND inner_q."values" ?& ARRAY['csv_data_source_id', 'csv_data_row_index', 'source_roughness']
         AND assets_survey."values" ?& ARRAY['csv_data_source_id', 'csv_data_row_index', 'source_roughness']
@@ -250,7 +250,7 @@ def update_roughness_chainage_values():
     UPDATE assets_survey SET chainage_end =
         inner_q.chainage_start
         FROM assets_survey inner_q
-        WHERE (inner_q."values" -> 'csv_data_source_id')::integer = (assets_survey."values" ->'csv_data_source_id')::integer 
+        WHERE (inner_q."values" -> 'csv_data_source_id')::integer = (assets_survey."values" ->'csv_data_source_id')::integer
         AND   (inner_q."values" -> 'csv_data_row_index')::integer = (assets_survey."values" ->'csv_data_row_index')::integer + (1 * (assets_survey."values" ->'csv_data_invert')::integer)
         AND inner_q."chainage_end" != assets_survey.chainage_start
         AND inner_q."values" ?& ARRAY['csv_data_source_id', 'csv_data_row_index', 'source_roughness']
@@ -357,6 +357,7 @@ class RoughnessManager(models.Manager):
                     },
                     road_id=from_row.road_id,
                     user=user,
+                    source="programmatic",
                 )
                 for from_row in objects
             ],

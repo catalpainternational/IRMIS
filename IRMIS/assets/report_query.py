@@ -1,5 +1,7 @@
 import json
 
+from numbers import Number
+
 from django.db import connection
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotFound
 
@@ -31,7 +33,7 @@ class ReportQuery:
                 #   i.e. they refer to the road associated with the Bridge or Culvert
                 # * material_id and structure_type_id have different meanings for bridge and culvert
                 # * asset_code (relative to a road) may not be set properly and requires special handling
-                "SELECT asset_type_prefix, asset_id, asset_code, asset_name,\n"
+                "SELECT asset_type, asset_id, asset_code, asset_name,\n"
                 " asset_condition, asset_class,\n"
                 " geom_chainage, municipality,\n"
                 " geojson_file,\n"
@@ -39,7 +41,7 @@ class ReportQuery:
                 " surface_type,\n"
                 " road_id, road_code\n"
                 "FROM (\n"
-                "SELECT DISTINCT 'ROAD-' AS asset_type_prefix, r.id AS asset_id,\n"
+                "SELECT DISTINCT 'ROAD' AS asset_type, r.id AS asset_id,\n"
                 " CASE\n"
                 " WHEN s.asset_code IS NOT NULL THEN s.asset_code\n"
                 " WHEN s.asset_code IS NULL AND s.road_code IS NOT NULL THEN s.road_code\n"
@@ -54,9 +56,9 @@ class ReportQuery:
                 " r.surface_type_id AS surface_type,\n"
                 " NULL::INTEGER AS road_id, NULL AS road_code\n"
                 " FROM assets_survey s, assets_road r\n"
-                " WHERE s.asset_id = CONCAT('ROAD-', r.id::text)\n"
+                " WHERE s.asset_id = CONCAT('ROAD', '-', r.id::text)\n"
                 "UNION\n"
-                "SELECT DISTINCT bc.asset_type_prefix, bc.asset_id,\n"
+                "SELECT DISTINCT bc.asset_type, bc.asset_id,\n"
                 " bc.asset_code, bc.asset_name,\n"
                 " bc.asset_condition, bc.asset_class,\n"
                 " bc.geom_chainage, bc.municipality,\n"
@@ -72,7 +74,7 @@ class ReportQuery:
                 "  ELSE bc.road_code\n"
                 " END AS road_code\n"
                 " FROM assets_survey s, (\n"
-                "  SELECT 'BRDG-' AS asset_type_prefix, id AS asset_id,\n"
+                "  SELECT 'BRDG' AS asset_type, id AS asset_id,\n"
                 "  structure_code AS asset_code, structure_name AS asset_name,\n"
                 "  NULL AS asset_condition, asset_class,\n"
                 "  chainage AS geom_chainage, administrative_area AS municipality,\n"
@@ -86,7 +88,7 @@ class ReportQuery:
                 "  road_id, road_code\n"
                 "  FROM assets_bridge\n"
                 "  UNION\n"
-                "  SELECT 'CULV-' AS asset_type_prefix, id AS asset_id,\n"
+                "  SELECT 'CULV' AS asset_type, id AS asset_id,\n"
                 "  structure_code AS asset_code, structure_name AS asset_name,\n"
                 "  NULL AS asset_condition, asset_class,\n"
                 "  chainage AS geom_chainage, administrative_area AS municipality,\n"
@@ -128,12 +130,27 @@ class ReportQuery:
                 " ) jp\n"
                 " GROUP BY jp.object_id"
             ),
+            # This is a template for "suc"
             # Surveys which match the given values and assets
+            # Chainages for Roads are manipulated if start and end chainage values are supplied
+            # Chainages for structure surveys are manipulated to make the rest of the query still work
             "su": (
-                "SELECT s.id, atc.asset_type_prefix, atc.asset_id, atc.asset_code,\n"
+                "SELECT s.id, atc.asset_type, atc.asset_id, atc.asset_code,\n"
                 " s.date_created, s.date_updated, s.date_surveyed,\n"
-                " s.chainage_start, s.chainage_end, p.photos,\n"
-                " atc.geom_chainage, atc.road_id, atc.road_code,\n"
+                " p.photos,\n"
+                " CASE\n"
+                " WHEN atc.asset_type = 'ROAD' THEN s.chainage_start\n"
+                " ELSE 0\n"
+                " END AS chainage_start,\n"
+                " CASE\n"
+                " WHEN atc.asset_type = 'ROAD' THEN s.chainage_end\n"
+                " ELSE 1\n"
+                " END AS chainage_end,\n"
+                " CASE\n"
+                " WHEN atc.asset_type = 'ROAD' THEN atc.geom_chainage\n"
+                " ELSE 1\n"
+                " END AS geom_chainage,\n"
+                " atc.road_id, atc.road_code,\n"
                 " CASE\n"
                 "  WHEN s.user_id IS NULL THEN TRIM(FROM s.source)\n"
                 "  WHEN TRIM(FROM u.username) != '' THEN u.username\n"
@@ -142,48 +159,50 @@ class ReportQuery:
                 " s.user_id, vtc.attr,\n"
                 " s.values - (SELECT ARRAY(SELECT attr FROM values_to_exclude)) AS values\n"
                 " FROM assets_survey s\n"
-                " JOIN assets_to_chart atc ON s.asset_id = CONCAT(atc.asset_type_prefix, atc.asset_id::text)\n"
+                " JOIN assets_to_chart atc ON s.asset_id = CONCAT(atc.asset_type, '-', atc.asset_id::text)\n"
                 " JOIN values_to_chart vtc ON s.values ? vtc.attr\n"
                 " LEFT OUTER JOIN usernames u ON s.user_id = u.user_id\n"
                 " LEFT OUTER JOIN surveyphotos p ON s.id = p.object_id\n"
-                " WHERE s.chainage_start != s.chainage_end\n"
+                " WHERE (atc.asset_type = 'ROAD' AND s.chainage_start != s.chainage_end)\n"
+                " OR (atc.asset_type <> 'ROAD')\n"
             ),
-            # Where these roads have a survey start or end point
+            # Where the roads have a survey start or end point
             "breakpoints": (
                 "SELECT DISTINCT * FROM (\n"
-                "  SELECT id AS survey_id, attr, asset_type_prefix, asset_id, asset_code, chainage_start c\n"
-                "  FROM su\n"
+                "  SELECT id AS survey_id, attr, asset_type, asset_id, asset_code, chainage_start c\n"
+                "  FROM suc\n"
                 " UNION\n"
-                "  SELECT id AS survey_id, attr, asset_type_prefix, asset_id, asset_code, chainage_end c\n"
-                "  FROM su\n"
+                "  SELECT id AS survey_id, attr, asset_type, asset_id, asset_code, chainage_end c\n"
+                "  FROM suc\n"
                 " ) xxxx\n"
             ),
             # merge and rank breakpoints (by date)
             "merge_breakpoints": (
-                "SELECT bp.survey_id, bp.attr AS break_attr, bp.c, su.*,\n"
-                " bp.c = su.chainage_end AS isend,\n"
+                "SELECT bp.survey_id, bp.attr AS break_attr, bp.c, suc.*,\n"
+                " bp.c = suc.chainage_end AS isend,\n"
                 " RANK() OVER (\n"
-                "  PARTITION BY bp.asset_type_prefix, bp.asset_id, bp.asset_code, bp.c, bp.attr\n"
+                "  PARTITION BY bp.asset_type, bp.asset_id, bp.asset_code, bp.c, bp.attr\n"
                 "  ORDER BY\n"
                 "  CASE\n"
-                "   WHEN bp.c = su.chainage_end THEN 1\n"
+                "   WHEN bp.c = suc.chainage_end THEN 1\n"
                 "   ELSE 0\n"
                 "  END,\n"
                 "  date_surveyed DESC NULLS LAST\n"
                 " )\n"
-                " FROM breakpoints bp, su\n"
-                " WHERE bp.asset_type_prefix = su.asset_type_prefix\n"
-                " AND bp.asset_id = su.asset_id\n"
-                " AND bp.attr = su.attr\n"
-                " AND bp.c >= su.chainage_start\n"
-                " AND bp.c <= su.chainage_end\n"
-                " AND su.chainage_start != su.chainage_end\n"
+                " FROM breakpoints bp, suc\n"
+                " WHERE bp.asset_type = suc.asset_type\n"
+                " AND bp.asset_id = suc.asset_id\n"
+                " AND bp.attr = suc.attr\n"
+                " AND bp.c >= suc.chainage_start\n"
+                " AND bp.c <= suc.chainage_end\n"
+                " AND ((suc.asset_type = 'ROAD' AND suc.chainage_start != suc.chainage_end)\n"
+                " OR (suc.asset_type <> 'ROAD'))\n"
             ),
             # If the survey is actually the end value we NULLify the value
             # rather than using the attribute, we use this in final_results below
             # also road_id and road_code will only have values if the result relates to a Bridge or a Culvert
             "results": (
-                "SELECT survey_id, rank, asset_type_prefix, asset_id, asset_code, c, break_attr, geom_chainage,\n"
+                "SELECT survey_id, rank, asset_type, asset_id, asset_code, c, break_attr, geom_chainage,\n"
                 " CASE\n"
                 "  WHEN NOT isend THEN values -> break_attr\n"
                 "  ELSE NULL\n"
@@ -194,14 +213,14 @@ class ReportQuery:
                 " road_id, road_code\n"
                 " FROM merge_breakpoints\n"
                 " WHERE rank = 1\n"
-                " ORDER BY asset_type_prefix, asset_id, asset_code, c\n"
+                " ORDER BY asset_type, asset_id, asset_code, c\n"
             ),
             # Filters out situations where the value does not actually change between surveys
             "with_unchanged": (
                 "SELECT *,\n"
                 " rank() over (\n"
                 "  PARTITION\n"
-                "    BY survey_id, asset_type_prefix, asset_id, asset_code,\n"
+                "    BY survey_id, asset_type, asset_id, asset_code,\n"
                 "    break_attr, value, user_id, added_by, date_surveyed,\n"
                 "    road_id, road_code\n"
                 "  ORDER BY c\n"
@@ -211,13 +230,13 @@ class ReportQuery:
             "with_lead_values": (
                 "SELECT\n"
                 " survey_id,\n"
-                " asset_type_prefix, asset_id, asset_code,\n"
+                " asset_type, asset_id, asset_code,\n"
                 " break_attr,\n"
                 " c AS start_chainage,\n"
                 # Pick the previous end point
                 " lead(c) over (\n"
                 "  PARTITION\n"
-                "  BY asset_type_prefix, asset_id, asset_code, break_attr\n"
+                "  BY asset_type, asset_id, asset_code, break_attr\n"
                 "  ORDER BY c\n"
                 " ) AS end_chainage,\n"
                 " geom_chainage,\n"
@@ -229,7 +248,7 @@ class ReportQuery:
                 " WHERE filtered = 1\n"
             ),
             "final_results": (
-                "SELECT CONCAT(asset_type_prefix, asset_id::text) AS asset_id, asset_code,\n"
+                "SELECT asset_type, CONCAT(asset_type, '-', asset_id::text) AS asset_id, asset_code,\n"
                 " break_attr AS attribute,\n"
                 " start_chainage,\n"
                 " CASE\n"
@@ -243,7 +262,7 @@ class ReportQuery:
                 " FROM with_lead_values\n"
                 " WHERE start_chainage != end_chainage\n"
                 " OR (end_chainage IS NULL AND start_chainage != geom_chainage)\n"
-                " ORDER BY asset_type_prefix, asset_code, break_attr, start_chainage\n"
+                " ORDER BY asset_type, asset_code, break_attr, start_chainage\n"
             ),
             # Max rainfall bracket is 2000-2999 mm
             "rainfall_series": "SELECT generate_series(0, 2000, 1000) AS r_from\n",
@@ -268,7 +287,7 @@ class ReportQuery:
             "retrieve_aggregate_select": (
                 "SELECT *\n"
                 " FROM (\n"
-                " SELECT 'rainfall' AS attribute,\n"
+                " SELECT 'ROAD' AS asset_type, 'rainfall' AS attribute,\n"
                 " CONCAT(r_from, '-', r_to, ' ', units) AS value,\n"
                 " (\n"
                 "  SELECT SUM(end_chainage - start_chainage)\n"
@@ -278,7 +297,7 @@ class ReportQuery:
                 " ) AS total_length\n"
                 " FROM rainfall_range\n"
                 " UNION\n"
-                " SELECT 'carriageway_width' AS attribute,\n"
+                " SELECT 'ROAD' AS asset_type, 'carriageway_width' AS attribute,\n"
                 " CONCAT(r_from, '-', r_to, ' ', units) AS value,\n"
                 " (\n"
                 "  SELECT SUM(end_chainage - start_chainage)\n"
@@ -288,7 +307,7 @@ class ReportQuery:
                 " ) AS total_length\n"
                 " FROM carriageway_width_range\n"
                 " UNION\n"
-                " SELECT 'total_width' AS attribute,\n"
+                " SELECT 'ROAD' AS asset_type, 'total_width' AS attribute,\n"
                 " CONCAT(r_from, '-', r_to, ' ', units) AS value,\n"
                 " (\n"
                 "  SELECT SUM(end_chainage - start_chainage)\n"
@@ -298,20 +317,20 @@ class ReportQuery:
                 " ) AS total_length\n"
                 " FROM total_width_range\n"
                 " UNION\n"
-                " SELECT attribute, value, SUM(end_chainage - start_chainage) AS total_length\n"
+                " SELECT asset_type, attribute, value, SUM(end_chainage - start_chainage) AS total_length\n"
                 " FROM final_results\n"
                 " WHERE attribute IN ('rainfall', 'carriageway_width', 'total_width')\n"
                 " AND value IS NULL\n"
-                " GROUP BY attribute, value\n"
+                " GROUP BY asset_type, attribute, value\n"
                 " UNION\n"
-                " SELECT attribute, value, SUM(end_chainage - start_chainage) AS total_length\n"
+                " SELECT asset_type, attribute, value, SUM(end_chainage - start_chainage) AS total_length\n"
                 " FROM final_results\n"
                 " WHERE attribute NOT IN ('rainfall', 'carriageway_width', 'total_width')\n"
-                " GROUP BY attribute, value\n"
+                " GROUP BY asset_type, attribute, value\n"
                 ") totals\n"
                 " WHERE total_length IS NOT NULL\n"
             ),
-            "get_aggregate_ordering": " ORDER BY attribute, value\n",
+            "get_aggregate_ordering": " ORDER BY asset_type, attribute, value\n",
         }
 
     def filter_assembly(self, get_all_surveys):
@@ -369,7 +388,7 @@ class ReportQuery:
         asset_filters = [
             # road.*, bridge.*, culvert.* have several commonly named fields in the query above
             # Common fields
-            "asset_type_prefix",  # relevant for the query
+            "asset_type",  # relevant for the query
             "asset_id",
             "asset_code",
             "asset_name",
@@ -419,6 +438,7 @@ class ReportQuery:
             "road_id",
             "road_code",
         ]
+
         asset_filter_clauses = []
         asset_filter_cases = []
 
@@ -429,6 +449,7 @@ class ReportQuery:
         self.report_clauses["values_to_exclude"] = self.report_clauses["values_to_use"]
         self.report_clauses["values_to_chart"] += " WHERE attr=ANY(%s)\n"
         self.report_clauses["values_to_exclude"] += " WHERE NOT (attr=ANY(%s))\n"
+        self.report_clauses["suc"] = self.report_clauses["su"]
 
         # handle the filtering of the 'values' attributes
         for filter_key in self.filters.keys():
@@ -488,6 +509,35 @@ class ReportQuery:
             self.report_clauses["assets_to_chart"] += where_clauses
             self.filter_cases.extend(asset_filter_cases)
 
+        # Check for valid chainage values (because we're bypassing some SQL validation checks)
+        has_chainage_start = "chainage_start" in self.filters and isinstance(
+            self.filters["chainage_start"], Number
+        )
+        has_chainage_end = "chainage_end" in self.filters and isinstance(
+            self.filters["chainage_end"], Number
+        )
+        if has_chainage_start or has_chainage_end:
+            road_test = " WHEN atc.asset_type = 'ROAD' "
+            if has_chainage_start:
+                start_c = self.filters["chainage_start"]
+                self.report_clauses["suc"] = self.report_clauses["suc"].replace(
+                    "%sTHEN s.chainage_start\n" % road_test,
+                    "%sAND s.chainage_start < %s THEN %s\n%sTHEN s.chainage_start\n"
+                    % (road_test, start_c, start_c, road_test),
+                )
+            if has_chainage_end:
+                end_c = self.filters["chainage_end"]
+                self.report_clauses["suc"] = self.report_clauses["suc"].replace(
+                    "%sTHEN s.chainage_end\n" % road_test,
+                    "%sAND s.chainage_end > %s THEN %s\n%sTHEN s.chainage_end\n"
+                    % (road_test, end_c, end_c, road_test),
+                )
+                self.report_clauses["suc"] = self.report_clauses["suc"].replace(
+                    "%sTHEN atc.geom_chainage\n" % road_test,
+                    "%sAND atc.geom_chainage > %s THEN %s\n%sTHEN atc.geom_chainage\n"
+                    % (road_test, end_c, end_c, road_test),
+                )
+
         # only one of these queries will be performed, depending on get_all_surveys value
         if get_all_surveys:
             self.report_clauses["get_all"] = self.report_clauses["retrieve_all"]
@@ -515,7 +565,7 @@ class ReportQuery:
         self.add_report_clause("assets_to_chart")
         self.add_report_clause("usernames")
         self.add_report_clause("surveyphotos")
-        self.add_report_clause("su")
+        self.add_report_clause("suc")
         self.add_report_clause("breakpoints")
         self.add_report_clause("merge_breakpoints")
         self.add_report_clause("results")
@@ -575,12 +625,18 @@ class ReportQuery:
         return rows
 
     def compile_summary_stats(self, rows):
-        """ Takes the rows returned by the aggregate query and returns a 'lengths' dict for conversion to JSON """
+        """ Takes the rows returned by the aggregate query and returns a 'lengths' dict for conversion to JSON
+
+        Note: While the report query can report on multiple asset types in one go,
+        and this aggregation could easily be changed to support it,
+        it will not be changed because of the changes required in the client."""
         lengths = {}
 
         for aggregate_row in rows:
             attribute_type = aggregate_row["attribute"]
             attribute_value = aggregate_row["value"]
+            # For ROAD total_length is the length (in meters)
+            # For Structures total_length is simply a count
             attribute_total = float(aggregate_row["total_length"])
 
             if attribute_type not in lengths:

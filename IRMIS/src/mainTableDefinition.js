@@ -530,6 +530,11 @@ function getStructureTypeName(structureType) {
 
 // function getStructureFieldData(field, structure) { return null; }
 function buttonSegmentsTemplate(attrib, asset, fallbackLabel) {
+    const assetStructureType = detectStructure(asset);
+    const assetType = !assetStructureType
+        ? currentFilter.assetType === "ROAD" ? "ROAD" : "STRC"
+        : ["ROAD", "BRDG", "CULV"].includes(assetStructureType) ? assetStructureType : "ROAD";
+
     let getFieldName = (attrib) => (attrib);
     switch (asset.assetType) {
         case "ROAD":

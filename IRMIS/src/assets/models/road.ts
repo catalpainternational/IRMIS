@@ -38,10 +38,6 @@ export class EstradaRoad extends Road implements IAsset {
                 return "Total Width";
         }
 
-        if (assetSchema[`${field}_${EstradaRoad.assetType}`]) {
-            return assetSchema[`${field}_${EstradaRoad.assetType}`].display || "";
-        }
-
         return getFieldName(assetSchema, field);
     }
 

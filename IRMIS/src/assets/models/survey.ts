@@ -196,6 +196,9 @@ export class EstradaSurvey extends Survey implements IEstrada {
         return JSON.parse(jsonValues);
     }
 
+    /** title is set according to the 'shape' of the data returned */
+    public title: string = "";
+
     private setValue(value: any, fieldName: string) {
         const values = this.values;
         values[fieldName] = value;

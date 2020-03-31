@@ -25,6 +25,7 @@ from protobuf.survey_pb2 import Surveys as ProtoSurveys
 from protobuf.structure_pb2 import Structures as ProtoStructures
 
 from .geodjango_utils import start_end_point_annos
+from csv_data_sources.models import CsvData
 from .managers import RoughnessManager
 
 
@@ -405,34 +406,6 @@ class Asset:
     TERRAIN_CLASS_CHOICES = [(1, _("Flat")), (2, _("Rolling")), (3, _("Mountainous"))]
 
     CORE_CHOICES = [(-1, _("Undefined")), (0, _("Non-core")), (1, _("Core"))]
-
-
-def prepare_protobuf_nullable_float(raw_value):
-    nullable = -1.0
-    if raw_value is not None:
-        if isinstance(raw_value, str):
-            if raw_value.isnumeric():
-                nullable = float(raw_value)
-        elif isinstance(raw_value, bool):
-            nullable = 1.0 if raw_value else 0.0
-        else:
-            nullable = raw_value
-
-    return nullable
-
-
-def prepare_protobuf_nullable_int(raw_value):
-    nullable = -1
-    if raw_value is not None:
-        if isinstance(raw_value, str):
-            if raw_value.isnumeric():
-                nullable = float(raw_value)
-        elif isinstance(raw_value, bool):
-            nullable = 1 if raw_value else 0
-        else:
-            nullable = raw_value
-
-    return nullable
 
 
 def prepare_protobuf_nullable_float(raw_value):

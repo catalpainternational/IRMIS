@@ -565,9 +565,11 @@ def protobuf_reports(request):
     # Survey level attributes
     # if report_date:
     #     final_filters["report_date"] = report_date
-    if (road_id or road_code) and chainage_start and chainage_end:
-        final_filters["chainage_start"] = chainage_start
-        final_filters["chainage_end"] = chainage_end
+    if (road_id or road_code) and chainage_start or chainage_end:
+        if chainage_start:
+            final_filters["chainage_start"] = chainage_start
+        if chainage_end:
+            final_filters["chainage_end"] = chainage_end
     if (
         bridge_id or bridge_code or culvert_id or culvert_code or road_id or road_code
     ) and chainage:

@@ -7,25 +7,26 @@
             </button>
         </div>
 
-        <stacked_bar id="{stacked_bar_id}" entries="{state.assetConditions}"
+        <stacked_bar id="{identifiers.asset_condition.stackedBarId}" entries="{state.assetConditions}"
             total_title="{window.gettext('Total road chainage')}">
         </stacked_bar>
 
         <div class="d-flex">
-            <a class="{!state.viewAll ? 'active' : '' } table-toggle" onclick="{viewCurrent}">
+            <a class="{!state.viewAllAssetCondition ? 'active' : '' } table-toggle"
+                onclick="{viewCurrentAssetCondition}">
                 { window.gettext("Current surface condition") }
             </a>
-            <a class="{state.viewAll ? 'active' : '' } table-toggle" onclick="{viewAll}">
+            <a class="{state.viewAllAssetCondition ? 'active' : '' } table-toggle" onclick="{viewAllAssetCondition}">
                 { window.gettext("View all data entries") }
             </a>
         </div>
-        <data_table if="{state.viewAll}" table_id="{all_data_table_id}" columns="{all_data_table_columns}"
-            columnSortOrder="{all_data_table_columns_order}" getHelpText="{props.parent.getHelpText}"
-            pendingRows="{state.pendingRows}" candelete=true>
+        <data_table if="{state.viewAllAssetCondition}" table_id="{identifiers.asset_condition.allDataTableId}"
+            columns="{all_data_table_columns}" columnSortOrder="{all_data_table_columns_order}"
+            getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows}" candelete=true>
         </data_table>
-        <data_table if="{!state.viewAll}" table_id="{current_data_table_id}" columns="{current_data_table_columns}"
-            columnSortOrder="{current_data_table_columns_order}" getHelpText="{props.parent.getHelpText}"
-            pendingRows="{state.pendingRows}">
+        <data_table if="{!state.viewAllAssetCondition}" table_id="{identifiers.asset_condition.reportDataTableId}"
+            columns="{current_data_table_columns}" columnSortOrder="{current_data_table_columns_order}"
+            getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows}">
         </data_table>
     </div>
 
@@ -154,6 +155,7 @@
 
         import {putPhotoData, deletePhotoData} from "../assets/photoAPI";
         import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
+        import {surveysAndReportRefresh} from "../assets/editUtilities";
         import {choice_or_default, toChainageFormat} from "../assets/protoBufUtilities";
         import {withinMaxDigits} from "../assets/utilities";
 
@@ -178,7 +180,7 @@
                 assetConditions: [{key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading")}],
                 surveyTotalDistance: 0,
                 reportRows: [],
-                viewAll: false,
+                viewAllAssetCondition: false,
                 editMode: false,
                 currentRowData: new EstradaSurvey({}),
                 photoLinkQueue: [],
@@ -186,14 +188,19 @@
             components: {
                 Edit_Stop_Alert, Edit_Modal, Stacked_Bar, Upload_Photo
             },
-
+            identifiers: {
+                asset_condition: {
+                    allDataTableId: "asset-condition-table",
+                    primaryAttribute: "asset_condition",
+                    reportAttribute: "assetConditions",
+                    reportDataTableId: "asset-condition-report-table",
+                    stackedBarId: "asset-condition-stacked-bar",
+                },
+            },
             // Condition Survey
             onMounted(props, state) {
                 state.loading = true;
                 state.road = makeEstradaRoad(props.road);
-
-                this.props.parent.updateReportAttributeSummary(state, "asset_condition", props.parent.emptyAttributes);
-                this.props.parent.refreshSurveysAndReports(state, this.all_data_table_id, "asset_condition", "assetConditions", this.current_data_table_id, this.stacked_bar_id);
 
                 state.survey.photos = state.survey.photos || [];
                 if (state.survey.photos.length > 0) {
@@ -224,7 +231,18 @@
                     this.showStopAlertModal("delete-alert", rowId);
                 };
 
-                document.addEventListener(`${this.all_data_table_id}.deleteRow`, this.deleteListener);
+                const refreshPromises = [];
+                Object.keys(this.identifiers).forEach((idSet) => {
+                    this.identifiers[idSet].emptyAttributes = this.props.parent.emptyAttributes;
+                    refreshPromises.push(surveysAndReportRefresh(state, this.identifiers[idSet]));
+                });
+
+                Promise.all(refreshPromises).then((results) => {
+                    Object.keys(this.identifiers).forEach((idSet) => {
+                        document.addEventListener(`${this.identifiers[idSet].allDataTableId}.deleteRow`, this.deleteListener);
+                    });
+                    this.update();
+                });
             },
             onUnmount(props, state) {
                 document.removeEventListener(`${this.all_data_table_id}.deleteRow`, this.deleteListener);
@@ -232,25 +250,25 @@
                 document.removeEventListener(`${this.photoId2}.photoNeedsLinking`, this.photoNeedsLinkingListener);
                 document.removeEventListener(`${this.photoId1}.photoNeedsRemoval`, this.photoNeedsRemovalListener);
                 document.removeEventListener(`${this.photoId2}.photoNeedsRemoval`, this.photoNeedsRemovalListener);
+
+                Object.keys(this.identifiers).forEach((idSet) => {
+                    document.removeEventListener(`${this.identifiers[idSet].allDataTableId}.deleteRow`, this.deleteListener)
+                });
             },
-            viewAll(e) {
-                if (!this.state.viewAll) {
-                    this.update({viewAll: true});
-                    this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "asset_condition", "assetConditions", this.current_data_table_id, this.stacked_bar_id);
-                    // If we're not still loading, then we assume that we want to replace all rows
-                    const eventName = `${this.all_data_table_id}.dataAdded`;
-                    const eventDetail = {detail: {pendingRows: this.state.pendingRows, clearRows: true}}
-                    document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+            viewChange(identifierSet) {
+                this.update();
+                surveysAndReportRefresh(this.state, identifierSet);
+            },
+            viewAllAssetCondition(e) {
+                if (!this.state.viewAllAssetCondition) {
+                    this.state.viewAllAssetCondition = true;
+                    this.viewChange(this.identifiers["asset_condition"]);
                 }
             },
-            viewCurrent(e) {
-                if (this.state.viewAll) {
-                    this.update({viewAll: false});
-                    this.props.parent.refreshSurveysAndReports(this.state, this.all_data_table_id, "asset_condition", "assetConditions", this.current_data_table_id, this.stacked_bar_id);
-                    // If we're not still loading, then we assume that we want to replace all rows
-                    const eventName = `${this.current_data_table_id}.dataAdded`;
-                    const eventDetail = {detail: {pendingRows: this.state.reportRows, clearRows: true}}
-                    document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+            viewCurrentAssetCondition(e) {
+                if (this.state.viewAllAssetCondition) {
+                    this.state.viewAllAssetCondition = false;
+                    this.viewChange(this.identifiers["asset_condition"]);
                 }
             },
             addEdit(e) {
@@ -267,6 +285,7 @@
             conditions: window.asset_schema.asset_condition,
             stacked_bar_id: "asset-condition-stacked-bar",
             current_data_table_id: "asset-condition-report-table",
+            conditions: window.asset_schema.asset_condition,
             current_data_table_columns_order: [[0, 'asc']],
             current_data_table_columns: [
                 {
@@ -309,7 +328,6 @@
                     orderable: false,
                 },
             ],
-            all_data_table_id: "asset-condition-table",
             all_data_table_columns_order: [[3, 'desc'], [0, 'asc']],
             all_data_table_columns: [
                 {
@@ -497,22 +515,16 @@
                     ? createSurvey(this.state.survey)
                     : updateSurvey(this.state.survey);
 
+                const identifierSet = this.identifiers["asset_condition"];
+
                 surveyPromise
                     .then((surveyData) => {
-                        this.props.parent.refreshSurveysAndReports(
-                            this.state,
-                            this.all_data_table_id,
-                            "asset_condition",
-                            "assetConditions",
-                            this.current_data_table_id,
-                            this.stacked_bar_id
-                        );
-                        this.update({
-                            photoLinkQueue: [],
-                            survey: makeEstradaSurvey(this.state.baseSurvey), // clear input values
+                        surveysAndReportRefresh(this.state, identifierSet).then((result) => {
+                            this.update({
+                                survey: new EstradaSurvey({}), // clear input values
+                            });
+                            this.props.showFeedback();
                         });
-                        this.clearPhotos();
-                        this.props.showFeedback();
                     })
                     .catch((err) => {
                         this.props.showFeedback(true);

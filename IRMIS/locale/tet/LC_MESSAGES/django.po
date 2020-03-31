@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0 VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-18 01:43+0000\n"
+"POT-Creation-Date: 2020-03-20 01:13+0000\n"
 "PO-Revision-Date: 2019-10-09 05:43+0000\n"
 "Last-Translator: b'  <januario@catalpa.io>'\n"
 "Language-Team: Catalpa International <info@catalpa.io>\n"
@@ -82,6 +82,60 @@ msgid "Steel"
 msgstr ""
 
 msgid "Stone"
+msgstr ""
+
+msgid "Health facility"
+msgstr ""
+
+msgid "School"
+msgstr ""
+
+msgid "Police/security station"
+msgstr ""
+
+msgid "Fire station"
+msgstr ""
+
+msgid "Recreational area"
+msgstr ""
+
+msgid "Fishing"
+msgstr ""
+
+msgid "Farming"
+msgstr ""
+
+msgid "Market"
+msgstr ""
+
+msgid "Tourism"
+msgstr ""
+
+msgid "Commercial"
+msgstr ""
+
+msgid "Industrial"
+msgstr ""
+
+msgid "Cash crops"
+msgstr ""
+
+msgid "Connects municipalities"
+msgstr ""
+
+msgid "Connects Dili to municipal centers"
+msgstr ""
+
+msgid "Connects administrative posts"
+msgstr ""
+
+msgid "Connects to land border"
+msgstr ""
+
+msgid "Connects to seaport"
+msgstr ""
+
+msgid "Connects to airport"
 msgstr ""
 
 #, python-format
