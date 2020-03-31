@@ -20,7 +20,6 @@ from protobuf.survey_pb2 import Surveys as ProtoSurveys
 from protobuf.structure_pb2 import Structures as ProtoStructures
 from protobuf.plan_pb2 import Plans as ProtoPlans
 from protobuf.plan_pb2 import PlanSnapshots as ProtoPlanSnapshots
-from protobuf.structure_pb2 import Point
 
 from google.protobuf.timestamp_pb2 import Timestamp
 from google.protobuf.wrappers_pb2 import FloatValue, UInt32Value
