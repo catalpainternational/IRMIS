@@ -98,34 +98,17 @@
         stopResult="keep">
     </edit_stop_alert>
 
-    <div id="photos-modal" class="modal inventory-modal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title">{ window.gettext("Structure Conditions Photos") }</h1>
-                    <span class="close image" data-dismiss="modal" aria-label="{ window.gettext('Close') }" aria-hidden="true"></span>
-                </div>
-                <div class="modal-body">
-                    <div id="inventory-photos_wrapper">
-                        <photos_details_box></photos_details_box>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
         import Edit_Stop_Alert from "./edit_stop_alert.riot.html";
         import Data_Table from "./data_table.riot.html";
         import Edit_Modal from "./edit_modal.riot.html";
         import Upload_Photo from "./upload_photo.riot.html";
-        import PhotosDetailsBox from "./photos_details_box.riot.html";
 
         import {choice_or_default} from "../assets/protoBufUtilities";
         import {ASSET_CONDITION_CHOICES} from "../assets/models/estradaBase";
 
         import {putPhotoData, deletePhotoData} from "../assets/photoAPI";
-        import { getPhotos } from "../photoManager";
+        import {getPhotos} from "../photoManager";
         import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
         import {EstradaSurvey, makeEstradaSurvey} from "../assets/models/survey";
         import {Survey} from "../../protobuf/survey_pb";
@@ -149,7 +132,7 @@
                 photoLinkQueue: [],
             },
             components: {
-                Edit_Stop_Alert, Edit_Modal, Data_Table, Upload_Photo, PhotosDetailsBox,
+                Edit_Stop_Alert, Edit_Modal, Data_Table, Upload_Photo
             },
             // Structure Condition Survey
             onMounted(props, state) {
@@ -187,15 +170,6 @@
                     this.showStopAlertModal("delete-alert", rowId);
                 };
                 document.addEventListener(`${this.data_table_id}.deleteRow`, this.deleteListener);
-
-                $("#photos-modal").on("show.bs.modal", () => {
-                    let photos = undefined;
-                    getPhotos(props.structure.id).then((photosData) => {
-                        photos = photosData;
-                    }).finally(() => {
-                        document.dispatchEvent(new CustomEvent("photos-details-modal.updateModalData", { detail: { currentPhotosData: photos } }));
-                    });
-                });
             },
             onUnmount(props, state) {
                 document.removeEventListener(`${this.data_table_id}.deleteRow`, this.deleteListener);
@@ -236,9 +210,12 @@
                 },
                 {
                     title: window.gettext("Photos"),
-                    data: "photos",
+                    data: null,
                     defaultContent: "",
-                    render: (photos) => photos.length ? `<a data-toggle='modal' data-target='#photos-modal'>${ window.gettext("View Photos") }</a>` : "",
+                    render: (data, type, row) => {
+                        const title = window.gettext("View Photos");
+                        return (row.photos.length) ? `<a onclick="document.dispatchEvent(new CustomEvent('structure-condition-table.showSurveyPhotos',{detail:{rowId:${row.id}}}))">${title}</a>` : "";
+                    },
                     className: "text-center",
                     orderable: false,
                 },

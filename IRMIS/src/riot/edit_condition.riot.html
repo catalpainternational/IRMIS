@@ -133,7 +133,8 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title">{ window.gettext("Road Conditions Photos") }</h1>
-                    <span class="close image" data-dismiss="modal" aria-label="{ window.gettext('Close') }" aria-hidden="true"></span>
+                    <span class="close image" data-dismiss="modal" aria-label="{ window.gettext('Close') }"
+                        aria-hidden="true"></span>
                 </div>
                 <div class="modal-body">
                     <div id="inventory-photos_wrapper">
@@ -150,10 +151,8 @@
         import Edit_Modal from "./edit_modal.riot.html";
         import Stacked_Bar from "./stacked_bar.riot.html";
         import Upload_Photo from "./upload_photo.riot.html";
-        import PhotosDetailsBox from "./photos_details_box.riot.html";
 
         import {putPhotoData, deletePhotoData} from "../assets/photoAPI";
-        import { getPhotos } from "../photoManager";
         import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
         import {choice_or_default, toChainageFormat} from "../assets/protoBufUtilities";
         import {withinMaxDigits} from "../assets/utilities";
@@ -185,7 +184,7 @@
                 photoLinkQueue: [],
             },
             components: {
-                Edit_Stop_Alert, Edit_Modal, Stacked_Bar, Upload_Photo, PhotosDetailsBox,
+                Edit_Stop_Alert, Edit_Modal, Stacked_Bar, Upload_Photo
             },
 
             // Condition Survey
@@ -226,15 +225,6 @@
                 };
 
                 document.addEventListener(`${this.all_data_table_id}.deleteRow`, this.deleteListener);
-
-                $("#photos-modal").on("show.bs.modal", () => {
-                    let photos = undefined;
-                    getPhotos(`ROAD-${ state.road.id }`).then((photosData) => {
-                        photos = photosData;
-                    }).finally(() => {
-                        document.dispatchEvent(new CustomEvent("photos-details-modal.updateModalData", { detail: { currentPhotosData: photos } }));
-                    });
-                });
             },
             onUnmount(props, state) {
                 document.removeEventListener(`${this.all_data_table_id}.deleteRow`, this.deleteListener);
@@ -353,9 +343,12 @@
                 },
                 {
                     title: window.gettext("Photos"),
-                    data: "photos",
+                    data: null,
                     defaultContent: "",
-                    render: (photos) => photos.length ? `<a data-toggle='modal' data-target='#photos-modal'>${ window.gettext("View Photos") }</a>` : "",
+                    render: (data, type, row) => {
+                        const title = window.gettext("View Photos");
+                        return (row.photos.length) ? `<a onclick="document.dispatchEvent(new CustomEvent('asset-condition-table.showSurveyPhotos',{detail:{rowId:${row.id}}}))">${title}</a>` : "";
+                    },
                     className: "text-center",
                     orderable: false,
                 },

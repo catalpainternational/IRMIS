@@ -116,6 +116,22 @@
                     parent="{parentFunctions}" asset="{ state.editingRoad }" structure="{ state.editingStructure }">
                 </edit_media>
             </div>
+            <div id="survey-photos-modal" class="modal inventory-modal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title"></h1>
+                            <span class="close image" data-dismiss="modal" aria-label="{ window.gettext('Close') }"
+                                aria-hidden="true"></span>
+                        </div>
+                        <div class="modal-body">
+                            <div id="survey-photos_wrapper">
+                                <photos_details_box></photos_details_box>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <footer>
                 <small>República Democrática de Timor-Leste / Ministério das Obras Públicas</small>
                 <small>{ window.gettext("Created by Catalpa International") }</small>
@@ -135,6 +151,7 @@
 
         // We really should NOT be importing road specific stuff here
         import {saveRoad} from "../roadManager";
+        import {getPhotos} from "../photoManager";
         import {EstradaRoad, makeEstradaRoad} from "../assets/models/road";
         import {makeEstradaBridge, makeEstradaCulvert} from "../assets/models/structures";
         import {updateStructure} from "../structureManager";
@@ -241,6 +258,34 @@
                         this.update();
                     });
                 }
+
+                this.showSurveyPhotosListener = (data) => {
+                    const assetId = data.detail.rowId;
+                    const modal = $('#survey-photos-modal');
+                    let photos = undefined;
+
+                    // clear the modal of existing photos data that might be there
+                    document.dispatchEvent(new CustomEvent("photos-details-modal.updateModalData", {detail: {currentPhotosData: undefined}}));
+
+                    modal.find(".modal-title").text("Survey Photos");
+                    modal.modal('show');
+
+                    if (assetId) {
+                        getPhotos("SURV-" + assetId)
+                            .then((photosData) => {
+                                photos = photosData;
+                            }).finally(() => {
+                                // update the inventory modal tag with current data
+                                document.dispatchEvent(new CustomEvent("photos-details-modal.updateModalData", {detail: {currentPhotosData: photos}}));
+                            });
+                    }
+                }
+                document.addEventListener(`asset-condition-table.showSurveyPhotos`, this.showSurveyPhotosListener);
+                document.addEventListener(`structure-condition-table.showSurveyPhotos`, this.showSurveyPhotosListener);
+            },
+            onUnmount(props, state) {
+                document.removeEventListener(`asset-condition-table.showSurveyPhotos`, this.showSurveyPhotosListener);
+                document.removeEventListener(`structure-condition-table.showSurveyPhotos`, this.showSurveyPhotosListener);
             },
             initRoad(road) {
                 this.state.baseRoad = road;
