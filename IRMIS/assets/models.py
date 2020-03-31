@@ -2041,7 +2041,7 @@ class BreakpointRelationships(models.Model):
         initial_q = (
             """
             SELECT * FROM ( 
-                SELECT DISTINCT ON (key, asset_code) 
+                SELECT DISTINCT ON (key, asset_code)
                 *, 1 AS lvl, CASE
                 WHEN newer THEN lower(survey_second_range)
                 ELSE upper(survey_first_range) 
@@ -2092,6 +2092,7 @@ class BreakpointRelationships(models.Model):
                     (cte.survey_second_id IS NULL AND {table}.survey_first_id IS NULL)
                 )
                 AND cte.key = {table}.key
+                AND cte.asset_code = {table}.asset_code
 
             -- Conditions on which we want to consider the "next" join
             -- when the "next" is a greater chainage
@@ -2118,25 +2119,15 @@ class BreakpointRelationships(models.Model):
             """
         )
 
-        postamble = """
-            ) SELECT 
-
-                asset_code, 
-                key,
-                survey_first_value,
-                lvl, 
-                survey_first_id,
-                LAG(running_chainage) OVER (PARTITION BY asset_code, key ORDER BY lvl) start_chainage, 
-                running_chainage, key
-                FROM cte ORDER BY asset_code, key, lvl, running_chainage
-            """
-
         postamble = """) SELECT asset_code, 
                 key,
                 survey_first_value,
                 lvl, 
                 survey_first_id,
-                LAG(running_chainage) OVER (PARTITION BY asset_code, key ORDER BY lvl) start_chainage,
+                COALESCE(
+                    LAG(running_chainage) OVER (PARTITION BY asset_code, key ORDER BY lvl),
+                    LOWER(survey_first_range)
+                ) start_chainage,
 
                 CASE 
                     WHEN
