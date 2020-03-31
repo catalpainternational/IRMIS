@@ -9,6 +9,7 @@ import pytz
 
 from django.contrib.auth import get_user_model
 from django.contrib.gis.db import models
+from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
 from django.http import (
     HttpResponse,
@@ -34,29 +35,37 @@ from rest_framework_condition import condition
 
 from google.protobuf.timestamp_pb2 import Timestamp
 
-from protobuf import roads_pb2, survey_pb2, report_pb2, structure_pb2, version_pb2
+from protobuf import (
+    plan_pb2,
+    report_pb2,
+    roads_pb2,
+    structure_pb2,
+    survey_pb2,
+    version_pb2,
+)
 from .report_query import ReportQuery
-
 
 from .models import (
     Bridge,
     BridgeClass,
     BridgeMaterialType,
     CollatedGeoJsonFile,
+    ConnectionType,
     Culvert,
     CulvertClass,
     CulvertMaterialType,
+    EconomicArea,
+    FacilityType,
     MaintenanceNeed,
     PavementClass,
+    Plan,
+    PlanSnapshot,
     Road,
     RoadStatus,
     StructureProtectionType,
     SurfaceType,
     Survey,
     TechnicalClass,
-    FacilityType,
-    EconomicArea,
-    ConnectionType,
 )
 from .serializers import RoadSerializer, RoadMetaOnlySerializer, RoadToWGSSerializer
 
@@ -324,6 +333,55 @@ def protobuf_road_surveys(request, pk, survey_attribute=None):
 
     return HttpResponse(
         surveys_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )
+
+
+@login_required
+def protobuf_plan_set(request):
+    """ returns a protobuf object with the set of all Plans """
+    plans = Plan.objects.all()
+    plans_protobuf = plans.to_protobuf()
+
+    return HttpResponse(
+        plans_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )
+
+
+@login_required
+def protobuf_plan(request, pk):
+    """ returns the protobuf object of a single Plan """
+    queryset = Plan.objects.all()
+    plans = get_object_or_404(queryset, pk=pk)
+    plans_protobuf = plans.to_protobuf()
+
+    return HttpResponse(
+        plans_protobuf.plans[0].SerializeToString(),
+        content_type="application/octet-stream",
+    )
+
+
+@login_required
+def protobuf_plansnapshot_set(request):
+    """ returns a protobuf object with the set of all PlanSnapshots """
+    plansnapshots = PlanSnapshot.objects.all()
+    plansnapshots_protobuf = plansnapshots.to_protobuf()
+
+    return HttpResponse(
+        plansnapshots_protobuf.SerializeToString(),
+        content_type="application/octet-stream",
+    )
+
+
+@login_required
+def protobuf_plansnapshot(request, pk):
+    """ returns the protobuf object of a single PlanSnapshot """
+    queryset = PlanSnapshot.objects.all()
+    plansnapshots = get_object_or_404(queryset, pk=pk)
+    plansnapshots_protobuf = plansnapshots.to_protobuf()
+
+    return HttpResponse(
+        plansnapshots_protobuf.snapshots[0].SerializeToString(),
+        content_type="application/octet-stream",
     )
 
 
@@ -812,6 +870,128 @@ def culvert_update(culvert, req_pb, db_pb):
     return culvert, changed_fields
 
 
+@login_required
+@user_passes_test(user_can_edit)
+def plan_create(request):
+    if request.method != "POST":
+        raise MethodNotAllowed(request.method)
+    elif request.content_type != "application/octet-stream":
+        return HttpResponse(status=400)
+
+    # parse Plan from protobuf in request body
+    req_pb = plan_pb2.Plan()
+    req_pb = req_pb.FromString(request.body)
+
+    # check that Protobuf parsed
+    if not req_pb.title:
+        return HttpResponse(status=400)
+
+    try:
+        with reversion.create_revision():
+            plan = Plan.objects.create(
+                **{
+                    "title": req_pb.title,
+                    "approved": req_pb.approved,
+                    "asset_class": req_pb.asset_class,
+                    "user": get_user_model().objects.get(pk=request.user.pk),
+                }
+            )
+
+            # save the file binary data to the plan
+            plan.file.save(req_pb.file_name, ContentFile(req_pb.file))
+
+            # store the user who made the changes
+            reversion.set_user(request.user)
+
+        plan_pb = Plan.objects.filter(pk=plan.pk).to_protobuf()
+        response = HttpResponse(
+            plan_pb.plans[0].SerializeToString(),
+            status=200,
+            content_type="application/octet-stream",
+        )
+
+        return response
+    except Exception as err:
+        print(err)
+        return HttpResponse(status=400)
+
+
+@login_required
+@user_passes_test(user_can_edit)
+def plan_delete(request, pk):
+    if request.method != "PUT":
+        raise MethodNotAllowed(request.method)
+    elif not pk:
+        return HttpResponse(status=400)
+
+    plan_pb = Plan.objects.filter(pk=pk).to_protobuf().plans[0].SerializeToString()
+
+    # assert Plan ID given exists in the DB and delete it
+    plan = get_object_or_404(Plan.objects.filter(pk=pk))
+    plan.delete()
+
+    return HttpResponse(plan_pb, status=200, content_type="application/octet-stream",)
+
+
+@login_required
+@user_passes_test(user_can_edit)
+def plan_update(request):
+    if request.method != "PUT":
+        raise MethodNotAllowed(request.method)
+    elif request.content_type != "application/octet-stream":
+        return HttpResponse(status=400)
+
+    # parse Plan from protobuf in request body
+    req_pb = plan_pb2.Plan()
+    req_pb = req_pb.FromString(request.body)
+
+    # check that Protobuf parsed
+    if not req_pb.id:
+        return HttpResponse(status=400)
+
+    # assert Plan ID given exists in the DB & there are changes to make
+    plan = get_object_or_404(Plan.objects.filter(pk=req_pb.id))
+
+    # check that the plan has a user assigned, if not, do not allow updating
+    if not plan.user:
+        return HttpResponse(
+            req_pb.SerializeToString(),
+            status=400,
+            content_type="application/octet-stream",
+        )
+
+    # if there are no changes between the DB plan and the protobuf plan return 200
+    if Plan.objects.filter(pk=req_pb.id).to_protobuf().plans[0] == req_pb:
+        return HttpResponse(
+            req_pb.SerializeToString(),
+            status=200,
+            content_type="application/octet-stream",
+        )
+
+    # update the Plan instance from PB fields
+    plan.id = req_pb.id
+    plan.approved = req_pb.approved
+    plan.asset_class = req_pb.asset_class
+    plan.user = get_user_model().objects.get(pk=request.user.pk)
+    plan.title = req_pb.title if req_pb.title else "No Title"
+
+    # save the file binary data to the plan
+    plan.file.save(req_pb.file_name, ContentFile(req_pb.file))
+
+    with reversion.create_revision():
+        plan.save()
+        # store the user who made the changes
+        reversion.set_user(request.user)
+
+    plan_pb = Plan.objects.filter(pk=plan.pk).to_protobuf()
+    response = HttpResponse(
+        plan_pb.plans[0].SerializeToString(),
+        status=200,
+        content_type="application/octet-stream",
+    )
+    return response
+
+
 ASSET_PREFIXES_MAPPING = {
     "ROAD": {
         "model": Road,
@@ -830,6 +1010,12 @@ ASSET_PREFIXES_MAPPING = {
         "update": culvert_update,
         "create": culvert_create,
         "proto": structure_pb2.Culvert,
+    },
+    "PLAN": {
+        "model": Plan,
+        "update": plan_update,
+        "create": plan_create,
+        "proto": plan_pb2.Plan,
     },
 }
 

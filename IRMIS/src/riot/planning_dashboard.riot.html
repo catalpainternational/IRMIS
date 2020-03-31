@@ -1,0 +1,157 @@
+<planning_dashboard>
+    <header class="align-items-center d-flex">
+        <h1>{ window.gettext("Planning and Budgetting Dashboard") }</h1>
+    </header>
+
+    <div class="content-wrapper">
+        <h5>{ window.gettext("5-Year Plan and Budget Summary") }</h5>
+        <template if="{ !isEmpty(state.summaries) && !isEmpty(state.summaryData) }">
+            <div class="planning-dashboard-section" each="{ workType in Object.entries(workTypes) }">
+                <div class="total-budget">
+                    <p>{ window.gettext("Total Budget") } { workType[1] }</p>
+                    <h1>$ { parseFloat(total(workType[0]).toFixed(2)) }</h1>
+                </div>
+                <table class="planning-dashboard-table d-block table table-bordered">
+                    <thead>
+                        <tr>
+                            <th rowspan="2">
+                                { workType[1] }
+                            </th>
+                            <th each="{ year in years }" colspan="2">
+                                { year }
+                            </th>
+                        </tr>
+                        <tr>
+                            <template each="{ year in years }">
+                                <th>
+                                    { window.gettext("Budget") }
+                                </th>
+                                <th>
+                                    { window.gettext("Length") }
+                                </th>
+                            </template>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr each="{ assetClass in Object.entries(assetClasses) }">
+                            <td>
+                                { assetClass[1][1] }
+                            </td>
+                            <template each="{ year in years }">
+                                <td>
+                                    { ( state.summaryData[workType[0]][assetClass[1][0]][year].budget == 0) ? "-" :
+                                    parseFloat(state.summaryData[workType[0]][assetClass[1][0]][year].budget).toFixed(2)
+                                    }
+                                </td>
+                                <td>
+                                    { ( state.summaryData[workType[0]][assetClass[1][0]][year].length == 0) ? "-" :
+                                    parseFloat(state.summaryData[workType[0]][assetClass[1][0]][year].length).toFixed(2)
+                                    }
+                                </td>
+                            </template>
+                        </tr>
+                    </tbody>
+                </table>
+                <small class="text-muted">{ window.gettext("Budget are in million USD and Length in KM") }</small>
+            </div>
+        </template>
+        <template if="{ isEmpty(state.summaries) }">
+            <div class="align-items-center content-wrapper no-plans d-flex flex-column justify-content-center">
+                <span class="no-report image"></span>
+                <h6>{ window.gettext("Welcome to the planning and budgetting tool") }.</h6>
+                <p>{ window.gettext("No plans available yet") }</p>
+            </div>
+        </template>
+    </div>
+
+    <script>
+        import $ from "jquery";
+        import {createPlan, getSnapshots, getPlan, getPlans, updatePlan} from "../planManager";
+
+        export default {
+            state: {
+                summaries: [],
+                summaryData: [],
+            },
+            workTypes: {
+                'routine': window.gettext('Routine Maintenance'),
+                'periodic': window.gettext('Periodic Maintenance'),
+                'rehab': window.gettext('Rehabilitation'),
+                'spot': window.gettext('Spot Improvement'),
+            },
+            assetClasses: window.asset_schema.asset_class.options,
+            years: getYears(),
+            onMounted() {
+                $("#loading").modal("show");
+                this.fetchSummaries();
+            },
+            total(workType) {
+                return Object.values(this.state.summaryData[workType]).reduce(
+                    (workTypeTotal, assetClassData) => {
+                        return workTypeTotal + Object.values(assetClassData).reduce(
+                            (assetClassTotal, yearData) => {
+                                return assetClassTotal + yearData.budget;
+                            }, 0);
+                    }, 0);
+            },
+            isEmpty(data) {
+                for (var i in data) {
+                    return false;
+                }
+                return true;
+            },
+            fetchSummaries() {
+                // Fetch Summaries (ie. PlanSnapshot objects) from the server
+                getSnapshots()
+                    .then((snapshotsData) => {
+                        this.state.summaries = snapshotsData;
+                    }).catch((err) => {
+                        this.state.summaries = [];
+                    }).finally((r) => {
+                        this.buildSummaryData();
+                        this.update();
+                        $("#loading").modal("hide");
+                    });
+            },
+            buildSummaryData() {
+                // splits an array of summaries into { length, budget } objects nested by workTypes.assetClass.year
+                //this.state.summaryData[workTypes][assetClass][year].length
+                //this.state.summaryData[workTypes][assetClass][year].budget
+                this.state.summaryData = {};
+
+                // build the data object containing the keys we want in the summary
+                Object.entries(this.workTypes).forEach(workType => {
+                    const wt = workType[0];
+                    this.state.summaryData[wt] = {};
+                    Object.entries(this.assetClasses).forEach(assetClass => {
+                        const ac = assetClass[1]; // access the option info for lookups
+                        this.state.summaryData[wt][ac[0]] = {};
+                        this.years.forEach(year => {
+                            this.state.summaryData[wt][ac[0]][year] = {length: 0, budget: 0};
+                        });
+                    });
+                });
+                // fill the data object with values we have from the summaries
+                this.state.summaries.forEach(summary => {
+                    // do nothing if the summary does not have keys we are interested in
+                    if (!this.state.summaryData.hasOwnProperty(summary.workType)) return;
+                    if (!this.state.summaryData[summary.workType].hasOwnProperty(summary.assetClass)) return;
+                    if (!this.state.summaryData[summary.workType][summary.assetClass].hasOwnProperty(summary.year)) return;
+
+                    this.state.summaryData[summary.workType][summary.assetClass][summary.year].budget += summary.budget;
+                    this.state.summaryData[summary.workType][summary.assetClass][summary.year].length += summary.length;
+                });
+            }
+        }
+
+        function getYears() {
+            // returns an array containing this year, and the four next
+            const now = new Date().getFullYear();
+            const years = [now];
+            for (let i = 1; i < 5; i++) {
+                years.push(now + i);
+            }
+            return years;
+        }
+    </script>
+</planning_dashboard>

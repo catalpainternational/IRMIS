@@ -1,3 +1,5 @@
+$no-plans-content-width: 444px;
+
 #planning {
     height: calc(100vh - #{$top-menu-height} - 5px);
     width: calc(100% - #{$side-menu-width});
@@ -10,23 +12,21 @@ planning_base {
     display: block;
 }
 
-plan {
+planning, planning_dashboard, planning_templates {
     min-height: calc(100% - #{$footer-height});
     display: block;
 
     header {
-        padding: 30px 30px 30px 60px;
+        border-bottom: 1px solid $light-gray;
         background-color: $white;
-        margin-bottom: 10px;
+        padding-right: 20px;
+        padding-left: 20px;
+        height: 70px;
 
-        h6 {
-            margin-left: 15px;
+        h1 {
+            margin-left: 40px;
             margin-bottom: 0;
-        }
-
-        p {
-            margin-bottom: 0;
-            margin-top: 20px;
+            margin-top: 5px;
         }
     }
 
@@ -39,8 +39,106 @@ plan {
             margin-bottom: 0;
         }
 
+        h5 {
+            border-bottom: 1px solid $lighter-gray;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+        }
+
         h6 {
             margin-bottom: 0;
         }
+
+        &.no-plans {
+            margin-bottom: 0;
+            padding: 90px;
+        
+            h6 {
+                max-width: $no-plans-content-width;
+                margin-bottom: 0;
+                margin-top: 15px;
+            }
+        
+            p {
+                max-width: $no-plans-content-width;
+                margin-bottom: 0;
+                margin-top: 10px;
+                margin-left: 0;
+            }
+        }
+        
+    }
+}
+
+.planning-dashboard-section {
+    border-bottom: 1px solid $light-gray;
+    padding-bottom: 40px;
+    margin-bottom: 40px;
+
+    &:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+        margin-bottom: 0;
+    }
+
+    div.total-budget {
+        margin-bottom: 30px;
+
+        p, h1 {
+            margin-bottom: 0;
+        }
+    }
+}
+
+planning {
+    .modal-body {
+        p {
+            margin-bottom: 30px;
+        }
+
+        input[type="file"] {
+            margin-bottom: 20px;
+        }
+    }
+}
+
+planning_templates {
+    .instructions {
+        margin-right: 40px;
+        max-width: 600px;
+
+        & > ul {
+            list-style-position: outside;
+            list-style-type: decimal;
+            margin-bottom: 20px;
+            padding-left: 13px;
+        }
+
+        & > .download-guidelines {
+            margin-bottom: 40px;
+
+            a {
+                margin-left: 3px;
+            }
+        }
+    
+        & + span.image {
+            background-color: $lighter-gray;
+            height: 400px;
+            width: 100%;
+        }
+
+        #access-token {
+            pointer-events: none;
+            border: none;
+
+            &:focus {
+                outline: none;
+            }
+        }
+    }
+
+    .templates-list {
+        margin-top: 40px;
     }
 }

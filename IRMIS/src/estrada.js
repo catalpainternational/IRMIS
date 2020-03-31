@@ -90,7 +90,7 @@ function hashCheck() {
     const reportsBase = document.getElementById("reports") || document.getElementById("dashboard");
     const editBase = document.getElementById("edit-base");
 
-    let planningHash = /#planning/.exec(location.hash);
+    let planningHash = /#planning\/(.*)\/?/.exec(location.hash);
     let reportsHash = /#reports\/(.*)\/?/.exec(location.hash);
     let editHash = /#edit\/(\w+)\/(\d*)\/(\w+)/.exec(location.hash);
 
@@ -114,7 +114,7 @@ function hashCheck() {
     } else if (planningHash !== null && !planningBase) {
         if (editBase) riot.unmount("edit_base", true);
         if (reportsBase) riot.unmount("reports_base", true);
-        riot.mount("planning_base");
+        riot.mount("planning_base", { page: planningHash[1] });
         mainContent.hidden = true;
     } else if (editHash === null && reportsHash === null && planningHash === null) {
         if (planningBase) riot.unmount("planning_base", true);

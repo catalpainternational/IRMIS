@@ -83,13 +83,43 @@
     }
 }
 
-#plan-rural-roads {
-    border-bottom: 1px solid $light-gray;
-    border-right: 1px solid $light-gray;
-    border-left: 1px solid $light-gray;
+table.planning-dashboard-table {
+    border-bottom: 1px solid $light-gray !important;
+    border-right: 1px solid $light-gray !important;
+    border-left: 1px solid $light-gray !important;
     margin-bottom: 0 !important;
     margin-top: 10px !important;
     overflow-x: auto;
+
+    thead th, tbody td {
+        border-left: none;
+    }
+
+    thead th:last-child, tbody td:last-child {
+        border-right: none;
+    }
+
+    tbody tr:last-child td {
+        border-bottom: none;
+    }
+}
+
+table.planning-table {
+    overflow-x: auto;
+
+    thead tr th {
+        border-bottom-width: 1px;
+        border-top: none;
+    }
+
+    tbody tr td {
+        height: 55px;
+
+        span {
+            border-right: 1px solid $light-gray;
+            margin: 0 10px;
+        }
+    }
 }
 
 .table-spacing {

@@ -11,7 +11,7 @@
         import {datatableTranslations} from "../datatableTranslations";
         import {exportCsv} from "../exportCsv";
 
-        import { currentFilter } from "../side_menu";
+        import {currentFilter} from "../side_menu";
 
         import "bootstrap/js/dist/modal";
         import $ from "jquery";
@@ -101,7 +101,7 @@
                 // This is only here so that dataTables will change its internal state
             }
             if (state.showTotal || state.showTotalCount) {
-                state.dataTableConfig.footerCallback = ( tfoot, data, start, end, display ) => {
+                state.dataTableConfig.footerCallback = (tfoot, data, start, end, display) => {
                     if (!state.table) {
                         // If the actual dataTable is not defined yet - then exit
                         return;
@@ -182,7 +182,7 @@
         export default {
             onMounted(props, state) {
                 initialiseStateFromProps(props, state);
-              
+
                 // Wraps the handling for the 'changedTitle' event, and includes this tag's state
                 state.changedTitle = (data) => this.processTitleChanged(data, state);
                 // Wraps the handling for the 'changedColumns' event, and includes this tag's state
@@ -256,7 +256,7 @@
                     $(`#${state.id}`).empty();
                     // Argh - just shoot the zombie in the head
                     state.table = undefined;
-                    
+
                     setColumns(state, data.detail.columns);
                     setDataTableConfig(state);
 

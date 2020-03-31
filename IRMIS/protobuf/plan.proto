@@ -1,0 +1,41 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+package assets;
+
+/* Remember to run `yarn protoc` after making any changes
+ * to regenerate the javascript and python protobuf implementations */
+
+message Snapshot {
+  uint32 id = 1;
+  uint32 year = 2;
+  float budget = 3;
+  float length = 4;
+  string asset_class = 5;
+  string work_type = 6;
+}
+
+message Plan {
+  /* Note that field Id numbers once used, are fixed. */
+  uint32 id = 1;
+  string title = 2;
+  bytes file = 3;
+  uint32 user = 4;
+  string added_by = 5;
+  google.protobuf.Timestamp last_modified = 6;
+  google.protobuf.Timestamp date_created = 7;
+  bool approved = 8;
+  string asset_class = 9;
+  repeated Snapshot summary = 10;
+  // file info data only used in the frontend
+  string url = 11;
+  string file_name = 12;
+}
+
+message Plans {
+  repeated Plan plans = 1;
+}
+
+message PlanSnapshots {
+  repeated Snapshot snapshots = 1;
+}

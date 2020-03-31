@@ -12,12 +12,19 @@ from .views import (
     protobuf_road_set,
     protobuf_road_structures,
     protobuf_road_surveys,
+    protobuf_plan_set,
+    protobuf_plan,
+    protobuf_plansnapshot_set,
+    protobuf_plansnapshot,
     road_chunks_set,
     road_update,
     structure_create,
     structure_update,
     survey_create,
     survey_update,
+    plan_create,
+    plan_delete,
+    plan_update,
 )
 
 # Wire up our API using automatic URL routing.
@@ -25,16 +32,38 @@ from .views import (
 urlpatterns = [
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     path("geojson_details", geojson_details, name="geojson_details"),
+    # Report URLs
+    path("reports/", protobuf_reports, name="protobuf_reports"),
+    # Roads URLs
     path("road_chunks", road_chunks_set, name="road_chunks"),
     path("road_update", road_update, name="road_update"),
+    # Survey URLs
+    path("survey_create", survey_create, name="survey_create"),
+    path("survey_update", survey_update, name="survey_update"),
+    # Plans URLs
+    path("plan_create", plan_create, name="plan_create"),
+    path("plan_delete/<int:pk>", plan_delete, name="plan_delete"),
+    path("plan_update", plan_update, name="plan_update"),
+    # Structure URLs
     path(
         "structure_create/<slug:structure_type>/",
         structure_create,
         name="structure_create",
     ),
     path("structure_update/<slug:pk>", structure_update, name="structure_update",),
-    path("survey_create", survey_create, name="survey_create"),
-    path("survey_update", survey_update, name="survey_update"),
+    # Protobuf URLs
+    path("protobuf_plans", protobuf_plan_set, name="protobuf_plans"),
+    path("protobuf_plan/<slug:pk>/", protobuf_plan, name="protobuf_plan"),
+    path(
+        "protobuf_plansnapshots",
+        protobuf_plansnapshot_set,
+        name="protobuf_plansnapshots",
+    ),
+    path(
+        "protobuf_plansnapshot/<slug:pk>/",
+        protobuf_plansnapshot,
+        name="protobuf_plansnapshot",
+    ),
     path(
         "protobuf_structure/<slug:pk>/", protobuf_structure, name="protobuf_structure"
     ),
@@ -75,5 +104,4 @@ urlpatterns = [
         protobuf_structure_surveys,
         name="protobuf_structure_surveys",
     ),
-    path("reports/", protobuf_reports, name="protobuf_reports"),
 ]
