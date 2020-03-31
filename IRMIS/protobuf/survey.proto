@@ -1,5 +1,6 @@
 syntax = "proto3";
 import "google/protobuf/timestamp.proto";
+import "photo.proto";
 
 package assets;
 
@@ -23,6 +24,7 @@ message Survey {
   float chainage_end = 6;
   string values = 7;
   string added_by = 11;
+  repeated Photo photos = 14;
 }
 
 message Surveys {

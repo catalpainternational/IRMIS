@@ -13,6 +13,8 @@ var global = Function('return this')();
 
 var google_protobuf_timestamp_pb = require('google-protobuf/google/protobuf/timestamp_pb.js');
 goog.object.extend(proto, google_protobuf_timestamp_pb);
+var photo_pb = require('./photo_pb.js');
+goog.object.extend(proto, photo_pb);
 goog.exportSymbol('proto.assets.Attribute', null, global);
 goog.exportSymbol('proto.assets.Report', null, global);
 /**
@@ -47,7 +49,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.assets.Attribute = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.assets.Attribute.repeatedFields_, null);
 };
 goog.inherits(proto.assets.Attribute, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -266,6 +268,13 @@ proto.assets.Report.prototype.clearAttributesList = function() {
 
 
 
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.assets.Attribute.repeatedFields_ = [13];
+
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -306,7 +315,9 @@ proto.assets.Attribute.toObject = function(includeInstance, msg) {
     addedBy: jspb.Message.getFieldWithDefault(msg, 9, ""),
     value: jspb.Message.getFieldWithDefault(msg, 10, ""),
     roadId: jspb.Message.getFieldWithDefault(msg, 11, 0),
-    roadCode: jspb.Message.getFieldWithDefault(msg, 12, "")
+    roadCode: jspb.Message.getFieldWithDefault(msg, 12, ""),
+    photosList: jspb.Message.toObjectList(msg.getPhotosList(),
+    photo_pb.Photo.toObject, includeInstance)
   };
 
   if (includeInstance) {
@@ -391,6 +402,11 @@ proto.assets.Attribute.deserializeBinaryFromReader = function(msg, reader) {
     case 12:
       var value = /** @type {string} */ (reader.readString());
       msg.setRoadCode(value);
+      break;
+    case 13:
+      var value = new photo_pb.Photo;
+      reader.readMessage(value,photo_pb.Photo.deserializeBinaryFromReader);
+      msg.addPhotos(value);
       break;
     default:
       reader.skipField();
@@ -504,6 +520,14 @@ proto.assets.Attribute.serializeBinaryToWriter = function(message, writer) {
     writer.writeString(
       12,
       f
+    );
+  }
+  f = message.getPhotosList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      13,
+      f,
+      photo_pb.Photo.serializeBinaryToWriter
     );
   }
 };
@@ -704,6 +728,40 @@ proto.assets.Attribute.prototype.getRoadCode = function() {
 /** @param {string} value */
 proto.assets.Attribute.prototype.setRoadCode = function(value) {
   jspb.Message.setProto3StringField(this, 12, value);
+};
+
+
+/**
+ * repeated Photo photos = 13;
+ * @return {!Array<!proto.assets.Photo>}
+ */
+proto.assets.Attribute.prototype.getPhotosList = function() {
+  return /** @type{!Array<!proto.assets.Photo>} */ (
+    jspb.Message.getRepeatedWrapperField(this, photo_pb.Photo, 13));
+};
+
+
+/** @param {!Array<!proto.assets.Photo>} value */
+proto.assets.Attribute.prototype.setPhotosList = function(value) {
+  jspb.Message.setRepeatedWrapperField(this, 13, value);
+};
+
+
+/**
+ * @param {!proto.assets.Photo=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.assets.Photo}
+ */
+proto.assets.Attribute.prototype.addPhotos = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 13, opt_value, proto.assets.Photo, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ */
+proto.assets.Attribute.prototype.clearPhotosList = function() {
+  this.setPhotosList([]);
 };
 
 

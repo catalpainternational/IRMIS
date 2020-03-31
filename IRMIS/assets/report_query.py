@@ -114,6 +114,22 @@ class ReportQuery:
                 " END AS username\n"
                 " FROM auth_user\n"
             ),
+            "surveyphotos": (
+                " SELECT jp.object_id as object_id, CONCAT('[', string_agg(jp.photos_json::text, ','), ']') as photos\n"
+                " FROM (\n"
+                "     SELECT object_id, json_build_object(\n"
+                "         'id', id,\n"
+                "         'url', CONCAT('media/', file),\n"
+                "         'description', description,\n"
+                "         'date_created', date_created,\n"
+                "         'fk_link', CONCAT('SURV-', object_id)\n"
+                "     ) AS photos_json\n"
+                "     FROM assets_photo AS new_p\n"
+                "     WHERE object_id IS NOT NULL\n"
+                "     AND content_type_id = 42\n"
+                " ) jp\n"
+                " GROUP BY jp.object_id"
+            ),
             # This is a template for "suc"
             # Surveys which match the given values and assets
             # Chainages for Roads are manipulated if start and end chainage values are supplied
@@ -121,6 +137,7 @@ class ReportQuery:
             "su": (
                 "SELECT s.id, atc.asset_type, atc.asset_id, atc.asset_code,\n"
                 " s.date_created, s.date_updated, s.date_surveyed,\n"
+                " p.photos,\n"
                 " CASE\n"
                 " WHEN atc.asset_type = 'ROAD' THEN s.chainage_start\n"
                 " ELSE 0\n"
@@ -145,6 +162,7 @@ class ReportQuery:
                 " JOIN assets_to_chart atc ON s.asset_id = CONCAT(atc.asset_type, '-', atc.asset_id::text)\n"
                 " JOIN values_to_chart vtc ON s.values ? vtc.attr\n"
                 " LEFT OUTER JOIN usernames u ON s.user_id = u.user_id\n"
+                " LEFT OUTER JOIN surveyphotos p ON s.id = p.object_id\n"
                 " WHERE (atc.asset_type = 'ROAD' AND s.chainage_start != s.chainage_end)\n"
                 " OR (atc.asset_type <> 'ROAD')\n"
             ),
@@ -190,6 +208,7 @@ class ReportQuery:
                 "  ELSE NULL\n"
                 " END AS value,\n"
                 " values,\n"
+                " photos,\n"
                 " user_id, added_by, date_surveyed,\n"
                 " road_id, road_code\n"
                 " FROM merge_breakpoints\n"
@@ -222,6 +241,7 @@ class ReportQuery:
                 " ) AS end_chainage,\n"
                 " geom_chainage,\n"
                 " value,\n"
+                " photos,\n"
                 " user_id, added_by, date_surveyed,\n"
                 " road_id, road_code\n"
                 " FROM with_unchanged\n"
@@ -236,6 +256,7 @@ class ReportQuery:
                 "  ELSE end_chainage\n"
                 " END AS end_chainage,\n"
                 " value, survey_id,\n"
+                " photos,\n"
                 " user_id, added_by, date_surveyed,\n"
                 " road_id, road_code\n"
                 " FROM with_lead_values\n"
@@ -543,6 +564,7 @@ class ReportQuery:
         self.add_report_clause("values_to_exclude")
         self.add_report_clause("assets_to_chart")
         self.add_report_clause("usernames")
+        self.add_report_clause("surveyphotos")
         self.add_report_clause("suc")
         self.add_report_clause("breakpoints")
         self.add_report_clause("merge_breakpoints")
@@ -604,7 +626,7 @@ class ReportQuery:
 
     def compile_summary_stats(self, rows):
         """ Takes the rows returned by the aggregate query and returns a 'lengths' dict for conversion to JSON
-        
+
         Note: While the report query can report on multiple asset types in one go,
         and this aggregation could easily be changed to support it,
         it will not be changed because of the changes required in the client."""

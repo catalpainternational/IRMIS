@@ -51,11 +51,11 @@
                 state.material = props.structure.getMaterial();
 
                 if (props.assetType === 'BRDG') {
-                    state.structureTypes = this.structure_type_bridge;
-                    state.structureMaterials = this.material_bridge;
+                    state.structureTypes = this.structure_type_BRDG;
+                    state.structureMaterials = this.material_BRDG;
                 } else {
-                    state.structureTypes = this.structure_type_culvert;
-                    state.structureMaterials = this.material_culvert;
+                    state.structureTypes = this.structure_type_CULV;
+                    state.structureMaterials = this.material_CULV;
                 }
             },
             save(e) {
@@ -71,10 +71,10 @@
                 this.props.structure.setMaterial(this.state.material);
                 this.update();
             },
-            structure_type_bridge: window.asset_schema.structure_type_bridge,
-            structure_type_culvert: window.asset_schema.structure_type_culvert,
-            material_bridge: window.asset_schema.material_bridge,
-            material_culvert: window.asset_schema.material_culvert,
+            structure_type_BRDG: window.asset_schema.structure_type_BRDG,
+            structure_type_CULV: window.asset_schema.structure_type_CULV,
+            material_BRDG: window.asset_schema.material_BRDG,
+            material_CULV: window.asset_schema.material_CULV,
         }
     </script>
 </edit_structure_type>

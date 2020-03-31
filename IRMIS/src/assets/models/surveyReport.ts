@@ -3,6 +3,7 @@ import { isArray } from "util";
 
 import { Timestamp } from "google-protobuf/google/protobuf/timestamp_pb";
 import { Attribute, Report } from "../../../protobuf/report_pb";
+import { makeEstradaPhoto, EstradaPhoto } from "./photo";
 
 import { reportColumns } from "../../reportTableDefinitions";
 import { choice_or_default, getFieldName, getHelpText, invertChoices, makeEstradaObject } from "../protoBufUtilities";
@@ -655,6 +656,15 @@ export class EstradaSurveyAttribute extends Attribute implements IEstrada {
         return this.primaryAttribute === "traffic_level"
             ? (window as any).gettext(choice_or_default(this.value, TRAFFIC_LEVEL_CHOICES, "Unknown")) as string
             : this.unknownI8n();
+    }
+
+    get photos(): EstradaPhoto[] | undefined {
+        const photosListRaw = this.getPhotosList();
+        return photosListRaw ? photosListRaw.map(makeEstradaPhoto) : photosListRaw;
+    }
+
+    set photos(values: EstradaPhoto[] | undefined) {
+        this.setPhotosList(values as Photo[]);
     }
 
     private unknownI8n(): string {

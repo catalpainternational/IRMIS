@@ -66,6 +66,19 @@
     }
 }
 
+.btn-tertiary {
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.btn-delete {
+    width: 94px;
+}
+
+.btn-caption {
+    width: 115px;
+}
+
 .btn-danger {
     @extend %primary-shared;
     background-color: $red;

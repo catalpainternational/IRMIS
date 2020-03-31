@@ -66,13 +66,24 @@
                     <input
                         class="{ state.errors.conditionDescription ? 'danger' : null } { state.survey.conditionDescription ? '' : 'inactive' } form-control"
                         type="text" maxlength="500" placeholder="E.g." value="{ state.survey.conditionDescription }"
-                        oninput="{ checkDescription }">
+                        onblur="{ checkDescription }">
                     <div if="{state.errors.conditionDescription}" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.conditionDescription }.</li>
                         </ul>
                     </div>
                 </div>
+            </section>
+            <section>
+                <h6>{ window.gettext("Upload photos") }</h6>
+                <label>{ window.gettext("Photo 1") }</label>
+                <upload_photo photoId="{photoId1}" photo="{state.photo1}" fkLink="{props.fkLink}" surveyPhoto="{true}"
+                    showFeedback="{ props.showFeedback }">
+                </upload_photo>
+                <label>{ window.gettext("Photo 2") }</label>
+                <upload_photo photoId="{photoId2}" photo="{state.photo2}" fkLink="{props.fkLink}" surveyPhoto="{true}"
+                    showFeedback="{ props.showFeedback }">
+                </upload_photo>
             </section>
             <div class="d-flex justify-content-end">
                 <span>[</span><span class="required">*</span><span>]: Mandatory</span>
@@ -91,9 +102,13 @@
         import Edit_Stop_Alert from "./edit_stop_alert.riot.html";
         import Data_Table from "./data_table.riot.html";
         import Edit_Modal from "./edit_modal.riot.html";
+        import Upload_Photo from "./upload_photo.riot.html";
 
         import {choice_or_default} from "../assets/protoBufUtilities";
         import {ASSET_CONDITION_CHOICES} from "../assets/models/estradaBase";
+
+        import {putPhotoData, deletePhotoData} from "../assets/photoAPI";
+        import {getPhotos} from "../photoManager";
         import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
         import {EstradaSurvey, makeEstradaSurvey} from "../assets/models/survey";
         import {Survey} from "../../protobuf/survey_pb";
@@ -114,12 +129,11 @@
                 assetConditions: [{key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading")}],
                 editMode: false,
                 currentRowData: new EstradaSurvey({}),
+                photoLinkQueue: [],
             },
             components: {
-                Edit_Stop_Alert, Edit_Modal
+                Edit_Stop_Alert, Edit_Modal, Data_Table, Upload_Photo
             },
-
-
             // Structure Condition Survey
             onMounted(props, state) {
                 state.loading = true;
@@ -127,17 +141,45 @@
 
                 this.props.parent.getStructureSurveys(state, this.data_table_id, "asset_condition", "assetConditions");
 
+                state.survey.photos = state.survey.photos || [];
+                if (state.survey.photos.length > 0) {
+                    state.photo1 = state.survey.photos[0] ? state.survey.photos[0] : undefined;
+                    state.photo2 = state.survey.photos[1] ? state.survey.photos[1] : undefined;
+                }
+
+                this.photoNeedsLinkingListener = (data) => {
+                    const newPhoto = data.detail.photo;
+                    this.state.photoLinkQueue = this.state.photoLinkQueue.filter(p => {
+                        if (p.getId() != newPhoto.getId()) {return p;};
+                    }).concat(newPhoto);
+                }
+                document.addEventListener(`${this.photoId1}.photoNeedsLinking`, this.photoNeedsLinkingListener);
+                document.addEventListener(`${this.photoId2}.photoNeedsLinking`, this.photoNeedsLinkingListener);
+
+                this.photoNeedsRemovalListener = (data) => {
+                    const oldPhoto = data.detail.photo;
+                    this.state.photoLinkQueue = this.state.photoLinkQueue.filter(p => {
+                        if (p.getId() != oldPhoto.getId()) {return p};
+                    });
+                }
+                document.addEventListener(`${this.photoId1}.photoNeedsRemoval`, this.photoNeedsRemovalListener);
+                document.addEventListener(`${this.photoId2}.photoNeedsRemoval`, this.photoNeedsRemovalListener);
+
                 this.deleteListener = (data) => {
                     const rowId = data.detail.rowId;
-                    // Won't work just yet - waiting for the showStopAlertModal function to be defined in this riot tag
                     this.showStopAlertModal("delete-alert", rowId);
                 };
-
                 document.addEventListener(`${this.data_table_id}.deleteRow`, this.deleteListener);
             },
             onUnmount(props, state) {
                 document.removeEventListener(`${this.data_table_id}.deleteRow`, this.deleteListener);
+                document.removeEventListener(`${this.photoId1}.photoNeedsLinking`, this.photoNeedsLinkingListener);
+                document.removeEventListener(`${this.photoId2}.photoNeedsLinking`, this.photoNeedsLinkingListener);
+                document.removeEventListener(`${this.photoId1}.photoNeedsRemoval`, this.photoNeedsRemovalListener);
+                document.removeEventListener(`${this.photoId2}.photoNeedsRemoval`, this.photoNeedsRemovalListener);
             },
+            photoId1: "structureSurveyPhoto1",
+            photoId2: "structureSurveyPhoto2",
             conditions: window.asset_schema.asset_condition,
             modal_id: "structure-condition-modal",
             data_table_id: "structure-condition-table",
@@ -166,18 +208,17 @@
                     className: "text-center",
                     orderable: false,
                 },
-                // {
-                //     title: window.gettext("Photos"),
-                //     data: "photos",
-                //     defaultContent: "",
-                //     render: (photos) => {
-                //         return (photos) ? photos.forEach((p) => {
-                //             return `<a class="image" href="${p.url}"></a>`;
-                //         }) : "";
-                //     },
-                //     className: "text-center",
-                //     orderable: false,
-                // },
+                {
+                    title: window.gettext("Photos"),
+                    data: null,
+                    defaultContent: "",
+                    render: (data, type, row) => {
+                        const title = window.gettext("View Photos");
+                        return (row.photos.length) ? `<a onclick="document.dispatchEvent(new CustomEvent('structure-condition-table.showSurveyPhotos',{detail:{rowId:${row.id}}}))">${title}</a>` : "";
+                    },
+                    className: "text-center",
+                    orderable: false,
+                },
                 {
                     title: window.gettext("Added by"),
                     data: "addedBy",
@@ -264,8 +305,10 @@
                 $(`#${this.modal_id}`).modal("hide");
                 this.update({
                     survey: makeEstradaSurvey(this.state.baseSurvey),
+                    photoLinkQueue: [],
                     errors: {},
                 });
+                this.clearPhotos();
             },
             save(e) {
                 const missingFieldNames = checkRequiredFields(this.requiredFieldNames, this.state.survey);
@@ -319,6 +362,7 @@
                 $(`#${this.modal_id}`).modal("hide");
                 $("#loading").modal("show");
 
+                this.state.survey.photos = this.state.photoLinkQueue;
                 const surveyPromise = (!this.state.editMode)
                     ? createSurvey(this.state.survey)
                     : updateSurvey(this.state.survey);
@@ -332,8 +376,10 @@
                             "assetConditions",
                         );
                         this.update({
-                            survey: new EstradaSurvey({}), // clear input values
+                            photoLinkQueue: [],
+                            survey: makeEstradaSurvey(this.state.baseSurvey), // clear input values
                         });
+                        this.clearPhotos();
                         this.props.showFeedback();
                     })
                     .catch((err) => {
@@ -341,11 +387,8 @@
                     })
                     .finally((r) => {
                         $("#loading").modal("hide");
+                        this.update();
                     });
-
-                // clear input values
-                this.state.survey = new EstradaSurvey({});
-                this.update();
             },
             canSave() {
                 const missingFieldNames = checkRequiredFields(this.requiredFieldNames, this.state.survey);
@@ -364,7 +407,7 @@
                 * `source` and `user` are deliberately not compared
             */
             hasChanges() {
-                const compareFieldNames = this.requiredFieldNames; // + ["photo1", "photo2"];
+                const compareFieldNames = ["surveyDate", "assetCondition", "photos"];
                 const surveyBase = compareFieldNames.map((fieldName) => {return this.state.baseSurvey[fieldName] || "";}).join("|||");
                 const surveyResult = compareFieldNames.map((fieldName) => {return this.state.survey[fieldName] || "";}).join("|||");
 
@@ -395,11 +438,9 @@
                 this.state.survey.conditionDescription = e.currentTarget.value;
                 this.canSave();
             },
-            checkPhoto1Text(e) {
-                this.state.photo1 = e.currentTarget.value;
-            },
-            checkPhoto2Text(e) {
-                this.state.photo2 = e.currentTarget.value;
+            clearPhotos() {
+                document.dispatchEvent(new CustomEvent(`${this.photoId1}.photoCleared`, {}));
+                document.dispatchEvent(new CustomEvent(`${this.photoId2}.photoCleared`, {}));
             },
             max_date: () => new Date().toISOString().substring(0, 10),
         }
