@@ -14,8 +14,9 @@ reports_base #side-menu > div,
 edit_base #side-menu > div,
 #edit-base,
 #planning,
-#reports,
 #dashboard,
+#report-assets,
+#report-contracts,
 .filters {
     @extend %scrollbar-shared;
 }
@@ -64,6 +65,14 @@ edit_base #side-menu > div,
 #report-asset-condition-table,
 #report-road-status-table,
 #report-technical-class-table,
+#report-program-table,
+#report-contract-code-table,
+#report-asset-class-type-work-table,
+#report-type-work-year-table,
+#report-asset-class-year-table,
+#report-number-employees-table,
+#report-wages-table,
+#report-worked-days-table,
 .planning-dashboard-table {
     @extend %scrollbar-shared;
 

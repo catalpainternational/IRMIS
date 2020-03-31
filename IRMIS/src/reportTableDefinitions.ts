@@ -2,7 +2,70 @@ import { toChainageFormat } from "./assets/protoBufUtilities";
 
 // tslint:disable: object-literal-sort-keys
 
-/** The various columns shared between the different reports */
+/** The list of sections for the different types of asset reports */
+export const reportAssetsSections: Array<{ [name: string]: any }> = [
+    { section: "network", title: (window as any).gettext("Road Network Report") },
+    { section: "condition", title: (window as any).gettext("Road Condition Report") },
+    { section: "roadClass", title: (window as any).gettext("Road Network Reports by Road Class") },
+];
+
+/** assetReports.id matches the definitions in reportTableDefinitions */
+export const assetReports: Array<{ [name: string]: any }> = [
+    { id: 1, section: "network", title: (window as any).gettext("Road Network Length") },
+    { id: 2, section: "network", title: (window as any).gettext("Road Network Length Breakdown") },
+    { id: 3, section: "condition", title: (window as any).gettext("Surface Condition (SDI)") },
+    { id: 4, section: "condition", title: (window as any).gettext("IRI Roughness") },
+    { id: 5, section: "roadClass", title: (window as any).gettext("Road Network Length - National Class") },
+    { id: 6, section: "roadClass", title: (window as any).gettext("Road Network Length - Municipal Class") },
+    { id: 7, section: "roadClass", title: (window as any).gettext("Road Network Length - Rural Class") },
+    { id: 8, section: "roadClass", title: (window as any).gettext("Road Network Length - Highway Class") },
+    { id: 9, section: "roadClass", title: (window as any).gettext("Road Network Length - Urban Class") },
+];
+
+/** The names given to the dataTables used in the asset reports */
+export const reportTableIds: { [name: string]: string } = {
+    municipality: "report-municipality-table",
+    assetClass: "report-asset-class-table",
+    surfaceType: "report-surface-type-table",
+    roadStatus: "report-road-status-table",
+    technicalClass: "report-technical-class-table",
+    assetCondition: "report-asset-condition-table",
+};
+
+/** The names of the stacked bars used in the asset reports */
+export const reportBarIds: { [name: string]: string } = {
+    assetClass: "report-asset-class-bar",
+    roadStatus: "report-road-status-bar",
+    technicalClass: "report-technical-class-bar",
+    assetCondition: "report-asset-condition-bar",
+    pavementClass: "report-pavement-class-bar",
+};
+
+/** IDs of the asset report elements */
+export const allAssetReportElements = {
+    stackedBars: [reportBarIds.roadStatus, reportBarIds.technicalClass, reportBarIds.assetCondition],
+    tables: [
+        reportTableIds.municipality,
+        reportTableIds.assetClass,
+        reportTableIds.surfaceType,
+        reportTableIds.roadStatus,
+        reportTableIds.technicalClass,
+        reportTableIds.assetCondition,
+    ],
+};
+
+/** The various titles given to the dataTables used in the asset reports */
+export const reportTitleColumnMapping: { [name: string]: string } = {
+    municipality: "Municipality",
+    asset_class: "Asset Class",
+    road_status: "Road Status",
+    // asset_condition: no title column for asset condition
+    surface_type: "Surface Type",
+    technical_class: "Technical Class",
+    terrain_class: "Terrain Class",
+};
+
+/** The various columns shared between the different asset reports */
 export const reportColumns: { [name: string]: any } = {
     title: {
         // Title needs to be set per data type
@@ -82,33 +145,29 @@ export const reportColumns: { [name: string]: any } = {
     },
 };
 
-/** The names given to the dataTables used in the reports */
-export const reportTableIds: { [name: string]: string } = {
-    municipality: "report-municipality-table",
-    assetClass: "report-asset-class-table",
-    surfaceType: "report-surface-type-table",
-    roadStatus: "report-road-status-table",
-    technicalClass: "report-technical-class-table",
-    assetCondition: "report-asset-condition-table",
+/** 
+ * These are the default column sets for each report type,
+ * they are overriden for any report that specifies fixedFilter.secondaryattribute
+ * A column title is usually reset by the columns functions below
+ */
+export const reportColumnSets: { [name: string]: Array<string> } = {
+    municipality: [reportColumns.title, reportColumns.distance, reportColumns.percent],
+    asset_class: [reportColumns.title, reportColumns.distance, reportColumns.percent],
+    road_status: [reportColumns.title, reportColumns.distance, reportColumns.percent],
+    asset_condition: [reportColumns.chainageStart, reportColumns.chainageEnd, reportColumns.assetCondition, reportColumns.surveyDate],
+    surface_type: [reportColumns.title, reportColumns.distance, reportColumns.percent],
+    technical_class: [reportColumns.title, reportColumns.distance, reportColumns.percent],
+    terrain_class: [reportColumns.title, reportColumns.distance, reportColumns.percent],
 };
 
-/** The names of the stacked bars used in the reports */
-export const reportBarIds: { [name: string]: string } = {
-    assetClass: "report-asset-class-bar",
-    roadStatus: "report-road-status-bar",
-    technicalClass: "report-technical-class-bar",
-    assetCondition: "report-asset-condition-bar",
-    pavementClass: "report-pavement-class-bar",
-};
-
-/** The definitions of the different reports
+/** The definitions of the different asset reports
  * Note:
  * - fixedFilters uses snake_case for various field names
  * this excludes 'primaryattribute' and 'secondaryattribute' because they are not field names
- * within report.riot.html it also excludes several fields that a heavily verified/manipulated as filters
+ * within report_assets.riot.html it also excludes several fields that a heavily verified/manipulated as filters
  * - visibleFilters uses camelCase for various html id names within report.riot.html
  */
-export const reportContent: { [name: string]: any } = {
+export const reportAssetsContent: { [name: string]: any } = {
     1: {
         title: (window as any).gettext("Road Network Length"),
         description: (window as any).gettext("A report on the total length of the road network. The report provides total length in kilometers and percentages according to Road Status and Technical Class. A number of filters can be selected in order to generate a length report according to the required criteria"),
@@ -265,5 +324,423 @@ export const reportContent: { [name: string]: any } = {
             reportDate: true,
         },
         reportElements: { totalLength: true, dataTables: [reportTableIds.roadStatus, reportTableIds.technicalClass] },
+    },
+};
+
+/** The list of sections for the different types of contract reports */
+export const reportContractsSections: Array<{ [name: string]: any }> = [
+    { section: "contract", title: (window as any).gettext("Contract Reports") },
+    { section: "socialSafeguard", title: (window as any).gettext("Social Safeguard Reports") },
+];
+
+/** contractReports.id matches the definitions in reportTableDefinitions */
+export const contractReports: Array<{ [name: string]: any }> = [
+    { id: 1, section: "contract", title: (window as any).gettext("Financial and Physical Progress Summary") },
+    { id: 2, section: "contract", title: (window as any).gettext("Financial and Physical Progress") },
+    { id: 3, section: "contract", title: (window as any).gettext("Completed Contracts") },
+    { id: 4, section: "socialSafeguard", title: (window as any).gettext("Social Safeguard") },
+    { id: 5, section: "socialSafeguard", title: (window as any).gettext("Contract's Social Safeguard") },
+];
+
+/** The names given to the dataTables used in the contract reports */
+export const reportContractsTableIds: { [name: string]: string } = {
+    program: "report-program-table",
+    contractCode: "report-contract-code-table",
+    assetClassTypeOfWork: "report-asset-class-type-work-table",
+    typeOfWorkYear: "report-type-work-year-table",
+    assetClassYear: "report-asset-class-year-table",
+    numberEmployees: "report-number-employees-table",
+    wages: "report-wages-table",
+    workedDays: "report-worked-days-table",
+};
+
+/** The various titles given to the dataTables used in the contract reports */
+export const reportContractsTitleColumnMapping: { [name: string]: string } = {
+    program: (window as any).gettext("Program name"),
+    contractCode: (window as any).gettext("Contract code"),
+    assetClassTypeOfWork: (window as any).gettext("Asset class"),
+    typeOfWorkYear: (window as any).gettext("Type of work"),
+    assetClassYear: (window as any).gettext("Asset class"),
+    numberEmployees: (window as any).gettext("Number of employees"),
+    wages: (window as any).gettext("Wages"),
+    workedDays: (window as any).gettext("Worked days"),
+};
+
+/** The various columns shared between the different contract reports */
+export const reportContractsTableColumns: { [name: string]: any } = {
+    title: {
+        title: (window as any).gettext("Title"),
+        data: "title",
+        defaultContent: "",
+        orderable: false,
+    },
+    programName: {
+        title: (window as any).gettext("Program name"),
+        data: "programName",
+        defaultContent: "",
+        orderable: false,
+    },
+    projectName: {
+        title: (window as any).gettext("Project names"),
+        data: "projectName",
+        defaultContent: "",
+        orderable: false,
+    },
+    typeOfWork: {
+        title: (window as any).gettext("Type of work"),
+        data: "typeOfWork",
+        defaultContent: "",
+        orderable: false,
+    },
+    fundingSource: {
+        title: (window as any).gettext("Funding source"),
+        data: "fundingSource",
+        defaultContent: "",
+        orderable: false,
+    },
+    assets: {
+        title: (window as any).gettext("Number of assets"),
+        data: "assets",
+        defaultContent: "",
+        orderable: false,
+    },
+    projects: {
+        title: (window as any).gettext("Number of projects"),
+        data: "projects",
+        defaultContent: "",
+        orderable: false,
+    },
+    contracts: {
+        title: (window as any).gettext("Number of contracts"),
+        data: "contracts",
+        defaultContent: "",
+        orderable: false,
+    },
+    companies: {
+        title: (window as any).gettext("Number of companies"),
+        data: "companies",
+        defaultContent: "",
+        orderable: false,
+    },
+    contractor: {
+        title: (window as any).gettext("Contractor"),
+        data: "contractor",
+        defaultContent: "",
+        orderable: false,
+    },
+    budget: {
+        title: (window as any).gettext("Budget current year ($)"),
+        data: "budget",
+        defaultContent: "",
+        orderable: false,
+    },
+    totalBudget: {
+        title: (window as any).gettext("Total budget ($)"),
+        data: "totalBudget",
+        defaultContent: "",
+        orderable: false,
+    },
+    totalContractValue: {
+        title: (window as any).gettext("Total contract value ($)"),
+        data: "totalContractValue",
+        defaultContent: "",
+        orderable: false,
+    },
+    contractValue: {
+        title: (window as any).gettext("Value of the contract - including variations (amendments) ($)"),
+        data: "contractValue",
+        defaultContent: "",
+        orderable: false,
+    },
+    paymentPreviousYear: {
+        title: (window as any).gettext("Payments previous year ($)"),
+        data: "paymentPreviousYear",
+        defaultContent: "",
+        orderable: false,
+    },
+    paymentCurrentYear: {
+        title: (window as any).gettext("Payments current year ($)"),
+        data: "paymentCurrentYear",
+        defaultContent: "",
+        orderable: false,
+    },
+    totalPayment: {
+        title: (window as any).gettext("Total payment ($)"),
+        data: "totalPayment",
+        defaultContent: "",
+        orderable: false,
+    },
+    totalProgressPayment: {
+        title: (window as any).gettext("Total progress payment (%)"),
+        data: "totalProgressPayment",
+        defaultContent: "",
+        orderable: false,
+    },
+    balance: {
+        title: (window as any).gettext("Balance"),
+        data: "balance",
+        defaultContent: "",
+        orderable: false,
+    },
+    physicalProgress: {
+        title: (window as any).gettext("Physical progress"),
+        data: "physicalProgress",
+        defaultContent: "",
+        orderable: false,
+    },
+    status: {
+        title: (window as any).gettext("Status"),
+        data: "status",
+        defaultContent: "",
+        orderable: false,
+    },
+    startDate: {
+        title: (window as any).gettext("Start date"),
+        data: "startDate",
+        defaultContent: "",
+        orderable: false,
+    },
+    amendmentStartDate: {
+        title: (window as any).gettext("Amendment start date"),
+        data: "amendmentStartDate",
+        defaultContent: "",
+        orderable: false,
+    },
+    endDate: {
+        title: (window as any).gettext("End date"),
+        data: "endDate",
+        defaultContent: "",
+        orderable: false,
+    },
+    amendmentEndDate: {
+        title: (window as any).gettext("Amendment end date"),
+        data: "amendmentEndDate",
+        defaultContent: "",
+        orderable: false,
+    },
+    lastUpdateDate: {
+        title: (window as any).gettext("Date of last update"),
+        data: "lastUpdateDate",
+        defaultContent: "",
+        orderable: false,
+    },
+    dlpStartDate: {
+        title: (window as any).gettext("DLP start date"),
+        data: "dlpStartDate",
+        defaultContent: "",
+        orderable: false,
+    },
+    dlpEndDate: {
+        title: (window as any).gettext("DLP end date"),
+        data: "dlpEndDate",
+        defaultContent: "",
+        orderable: false,
+    },
+    year: {
+        title: (window as any).gettext("Year"),
+        data: "year",
+        defaultContent: "",
+        orderable: false,
+    },
+    employeesTotal: {
+        title: (window as any).gettext("Total"),
+        data: "employeesTotal",
+        defaultContent: "",
+        orderable: false,
+    },
+    employeesTotalPercentage: {
+        title: "%",
+        data: "employeesTotalPercentage",
+        defaultContent: "",
+        orderable: false,
+    },
+    wagesTotal: {
+        title: (window as any).gettext("Total"),
+        data: "wagesTotal",
+        defaultContent: "",
+        orderable: false,
+    },
+    workedDaysTotal: {
+        title: (window as any).gettext("Total"),
+        data: "workedDaysTotal",
+        defaultContent: "",
+        orderable: false,
+    },
+};
+
+/** The various columns for each dataTable used in the contract reports */
+export const reportContractsColumnSets: { [name: string]: Array<string> } = {
+    program: [
+        reportContractsTableColumns.title,
+        reportContractsTableColumns.fundingSource,
+        reportContractsTableColumns.projects,
+        reportContractsTableColumns.contracts,
+        reportContractsTableColumns.companies,
+        reportContractsTableColumns.budget,
+        reportContractsTableColumns.contractValue,
+        reportContractsTableColumns.paymentPreviousYear,
+        reportContractsTableColumns.paymentCurrentYear,
+        reportContractsTableColumns.totalPayment,
+        reportContractsTableColumns.totalProgressPayment,
+        reportContractsTableColumns.balance,
+        reportContractsTableColumns.physicalProgress,
+        reportContractsTableColumns.status,
+    ],
+    contractCode: [
+        reportContractsTableColumns.title,
+        reportContractsTableColumns.status,
+        reportContractsTableColumns.programName,
+        reportContractsTableColumns.fundingSource,
+        reportContractsTableColumns.projectName,
+        reportContractsTableColumns.typeOfWork,
+        reportContractsTableColumns.projects,
+        reportContractsTableColumns.assets,
+        reportContractsTableColumns.contractor,
+        reportContractsTableColumns.totalBudget,
+        reportContractsTableColumns.budget,
+        reportContractsTableColumns.totalContractValue,
+        reportContractsTableColumns.contractValue,
+        reportContractsTableColumns.paymentPreviousYear,
+        reportContractsTableColumns.paymentCurrentYear,
+        reportContractsTableColumns.totalPayment,
+        reportContractsTableColumns.totalProgressPayment,
+        reportContractsTableColumns.balance,
+        reportContractsTableColumns.startDate,
+        reportContractsTableColumns.amendmentStartDate,
+        reportContractsTableColumns.endDate,
+        reportContractsTableColumns.amendmentEndDate,
+        reportContractsTableColumns.physicalProgress,
+        reportContractsTableColumns.lastUpdateDate,
+        reportContractsTableColumns.dlpStartDate,
+        reportContractsTableColumns.dlpEndDate,
+    ],
+    assetClassTypeOfWork: [
+        reportContractsTableColumns.title,
+        reportContractsTableColumns.typeOfWork,
+    ],
+    typeOfWorkYear: [
+        reportContractsTableColumns.title,
+        reportContractsTableColumns.year,
+    ],
+    assetClassYear: [
+        reportContractsTableColumns.title,
+        reportContractsTableColumns.year,
+    ],
+    numberEmployees: [
+        reportContractsTableColumns.title,
+        reportContractsTableColumns.employeesTotal,
+        reportContractsTableColumns.employeesTotalPercentage,
+    ],
+    wages: [
+        reportContractsTableColumns.title,
+        reportContractsTableColumns.wagesTotal,
+    ],
+    workedDays: [
+        reportContractsTableColumns.title,
+        reportContractsTableColumns.workedDaysTotal,
+    ],
+};
+
+/** The definitions of the different contract reports */
+export const reportContractsContent: { [name: string]: any } = {
+    1: {
+        title: (window as any).gettext("Financial and Physical Progress Summary"),
+        description: (window as any).gettext("A report on the financial and physical progress of all projects and contracts. This report provides detailed information per contract"),
+        noReportTitle: (window as any).gettext("Click on Create Report button to access the financial and physical progress summary report"),
+        noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed financial and physical progress information. You can use filters to generate a customized report"),
+        noReportData: (window as any).gettext("Sorry, data for financial and physical progress is not available yet"),
+        visibleFilters: {
+            assetClass: true,
+            typeOfWork: true,
+            program: true,
+            fundingSource: true,
+            donor: true,
+            fromDate: true,
+            toDate: true,
+        },
+        reportElements: {
+            filters: true,
+            total: true,
+            dataTables: [reportContractsTableIds.program],
+        },
+    },
+    2: {
+        title: (window as any).gettext("Financial and Physical Progress"),
+        description: (window as any).gettext("A summary report on the financial and physical progress of all projects and contracts. This report provides aggregated information per program"),
+        noReportTitle: (window as any).gettext("Click on Create Report button to access the financial and physical progress report"),
+        noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed financial and physical progress information. You can use filters to generate a customized report"),
+        noReportData: (window as any).gettext("Sorry, data for financial and physical progress is not available yet"),
+        visibleFilters: {
+            assetClass: true,
+            typeOfWork: true,
+            program: true,
+            fundingSource: true,
+            donor: true,
+            fromDate: true,
+            toDate: true,
+        },
+        reportElements: {
+            filters: true,
+            total: true,
+            dataTables: [reportContractsTableIds.contractCode],
+        },
+    },
+    3: {
+        title: (window as any).gettext("Completed Contracts"),
+        description: (window as any).gettext("A summary report on the total length of works completed by type of work, breakdown by road class and year"),
+        noReportTitle: (window as any).gettext("Click on Create Report button to access the completed contracts report"),
+        noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed completed contracts information. You can use filters to generate a customized report"),
+        noReportData: (window as any).gettext("Sorry, data for completed contracts is not available yet"),
+        visibleFilters: {
+            fundingSource: true,
+            donor: true,
+        },
+        reportElements: {
+            filters: true,
+            total: true,
+            dataTables: [
+                reportContractsTableIds.assetClassTypeOfWork,
+                reportContractsTableIds.typeOfWorkYear,
+                reportContractsTableIds.assetClassYear,
+            ],
+        },
+    },
+    4: {
+        title: (window as any).gettext("Social Safeguard"),
+        description: (window as any).gettext("A summary report on the social safeguard data for all contracts for the selected period. The report provides information on number of employees, wages and number of worked days, with a breakdown by gender, age and disabilities"),
+        noReportTitle: (window as any).gettext("Click on Create Report button to access social safeguard report"),
+        noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed social safeguard information. You can use filters to generate a customized report"),
+        noReportData: (window as any).gettext("Sorry, data for social safeguard is not available yet"),
+        visibleFilters: {
+            year: true,
+            quarter: true,
+            month: true,
+        },
+        reportElements: {
+            filters: true,
+            dataTables: [
+                reportContractsTableIds.wages,
+                reportContractsTableIds.workedDays
+            ],
+        },
+    },
+    5: {
+        title: (window as any).gettext("Contract's Social Safeguard"),
+        description: (window as any).gettext("A report on the social safeguard data for a selected contract and period. The report provides information on number of employees, wages and number of worked days, with a breakdown by gender, age and disabilities"),
+        noReportTitle: (window as any).gettext("Click on Create Report button to access social safeguard contracts report"),
+        noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed social safeguard information. You can use filters to generate a customized report"),
+        noReportData: (window as any).gettext("Sorry, data for social safeguard is not available yet"),
+        visibleFilters: {
+            fromDate: true,
+            toDate: true,
+        },
+        reportElements: {
+            filters: true,
+            dataTables: [
+                reportContractsTableIds.numberEmployees,
+                reportContractsTableIds.wages,
+                reportContractsTableIds.workedDays
+            ],
+        },
     },
 };

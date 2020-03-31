@@ -409,4 +409,10 @@ table {
         text-transform: uppercase;
         color: $darker-gray;
     }
+
+    .print-footer p {
+        color: $darker-gray;
+        line-height: 20px;
+        font-size: 18px;
+    }
 }
