@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-20 01:13+0000\n"
+"POT-Creation-Date: 2020-03-30 02:27+0000\n"
 "PO-Revision-Date: 2019-10-09 01:05+0000\n"
 "Last-Translator: b'  <juliana@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -630,6 +630,55 @@ msgstr ""
 msgid "Choose the culvert material"
 msgstr "Escolha a classe de pavimento da estrada"
 
+msgid "Title"
+msgstr ""
+
+msgid "Approved"
+msgstr ""
+
+#, fuzzy
+#| msgid "Maintenance Needs"
+msgid "Routine Maintenance"
+msgstr "Tipo de Manutenção"
+
+msgid "Periodic Maintenance"
+msgstr ""
+
+msgid "Rehabilitation"
+msgstr ""
+
+msgid "Spot Improvement"
+msgstr ""
+
+msgid "Year"
+msgstr ""
+
+msgid "Budget"
+msgstr ""
+
+msgid "Enter the budget amount"
+msgstr ""
+
+#, fuzzy
+#| msgid "Link Length"
+msgid "Length"
+msgstr "Extensão da secção"
+
+#, fuzzy
+#| msgid "Enter road link length (in Km)"
+msgid "Enter the length"
+msgstr "Introduza a extensão da secção da estrada (em Km)"
+
+#, fuzzy
+#| msgid "Road Type"
+msgid "Work Type"
+msgstr "Tipo de Estrada"
+
+#, fuzzy
+#| msgid "Choose the pavement class of the road"
+msgid "Choose the work type"
+msgstr "Escolha a classe de pavimento da estrada"
+
 msgid "Road Inventory"
 msgstr "Inventário de Estradas"
 
@@ -769,11 +818,6 @@ msgstr ""
 #| msgid "Road Type"
 msgid "Type"
 msgstr "Tipo de Estrada"
-
-#, fuzzy
-#| msgid "Link Length"
-msgid "Length"
-msgstr "Extensão da secção"
 
 msgid "Width"
 msgstr ""

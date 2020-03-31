@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0 VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-20 01:13+0000\n"
+"POT-Creation-Date: 2020-03-30 02:27+0000\n"
 "PO-Revision-Date: 2019-10-09 05:43+0000\n"
 "Last-Translator: b'  <januario@catalpa.io>'\n"
 "Language-Team: Catalpa International <info@catalpa.io>\n"
@@ -629,6 +629,55 @@ msgstr ""
 msgid "Choose the culvert material"
 msgstr "Hili klase pavimentu husi estrada"
 
+msgid "Title"
+msgstr ""
+
+msgid "Approved"
+msgstr ""
+
+#, fuzzy
+#| msgid "Maintenance Needs"
+msgid "Routine Maintenance"
+msgstr "Persija Manutensaun "
+
+msgid "Periodic Maintenance"
+msgstr ""
+
+msgid "Rehabilitation"
+msgstr ""
+
+msgid "Spot Improvement"
+msgstr ""
+
+msgid "Year"
+msgstr ""
+
+msgid "Budget"
+msgstr ""
+
+msgid "Enter the budget amount"
+msgstr ""
+
+#, fuzzy
+#| msgid "Link Length"
+msgid "Length"
+msgstr "Naruk Estasaun"
+
+#, fuzzy
+#| msgid "Enter road link length (in Km)"
+msgid "Enter the length"
+msgstr "Hatama linha estrada nia naruk (iha Km) "
+
+#, fuzzy
+#| msgid "Road Type"
+msgid "Work Type"
+msgstr "Typu Estrada"
+
+#, fuzzy
+#| msgid "Choose the pavement class of the road"
+msgid "Choose the work type"
+msgstr "Hili klase pavimentu husi estrada"
+
 msgid "Road Inventory"
 msgstr "Inventoriu Estrada "
 
@@ -768,11 +817,6 @@ msgstr ""
 #| msgid "Road Type"
 msgid "Type"
 msgstr "Typu Estrada"
-
-#, fuzzy
-#| msgid "Link Length"
-msgid "Length"
-msgstr "Naruk Estasaun"
 
 msgid "Width"
 msgstr ""

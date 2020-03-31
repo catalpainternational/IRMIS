@@ -14,15 +14,16 @@ from django.db.models.functions import Cast, Substr
 import json
 import reversion
 
-from csv_data_sources.models import CsvData
-
-from google.protobuf.timestamp_pb2 import Timestamp
-from google.protobuf.wrappers_pb2 import FloatValue, UInt32Value
-
 from protobuf.photo_pb2 import Photos as ProtoPhotos
 from protobuf.roads_pb2 import Roads as ProtoRoads, Projection
 from protobuf.survey_pb2 import Surveys as ProtoSurveys
 from protobuf.structure_pb2 import Structures as ProtoStructures
+from protobuf.plan_pb2 import Plans as ProtoPlans
+from protobuf.plan_pb2 import PlanSnapshots as ProtoPlanSnapshots
+from protobuf.structure_pb2 import Point
+
+from google.protobuf.timestamp_pb2 import Timestamp
+from google.protobuf.wrappers_pb2 import FloatValue, UInt32Value
 
 from .geodjango_utils import start_end_point_annos
 from csv_data_sources.models import CsvData
@@ -1500,6 +1501,196 @@ class RoughnessSurvey(CsvData):
         proxy = True
 
     objects = RoughnessManager()
+
+
+class PlanQuerySet(models.QuerySet):
+    def to_protobuf(self):
+        """ returns a Plan protobuf object from the queryset with a Plans list """
+        # See plan.proto --> Plans --> Plan
+        plans_protobuf = ProtoPlans()
+        asset_type = "PLAN"
+
+        regular_fields = dict(
+            id="id", title="title", approved="approved", asset_class="asset_class"
+        )
+
+        datetime_fields = dict(
+            date_created="date_created", last_modified="last_modified",
+        )
+
+        plans = self.prefetch_related("user").prefetch_related("summary")
+        for plan in plans:
+            plan_protobuf = plans_protobuf.plans.add()
+            for protobuf_key, query_key in regular_fields.items():
+                if getattr(plan, query_key, None):
+                    setattr(plan_protobuf, protobuf_key, getattr(plan, query_key))
+
+            for protobuf_key, query_key in datetime_fields.items():
+                if getattr(plan, query_key, None):
+                    ts = timestamp_from_datetime(getattr(plan, query_key))
+                    getattr(plan_protobuf, protobuf_key).CopyFrom(ts)
+
+            if plan.user:
+                if plan.user.first_name and plan.user.last_name:
+                    setattr(
+                        plan_protobuf,
+                        "added_by",
+                        "%s %s" % (plan.user.first_name, plan.user.last_name),
+                    )
+                elif plan.user.username:
+                    setattr(plan_protobuf, "added_by", plan.user.username)
+            else:
+                setattr(plan_protobuf, "added_by", "")
+
+            if getattr(plan, "date_created", None):
+                ts = timestamp_from_datetime(getattr(plan, "date_created"))
+                plan_protobuf.date_created.CopyFrom(ts)
+
+            if getattr(plan, "last_modified", None):
+                ts = timestamp_from_datetime(getattr(plan, "last_modified"))
+                plan_protobuf.last_modified.CopyFrom(ts)
+
+            # set informational protobuf file fields (name/url) for frontend use
+            if plan.file:
+                setattr(plan_protobuf, "file_name", plan.file.name)
+                setattr(plan_protobuf, "url", plan.file.url)
+
+            summaries = plan.summary.all()
+            for summary in summaries:
+                snapshot = plan_protobuf.summary.add()
+                setattr(snapshot, "budget", snapshot.budget)
+                setattr(snapshot, "year", snapshot.year)
+                setattr(snapshot, "length", snapshot.length)
+                setattr(snapshot, "asset_class", snapshot.asset_class)
+
+        return plans_protobuf
+
+
+class PlanManager(models.Manager):
+    def get_queryset(self):
+        return PlanQuerySet(self.model, using=self._db)
+
+    def to_protobuf(self):
+        """ returns a Plan protobuf object from the manager """
+        return self.get_queryset().to_protobuf()
+
+
+@reversion.register()
+class Plan(models.Model):
+
+    objects = PlanManager()
+
+    title = models.CharField(
+        verbose_name=_("Title"), max_length=150, blank=True, null=True
+    )
+    file = models.FileField(upload_to="plans/")
+    approved = models.BooleanField(verbose_name=_("Approved"), default=False)
+    asset_class = models.CharField(
+        verbose_name=_("Asset Class"),
+        max_length=4,
+        choices=Asset.ASSET_CLASS_CHOICES,
+        blank=True,
+        null=True,
+        help_text=_("Choose the asset class"),
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        verbose_name=_("User"),
+        null=True,
+        on_delete=models.SET_NULL,
+    )
+    date_created = models.DateTimeField(
+        verbose_name=_("Date Created"), auto_now_add=True, null=True
+    )
+    last_modified = models.DateTimeField(verbose_name=_("last modified"), auto_now=True)
+
+
+class PlanSnapshotQuerySet(models.QuerySet):
+    def to_protobuf(self):
+        """ returns a PlanSnapshots protobuf object with a list of Snapshots from the queryset """
+        # See plan.proto --> PlanSnapshots --> Snapshots[]
+        plansnapshots_protobuf = ProtoPlanSnapshots()
+        asset_type = "SNAP"
+
+        regular_fields = dict(
+            id="id", plan="plan__id", asset_class="asset_class", work_type="work_type",
+        )
+        float_fields = dict(length="length", budget="budget",)
+        int_fields = dict(year="year",)
+
+        snapshots = self.order_by("id").prefetch_related("plan")
+
+        for snap in snapshots:
+            snap_protobuf = plansnapshots_protobuf.snapshots.add()
+            for protobuf_key, query_key in regular_fields.items():
+                if getattr(snap, query_key, None):
+                    setattr(snap_protobuf, protobuf_key, getattr(snap, query_key, None))
+
+            for protobuf_key, query_key in float_fields.items():
+                nullable_value = prepare_protobuf_nullable_float(
+                    getattr(snap, query_key, None)
+                )
+                setattr(snap_protobuf, protobuf_key, nullable_value)
+
+            for protobuf_key, query_key in int_fields.items():
+                nullable_value = prepare_protobuf_nullable_int(
+                    getattr(snap, query_key, None)
+                )
+                setattr(snap_protobuf, protobuf_key, nullable_value)
+
+        return plansnapshots_protobuf
+
+
+class PlanSnapshotManager(models.Manager):
+    def get_queryset(self):
+        return PlanSnapshotQuerySet(self.model, using=self._db)
+
+    def to_protobuf(self):
+        """ returns a PlanSnapshot protobuf object from the manager """
+        return self.get_queryset().to_protobuf()
+
+
+class PlanSnapshot(models.Model):
+
+    objects = PlanSnapshotManager()
+
+    WORK_TYPE_CHOICES = [
+        ("routine", _("Routine Maintenance")),
+        ("periodic", _("Periodic Maintenance")),
+        ("rehab", _("Rehabilitation")),
+        ("spot", _("Spot Improvement")),
+    ]
+
+    plan = models.ForeignKey(Plan, related_name="summary", on_delete=models.CASCADE)
+    year = models.IntegerField(verbose_name=_("Year"), blank=True, null=True)
+    budget = models.DecimalField(
+        verbose_name=_("Budget"),
+        max_digits=12,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        help_text=_("Enter the budget amount"),
+    )
+    length = models.DecimalField(
+        verbose_name=_("Length"),
+        max_digits=9,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        help_text=_("Enter the length"),
+    )
+    asset_class = models.CharField(
+        verbose_name=_("Asset Class"),
+        max_length=4,
+        choices=Asset.ASSET_CLASS_CHOICES,
+        help_text=_("Choose the asset class"),
+    )
+    work_type = models.CharField(
+        verbose_name=_("Work Type"),
+        max_length=10,
+        choices=WORK_TYPE_CHOICES,
+        help_text=_("Choose the work type"),
+    )
 
 
 def timestamp_from_datetime(dt):

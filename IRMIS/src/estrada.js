@@ -79,7 +79,7 @@ window.addEventListener("load", () => {
         riot.register("edit_base", Edit_Base);
     }
 
-    window.goBack = () => {};
+    window.goBack = () => { };
 
     hashCheck();
 });
@@ -91,11 +91,11 @@ window.addEventListener("hashchange", () => {
 function hashCheck() {
     const mainContent = document.getElementById("view-content");
     const planningBase = document.getElementById("planning");
-    const reportsBase = document.getElementById("reports") || document.getElementById("dashboard");
+    const reportsBase = document.getElementById("dashboard") || document.getElementById("report-assets") || document.getElementById("report-contracts");
     const editBase = document.getElementById("edit-base");
 
-    let planningHash = /#planning/.exec(location.hash);
-    let reportsHash = /#reports\/(.*)\/?/.exec(location.hash);
+    let planningHash = /#planning\/(.*)\/?/.exec(location.hash);
+    let reportsHash = /#reports\/(\w+)\/(\d*)/.exec(location.hash);
     let editHash = /#edit\/(\w+)\/(\d*)\/(\w+)/.exec(location.hash);
 
     if (editHash !== null && !editBase) {
@@ -113,12 +113,12 @@ function hashCheck() {
     } else if (reportsHash !== null && !reportsBase) {
         if (planningBase) riot.unmount("planning_base", true);
         if (editBase) riot.unmount("edit_base", true);
-        riot.mount("reports_base", { page: reportsHash[1] });
+        riot.mount("reports_base", { page: reportsHash[1], pageId: reportsHash[2] });
         mainContent.hidden = true;
     } else if (planningHash !== null && !planningBase) {
         if (editBase) riot.unmount("edit_base", true);
         if (reportsBase) riot.unmount("reports_base", true);
-        riot.mount("planning_base");
+        riot.mount("planning_base", { page: planningHash[1] });
         mainContent.hidden = true;
     } else if (editHash === null && reportsHash === null && planningHash === null) {
         if (planningBase) riot.unmount("planning_base", true);

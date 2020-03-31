@@ -1,7 +1,7 @@
 $blank-report-content-width: 444px;
 $form-control-width: 225px;
 
-#reports, #dashboard {
+#dashboard, #report-assets, #report-contracts {
     height: calc(100vh - #{$top-menu-height} - 5px);
     width: calc(100% - #{$side-menu-width});
     padding-right: 8px;
@@ -57,7 +57,7 @@ reports_base {
     }
 }
 
-report, report_dashboard {
+report_dashboard, report_assets, report_contracts {
     min-height: calc(100% - 40px);
     display: block;
 
@@ -82,33 +82,42 @@ report, report_dashboard {
         padding: 25px 25px 15px 60px;
         background-color: $white;
 
+        .report-criteria {
+            border-bottom: 1px solid $darker-gray;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        .report-content {
+            margin-bottom: 0;
+    
+            h6 {
+                margin-bottom: 0;
+            }
+    
+            .total, .total-length {
+                margin-bottom: 30px;
+    
+                h1 {
+                    margin-right: 30px;
+                    margin-bottom: 0;
+                    font-size: 30px;
+                    line-height: 44px;
+                }
+            }
+        }
+
         p {
             margin-bottom: 0;
         }
     }
-
-    .content-wrapper.report-content {
-        margin-bottom: 0;
-
-        h6 {
-            margin-bottom: 0;
-        }
-
-        .total-length {
-            margin-bottom: 30px;
-
-            h1 {
-                margin-right: 30px;
-                margin-bottom: 0;
-                font-size: 30px;
-                line-height: 44px;
-            }
-        }
-    }
 }
 
-report {
+report_assets, report_contracts {
     header {
+        align-items: center;
+        display: flex;
+
         .caret-dark {
             background-size: 16px 10px;
             height: 25px;
@@ -133,7 +142,7 @@ report {
         }
     }
 
-    .content-wrapper.report-content {
+    .content-wrapper .report-content {
         .print-title {
             display: none;
         }
@@ -173,6 +182,8 @@ report {
 
     input[type="date"] {
         width: $form-control-width;
+        margin-bottom: 10px;
+        margin-right: 10px;
     }
 
     .options {

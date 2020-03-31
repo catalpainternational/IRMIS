@@ -1,0 +1,68 @@
+<planning_templates>
+    <header class="align-items-center d-flex">
+        <h1>{ window.gettext("Planning Templates") }</h1>
+    </header>
+
+    <div class="content-wrapper">
+        <div class="d-flex">
+            <div class="instructions">
+                <h5>{ window.gettext("How to use the planning tool, step by step") }</h5>
+                <ul>
+                    <li>{ window.gettext("Download Excel templates and the query for the road class you will be preparing the planning from the list below. Example, if you want to prepare a 5-year plan for National Roads, download Excel XXX and Query file XXX") }</li>
+                    <li>{ window.gettext("Import data from the Estrada database to the Excel template using the downloaded query") }</li>
+                    <li>{ window.gettext("Start preparing your plan") }</li>
+                    <li>{ window.gettext("Review criteria such as type of work criteria, unit costs and prioritization of facilities and connections") }</li>
+                    <li>{ window.gettext("Pick the planned year of treatment for segments of roads that requires Rehabilitation and Periodic Maintenance") }</li>
+                    <li>{ window.gettext("Access annual pans for each of the 5 years and the summary of your plan") }</li>
+                    <li>{ window.gettext("Upload your plan to the Estrada and mark it as approved once the approval process is completed") }</li>
+                    <li>{ window.gettext("When reviews to the plan are required, download the most up-to-date plan from the Estrada and follow steps 2 to 7 as needed") }</li>
+                </ul>
+                <p class="download-guidelines">
+                    { window.gettext("You can find detailed guidelines on how to use the planning tools") }
+                    <a href="" download=""> { window.gettext("here") }</a>
+                </p>
+                <h5>{ window.gettext("Access token") }</h5>
+                <p>{ window.gettext("Token to get information from the Estrada database to your Excel planning file") }</p>
+                <div class="align-items-center d-flex justify-content-between">
+                    <input id="access-token" class="disabled" type="text" value="{ state.token }">
+                    <button class="btn btn-primary btn-sm" onclick="{ copyToClipboard }">{ window.gettext("Copy") }</button>
+                </div>
+            </div>
+            <span class="image"></span>
+        </div>
+        <div class="templates-list">
+            <h5>{ window.gettext("List of templates") }</h5>
+            <table class="d-block planning-table table table-hover w-100">
+                <thead>
+                    <tr>
+                        <th>{ window.gettext("Title") }</th>
+                        <th>{ window.gettext("Road Class") }</th>
+                        <th>{ window.gettext("Uploaded On") }</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{ window.gettext("5 year plan urban roads") }</td>
+                        <td>{ window.gettext("Urban") }</td>
+                        <td>03/27/2020</td>
+                        <td><a class="image document" href="/static/5year-plan-UrbanRoads-Template.xlsx" download="5year-plan-UrbanRoads-Template.xlsx"></a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        export default {
+            state: {
+                token: 1234,
+            },
+            copyToClipboard() {
+                const accessToken = document.getElementById("access-token");
+                accessToken.select();
+                document.execCommand("copy");
+            },
+        }
+    </script>
+</planning_templates>
