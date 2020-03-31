@@ -1,30 +1,30 @@
 <photos_details_box>
-    <span if="{!state.hidden}">
-        <span if="{state.errors.length}">
+    <template if="{ !state.errors.length && !state.currentPhotosData }">
+        <p class="small">{ window.gettext("Loading photos...") }</p>
+    </template>
+    <template if="{ !state.hidden }">
+        <template if="{ state.errors.length }">
             <p class="small">{ window.gettext(state.errors[0]) }</p>
-        </span>
-        <span if="{!state.errors.length && !state.currentPhotosData}">
-            <p class="small">{ window.gettext("Loading photos...") }</p>
-        </span>
-        <span if="{!state.errors.length && state.currentPhotosData}" style="text-align: center;">
-            <div if="{state.photo1_show}">
-                <img src="{ state.currentPhotosData[0].url }" style="max-width: 500px;">
-                <p class="small">{ state.currentPhotosData[0].description }</p>
+        </template>
+        <div if="{ !state.errors.length && state.currentPhotosData }" class="text-center">
+            <div if="{ state.photo1_show }">
+                <img class="uploaded-photo" src="{ state.currentPhotosData[0].url }">
             </div>
-            <span if="{ state.currentPhotosData.length>1 }">
-                <div if="{state.photo2_show}">
-                    <img src="{ state.currentPhotosData[1].url }" style="max-width: 500px;">
-                    <p class="small">{ state.currentPhotosData[1].description }</p>
+            <template if="{ state.currentPhotosData.length > 1 }">
+                <div if="{ state.photo2_show }">
+                    <img class="uploaded-photo" src="{ state.currentPhotosData[1].url }">
                 </div>
-                <div class="photos-toggle-btns">
-                    <button class="btn btn-sm btn-primary {state.photo1_show ? 'active' : ''}"
-                        style="margin-right: 10px;" onclick="{showPhoto1}">Photo 1</button>
-                    <button class="btn btn-sm btn-primary {state.photo2_show ? 'active' : ''}"
-                        style="margin-right: 10px;" onclick="{showPhoto2}">Photo 2</button>
-                </div>
-            </span>
-        </span>
-    </span>
+                <ul class="d-flex justify-content-center pagination">
+                    <li onclick="{ showPhoto1 }">{ window.gettext("Previous") }</li>
+                    <li class="{ state.photo1_show ? 'active' : '' }" onclick="{ showPhoto1 }">1</li>
+                    <li class="{ state.photo2_show ? 'active' : '' }" onclick="{ showPhoto2 }">2</li>
+                    <li onclick="{ showPhoto2 }">{ window.gettext("Next") }</li>
+                </ul>
+            </template>
+        </div>
+        <p if="{ state.photo1_show }">{ state.currentPhotosData[0].description }</p>
+        <p if="{ state.photo2_show }">{ state.currentPhotosData[1].description }</p>
+    </template>
 
     <script>
         export default {
@@ -38,13 +38,16 @@
             },
             onMounted(props, state) {
                 this.photosModalListener = (data) => {
-                    if (data.detail.currentPhotosData != []) {
+                    if (data.detail.currentPhotosData == undefined) {
+                        this.state.hidden = true;
+                    }
+                    else if (data.detail.currentPhotosData != []) {
                         this.state.currentPhotosData = data.detail.currentPhotosData;
-                        this.state.errors = [];
+                        this.state.hidden = false;
                     } else {
                         this.state.errors = ["No inventory photos to show"];
+                        this.state.hidden = false;
                     }
-                    this.state.hidden = false;
                     this.update();
                 };
                 document.addEventListener("photos-details-modal.updateModalData", this.photosModalListener);

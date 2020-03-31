@@ -111,6 +111,7 @@ edit_location_type,
 edit_structure_type,
 edit_project,
 edit_maintenance,
+edit_media,
 edit_history {
     background-color: $white;
     padding: 30px 60px 60px;
@@ -130,18 +131,6 @@ edit_pavement,
 edit_condition {
     h5 {
         margin-bottom: 0;
-    }
-}
-
-edit_structure_condition {
-    section {
-        min-width: 450px;
-    }
-}
-
-edit_photos {
-    .button-spacer {
-        margin-top: 80px;
     }
 }
 

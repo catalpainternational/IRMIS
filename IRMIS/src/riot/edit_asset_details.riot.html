@@ -180,34 +180,6 @@
 
     <div class="content-wrapper">
         <div class="d-flex justify-content-between">
-            <h5>{ window.gettext("Total Width Data") }</h5>
-            <button class="btn btn-primary" onclick="{ addEditTotalWidth }" disabled="{ props.editing }">
-                { window.gettext("Add") }
-            </button>
-        </div>
-
-        <div class="d-flex">
-            <a class="{ !state.viewAllTotalWidth ? 'active' : '' } table-toggle" onclick="{ viewCurrentTotalWidth }">
-                { window.gettext("Current total width") }
-            </a>
-            <a class="{ state.viewAllTotalWidth ? 'active' : '' } table-toggle" onclick="{ viewAllTotalWidth }">
-                { window.gettext("View all data entries") }
-            </a>
-        </div>
-        <data_table if="{ state.viewAllTotalWidth }" table_id="{total_width_all_data_table_id}"
-            columns="{total_width_all_data_table_columns}" columnSortOrder="{total_width_all_data_table_columns_order}"
-            getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows['total_width']}"
-            candelete=true>
-        </data_table>
-        <data_table if="{ !state.viewAllTotalWidth }" table_id="{total_width_current_data_table_id}"
-            columns="{total_width_current_data_table_columns}"
-            columnSortOrder="{total_width_current_data_table_columns_order}" getHelpText="{props.parent.getHelpText}"
-            pendingRows="{state.pendingRows['total_width']}">
-        </data_table>
-    </div>
-
-    <div class="content-wrapper">
-        <div class="d-flex justify-content-between">
             <h5>{ window.gettext("Technical Class Data") }</h5>
             <button class="btn btn-primary" onclick="{ addEditTechnical }" disabled="{ props.editing }">
                 { window.gettext("Add") }

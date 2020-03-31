@@ -1,5 +1,4 @@
-import { choice_or_default, toChainageFormat } from "./assets/protoBufUtilities";
-import {ASSET_CONDITION_CHOICES} from "./assets/models/estradaBase";
+import { toChainageFormat } from "./assets/protoBufUtilities";
 
 /** Defines base columns needed in all segments modal tables **/
 const baseSegmentColumns = [
@@ -21,17 +20,6 @@ const baseSegmentColumns = [
         render: (data, type) => {
             return (type === "display" && typeof data === "number") ? toChainageFormat(data) : data;
         },
-    },
-];
-
-/** Defines base columns needed in all details modal tables **/
-const baseDetailColumns = [
-    {
-        title: window.gettext("Survey date"),
-        data: "dateSurveyed",
-        defaultContent: "",
-        className: "text-center",
-        orderable: false,
     },
 ];
 

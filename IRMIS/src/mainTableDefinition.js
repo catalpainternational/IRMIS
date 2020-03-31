@@ -491,6 +491,7 @@ export const structuresTableColumns = [
         data: null,
         defaultContent: "",
         render: (r) => r.assetCondition ? buttonSegmentsTemplate("structure_condition_photos", r, "Photos") : "",
+        className: "text-center",
         visible: false,
         orderable: false,
     },
