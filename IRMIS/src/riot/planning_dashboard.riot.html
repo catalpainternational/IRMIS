@@ -4,8 +4,8 @@
     </header>
 
     <div class="content-wrapper">
-        <h5>{ window.gettext("5-Year Plan and Budget Summary") }</h5>
         <template if="{ !isEmpty(state.summaries) && !isEmpty(state.summaryData) }">
+            <h5>{ window.gettext("5-Year Plan and Budget Summary") }</h5>
             <div class="planning-dashboard-section" each="{ workType in Object.entries(workTypes) }">
                 <div class="total-budget">
                     <p>{ window.gettext("Total Budget") } { workType[1] }</p>
