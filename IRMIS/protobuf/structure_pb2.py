@@ -16,8 +16,8 @@ _sym_db = _symbol_database.Default()
 
 
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
-import photo_pb2 as photo__pb2
-import roads_pb2 as roads__pb2
+from . import photo_pb2 as photo__pb2
+from . import roads_pb2 as roads__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
