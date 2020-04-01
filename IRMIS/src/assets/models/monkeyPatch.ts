@@ -11,13 +11,12 @@
 
 import * as jspb from "google-protobuf";
 
-import { EstradaPhoto } from "./photo";
+import { EstradaPhoto, Photo } from "./photo";
 import { makeEstradaObject } from "../protoBufUtilities";
 
 // The affected 'nested' Messages
 import { Timestamp } from "google-protobuf/google/protobuf/timestamp_pb";
 import { Projection } from "../../../protobuf/roads_pb";
-import { Photo } from "../../../protobuf/photo_pb";
 
 /**
  * Serializes the given Message data (not the Message object)

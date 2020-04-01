@@ -1,10 +1,9 @@
 import dayjs from "dayjs";
 
-import { Photo } from "../../../protobuf/photo_pb";
 import { Survey } from "../../../protobuf/survey_pb";
 
 import { IEstrada } from "./estradaBase";
-import { makeEstradaPhoto, EstradaPhoto } from "./photo";
+import { makeEstradaPhoto, EstradaPhoto, Photo } from "./photo";
 
 import { getFieldName, getHelpText, makeEstradaObject } from "../protoBufUtilities";
 

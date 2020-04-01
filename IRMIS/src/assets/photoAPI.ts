@@ -1,5 +1,4 @@
-import { Photo, Photos } from "../../protobuf/photo_pb";
-import { EstradaPhoto, makeEstradaPhoto } from "./models/photo";
+import { EstradaPhoto, makeEstradaPhoto, Photo, Photos } from "./models/photo";
 
 import { ConfigAPI } from "./configAPI";
 

@@ -3,19 +3,19 @@ import { isArray } from "util";
 
 import { Timestamp } from "google-protobuf/google/protobuf/timestamp_pb";
 import { Attribute, Report } from "../../../protobuf/report_pb";
-import { Photo } from "../../../protobuf/photo_pb";
 
-import { makeEstradaPhoto, EstradaPhoto } from "./photo";
+import { IEstrada } from "./estradaBase";
+import { makeEstradaPhoto, EstradaPhoto, Photo } from "./photo";
 
 import { reportColumns } from "../../reportTableDefinitions";
 import { choice_or_default, getFieldName, getHelpText, invertChoices, makeEstradaObject } from "../protoBufUtilities";
 
-import { ADMINISTRATIVE_AREA_CHOICES, ASSET_CLASS_CHOICES, ASSET_CONDITION_CHOICES, ASSET_TYPE_CHOICES, IEstrada } from "./estradaBase";
 import {
+    ADMINISTRATIVE_AREA_CHOICES, ASSET_CLASS_CHOICES, ASSET_CONDITION_CHOICES, ASSET_TYPE_CHOICES,
     PAVEMENT_CLASS_CHOICES, ROAD_STATUS_CHOICES, SURFACE_TYPE_CHOICES,
     TECHNICAL_CLASS_CHOICES,
     TERRAIN_CLASS_CHOICES, TRAFFIC_LEVEL_CHOICES,
-} from "./road";
+} from "./choices";
 
 // tslint:disable: object-literal-sort-keys
 // tslint:disable: max-classes-per-file

@@ -4,6 +4,9 @@ import { Photo } from "../../../protobuf/photo_pb";
 import { IEstrada } from "./estradaBase";
 import { getFieldName, getHelpText, makeEstradaObject } from "../protoBufUtilities";
 
+// Do a reexport for the benefit of anything that references EstradaPhoto
+export { Photo, Photos } from "../../../protobuf/photo_pb";
+
 // tslint:disable: max-classes-per-file
 
 const photoSchema = {};
