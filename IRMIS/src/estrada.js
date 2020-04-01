@@ -13,6 +13,7 @@ import Data_Table from "./riot/data_table.riot.html";
 import Edit_Base from "./riot/edit_base.riot.html";
 import Top_Menu from "./riot/top_menu.riot.html";
 import TrafficDataDetails from "./riot/traffic_data_details.riot.html";
+import PhotosDetailsBox from "./riot/photos_details_box.riot.html";
 
 import { getGeoJsonDetails, getGeoJsonDetail } from "./assets/geoJsonAPI.js";
 
@@ -70,6 +71,9 @@ window.addEventListener("load", () => {
 
     riot.register("traffic_data_details", TrafficDataDetails);
     riot.mount("traffic_data_details");
+
+    riot.register("photos_details_box", PhotosDetailsBox);
+    riot.mount("photos_details_box");
 
     if (window.canEdit) {
         riot.register("edit_base", Edit_Base);

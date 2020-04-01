@@ -34,6 +34,6 @@ export interface IAsset extends IEstrada {
     assetId: string;
 
     // public static methods
-    // getFieldName(field: string): string;
+    getFieldName(field: string): string;
     // getHelpText(field: string): string;
 }

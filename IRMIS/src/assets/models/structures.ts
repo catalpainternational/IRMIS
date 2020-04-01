@@ -1,26 +1,27 @@
-import { Bridge, Culvert, Point, Structures } from "../../../protobuf/structure_pb";
-import { projToWGS84, toDms } from "../crsUtilities";
+import { Bridge, Culvert, Structures } from "../../../protobuf/structure_pb";
+import { EstradaPhoto, makeEstradaPhoto } from "./photo";
+import { makeEstradaProjection } from "./road";
 import {
     choice_or_default,
     getFieldName,
     getHelpText,
     humanizeChoices,
     makeEstradaObject,
-    projectionToCoordinates,
     toChainageFormat,
 } from "../protoBufUtilities";
 
 import { ADMINISTRATIVE_AREA_CHOICES, ASSET_CLASS_CHOICES, ASSET_CONDITION_CHOICES, IAsset, IEstrada } from "./estradaBase";
+import { Photo } from "../../../protobuf/photo_pb";
 
 const assetSchema = JSON.parse(document.getElementById("asset_schema")?.textContent || "");
 
 export const STRUCTURE_UPSTREAM_PROTECTION_TYPE_CHOICES = humanizeChoices(assetSchema, "protection_upstream", "code", "name");
 export const STRUCTURE_DOWNSTREAM_PROTECTION_TYPE_CHOICES
     = humanizeChoices(assetSchema, "protection_downstream", "code", "name");
-export const STRUCTURE_TYPE_BRIDGE_CHOICES = humanizeChoices(assetSchema, "structure_type_bridge", "code", "name");
-export const STRUCTURE_TYPE_CULVERT_CHOICES = humanizeChoices(assetSchema, "structure_type_culvert", "code", "name");
-export const MATERIAL_TYPE_BRIDGE_CHOICES = humanizeChoices(assetSchema, "material_bridge", "code", "name");
-export const MATERIAL_TYPE_CULVERT_CHOICES = humanizeChoices(assetSchema, "material_culvert", "code", "name");
+export const STRUCTURE_TYPE_BRIDGE_CHOICES = humanizeChoices(assetSchema, "structure_type_BRDG", "code", "name");
+export const STRUCTURE_TYPE_CULVERT_CHOICES = humanizeChoices(assetSchema, "structure_type_CULV", "code", "name");
+export const MATERIAL_TYPE_BRIDGE_CHOICES = humanizeChoices(assetSchema, "material_BRDG", "code", "name");
+export const MATERIAL_TYPE_CULVERT_CHOICES = humanizeChoices(assetSchema, "material_CULV", "code", "name");
 
 // tslint:disable: max-classes-per-file
 
@@ -69,7 +70,14 @@ export class EstradaStructures extends Structures implements IEstrada {
 
 export class EstradaBridge extends Bridge implements IAsset {
     public static getFieldName(field: string) {
+        if (assetSchema[`${field}_${EstradaBridge.assetType}`]) {
+            return assetSchema[`${field}_${EstradaBridge.assetType}`].display || "";
+        }
         return getFieldName(assetSchema, field);
+    }
+
+    public getFieldName(field: string) {
+        return EstradaBridge.getFieldName(field);
     }
 
     public static getHelpText(field: string) {
@@ -88,8 +96,12 @@ export class EstradaBridge extends Bridge implements IAsset {
     }
 
     /** The asset's type - the prefix part of its Id */
-    get assetType() {
+    static get assetType() {
         return "BRDG";
+    }
+
+    get assetType() {
+        return EstradaBridge.assetType;
     }
 
     get assetTypeName() {
@@ -137,7 +149,7 @@ export class EstradaBridge extends Bridge implements IAsset {
 
     get geomPoint() {
         const geomPointRaw = this.getGeomPoint();
-        return geomPointRaw ? makeEstradaPoint(geomPointRaw) : geomPointRaw;
+        return geomPointRaw ? makeEstradaProjection(geomPointRaw) : geomPointRaw;
     }
 
     get dms() {
@@ -196,6 +208,24 @@ export class EstradaBridge extends Bridge implements IAsset {
         return choice_or_default(this.getProtectionDownstream(), STRUCTURE_DOWNSTREAM_PROTECTION_TYPE_CHOICES);
     }
 
+    get inventoryPhotos(): EstradaPhoto[] | undefined {
+        const inventoryPhotosListRaw = this.getInventoryPhotosList();
+        return inventoryPhotosListRaw ? inventoryPhotosListRaw.map(makeEstradaPhoto) : inventoryPhotosListRaw;
+    }
+
+    set inventoryPhotos(values: EstradaPhoto[] | undefined) {
+        this.setInventoryPhotosList(values as Photo[]);
+    }
+
+    get surveyPhotos(): EstradaPhoto[] | undefined {
+        const surveyPhotosListRaw = this.getSurveyPhotosList();
+        return surveyPhotosListRaw ? surveyPhotosListRaw.map(makeEstradaPhoto) : surveyPhotosListRaw;
+    }
+
+    set surveyPhotos(values: EstradaPhoto[] | undefined) {
+        this.setSurveyPhotosList(values as Photo[]);
+    }
+
     /** assetCondition is the most recent structure condition from the surveys */
     get assetCondition() {
         return choice_or_default(this.getAssetCondition(), ASSET_CONDITION_CHOICES);
@@ -245,11 +275,14 @@ export class EstradaBridge extends Bridge implements IAsset {
 
 export class EstradaCulvert extends Culvert implements IAsset {
     public static getFieldName(field: string) {
+        if (assetSchema[`${field}_${EstradaCulvert.assetType}`]) {
+            return assetSchema[`${field}_${EstradaCulvert.assetType}`].display || "";
+        }
         return getFieldName(assetSchema, field);
     }
 
-    public static getHelpText(field: string) {
-        return getHelpText(assetSchema, field);
+    public getFieldName(field: string) {
+        return EstradaCulvert.getFieldName(field);
     }
 
     private isSerialising: boolean;
@@ -264,8 +297,12 @@ export class EstradaCulvert extends Culvert implements IAsset {
     }
 
     /** The asset's type - the prefix part of its Id */
-    get assetType() {
+    static get assetType() {
         return "CULV";
+    }
+
+    get assetType() {
+        return EstradaCulvert.assetType;
     }
 
     get assetTypeName() {
@@ -313,7 +350,7 @@ export class EstradaCulvert extends Culvert implements IAsset {
 
     get geomPoint() {
         const geomPointRaw = this.getGeomPoint();
-        return geomPointRaw ? makeEstradaPoint(geomPointRaw) : geomPointRaw;
+        return geomPointRaw ? makeEstradaProjection(geomPointRaw) : geomPointRaw;
     }
 
     get dms() {
@@ -368,6 +405,24 @@ export class EstradaCulvert extends Culvert implements IAsset {
         return choice_or_default(this.getProtectionDownstream(), STRUCTURE_DOWNSTREAM_PROTECTION_TYPE_CHOICES);
     }
 
+    get inventoryPhotos(): EstradaPhoto[] | undefined {
+        const inventoryPhotosListRaw = this.getInventoryPhotosList();
+        return inventoryPhotosListRaw ? inventoryPhotosListRaw.map(makeEstradaPhoto) : inventoryPhotosListRaw;
+    }
+
+    set inventoryPhotos(values: EstradaPhoto[] | undefined) {
+        this.setInventoryPhotosList(values as Photo[]);
+    }
+
+    get surveyPhotos(): EstradaPhoto[] | undefined {
+        const surveyPhotosListRaw = this.getSurveyPhotosList();
+        return surveyPhotosListRaw ? surveyPhotosListRaw.map(makeEstradaPhoto) : surveyPhotosListRaw;
+    }
+
+    set surveyPhotos(values: EstradaPhoto[] | undefined) {
+        this.setSurveyPhotosList(values as Photo[]);
+    }
+
     /** assetCondition is the most recent structure condition from the surveys */
     get assetCondition() {
         return choice_or_default(this.getAssetCondition(), ASSET_CONDITION_CHOICES);
@@ -415,20 +470,6 @@ export class EstradaCulvert extends Culvert implements IAsset {
     }
 }
 
-export class EstradaPoint extends Point {
-    get x() {
-        return this.getX();
-    }
-
-    get y() {
-        return this.getY();
-    }
-
-    get dms() {
-        return toDms(projToWGS84.forward(projectionToCoordinates(this)));
-    }
-}
-
 export function makeEstradaStructures(pbstructures: { [name: string]: any }): EstradaStructures {
     return makeEstradaObject(EstradaStructures, pbstructures) as EstradaStructures;
 }
@@ -439,8 +480,4 @@ export function makeEstradaBridge(pbattribute: { [name: string]: any }): Estrada
 
 export function makeEstradaCulvert(pbattribute: { [name: string]: any }): EstradaCulvert {
     return makeEstradaObject(EstradaCulvert, pbattribute) as EstradaCulvert;
-}
-
-export function makeEstradaPoint(pbpoint: { [name: string]: any }): EstradaPoint {
-    return makeEstradaObject(EstradaPoint, pbpoint) as EstradaPoint;
 }

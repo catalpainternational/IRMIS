@@ -52,12 +52,12 @@
 #inventory-terrain-class-table,
 #inventory-rainfall-table,
 #inventory-pavement-class-table,
-#inventory-traffic-level-table,
-#inventory-structure-photos-table,
-#inventory-structure-condition-table,
-#inventory-structure-condition-description-table {
+#inventory-traffic-level-table
+#inventory-photos {
+    border-bottom: 1px solid $light-gray;
     border-right: 1px solid $light-gray;
     border-left: 1px solid $light-gray;
+    border-bottom: 1px solid $light-gray;
     margin-bottom: 0 !important;
     margin-top: 0 !important;
     max-height: 353px; // table's height with 10 rows

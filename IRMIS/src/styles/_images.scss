@@ -111,6 +111,10 @@
     vertical-align: middle;
     height: 16px;
     width: 15px;
+
+    &.button {
+        margin-right: 10px;
+    }
 }
 
 tr.selected .pencil {
@@ -251,7 +255,7 @@ tr.selected .pencil {
 }
 
 .upload-cloud {
-    background-image: url("../images/upload-cloud.svg");
+    background-image: url("../images/upload_cloud.svg");
     height: 55px;
     width: 85px;
 }

@@ -317,6 +317,15 @@ export const estradaTableColumns = [
         visible: false,
         orderable: false,
     },
+    {
+        title: window.gettext("Inventory Photos"),
+        data: null,
+        defaultContent: "",
+        render: (r) => r.inventoryPhotos.length ? buttonSegmentsTemplate("inventory_photos", r, "Photos") : "",
+        className: "text-center",
+        visible: false,
+        orderable: false,
+    },
 ];
 
 /** Defines the columns for the Structures table on the Estrada main page
@@ -477,12 +486,24 @@ export const structuresTableColumns = [
         visible: false,
         className: "clip-text-ellipsis",
     },
-    // {
-    //     title: "Inventory Photos",
-    //     data: null,
-    //     render: r => buttonSegmentsTemplate("inventory_photos", r),
-    //     defaultContent: "",
-    // },
+    {
+        title: window.gettext("Condition Photos"),
+        data: null,
+        defaultContent: "",
+        render: (r) => r.assetCondition ? buttonSegmentsTemplate("structure_condition_photos", r, "Photos") : "",
+        className: "text-center",
+        visible: false,
+        orderable: false,
+    },
+    {
+        title: window.gettext("Inventory Photos"),
+        data: null,
+        defaultContent: "",
+        render: (r) => r.inventoryPhotos.length ? buttonSegmentsTemplate("inventory_photos", r, "Photos") : "",
+        className: "text-center",
+        visible: false,
+        orderable: false,
+    },
 ];
 
 function detectStructure(structure) {
@@ -508,14 +529,14 @@ function getStructureTypeName(structureType) {
 }
 
 // function getStructureFieldData(field, structure) { return null; }
-function buttonSegmentsTemplate(attrib, asset) {
+function buttonSegmentsTemplate(attrib, asset, fallbackLabel) {
     const assetStructureType = detectStructure(asset);
     const assetType = !assetStructureType
         ? currentFilter.assetType === "ROAD" ? "ROAD" : "STRC"
         : ["ROAD", "BRDG", "CULV"].includes(assetStructureType) ? assetStructureType : "ROAD";
 
     let getFieldName = (attrib) => (attrib);
-    switch (assetType) {
+    switch (asset.assetType) {
         case "ROAD":
             getFieldName = EstradaRoad.getFieldName;
             break;
@@ -536,7 +557,8 @@ function buttonSegmentsTemplate(attrib, asset) {
     const data_code = ' data-code="' + asset.code + '"';
     const data_id = ' data-id="' + asset.id + '"';
     const data_attr = ' data-attr="' + attrib + '"';
-    const viewTitle = window.gettext("View") + " " + getFieldName(attrib);
+    const data_type = ' data-type="' + asset.assetType + '"';
+    const viewTitle = window.gettext("View") + " " + (getFieldName(attrib) || window.gettext(fallbackLabel));
 
-    return "<a" + data_toggle + data_target + data_code + data_id + data_attr + ">" + viewTitle + "</a>";
+    return "<a" + data_toggle + data_target + data_code + data_id + data_attr + data_type + ">" + viewTitle + "</a>";
 }

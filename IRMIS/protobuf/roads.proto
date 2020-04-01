@@ -1,4 +1,5 @@
 syntax = "proto3";
+import "photo.proto";
 
 package assets;
 
@@ -51,6 +52,8 @@ message Road {
   repeated int32 served_facilities = 33;
   repeated int32 served_economic_areas = 34;
   repeated int32 served_connection_types = 35;
+  repeated Photo inventory_photos = 36;
+  repeated Photo survey_photos = 37;
 }
 
 message Roads {

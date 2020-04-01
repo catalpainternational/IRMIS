@@ -5,7 +5,7 @@
     </feedback_banner>
     <header class="align-items-center d-flex justify-content-between">
         <h1>{ window.gettext("Detailed Plans and Budgets") }</h1>
-        <button class="btn btn-primary" onclick="{ addPlan }">
+        <button if={window.canEditPlans} class="btn btn-primary" onclick="{ addPlan }">
             { window.gettext("Upload 5-Year Plan") }
         </button>
     </header>
@@ -115,9 +115,9 @@
                     defaultContent: "",
                     render: (data, type, row) => {
                         const selected = (data) ? "selected" : "";
-                        return `<a class="image checkbox ${selected} data-id="${row.id}" data-approved="${data}" onClick="
+                        return (window.canEditPlans) ? `<a class="image checkbox ${selected} data-id="${row.id}" data-approved="${data}" onClick="
                                 document.dispatchEvent(new CustomEvent('plans-datatable.approveRow', {detail: {rowId: ${row.id}, tableId: 'plans-datatable'}}))
-                                "></a>`;
+                                "></a>` : `<span class="image checkbox ${selected}"></span>`;
                     },
                     className: "text-center",
                     orderable: false,
@@ -159,23 +159,27 @@
                     className: "text-center",
                     orderable: false,
                 },
-                {
-                    title: "",
-                    data: null,
-                    render: (data, type, row) => {
-                        let links = [];
-                        if (row.addedBy) {
-                            const editEvent = `document.dispatchEvent(new CustomEvent('plans-datatable.editRow', {detail: {rowId: ${row.id}, tableId: 'plans-datatable'}}))`;
-                            links.push(`<a class="image pencil" href="#planning/plans" onClick="${editEvent}"></a>`);
-                            const deleteEvent = `document.dispatchEvent(new CustomEvent('plans-datatable.deleteRow', {detail: {rowId: ${row.id}, tableId: 'plans-datatable'}}))`;
-                            links.push(`<a class="image delete" onClick="${deleteEvent}"></a>`);
-                        }
-                        return links.join("<span></span>");
-                    },
-                    orderable: false,
-                },
             ],
             data_table_columns_order: [[3, 'desc']],
+            onBeforeMount(props, state) {
+                if (window.canEditPlans) {
+                    this.data_table_columns.push({
+                        title: "",
+                        data: null,
+                        render: (data, type, row) => {
+                            let links = [];
+                            if (row.addedBy) {
+                                const editEvent = `document.dispatchEvent(new CustomEvent('plans-datatable.editRow', {detail: {rowId: ${row.id}, tableId: 'plans-datatable'}}))`;
+                                links.push(`<a class="image pencil" href="#planning/plans" onClick="${editEvent}"></a>`);
+                                const deleteEvent = `document.dispatchEvent(new CustomEvent('plans-datatable.deleteRow', {detail: {rowId: ${row.id}, tableId: 'plans-datatable'}}))`;
+                                links.push(`<a class="image delete" onClick="${deleteEvent}"></a>`);
+                            }
+                            return links.join("<span></span>");
+                        },
+                        orderable: false,
+                    });
+                }
+            },
             onMounted(props, state) {
                 this.getPlans();
 

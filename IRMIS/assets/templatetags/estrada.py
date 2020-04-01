@@ -98,9 +98,34 @@ def get_schema_data():
     )
 
     asset_schema = {}
+    # Special asset_schema definitions
     asset_schema["asset_type"] = {
         "display": _("Asset Type"),
         "slug": "asset_type",
+    }
+    asset_schema["asset_condition_BRDG"] = {
+        "display": _("Structure Condition"),
+        "slug": "asset_condition",
+    }
+    asset_schema["asset_condition_CULV"] = {
+        "display": _("Structure Condition"),
+        "slug": "asset_condition",
+    }
+    asset_schema["structure_type_BRDG"] = {
+        "display": _("Structure Type"),
+        "slug": "structure_type",
+    }
+    asset_schema["structure_type_CULV"] = {
+        "display": _("Structure Type"),
+        "slug": "structure_type",
+    }
+    asset_schema["material_BRDG"] = {
+        "display": _("Structure Type"),
+        "slug": "material",
+    }
+    asset_schema["material_CULV"] = {
+        "display": _("Structure Type"),
+        "slug": "material",
     }
 
     roads_mtom_fields = [
@@ -154,6 +179,12 @@ def get_schema_data():
     asset_schema["asset_class"].update({"options": Asset.ASSET_CLASS_CHOICES})
     # Asset Condition - AKA surface_condition or structure_condition
     asset_schema["asset_condition"].update({"options": Asset.ASSET_CONDITION_CHOICES})
+    asset_schema["asset_condition_BRDG"].update(
+        {"options": Asset.ASSET_CONDITION_CHOICES}
+    )
+    asset_schema["asset_condition_CULV"].update(
+        {"options": Asset.ASSET_CONDITION_CHOICES}
+    )
 
     # Road specific schema values
     # - Used in side_menu filters
@@ -211,13 +242,13 @@ def get_schema_data():
     )
 
     # Bridge specific schema values
-    asset_schema["structure_type_bridge"].update(
+    asset_schema["structure_type_BRDG"].update(
         {
             "options": list(BridgeClass.objects.all().values()),
             "default_value": _("Select the type"),
         }
     )
-    asset_schema["material_bridge"].update(
+    asset_schema["material_BRDG"].update(
         {
             "options": list(BridgeMaterialType.objects.all().values()),
             "default_value": _("Select the Deck Material"),
@@ -225,13 +256,13 @@ def get_schema_data():
     )
 
     # Culvert specific schema values
-    asset_schema["structure_type_culvert"].update(
+    asset_schema["structure_type_CULV"].update(
         {
             "options": list(CulvertClass.objects.all().values()),
             "default_value": _("Select the type"),
         }
     )
-    asset_schema["material_culvert"].update(
+    asset_schema["material_CULV"].update(
         {
             "options": list(CulvertMaterialType.objects.all().values()),
             "default_value": _("Select the Material"),

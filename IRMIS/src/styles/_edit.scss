@@ -9,7 +9,7 @@ edit_base {
         width: calc(100% - #{$side-menu-width});
         padding-right: 8px;
         overflow-y: auto;
-        
+
         header {
             border-bottom: 1px solid $light-gray;
             background-color: $white;
@@ -111,6 +111,7 @@ edit_location_type,
 edit_structure_type,
 edit_project,
 edit_maintenance,
+edit_media,
 edit_history {
     background-color: $white;
     padding: 30px 60px 60px;
@@ -130,37 +131,6 @@ edit_pavement,
 edit_condition {
     h5 {
         margin-bottom: 0;
-    }
-}
-
-edit_structure_condition {
-    section {
-        min-width: 450px;
-    }
-
-    .upload-box { 
-        box-sizing: border-box;
-        height: 230px;
-        border: 1px solid $light-gray;
-        border-radius: 4px;
-        margin-bottom: 20px;
-        margin-top: 30px;
-    }
-
-    .cloud-box {
-        margin: 70px 85px 20px 85px;
-        font-size: 12px;
-        line-height: 14px;
-        align-items: center;
-        display: flex;
-        flex-direction: column;
-        font-weight: 600;
-
-        div.upload-text {
-            color: $green;
-            margin-bottom: 30px;
-            margin-top: 5px;
-        }
     }
 }
 
@@ -210,14 +180,14 @@ traffic_data_details {
     }
 
     .date-field-title {
-        font-size: 14px; 
-        width: 96px; 
-        margin-left: 10px; 
+        font-size: 14px;
+        width: 96px;
+        margin-left: 10px;
         font-weight: 400;
     }
 
     .date-input-field {
-        width: 192px; 
+        width: 192px;
         height: 28px;
     }
 
@@ -230,35 +200,35 @@ traffic_data_details {
     }
 
     .vehicle-name {
-        width: 144px; 
+        width: 144px;
         font-size: 14px;
     }
 
     .vehicle-input {
-        height: 28px; 
+        height: 28px;
         margin: 0 36px 0 16px;
     }
 
     .details-modal-type-spacing {
-        margin: 10px 0 0 10px; 
+        margin: 10px 0 0 10px;
         font-size: 14px;
     }
 
     .details-survey-type {
-        display: inline-block; 
-        width: 250px; 
-        border-right: 1px solid #CFD1D6; 
-        margin-right: 50px; 
+        display: inline-block;
+        width: 250px;
+        border-right: 1px solid #CFD1D6;
+        margin-right: 50px;
         margin-bottom: 10px;
     }
 
     .details-forecast-methods-block {
-        display: inline-block; 
+        display: inline-block;
         margin-bottom: 10px;
     }
 
     .details-modal-date {
-        font-size: 14px; 
+        font-size: 14px;
         font-weight: 700;
         margin-right: 32px;
     }
@@ -266,29 +236,29 @@ traffic_data_details {
     .details-modal-date-spacing {
         width: 56px;
     }
-    
+
     .details-vehicle-spacing {
-        margin-right: 88px; 
+        margin-right: 88px;
         font-weight: 700;
         width: 100px;
     }
-    
+
     .details-vehicle-count {
         text-align: right;
     }
 
     .details-total {
-        padding-top: 20px; 
+        padding-top: 20px;
         border-top: 1px solid #CFD1D6;
     }
 
     .details-total-title {
-        margin-left: 50px; 
+        margin-left: 50px;
         font-size: 18px;
     }
 
     .details-total-number {
-        margin-left: 105px; 
+        margin-left: 105px;
         font-size: 18px;
         width: 100px;
         text-align: right;

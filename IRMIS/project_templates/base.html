@@ -44,6 +44,10 @@
             window.canEdit = true;
             {% endif %}
 
+            {% if perms.assets.change_plan %}
+            window.canEditPlans = true;
+            {% endif %}
+
             {% if user.get_full_name %}
             window.user = '{{ user.get_full_name }}';
             {% else %}

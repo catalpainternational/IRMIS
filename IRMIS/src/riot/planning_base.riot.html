@@ -8,8 +8,8 @@
                             onclick="{ selectPage }">{ window.gettext("Dashboard") }</li>
                         <li class="{ state.page === 'plans' ? 'active' : '' }" data-page="plans"
                             onclick="{ selectPage }">{ window.gettext("Plans") }</li>
-                        <li class="{ state.page === 'create' ? 'active' : '' }" data-page="create"
-                            onclick="{ selectPage }">{ window.gettext("Planning Templates") }</li>
+                        <li if={window.canEditPlans} class="{ state.page === 'create' ? 'active' : '' }"
+                            data-page="create" onclick="{ selectPage }">{ window.gettext("Planning Templates") }</li>
                     </ul>
                 </ul>
             </div>

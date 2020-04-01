@@ -16,6 +16,7 @@ _sym_db = _symbol_database.Default()
 
 
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
+from . import photo_pb2 as photo__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
@@ -24,9 +25,12 @@ DESCRIPTOR = _descriptor.FileDescriptor(
     syntax="proto3",
     serialized_options=None,
     serialized_pb=_b(
-        '\n\x0creport.proto\x12\x06\x61ssets\x1a\x1fgoogle/protobuf/timestamp.proto"V\n\x06Report\x12\x0e\n\x06\x66ilter\x18\x01 \x01(\t\x12\x0f\n\x07lengths\x18\x02 \x01(\t\x12%\n\nattributes\x18\x04 \x03(\x0b\x32\x11.assets.AttributeJ\x04\x08\x03\x10\x04"\x96\x02\n\tAttribute\x12\x10\n\x08\x61sset_id\x18\x01 \x01(\t\x12\x12\n\nasset_code\x18\x02 \x01(\t\x12\x19\n\x11primary_attribute\x18\x03 \x01(\t\x12\x16\n\x0e\x63hainage_start\x18\x04 \x01(\x02\x12\x14\n\x0c\x63hainage_end\x18\x05 \x01(\x02\x12\x11\n\tsurvey_id\x18\x06 \x01(\r\x12\x0f\n\x07user_id\x18\x07 \x01(\r\x12\x31\n\rdate_surveyed\x18\x08 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x10\n\x08\x61\x64\x64\x65\x64_by\x18\t \x01(\t\x12\r\n\x05value\x18\n \x01(\t\x12\x0f\n\x07road_id\x18\x0b \x01(\r\x12\x11\n\troad_code\x18\x0c \x01(\tb\x06proto3'
+        '\n\x0creport.proto\x12\x06\x61ssets\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x0bphoto.proto"V\n\x06Report\x12\x0e\n\x06\x66ilter\x18\x01 \x01(\t\x12\x0f\n\x07lengths\x18\x02 \x01(\t\x12%\n\nattributes\x18\x04 \x03(\x0b\x32\x11.assets.AttributeJ\x04\x08\x03\x10\x04"\xb5\x02\n\tAttribute\x12\x10\n\x08\x61sset_id\x18\x01 \x01(\t\x12\x12\n\nasset_code\x18\x02 \x01(\t\x12\x19\n\x11primary_attribute\x18\x03 \x01(\t\x12\x16\n\x0e\x63hainage_start\x18\x04 \x01(\x02\x12\x14\n\x0c\x63hainage_end\x18\x05 \x01(\x02\x12\x11\n\tsurvey_id\x18\x06 \x01(\r\x12\x0f\n\x07user_id\x18\x07 \x01(\r\x12\x31\n\rdate_surveyed\x18\x08 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x10\n\x08\x61\x64\x64\x65\x64_by\x18\t \x01(\t\x12\r\n\x05value\x18\n \x01(\t\x12\x0f\n\x07road_id\x18\x0b \x01(\r\x12\x11\n\troad_code\x18\x0c \x01(\t\x12\x1d\n\x06photos\x18\r \x03(\x0b\x32\r.assets.Photob\x06proto3'
     ),
-    dependencies=[google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,],
+    dependencies=[
+        google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,
+        photo__pb2.DESCRIPTOR,
+    ],
 )
 
 
@@ -100,8 +104,8 @@ _REPORT = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=57,
-    serialized_end=143,
+    serialized_start=70,
+    serialized_end=156,
 )
 
 
@@ -328,6 +332,24 @@ _ATTRIBUTE = _descriptor.Descriptor(
             serialized_options=None,
             file=DESCRIPTOR,
         ),
+        _descriptor.FieldDescriptor(
+            name="photos",
+            full_name="assets.Attribute.photos",
+            index=12,
+            number=13,
+            type=11,
+            cpp_type=10,
+            label=3,
+            has_default_value=False,
+            default_value=[],
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+        ),
     ],
     extensions=[],
     nested_types=[],
@@ -337,14 +359,15 @@ _ATTRIBUTE = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=146,
-    serialized_end=424,
+    serialized_start=159,
+    serialized_end=468,
 )
 
 _REPORT.fields_by_name["attributes"].message_type = _ATTRIBUTE
 _ATTRIBUTE.fields_by_name[
     "date_surveyed"
 ].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
+_ATTRIBUTE.fields_by_name["photos"].message_type = photo__pb2._PHOTO
 DESCRIPTOR.message_types_by_name["Report"] = _REPORT
 DESCRIPTOR.message_types_by_name["Attribute"] = _ATTRIBUTE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)

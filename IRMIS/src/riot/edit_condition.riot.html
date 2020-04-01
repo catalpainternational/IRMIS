@@ -12,7 +12,8 @@
         </stacked_bar>
 
         <div class="d-flex">
-            <a class="{!state.viewAllAssetCondition ? 'active' : '' } table-toggle" onclick="{viewCurrentAssetCondition}">
+            <a class="{!state.viewAllAssetCondition ? 'active' : '' } table-toggle"
+                onclick="{viewCurrentAssetCondition}">
                 { window.gettext("Current surface condition") }
             </a>
             <a class="{state.viewAllAssetCondition ? 'active' : '' } table-toggle" onclick="{viewAllAssetCondition}">
@@ -104,6 +105,17 @@
                     </div>
                 </div>
             </section>
+            <section>
+                <h6>{ window.gettext("Upload photos") }</h6>
+                <label>{ window.gettext("Photo 1") }</label>
+                <upload_photo photoId="{photoId1}" photo="{state.photo1}" fkLink="{props.fkLink}" surveyPhoto="{true}"
+                    showFeedback="{ props.showFeedback }">
+                </upload_photo>
+                <label>{ window.gettext("Photo 2") }</label>
+                <upload_photo photoId="{photoId2}" photo="{state.photo2}" fkLink="{props.fkLink}" surveyPhoto="{true}"
+                    showFeedback="{ props.showFeedback }">
+                </upload_photo>
+            </section>
 
             <div class="d-flex justify-content-end">
                 <span>[</span><span class="required">*</span><span>]: Mandatory</span>
@@ -117,20 +129,39 @@
         stopResult="keep">
     </edit_stop_alert>
 
+    <div id="photos-modal" class="modal inventory-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title">{ window.gettext("Road Conditions Photos") }</h1>
+                    <span class="close image" data-dismiss="modal" aria-label="{ window.gettext('Close') }"
+                        aria-hidden="true"></span>
+                </div>
+                <div class="modal-body">
+                    <div id="inventory-photos_wrapper">
+                        <photos_details_box></photos_details_box>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         import Edit_Stop_Alert from "./edit_stop_alert.riot.html";
         import Data_Table from "./data_table.riot.html";
         import Edit_Modal from "./edit_modal.riot.html";
         import Stacked_Bar from "./stacked_bar.riot.html";
+        import Upload_Photo from "./upload_photo.riot.html";
 
+        import {putPhotoData, deletePhotoData} from "../assets/photoAPI";
         import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
         import {surveysAndReportRefresh} from "../assets/editUtilities";
-        import { choice_or_default, toChainageFormat } from "../assets/protoBufUtilities";
+        import {choice_or_default, toChainageFormat} from "../assets/protoBufUtilities";
         import {withinMaxDigits} from "../assets/utilities";
 
-        import { ASSET_CONDITION_CHOICES } from "../assets/models/estradaBase";
-        import { makeEstradaRoad } from "../assets/models/road";
-        import { EstradaSurvey, makeEstradaSurvey } from "../assets/models/survey";
+        import {ASSET_CONDITION_CHOICES} from "../assets/models/estradaBase";
+        import {makeEstradaRoad} from "../assets/models/road";
+        import {EstradaSurvey, makeEstradaSurvey} from "../assets/models/survey";
 
         import $ from "jquery";
 
@@ -152,12 +183,13 @@
                 viewAllAssetCondition: false,
                 editMode: false,
                 currentRowData: new EstradaSurvey({}),
+                photoLinkQueue: [],
             },
             components: {
-                Edit_Stop_Alert, Edit_Modal, Stacked_Bar
+                Edit_Stop_Alert, Edit_Modal, Stacked_Bar, Upload_Photo
             },
             identifiers: {
-                asset_condition:{
+                asset_condition: {
                     allDataTableId: "asset-condition-table",
                     primaryAttribute: "asset_condition",
                     reportAttribute: "assetConditions",
@@ -169,6 +201,30 @@
             onMounted(props, state) {
                 state.loading = true;
                 state.road = makeEstradaRoad(props.road);
+
+                state.survey.photos = state.survey.photos || [];
+                if (state.survey.photos.length > 0) {
+                    state.photo1 = state.survey.photos[0] ? state.survey.photos[0] : undefined;
+                    state.photo2 = state.survey.photos[1] ? state.survey.photos[1] : undefined;
+                }
+
+                this.photoNeedsLinkingListener = (data) => {
+                    const newPhoto = data.detail.photo;
+                    this.state.photoLinkQueue = this.state.photoLinkQueue.filter(p => {
+                        if (p.getId() != newPhoto.getId()) {return p;};
+                    }).concat(newPhoto);
+                }
+                document.addEventListener(`${this.photoId1}.photoNeedsLinking`, this.photoNeedsLinkingListener);
+                document.addEventListener(`${this.photoId2}.photoNeedsLinking`, this.photoNeedsLinkingListener);
+
+                this.photoNeedsRemovalListener = (data) => {
+                    const oldPhoto = data.detail.photo;
+                    this.state.photoLinkQueue = this.state.photoLinkQueue.filter(p => {
+                        if (p.getId() != oldPhoto.getId()) {return p};
+                    });
+                }
+                document.addEventListener(`${this.photoId1}.photoNeedsRemoval`, this.photoNeedsRemovalListener);
+                document.addEventListener(`${this.photoId2}.photoNeedsRemoval`, this.photoNeedsRemovalListener);
 
                 this.deleteListener = (data) => {
                     const rowId = data.detail.rowId;
@@ -189,6 +245,12 @@
                 });
             },
             onUnmount(props, state) {
+                document.removeEventListener(`${this.all_data_table_id}.deleteRow`, this.deleteListener);
+                document.removeEventListener(`${this.photoId1}.photoNeedsLinking`, this.photoNeedsLinkingListener);
+                document.removeEventListener(`${this.photoId2}.photoNeedsLinking`, this.photoNeedsLinkingListener);
+                document.removeEventListener(`${this.photoId1}.photoNeedsRemoval`, this.photoNeedsRemovalListener);
+                document.removeEventListener(`${this.photoId2}.photoNeedsRemoval`, this.photoNeedsRemovalListener);
+
                 Object.keys(this.identifiers).forEach((idSet) => {
                     document.removeEventListener(`${this.identifiers[idSet].allDataTableId}.deleteRow`, this.deleteListener)
                 });
@@ -218,7 +280,12 @@
 
                 this.showEditModal();
             },
-            conditions: window.asset_schema.asset_condition,            
+            photoId1: "assetConditionSurveyPhoto1",
+            photoId2: "assetConditionSurveyPhoto2",
+            conditions: window.asset_schema.asset_condition,
+            stacked_bar_id: "asset-condition-stacked-bar",
+            current_data_table_id: "asset-condition-report-table",
+            conditions: window.asset_schema.asset_condition,
             current_data_table_columns_order: [[0, 'asc']],
             current_data_table_columns: [
                 {
@@ -291,6 +358,17 @@
                     render: (data, type) => {
                         return (type === 'display') ? choice_or_default(data, ASSET_CONDITION_CHOICES) : data;
                     },
+                },
+                {
+                    title: window.gettext("Photos"),
+                    data: null,
+                    defaultContent: "",
+                    render: (data, type, row) => {
+                        const title = window.gettext("View Photos");
+                        return (row.photos.length) ? `<a onclick="document.dispatchEvent(new CustomEvent('asset-condition-table.showSurveyPhotos',{detail:{rowId:${row.id}}}))">${title}</a>` : "";
+                    },
+                    className: "text-center",
+                    orderable: false,
                 },
                 {
                     title: window.gettext("Survey date"),
@@ -378,8 +456,10 @@
                 $(`#${this.modal_id}`).modal("hide");
                 this.update({
                     survey: makeEstradaSurvey(this.state.baseSurvey),
+                    photoLinkQueue: [],
                     errors: {},
                 });
+                this.clearPhotos();
             },
             save(e) {
                 const missingFieldNames = checkRequiredFields(this.requiredFieldNames, this.state.survey);
@@ -430,6 +510,7 @@
                 $(`#${this.modal_id}`).modal("hide");
                 $("#loading").modal("show");
 
+                this.state.survey.photos = this.state.photoLinkQueue;
                 const surveyPromise = (!this.state.editMode)
                     ? createSurvey(this.state.survey)
                     : updateSurvey(this.state.survey);
@@ -443,7 +524,7 @@
                                 survey: new EstradaSurvey({}), // clear input values
                             });
                             this.props.showFeedback();
-                        });                         
+                        });
                     })
                     .catch((err) => {
                         this.props.showFeedback(true);
@@ -507,6 +588,10 @@
             checkAssetCondition(e) {
                 this.state.survey.assetCondition = e.currentTarget.dataset.condition;
                 this.canSave();
+            },
+            clearPhotos() {
+                document.dispatchEvent(new CustomEvent(`${this.photoId1}.photoCleared`, {}));
+                document.dispatchEvent(new CustomEvent(`${this.photoId2}.photoCleared`, {}));
             },
             modal_id: "asset-condition-modal",
             max_date: () => new Date().toISOString().substring(0, 10),
