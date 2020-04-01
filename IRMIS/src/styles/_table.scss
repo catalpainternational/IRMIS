@@ -57,7 +57,6 @@
     border-bottom: 1px solid $light-gray;
     border-right: 1px solid $light-gray;
     border-left: 1px solid $light-gray;
-    border-bottom: 1px solid $light-gray;
     margin-bottom: 0 !important;
     margin-top: 0 !important;
     max-height: 353px; // table's height with 10 rows
@@ -117,10 +116,12 @@ table.planning-table {
 
     thead tr th {
         border-bottom-width: 1px;
+        border-right: none;
         border-top: none;
     }
 
     tbody tr td {
+        border-right: none;
         height: 55px;
 
         span {

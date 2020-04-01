@@ -96,8 +96,14 @@ planning {
             margin-bottom: 30px;
         }
 
+        p.file-name {
+            margin-bottom: 5px;
+        }
+
         input[type="file"] {
             margin-bottom: 20px;
+            color: transparent; // hides selected file name
+            display: block;
         }
     }
 }

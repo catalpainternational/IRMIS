@@ -5,7 +5,7 @@
             { window.gettext("Export table") }
         </button>
     </div>
-    <table if="{ state.id }" id="{ state.id }" class="d-block table table-bordered table-hover w-100"></table>
+    <table if="{ state.id }" id="{ state.id }" class="d-block table table-bordered table-hover w-100 { props.cssClass }"></table>
 
     <script>
         import {datatableTranslations} from "../datatableTranslations";

@@ -4,14 +4,15 @@
         errorMessage="{ window.gettext('Something went wrong') }" error="{ state.error }">
     </feedback_banner>
     <header class="align-items-center d-flex justify-content-between">
-        <h1>{ window.gettext('Detailed Plans and Budgets') }</h1>
+        <h1>{ window.gettext("Detailed Plans and Budgets") }</h1>
         <button if={window.canEditPlans} class="btn btn-primary" onclick="{ addPlan }">
             { window.gettext("Upload 5-Year Plan") }
         </button>
     </header>
 
     <div class="content-wrapper">
-        <data_table table_id="{data_table_id}" columns="{data_table_columns}"
+        <h5>{ window.gettext("List of plans") }</h5>
+        <data_table table_id="{data_table_id}" columns="{data_table_columns}" cssClass="planning-table"
             columnSortOrder="{data_table_columns_order}" getHelpText="{getHelpText}" pendingRows="{state.pendingRows}"
             candelete=true>
         </data_table>
@@ -27,26 +28,16 @@
                     "ullamco laboris nisi ut aliquip ex ea commodo consequat.") }</p>
 
 
-                <template if={!state.editingPlan.url}>
-                    <div class="position-relative">
-                        <input type="file" name="file" oninput="{ checkPlanFile }" required>
-                        <div if="{ state.errors.file }" class="invalid-tooltip error-tooltip-file">
-                            <ul>
-                                <li>{ state.errors.file }</li>
-                            </ul>
-                        </div>
+                <div class="form-group position-relative">
+                    <label>{ window.gettext("File") }</label>
+                    <p if="{ state.hasFile }" class="file-name">{ state.editingPlan.fileName }</p>
+                    <input type="file" name="file" oninput="{ checkPlanFile }" required>
+                    <div if="{ state.errors.file }" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.file }</li>
+                        </ul>
                     </div>
-                </template>
-                <template if={state.editingPlan.url}>
-                    <div class="position-relative">
-                        <a class="image document" href="{state.editingPlan.url}"
-                            download="{state.editingPlan.fileName}"></a>
-                        {state.editingPlan.fileName}<br>
-                        <button class="btn btn-primary btn-sm" onclick="{replacePlanFile}">
-                            {window.gettext("Replace Existing File")}
-                        </button>
-                    </div>
-                </template>
+                </div>
 
                 <div class="form-group">
                     <label>{ window.gettext("Title") }</label>
@@ -196,6 +187,7 @@
                     const plan = this.state.pendingRows.filter((p) => {return p.id == rowId});
                     if (plan.length) {
                         this.state.editingPlan = plan[0];
+                        this.state.hasFile = true;
                         this.update();
                         this.showEditModal();
                     }
@@ -218,12 +210,9 @@
                 document.removeEventListener(`${this.data_table_id}.editRow`, this.editListener);
                 document.removeEventListener(`${this.data_table_id}.approveRow`, this.approveListener)
             },
-            replacePlanFile(e) {
-                this.state.editingPlan.url = undefined;
-                this.update();
-            },
             addPlan(e) {
                 this.state.editingPlan = new EstradaPlan({});
+                this.state.hasFile = false;
                 this.state.errors = {};
                 this.update();
                 this.showEditModal();
@@ -296,7 +285,9 @@
                 const testResult = value.length !== 0;
                 const errorText = window.gettext("You need to provide a plan file");
 
-                if (testResult) {
+                if (!testResult) {
+                    this.state.hasFile = false;
+                } else {
                     const reader = new FileReader();
                     reader.readAsArrayBuffer(file);
                     reader.onloadend = (ev) => {
@@ -304,6 +295,7 @@
                         this.state.editingPlan.setFile(bytes);
                     };
                     this.state.editingPlan.setFileName(file.name);
+                    this.state.hasFile = true;
                 }
 
                 this.validate(fieldName, value, testResult, errorText);
