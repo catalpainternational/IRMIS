@@ -1,0 +1,16 @@
+{% extends "contracts/contracts.html" %}
+{% load i18n %}
+
+{% block contracts_profile %}
+<header>
+    <a class="caret-dark discard-link left image" data-back="{% url 'contract-tender-list' %}"></a>
+    {% if tender.code is not None %}
+    <h1>{% trans "Edit Tender" %} — {{ tender.code }}</h1>
+    {% else %}
+    <h1>{% trans "Create Tender" %}</h1>
+    {% endif %}
+</header>
+
+{% block tender_content %}
+{% endblock %}
+{% endblock %}

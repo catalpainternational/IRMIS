@@ -19,7 +19,9 @@ from django.http import (
     HttpResponseNotFound,
 )
 from django.utils.translation import ugettext_lazy as _
+from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic.base import TemplateView
 from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.contenttypes.models import ContentType
@@ -71,6 +73,11 @@ from .models import (
     TechnicalClass,
 )
 from .serializers import RoadSerializer, RoadMetaOnlySerializer, RoadToWGSSerializer
+
+
+@method_decorator(login_required, name="dispatch")
+class HomePageView(TemplateView):
+    template_name = "assets/estrada.html"
 
 
 def display_user(user):

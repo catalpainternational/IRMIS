@@ -1,0 +1,178 @@
+{% extends "contracts/company_base.html" %}
+{% load i18n %}
+
+{% block company_content %}
+<nav>
+    <a class="selected">
+        <h6>{% trans "Company Details" %}</h6>
+    </a>
+    {% if not company.id %}
+    <a class="align-items-center d-flex flex-column disabled">
+        <h6>{% trans "Documents" %}</h6>
+        <span>(coming soon)</span>
+    </a>
+    {% else %}
+    <a class="align-items-center d-flex flex-column">
+        <h6>{% trans "Documents" %}</h6>
+        <span>(coming soon)</span>
+    </a>
+    {% endif %}
+</nav>
+
+<div class="content">
+    <form id="company-details-form" method="post" action="{{ request.get_full_path }}">
+        {% csrf_token %}
+        <section>
+            <h6>{% trans "Company Details" %}</h6>
+            <div class="form-group">
+                {{ form.name.label_tag }}
+                <small class="form-text text-muted">{{ form.name.help_text }}</small>
+                {{ form.name }}
+                {% if form.name.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.name.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.address.label_tag }}
+                <small class="form-text text-muted">{{ form.address.help_text }}</small>
+                {{ form.address }}
+                {% if form.address.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.address.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.phone.label_tag }}
+                <small class="form-text text-muted">{{ form.phone.help_text }}</small>
+                {{ form.phone }}
+                {% if form.phone.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.phone.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.email.label_tag }}
+                <small class="form-text text-muted">{{ form.email.help_text }}</small>
+                {{ form.email }}
+                {% if form.email.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.email.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.TIN.label_tag }}
+                <small class="form-text text-muted">{{ form.TIN.help_text }}</small>
+                {{ form.TIN }}
+                {% if form.TIN.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.TIN.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.iban.label_tag }}
+                <small class="form-text text-muted">{{ form.iban.help_text }}</small>
+                {{ form.iban }}
+                {% if form.iban.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.iban.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.rep_name.label_tag }}
+                <small class="form-text text-muted">{{ form.rep_name.help_text }}</small>
+                {{ form.rep_name }}
+                {% if form.rep_name.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.rep_name.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.rep_phone.label_tag }}
+                <small class="form-text text-muted">{{ form.rep_phone.help_text }}</small>
+                {{ form.rep_phone }}
+                {% if form.rep_phone.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.rep_phone.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.rep_email.label_tag }}
+                <small class="form-text text-muted">{{ form.rep_email.help_text }}</small>
+                {{ form.rep_email }}
+                {% if form.rep_email.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.rep_email.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.woman_led.label_tag }}
+                <small class="form-text text-muted">{{ form.woman_led.help_text }}</small>
+                {{ form.woman_led }}
+                {% if form.woman_led.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.woman_led.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </section>
+        <div class="align-items-center buttons d-flex justify-content-end">
+            <a class="discard-link" data-back="{% url 'contract-company-list' %}">{% trans "Cancel" %}</a>
+            {% if company.id is not None %}
+            <button class="btn btn-primary" type="submit" form="company-details-form">{% trans "Save" %}</button>
+            {% else %}
+            <button class="btn btn-primary" type="submit" form="company-details-form">{% trans "Create" %}</button>
+            {% endif %}
+        </div>
+    </form>
+</div>
+{% endblock %}

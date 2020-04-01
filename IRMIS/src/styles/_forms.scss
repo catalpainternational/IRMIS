@@ -1,4 +1,16 @@
+textarea.form-control {
+    height: 100px;
+}
+
 // Override Bootstrap form styles
+
+.form-row .form-group {
+    margin-right: 10px;
+
+    &:last-child {
+        margin-right: 0;
+    }
+}
 
 .form-group {
     margin-bottom: 10px;
@@ -41,6 +53,24 @@
     &::-moz-placeholder { color: $gray; } /* Firefox 19+ */
     &:-moz-placeholder { color: $gray; } /* Firefox 18- */
     &::placeholder { color: $gray; } /* Most modern browsers */
+}
+
+.form-control-lg {
+    height: calc(1.5em + 0.75rem + 2px); // copied from .form-control
+    font-size: 1rem; // copied from .form-control
+    width: 400px;
+}
+
+.form-control-sm {
+    height: calc(1.5em + 0.75rem + 2px); // copied from .form-control
+    font-size: 1rem; // copied from .form-control
+    width: 195px;
+}
+
+.form-inline {
+    & > :first-child {
+        margin-right: 15px;
+    }
 }
 
 .form-text {

@@ -188,6 +188,12 @@ tr.selected .pencil {
     width: 432px;
 }
 
+.no-projects, .no-tenders, .no-contracts, .no-companies {
+    background-image: url("../images/no_projects.png");
+    height: 269px;
+    width: 566px;
+}
+
 .loading {
     background-image: url("../images/loading_spinner.gif");
     height: 120px;
