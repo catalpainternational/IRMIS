@@ -18,6 +18,7 @@ django-taggit==0.24.0     # via wagtail
 django-treebeard==4.3     # via wagtail
 django==2.2.4             # via django-rest-framework-condition, django-reversion, django-rosetta, django-sendfile, django-taggit, django-treebeard, wagtail
 djangorestframework-gis==0.14
+djangorestframework-jwt==1.11.0
 djangorestframework==3.10.2  # via djangorestframework-gis, wagtail
 draftjs-exporter==2.1.6   # via wagtail
 geobuf==1.1.1
