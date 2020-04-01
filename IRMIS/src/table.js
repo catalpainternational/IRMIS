@@ -167,6 +167,10 @@ function initializeDataTable() {
             rowId: ".id",
             dom: "<'row'<'col-sm-12'tr>>", // https://datatables.net/reference/option/dom#Styling
             language: datatableTranslations,
+            // Do NOT turn on scrolling for these modal tables, it screws up the headers in unfixable ways
+            // scrollY: "" - defines vertical scrolling as off
+            scrollY: "",
+            paging: false,
             // This turns off filtering for all tables ( DO NOT SET THIS TO TRUE )
             // dataTables has a bug where the searching / filtering clause passes from one table to another
             // We only want it for the main tables
@@ -541,6 +545,7 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
         const getAsset = currentFilter.assetType === "ROAD" ? getRoad : getStructure;
         const getAssetFilters = (assetData) => {
             let filters = {
+                reportassettype: [currentFilter.assetType],
                 primaryattribute: attr,
             };
 

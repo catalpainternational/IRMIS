@@ -135,7 +135,9 @@ class ReportQuery:
             # Chainages for Roads are manipulated if start and end chainage values are supplied
             # Chainages for structure surveys are manipulated to make the rest of the query still work
             "su": (
-                "SELECT s.id, atc.asset_type, atc.asset_id, atc.asset_code,\n"
+                "SELECT\n"
+                " s.id,\n"
+                " atc.asset_type, atc.asset_id, atc.asset_code,\n"
                 " s.date_created, s.date_updated, s.date_surveyed,\n"
                 " p.photos,\n"
                 " CASE\n"
@@ -381,6 +383,7 @@ class ReportQuery:
             "span_length",
             "structure_type",
             "width",
+            "source_roughness",
             "roughness",
         ]
 
@@ -410,6 +413,8 @@ class ReportQuery:
             "funding_source",
             "geom_length",
             "core",
+            "source_roughness",
+            "roughness",
             # these are FK references
             "pavement_class",
             "surface_type",

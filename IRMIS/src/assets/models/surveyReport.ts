@@ -8,7 +8,7 @@ import { makeEstradaPhoto, EstradaPhoto } from "./photo";
 import { reportColumns } from "../../reportTableDefinitions";
 import { choice_or_default, getFieldName, getHelpText, invertChoices, makeEstradaObject } from "../protoBufUtilities";
 
-import { ADMINISTRATIVE_AREA_CHOICES, ASSET_CLASS_CHOICES, ASSET_CONDITION_CHOICES, IEstrada } from "./estradaBase";
+import { ADMINISTRATIVE_AREA_CHOICES, ASSET_CLASS_CHOICES, ASSET_CONDITION_CHOICES, ASSET_TYPE_CHOICES, IEstrada } from "./estradaBase";
 import {
     PAVEMENT_CLASS_CHOICES, ROAD_STATUS_CHOICES, SURFACE_TYPE_CHOICES,
     TECHNICAL_CLASS_CHOICES,
@@ -19,12 +19,6 @@ import {
 // tslint:disable: max-classes-per-file
 
 // All Ids in the following schemas are generated
-const networkReportSchema: { [name: string]: any } = {
-    id: { display: "Id" },
-    filter: { display: (window as any).gettext("Filter") },
-    lengths: { display: (window as any).gettext("Lengths") },
-};
-
 const roadReportSchema: { [name: string]: any } = {
     id: { display: "Id" },
     roadCode: { display: (window as any).gettext("Road Code") },
@@ -45,11 +39,15 @@ const attributeSchema: { [name: string]: any } = {
     dateSurveyed: { display: (window as any).gettext("Survey Date") },
     addedBy: { display: (window as any).gettext("Added By") },
     value: { display: (window as any).gettext("Value") },
+    assetType: { display: (window as any).gettext("Asset Type") },
 };
 
 // These are the response filters returned from reports.py and views.py
 const filterTitles: { [name: string]: any } = {
     road_id: { display: (window as any).gettext("Road Id") },
+    asset_id: { display: (window as any).gettext("Asset Id") },
+    asset_code: { display: (window as any).gettext("Asset Code") },
+    asset_type: { display: (window as any).gettext("Asset Type"), choices: ASSET_TYPE_CHOICES },
     asset_class: { display: (window as any).gettext("Asset Class"), choices: ASSET_CLASS_CHOICES },
     asset_condition: { display: (window as any).gettext("Surface Condition"), choices: ASSET_CONDITION_CHOICES },
     surface_type: { display: (window as any).gettext("Surface Type"), choices: SURFACE_TYPE_CHOICES },
@@ -67,6 +65,7 @@ const lengthTypeChoices: { [name: string]: any } = {
     number_lanes: {},
     pavement_class: PAVEMENT_CLASS_CHOICES,
     rainfall: {},
+    asset_type: ASSET_TYPE_CHOICES,
     asset_class: ASSET_CLASS_CHOICES,
     road_status: ROAD_STATUS_CHOICES,
     asset_condition: ASSET_CONDITION_CHOICES,
@@ -74,6 +73,8 @@ const lengthTypeChoices: { [name: string]: any } = {
     technical_class: TECHNICAL_CLASS_CHOICES,
     terrain_class: TERRAIN_CLASS_CHOICES,
     traffic_level: TRAFFIC_LEVEL_CHOICES,
+    source_roughness: {},
+    roughness: {},
 };
 
 export function testKeyIsReal(key: any): boolean {
@@ -81,7 +82,7 @@ export function testKeyIsReal(key: any): boolean {
 }
 
 /** Define a new report column based on the supplied title and columnData */
-function defineReportColumn(title: string, columnData: string): void {
+function defineReportColumn(title: string, columnData: string, isCount = false): void {
     if (reportColumns[columnData]) {
         return;
     }
@@ -95,7 +96,7 @@ function defineReportColumn(title: string, columnData: string): void {
         orderable: false,
         render: (data: any, type: string) => {
             return (type === "display" && typeof data === "number")
-                ? (data / 1000).toFixed(2)
+                ? isCount ? data.toFixed(0) : (data / 1000).toFixed(2)
                 : data;
         },
     };
@@ -129,6 +130,7 @@ function extractCountData(
     allLengths: { [name: string]: any },
     primaryAttribute: string,
     useLengthKeyAsDefault = false,
+    isCount = false,
 ): any[] {
     const lengths: any[] = [];
     const lengthsForType = allLengths[primaryAttribute] || [];
@@ -155,7 +157,7 @@ function extractCountData(
                     const [attrTermTitle, attrLengthKey] = extractTitle(attrTerm, attrChoices, useLengthKeyAsDefault);
                     const fullAttrTerm = `${attrKey}|${attrTermTitle}`;
                     newLength[fullAttrTerm] = lengthsForType[key][attrKey][attrTerm];
-                    defineReportColumn(attrTermTitle, fullAttrTerm);
+                    defineReportColumn(attrTermTitle, fullAttrTerm, isCount);
                 });
             });
             lengths.push(newLength);
@@ -174,13 +176,26 @@ export class EstradaNetworkSurveyReport extends Report implements IEstrada {
         return getHelpText(roadReportSchema, field);
     }
 
+    /** A 'nominal' Id for the data returned in this report */
     public getId() {
-        if (this.roadCodes.length === 1) {
-            return `${this.roadCodes}_${this.reportChainage[0]}-${this.reportChainage[1]}`;
+        if (this.assetTypeList.length === 0) {
+            return "";
         }
 
-        return (this.assetClasses && this.assetClasses.length > 0)
-            ? `${this.assetClasses.join(",")}`
+        if (this.assetTypeList.length === 1) {
+            const assetType = this.assetTypeList[0];
+            if (this.assetCodes.length === 1) {
+                const idPrefix = `${assetType}_${this.assetCodes}`;
+                if (assetType !== "ROAD") {
+                    return idPrefix;
+                }
+                return `${idPrefix}_${this.reportChainage[0]}-${this.reportChainage[1]}`;
+            }
+        }
+        const assetTypes = this.assetTypeList.join(",");
+        const assetClasses = this.assetClasses.join(",");
+        return (assetTypes.length && assetClasses.length)
+            ? `${assetTypes}_${assetClasses}`
             : "";
     }
 
@@ -196,9 +211,9 @@ export class EstradaNetworkSurveyReport extends Report implements IEstrada {
         return JSON.parse(filter);
     }
 
-    /** Clears the filter, leaving it with a 'primary_attribute' member with an empty list */
+    /** Clears the filter, leaving it with 'report_asset_type' and 'primary_attribute' members with empty lists */
     public clearFilter() {
-        this.setFilter(JSON.stringify({primary_attribute: []}));
+        this.setFilter(JSON.stringify({report_asset_type: [], primary_attribute: []}));
     }
 
     /** Sets a key (member) in the filter to a specific list of values
@@ -305,7 +320,9 @@ export class EstradaNetworkSurveyReport extends Report implements IEstrada {
             "asset_condition",
             "surface_type",
             "technical_class",
-            "terrain_class"
+            "terrain_class",
+            "roughness",
+            "source_roughness",
         ].map((attribute) => `"${attribute}": { "None": { "value": 0 } }`);
 
         lengths = lengths || `{ ${emptyLengths.join(", ")} }`;
@@ -325,10 +342,10 @@ export class EstradaNetworkSurveyReport extends Report implements IEstrada {
      * If value is undefined then the term is removed from lengths[key]
      * If lengths[key] has no more terms then the key is removed from lengths
      */
-    public lengthsKeyAddItem(key: any, term: any, value?: any) {
+    public lengthsKeyAddItem(key: any, term: any, assetSchema: { [name: string]: any }, value?: any) {
         // Verify/correct input parameters
         const hasKey = (key || key === 0);
-        const hasTerm = (term || term === 0);
+        const hasTerm = (term || term === 0 || (Array.isArray(term) && term.length));
         const hasValue = (typeof value === "undefined" || typeof value === "number" || (value && typeof value.value === "number"));
         if (!hasKey || !hasTerm || !hasValue) {
             // no supplied key, term or valid value  - so nothing to do
@@ -357,6 +374,26 @@ export class EstradaNetworkSurveyReport extends Report implements IEstrada {
                 return;
             }
         } else {
+            // get the terms translation
+            if (Array.isArray(term) && term.length === 1) {
+                term = term[0];
+            }
+            let transTerm = term;
+            if (assetSchema[key] && assetSchema[key].options) {
+                const selectedOption =
+                    assetSchema[key].options.filter((option: any) => {
+                        const optionTerm = (Array.isArray(option) ? option[0] : option.code);
+                        return optionTerm === term;
+                    });
+                if (selectedOption.length === 1) {
+                    transTerm = Array.isArray(selectedOption)
+                        ? selectedOption[0][1]
+                        : selectedOption.name;
+                }
+            }
+
+            value.title = transTerm;
+
             currentLengths[key] = currentLengths[key] || {};
             currentLengths[key][term] = value;
         }
@@ -364,7 +401,22 @@ export class EstradaNetworkSurveyReport extends Report implements IEstrada {
         this.setLengths(JSON.stringify(currentLengths));
     }
 
-    get roadCodes() {
+    get assetTypeList() {
+        return [...new Set(this.assetIds.map((assetId) => assetId.substr(0, 4)))];
+    }
+
+    get assetIds(): string[] {
+        return this.filter.asset_id || [];
+    }
+
+    get assetCodes(): string[] {
+        return this.filter.asset_code || [];
+    }
+
+    /** road codes are only relevant when the asset(s) reported on are structures
+     * It identifies the road(s) related to the structure(s)
+     */
+    get roadCodes(): string[] {
         return this.filter.road_code || [];
     }
 
@@ -381,6 +433,34 @@ export class EstradaNetworkSurveyReport extends Report implements IEstrada {
     get attributesList() {
         const attributesRaw = this.getAttributesList();
         return attributesRaw.map(makeEstradaSurveyAttribute);
+    }
+
+    get mergedAttributes() {
+        const allAttributes = this.attributesList;
+
+        const mergeSet: { [name: number]: EstradaSurveyAttribute } = {};
+        allAttributes.forEach((attribute) => {
+            const surveyId = attribute.surveyId;
+            mergeSet[surveyId] = mergeSet[surveyId] || makeEstradaSurveyAttribute(attribute);
+            const newPrimaryAttributeList = `["${attribute.primaryAttribute}"]`;
+
+            const newValue = attribute.getValue();
+
+            if (mergeSet[surveyId].primaryAttribute !== attribute.primaryAttribute
+                && mergeSet[surveyId].primaryAttribute !== newPrimaryAttributeList) {
+                const currentAttributes = JSON.parse(mergeSet[surveyId].getPrimaryAttribute());
+                currentAttributes.push(attribute.primaryAttribute);
+                mergeSet[surveyId].setPrimaryAttribute(JSON.stringify(currentAttributes));
+                const currentValues = JSON.parse(mergeSet[surveyId].getValue());
+                currentValues[attribute.primaryAttribute] = newValue;
+                mergeSet[surveyId].setValue(JSON.stringify(currentValues));
+            } else {
+                mergeSet[surveyId].setPrimaryAttribute(`["${attribute.primaryAttribute}"]`);
+                mergeSet[surveyId].setValue(`{"${attribute.primaryAttribute}": "${newValue}"}`);
+            }
+        });
+
+        return Object.values(mergeSet);
     }
 
     get municipalities() {
@@ -425,6 +505,18 @@ export class EstradaNetworkSurveyReport extends Report implements IEstrada {
 
     get trafficLevels() {
         return this.makeSpecificLengths("traffic_level");
+    }
+
+    get roughnesses() {
+        return this.makeSpecificLengths("roughness");
+    }
+
+    get sourceRoughnesses() {
+        return this.makeSpecificLengths("source_roughness");
+    }
+
+    get assetTypes() {
+        return this.makeSpecificLengths("asset_type", false, true);
     }
 
     /** Returns a collection of attributes matching the criteria
@@ -501,8 +593,8 @@ export class EstradaNetworkSurveyReport extends Report implements IEstrada {
         };
     }
 
-    private makeSpecificLengths(primaryAttribute: string, useLengthKeyAsDefault = false) {
-        return extractCountData(this.lengths, primaryAttribute, useLengthKeyAsDefault);
+    private makeSpecificLengths(primaryAttribute: string, useLengthKeyAsDefault = false, isCount = false) {
+        return extractCountData(this.lengths, primaryAttribute, useLengthKeyAsDefault, isCount);
     }
 }
 
@@ -516,11 +608,23 @@ export class EstradaSurveyAttribute extends Attribute implements IEstrada {
     }
 
     public getId() {
-        return `${this.roadId}_${this.primaryAttribute}-${this.surveyId}`;
+        return `${this.assetId}_${this.primaryAttribute}-${this.surveyId}`;
     }
 
     get id() {
         return this.getId();
+    }
+
+    get assetType() {
+        return this.assetId.substr(0, 4);
+    }
+
+    get assetId() {
+        return this.getAssetId();
+    }
+
+    get assetCode() {
+        return this.getAssetCode();
     }
 
     get roadId() {
@@ -574,38 +678,27 @@ export class EstradaSurveyAttribute extends Attribute implements IEstrada {
     }
 
     get municipality(): string {
-        return this.primaryAttribute === "municipality" && this.value
-            ? this.value : this.unknownI8n();
+        return this.extractStringValue("municipality");
     }
 
     get carriagewayWidth(): number | string {
-        const numericValue = parseFloat(this.value);
-        return this.primaryAttribute === "carriageway_width" && numericValue
-            ? numericValue.toFixed(1) : this.unknownI8n();
+        return this.extractFloatValue("carriageway_width");
     }
 
     get totalWidth(): number | string {
-        const numericValue = parseFloat(this.value);
-        return this.primaryAttribute === "total_width" && numericValue
-            ? numericValue.toFixed(1) : this.unknownI8n();
+        return this.extractFloatValue("total_width");
     }
 
     get numberLanes(): number | string {
-        const numericValue = parseInt(this.value, 10);
-        return this.primaryAttribute === "number_lanes" && numericValue
-            ? numericValue.toFixed(0) : this.unknownI8n();
+        return this.extractIntValue("number_lanes");
     }
 
     get pavementClass(): string {
-        return this.primaryAttribute === "pavement_class"
-            ? (window as any).gettext(choice_or_default(this.value, PAVEMENT_CLASS_CHOICES, "Unknown")) as string
-            : this.unknownI8n();
+        return this.extractChoiceValue("pavement_class", PAVEMENT_CLASS_CHOICES);
     }
 
     get rainfall(): number | string {
-        const numericValue = parseInt(this.value, 10);
-        return this.primaryAttribute === "rainfall" && numericValue
-            ? numericValue.toFixed(0) : this.unknownI8n();
+        return this.extractIntValue("rainfall");
     }
 
     get trafficCounts(): { [name: string]: any }  {
@@ -623,39 +716,35 @@ export class EstradaSurveyAttribute extends Attribute implements IEstrada {
     }
 
     get assetClass(): string {
-        return this.primaryAttribute === "asset_class"
-            ? (window as any).gettext(choice_or_default(this.value, ASSET_CLASS_CHOICES, "Unknown")) as string
-            : this.unknownI8n();
+        return this.extractChoiceValue("asset_class", ASSET_CLASS_CHOICES);
     }
 
     get assetCondition(): string {
-        return this.primaryAttribute === "asset_condition"
-            ? (window as any).gettext(choice_or_default(this.value, ASSET_CONDITION_CHOICES, "Unknown")) as string
-            : this.unknownI8n();
+        return this.extractChoiceValue("asset_condition", ASSET_CONDITION_CHOICES);
     }
 
     get surfaceType(): string {
-        return this.primaryAttribute === "surface_type"
-            ? (window as any).gettext(choice_or_default(this.value, SURFACE_TYPE_CHOICES, "Unknown")) as string
-            : this.unknownI8n();
+        return this.extractChoiceValue("surface_type", SURFACE_TYPE_CHOICES);
     }
 
     get technicalClass(): string {
-        return this.primaryAttribute === "technical_class"
-            ? (window as any).gettext(choice_or_default(this.value, TECHNICAL_CLASS_CHOICES, "Unknown")) as string
-            : this.unknownI8n();
+        return this.extractChoiceValue("technical_class", TECHNICAL_CLASS_CHOICES);
     }
 
     get terrainClass(): string {
-        return this.primaryAttribute === "terrain_class"
-            ? (window as any).gettext(choice_or_default(this.value, TERRAIN_CLASS_CHOICES, "Unknown")) as string
-            : this.unknownI8n();
+        return this.extractChoiceValue("terrain_class", TERRAIN_CLASS_CHOICES);
     }
 
     get trafficLevel(): string {
-        return this.primaryAttribute === "traffic_level"
-            ? (window as any).gettext(choice_or_default(this.value, TRAFFIC_LEVEL_CHOICES, "Unknown")) as string
-            : this.unknownI8n();
+        return this.extractChoiceValue("traffic_level", TRAFFIC_LEVEL_CHOICES);
+    }
+
+    get sourceRoughness(): number | string {
+        return this.extractFloatValue("source_roughness");
+    }
+
+    get roughness(): string {
+        return this.extractStringValue("roughness");
     }
 
     get photos(): EstradaPhoto[] | undefined {
@@ -669,6 +758,68 @@ export class EstradaSurveyAttribute extends Attribute implements IEstrada {
 
     private unknownI8n(): string {
         return (window as any).gettext("Unknown") as string;
+    }
+
+    private extractAnyValue(primaryAttribute: string): string | null {
+        const simpleMatch = this.primaryAttribute === primaryAttribute;
+        const arrayMatch = !simpleMatch && this.primaryAttribute.indexOf(`"${primaryAttribute}`) !== -1;
+        if (!simpleMatch && !arrayMatch) {
+            return null;
+        }
+        let extractedValue: string | null = this.value;
+        if (arrayMatch) {
+            let valueObj: { [name: string]: string } = {};
+            try {
+                valueObj = JSON.parse(extractedValue);
+                extractedValue = valueObj[primaryAttribute] || null;
+            }
+            catch {
+                extractedValue = null;
+            }
+        }
+
+        return extractedValue;
+    }
+
+    private extractStringValue(primaryAttribute: string): string {
+        const extractedValue = this.extractAnyValue(primaryAttribute);
+
+        if (!extractedValue) {
+            return this.unknownI8n();
+        }
+        return (window as any).gettext(extractedValue) as string;
+    }
+
+    private extractFloatValue(primaryAttribute: string): number | string {
+        const extractedValue = this.extractAnyValue(primaryAttribute);
+
+        if (!extractedValue) {
+            return this.unknownI8n();
+        }
+        const numericValue = parseFloat(extractedValue);
+        return numericValue
+            ? numericValue.toFixed(1) : this.unknownI8n();
+    }
+
+    private extractIntValue(primaryAttribute: string): number | string {
+        const extractedValue = this.extractAnyValue(primaryAttribute);
+
+        if (!extractedValue) {
+            return this.unknownI8n();
+        }
+        const numericValue = parseInt(extractedValue, 10);
+        return numericValue
+            ? numericValue.toFixed(0) : this.unknownI8n();
+    }
+
+    private extractChoiceValue(primaryAttribute: string, choices: {[name: string]: any}): string {
+        const extractedValue = this.extractAnyValue(primaryAttribute);
+
+        if (!extractedValue) {
+            return this.unknownI8n();
+        }
+
+        return (window as any).gettext(choice_or_default(extractedValue, choices, "Unknown")) as string;
     }
 }
 

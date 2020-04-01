@@ -30,7 +30,7 @@
                             </option>
                         </select>
                     </div>
-
+    
                     <div if="{ reportAssetsContent().visibleFilters.assetClass }" class="options">
                         <select id="asset_class_select2" multiple="true">
                             <option each="{ asset_class in window.asset_schema.asset_class.options }"
@@ -46,6 +46,14 @@
                         <select id="surface_type_select2" multiple="true">
                             <option each="{ surface_type in window.asset_schema.surface_type.options }"
                                 value="{ surface_type.code }">{ surface_type.name }</option>
+                        </select>
+                    </div>
+
+                    <!-- This uses a restricted set of asset_type values - for structures only -->
+                    <div if="{ reportAssetsContent().visibleFilters.assetType }" class="options">
+                        <select id="asset_type_select2" multiple="true">
+                            <option each="{ asset_type in structureForms() }"
+                                value="{ asset_type[0] }">{ asset_type[1] }</option>
                         </select>
                     </div>
 
@@ -82,12 +90,10 @@
                         class="{ state.reportDate ? '' : 'inactive' } form-control form-control-sm" type="date"
                         oninput="{ selectDate }" value="{ state.reportDate }" max="{ state.max_date }" placeholder="Select Date"
                         pattern="\d{4}-\d{2}-\d{2}">
-                </div>
-                <div>
-                    <button type="button" class="btn btn-primary" onclick="{ createReport }" data-id="{ props.id }">
-                        { window.gettext("Create Report") }
-                    </button>
-                </div>
+            </div>
+            <div>
+                <button type="button" class="btn btn-primary" onclick="{ createReport }" data-id="{ props.id }">{
+                    window.gettext("Create Report") }</button>
             </div>
         </div>
 
@@ -104,10 +110,9 @@
                 <h6 if="{ state.reportData.roadCodes && state.reportData.roadCodes.length === 1 }">
                     { window.gettext("Road") } { state.reportData.roadCodes[0] }
                 </h6>
-                <h6 if="{ state.reportData.reportChainage }">, { window.gettext("Chainage") }
-                    { toChainageFormat(state.reportData.reportChainage[0]) } { window.gettext("to") }
-                    { toChainageFormat(state.reportData.reportChainage[1]) }
-                </h6>
+                <h6 if="{ state.reportData.reportChainage }">, { window.gettext("Chainage") } {
+                    toChainageFormat(state.reportData.reportChainage[0]) } { window.gettext("to") } {
+                    toChainageFormat(state.reportData.reportChainage[1]) }</h6>
             </div>
 
             <span class="report-date" if="{ state.reportData.dateCreated }">
@@ -125,65 +130,95 @@
                 </div>
             </div>
 
-            <div if="{state.reportData.totalLength}" class="d-flex flex-column total-length" hidden="{ !hasTotalLength() }">
+            <div if="{state.reportData.totalLength && hasTotalLength()}" class="d-flex flex-column total-length" hidden="{ !hasTotalLength() }">
                 <p>{ window.gettext("Total Length") }</p>
                 <h1>{ (state.reportData.totalLength / 1000).toFixed(2) } km</h1>
             </div>
+            <div if="{state.reportData.totalLength && hasTotalCount()}" class="d-flex flex-column total-length" hidden="{ !hasTotalCount() }">
+                <p>{ window.gettext("Total Count") }</p>
+                <h1>{ state.reportData.totalLength.toFixed(0) } Structures</h1>
+            </div>
 
-            <stacked_bar hidden="{ !state.road_status || !hasStackedBar(stackedBarIds.roadStatus) }"
-                id="{ stackedBarIds.roadStatus }" title="{ window.gettext('Road Status') }" entries="{ state.road_status }"
-                total_title="{ window.gettext('Total road chainage') }">
+            <stacked_bar class="{!state.road_status || !hasStackedBar(stackedBarIds.roadStatus) ? 'hidden' : 'show'}" 
+                id="{ stackedBarIds.roadStatus }" title="{ window.gettext('Road Status') }"
+                entries="{ state.road_status }" total_title="{ window.gettext('Total road chainage') }">
             </stacked_bar>
-            <stacked_bar hidden="{ !state.technical_class || !hasStackedBar(stackedBarIds.technicalClass) }"
+            <stacked_bar class="{!state.technical_class || !hasStackedBar(stackedBarIds.technicalClass) ? 'hidden' : 'show'}"
                 id="{ stackedBarIds.technicalClass }" title="{ window.gettext('Technical Class') }"
                 entries="{ state.technical_class }" total_title="{ window.gettext('Total road chainage') }">
             </stacked_bar>
-            <stacked_bar hidden="{ !state.asset_condition || !hasStackedBar(stackedBarIds.assetCondition) }"
+            <stacked_bar class="{!state.asset_condition || !hasStackedBar(stackedBarIds.assetCondition) ? 'hidden' : 'show'}"
                 id="{ stackedBarIds.assetCondition }" title="{ window.gettext('Surface Condition (SDI)') }"
                 entries="{ state.asset_condition }" total_title="{ window.gettext('Total road chainage') }">
             </stacked_bar>
+            <stacked_bar class="{!state.roughness || !hasStackedBar(stackedBarIds.assetRoughnessCondition) ? 'hidden' : 'show'}"
+                id="{ stackedBarIds.assetRoughnessCondition }" title="{ window.gettext('Roughness Condition') }"
+                entries="{ state.roughness }" total_title="{ window.gettext('Total road chainage') }">
+            </stacked_bar>
 
             <data_table hidden="{ !state.reportData.municipality || !hasDataTable(reportTableIds.municipality) }"
+                class="report-table" paging="false" canexport showTotal
                 table_id="{reportTableIds.municipality}" title="{ window.gettext('Municipality') }"
-                columns="{columns.municipality()}" columnSortOrder="{baseColumnSortOrder}" paging="false" canexport
-                showTotal>
+                columns="{columns.municipality()}" columnSortOrder="{baseColumnSortOrder}">
             </data_table>
             <data_table hidden="{ !state.reportData.assetClass || !hasDataTable(reportTableIds.assetClass) }"
+                class="report-table" paging="false" canexport showTotal
                 table_id="{reportTableIds.assetClass}" title="{ window.gettext('Asset Class') }"
-                columns="{columns.assetClass()}" columnSortOrder="{baseColumnSortOrder}" paging="false" canexport showTotal>
+                columns="{columns.assetClass()}" columnSortOrder="{baseColumnSortOrder}">
             </data_table>
             <data_table hidden="{ !state.reportData.surfaceType || !hasDataTable(reportTableIds.surfaceType) }"
+                class="report-table" paging="false" canexport showTotal
                 table_id="{reportTableIds.surfaceType}" title="{ window.gettext('Surface Type') }"
-                columns="{columns.surfaceType()}" columnSortOrder="{baseColumnSortOrder}" paging="false" canexport
-                showTotal>
+                columns="{columns.surfaceType()}" columnSortOrder="{baseColumnSortOrder}">
             </data_table>
             <data_table hidden="{ !state.reportData.roadStatus || !hasDataTable(reportTableIds.roadStatus) }"
+                class="report-table" paging="false" canexport showTotal
                 table_id="{reportTableIds.roadStatus}" title="{ window.gettext('Road Status') }"
-                columns="{columns.roadStatus()}" columnSortOrder="{baseColumnSortOrder}" paging="false" canexport showTotal>
+                columns="{columns.roadStatus()}" columnSortOrder="{baseColumnSortOrder}">
             </data_table>
             <data_table hidden="{ !state.reportData.technicalClass || !hasDataTable(reportTableIds.technicalClass) }"
+                class="report-table" paging="false" canexport showTotal
                 table_id="{reportTableIds.technicalClass}" title="{ window.gettext('Technical Class') }"
-                columns="{columns.technicalClass()}" columnSortOrder="{baseColumnSortOrder}" paging="false" canexport
-                showTotal>
+                columns="{columns.technicalClass()}" columnSortOrder="{baseColumnSortOrder}">
             </data_table>
             <data_table hidden="{ !state.reportData.assetCondition || !hasDataTable(reportTableIds.assetCondition) }"
+                class="report-table" paging="false" canexport
                 table_id="{reportTableIds.assetCondition}" title="{ window.gettext('Surface Condition (SDI)') }"
-                columns="{columns.assetCondition()}" columnSortOrder="{baseColumnSortOrder}" paging="false" canexport>
+                columns="{columns.roadAssetCondition()}" columnSortOrder="{baseColumnSortOrder}">
+            </data_table>
+            <data_table hidden="{ !state.reportData.structureForm || !hasDataTable(reportTableIds.structureForm) }"
+                class="report-table" paging="false" canexport
+                table_id="{reportTableIds.structureForm}" title="{ window.gettext('Structure Form') }"
+                columns="{columns.assetType()}" columnSortOrder="{baseColumnSortOrder}">
+            </data_table>
+            <data_table hidden="{ !state.reportData.assetType || !hasDataTable(reportTableIds.structureClass) }"
+                class="report-table" paging="false" canexport showTotalCount
+                table_id="{reportTableIds.structureClass}" title="{ window.gettext('Asset Class') }"
+                columns="{columns.assetClass()}" columnSortOrder="{baseColumnSortOrder}">
+            </data_table>
+            <data_table hidden="{ !state.reportData.assetCondition || !hasDataTable(reportTableIds.structureCondition) }"
+                class="report-table" paging="false" canexport showTotalCount
+                table_id="{reportTableIds.structureCondition}" title="{ window.gettext('Structure Condition') }"
+                columns="{columns.structureAssetCondition()}" columnSortOrder="{baseColumnSortOrder}">
+            </data_table>
+            <data_table hidden="{ !state.reportData.assetRoughness || !hasDataTable(reportTableIds.assetRoughness) }"
+                class="report-table" paging="false" canexport
+                table_id="{reportTableIds.assetRoughness}" title="{ window.gettext('Roughness Condition (IRI)') }"
+                columns="{columns.assetRoughness()}" columnSortOrder="{baseColumnSortOrder}">
             </data_table>
         </div>
-
+    
         <div if="{ state.noReport }"
             class="align-items-center blank d-flex flex-column justify-content-center">
             <span class="no-report image"></span>
             <h6>{ reportAssetsContent().noReportTitle }</h6>
             <p>{ reportAssetsContent().noReportDescription }</p>
         </div>
-
         <div if="{ state.noReportData }"
             class="align-items-center blank d-flex flex-column justify-content-center">
             <span class="no-report-data image"></span>
             <h6>{ reportAssetsContent().noReportData }</h6>
-        </div>
+        </div>        
     </div>
 
     <div class="print-footer">
@@ -202,13 +237,14 @@
             ADMINISTRATIVE_AREA_CHOICES, // municipality
             ASSET_CLASS_CHOICES, // asset_class - previously road_class / road_type, structure_class
             ASSET_CONDITION_CHOICES, // asset_condition - previously surface_condition, structure_condition
+            ASSET_TYPE_CHOICES, // asset_type
         } from "../assets/models/estradaBase";
         import {
             SURFACE_TYPE_CHOICES // surface_type
         } from "../assets/models/road";
-        import { makeEstradaNetworkSurveyReport } from "../assets/models/surveyReport";
+        import {makeEstradaNetworkSurveyReport} from "../assets/models/surveyReport";
 
-        import { getAssetReport } from "../reportManager";
+        import {getAssetReport} from "../reportManager";
         import {
             allAssetReportElements,
             reportTableIds,
@@ -216,11 +252,12 @@
             reportTitleColumnMapping,
             reportColumns,
             reportColumnSets,
-            reportAssetsContent
+            reportAssetsContent,
         } from "../reportTableDefinitions";
-        import { updateReportAttributeSummary } from "../roadAttributes";
-        import { toChainageFormat } from "../assets/protoBufUtilities";
-        import { maxDate, currentDate, currentDateTime } from "../assets/reportUtilities";
+        import {updateReportAttributeSummary} from "../roadAttributes";
+        import {toChainageFormat} from "../assets/protoBufUtilities";
+        import {maxDate, currentDate, currentDateTime} from "../assets/reportUtilities";
+        import {copyData} from "../assets/utilities";
 
         import "select2/dist/js/select2.full.min.js";
         import dayjs from "dayjs";
@@ -244,36 +281,48 @@
             return reportColumnSets[titleColumnName];
         }
 
-        /** Deep copy the supplied data to a new object
-         */
-        function copyData(data) { return JSON.parse(JSON.stringify(data)); };
+        let assetSchema = {};
+        const assetSchemaElement = document.getElementById("asset_schema");
+        if (assetSchemaElement) {
+            assetSchema = JSON.parse(assetSchemaElement.textContent || "");
+        }
 
         export default {
             state: {
                 noReport: true,
                 noReportData: false,
                 filterDefinitions: [
-                    { selectId: "municipality_area_select2", placeHolder: "Municipality", dataIn: "reportMunicipality", filterName: "municipality" },
-                    { selectId: "asset_class_select2", placeHolder: "Asset class", dataIn: "reportAssetClass", filterName: "asset_class" },
-                    { selectId: "surface_type_select2", placeHolder: "Surface type", dataIn: "reportSurfaceType", filterName: "surface_type" },
-                    { selectId: "asset_condition_select2", placeHolder: "Surface condition", dataIn: "reportAssetCondition", filterName: "asset_condition" },
-                    { selectId: "road_code_select2", placeHolder: "Road code", dataIn: "reportRoadCode", isSingle: true, filterName: "road_code" },
+                    {selectId: "municipality_area_select2", placeHolder: "Municipality", dataIn: "reportMunicipality", filterName: "municipality"},
+                    {selectId: "asset_class_select2", placeHolder: "Asset class", dataIn: "reportAssetClass", filterName: "asset_class"},
+                    {selectId: "surface_type_select2", placeHolder: "Surface type", dataIn: "reportSurfaceType", filterName: "surface_type"},
+                    {selectId: "asset_condition_select2", placeHolder: "Surface condition", dataIn: "reportAssetCondition", filterName: "asset_condition"},
+                    {selectId: "asset_type_select2", placeHolder: "Structure form", dataIn: "reportAssetType", filterName: "asset_type"},
+                    {selectId: "road_code_select2", placeHolder: "Road code", dataIn: "reportRoadCode", isSingle: true, filterName: "road_code"},
                 ],
                 reportMunicipality: [],
                 reportAssetClass: [],
                 reportSurfaceType: [],
                 reportAssetCondition: [],
+                reportAssetType: [],
                 reportRoadCode: null,
                 reportStartChainage: null,
                 reportEndChainage: null,
                 reportDate: true,
                 reportData: {},
+                // Loaders for the stacked bars
                 road_status: [{ key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
                 technical_class: [{ key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
                 asset_condition: [{ key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
+                asset_type: [{key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading")}],
+                roughness: [{ key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }],
             },
             components: {
                 Stacked_Bar
+            },
+            structureForms() {
+                return window.asset_schema.asset_type.options.filter((option) => {
+                    return option[0] !== "ROAD";
+                });
             },
             stackedBarIds: reportBarIds,
             // This just ensures we can see the reportTableIds from the HTML above
@@ -282,11 +331,15 @@
             columns: {
                 municipality: () => SetTitleColumn("municipality"),
                 assetClass: () => SetTitleColumn("asset_class"),
+                assetType: () => SetTitleColumn("asset_type"),
                 roadStatus: () => SetTitleColumn("road_status"),
                 assetCondition: () => SetTitleColumn("asset_condition"),
+                assetRoughness: () => SetTitleColumn("asset_roughness"),
+                roadAssetCondition: () => SetTitleColumn("road_asset_condition"),
                 surfaceType: () => SetTitleColumn("surface_type"),
                 technicalClass: () => SetTitleColumn("technical_class"),
                 terrainClass: () => SetTitleColumn("terrain_class"),
+                structureAssetCondition: () => SetTitleColumn("structure_asset_condition"),
             },
             reportAssetsContent() {
                 // For the definitions of the reports themselves see reportAssetsContent in reportTableDefinitions
@@ -303,7 +356,12 @@
                 return this.reportElements().roadCodeAndChainage;
             },
             hasTotalLength() {
-                return this.reportElements().totalLength;
+                // For Roads
+                return !!this.reportElements().totalLength;
+            },
+            hasTotalCount() {
+                // For Structures
+                return !!this.reportElements().totalCount;
             },
             hasStackedBar(stackedBarId) {
                 return (this.reportElements().stackedBars || []).indexOf(stackedBarId) > -1;
@@ -377,12 +435,8 @@
             toggleSingleSelect2(e) {
                 this.state[e.data] = e.currentTarget.value;
             },
-            prepareTableData(reportTableId, tableData, filterName) {
-                const haveTableData = tableData.length > 0;
+            prepareTableColumns(reportTableId, tableData, filterName) {
                 const fixedFilter = this.reportAssetsContent().fixedFilter;
-                const isFixedFilter = fixedFilter.primaryattribute
-                    ? fixedFilter.primaryattribute.indexOf(filterName) !== -1
-                    : false;
                 const hasSecondaryAttributes = fixedFilter.secondaryattribute
                     ? fixedFilter.secondaryattribute[filterName] && this.reportElements().dataTables.includes(reportTableId)
                     : false;
@@ -390,10 +444,14 @@
                 // Add in the extra columns needed by any secondaryattributes
                 // This assumes that the reportColumns definitions have been generated
                 // in the defineReportColumn in surveyReport.js
-                if (haveTableData && hasSecondaryAttributes) {
-                    // Initialise the new set of columns with the distance column (but not percent)
+                if (tableData.length > 0 && hasSecondaryAttributes) {                
+                    // Initialise the new set of columns
+                    // For totalLength (or unknown): with the distance column (but not percent)
+                    // For totalCount: with the count column (but not percent)
                     const columnSet = {};
-                    columnSet[reportColumns.distance.data] = reportColumns.distance;
+                    columnSet[reportColumns.distance.data] = this.hasTotalCount()
+                        ? reportColumns.count
+                        : reportColumns.distance;
 
                     // Build up the new title
                     const newTitles = [GetTitleTranslation(filterName)];
@@ -404,7 +462,7 @@
 
                         tableData.forEach((entry) => {
                             const fullAttrTerms = Object.keys(entry)
-                                .filter((entryKey) => { return entryKey.indexOf(`${attrKey}|`) === 0; });
+                                .filter((entryKey) => {return entryKey.indexOf(`${attrKey}|`) === 0;});
                             if (fullAttrTerms.length === 0) {
                                 return; // continue to next entry
                             }
@@ -420,7 +478,7 @@
                     // Only replace the 'title' if we've got something new defined
                     if (newTitles.length > 1) {
                         const eventName = `${reportTableId}.changedTitle`;
-                        const eventDetail = { detail: { title: newTitles.join(", ") } };
+                        const eventDetail = {detail: {title: newTitles.join(", ")}};
                         document.dispatchEvent(new CustomEvent(eventName, eventDetail));
                     }
 
@@ -440,12 +498,20 @@
                         });
 
                         const eventName = `${reportTableId}.changedColumns`;
-                        const eventDetail = { detail: { columns: newColumnSet } };
+                        const eventDetail = {detail: {columns: newColumnSet}};
                         document.dispatchEvent(new CustomEvent(eventName, eventDetail));
                     }
                 }
+            },
+            prepareTableData(reportTableId, tableData, filterName) {
+                const fixedFilter = this.reportAssetsContent().fixedFilter;
+                const isFixedFilter = fixedFilter.primaryattribute
+                    ? fixedFilter.primaryattribute.indexOf(filterName) !== -1
+                    : false;
 
-                if (haveTableData || isFixedFilter) {
+                this.prepareTableColumns(reportTableId, tableData, filterName);
+
+                if (tableData.length > 0 || isFixedFilter) {
                     this.state.reportData.totalLength = this.state.reportData.totalLength || tableData.reduce((acc, cur) => acc += cur.distance || 0, 0);
                     tableData.forEach((entry) => {
                         if (this.state.reportData.totalLength > 0) {
@@ -454,11 +520,11 @@
                             // 100% of 0km - but this won't appear in the label
                             entry.percent = 100;
                         }
-                        entry.getId = () => { return entry.key; };
+                        entry.getId = () => {return entry.key;};
                         entry.title = window.gettext(entry.title || entry.key);
                     });
                     const eventName = `${reportTableId}.dataAdded`;
-                    const eventDetail = { detail: { pendingRows: tableData, clearRows: true } };
+                    const eventDetail = {detail: {pendingRows: tableData, clearRows: true}};
                     document.dispatchEvent(new CustomEvent(eventName, eventDetail));
 
                     return tableData || [];
@@ -473,7 +539,7 @@
                     this.state.reportData.totalLength = this.state.reportData.totalLength || barData.reduce((acc, cur) => acc += cur.distance || 0, 0);
 
                     const eventName = `${barName}.dataUpdated`;
-                    const eventDetail = { detail: { entries: this.state[filterName], barName } };
+                    const eventDetail = {detail: {entries: this.state[filterName], barName}};
                     document.dispatchEvent(new CustomEvent(eventName, eventDetail));
                 } else {
                     delete this.state[filterName];
@@ -488,9 +554,10 @@
                 // Handle the select filters
                 this.state.filterDefinitions.forEach((filterDefinition) => {
                     const requestFilterName = filterDefinition.filterName || "";
-                    if (!requestFilterName || filterSet[requestFilterName]) {
+                    if (requestFilterName !== "asset_type" && (!requestFilterName || filterSet[requestFilterName])) {
                         // If the fixedFilters already defines this request filter
                         // then we will not accept this user defined one
+                        // unless it is asset_type on a structure report
                         return;
                     }
 
@@ -498,9 +565,14 @@
                     if (!selectData || selectData.length === 0) {
                         return;
                     }
-                    const selection = selectData.map((data) => { return data.id; });
+                    const selection = selectData.map((data) => {return data.id;});
 
-                    filterSet[requestFilterName] = selection;
+                    if (requestFilterName !== "asset_type") {
+                        filterSet[requestFilterName] = selection;
+                    } else {
+                        // override the master report asset type selection instead
+                        filterSet["reportassettype"] = selection;
+                    }
                 });
                 // Check for the other filters
                 if (this.state.reportDate) {
@@ -552,6 +624,7 @@
                                 case "asset_class": selectSource = ASSET_CLASS_CHOICES; break;
                                 case "asset_condition": selectSource = ASSET_CONDITION_CHOICES; break;
                                 case "surface_type": selectSource = SURFACE_TYPE_CHOICES; break;
+                                case "asset_type": selectSource = ASSET_TYPE_CHOICES; break;
                             }
                             if (selectSource) {
                                 expandedPrimaries[parentPrimary] = Object.keys(selectSource);
@@ -590,32 +663,43 @@
             assembleSurveyReportData(surveyReportData) {
                 this.state.noReport = false;
                 const haveLengths = !!surveyReportData.lengths;
+                const mergedAttributes = surveyReportData.mergedAttributes;
 
                 this.state.reportData = {
                     totalLength: 0,
-                    roadCodes: (surveyReportData.roadCodes || []).sort(),
+                    totalCount: 0,
+                    assetCodes: (surveyReportData.assetCodes || []).sort(),
                     reportChainage: (surveyReportData.reportChainage && surveyReportData.reportChainage.length === 2
                         && (surveyReportData.reportChainage[0] + surveyReportData.reportChainage[1]))
                         ? surveyReportData.reportChainage
                         : undefined,
                     dateCreated: currentDateTime(),
-                    formattedFilters: surveyReportData.formattedFilters
+                    formattedFilters: surveyReportData.formattedFilters,
                 };
 
                 if (haveLengths) {
                     this.state.reportData.municipality = this.prepareTableData(reportTableIds.municipality, surveyReportData.municipalities, "municipality");
                     this.state.reportData.assetClass = this.prepareTableData(reportTableIds.assetClass, surveyReportData.assetClasses, "asset_class");
                     this.state.reportData.surfaceType = this.prepareTableData(reportTableIds.surfaceType, surveyReportData.surfaceTypes, "surface_type");
-
                     this.state.reportData.roadStatus = this.prepareTableData(reportTableIds.roadStatus, surveyReportData.roadStatuses, "road_status");
                     this.state.reportData.technicalClass = this.prepareTableData(reportTableIds.technicalClass, surveyReportData.technicalClasses, "technical_class");
-                    const assetConditions = surveyReportData.attributes("asset_condition", null, false, true);
-                    const assetConditionAttributes = assetConditions ? assetConditions.attributeEntries || [] : [];
-                    this.state.reportData.assetCondition = this.prepareTableData(reportTableIds.assetCondition, assetConditionAttributes, "asset_condition");
+
+                    let assetConditions = surveyReportData.assetConditions;
+                    let surfaceConditions = surveyReportData.attributes("asset_condition", null, false, true);
+                    if (surfaceConditions && (surfaceConditions.attributeEntries || []).length > 0) {
+                        // We're assuming the individual Road - Surface Condition report
+                        this.state.reportData.assetCondition = this.prepareTableData(reportTableIds.assetCondition, surfaceConditions.attributeEntries, "asset_condition");
+                    } else {
+                        this.state.reportData.assetCondition = this.prepareTableData(reportTableIds.structureCondition, surveyReportData.assetTypes, "asset_type");
+                    }
+
+                    this.state.reportData.assetType = this.prepareTableData(reportTableIds.structureClass, surveyReportData.assetTypes, "asset_type");
+                    this.state.reportData.assetRoughness = this.prepareTableData(reportTableIds.assetRoughness, mergedAttributes || [], "roughness");
 
                     this.prepareStackedBar(this.stackedBarIds.roadStatus, surveyReportData.roadStatuses, "asset_class");
                     this.prepareStackedBar(this.stackedBarIds.technicalClass, surveyReportData.technicalClasses, "technical_class");
                     this.prepareStackedBar(this.stackedBarIds.assetCondition, surveyReportData.assetConditions, "asset_condition");
+                    this.prepareStackedBar(this.stackedBarIds.assetRoughnessCondition, surveyReportData.roughnesses, "roughness");
 
                     const reportingTables = this.reportElements().dataTables;
                     this.state.noReportData = true;
@@ -624,7 +708,11 @@
                         reportingTables.includes(reportTableIds.surfaceType) && surveyReportData.surfaceTypes.length ||
                         reportingTables.includes(reportTableIds.roadStatus) && surveyReportData.roadStatuses.length ||
                         reportingTables.includes(reportTableIds.technicalClass) && surveyReportData.technicalClasses.length ||
-                        reportingTables.includes(reportTableIds.assetCondition) && surveyReportData.assetConditions.length) {
+                        reportingTables.includes(reportTableIds.assetCondition) && surveyReportData.assetConditions.length ||
+                        reportingTables.includes(reportTableIds.assetRoughness) && mergedAttributes.length ||
+                        reportingTables.includes(reportTableIds.structureForm) && surveyReportData.assetTypes.length ||
+                        reportingTables.includes(reportTableIds.structureClass) && surveyReportData.assetTypes.length ||
+                        reportingTables.includes(reportTableIds.structureCondition) && surveyReportData.assetTypes.length) {
                         this.state.noReportData = false;
                     }
                 } else {
@@ -652,9 +740,9 @@
                     return;
                 }
 
-                const getAssetReports = filters.map((f) => { return getAssetReport(f); });
+                const getReports = filters.map((f) => {return getAssetReport(f);});
 
-                Promise.all(getAssetReports)
+                Promise.all(getReports)
                     .then((surveyReportData) => {
                         switch (surveyReportData.length) {
                             case 0:
@@ -693,7 +781,7 @@
                                                 assembledReportData.setFilterKey("secondary_attribute", filterSecondary);
                                             }
 
-                                            const value = { "value": 0 };
+                                            const value = {"value": 0};
                                             secondaryAttributes.forEach((attribute) => {
                                                 const attributeLengths = survey.lengths[attribute];
                                                 value[attribute] = {};
@@ -714,7 +802,7 @@
                                                 });
 
                                             });
-                                            assembledReportData.lengthsKeyAddItem(primaryattribute, survey.filter[primaryattribute], value);
+                                            assembledReportData.lengthsKeyAddItem(primaryattribute, survey.filter[primaryattribute], assetSchema, value);
                                         });
                                     }
                                 });

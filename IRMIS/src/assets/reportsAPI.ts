@@ -3,11 +3,11 @@ import { Report } from "../../protobuf/report_pb";
 import { ConfigAPI } from "./configAPI";
 import { makeEstradaNetworkSurveyReport } from "./models/surveyReport";
 
-/** getRoadReports
+/** getReports
  *
- * Retrieves the road report data from the server
+ * Retrieves asset/structure report data from the server
  */
-export function getRoadReports(filters: { [name: string]: any }) {
+export function getReports(filters: { [name: string]: any }) {
     const filterParams = ConfigAPI.objectToQueryString(filters);
     const reportUrl = `${ConfigAPI.requestReportUrl}/${filterParams}`;
 

@@ -3,14 +3,15 @@ import { toChainageFormat } from "./assets/protoBufUtilities";
 // tslint:disable: object-literal-sort-keys
 
 /** The list of sections for the different types of asset reports */
-export const reportAssetsSections: Array<{ [name: string]: any }> = [
+export const reportAssetsSections: { [name: string]: string }[] = [
     { section: "network", title: (window as any).gettext("Road Network Report") },
     { section: "condition", title: (window as any).gettext("Road Condition Report") },
     { section: "roadClass", title: (window as any).gettext("Road Network Reports by Road Class") },
+    { section: "structures", title: (window as any).gettext("Structures Reports") },
 ];
 
-/** assetReports.id matches the definitions in reportTableDefinitions */
-export const assetReports: Array<{ [name: string]: any }> = [
+/** assetReports.id matches the definitions in reportAssetsContent below */
+export const assetReports: { [name: string]: number | string }[] = [
     { id: 1, section: "network", title: (window as any).gettext("Road Network Length") },
     { id: 2, section: "network", title: (window as any).gettext("Road Network Length Breakdown") },
     { id: 3, section: "condition", title: (window as any).gettext("Surface Condition (SDI)") },
@@ -20,6 +21,8 @@ export const assetReports: Array<{ [name: string]: any }> = [
     { id: 7, section: "roadClass", title: (window as any).gettext("Road Network Length - Rural Class") },
     { id: 8, section: "roadClass", title: (window as any).gettext("Road Network Length - Highway Class") },
     { id: 9, section: "roadClass", title: (window as any).gettext("Road Network Length - Urban Class") },
+    { id: 10, section: "structures", title: (window as any).gettext("Structures Overview Report") },
+    { id: 11, section: "structures", title: (window as any).gettext("Structures Condition Report") },
 ];
 
 /** The names given to the dataTables used in the asset reports */
@@ -30,6 +33,10 @@ export const reportTableIds: { [name: string]: string } = {
     roadStatus: "report-road-status-table",
     technicalClass: "report-technical-class-table",
     assetCondition: "report-asset-condition-table",
+    assetRoughness: "report-asset-roughness-table",
+    structureForm: "report-structure-form-table",
+    structureClass: "report-structure-class-table",
+    structureCondition: "report-structure-condition-table",
 };
 
 /** The names of the stacked bars used in the asset reports */
@@ -38,31 +45,21 @@ export const reportBarIds: { [name: string]: string } = {
     roadStatus: "report-road-status-bar",
     technicalClass: "report-technical-class-bar",
     assetCondition: "report-asset-condition-bar",
+    assetRoughnessCondition: "report-roughness-condition-bar",
     pavementClass: "report-pavement-class-bar",
-};
-
-/** IDs of the asset report elements */
-export const allAssetReportElements = {
-    stackedBars: [reportBarIds.roadStatus, reportBarIds.technicalClass, reportBarIds.assetCondition],
-    tables: [
-        reportTableIds.municipality,
-        reportTableIds.assetClass,
-        reportTableIds.surfaceType,
-        reportTableIds.roadStatus,
-        reportTableIds.technicalClass,
-        reportTableIds.assetCondition,
-    ],
 };
 
 /** The various titles given to the dataTables used in the asset reports */
 export const reportTitleColumnMapping: { [name: string]: string } = {
     municipality: "Municipality",
     asset_class: "Asset Class",
+    asset_type: "Asset Type",
     road_status: "Road Status",
-    // asset_condition: no title column for asset condition
+    // road_asset_condition: no title column for (Road) asset condition
     surface_type: "Surface Type",
     technical_class: "Technical Class",
     terrain_class: "Terrain Class",
+    structure_asset_condition: "Structure Condition",
 };
 
 /** The various columns shared between the different asset reports */
@@ -83,6 +80,18 @@ export const reportColumns: { [name: string]: any } = {
         render: (data: any, type: string) => {
             return (type === "display")
                 ? (data / 1000).toFixed(2)
+                : data;
+        },
+    },
+    count: {
+        title: (window as any).gettext("Count"),
+        data: "distance",
+        defaultContent: "",
+        className: "text-right",
+        orderable: false,
+        render: (data: any, type: string) => {
+            return (type === "display")
+                ? data.toFixed(0)
                 : data;
         },
     },
@@ -131,6 +140,18 @@ export const reportColumns: { [name: string]: any } = {
         defaultContent: "",
         orderable: false,
     },
+    roughness: {
+        title: (window as any).gettext("Roughness (IRI)"),
+        data: "sourceRoughness",
+        defaultContent: "",
+        orderable: false,
+    },
+    roughnessCondition: {
+        title: (window as any).gettext("Roughness Condition"),
+        data: "roughness",
+        defaultContent: "",
+        orderable: false,
+    },
     surfaceType: {
         title: (window as any).gettext("Surface Type"),
         data: "surfaceType",
@@ -145,25 +166,39 @@ export const reportColumns: { [name: string]: any } = {
     },
 };
 
-/** 
+/**
  * These are the default column sets for each report type,
  * they are overriden for any report that specifies fixedFilter.secondaryattribute
  * A column title is usually reset by the columns functions below
  */
-export const reportColumnSets: { [name: string]: Array<string> } = {
+export const reportColumnSets: { [name: string]: string[] } = {
     municipality: [reportColumns.title, reportColumns.distance, reportColumns.percent],
     asset_class: [reportColumns.title, reportColumns.distance, reportColumns.percent],
+    asset_type: [reportColumns.title, reportColumns.distance, reportColumns.percent],
     road_status: [reportColumns.title, reportColumns.distance, reportColumns.percent],
-    asset_condition: [reportColumns.chainageStart, reportColumns.chainageEnd, reportColumns.assetCondition, reportColumns.surveyDate],
+    asset_condition: [
+        reportColumns.chainageStart, reportColumns.chainageEnd,
+        reportColumns.assetCondition, reportColumns.surveyDate,
+    ],
+    road_asset_condition: [
+        reportColumns.chainageStart, reportColumns.chainageEnd,
+        reportColumns.assetCondition, reportColumns.surveyDate,
+    ],
+    asset_roughness: [
+        reportColumns.chainageStart, reportColumns.chainageEnd,
+        reportColumns.roughness, reportColumns.roughnessCondition,
+        reportColumns.surveyDate,
+    ],
     surface_type: [reportColumns.title, reportColumns.distance, reportColumns.percent],
     technical_class: [reportColumns.title, reportColumns.distance, reportColumns.percent],
     terrain_class: [reportColumns.title, reportColumns.distance, reportColumns.percent],
+    structure_asset_condition: [reportColumns.title, reportColumns.count, reportColumns.percent],
 };
 
 /** The definitions of the different asset reports
  * Note:
  * - fixedFilters uses snake_case for various field names
- * this excludes 'primaryattribute' and 'secondaryattribute' because they are not field names
+ * this excludes 'reportassettype', 'primaryattribute' and 'secondaryattribute' because they are not field names
  * within report_assets.riot.html it also excludes several fields that a heavily verified/manipulated as filters
  * - visibleFilters uses camelCase for various html id names within report.riot.html
  */
@@ -175,6 +210,7 @@ export const reportAssetsContent: { [name: string]: any } = {
         noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed Road Network Length information. You can use filters to generate a customized report"),
         noReportData: (window as any).gettext("Sorry, data for the road network is not available yet"),
         fixedFilter: {
+            reportassettype: ["ROAD"],
             primaryattribute: ["road_status", "technical_class"],
         },
         visibleFilters: {
@@ -197,6 +233,7 @@ export const reportAssetsContent: { [name: string]: any } = {
         noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed Road Network Length Breakdown information. You can use filters to generate a customized report"),
         noReportData: (window as any).gettext("Sorry, data for the road network is not available yet"),
         fixedFilter: {
+            reportassettype: ["ROAD"],
             primaryattribute: ["municipality", "asset_class", "surface_type"],
             secondaryattribute: {
                 municipality: ["road_status", "technical_class"],
@@ -225,6 +262,7 @@ export const reportAssetsContent: { [name: string]: any } = {
         noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed Surface Condition information per segment of the selected road"),
         noReportData: (window as any).gettext("Sorry, Surface Condition data is not available for the selected road"),
         fixedFilter: {
+            reportassettype: ["ROAD"],
             primaryattribute: ["asset_condition"],
         },
         visibleFilters: {
@@ -243,12 +281,20 @@ export const reportAssetsContent: { [name: string]: any } = {
         noReportTitle: (window as any).gettext("Please select a road above to view IRI Roughness reports"),
         noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed IRI Roughness information per segment of the selected road"),
         noReportData: (window as any).gettext("Sorry, IRI Roughness data is not available for the selected road"),
-        fixedFilter: {},
+        fixedFilter: {
+            reportassettype: ["ROAD"],
+            primaryattribute: ["source_roughness", "roughness"],
+        },
         visibleFilters: {
             roadCode: true,
             reportDate: true,
         },
-        reportElements: { roadCodeAndChainage: true },
+        reportElements: {
+            filters: true,
+            roadCodeAndChainage: true,
+            stackedBars: [reportBarIds.assetRoughnessCondition],
+            dataTables: [reportTableIds.assetRoughness],
+        },
     },
     5: {
         title: (window as any).gettext("Road Network Length - National Class"),
@@ -257,6 +303,7 @@ export const reportAssetsContent: { [name: string]: any } = {
         noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed Road Network Length information for National class roads"),
         noReportData: (window as any).gettext("Sorry, data for National Class roads is not available yet"),
         fixedFilter: {
+            reportassettype: ["ROAD"],
             primaryattribute: ["road_status", "technical_class"],
             asset_class: "NAT",
         },
@@ -272,6 +319,7 @@ export const reportAssetsContent: { [name: string]: any } = {
         noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed Road Network Length information for Municipal class roads"),
         noReportData: (window as any).gettext("Sorry, data for Municipal Class roads is not available yet"),
         fixedFilter: {
+            reportassettype: ["ROAD"],
             primaryattribute: ["road_status", "technical_class"],
             asset_class: "MUN",
         },
@@ -287,6 +335,7 @@ export const reportAssetsContent: { [name: string]: any } = {
         noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed Road Network Length information for Rural class roads"),
         noReportData: (window as any).gettext("Sorry, data for Rural Class roads is not available yet"),
         fixedFilter: {
+            reportassettype: ["ROAD"],
             primaryattribute: ["road_status", "technical_class"],
             asset_class: "RUR",
         },
@@ -302,6 +351,7 @@ export const reportAssetsContent: { [name: string]: any } = {
         noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed Road Network Length information for Highway class roads"),
         noReportData: (window as any).gettext("Sorry, data for Highway Class roads is not available yet"),
         fixedFilter: {
+            reportassettype: ["ROAD"],
             primaryattribute: ["road_status", "technical_class"],
             asset_class: "HIGH",
         },
@@ -317,6 +367,7 @@ export const reportAssetsContent: { [name: string]: any } = {
         noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed Road Network Length information for Urban class roads"),
         noReportData: (window as any).gettext("Sorry, data for Urban Class roads is not available yet"),
         fixedFilter: {
+            reportassettype: ["ROAD"],
             primaryattribute: ["road_status", "technical_class"],
             asset_class: "URB",
         },
@@ -325,16 +376,87 @@ export const reportAssetsContent: { [name: string]: any } = {
         },
         reportElements: { totalLength: true, dataTables: [reportTableIds.roadStatus, reportTableIds.technicalClass] },
     },
+    10: {
+        title: (window as any).gettext("Structures"),
+        description: (window as any).gettext("A report on Structures data. This report provides detailed Structure totals and percentages according to structure type as well as by structure class"),
+        noReportTitle: (window as any).gettext("Click on Create Report button to access the Structure Class Report for structures"),
+        noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed Structure Class information for structures"),
+        noReportData: (window as any).gettext("Sorry, data for structures is not available yet"),
+        fixedFilter: {
+            reportassettype: ["BRDG", "CULV"],
+            primaryattribute: ["asset_type"],
+            secondaryattribute: {
+                asset_type: ["asset_class"],
+            },
+            asset_type: ["BRDG", "CULV"],
+        },
+        visibleFilters: {
+            municipality: true,
+            assetCondition: true,
+            assetType: true,
+        },
+        reportElements: {
+            filters: true,
+            totalCount: true,
+            dataTables: [reportTableIds.structureForm, reportTableIds.structureClass],
+        },
+    },
+    11: {
+        title: (window as any).gettext("Condition of Structures"),
+        description: (window as any).gettext("A report on Structures conditions. This report provides detailed Structure condition information by structure type"),
+        noReportTitle: (window as any).gettext("Click on Create Report button to access the Structure Condition Report for structures"),
+        noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed Structure Condition information for structures"),
+        noReportData: (window as any).gettext("Sorry, data for structures is not available yet"),
+        fixedFilter: {
+            reportassettype: ["BRDG", "CULV"],
+            primaryattribute: ["asset_type"],
+            secondaryattribute: {
+                asset_type: ["asset_condition"],
+            },
+            asset_type: ["BRDG", "CULV"],
+        },
+        visibleFilters: {
+            municipality: true,
+            assetCondition: true,
+            assetType: true,
+        },
+        reportElements: {
+            filters: true,
+            totalCount: true,
+            dataTables: [reportTableIds.structureCondition],
+        },
+    },
+};
+
+/** IDs of the asset report elements */
+export const allAssetReportElements = {
+    stackedBars: [
+        reportBarIds.roadStatus,
+        reportBarIds.technicalClass,
+        reportBarIds.assetCondition,
+        reportBarIds.assetRoughnessCondition
+    ],
+    tables: [
+        reportTableIds.municipality,
+        reportTableIds.assetClass,
+        reportTableIds.surfaceType,
+        reportTableIds.roadStatus,
+        reportTableIds.technicalClass,
+        reportTableIds.assetCondition,
+        reportTableIds.structureClass,
+        reportTableIds.structureForm,
+        reportTableIds.structureCondition,
+    ],
 };
 
 /** The list of sections for the different types of contract reports */
-export const reportContractsSections: Array<{ [name: string]: any }> = [
+export const reportContractsSections: { [name: string]: string }[] = [
     { section: "contract", title: (window as any).gettext("Contract Reports") },
     { section: "socialSafeguard", title: (window as any).gettext("Social Safeguard Reports") },
 ];
 
 /** contractReports.id matches the definitions in reportTableDefinitions */
-export const contractReports: Array<{ [name: string]: any }> = [
+export const contractReports: { [name: string]: number | string }[] = [
     { id: 1, section: "contract", title: (window as any).gettext("Financial and Physical Progress Summary") },
     { id: 2, section: "contract", title: (window as any).gettext("Financial and Physical Progress") },
     { id: 3, section: "contract", title: (window as any).gettext("Completed Contracts") },
@@ -569,7 +691,7 @@ export const reportContractsTableColumns: { [name: string]: any } = {
 };
 
 /** The various columns for each dataTable used in the contract reports */
-export const reportContractsColumnSets: { [name: string]: Array<string> } = {
+export const reportContractsColumnSets: { [name: string]: string[] } = {
     program: [
         reportContractsTableColumns.title,
         reportContractsTableColumns.fundingSource,

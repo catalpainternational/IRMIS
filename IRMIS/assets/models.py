@@ -358,6 +358,10 @@ class Survey(models.Model):
     values = HStoreField()
     photos = GenericRelation(Photo, related_query_name="survey")
 
+    @property
+    def prefix(self):
+        return "SURV"
+
     def __str__(self,):
         if not self.asset_id:
             return "(%s) %s %s - Bad Survey" % (
@@ -878,6 +882,10 @@ class Road(models.Model):
     def link_name(self):
         return self.link_start_name + " - " + self.link_end_name
 
+    @property
+    def prefix(self):
+        return "ROAD"
+
     def __str__(self,):
         return "%s(%s) %s" % (self.road_code, self.link_code, self.road_name)
 
@@ -1143,7 +1151,7 @@ class Bridge(models.Model):
         verbose_name=_("Structure Code"),
         validators=[no_spaces],
         max_length=25,
-        # unique=True,
+        unique=True,
         blank=True,
         null=True,
     )
@@ -1266,6 +1274,10 @@ class Bridge(models.Model):
     )
     photos = GenericRelation(Photo, related_query_name="bridge")
 
+    @property
+    def prefix(self):
+        return "BRDG"
+
     def __str__(self,):
         return "%s(%s)" % (self.structure_name, self.pk)
 
@@ -1374,7 +1386,7 @@ class Culvert(models.Model):
         verbose_name=_("Structure Code"),
         validators=[no_spaces],
         max_length=25,
-        # unique=True,
+        unique=True,
         blank=True,
         null=True,
     )
@@ -1488,6 +1500,10 @@ class Culvert(models.Model):
         help_text=_("Choose the downstream protection type"),
     )
     photos = GenericRelation(Photo, related_query_name="culvert")
+
+    @property
+    def prefix(self):
+        return "CULV"
 
     def __str__(self,):
         return "%s(%s)" % (self.structure_name, self.pk)

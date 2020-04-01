@@ -58,13 +58,6 @@ edit_base #side-menu > div,
 #number-lanes-table,
 #number-lanes-report-table,
 #structure-condition-table,
-#report-municipality-table,
-#report-asset-class-table,
-#report-surface-type-table,
-#report-technical-class-table,
-#report-asset-condition-table,
-#report-road-status-table,
-#report-technical-class-table,
 #report-program-table,
 #report-contract-code-table,
 #report-asset-class-type-work-table,
@@ -73,6 +66,7 @@ edit_base #side-menu > div,
 #report-number-employees-table,
 #report-wages-table,
 #report-worked-days-table,
+.report-table table,
 .planning-dashboard-table,
 .planning-table {
     @extend %scrollbar-shared;
@@ -83,7 +77,7 @@ edit_base #side-menu > div,
     }
 }
 
-#inventory-asset-condition-table, #inventory-surface-type-table, #inventory-technical-class-table {
+.inventory-table {
     @extend %scrollbar-shared;
 
     &::-webkit-scrollbar:vertical {

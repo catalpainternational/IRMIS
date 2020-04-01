@@ -38,6 +38,7 @@ export function getSurveysForAsset(
 function getSurveyReportsForAsset(state: { [name: string]: any }, identifiers: { [name: string]: any }) {
     const editingRoad = state.editingRoad || state.road;
     const filters = {
+        reportassettype: ["ROAD"],
         primaryattribute: identifiers.primaryAttribute,
         asset_code: editingRoad.code,
         // Use the raw chainage (not the formatted one)

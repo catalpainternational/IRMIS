@@ -5,6 +5,7 @@ const assetSchema = JSON.parse(document.getElementById("asset_schema")?.textCont
 export const ADMINISTRATIVE_AREA_CHOICES = humanizeChoices(assetSchema, "administrative_area", "id", "name");
 export const ASSET_CONDITION_CHOICES = humanizeChoices(assetSchema, "asset_condition");
 export const ASSET_CLASS_CHOICES = humanizeChoices(assetSchema, "asset_class");
+export const ASSET_TYPE_CHOICES = humanizeChoices(assetSchema, "asset_type");
 
 export function AdminAreaChoices() {
     const adminAreaChoices: { [name: string]: any } = {};

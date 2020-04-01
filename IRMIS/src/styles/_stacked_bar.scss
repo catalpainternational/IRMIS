@@ -58,6 +58,26 @@
     }
 }
 
+#report-roughness-condition-bar {
+    @extend %stacked-bar-shared;
+
+    .entry-good {
+        background-color: #03A59A;
+    }
+
+    .entry-fair {
+        background-color: #81D2CC;
+    }
+
+    .entry-poor {
+        background-color: #FFACAF;
+    }
+
+    .entry-verypoor {
+        background-color: #FF5A5F;
+    }
+}
+
 #pavement-class-stacked-bar, #report-pavement-class-bar {
     @extend %stacked-bar-shared;
 
@@ -185,7 +205,10 @@
 }
 
 #report-assets {
-    #report-asset-condition-bar {
+    stacked_bar.hidden {
+        display: none;
+    }
+    stacked_bar.show > div {
         margin-bottom: 30px;
     }
 }    

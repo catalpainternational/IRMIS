@@ -79,7 +79,6 @@ report_dashboard, report_assets, report_contracts {
     }
 
     .content-wrapper {
-        padding: 25px 25px 15px 60px;
         background-color: $white;
 
         .report-criteria {
@@ -208,6 +207,10 @@ report_assets, report_contracts {
 }
 
 report_dashboard {
+    .content-wrapper.report-content {
+        padding: 25px 25px 20px 60px;
+    }
+
     .total-length h1.highlight {
         color: #03A59A;
         font-size: 36px;

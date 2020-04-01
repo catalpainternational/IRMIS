@@ -497,12 +497,19 @@ def protobuf_reports(request):
         raise MethodNotAllowed(request.method)
 
     # get/initialise the Filters
+    # primaryattribute and reportassettype are 'special' filters
+    # that identify what the report is focussed on
     primary_attributes = request.GET.getlist("primaryattribute", [])
+    report_asset_types = request.GET.getlist("reportassettype", [])
 
     # Ensure a minimum set of filters have been provided
     if len(primary_attributes) == 0:
         return HttpResponseBadRequest(
             "primaryattribute must contain at least one reportable attribute"
+        )
+    if len(report_asset_types) == 0:
+        return HttpResponseBadRequest(
+            "reportassettype must contain at least one asset type to report on"
         )
 
     # handle all of the id, code and asset_class permutations
@@ -536,6 +543,8 @@ def protobuf_reports(request):
     pavement_classes = request.GET.getlist("pavement_class", [])  # pavement_class=X
     municipalities = request.GET.getlist("municipality", [])  # municipality=X
     asset_conditions = request.GET.getlist("asset_condition", [])  # asset_condition=X
+    # this allows us to aggregate by asset_type
+    asset_types = request.GET.getlist("asset_type", [])  # asset_type=X
 
     # handle the (maximum) report date
     report_date = request.GET.get("reportdate", None)  # reportdate=X
@@ -547,19 +556,21 @@ def protobuf_reports(request):
         report_date = None
 
     # handle chainage filters
+    # for the moment `chainage` (for bridges and culverts) is not supported
+
     chainage_start = None
     chainage_end = None
-    chainage = None
+    # chainage = None
     if road_id or road_code:
         # chainage range is only valid if we've specified a road
         chainage_start = request.GET.get("chainagestart", None)
         chainage_end = request.GET.get("chainageend", None)
-    if bridge_id or bridge_code or culvert_id or culvert_code:
-        # chainage is only valid if we've specified a bridge or culvert
-        chainage = request.GET.get("chainage", None)
+    # if bridge_id or bridge_code or culvert_id or culvert_code:
+    #     # chainage is only valid if we've specified a bridge or culvert
+    #     chainage = request.GET.get("chainage", None)
     # If chainage has been supplied, ensure it is clean
-    if chainage != None:
-        chainage = float(chainage)
+    # if chainage != None:
+    #     chainage = float(chainage)
     if chainage_start != None:
         chainage_start = float(chainage_start)
     if chainage_end != None:
@@ -579,6 +590,10 @@ def protobuf_reports(request):
     final_lengths = defaultdict(Counter)
 
     final_filters["primary_attribute"] = primary_attributes
+    if len(asset_types) > 0:
+        final_filters["asset_type"] = list(set(asset_types) & set(report_asset_types))
+    else:
+        final_filters["asset_type"] = report_asset_types
 
     # Set the final_filters for all of the various id, code and class values
     # Of the specific asset types only road_* may be included,
@@ -622,10 +637,10 @@ def protobuf_reports(request):
             final_filters["chainage_start"] = chainage_start
         if chainage_end:
             final_filters["chainage_end"] = chainage_end
-    if (
-        bridge_id or bridge_code or culvert_id or culvert_code or road_id or road_code
-    ) and chainage:
-        final_filters["chainage"] = chainage
+    # if (
+    #     bridge_id or bridge_code or culvert_id or culvert_code or road_id or road_code
+    # ) and chainage:
+    #     final_filters["chainage"] = chainage
 
     # Initialise the Report
     asset_report = ReportQuery(final_filters)

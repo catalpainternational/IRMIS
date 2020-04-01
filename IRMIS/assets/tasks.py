@@ -242,6 +242,7 @@ def import_shapefiles(management_command, shape_file_folder, asset="road"):
             )
         )
     elif asset == "bridge":
+        set_unknown_structure_codes()
         set_structure_municipalities(asset)
         collate_geometries(asset)
         management_command.stdout.write(
@@ -255,6 +256,7 @@ def import_shapefiles(management_command, shape_file_folder, asset="road"):
             )
         )
     elif asset == "culvert":
+        set_unknown_structure_codes()
         set_structure_municipalities(asset)
         collate_geometries(asset)
         management_command.stdout.write(
@@ -511,6 +513,23 @@ def set_unknown_road_codes():
     for index, road in enumerate(roads):
         road.road_code = "XX{:>03}".format(index + 1)
         road.save()
+
+
+def set_unknown_structure_codes():
+    """ finds all structures with meaningless codes and assigns them XB / XC indexed codes """
+    bridges = Bridge.objects.filter(
+        Q(structure_code__isnull=True) | Q(structure_code__in=["X", "", "-", "Unknown"])
+    )
+    for index, bridge in enumerate(bridges):
+        bridge.structure_code = "XB{:>03}".format(index + 1)
+        bridge.save()
+
+    culverts = Culvert.objects.filter(
+        Q(structure_code__isnull=True) | Q(structure_code__in=["X", "", "-", "Unknown"])
+    )
+    for index, culvert in enumerate(culverts):
+        culvert.structure_code = "XC{:>03}".format(index + 1)
+        culvert.save()
 
 
 def set_road_municipalities():

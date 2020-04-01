@@ -165,7 +165,10 @@ def get_schema_data():
                 "help_text": x.help_text,
             }
 
-    # Schemas that are common to both asset types
+    # Asset Type
+    asset_schema["asset_type"].update({"options": Asset.ASSET_TYPE_CHOICES})
+
+    # Schemas that are common to all asset types
     # note that many road_code values will not have any matching Bridge or Culvert asset
     asset_schema["road_code"].update(
         {"options": list(Road.objects.all().distinct("road_code").values("road_code"))}
@@ -174,7 +177,7 @@ def get_schema_data():
         {"options": list(Municipality.objects.all().values("id", "name"))}
     )
 
-    # Schemas that have the same values for both asset types
+    # Schemas that have the same values for all asset types
     # Asset Class - AKA structure_class
     asset_schema["asset_class"].update({"options": Asset.ASSET_CLASS_CHOICES})
     # Asset Condition - AKA surface_condition or structure_condition

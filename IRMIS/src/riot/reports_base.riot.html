@@ -76,9 +76,9 @@
 
         import Feedback_Banner from './feedback_banner.riot.html';
         import Loading from './loading.riot.html';
-        import Report_Dashboard from './report_dashboard.riot.html';
         import Report_Assets from './report_assets.riot.html';
         import Report_Contracts from './report_contracts.riot.html';
+        import Report_Dashboard from './report_dashboard.riot.html';
 
         export default {
             state: {
@@ -102,7 +102,7 @@
             },
             onBeforeUnmount(props, state) {
                 window.removeEventListener("hashchange", this.hashCheck);
-                window.goBack = () => { };
+                window.goBack = () => {};
             },
             hashCheck() {
                 const reportHash = /#reports\/(\w+)\/(\d*)/.exec(location.hash);
@@ -138,7 +138,7 @@
                     feedback.classList.add("slide-out");
                     setTimeout(() => {
                         feedback.classList.remove("slide-out");
-                        this.update({ showFeedback: false });
+                        this.update({showFeedback: false});
                     }, 300);
                 }
             },
