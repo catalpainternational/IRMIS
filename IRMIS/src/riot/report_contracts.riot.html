@@ -169,15 +169,15 @@
             </data_table>
         </div>
 
-        <div if="{ state.noReport }" class="align-items-center blank d-flex flex-column justify-content-center">
-            <span class="no-report image"></span>
-            <h6>{ reportContractsContent().noReportTitle }</h6>
-            <p>{ reportContractsContent().noReportDescription }</p>
+        <div if="{ state.noReport }" class="align-items-center d-flex flex-column justify-content-center no-data-wrapper">
+            <span class="no-data image"></span>
+            <h6 class="text-center">{ reportContractsContent().noReportTitle }</h6>
+            <p class="text-center">{ reportContractsContent().noReportDescription }</p>
         </div>
 
-        <div if="{ state.noReportData }" class="align-items-center blank d-flex flex-column justify-content-center">
-            <span class="no-report-data image"></span>
-            <h6>{ reportContractsContent().noReportData }</h6>
+        <div if="{ state.noReportData }" class="align-items-center d-flex flex-column justify-content-center no-data-wrapper">
+            <span class="no-data image"></span>
+            <h6 class="text-center">{ reportContractsContent().noReportData }</h6>
         </div>
     </div>
 
