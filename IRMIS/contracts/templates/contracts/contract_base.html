@@ -1,0 +1,15 @@
+{% extends "contracts/contracts.html" %}
+{% load i18n %}
+
+{% block contracts_profile %}
+<header>
+    <a class="caret-dark discard-link left image" data-back="{% url 'contract-contract-list' %}"></a>
+    {% if contract.id is not None %}
+    <h1>{% trans "Edit Contract" %} — {{ contract.contract_code }}</h1>
+    {% else %}
+    <h1>{% trans "Create Contract" %}</h1>
+    {% endif %}
+</header>
+{% block contract_content %}
+{% endblock %}
+{% endblock %}

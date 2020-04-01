@@ -9,12 +9,14 @@
     }
 }
 
+#contracts-base #side-menu > div,
 planning_base #side-menu > div,
 reports_base #side-menu > div,
 edit_base #side-menu > div,
 #edit-base,
 #planning,
 #dashboard,
+#contracts,
 #report-assets,
 #report-contracts,
 .filters {
@@ -83,5 +85,15 @@ edit_base #side-menu > div,
     &::-webkit-scrollbar:vertical {
         border-left: 1px solid $light-gray;
         border-top: 1px solid $light-gray;
+    }
+}
+
+.contracts-profile-table,
+#project-assets-table,
+#project-milestones-table {
+    @extend %scrollbar-shared;
+
+    &::-webkit-scrollbar:horizontal {
+        height: 6px;
     }
 }

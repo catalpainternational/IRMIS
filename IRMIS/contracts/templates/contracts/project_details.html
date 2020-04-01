@@ -1,0 +1,171 @@
+{% extends "contracts/project_base.html" %}
+{% load i18n %}
+
+{% block project_content %}
+<nav>
+    <a class="selected">
+        <h6>{% trans "Project Details" %}</h6>
+    </a>
+    {% if not project.id %}
+    <a class="disabled">
+        <h6>{% trans "Financials" %}</h6>
+    </a>
+    <a class="disabled">
+        <h6>{% trans "Construction Schedule" %}</h6>
+    </a>
+    <a class="align-items-center d-flex flex-column disabled">
+        <h6>{% trans "Documents" %}</h6>
+        <span>(coming soon)</span>
+    </a>
+    {% else %}
+    <a href="{% url 'contract-projectfinancials-update' project.id %}">
+        <h6>{% trans "Financials" %}</h6>
+    </a>
+    <a href="{% url 'contract-projectconstructionschedule-update' project.id %}">
+        <h6>{% trans "Construction Schedule" %}</h6>
+    </a>
+    <a class="align-items-center d-flex flex-column">
+        <h6>{% trans "Documents" %}</h6>
+        <span>(coming soon)</span>
+    </a>
+    {% endif %}
+</nav>
+
+<div class="content">
+    <form id="project-details-form" method="post" action="{{ request.get_full_path }}">
+        {% csrf_token %}
+        <section>
+            <h6>{% trans "Project Details" %}</h6>
+
+            <div class="form-group">
+                {{ form.status.label_tag }}
+                <small class="form-text text-muted">{{ form.status.help_text }}</small>
+                {{ form.status }}
+                {% if form.status.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.status.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.program.label_tag }}
+                <small class="form-text text-muted">{{ form.program.help_text }}</small>
+                {{ form.program }}
+                {% if form.program.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.program.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.name.label_tag }}
+                <small class="form-text text-muted">{{ form.name.help_text }}</small>
+                {{ form.name }}
+                {% if form.name.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.name.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.code.label_tag }}
+                <small class="form-text text-muted">{{ form.code.help_text }}</small>
+                {{ form.code }}
+                {% if form.code.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.code.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.description.label_tag }}
+                <small class="form-text text-muted">{{ form.description.help_text }}</small>
+                {{ form.description }}
+                {% if form.description.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.description.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </section>
+
+        <section class="no-max-width">
+            <h6>{% trans "Asset Details" %}</h6>
+
+            <div class="flex-column form-row">
+                {{ formset.management_form }}
+                {% for form in formset %}
+                <div class="col d-flex flex-wrap">
+                    {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                    {% endfor %}
+                    {% for field in form.visible_fields %}
+                    <div class="form-group">
+                        {{ field.label_tag }}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                        {{ field }}
+                        {% if field.errors %}
+                        <div class="invalid-tooltip">
+                            {% for error in field.errors %}
+                            <ul>
+                                <li>{{ error }}</li>
+                            </ul>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section>
+            <div class="form-group">
+                {{ form.type_of_work.label_tag }}
+                <small class="form-text text-muted">{{ form.type_of_work.help_text }}</small>
+                {{ form.type_of_work }}
+                {% if form.type_of_work.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.type_of_work.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </section>
+
+        <div class="align-items-center buttons d-flex justify-content-end">
+            <a class="discard-link" data-back="{% url 'contract-project-list' %}">{% trans "Cancel" %}</a>
+            {% if project.id is not None %}
+            <button class="btn btn-primary" type="submit" form="project-details-form">{% trans "Save" %}</button>
+            {% else %}
+            <button class="btn btn-primary" type="submit" form="project-details-form">{% trans "Create" %}</button>
+            {% endif %}
+        </div>
+    </form>
+</div>
+{% endblock %}

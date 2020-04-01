@@ -1,0 +1,68 @@
+{% extends "contracts/contracts.html" %}
+{% load i18n %}
+
+{% block contracts_profile %}
+<header class="justify-content-between">
+    <div class="align-items-center d-flex">
+        <a class="caret-dark left image" href="{% url 'contract-company-list' %}"></a>
+        <h1>{% trans "Company" %} — {{ company.name }}</h1>
+    </div>
+    <button class="btn btn-secondary btn-sm print-profile">{% trans "Print" %}</button>
+</header>
+
+<nav>
+    <a class="selected">
+        <h6>{% trans "Company Details" %}</h6>
+    </a>
+    <a class="align-items-center d-flex flex-column">
+        <h6>{% trans "Documents" %}</h6>
+        <span>(coming soon)</span>
+    </a>
+</nav>
+
+<div class="content">
+    <section>
+        <h6>{% trans "Company Details" %}</h6>
+        <div>
+            <label>{% trans "Company Name" %}</label>
+            <p>{{ company.name }}</p>
+        </div>
+        <div>
+            <label>{% trans "Address" %}</label>
+            <p>{{ company.address }}</p>
+        </div>
+        <div>
+            <label>{% trans "Phone" %}</label>
+            <p>{{ company.phone }}</p>
+        </div>
+        <div>
+            <label>{% trans "Email" %}</label>
+            <p>{{ company.email }}</p>
+        </div>
+        <div>
+            <label>{% trans "TIN" %}</label>
+            <p>{{ company.TIN }}</p>
+        </div>
+        <div>
+            <label>{% trans "Bank Account Number" %}</label>
+            <p>{{ company.iban }}</p>
+        </div>
+        <div>
+            <label>{% trans "Representative Name" %}</label>
+            <p>{{ company.rep_name }}</p>
+        </div>
+        <div>
+            <label>{% trans "Representative Phone" %}</label>
+            <p>{{ company.rep_phone }}</p>
+        </div>
+        <div>
+            <label>{% trans "Representative Email" %}</label>
+            <p>{{ company.rep_email }}</p>
+        </div>
+        <div>
+            <label>{% trans "Woman-Led Company" %}</label>
+            <p>{{ company.get_woman_led_display }}</p>
+        </div>
+    </section>
+</div>
+{% endblock %}

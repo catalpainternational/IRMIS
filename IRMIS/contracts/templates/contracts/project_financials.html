@@ -1,0 +1,94 @@
+{% extends "contracts/project_base.html" %}
+{% load i18n %}
+
+{% block project_content %}
+<nav>
+    <a href="{% url 'contract-project-update' project.id %}">
+        <h6>{% trans "Project Details" %}</h6>
+    </a>
+    <a class="selected">
+        <h6>{% trans "Financials" %}</h6>
+    </a>
+    <a href="{% url 'contract-projectconstructionschedule-update' project.id %}">
+        <h6>{% trans "Construction Schedule" %}</h6>
+    </a>
+    <a class="align-items-center d-flex flex-column">
+        <h6>{% trans "Documents" %}</h6>
+        <span>(coming soon)</span>
+    </a>
+</nav>
+
+<div class="content">
+    <form method="post" action="{{ request.get_full_path }}">
+        {% csrf_token %}
+
+        <section>
+            <h6>{% trans "Funding" %}</h6>
+            <div class="form-group">
+                {{ form.funding_source.label_tag }}
+                <small class="form-text text-muted">{{ form.funding_source.help_text }}</small>
+                {{ form.funding_source }}
+                {% if form.funding_source.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.funding_source.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.donor.label_tag }}
+                <small class="form-text text-muted">{{ form.donor.help_text }}</small>
+                {{ form.donor }}
+                {% if form.donor.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.donor.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </section>
+
+        <section class="no-max-width">
+            <h6>{% trans "Budget" %}</h6>
+
+            <div class="flex-column form-row">
+                {{ formset.management_form }}
+                {% for form in formset %}
+                <div class="col d-flex flex-wrap">
+                    {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                    {% endfor %}
+                    {% for field in form.visible_fields %}
+                    <div class="form-group">
+                        {{ field.label_tag }}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                        {{ field }}
+                        {% if field.errors %}
+                        <div class="invalid-tooltip">
+                            {% for error in field.errors %}
+                            <ul>
+                                <li>{{ error }}</li>
+                            </ul>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <div class="align-items-center buttons d-flex justify-content-end">
+            <a class="discard-link" data-back="{% url 'contract-project-list' %}">{% trans "Cancel" %}</a>
+            <button class="btn btn-primary">{% trans "Save" %}</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

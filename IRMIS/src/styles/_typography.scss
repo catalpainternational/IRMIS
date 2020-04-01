@@ -42,7 +42,7 @@ body {
 label {
     color: $darker-gray;
     line-height: 17px;
-    font-weight: 700;
+    font-weight: 800;
     font-size: 14px;
 }
 
@@ -152,13 +152,20 @@ p {
     font-size: 16px;
 }
 
-reports_base p, planning_base p {
+reports_base p, planning_base p, .empty-table p {
     color: $darker-gray;
     line-height: 16px;
     font-size: 14px;
 }
 
 .report-content p {
+    line-height: 17px;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.total-budget p {
+    color: $darker-gray;
     line-height: 17px;
     font-weight: 700;
     font-size: 14px;
@@ -226,6 +233,16 @@ h1, h1 span {
     font-size: 22px;
 }
 
+.total-length h1, .total-budget h1 {
+    line-height: 44px;
+    font-size: 30px;
+
+    &.highlight {
+        color: #03A59A;
+        font-size: 36px;
+    }
+}
+
 h5 {
     color: $dark-green;
     line-height: 22px;
@@ -235,6 +252,13 @@ h5 {
 
 edit_base h5 {
     color: $darker-gray;
+}
+
+h5.title {
+    color: $darker-gray;
+    line-height: 24px;
+    margin-bottom: 0;
+    font-size: 20px;
 }
 
 planning_base h5 {
@@ -250,7 +274,28 @@ h6 {
     color: $white;
 }
 
-reports_base h6, planning_base h6 {
+nav {
+    a h6 {
+        color: $darker-gray;
+        font-weight: 500;
+    }
+
+    a.selected h6 {
+        font-weight: 700;
+    }
+
+    a.disabled {
+        pointer-events: none;
+
+        h6 {
+            color: rgba(61, 71, 88, 0.5);
+        }
+    }
+}
+
+reports_base h6,
+planning_base h6,
+.empty-table h6 {
     color: $darker-gray;
 }
 
@@ -262,13 +307,43 @@ reports_base h6, planning_base h6 {
 }
 
 section h6, .modal section h6 {
-    line-height: 17px;
+    color: $darker-gray;
+    line-height: 24px;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 20px;
+}
+
+section p {
+    color: $darker-gray;
+    line-height: 16px;
+    font-size: 16px;
+}
+
+section a {
+    line-height: 16px;
+    font-weight: 500;
+    font-size: 16px;
     color: $green;
 }
 
-table {
+table:not(.dataTable) {
+    th {
+        color: $darker-gray;
+        line-height: 17px;
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+    td {
+        color: $darker-gray;
+        line-height: 12px;
+        font-size: 14px;
+    }
+}
+
+
+// Override DataTables.net styles
+table.dataTable {
     th, td {
         color: $darker-gray;
         line-height: 17px;
@@ -290,8 +365,6 @@ table {
         }
     }
 }
-
-// Override DataTables.net styles
 
 .dt-buttons h6 {
     color: $darker-gray;
