@@ -1793,10 +1793,8 @@ class BreakpointRelationshipsReport(TemplateView):
         else:
             raise AssertionError("Required: key or key[]")
 
-        group_results = "groupresults" in self.request.GET
-
         query, columnnames = BreakpointRelationships.survey_report(
-            asset_code=asset_code, key=key, group_results=group_results, prepare=False,
+            asset_code=asset_code, key=key,
         )
 
         nt_result = namedtuple("Result", columnnames)

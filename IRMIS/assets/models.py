@@ -1854,8 +1854,7 @@ class BreakpointRelationships(models.Model):
     def survey_report(
         asset_code: Union[str, Iterable[str]],
         key: Union[str, Iterable[str]],
-        group_results: bool = True,
-        prepare=True,
+        prepare=True,  # You might set "prepare=False" if running this multiple times
     ):
         # Convert to array
         def pgarr(pythonarr: Iterable) -> str:
