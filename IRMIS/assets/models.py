@@ -11,9 +11,11 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db.models import Count, Max, OuterRef, Prefetch, Subquery, F, Value
 from django.db.models.functions import Cast, Substr
-from django.db import connection, OperationalError
+from django.db import connection, OperationalError, ProgrammingError
+from warnings import warn
 from psycopg2 import sql
 from typing import Iterable, Union
+from warnings import warn
 
 import importlib_resources as resources
 from . import sql_scripts
@@ -44,7 +46,13 @@ def run_script(script_name: str):
     logger.info("Running script %s", script_name)
     script_content = resources.read_text(sql_scripts, script_name)
     with connection.cursor() as cur:
-        cur.execute(script_content)
+        try:
+            cur.execute(script_content)
+        except ProgrammingError as e:
+            if "prepared statement" in e.args[0] and "already exists" in e.args[0]:
+                warn("%s" % e)
+            else:
+                raise
 
 
 def no_spaces(value):
@@ -1842,273 +1850,27 @@ class BreakpointRelationships(models.Model):
         # Drop the "temporary" table content
         AssetSurveyBreakpoint.truncate()
 
-    @classmethod
+    @staticmethod
     def survey_report(
-        cls,
         asset_code: Union[str, Iterable[str]],
         key: Union[str, Iterable[str]],
         group_results: bool = True,
         prepare=True,
     ):
-
-        arrays = []
-        if not isinstance(asset_code, str):
-            arrays.append("asset_code")
-        if not isinstance(key, str):
-            arrays.append("key")
-
-        """
-        Fetch the surveys and the effective chainage (ie where it's the most
-        up to date value) along the length of a single road code
-        """
-
-        # Start by indicating to postgres that we'er using a recursive query
-
-        preamble = """WITH recursive cte AS ("""
-
-        # The initial query gives us the starting point for the desired parameter
-        # and asset code combinations
-        # Note that this can be extended to include an array of asset_codes and
-        # an array of parameters quite easily
-        # The ORDER is very important
-
-        # Common "conditions" shared between the initial CTE and the recursive part
-        # (when table_alias = 'br')
-        # This is not strictly necessary for the recursive part but provides a ~50% speedup
-        # by providing a simple initial filter for rows
-
-        # In future, we'll be able to add additional parameters here
-
-        def conditional_clause(table="{table}"):
-            """
-            By using the same clause we filter on the initial query and also
-            "pre-filter" the breakpoints table. It's not *always* required
-            for the UNION ALL bit but is "nice to have" as it can provide
-            a simple filter which is faster than comparing to the CTE query
-
-            Note that we might want to override this to include
-            date ranges, or any other parameter on the "breakpoints" table
-            """
-            clause = (
-                "{table}.key = ANY({{key}})"
-                if "key" in arrays
-                else "{table}.key = {{key}}"
-            )
-            clause += " AND "
-            clause += (
-                "{table}.asset_code = ANY({{asset_code}})"
-                if "asset_code" in arrays
-                else "{table}.asset_code = {{asset_code}}"
-            )
-            return clause.format(table=table)
-
-        initial_q = (
-            """
-            SELECT * FROM ( 
-                SELECT DISTINCT ON (key, asset_code)
-                *, 1 AS lvl, CASE
-                WHEN newer THEN lower(survey_second_range)
-                ELSE upper(survey_first_range) 
-                END AS running_chainage FROM {table}
-            WHERE """
-            + conditional_clause()
-            + """
-                ORDER BY
-                    key, asset_code,
-                    lower(survey_first_range),
-                    survey_first_date DESC NULLS LAST,
-                    survey_second_date DESC NULLS LAST,
-                    lower(survey_second_range)
-            ) AS start_rows
-                """
-        )
-
-        # After the initial query, look for the  next matching one in the sequence
-        recursion_query = (
-            """
-            SELECT * FROM (
-            SELECT DISTINCT ON ({table}.key, {table}.asset_code)
-                {table}.*, 
-                cte.lvl + 1 AS lvl,
-                GREATEST(
-                    cte.running_chainage,
-                    CASE
-                        WHEN {table}.newer AND {table}.extends_left AND NOT {table}.extends_right THEN lower({table}.survey_first_range)
-                        WHEN {table}.newer THEN lower({table}.survey_second_range)
-                        -- Avoid skipping to the end especially for roughness surveys
-                        WHEN {table}.survey_first_id IS NULL THEN lower({table}.survey_second_range) 
-                        ELSE upper({table}.survey_first_range)
-                    END
-                )AS running_chainage
-                
-                FROM cte, {table}
-                
-            WHERE
-                -- Additional "where" clauses here should match the
-                -- "where" clause of the original query
-                """
-            + conditional_clause()
-            + """
-
-                AND (
-                    (cte.survey_second_id = {table}.survey_first_id)
-                    OR 
-                    (cte.survey_second_id IS NULL AND {table}.survey_first_id IS NULL)
-                )
-                AND cte.key = {table}.key
-                AND cte.asset_code = {table}.asset_code
-
-            -- Conditions on which we want to consider the "next" join
-            -- when the "next" is a greater chainage
-
-            -- Always keep moving forwards, don't go "backwards"
-
-            AND upper({table}.survey_second_range) > cte.running_chainage
-            --AND lower({table}.survey_second_range) <= cte.running_chainage
-                
-            -- Don't include older, overlapping, surveys
-            -- which end within the current suryey
-            AND ({table}.survey_second_date > {table}.survey_first_date 
-                OR upper({table}.survey_second_range) > upper({table}.survey_first_range)
-                OR {table}.survey_first_date IS NULL
-            )
-                
-            ORDER BY {table}.key, {table}.asset_code,
-                -- Prefer a "forwards" rather than a "backwards"
-                {table}.survey_second_date DESC NULLS LAST,
-                {table}.survey_second_id DESC NULLS LAST,
-                -- If there are multiple NULL DATE options choose the closest one
-                upper({table}.survey_second_range)
-            ) mynext
-            """
-        )
-
-        postamble = """) SELECT asset_code, 
-                key,
-                survey_first_value,
-                lvl, 
-                survey_first_id,
-                COALESCE(
-                    LAG(running_chainage) OVER (PARTITION BY asset_code, key ORDER BY lvl),
-                    LOWER(survey_first_range)
-                ) start_chainage,
-
-                CASE 
-                    WHEN
-                        LAG(asset_code) OVER (PARTITION BY asset_code, key ORDER BY lvl) != asset_code IS NULL 
-                    THEN TRUE
-                    ELSE
-                        COALESCE(LAG(survey_first_value) OVER (PARTITION BY asset_code, key ORDER BY lvl), '') != COALESCE(survey_first_value, '')
-                            OR
-                        LAG(asset_code) OVER (PARTITION BY asset_code, key ORDER BY lvl) != asset_code 
-                            OR
-                        LAG(key) OVER (PARTITION BY asset_code, key ORDER BY lvl) != key
-                END 
-                    AS some_changes,
-                
-                running_chainage
-                FROM cte ORDER BY asset_code, key, lvl, running_chainage
-            """
-
-        parameters = dict(
-            table=sql.Identifier(cls._meta.db_table),
-            key=sql.Placeholder("key"),
-            asset_code=sql.Placeholder("asset_code"),
-        )
+        # Convert to array
+        def pgarr(pythonarr: Iterable) -> str:
+            return "ARRAY[%s]" % (",".join(["'%s'" % a for a in pythonarr]))
 
         if prepare:
-            parameters.update(dict(asset_code=sql.SQL("$1"), key=sql.SQL("$2"),))
+            run_script("prepare_survey_report.sql")
 
-        query = (
-            sql.SQL(preamble)
-            + sql.SQL(initial_q).format(**parameters)
-            + sql.SQL("""UNION ALL""")
-            + sql.SQL(recursion_query).format(**parameters)
-            + sql.SQL(postamble)
-        )
+        # Comptible with the single-element URL
+        if isinstance(asset_code, str):
+            asset_code = [asset_code]
+        if isinstance(key, str):
+            key = [key]
 
-        if group_results:
-            # This additional "group" wrapper
-            # consolidates rows where the value does not change between rows
-
-            grouped_preamble = "WITH {grouped_preamble} AS ("
-            group_result = """), {grouped_postamble} AS (
-                    SELECT survey_first_id,
-                    asset_code,
-                    key,
-                    lvl,
-                    survey_first_value, 
-                    some_changes,
-                    COUNT (CASE WHEN some_changes THEN 1 ELSE NULL END) OVER (PARTITION BY asset_code, key ORDER BY lvl) AS grp,
-                    start_chainage, 
-                    running_chainage FROM {grouped_preamble}
-                ) SELECT
-                    grp,
-                    MIN(asset_code) AS asset_code,
-                    MIN(key) AS key,
-                    MIN(survey_first_value) AS value,
-                    MIN(start_chainage) AS start,
-                    MAX(running_chainage) AS end
-                FROM {grouped_postamble}
-                    GROUP BY asset_code, key, grp 
-                    ORDER BY asset_code, key, grp
-                    """
-
-            parameters.update(
-                dict(
-                    grouped_preamble=sql.Identifier("grouped_preamble"),
-                    grouped_postamble=sql.Identifier("grouped_postamble"),
-                )
-            )
-            query = (
-                sql.SQL(grouped_preamble).format(**parameters)
-                + query
-                + sql.SQL(group_result).format(**parameters)
-            )
-
-        if prepare:
-            # This ought to be a distinct name for whichever SQL gets generated.
-            # The SQL might change if for instance it's grouped; or on whether
-            # parameters or parameter types are included
-            prepared_survey_name = "survey_report{}{}_code{}_param".format(
-                "_grp" if group_results else "",
-                "",
-                "_array" if "asset_code" in arrays else "_single",
-                "_array" if "key" in arrays else "_single",
-            )
-
-            code_type = "" if "asset_code" in arrays else "[]"
-            key_type = "" if "key" in arrays else "[]"
-
-            query = (
-                sql.SQL(
-                    f"PREPARE {prepared_survey_name}(text{code_type}, text{key_type}) AS SELECT * FROM ("
-                )
-                + query
-                + sql.SQL(") AS foo")
-            )
-
-        query_vars = dict(key=key, asset_code=asset_code)
-
+        sql = "EXECUTE survey_report(%s, %s)" % (pgarr(asset_code), pgarr(key))
         with connection.cursor() as cur:
-
-            if prepare:
-                try:
-                    cur.execute(
-                        f"""EXECUTE {prepared_survey_name}(%s, %s);""",
-                        [asset_code, key],
-                    )
-                except OperationalError as e:
-                    if (
-                        e.args[0]
-                        == f'prepared statement "{prepared_survey_name}" does not exist\n'
-                    ):
-                        cur.execute(query, query_vars)
-                        cur.execute(
-                            f"""EXECUTE {prepared_survey_name}(%s, %s);""",
-                            [asset_code, key],
-                        )
-            else:
-                cur.execute(query, query_vars)
-
+            cur.execute(sql)
             return cur.fetchall(), [column.name for column in cur.description]

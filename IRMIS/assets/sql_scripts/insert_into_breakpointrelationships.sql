@@ -63,8 +63,7 @@ SELECT
 
 	AND bp_1.asset_code = bp_2.asset_code
 
-	AND
-		bp_1.key = bp_2.key
+	AND bp_1.key = bp_2.key
 		AND (bp_1.chainage_range && bp_2.chainage_range -- Overlap 
 		OR (
 			bp_1.chainage_range -|- bp_2.chainage_range  -- Next to each other
