@@ -34,7 +34,6 @@
     </head>
 
     <body class="h-100 {% block body_class %}{% endblock %}">
-        <top_menu></top_menu>
 
         {% block base_content %}{% endblock %}
 
@@ -46,6 +45,22 @@
 
             {% if perms.assets.change_plan %}
             window.canEditPlans = true;
+            {% endif %}
+
+            {% if perms.contracts.change_project or perms.contracts.delete_project %}
+            window.canChangeContractsProjects = true;
+            {% endif %}
+
+            {% if perms.contracts.change_tender or perms.contracts.delete_tender %}
+            window.canChangeContractsTenders = true;
+            {% endif %}
+
+            {% if perms.contracts.change_contract or perms.contracts.delete_contract %}
+            window.canChangeContracts = true;
+            {% endif %}
+
+            {% if perms.contracts.change_company or perms.contracts.delete_company %}
+            window.canChangeContractsCompanies = true;
             {% endif %}
 
             {% if user.get_full_name %}

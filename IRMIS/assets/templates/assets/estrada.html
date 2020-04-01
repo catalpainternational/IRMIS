@@ -1,0 +1,14 @@
+{% extends "assets/base.html" %}
+{% load static %}
+
+{% block extra_js %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'vendors~estrada.js' %}"></script>
+    <script type="text/javascript" src="{% static 'estrada.js' %}"></script>
+{% endblock %}
+
+{% load estrada %}
+
+{% block content %}
+    {% estrada_main %}
+{% endblock %}

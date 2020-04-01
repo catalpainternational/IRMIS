@@ -1,0 +1,80 @@
+{% extends "contracts/contracts.html" %}
+{% load i18n %}
+
+{% block contracts_profile %}
+<header class="justify-content-between">
+    <div class="align-items-center d-flex">
+        <a class="caret-dark left image" href="{% url 'contract-contract-list' %}"></a>
+        <h1>{% trans "Contract" %} — {{ contract.contract_code }}</h1>
+    </div>
+    <button class="btn btn-secondary btn-sm print-profile">{% trans "Print" %}</button>
+</header>
+
+<nav>
+    <a href="{% url 'contract-contract-detail' contract.id %}">
+        <h6>{% trans "Contract Details" %}</h6>
+    </a>
+    <a href="{% url 'contract-contractinspection-detail' contract.id %}">
+        <h6>{% trans "Inspections" %}</h6>
+    </a>
+    <a class="selected">
+        <h6>{% trans "Payments" %}</h6>
+    </a>
+    <a href="{% url 'contract-socialsafeguarddata-detail' contract.id %}">
+        <h6>{% trans "Social Safeguard" %}</h6>
+    </a>
+    <a class="align-items-center d-flex flex-column">
+        <h6>{% trans "Documents" %}</h6>
+        <span>(coming soon)</span>
+    </a>
+</nav>
+
+<div class="content">
+    <h5 class="title">{% trans "List of payments" %}</h5>
+    <table id="contract-payment-view-list-table" class="contracts-profile-table d-block table table-hover">
+        <thead>
+            <tr>
+                <th>{% trans "Payment Date" %}</th>
+                <th>{% trans "Payment Value" %}</th>
+                <th>{% trans "Donor" %}</th>
+                <th>{% trans "Funding Source" %}</th>
+                <th>{% trans "Destination" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in payments %}
+            <tr>
+                <td>{{ payment.date }}</td>
+                <td>{{ payment.value }}</td>
+                <td>{{ payment.donor }}</td>
+                <td>{{ payment.source }}</td>
+                <td>{{ payment.destination }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <table id="contract-payment-print-list-table" class="contracts-profile-table d-block table table-hover">
+        <thead>
+            <tr>
+                <th>{% trans "Payment Date" %}</th>
+                <th>{% trans "Payment Value" %}</th>
+                <th>{% trans "Donor" %}</th>
+                <th>{% trans "Funding Source" %}</th>
+                <th>{% trans "Destination" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in payments %}
+            <tr>
+                <td>{{ payment.date }}</td>
+                <td>{{ payment.value }}</td>
+                <td>{{ payment.donor }}</td>
+                <td>{{ payment.source }}</td>
+                <td>{{ payment.destination }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

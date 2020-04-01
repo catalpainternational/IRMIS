@@ -11,7 +11,6 @@ import Planning_Base from "./riot/planning_base.riot.html";
 import Reports_Base from "./riot/reports_base.riot.html";
 import Data_Table from "./riot/data_table.riot.html";
 import Edit_Base from "./riot/edit_base.riot.html";
-import Top_Menu from "./riot/top_menu.riot.html";
 import TrafficDataDetails from "./riot/traffic_data_details.riot.html";
 import PhotosDetailsBox from "./riot/photos_details_box.riot.html";
 
@@ -33,9 +32,6 @@ import "./styles/vendor.scss";
 import "./assets/models/monkeyPatch";
 
 export const estradaMap = new Map();
-
-riot.register("top_menu", Top_Menu);
-riot.mount("top_menu");
 
 window.addEventListener("load", () => {
     // Set up the map and table - but without any data for either

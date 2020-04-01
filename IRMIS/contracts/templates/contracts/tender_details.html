@@ -1,0 +1,139 @@
+{% extends "contracts/tender_base.html" %}
+{% load i18n %}
+
+{% block tender_content %}
+<nav>
+    <a class="selected">
+        <h6>{% trans "Tender Details" %}</h6>
+    </a>
+    {% if not tender.code %}
+    <a class="align-items-center d-flex flex-column disabled">
+        <h6>{% trans "Documents" %}</h6>
+        <span>(coming soon)</span>
+    </a>
+    {% else %}
+    <a class="align-items-center d-flex flex-column">
+        <h6>{% trans "Documents" %}</h6>
+        <span>(coming soon)</span>
+    </a>
+    {% endif %}
+</nav>
+
+<div class="content">
+    <form id="tender-details-form" method="post" action="{{ request.get_full_path }}">
+        {% csrf_token %}
+        <section>
+            <h6>{% trans "Tender Details" %}</h6>
+            <div class="form-group">
+                {{ form.status.label_tag }}
+                <small class="form-text text-muted">{{ form.status.help_text }}</small>
+                {{ form.status }}
+                {% if form.status.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.status.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.code.label_tag }}
+                <small class="form-text text-muted">{{ form.code.help_text }}</small>
+                {{ form.code }}
+                {% if form.code.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.code.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.projects.label_tag }}
+                <small class="form-text text-muted">{{ form.projects.help_text }}</small>
+                {{ form.projects }}
+                {% if form.projects.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.projects.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.announcement_date.label_tag }}
+                <small class="form-text text-muted">{{ form.announcement_date.help_text }}</small>
+                {{ form.announcement_date }}
+                {% if form.announcement_date.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.announcement_date.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </section>
+        <section>
+            <h6>{% trans "Bids and Evaluation" %}</h6>
+            <div class="form-group">
+                {{ form.submission_date.label_tag }}
+                <small class="form-text text-muted">{{ form.submission_date.help_text }}</small>
+                {{ form.submission_date }}
+                {% if form.submission_date.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.submission_date.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.tendering_companies.label_tag }}
+                <small class="form-text text-muted">{{ form.tendering_companies.help_text }}</small>
+                {{ form.tendering_companies }}
+                {% if form.tendering_companies.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.tendering_companies.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.evaluation_date.label_tag }}
+                <small class="form-text text-muted">{{ form.evaluation_date.help_text }}</small>
+                {{ form.evaluation_date }}
+                {% if form.evaluation_date.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.evaluation_date.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </section>
+        <div class="align-items-center buttons d-flex justify-content-end">
+            <a class="discard-link" data-back="{% url 'contract-tender-list' %}">{% trans "Cancel" %}</a>
+            {% if tender.code is not None %}
+            <button class="btn btn-primary" type="submit" form="tender-details-form">{% trans "Save" %}</button>
+            {% else %}
+            <button class="btn btn-primary" type="submit" form="tender-details-form">{% trans "Create" %}</button>
+            {% endif %}
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -5,6 +5,7 @@ module.exports = {
     context: path.resolve(__dirname, './src'),
     entry: {
         estrada: ['whatwg-fetch', './estrada.js'],
+        contracts: ['./contracts.js'],
     },
     output: {
         filename: '[name].js',
