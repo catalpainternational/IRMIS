@@ -15,6 +15,9 @@ from django.db import connection, OperationalError
 from psycopg2 import sql
 from typing import Iterable, Union
 
+import importlib_resources as resources
+from . import sql_scripts
+
 import json
 import logging
 
@@ -35,6 +38,13 @@ from google.protobuf.wrappers_pb2 import FloatValue, UInt32Value
 from .geodjango_utils import start_end_point_annos
 from csv_data_sources.models import CsvData
 from .managers import RoughnessManager
+
+
+def run_script(script_name: str):
+    logger.info("Running script %s", script_name)
+    script_content = resources.read_text(sql_scripts, script_name)
+    with connection.cursor() as cur:
+        cur.execute(script_content)
 
 
 def no_spaces(value):
@@ -1771,74 +1781,13 @@ class AssetSurveyBreakpoint(models.Model):
         ]
 
     @classmethod
+    def truncate(cls):
+        run_script("truncate_assetsurveybreakpoint.sql")
+
+    @classmethod
     def refresh(cls):
-
-        fields = "survey_id key date_surveyed chainage_range asset_code".split()
-
-        def _survey_breakdown():
-            """
-            Annotate each key and chainage range 
-            for import into AssetSurveyBreakpoint table
-            The field names are consistent for clarity
-            """
-
-            return (
-                Survey.objects.all()
-                .order_by("id")
-                .filter(chainage_start__lte=F("chainage_end"))
-                .filter(asset_code__isnull=False)
-                .annotate(NumRange("chainage_start", "chainage_end"), SKeys("values"))
-                .annotate(survey_id=F("id"))
-            ).values(*fields, "values")
-
-        insert_fields = [sql.Identifier(f) for f in fields]
-        with connection.cursor() as cur:
-
-            cur.execute(
-                sql.SQL("TRUNCATE {};").format(sql.Identifier(cls._meta.db_table))
-            )
-
-            cur.execute(
-                sql.SQL(
-                    """SELECT setval(pg_get_serial_sequence('{}','id'), 
-                coalesce(max("id"), 1), max("id") IS NOT null) FROM {};"""
-                ).format(
-                    sql.Identifier(cls._meta.db_table),
-                    sql.Identifier(cls._meta.db_table),
-                )
-            )
-
-            statement = """insert into {table} ({survey_id}, {key}, {date_surveyed}, {chainage_range}, {asset_code}, {value}) 
-            
-            (SELECT {survey_id}, {key}, {date_surveyed}, {chainage_range}, {asset_code}, {values} -> key FROM ({subquery}) foo)"""
-            parameters = {
-                "table": sql.Identifier(cls._meta.db_table),
-                "values": sql.Identifier("values"),
-                **{k: sql.Identifier(k) for k in fields},
-                "value": sql.Identifier("value"),
-                "subquery": sql.SQL(
-                    cur.mogrify(*(_survey_breakdown().query.sql_with_params())).decode()
-                ),
-            }
-
-            cur.execute(sql.SQL(statement).format(**parameters))
-            cur.execute(
-                sql.SQL(
-                    """
-                INSERT INTO {table} ({survey_id}, {key}, {date_surveyed}, {chainage_range}, {asset_code})
-
-                SELECT DISTINCT ON (asset_code, key) 
-                    null AS {survey_id},
-                    {key},
-                    null AS {date_surveyed},
-                    numrange(
-                        min(lower({chainage_range})) OVER (PARTITION BY {asset_code}, {key}),
-                        max(upper({chainage_range})) OVER (PARTITION BY {asset_code}, {key})
-                    ) AS {chainage_range},
-                    {asset_code}
-                    FROM {table}"""
-                ).format(**parameters)
-            )
+        cls.truncate()
+        run_script("insert_into_assetsurveybreakpoint.sql")
 
 
 class BreakpointRelationships(models.Model):
@@ -1883,100 +1832,13 @@ class BreakpointRelationships(models.Model):
     strictly_left = models.BooleanField()
 
     @classmethod
+    def truncate(cls):
+        run_script("truncate_breakpointrelationships.sql")
+
+    @classmethod
     def refresh(cls):
-        """
-        Holds a lot of duplicate info but we need every millisecond, it's a
-        big ask for a small database
-        """
-        with connection.cursor() as cur:
-            cur.execute(
-                # print(
-                sql.SQL(
-                    """
-                INSERT INTO {relations}(
-                    
-                    asset_code,
-                    key,
-
-                    survey_first_id,
-                    survey_second_id,
-                    survey_first_range,
-                    survey_second_range,
-                    survey_first_date,
-                    survey_second_date,
-                    survey_first_value,
-                    survey_second_value,
-
-                    newer,
-                    is_adjacent,
-                    extends_right,
-                    extends_left,
-                    is_contained_by,
-                    contains,
-                    range_intersection ,
-                    strictly_left
-
-                )
-                SELECT
-
-                    bp_1.asset_code,
-                    bp_1.key,
-
-                    bp_1.survey_id survey_first_id, 
-                    bp_2.survey_id survey_second_id,
-
-                    bp_1.chainage_range survey_first_range,
-                    bp_2.chainage_range survey_second_range,
-                
-                    bp_1.date_surveyed survey_first_date,
-                    bp_2.date_surveyed survey_second_date,
-                    
-                    bp_1.value AS survey_first_value,
-                    bp_2.value AS survey_second_value,
-
-                    CASE 
-                        WHEN bp_2.date_surveyed IS NULL THEN FALSE
-                        WHEN bp_1.date_surveyed IS NULL THEN TRUE
-                    ELSE 
-                        bp_2.date_surveyed > bp_1.date_surveyed END 
-                    AS newer,
-
-                    bp_2.chainage_range -|- bp_1.chainage_range as is_adjacent,
-                    not(bp_2.chainage_range &< bp_1.chainage_range) as extends_right,
-                    not(bp_2.chainage_range &> bp_1.chainage_range) as extends_left,
-                    bp_2.chainage_range @> bp_1.chainage_range as is_contained_by,
-                    bp_2.chainage_range <@ bp_1.chainage_range as contains,
-                    bp_2.chainage_range * bp_1.chainage_range as range_intersection,
-                    bp_1.chainage_range << bp_2.chainage_range AS strictly_left
-
-                    FROM {breakpoints} bp_1 INNER JOIN {breakpoints} bp_2
-
-                    ON (bp_1.id != bp_2.id 
-                        OR ((bp_2.id IS NULL OR bp_1.id IS NULL) AND NOT (bp_2.id IS NULL AND bp_1.id IS NULL))
-                    )
-
-                    AND bp_1.asset_code = bp_2.asset_code
-
-                    AND
-                        bp_1.key = bp_2.key
-                        AND (bp_1.chainage_range && bp_2.chainage_range -- Overlap 
-                        OR (
-                            bp_1.chainage_range -|- bp_2.chainage_range  -- Next to each other
-                            AND NOT (bp_2.chainage_range &< bp_1.chainage_range)) -- And the first survey has the smallest chainage range
-                            )
-                ;
-
-
-                """
-                ).format(
-                    **{
-                        "relations": sql.Identifier(cls._meta.db_table),
-                        "breakpoints": sql.Identifier(
-                            AssetSurveyBreakpoint._meta.db_table
-                        ),
-                    }
-                )
-            )
+        cls.truncate()
+        run_script("insert_into_breakpointrelationships.sql")
 
     @classmethod
     def survey_report(
