@@ -152,7 +152,7 @@ p {
     font-size: 16px;
 }
 
-reports_base p, planning_base p, .empty-table p {
+reports_base p, planning_base p, .no-data-wrapper p {
     color: $darker-gray;
     line-height: 16px;
     font-size: 14px;
@@ -295,7 +295,7 @@ nav {
 
 reports_base h6,
 planning_base h6,
-.empty-table h6 {
+.no-data-wrapper h6 {
     color: $darker-gray;
 }
 

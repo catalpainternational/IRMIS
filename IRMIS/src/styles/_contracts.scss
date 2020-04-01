@@ -1,4 +1,3 @@
-$empty-list-max-width: 444px;
 $max-width: 400px;
 
 #contracts-base {
@@ -126,20 +125,6 @@ $max-width: 400px;
         .print-header, .print-footer {
             display: none;
         }
-    }
-}
-
-.empty-table {
-    h6 {
-        max-width: $empty-list-max-width;
-        margin-bottom: 0;
-        margin-top: 15px;
-    }
-
-    p {
-        max-width: $empty-list-max-width;
-        margin-bottom: 0;
-        margin-top: 10px;
     }
 }
 

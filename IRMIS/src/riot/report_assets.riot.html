@@ -207,18 +207,17 @@
                 columns="{columns.assetRoughness()}" columnSortOrder="{baseColumnSortOrder}">
             </data_table>
         </div>
-    
-        <div if="{ state.noReport }"
-            class="align-items-center blank d-flex flex-column justify-content-center">
+
+        <div if="{ state.noReport }" class="align-items-center d-flex flex-column justify-content-center no-data-wrapper">
             <span class="no-data image"></span>
             <h6 class="text-center">{ reportAssetsContent().noReportTitle }</h6>
             <p class="text-center">{ reportAssetsContent().noReportDescription }</p>
         </div>
-        <div if="{ state.noReportData }"
-            class="align-items-center blank d-flex flex-column justify-content-center">
+
+        <div if="{ state.noReportData }" class="align-items-center d-flex flex-column justify-content-center no-data-wrapper">
             <span class="no-data image"></span>
-            <h6>{ reportAssetsContent().noReportData }</h6>
-        </div>        
+            <h6 class="text-center">{ reportAssetsContent().noReportData }</h6>
+        </div>
     </div>
 
     <div class="print-footer">
