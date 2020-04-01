@@ -73,7 +73,8 @@ edit_base #side-menu > div,
 #report-number-employees-table,
 #report-wages-table,
 #report-worked-days-table,
-.planning-dashboard-table {
+.planning-dashboard-table,
+.planning-table {
     @extend %scrollbar-shared;
 
     &::-webkit-scrollbar:horizontal {
