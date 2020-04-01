@@ -4,12 +4,14 @@ import { Plan, Snapshot } from "../../../protobuf/plan_pb";
 import { IEstrada } from "./estradaBase";
 
 import { choice_or_default, getFieldName, getHelpText, makeEstradaObject } from "../protoBufUtilities";
-import { ASSET_CLASS_CHOICES } from "./estradaBase";
+import { ASSET_CLASS_CHOICES } from "./choices";
 
 // We may need a plan schema - primarily for formatted field names
 // JSON.parse(document.getElementById('plan_schema').textContent);
 const planSchema = {};
 const snapshotSchema = {};
+
+// tslint:disable: max-classes-per-file
 
 export class EstradaPlan extends Plan implements IEstrada {
     public static getFieldName(field: string) {

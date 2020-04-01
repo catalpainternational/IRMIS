@@ -233,11 +233,12 @@
 
         import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
         import {surveysAndReportRefresh} from "../assets/editUtilities";
-        import { choice_or_default, toChainageFormat } from "../assets/protoBufUtilities";
+        import {choice_or_default, toChainageFormat} from "../assets/protoBufUtilities";
         import {withinMaxDigits} from "../assets/utilities";
 
-        import { makeEstradaRoad, TERRAIN_CLASS_CHOICES } from "../assets/models/road";
-        import { EstradaSurvey, makeEstradaSurvey } from "../assets/models/survey";
+        import {TERRAIN_CLASS_CHOICES} from "../assets/models/choices";
+        import {makeEstradaRoad} from "../assets/models/road";
+        import {EstradaSurvey, makeEstradaSurvey} from "../assets/models/survey";
 
         import $ from "jquery";
 

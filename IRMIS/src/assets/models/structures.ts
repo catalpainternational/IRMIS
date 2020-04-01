@@ -1,38 +1,27 @@
 import { Bridge, Culvert, Structures } from "../../../protobuf/structure_pb";
-import { Photo } from "../../../protobuf/photo_pb";
 
-import { EstradaPhoto, makeEstradaPhoto } from "./photo";
-import { makeEstradaProjection } from "./road";
+import { IAsset, IEstrada } from "./estradaBase";
+import { EstradaPhoto, makeEstradaPhoto, Photo } from "./photo";
+import { makeEstradaProjection } from "./projection";
 
 import {
     choice_or_default,
     getFieldName,
     getHelpText,
-    humanizeChoices,
     makeEstradaObject,
     toChainageFormat,
 } from "../protoBufUtilities";
 
-import { ADMINISTRATIVE_AREA_CHOICES, ASSET_CLASS_CHOICES, ASSET_CONDITION_CHOICES, IAsset, IEstrada } from "./estradaBase";
+import {
+    ADMINISTRATIVE_AREA_CHOICES, ASSET_CLASS_CHOICES, ASSET_CONDITION_CHOICES,
+    STRUCTURE_UPSTREAM_PROTECTION_TYPE_CHOICES, STRUCTURE_DOWNSTREAM_PROTECTION_TYPE_CHOICES,
+    STRUCTURE_TYPE_BRIDGE_CHOICES, STRUCTURE_TYPE_CULVERT_CHOICES,
+    MATERIAL_TYPE_BRIDGE_CHOICES, MATERIAL_TYPE_CULVERT_CHOICES,
+} from "./choices";
 
 const assetSchema = JSON.parse(document.getElementById("asset_schema")?.textContent || "");
 
-export const STRUCTURE_UPSTREAM_PROTECTION_TYPE_CHOICES = humanizeChoices(assetSchema, "protection_upstream", "code", "name");
-export const STRUCTURE_DOWNSTREAM_PROTECTION_TYPE_CHOICES
-    = humanizeChoices(assetSchema, "protection_downstream", "code", "name");
-export const STRUCTURE_TYPE_BRIDGE_CHOICES = humanizeChoices(assetSchema, "structure_type_BRDG", "code", "name");
-export const STRUCTURE_TYPE_CULVERT_CHOICES = humanizeChoices(assetSchema, "structure_type_CULV", "code", "name");
-export const MATERIAL_TYPE_BRIDGE_CHOICES = humanizeChoices(assetSchema, "material_BRDG", "code", "name");
-export const MATERIAL_TYPE_CULVERT_CHOICES = humanizeChoices(assetSchema, "material_CULV", "code", "name");
-
 // tslint:disable: max-classes-per-file
-
-// We may need a collection of Structure schemas - primarily for formatted field names
-// JSON.parse(document.getElementById('<structureType>_schema').textContent);
-const structureSchemas = {
-    bridge: {},
-    culvert: {},
-};
 
 export class EstradaStructures extends Structures implements IEstrada {
     get id() {
