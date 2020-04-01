@@ -3,6 +3,8 @@ import { isArray } from "util";
 
 import { Timestamp } from "google-protobuf/google/protobuf/timestamp_pb";
 import { Attribute, Report } from "../../../protobuf/report_pb";
+import { Photo } from "../../../protobuf/photo_pb";
+
 import { makeEstradaPhoto, EstradaPhoto } from "./photo";
 
 import { reportColumns } from "../../reportTableDefinitions";
