@@ -162,21 +162,23 @@
             data_table_columns_order: [[3, 'desc']],
             onBeforeMount(props, state) {
                 if (window.canEditPlans) {
-                    this.data_table_columns.push({
-                        title: "",
-                        data: null,
-                        render: (data, type, row) => {
-                            let links = [];
-                            if (row.addedBy) {
-                                const editEvent = `document.dispatchEvent(new CustomEvent('plans-datatable.editRow', {detail: {rowId: ${row.id}, tableId: 'plans-datatable'}}))`;
-                                links.push(`<a class="image pencil" href="#planning/plans" onClick="${editEvent}"></a>`);
-                                const deleteEvent = `document.dispatchEvent(new CustomEvent('plans-datatable.deleteRow', {detail: {rowId: ${row.id}, tableId: 'plans-datatable'}}))`;
-                                links.push(`<a class="image delete" onClick="${deleteEvent}"></a>`);
-                            }
-                            return links.join("<span></span>");
-                        },
-                        orderable: false,
-                    });
+                    if (this.data_table_columns.length <= 6) {
+                        this.data_table_columns.push({
+                            title: "",
+                            data: null,
+                            render: (data, type, row) => {
+                                let links = [];
+                                if (row.addedBy) {
+                                    const editEvent = `document.dispatchEvent(new CustomEvent('plans-datatable.editRow', {detail: {rowId: ${row.id}, tableId: 'plans-datatable'}}))`;
+                                    links.push(`<a class="image pencil" href="#planning/plans" onClick="${editEvent}"></a>`);
+                                    const deleteEvent = `document.dispatchEvent(new CustomEvent('plans-datatable.deleteRow', {detail: {rowId: ${row.id}, tableId: 'plans-datatable'}}))`;
+                                    links.push(`<a class="image delete" onClick="${deleteEvent}"></a>`);
+                                }
+                                return links.join("<span></span>");
+                            },
+                            orderable: false,
+                        });
+                    }
                 }
             },
             onMounted(props, state) {
