@@ -1763,6 +1763,8 @@ class AssetSurveyBreakpoint(models.Model):
     Break down the "Asset Survey" to individual key/value pairs
     in order to identify spatial and temporal relationships between
     surveys on the same road code and parameter
+
+    This table is populated and truncated when "BreakpointRelationships.refresh" is run
     """
 
     survey = models.ForeignKey(
@@ -1805,13 +1807,9 @@ class BreakpointRelationships(models.Model):
     asset_code = models.TextField()
     key = models.TextField()
 
-    survey_first = models.ForeignKey(
-        "Survey", on_delete=models.CASCADE, null=True, blank=True, related_name="+"
-    )
+    survey_first = models.IntegerField()  # Weak reference to Survey
 
-    survey_second = models.ForeignKey(
-        "Survey", on_delete=models.CASCADE, null=True, blank=True, related_name="+"
-    )
+    survey_second = models.IntegerField()  # Weak reference to Survey
 
     survey_first_range = DecimalRangeField()
     survey_second_range = DecimalRangeField()
@@ -1833,12 +1831,16 @@ class BreakpointRelationships(models.Model):
 
     @classmethod
     def truncate(cls):
+        AssetSurveyBreakpoint.truncate()
         run_script("truncate_breakpointrelationships.sql")
 
     @classmethod
     def refresh(cls):
         cls.truncate()
+        AssetSurveyBreakpoint.refresh()
         run_script("insert_into_breakpointrelationships.sql")
+        # Drop the "temporary" table content
+        AssetSurveyBreakpoint.truncate()
 
     @classmethod
     def survey_report(
