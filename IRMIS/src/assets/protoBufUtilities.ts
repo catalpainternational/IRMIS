@@ -1,7 +1,5 @@
 import { Projection } from "../../protobuf/roads_pb";
-import { Point } from "../../protobuf/structure_pb";
 import { EstradaProjection } from "./models/road";
-import { EstradaPoint } from "./models/structures";
 
 /** utility function to pick from choices if value is truthy, or return default string
  * the default for defaultValue is empty string ""
@@ -86,6 +84,6 @@ export function humanizeChoices(
 }
 
 export function projectionToCoordinates(
-    proj: Projection | Point | EstradaProjection | EstradaPoint): [number, number] {
+    proj: Projection | EstradaProjection): [number, number] {
     return [proj.getX(), proj.getY()];
 }

@@ -1,6 +1,9 @@
 import { Bridge, Culvert, Structures } from "../../../protobuf/structure_pb";
+import { Photo } from "../../../protobuf/photo_pb";
+
 import { EstradaPhoto, makeEstradaPhoto } from "./photo";
 import { makeEstradaProjection } from "./road";
+
 import {
     choice_or_default,
     getFieldName,
@@ -11,7 +14,6 @@ import {
 } from "../protoBufUtilities";
 
 import { ADMINISTRATIVE_AREA_CHOICES, ASSET_CLASS_CHOICES, ASSET_CONDITION_CHOICES, IAsset, IEstrada } from "./estradaBase";
-import { Photo } from "../../../protobuf/photo_pb";
 
 const assetSchema = JSON.parse(document.getElementById("asset_schema")?.textContent || "");
 
