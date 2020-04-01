@@ -22,10 +22,18 @@
                     <a href="/static/Estrada-How-to-use-Planning-tool.pdf" download="Estrada-How-to-use-Planning-tool.pdf"> { window.gettext("here") }</a>
                 </p>
                 <h5>{ window.gettext("Access token") }</h5>
-                <p>{ window.gettext("Token to get information from the Estrada database to your Excel planning file") }</p>
-                <div class="align-items-center d-flex justify-content-between">
-                    <input id="access-token" class="disabled" type="text" value="{ state.token }">
-                    <button class="btn btn-primary btn-sm" onclick="{ copyToClipboard }">{ window.gettext("Copy") }</button>
+                <p>
+                    { window.gettext("Token to get information from the Estrada database to your Excel planning file (valid for 24 hours from issuance)") }
+                </p>
+                <div if="{!state.accessToken}">
+                    <button class="btn btn-primary btn-sm" type="submit" onclick="{ requestAccessToken }">{ window.gettext("Request Access Token") }</button>
+                </div>
+                <div if="{state.accessToken}">
+                    <p><strong>Issued:</strong> { state.accessToken.issue_date }</p>
+                    <div class="align-items-center d-flex justify-content-between">
+                        <textarea id="access-token" class="disabled" type="textarea" value="{ state.accessToken.token }" style="height: 100px; width:500px;"></textarea>
+                        <button class="btn btn-primary btn-sm" onclick="{ copyToClipboard }">{ window.gettext("Copy") }</button>
+                    </div>
                 </div>
             </div>
             <span class="image"></span>
@@ -72,14 +80,34 @@
     </div>
 
     <script>
+        import {requestApiToken} from "../assets/tokenAPI";
+        import $ from 'jquery';
+
         export default {
             state: {
-                token: 1234,
+                accessToken: undefined,
             },
             copyToClipboard() {
                 const accessToken = document.getElementById("access-token");
                 accessToken.select();
                 document.execCommand("copy");
+            },
+            showFeedback(error) {
+                this.update({
+                    showFeedback: true,
+                    error: error,
+                });
+                setTimeout(() => this.closeFeedback(), 2000);
+            },
+            requestAccessToken(e) {
+                requestApiToken()
+                    .then((tokenData) => {
+                        this.state.accessToken = tokenData;
+                    }).catch((err) => {
+                        this.showFeedback(err);
+                    }).finally(() => {
+                        this.update();
+                    })
             },
         }
     </script>

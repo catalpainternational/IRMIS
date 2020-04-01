@@ -1,6 +1,9 @@
+from django.conf.urls import url
 from django.urls import include, path
 from rest_framework import routers
+
 from .views import (
+    api_token_request,
     geojson_details,
     protobuf_structure,
     protobuf_structure_audit,
@@ -35,6 +38,7 @@ from .views import (
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
+    path("api_token_request/", api_token_request, name="api_token_request"),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     path("geojson_details", geojson_details, name="geojson_details"),
     # Photo URLs
