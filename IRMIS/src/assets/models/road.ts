@@ -1,34 +1,28 @@
-import { Projection, Road } from "../../../protobuf/roads_pb";
-import { EstradaPhoto, makeEstradaPhoto } from "./photo";
+import { Road } from "../../../protobuf/roads_pb";
+import { IAsset } from "./estradaBase";
+import { EstradaPhoto, makeEstradaPhoto, Photo } from "./photo";
+import { makeEstradaProjection } from "./projection";
 
-import { projToWGS84, toDms, toUtm } from "../crsUtilities";
 import {
     choice_or_default,
     getFieldName,
     getHelpText,
-    humanizeChoices,
     makeEstradaObject,
-    projectionToCoordinates,
     toChainageFormat,
 } from "../protoBufUtilities";
 
-import { ADMINISTRATIVE_AREA_CHOICES, ASSET_CLASS_CHOICES, ASSET_CONDITION_CHOICES, IAsset } from "./estradaBase";
-import { Photo } from "../../../protobuf/photo_pb";
-// tslint:disable: max-classes-per-file
+import {
+    ADMINISTRATIVE_AREA_CHOICES, ASSET_CLASS_CHOICES, ASSET_CONDITION_CHOICES,
+    MAINTENANCE_NEED_CHOICES, PAVEMENT_CLASS_CHOICES, ROAD_STATUS_CHOICES,
+    SURFACE_TYPE_CHOICES, TECHNICAL_CLASS_CHOICES, TRAFFIC_LEVEL_CHOICES,
+    FACILITY_TYPE_CHOICES, ECONOMIC_AREA_CHOICES,
+    CONNECTION_TYPE_CHOICES, CORE_CHOICES,
+    // TERRAIN_CLASS_CHOICES, // Not currently used
+} from "./choices";
 
 const assetSchema = JSON.parse(document.getElementById("asset_schema")?.textContent || "");
 
-export const MAINTENANCE_NEED_CHOICES = humanizeChoices(assetSchema, "maintenance_need", "code", "name");
-export const PAVEMENT_CLASS_CHOICES = humanizeChoices(assetSchema, "pavement_class", "code", "name");
-export const ROAD_STATUS_CHOICES = humanizeChoices(assetSchema, "road_status", "code", "name");
-export const SURFACE_TYPE_CHOICES = humanizeChoices(assetSchema, "surface_type", "code", "name");
-export const TECHNICAL_CLASS_CHOICES = humanizeChoices(assetSchema, "technical_class", "code", "name");
-export const TRAFFIC_LEVEL_CHOICES = humanizeChoices(assetSchema, "traffic_level");
-export const TERRAIN_CLASS_CHOICES = humanizeChoices(assetSchema, "terrain_class");
-export const FACILITY_TYPE_CHOICES = humanizeChoices(assetSchema, "facility_type", "code", "name");
-export const ECONOMIC_AREA_CHOICES = humanizeChoices(assetSchema, "economic_area", "code", "name");
-export const CONNECTION_TYPE_CHOICES = humanizeChoices(assetSchema, "connection_type", "code", "name");
-export const CORE_CHOICES = humanizeChoices(assetSchema, "core");
+// tslint:disable: max-classes-per-file
 
 export class EstradaRoad extends Road implements IAsset {
     public static getFieldName(field: string) {
@@ -358,28 +352,6 @@ export class EstradaRoad extends Road implements IAsset {
     }
 }
 
-export class EstradaProjection extends Projection {
-    get x() {
-        return this.getX();
-    }
-
-    get y() {
-        return this.getY();
-    }
-
-    get dms() {
-        return toDms(projToWGS84.forward(projectionToCoordinates(this)));
-    }
-
-    get utm() {
-        return toUtm(projToWGS84.forward(projectionToCoordinates(this)));
-    }
-}
-
 export function makeEstradaRoad(pbattribute: { [name: string]: any }): EstradaRoad {
     return makeEstradaObject(EstradaRoad, pbattribute) as EstradaRoad;
-}
-
-export function makeEstradaProjection(pbprojection: { [name: string]: any }): EstradaProjection {
-    return makeEstradaObject(EstradaProjection, pbprojection) as EstradaProjection;
 }

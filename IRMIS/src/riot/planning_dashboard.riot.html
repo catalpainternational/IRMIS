@@ -56,8 +56,8 @@
             </div>
         </template>
         <template if="{ isEmpty(state.summaries) }">
-            <div class="align-items-center content-wrapper no-plans d-flex flex-column justify-content-center">
-                <span class="no-report image"></span>
+            <div class="align-items-center d-flex flex-column justify-content-center no-data-wrapper">
+                <span class="no-data image"></span>
                 <h6>{ window.gettext("Welcome to the planning and budgetting tool") }.</h6>
                 <p>{ window.gettext("No plans available yet") }</p>
             </div>

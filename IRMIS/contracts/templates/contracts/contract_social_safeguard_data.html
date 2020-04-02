@@ -1,0 +1,201 @@
+{% extends "contracts/contract_base.html" %}
+{% load i18n %}
+
+{% block contract_content %}
+<nav>
+    <a href="{% url 'contract-contract-update' contract_id %}">
+        <h6>{% trans "Contract Details" %}</h6>
+    </a>
+    <a href="{% url 'contract-contractinspection-list' contract_id %}">
+        <h6>{% trans "Inspections" %}</h6>
+    </a>
+    <a href="{% url 'contract-contractpayment-list' contract_id %}">
+        <h6>{% trans "Payments" %}</h6>
+    </a>
+    <a class="selected">
+        <h6>{% trans "Social Safeguard" %}</h6>
+    </a>
+    <a class="align-items-center d-flex flex-column">
+        <h6>{% trans "Documents" %}</h6>
+        <span>(coming soon)</span>
+    </a>
+</nav>
+
+<div class="content">
+    <form id="contract-social-form" method="post" action="{{ request.get_full_path }}">
+        {% csrf_token %}
+        <div class="align-items-center d-flex justify-content-between">
+            <h5 class="title">{% trans "List of Social Safeguard Data" %}</h5>
+            <button class="btn btn-primary form-modal-link" type="button" data-method="POST">{% trans "Add" %}</button>
+        </div>
+        <table id="contract-social-safeguard-list-table" class="contracts-profile-table d-block table table-hover">
+            <thead>
+                <tr>
+                    <th>{% trans "Reporting Month" %}</th>
+                    <th>{% trans "Total Employees" %}</th>
+                    <th>{% trans "Total Female Employees" %}</th>
+                    <th>{% trans "Total Employees With Disabilities" %}</th>
+                    <th>{% trans "Female Employees With Disabilities" %}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for social_data in social_list_data %}
+                <tr>
+                    <td>{{ social_data.month }}</td>
+                    <td>{{ social_data.employees }}</td>
+                    <td>{{ social_data.female_employees }}</td>
+                    <td>{{ social_data.employees_with_disabilities }}</td>
+                    <td>{{ social_data.female_employees_with_disabilities }}</td>
+                    <td class="text-center">
+                        <a class="image pencil form-modal-link" data-method="PUT" data-object="{{ social_data.json }}"
+                            data-id="{{ social_data.id }}"></a>
+                        <span></span>
+                        <a class="image delete delete-link"
+                            data-delete="/contracts/api/socialsafeguarddata/{{ social_data.id }}/"></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </form>
+</div>
+
+<div class="social-data-modal form-modal modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title">{% trans "Save Social Safeguard Report" %}</h1>
+                <span class="close image" data-dismiss="modal" aria-label="{% trans 'Close' %}"
+                    aria-hidden="true"></span>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <section>
+                        <h6>{% trans "Number of Employees" %}</h6>
+                        <div class="form-group">
+                            <label>{% trans "Reporting Month" %}</label>
+                            <span class="required">*</span>
+                            <small class="form-text text-muted">{% trans "Select month of the report" %}</small>
+                            <input id="reporting-month" class="form-control" type="month" pattern="\d{4}-\d{2}"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label>{% trans "Total Employees" %}</label>
+                            <span class="required">*</span>
+                            <input id="total-employees" class="form-control" type="number" min="0" placeholder="10" required>
+                        </div>
+                        <div class="form-group">
+                            <label>{% trans "National Employees" %}</label>
+                            <input id="national-employees" class="form-control" type="number" min="0" placeholder="9">
+                        </div>
+                        <div class="form-group">
+                            <label>{% trans "International Employees" %}</label>
+                            <small class="form-text text-muted">{% trans "Non timorese employees" %}</small>
+                            <input id="international-employees" class="form-control" type="number" min="0" placeholder="1">
+                        </div>
+                        <div class="form-group">
+                            <label>{% trans "Female Employees" %}</label>
+                            <input id="female-employees" class="form-control" type="number" min="0" placeholder="5">
+                        </div>
+                        <div class="form-group">
+                            <label>{% trans "Employees With Disabilities" %}</label>
+                            <input id="employees-disabilities" class="form-control" type="number" min="0" placeholder="2">
+                        </div>
+                        <div class="form-group">
+                            <label>{% trans "Female Employees With Disabilities" %}</label>
+                            <input id="female-employees-disabilities" class="form-control" type="number" min="0" placeholder="2">
+                        </div>
+                        <div class="form-group">
+                            <label>{% trans "Young Employees" %}</label>
+                            <input id="young-employees" class="form-control" type="number" min="0" placeholder="1">
+                        </div>
+                        <div class="form-group">
+                            <label>{% trans "Young Female Employees" %}</label>
+                            <input id="young-female-employees" class="form-control" type="number" min="0" placeholder="1">
+                        </div>
+                    </section>
+                    <section>
+                        <h6>{% trans "Worked Days" %}</h6>
+                        <div class="form-group">
+                            <label>{% trans "Total Worked Days" %}</label>
+                            <small class="form-text text-muted">{% trans "Worked days of all employees" %}</small>
+                            <input id="total-worked-days" class="form-control" type="number" min="0" placeholder="200">
+                        </div>
+                        <div class="form-group">
+                            <label>{% trans "Female Employees Worked Days" %}</label>
+                            <input id="female-employees-worked-days" class="form-control" type="number" min="0" placeholder="100">
+                        </div>
+                        <div class="form-group">
+                            <label>{% trans "Employees With Disabilities Worked Days" %}</label>
+                            <input id="employees-disabilities-worked-days" class="form-control" type="number" min="0" placeholder="40">
+                        </div>
+                        <div class="form-group">
+                            <label>{% trans "Female Employees With Disabilities Worked Days" %}</label>
+                            <input id="female-employees-disabilities-worked-days" class="form-control" type="number"
+                                min="0" placeholder="40">
+                        </div>
+                        <div class="form-group">
+                            <label>{% trans "Young Employees Worked Days" %}</label>
+                            <input id="young-employees-worked-days" class="form-control" type="number" min="0" placeholder="20">
+                        </div>
+                        <div class="form-group">
+                            <label>{% trans "Young Female Employees Worked Days" %}</label>
+                            <input id="young-female-employees-worked-days" class="form-control" type="number" min="0" placeholder="20">
+                        </div>
+                    </section>
+                    <section>
+                        <h6>{% trans "Wages" %}</h6>
+                        <div class="form-group">
+                            <label>{% trans "Total Wages" %}</label>
+                            <small class="form-text text-muted">{% trans "All salaries paid in USD" %}</small>
+                            <input id="total-wages" class="form-control" type="number" min="0" max="999999" step="0.01" placeholder="$2.500">
+                        </div>
+                        <div class="form-group">
+                            <label>{% trans "Average Gross Wages" %}</label>
+                            <small class="form-text text-muted">{% trans "Average of gross salaries in USD" %}</small>
+                            <input id="average-gross-wages" class="form-control" type="number" min="0" max="999999"
+                                step="0.01" placeholder="$125">
+                        </div>
+                        <div class="form-group">
+                            <label>{% trans "Average Net Wages" %}</label>
+                            <small class="form-text text-muted">{% trans "Average of net salaries in USD" %}</small>
+                            <input id="average-net-wages" class="form-control" type="number" min="0" max="999999"
+                                step="0.01" placeholder="$110">
+                        </div>
+                    </section>
+                    <div class="d-flex justify-content-end">
+                        <span>[</span><span class="required">*</span><span>]: Mandatory</span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <a data-dismiss="modal">{% trans "Cancel" %}</a>
+                <button id="save-social-data" type="button" class="btn btn-primary"
+                    data-url="/contracts/api/socialsafeguarddata/"
+                    data-id="{{ contract_id }}">{% trans "Save" %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="action-modal delete-modal modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="d-flex justify-content-center modal-header">
+                <span class="alert stop image"></span>
+                <span class="close image" data-dismiss="modal" aria-label="{% trans 'Close' %}"
+                    aria-hidden="true"></span>
+            </div>
+            <div class="modal-body text-center">
+                <h6>{% trans "Delete Social Safeguard Data" %}</h6>
+                <p>{% trans "Are you sure you want to delete this data?" %}</p>
+            </div>
+            <div class="d-flex justify-content-center modal-footer">
+                <button type="button" class="btn btn-danger delete-item">{% trans "Delete" %}</button>
+                <button type="button" class="btn btn-light" data-dismiss="modal">{% trans "Don't delete" %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

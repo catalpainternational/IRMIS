@@ -20,7 +20,9 @@ from django.http import (
     HttpResponseNotFound,
 )
 from django.utils.translation import ugettext_lazy as _
+from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic.base import TemplateView
 from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.contenttypes.models import ContentType
@@ -28,6 +30,7 @@ from django.db.models import Value, CharField, OuterRef, Prefetch, Subquery
 from django.db.models.functions import Cast, Substr
 from django.views.generic import TemplateView, ListView
 
+from rest_framework_jwt.settings import api_settings
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import IsAuthenticated
@@ -78,6 +81,11 @@ from .models import (
 from .serializers import RoadSerializer, RoadMetaOnlySerializer, RoadToWGSSerializer
 
 
+@method_decorator(login_required, name="dispatch")
+class HomePageView(TemplateView):
+    template_name = "assets/estrada.html"
+
+
 def display_user(user):
     """ returns the full username if populated, or the username, or "" """
     if not user:
@@ -98,6 +106,17 @@ def user_can_edit(user):
         user.is_staff
         or user.is_superuser
         or user.groups.filter(name="Editors").exists()
+    ):
+        return True
+
+    return False
+
+
+def user_can_plan(user):
+    if (
+        user.is_staff
+        or user.is_superuser
+        or user.permissions.filter(name__contains="can_edit_plan").exists()
     ):
         return True
 
@@ -130,6 +149,19 @@ def get_last_modified(request, pk=None):
             return Road.objects.all().latest("last_modified").last_modified
     except Road.DoesNotExist:
         return datetime.now()
+
+
+@login_required
+@user_passes_test(user_can_plan)
+def api_token_request(request):
+    jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+    jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+    payload = jwt_payload_handler(request.user)
+    res_data = {
+        "token": jwt_encode_handler(payload),
+        "issue_date": datetime.now().strftime("%Y-%m-%d %H:%M"),
+    }
+    return JsonResponse(res_data, status=200)
 
 
 @login_required
@@ -912,7 +944,7 @@ def culvert_update(culvert, req_pb, db_pb):
 
 
 @login_required
-@user_passes_test(user_can_edit)
+@user_passes_test(user_can_plan)
 def plan_create(request):
     if request.method != "POST":
         raise MethodNotAllowed(request.method)
@@ -958,7 +990,7 @@ def plan_create(request):
 
 
 @login_required
-@user_passes_test(user_can_edit)
+@user_passes_test(user_can_plan)
 def plan_delete(request, pk):
     if request.method != "PUT":
         raise MethodNotAllowed(request.method)
@@ -975,7 +1007,7 @@ def plan_delete(request, pk):
 
 
 @login_required
-@user_passes_test(user_can_edit)
+@user_passes_test(user_can_plan)
 def plan_update(request):
     if request.method != "PUT":
         raise MethodNotAllowed(request.method)

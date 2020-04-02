@@ -1,6 +1,3 @@
-import { Projection } from "../../protobuf/roads_pb";
-import { EstradaProjection } from "./models/road";
-
 /** utility function to pick from choices if value is truthy, or return default string
  * the default for defaultValue is empty string ""
  */
@@ -81,9 +78,4 @@ export function humanizeChoices(
     }
 
     return values;
-}
-
-export function projectionToCoordinates(
-    proj: Projection | EstradaProjection): [number, number] {
-    return [proj.getX(), proj.getY()];
 }

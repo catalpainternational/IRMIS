@@ -131,6 +131,36 @@ table.planning-table {
     }
 }
 
+table.contracts-profile-table {
+    overflow-x: auto;
+
+    thead tr th {
+        border-bottom-width: 1px;
+        border-top: none;
+    }
+
+    tbody tr td {
+        height: 55px;
+
+        span {
+            border-right: 1px solid $light-gray;
+            margin: 0 10px;
+        }
+    }
+}
+
+.contract-details-table {
+    overflow-x: auto;
+
+    thead th {
+        border-top: none;
+    }
+
+    thead th, tbody td {
+        height: 40px;
+    }
+}
+
 .table-spacing {
     margin-top: 25px;
 }
@@ -185,20 +215,7 @@ div.dataTables_wrapper {
     }
 }
 
-#all-data-table_wrapper ul.pagination {
-    li.paginate_button.page-item {
-        &.active a.page-link {
-            background-color: $white;
-            color: $darker-gray;
-        }
-
-        a.page-link {
-            background-color: $darker-gray;
-            color: $white;
-        }
-    }
-}
-
+#all-data-table_wrapper ul.pagination,
 #structures-data-table_wrapper ul.pagination {
     li.paginate_button.page-item {
         &.active a.page-link {
@@ -213,7 +230,24 @@ div.dataTables_wrapper {
     }
 }
 
-#history-table_wrapper ul.pagination, .content-wrapper ul.pagination {
+#contract-inspection-print-list-table_wrapper,
+#contract-payment-print-list-table_wrapper,
+#contract-social-safeguard-print-list-table_wrapper {
+    display: none;
+}
+
+#project-list-table_wrapper ul.pagination,
+#tender-list-table_wrapper ul.pagination,
+#contract-list-table_wrapper ul.pagination,
+#contract-inspection-list-table_wrapper ul.pagination,
+#contract-inspection-view-list-table_wrapper ul.pagination,
+#contract-payment-list-table_wrapper ul.pagination,
+#contract-payment-view-list-table_wrapper ul.pagination,
+#contract-social-safeguard-list-table_wrapper ul.pagination,
+#contract-social-safeguard-view-list-table_wrapper ul.pagination,
+#company-list-table_wrapper ul.pagination,
+#history-table_wrapper ul.pagination,
+.content-wrapper ul.pagination {
     li.paginate_button.page-item {
         &.active a.page-link {
             background-color: $darker-gray;

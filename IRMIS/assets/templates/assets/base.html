@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_js %}
+    <script type="text/javascript" src="{% static 'vendors~contracts~estrada.js' %}"></script>
+{% endblock %}
+
+{% block title %}
+    Estrada
+{% endblock %}
+
+{% block body_class %}content{% endblock %}
+
+{% block base_content %}
+    <top_menu></top_menu>
+    {% block content %}
+    {% endblock %}
+{% endblock %}

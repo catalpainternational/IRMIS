@@ -8,7 +8,7 @@
             <div class="instructions">
                 <h5>{ window.gettext("How to use the planning tool, step by step") }</h5>
                 <ul>
-                    <li>{ window.gettext("Download Excel templates and the query for the road class you will be preparing the planning from the list below. Example, if you want to prepare a 5-year plan for National Roads, download Excel XXX and Query file XXX") }</li>
+                    <li>{ window.gettext("Download Excel templates and the query for the road class you will be preparing the planning from the list below. Example, if you want to prepare a 5-year plan for National Roads, download the Excel and Query file corresponding to National Roads") }</li>
                     <li>{ window.gettext("Import data from the Estrada database to the Excel template using the downloaded query") }</li>
                     <li>{ window.gettext("Start preparing your plan") }</li>
                     <li>{ window.gettext("Review criteria such as type of work criteria, unit costs and prioritization of facilities and connections") }</li>
@@ -22,10 +22,18 @@
                     <a href="/static/Estrada-How-to-use-Planning-tool.pdf" download="Estrada-How-to-use-Planning-tool.pdf"> { window.gettext("here") }</a>
                 </p>
                 <h5>{ window.gettext("Access token") }</h5>
-                <p>{ window.gettext("Token to get information from the Estrada database to your Excel planning file") }</p>
-                <div class="align-items-center d-flex justify-content-between">
-                    <input id="access-token" class="disabled" type="text" value="{ state.token }">
-                    <button class="btn btn-primary btn-sm" onclick="{ copyToClipboard }">{ window.gettext("Copy") }</button>
+                <p>
+                    { window.gettext("Token to get information from the Estrada database to your Excel planning file (valid for 24 hours from issuance)") }
+                </p>
+                <div if="{!state.accessToken}">
+                    <button class="btn btn-primary btn-sm" type="submit" onclick="{ requestAccessToken }">{ window.gettext("Request Access Token") }</button>
+                </div>
+                <div if="{state.accessToken}">
+                    <p><strong>Issued:</strong> { state.accessToken.issue_date }</p>
+                    <div class="align-items-center d-flex justify-content-between">
+                        <textarea id="access-token" class="disabled" type="textarea" value="{ state.accessToken.token }" style="height: 100px; width:500px;"></textarea>
+                        <button class="btn btn-primary btn-sm" onclick="{ copyToClipboard }">{ window.gettext("Copy") }</button>
+                    </div>
                 </div>
             </div>
             <span class="image"></span>
@@ -72,14 +80,34 @@
     </div>
 
     <script>
+        import {requestApiToken} from "../assets/tokenAPI";
+        import $ from 'jquery';
+
         export default {
             state: {
-                token: 1234,
+                accessToken: null,
             },
             copyToClipboard() {
                 const accessToken = document.getElementById("access-token");
                 accessToken.select();
                 document.execCommand("copy");
+            },
+            showFeedback(error) {
+                this.update({
+                    showFeedback: true,
+                    error: error,
+                });
+                setTimeout(() => this.closeFeedback(), 2000);
+            },
+            requestAccessToken(e) {
+                requestApiToken()
+                    .then((tokenData) => {
+                        this.state.accessToken = tokenData;
+                    }).catch((err) => {
+                        this.showFeedback(err);
+                    }).finally(() => {
+                        this.update();
+                    })
             },
         }
     </script>

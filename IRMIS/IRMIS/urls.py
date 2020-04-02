@@ -26,14 +26,18 @@ from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.core import urls as wagtail_urls
 
+from assets.views import HomePageView
+
 
 def trigger_error(request):
     division_by_zero = 1 / 0  # noqa
 
 
 urlpatterns = [
+    path("", HomePageView.as_view(), name="estrada"),
     path("jsi18n/", JavaScriptCatalog.as_view(), name="javascript-catalog"),
     path("assets/", include("assets.urls")),
+    path("contracts/", include("contracts.urls")),
     path("downloads/", include("protected_downloads.urls")),
     path("admin/", admin.site.urls),
     path("sentry-debug/", trigger_error),
@@ -51,7 +55,7 @@ urlpatterns = [
 
 
 # catchall must come last
-urlpatterns += [re_path(r"", include(wagtail_urls))]
+urlpatterns += [re_path(r"pages/", include(wagtail_urls))]
 
 if "rosetta" in settings.INSTALLED_APPS:
     urlpatterns = [re_path(r"^rosetta/", include("rosetta.urls"))] + urlpatterns

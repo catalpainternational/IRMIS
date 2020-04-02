@@ -1,0 +1,61 @@
+{% extends "contracts/contracts.html" %}
+{% load i18n %}
+
+{% block contracts_profile %}
+<header class="justify-content-between">
+    <div class="align-items-center d-flex">
+        <a class="caret-dark left image" href="{% url 'contract-tender-list' %}"></a>
+        <h1>{% trans "Tender" %} — {{ tender.code }}</h1>
+    </div>
+    <button class="btn btn-secondary btn-sm print-profile">{% trans "Print" %}</button>
+</header>
+
+<nav>
+    <a class="selected">
+        <h6>{% trans "Tender Details" %}</h6>
+    </a>
+    <a class="align-items-center d-flex flex-column">
+        <h6>{% trans "Documents" %}</h6>
+        <span>(coming soon)</span>
+    </a>
+</nav>
+
+<div class="content">
+    <section>
+        <h6>{% trans "Tender Details" %}</h6>
+        <div>
+            <label>{% trans "Status" %}</label>
+            <p>{{ tender.status }}</p>
+        </div>
+        <div>
+            <label>{% trans "Tender Code" %}</label>
+            <p>{{ tender.code }}</p>
+        </div>
+        <div>
+            <label>{% trans "Associated Projects" %}</label>
+            {% for project in tender.projects.all %}
+            <div><a href="{% url 'contract-project-detail' project.id %}">{{ project.name }}</a></div>
+            {% endfor %}
+        </div>
+        <div>
+            <label>{% trans "Announcement Date" %}</label>
+            <p>{{ tender.announcement_date }}</p>
+        </div>
+    </section>
+    <section>
+        <h6>{% trans "Bids and Evaluation" %}</h6>
+        <div>
+            <label>{% trans "Bid Submission Deadline" %}</label>
+            <p>{{ tender.submission_date }}</p>
+        </div>
+        <div>
+            <label>{% trans "Numbering of Companies Tendering" %}</label>
+            <p>{{ tender.tendering_companies }}</p>
+        </div>
+        <div>
+            <label>{% trans "Evaluation Date" %}</label>
+            <p>{{ tender.evaluation_date }}</p>
+        </div>
+    </section>
+</div>
+{% endblock %}

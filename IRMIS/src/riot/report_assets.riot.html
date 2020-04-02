@@ -90,10 +90,12 @@
                         class="{ state.reportDate ? '' : 'inactive' } form-control form-control-sm" type="date"
                         oninput="{ selectDate }" value="{ state.reportDate }" max="{ state.max_date }" placeholder="Select Date"
                         pattern="\d{4}-\d{2}-\d{2}">
-            </div>
-            <div>
-                <button type="button" class="btn btn-primary" onclick="{ createReport }" data-id="{ props.id }">{
-                    window.gettext("Create Report") }</button>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-primary" onclick="{ createReport }" data-id="{ props.id }">
+                        { window.gettext("Create Report") }
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -207,18 +209,17 @@
                 columns="{columns.assetRoughness()}" columnSortOrder="{baseColumnSortOrder}">
             </data_table>
         </div>
-    
-        <div if="{ state.noReport }"
-            class="align-items-center blank d-flex flex-column justify-content-center">
-            <span class="no-report image"></span>
-            <h6>{ reportAssetsContent().noReportTitle }</h6>
-            <p>{ reportAssetsContent().noReportDescription }</p>
+
+        <div if="{ state.noReport }" class="align-items-center d-flex flex-column justify-content-center no-data-wrapper">
+            <span class="no-data image"></span>
+            <h6 class="text-center">{ reportAssetsContent().noReportTitle }</h6>
+            <p class="text-center">{ reportAssetsContent().noReportDescription }</p>
         </div>
-        <div if="{ state.noReportData }"
-            class="align-items-center blank d-flex flex-column justify-content-center">
-            <span class="no-report-data image"></span>
-            <h6>{ reportAssetsContent().noReportData }</h6>
-        </div>        
+
+        <div if="{ state.noReportData }" class="align-items-center d-flex flex-column justify-content-center no-data-wrapper">
+            <span class="no-data image"></span>
+            <h6 class="text-center">{ reportAssetsContent().noReportData }</h6>
+        </div>
     </div>
 
     <div class="print-footer">
@@ -238,10 +239,8 @@
             ASSET_CLASS_CHOICES, // asset_class - previously road_class / road_type, structure_class
             ASSET_CONDITION_CHOICES, // asset_condition - previously surface_condition, structure_condition
             ASSET_TYPE_CHOICES, // asset_type
-        } from "../assets/models/estradaBase";
-        import {
-            SURFACE_TYPE_CHOICES // surface_type
-        } from "../assets/models/road";
+            SURFACE_TYPE_CHOICES, // surface_type
+        } from "../assets/models/choices";
         import {makeEstradaNetworkSurveyReport} from "../assets/models/surveyReport";
 
         import {getAssetReport} from "../reportManager";
@@ -260,7 +259,6 @@
         import {copyData} from "../assets/utilities";
 
         import "select2/dist/js/select2.full.min.js";
-        import dayjs from "dayjs";
         import $ from "jquery";
 
         const baseColumnSortOrder = [[0, 'asc']];
