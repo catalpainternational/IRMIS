@@ -43,7 +43,7 @@ def test_contracts_api_requires_auth(client):
     """ This test will fail if an unauthenticated request can access the contracts api """
     url = reverse("auto-api-project_extended-list")
     response = client.get(url)
-    assert response.status_code == 403
+    assert response.status_code in [401, 403]
 
 
 @pytest.mark.django_db
