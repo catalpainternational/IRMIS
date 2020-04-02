@@ -24,9 +24,11 @@ message Road {
   string link_code = 5;
   /* string link_name = 6; */
   string link_start_name = 16;
-  float link_start_chainage = 11;
+  // link_start_chainage is uint - we use int32 so that we can set it to -ve to indicate when it is null / None
+  int32 link_start_chainage = 11;
   string link_end_name = 17;
-  float link_end_chainage = 12;
+  // link_end_chainage is uint - we use int32 so that we can set it to -ve to indicate when it is null / None
+  int32 link_end_chainage = 12;
   float link_length = 7;
   string surface_type = 8;
   string asset_condition = 9; // surface_condition has been renamed to asset_condition
