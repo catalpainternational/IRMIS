@@ -31,7 +31,7 @@
                 <div if="{state.accessToken}">
                     <p><strong>Issued:</strong> { state.accessToken.issue_date }</p>
                     <div class="align-items-center d-flex justify-content-between">
-                        <textarea id="access-token" class="disabled" value="{ state.accessToken.token }"></textarea>
+                        <textarea id="access-token" class="disabled" value="{ state.accessToken.token }" readonly></textarea>
                         <button class="btn btn-primary btn-sm" onclick="{ copyToClipboard }">{ window.gettext("Copy") }</button>
                     </div>
                 </div>
