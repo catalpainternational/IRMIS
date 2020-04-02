@@ -1506,7 +1506,11 @@ class PlanQuerySet(models.QuerySet):
         asset_type = "PLAN"
 
         regular_fields = dict(
-            id="id", title="title", approved="approved", asset_class="asset_class"
+            id="id",
+            title="title",
+            approved="approved",
+            asset_class="asset_class",
+            planning_period="planning_period",
         )
 
         datetime_fields = dict(
@@ -1580,6 +1584,9 @@ class Plan(models.Model):
     )
     file = models.FileField(upload_to="plans/")
     approved = models.BooleanField(verbose_name=_("Approved"), default=False)
+    planning_period = models.CharField(
+        verbose_name=_("Planning Period"), max_length=12, blank=True, null=True,
+    )
     asset_class = models.CharField(
         verbose_name=_("Asset Class"),
         max_length=4,

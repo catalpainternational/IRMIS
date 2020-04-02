@@ -127,6 +127,14 @@
                     orderable: true,
                 },
                 {
+                    title: window.gettext("Planning Period"),
+                    data: 'planningPeriod',
+                    defaultContent: "",
+                    render: (r) => {return "2020 - 2024";}, // TO DO: replace with true Planning Period data setup
+                    className: "text-center",
+                    orderable: true,
+                },
+                {
                     title: window.gettext("Date Uploaded"),
                     data: 'dateCreated',
                     defaultContent: "",

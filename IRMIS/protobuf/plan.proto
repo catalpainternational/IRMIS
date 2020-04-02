@@ -30,6 +30,7 @@ message Plan {
   // file info data only used in the frontend
   string url = 11;
   string file_name = 12;
+  string planning_period = 13;
 }
 
 message Plans {
