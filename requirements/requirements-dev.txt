@@ -29,14 +29,15 @@ django-taggit==0.24.0
 django-treebeard==4.3
 django==2.2.4
 djangorestframework-gis==0.14
+djangorestframework-jwt==1.11.0
 djangorestframework==3.10.2
 draftjs-exporter==2.1.6
 geobuf==1.1.1
 html5lib==1.0.1
 identify==1.4.5           # via pre-commit
 idna==2.8
-importlib-metadata==0.19  # via pluggy, pre-commit, pytest
-importlib-resources==1.0.2
+importlib-metadata==1.6.0
+importlib-resources==1.4.0
 ipdb==0.12.2
 ipython-genutils==0.2.0   # via traitlets
 ipython==7.7.0            # via ipdb
@@ -61,6 +62,7 @@ psycopg2-binary==2.8.3
 ptyprocess==0.6.0         # via pexpect
 py==1.8.0                 # via pytest
 pygments==2.4.2           # via ipython
+pyjwt==1.7.1              # via djangorestframework-jwt
 pylint==2.3.1
 pyparsing==2.4.2          # via packaging
 pytest-django==3.5.1
@@ -84,7 +86,7 @@ wcwidth==0.1.7            # via prompt-toolkit, pytest
 webencodings==0.5.1
 willow==1.1
 wrapt==1.11.2             # via astroid
-zipp==0.5.2               # via importlib-metadata
+zipp==3.1.0
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
