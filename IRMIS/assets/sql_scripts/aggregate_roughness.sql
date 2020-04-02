@@ -99,7 +99,7 @@ COMMIT;
 
 BEGIN;
 	DROP TABLE IF EXISTS roughness_temp_joined;
-	CREATE TABLE roughness_temp_joined AS (
+	CREATE TEMP TABLE roughness_temp_joined AS (
 
 		SELECT
 			min(id) AS id,

@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
     ]
 
     dependencies = [
-        ("assets", "0040_roadfeatureattributes_20200310_0313"),
+        ("assets", "0046_merge_20200331_0832"),
     ]
 
     operations = [
@@ -120,26 +120,8 @@ class Migration(migrations.Migration):
                     django.contrib.postgres.fields.ranges.DecimalRangeField(),
                 ),
                 ("strictly_left", models.BooleanField()),
-                (
-                    "survey_first",
-                    models.ForeignKey(
-                        blank=True,
-                        null=True,
-                        on_delete=django.db.models.deletion.CASCADE,
-                        related_name="+",
-                        to="assets.Survey",
-                    ),
-                ),
-                (
-                    "survey_second",
-                    models.ForeignKey(
-                        blank=True,
-                        null=True,
-                        on_delete=django.db.models.deletion.CASCADE,
-                        related_name="+",
-                        to="assets.Survey",
-                    ),
-                ),
+                ("survey_first_id", models.IntegerField(null=True),),
+                ("survey_second_id", models.IntegerField(null=True),),
             ],
         ),
         migrations.AddIndex(
