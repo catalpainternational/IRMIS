@@ -112,24 +112,16 @@ planning_templates {
             height: 400px;
             width: 100%;
         }
+    }
 
-        #access-token {
-            pointer-events: none;
-            border: none;
-
-            &:focus {
-                outline: none;
-            }
-        }
+    p.generated-token {
+        word-break: break-word;
+        margin-right: 10px;
+        margin-bottom: 0;
     }
 
     strong {
         margin-right: 3px;
-    }
-
-    textarea {
-        margin-right: 10px;
-        width: 100%;
     }
 
     .templates-list {

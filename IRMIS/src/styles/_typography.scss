@@ -191,13 +191,6 @@ input.form-control {
     }
 }
 
-input#access-token {
-    color: $darker-gray;
-    line-height: 27px;
-    font-weight: 700;
-    font-size: 18px;
-}
-
 ul li {
     line-height: 24px;
     font-size: 14px;
@@ -339,12 +332,6 @@ table:not(.dataTable) {
         line-height: 12px;
         font-size: 14px;
     }
-}
-
-textarea#access-token {
-    color: $darker-gray;
-    line-height: 14px;
-    font-size: 12px;
 }
 
 // Override DataTables.net styles

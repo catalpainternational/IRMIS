@@ -31,7 +31,8 @@
                 <div if="{state.accessToken}">
                     <p><strong>{ window.gettext("Issued") }: </strong>{ state.accessToken.issue_date }</p>
                     <div class="align-items-center d-flex justify-content-between">
-                        <textarea id="access-token" class="disabled" value="{ state.accessToken.token }" readonly></textarea>
+                        <input id="access-token" type="hidden" value="{ state.accessToken.token }">
+                        <p class="generated-token">{ state.accessToken.token }</p>
                         <button class="btn btn-primary btn-sm" onclick="{ copyToClipboard }">{ window.gettext("Copy") }</button>
                     </div>
                 </div>
@@ -89,8 +90,10 @@
             },
             copyToClipboard() {
                 const accessToken = document.getElementById("access-token");
+                accessToken.type = "text";
                 accessToken.select();
                 document.execCommand("copy");
+                accessToken.type = "hidden";
             },
             showFeedback(error) {
                 this.update({
