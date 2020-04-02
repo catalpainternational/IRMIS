@@ -1,3 +1,4 @@
+// source: survey.proto
 /**
  * @fileoverview
  * @enhanceable
@@ -71,13 +72,15 @@ proto.assets.Survey.repeatedFields_ = [14];
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
 /**
- * Creates an object representation of this proto suitable for use in Soy templates.
+ * Creates an object representation of this proto.
  * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
  * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
  * For the list of reserved names please see:
- *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
- * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
- *     for transitional soy proto support: http://goto/soy-param-migration
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
  * @return {!Object}
  */
 proto.assets.Survey.prototype.toObject = function(opt_includeInstance) {
@@ -87,8 +90,8 @@ proto.assets.Survey.prototype.toObject = function(opt_includeInstance) {
 
 /**
  * Static version of the {@see toObject} method.
- * @param {boolean|undefined} includeInstance Whether to include the JSPB
- *     instance for transitional soy proto support:
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
  * @param {!proto.assets.Survey} msg The msg instance to transform.
  * @return {!Object}
@@ -105,8 +108,8 @@ proto.assets.Survey.toObject = function(includeInstance, msg) {
     source: jspb.Message.getFieldWithDefault(msg, 9, ""),
     dateUpdated: (f = msg.getDateUpdated()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
     dateSurveyed: (f = msg.getDateSurveyed()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
-    chainageStart: +jspb.Message.getFieldWithDefault(msg, 5, 0.0),
-    chainageEnd: +jspb.Message.getFieldWithDefault(msg, 6, 0.0),
+    chainageStart: jspb.Message.getFieldWithDefault(msg, 5, 0),
+    chainageEnd: jspb.Message.getFieldWithDefault(msg, 6, 0),
     values: jspb.Message.getFieldWithDefault(msg, 7, ""),
     addedBy: jspb.Message.getFieldWithDefault(msg, 11, ""),
     photosList: jspb.Message.toObjectList(msg.getPhotosList(),
@@ -186,11 +189,11 @@ proto.assets.Survey.deserializeBinaryFromReader = function(msg, reader) {
       msg.setDateSurveyed(value);
       break;
     case 5:
-      var value = /** @type {number} */ (reader.readFloat());
+      var value = /** @type {number} */ (reader.readUint32());
       msg.setChainageStart(value);
       break;
     case 6:
-      var value = /** @type {number} */ (reader.readFloat());
+      var value = /** @type {number} */ (reader.readUint32());
       msg.setChainageEnd(value);
       break;
     case 7:
@@ -301,15 +304,15 @@ proto.assets.Survey.serializeBinaryToWriter = function(message, writer) {
     );
   }
   f = message.getChainageStart();
-  if (f !== 0.0) {
-    writer.writeFloat(
+  if (f !== 0) {
+    writer.writeUint32(
       5,
       f
     );
   }
   f = message.getChainageEnd();
-  if (f !== 0.0) {
-    writer.writeFloat(
+  if (f !== 0) {
+    writer.writeUint32(
       6,
       f
     );
@@ -348,9 +351,12 @@ proto.assets.Survey.prototype.getId = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.assets.Survey} returns this
+ */
 proto.assets.Survey.prototype.setId = function(value) {
-  jspb.Message.setProto3IntField(this, 1, value);
+  return jspb.Message.setProto3IntField(this, 1, value);
 };
 
 
@@ -363,9 +369,12 @@ proto.assets.Survey.prototype.getAssetId = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Survey} returns this
+ */
 proto.assets.Survey.prototype.setAssetId = function(value) {
-  jspb.Message.setProto3StringField(this, 13, value);
+  return jspb.Message.setProto3StringField(this, 13, value);
 };
 
 
@@ -378,9 +387,12 @@ proto.assets.Survey.prototype.getAssetCode = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Survey} returns this
+ */
 proto.assets.Survey.prototype.setAssetCode = function(value) {
-  jspb.Message.setProto3StringField(this, 10, value);
+  return jspb.Message.setProto3StringField(this, 10, value);
 };
 
 
@@ -393,9 +405,12 @@ proto.assets.Survey.prototype.getRoadId = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.assets.Survey} returns this
+ */
 proto.assets.Survey.prototype.setRoadId = function(value) {
-  jspb.Message.setProto3IntField(this, 12, value);
+  return jspb.Message.setProto3IntField(this, 12, value);
 };
 
 
@@ -408,9 +423,12 @@ proto.assets.Survey.prototype.getRoadCode = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Survey} returns this
+ */
 proto.assets.Survey.prototype.setRoadCode = function(value) {
-  jspb.Message.setProto3StringField(this, 2, value);
+  return jspb.Message.setProto3StringField(this, 2, value);
 };
 
 
@@ -423,9 +441,12 @@ proto.assets.Survey.prototype.getUser = function() {
 };
 
 
-/** @param {number} value */
+/**
+ * @param {number} value
+ * @return {!proto.assets.Survey} returns this
+ */
 proto.assets.Survey.prototype.setUser = function(value) {
-  jspb.Message.setProto3IntField(this, 3, value);
+  return jspb.Message.setProto3IntField(this, 3, value);
 };
 
 
@@ -438,9 +459,12 @@ proto.assets.Survey.prototype.getSource = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Survey} returns this
+ */
 proto.assets.Survey.prototype.setSource = function(value) {
-  jspb.Message.setProto3StringField(this, 9, value);
+  return jspb.Message.setProto3StringField(this, 9, value);
 };
 
 
@@ -454,17 +478,21 @@ proto.assets.Survey.prototype.getDateUpdated = function() {
 };
 
 
-/** @param {?proto.google.protobuf.Timestamp|undefined} value */
+/**
+ * @param {?proto.google.protobuf.Timestamp|undefined} value
+ * @return {!proto.assets.Survey} returns this
+*/
 proto.assets.Survey.prototype.setDateUpdated = function(value) {
-  jspb.Message.setWrapperField(this, 4, value);
+  return jspb.Message.setWrapperField(this, 4, value);
 };
 
 
 /**
  * Clears the message field making it undefined.
+ * @return {!proto.assets.Survey} returns this
  */
 proto.assets.Survey.prototype.clearDateUpdated = function() {
-  this.setDateUpdated(undefined);
+  return this.setDateUpdated(undefined);
 };
 
 
@@ -487,17 +515,21 @@ proto.assets.Survey.prototype.getDateSurveyed = function() {
 };
 
 
-/** @param {?proto.google.protobuf.Timestamp|undefined} value */
+/**
+ * @param {?proto.google.protobuf.Timestamp|undefined} value
+ * @return {!proto.assets.Survey} returns this
+*/
 proto.assets.Survey.prototype.setDateSurveyed = function(value) {
-  jspb.Message.setWrapperField(this, 8, value);
+  return jspb.Message.setWrapperField(this, 8, value);
 };
 
 
 /**
  * Clears the message field making it undefined.
+ * @return {!proto.assets.Survey} returns this
  */
 proto.assets.Survey.prototype.clearDateSurveyed = function() {
-  this.setDateSurveyed(undefined);
+  return this.setDateSurveyed(undefined);
 };
 
 
@@ -511,32 +543,38 @@ proto.assets.Survey.prototype.hasDateSurveyed = function() {
 
 
 /**
- * optional float chainage_start = 5;
+ * optional uint32 chainage_start = 5;
  * @return {number}
  */
 proto.assets.Survey.prototype.getChainageStart = function() {
-  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 5, 0.0));
-};
-
-
-/** @param {number} value */
-proto.assets.Survey.prototype.setChainageStart = function(value) {
-  jspb.Message.setProto3FloatField(this, 5, value);
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 5, 0));
 };
 
 
 /**
- * optional float chainage_end = 6;
- * @return {number}
+ * @param {number} value
+ * @return {!proto.assets.Survey} returns this
  */
-proto.assets.Survey.prototype.getChainageEnd = function() {
-  return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 6, 0.0));
+proto.assets.Survey.prototype.setChainageStart = function(value) {
+  return jspb.Message.setProto3IntField(this, 5, value);
 };
 
 
-/** @param {number} value */
+/**
+ * optional uint32 chainage_end = 6;
+ * @return {number}
+ */
+proto.assets.Survey.prototype.getChainageEnd = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 6, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.assets.Survey} returns this
+ */
 proto.assets.Survey.prototype.setChainageEnd = function(value) {
-  jspb.Message.setProto3FloatField(this, 6, value);
+  return jspb.Message.setProto3IntField(this, 6, value);
 };
 
 
@@ -549,9 +587,12 @@ proto.assets.Survey.prototype.getValues = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Survey} returns this
+ */
 proto.assets.Survey.prototype.setValues = function(value) {
-  jspb.Message.setProto3StringField(this, 7, value);
+  return jspb.Message.setProto3StringField(this, 7, value);
 };
 
 
@@ -564,9 +605,12 @@ proto.assets.Survey.prototype.getAddedBy = function() {
 };
 
 
-/** @param {string} value */
+/**
+ * @param {string} value
+ * @return {!proto.assets.Survey} returns this
+ */
 proto.assets.Survey.prototype.setAddedBy = function(value) {
-  jspb.Message.setProto3StringField(this, 11, value);
+  return jspb.Message.setProto3StringField(this, 11, value);
 };
 
 
@@ -580,9 +624,12 @@ proto.assets.Survey.prototype.getPhotosList = function() {
 };
 
 
-/** @param {!Array<!proto.assets.Photo>} value */
+/**
+ * @param {!Array<!proto.assets.Photo>} value
+ * @return {!proto.assets.Survey} returns this
+*/
 proto.assets.Survey.prototype.setPhotosList = function(value) {
-  jspb.Message.setRepeatedWrapperField(this, 14, value);
+  return jspb.Message.setRepeatedWrapperField(this, 14, value);
 };
 
 
@@ -598,9 +645,10 @@ proto.assets.Survey.prototype.addPhotos = function(opt_value, opt_index) {
 
 /**
  * Clears the list making it empty but non-null.
+ * @return {!proto.assets.Survey} returns this
  */
 proto.assets.Survey.prototype.clearPhotosList = function() {
-  this.setPhotosList([]);
+  return this.setPhotosList([]);
 };
 
 
@@ -616,13 +664,15 @@ proto.assets.Surveys.repeatedFields_ = [1];
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
 /**
- * Creates an object representation of this proto suitable for use in Soy templates.
+ * Creates an object representation of this proto.
  * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
  * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
  * For the list of reserved names please see:
- *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
- * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
- *     for transitional soy proto support: http://goto/soy-param-migration
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
  * @return {!Object}
  */
 proto.assets.Surveys.prototype.toObject = function(opt_includeInstance) {
@@ -632,8 +682,8 @@ proto.assets.Surveys.prototype.toObject = function(opt_includeInstance) {
 
 /**
  * Static version of the {@see toObject} method.
- * @param {boolean|undefined} includeInstance Whether to include the JSPB
- *     instance for transitional soy proto support:
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
  * @param {!proto.assets.Surveys} msg The msg instance to transform.
  * @return {!Object}
@@ -734,9 +784,12 @@ proto.assets.Surveys.prototype.getSurveysList = function() {
 };
 
 
-/** @param {!Array<!proto.assets.Survey>} value */
+/**
+ * @param {!Array<!proto.assets.Survey>} value
+ * @return {!proto.assets.Surveys} returns this
+*/
 proto.assets.Surveys.prototype.setSurveysList = function(value) {
-  jspb.Message.setRepeatedWrapperField(this, 1, value);
+  return jspb.Message.setRepeatedWrapperField(this, 1, value);
 };
 
 
@@ -752,9 +805,10 @@ proto.assets.Surveys.prototype.addSurveys = function(opt_value, opt_index) {
 
 /**
  * Clears the list making it empty but non-null.
+ * @return {!proto.assets.Surveys} returns this
  */
 proto.assets.Surveys.prototype.clearSurveysList = function() {
-  this.setSurveysList([]);
+  return this.setSurveysList([]);
 };
 
 
