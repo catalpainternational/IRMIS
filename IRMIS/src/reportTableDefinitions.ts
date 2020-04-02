@@ -84,7 +84,7 @@ export const reportColumns: { [name: string]: any } = {
         },
     },
     count: {
-        title: (window as any).gettext("Count"),
+        title: (window as any).gettext("Total"),
         data: "distance",
         defaultContent: "",
         className: "text-right",
