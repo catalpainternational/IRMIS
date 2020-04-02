@@ -7,18 +7,31 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('contracts', '0038_edit_project_construction_schedule_model'),
+        ("contracts", "0038_edit_project_construction_schedule_model"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='contract',
-            name='tender',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='contracts.Tender', verbose_name='Associated tender'),
+            model_name="contract",
+            name="tender",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                to="contracts.Tender",
+                verbose_name="Associated tender",
+            ),
         ),
         migrations.AlterField(
-            model_name='project',
-            name='tender',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='projects', to='contracts.Tender', verbose_name='Associated projects'),
+            model_name="project",
+            name="tender",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="projects",
+                to="contracts.Tender",
+                verbose_name="Associated projects",
+            ),
         ),
     ]

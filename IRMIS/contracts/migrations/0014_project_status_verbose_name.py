@@ -7,13 +7,17 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('contracts', '0013_remove_help_text'),
+        ("contracts", "0013_remove_help_text"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='project',
-            name='status',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='contracts.ProjectStatus', verbose_name='Project Status'),
+            model_name="project",
+            name="status",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT,
+                to="contracts.ProjectStatus",
+                verbose_name="Project Status",
+            ),
         ),
     ]

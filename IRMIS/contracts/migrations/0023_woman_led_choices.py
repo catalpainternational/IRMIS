@@ -6,13 +6,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('contracts', '0022_company_model_fields_verbose_name'),
+        ("contracts", "0022_company_model_fields_verbose_name"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='company',
-            name='woman_led',
-            field=models.NullBooleanField(choices=[(None, 'Unknown'), (True, 'Yes'), (False, 'No')], verbose_name='Woman-Led Company'),
+            model_name="company",
+            name="woman_led",
+            field=models.NullBooleanField(
+                choices=[(None, "Unknown"), (True, "Yes"), (False, "No")],
+                verbose_name="Woman-Led Company",
+            ),
         ),
     ]

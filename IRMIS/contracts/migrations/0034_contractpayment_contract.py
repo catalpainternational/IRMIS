@@ -7,14 +7,18 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('contracts', '0033_update_contract_inspection'),
+        ("contracts", "0033_update_contract_inspection"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='contractpayment',
-            name='contract',
-            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to='contracts.Contract'),
+            model_name="contractpayment",
+            name="contract",
+            field=models.ForeignKey(
+                default=None,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="contracts.Contract",
+            ),
             preserve_default=False,
         ),
     ]

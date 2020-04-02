@@ -7,13 +7,18 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('contracts', '0023_woman_led_choices'),
+        ("contracts", "0023_woman_led_choices"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='contract',
-            name='tender',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='contracts.Tender'),
+            model_name="contract",
+            name="tender",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                to="contracts.Tender",
+            ),
         ),
     ]

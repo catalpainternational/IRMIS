@@ -7,23 +7,30 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('contracts', '0009_model_fields_verbose_name'),
+        ("contracts", "0009_model_fields_verbose_name"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='fundingsource',
-            name='name',
-            field=models.CharField(max_length=256, unique=True, verbose_name='Fontes Orsamentu'),
+            model_name="fundingsource",
+            name="name",
+            field=models.CharField(
+                max_length=256, unique=True, verbose_name="Fontes Orsamentu"
+            ),
         ),
         migrations.AlterField(
-            model_name='project',
-            name='funding_source',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='contracts.FundingSource'),
+            model_name="project",
+            name="funding_source",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="contracts.FundingSource",
+            ),
         ),
         migrations.AlterField(
-            model_name='projectdonor',
-            name='name',
-            field=models.CharField(max_length=256, unique=True, verbose_name='Donor'),
+            model_name="projectdonor",
+            name="name",
+            field=models.CharField(max_length=256, unique=True, verbose_name="Donor"),
         ),
     ]
