@@ -341,6 +341,11 @@ table:not(.dataTable) {
     }
 }
 
+textarea#access-token {
+    color: $darker-gray;
+    line-height: 14px;
+    font-size: 12px;
+}
 
 // Override DataTables.net styles
 table.dataTable {
