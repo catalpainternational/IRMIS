@@ -25,7 +25,8 @@ message Bridge {
     int32 construction_year = 10;
     float length = 11;
     float width = 12;
-    float chainage = 13;
+    // chainage is uint - we use int32 so that we can set it to -ve to indicate when it is null / None
+    int32 chainage = 13;
     string structure_type = 14;
     string material = 15;
     string protection_upstream = 16;
@@ -59,7 +60,8 @@ message Culvert {
     int32 construction_year = 10;
     float length = 11;
     float width = 12;
-    float chainage = 13;
+    // chainage is uint - we use int32 so that we can set it to -ve to indicate when it is null / None
+    int32 chainage = 13;
     string structure_type = 14;
     string material = 15;
     string protection_upstream = 16;

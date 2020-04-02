@@ -89,6 +89,9 @@ export class Plan extends jspb.Message {
   getFileName(): string;
   setFileName(value: string): void;
 
+  getPlanningPeriod(): string;
+  setPlanningPeriod(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Plan.AsObject;
   static toObject(includeInstance: boolean, msg: Plan): Plan.AsObject;
@@ -113,6 +116,7 @@ export namespace Plan {
     summaryList: Array<Snapshot.AsObject>,
     url: string,
     fileName: string,
+    planningPeriod: string,
   }
 }
 

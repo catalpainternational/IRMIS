@@ -410,7 +410,8 @@ proto.assets.Plan.toObject = function(includeInstance, msg) {
     summaryList: jspb.Message.toObjectList(msg.getSummaryList(),
     proto.assets.Snapshot.toObject, includeInstance),
     url: jspb.Message.getFieldWithDefault(msg, 11, ""),
-    fileName: jspb.Message.getFieldWithDefault(msg, 12, "")
+    fileName: jspb.Message.getFieldWithDefault(msg, 12, ""),
+    planningPeriod: jspb.Message.getFieldWithDefault(msg, 13, "")
   };
 
   if (includeInstance) {
@@ -497,6 +498,10 @@ proto.assets.Plan.deserializeBinaryFromReader = function(msg, reader) {
     case 12:
       var value = /** @type {string} */ (reader.readString());
       msg.setFileName(value);
+      break;
+    case 13:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setPlanningPeriod(value);
       break;
     default:
       reader.skipField();
@@ -611,6 +616,13 @@ proto.assets.Plan.serializeBinaryToWriter = function(message, writer) {
   if (f.length > 0) {
     writer.writeString(
       12,
+      f
+    );
+  }
+  f = message.getPlanningPeriod();
+  if (f.length > 0) {
+    writer.writeString(
+      13,
       f
     );
   }
@@ -875,6 +887,21 @@ proto.assets.Plan.prototype.getFileName = function() {
 /** @param {string} value */
 proto.assets.Plan.prototype.setFileName = function(value) {
   jspb.Message.setProto3StringField(this, 12, value);
+};
+
+
+/**
+ * optional string planning_period = 13;
+ * @return {string}
+ */
+proto.assets.Plan.prototype.getPlanningPeriod = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 13, ""));
+};
+
+
+/** @param {string} value */
+proto.assets.Plan.prototype.setPlanningPeriod = function(value) {
+  jspb.Message.setProto3StringField(this, 13, value);
 };
 
 

@@ -50,6 +50,10 @@ export class EstradaPlan extends Plan implements IEstrada {
         this.setFile(value);
     }
 
+    get planningPeriod() {
+        return this.getPlanningPeriod();
+    }
+
     get user() {
         return this.getUser() || "";
     }

@@ -20,8 +20,8 @@ message Survey {
   string source = 9;
   google.protobuf.Timestamp date_updated = 4;
   google.protobuf.Timestamp date_surveyed = 8;
-  float chainage_start = 5;
-  float chainage_end = 6;
+  uint32 chainage_start = 5;
+  uint32 chainage_end = 6;
   string values = 7;
   string added_by = 11;
   repeated Photo photos = 14;
