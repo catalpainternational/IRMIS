@@ -119,8 +119,7 @@
                 { window.gettext("Created on") } { state.reportData.dateCreated }
             </span>
 
-            <div class="filters-applied"
-                hidden="{ !hasFilters() || !state.reportData.formattedFilters || !state.reportData.formattedFilters.length }">
+            <div class="filters-applied" hidden="{ !hasFilters() || !state.reportData.formattedFilters || !state.reportData.formattedFilters.length }">
                 <p>{ window.gettext("Filters applied") }</p>
                 <div class="d-flex">
                     <div class="d-flex flex-column filter" each="{ filter in state.reportData.formattedFilters }">
@@ -130,7 +129,7 @@
                 </div>
             </div>
 
-            <div if="{ state.reportData.total }" class="d-flex flex-column total" hidden="{ !hasTotal() }">
+            <div if="{ state.reportData.total && hasTotal() }" class="d-flex flex-column total">
                 <p>{ window.gettext("Total") }</p>
                 <h1>{ state.reportData.total }</h1>
             </div>

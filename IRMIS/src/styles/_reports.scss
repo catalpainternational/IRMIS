@@ -84,6 +84,10 @@ report_dashboard, report_assets, report_contracts {
             border-bottom: 1px solid $darker-gray;
             padding-bottom: 20px;
             margin-bottom: 20px;
+
+            input[type="date"], input[type="number"], select {
+                height: 31px;
+            }
         }
 
         .report-content {
@@ -120,6 +124,10 @@ report_assets, report_contracts {
             background-size: 16px 10px;
             height: 25px;
             width: 25px;
+        }
+
+        h1 {
+            margin-left: 15px;
         }
     }
 
@@ -193,8 +201,16 @@ report_dashboard {
         padding: 25px 25px 20px 60px;
     }
 
-    .total-length h1.highlight {
-        color: #03A59A;
-        font-size: 36px;
+    .total-length {
+        margin-right: 30px;
+
+        &:last-child {
+            margin-right: 0;
+        }
+
+        h1.highlight {
+            color: #03A59A;
+            font-size: 36px;
+        }
     }
 }

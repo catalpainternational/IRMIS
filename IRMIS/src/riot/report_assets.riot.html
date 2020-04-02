@@ -132,11 +132,11 @@
                 </div>
             </div>
 
-            <div if="{state.reportData.totalLength && hasTotalLength()}" class="d-flex flex-column total-length" hidden="{ !hasTotalLength() }">
+            <div if="{state.reportData.totalLength && hasTotalLength()}" class="d-flex flex-column total-length">
                 <p>{ window.gettext("Total Length") }</p>
                 <h1>{ (state.reportData.totalLength / 1000).toFixed(2) } km</h1>
             </div>
-            <div if="{state.reportData.totalLength && hasTotalCount()}" class="d-flex flex-column total-length" hidden="{ !hasTotalCount() }">
+            <div if="{state.reportData.totalLength && hasTotalCount()}" class="d-flex flex-column total-length">
                 <p>{ window.gettext("Total Count") }</p>
                 <h1>{ state.reportData.totalLength.toFixed(0) } Structures</h1>
             </div>
