@@ -1543,6 +1543,14 @@ class RoughnessSurvey(CsvData):
 
     objects = RoughnessManager()
 
+    @staticmethod
+    def refresh_aggregates():
+        """
+        Refresh the "aggregate roughness" surveys
+        from the input CSV files
+        """
+        run_script("aggregate_roughness.sql")
+
 
 class PlanQuerySet(models.QuerySet):
     def to_protobuf(self):
@@ -1815,9 +1823,9 @@ class BreakpointRelationships(models.Model):
     asset_code = models.TextField()
     key = models.TextField()
 
-    survey_first = models.IntegerField()  # Weak reference to Survey
+    survey_first_id = models.IntegerField(null=True)  # Weak reference to Survey
 
-    survey_second = models.IntegerField()  # Weak reference to Survey
+    survey_second_id = models.IntegerField(null=True)  # Weak reference to Survey
 
     survey_first_range = DecimalRangeField()
     survey_second_range = DecimalRangeField()

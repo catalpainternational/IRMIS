@@ -373,18 +373,6 @@ class RoughnessManager(models.Manager):
         model = apps.get_model("assets", "survey")
         model.objects.filter(values__has_key="source_roughness").delete()
 
-    def make_aggregate_roughness(self):
-        """
-        For performance reasons, it's "nice" and probably essential
-        from a UX point of view to consolidate roughness before it hits the assets_survey
-        table
-        """
-        aggregation_script = resources.read_text(sql_scripts, "aggregate_roughness.sql")
-        clear_breakpoints = resources.read_text(sql_scripts, "clear_breakpoints.sql")
-        with connection.cursor() as cur:
-            cur.execute(clear_breakpoints)
-            cur.execute(aggregation_script)
-
 
 def survey_map():
 
