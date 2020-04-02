@@ -7,18 +7,26 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('contracts', '0035_expand_socialsafeguarddata_model'),
+        ("contracts", "0035_expand_socialsafeguarddata_model"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='contractamendment',
-            name='contract',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='amendments', to='contracts.Contract'),
+            model_name="contractamendment",
+            name="contract",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="amendments",
+                to="contracts.Contract",
+            ),
         ),
         migrations.AlterField(
-            model_name='contractbudget',
-            name='contract',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='budgets', to='contracts.Contract'),
+            model_name="contractbudget",
+            name="contract",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="budgets",
+                to="contracts.Contract",
+            ),
         ),
     ]

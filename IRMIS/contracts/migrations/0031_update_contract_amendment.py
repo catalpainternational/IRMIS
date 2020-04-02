@@ -7,51 +7,60 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('contracts', '0030_remove_contractamendment_contract_total_value'),
+        ("contracts", "0030_remove_contractamendment_contract_total_value"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='contractamendment',
-            name='description',
-        ),
-        migrations.RemoveField(
-            model_name='contractamendment',
-            name='duration',
-        ),
-        migrations.RemoveField(
-            model_name='contractamendment',
-            name='start_date',
-        ),
+        migrations.RemoveField(model_name="contractamendment", name="description",),
+        migrations.RemoveField(model_name="contractamendment", name="duration",),
+        migrations.RemoveField(model_name="contractamendment", name="start_date",),
         migrations.AddField(
-            model_name='contract',
-            name='amendment_description',
+            model_name="contract",
+            name="amendment_description",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='contract',
-            name='amendment_duration',
+            model_name="contract",
+            name="amendment_duration",
             field=models.IntegerField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='contract',
-            name='amendment_start_date',
+            model_name="contract",
+            name="amendment_start_date",
             field=models.DateField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='contractamendment',
-            name='value',
+            model_name="contractamendment",
+            name="value",
             field=models.DecimalField(decimal_places=4, default=0, max_digits=14),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='contractamendment',
-            name='year',
-            field=models.IntegerField(blank=True, choices=[(2010, 2010), (2011, 2011), (2012, 2012), (2013, 2013), (2014, 2014), (2015, 2015), (2016, 2016), (2017, 2017), (2018, 2018), (2019, 2019), (2020, 2020)], null=True),
+            model_name="contractamendment",
+            name="year",
+            field=models.IntegerField(
+                blank=True,
+                choices=[
+                    (2010, 2010),
+                    (2011, 2011),
+                    (2012, 2012),
+                    (2013, 2013),
+                    (2014, 2014),
+                    (2015, 2015),
+                    (2016, 2016),
+                    (2017, 2017),
+                    (2018, 2018),
+                    (2019, 2019),
+                    (2020, 2020),
+                ],
+                null=True,
+            ),
         ),
         migrations.AlterField(
-            model_name='contractamendment',
-            name='contract',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='contracts.Contract'),
+            model_name="contractamendment",
+            name="contract",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="contracts.Contract"
+            ),
         ),
     ]

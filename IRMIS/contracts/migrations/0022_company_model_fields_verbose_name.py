@@ -6,38 +6,58 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('contracts', '0021_tender_model_fields_verbose_name'),
+        ("contracts", "0021_tender_model_fields_verbose_name"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='company',
-            name='iban',
-            field=models.CharField(blank=True, max_length=256, null=True, verbose_name='Bank Account Number'),
+            model_name="company",
+            name="iban",
+            field=models.CharField(
+                blank=True,
+                max_length=256,
+                null=True,
+                verbose_name="Bank Account Number",
+            ),
         ),
         migrations.AlterField(
-            model_name='company',
-            name='name',
-            field=models.CharField(max_length=256, verbose_name='Company Name'),
+            model_name="company",
+            name="name",
+            field=models.CharField(max_length=256, verbose_name="Company Name"),
         ),
         migrations.AlterField(
-            model_name='company',
-            name='rep_email',
-            field=models.EmailField(blank=True, max_length=254, null=True, verbose_name='Representative email'),
+            model_name="company",
+            name="rep_email",
+            field=models.EmailField(
+                blank=True,
+                max_length=254,
+                null=True,
+                verbose_name="Representative email",
+            ),
         ),
         migrations.AlterField(
-            model_name='company',
-            name='rep_name',
-            field=models.CharField(blank=True, max_length=256, null=True, verbose_name='Representative name'),
+            model_name="company",
+            name="rep_name",
+            field=models.CharField(
+                blank=True,
+                max_length=256,
+                null=True,
+                verbose_name="Representative name",
+            ),
         ),
         migrations.AlterField(
-            model_name='company',
-            name='rep_phone',
-            field=models.CharField(blank=True, max_length=256, null=True, verbose_name='Representative phone'),
+            model_name="company",
+            name="rep_phone",
+            field=models.CharField(
+                blank=True,
+                max_length=256,
+                null=True,
+                verbose_name="Representative phone",
+            ),
         ),
         migrations.AlterField(
-            model_name='company',
-            name='woman_led',
-            field=models.NullBooleanField(verbose_name='Woman-Led Company'),
+            model_name="company",
+            name="woman_led",
+            field=models.NullBooleanField(verbose_name="Woman-Led Company"),
         ),
     ]

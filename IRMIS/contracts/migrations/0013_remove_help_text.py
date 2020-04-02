@@ -6,18 +6,30 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('contracts', '0012_auto_20200221_0107'),
+        ("contracts", "0012_auto_20200221_0107"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='projectasset',
-            name='asset_end_chainage',
-            field=models.DecimalField(blank=True, decimal_places=5, max_digits=12, null=True, verbose_name='End Chainage'),
+            model_name="projectasset",
+            name="asset_end_chainage",
+            field=models.DecimalField(
+                blank=True,
+                decimal_places=5,
+                max_digits=12,
+                null=True,
+                verbose_name="End Chainage",
+            ),
         ),
         migrations.AlterField(
-            model_name='projectasset',
-            name='asset_start_chainage',
-            field=models.DecimalField(blank=True, decimal_places=5, max_digits=12, null=True, verbose_name='Start Chainage'),
+            model_name="projectasset",
+            name="asset_start_chainage",
+            field=models.DecimalField(
+                blank=True,
+                decimal_places=5,
+                max_digits=12,
+                null=True,
+                verbose_name="Start Chainage",
+            ),
         ),
     ]
