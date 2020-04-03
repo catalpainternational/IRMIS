@@ -1813,6 +1813,21 @@ class AssetSurveyBreakpoint(models.Model):
 class BreakpointRelationships(models.Model):
     """
     Meta data on how two surveys relate spatially / temporally
+
+    This class also acts as a namespce for the generation of reports 
+    derived from the assets_survey table
+
+    To use, first refresh
+
+    >>> BreakpointRelationships.refresh()
+
+    Then tests
+
+road_codes = ('A01', 'A02', 'A03', 'C04')
+survey_params = ('municipality', 'aggregate_roughness', 'asset_class', 'terrain_class')
+
+BreakpointRelationship.survey_check_results(road_codes, survey_params)
+
     """
 
     class Meta:
@@ -1865,10 +1880,8 @@ class BreakpointRelationships(models.Model):
         run_script("04_excel_connection.sql")
 
     @staticmethod
-    def _survey_check_result(
-        asset_codes: Iterable[str],
-        survey_params: Iterable[str],
-        function="assets_surveys_recursion",
+    def survey_check_results(
+        asset_codes: Iterable[str], survey_params: Iterable[str],
     ):
         """
         This function is here to track/debug the result of the
@@ -1879,12 +1892,30 @@ class BreakpointRelationships(models.Model):
             assets_surveys_group,
             assets_crosstab_generator
         """
-        sql = "SELECT * FROM {}(ARRAY[{}], ARRAY[{}])".format(
-            function,
-            ", ".join(["%s"] * len(asset_codes)),
-            ", ".join(["%s"] * len(survey_params)),
+        tuples = []
+
+        for fn in (
+            "assets_surveys_recursion",
+            "assets_surveys_group",
+            "assets_crosstab_generator",
+        ):
+            sql = "SELECT * FROM {}(ARRAY[{}], ARRAY[{}])".format(
+                fn,
+                ", ".join(["%s"] * len(asset_codes)),
+                ", ".join(["%s"] * len(survey_params)),
+            )
+            tuples.append(namedtuple_query(sql, [*asset_codes, *survey_params]))
+
+        tuples.append(
+            namedtuple_query(
+                "SELECT * FROM assets_excel_generator(ARRAY[{}])".format(
+                    ", ".join(["%s"] * len(asset_codes))
+                ),
+                asset_codes,
+            ),
         )
-        return namedtuple_query(sql, [*asset_codes, *survey_params])
+
+        return tuples
 
     @staticmethod
     def excel_report(asset_codes: Iterable[str]):

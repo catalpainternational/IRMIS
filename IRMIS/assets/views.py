@@ -1744,31 +1744,12 @@ class BreakpointRelationshipsReport(TemplateView):
     Returns the "raw" content of the BreakpointRelationships.survey_report function
     """
 
-    template_name = "assets/named_tuple_table.html"
+    template_name = "assets/multiple_tuples_table.html"
 
     def get_context_data(self, *args, **kwargs):
-
-        if "asset_code" in self.request.GET:
-            asset_code = self.request.GET.get("asset_code")
-        elif "asset_code[]" in self.request.GET:
-            asset_code = self.request.GET.get("asset_code[]").split(",")
-        else:
-            raise AssertionError("Required: asset_code or asset_code[]")
-
-        if "key" in self.request.GET:
-            key = self.request.GET.get("key")
-        elif "key[]" in self.request.GET:
-            key = self.request.GET.get("key[]").split(",")
-        else:
-            raise AssertionError("Required: key or key[]")
-
-        query, columnnames = BreakpointRelationships.survey_report(
-            asset_code=asset_code, key=key,
-        )
-
-        nt_result = namedtuple("Result", columnnames)
-
         context = super().get_context_data(*args, **kwargs)
-        context["objects"] = [nt_result(*row) for row in query]
-        context["fields"] = nt_result._fields
+        context["tuples"] = BreakpointRelationships.survey_check_results(
+            asset_codes=self.request.GET.get("asset_codes").split(","),
+            survey_params=self.request.GET.get("survey_params").split(","),
+        )
         return context

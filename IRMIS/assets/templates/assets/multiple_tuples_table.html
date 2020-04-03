@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<body>
+    {% for objects, fields in tuples %}
+    <table id="data">
+        <thead>
+            <tr> {% for field in fields %}
+                <th>{{field}}</th> {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for o in objects %}
+            <tr>
+                {% for value in o %}
+                <td>{{value}}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    {% endfor %}
+    </table>
+</body>
