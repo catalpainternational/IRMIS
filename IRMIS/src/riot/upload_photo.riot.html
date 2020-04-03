@@ -43,6 +43,7 @@
                     method: "post",
                     headers: {'X-CSRFToken': document.cookie.replace(/(?:(?:^|.*;\s*)csrftoken\s*\=\s*([^;]*).*$)|^.*$/, "$1")},
                     params: {fk_link: props.fkLink},
+                    clickable: `#dropzone-${ props.photoId } > div.cloud-box`,
                     maxFiles: 1,
                     maxFilesize: 0.5, // MB
                     acceptedFiles: '.jpeg,.jpg,.gif,.png',
