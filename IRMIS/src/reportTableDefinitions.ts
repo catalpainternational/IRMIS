@@ -95,6 +95,13 @@ export const reportColumns: { [name: string]: any } = {
                 : data;
         },
     },
+    number: {
+        title: (window as any).gettext("Number of structures"),
+        data: "distance",
+        defaultContent: "",
+        className: "text-right",
+        orderable: false,
+    },
     percent: {
         title: (window as any).gettext("Percentages (%)"),
         data: "percent",
@@ -193,6 +200,7 @@ export const reportColumnSets: { [name: string]: string[] } = {
     technical_class: [reportColumns.title, reportColumns.distance, reportColumns.percent],
     terrain_class: [reportColumns.title, reportColumns.distance, reportColumns.percent],
     structure_asset_condition: [reportColumns.title, reportColumns.count, reportColumns.percent],
+    structure_asset_class: [reportColumns.title, reportColumns.number, reportColumns.percent],
 };
 
 /** The definitions of the different asset reports
@@ -417,7 +425,6 @@ export const reportAssetsContent: { [name: string]: any } = {
         },
         visibleFilters: {
             municipality: true,
-            assetCondition: true,
             assetType: true,
         },
         reportElements: {
