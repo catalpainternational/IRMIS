@@ -411,6 +411,11 @@ def import_csv(management_command, csv_folder):
                     )
                     continue
                 except Road.MultipleObjectsReturned:
+                    management_command.stderr.write(
+                        management_command.style.NOTICE(
+                            "Ignoring row - multiple roads found for {}".format(filters)
+                        )
+                    )
                     continue
 
                 populate_from_csv(road, row)
