@@ -1,7 +1,4 @@
 <photos_details_box>
-    <template if="{ !state.errors.length && !state.currentPhotosData }">
-        <p class="small">{ window.gettext("Loading photos...") }</p>
-    </template>
     <template if="{ !state.hidden }">
         <template if="{ state.errors.length }">
             <p class="small">{ window.gettext(state.errors[0]) }</p>
