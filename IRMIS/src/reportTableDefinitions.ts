@@ -860,6 +860,7 @@ export const reportContractsContent: { [name: string]: any } = {
         noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed social safeguard information. You can use filters to generate a customized report"),
         noReportData: (window as any).gettext("Sorry, data for social safeguard is not available yet"),
         visibleFilters: {
+            contractCode: true,
             fromDate: true,
             toDate: true,
         },

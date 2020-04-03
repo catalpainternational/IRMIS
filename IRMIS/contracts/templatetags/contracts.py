@@ -22,7 +22,7 @@ def get_contract_schema():
         "program": {},
         "funding_source": {},
         "donor": {},
-        "contract": {},
+        "contract_code": {},
     }
 
     contract_schema["type_of_work"].update(
@@ -39,8 +39,12 @@ def get_contract_schema():
         {"options": list(ProjectDonor.objects.all().values())}
     )
 
-    contract_schema["contract"].update(
-        {"options": list(Contract.objects.all().values())}
+    contract_schema["contract_code"].update(
+        {
+            "options": list(
+                Contract.objects.all().distinct("contract_code").values("contract_code")
+            )
+        }
     )
 
     return contract_schema

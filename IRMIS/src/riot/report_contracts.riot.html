@@ -58,6 +58,13 @@
                             </option>
                         </select>
                     </div>
+                    <div if="{ reportContractsContent().visibleFilters.contractCode }" class="options">
+                        <select id="contract_code_select2" multiple="true">
+                            <option each="{ contract in window.contract_schema.contract_code.options }" value="{ contract.contract_code }">
+                                { contract.contract_code }
+                            </option>
+                        </select>
+                    </div>
                     <div if="{ reportContractsContent().visibleFilters.year }" class="options">
                         <select class="{ state.reportYear ? '' : 'inactive' } form-control form-control-sm">
                             <option value="year">{ window.gettext('Year') }</option>
@@ -226,12 +233,14 @@
                     { selectId: "program_select2", placeHolder: window.gettext("Program"), dataIn: "reportProgram" },
                     { selectId: "funding_source_select2", placeHolder: window.gettext("Funding Source"), dataIn: "reportFundingSource" },
                     { selectId: "donor_select2", placeHolder: window.gettext("Donor"), dataIn: "reportDonor" },
+                    { selectId: "contract_code_select2", placeHolder: "Contract code", dataIn: "reportContractCode", isSingle: true },
                 ],
                 reportAssetClass: [],
                 reportTypeOfWork: [],
                 reportProgram: [],
                 reportFundingSource: [],
                 reportDonor: [],
+                reportContractCode: null,
                 reportYear: null,
                 reportQuarter: null,
                 reportMonth: null,
