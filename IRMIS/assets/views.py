@@ -1725,7 +1725,7 @@ class ExcelDataSource(TemplateView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context["objects"], context["fields"] = BreakpointRelationships.excel_report(
-            asset_codes=self.request.GET.get("asset_code[]").split(",")
+            asset_codes=self.request.GET.get("asset_codes").split(",")
         )
         return context
 
@@ -1734,7 +1734,7 @@ class SurveySource(ExcelDataSource):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context["objects"], context["fields"] = BreakpointRelationships.excel_report(
-            asset_codes=self.request.GET.get("asset_code[]").split(",")
+            asset_codes=self.request.GET.get("asset_codes").split(",")
         )
         return context
 
