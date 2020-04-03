@@ -6,7 +6,8 @@ from reversion.models import Version
 from datetime import datetime
 from collections import Counter, defaultdict
 import pytz
-
+import importlib_resources as resources
+from .models import sql_scripts
 from django.db import connection
 from django.contrib.auth import get_user_model
 from django.contrib.gis.db import models
@@ -1711,7 +1712,7 @@ class ExcelDataSource(TemplateView):
     Connection endpoint for an .iqy file generating an HTML table
     """
 
-    template_name = "assets/remote_excel_table.html"
+    template_name = "assets/named_tuple_table.html"
 
     def post(self, *args, **kwargs):
         # raise AssertionError('Check your username and password')
@@ -1722,83 +1723,19 @@ class ExcelDataSource(TemplateView):
         return super().get(*args, **kwargs)
 
     def get_context_data(self, *args, **kwargs):
-        headers = [
-            "id",
-            "asset_id",
-            "asset_code",
-            "road_id",
-            "road_code",
-            # "user",
-            "date_surveyed",
-            # "date_created",
-            # "date_updated",
-            "chainage_start",
-            "chainage_end",
-            "source",
-            "values__roughness",
-        ]
-        # headers = "id,date_created,link_code,road_code,surface_type".split(",")
-        data = list(Survey.objects.values_list(*headers))
         context = super().get_context_data(*args, **kwargs)
-        context["data"] = {"headers": headers, "data": data}
+        context["objects"], context["fields"] = BreakpointRelationships.excel_report(
+            asset_codes=self.request.GET.get("asset_code[]").split(",")
+        )
         return context
 
 
-class SurveyExcelDataSource(TemplateView):
-
-    template_name = "assets/remote_excel_table.html"
-
-    awesome_template = """
-    WITH r AS (
-        SELECT 
-            assets_survey.id,
-            numrange(chainage_start, chainage_end) chainagerange,
-            chainage_start,
-            chainage_end,
-            road_code,
-            values -> %s AS val
-            FROM public.assets_survey 
-            WHERE values ? %s
-            AND road_code = %s
-            AND chainage_start < chainage_end
-            ORDER BY chainage_start ASC
-        ), b AS (
-        SELECT *, 
-            -- Hey, are you the next one in the link?
-            -- If you are, I'll be a NULL
-            -- This value is Truthy when the end chainage is NOT included in the range of the next chainage.
-            lag(chainage_end) OVER (ORDER BY chainagerange) < chainage_start OR NULL AS step,
-            -- Hey, are you still the same value?
-            -- If you are, I'll be a NULL
-            COALESCE(
-                lag(val) OVER (ORDER BY chainagerange) != val OR NULL
-                -- Add a few more "lags" here for more properties to group together?
-            ) AS val_changes
-        FROM   r
-        ), c AS (
-        SELECT *, 
-            count(step OR val_changes) OVER (ORDER BY chainagerange) AS grp
-            FROM   b
-        )
-        SELECT 
-            -- numrange(min(chainage_start), max(chainage_end)), 
-            -- grp,
-            val,
-            road_code,
-            min(chainage_start) chainage_start,
-            max(chainage_end) chainage_end
-        FROM c GROUP BY grp, val, road_code ORDER BY chainage_start;
-        """  # , [kwargs.val, kwargs.val, kwargs.road_code]
-
+class SurveySource(ExcelDataSource):
     def get_context_data(self, *args, **kwargs):
-        query = self.awesome_template
-        road_code = self.request.GET.get("road_code") or "A01"
-        attribute = self.request.GET.get("val") or "roughness"
-        with connection.cursor() as c:
-            c.execute(query, [attribute, attribute, road_code])
-            objects = namedtuplefetchall(c)
         context = super().get_context_data(*args, **kwargs)
-        context["objects"] = objects
+        context["objects"], context["fields"] = BreakpointRelationships.excel_report(
+            asset_codes=self.request.GET.get("asset_code[]").split(",")
+        )
         return context
 
 

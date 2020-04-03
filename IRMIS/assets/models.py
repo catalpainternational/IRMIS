@@ -26,6 +26,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 import reversion
+from collections import namedtuple
 
 from protobuf.photo_pb2 import Photos as ProtoPhotos
 from protobuf.roads_pb2 import Roads as ProtoRoads, Projection
@@ -42,9 +43,11 @@ from csv_data_sources.models import CsvData
 from .managers import RoughnessManager
 
 
-def run_script(script_name: str):
+def run_script(script_name: str, preamble: str = ""):
     logger.info("Running script %s", script_name)
     script_content = resources.read_text(sql_scripts, script_name)
+    if preamble != "":
+        script_content = "%s%s" % (preamble, script_content)
     with connection.cursor() as cur:
         try:
             cur.execute(script_content)
@@ -60,6 +63,18 @@ def no_spaces(value):
         raise ValidationError(
             _("%(value)s should not contain spaces"), params={"value": value}
         )
+
+
+def namedtuple_query(sql, params=None):
+    """
+    Return the executed SQL as a NamedTuple
+    """
+
+    with connection.cursor() as cur:
+        cur.execute(sql, params)
+        nt_result = namedtuple("Result", [column.name for column in cur.description])
+        objects = [nt_result(*row) for row in cur.fetchall()]
+        return objects, nt_result._fields
 
 
 class RoadStatus(models.Model):
@@ -1844,27 +1859,36 @@ class BreakpointRelationships(models.Model):
         run_script("insert_into_breakpointrelationships.sql")
         # Drop the "temporary" table content
         AssetSurveyBreakpoint.truncate()
+        run_script("01_surveys_recursion.sql")
+        run_script("02_surveys_group.sql")
+        run_script("03_crosstab_generator.sql")
+        run_script("04_excel_connection.sql")
 
     @staticmethod
-    def survey_report(
-        asset_code: Union[str, Iterable[str]],
-        key: Union[str, Iterable[str]],
-        prepare=True,  # You might set "prepare=False" if running this multiple times
+    def _survey_check_result(
+        asset_codes: Iterable[str],
+        survey_params: Iterable[str],
+        function="assets_surveys_recursion",
     ):
-        # Convert to array
-        def pgarr(pythonarr: Iterable) -> str:
-            return "ARRAY[%s]" % (",".join(["'%s'" % a for a in pythonarr]))
+        """
+        This function is here to track/debug the result of the
+        survey amalgamation.
 
-        if prepare:
-            run_script("prepare_survey_report.sql")
+        Valid values for 'function' in order of processing are
+            assets_surveys_recursion,
+            assets_surveys_group,
+            assets_crosstab_generator
+        """
+        sql = "SELECT * FROM {}(ARRAY[{}], ARRAY[{}])".format(
+            function,
+            ", ".join(["%s"] * len(asset_codes)),
+            ", ".join(["%s"] * len(survey_params)),
+        )
+        return namedtuple_query(sql, [*asset_codes, *survey_params])
 
-        # Comptible with the single-element URL
-        if isinstance(asset_code, str):
-            asset_code = [asset_code]
-        if isinstance(key, str):
-            key = [key]
-
-        sql = "EXECUTE survey_report(%s, %s)" % (pgarr(asset_code), pgarr(key))
-        with connection.cursor() as cur:
-            cur.execute(sql)
-            return cur.fetchall(), [column.name for column in cur.description]
+    @staticmethod
+    def excel_report(asset_codes: Iterable[str]):
+        sql = "SELECT * FROM assets_excel_generator(ARRAY[{}])".format(
+            ", ".join(["%s"] * len(asset_codes))
+        )
+        return namedtuple_query(sql, asset_codes)
