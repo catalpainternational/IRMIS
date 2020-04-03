@@ -410,6 +410,8 @@ def import_csv(management_command, csv_folder):
                         )
                     )
                     continue
+                except Road.MultipleObjectsReturned:
+                    continue
 
                 populate_from_csv(road, row)
 
