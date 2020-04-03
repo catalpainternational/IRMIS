@@ -1,13 +1,14 @@
 upload_photo {
     .cloud-box {
-        margin: 70px 85px 20px 85px;
+        border: 1px solid $light-gray;
+        padding: 70px 85px 20px 85px;
         font-size: 12px;
         line-height: 14px;
         align-items: center;
         display: flex;
         flex-direction: column;
         font-weight: 600;
-        z-index: -10;
+        cursor: pointer;
 
         div.upload-instructions {
             color: $green;

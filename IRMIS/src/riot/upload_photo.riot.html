@@ -4,7 +4,7 @@
             <span class="image upload-cloud"></span>
             <div class="upload-instructions">{ window.gettext("Click to upload") }</div>
             <div>{ window.gettext("Maximum file size 500KB") }</div>
-            <div>{ window.gettext("Accepted file formats: JPEG, GIF, PNG") }</div>
+            <div class="text-center">{ window.gettext("Accepted file formats: JPEG, GIF, PNG") }</div>
         </div>
     </form>
     <div if="{ state.photo.url && state.photo.url != '' && state.photo.url != state.basePhoto.url }" class="photo-management-area">
@@ -43,6 +43,7 @@
                     method: "post",
                     headers: {'X-CSRFToken': document.cookie.replace(/(?:(?:^|.*;\s*)csrftoken\s*\=\s*([^;]*).*$)|^.*$/, "$1")},
                     params: {fk_link: props.fkLink},
+                    clickable: `#dropzone-${ props.photoId } > div.cloud-box`,
                     maxFiles: 1,
                     maxFilesize: 0.5, // MB
                     acceptedFiles: '.jpeg,.jpg,.gif,.png',
