@@ -1,47 +1,35 @@
 import "datatables.net-bs4";
 import $ from "jquery";
 
-const projectsTable = $("#project-list-table");
-const projectsColumnDefs = window.canChangeContractsProjects ? [{ orderable: false, targets: 6 }] : [];
-const tendersTable = $("#tender-list-table");
-const tendersColumnDefs = window.canChangeContractsTenders ? [{ orderable: false, targets: 4 }] : [];
-const contractsTable = $("#contract-list-table");
-const contractsColumnDefs = window.canChangeContracts ? [{ orderable: false, targets: 5 }] : [];
-const companiesTable = $("#company-list-table");
-const companiesColumnDefs = window.canChangeContractsCompanies ? [{ orderable: false, targets: 3 }] : [];
-const inspectionsTable = $("#contract-inspection-list-table");
-const inspectionsColumnDefs = [{ orderable: false, targets: 4 }];
-const inspectionsViewTable = $("#contract-inspection-view-list-table");
-const inspectionsPrintTable = $("#contract-inspection-print-list-table");
-const paymentsTable = $("#contract-payment-list-table");
-const paymentsColumnDefs = [{ orderable: false, targets: 5 }];
-const paymentsViewTable = $("#contract-payment-view-list-table");
-const paymentsPrintTable = $("#contract-payment-print-list-table");
-const socialSafeguardTable = $("#contract-social-safeguard-list-table");
-const socialSafeguardColumnDefs = [{ orderable: false, targets: 5 }];
-const socialSafeguardViewTable = $("#contract-social-safeguard-view-list-table");
-const socialSafeguardPrintTable = $("#contract-social-safeguard-print-list-table");
+if (window.canChangeProjects) initializeProjectsTable($("#project-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
+else initializeProjectsTable($("#project-list-table"), [], [[1, 'asc']]);
 
-initializeProjectsTable(projectsTable, projectsColumnDefs);
-initializeProjectsTable(tendersTable, tendersColumnDefs);
-initializeProjectsTable(contractsTable, contractsColumnDefs);
-initializeProjectsTable(companiesTable, companiesColumnDefs);
-initializeProjectsTable(inspectionsTable, inspectionsColumnDefs);
-initializeProjectsTable(inspectionsViewTable, []);
-initializeProjectsTable(paymentsTable, paymentsColumnDefs);
-initializeProjectsTable(paymentsViewTable, []);
-initializeProjectsTable(socialSafeguardTable, socialSafeguardColumnDefs);
-initializeProjectsTable(socialSafeguardViewTable, []);
+if (window.canChangeTenders) initializeProjectsTable($("#tender-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
+else initializeProjectsTable($("#tender-list-table"), [], [[1, 'asc']]);
 
-initializeProjectsPrintableTable(inspectionsPrintTable, []);
-initializeProjectsPrintableTable(paymentsPrintTable, []);
-initializeProjectsPrintableTable(socialSafeguardPrintTable, []);
+if (window.canChangeContracts) initializeProjectsTable($("#contract-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
+else initializeProjectsTable($("#contract-list-table"), [], [[1, 'asc']]);
 
-function initializeProjectsTable(table, columnDefs) {
+if (window.canChangeCompanies) initializeProjectsTable($("#company-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
+else initializeProjectsTable($("#company-list-table"), [], [[1, 'asc']]);
+
+initializeProjectsTable($("#contract-inspection-list-table"), [{ orderable: false, targets: 4 }], [[0, 'asc']]);
+initializeProjectsTable($("#contract-inspection-view-list-table"), [], [[0, 'asc']]);
+initializeProjectsTable($("#contract-payment-list-table"), [{ orderable: false, targets: 5 }], [[0, 'asc']]);
+initializeProjectsTable($("#contract-payment-view-list-table"), [], [[0, 'asc']]);
+initializeProjectsTable($("#contract-social-safeguard-list-table"), [{ orderable: false, targets: 5 }], [[0, 'asc']]);
+initializeProjectsTable($("#contract-social-safeguard-view-list-table"), [], [[0, 'asc']]);
+
+initializeProjectsPrintableTable($("#contract-inspection-print-list-table"), []);
+initializeProjectsPrintableTable($("#contract-payment-print-list-table"), []);
+initializeProjectsPrintableTable($("#contract-social-safeguard-print-list-table"), []);
+
+function initializeProjectsTable(table, columnDefs, order) {
     if (table.length) {
         table.DataTable({
             dom: "<'row'<'col-12'>><'row'<'col-sm-12'tr>><'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>", // https://datatables.net/reference/option/dom#Styling
             columnDefs: columnDefs,
+            order: order,
         });
     }
 }

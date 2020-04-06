@@ -48,11 +48,11 @@
             {% endif %}
 
             {% if perms.contracts.change_project or perms.contracts.delete_project %}
-            window.canChangeContractsProjects = true;
+            window.canChangeProjects = true;
             {% endif %}
 
             {% if perms.contracts.change_tender or perms.contracts.delete_tender %}
-            window.canChangeContractsTenders = true;
+            window.canChangeTenders = true;
             {% endif %}
 
             {% if perms.contracts.change_contract or perms.contracts.delete_contract %}
@@ -60,7 +60,7 @@
             {% endif %}
 
             {% if perms.contracts.change_company or perms.contracts.delete_company %}
-            window.canChangeContractsCompanies = true;
+            window.canChangeCompanies = true;
             {% endif %}
 
             {% if user.get_full_name %}

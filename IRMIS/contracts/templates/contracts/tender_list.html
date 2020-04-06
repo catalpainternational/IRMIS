@@ -16,26 +16,18 @@
     <table id="tender-list-table" class="contracts-profile-table d-block table table-hover">
         <thead>
             <tr>
+                {% if perms.contracts.change_tender or perms.contracts.delete_tender %}
+                <th>{% trans "Edit" %}</th>
+                {% endif %}
                 <th>{% trans "Tender Code" %}</th>
                 <th>{% trans "Number of Projects" %}</th>
                 <th>{% trans "Project(s) name" %}</th>
                 <th>{% trans "Status" %}</th>
-                {% if perms.contracts.change_tender or perms.contracts.delete_tender %}
-                <th></th>
-                {% endif %}
             </tr>
         </thead>
         <tbody>
             {% for tender in tender_list %}
             <tr>
-                <td><a href="{% url 'contract-tender-detail' tender.code %}">{{ tender.code }}</a></td>
-                <td>{{ tender.projects.count }}</td>
-                <td>
-                    {% for project in tender.projects.all %}
-                    <div>{{ project.name }}</div>
-                    {% endfor %}
-                </td>
-                <td>{{ tender.status }}</td>
                 {% if perms.contracts.change_tender or perms.contracts.delete_tender %}
                 <td class="text-center">
                     {% if perms.contracts.change_tender and not perms.contracts.delete_tender %}
@@ -49,6 +41,14 @@
                     {% endif %}
                 </td>
                 {% endif %}
+                <td><a href="{% url 'contract-tender-detail' tender.code %}">{{ tender.code }}</a></td>
+                <td>{{ tender.projects.count }}</td>
+                <td>
+                    {% for project in tender.projects.all %}
+                    <div>{{ project.name }}</div>
+                    {% endfor %}
+                </td>
+                <td>{{ tender.status }}</td>
             </tr>
             {% endfor %}
         </tbody>

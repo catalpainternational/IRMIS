@@ -137,10 +137,20 @@ table.contracts-profile-table {
     thead tr th {
         border-bottom-width: 1px;
         border-top: none;
+        width: 100%;
+
+        &:first-child {
+            width: 60px;
+        }
     }
 
     tbody tr td {
         height: 55px;
+        width: 100%;
+
+        &:first-child {
+            width: 60px;
+        }
 
         span {
             border-right: 1px solid $light-gray;
