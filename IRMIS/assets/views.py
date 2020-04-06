@@ -25,7 +25,7 @@ from django.views.generic.base import TemplateView
 from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Value, CharField, OuterRef, Prefetch, Subquery
+from django.db.models import Value, CharField, OuterRef, Prefetch, Q, Subquery
 from django.db.models.functions import Cast, Substr
 
 from rest_framework_jwt.settings import api_settings
@@ -337,7 +337,13 @@ def protobuf_road_set(request, chunk_name=None):
 
     roads = Road.objects.all()
     if chunk_name:
-        roads = roads.filter(asset_class=chunk_name)
+        name_parts = chunk_name.split("_")
+        roads = roads.filter(asset_class=name_parts[0])
+        if len(name_parts) > 1:
+            rc = name_parts[1]
+            roads = roads.filter(
+                Q(road_code__startswith=rc) | Q(road_code__startswith=rc.upper())
+            )
 
     roads_protobuf = roads.to_protobuf()
 
