@@ -29,7 +29,6 @@ getRoadsMetadataChunks()
         });
         // for each chunk, download the roads
         prepared_chunks.forEach((chunk) => {
-            console.log(JSON.stringify(chunk));
             getRoadsMetadata(`${chunk.asset_class}_${chunk.asset_code_prefix}`)
                 .then((roadList) => {
                     // add the roads to the road manager
