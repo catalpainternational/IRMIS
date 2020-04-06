@@ -1725,7 +1725,7 @@ class ExcelDataSource(TemplateView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context["objects"], context["fields"] = BreakpointRelationships.excel_report(
-            asset_codes=self.request.GET.get("asset_codes").split(",")
+            asset_codes=self.request.GET.getlist("asset_code")
         )
         return context
 
@@ -1734,14 +1734,17 @@ class SurveySource(ExcelDataSource):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context["objects"], context["fields"] = BreakpointRelationships.excel_report(
-            asset_codes=self.request.GET.get("asset_codes").split(",")
+            asset_codes=self.request.GET.getlist("asset_code")
         )
         return context
 
 
 class BreakpointRelationshipsReport(TemplateView):
     """
-    Returns the "raw" content of the BreakpointRelationships.survey_report function
+    Returns three tables to illustrate the output of the SQL functions involved in 
+    creating the SurveySource `.iqy` files
+
+    These are developer-centred outputs. Not intended for public use.
     """
 
     template_name = "assets/multiple_tuples_table.html"
@@ -1749,7 +1752,7 @@ class BreakpointRelationshipsReport(TemplateView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context["tuples"] = BreakpointRelationships.survey_check_results(
-            asset_codes=self.request.GET.get("asset_codes").split(","),
-            survey_params=self.request.GET.get("survey_params").split(","),
+            asset_codes=self.request.GET.getlist("asset_code"),
+            survey_params=self.request.GET.getlist("survey_param"),
         )
         return context
