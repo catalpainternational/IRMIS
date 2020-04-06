@@ -84,7 +84,7 @@ export const reportColumns: { [name: string]: any } = {
         },
     },
     count: {
-        title: (window as any).gettext("Count"),
+        title: (window as any).gettext("Total"),
         data: "distance",
         defaultContent: "",
         className: "text-right",
@@ -94,6 +94,13 @@ export const reportColumns: { [name: string]: any } = {
                 ? data.toFixed(0)
                 : data;
         },
+    },
+    number: {
+        title: (window as any).gettext("Number of structures"),
+        data: "distance",
+        defaultContent: "",
+        className: "text-right",
+        orderable: false,
     },
     percent: {
         title: (window as any).gettext("Percentages (%)"),
@@ -193,6 +200,7 @@ export const reportColumnSets: { [name: string]: string[] } = {
     technical_class: [reportColumns.title, reportColumns.distance, reportColumns.percent],
     terrain_class: [reportColumns.title, reportColumns.distance, reportColumns.percent],
     structure_asset_condition: [reportColumns.title, reportColumns.count, reportColumns.percent],
+    structure_asset_class: [reportColumns.title, reportColumns.number, reportColumns.percent],
 };
 
 /** The definitions of the different asset reports
@@ -417,7 +425,6 @@ export const reportAssetsContent: { [name: string]: any } = {
         },
         visibleFilters: {
             municipality: true,
-            assetCondition: true,
             assetType: true,
         },
         reportElements: {
@@ -853,6 +860,7 @@ export const reportContractsContent: { [name: string]: any } = {
         noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed social safeguard information. You can use filters to generate a customized report"),
         noReportData: (window as any).gettext("Sorry, data for social safeguard is not available yet"),
         visibleFilters: {
+            contractCode: true,
             fromDate: true,
             toDate: true,
         },

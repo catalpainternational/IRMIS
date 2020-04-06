@@ -8,9 +8,28 @@ let filteredRoads = {};
 // Get the road metadata chunk details
 getRoadsMetadataChunks()
     .then((chunks) => {
-        // for each chunk, download the roads
+        const big_chunks = {};
         chunks.forEach((chunk) => {
-            getRoadsMetadata(chunk.asset_class)
+            big_chunks[chunk.asset_class] = big_chunks[chunk.asset_class] || {
+                asset_class: chunk.asset_class,
+                asset_code_prefix: "",
+                id__count: 0
+            };
+
+            big_chunks[chunk.asset_class].id__count += chunk.id__count;
+        });
+        let prepared_chunks = [];
+        Object.keys(big_chunks).forEach((asset_class) => {
+            if (big_chunks[asset_class].id__count < 1000) {
+                prepared_chunks.push(big_chunks[asset_class]);
+            } else {
+                const asset_class_chunks = chunks.filter((chunk) => chunk.asset_class === asset_class);
+                prepared_chunks = prepared_chunks.concat(asset_class_chunks);
+            }
+        });
+        // for each chunk, download the roads
+        prepared_chunks.forEach((chunk) => {
+            getRoadsMetadata(`${chunk.asset_class}_${chunk.asset_code_prefix}`)
                 .then((roadList) => {
                     // add the roads to the road manager
                     addRoadMetadata(roadList);

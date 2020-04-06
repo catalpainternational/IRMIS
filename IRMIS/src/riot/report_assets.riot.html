@@ -196,7 +196,7 @@
             <data_table hidden="{ !state.reportData.assetType || !hasDataTable(reportTableIds.structureClass) }"
                 class="report-table" paging="false" canexport showTotalCount
                 table_id="{reportTableIds.structureClass}" title="{ window.gettext('Asset Class') }"
-                columns="{columns.assetClass()}" columnSortOrder="{baseColumnSortOrder}">
+                columns="{columns.structureAssetClass()}" columnSortOrder="{baseColumnSortOrder}">
             </data_table>
             <data_table hidden="{ !state.reportData.assetCondition || !hasDataTable(reportTableIds.structureCondition) }"
                 class="report-table" paging="false" canexport showTotalCount
@@ -293,7 +293,7 @@
                     {selectId: "municipality_area_select2", placeHolder: "Municipality", dataIn: "reportMunicipality", filterName: "municipality"},
                     {selectId: "asset_class_select2", placeHolder: "Asset class", dataIn: "reportAssetClass", filterName: "asset_class"},
                     {selectId: "surface_type_select2", placeHolder: "Surface type", dataIn: "reportSurfaceType", filterName: "surface_type"},
-                    {selectId: "asset_condition_select2", placeHolder: "Surface condition", dataIn: "reportAssetCondition", filterName: "asset_condition"},
+                    {selectId: "asset_condition_select2", placeHolder: "Asset condition", dataIn: "reportAssetCondition", filterName: "asset_condition"},
                     {selectId: "asset_type_select2", placeHolder: "Structure form", dataIn: "reportAssetType", filterName: "asset_type"},
                     {selectId: "road_code_select2", placeHolder: "Road code", dataIn: "reportRoadCode", isSingle: true, filterName: "road_code"},
                 ],
@@ -338,6 +338,7 @@
                 technicalClass: () => SetTitleColumn("technical_class"),
                 terrainClass: () => SetTitleColumn("terrain_class"),
                 structureAssetCondition: () => SetTitleColumn("structure_asset_condition"),
+                structureAssetClass: () => SetTitleColumn("structure_asset_class"),
             },
             reportAssetsContent() {
                 // For the definitions of the reports themselves see reportAssetsContent in reportTableDefinitions

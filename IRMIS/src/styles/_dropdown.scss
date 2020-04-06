@@ -27,6 +27,15 @@
 
     .asset-condition-data {
         padding-left: 15px;
+
+        .top-pane {
+            border-bottom: 1px solid $light-gray;
+            padding-bottom: 15px;
+        }
+
+        .bottom-pane {
+            padding-top: 15px;
+        }
     }
 }
 

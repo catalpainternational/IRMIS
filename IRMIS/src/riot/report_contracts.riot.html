@@ -32,60 +32,60 @@
                     </div>
                     <div if="{ reportContractsContent().visibleFilters.typeOfWork }" class="options">
                         <select id="type_of_work_select2" multiple="true">
-                            <!-- Replace option values with actual type of work values -->
-                            <option each="{ asset_class in window.asset_schema.asset_class.options }" value="{ asset_class[0] }">
-                                { asset_class[1] }
+                            <option each="{ type_of_work in window.contract_schema.type_of_work.options }" value="{ type_of_work.id }">
+                                { type_of_work.name }
                             </option>
                         </select>
                     </div>
                     <div if="{ reportContractsContent().visibleFilters.program }" class="options">
                         <select id="program_select2" multiple="true">
-                            <!-- Replace option values with actual program values -->
-                            <option each="{ asset_class in window.asset_schema.asset_class.options }" value="{ asset_class[0] }">
-                                { asset_class[1] }
+                            <option each="{ program in window.contract_schema.program.options }" value="{ program.id }">
+                                { program.name }
                             </option>
                         </select>
                     </div>
                     <div if="{ reportContractsContent().visibleFilters.fundingSource }" class="options">
                         <select id="funding_source_select2" multiple="true">
-                            <!-- Replace option values with actual funding source values -->
-                            <option each="{ asset_class in window.asset_schema.asset_class.options }" value="{ asset_class[0] }">
-                                { asset_class[1] }
+                            <option each="{ funding_source in window.contract_schema.funding_source.options }" value="{ funding_source.id }">
+                                { funding_source.name }
                             </option>
                         </select>
                     </div>
                     <div if="{ reportContractsContent().visibleFilters.donor }" class="options">
                         <select id="donor_select2" multiple="true">
-                            <!-- Replace option values with actual donor values -->
-                            <option each="{ asset_class in window.asset_schema.asset_class.options }" value="{ asset_class[0] }">
-                                { asset_class[1] }
+                            <option each="{ donor in window.contract_schema.donor.options }" value="{ donor.id }">
+                                { donor.name }
+                            </option>
+                        </select>
+                    </div>
+                    <div if="{ reportContractsContent().visibleFilters.contractCode }" class="options">
+                        <select id="contract_code_select2" multiple="true">
+                            <option each="{ contract in window.contract_schema.contract_code.options }" value="{ contract.contract_code }">
+                                { contract.contract_code }
                             </option>
                         </select>
                     </div>
                     <div if="{ reportContractsContent().visibleFilters.year }" class="options">
                         <select class="{ state.reportYear ? '' : 'inactive' } form-control form-control-sm">
-                            <!-- Replace option values with actual year values -->
-                            <option value="year" selected>{ window.gettext('Year') }</option>
-                            <option each="{ asset_class in window.asset_schema.asset_class.options }" value="{ asset_class[0] }">
-                                { asset_class[1] }
+                            <option value="year">{ window.gettext('Year') }</option>
+                            <option each="{ year in yearValues }" value="{ year.id }">
+                                { year.name }
                             </option>
                         </select>
                     </div>
                     <div if="{ reportContractsContent().visibleFilters.quarter }" class="options">
                         <select class="{ state.reportQuarter ? '' : 'inactive' } form-control form-control-sm">
-                            <!-- Replace option values with actual quarter values -->
-                            <option value="quarter" selected>{ window.gettext('Quarter') }</option>
-                            <option each="{ asset_class in window.asset_schema.asset_class.options }" value="{ asset_class[0] }">
-                                { asset_class[1] }
+                            <option value="quarter">{ window.gettext('Quarter') }</option>
+                            <option each="{ quarter in quarterValues }" value="{ quarter.id }">
+                                { quarter.name }
                             </option>
                         </select>
                     </div>
                     <div if="{ reportContractsContent().visibleFilters.month }" class="options">
                         <select class="{ state.reportMonth ? '' : 'inactive' } form-control form-control-sm">
-                            <!-- Replace option values with actual month values -->
-                            <option value="month" selected>{ window.gettext('Month') }</option>
-                            <option each="{ asset_class in window.asset_schema.asset_class.options }" value="{ asset_class[0] }">
-                                { asset_class[1] }
+                            <option value="month">{ window.gettext('Month') }</option>
+                            <option each="{ month in monthValues }" value="{ month.id }">
+                                { month.name }
                             </option>
                         </select>
                     </div>
@@ -210,6 +210,21 @@
             return reportContractsColumnSets[titleColumnName];
         };
 
+        function getPastTenYears() {
+            let currentYear = new Date().getFullYear();
+            let pastTenYears = [{ id: 1, name: currentYear }];
+
+            for (var year=2; year <= 11; year++) {
+                currentYear = currentYear - 1;
+
+                pastTenYears.push({
+                    id: year, name: currentYear
+                });
+            }
+
+            return pastTenYears;
+        };
+
         export default {
             state: {
                 filterDefinitions: [
@@ -218,12 +233,14 @@
                     { selectId: "program_select2", placeHolder: window.gettext("Program"), dataIn: "reportProgram" },
                     { selectId: "funding_source_select2", placeHolder: window.gettext("Funding Source"), dataIn: "reportFundingSource" },
                     { selectId: "donor_select2", placeHolder: window.gettext("Donor"), dataIn: "reportDonor" },
+                    { selectId: "contract_code_select2", placeHolder: "Contract code", dataIn: "reportContractCode", isSingle: true },
                 ],
                 reportAssetClass: [],
                 reportTypeOfWork: [],
                 reportProgram: [],
                 reportFundingSource: [],
                 reportDonor: [],
+                reportContractCode: null,
                 reportYear: null,
                 reportQuarter: null,
                 reportMonth: null,
@@ -233,6 +250,27 @@
                 noReport: true,
                 noReportData: false,
             },
+            yearValues: getPastTenYears(),
+            quarterValues: [
+                { id: 1, name: "Q1" },
+                { id: 2, name: "Q2" },
+                { id: 3, name: "Q3" },
+                { id: 4, name: "Q4" },
+            ],
+            monthValues: [
+                { id: 1, name: window.gettext("January") },
+                { id: 2, name: window.gettext("February") },
+                { id: 3, name: window.gettext("March") },
+                { id: 4, name: window.gettext("April") },
+                { id: 5, name: window.gettext("May") },
+                { id: 6, name: window.gettext("June") },
+                { id: 7, name: window.gettext("July") },
+                { id: 8, name: window.gettext("August") },
+                { id: 9, name: window.gettext("September") },
+                { id: 10, name: window.gettext("October") },
+                { id: 11, name: window.gettext("November") },
+                { id: 12, name: window.gettext("December") },
+            ],
             reportContractsTableIds: reportContractsTableIds,
             columns: {
                 program: () => setTitleColumn("program"),

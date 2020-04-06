@@ -118,19 +118,42 @@ export const estradaTableColumns = [
     },
     {
         // data-column="2"
+        title: EstradaRoad.getFieldName("asset_class") || window.gettext("Asset Class"),
+        data: "assetClass",
+        defaultContent: "",
+        visible: false,
+    },
+    {
+        // data-column="3"
+        title: EstradaRoad.getFieldName("technical_class"),
+        data: null,
+        defaultContent: "",
+        render: r => buttonSegmentsTemplate("technical_class", r),
+        visible: false,
+        orderable: false,
+    },
+    {
+        // data-column="4"
+        title: EstradaRoad.getFieldName("core"),
+        data: "core",
+        defaultContent: "",
+        visible: false,
+    },
+    {
+        // data-column="5"
         title: EstradaRoad.getFieldName("link_code"),
         data: "linkCode",
         defaultContent: "",
     },
     {
-        // data-column="3"
+        // data-column="6"
         title: window.gettext("Link Name"),
         data: "linkName",
         defaultContent: "",
         visible: false,
     },
     {
-        // data-column="4"
+        // data-column="7"
         title: EstradaRoad.getFieldName("link_length"),
         data: "linkLength",
         defaultContent: "",
@@ -140,61 +163,67 @@ export const estradaTableColumns = [
         },
     },
     {
-        // data-column="5"
+        // data-column="8"
+        title: EstradaRoad.getFieldName("administrative_area"),
+        data: "administrativeArea",
+        defaultContent: "",
+    },
+    {
+        // data-column="9"
         title: EstradaRoad.getFieldName("link_start_name"),
         data: "linkStartName",
         defaultContent: "",
     },
     {
-        // data-column="6"
+        // data-column="10"
         title: EstradaRoad.getFieldName("link_start_chainage"),
         data: "linkStartChainage",
         defaultContent: "",
         className: "text-right",
     },
     {
-        // data-column="7"
-        title: EstradaRoad.getFieldName("link_end_name"),
-        data: "linkEndName",
-        defaultContent: "",
-    },
-    {
-        // data-column="8"
-        title: EstradaRoad.getFieldName("link_end_chainage"),
-        data: "linkEndChainage",
-        defaultContent: "",
-        className: "text-right",
-    },
-    {
-        // data-column="9"
+        // data-column="11"
         title: window.gettext("Start Point (DMS)"),
         data: "startDMS",
         defaultContent: "",
         visible: false,
     },
     {
-        // data-column="10"
-        title: window.gettext("End Point (DMS)"),
-        data: "endDMS",
-        defaultContent: "",
-        visible: false,
-    },
-    {
-        // data-column="11"
+        // data-column="12"
         title: window.gettext("Start Point (UTM)"),
         data: "startUTM",
         defaultContent: "",
         visible: false,
     },
     {
-        // data-column="12"
+        // data-column="13"
+        title: EstradaRoad.getFieldName("link_end_name"),
+        data: "linkEndName",
+        defaultContent: "",
+    },
+    {
+        // data-column="14"
+        title: EstradaRoad.getFieldName("link_end_chainage"),
+        data: "linkEndChainage",
+        defaultContent: "",
+        className: "text-right",
+    },
+    {
+        // data-column="15"
+        title: window.gettext("End Point (DMS)"),
+        data: "endDMS",
+        defaultContent: "",
+        visible: false,
+    },
+    {
+        // data-column="16"
         title: window.gettext("End Point (UTM)"),
         data: "endUTM",
         defaultContent: "",
         visible: false,
     },
     {
-        // data-column="13"
+        // data-column="17"
         title: EstradaRoad.getFieldName("surface_type"),
         data: null,
         defaultContent: "",
@@ -202,7 +231,7 @@ export const estradaTableColumns = [
         orderable: false,
     },
     {
-        // data-column="14"
+        // data-column="18"
         title: EstradaRoad.getFieldName("pavement_class"),
         data: null,
         defaultContent: "",
@@ -210,7 +239,7 @@ export const estradaTableColumns = [
         orderable: false,
     },
     {
-        // data-column="15"
+        // data-column="19"
         title: EstradaRoad.getFieldName("carriageway_width"),
         data: null,
         defaultContent: "",
@@ -220,7 +249,7 @@ export const estradaTableColumns = [
     {
         // note: `total_width` is NOT actually part of EstradaRoad,
         // but EstradaRoad.getFieldName explicitly supports it
-        // data-column="16"
+        // data-column="20"
         title: EstradaRoad.getFieldName("total_width"),
         data: null,
         defaultContent: "",
@@ -229,7 +258,7 @@ export const estradaTableColumns = [
         visible: false,
     },
     {
-        // data-column="17"
+        // data-column="21"
         title: EstradaRoad.getFieldName("number_lanes"),
         data: null,
         defaultContent: "",
@@ -238,101 +267,7 @@ export const estradaTableColumns = [
         orderable: false,
     },
     {
-        // data-column="18"
-        title: EstradaRoad.getFieldName("administrative_area"),
-        data: "administrativeArea",
-        defaultContent: "",
-    },
-    {
-        // data-column="19"
-        title: EstradaRoad.getFieldName("asset_class") || window.gettext("Asset Class"),
-        data: "assetClass",
-        defaultContent: "",
-        visible: false,
-    },
-    {
-        // data-column="20"
-        title: EstradaRoad.getFieldName("technical_class"),
-        data: null,
-        defaultContent: "",
-        render: r => buttonSegmentsTemplate("technical_class", r),
-        visible: false,
-        orderable: false,
-    },
-    {
-        // data-column="21"
-        title: EstradaRoad.getFieldName("funding_source"),
-        data: "fundingSource",
-        defaultContent: "",
-        visible: false
-    },
-    {
         // data-column="22"
-        title: EstradaRoad.getFieldName("road_status"),
-        data: "status",
-        defaultContent: "",
-        visible: false,
-    },
-    {
-        // data-column="23"
-        title: EstradaRoad.getFieldName("project"),
-        data: "project",
-        defaultContent: "",
-        visible: false,
-    },
-    {
-        // data-column="24"
-        title: EstradaRoad.getFieldName("population"),
-        data: "population",
-        defaultContent: "",
-        visible: false,
-    },
-    {
-        // data-column="25"
-        title: EstradaRoad.getFieldName("construction_year"),
-        data: "constructionYear",
-        defaultContent: "",
-        visible: false,
-    },
-    {
-        // data-column="25"
-        title: EstradaRoad.getFieldName("core"),
-        data: "core",
-        defaultContent: "",
-        visible: false,
-    },
-    {
-        // data-column="27"
-        title: window.gettext("Roughness (IRI)"),
-        data: "",
-        defaultContent: "",
-        visible: false,
-    },
-    {
-        // data-column="28"
-        title: EstradaRoad.getFieldName("asset_condition"),
-        data: null,
-        defaultContent: "",
-        render: r => buttonSegmentsTemplate("asset_condition", r),
-        orderable: false,
-    },
-    {
-        // data-column="29"
-        title: EstradaRoad.getFieldName("maintenance_need"),
-        data: "maintenanceNeed",
-        defaultContent: "",
-        visible: false,
-    },
-    {
-        // data-column="30"
-        title: window.gettext("Traffic data"),
-        data: null,
-        defaultContent: "",
-        render: r => buttonSegmentsTemplate("traffic_level", r),
-        visible: false,
-    },
-    {
-        // data-column="31"
         title: EstradaRoad.getFieldName("rainfall"),
         data: null,
         defaultContent: "",
@@ -341,7 +276,7 @@ export const estradaTableColumns = [
         orderable: false,
     },
     {
-        // data-column="32"
+        // data-column="23"
         title: EstradaRoad.getFieldName("terrain_class"),
         data: null,
         defaultContent: "",
@@ -350,7 +285,7 @@ export const estradaTableColumns = [
         orderable: false,
     },
     {
-        // data-column="33"
+        // data-column="24"
         title: window.gettext("Inventory Photos"),
         data: null,
         defaultContent: "",
@@ -358,6 +293,71 @@ export const estradaTableColumns = [
         className: "text-center",
         visible: false,
         orderable: false,
+    },
+    {
+        // data-column="25"
+        title: EstradaRoad.getFieldName("population"),
+        data: "population",
+        defaultContent: "",
+        visible: false,
+    },
+    {
+        // data-column="26"
+        title: window.gettext("Roughness (IRI)"),
+        data: "",
+        defaultContent: "",
+        visible: false,
+    },
+    {
+        // data-column="27"
+        title: EstradaRoad.getFieldName("asset_condition"),
+        data: null,
+        defaultContent: "",
+        render: r => buttonSegmentsTemplate("asset_condition", r),
+        orderable: false,
+    },
+    {
+        // data-column="28"
+        title: EstradaRoad.getFieldName("maintenance_need"),
+        data: "maintenanceNeed",
+        defaultContent: "",
+        visible: false,
+    },
+    {
+        // data-column="29"
+        title: window.gettext("Traffic data"),
+        data: null,
+        defaultContent: "",
+        render: r => buttonSegmentsTemplate("traffic_level", r),
+        visible: false,
+    },
+    {
+        // data-column="30"
+        title: EstradaRoad.getFieldName("road_status"),
+        data: "status",
+        defaultContent: "",
+        visible: false,
+    },
+    {
+        // data-column="31"
+        title: EstradaRoad.getFieldName("construction_year"),
+        data: "constructionYear",
+        defaultContent: "",
+        visible: false,
+    },
+    {
+        // data-column="32"
+        title: EstradaRoad.getFieldName("funding_source"),
+        data: "fundingSource",
+        defaultContent: "",
+        visible: false
+    },
+    {
+        // data-column="33"
+        title: EstradaRoad.getFieldName("project"),
+        data: "project",
+        defaultContent: "",
+        visible: false,
     },
 ];
 
@@ -508,6 +508,15 @@ export const structuresTableColumns = [
         visible: false,
     },
     {
+        title: window.gettext("Inventory Photos"),
+        data: null,
+        defaultContent: "",
+        render: (r) => r.inventoryPhotos.length ? buttonSegmentsTemplate("inventory_photos", r, "Photos") : "",
+        className: "text-center",
+        visible: false,
+        orderable: false,
+    },
+    {
         title: window.gettext("Structure Condition"),
         data: "assetCondition",
         defaultContent: "",
@@ -524,15 +533,6 @@ export const structuresTableColumns = [
         data: null,
         defaultContent: "",
         render: (r) => r.assetCondition ? buttonSegmentsTemplate("structure_condition_photos", r, "Photos") : "",
-        className: "text-center",
-        visible: false,
-        orderable: false,
-    },
-    {
-        title: window.gettext("Inventory Photos"),
-        data: null,
-        defaultContent: "",
-        render: (r) => r.inventoryPhotos.length ? buttonSegmentsTemplate("inventory_photos", r, "Photos") : "",
         className: "text-center",
         visible: false,
         orderable: false,

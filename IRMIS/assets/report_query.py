@@ -35,7 +35,7 @@ class ReportQuery:
                 # * asset_code (relative to a road) may not be set properly and requires special handling
                 "SELECT asset_type, asset_id, asset_code, asset_name,\n"
                 " asset_condition, asset_class,\n"
-                " geom_chainage, municipality,\n"
+                " geom_chainage::INTEGER, municipality,\n"
                 " geojson_file,\n"
                 " geom_length, core,\n"
                 " surface_type,\n"
@@ -136,20 +136,19 @@ class ReportQuery:
             # Chainages for structure surveys are manipulated to make the rest of the query still work
             "su": (
                 "SELECT\n"
-                " s.id,\n"
                 " atc.asset_type, atc.asset_id, atc.asset_code,\n"
                 " s.date_created, s.date_updated, s.date_surveyed,\n"
                 " p.photos,\n"
                 " CASE\n"
-                " WHEN atc.asset_type = 'ROAD' THEN s.chainage_start\n"
+                " WHEN atc.asset_type = 'ROAD' THEN s.chainage_start::INTEGER\n"
                 " ELSE 0\n"
                 " END AS chainage_start,\n"
                 " CASE\n"
-                " WHEN atc.asset_type = 'ROAD' THEN s.chainage_end\n"
+                " WHEN atc.asset_type = 'ROAD' THEN s.chainage_end::INTEGER\n"
                 " ELSE 1\n"
                 " END AS chainage_end,\n"
                 " CASE\n"
-                " WHEN atc.asset_type = 'ROAD' THEN atc.geom_chainage\n"
+                " WHEN atc.asset_type = 'ROAD' THEN atc.geom_chainage::INTEGER\n"
                 " ELSE 1\n"
                 " END AS geom_chainage,\n"
                 " atc.road_id, atc.road_code,\n"
@@ -171,16 +170,16 @@ class ReportQuery:
             # Where the roads have a survey start or end point
             "breakpoints": (
                 "SELECT DISTINCT * FROM (\n"
-                "  SELECT id AS survey_id, attr, asset_type, asset_id, asset_code, chainage_start c\n"
+                "  SELECT attr, asset_type, asset_id, asset_code, chainage_start::INTEGER c\n"
                 "  FROM suc\n"
                 " UNION\n"
-                "  SELECT id AS survey_id, attr, asset_type, asset_id, asset_code, chainage_end c\n"
+                "  SELECT attr, asset_type, asset_id, asset_code, chainage_end::INTEGER c\n"
                 "  FROM suc\n"
                 " ) xxxx\n"
             ),
             # merge and rank breakpoints (by date)
             "merge_breakpoints": (
-                "SELECT bp.survey_id, bp.attr AS break_attr, bp.c, suc.*,\n"
+                "SELECT bp.attr AS break_attr, bp.c, suc.*,\n"
                 " bp.c = suc.chainage_end AS isend,\n"
                 " RANK() OVER (\n"
                 "  PARTITION BY bp.asset_type, bp.asset_id, bp.asset_code, bp.c, bp.attr\n"
@@ -204,7 +203,7 @@ class ReportQuery:
             # rather than using the attribute, we use this in final_results below
             # also road_id and road_code will only have values if the result relates to a Bridge or a Culvert
             "results": (
-                "SELECT survey_id, rank, asset_type, asset_id, asset_code, c, break_attr, geom_chainage,\n"
+                "SELECT rank, asset_type, asset_id, asset_code, c, break_attr, geom_chainage,\n"
                 " CASE\n"
                 "  WHEN NOT isend THEN values -> break_attr\n"
                 "  ELSE NULL\n"
@@ -222,7 +221,7 @@ class ReportQuery:
                 "SELECT *,\n"
                 " rank() over (\n"
                 "  PARTITION\n"
-                "    BY survey_id, asset_type, asset_id, asset_code,\n"
+                "    BY asset_type, asset_id, asset_code,\n"
                 "    break_attr, value, user_id, added_by, date_surveyed,\n"
                 "    road_id, road_code\n"
                 "  ORDER BY c\n"
@@ -231,7 +230,6 @@ class ReportQuery:
             ),
             "with_lead_values": (
                 "SELECT\n"
-                " survey_id,\n"
                 " asset_type, asset_id, asset_code,\n"
                 " break_attr,\n"
                 " c AS start_chainage,\n"
@@ -249,19 +247,35 @@ class ReportQuery:
                 " FROM with_unchanged\n"
                 " WHERE filtered = 1\n"
             ),
+            # Note that we shouldn't need both
+            # CONCAT(asset_type, '-', wlv.asset_id::text) = s.asset_id
+            # and
+            # wlv.asset_code = s.asset_code
+            # to correctly attach the survey_id, but there has been some bad data
             "final_results": (
-                "SELECT asset_type, CONCAT(asset_type, '-', asset_id::text) AS asset_id, asset_code,\n"
+                "SELECT asset_type, CONCAT(asset_type, '-', wlv.asset_id::text) AS asset_id, wlv.asset_code,\n"
                 " break_attr AS attribute,\n"
                 " start_chainage,\n"
                 " CASE\n"
                 "  WHEN end_chainage IS NULL THEN geom_chainage\n"
                 "  ELSE end_chainage\n"
                 " END AS end_chainage,\n"
-                " value, survey_id,\n"
+                " value,\n"
+                " CASE\n"
+                " WHEN s.id IS NOT NULL THEN s.id\n"
+                " ELSE 0\n"
+                " END AS survey_id,\n"
                 " photos,\n"
-                " user_id, added_by, date_surveyed,\n"
-                " road_id, road_code\n"
-                " FROM with_lead_values\n"
+                " wlv.user_id, added_by, wlv.date_surveyed,\n"
+                " wlv.road_id, wlv.road_code\n"
+                " FROM with_lead_values wlv\n"
+                " LEFT OUTER JOIN assets_survey s\n"
+                " ON CONCAT(asset_type, '-', wlv.asset_id::text) = s.asset_id\n"
+                " AND wlv.asset_code = s.asset_code\n"
+                " AND wlv.start_chainage = s.chainage_start\n"
+                " AND wlv.end_chainage = s.chainage_end\n"
+                " AND wlv.date_surveyed = s.date_surveyed\n"
+                " AND s.values ? wlv.break_attr\n"
                 " WHERE start_chainage != end_chainage\n"
                 " OR (end_chainage IS NULL AND start_chainage != geom_chainage)\n"
                 " ORDER BY asset_type, asset_code, break_attr, start_chainage\n"
