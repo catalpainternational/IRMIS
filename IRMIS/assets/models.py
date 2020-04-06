@@ -1819,15 +1819,22 @@ class BreakpointRelationships(models.Model):
 
     To use, first refresh
 
-    >>> BreakpointRelationships.refresh()
+>>> from assets.models import BreakpointRelationships
+>>> BreakpointRelationships.refresh()
 
-    Then tests
+>>> # Then try some tests
 
-road_codes = ('A01', 'A02', 'A03', 'C04')
-survey_params = ('municipality', 'aggregate_roughness', 'asset_class', 'terrain_class')
+>>> road_codes = ('A01', 'A02', 'A03', 'C04')
+>>> survey_params = ('municipality', 'aggregate_roughness', 'asset_class', 'terrain_class')
+>>> BreakpointRelationships.survey_check_results(road_codes, survey_params)
 
-BreakpointRelationship.survey_check_results(road_codes, survey_params)
 
+>>> # For the Excel endpoint we also want to have "aggregate roughness"
+
+>>> from assets.models import RoughnessSurvey
+>>> RoughnessSurvey.refresh_aggregates()
+>>> BreakpointRelationships.refresh()
+>>> BreakpointRelationships.excel_export(road_codes)
     """
 
     class Meta:
@@ -1899,7 +1906,7 @@ BreakpointRelationship.survey_check_results(road_codes, survey_params)
             "assets_surveys_group",
             "assets_crosstab_generator",
         ):
-            sql = "SELECT * FROM {}(ARRAY[{}], ARRAY[{}])".format(
+            sql = "SELECT * FROM {}(ARRAY[{}]::text[], ARRAY[{}]::text[])".format(
                 fn,
                 ", ".join(["%s"] * len(asset_codes)),
                 ", ".join(["%s"] * len(survey_params)),
@@ -1908,7 +1915,7 @@ BreakpointRelationship.survey_check_results(road_codes, survey_params)
 
         tuples.append(
             namedtuple_query(
-                "SELECT * FROM assets_excel_generator(ARRAY[{}])".format(
+                "SELECT * FROM assets_excel_generator(ARRAY[{}]::text[])".format(
                     ", ".join(["%s"] * len(asset_codes))
                 ),
                 asset_codes,
@@ -1919,7 +1926,7 @@ BreakpointRelationship.survey_check_results(road_codes, survey_params)
 
     @staticmethod
     def excel_report(asset_codes: Iterable[str]):
-        sql = "SELECT * FROM assets_excel_generator(ARRAY[{}])".format(
+        sql = "SELECT * FROM assets_excel_generator(ARRAY[{}]::text[])".format(
             ", ".join(["%s"] * len(asset_codes))
         )
         return namedtuple_query(sql, asset_codes)
