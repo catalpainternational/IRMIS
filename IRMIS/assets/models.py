@@ -9,7 +9,7 @@ from django.utils.translation import get_language, ugettext, ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db.models import Count, Max, OuterRef, Prefetch, Subquery
-from django.db.models.functions import Cast, Substr
+from django.db.models.functions import Cast, Substr, Upper
 
 import json
 import reversion
@@ -443,8 +443,9 @@ class RoadQuerySet(models.QuerySet):
 
         return (
             Road.objects.order_by("asset_class")
-            .values("asset_class")
-            .annotate(Count("asset_class"))
+            .annotate(asset_code_prefix=Upper(Substr("road_code", 1, 1)))
+            .values("asset_class", "asset_code_prefix")
+            .annotate(Count("id"))
         )
 
     def to_protobuf(self):
