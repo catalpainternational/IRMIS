@@ -125,7 +125,10 @@ urlpatterns = [
     path("reports/", protobuf_reports, name="protobuf_reports"),
     path("remote/<slug:slug>.iqy", ExcelDataSourceIqy.as_view()),
     path(
-        "remote/survey_<slug:slug>.html",
+        "remote/survey.html", ExcelDataSource.as_view(), name="surveyexceldatasource",
+    ),
+    path(
+        "remote/survey/<slug:slug>.html",
         ExcelDataSource.as_view(),
         name="surveyexceldatasource",
     ),
