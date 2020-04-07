@@ -10,7 +10,7 @@
             {% for o in objects %}
             <tr>
                 {% for value in o %}
-                <td>{{value}}</td>
+                <td>{{value|default:''}}</td>
                 {% endfor %}
             </tr>
             {% endfor %}

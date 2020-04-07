@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from django.urls import include, path
 from rest_framework import routers
+from django.views.decorators.cache import cache_page
 
 from .views import (
     api_token_request,
@@ -36,6 +37,9 @@ from .views import (
     ExcelDataSource,
     ExcelDataSourceIqy,
     BreakpointRelationshipsReport,
+    ExcelInventoryMunicipal,
+    ExcelInventoryNational,
+    ExcelInventoryRural,
 )
 
 # Wire up our API using automatic URL routing.
@@ -126,6 +130,21 @@ urlpatterns = [
     path("remote/<slug:slug>.iqy", ExcelDataSourceIqy.as_view()),
     path(
         "remote/survey.html", ExcelDataSource.as_view(), name="surveyexceldatasource",
+    ),
+    path(
+        "remote/inventory/municipal.html",
+        ExcelInventoryMunicipal.as_view(),
+        name="excelinventorymunicipal",
+    ),
+    path(
+        "remote/inventory/national.html",
+        ExcelInventoryNational.as_view(),
+        name="excelinventorynational",
+    ),
+    path(
+        "remote/inventory/rural.html",
+        ExcelInventoryRural.as_view(),
+        name="excelinventoryrural",
     ),
     path(
         "remote/survey/<slug:slug>.html",
