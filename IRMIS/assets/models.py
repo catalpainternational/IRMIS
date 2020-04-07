@@ -7,6 +7,7 @@ from django.contrib.postgres.fields import HStoreField, JSONField, DecimalRangeF
 from django.contrib.postgres.indexes import GistIndex
 from django.contrib.postgres.aggregates.general import ArrayAgg
 from django.utils.translation import get_language, ugettext, ugettext_lazy as _
+from django.core.cache import caches
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db.models import Count, Max, OuterRef, Prefetch, Subquery, F, Value
@@ -65,14 +66,36 @@ def no_spaces(value):
         )
 
 
-def namedtuple_query(sql, params=None):
+# We can generate this namedtuple from a query but it won't be cache-able
+Result = namedtuple(
+    "Result",
+    (
+        "asset_class",
+        "asset_code",
+        "municipality",
+        "chainage_start",
+        "chainage_end",
+        "length",
+        "surface_type",
+        "terrain",
+        "roughness",
+        "surface_condition",
+        "population",
+    ),
+)
+
+
+def namedtuple_query(sql, params=None, nt_result=None):
     """
     Return the executed SQL as a NamedTuple
     """
 
     with connection.cursor() as cur:
         cur.execute(sql, params)
-        nt_result = namedtuple("Result", [column.name for column in cur.description])
+        if not nt_result:
+            nt_result = namedtuple(
+                "Result", [column.name for column in cur.description]
+            )
         objects = [nt_result(*row) for row in cur.fetchall()]
         return objects, nt_result._fields
 
@@ -1890,9 +1913,7 @@ class BreakpointRelationships(models.Model):
         run_script("04_excel_connection.sql")
 
     @staticmethod
-    def survey_check_results(
-        asset_codes: Iterable[str], survey_params: Iterable[str],
-    ):
+    def survey_check_results(asset_codes: Iterable[str], survey_params: Iterable[str]):
         """
         This function is here to track/debug the result of the
         survey amalgamation.
@@ -1929,7 +1950,38 @@ class BreakpointRelationships(models.Model):
 
     @staticmethod
     def excel_report(asset_codes: Iterable[str]):
-        sql = "SELECT * FROM assets_excel_generator(ARRAY[{}]::text[])".format(
+        sql = "SELECT * FROM assets_excel_generator(ARRAY[{}]::text[]) ORDER BY asset_code, chainage_start".format(
             ", ".join(["%s"] * len(asset_codes))
         )
-        return namedtuple_query(sql, asset_codes)
+        return namedtuple_query(sql, asset_codes, nt_result=Result)
+
+    @staticmethod
+    def excel_report_cached(
+        asset_codes: Iterable[str], timeout: int = (60 * 60 * 24), version: int = 1
+    ):
+        """
+        Returns cached rows (cache key is road code)
+        for Excel report
+        """
+        cache = caches["default"]
+        returns = []
+        # Get cached asset codes where possible
+        for asset_code in asset_codes:
+            report_for_code = cache.get(
+                "excel_report_%s" % (asset_code), version=version
+            )
+            if report_for_code:
+                logger.debug("Cache hit: Excel report %s", asset_code)
+            if not report_for_code:
+                logger.debug("Cache miss: Excel report regenerate for %s", asset_code)
+                cache.set(
+                    "excel_report_%s" % (asset_code),
+                    BreakpointRelationships.excel_report([asset_code]),
+                    version=version,
+                )
+                report_for_code = cache.get(
+                    "excel_report_%s" % (asset_code), version=version
+                )
+
+            returns.append(report_for_code[0])
+        return (returns, Result._fields)
