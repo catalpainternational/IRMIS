@@ -84,13 +84,19 @@ class ProjectAssetForm(ModelForm):
         super().__init__(*args, **kwargs)
         self.label_suffix = ""
         self.fields["asset_code"].widget.attrs.update(
-            {"class": "form-control form-control-lg", "placeholder": "A01-1"}
+            {"class": "asset-code form-control form-control-lg", "placeholder": "A01-1"}
         )
         self.fields["asset_start_chainage"].widget.attrs.update(
-            {"class": "form-control form-control-sm", "placeholder": "2000"}
+            {
+                "class": "asset-start-chainage form-control form-control-sm",
+                "placeholder": "2000",
+            }
         )
         self.fields["asset_end_chainage"].widget.attrs.update(
-            {"class": "form-control form-control-sm", "placeholder": "3000"}
+            {
+                "class": "asset-end-chainage form-control form-control-sm",
+                "placeholder": "3000",
+            }
         )
 
     class Meta:
