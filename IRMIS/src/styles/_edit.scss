@@ -128,7 +128,7 @@ edit_condition {
     }
 }
 
-feedback_banner {
+feedback_banner, #feedback-banner {
     & > div {
         box-shadow: 0 0 10px 0 rgba(61, 71, 88, 0.5);
         border-bottom-right-radius: $radius;

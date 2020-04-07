@@ -1,4 +1,5 @@
 from django.apps import apps
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, Count
 from django.db.models.base import ModelBase
@@ -58,16 +59,36 @@ class AddedFormsetMixin:
             self.object = form.save()
             for dependent in dependents.values():
                 dependent.save()
-        return HttpResponseRedirect(self.get_success_url())
+        response = HttpResponseRedirect(self.get_success_url())
+        success_message = self.get_success_message(form.cleaned_data)
+        if success_message:
+            messages.success(self.request, success_message)
+        return response
 
     def form_invalid(self, form, dependents):
         """
         Called if a form is invalid. Re-renders the context data with the
         data-filled forms and errors.
         """
-        return self.render_to_response(
+        response = self.render_to_response(
             self.get_context_data(form=form, formsets=dependents)
         )
+        error_message = self.get_error_message(form.cleaned_data)
+        if error_message:
+            messages.error(self.request, error_message)
+        return response
+
+    def get_success_message(self, cleaned_data):
+        if hasattr(self, "success_message"):
+            return self.success_message % cleaned_data
+        else:
+            return "You have successfully saved"
+
+    def get_error_message(self, cleaned_data):
+        if hasattr(self, "error_message"):
+            return self.error_message % cleaned_data
+        else:
+            return "Something went wrong"
 
 
 # Project
