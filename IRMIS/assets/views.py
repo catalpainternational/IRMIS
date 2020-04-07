@@ -1791,8 +1791,10 @@ class ExcelInventoryNational(TemplateView):
             context["fields"],
         ) = BreakpointRelationships.excel_report_cached(
             asset_codes=list(
-                Road.objects.filter(asset_class="NAT").values_list(
-                    "road_code", flat=True
+                set(
+                    Road.objects.filter(asset_class="NAT").values_list(
+                        "road_code", flat=True
+                    )
                 )
             )
         )

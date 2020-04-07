@@ -1983,5 +1983,5 @@ class BreakpointRelationships(models.Model):
                     "excel_report_%s" % (asset_code), version=version
                 )
 
-            returns.append(report_for_code[0])
+            returns.extend(report_for_code[0])
         return (returns, Result._fields)
