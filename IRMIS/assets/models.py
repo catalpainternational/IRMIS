@@ -343,6 +343,7 @@ class Survey(models.Model):
         validators=[no_spaces],
         blank=True,
         null=True,
+        db_index=True,
         max_length=15,
         db_index=True,
     )
@@ -351,6 +352,7 @@ class Survey(models.Model):
         validators=[no_spaces],
         blank=True,
         null=True,
+        db_index=True,
         max_length=25,
         db_index=True,
     )

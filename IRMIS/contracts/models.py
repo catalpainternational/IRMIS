@@ -13,7 +13,7 @@ from django.db.models import OuterRef, Subquery
 # Project
 class Project(models.Model):
     """
-    On the Contract Manager, users will start by creating a project. That project will result in a tender. The tender will result in a contract. 
+    On the Contract Manager, users will start by creating a project. That project will result in a tender. The tender will result in a contract.
     """
 
     status = models.ForeignKey(
@@ -572,8 +572,9 @@ class ContractDocument(models.Model):
     document_date = models.DateField(null=True, blank=True)
     content = models.FileField(upload_to="contract_documents/")
 
-    projects = models.ManyToManyField("Project", related_name="documents")
+    companies = models.ManyToManyField("Company", related_name="documents")
     contracts = models.ManyToManyField("Contract", related_name="documents")
+    projects = models.ManyToManyField("Project", related_name="documents")
     tenders = models.ManyToManyField("Tender", related_name="documents")
 
 

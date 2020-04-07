@@ -114,14 +114,12 @@ export const estradaTableColumns = [
         title: EstradaRoad.getFieldName("road_name"),
         data: "name",
         defaultContent: "",
-        visible: false,
     },
     {
         // data-column="2"
         title: EstradaRoad.getFieldName("asset_class") || window.gettext("Asset Class"),
         data: "assetClass",
         defaultContent: "",
-        visible: false,
     },
     {
         // data-column="3"

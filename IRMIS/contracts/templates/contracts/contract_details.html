@@ -44,6 +44,7 @@
             <h6>{% trans "Contract Details" %}</h6>
             <div class="form-group">
                 {{ form.status.label_tag }}
+                <span class="required">*</span>
                 <small class="form-text text-muted">{{ form.status.help_text }}</small>
                 {{ form.status }}
                 {% if form.status.errors %}
@@ -58,6 +59,7 @@
             </div>
             <div class="form-group">
                 {{ form.tender.label_tag }}
+                <span class="required">*</span>
                 <small class="form-text text-muted">{{ form.tender.help_text }}</small>
                 {{ form.tender }}
                 {% if form.tender.errors %}
@@ -72,6 +74,7 @@
             </div>
             <div class="form-group">
                 {{ form.contract_code.label_tag }}
+                <span class="required">*</span>
                 <small class="form-text text-muted">{{ form.contract_code.help_text }}</small>
                 {{ form.contract_code }}
                 {% if form.contract_code.errors %}
@@ -191,6 +194,7 @@
                 <div class="col d-flex flex-wrap">
                     <div class="form-group">
                         {{ form.start_date.label_tag }}
+                        <span class="required">*</span>
                         <small class="form-text text-muted">{{ form.start_date.help_text }}</small>
                         {{ form.start_date }}
                         {% if form.start_date.errors %}
@@ -205,6 +209,7 @@
                     </div>
                     <div class="form-group">
                         {{ form.end_date.label_tag }}
+                        <span class="required">*</span>
                         <small class="form-text text-muted">{{ form.end_date.help_text }}</small>
                         {{ form.end_date }}
                         {% if form.end_date.errors %}
@@ -219,6 +224,7 @@
                     </div>
                     <div class="form-group">
                         {{ form.duration.label_tag }}
+                        <span class="required">*</span>
                         <small class="form-text text-muted">{{ form.duration.help_text }}</small>
                         {{ form.duration }}
                         {% if form.duration.errors %}
@@ -356,6 +362,11 @@
                 </div>
             </div>
         </section>
+
+        <div class="d-flex justify-content-end">
+            <span>[</span><span class="required">*</span><span>]: Mandatory</span>
+        </div>
+
         <div class="align-items-center buttons d-flex justify-content-end">
             <a class="discard-link" data-back="{% url 'contract-contract-list' %}">{% trans "Cancel" %}</a>
             {% if contract.id is not None %}

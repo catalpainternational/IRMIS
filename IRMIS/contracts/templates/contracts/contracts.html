@@ -85,4 +85,30 @@
         </div>
     </div>
 </div>
+
+{% if messages %}
+{% for message in messages %}
+<div id="feedback-banner">
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+    <div class="align-items-center d-flex unsuccess slide-in">
+        <span class="error image"></span>
+        <div class="d-flex flex-column flex-grow-1">
+            <span>{% trans "Error" %}</span>
+            <small class="text-muted">{{ message }}</small>
+        </div>
+        <span id="close-banner" class="close image"></span>
+    </div>
+    {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+    <div class="align-items-center d-flex success slide-in">
+        <span class="tick image"></span>
+        <div class="d-flex flex-column flex-grow-1">
+            <span>{% trans "Success" %}</span>
+            <small class="text-muted">{{ message }}</small>
+        </div>
+        <span id="close-banner" class="close image"></span>
+    </div>
+    {% endif %}
+</div>
+{% endfor %}
+{% endif %}
 {% endblock %}
