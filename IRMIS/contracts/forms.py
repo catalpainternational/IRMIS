@@ -310,10 +310,13 @@ class ContractSupervisorForm(ModelForm):
         super().__init__(*args, **kwargs)
         self.label_suffix = ""
         self.fields["name"].widget.attrs.update(
-            {"class": "form-control form-control-lg", "placeholder": "Maria da Costa"}
+            {
+                "class": "supervisor-name form-control form-control-lg",
+                "placeholder": "Maria da Costa",
+            }
         )
         self.fields["phone"].widget.attrs.update(
-            {"class": "form-control", "placeholder": "77000000"}
+            {"class": "supervisor-phone form-control", "placeholder": "77000000"}
         )
 
     class Meta:
