@@ -16,26 +16,20 @@
     <table id="project-list-table" class="contracts-profile-table d-block table table-hover">
         <thead>
             <tr>
+                {% if perms.contracts.change_project or perms.contracts.delete_project %}
+                <th>{% trans "Edit" %}</th>
+                {% endif %}
                 <th>{% trans "Project Name" %}</th>
                 <th>{% trans "Status" %}</th>
                 <th>{% trans "Program" %}</th>
                 <th>{% trans "Type of Work" %}</th>
                 <th>{% trans "Estimated Budget" %}</th>
                 <th>{% trans "Funding Source" %}</th>
-                {% if perms.contracts.change_project or perms.contracts.delete_project %}
-                <th></th>
-                {% endif %}
             </tr>
         </thead>
         <tbody>
             {% for project in project_list %}
             <tr>
-                <td><a href="{% url 'contract-project-detail' project.id %}">{{ project.name }}</a></td>
-                <td>{{ project.status }}</td>
-                <td>{{ project.program }}</td>
-                <td>{{ project.type_of_work }}</td>
-                <td>$ {{ project.total_budget }}</td>
-                <td>{{ project.funding_source }}</td>
                 {% if perms.contracts.change_project or perms.contracts.delete_project %}
                 <td class="text-center">
                     {% if perms.contracts.change_project and not perms.contracts.delete_project %}
@@ -49,6 +43,12 @@
                     {% endif %}
                 </td>
                 {% endif %}
+                <td><a href="{% url 'contract-project-detail' project.id %}">{{ project.name }}</a></td>
+                <td>{{ project.status }}</td>
+                <td>{{ project.program }}</td>
+                <td>{{ project.type_of_work }}</td>
+                <td>$ {{ project.total_budget }}</td>
+                <td>{{ project.funding_source }}</td>
             </tr>
             {% endfor %}
         </tbody>

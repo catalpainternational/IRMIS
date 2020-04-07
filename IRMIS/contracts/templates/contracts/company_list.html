@@ -16,20 +16,17 @@
     <table id="company-list-table" class="contracts-profile-table d-block table table-hover">
         <thead>
             <tr>
+                {% if perms.contracts.change_company or perms.contracts.delete_company %}
+                <th>{% trans "Edit" %}</th>
+                {% endif %}
                 <th>{% trans "Name" %}</th>
                 <th>{% trans "Total Contracts Amount" %}</th>
                 <th>{% trans "Total Contracts" %}</th>
-                {% if perms.contracts.change_company or perms.contracts.delete_company %}
-                <th></th>
-                {% endif %}
             </tr>
         </thead>
         <tbody>
             {% for company in company_list %}
             <tr>
-                <td><a href="{% url 'contract-company-detail' company.id %}">{{ company.name }}</a></td>
-                <td>{{ company.total_contracts_amount }}</td>
-                <td>{{ company.total_contracts }}</td>
                 {% if perms.contracts.change_company or perms.contracts.delete_company %}
                 <td class="text-center">
                     {% if perms.contracts.change_company and not perms.contracts.delete_company %}
@@ -43,6 +40,9 @@
                     {% endif %}
                 </td>
                 {% endif %}
+                <td><a href="{% url 'contract-company-detail' company.id %}">{{ company.name }}</a></td>
+                <td>{{ company.total_contracts_amount }}</td>
+                <td>{{ company.total_contracts }}</td>
             </tr>
             {% endfor %}
         </tbody>

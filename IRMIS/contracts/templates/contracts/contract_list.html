@@ -16,32 +16,19 @@
     <table id="contract-list-table" class="contracts-profile-table d-block table table-hover">
         <thead>
             <tr>
+                {% if perms.contracts.change_contract or perms.contracts.delete_contract %}
+                <th>{% trans "Edit" %}</th>
+                {% endif %}
                 <th>{% trans "Contract Code" %}</th>
                 <th>{% trans "Number of Projects" %}</th>
                 <th>{% trans "Project(s) Name" %}</th>
                 <th>{% trans "Type of Works" %}</th>
                 <th>{% trans "Status" %}</th>
-                {% if perms.contracts.change_contract or perms.contracts.delete_contract %}
-                <th></th>
-                {% endif %}
             </tr>
         </thead>
         <tbody>
             {% for contract in contract_list %}
             <tr>
-                <td><a href="{% url 'contract-contract-detail' contract.id %}">{{ contract.contract_code }}</a></td>
-                <td>{{ contract.tender.projects.count }}</td>
-                <td>
-                    {% for project in contract.tender.projects.all %}
-                    <div>{{ project.name }}</div>
-                    {% endfor %}
-                </td>
-                <td>
-                    {% for project in contract.tender.projects.all %}
-                    <div>{{ project.type_of_work }}</div>
-                    {% endfor %}
-                </td>
-                <td>{{ contract.status }}</td>
                 {% if perms.contracts.change_contract or perms.contracts.delete_contract %}
                 <td class="text-center">
                     {% if perms.contracts.change_contract and not perms.contracts.delete_contract %}
@@ -55,6 +42,19 @@
                     {% endif %}
                 </td>
                 {% endif %}
+                <td><a href="{% url 'contract-contract-detail' contract.id %}">{{ contract.contract_code }}</a></td>
+                <td>{{ contract.tender.projects.count }}</td>
+                <td>
+                    {% for project in contract.tender.projects.all %}
+                    <div>{{ project.name }}</div>
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for project in contract.tender.projects.all %}
+                    <div>{{ project.type_of_work }}</div>
+                    {% endfor %}
+                </td>
+                <td>{{ contract.status }}</td>
             </tr>
             {% endfor %}
         </tbody>
