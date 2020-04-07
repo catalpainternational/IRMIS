@@ -344,6 +344,7 @@ class Survey(models.Model):
         blank=True,
         null=True,
         max_length=15,
+        db_index=True,
     )
     asset_code = models.CharField(
         verbose_name=_("Asset Code"),
@@ -1815,7 +1816,7 @@ class BreakpointRelationships(models.Model):
     """
     Meta data on how two surveys relate spatially / temporally
 
-    This class also acts as a namespce for the generation of reports 
+    This class also acts as a namespce for the generation of reports
     derived from the assets_survey table
 
     To use, first refresh
