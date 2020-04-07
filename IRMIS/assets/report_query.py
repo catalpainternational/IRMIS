@@ -536,26 +536,16 @@ class ReportQuery:
             self.filters["chainage_end"], Number
         )
         if has_chainage_start or has_chainage_end:
-            road_test = " WHEN atc.asset_type = 'ROAD' "
             if has_chainage_start:
-                start_c = self.filters["chainage_start"]
-                self.report_clauses["suc"] = self.report_clauses["suc"].replace(
-                    "%sTHEN s.chainage_start\n" % road_test,
-                    "%sAND s.chainage_start < %s THEN %s\n%sTHEN s.chainage_start\n"
-                    % (road_test, start_c, start_c, road_test),
-                )
+                start_v = "s.chainage_start::INTEGER"
+                start_c = int(self.filters["chainage_start"])
+                self.suc_clause_chainage_swap(start_v, "<", start_c)
             if has_chainage_end:
-                end_c = self.filters["chainage_end"]
-                self.report_clauses["suc"] = self.report_clauses["suc"].replace(
-                    "%sTHEN s.chainage_end\n" % road_test,
-                    "%sAND s.chainage_end > %s THEN %s\n%sTHEN s.chainage_end\n"
-                    % (road_test, end_c, end_c, road_test),
-                )
-                self.report_clauses["suc"] = self.report_clauses["suc"].replace(
-                    "%sTHEN atc.geom_chainage\n" % road_test,
-                    "%sAND atc.geom_chainage > %s THEN %s\n%sTHEN atc.geom_chainage\n"
-                    % (road_test, end_c, end_c, road_test),
-                )
+                end_c = int(self.filters["chainage_end"])
+                end_v = "s.chainage_end::INTEGER"
+                geom_v = "atc.geom_chainage::INTEGER"
+                self.suc_clause_chainage_swap(end_v, ">", end_c)
+                self.suc_clause_chainage_swap(geom_v, ">", end_c)
 
         # only one of these queries will be performed, depending on get_all_surveys value
         if get_all_surveys:
@@ -569,6 +559,22 @@ class ReportQuery:
             and_clauses = " AND " + " AND ".join(attribute_clauses)
             self.report_clauses["get_aggregate_select"] += and_clauses
         self.filter_cases.extend(attribute_cases)
+
+    def suc_clause_chainage_swap(self, swap_value, ltgt, swap_chainage):
+        road_test = " WHEN atc.asset_type = 'ROAD' "
+        self.report_clauses["suc"] = self.report_clauses["suc"].replace(
+            "%sTHEN %s\n" % (road_test, swap_value),
+            "%sAND %s %s %s THEN %s\n%sTHEN %s\n"
+            % (
+                road_test,
+                swap_value,
+                ltgt,
+                swap_chainage,
+                swap_chainage,
+                road_test,
+                swap_value,
+            ),
+        )
 
     def add_report_clause(self, clause_name):
         self.reportSQL += (
