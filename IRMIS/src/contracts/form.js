@@ -1,4 +1,6 @@
 window.addEventListener("load", () => {
+    const navigationLink = document.getElementsByClassName("discard-link");
+
     const status = document.getElementById("id_status");
     const startDate = document.getElementById("id_start_date");
     const endDate = document.getElementById("id_end_date");
@@ -8,6 +10,13 @@ window.addEventListener("load", () => {
     const amendmentStartDate = document.getElementById("id_amendment_start_date");
 
     let originalForm = {};
+    let currentForm = {};
+
+    navigationLink.forEach(link => {
+        link.addEventListener("click", () => {
+            currentForm["status"] = status.value;
+        });
+    });
 
     if (status) {
         originalForm["status"] = status.value;
