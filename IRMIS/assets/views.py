@@ -1723,6 +1723,8 @@ class ExcelDataSourceIqy(TemplateView):
 class ExcelDataSource(TemplateView):
     """
     Connection endpoint for an .iqy file generating an HTML table
+
+    Returns arbitrary road_codes
     """
 
     template_name = "assets/named_tuple_table.html"
@@ -1737,8 +1739,84 @@ class ExcelDataSource(TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context["objects"], context["fields"] = BreakpointRelationships.excel_report(
-            asset_codes=self.request.GET.getlist("asset_code")
+
+        if "asset_code" in self.request.GET:
+            asset_codes = self.request.GET.getlist("asset_code")
+
+        elif "asset_class" in self.request.GET:
+            asset_codes = Road.objects.filter(
+                asset_class__in=self.request.GET.getlist("asset_class")
+            ).values_list("road_code")
+
+        (
+            context["objects"],
+            context["fields"],
+        ) = BreakpointRelationships.excel_report_cached(asset_codes=asset_codes)
+        return context
+
+
+class ExcelInventoryMunicipal(TemplateView):
+    """
+    Connection endpoint for Municipal roads
+    """
+
+    template_name = "assets/named_tuple_table.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        (
+            context["objects"],
+            context["fields"],
+        ) = BreakpointRelationships.excel_report_cached(
+            asset_codes=list(
+                Road.objects.filter(asset_class="MUN").values_list(
+                    "road_code", flat=True
+                )
+            )
+        )
+        return context
+
+
+class ExcelInventoryNational(TemplateView):
+    """
+    Connection endpoint for National roads
+    """
+
+    template_name = "assets/named_tuple_table.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        (
+            context["objects"],
+            context["fields"],
+        ) = BreakpointRelationships.excel_report_cached(
+            asset_codes=list(
+                Road.objects.filter(asset_class="NAT").values_list(
+                    "road_code", flat=True
+                )
+            )
+        )
+        return context
+
+
+class ExcelInventoryRural(TemplateView):
+    """
+    Connection endpoint for Rural roads
+    """
+
+    template_name = "assets/named_tuple_table.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        (
+            context["objects"],
+            context["fields"],
+        ) = BreakpointRelationships.excel_report_cached(
+            asset_codes=list(
+                Road.objects.filter(asset_class="RUR").values_list(
+                    "road_code", flat=True
+                )
+            )
         )
         return context
 
@@ -1746,6 +1824,16 @@ class ExcelDataSource(TemplateView):
 class SurveySource(ExcelDataSource):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
+
+        # Distinct asset codes via query params
+        if "asset_code" in self.request.GET:
+            asset_codes = self.request.GET.getlist("asset_code")
+
+        elif "asset_class" in self.request.GET:
+            asset_codes = Road.objects.filter(
+                asset_class__in=self.request.GET.getlist("asset_class")
+            ).values_list("road_code")
+
         context["objects"], context["fields"] = BreakpointRelationships.excel_report(
             asset_codes=self.request.GET.getlist("asset_code")
         )
