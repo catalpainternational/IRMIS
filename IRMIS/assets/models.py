@@ -302,6 +302,7 @@ class Survey(models.Model):
         validators=[no_spaces],
         blank=True,
         null=True,
+        db_index=True,
         max_length=15,
     )
     asset_code = models.CharField(
@@ -309,6 +310,7 @@ class Survey(models.Model):
         validators=[no_spaces],
         blank=True,
         null=True,
+        db_index=True,
         max_length=25,
     )
     # a disconnected reference to the road record this survey relates to

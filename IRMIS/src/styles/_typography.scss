@@ -51,16 +51,20 @@ label {
 }
 
 a {
-    color: $dark-green;
     line-height: 11px;
     font-weight: 700;
     font-size: 14px;
+    color: $green;
 
     &:hover {
         text-decoration: none;
         color: $dark-green;
         cursor: pointer;
     }
+}
+
+.registration-content a {
+    color: $darker-gray;
 }
 
 #side-menu a {
@@ -320,7 +324,6 @@ section a {
     line-height: 16px;
     font-weight: 500;
     font-size: 16px;
-    color: $green;
 }
 
 table:not(.dataTable) {
@@ -347,8 +350,8 @@ table.dataTable {
     }
 
     a {
-        color: $green !important;
         font-weight: 400;
+        color: $green;
     }
 
     tr.selected {

@@ -1,4 +1,5 @@
 import "./contracts/side_menu";
+import "./contracts/feedback";
 import "./contracts/select2";
 import "./contracts/table";
 import "./contracts/modal";
