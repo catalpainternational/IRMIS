@@ -44,6 +44,7 @@ edit_base {
         }
 
         a.table-toggle {
+            color: $darker-gray;
             margin-top: 25px;
 
             &:first-of-type {
@@ -70,6 +71,7 @@ edit_traffic,
 edit_social_economic,
 edit_maintenance,
 edit_environment,
+edit_media,
 edit_history {
     section {
         max-width: $max-width;

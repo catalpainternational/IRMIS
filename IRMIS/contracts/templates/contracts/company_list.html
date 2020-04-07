@@ -20,8 +20,8 @@
                 <th>{% trans "Edit" %}</th>
                 {% endif %}
                 <th>{% trans "Name" %}</th>
-                <th>{% trans "Total Contracts Amount" %}</th>
                 <th>{% trans "Total Contracts" %}</th>
+                <th>{% trans "Active Contracts" %}</th>
             </tr>
         </thead>
         <tbody>
@@ -41,8 +41,8 @@
                 </td>
                 {% endif %}
                 <td><a href="{% url 'contract-company-detail' company.id %}">{{ company.name }}</a></td>
-                <td>{{ company.total_contracts_amount }}</td>
                 <td>{{ company.total_contracts }}</td>
+                <td>{{ company.total_contracts_amount }}</td>
             </tr>
             {% endfor %}
         </tbody>
