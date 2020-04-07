@@ -6,6 +6,9 @@ window.addEventListener("load", () => {
     const name = document.getElementById("id_name");
     const code = document.getElementById("id_code");
     const description = document.getElementById("id_description");
+    const assetCode = document.getElementsByClassName("asset-code");
+    const assetStartChainage = document.getElementsByClassName("asset-start-chainage");
+    const assetEndChainage = document.getElementsByClassName("asset-end-chainage");
     const typeOfWork = document.getElementById("id_type_of_work");
     const startDate = document.getElementById("id_start_date");
     const endDate = document.getElementById("id_end_date");
@@ -21,12 +24,15 @@ window.addEventListener("load", () => {
         link.addEventListener("click", () => {
             const backUrl = link.dataset.back;
 
-            currentForm["status"] = status.value;
-            currentForm["program"] = program.value;
-            currentForm["name"] = name.value;
-            currentForm["code"] = code.value;
-            currentForm["description"] = description.value;
-            currentForm["typeOfWork"] = typeOfWork.value;
+            saveValue(currentForm, status);
+            saveValue(currentForm, program);
+            saveValue(currentForm, name);
+            saveValue(currentForm, code);
+            saveValue(currentForm, description);
+            saveFormsetValue(currentForm, assetCode);
+            saveFormsetValue(currentForm, assetStartChainage);
+            saveFormsetValue(currentForm, assetEndChainage);
+            saveValue(currentForm, typeOfWork);
 
             if (JSON.stringify(originalForm) !== JSON.stringify(currentForm)) {
                 document.dispatchEvent(new CustomEvent("confirm-changes", { detail: { backUrl: backUrl } }));
@@ -36,29 +42,16 @@ window.addEventListener("load", () => {
         });
     });
 
-    if (status) {
-        originalForm["status"] = status.value;
-    }
-
-    if (program) {
-        originalForm["program"] = program.value;
-    }
-
-    if (name) {
-        originalForm["name"] = name.value;
-    }
-
-    if (code) {
-        originalForm["code"] = code.value;
-    }
-
-    if (description) {
-        originalForm["description"] = description.value;
-    }
-
-    if (typeOfWork) {
-        originalForm["typeOfWork"] = typeOfWork.value;
-    }
+    saveValue(originalForm, status);
+    saveValue(originalForm, status);
+    saveValue(originalForm, program);
+    saveValue(originalForm, name);
+    saveValue(originalForm, code);
+    saveValue(originalForm, description);
+    saveFormsetValue(originalForm, assetCode);
+    saveFormsetValue(originalForm, assetStartChainage);
+    saveFormsetValue(originalForm, assetEndChainage);
+    saveValue(originalForm, typeOfWork);
 
     if (startDate) {
         startDate.type = "date";
@@ -84,3 +77,19 @@ window.addEventListener("load", () => {
         amendmentStartDate.type = "date";
     }
 });
+
+function saveValue(state, field) {
+    if (field) {
+        state[field.name] = field.value;
+    }
+}
+
+function saveFormsetValue(state, field) {
+    if (field.length) {
+        for (let index = 0; index < field.length; index++) {
+            const element = field.item(index);
+
+            state[element.name] = element.value;
+        }
+    }
+}
