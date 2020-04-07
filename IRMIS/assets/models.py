@@ -66,7 +66,10 @@ def no_spaces(value):
         )
 
 
-# We can generate this namedtuple from a query but it won't be cache-able
+# We usually generate namedtuple from a query.
+# However to be pickle-able (ie via Django's caching system)
+# it needs to be defined at the class level.
+# Add additional columns to the Excel export here and in the SQL code.
 Result = namedtuple(
     "Result",
     (
@@ -78,11 +81,23 @@ Result = namedtuple(
         "length",
         "surface_type",
         "terrain",
+        "last_treatment",
+        "average_roughness",
         "roughness",
         "surface_condition",
         "population",
     ),
 )
+
+
+class SchemaError(TypeError):
+    """
+    This happens when the result from the cursor does not match the
+    named tuple which we're trying to mutate it into. Check that the
+    fields on the named tuple match the fields on the cursor.
+    """
+
+    pass
 
 
 def namedtuple_query(sql, params=None, nt_result=None):
@@ -96,7 +111,14 @@ def namedtuple_query(sql, params=None, nt_result=None):
             nt_result = namedtuple(
                 "Result", [column.name for column in cur.description]
             )
-        objects = [nt_result(*row) for row in cur.fetchall()]
+        try:
+            objects = [nt_result(*row) for row in cur.fetchall()]
+        except TypeError as e:
+            raise SchemaError(
+                "Named tuple %s did not match columns %s",
+                nt_result,
+                [column.name for column in cur.description],
+            ) from e
         return objects, nt_result._fields
 
 
@@ -1860,7 +1882,10 @@ class BreakpointRelationships(models.Model):
 >>> from assets.models import RoughnessSurvey
 >>> RoughnessSurvey.refresh_aggregates()
 >>> BreakpointRelationships.refresh()
->>> BreakpointRelationships.excel_export(road_codes)
+>>> BreakpointRelationships.excel_report(road_codes)
+
+>>> BreakpointRelationships.excel_report(road_codes)
+>>> BreakpointRelationships.excel_report_cached(road_codes)
     """
 
     class Meta:
@@ -1957,7 +1982,7 @@ class BreakpointRelationships(models.Model):
 
     @staticmethod
     def excel_report_cached(
-        asset_codes: Iterable[str], timeout: int = (60 * 60 * 24), version: int = 1
+        asset_codes: Iterable[str], timeout: int = (60 * 60 * 24), version: int = 2
     ):
         """
         Returns cached rows (cache key is road code)

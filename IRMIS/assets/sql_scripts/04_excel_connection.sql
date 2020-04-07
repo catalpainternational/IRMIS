@@ -1,3 +1,6 @@
+-- This is necessary despite the 'CREATE OR REPLACE' as argument types changed (added average roughness)
+DROP FUNCTION IF EXISTS assets_excel_generator;
+
 CREATE OR REPLACE FUNCTION assets_excel_generator(
     in road_codes text[]
 ) RETURNS TABLE(
@@ -9,6 +12,8 @@ CREATE OR REPLACE FUNCTION assets_excel_generator(
     "length" int,
     "surface_type" text,
     "terrain" text,
+	"last_treatment" text, -- Placeholder (for now)
+	"average_roughness" text,
 	"roughness" text,
     "surface_condition" text,
     "population" int
@@ -16,7 +21,7 @@ CREATE OR REPLACE FUNCTION assets_excel_generator(
 
 WITH src AS (
     SELECT * FROM assets_crosstab_generator($1, 
-    ARRAY['asset_class', 'surface_type', 'terrain_class', 'municipality', 'aggregate_roughness', 'surface_condition'])
+    ARRAY['asset_class', 'surface_type', 'terrain_class', 'municipality', 'aggregate_roughness', 'avg_roughness', 'surface_condition'])
 ) 
 SELECT 
 	key_asset_class.value AS "asset_class",
@@ -28,7 +33,9 @@ SELECT
 
 	key_surface_type.value AS "surface_type",
 	key_terrain_class.value AS "terrain_class",
-	key_aggregate_roughness.value AS "roughness",
+	NULL::text AS "last_treatment",
+	key_avg_roughness.value AS "avg_roughness", -- This is an average IRI
+	key_aggregate_roughness.value AS "roughness", -- good, fair, poor, bad
 	key_surface_condition.value AS "surface_condition",
 	(null)::int AS population
 	
@@ -43,6 +50,9 @@ SELECT
 	LEFT JOIN
 		(SELECT * FROM src WHERE key = 'terrain_class') key_terrain_class
 	ON (key_terrain_class.asset_code = key_municipality.asset_code AND  key_terrain_class.lower = key_municipality.lower)
+	LEFT JOIN
+		(SELECT * FROM src WHERE key = 'avg_roughness') key_avg_roughness
+	ON (key_avg_roughness.asset_code = key_municipality.asset_code AND  key_avg_roughness.lower = key_municipality.lower)
 	LEFT JOIN
 		(SELECT * FROM src WHERE key = 'aggregate_roughness') key_aggregate_roughness
 	ON (key_aggregate_roughness.asset_code = key_municipality.asset_code AND  key_aggregate_roughness.lower = key_municipality.lower)

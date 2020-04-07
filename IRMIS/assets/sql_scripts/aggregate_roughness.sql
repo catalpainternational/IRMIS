@@ -70,12 +70,12 @@ BEGIN;
 	UPDATE roughness_temp SET roughness_class = 'good' WHERE asset_class = 'MUN' AND roughness >= 0.01 AND roughness < 4;
 	UPDATE roughness_temp SET roughness_class = 'fair' WHERE asset_class = 'MUN' AND roughness >= 4 AND roughness < 6;
 	UPDATE roughness_temp SET roughness_class = 'poor' WHERE asset_class = 'MUN' AND roughness >= 6 AND roughness < 10;
-	UPDATE roughness_temp SET roughness_class = 'verypoor' WHERE asset_class = 'MUN' AND roughness >= 10;
+	UPDATE roughness_temp SET roughness_class = 'bad' WHERE asset_class = 'MUN' AND roughness >= 10;
 
 	UPDATE roughness_temp SET roughness_class = 'good' WHERE asset_class = 'NAT' AND roughness >= 0.01 AND roughness < 6;
 	UPDATE roughness_temp SET roughness_class = 'fair' WHERE asset_class = 'NAT' AND roughness >= 6 AND roughness < 10;
 	UPDATE roughness_temp SET roughness_class = 'poor' WHERE asset_class = 'NAT' AND roughness >= 10 AND roughness < 14;
-	UPDATE roughness_temp SET roughness_class = 'verypoor' WHERE asset_class = 'NAT' AND roughness >= 14;
+	UPDATE roughness_temp SET roughness_class = 'bad' WHERE asset_class = 'NAT' AND roughness >= 14;
 COMMIT;
 
 BEGIN;
@@ -110,6 +110,7 @@ BEGIN;
 			max(end_chainage) AS end_chainage,
 			min(roughness) AS min_roughness,
 			max(roughness) AS max_roughness,
+			round(avg(roughness),2) AS avg_roughness,
 			min(date_surveyed) AS date_surveyed,
 			now() AS date_updated,
 			now() AS date_created
@@ -198,7 +199,7 @@ BEGIN;
 		date_updated,
 		start_chainage AS chainage_start, 
 		end_chainage AS chainage_end,
-		hstore(ARRAY['aggregate_roughness', "roughness_class", 'min_roughness', "min_roughness"::text, 'max_roughness', "max_roughness"::text]),
+		hstore(ARRAY['aggregate_roughness', "roughness_class", 'min_roughness', "min_roughness"::text, 'max_roughness', "max_roughness"::text, 'avg_roughness', "avg_roughness"::text]),
 		--road_code is never set for a road survey,
 		(SELECT id FROM auth_user WHERE username = 'survey_import') user_id,
 		date_surveyed,
