@@ -10,6 +10,10 @@ window.addEventListener("load", () => {
     const assetStartChainage = document.getElementsByClassName("asset-start-chainage");
     const assetEndChainage = document.getElementsByClassName("asset-end-chainage");
     const typeOfWork = document.getElementById("id_type_of_work");
+    const fundingSource = document.getElementById("id_funding_source");
+    const donor = document.getElementById("id_donor");
+    const budgetValue = document.getElementsByClassName("budget-value");
+    const budgetYear = document.getElementsByClassName("budget-year");
     const startDate = document.getElementById("id_start_date");
     const endDate = document.getElementById("id_end_date");
     const announcementStartDate = document.getElementById("id_announcement_date");
@@ -24,6 +28,7 @@ window.addEventListener("load", () => {
         link.addEventListener("click", () => {
             const backUrl = link.dataset.back;
 
+            // Project details
             saveValue(currentForm, status);
             saveValue(currentForm, program);
             saveValue(currentForm, name);
@@ -34,6 +39,12 @@ window.addEventListener("load", () => {
             saveFormsetValue(currentForm, assetEndChainage);
             saveValue(currentForm, typeOfWork);
 
+            // Project financials
+            saveValue(currentForm, fundingSource);
+            saveValue(currentForm, donor);
+            saveFormsetValue(currentForm, budgetValue);
+            saveFormsetValue(currentForm, budgetYear);
+
             if (JSON.stringify(originalForm) !== JSON.stringify(currentForm)) {
                 document.dispatchEvent(new CustomEvent("confirm-changes", { detail: { backUrl: backUrl } }));
             } else {
@@ -42,6 +53,7 @@ window.addEventListener("load", () => {
         });
     });
 
+    // Project details
     saveValue(originalForm, status);
     saveValue(originalForm, status);
     saveValue(originalForm, program);
@@ -52,6 +64,12 @@ window.addEventListener("load", () => {
     saveFormsetValue(originalForm, assetStartChainage);
     saveFormsetValue(originalForm, assetEndChainage);
     saveValue(originalForm, typeOfWork);
+
+    // Project financials
+    saveValue(originalForm, fundingSource);
+    saveValue(originalForm, donor);
+    saveFormsetValue(originalForm, budgetValue);
+    saveFormsetValue(originalForm, budgetYear);
 
     if (startDate) {
         startDate.type = "date";
