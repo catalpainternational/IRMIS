@@ -15,6 +15,10 @@ window.addEventListener("load", () => {
     const budgetValue = document.getElementsByClassName("budget-value");
     const budgetYear = document.getElementsByClassName("budget-year");
     const startDate = document.getElementById("id_start_date");
+    const duration = document.getElementById("id_duration");
+    const milestoneDaysOfWork = document.getElementsByClassName("milestone-days-work");
+    const milestoneProgress = document.getElementsByClassName("milestone-progress");
+
     const endDate = document.getElementById("id_end_date");
     const announcementStartDate = document.getElementById("id_announcement_date");
     const submissionStartDate = document.getElementById("id_submission_date");
@@ -45,6 +49,12 @@ window.addEventListener("load", () => {
             saveFormsetValue(currentForm, budgetValue);
             saveFormsetValue(currentForm, budgetYear);
 
+            // Project construction schedule
+            saveValue(currentForm, startDate);
+            saveValue(currentForm, duration);
+            saveFormsetValue(currentForm, milestoneDaysOfWork);
+            saveFormsetValue(currentForm, milestoneProgress);
+
             if (JSON.stringify(originalForm) !== JSON.stringify(currentForm)) {
                 document.dispatchEvent(new CustomEvent("confirm-changes", { detail: { backUrl: backUrl } }));
             } else {
@@ -70,6 +80,12 @@ window.addEventListener("load", () => {
     saveValue(originalForm, donor);
     saveFormsetValue(originalForm, budgetValue);
     saveFormsetValue(originalForm, budgetYear);
+
+    // Project construction schedule
+    saveValue(originalForm, startDate);
+    saveValue(originalForm, duration);
+    saveFormsetValue(originalForm, milestoneDaysOfWork);
+    saveFormsetValue(originalForm, milestoneProgress);
 
     if (startDate) {
         startDate.type = "date";
