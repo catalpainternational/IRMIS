@@ -14,7 +14,15 @@ window.addEventListener("load", () => {
 
     navigationLink.forEach(link => {
         link.addEventListener("click", () => {
+            const backUrl = link.dataset.back;
+
             currentForm["status"] = status.value;
+
+            if (JSON.stringify(originalForm) !== JSON.stringify(currentForm)) {
+                document.dispatchEvent(new CustomEvent("confirm-changes", { detail: { backUrl: backUrl } }));
+            } else {
+                location.href = backUrl;
+            }
         });
     });
 

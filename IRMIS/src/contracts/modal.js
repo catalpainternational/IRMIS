@@ -5,7 +5,6 @@ const csrftoken = document.cookie.replace(/(?:(?:^|.*;\s*)csrftoken\s*\=\s*([^;]
 
 const deleteLink = document.getElementsByClassName("delete-link");
 const deleteAlert = $(".delete-modal");
-const discardLink = document.getElementsByClassName("discard-link");
 const discardAlert = $(".discard-modal");
 const formModalLink = document.getElementsByClassName("form-modal-link");
 const inspectionFormModal = $(".inspection-modal");
@@ -22,13 +21,6 @@ deleteLink.forEach(link => {
     link.addEventListener("click", () => {
         deleteUrl = link.dataset.delete;
         deleteAlert.modal('show');
-    });
-});
-
-discardLink.forEach(link => {
-    link.addEventListener("click", () => {
-        backUrl = link.dataset.back;
-        discardAlert.modal('show');
     });
 });
 
@@ -57,6 +49,11 @@ deleteAlert.on('shown.bs.modal', () => {
             }
         });
     });
+});
+
+document.addEventListener("confirm-changes", (data) => {
+    backUrl = data.detail.backUrl;
+    discardAlert.modal('show');
 });
 
 discardAlert.on('shown.bs.modal', () => {
