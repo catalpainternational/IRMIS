@@ -23,6 +23,15 @@ window.addEventListener("load", () => {
     const submissionDate = document.getElementById("id_submission_date");
     const tenderingCompanies = document.getElementById("id_tendering_companies");
     const evaluationDate = document.getElementById("id_evaluation_date");
+    const address = document.getElementById("id_address");
+    const phone = document.getElementById("id_phone");
+    const email = document.getElementById("id_email");
+    const tin = document.getElementById("id_TIN");
+    const iban = document.getElementById("id_iban");
+    const representativeName = document.getElementById("id_rep_name");
+    const representativePhone = document.getElementById("id_rep_phone");
+    const representativeEmail = document.getElementById("id_rep_email");
+    const womanLed = document.getElementById("id_woman_led");
 
     const endDate = document.getElementById("id_end_date");
     const amendmentStartDate = document.getElementById("id_amendment_start_date");
@@ -56,6 +65,15 @@ window.addEventListener("load", () => {
             saveValue(currentForm, submissionDate);
             saveValue(currentForm, tenderingCompanies);
             saveValue(currentForm, evaluationDate);
+            saveValue(currentForm, address);
+            saveValue(currentForm, phone);
+            saveValue(currentForm, email);
+            saveValue(currentForm, tin);
+            saveValue(currentForm, iban);
+            saveValue(currentForm, representativeName);
+            saveValue(currentForm, representativePhone);
+            saveValue(currentForm, representativeEmail);
+            saveValue(currentForm, womanLed);
 
             if (JSON.stringify(originalForm) !== JSON.stringify(currentForm)) {
                 document.dispatchEvent(new CustomEvent("confirm-changes", { detail: { backUrl: backUrl } }));
@@ -89,6 +107,15 @@ window.addEventListener("load", () => {
     saveValue(originalForm, submissionDate);
     saveValue(originalForm, tenderingCompanies);
     saveValue(originalForm, evaluationDate);
+    saveValue(originalForm, address);
+    saveValue(originalForm, phone);
+    saveValue(originalForm, email);
+    saveValue(originalForm, tin);
+    saveValue(originalForm, iban);
+    saveValue(originalForm, representativeName);
+    saveValue(originalForm, representativePhone);
+    saveValue(originalForm, representativeEmail);
+    saveValue(originalForm, womanLed);
 
     if (startDate) {
         startDate.type = "date";
