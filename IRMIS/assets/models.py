@@ -19,6 +19,7 @@ from typing import Iterable, Union
 from warnings import warn
 
 import importlib_resources as resources
+import re
 from . import sql_scripts
 
 import json
@@ -42,6 +43,8 @@ from google.protobuf.wrappers_pb2 import FloatValue, UInt32Value
 from .geodjango_utils import start_end_point_annos
 from csv_data_sources.models import CsvData
 from .managers import RoughnessManager
+
+cache = caches["default"]
 
 
 def run_script(script_name: str, preamble: str = ""):
@@ -1988,25 +1991,23 @@ class BreakpointRelationships(models.Model):
         Returns cached rows (cache key is road code)
         for Excel report
         """
-        cache = caches["default"]
+
         returns = []
         # Get cached asset codes where possible
+
         for asset_code in asset_codes:
-            report_for_code = cache.get(
-                "excel_report_%s" % (asset_code), version=version
-            )
+            ckey = "excel_report_%s" % (re.sub(r"\W+", "", asset_code))
+            report_for_code = cache.get(ckey, version=version)
             if report_for_code:
                 logger.debug("Cache hit: Excel report %s", asset_code)
             if not report_for_code:
                 logger.debug("Cache miss: Excel report regenerate for %s", asset_code)
                 cache.set(
-                    "excel_report_%s" % (asset_code),
+                    ckey,
                     BreakpointRelationships.excel_report([asset_code]),
                     version=version,
                 )
-                report_for_code = cache.get(
-                    "excel_report_%s" % (asset_code), version=version
-                )
+                report_for_code = cache.get(ckey, version=version)
 
             returns.extend(report_for_code[0])
         return (returns, Result._fields)
