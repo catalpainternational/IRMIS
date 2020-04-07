@@ -1769,8 +1769,10 @@ class ExcelInventoryMunicipal(TemplateView):
             context["fields"],
         ) = BreakpointRelationships.excel_report_cached(
             asset_codes=list(
-                Road.objects.filter(asset_class="MUN").values_list(
-                    "road_code", flat=True
+                set(
+                    Road.objects.filter(asset_class="MUN").values_list(
+                        "road_code", flat=True
+                    )
                 )
             )
         )
@@ -1815,8 +1817,10 @@ class ExcelInventoryRural(TemplateView):
             context["fields"],
         ) = BreakpointRelationships.excel_report_cached(
             asset_codes=list(
-                Road.objects.filter(asset_class="RUR").values_list(
-                    "road_code", flat=True
+                set(
+                    Road.objects.filter(asset_class="RUR").values_list(
+                        "road_code", flat=True
+                    )
                 )
             )
         )
