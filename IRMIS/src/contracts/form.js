@@ -18,11 +18,13 @@ window.addEventListener("load", () => {
     const duration = document.getElementById("id_duration");
     const milestoneDaysOfWork = document.getElementsByClassName("milestone-days-work");
     const milestoneProgress = document.getElementsByClassName("milestone-progress");
+    const projects = document.getElementById("id_projects");
+    const announcementDate = document.getElementById("id_announcement_date");
+    const submissionDate = document.getElementById("id_submission_date");
+    const tenderingCompanies = document.getElementById("id_tendering_companies");
+    const evaluationDate = document.getElementById("id_evaluation_date");
 
     const endDate = document.getElementById("id_end_date");
-    const announcementStartDate = document.getElementById("id_announcement_date");
-    const submissionStartDate = document.getElementById("id_submission_date");
-    const evaluationStartDate = document.getElementById("id_evaluation_date");
     const amendmentStartDate = document.getElementById("id_amendment_start_date");
 
     let originalForm = {};
@@ -32,7 +34,6 @@ window.addEventListener("load", () => {
         link.addEventListener("click", () => {
             const backUrl = link.dataset.back;
 
-            // Project details
             saveValue(currentForm, status);
             saveValue(currentForm, program);
             saveValue(currentForm, name);
@@ -42,18 +43,19 @@ window.addEventListener("load", () => {
             saveFormsetValue(currentForm, assetStartChainage);
             saveFormsetValue(currentForm, assetEndChainage);
             saveValue(currentForm, typeOfWork);
-
-            // Project financials
             saveValue(currentForm, fundingSource);
             saveValue(currentForm, donor);
             saveFormsetValue(currentForm, budgetValue);
             saveFormsetValue(currentForm, budgetYear);
-
-            // Project construction schedule
             saveValue(currentForm, startDate);
             saveValue(currentForm, duration);
             saveFormsetValue(currentForm, milestoneDaysOfWork);
             saveFormsetValue(currentForm, milestoneProgress);
+            saveValue(currentForm, projects);
+            saveValue(currentForm, announcementDate);
+            saveValue(currentForm, submissionDate);
+            saveValue(currentForm, tenderingCompanies);
+            saveValue(currentForm, evaluationDate);
 
             if (JSON.stringify(originalForm) !== JSON.stringify(currentForm)) {
                 document.dispatchEvent(new CustomEvent("confirm-changes", { detail: { backUrl: backUrl } }));
@@ -74,18 +76,19 @@ window.addEventListener("load", () => {
     saveFormsetValue(originalForm, assetStartChainage);
     saveFormsetValue(originalForm, assetEndChainage);
     saveValue(originalForm, typeOfWork);
-
-    // Project financials
     saveValue(originalForm, fundingSource);
     saveValue(originalForm, donor);
     saveFormsetValue(originalForm, budgetValue);
     saveFormsetValue(originalForm, budgetYear);
-
-    // Project construction schedule
     saveValue(originalForm, startDate);
     saveValue(originalForm, duration);
     saveFormsetValue(originalForm, milestoneDaysOfWork);
     saveFormsetValue(originalForm, milestoneProgress);
+    saveValue(originalForm, projects);
+    saveValue(originalForm, announcementDate);
+    saveValue(originalForm, submissionDate);
+    saveValue(originalForm, tenderingCompanies);
+    saveValue(originalForm, evaluationDate);
 
     if (startDate) {
         startDate.type = "date";
@@ -95,16 +98,16 @@ window.addEventListener("load", () => {
         endDate.type = "date";
     }
 
-    if (announcementStartDate) {
-        announcementStartDate.type = "date";
+    if (announcementDate) {
+        announcementDate.type = "date";
     }
 
-    if (submissionStartDate) {
-        submissionStartDate.type = "date";
+    if (submissionDate) {
+        submissionDate.type = "date";
     }
 
-    if (evaluationStartDate) {
-        evaluationStartDate.type = "date";
+    if (evaluationDate) {
+        evaluationDate.type = "date";
     }
 
     if (amendmentStartDate) {
