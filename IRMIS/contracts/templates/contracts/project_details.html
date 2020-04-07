@@ -39,6 +39,7 @@
 
             <div class="form-group">
                 {{ form.status.label_tag }}
+                <span class="required">*</span>
                 <small class="form-text text-muted">{{ form.status.help_text }}</small>
                 {{ form.status }}
                 {% if form.status.errors %}
@@ -54,6 +55,7 @@
 
             <div class="form-group">
                 {{ form.program.label_tag }}
+                <span class="required">*</span>
                 <small class="form-text text-muted">{{ form.program.help_text }}</small>
                 {{ form.program }}
                 {% if form.program.errors %}
@@ -68,6 +70,7 @@
             </div>
             <div class="form-group">
                 {{ form.name.label_tag }}
+                <span class="required">*</span>
                 <small class="form-text text-muted">{{ form.name.help_text }}</small>
                 {{ form.name }}
                 {% if form.name.errors %}
@@ -144,6 +147,7 @@
         <section>
             <div class="form-group">
                 {{ form.type_of_work.label_tag }}
+                <span class="required">*</span>
                 <small class="form-text text-muted">{{ form.type_of_work.help_text }}</small>
                 {{ form.type_of_work }}
                 {% if form.type_of_work.errors %}
@@ -157,6 +161,10 @@
                 {% endif %}
             </div>
         </section>
+
+        <div class="d-flex justify-content-end">
+            <span>[</span><span class="required">*</span><span>]: Mandatory</span>
+        </div>
 
         <div class="align-items-center buttons d-flex justify-content-end">
             <a class="discard-link" data-back="{% url 'contract-project-list' %}">{% trans "Cancel" %}</a>

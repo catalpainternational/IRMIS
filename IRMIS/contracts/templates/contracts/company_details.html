@@ -26,6 +26,7 @@
             <h6>{% trans "Company Details" %}</h6>
             <div class="form-group">
                 {{ form.name.label_tag }}
+                <span class="required">*</span>
                 <small class="form-text text-muted">{{ form.name.help_text }}</small>
                 {{ form.name }}
                 {% if form.name.errors %}
@@ -165,6 +166,11 @@
                 {% endif %}
             </div>
         </section>
+
+        <div class="d-flex justify-content-end">
+            <span>[</span><span class="required">*</span><span>]: Mandatory</span>
+        </div>
+
         <div class="align-items-center buttons d-flex justify-content-end">
             <a class="discard-link" data-back="{% url 'contract-company-list' %}">{% trans "Cancel" %}</a>
             {% if company.id is not None %}
