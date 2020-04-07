@@ -135,10 +135,17 @@ class ProjectMilestoneForm(ModelForm):
         super().__init__(*args, **kwargs)
         self.label_suffix = ""
         self.fields["days_of_work"].widget.attrs.update(
-            {"class": "form-control form-control-sm", "placeholder": "60"}
+            {
+                "class": "milestone-days-work form-control form-control-sm",
+                "placeholder": "60",
+            }
         )
         self.fields["progress"].widget.attrs.update(
-            {"class": "form-control form-control-sm", "min": 0, "max": 100}
+            {
+                "class": "milestone-progress form-control form-control-sm",
+                "min": 0,
+                "max": 100,
+            }
         )
 
     class Meta:
