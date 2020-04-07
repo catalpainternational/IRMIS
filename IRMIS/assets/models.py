@@ -345,7 +345,6 @@ class Survey(models.Model):
         null=True,
         db_index=True,
         max_length=15,
-        db_index=True,
     )
     asset_code = models.CharField(
         verbose_name=_("Asset Code"),
@@ -354,7 +353,6 @@ class Survey(models.Model):
         null=True,
         db_index=True,
         max_length=25,
-        db_index=True,
     )
     # a disconnected reference to the road record this survey relates to
     # for a survey connected to a road, this will be null and the actual value will be in asset_*

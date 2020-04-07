@@ -7,7 +7,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("assets", "0047_survey_report_tables"),
-        ("assets", "0048_merge_20200402_0318"),
+        ("assets", "0049_survey_asset_indices_20200407_0357"),
     ]
 
     operations = []
