@@ -352,6 +352,7 @@ class Survey(models.Model):
         blank=True,
         null=True,
         max_length=25,
+        db_index=True,
     )
     # a disconnected reference to the road record this survey relates to
     # for a survey connected to a road, this will be null and the actual value will be in asset_*
