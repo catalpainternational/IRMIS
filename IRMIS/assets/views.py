@@ -1065,6 +1065,13 @@ ASSET_PREFIXES_MAPPING = {
         "create": None,
         "proto": roads_pb2.Road,
     },
+    "SURV": {
+        "name": "survey",
+        "model": Survey,
+        "update": survey_update,
+        "create": survey_create,
+        "proto": survey_pb2.Survey,
+    },
     "BRDG": {
         "name": "bridge",
         "model": Bridge,
