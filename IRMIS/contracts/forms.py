@@ -113,10 +113,13 @@ class ProjectBudgetForm(ModelForm):
         super().__init__(*args, **kwargs)
         self.label_suffix = ""
         self.fields["approved_value"].widget.attrs.update(
-            {"class": "form-control form-control-sm", "placeholder": "$100.000"}
+            {
+                "class": "budget-value form-control form-control-sm",
+                "placeholder": "$100.000",
+            }
         )
         self.fields["year"].widget.attrs.update(
-            {"class": "form-control form-control-sm"}
+            {"class": "budget-year form-control form-control-sm"}
         )
 
     class Meta:
