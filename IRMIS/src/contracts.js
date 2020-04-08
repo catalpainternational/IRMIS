@@ -4,6 +4,7 @@ import "./contracts/select2";
 import "./contracts/table";
 import "./contracts/modal";
 import "./contracts/form";
+import "./contracts/nav";
 import "./top_menu";
 
 window.addEventListener("load", () => {

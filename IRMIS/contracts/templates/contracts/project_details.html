@@ -18,10 +18,10 @@
         <span>(coming soon)</span>
     </a>
     {% else %}
-    <a href="{% url 'contract-projectfinancials-update' project.id %}">
+    <a data-next="{% url 'contract-projectfinancials-update' project.id %}">
         <h6>{% trans "Financials" %}</h6>
     </a>
-    <a href="{% url 'contract-projectconstructionschedule-update' project.id %}">
+    <a data-next="{% url 'contract-projectconstructionschedule-update' project.id %}">
         <h6>{% trans "Construction Schedule" %}</h6>
     </a>
     <a class="align-items-center d-flex flex-column">

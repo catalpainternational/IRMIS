@@ -21,13 +21,13 @@
         <span>(coming soon)</span>
     </a>
     {% else %}
-    <a href="{% url 'contract-contractinspection-list' contract.id %}">
+    <a data-next="{% url 'contract-contractinspection-list' contract.id %}">
         <h6>{% trans "Inspections" %}</h6>
     </a>
-    <a href="{% url 'contract-contractpayment-list' contract.id %}">
+    <a data-next="{% url 'contract-contractpayment-list' contract.id %}">
         <h6>{% trans "Payments" %}</h6>
     </a>
-    <a href="{% url 'contract-socialsafeguarddata-list' contract.id %}">
+    <a data-next="{% url 'contract-socialsafeguarddata-list' contract.id %}">
         <h6>{% trans "Social Safeguard" %}</h6>
     </a>
     <a class="align-items-center d-flex flex-column">
