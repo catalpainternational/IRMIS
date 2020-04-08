@@ -24,7 +24,7 @@ CREATE OR REPLACE FUNCTION assets_excel_generator(
 
 WITH src AS (
     SELECT * FROM assets_crosstab_generator($1, 
-    ARRAY['asset_class', 'asset_name', 'surface_type', 'terrain_class', 'municipality', 'aggregate_roughness', 'avg_roughness', 'surface_condition', 'poulation'])
+    ARRAY['asset_class', 'asset_name', 'surface_type', 'terrain_class', 'municipality', 'aggregate_roughness', 'last_treatment', 'avg_roughness', 'surface_condition', 'poulation'])
 ) 
 SELECT 
 	key_asset_class.value AS "asset_class",
