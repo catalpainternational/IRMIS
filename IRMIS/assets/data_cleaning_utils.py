@@ -381,6 +381,10 @@ ROAD_SURVEY_VALUE_MAPPINGS = [
     ("total_width", "total_width", str_transform),
     ("number_lanes", "number_lanes", str_transform),
     ("rainfall", "rainfall", str_transform),
+    ("population", "population", str_transform),
+    ("construction_year", "construction_year", str_transform),
+    # `core` is a `nullable boolean` - handled as an Int, and here stored as a string
+    ("core", "core", str_transform),
     # These are actually FK Ids
     ("municipality", "administrative_area", str_transform),
     ("asset_condition", "asset_condition", str_transform),
