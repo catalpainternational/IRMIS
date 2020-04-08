@@ -49,60 +49,64 @@ window.addEventListener("load", () => {
     let originalForm = {};
     let currentForm = {};
 
+    document.addEventListener("compare-changes", (data) => {
+        const nextUrl = data.detail.nextUrl;
+
+        saveValue(currentForm, status);
+        saveValue(currentForm, program);
+        saveValue(currentForm, name);
+        saveValue(currentForm, code);
+        saveValue(currentForm, description);
+        saveFormsetValue(currentForm, assetCode);
+        saveFormsetValue(currentForm, assetStartChainage);
+        saveFormsetValue(currentForm, assetEndChainage);
+        saveValue(currentForm, typeOfWork);
+        saveValue(currentForm, fundingSource);
+        saveValue(currentForm, donor);
+        saveFormsetValue(currentForm, budgetValue);
+        saveFormsetValue(currentForm, budgetYear);
+        saveValue(currentForm, startDate);
+        saveValue(currentForm, duration);
+        saveFormsetValue(currentForm, milestoneDaysOfWork);
+        saveFormsetValue(currentForm, milestoneProgress);
+        saveValue(currentForm, projects);
+        saveValue(currentForm, announcementDate);
+        saveValue(currentForm, submissionDate);
+        saveValue(currentForm, tenderingCompanies);
+        saveValue(currentForm, evaluationDate);
+        saveValue(currentForm, address);
+        saveValue(currentForm, phone);
+        saveValue(currentForm, email);
+        saveValue(currentForm, tin);
+        saveValue(currentForm, iban);
+        saveValue(currentForm, representativeName);
+        saveValue(currentForm, representativePhone);
+        saveValue(currentForm, representativeEmail);
+        saveValue(currentForm, womanLed);
+        saveValue(currentForm, tender);
+        saveValue(currentForm, contractCode);
+        saveValue(currentForm, contractor);
+        saveValue(currentForm, subcontractor);
+        saveFormsetValue(currentForm, supervisorName);
+        saveFormsetValue(currentForm, supervisorPhone);
+        saveValue(currentForm, endDate);
+        saveValue(currentForm, dlp);
+        saveFormsetValue(currentForm, amendmentValue);
+        saveFormsetValue(currentForm, amendmentYear);
+        saveValue(currentForm, amendmentStartDate);
+        saveValue(currentForm, amendmentDuration);
+        saveValue(currentForm, amendmentDescription);
+
+        if (JSON.stringify(originalForm) !== JSON.stringify(currentForm)) {
+            document.dispatchEvent(new CustomEvent("confirm-changes", { detail: { nextUrl: nextUrl } }));
+        } else {
+            location.href = nextUrl;
+        }
+    });
+
     navigationLink.forEach(link => {
         link.addEventListener("click", () => {
-            const backUrl = link.dataset.back;
-
-            saveValue(currentForm, status);
-            saveValue(currentForm, program);
-            saveValue(currentForm, name);
-            saveValue(currentForm, code);
-            saveValue(currentForm, description);
-            saveFormsetValue(currentForm, assetCode);
-            saveFormsetValue(currentForm, assetStartChainage);
-            saveFormsetValue(currentForm, assetEndChainage);
-            saveValue(currentForm, typeOfWork);
-            saveValue(currentForm, fundingSource);
-            saveValue(currentForm, donor);
-            saveFormsetValue(currentForm, budgetValue);
-            saveFormsetValue(currentForm, budgetYear);
-            saveValue(currentForm, startDate);
-            saveValue(currentForm, duration);
-            saveFormsetValue(currentForm, milestoneDaysOfWork);
-            saveFormsetValue(currentForm, milestoneProgress);
-            saveValue(currentForm, projects);
-            saveValue(currentForm, announcementDate);
-            saveValue(currentForm, submissionDate);
-            saveValue(currentForm, tenderingCompanies);
-            saveValue(currentForm, evaluationDate);
-            saveValue(currentForm, address);
-            saveValue(currentForm, phone);
-            saveValue(currentForm, email);
-            saveValue(currentForm, tin);
-            saveValue(currentForm, iban);
-            saveValue(currentForm, representativeName);
-            saveValue(currentForm, representativePhone);
-            saveValue(currentForm, representativeEmail);
-            saveValue(currentForm, womanLed);
-            saveValue(currentForm, tender);
-            saveValue(currentForm, contractCode);
-            saveValue(currentForm, contractor);
-            saveValue(currentForm, subcontractor);
-            saveFormsetValue(currentForm, supervisorName);
-            saveFormsetValue(currentForm, supervisorPhone);
-            saveValue(currentForm, endDate);
-            saveValue(currentForm, dlp);
-            saveFormsetValue(currentForm, amendmentValue);
-            saveFormsetValue(currentForm, amendmentYear);
-            saveValue(currentForm, amendmentStartDate);
-            saveValue(currentForm, amendmentDuration);
-            saveValue(currentForm, amendmentDescription);
-
-            if (JSON.stringify(originalForm) !== JSON.stringify(currentForm)) {
-                document.dispatchEvent(new CustomEvent("confirm-changes", { detail: { backUrl: backUrl } }));
-            } else {
-                location.href = backUrl;
-            }
+            document.dispatchEvent(new CustomEvent("compare-changes", { detail: { nextUrl: link.dataset.back } }));
         });
     });
 

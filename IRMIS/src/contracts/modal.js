@@ -12,7 +12,7 @@ const paymentFormModal = $(".payment-modal");
 const socialDataFormModal = $(".social-data-modal");
 
 let deleteUrl;
-let backUrl;
+let nextUrl;
 let requestMethod;
 let requestData;
 let requestId;
@@ -52,13 +52,13 @@ deleteAlert.on('shown.bs.modal', () => {
 });
 
 document.addEventListener("confirm-changes", (data) => {
-    backUrl = data.detail.backUrl;
+    nextUrl = data.detail.nextUrl;
     discardAlert.modal('show');
 });
 
 discardAlert.on('shown.bs.modal', () => {
     document.getElementsByClassName("discard-changes").item(0).addEventListener("click", () => {
-        location.href = backUrl;
+        location.href = nextUrl;
     });
 });
 
