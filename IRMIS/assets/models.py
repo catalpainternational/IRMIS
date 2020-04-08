@@ -78,6 +78,7 @@ Result = namedtuple(
     (
         "asset_class",
         "asset_code",
+        "asset_name",
         "municipality",
         "chainage_start",
         "chainage_end",
@@ -1985,7 +1986,7 @@ class BreakpointRelationships(models.Model):
 
     @staticmethod
     def excel_report_cached(
-        asset_codes: Iterable[str], timeout: int = (60 * 60 * 24), version: int = 2
+        asset_codes: Iterable[str], timeout: int = (60 * 60 * 24), version: int = 3
     ):
         """
         Returns cached rows (cache key is road code)

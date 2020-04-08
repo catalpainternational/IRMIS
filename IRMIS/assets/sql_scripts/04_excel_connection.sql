@@ -6,7 +6,10 @@ CREATE OR REPLACE FUNCTION assets_excel_generator(
 ) RETURNS TABLE(
 	"asset_class" text,
 	"asset_code" text,
+	"asset_name" text,
+
 	"municipality" text,
+
     "chainage_start" int,
     "chainage_end" int,
     "length" int,
@@ -16,16 +19,18 @@ CREATE OR REPLACE FUNCTION assets_excel_generator(
 	"average_roughness" text,
 	"roughness" text,
     "surface_condition" text,
-    "population" int
+    "population" text
 ) AS $$
 
 WITH src AS (
     SELECT * FROM assets_crosstab_generator($1, 
-    ARRAY['asset_class', 'surface_type', 'terrain_class', 'municipality', 'aggregate_roughness', 'avg_roughness', 'surface_condition'])
+    ARRAY['asset_class', 'asset_name', 'surface_type', 'terrain_class', 'municipality', 'aggregate_roughness', 'avg_roughness', 'surface_condition', 'poulation'])
 ) 
 SELECT 
 	key_asset_class.value AS "asset_class",
 	key_municipality.asset_code,
+	key_asset_name.value AS "asset_name",
+
 	key_municipality.value AS "municipality",
 	key_municipality.lower::int,
 	key_municipality.upper::int,
@@ -33,17 +38,20 @@ SELECT
 
 	key_surface_type.value AS "surface_type",
 	key_terrain_class.value AS "terrain_class",
-	NULL::text AS "last_treatment",
+	key_last_treatment.value AS "last_treatment",
 	key_avg_roughness.value AS "avg_roughness", -- This is an average IRI
 	key_aggregate_roughness.value AS "roughness", -- good, fair, poor, bad
 	key_surface_condition.value AS "surface_condition",
-	(null)::int AS population
+	key_population.value AS "population"
 	
 	FROM 
 		(SELECT * FROM src WHERE key = 'municipality') key_municipality
 	LEFT JOIN
 		(SELECT * FROM src WHERE key = 'surface_type') key_surface_type
 	ON (key_surface_type.asset_code = key_municipality.asset_code AND  key_surface_type.lower = key_municipality.lower)
+	LEFT JOIN
+		(SELECT * FROM src WHERE key = 'asset_name') key_asset_name
+	ON (key_asset_name.asset_code = key_municipality.asset_code AND  key_asset_name.lower = key_municipality.lower)
 	LEFT JOIN
 		(SELECT * FROM src WHERE key = 'asset_class') key_asset_class
 	ON (key_asset_class.asset_code = key_municipality.asset_code AND  key_asset_class.lower = key_municipality.lower)
@@ -59,5 +67,12 @@ SELECT
 	LEFT JOIN
 		(SELECT * FROM src WHERE key = 'surface_condition') key_surface_condition
 	ON (key_surface_condition.asset_code = key_municipality.asset_code AND  key_surface_condition.lower = key_municipality.lower)
+	LEFT JOIN
+		(SELECT * FROM src WHERE key = 'population') key_population
+	ON (key_population.asset_code = key_municipality.asset_code AND  key_population.lower = key_municipality.lower)
+	LEFT JOIN
+		(SELECT * FROM src WHERE key = 'last_treatment') key_last_treatment
+	ON (key_last_treatment.asset_code = key_municipality.asset_code AND  key_last_treatment.lower = key_municipality.lower)
+
 
 $$ LANGUAGE sql;
