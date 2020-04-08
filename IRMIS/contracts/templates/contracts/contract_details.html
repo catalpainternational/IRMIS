@@ -132,7 +132,7 @@
         </section>
         <section class="no-max-width">
             <h6>{% trans "Supervisor" %}</h6>
-            <div class="flex-column form-row">
+            <div class="flex-column form-row formset">
                 {{ supervisor.management_form }}
                 {% for form in supervisor %}
                 <div class="col d-flex flex-wrap">
@@ -161,7 +161,7 @@
         </section>
         <section>
             <h6>{% trans "Contract Value Total" %}</h6>
-            <div class="flex-column form-row">
+            <div class="flex-column form-row formset">
                 {{ budget.management_form }}
                 {% for form in budget %}
                 <div class="col d-flex flex-wrap">
@@ -256,7 +256,7 @@
         </section>
         <section>
             <h6>{% trans "Milestones" %}</h6>
-            <div class="flex-column form-row">
+            <div class="flex-column form-row formset">
                 {{ milestone.management_form }}
                 {% for form in milestone %}
                 <div class="col d-flex flex-wrap">
@@ -285,7 +285,7 @@
         </section class="no-max-width">
         <section>
             <h6>{% trans "Amendments" %}</h6>
-            <div class="flex-column form-row">
+            <div class="flex-column form-row formset">
                 {{ amendment.management_form }}
                 {% for form in amendment %}
                 <div class="col d-flex flex-wrap">
