@@ -1,6 +1,4 @@
 window.addEventListener("load", () => {
-    const navigationLink = document.getElementsByClassName("discard-link");
-
     const status = document.getElementById("id_status");
     const program = document.getElementById("id_program");
     const name = document.getElementById("id_name");
@@ -104,13 +102,6 @@ window.addEventListener("load", () => {
         }
     });
 
-    navigationLink.forEach(link => {
-        link.addEventListener("click", () => {
-            document.dispatchEvent(new CustomEvent("compare-changes", { detail: { nextUrl: link.dataset.back } }));
-        });
-    });
-
-    // Project details
     saveValue(originalForm, status);
     saveValue(originalForm, status);
     saveValue(originalForm, program);

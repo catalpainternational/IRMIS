@@ -6,12 +6,21 @@ import "./contracts/modal";
 import "./contracts/form";
 import "./top_menu";
 
-const printButton = document.getElementsByClassName("print-profile").item(0);
+window.addEventListener("load", () => {
+    const printButton = document.getElementsByClassName("print-profile").item(0);
+    const navigationLink = document.getElementsByClassName("discard-link");
 
-window.goBack = () => window.location.pathname = "";
+    window.goBack = () => window.location.pathname = "";
 
-if (printButton) {
-    printButton.addEventListener("click", () => {
-        window.print();
+    if (printButton) {
+        printButton.addEventListener("click", () => {
+            window.print();
+        });
+    }
+
+    navigationLink.forEach(link => {
+        link.addEventListener("click", () => {
+            document.dispatchEvent(new CustomEvent("compare-changes", { detail: { nextUrl: link.dataset.back } }));
+        });
     });
-}
+});
