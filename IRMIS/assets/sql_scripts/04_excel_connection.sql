@@ -18,13 +18,13 @@ CREATE OR REPLACE FUNCTION assets_excel_generator(
 	"last_treatment" text, -- Placeholder (for now)
 	"average_roughness" text,
 	"roughness" text,
-    "surface_condition" text,
+    "asset_condition" text,
     "population" text
 ) AS $$
 
 WITH src AS (
     SELECT * FROM assets_crosstab_generator($1, 
-    ARRAY['asset_class', 'asset_name', 'surface_type', 'terrain_class', 'municipality', 'aggregate_roughness', 'last_treatment', 'avg_roughness', 'surface_condition', 'poulation'])
+    ARRAY['asset_class', 'asset_name', 'surface_type', 'terrain_class', 'municipality', 'aggregate_roughness', 'last_treatment', 'avg_roughness', 'asset_condition', 'population'])
 ) 
 SELECT 
 	key_asset_class.value AS "asset_class",
@@ -41,7 +41,7 @@ SELECT
 	key_last_treatment.value AS "last_treatment",
 	key_avg_roughness.value AS "avg_roughness", -- This is an average IRI
 	key_aggregate_roughness.value AS "roughness", -- good, fair, poor, bad
-	key_surface_condition.value AS "surface_condition",
+	key_asset_condition.value AS "asset_condition",
 	key_population.value AS "population"
 	
 	FROM 
@@ -65,8 +65,8 @@ SELECT
 		(SELECT * FROM src WHERE key = 'aggregate_roughness') key_aggregate_roughness
 	ON (key_aggregate_roughness.asset_code = key_municipality.asset_code AND  key_aggregate_roughness.lower = key_municipality.lower)
 	LEFT JOIN
-		(SELECT * FROM src WHERE key = 'surface_condition') key_surface_condition
-	ON (key_surface_condition.asset_code = key_municipality.asset_code AND  key_surface_condition.lower = key_municipality.lower)
+		(SELECT * FROM src WHERE key = 'asset_condition') key_asset_condition
+	ON (key_asset_condition.asset_code = key_municipality.asset_code AND  key_asset_condition.lower = key_municipality.lower)
 	LEFT JOIN
 		(SELECT * FROM src WHERE key = 'population') key_population
 	ON (key_population.asset_code = key_municipality.asset_code AND  key_population.lower = key_municipality.lower)

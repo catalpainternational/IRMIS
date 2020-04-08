@@ -88,7 +88,7 @@ Result = namedtuple(
         "last_treatment",
         "average_roughness",
         "roughness",
-        "surface_condition",
+        "asset_condition",
         "population",
     ),
 )
