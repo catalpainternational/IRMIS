@@ -457,7 +457,9 @@ def delete_redundant_surveys():
         "user",
     ).annotate(minid=Min("id"))
     surveys_to_keep = [s["minid"] for s in surveys]
-    Survey.objects.exclude(id__in=surveys_to_keep).delete()
+    Survey.objects.exclude(id__in=surveys_to_keep).exclude(
+        values__has_key="roughness"
+    ).delete()
     # delete revisions associated with the deleted surveys
     Version.objects.get_deleted(Survey).delete()
 
@@ -466,14 +468,16 @@ def delete_programmatic_surveys_for_road_by_road_code(rc):
     """ deletes programmatic surveys generated from road link records for a given road code """
     Survey.objects.filter(source="programmatic", asset_code=rc).exclude(
         values__has_key="trafficType"
-    ).delete()
+    ).exclude(values__has_key="roughness").delete()
     # delete revisions associated with the now deleted "programmatic" surveys
     Version.objects.get_deleted(Survey).delete()
 
 
 def delete_programmatic_surveys_for_structure_by_structure_code(sc):
     """ deletes programmatic surveys generated from structure records for a given structure code """
-    Survey.objects.filter(source="programmatic", asset_code=sc).delete()
+    Survey.objects.filter(source="programmatic", asset_code=sc).exclude(
+        values__has_key="roughness"
+    ).delete()
     # delete revisions associated with the now deleted "programmatic" surveys
     Version.objects.get_deleted(Survey).delete()
 
