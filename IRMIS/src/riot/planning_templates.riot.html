@@ -51,29 +51,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>{ window.gettext("5 year plan urban roads") }</td>
-                        <td>{ window.gettext("Urban") }</td>
-                        <td>03/27/2020</td>
-                        <td><a class="image document" href="/static/5year-plan-UrbanRoads-Template.xlsx" download="5year-plan-UrbanRoads-Template.xlsx"></a></td>
-                    </tr>
-                    <tr>
-                        <td>{ window.gettext("5 year plan national roads") }</td>
-                        <td>{ window.gettext("National") }</td>
-                        <td>04/01/2020</td>
-                        <td><a class="image document" href="/static/5year-plan-NationalRoads-Template.xlsx" download="5year-plan-NationalRoads-Template.xlsx"></a></td>
-                    </tr>
-                    <tr>
-                        <td>{ window.gettext("5 year plan rural roads") }</td>
-                        <td>{ window.gettext("Rural") }</td>
-                        <td>04/01/2020</td>
-                        <td><a class="image document" href="/static/5year-plan-RuralRoads-Template.xlsx" download="5year-plan-RuralRoads-Template.xlsx"></a></td>
-                    </tr>
-                    <tr>
-                        <td>{ window.gettext("5 year plan municipal roads") }</td>
-                        <td>{ window.gettext("Municipal") }</td>
-                        <td>04/01/2020</td>
-                        <td><a class="image document" href="/static/5year-plan-MunicipalRoads-Template.xlsx" download="5year-plan-MunicipalRoads-Template.xlsx"></a></td>
+                    <tr each={file in state.templateFiles}>
+                        <td>{ file.title }</td>
+                        <td>{ file.type }</td>
+                        <td>{ file.dateUploaded }</td>
+                        <td><a class="image document" href="{file.filePath}" download="{file.fileName}"></a></td>
                     </tr>
                 </tbody>
             </table>
@@ -87,6 +69,37 @@
         export default {
             state: {
                 accessToken: null,
+                cacheBuster: Date.now(),
+                templateFiles: [
+                    {
+                        'title': window.gettext("5 year plan national roads"),
+                        'type': window.gettext("National"),
+                        'fileName': "5year-plan-NationalRoads-Template.xlsx",
+                        'filePath': `/static/5year-plan-NationalRoads-Template.xlsx?t=${cacheBuster}`,
+                        'dateUploaded': '04/07/2020'
+                    },
+                    {
+                        'title': window.gettext("5 year plan urban roads"),
+                        'type': window.gettext("Urban"),
+                        'fileName': "5year-plan-UrbanRoads-Template.xlsx",
+                        'filePath': `/static/5year-plan-UrbanRoads-Template.xlsx?t=${cacheBuster}`,
+                        'dateUploaded': '04/07/2020'
+                    },
+                    {
+                        'title': window.gettext("5 year plan rural roads"),
+                        'type': window.gettext("Rural"),
+                        'fileName': "5year-plan-RuralRoads-Template.xlsx",
+                        'filePath': `/static/5year-plan-RuralRoads-Template.xlsx?t=${cacheBuster}`,
+                        'dateUploaded': '04/07/2020'
+                    },
+                    {
+                        'title': window.gettext("5 year plan municipal roads"),
+                        'type': window.gettext("Municipal"),
+                        'fileName': "5year-plan-MunicipalRoads-Template.xlsx",
+                        'filePath': `/static/5year-plan-MunicipalRoads-Template.xlsx?t=${cacheBuster}`,
+                        'dateUploaded': '04/07/2020'
+                    },
+                ],
             },
             copyToClipboard() {
                 const accessToken = document.getElementById("access-token");
