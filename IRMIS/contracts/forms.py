@@ -84,13 +84,19 @@ class ProjectAssetForm(ModelForm):
         super().__init__(*args, **kwargs)
         self.label_suffix = ""
         self.fields["asset_code"].widget.attrs.update(
-            {"class": "form-control form-control-lg", "placeholder": "A01-1"}
+            {"class": "asset-code form-control form-control-lg", "placeholder": "A01-1"}
         )
         self.fields["asset_start_chainage"].widget.attrs.update(
-            {"class": "form-control form-control-sm", "placeholder": "2000"}
+            {
+                "class": "asset-start-chainage form-control form-control-sm",
+                "placeholder": "2000",
+            }
         )
         self.fields["asset_end_chainage"].widget.attrs.update(
-            {"class": "form-control form-control-sm", "placeholder": "3000"}
+            {
+                "class": "asset-end-chainage form-control form-control-sm",
+                "placeholder": "3000",
+            }
         )
 
     class Meta:
@@ -107,10 +113,13 @@ class ProjectBudgetForm(ModelForm):
         super().__init__(*args, **kwargs)
         self.label_suffix = ""
         self.fields["approved_value"].widget.attrs.update(
-            {"class": "form-control form-control-sm", "placeholder": "$100.000"}
+            {
+                "class": "budget-value form-control form-control-sm",
+                "placeholder": "$100.000",
+            }
         )
         self.fields["year"].widget.attrs.update(
-            {"class": "form-control form-control-sm"}
+            {"class": "budget-year form-control form-control-sm"}
         )
 
     class Meta:
@@ -126,10 +135,17 @@ class ProjectMilestoneForm(ModelForm):
         super().__init__(*args, **kwargs)
         self.label_suffix = ""
         self.fields["days_of_work"].widget.attrs.update(
-            {"class": "form-control form-control-sm", "placeholder": "60"}
+            {
+                "class": "milestone-days-work form-control form-control-sm",
+                "placeholder": "60",
+            }
         )
         self.fields["progress"].widget.attrs.update(
-            {"class": "form-control form-control-sm", "min": 0, "max": 100}
+            {
+                "class": "milestone-progress form-control form-control-sm",
+                "min": 0,
+                "max": 100,
+            }
         )
 
     class Meta:
@@ -294,10 +310,13 @@ class ContractSupervisorForm(ModelForm):
         super().__init__(*args, **kwargs)
         self.label_suffix = ""
         self.fields["name"].widget.attrs.update(
-            {"class": "form-control form-control-lg", "placeholder": "Maria da Costa"}
+            {
+                "class": "supervisor-name form-control form-control-lg",
+                "placeholder": "Maria da Costa",
+            }
         )
         self.fields["phone"].widget.attrs.update(
-            {"class": "form-control", "placeholder": "77000000"}
+            {"class": "supervisor-phone form-control", "placeholder": "77000000"}
         )
 
     class Meta:
@@ -310,10 +329,13 @@ class ContractBudgetForm(ModelForm):
         super().__init__(*args, **kwargs)
         self.label_suffix = ""
         self.fields["year"].widget.attrs.update(
-            {"class": "form-control form-control-sm"}
+            {"class": "budget-year form-control form-control-sm"}
         )
         self.fields["value"].widget.attrs.update(
-            {"class": "form-control form-control-sm", "placeholder": "$100.000"}
+            {
+                "class": "budget-value form-control form-control-sm",
+                "placeholder": "$100.000",
+            }
         )
 
     class Meta:
@@ -326,10 +348,16 @@ class ContractMilestoneForm(ModelForm):
         super().__init__(*args, **kwargs)
         self.label_suffix = ""
         self.fields["days_of_work"].widget.attrs.update(
-            {"class": "form-control form-control-sm", "placeholder": "60"}
+            {
+                "class": "milestone-days-work form-control form-control-sm",
+                "placeholder": "60",
+            }
         )
         self.fields["progress"].widget.attrs.update(
-            {"class": "form-control form-control-sm", "placeholder": "25%"}
+            {
+                "class": "milestone-progress form-control form-control-sm",
+                "placeholder": "25%",
+            }
         )
 
     class Meta:
@@ -342,10 +370,13 @@ class ContractAmendmentForm(ModelForm):
         super().__init__(*args, **kwargs)
         self.label_suffix = ""
         self.fields["year"].widget.attrs.update(
-            {"class": "form-control form-control-sm"}
+            {"class": "amendment-year form-control form-control-sm"}
         )
         self.fields["value"].widget.attrs.update(
-            {"class": "form-control form-control-sm", "placeholder": "$100.000"}
+            {
+                "class": "amendment-value form-control form-control-sm",
+                "placeholder": "$100.000",
+            }
         )
 
     class Meta:
