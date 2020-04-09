@@ -69,33 +69,34 @@
         export default {
             state: {
                 accessToken: null,
+                cacheBuster: Date.now(),
                 templateFiles: [
                     {
                         'title': window.gettext("5 year plan national roads"),
                         'type': window.gettext("National"),
                         'fileName': "5year-plan-NationalRoads-Template.xlsx",
-                        'filePath': `/static/5year-plan-NationalRoads-Template.xlsx?t=${Date.now()}`,
+                        'filePath': `/static/5year-plan-NationalRoads-Template.xlsx?t=${cacheBuster}`,
                         'dateUploaded': '04/07/2020'
                     },
                     {
                         'title': window.gettext("5 year plan urban roads"),
                         'type': window.gettext("Urban"),
                         'fileName': "5year-plan-UrbanRoads-Template.xlsx",
-                        'filePath': `/static/5year-plan-UrbanRoads-Template.xlsx?t=${Date.now()}`,
+                        'filePath': `/static/5year-plan-UrbanRoads-Template.xlsx?t=${cacheBuster}`,
                         'dateUploaded': '04/07/2020'
                     },
                     {
                         'title': window.gettext("5 year plan rural roads"),
                         'type': window.gettext("Rural"),
                         'fileName': "5year-plan-RuralRoads-Template.xlsx",
-                        'filePath': `/static/5year-plan-RuralRoads-Template.xlsx?t=${Date.now()}`,
+                        'filePath': `/static/5year-plan-RuralRoads-Template.xlsx?t=${cacheBuster}`,
                         'dateUploaded': '04/07/2020'
                     },
                     {
                         'title': window.gettext("5 year plan municipal roads"),
                         'type': window.gettext("Municipal"),
                         'fileName': "5year-plan-MunicipalRoads-Template.xlsx",
-                        'filePath': `/static/5year-plan-MunicipalRoads-Template.xlsx?t=${Date.now()}`,
+                        'filePath': `/static/5year-plan-MunicipalRoads-Template.xlsx?t=${cacheBuster}`,
                         'dateUploaded': '04/07/2020'
                     },
                 ],
