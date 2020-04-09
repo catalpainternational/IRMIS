@@ -64,6 +64,9 @@ from .models import (
     Culvert,
     CulvertClass,
     CulvertMaterialType,
+    Drift,
+    DriftClass,
+    DriftMaterialType,
     EconomicArea,
     FacilityType,
     MaintenanceNeed,
@@ -372,7 +375,7 @@ def protobuf_road_surveys(request, pk, survey_attribute=None):
     # get the Road link requested
     road = get_object_or_404(Road.objects.all(), pk=pk)
     # pull any Surveys that cover the Road Code above
-    # note: road_* fields in the surveys are ONLY relevant for Bridges or Culverts
+    # note: road_* fields in the surveys are ONLY relevant for Bridges, Culverts or Drifts
     # the asset_* fields in a survey correspond to the road_* fields in a Road
     queryset = Survey.objects.filter(asset_code=road.road_code)
 
@@ -486,8 +489,10 @@ def clean_id_filter(id_value, prefix):
     return id_value
 
 
-def id_filter_consistency(primary_id, culvert_id, bridge_id, road_id=None):
+def id_filter_consistency(primary_id, drift_id, culvert_id, bridge_id, road_id=None):
     if primary_id != None:
+        if drift_id != None and "DRFT-" + str(primary_id) == drift_id:
+            primary_id = drift_id
         if culvert_id != None and "CULV-" + str(primary_id) == culvert_id:
             primary_id = culvert_id
         if bridge_id != None and "BRDG-" + str(primary_id) == bridge_id:
@@ -498,27 +503,35 @@ def id_filter_consistency(primary_id, culvert_id, bridge_id, road_id=None):
     return primary_id
 
 
-def filter_consistency(asset, culvert, bridge, road):
-    """ If asset is not set, then it is set to a structure (bridge, culvert),
+def filter_consistency(asset, drift, culvert, bridge, road):
+    """ If asset is not set, then it is set to a structure (bridge, culvert, drift),
     in preference to be set to a road value """
-    if asset == None and (bridge != None or culvert != None or road != None):
-        if bridge != None or culvert != None:
+    if asset == None and (
+        bridge != None or culvert != None or drift != None or road != None
+    ):
+        if bridge != None or culvert != None or drift != None:
             if bridge != None:
                 asset = bridge
-            else:
+            elif culvert != None:
                 asset = culvert
+            else:
+                asset = drift
         else:
             asset = road
 
     return asset
 
 
-def filters_consistency(assets, structures, culverts, bridges, roads):
-    if len(structures) == 0 and (len(bridges) > 0 or len(culverts) > 0):
+def filters_consistency(assets, structures, drifts, culverts, bridges, roads):
+    if len(structures) == 0 and (
+        len(bridges) > 0 or len(culverts) > 0 or len(drifts) > 0
+    ):
         if len(bridges) > 0:
             structures = bridges
-        else:
+        if len(culverts) > 0:
             structures = culverts
+        else:
+            structures = drifts
     if len(assets) == 0 and (len(structures) > 0 or len(roads) > 0):
         if len(structures) > 0:
             assets = structures
@@ -565,26 +578,34 @@ def protobuf_reports(request):
         )
 
     # handle all of the id, code and asset_class permutations
-    # asset_* will be set to something, if bridge_*, culvert_*, road_* is set
+    # asset_* will be set to something, if bridge_*, culvert_*, drift_*, road_* is set
+    drift_id = clean_id_filter(request.GET.get("drift_id", None), "DRFT-")
     culvert_id = clean_id_filter(request.GET.get("culvert_id", None), "CULV-")
     bridge_id = clean_id_filter(request.GET.get("bridge_id", None), "BRDG-")
     road_id = clean_id_filter(request.GET.get("road_id", None), "ROAD-")
     asset_id = id_filter_consistency(
-        request.GET.get("asset_id", None), culvert_id, bridge_id, road_id
+        request.GET.get("asset_id", None), drift_id, culvert_id, bridge_id, road_id
     )
 
+    drift_code = request.GET.get("drift_code", None)
     culvert_code = request.GET.get("culvert_code", None)
     bridge_code = request.GET.get("bridge_code", None)
     road_code = request.GET.get("road_code", None)
     asset_code = filter_consistency(
-        request.GET.get("asset_code", None), culvert_code, bridge_code, road_code
+        request.GET.get("asset_code", None),
+        drift_code,
+        culvert_code,
+        bridge_code,
+        road_code,
     )
 
+    drift_classes = request.GET.getlist("drift_class", [])
     culvert_classes = request.GET.getlist("culvert_class", [])
     bridge_classes = request.GET.get("bridge_class", [])
     road_classes = request.GET.getlist("road_class", [])
     asset_classes = filter_consistency(
         request.GET.getlist("asset_class", []),
+        drift_classes,
         culvert_classes,
         bridge_classes,
         road_classes,
@@ -608,7 +629,7 @@ def protobuf_reports(request):
         report_date = None
 
     # handle chainage filters
-    # for the moment `chainage` (for bridges and culverts) is not supported
+    # for the moment `chainage` (for bridges, culverts and drifts) is not supported
 
     chainage_start = None
     chainage_end = None
@@ -617,8 +638,8 @@ def protobuf_reports(request):
         # chainage range is only valid if we've specified a road
         chainage_start = request.GET.get("chainagestart", None)
         chainage_end = request.GET.get("chainageend", None)
-    # if bridge_id or bridge_code or culvert_id or culvert_code:
-    #     # chainage is only valid if we've specified a bridge or culvert
+    # if bridge_id or bridge_code or culvert_id or culvert_code or drift_id or drift_code:
+    #     # chainage is only valid if we've specified a bridge, culvert or drift
     #     chainage = request.GET.get("chainage", None)
     # If chainage has been supplied, ensure it is clean
     # if chainage != None:
@@ -649,7 +670,7 @@ def protobuf_reports(request):
 
     # Set the final_filters for all of the various id, code and class values
     # Of the specific asset types only road_* may be included,
-    # and that's only if a bridge_* or culvert_* is specified
+    # and that's only if a bridge_*, culvert_* or drift_* is specified
     filter_priority(
         final_filters,
         asset_id,
@@ -659,7 +680,7 @@ def protobuf_reports(request):
         "asset_code",
         "asset_class",
     )
-    if bridge_id or bridge_code or culvert_id or culvert_code:
+    if bridge_id or bridge_code or culvert_id or culvert_code or drift_id or drift_code:
         filter_priority(
             final_filters,
             road_id,
@@ -690,7 +711,7 @@ def protobuf_reports(request):
         if chainage_end:
             final_filters["chainage_end"] = chainage_end
     # if (
-    #     bridge_id or bridge_code or culvert_id or culvert_code or road_id or road_code
+    #     bridge_id or bridge_code or culvert_id or culvert_code or drift_id or drift_code or road_id or road_code
     # ) and chainage:
     #     final_filters["chainage"] = chainage
 
@@ -775,6 +796,30 @@ def bridge_create(req_pb):
 
 def culvert_create(req_pb):
     return Culvert.objects.create(
+        **{
+            "road_id": req_pb.road_id,
+            "road_code": req_pb.road_code,
+            "user": get_user_model().objects.get(pk=req_pb.user),
+            "structure_code": req_pb.structure_code,
+            "structure_name": req_pb.structure_name,
+            "asset_class": req_pb.asset_class,
+            "administrative_area": req_pb.administrative_area,
+            "construction_year": req_pb.construction_year,
+            "length": req_pb.length,
+            "width": req_pb.width,
+            "chainage": req_pb.chainage,
+            "structure_type": req_pb.structure_type,
+            "height": req_pb.height,
+            "number_cells": req_pb.number_cells,
+            "material": req_pb.material,
+            "protection_upstream": req_pb.protection_upstream,
+            "protection_downstream": req_pb.protection_downstream,
+        }
+    )
+
+
+def drift_create(req_pb):
+    return Drift.objects.create(
         **{
             "road_id": req_pb.road_id,
             "road_code": req_pb.road_code,
@@ -948,6 +993,82 @@ def culvert_update(culvert, req_pb, db_pb):
             changed_fields.append(field)
 
     return culvert, changed_fields
+
+
+def drift_update(drift, req_pb, db_pb):
+    """ Update the Drift instance from PB fields """
+    changed_fields = []
+
+    # Char/Text Input Fields
+    regular_fields = [
+        "road_id",
+        "road_code",
+        "structure_code",
+        "structure_name",
+        "administrative_area",
+        "asset_class",
+    ]
+    for field in regular_fields:
+        request_value = getattr(req_pb, field)
+        if getattr(db_pb, field) != request_value:
+            # add field to list of changes fields
+            changed_fields.append(field)
+            # set attribute on drift
+            setattr(drift, field, request_value)
+
+    # Numeric Input Fields
+    numeric_fields = [
+        "construction_year",
+        "length",
+        "width",
+        "height",
+        "number_cells",
+        "chainage",
+    ]
+    for field in numeric_fields:
+        existing_value = getattr(db_pb, field)
+        request_value = getattr(req_pb, field)
+
+        # -ve request_values indicate that the supplied value is actually meant to be None
+        if request_value < 0:
+            request_value = None
+
+        if existing_value < 0:
+            existing_value = None
+
+        if existing_value != request_value:
+            # set attribute on drift
+            setattr(drift, field, request_value)
+            # add field to list of changes fields
+            changed_fields.append(field)
+
+    # Foreign Key Fields
+    fks = [
+        (DriftClass, "structure_type"),
+        (DriftMaterialType, "material"),
+        (StructureProtectionType, "protection_downstream"),
+        (StructureProtectionType, "protection_upstream"),
+    ]
+
+    for fk in fks:
+        field = fk[1]
+        model = fk[0]
+        request_value = getattr(req_pb, field, None)
+        if getattr(db_pb, field, None) != request_value:
+            if request_value:
+                try:
+                    fk_obj = model.objects.filter(code=request_value).get()
+                except model.DoesNotExist:
+                    return HttpResponse(status=400)
+            else:
+                fk_obj = None
+            setattr(drift, field, fk_obj)
+            # handle field name differences
+            if field in ["structure_type", "material"]:
+                field += "_drift"
+            changed_fields.append(field)
+
+    return drift, changed_fields
 
 
 @login_required
@@ -1279,6 +1400,13 @@ ASSET_PREFIXES_MAPPING = {
         "create": culvert_create,
         "proto": structure_pb2.Culvert,
     },
+    "DRFT": {
+        "name": "drift",
+        "model": Drift,
+        "update": drift_update,
+        "create": drift_create,
+        "proto": structure_pb2.Drift,
+    },
     "PLAN": {
         "model": Plan,
         "update": plan_update,
@@ -1328,7 +1456,7 @@ def protobuf_structure(request, pk):
         return HttpResponseNotFound()
 
     # Note that we're returning a structure here,
-    # which is a container for the Bridge or Culvert that we want
+    # which is a container for the Bridge, Culvert or Drift that we want
     structure_protobuf = structure.to_protobuf()
 
     return HttpResponse(
@@ -1385,6 +1513,7 @@ def protobuf_structures(request):
     structures_protobuf = structure_pb2.Structures()
     structures_protobuf.bridges.extend(Bridge.objects.all().to_protobuf().bridges)
     structures_protobuf.culverts.extend(Culvert.objects.all().to_protobuf().culverts)
+    structures_protobuf.drifts.extend(Drift.objects.all().to_protobuf().drifts)
 
     return HttpResponse(
         structures_protobuf.SerializeToString(), content_type="application/octet-stream"
@@ -1410,6 +1539,12 @@ def protobuf_road_structures(request, pk):
         .order_by("chainage", "last_modified")
         .to_protobuf()
         .culverts
+    )
+    structures_protobuf.drifts.extend(
+        Drift.objects.filter(road_code=road.road_code)
+        .order_by("chainage", "last_modified")
+        .to_protobuf()
+        .drifts
     )
 
     return HttpResponse(
@@ -1492,6 +1627,8 @@ def structure_update(request, pk):
         db_pb = mapping["model"].objects.filter(pk=django_pk).to_protobuf().bridges[0]
     elif mapping["model"] == Culvert:
         db_pb = mapping["model"].objects.filter(pk=django_pk).to_protobuf().culverts[0]
+    elif mapping["model"] == Drift:
+        db_pb = mapping["model"].objects.filter(pk=django_pk).to_protobuf().drifts[0]
     if db_pb == req_pb:
         return HttpResponse(
             req_pb.SerializeToString(),

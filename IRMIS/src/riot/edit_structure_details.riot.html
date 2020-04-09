@@ -85,8 +85,8 @@
             </div>
         </section>
 
-        <!-- Culvert-specific fields -->
-        <template if="{ props.assetType === 'CULV' }">
+        <!-- Culvert and Drift -specific fields -->
+        <template if="{ props.assetType === 'CULV' || props.assetType === 'DRFT' }">
             <section>
                 <div class="form-group">
                     <label>{ window.gettext("Height (meters)") }</label>

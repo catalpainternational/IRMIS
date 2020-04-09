@@ -1,4 +1,4 @@
-import { EstradaBridge, EstradaCulvert } from "./assets/models/structures";
+import { EstradaBridge, EstradaCulvert, EstradaDrift } from "./assets/models/structures";
 import { EstradaRoad } from "./assets/models/road";
 import { currentFilter } from "./side_menu";
 
@@ -360,7 +360,7 @@ export const estradaTableColumns = [
 ];
 
 /** Defines the columns for the Structures table on the Estrada main page
- * In many cases Bridge and Culvert use the same field names and are interchangeable
+ * In many cases Bridge, Culvert and Drift use the same field names and are interchangeable
  *
  * For those that don't we'll use the simpler title
  */
@@ -427,7 +427,7 @@ export const structuresTableColumns = [
         visible: false,
     },
     {
-        // Bridges "Deck Material", Culverts "Material"
+        // Bridges "Deck Material", Culverts and Drifts "Material"
         // however we show both together
         // so we'll use the simpler title
         title: window.gettext("Material"),
@@ -435,7 +435,7 @@ export const structuresTableColumns = [
         defaultContent: "-",
     },
     {
-        // Bridges "Bridge Type", Culverts "Culvert Type"
+        // Bridges "Bridge Type", Culverts "Culvert Type", Drifts "Drift Type"
         // however we show both together
         // so we'll use the common title "Structure Type"
         title: window.gettext("Structure Type"),
@@ -553,6 +553,7 @@ function getStructureTypeName(structureType) {
         "ROAD": "Road",
         "BRDG": "Bridge",
         "CULV": "Culvert",
+        "DRFT": "Drift",
         "STRC": "Structure",
     };
 
@@ -571,6 +572,9 @@ function buttonSegmentsTemplate(attrib, asset, fallbackLabel) {
             break;
         case "CULV":
             getFieldName = EstradaCulvert.getFieldName;
+            break;
+        case "DRFT":
+            getFieldName = EstradaDrift.getFieldName;
             break;
         default:
             break;

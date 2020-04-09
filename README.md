@@ -39,7 +39,7 @@ This entire sequence must be performed to completion before users are allowed to
 
 1. `./manage.py import_shapefiles ../../path/to/the/data-sources/repo/shapefiles <asset_type>`
   - imports the shapefile geometries and copies properties across where useful
-  - `<asset_type>` is one of "road", "bridge", or "culvert"
+  - `<asset_type>` is one of "road", "bridge", "culvert", or "drift"
   - also calls `set_municipalities` and `collate_geometries` automatically
 
 2. `./manage.py import_csv ../../path/to/the/data-sources/repo/csv`
@@ -52,13 +52,13 @@ This entire sequence must be performed to completion before users are allowed to
   A. `./manage.py set_unknown_road_codes`
     - Fixes roads with missing road codes, assigning these roads a unique `XX_` `road_code`.
 
-  B. `./manage.py set_municipalities <optional: "all", "road", "bridge", or "culvert">`
+  B. `./manage.py set_municipalities <optional: "all", "road", "bridge", "culvert" or "drift">`
     - Sets the administrative areas for each asset/structure, based the centroids of their respective geometries
     - Takes an optional argument to restrict the municipalities getting set to objects of a single type
     - If 'all' argument is given all of the assets/structures will have their municipalities set
 
-  C. `./manage.py collate_geometries <optional: "all", "road", "bridge", or "culvert">`
-    - you have edited roads, bridges, culverts so re-collate
+  C. `./manage.py collate_geometries <optional: "all", "road", "bridge", "culvert" or "drift">`
+    - you have edited roads, bridges, culverts, drifts, so re-collate
 
 4. `./manage.py make_road_surveys <optional: --no-road-refresh>` 
   - Refresh the calculated Road record geometry data (unless you specify --no-road-refresh)

@@ -198,6 +198,8 @@ class PhotoQuerySet(models.QuerySet):
                     prefix = "BRDG-"
                 elif model == "culvert":
                     prefix = "CULV-"
+                elif model == "drift":
+                    prefix = "DRFT-"
                 elif model == "survey":
                     prefix = "SURV-"
                 elif model == "road":
@@ -492,6 +494,7 @@ class Asset:
         ("ROAD", _("Road")),
         ("BRDG", _("Bridge")),
         ("CULV", _("Culvert")),
+        ("DRFT", _("Drift")),
     ]
 
     TRAFFIC_LEVEL_CHOICES = [("L", _("Low")), ("M", _("Medium")), ("H", _("High"))]
@@ -1007,7 +1010,7 @@ def get_structures_with_survey_data(
     float_fields,
     int_fields,
 ):
-    """ Get the structures (Bridges or Culverts) with the survey data that we're interested in"""
+    """ Get the structures (Bridges, Culverts or Drifts) with the survey data that we're interested in"""
 
     survey = (
         Survey.objects.filter(
@@ -1031,6 +1034,13 @@ def get_structures_with_survey_data(
                 culvert__id__in=self_structure.values("id")
             ),
         )
+    elif asset_type == "DRFT":
+        photos_prefetch = Prefetch(
+            "photos",
+            queryset=Photo.objects.select_related("user").filter(
+                drift__id__in=self_structure.values("id")
+            ),
+        )
 
     structures = (
         self_structure.order_by("id")
@@ -1049,7 +1059,7 @@ def get_structures_with_survey_data(
 def structure_to_protobuf(
     structure, structure_protobuf, asset_type, regular_fields, float_fields, int_fields
 ):
-    """ Take an individual structure (Bridge or Culvert)
+    """ Take an individual structure (Bridge, Culvert or Drift)
     and use it to fill in an empty corresponding protobuf object """
 
     structure_id = "%s-%s" % (asset_type, structure.id)
@@ -1577,6 +1587,231 @@ class Culvert(models.Model):
     @property
     def prefix(self):
         return "CULV"
+
+    def __str__(self,):
+        return "%s(%s)" % (self.structure_name, self.pk)
+
+
+class DriftClass(models.Model):
+    code = models.CharField(max_length=3, unique=True, verbose_name=_("Code"))
+    name = models.CharField(max_length=50, verbose_name=_("Name"))
+
+    def __str__(self):
+        return self.name
+
+
+class DriftMaterialType(models.Model):
+    code = models.CharField(max_length=3, unique=True, verbose_name=_("Code"))
+    name = models.CharField(max_length=50, verbose_name=_("Name"))
+
+    def __str__(self):
+        return self.name
+
+
+class DriftQuerySet(models.QuerySet):
+    def to_protobuf(self):
+        """ returns a Structure protobuf object from the queryset with a Drifts list """
+        # See sturcture.proto --> Structures --> Drifts --> Drift
+        structures_protobuf = ProtoStructures()
+
+        regular_fields = dict(
+            road_id="road_id",
+            road_code="road_code",
+            structure_code="structure_code",
+            structure_name="structure_name",
+            asset_class="asset_class",
+            administrative_area="administrative_area",
+            structure_type="structure_type",
+            material="material",
+            protection_upstream="protection_upstream",
+            protection_downstream="protection_downstream",
+        )
+
+        datetime_fields = dict(
+            date_created="date_created", last_modified="last_modified",
+        )
+
+        float_fields = dict(length="length", width="width", height="height",)
+
+        int_fields = dict(
+            chainage="chainage",
+            construction_year="construction_year",
+            number_cells="number_cells",
+        )
+
+        asset_type = "DRFT"
+        structures = get_structures_with_survey_data(
+            self, asset_type, regular_fields, datetime_fields, float_fields, int_fields
+        )
+
+        for structure in structures:
+            structure_protobuf = structures_protobuf.drifts.add()
+            structure_to_protobuf(
+                structure,
+                structure_protobuf,
+                asset_type,
+                regular_fields,
+                numeric_fields,
+            )
+
+        return structures_protobuf
+
+
+class DriftManager(models.Manager):
+    def get_queryset(self):
+        return DriftQuerySet(self.model, using=self._db)
+
+    def to_protobuf(self):
+        """ returns a drifts protobuf object from the manager """
+        return self.get_queryset().to_protobuf()
+
+    def to_wgs(self):
+        """
+        "To World Geodetic System"
+        Adds a `to_wgs` param which is the geometry transformed into latitude, longitude coordinates
+        """
+        return (
+            super()
+            .get_queryset()
+            .annotate(to_wgs=models.functions.Transform("geom", 4326))
+        )
+
+
+@reversion.register()
+class Drift(models.Model):
+
+    objects = DriftManager()
+
+    geom = models.PointField(srid=32751, dim=2, blank=True, null=True)
+
+    # a disconnected reference to the road record this structure relates to
+    road_id = models.IntegerField(verbose_name=_("Road Id"), blank=True, null=True)
+
+    date_created = models.DateTimeField(
+        verbose_name=_("Date Created"), auto_now_add=True, null=True
+    )
+    last_modified = models.DateTimeField(verbose_name=_("last modified"), auto_now=True)
+
+    structure_code = models.CharField(
+        verbose_name=_("Structure Code"),
+        validators=[no_spaces],
+        max_length=25,
+        unique=True,
+        blank=True,
+        null=True,
+    )
+    structure_name = models.CharField(
+        verbose_name=_("Name"), max_length=100, blank=True, null=True
+    )
+    asset_class = models.CharField(
+        verbose_name=_("Structure Class"),
+        max_length=4,
+        choices=Asset.ASSET_CLASS_CHOICES,
+        blank=True,
+        null=True,
+        help_text=_("Choose the structure class"),
+    )
+    administrative_area = models.CharField(
+        verbose_name=_("Municipality"),
+        max_length=50,
+        default=None,
+        null=True,
+        help_text=_("Choose the municipality for the structure"),
+    )
+    road_code = models.CharField(
+        verbose_name=_("Road Code"),
+        validators=[no_spaces],
+        max_length=25,
+        blank=True,
+        null=True,
+        help_text=_("Enter the Road Code associated with the structure"),
+    )
+    construction_year = models.IntegerField(
+        verbose_name=_("Structure Construction Year"), blank=True, null=True
+    )
+    length = models.DecimalField(
+        verbose_name=_("Structure Length (m)"),
+        max_digits=8,
+        decimal_places=3,
+        blank=True,
+        null=True,
+        validators=[MinValueValidator(0)],
+        help_text=_("Enter structure length"),
+    )
+    width = models.DecimalField(
+        verbose_name=_("Structure Width (m)"),
+        max_digits=8,
+        decimal_places=3,
+        blank=True,
+        null=True,
+        validators=[MinValueValidator(0)],
+        help_text=_("Enter structure width"),
+    )
+    chainage = models.IntegerField(
+        verbose_name=_("Chainage"),
+        blank=True,
+        null=True,
+        help_text=_("Enter chainage point for the structure"),
+    )
+    # a reference to the collated geojson file this Structure's geometry is in
+    geojson_file = models.ForeignKey(
+        "CollatedGeoJsonFile", on_delete=models.DO_NOTHING, blank=True, null=True
+    )
+
+    structure_type = models.ForeignKey(
+        "DriftClass",
+        verbose_name=_("Drift Type"),
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        help_text=_("Choose the drift type"),
+    )
+    height = models.DecimalField(
+        verbose_name=_("Structure Height (m)"),
+        max_digits=8,
+        decimal_places=3,
+        blank=True,
+        null=True,
+        validators=[MinValueValidator(0)],
+        help_text=_("Enter structure height"),
+    )
+    number_cells = models.IntegerField(
+        verbose_name=_("Number of Cells"),
+        blank=True,
+        null=True,
+        validators=[MinValueValidator(1)],
+    )
+    material = models.ForeignKey(
+        "DriftMaterialType",
+        verbose_name=_("Material"),
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        help_text=_("Choose the drift material"),
+    )
+    protection_upstream = models.ForeignKey(
+        "StructureProtectionType",
+        verbose_name=_("Protection Upstream"),
+        related_name="drift_protection_upstream",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        help_text=_("Choose the upstream protection type"),
+    )
+    protection_downstream = models.ForeignKey(
+        "StructureProtectionType",
+        verbose_name=_("Protection Downstream"),
+        related_name="drift_protection_downstream",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        help_text=_("Choose the downstream protection type"),
+    )
+    photos = GenericRelation(Photo, related_query_name="drift")
+
+    @property
+    def prefix(self):
+        return "DRFT"
 
     def __str__(self,):
         return "%s(%s)" % (self.structure_name, self.pk)
