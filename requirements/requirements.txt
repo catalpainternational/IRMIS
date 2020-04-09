@@ -24,7 +24,8 @@ draftjs-exporter==2.1.6   # via wagtail
 geobuf==1.1.1
 html5lib==1.0.1           # via wagtail
 idna==2.8                 # via requests
-importlib-resources==1.0.2
+importlib-metadata==1.6.0  # via importlib-resources
+importlib-resources==1.4.0
 pillow==6.1.0             # via wagtail
 polib==1.1.0              # via django-rosetta
 protobuf==3.9.1
@@ -40,6 +41,7 @@ wagtail-modeltranslation==0.10.2
 wagtail==2.6.1
 webencodings==0.5.1       # via html5lib
 willow==1.1               # via wagtail
+zipp==3.1.0               # via importlib-metadata, importlib-resources
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools

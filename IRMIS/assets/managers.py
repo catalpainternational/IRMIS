@@ -11,6 +11,8 @@ from django.db.models import (
     When,
 )
 from django.db import connection
+import importlib_resources as resources
+from . import sql_scripts
 
 
 class HstoreFieldAsFloat(Func):
@@ -184,11 +186,11 @@ def update_roughness_survey_values():
                 ("good", roughness_range(None, 4) & nat),
                 ("fair", roughness_range(4, 6) & nat),
                 ("poor", roughness_range(6, 10) & nat),
-                ("verypoor", roughness_range(10, None) & nat),
+                ("bad", roughness_range(10, None) & nat),
                 ("good", roughness_range(None, 6) & mun),
                 ("fair", roughness_range(6, 10) & mun),
                 ("poor", roughness_range(10, 14) & mun),
-                ("verypoor", roughness_range(14, None) & mun),
+                ("bad", roughness_range(14, None) & mun),
             )
         ]
 

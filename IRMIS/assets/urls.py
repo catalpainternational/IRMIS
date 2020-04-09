@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from django.urls import include, path
 from rest_framework import routers
+from django.views.decorators.cache import cache_page
 
 from .views import (
     api_token_request,
@@ -33,6 +34,12 @@ from .views import (
     plan_create,
     plan_delete,
     plan_update,
+    ExcelDataSource,
+    ExcelDataSourceIqy,
+    BreakpointRelationshipsReport,
+    ExcelInventoryMunicipal,
+    ExcelInventoryNational,
+    ExcelInventoryRural,
 )
 
 # Wire up our API using automatic URL routing.
@@ -118,5 +125,35 @@ urlpatterns = [
         "protobuf_structure_surveys/<slug:pk>/<slug:survey_attribute>/",
         protobuf_structure_surveys,
         name="protobuf_structure_surveys",
+    ),
+    path("reports/", protobuf_reports, name="protobuf_reports"),
+    path("remote/<slug:slug>.iqy", ExcelDataSourceIqy.as_view()),
+    path(
+        "remote/survey.html", ExcelDataSource.as_view(), name="surveyexceldatasource",
+    ),
+    path(
+        "remote/inventory/municipal.html",
+        ExcelInventoryMunicipal.as_view(),
+        name="excelinventorymunicipal",
+    ),
+    path(
+        "remote/inventory/national.html",
+        ExcelInventoryNational.as_view(),
+        name="excelinventorynational",
+    ),
+    path(
+        "remote/inventory/rural.html",
+        ExcelInventoryRural.as_view(),
+        name="excelinventoryrural",
+    ),
+    path(
+        "remote/survey/<slug:slug>.html",
+        ExcelDataSource.as_view(),
+        name="surveyexceldatasource",
+    ),
+    path(
+        "remote/testing_endpoint.html",
+        BreakpointRelationshipsReport.as_view(),
+        name="BreakpointRelationshipsReport",
     ),
 ]

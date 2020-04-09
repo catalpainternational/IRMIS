@@ -6,7 +6,9 @@ from reversion.models import Version
 from datetime import datetime
 from collections import Counter, defaultdict
 import pytz
-
+import importlib_resources as resources
+from .models import sql_scripts
+from django.db import connection
 from django.contrib.auth import get_user_model
 from django.contrib.gis.db import models
 from django.core.files.base import ContentFile
@@ -27,6 +29,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Value, CharField, OuterRef, Prefetch, Q, Subquery
 from django.db.models.functions import Cast, Substr
+from django.views.generic import TemplateView, ListView
 
 from rest_framework_jwt.settings import api_settings
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
@@ -48,6 +51,9 @@ from protobuf import (
     version_pb2,
 )
 from .report_query import ReportQuery
+
+
+from collections import namedtuple
 
 from .models import (
     Bridge,
@@ -71,6 +77,7 @@ from .models import (
     SurfaceType,
     Survey,
     TechnicalClass,
+    BreakpointRelationships,
 )
 from .serializers import RoadSerializer, RoadMetaOnlySerializer, RoadToWGSSerializer
 
@@ -86,6 +93,13 @@ def display_user(user):
         return ""
     user_display = user.get_full_name()
     return user_display or user.username
+
+
+def namedtuplefetchall(cursor):
+    "Return all rows from a cursor as a namedtuple"
+    desc = cursor.description
+    nt_result = namedtuple("Result", [col[0] for col in desc])
+    return [nt_result(*row) for row in cursor.fetchall()]
 
 
 def user_can_edit(user):
@@ -1680,3 +1694,172 @@ def photo_delete(request):
     return HttpResponse(
         req_pb.SerializeToString(), status=200, content_type="application/octet-stream",
     )
+
+
+class ExcelDataSourceIqy(TemplateView):
+    """
+    Generate an .iqy file for Excel to use as a link to a datasource
+    """
+
+    content_type = "application/text"
+    template_name = "assets/iqy.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context.update(
+            {
+                "user": "iqy_query",
+                "password": "only-for-estrada-users-secret",
+                "slug": kwargs["slug"],
+            }
+        )
+
+        context.update(
+            {"scheme": self.request._get_scheme(), "host": self.request.get_host(),}
+        )
+        return context
+
+
+class ExcelDataSource(TemplateView):
+    """
+    Connection endpoint for an .iqy file generating an HTML table
+
+    Returns arbitrary road_codes
+    """
+
+    template_name = "assets/named_tuple_table.html"
+
+    def post(self, *args, **kwargs):
+        # raise AssertionError('Check your username and password')
+        return super().post(*args, **kwargs)
+
+    def get(self, *args, **kwargs):
+        # raise AssertionError('POST to me')
+        return super().get(*args, **kwargs)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+
+        if "asset_code" in self.request.GET:
+            asset_codes = self.request.GET.getlist("asset_code")
+
+        elif "asset_class" in self.request.GET:
+            asset_codes = Road.objects.filter(
+                asset_class__in=self.request.GET.getlist("asset_class")
+            ).values_list("road_code")
+
+        (
+            context["objects"],
+            context["fields"],
+        ) = BreakpointRelationships.excel_report_cached(asset_codes=asset_codes)
+        return context
+
+
+class ExcelInventoryMunicipal(TemplateView):
+    """
+    Connection endpoint for Municipal roads
+    """
+
+    template_name = "assets/named_tuple_table.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        (
+            context["objects"],
+            context["fields"],
+        ) = BreakpointRelationships.excel_report_cached(
+            asset_codes=list(
+                set(
+                    Road.objects.filter(asset_class="MUN").values_list(
+                        "road_code", flat=True
+                    )
+                )
+            )
+        )
+        return context
+
+
+class ExcelInventoryNational(TemplateView):
+    """
+    Connection endpoint for National roads
+    """
+
+    template_name = "assets/named_tuple_table.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        (
+            context["objects"],
+            context["fields"],
+        ) = BreakpointRelationships.excel_report_cached(
+            asset_codes=list(
+                set(
+                    Road.objects.filter(asset_class="NAT").values_list(
+                        "road_code", flat=True
+                    )
+                )
+            )
+        )
+        return context
+
+
+class ExcelInventoryRural(TemplateView):
+    """
+    Connection endpoint for Rural roads
+    """
+
+    template_name = "assets/named_tuple_table.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        (
+            context["objects"],
+            context["fields"],
+        ) = BreakpointRelationships.excel_report_cached(
+            asset_codes=list(
+                set(
+                    Road.objects.filter(asset_class="RUR").values_list(
+                        "road_code", flat=True
+                    )
+                )
+            )
+        )
+        return context
+
+
+class SurveySource(ExcelDataSource):
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+
+        # Distinct asset codes via query params
+        if "asset_code" in self.request.GET:
+            asset_codes = self.request.GET.getlist("asset_code")
+
+        elif "asset_class" in self.request.GET:
+            asset_codes = Road.objects.filter(
+                asset_class__in=self.request.GET.getlist("asset_class")
+            ).values_list("road_code")
+
+        context["objects"], context["fields"] = BreakpointRelationships.excel_report(
+            asset_codes=self.request.GET.getlist("asset_code")
+        )
+        return context
+
+
+class BreakpointRelationshipsReport(TemplateView):
+    """
+    Returns three tables to illustrate the output of the SQL functions involved in 
+    creating the SurveySource `.iqy` files
+
+    These are developer-centred outputs. Not intended for public use.
+    """
+
+    template_name = "assets/multiple_tuples_table.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context["tuples"] = BreakpointRelationships.survey_check_results(
+            asset_codes=self.request.GET.getlist("asset_code"),
+            survey_params=self.request.GET.getlist("survey_param"),
+        )
+        return context

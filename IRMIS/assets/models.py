@@ -3,16 +3,32 @@ from django.contrib.gis.db import models
 from django.contrib.postgres.indexes import GistIndex
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.postgres.fields import HStoreField, JSONField, DecimalRangeField
+from django.contrib.postgres.indexes import GistIndex
 from django.contrib.postgres.aggregates.general import ArrayAgg
-from django.contrib.postgres.fields import HStoreField, JSONField
 from django.utils.translation import get_language, ugettext, ugettext_lazy as _
+from django.core.cache import caches
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
-from django.db.models import Count, Max, OuterRef, Prefetch, Subquery
+from django.db.models import Count, Max, OuterRef, Prefetch, Subquery, F, Value
 from django.db.models.functions import Cast, Substr, Upper
+from django.db import connection, OperationalError, ProgrammingError
+from warnings import warn
+from psycopg2 import sql
+from typing import Iterable, Union
+from warnings import warn
+
+import importlib_resources as resources
+import re
+from . import sql_scripts
 
 import json
+import logging
+
+logger = logging.getLogger(__name__)
+
 import reversion
+from collections import namedtuple
 
 from protobuf.photo_pb2 import Photos as ProtoPhotos
 from protobuf.roads_pb2 import Roads as ProtoRoads, Projection
@@ -28,12 +44,86 @@ from .geodjango_utils import start_end_point_annos
 from csv_data_sources.models import CsvData
 from .managers import RoughnessManager
 
+cache = caches["default"]
+
+
+def run_script(script_name: str, preamble: str = ""):
+    logger.info("Running script %s", script_name)
+    script_content = resources.read_text(sql_scripts, script_name)
+    if preamble != "":
+        script_content = "%s%s" % (preamble, script_content)
+    with connection.cursor() as cur:
+        try:
+            cur.execute(script_content)
+        except ProgrammingError as e:
+            if "prepared statement" in e.args[0] and "already exists" in e.args[0]:
+                warn("%s" % e)
+            else:
+                raise
+
 
 def no_spaces(value):
     if " " in value:
         raise ValidationError(
             _("%(value)s should not contain spaces"), params={"value": value}
         )
+
+
+# We usually generate namedtuple from a query.
+# However to be pickle-able (ie via Django's caching system)
+# it needs to be defined at the class level.
+# Add additional columns to the Excel export here and in the SQL code.
+Result = namedtuple(
+    "Result",
+    (
+        "asset_class",
+        "asset_code",
+        "asset_name",
+        "municipality",
+        "chainage_start",
+        "chainage_end",
+        "length",
+        "surface_type",
+        "terrain",
+        "last_treatment",
+        "average_roughness",
+        "roughness",
+        "asset_condition",
+        "population",
+    ),
+)
+
+
+class SchemaError(TypeError):
+    """
+    This happens when the result from the cursor does not match the
+    named tuple which we're trying to mutate it into. Check that the
+    fields on the named tuple match the fields on the cursor.
+    """
+
+    pass
+
+
+def namedtuple_query(sql, params=None, nt_result=None):
+    """
+    Return the executed SQL as a NamedTuple
+    """
+
+    with connection.cursor() as cur:
+        cur.execute(sql, params)
+        if not nt_result:
+            nt_result = namedtuple(
+                "Result", [column.name for column in cur.description]
+            )
+        try:
+            objects = [nt_result(*row) for row in cur.fetchall()]
+        except TypeError as e:
+            raise SchemaError(
+                "Named tuple %s did not match columns %s",
+                nt_result,
+                [column.name for column in cur.description],
+            ) from e
+        return objects, nt_result._fields
 
 
 class RoadStatus(models.Model):
@@ -1500,6 +1590,14 @@ class RoughnessSurvey(CsvData):
 
     objects = RoughnessManager()
 
+    @staticmethod
+    def refresh_aggregates():
+        """
+        Refresh the "aggregate roughness" surveys
+        from the input CSV files
+        """
+        run_script("aggregate_roughness.sql")
+
 
 class PlanQuerySet(models.QuerySet):
     def to_protobuf(self):
@@ -1702,3 +1800,215 @@ def timestamp_from_datetime(dt):
     ts = Timestamp()
     ts.FromDatetime(dt)
     return ts
+
+
+def display_user(user):
+    """ returns the full username if populated, or the username, or "" """
+    if not user:
+        return ""
+    user_display = user.get_full_name()
+    return user_display or user.username
+
+
+class NumRange(models.Func):
+    function = "NumRange"
+    default_alias = "chainage_range"
+    output_field = DecimalRangeField()
+
+
+class SKeys(models.Func):
+    function = "SKEYS"
+    default_alias = "key"
+    output_field = models.TextField()
+
+
+class HstoreValue(models.Func):
+    template = "%(expressions)s %(function)s %(key)s"
+    function = "->"
+    default_alias = "value"
+
+
+class AssetSurveyBreakpoint(models.Model):
+    """
+    Break down the "Asset Survey" to individual key/value pairs
+    in order to identify spatial and temporal relationships between
+    surveys on the same road code and parameter
+
+    This table is populated and truncated when "BreakpointRelationships.refresh" is run
+    """
+
+    survey = models.ForeignKey(
+        "Survey", on_delete=models.CASCADE, null=True, blank=True
+    )
+    key = models.TextField()
+    date_surveyed = models.DateTimeField(_("Date Surveyed"), null=True)
+    value = models.TextField(null=True, blank=True)
+    chainage_range = DecimalRangeField()
+    asset_code = models.TextField()
+
+    class Meta:
+        indexes = [
+            GistIndex(fields=("chainage_range",)),
+            models.Index(fields=("asset_code", "key")),
+        ]
+
+    @classmethod
+    def truncate(cls):
+        run_script("truncate_assetsurveybreakpoint.sql")
+
+    @classmethod
+    def refresh(cls):
+        cls.truncate()
+        run_script("insert_into_assetsurveybreakpoint.sql")
+
+
+class BreakpointRelationships(models.Model):
+    """
+    Meta data on how two surveys relate spatially / temporally
+
+    This class also acts as a namespce for the generation of reports
+    derived from the assets_survey table
+
+    To use, first refresh
+
+>>> from assets.models import BreakpointRelationships
+>>> BreakpointRelationships.refresh()
+
+>>> # Then try some tests
+
+>>> road_codes = ('A01', 'A02', 'A03', 'C04')
+>>> survey_params = ('municipality', 'aggregate_roughness', 'asset_class', 'terrain_class')
+>>> BreakpointRelationships.survey_check_results(road_codes, survey_params)
+
+
+>>> # For the Excel endpoint we also want to have "aggregate roughness"
+
+>>> from assets.models import RoughnessSurvey
+>>> RoughnessSurvey.refresh_aggregates()
+>>> BreakpointRelationships.refresh()
+>>> BreakpointRelationships.excel_report(road_codes)
+
+>>> BreakpointRelationships.excel_report(road_codes)
+>>> BreakpointRelationships.excel_report_cached(road_codes)
+    """
+
+    class Meta:
+        indexes = [
+            GistIndex(fields=("survey_first_range",)),
+            GistIndex(fields=("survey_second_range",)),
+            models.Index(fields=("asset_code", "key")),
+        ]
+
+    asset_code = models.TextField()
+    key = models.TextField()
+
+    survey_first_id = models.IntegerField(null=True)  # Weak reference to Survey
+
+    survey_second_id = models.IntegerField(null=True)  # Weak reference to Survey
+
+    survey_first_range = DecimalRangeField()
+    survey_second_range = DecimalRangeField()
+
+    survey_first_date = models.DateTimeField(_("Date of first Survey"), null=True)
+    survey_second_date = models.DateTimeField(_("Date of second Survey"), null=True)
+
+    survey_first_value = models.TextField(null=True, blank=True)
+    survey_second_value = models.TextField(null=True, blank=True)
+
+    newer = models.BooleanField()
+    is_adjacent = models.BooleanField()
+    extends_right = models.BooleanField()
+    extends_left = models.BooleanField()
+    is_contained_by = models.BooleanField()
+    contains = models.BooleanField()
+    range_intersection = DecimalRangeField()
+    strictly_left = models.BooleanField()
+
+    @classmethod
+    def truncate(cls):
+        AssetSurveyBreakpoint.truncate()
+        run_script("truncate_breakpointrelationships.sql")
+
+    @classmethod
+    def refresh(cls):
+        cls.truncate()
+        AssetSurveyBreakpoint.refresh()
+        run_script("insert_into_breakpointrelationships.sql")
+        # Drop the "temporary" table content
+        AssetSurveyBreakpoint.truncate()
+        run_script("01_surveys_recursion.sql")
+        run_script("02_surveys_group.sql")
+        run_script("03_crosstab_generator.sql")
+        run_script("04_excel_connection.sql")
+
+    @staticmethod
+    def survey_check_results(asset_codes: Iterable[str], survey_params: Iterable[str]):
+        """
+        This function is here to track/debug the result of the
+        survey amalgamation.
+
+        Valid values for 'function' in order of processing are
+            assets_surveys_recursion,
+            assets_surveys_group,
+            assets_crosstab_generator
+        """
+        tuples = []
+
+        for fn in (
+            "assets_surveys_recursion",
+            "assets_surveys_group",
+            "assets_crosstab_generator",
+        ):
+            sql = "SELECT * FROM {}(ARRAY[{}]::text[], ARRAY[{}]::text[])".format(
+                fn,
+                ", ".join(["%s"] * len(asset_codes)),
+                ", ".join(["%s"] * len(survey_params)),
+            )
+            tuples.append(namedtuple_query(sql, [*asset_codes, *survey_params]))
+
+        tuples.append(
+            namedtuple_query(
+                "SELECT * FROM assets_excel_generator(ARRAY[{}]::text[])".format(
+                    ", ".join(["%s"] * len(asset_codes))
+                ),
+                asset_codes,
+            ),
+        )
+
+        return tuples
+
+    @staticmethod
+    def excel_report(asset_codes: Iterable[str]):
+        sql = "SELECT * FROM assets_excel_generator(ARRAY[{}]::text[]) ORDER BY asset_code, chainage_start".format(
+            ", ".join(["%s"] * len(asset_codes))
+        )
+        return namedtuple_query(sql, asset_codes, nt_result=Result)
+
+    @staticmethod
+    def excel_report_cached(
+        asset_codes: Iterable[str], timeout: int = (60 * 60 * 24), version: int = 3
+    ):
+        """
+        Returns cached rows (cache key is road code)
+        for Excel report
+        """
+
+        returns = []
+        # Get cached asset codes where possible
+
+        for asset_code in asset_codes:
+            ckey = "excel_report_%s" % (re.sub(r"\W+", "", asset_code))
+            report_for_code = cache.get(ckey, version=version)
+            if report_for_code:
+                logger.debug("Cache hit: Excel report %s", asset_code)
+            if not report_for_code:
+                logger.debug("Cache miss: Excel report regenerate for %s", asset_code)
+                cache.set(
+                    ckey,
+                    BreakpointRelationships.excel_report([asset_code]),
+                    version=version,
+                )
+                report_for_code = cache.get(ckey, version=version)
+
+            returns.extend(report_for_code[0])
+        return (returns, Result._fields)
