@@ -3,13 +3,13 @@
 
 {% block project_content %}
 <nav>
-    <a href="{% url 'contract-project-update' project.id %}">
+    <a data-next="{% url 'contract-project-update' project.id %}">
         <h6>{% trans "Project Details" %}</h6>
     </a>
     <a class="selected">
         <h6>{% trans "Financials" %}</h6>
     </a>
-    <a href="{% url 'contract-projectconstructionschedule-update' project.id %}">
+    <a data-next="{% url 'contract-projectconstructionschedule-update' project.id %}">
         <h6>{% trans "Construction Schedule" %}</h6>
     </a>
     <a class="align-items-center d-flex flex-column">
