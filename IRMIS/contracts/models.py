@@ -131,7 +131,7 @@ class ProjectAsset(models.Model):
         Project, on_delete=models.CASCADE, related_name="assets"
     )
     asset_code = models.CharField(
-        max_length=128, verbose_name=_("Asset"), help_text=_("Select project’s asset"),
+        max_length=128, verbose_name=_("Assets"), help_text=_("Select project’s asset"),
     )
     asset_start_chainage = models.IntegerField(
         verbose_name=_("Start Chainage"),

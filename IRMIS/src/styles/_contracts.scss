@@ -125,6 +125,12 @@ $max-width: 400px;
         .print-header, .print-footer {
             display: none;
         }
+        
+        .formset .col:not(:first-of-type) {
+            label, small {
+                display: none;
+            }
+        }
     }
 }
 
