@@ -52,7 +52,6 @@ from protobuf import (
 )
 from .report_query import ReportQuery
 
-
 from collections import namedtuple
 
 from .models import (
@@ -80,6 +79,8 @@ from .models import (
     BreakpointRelationships,
 )
 from .serializers import RoadSerializer, RoadMetaOnlySerializer, RoadToWGSSerializer
+
+from .data_cleaning_utils import update_non_programmatic_surveys_by_road_code
 
 
 @method_decorator(login_required, name="dispatch")
@@ -1102,16 +1103,22 @@ def survey_create(request):
             content_type="application/octet-stream",
         )
 
-    # and default the road_code if none was provided
-    if not req_pb.road_code:
-        req_pb.road_code = survey_asset.road_code
-    elif survey_asset.road_code != req_pb.road_code:
-        # or check it for basic data integrity problem
-        return HttpResponse(
-            req_pb.SerializeToString(),
-            status=400,
-            content_type="application/octet-stream",
-        )
+    # and default the asset_code if none was provided
+    asset_code = None
+    if getattr(survey_asset, "structure_code", None):
+        asset_code = survey_asset.structure_code
+    elif getattr(survey_asset, "road_code", None):
+        asset_code = survey_asset.road_code
+    if asset_code:
+        if not req_pb.asset_code:
+            req_pb.asset_code = asset_code
+        elif req_pb.asset_code != asset_code:
+            # or check it for basic data integrity problem
+            return HttpResponse(
+                req_pb.SerializeToString(),
+                status=400,
+                content_type="application/octet-stream",
+            )
 
     try:
         with reversion.create_revision():
@@ -1133,19 +1140,31 @@ def survey_create(request):
             # store the user who made the changes
             reversion.set_user(request.user)
 
+        initial_survey_id = survey.id
+
         # link the orphan Photos up to the newly created Survey
-        survey_id = "SURV-" + str(survey.id)
+        survey_id = "SURV-" + str(initial_survey_id)
 
         for pb_photo in req_pb.photos:
             # check there's a Photo instance first
             photo = get_object_or_404(Photo.objects.filter(pk=pb_photo.id))
-            photo.object_id = survey.id
+            photo.object_id = initial_survey_id
             photo.content_type = ContentType.objects.get_for_model(survey)
             photo.fk_link = survey_id
             photo.save()
 
-        # return the full new survey
-        pb_survey = Survey.objects.filter(pk=survey.id).to_protobuf().surveys[0]
+        # ensure that Road surveys have correct ids and chainage ranges
+        if survey.asset_id.startswith("ROAD-"):
+            # This may correct the asset_id that points to the road link
+            # And split the survey across multiple road links according to its chainage
+            # only the first survey (in chainage order) will have any photos attached to it
+            updated = update_non_programmatic_surveys_by_road_code(
+                None, survey, survey.asset_code, 0
+            )
+
+        # get the full new survey
+        pb_survey = Survey.objects.filter(pk=initial_survey_id).to_protobuf().surveys[0]
+
         response = HttpResponse(
             pb_survey.SerializeToString(),
             status=200,

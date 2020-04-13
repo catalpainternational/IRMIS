@@ -43,7 +43,7 @@
                     class="{ state.errors.linkStartChainage ? 'danger' : null } { state.linkStartChainage !== -1 && state.linkStartChainage !== '' ? '' : 'inactive' } form-control"
                     type="number" placeholder="0"
                     value="{ state.linkStartChainage !== -1 ? state.linkStartChainage : '' }"
-                    oninput="{ checkLinkStartChainage }" min="0" max="999999999" step="1">
+                    oninput="{ checkLinkStartChainage }" min="0" max="999999" step="1">
                 <div if="{ state.errors.linkStartChainage }" class="invalid-tooltip">
                     <ul>
                         <li>{ state.errors.linkStartChainage }.</li>
@@ -57,7 +57,7 @@
                     class="{ state.errors.linkEndChainage ? 'danger' : null } { state.linkEndChainage !== -1 && state.linkEndChainage !== '' ? '' : 'inactive' } form-control"
                     type="number" placeholder="62410"
                     value="{ state.linkEndChainage !== -1 ? state.linkEndChainage : '' }"
-                    oninput="{ checkLinkEndChainage }" min="0" max="999999999" step="1">
+                    oninput="{ checkLinkEndChainage }" min="0" max="999999" step="1">
                 <div if="{ state.errors.linkEndChainage }" class="invalid-tooltip">
                     <ul>
                         <li>{ state.errors.linkEndChainage }.</li>
@@ -236,7 +236,7 @@
                     <input
                         class="{state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
                         type="number" name="startChainage" placeholder="1000" value="{state.survey.startChainage}"
-                        oninput="{checkChainage}" min="0" max="999999999" step="1" required>
+                        oninput="{checkChainage}" min="0" max="999999" step="1" required>
                     <div if="{state.errors.startChainage}" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.startChainage }.</li>
@@ -250,7 +250,7 @@
                     <input
                         class="{state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
                         type="number" name="endChainage" placeholder="62410" value="{state.survey.endChainage}"
-                        oninput="{checkChainage}" min="0" max="999999999" step="1" required>
+                        oninput="{checkChainage}" min="0" max="999999" step="1" required>
                     <div if="{state.errors.endChainage}" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.endChainage }.</li>
@@ -315,7 +315,7 @@
                     <input
                         class="{state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
                         type="number" name="startChainage" placeholder="1000" value="{state.survey.startChainage}"
-                        oninput="{checkChainage}" min="0" max="999999999" step="1" required>
+                        oninput="{checkChainage}" min="0" max="999999" step="1" required>
                     <div if="{state.errors.startChainage}" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.startChainage }.</li>
@@ -329,7 +329,7 @@
                     <input
                         class="{state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
                         type="number" name="endChainage" placeholder="62410" value="{state.survey.endChainage}"
-                        oninput="{checkChainage}" min="0" max="999999999" step="1" required>
+                        oninput="{checkChainage}" min="0" max="999999" step="1" required>
                     <div if="{state.errors.endChainage}" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.endChainage }.</li>
@@ -393,7 +393,7 @@
                     <input
                         class="{state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
                         type="number" name="startChainage" placeholder="1000" value="{state.survey.startChainage}"
-                        oninput="{checkChainage}" min="0" max="999999999" step="1" required>
+                        oninput="{checkChainage}" min="0" max="999999" step="1" required>
                     <div if="{state.errors.startChainage}" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.startChainage }.</li>
@@ -407,7 +407,7 @@
                     <input
                         class="{state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
                         type="number" name="endChainage" placeholder="62410" value="{state.survey.endChainage}"
-                        oninput="{checkChainage}" min="0" max="999999999" step="1" required>
+                        oninput="{checkChainage}" min="0" max="999999" step="1" required>
                     <div if="{state.errors.endChainage}" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.endChainage }.</li>
@@ -475,7 +475,7 @@
                     <input
                         class="{state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
                         type="number" name="startChainage" placeholder="1000" value="{state.survey.startChainage}"
-                        oninput="{checkChainage}" min="0" max="999999999" step="1" required>
+                        oninput="{checkChainage}" min="0" max="999999" step="1" required>
                     <div if="{state.errors.startChainage}" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.startChainage }.</li>
@@ -489,7 +489,7 @@
                     <input
                         class="{state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
                         type="number" name="endChainage" placeholder="62410" value="{state.survey.endChainage}"
-                        oninput="{checkChainage}" min="0" max="999999999" step="1" required>
+                        oninput="{checkChainage}" min="0" max="999999" step="1" required>
                     <div if="{state.errors.endChainage}" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.endChainage }.</li>
@@ -553,7 +553,7 @@
 
         export default {
             state: {
-                chainageDigits: 9,
+                chainageDigits: 6,
                 linkLengthDecimals: 3,
                 linkLengthDigits: 8,
                 carriagewayWidthDecimals: 1,
@@ -1363,9 +1363,21 @@
             },
             checkChainage(e) {
                 const fieldName = e.currentTarget.name;
-                const input = e.currentTarget.value;
-                const testResult = withinMaxDigits(input, this.state.chainageDigits);
-                const errorText = window.gettext(`Chainage cannot contain more than ${this.state.chainageDigits} digits and value shouldn't contain decimals`);
+                const input = Number(e.currentTarget.value);
+
+                const nominalStart = fieldName === "startChainage" ? 0 : (this.state.survey.startChainage || 0) + 1;
+                const nominalEnd =  fieldName === "endChainage" ? 999999 : (this.state.survey.endChainage || 999999) - 1;
+
+                const chainageError = !withinMaxDigits(input, this.state.chainageDigits)
+                    ? window.gettext(`Chainage cannot contain more than ${this.state.chainageDigits} digits and value shouldn't contain decimals.`)
+                    : "";
+                const rangeError = input < nominalStart || input > nominalEnd
+                    ? window.gettext(`Chainage must be greater than or equal to ${nominalStart} and less than or equal to ${nominalEnd}.`)
+                    : "";
+
+                const testResult = !(chainageError || rangeError);
+                const errorText = `${chainageError} ${rangeError}`.trim();
+
                 this.validate(fieldName, input, testResult, errorText);
             },
             save(e) {
