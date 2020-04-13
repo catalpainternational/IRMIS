@@ -66,10 +66,11 @@
         import {requestApiToken} from "../assets/tokenAPI";
         import $ from 'jquery';
 
+        const cacheBuster = Date.now();
+
         export default {
             state: {
                 accessToken: null,
-                cacheBuster: Date.now(),
                 templateFiles: [
                     {
                         'title': window.gettext("5 year plan national roads"),
