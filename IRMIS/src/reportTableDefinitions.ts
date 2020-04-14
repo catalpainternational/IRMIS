@@ -492,7 +492,7 @@ export const reportContractsTitleColumnMapping: { [name: string]: string } = {
     assetClassYear: (window as any).gettext("Asset class"),
     numberEmployees: (window as any).gettext("Number of employees"),
     wages: (window as any).gettext("Wages"),
-    workedDays: (window as any).gettext("Worked days"),
+    workedDays: (window as any).gettext("Worker-days"),
 };
 
 /** The various columns shared between the different contract reports */
@@ -836,7 +836,7 @@ export const reportContractsContent: { [name: string]: any } = {
     },
     4: {
         title: (window as any).gettext("Social Safeguard"),
-        description: (window as any).gettext("A summary report on the social safeguard data for all contracts for the selected period. The report provides information on number of employees, wages and number of worked days, with a breakdown by gender, age and disabilities"),
+        description: (window as any).gettext("A summary report on the social safeguard data for all contracts for the selected period. The report provides information on number of employees, wages and number of worker-days, with a breakdown by gender, age and disabilities"),
         noReportTitle: (window as any).gettext("Click on Create Report button to access social safeguard report"),
         noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed social safeguard information. You can use filters to generate a customized report"),
         noReportData: (window as any).gettext("Sorry, data for social safeguard is not available yet"),
@@ -855,7 +855,7 @@ export const reportContractsContent: { [name: string]: any } = {
     },
     5: {
         title: (window as any).gettext("Contract's Social Safeguard"),
-        description: (window as any).gettext("A report on the social safeguard data for a selected contract and period. The report provides information on number of employees, wages and number of worked days, with a breakdown by gender, age and disabilities"),
+        description: (window as any).gettext("A report on the social safeguard data for a selected contract and period. The report provides information on number of employees, wages and number of worker-days, with a breakdown by gender, age and disabilities"),
         noReportTitle: (window as any).gettext("Click on Create Report button to access social safeguard contracts report"),
         noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed social safeguard information. You can use filters to generate a customized report"),
         noReportData: (window as any).gettext("Sorry, data for social safeguard is not available yet"),
