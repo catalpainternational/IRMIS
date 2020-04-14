@@ -120,11 +120,11 @@ def get_schema_data():
         "slug": "structure_type",
     }
     asset_schema["material_BRDG"] = {
-        "display": _("Structure Type"),
+        "display": _("Structure Material"),
         "slug": "material",
     }
     asset_schema["material_CULV"] = {
-        "display": _("Structure Type"),
+        "display": _("Structure Material"),
         "slug": "material",
     }
 
