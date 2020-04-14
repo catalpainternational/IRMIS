@@ -252,7 +252,13 @@ def test_survey_create(client, django_user_model):
     client.force_login(user)
     # create a road
     road_code = "A01"
-    road = Road.objects.create(**{"road_code": road_code})
+    road = Road.objects.create(
+        **{
+            "road_code": road_code,
+            "geom_start_chainage": 1234,
+            "geom_end_chainage": 7890,
+        }
+    )
     # build protobuf to send new survey
     pb = survey_pb2.Survey()
     pb.user = user.pk
@@ -283,7 +289,13 @@ def test_survey_edit_update(client, django_user_model):
     client.force_login(user)
     # create a road
     road_code = "A01"
-    road = Road.objects.create(**{"road_code": road_code})
+    road = Road.objects.create(
+        **{
+            "road_code": road_code,
+            "geom_start_chainage": 1234,
+            "geom_end_chainage": 7890,
+        }
+    )
     # create a survey
     with reversion.create_revision():
         survey = Survey.objects.create(
@@ -364,7 +376,13 @@ def test_survey_delete(client, django_user_model):
     client.force_login(user)
     # create a road
     road_code = "A01"
-    road = Road.objects.create(**{"road_code": road_code})
+    road = Road.objects.create(
+        **{
+            "road_code": road_code,
+            "geom_start_chainage": 1234,
+            "geom_end_chainage": 7890,
+        }
+    )
     # create a survey
     with reversion.create_revision():
         survey = Survey.objects.create(
