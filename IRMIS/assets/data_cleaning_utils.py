@@ -682,12 +682,13 @@ def update_non_programmatic_surveys_by_road_code(
         None,
     )
     if not road_survey:
-        management_command.stderr.write(
-            management_command.style.ERROR(
-                "Error: User entered survey Id:%s for road '%s' has problems"
-                % (survey.id, rc)
+        if management_command:
+            management_command.stderr.write(
+                management_command.style.ERROR(
+                    "Error: User entered survey Id:%s for road '%s' has problems"
+                    % (survey.id, rc)
+                )
             )
-        )
         return updated
 
     # Test if this survey exists wholly within the road link
@@ -707,12 +708,15 @@ def update_non_programmatic_surveys_by_road_code(
 
     # This survey spans more than one road link
     # So 'split' it and create a new survey for the rest
-    management_command.stderr.write(
-        management_command.style.NOTICE(
-            "User entered survey Id:%s spans multiple road links for road '%s'"
-            % (survey.id, rc)
-        )
+    splitSurveyComment = (
+        "User entered survey Id:%s spans multiple road links for road '%s'"
+        % (survey.id, rc)
     )
+    if management_command:
+        management_command.stderr.write(
+            management_command.style.NOTICE(splitSurveyComment)
+        )
+
     prev_chainage_end = survey.chainage_end
     with reversion.create_revision():
         survey.asset_id = "ROAD-%s" % road_survey.id
