@@ -226,19 +226,13 @@
         import Data_Table from "./data_table.riot.html";
 
         import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
-        import {getSurveysForAsset} from "../assets/editUtilities";
+        import {checkRequiredFields, getSurveysForAsset} from "../assets/editUtilities";
         import {withinMaxDigits} from "../assets/utilities";
 
         import { makeEstradaRoad } from "../assets/models/road";
         import { EstradaSurvey, makeEstradaSurvey } from "../assets/models/survey";
 
         import $ from "jquery";
-
-        function checkRequiredFields(fieldNames, data, errors) {
-            return fieldNames.filter((fieldName) => {
-                return typeof data[fieldName] !== "undefined" && data[fieldName] !== null;
-            });
-        }
 
         export default {
             state: {

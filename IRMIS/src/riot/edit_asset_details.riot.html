@@ -536,22 +536,15 @@
         import Edit_Field_Construction_Year from "./edit_field_construction_year.riot.html";
 
         import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
-        import {surveysAndReportRefresh} from "../assets/editUtilities";
+        import {checkRequiredFields, surveysAndReportRefresh} from "../assets/editUtilities";
         import {choice_or_default, toChainageFormat} from "../assets/protoBufUtilities";
         import {containsWhiteSpaces, withinMaxDigits} from "../assets/utilities";
-
 
         import {TECHNICAL_CLASS_CHOICES} from "../assets/models/choices";
         import {makeEstradaRoad} from "../assets/models/road";
         import {EstradaSurvey, makeEstradaSurvey} from "../assets/models/survey";
 
         import $ from "jquery";
-
-        function checkRequiredFields(fieldNames, data, errors) {
-            return fieldNames.filter((fieldName) => {
-                return typeof data[fieldName] !== "undefined" && data[fieldName] !== null;
-            });
-        }
 
         export default {
             state: {

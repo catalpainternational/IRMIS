@@ -232,7 +232,7 @@
         import Stacked_Bar from "./stacked_bar.riot.html";
 
         import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
-        import {surveysAndReportRefresh} from "../assets/editUtilities";
+        import {checkRequiredFields, surveysAndReportRefresh} from "../assets/editUtilities";
         import {choice_or_default, toChainageFormat} from "../assets/protoBufUtilities";
         import {withinMaxDigits} from "../assets/utilities";
 
@@ -241,12 +241,6 @@
         import {EstradaSurvey, makeEstradaSurvey} from "../assets/models/survey";
 
         import $ from "jquery";
-
-        function checkRequiredFields(fieldNames, data, errors) {
-            return fieldNames.filter((fieldName) => {
-                return typeof data[fieldName] !== "undefined" && data[fieldName] !== null;
-            });
-        }
 
         export default {
             state: {
