@@ -701,6 +701,7 @@ def update_non_programmatic_surveys_by_road_code(
     ):
         reversion_comment = "Survey chainages updated programmatically"
         with reversion.create_revision():
+            survey.chainage_start = road_survey.geom_start_chainage
             survey.chainage_end = road_survey.geom_end_chainage
             survey.save()
             reversion.set_comment(reversion_comment)
