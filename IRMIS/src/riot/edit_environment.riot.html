@@ -90,7 +90,7 @@
                     <input
                         class="{ state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
                         type="number" name="startChainage" placeholder="1000" value="{ state.survey.startChainage }"
-                        oninput="{ checkChainage }" min="0" max="999999" step="1" required>
+                        oninput="{ checkChainage }" min="0" max="999998" step="1" required>
                     <div if="{ state.errors.startChainage }" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.startChainage }.</li>
@@ -104,7 +104,7 @@
                     <input
                         class="{ state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
                         type="number" name="endChainage" placeholder="62410" value="{ state.survey.endChainage }"
-                        oninput="{ checkChainage }" min="0" max="999999" step="1" required>
+                        oninput="{ checkChainage }" min="1" max="999999" step="1" required>
                     <div if="{ state.errors.endChainage }" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.endChainage }.</li>
@@ -172,7 +172,7 @@
                     <input
                         class="{ state.errors.startChainage ? 'danger' : null } { state.survey.startChainage ? '' : 'inactive' } form-control"
                         type="number" name="startChainage" placeholder="1000" value="{ state.survey.startChainage }"
-                        oninput="{ checkChainage }" min="0" max="999999" step="1" required>
+                        oninput="{ checkChainage }" min="0" max="999998" step="1" required>
                     <div if="{ state.errors.startChainage }" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.startChainage }.</li>
@@ -186,7 +186,7 @@
                     <input
                         class="{ state.errors.endChainage ? 'danger' : null } { state.survey.endChainage ? '' : 'inactive' } form-control"
                         type="number" name="endChainage" placeholder="62410" value="{ state.survey.endChainage }"
-                        oninput="{ checkChainage }" min="0" max="999999" step="1" required>
+                        oninput="{ checkChainage }" min="1" max="999999" step="1" required>
                     <div if="{ state.errors.endChainage }" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.endChainage }.</li>
@@ -232,7 +232,7 @@
         import Stacked_Bar from "./stacked_bar.riot.html";
 
         import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
-        import {surveysAndReportRefresh} from "../assets/editUtilities";
+        import {checkRequiredFields, surveysAndReportRefresh} from "../assets/editUtilities";
         import {choice_or_default, toChainageFormat} from "../assets/protoBufUtilities";
         import {withinMaxDigits} from "../assets/utilities";
 
@@ -241,10 +241,6 @@
         import {EstradaSurvey, makeEstradaSurvey} from "../assets/models/survey";
 
         import $ from "jquery";
-
-        function checkRequiredFields(fieldNames, data, errors) {
-            return fieldNames.filter((fieldName) => {return !data[fieldName];});
-        }
 
         export default {
             state: {
@@ -779,7 +775,7 @@
                 const chainageError = !withinMaxDigits(input, this.state.chainageDigits)
                     ? window.gettext(`Chainage cannot contain more than ${this.state.chainageDigits} digits and value shouldn't contain decimals.`)
                     : "";
-                const rangeError = input < nominalStart || input > nominalEnd
+                const rangeError = !(input >= nominalStart && input <= nominalEnd)
                     ? window.gettext(`Chainage must be greater than or equal to ${nominalStart} and less than or equal to ${nominalEnd}.`)
                     : "";
 

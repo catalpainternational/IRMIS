@@ -102,3 +102,10 @@ export function surveysAndReportRefresh(state: { [name: string]: any }, identifi
 
     return Promise.all([surveyPromise, surveyReportsPromise]);
 }
+
+
+export function checkRequiredFields(fieldNames: string[], data: { [name: string]: any }) {
+    return fieldNames.filter((fieldName) => {
+        return typeof data[fieldName] === "undefined" || data[fieldName] === null;
+    });
+}
