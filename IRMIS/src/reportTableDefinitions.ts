@@ -848,6 +848,7 @@ export const reportContractsContent: { [name: string]: any } = {
         reportElements: {
             filters: true,
             dataTables: [
+                reportContractsTableIds.numberEmployees,
                 reportContractsTableIds.wages,
                 reportContractsTableIds.workedDays
             ],
