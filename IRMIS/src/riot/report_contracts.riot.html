@@ -200,14 +200,24 @@
             reportContractsContent
         } from "../reportTableDefinitions";
 
-        function setTitleColumn(titleColumnName) {
-            if (reportContractsTitleColumnMapping[titleColumnName]) {
+        function setColumnsTitles(tableName) {
+            if (reportContractsTitleColumnMapping[tableName]) {
                 const titleColumn = JSON.parse(JSON.stringify(reportContractsTableColumns.title))
-                titleColumn.title = reportContractsTitleColumnMapping[titleColumnName];
-                reportContractsColumnSets[titleColumnName][0] = titleColumn;
+                titleColumn.title = reportContractsTitleColumnMapping[tableName];
+                reportContractsColumnSets[tableName][0] = titleColumn;
             }
 
-            return reportContractsColumnSets[titleColumnName];
+            if (tableName === "typeOfWorkYear" || tableName === "assetClassYear") {
+                let currentYear = new Date().getFullYear();
+                
+                for (var year=0; year < 5; year++) {
+                    let yearColumn = JSON.parse(JSON.stringify(reportContractsTableColumns.year));
+                    yearColumn.title = currentYear - year + "";
+                    reportContractsColumnSets[tableName][year + 1] = yearColumn;
+                }
+            }
+
+            return reportContractsColumnSets[tableName];
         };
 
         function getPastTenYears() {
@@ -273,14 +283,14 @@
             ],
             reportContractsTableIds: reportContractsTableIds,
             columns: {
-                program: () => setTitleColumn("program"),
-                contractCode: () => setTitleColumn("contractCode"),
-                assetClassTypeOfWork: () => setTitleColumn("assetClassTypeOfWork"),
-                typeOfWorkYear: () => setTitleColumn("typeOfWorkYear"),
-                assetClassYear: () => setTitleColumn("assetClassYear"),
-                numberEmployees: () => setTitleColumn("numberEmployees"),
-                wages: () => setTitleColumn("wages"),
-                workedDays: () => setTitleColumn("workedDays"),
+                program: () => setColumnsTitles("program"),
+                contractCode: () => setColumnsTitles("contractCode"),
+                assetClassTypeOfWork: () => setColumnsTitles("assetClassTypeOfWork"),
+                typeOfWorkYear: () => setColumnsTitles("typeOfWorkYear"),
+                assetClassYear: () => setColumnsTitles("assetClassYear"),
+                numberEmployees: () => setColumnsTitles("numberEmployees"),
+                wages: () => setColumnsTitles("wages"),
+                workedDays: () => setColumnsTitles("workedDays"),
             },
             onBeforeMount(props, state) {
                 state.reportFromDate = currentDate();

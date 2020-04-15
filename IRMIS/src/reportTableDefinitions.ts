@@ -750,9 +750,17 @@ export const reportContractsColumnSets: { [name: string]: string[] } = {
     typeOfWorkYear: [
         reportContractsTableColumns.title,
         reportContractsTableColumns.year,
+        reportContractsTableColumns.year,
+        reportContractsTableColumns.year,
+        reportContractsTableColumns.year,
+        reportContractsTableColumns.year,
     ],
     assetClassYear: [
         reportContractsTableColumns.title,
+        reportContractsTableColumns.year,
+        reportContractsTableColumns.year,
+        reportContractsTableColumns.year,
+        reportContractsTableColumns.year,
         reportContractsTableColumns.year,
     ],
     numberEmployees: [
