@@ -142,6 +142,10 @@ table.contracts-profile-table {
         &:first-child {
             width: 60px;
         }
+
+        &:nth-child(2) {
+            width: 30px;
+        }
     }
 
     tbody tr td {
@@ -150,6 +154,10 @@ table.contracts-profile-table {
 
         &:first-child {
             width: 60px;
+        }
+
+        &:nth-child(2) {
+            width: 30px;
         }
 
         span {
@@ -240,14 +248,22 @@ div.dataTables_wrapper {
     }
 }
 
+#project-document-print-list-table_wrapper,
+#tender-document-print-list-table_wrapper,
 #contract-inspection-print-list-table_wrapper,
 #contract-payment-print-list-table_wrapper,
-#contract-social-safeguard-print-list-table_wrapper {
+#contract-social-safeguard-print-list-table_wrapper,
+#contract-document-print-list-table_wrapper,
+#company-document-print-list-table_wrapper {
     display: none;
 }
 
 #project-list-table_wrapper ul.pagination,
+#project-document-list-table_wrapper ul.pagination,
+#project-document-view-list-table_wrapper ul.pagination,
 #tender-list-table_wrapper ul.pagination,
+#tender-document-list-table_wrapper ul.pagination,
+#tender-document-view-list-table_wrapper ul.pagination,
 #contract-list-table_wrapper ul.pagination,
 #contract-inspection-list-table_wrapper ul.pagination,
 #contract-inspection-view-list-table_wrapper ul.pagination,
@@ -255,7 +271,11 @@ div.dataTables_wrapper {
 #contract-payment-view-list-table_wrapper ul.pagination,
 #contract-social-safeguard-list-table_wrapper ul.pagination,
 #contract-social-safeguard-view-list-table_wrapper ul.pagination,
+#contract-document-list-table_wrapper ul.pagination,
+#contract-document-view-list-table_wrapper ul.pagination,
 #company-list-table_wrapper ul.pagination,
+#company-document-list-table_wrapper ul.pagination,
+#company-document-view-list-table_wrapper ul.pagination,
 #history-table_wrapper ul.pagination,
 .content-wrapper ul.pagination {
     li.paginate_button.page-item {

@@ -34,15 +34,23 @@
         margin: 0 !important;
     }
 
+    #project-document-print-list-table_wrapper,
+    #tender-document-print-list-table_wrapper,
     #contract-inspection-print-list-table_wrapper,
     #contract-payment-print-list-table_wrapper,
-    #contract-social-safeguard-print-list-table_wrapper {
+    #contract-social-safeguard-print-list-table_wrapper,
+    #contract-document-print-list-table_wrapper,
+    #company-document-print-list-table_wrapper {
         display: block;
     }
 
+    #project-document-view-list-table_wrapper,
+    #tender-document-view-list-table_wrapper,
     #contract-inspection-view-list-table_wrapper,
     #contract-payment-view-list-table_wrapper,
-    #contract-social-safeguard-view-list-table_wrapper {
+    #contract-social-safeguard-view-list-table_wrapper,
+    #contract-document-view-list-table_wrapper,
+    #company-document-view-list-table_wrapper {
         display: none;
     }
 

@@ -6,7 +6,7 @@
     <a href="{% url 'contract-contract-update' contract.id %}">
         <h6>{% trans "Contract Details" %}</h6>
     </a>
-    <a class="selected">
+    <a href="{% url 'contract-contractinspection-list' contract.id %}">
         <h6>{% trans "Inspections" %}</h6>
     </a>
     <a href="{% url 'contract-contractpayment-list' contract.id %}">
@@ -15,80 +15,85 @@
     <a href="{% url 'contract-socialsafeguarddata-list' contract.id %}">
         <h6>{% trans "Social Safeguard" %}</h6>
     </a>
-    <a href="{% url 'contract-contractdocument-list' contract.id %}">
+    <a class="selected">
         <h6>{% trans "Documents" %}</h6>
     </a>
 </nav>
 
 <div class="content">
     <div class="align-items-center d-flex justify-content-between">
-        <h5 class="title">{% trans "List of inspections" %}</h5>
+        <h5 class="title">{% trans "Uploaded Documents" %}</h5>
         <button class="btn btn-primary form-modal-link" type="button" data-method="POST">{% trans "Add" %}</button>
     </div>
-    <table id="contract-inspection-list-table" class="contracts-profile-table d-block table table-hover">
+    <table id="contract-document-list-table" class="contracts-profile-table d-block table table-hover">
         <thead>
             <tr>
                 <th></th>
-                <th>{% trans "Inspection Date" %}</th>
-                <th>{% trans "Inspection Entity" %}</th>
-                <th>{% trans "Physical Progress" %}</th>
-                <th>{% trans "Defect Liability Period" %}</th>
+                <th></th>
+                <th>{% trans "Title" %}</th>
+                <th>{% trans "Type" %}</th>
+                <th>{% trans "Document Date" %}</th>
+                <th>{% trans "Description" %}</th>
             </tr>
         </thead>
         <tbody>
-            {% for inspection in inspection_list %}
+            {% for document in document_list %}
             <tr>
                 <td class="text-center">
-                    <a class="image pencil form-modal-link" data-method="PUT" data-object="{{ inspection.json }}"></a>
+                    <a class="image pencil form-modal-link" data-method="PUT" data-object="{{ document.json }}"></a>
                     <span></span>
-                    <a class="image delete delete-link" data-delete="/contracts/api/contractinspection/{{ inspection.id }}/"></a>
+                    <a class="image delete delete-link" data-delete="/contracts/api/contractdocument/{{ document.id }}/"></a>
                 </td>
-                <td>{{ inspection.date }}</td>
-                <td>{{ inspection.entity }}</td>
-                <td>{{ inspection.progress }}</td>
-                <td>{{ inspection.get_defect_liability_period_display }}</td>
+                <td class="text-center">
+                    <a class="image document" href="/media/{{ document.content }}" download="{{ document.content.name }}"></a>
+                </td>
+                <td>{{ document.title }}</td>
+                <td>{{ document.document_type.name }}</td>
+                <td>{{ document.document_date }}</td>
+                <td>{{ document.description }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
 
-<div class="inspection-modal form-modal modal" tabindex="-1" role="dialog">
+<div class="document-modal form-modal modal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title">{% trans "Save Inspection" %}</h1>
+                <h1 class="modal-title">{% trans "Save Document" %}</h1>
                 <span class="close image" data-dismiss="modal" aria-label="{% trans 'Close' %}" aria-hidden="true"></span>
             </div>
             <div class="modal-body">
-                <form>
+                <form id="doc-upload-form" enctype="multipart/form-data">
                     <section>
-                        <div class="form-group">
-                            <label>{% trans "Inspection Date" %}</label>
+                        <div class="form-group position-relative">
+                            <label>{% trans "File" %}</label>
                             <span class="required">*</span>
-                            <small class="form-text text-muted">{% trans "Select inspection date" %}</small>
-                            <input id="inpection-date" class="form-control" type="date" pattern="\d{4}-\d{2}-\d{2}" required>
+                            <p id="document-file-name" class="file-name"></p>
+                            <input id="document-file" type="file" name="content" oninput="document.getElementById('document-file-name').innerHTML = document.getElementById('document-file').value;" required>
                         </div>
                         <div class="form-group">
-                            <label>{% trans "Inspection Entity" %}</label>
+                            <label>{% trans "Title" %}</label>
                             <span class="required">*</span>
-                            <small class="form-text text-muted">{% trans "Choose entity that performed the inspection" %}</small>
-                            <select id="inpection-entity" class="form-control">
-                                {% for entity in inspection_entities %}
-                                <option value="{{ entity.id }}">{{ entity.name }}</option>
+                            <input id="document-title" name="title" class="form-control" type="text" required>
+                        </div>
+                        <div class="form-group">
+                            <label>{% trans "Document Type" %}</label>
+                            <span class="required">*</span>
+                            <select id="document-type" name="document_type" class="form-control">
+                                {% for type in document_types %}
+                                <option value="{{ type.id }}">{{ type.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>{% trans "Physical Progress" %}</label>
-                            <span class="required">*</span>
-                            <small class="form-text text-muted">{% trans "Enter physical progress as inspected" %}</small>
-                            <input id="physical-progress" class="form-control" type="number" min="0" max="100" placeholder="25%" required>
+                            <label>{% trans "Document Date" %}</label>
+                            <input id="document-date" name="document_date" class="form-control" type="date" pattern="\d{4}-\d{2}-\d{2}" required>
                         </div>
                         <div class="form-group">
-                            <label>{% trans "Start Defect Liability Period" %}</label>
-                            <small class="form-text text-muted">{% trans "When DLP starts with the inspection" %}</small>
-                            <input id="defect-liability" type="checkbox">
+                            <label>{% trans "Description" %}</label>
+                            <input id="document-description" name="description" class="form-control" type="text">
                         </div>
                     </section>
                     <div class="d-flex justify-content-end">
@@ -98,7 +103,7 @@
             </div>
             <div class="modal-footer">
                 <a data-dismiss="modal">{% trans "Cancel" %}</a>
-                <button id="save-inspection" type="button" class="btn btn-primary" data-id="{{ contract.id }}">{% trans "Save" %}</button>
+                <button id="save-document" type="button" class="btn btn-primary" data-profile="contracts" data-id="{{ contract.id }}">{% trans "Save" %}</button>
             </div>
         </div>
     </div>
@@ -113,8 +118,8 @@
                     aria-hidden="true"></span>
             </div>
             <div class="modal-body text-center">
-                <h6>{% trans "Delete Inspection" %}</h6>
-                <p>{% trans "Are you sure you want to delete this inspection?" %}</p>
+                <h6>{% trans "Delete Document" %}</h6>
+                <p>{% trans "Are you sure you want to delete this document?" %}</p>
             </div>
             <div class="d-flex justify-content-center modal-footer">
                 <button type="button" class="btn btn-danger delete-item">{% trans "Delete" %}</button>

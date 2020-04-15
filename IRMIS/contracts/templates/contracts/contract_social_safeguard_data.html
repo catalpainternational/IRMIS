@@ -3,62 +3,56 @@
 
 {% block contract_content %}
 <nav>
-    <a href="{% url 'contract-contract-update' contract_id %}">
+    <a href="{% url 'contract-contract-update' contract.id %}">
         <h6>{% trans "Contract Details" %}</h6>
     </a>
-    <a href="{% url 'contract-contractinspection-list' contract_id %}">
+    <a href="{% url 'contract-contractinspection-list' contract.id %}">
         <h6>{% trans "Inspections" %}</h6>
     </a>
-    <a href="{% url 'contract-contractpayment-list' contract_id %}">
+    <a href="{% url 'contract-contractpayment-list' contract.id %}">
         <h6>{% trans "Payments" %}</h6>
     </a>
     <a class="selected">
         <h6>{% trans "Social Safeguard" %}</h6>
     </a>
-    <a class="align-items-center d-flex flex-column">
+    <a href="{% url 'contract-contractdocument-list' contract.id %}">
         <h6>{% trans "Documents" %}</h6>
-        <span>(coming soon)</span>
     </a>
 </nav>
 
 <div class="content">
-    <form id="contract-social-form" method="post" action="{{ request.get_full_path }}">
-        {% csrf_token %}
-        <div class="align-items-center d-flex justify-content-between">
-            <h5 class="title">{% trans "List of Social Safeguard Data" %}</h5>
-            <button class="btn btn-primary form-modal-link" type="button" data-method="POST">{% trans "Add" %}</button>
-        </div>
-        <table id="contract-social-safeguard-list-table" class="contracts-profile-table d-block table table-hover">
-            <thead>
-                <tr>
-                    <th>{% trans "Reporting Month" %}</th>
-                    <th>{% trans "Total Employees" %}</th>
-                    <th>{% trans "Total Female Employees" %}</th>
-                    <th>{% trans "Total Employees With Disabilities" %}</th>
-                    <th>{% trans "Female Employees With Disabilities" %}</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for social_data in social_list_data %}
-                <tr>
-                    <td>{{ social_data.month }}</td>
-                    <td>{{ social_data.employees }}</td>
-                    <td>{{ social_data.female_employees }}</td>
-                    <td>{{ social_data.employees_with_disabilities }}</td>
-                    <td>{{ social_data.female_employees_with_disabilities }}</td>
-                    <td class="text-center">
-                        <a class="image pencil form-modal-link" data-method="PUT" data-object="{{ social_data.json }}"
-                            data-id="{{ social_data.id }}"></a>
-                        <span></span>
-                        <a class="image delete delete-link"
-                            data-delete="/contracts/api/socialsafeguarddata/{{ social_data.id }}/"></a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </form>
+    <div class="align-items-center d-flex justify-content-between">
+        <h5 class="title">{% trans "List of Social Safeguard Data" %}</h5>
+        <button class="btn btn-primary form-modal-link" type="button" data-method="POST">{% trans "Add" %}</button>
+    </div>
+    <table id="contract-social-safeguard-list-table" class="contracts-profile-table d-block table table-hover">
+        <thead>
+            <tr>
+                <th></th>
+                <th>{% trans "Reporting Month" %}</th>
+                <th>{% trans "Total Employees" %}</th>
+                <th>{% trans "Total Female Employees" %}</th>
+                <th>{% trans "Total Employees With Disabilities" %}</th>
+                <th>{% trans "Female Employees With Disabilities" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for social_data in social_list_data %}
+            <tr>
+                <td class="text-center">
+                    <a class="image pencil form-modal-link" data-method="PUT" data-object="{{ social_data.json }}"></a>
+                    <span></span>
+                    <a class="image delete delete-link" data-delete="/contracts/api/socialsafeguarddata/{{ social_data.id }}/"></a>
+                </td>
+                <td>{{ social_data.month }}</td>
+                <td>{{ social_data.employees }}</td>
+                <td>{{ social_data.female_employees }}</td>
+                <td>{{ social_data.employees_with_disabilities }}</td>
+                <td>{{ social_data.female_employees_with_disabilities }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
 <div class="social-data-modal form-modal modal" tabindex="-1" role="dialog">
@@ -66,8 +60,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title">{% trans "Save Social Safeguard Report" %}</h1>
-                <span class="close image" data-dismiss="modal" aria-label="{% trans 'Close' %}"
-                    aria-hidden="true"></span>
+                <span class="close image" data-dismiss="modal" aria-label="{% trans 'Close' %}" aria-hidden="true"></span>
             </div>
             <div class="modal-body">
                 <form>
@@ -77,8 +70,7 @@
                             <label>{% trans "Reporting Month" %}</label>
                             <span class="required">*</span>
                             <small class="form-text text-muted">{% trans "Select month of the report" %}</small>
-                            <input id="reporting-month" class="form-control" type="month" pattern="\d{4}-\d{2}"
-                                required>
+                            <input id="reporting-month" class="form-control" type="month" pattern="\d{4}-\d{2}" required>
                         </div>
                         <div class="form-group">
                             <label>{% trans "Total Employees" %}</label>
@@ -132,8 +124,7 @@
                         </div>
                         <div class="form-group">
                             <label>{% trans "Female Employees With Disabilities Worker-days" %}</label>
-                            <input id="female-employees-disabilities-worked-days" class="form-control" type="number"
-                                min="0" placeholder="40">
+                            <input id="female-employees-disabilities-worked-days" class="form-control" type="number" min="0" placeholder="40">
                         </div>
                         <div class="form-group">
                             <label>{% trans "Young Employees Worker-days" %}</label>
@@ -154,14 +145,12 @@
                         <div class="form-group">
                             <label>{% trans "Average Gross Wages" %}</label>
                             <small class="form-text text-muted">{% trans "Average of gross salaries in USD" %}</small>
-                            <input id="average-gross-wages" class="form-control" type="number" min="0" max="999999"
-                                step="0.01" placeholder="$125">
+                            <input id="average-gross-wages" class="form-control" type="number" min="0" max="999999" step="0.01" placeholder="$125">
                         </div>
                         <div class="form-group">
                             <label>{% trans "Average Net Wages" %}</label>
                             <small class="form-text text-muted">{% trans "Average of net salaries in USD" %}</small>
-                            <input id="average-net-wages" class="form-control" type="number" min="0" max="999999"
-                                step="0.01" placeholder="$110">
+                            <input id="average-net-wages" class="form-control" type="number" min="0" max="999999" step="0.01" placeholder="$110">
                         </div>
                     </section>
                     <div class="d-flex justify-content-end">
@@ -171,9 +160,7 @@
             </div>
             <div class="modal-footer">
                 <a data-dismiss="modal">{% trans "Cancel" %}</a>
-                <button id="save-social-data" type="button" class="btn btn-primary"
-                    data-url="/contracts/api/socialsafeguarddata/"
-                    data-id="{{ contract_id }}">{% trans "Save" %}</button>
+                <button id="save-social-data" type="button" class="btn btn-primary" data-id="{{ contract.id }}">{% trans "Save" %}</button>
             </div>
         </div>
     </div>

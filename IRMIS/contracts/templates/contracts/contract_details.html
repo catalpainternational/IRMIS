@@ -16,9 +16,8 @@
     <a class="disabled">
         <h6>{% trans "Social Safeguard" %}</h6>
     </a>
-    <a class="align-items-center d-flex flex-column disabled">
+    <a class="disabled">
         <h6>{% trans "Documents" %}</h6>
-        <span>(coming soon)</span>
     </a>
     {% else %}
     <a data-next="{% url 'contract-contractinspection-list' contract.id %}">
@@ -30,9 +29,8 @@
     <a data-next="{% url 'contract-socialsafeguarddata-list' contract.id %}">
         <h6>{% trans "Social Safeguard" %}</h6>
     </a>
-    <a class="align-items-center d-flex flex-column">
+    <a href="{% url 'contract-contractdocument-list' contract.id %}">
         <h6>{% trans "Documents" %}</h6>
-        <span>(coming soon)</span>
     </a>
     {% endif %}
 </nav>

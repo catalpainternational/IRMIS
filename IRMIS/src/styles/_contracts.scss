@@ -115,11 +115,16 @@ $max-width: 400px;
                 &:last-child {
                     margin-bottom: 0;
                 }
-
-                label, p {
-                    margin-bottom: 0;
-                }
             }
+        }
+
+        p.file-name {
+            margin-bottom: 5px;
+        }
+
+        input[type="file"] {
+            color: transparent; // hides selected file name
+            display: block;
         }
 
         .print-header, .print-footer {
@@ -160,9 +165,7 @@ div.buttons {
     }
 }
 
-#contract-inspection-form > div:not(.dataTables_wrapper),
-#contract-payment-form > div:not(.dataTables_wrapper),
-#contract-social-form > div:not(.dataTables_wrapper) {
+form.contract-form > div:not(.dataTables_wrapper) {
     border-bottom: 1px solid $lighter-gray;
     padding-bottom: 10px;
 }

@@ -73,6 +73,7 @@ class Project(models.Model):
     duration = models.IntegerField(
         null=True,
         blank=True,
+        validators=[MinValueValidator(0)],
         verbose_name=_("Duration (days)"),
         help_text=_("Estimated duration of the work"),
     )
@@ -287,11 +288,14 @@ class Contract(models.Model):
         verbose_name=_("Contract end date"), help_text=_("Enter contract end date"),
     )
     duration = models.IntegerField(
-        verbose_name=_("Duration (days)"), help_text=_("Duration in days"),
+        validators=[MinValueValidator(0)],
+        verbose_name=_("Duration (days)"),
+        help_text=_("Duration in days"),
     )
     defect_liability_days = models.IntegerField(
         null=True,
         blank=True,
+        validators=[MinValueValidator(0)],
         verbose_name=_("Defect liability period (days)"),
         help_text=_("Duration of DLP in days"),
     )
@@ -310,6 +314,7 @@ class Contract(models.Model):
     amendment_duration = models.IntegerField(
         null=True,
         blank=True,
+        validators=[MinValueValidator(0)],
         verbose_name=_("Contract duration"),
         help_text=_("Enter new duration in days"),
     )
@@ -411,6 +416,7 @@ class ContractInspection(models.Model):
 
         return json.dumps(
             {
+                "id": self.id,
                 "date": self.date,
                 "entity": self.entity.id,
                 "progress": self.progress,
@@ -450,9 +456,10 @@ class ContractPayment(models.Model):
 
         return json.dumps(
             {
+                "id": self.id,
                 "date": self.date,
                 "value": self.value,
-                "donor": self.donor.id,
+                "donor": self.donor.id if self.donor is not None else 0,
                 "source": self.source.id,
                 "destination": self.destination.id,
             },
@@ -537,6 +544,7 @@ class SocialSafeguardData(models.Model):
 
         return json.dumps(
             {
+                "id": self.id,
                 "year": self.year,
                 "month": self.month,
                 "employees": self.employees,
@@ -559,39 +567,6 @@ class SocialSafeguardData(models.Model):
             },
             cls=DjangoJSONEncoder,
         )
-
-
-class ContractDocument(models.Model):
-    """
-    A Document may be associated with Projects, Tenders, Contracts or Companies
-    """
-
-    title = models.CharField(max_length=256)
-    description = models.TextField(null=True, blank=True)
-    document_type = models.ForeignKey("ContractDocumentType", on_delete=models.PROTECT)
-    document_date = models.DateField(null=True, blank=True)
-    content = models.FileField(upload_to="contract_documents/")
-
-    companies = models.ManyToManyField("Company", related_name="documents")
-    contracts = models.ManyToManyField("Contract", related_name="documents")
-    projects = models.ManyToManyField("Project", related_name="documents")
-    tenders = models.ManyToManyField("Tender", related_name="documents")
-
-
-class ContractDocumentType(models.Model):
-
-    CATEGORY_CHOICES = (
-        ("project", _("project")),
-        ("tender", _("tender")),
-        ("contract", _("contract")),
-        ("company", _("company")),
-    )
-
-    name = models.CharField(max_length=256)
-    category = models.CharField(max_length=8)
-
-    def __str__(self):
-        return f"{self.name} ({self.category})"
 
 
 # Company
@@ -676,3 +651,55 @@ class Company(models.Model):
             .annotate(v=Sum("contractor_for__budgets__value"))
             .values("v")
         )
+
+
+# Document
+class ContractDocument(models.Model):
+    """
+    A Document may be associated with Projects, Tenders, Contracts or Companies
+    """
+
+    title = models.CharField(max_length=256)
+    description = models.TextField(null=True, blank=True)
+    document_type = models.ForeignKey("ContractDocumentType", on_delete=models.PROTECT)
+    document_date = models.DateField(null=True, blank=True)
+    content = models.FileField(upload_to="contract_documents/")
+
+    companies = models.ManyToManyField("Company", blank=True, related_name="documents")
+    contracts = models.ManyToManyField("Contract", blank=True, related_name="documents")
+    projects = models.ManyToManyField("Project", blank=True, related_name="documents")
+    tenders = models.ManyToManyField("Tender", blank=True, related_name="documents")
+
+    @property
+    def json(self):
+        """
+        Property to return a JSON serialize string of instance
+        """
+
+        return json.dumps(
+            {
+                "id": self.id,
+                "title": self.title,
+                "description": self.description,
+                "document_type": self.document_type.id,
+                "document_date": self.document_date,
+                "content": self.content.name,
+            },
+            cls=DjangoJSONEncoder,
+        )
+
+
+class ContractDocumentType(models.Model):
+
+    CATEGORY_CHOICES = (
+        ("project", _("project")),
+        ("tender", _("tender")),
+        ("contract", _("contract")),
+        ("company", _("company")),
+    )
+
+    name = models.CharField(max_length=256)
+    category = models.CharField(max_length=8)
+
+    def __str__(self):
+        return f"{self.name} ({self.category})"

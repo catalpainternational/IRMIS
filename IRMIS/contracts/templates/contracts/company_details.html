@@ -7,14 +7,12 @@
         <h6>{% trans "Company Details" %}</h6>
     </a>
     {% if not company.id %}
-    <a class="align-items-center d-flex flex-column disabled">
+    <a class="disabled">
         <h6>{% trans "Documents" %}</h6>
-        <span>(coming soon)</span>
     </a>
     {% else %}
-    <a class="align-items-center d-flex flex-column">
+    <a href="{% url 'contract-companydocument-list' company.id %}">
         <h6>{% trans "Documents" %}</h6>
-        <span>(coming soon)</span>
     </a>
     {% endif %}
 </nav>

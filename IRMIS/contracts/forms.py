@@ -68,7 +68,7 @@ class ProjectConstructionScheduleForm(ModelForm):
             {"class": "form-control form-control-sm"}
         )
         self.fields["duration"].widget.attrs.update(
-            {"class": "form-control form-control-sm", "placeholder": "365"}
+            {"class": "form-control form-control-sm", "placeholder": "365", "min": 0}
         )
 
     class Meta:
@@ -266,16 +266,16 @@ class ContractForm(ModelForm):
             {"class": "form-control form-control-sm"}
         )
         self.fields["duration"].widget.attrs.update(
-            {"class": "form-control form-control-sm", "placeholder": "365"}
+            {"class": "form-control form-control-sm", "placeholder": "365", "min": 0}
         )
         self.fields["defect_liability_days"].widget.attrs.update(
-            {"class": "form-control form-control-sm", "placeholder": "365"}
+            {"class": "form-control form-control-sm", "placeholder": "365", "min": 0}
         )
         self.fields["amendment_start_date"].widget.attrs.update(
             {"class": "form-control form-control-sm"}
         )
         self.fields["amendment_duration"].widget.attrs.update(
-            {"class": "form-control form-control-sm", "placeholder": "365"}
+            {"class": "form-control form-control-sm", "placeholder": "365", "min": 0}
         )
         self.fields["amendment_description"].widget.attrs.update(
             {
@@ -474,25 +474,6 @@ ContractAmendmentInline = inlineformset_factory(
 )
 
 
-class ContractDocumentForm(ModelForm):
-    class Meta:
-        model = models.ContractDocument
-        fields = [
-            "title",
-            "description",
-            "document_type",
-            "document_date",
-            "content",
-            "projects",
-        ]
-
-
-class ContractDocumentTypeForm(ModelForm):
-    class Meta:
-        model = models.ContractDocumentType
-        fields = ["name", "category"]
-
-
 # Company
 class CompanyForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -549,3 +530,23 @@ class CompanyForm(ModelForm):
             "rep_email",
             "woman_led",
         ]
+
+
+# Document
+class ContractDocumentForm(ModelForm):
+    class Meta:
+        model = models.ContractDocument
+        fields = [
+            "title",
+            "description",
+            "document_type",
+            "document_date",
+            "content",
+            "projects",
+        ]
+
+
+class ContractDocumentTypeForm(ModelForm):
+    class Meta:
+        model = models.ContractDocumentType
+        fields = ["name", "category"]

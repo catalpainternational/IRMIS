@@ -130,7 +130,7 @@ edit_condition {
     }
 }
 
-feedback_banner, #feedback-banner {
+feedback_banner, .feedback-banner {
     & > div {
         box-shadow: 0 0 10px 0 rgba(61, 71, 88, 0.5);
         border-bottom-right-radius: $radius;
@@ -141,10 +141,10 @@ feedback_banner, #feedback-banner {
         padding-right: 30px;
         padding-left: 30px;
         position: absolute;
+        z-index: 1051;
         height: 71px;
         margin: auto;
         width: 376px;
-        z-index: 1;
         right: 0;
         left: 0;
         top: 0;

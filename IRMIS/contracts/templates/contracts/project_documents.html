@@ -1,0 +1,128 @@
+{% extends "contracts/project_base.html" %}
+{% load i18n %}
+
+{% block project_content %}
+<nav>
+    <a href="{% url 'contract-project-update' project.id %}">
+        <h6>{% trans "Project Details" %}</h6>
+    </a>
+    <a href="{% url 'contract-projectfinancials-update' project.id %}">
+        <h6>{% trans "Financials" %}</h6>
+    </a>
+    <a href="{% url 'contract-projectconstructionschedule-update' project.id %}">
+        <h6>{% trans "Construction Schedule" %}</h6>
+    </a>
+    <a class="selected">
+        <h6>{% trans "Documents" %}</h6>
+    </a>
+</nav>
+
+<div class="content">
+    <div class="align-items-center d-flex justify-content-between">
+        <h5 class="title">{% trans "Uploaded Documents" %}</h5>
+        <button class="btn btn-primary form-modal-link" type="button" data-method="POST">{% trans "Add" %}</button>
+    </div>
+    <table id="project-document-list-table" class="contracts-profile-table d-block table table-hover">
+        <thead>
+            <tr>
+                <th></th>
+                <th></th>
+                <th>{% trans "Title" %}</th>
+                <th>{% trans "Type" %}</th>
+                <th>{% trans "Document Date" %}</th>
+                <th>{% trans "Description" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for document in document_list %}
+            <tr>
+                <td class="text-center">
+                    <a class="image pencil form-modal-link" data-method="PUT" data-object="{{ document.json }}"></a>
+                    <span></span>
+                    <a class="image delete delete-link" data-delete="/contracts/api/contractdocument/{{ document.id }}/"></a>
+                </td>
+                <td class="text-center">
+                    <a class="image document" href="/media/{{ document.content }}" download="{{ document.content.name }}"></a>
+                </td>
+                <td>{{ document.title }}</td>
+                <td>{{ document.document_type.name }}</td>
+                <td>{{ document.document_date }}</td>
+                <td>{{ document.description }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="document-modal form-modal modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title">{% trans "Save Document" %}</h1>
+                <span class="close image" data-dismiss="modal" aria-label="{% trans 'Close' %}" aria-hidden="true"></span>
+            </div>
+            <div class="modal-body">
+                <form id="doc-upload-form" enctype="multipart/form-data">
+                    <section>
+                        <div class="form-group position-relative">
+                            <label>{% trans "File" %}</label>
+                            <span class="required">*</span>
+                            <p id="document-file-name" class="file-name"></p>
+                            <input id="document-file" name="content" type="file" name="file" oninput="document.getElementById('document-file-name').innerHTML = document.getElementById('document-file').value;" required>
+                        </div>
+                        <div class="form-group">
+                            <label>{% trans "Title" %}</label>
+                            <span class="required">*</span>
+                            <input id="document-title" name="title" class="form-control" type="text" required>
+                        </div>
+                        <div class="form-group">
+                            <label>{% trans "Document Type" %}</label>
+                            <span class="required">*</span>
+                            <select id="document-type" name="document_type" class="form-control">
+                                {% for type in document_types %}
+                                <option value="{{ type.id }}">{{ type.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>{% trans "Document Date" %}</label>
+                            <input id="document-date" name="document_date" class="form-control" type="date" pattern="\d{4}-\d{2}-\d{2}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>{% trans "Description" %}</label>
+                            <input id="document-description" name="description" class="form-control" type="text">
+                        </div>
+                    </section>
+                    <div class="d-flex justify-content-end">
+                        <span>[</span><span class="required">*</span><span>]: Mandatory</span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <a data-dismiss="modal">{% trans "Cancel" %}</a>
+                <button id="save-document" type="button" class="btn btn-primary" data-profile="projects" data-id="{{ project.id }}">{% trans "Save" %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="action-modal delete-modal modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="d-flex justify-content-center modal-header">
+                <span class="alert stop image"></span>
+                <span class="close image" data-dismiss="modal" aria-label="{% trans 'Close' %}"
+                    aria-hidden="true"></span>
+            </div>
+            <div class="modal-body text-center">
+                <h6>{% trans "Delete Document" %}</h6>
+                <p>{% trans "Are you sure you want to delete this document?" %}</p>
+            </div>
+            <div class="d-flex justify-content-center modal-footer">
+                <button type="button" class="btn btn-danger delete-item">{% trans "Delete" %}</button>
+                <button type="button" class="btn btn-light" data-dismiss="modal">{% trans "Don't delete" %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
