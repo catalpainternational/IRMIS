@@ -13,7 +13,7 @@
     <h5 class="title">{% trans "List of projects" %}</h5>
 
     {% if project_list.exists %}
-    <table id="project-list-table" class="contracts-profile-table d-block table table-hover">
+    <table id="project-list-table" class="contracts-profile-table d-block table table-hover w-100">
         <thead>
             <tr>
                 {% if perms.contracts.change_project or perms.contracts.delete_project %}
@@ -25,6 +25,8 @@
                 <th>{% trans "Type of Work" %}</th>
                 <th>{% trans "Estimated Budget" %}</th>
                 <th>{% trans "Funding Source" %}</th>
+                <th>Project Code</th> <!-- hidden column -->
+                <th>Project Assets</th> <!-- hidden column -->
             </tr>
         </thead>
         <tbody>
@@ -49,6 +51,12 @@
                 <td>{{ project.type_of_work }}</td>
                 <td>$ {{ project.total_budget }}</td>
                 <td>{{ project.funding_source }}</td>
+                <td>{{ project.code }}</td>
+                <td>
+                    {% for asset in project.assets.all %}
+                    <div>{{ asset.asset_code }}</div>
+                    {% endfor %}
+                </td>
             </tr>
             {% endfor %}
         </tbody>

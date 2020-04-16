@@ -1,8 +1,11 @@
 import "datatables.net-bs4";
 import $ from "jquery";
 
-if (window.canChangeProjects) initializeProjectsTable($("#project-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
-else initializeProjectsTable($("#project-list-table"), [], [[1, 'asc']]);
+if (window.canChangeProjects) {
+    initializeSearchableTable($("#project-list-table"), [{ orderable: false, targets: 0 }, { visible: false, targets: [-2, -1] }], [[1, 'asc']]);
+} else {
+    initializeSearchableTable($("#project-list-table"), [{ visible: false, targets: [-2, -1] }], [[1, 'asc']]);
+}
 
 if (window.canChangeTenders) initializeProjectsTable($("#tender-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
 else initializeProjectsTable($("#tender-list-table"), [], [[1, 'asc']]);
