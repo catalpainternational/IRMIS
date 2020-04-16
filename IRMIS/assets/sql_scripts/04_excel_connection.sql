@@ -19,12 +19,25 @@ CREATE OR REPLACE FUNCTION assets_excel_generator(
 	"average_roughness" text,
 	"roughness" text,
     "asset_condition" text,
-    "population" text
+    "population" text,
+	"traffic_total" text
 ) AS $$
 
 WITH src AS (
     SELECT * FROM assets_crosstab_generator($1, 
-    ARRAY['asset_class', 'asset_name', 'surface_type', 'terrain_class', 'municipality', 'aggregate_roughness', 'last_treatment', 'avg_roughness', 'asset_condition', 'population'])
+    ARRAY[
+		'asset_class', 
+		'asset_name', 
+		'surface_type', 
+		'terrain_class', 
+		'municipality',
+	 	'aggregate_roughness', 
+		'last_treatment',
+		'avg_roughness', 
+		'asset_condition', 
+		'population',
+	 	'countTotal'
+	 ])
 ) 
 SELECT 
 	key_asset_class.value AS "asset_class",
@@ -42,7 +55,8 @@ SELECT
 	key_avg_roughness.value AS "avg_roughness", -- This is an average IRI
 	key_aggregate_roughness.value AS "roughness", -- good, fair, poor, bad
 	key_asset_condition.value AS "asset_condition",
-	key_population.value AS "population"
+	key_population.value AS "population",
+	key_traffic_total.value AS "traffic_total"
 	
 	FROM 
 		(SELECT * FROM src WHERE key = 'municipality') key_municipality
@@ -73,6 +87,9 @@ SELECT
 	LEFT JOIN
 		(SELECT * FROM src WHERE key = 'last_treatment') key_last_treatment
 	ON (key_last_treatment.asset_code = key_municipality.asset_code AND  key_last_treatment.lower = key_municipality.lower)
+	LEFT JOIN
+		(SELECT * FROM src WHERE key = 'countTotal') key_traffic_total
+	ON (key_traffic_total.asset_code = key_municipality.asset_code AND  key_traffic_total.lower = key_municipality.lower)
 
 
 $$ LANGUAGE sql;

@@ -694,11 +694,17 @@ def update_non_programmatic_surveys_by_road_code(
         return updated
 
     # Test if this survey is for traffic, and needs its chainages corrected
-    if (
-        survey.chainage_start == 0
-        and survey.chainage_end == 0
-        and survey.values.get("trafficType", "") != ""
+    if survey.values.get("trafficType", "") != "" and (
+        survey.chainage_start != road_survey.geom_start_chainage
+        or survey.chainage_end != road_survey.geom_end_chainage
     ):
+        if management_command:
+            management_command.stdout.write(
+                management_command.style.NOTICE(
+                    "User entered traffic survey Id:%s for road '%s' - corrected chainages"
+                    % (survey.id, rc)
+                )
+            )
         reversion_comment = "Survey chainages updated programmatically"
         with reversion.create_revision():
             survey.chainage_start = road_survey.geom_start_chainage

@@ -74,6 +74,7 @@ def no_spaces(value):
 # However to be pickle-able (ie via Django's caching system)
 # it needs to be defined at the class level.
 # Add additional columns to the Excel export here and in the SQL code.
+# See 04_excel_connection.sql
 Result = namedtuple(
     "Result",
     (
@@ -91,6 +92,7 @@ Result = namedtuple(
         "roughness",
         "asset_condition",
         "population",
+        "traffic_total",
     ),
 )
 
@@ -1886,7 +1888,7 @@ class BreakpointRelationships(models.Model):
 >>> # Then try some tests
 
 >>> road_codes = ('A01', 'A02', 'A03', 'C04')
->>> survey_params = ('municipality', 'aggregate_roughness', 'asset_class', 'terrain_class')
+>>> survey_params = ('municipality', 'aggregate_roughness', 'asset_class', 'terrain_class', 'traffic_total')
 >>> BreakpointRelationships.survey_check_results(road_codes, survey_params)
 
 
