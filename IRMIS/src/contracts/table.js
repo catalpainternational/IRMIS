@@ -7,8 +7,11 @@ if (window.canChangeProjects) {
     initializeSearchableTable($("#project-list-table"), [{ visible: false, targets: [-2, -1] }], [[1, 'asc']]);
 }
 
-if (window.canChangeTenders) initializeProjectsTable($("#tender-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
-else initializeProjectsTable($("#tender-list-table"), [], [[1, 'asc']]);
+if (window.canChangeTenders) {
+    initializeSearchableTable($("#tender-list-table"), [{ orderable: false, targets: 0 }, { visible: false, targets: -1 }], [[1, 'asc']]);
+} else {
+    initializeSearchableTable($("#tender-list-table"), [{ visible: false, targets: -1 }], [[1, 'asc']]);
+}
 
 if (window.canChangeContracts) initializeProjectsTable($("#contract-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
 else initializeProjectsTable($("#contract-list-table"), [], [[1, 'asc']]);
