@@ -82,6 +82,7 @@ from .models import (
 from .serializers import RoadSerializer, RoadMetaOnlySerializer, RoadToWGSSerializer
 
 from .data_cleaning_utils import update_non_programmatic_surveys_by_road_code
+from .token_mixin import JWTRequiredMixin
 
 
 @method_decorator(login_required, name="dispatch")
@@ -1878,7 +1879,7 @@ class ExcelDataSource(TemplateView):
         return context
 
 
-class ExcelInventoryMunicipal(TemplateView):
+class ExcelInventoryMunicipal(JWTRequiredMixin, TemplateView):
     """
     Connection endpoint for Municipal roads
     """
@@ -1902,7 +1903,7 @@ class ExcelInventoryMunicipal(TemplateView):
         return context
 
 
-class ExcelInventoryNational(TemplateView):
+class ExcelInventoryNational(JWTRequiredMixin, TemplateView):
     """
     Connection endpoint for National roads
     """
@@ -1926,7 +1927,7 @@ class ExcelInventoryNational(TemplateView):
         return context
 
 
-class ExcelInventoryRural(TemplateView):
+class ExcelInventoryRural(JWTRequiredMixin, TemplateView):
     """
     Connection endpoint for Rural roads
     """
