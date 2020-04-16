@@ -36,6 +36,16 @@ initializeProjectsPrintableTable($("#contract-social-safeguard-print-list-table"
 initializeProjectsPrintableTable($("#contract-document-print-list-table"), []);
 initializeProjectsPrintableTable($("#company-document-print-list-table"), []);
 
+function initializeSearchableTable(table, columnDefs, order) {
+    if (table.length) {
+        table.DataTable({
+            dom: "<'row'<'col-12'f>><'row'<'col-sm-12'tr>><'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>", // https://datatables.net/reference/option/dom#Styling
+            columnDefs: columnDefs,
+            order: order,
+        });
+    }
+}
+
 function initializeProjectsTable(table, columnDefs, order) {
     if (table.length) {
         table.DataTable({
