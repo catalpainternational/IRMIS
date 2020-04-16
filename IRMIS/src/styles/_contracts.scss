@@ -175,3 +175,21 @@ form.contract-form > div:not(.dataTables_wrapper) {
     border-bottom: 1px solid $lighter-gray;
     padding-bottom: 10px;
 }
+
+div.dataTables_wrapper div.dataTables_filter {
+    position: absolute;
+    right: 15px;
+    top: -50px;
+
+    label {
+        color: transparent;
+        margin-bottom: 0;
+    }
+
+    input[type="search"] {
+        border: 1px solid $gray;
+        border-radius: 15px;
+        height: 30px;
+        width: 400px;
+    }
+}
