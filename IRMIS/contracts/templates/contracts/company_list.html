@@ -10,7 +10,9 @@
 </header>
 
 <div class="content">
-    <h5 class="title">{% trans "List of companies" %}</h5>
+    <div class="title-header">
+        <h5 class="title">{% trans "List of companies" %}</h5>
+    </div>
 
     {% if company_list.exists %}
     <table id="company-list-table" class="contracts-profile-table d-block table table-hover w-100">
