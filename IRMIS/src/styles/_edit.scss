@@ -201,8 +201,9 @@ traffic_data_details {
     }
 
     .vehicle-input {
-        height: 28px;
+        width: 115px !important;
         margin: 0 36px 0 16px;
+        height: 28px;
     }
 
     .details-modal-type-spacing {
