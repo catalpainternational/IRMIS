@@ -1,4 +1,4 @@
-import { getPlanMetadata, getPlansMetadata, postPlanData, putPlanData, deletePlanData, getPlanSnapshotsMetadata, getPlanSnapshotMetadata } from "./assets/planAPI";
+import { getPlanMetadata, getPlansMetadata, postPlanData, putPlanData, approvePlanData, deletePlanData, getPlanSnapshotsMetadata, getPlanSnapshotMetadata } from "./assets/planAPI";
 
 let plans = {};
 let snapshots = {};
@@ -25,6 +25,13 @@ export function createPlan(plan) {
 
 export function updatePlan(plan) {
     return Promise.resolve(putPlanData(plan))
+        .then(plan => {
+            return plan;
+        });
+}
+
+export function approvePlan(plan) {
+    return Promise.resolve(approvePlanData(plan))
         .then(plan => {
             return plan;
         });

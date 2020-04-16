@@ -2,6 +2,7 @@ import hashlib
 import json
 import pytz
 import reversion
+import xlrd
 from reversion.models import Version
 from datetime import datetime
 from collections import Counter, defaultdict
@@ -951,6 +952,25 @@ def culvert_update(culvert, req_pb, db_pb):
     return culvert, changed_fields
 
 
+def build_plan_snapshots(row_slice, plan, work_type, year_start):
+    year = year_start - 1
+    for pair in (row_slice[pos : pos + 2] for pos in range(0, len(row_slice), 2)):
+        year += 1
+        budget = pair[0].value
+        length = pair[1].value
+        if budget > 0 and length > 0:
+            PlanSnapshot.objects.create(
+                **{
+                    "plan": plan,
+                    "asset_class": plan.asset_class,
+                    "work_type": work_type,
+                    "year": year,
+                    "budget": budget,
+                    "length": length,
+                }
+            )
+
+
 @login_required
 @user_passes_test(user_can_plan)
 def plan_create(request):
@@ -972,8 +992,6 @@ def plan_create(request):
             plan = Plan.objects.create(
                 **{
                     "title": req_pb.title,
-                    "approved": req_pb.approved,
-                    "asset_class": req_pb.asset_class,
                     "user": get_user_model().objects.get(pk=request.user.pk),
                 }
             )
@@ -983,18 +1001,86 @@ def plan_create(request):
 
             # store the user who made the changes
             reversion.set_user(request.user)
-
-        plan_pb = Plan.objects.filter(pk=plan.pk).to_protobuf()
-        response = HttpResponse(
-            plan_pb.plans[0].SerializeToString(),
-            status=200,
-            content_type="application/octet-stream",
-        )
-
-        return response
     except Exception as err:
         print(err)
         return HttpResponse(status=400)
+
+    try:
+        workbook = xlrd.open_workbook(plan.file.path)
+
+        if "5YP" not in workbook.sheet_names():
+            return HttpResponse(status=400)
+        sheet = workbook.sheet_by_name("5YP")
+
+        asset_classes = {
+            "National": "NAT",
+            "Highway": "HIGH",
+            "Municipal": "MUN",
+            "Urban": "URB",
+            "Rural": "RUR",
+        }
+
+        # set plan asset class
+        plan.asset_class = asset_classes[sheet.cell(7, 1).value]
+        # set plan planning period
+        year_start = int(sheet.cell_value(4, 1))
+        year_end = int(sheet.cell_value(5, 1))
+        plan.planning_period = "%s - %s" % (year_start, year_end)
+        # save plan updates
+        plan.save()
+
+        # Process the new Plan file to make PlanSnapshots (aka. Summaries)
+        start_col = 4
+
+        if plan.asset_class == "RUR":
+            # Rural Roads are special in that that the spreadsheet is off by 1 column...
+            # and the order of the work types is different.
+            start_col = 5
+            build_plan_snapshots(
+                sheet.row_slice(8, start_colx=start_col, end_colx=start_col + 10),
+                plan,
+                "spot",
+                year_start,
+            )
+            build_plan_snapshots(
+                sheet.row_slice(9, start_colx=start_col, end_colx=start_col + 10),
+                plan,
+                "rehab",
+                year_start,
+            )
+        else:
+            build_plan_snapshots(
+                sheet.row_slice(8, start_colx=start_col, end_colx=start_col + 10),
+                plan,
+                "rehab",
+                year_start,
+            )
+        # these two work types are in the same spot on all spreadsheet templates
+        build_plan_snapshots(
+            sheet.row_slice(6, start_colx=start_col, end_colx=start_col + 10),
+            plan,
+            "routine",
+            year_start,
+        )
+        build_plan_snapshots(
+            sheet.row_slice(7, start_colx=start_col, end_colx=start_col + 10),
+            plan,
+            "periodic",
+            year_start,
+        )
+    except Exception:
+        # remove the previously created plan first
+        plan.delete()
+        return HttpResponse(status=400)
+
+    plan_pb = Plan.objects.filter(pk=plan.pk).to_protobuf()
+    response = HttpResponse(
+        plan_pb.plans[0].SerializeToString(),
+        status=200,
+        content_type="application/octet-stream",
+    )
+
+    return response
 
 
 @login_required
@@ -1011,6 +1097,24 @@ def plan_delete(request, pk):
     plan = get_object_or_404(Plan.objects.filter(pk=pk))
     plan.delete()
 
+    return HttpResponse(plan_pb, status=200, content_type="application/octet-stream",)
+
+
+@login_required
+@user_passes_test(user_can_plan)
+def plan_approve(request, pk):
+    if request.method != "PUT":
+        raise MethodNotAllowed(request.method)
+    elif not pk:
+        return HttpResponse(status=400)
+
+    # assert Plan ID given exists in the DB
+    plan = get_object_or_404(Plan.objects.filter(pk=pk))
+    # update approved status & save
+    plan.approved = not plan.approved
+    plan.save()
+
+    plan_pb = Plan.objects.filter(pk=pk).to_protobuf().plans[0].SerializeToString()
     return HttpResponse(plan_pb, status=200, content_type="application/octet-stream",)
 
 
@@ -1867,7 +1971,7 @@ class SurveySource(ExcelDataSource):
 
 class BreakpointRelationshipsReport(TemplateView):
     """
-    Returns three tables to illustrate the output of the SQL functions involved in 
+    Returns three tables to illustrate the output of the SQL functions involved in
     creating the SurveySource `.iqy` files
 
     These are developer-centred outputs. Not intended for public use.

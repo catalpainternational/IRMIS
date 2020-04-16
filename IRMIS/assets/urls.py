@@ -32,6 +32,7 @@ from .views import (
     photo_update,
     photo_delete,
     plan_create,
+    plan_approve,
     plan_delete,
     plan_update,
     ExcelDataSource,
@@ -62,6 +63,7 @@ urlpatterns = [
     path("survey_update", survey_update, name="survey_update"),
     # Plans URLs
     path("plan_create", plan_create, name="plan_create"),
+    path("plan_approve/<int:pk>", plan_approve, name="plan_approve"),
     path("plan_delete/<int:pk>", plan_delete, name="plan_delete"),
     path("plan_update", plan_update, name="plan_update"),
     # Structure URLs

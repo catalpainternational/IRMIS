@@ -65,7 +65,7 @@
     </edit_stop_alert>
 
     <script>
-        import {createPlan, deletePlan, getPlan, getPlans, updatePlan} from "../planManager";
+        import {createPlan, approvePlan, deletePlan, getPlan, getPlans, updatePlan} from "../planManager";
         import {EstradaPlan, makeEstradaPlan} from "../assets/models/plan";
 
         import Data_Table from "./data_table.riot.html";
@@ -120,7 +120,6 @@
                     title: window.gettext("Asset Class"),
                     data: 'assetClass',
                     defaultContent: "",
-                    render: (r) => {return "RUR";}, // TO DO: replace with true Asset Class data setup
                     className: "text-center",
                     orderable: true,
                 },
@@ -128,7 +127,6 @@
                     title: window.gettext("Planning Period"),
                     data: 'planningPeriod',
                     defaultContent: "",
-                    render: (r) => {return "2020 - 2024";}, // TO DO: replace with true Planning Period data setup
                     className: "text-center",
                     orderable: true,
                 },
@@ -206,7 +204,7 @@
                     if (plan.length) {
                         plan[0].setApproved(!plan[0].approved);
                         this.state.editingPlan = plan[0];
-                        this.savePlan();
+                        this.approvePlan();
                     }
                 }
                 document.addEventListener(`${this.data_table_id}.approveRow`, this.approveListener)
@@ -375,7 +373,6 @@
             savePlan() {
                 let plan = this.state.editingPlan;
                 if (plan.id === 0) {
-                    plan.setAssetClass("RUR"); // default the asset class for now...
                     createPlan(plan)
                         .then((planData) => {
                             this.state.pendingRows.push(planData);
@@ -404,6 +401,22 @@
                             this.update();
                         });
                 }
+            },
+            approvePlan() {
+                approvePlan(this.state.editingPlan)
+                    .then((planData) => {
+                        const planIndex = this.state.pendingRows.findIndex((obj => obj.id == planData.id));
+                        this.state.pendingRows[planIndex] = planData;
+
+                        const eventName = `${this.data_table_id}.dataAdded`;
+                        const eventDetail = {detail: {pendingRows: this.state.pendingRows}};
+                        document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+                        this.showFeedback();
+                    }).catch(error => {
+                        this.showFeedback(true);
+                    }).finally((r) => {
+                        this.update();
+                    });
             },
             deletePlan(planId) {
                 deletePlan(planId)
