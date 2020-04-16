@@ -13,7 +13,7 @@
     <h5 class="title">{% trans "List of contracts" %}</h5>
 
     {% if contract_list.exists %}
-    <table id="contract-list-table" class="contracts-profile-table d-block table table-hover">
+    <table id="contract-list-table" class="contracts-profile-table d-block table table-hover w-100">
         <thead>
             <tr>
                 {% if perms.contracts.change_contract or perms.contracts.delete_contract %}
@@ -24,6 +24,7 @@
                 <th>{% trans "Project(s) Name" %}</th>
                 <th>{% trans "Type of Works" %}</th>
                 <th>{% trans "Status" %}</th>
+                <th>Project Assets</th> <!-- hidden column -->
             </tr>
         </thead>
         <tbody>
@@ -55,6 +56,13 @@
                     {% endfor %}
                 </td>
                 <td>{{ contract.status }}</td>
+                <td>
+                    {% for project in contract.tender.projects.all %}
+                    {% for asset in project.assets.all %}
+                    <div>{{ asset.asset_code }}</div>
+                    {% endfor %}
+                    {% endfor %}
+                </td>
             </tr>
             {% endfor %}
         </tbody>
