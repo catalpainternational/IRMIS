@@ -79,7 +79,7 @@ This entire sequence must be performed to completion before users are allowed to
   - Create (if not existing) Roughness Surveys and...
   - Refresh the Roughness Survey aggregates & Breakpoint relationships
 
-  Note: Should ONLY be run after the appropirate topology load and import commands have been run as well:
+  Note: Should ONLY be run after the appropriate topology load and import commands have been run as well:
     - `loaddata /var/www/estrada/estrada-data-sources/topology/fixtures/topology.estradaroad.json`
     - `init_topology_functions`
     - `import_csv_source roughness /var/www/estrada/estrada-data-sources/csv/<file-path>.csv`
