@@ -1,5 +1,6 @@
 import json
 
+from datetime import datetime, date
 from numbers import Number
 
 from django.db import connection
@@ -164,8 +165,8 @@ class ReportQuery:
                 " JOIN values_to_chart vtc ON s.values ? vtc.attr\n"
                 " LEFT OUTER JOIN usernames u ON s.user_id = u.user_id\n"
                 " LEFT OUTER JOIN surveyphotos p ON s.id = p.object_id\n"
-                " WHERE (atc.asset_type = 'ROAD' AND s.chainage_start != s.chainage_end)\n"
-                " OR (atc.asset_type <> 'ROAD')\n"
+                " WHERE ((atc.asset_type = 'ROAD' AND s.chainage_start != s.chainage_end)\n"
+                " OR (atc.asset_type <> 'ROAD'))\n"
             ),
             # Where the roads have a survey start or end point
             "breakpoints": (
@@ -546,6 +547,18 @@ class ReportQuery:
                 geom_v = "atc.geom_chainage::INTEGER"
                 self.suc_clause_chainage_swap(end_v, ">", end_c)
                 self.suc_clause_chainage_swap(geom_v, ">", end_c)
+
+        has_report_date = "report_date" in self.filters
+        if has_report_date:
+            try:
+                report_date = datetime.strptime(self.filters["report_date"], "%Y-%m-%d")
+            except ValueError as e:
+                has_report_date = false
+            if has_report_date:
+                self.report_clauses["suc"] += (
+                    "AND s.date_surveyed <= '%s 11:59:59'"
+                    % report_date.strftime("%Y-%m-%d")
+                )
 
         # only one of these queries will be performed, depending on get_all_surveys value
         if get_all_surveys:
