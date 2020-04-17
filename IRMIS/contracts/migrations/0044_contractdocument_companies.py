@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('contracts', '0043_model_required_fields'),
+        ("contracts", "0043_model_required_fields"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='contractdocument',
-            name='companies',
-            field=models.ManyToManyField(related_name='documents', to='contracts.Company'),
+            model_name="contractdocument",
+            name="companies",
+            field=models.ManyToManyField(
+                related_name="documents", to="contracts.Company"
+            ),
         ),
     ]

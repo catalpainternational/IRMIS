@@ -10,7 +10,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("assets", "0050_merge_20200402_0419"),
+        ("assets", "0051_plansnapshot_last_modified"),
     ]
 
     operations = [
