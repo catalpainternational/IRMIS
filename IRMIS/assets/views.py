@@ -685,8 +685,8 @@ def protobuf_reports(request):
         final_filters["asset_condition"] = asset_conditions
 
     # Survey level attributes
-    # if report_date:
-    #     final_filters["report_date"] = report_date
+    if report_date:
+        final_filters["report_date"] = report_date
     if (road_id or road_code) and chainage_start or chainage_end:
         if chainage_start:
             final_filters["chainage_start"] = chainage_start
