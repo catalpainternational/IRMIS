@@ -465,6 +465,13 @@ export const structuresTableColumns = [
         visible: false,
     },
     {
+        title: EstradaDrift.getFieldName("thickness"),
+        data: "thickness",
+        className: "text-right",
+        defaultContent: "N/A",
+        visible: false,
+    },
+    {
         title: EstradaBridge.getFieldName("number_spans"),
         data: "numberSpans",
         className: "text-right",

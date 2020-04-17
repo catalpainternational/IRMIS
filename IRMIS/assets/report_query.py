@@ -81,7 +81,7 @@ class ReportQuery:
                 "  chainage AS geom_chainage, administrative_area AS municipality,\n"
                 "  geojson_file_id AS geojson_file,\n"
                 "  construction_year, length, width,\n"
-                "  NULL::DECIMAL AS height, span_length,\n"
+                "  NULL::DECIMAL AS height, NULL::DECIMAL AS thickness, span_length,\n"
                 "  NULL::INTEGER AS number_cells, number_spans,\n"
                 "  river_name,\n"
                 "  protection_downstream_id AS protection_downstream, protection_upstream_id AS protection_upstream,\n"
@@ -95,7 +95,7 @@ class ReportQuery:
                 "  chainage AS geom_chainage, administrative_area AS municipality,\n"
                 "  geojson_file_id AS geojson_file,\n"
                 "  construction_year, length, width,\n"
-                "  height, NULL::DECIMAL AS span_length,\n"
+                "  height, NULL::DECIMAL AS thickness, NULL::DECIMAL AS span_length,\n"
                 "  number_cells, NULL::INTEGER AS number_spans,\n"
                 "  NULL AS river_name,\n"
                 "  protection_downstream_id AS protection_downstream, protection_upstream_id AS protection_upstream,\n"
@@ -109,7 +109,7 @@ class ReportQuery:
                 "  chainage AS geom_chainage, administrative_area AS municipality,\n"
                 "  geojson_file_id AS geojson_file,\n"
                 "  construction_year, length, width,\n"
-                "  height, NULL::DECIMAL AS span_length,\n"
+                "  NULL::DECIMAL AS height, thickness, NULL::DECIMAL AS span_length,\n"
                 "  number_cells, NULL::INTEGER AS number_spans,\n"
                 "  NULL AS river_name,\n"
                 "  protection_downstream_id AS protection_downstream, protection_upstream_id AS protection_upstream,\n"
@@ -414,6 +414,7 @@ class ReportQuery:
             "width",
             "source_roughness",
             "roughness",
+            "thickness",
         ]
 
         # Ideally for these asset filters we'd drill down (in time) through the surveys instead
@@ -454,10 +455,11 @@ class ReportQuery:
             "served_facilities",
             "served_economic_areas",
             "served_connection_types",
-            # Structure specific - some are specific to only bridge or only culvert, drift
+            # Structure specific - some are specific to only bridge, culvert or drift
             "length",
             "width",
             "height",
+            "thickness",
             "span_length",
             "number_cells",
             "number_spans",

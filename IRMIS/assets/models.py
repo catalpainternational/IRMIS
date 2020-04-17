@@ -1614,7 +1614,7 @@ class DriftMaterialType(models.Model):
 class DriftQuerySet(models.QuerySet):
     def to_protobuf(self):
         """ returns a Structure protobuf object from the queryset with a Drifts list """
-        # See sturcture.proto --> Structures --> Drifts --> Drift
+        # See structure.proto --> Structures --> Drifts --> Drift
         structures_protobuf = ProtoStructures()
 
         regular_fields = dict(
@@ -1634,7 +1634,7 @@ class DriftQuerySet(models.QuerySet):
             date_created="date_created", last_modified="last_modified",
         )
 
-        float_fields = dict(length="length", width="width", height="height",)
+        float_fields = dict(length="length", width="width", thickness="thickness",)
 
         int_fields = dict(
             chainage="chainage",
@@ -1738,7 +1738,7 @@ class Drift(models.Model):
         decimal_places=3,
         blank=True,
         null=True,
-        validators=[MinValueValidator(0)],
+        validators=[MinValueValidator(0.1)],
         help_text=_("Enter structure length"),
     )
     width = models.DecimalField(
@@ -1747,7 +1747,7 @@ class Drift(models.Model):
         decimal_places=3,
         blank=True,
         null=True,
-        validators=[MinValueValidator(0)],
+        validators=[MinValueValidator(0.1)],
         help_text=_("Enter structure width"),
     )
     chainage = models.IntegerField(
@@ -1769,14 +1769,14 @@ class Drift(models.Model):
         null=True,
         help_text=_("Choose the drift type"),
     )
-    height = models.DecimalField(
-        verbose_name=_("Structure Height (m)"),
+    thickness = models.DecimalField(
+        verbose_name=_("Structure Thickness (m)"),
         max_digits=8,
         decimal_places=3,
         blank=True,
         null=True,
-        validators=[MinValueValidator(0)],
-        help_text=_("Enter structure height"),
+        validators=[MinValueValidator(0.1)],
+        help_text=_("Enter structure thickness"),
     )
     number_cells = models.IntegerField(
         verbose_name=_("Number of Cells"),

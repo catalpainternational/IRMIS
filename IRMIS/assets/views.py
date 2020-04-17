@@ -836,7 +836,7 @@ def drift_create(req_pb):
             "width": req_pb.width,
             "chainage": req_pb.chainage,
             "structure_type": req_pb.structure_type,
-            "height": req_pb.height,
+            "thickness": req_pb.thickness,
             "number_cells": req_pb.number_cells,
             "material": req_pb.material,
             "protection_upstream": req_pb.protection_upstream,
@@ -1024,7 +1024,7 @@ def drift_update(drift, req_pb, db_pb):
         "construction_year",
         "length",
         "width",
-        "height",
+        "thickness",
         "number_cells",
         "chainage",
     ]

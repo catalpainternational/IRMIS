@@ -3,8 +3,10 @@
 import assets.models
 import django.contrib.gis.db.models.fields
 import django.core.validators
-from django.db import migrations, models
 import django.db.models.deletion
+
+from django.db import migrations, models
+from django.utils.translation import get_language, ugettext, ugettext_lazy as _
 
 
 class Migration(migrations.Migration):
@@ -12,6 +14,40 @@ class Migration(migrations.Migration):
     dependencies = [
         ("assets", "0051_plansnapshot_last_modified"),
     ]
+
+    def insertData(apps, schema_editor):
+
+        STRUCTURE_PROTECTION_TYPE_CHOICES = [
+            ("0", _("No protection works")),
+            ("1", _("Gabion works")),
+            ("2", _("Masonry works")),
+            ("3", _("RCC")),
+            ("4", _("PCC concrete wall")),
+            ("5", _("RCC concrete wall")),
+        ]
+
+        DRIFT_MATERIAL_TYPE_CHOICES = [
+            ("1", _("Stone masonry")),
+            ("2", _("Plum concrete")),
+            ("3", _("PCC")),
+            ("4", _("RCC")),
+            ("5", _("Gabions")),
+            ("6", _("Precast concrete bricks")),
+            ("7", _("Clay bricks")),
+            ("8", _("PC")),
+        ]
+
+        StructureProtectionType = apps.get_model("assets", "StructureProtectionType")
+        for c in STRUCTURE_PROTECTION_TYPE_CHOICES:
+            record = StructureProtectionType.objects.filter(code=c[0])
+            if not record.exists():
+                record = StructureProtectionType(code=c[0], name=c[1])
+                record.save()
+
+        DriftMaterialType = apps.get_model("assets", "DriftMaterialType")
+        for c in DRIFT_MATERIAL_TYPE_CHOICES:
+            record = DriftMaterialType(code=c[0], name=c[1])
+            record.save()
 
     operations = [
         migrations.CreateModel(
@@ -155,7 +191,7 @@ class Migration(migrations.Migration):
                         help_text="Enter structure length",
                         max_digits=8,
                         null=True,
-                        validators=[django.core.validators.MinValueValidator(0)],
+                        validators=[django.core.validators.MinValueValidator(0.1)],
                         verbose_name="Structure Length (m)",
                     ),
                 ),
@@ -167,7 +203,7 @@ class Migration(migrations.Migration):
                         help_text="Enter structure width",
                         max_digits=8,
                         null=True,
-                        validators=[django.core.validators.MinValueValidator(0)],
+                        validators=[django.core.validators.MinValueValidator(0.1)],
                         verbose_name="Structure Width (m)",
                     ),
                 ),
@@ -181,15 +217,15 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "height",
+                    "thickness",
                     models.DecimalField(
                         blank=True,
                         decimal_places=3,
-                        help_text="Enter structure height",
+                        help_text="Enter structure thickness",
                         max_digits=8,
                         null=True,
-                        validators=[django.core.validators.MinValueValidator(0)],
-                        verbose_name="Structure Height (m)",
+                        validators=[django.core.validators.MinValueValidator(0.1)],
+                        verbose_name="Structure Thickness (m)",
                     ),
                 ),
                 (
@@ -258,4 +294,5 @@ class Migration(migrations.Migration):
                 ),
             ],
         ),
+        migrations.RunPython(insertData),
     ]

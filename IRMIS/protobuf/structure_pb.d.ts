@@ -376,8 +376,8 @@ export class Drift extends jspb.Message {
   setSurveyPhotosList(value: Array<photo_pb.Photo>): void;
   addSurveyPhotos(value?: photo_pb.Photo, index?: number): photo_pb.Photo;
 
-  getHeight(): number;
-  setHeight(value: number): void;
+  getThickness(): number;
+  setThickness(value: number): void;
 
   getNumberCells(): number;
   setNumberCells(value: number): void;
@@ -417,7 +417,7 @@ export namespace Drift {
     conditionDescription: string,
     inventoryPhotosList: Array<photo_pb.Photo.AsObject>,
     surveyPhotosList: Array<photo_pb.Photo.AsObject>,
-    height: number,
+    thickness: number,
     numberCells: number,
   }
 }
