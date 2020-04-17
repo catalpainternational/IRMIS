@@ -644,12 +644,17 @@ class Company(models.Model):
         """
         return Subquery(
             cls.objects.filter(pk=OuterRef("pk"))
-            # Drop any contracts not "in progress"
-            .exclude(
-                contractor_for__status__name__in=["Planned", "Completed", "Cancelled",]
+            .filter(
+                contractor_for__status__name__in=[
+                    "Ongoing",
+                    "DLP",
+                    "Final inspection",
+                    "Request of final payment",
+                ]
             )
-            .annotate(v=Sum("contractor_for__budgets__value"))
-            .values("v")
+            .annotate(v=Count("contractor_for__id"))
+            .values("v"),
+            output_field=models.IntegerField(),
         )
 
 

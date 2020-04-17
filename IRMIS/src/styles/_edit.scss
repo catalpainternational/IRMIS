@@ -81,6 +81,10 @@ edit_history {
         &:last-of-type {
             margin-bottom: 20px;
         }
+        
+        &.no-max-width {
+            max-width: unset;
+        }
 
         h6 {
             border-bottom: 1px solid $lighter-gray;

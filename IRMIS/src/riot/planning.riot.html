@@ -371,6 +371,7 @@
                     });
             },
             savePlan() {
+                $('#loading').modal('show');
                 let plan = this.state.editingPlan;
                 if (plan.id === 0) {
                     createPlan(plan)
@@ -383,6 +384,7 @@
                         }).catch(error => {
                             this.showFeedback(true);
                         }).finally((r) => {
+                            $('#loading').modal('hide');
                             this.update();
                         });
                 } else {
@@ -398,6 +400,7 @@
                         }).catch(error => {
                             this.showFeedback(true);
                         }).finally((r) => {
+                            $('#loading').modal('hide');
                             this.update();
                         });
                 }

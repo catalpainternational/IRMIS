@@ -750,9 +750,17 @@ export const reportContractsColumnSets: { [name: string]: string[] } = {
     typeOfWorkYear: [
         reportContractsTableColumns.title,
         reportContractsTableColumns.year,
+        reportContractsTableColumns.year,
+        reportContractsTableColumns.year,
+        reportContractsTableColumns.year,
+        reportContractsTableColumns.year,
     ],
     assetClassYear: [
         reportContractsTableColumns.title,
+        reportContractsTableColumns.year,
+        reportContractsTableColumns.year,
+        reportContractsTableColumns.year,
+        reportContractsTableColumns.year,
         reportContractsTableColumns.year,
     ],
     numberEmployees: [
@@ -848,6 +856,7 @@ export const reportContractsContent: { [name: string]: any } = {
         reportElements: {
             filters: true,
             dataTables: [
+                reportContractsTableIds.numberEmployees,
                 reportContractsTableIds.wages,
                 reportContractsTableIds.workedDays
             ],
