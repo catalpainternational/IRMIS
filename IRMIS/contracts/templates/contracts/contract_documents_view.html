@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block contracts_profile %}
-<header class="justify-content-between">
+<header class="d-flex justify-content-between">
     <div class="align-items-center d-flex">
         <a class="caret-dark left image" href="{% url 'contract-contract-list' %}"></a>
         <h1>{% trans "Contract" %} — {{ contract.contract_code }}</h1>
