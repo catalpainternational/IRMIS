@@ -9,7 +9,7 @@
             <div class="planning-dashboard-section" each="{ workType in Object.entries(workTypes) }">
                 <div class="total-budget">
                     <p>{ window.gettext("Total Budget") } { workType[1] }</p>
-                    <h1>$ { parseFloat(total(workType[0]).toFixed(2)) }</h1>
+                    <h1>$ { (parseFloat(total(workType[0]))/1000000).toFixed(2) }</h1>
                 </div>
                 <table class="planning-dashboard-table d-block table table-bordered">
                     <thead>
@@ -40,7 +40,7 @@
                             <template each="{ year in years }">
                                 <td>
                                     { ( state.summaryData[workType[0]][assetClass[1][0]][year].budget == 0) ? "-" :
-                                    parseFloat(state.summaryData[workType[0]][assetClass[1][0]][year].budget).toFixed(2)
+                                    (parseFloat(state.summaryData[workType[0]][assetClass[1][0]][year].budget)/1000000).toFixed(2)
                                     }
                                 </td>
                                 <td>
@@ -137,9 +137,13 @@
                     if (!this.state.summaryData.hasOwnProperty(summary.workType)) return;
                     if (!this.state.summaryData[summary.workType].hasOwnProperty(summary.assetClass)) return;
                     if (!this.state.summaryData[summary.workType][summary.assetClass].hasOwnProperty(summary.year)) return;
-
-                    this.state.summaryData[summary.workType][summary.assetClass][summary.year].budget += summary.budget;
-                    this.state.summaryData[summary.workType][summary.assetClass][summary.year].length += summary.length;
+                    // only set a value if one has NOT been set already (we want only the most recent Plan data)
+                    if (this.state.summaryData[summary.workType][summary.assetClass][summary.year].budget == 0 &&
+                        this.state.summaryData[summary.workType][summary.assetClass][summary.year].length == 0
+                    ) {
+                        this.state.summaryData[summary.workType][summary.assetClass][summary.year].budget = summary.budget;
+                        this.state.summaryData[summary.workType][summary.assetClass][summary.year].length = summary.length;
+                    }
                 });
             }
         }

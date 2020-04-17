@@ -88,6 +88,27 @@ export function putPlanData(plan: EstradaPlan) {
         });
 }
 
+/** approvePlanData
+ *
+ * Put data for a single Plan to the server
+ *
+ * @returns 200 (success) or 400 (failure)
+ */
+export function approvePlanData(plan: EstradaPlan) {
+    const assetTypeUrlFragment = "plan_approve";
+    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${plan.id}`;
+    const postAssetInit = ConfigAPI.requestInit("PUT");
+
+    return fetch(metadataUrl, postAssetInit)
+        .then((metadataResponse) => {
+            if (metadataResponse.ok) { return metadataResponse.arrayBuffer(); }
+            throw new Error(`Plan creation failed: ${metadataResponse.statusText}`);
+        })
+        .then((protobufBytes) => {
+            const uintArray = new Uint8Array(protobufBytes);
+            return makeEstradaPlan(Plan.deserializeBinary(uintArray));
+        });
+}
 
 /** deletePlanData
  *

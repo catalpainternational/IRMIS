@@ -3,60 +3,54 @@
 
 {% block contract_content %}
 <nav>
-    <a href="{% url 'contract-contract-update' contract_id %}">
+    <a href="{% url 'contract-contract-update' contract.id %}">
         <h6>{% trans "Contract Details" %}</h6>
     </a>
     <a class="selected">
         <h6>{% trans "Inspections" %}</h6>
     </a>
-    <a href="{% url 'contract-contractpayment-list' contract_id %}">
+    <a href="{% url 'contract-contractpayment-list' contract.id %}">
         <h6>{% trans "Payments" %}</h6>
     </a>
-    <a href="{% url 'contract-socialsafeguarddata-list' contract_id %}">
+    <a href="{% url 'contract-socialsafeguarddata-list' contract.id %}">
         <h6>{% trans "Social Safeguard" %}</h6>
     </a>
-    <a class="align-items-center d-flex flex-column">
+    <a href="{% url 'contract-contractdocument-list' contract.id %}">
         <h6>{% trans "Documents" %}</h6>
-        <span>(coming soon)</span>
     </a>
 </nav>
 
 <div class="content">
-    <form id="contract-inspection-form" method="post" action="{{ request.get_full_path }}">
-        {% csrf_token %}
-        <div class="align-items-center d-flex justify-content-between">
-            <h5 class="title">{% trans "List of inspections" %}</h5>
-            <button class="btn btn-primary form-modal-link" type="button" data-method="POST">{% trans "Add" %}</button>
-        </div>
-        <table id="contract-inspection-list-table" class="contracts-profile-table d-block table table-hover">
-            <thead>
-                <tr>
-                    <th>{% trans "Inspection Date" %}</th>
-                    <th>{% trans "Inspection Entity" %}</th>
-                    <th>{% trans "Physical Progress" %}</th>
-                    <th>{% trans "Defect Liability Period" %}</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for inspection in inspection_list %}
-                <tr>
-                    <td>{{ inspection.date }}</td>
-                    <td>{{ inspection.entity }}</td>
-                    <td>{{ inspection.progress }}</td>
-                    <td>{{ inspection.get_defect_liability_period_display }}</td>
-                    <td class="text-center">
-                        <a class="image pencil form-modal-link" data-method="PUT" data-object="{{ inspection.json }}"
-                            data-id="{{ inspection.id }}"></a>
-                        <span></span>
-                        <a class="image delete delete-link"
-                            data-delete="/contracts/api/contractinspection/{{ inspection.id }}/"></a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </form>
+    <div class="align-items-center d-flex justify-content-between">
+        <h5 class="title">{% trans "List of inspections" %}</h5>
+        <button class="btn btn-primary form-modal-link" type="button" data-method="POST">{% trans "Add" %}</button>
+    </div>
+    <table id="contract-inspection-list-table" class="contracts-profile-table d-block table table-hover">
+        <thead>
+            <tr>
+                <th></th>
+                <th>{% trans "Inspection Date" %}</th>
+                <th>{% trans "Inspection Entity" %}</th>
+                <th>{% trans "Physical Progress" %}</th>
+                <th>{% trans "Defect Liability Period" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for inspection in inspection_list %}
+            <tr>
+                <td class="text-center">
+                    <a class="image pencil form-modal-link" data-method="PUT" data-object="{{ inspection.json }}"></a>
+                    <span></span>
+                    <a class="image delete delete-link" data-delete="/contracts/api/contractinspection/{{ inspection.id }}/"></a>
+                </td>
+                <td>{{ inspection.date }}</td>
+                <td>{{ inspection.entity }}</td>
+                <td>{{ inspection.progress }}</td>
+                <td>{{ inspection.get_defect_liability_period_display }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
 <div class="inspection-modal form-modal modal" tabindex="-1" role="dialog">
@@ -64,8 +58,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title">{% trans "Save Inspection" %}</h1>
-                <span class="close image" data-dismiss="modal" aria-label="{% trans 'Close' %}"
-                    aria-hidden="true"></span>
+                <span class="close image" data-dismiss="modal" aria-label="{% trans 'Close' %}" aria-hidden="true"></span>
             </div>
             <div class="modal-body">
                 <form>
@@ -74,8 +67,7 @@
                             <label>{% trans "Inspection Date" %}</label>
                             <span class="required">*</span>
                             <small class="form-text text-muted">{% trans "Select inspection date" %}</small>
-                            <input id="inpection-date" class="form-control" type="date" pattern="\d{4}-\d{2}-\d{2}"
-                                required>
+                            <input id="inpection-date" class="form-control" type="date" pattern="\d{4}-\d{2}-\d{2}" required>
                         </div>
                         <div class="form-group">
                             <label>{% trans "Inspection Entity" %}</label>
@@ -106,9 +98,7 @@
             </div>
             <div class="modal-footer">
                 <a data-dismiss="modal">{% trans "Cancel" %}</a>
-                <button id="save-inspection" type="button" class="btn btn-primary"
-                    data-url="/contracts/api/contractinspection/"
-                    data-id="{{ contract_id }}">{% trans "Save" %}</button>
+                <button id="save-inspection" type="button" class="btn btn-primary" data-id="{{ contract.id }}">{% trans "Save" %}</button>
             </div>
         </div>
     </div>

@@ -44,6 +44,16 @@ urlpatterns = [
         views.ProjectConstructionScheduleDetailView.as_view(),
         name="contract-projectconstructionschedule-detail",
     ),
+    path(
+        "project/<int:pk>/document/",
+        views.ProjectDocumentListView.as_view(),
+        name="contract-projectdocument-list",
+    ),
+    path(
+        "project/<int:pk>/document/view/",
+        views.ProjectDocumentDetailView.as_view(),
+        name="contract-projectdocument-detail",
+    ),
     # Tender
     path("tender/", views.TenderListView.as_view(), name="contract-tender-list"),
     path(
@@ -60,6 +70,16 @@ urlpatterns = [
         "tender/<str:pk>/details/",
         views.TenderDetailView.as_view(),
         name="contract-tender-detail",
+    ),
+    path(
+        "tender/<str:pk>/document/",
+        views.TenderDocumentListView.as_view(),
+        name="contract-tenderdocument-list",
+    ),
+    path(
+        "tender/<str:pk>/document/view/",
+        views.TenderDocumentDetailView.as_view(),
+        name="contract-tenderdocument-detail",
     ),
     # Contract
     path("contract/", views.ContractListView.as_view(), name="contract-contract-list"),
@@ -109,24 +129,14 @@ urlpatterns = [
         name="contract-socialsafeguarddata-detail",
     ),
     path(
-        "contractdocument/",
+        "contract/<int:pk>/document/",
         views.ContractDocumentListView.as_view(),
         name="contract-contractdocument-list",
     ),
     path(
-        "contractdocument/<int:pk>/",
+        "contract/<int:pk>/document/view/",
         views.ContractDocumentDetailView.as_view(),
         name="contract-contractdocument-detail",
-    ),
-    path(
-        "forms/contractdocument/",
-        views.ContractDocumentCreateFormView.as_view(),
-        name="contract-contractdocument-create",
-    ),
-    path(
-        "forms/contractdocument/<int:pk>",
-        views.ContractDocumentUpdateFormView.as_view(),
-        name="contract-contractdocument-update",
     ),
     # Company
     path("company/", views.CompanyListView.as_view(), name="contract-company-list"),
@@ -144,5 +154,15 @@ urlpatterns = [
         "company/<int:pk>/details/",
         views.CompanyDetailView.as_view(),
         name="contract-company-detail",
+    ),
+    path(
+        "company/<int:pk>/document/",
+        views.CompanyDocumentListView.as_view(),
+        name="contract-companydocument-list",
+    ),
+    path(
+        "company/<int:pk>/document/view/",
+        views.CompanyDocumentDetailView.as_view(),
+        name="contract-companydocument-detail",
     ),
 ]

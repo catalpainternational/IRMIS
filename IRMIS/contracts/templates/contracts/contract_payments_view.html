@@ -23,9 +23,8 @@
     <a href="{% url 'contract-socialsafeguarddata-detail' contract.id %}">
         <h6>{% trans "Social Safeguard" %}</h6>
     </a>
-    <a class="align-items-center d-flex flex-column">
+    <a href="{% url 'contract-contractdocument-detail' contract.id %}">
         <h6>{% trans "Documents" %}</h6>
-        <span>(coming soon)</span>
     </a>
 </nav>
 

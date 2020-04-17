@@ -12,6 +12,7 @@ DATABASES = {
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 SENDFILE_BACKEND = "sendfile.backends.development"
+DATA_UPLOAD_MAX_MEMORY_SIZE = 20971520
 
 # django extensions
 try:

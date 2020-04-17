@@ -683,6 +683,8 @@ def update_non_programmatic_surveys_by_road_code(
     This assumes that all the supplied road links are for the same road code,
     and that they are in the correct order
 
+    It will fix the start and end chainages for user entered traffic surveys
+
     It will 'split' user entered surveys if they span more than one road link,
     creating new user surveys
 
@@ -707,6 +709,26 @@ def update_non_programmatic_surveys_by_road_code(
                 )
             )
         return updated
+
+    # Test if this survey is for traffic, and needs its chainages corrected
+    if survey.values.get("trafficType", "") != "" and (
+        survey.chainage_start != road_survey.geom_start_chainage
+        or survey.chainage_end != road_survey.geom_end_chainage
+    ):
+        if management_command:
+            management_command.stdout.write(
+                management_command.style.NOTICE(
+                    "User entered traffic survey Id:%s for road '%s' - corrected chainages"
+                    % (survey.id, rc)
+                )
+            )
+        reversion_comment = "Survey chainages updated programmatically"
+        with reversion.create_revision():
+            survey.chainage_start = road_survey.geom_start_chainage
+            survey.chainage_end = road_survey.geom_end_chainage
+            survey.save()
+            reversion.set_comment(reversion_comment)
+        return updated + 1
 
     # Test if this survey exists wholly within the road link
     if survey.chainage_end <= road_survey.geom_end_chainage:

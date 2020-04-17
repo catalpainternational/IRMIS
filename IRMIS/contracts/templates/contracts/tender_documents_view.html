@@ -1,0 +1,65 @@
+{% extends "contracts/contracts.html" %}
+{% load i18n %}
+
+{% block contracts_profile %}
+<header class="justify-content-between">
+    <div class="align-items-center d-flex">
+        <a class="caret-dark left image" href="{% url 'contract-tender-list' %}"></a>
+        <h1>{% trans "Tender" %} — {{ tender.code }}</h1>
+    </div>
+    <button class="btn btn-secondary btn-sm print-profile">{% trans "Print" %}</button>
+</header>
+
+<nav>
+    <a href="{% url 'contract-tender-detail' tender.code %}">
+        <h6>{% trans "Tender Details" %}</h6>
+    </a>
+    <a class="selected">
+        <h6>{% trans "Documents" %}</h6>
+    </a>
+</nav>
+
+<div class="content">
+    <h5 class="title">{% trans "List of documents" %}</h5>
+    <table id="tender-document-view-list-table" class="contracts-profile-table d-block table table-hover">
+        <thead>
+            <tr>
+                <th>{% trans "Title" %}</th>
+                <th>{% trans "Type" %}</th>
+                <th>{% trans "Document Date" %}</th>
+                <th>{% trans "Description" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for document in document_list %}
+            <tr>
+                <td>{{ document.title }}</td>
+                <td>{{ document.document_type.name }}</td>
+                <td>{{ document.document_date }}</td>
+                <td>{{ document.description }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <table id="tender-document-print-list-table" class="contracts-profile-table d-block table table-hover">
+        <thead>
+            <tr>
+                <th>{% trans "Title" %}</th>
+                <th>{% trans "Type" %}</th>
+                <th>{% trans "Document Date" %}</th>
+                <th>{% trans "Description" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for document in document_list %}
+            <tr>
+                <td>{{ document.title }}</td>
+                <td>{{ document.document_type.name }}</td>
+                <td>{{ document.document_date }}</td>
+                <td>{{ document.description }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -7,14 +7,12 @@
         <h6>{% trans "Tender Details" %}</h6>
     </a>
     {% if not tender.code %}
-    <a class="align-items-center d-flex flex-column disabled">
+    <a class="disabled">
         <h6>{% trans "Documents" %}</h6>
-        <span>(coming soon)</span>
     </a>
     {% else %}
-    <a class="align-items-center d-flex flex-column">
+    <a href="{% url 'contract-tenderdocument-list' tender.code %}">
         <h6>{% trans "Documents" %}</h6>
-        <span>(coming soon)</span>
     </a>
     {% endif %}
 </nav>

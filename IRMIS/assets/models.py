@@ -28,6 +28,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 import reversion
+from datetime import datetime
 from collections import namedtuple
 
 from protobuf.photo_pb2 import Photos as ProtoPhotos
@@ -73,6 +74,7 @@ def no_spaces(value):
 # However to be pickle-able (ie via Django's caching system)
 # it needs to be defined at the class level.
 # Add additional columns to the Excel export here and in the SQL code.
+# See 04_excel_connection.sql
 Result = namedtuple(
     "Result",
     (
@@ -90,6 +92,7 @@ Result = namedtuple(
         "roughness",
         "asset_condition",
         "population",
+        "traffic_total",
     ),
 )
 
@@ -1947,6 +1950,7 @@ class PlanSnapshotQuerySet(models.QuerySet):
     def to_protobuf(self):
         """ returns a PlanSnapshots protobuf object with a list of Snapshots from the queryset """
         # See plan.proto --> PlanSnapshots --> Snapshots[]
+        current_year = datetime.now().year
         plansnapshots_protobuf = ProtoPlanSnapshots()
         asset_type = "SNAP"
 
@@ -1956,7 +1960,13 @@ class PlanSnapshotQuerySet(models.QuerySet):
         float_fields = dict(length="length", budget="budget",)
         int_fields = dict(year="year",)
 
-        snapshots = self.order_by("id").prefetch_related("plan")
+        snapshots = (
+            self.order_by("-last_modified")
+            .prefetch_related("plan")
+            .filter(plan__approved=True)
+            .filter(year__gte=current_year)
+            .filter(year__lte=current_year + 4)
+        )
 
         for snap in snapshots:
             snap_protobuf = plansnapshots_protobuf.snapshots.add()
@@ -2029,6 +2039,7 @@ class PlanSnapshot(models.Model):
         choices=WORK_TYPE_CHOICES,
         help_text=_("Choose the work type"),
     )
+    last_modified = models.DateTimeField(verbose_name=_("last modified"), auto_now=True)
 
 
 def timestamp_from_datetime(dt):
@@ -2112,7 +2123,7 @@ class BreakpointRelationships(models.Model):
 >>> # Then try some tests
 
 >>> road_codes = ('A01', 'A02', 'A03', 'C04')
->>> survey_params = ('municipality', 'aggregate_roughness', 'asset_class', 'terrain_class')
+>>> survey_params = ('municipality', 'aggregate_roughness', 'asset_class', 'terrain_class', 'traffic_total')
 >>> BreakpointRelationships.survey_check_results(road_codes, survey_params)
 
 

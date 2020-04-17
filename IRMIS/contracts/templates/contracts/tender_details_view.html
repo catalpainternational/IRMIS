@@ -14,9 +14,8 @@
     <a class="selected">
         <h6>{% trans "Tender Details" %}</h6>
     </a>
-    <a class="align-items-center d-flex flex-column">
+    <a href="{% url 'contract-tenderdocument-detail' tender.code %}">
         <h6>{% trans "Documents" %}</h6>
-        <span>(coming soon)</span>
     </a>
 </nav>
 

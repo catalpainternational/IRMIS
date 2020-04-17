@@ -12,9 +12,8 @@
     <a data-next="{% url 'contract-projectconstructionschedule-update' project.id %}">
         <h6>{% trans "Construction Schedule" %}</h6>
     </a>
-    <a class="align-items-center d-flex flex-column">
+    <a href="{% url 'contract-projectdocument-list' project.id %}">
         <h6>{% trans "Documents" %}</h6>
-        <span>(coming soon)</span>
     </a>
 </nav>
 

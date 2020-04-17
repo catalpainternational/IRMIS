@@ -36,13 +36,13 @@
                     {% else %}
                     <a class="image pencil" href="{% url 'contract-company-update' company.id %}"></a>
                     <span></span>
-                    <a class="image delete delete-link" data-delete="/contracts/api/company/{{ company.id }}"></a>
+                    <a class="image delete delete-link" data-delete="/contracts/api/company/{{ company.id }}/"></a>
                     {% endif %}
                 </td>
                 {% endif %}
                 <td><a href="{% url 'contract-company-detail' company.id %}">{{ company.name }}</a></td>
                 <td>{{ company.total_contracts }}</td>
-                <td>{{ company.total_contracts_amount }}</td>
+                <td>{{ company.total_contracts_amount|default_if_none:"0" }}</td>
             </tr>
             {% endfor %}
         </tbody>

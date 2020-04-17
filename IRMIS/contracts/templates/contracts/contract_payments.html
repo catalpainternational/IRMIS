@@ -3,62 +3,56 @@
 
 {% block contract_content %}
 <nav>
-    <a href="{% url 'contract-contract-update' contract_id %}">
+    <a href="{% url 'contract-contract-update' contract.id %}">
         <h6>{% trans "Contract Details" %}</h6>
     </a>
-    <a href="{% url 'contract-contractinspection-list' contract_id %}">
+    <a href="{% url 'contract-contractinspection-list' contract.id %}">
         <h6>{% trans "Inspections" %}</h6>
     </a>
     <a class="selected">
         <h6>{% trans "Payments" %}</h6>
     </a>
-    <a href="{% url 'contract-socialsafeguarddata-list' contract_id %}">
+    <a href="{% url 'contract-socialsafeguarddata-list' contract.id %}">
         <h6>{% trans "Social Safeguard" %}</h6>
     </a>
-    <a class="align-items-center d-flex flex-column">
+    <a href="{% url 'contract-contractdocument-list' contract.id %}">
         <h6>{% trans "Documents" %}</h6>
-        <span>(coming soon)</span>
     </a>
 </nav>
 
 <div class="content">
-    <form id="contract-payment-form" method="post" action="{{ request.get_full_path }}">
-        {% csrf_token %}
-        <div class="align-items-center d-flex justify-content-between">
-            <h5 class="title">{% trans "List of payments" %}</h5>
-            <button class="btn btn-primary form-modal-link" type="button" data-method="POST">{% trans "Add" %}</button>
-        </div>
-        <table id="contract-payment-list-table" class="contracts-profile-table d-block table table-hover">
-            <thead>
-                <tr>
-                    <th>{% trans "Payment Date" %}</th>
-                    <th>{% trans "Payment Value" %}</th>
-                    <th>{% trans "Donor" %}</th>
-                    <th>{% trans "Funding Source" %}</th>
-                    <th>{% trans "Destination" %}</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for payment in payment_list %}
-                <tr>
-                    <td>{{ payment.date }}</td>
-                    <td>{{ payment.value }}</td>
-                    <td>{{ payment.donor }}</td>
-                    <td>{{ payment.source }}</td>
-                    <td>{{ payment.destination }}</td>
-                    <td class="text-center">
-                        <a class="image pencil form-modal-link" data-method="PUT" data-object="{{ payment.json }}"
-                            data-id="{{ payment.id }}"></a>
-                        <span></span>
-                        <a class="image delete delete-link"
-                            data-delete="/contracts/api/contractpayment/{{ payment.id }}/"></a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </form>
+    <div class="align-items-center d-flex justify-content-between">
+        <h5 class="title">{% trans "List of payments" %}</h5>
+        <button class="btn btn-primary form-modal-link" type="button" data-method="POST">{% trans "Add" %}</button>
+    </div>
+    <table id="contract-payment-list-table" class="contracts-profile-table d-block table table-hover">
+        <thead>
+            <tr>
+                <th></th>
+                <th>{% trans "Payment Date" %}</th>
+                <th>{% trans "Payment Value" %}</th>
+                <th>{% trans "Donor" %}</th>
+                <th>{% trans "Funding Source" %}</th>
+                <th>{% trans "Destination" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in payment_list %}
+            <tr>
+                <td class="text-center">
+                    <a class="image pencil form-modal-link" data-method="PUT" data-object="{{ payment.json }}"></a>
+                    <span></span>
+                    <a class="image delete delete-link" data-delete="/contracts/api/contractpayment/{{ payment.id }}/"></a>
+                </td>
+                <td>{{ payment.date }}</td>
+                <td>{{ payment.value }}</td>
+                <td>{{ payment.donor }}</td>
+                <td>{{ payment.source }}</td>
+                <td>{{ payment.destination }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
 <div class="payment-modal form-modal modal" tabindex="-1" role="dialog">
@@ -66,8 +60,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title">{% trans "Save Payment" %}</h1>
-                <span class="close image" data-dismiss="modal" aria-label="{% trans 'Close' %}"
-                    aria-hidden="true"></span>
+                <span class="close image" data-dismiss="modal" aria-label="{% trans 'Close' %}" aria-hidden="true"></span>
             </div>
             <div class="modal-body">
                 <form>
@@ -76,8 +69,7 @@
                             <label>{% trans "Payment Date" %}</label>
                             <span class="required">*</span>
                             <small class="form-text text-muted">{% trans "Select payment date" %}</small>
-                            <input id="payment-date" class="form-control" type="date" pattern="\d{4}-\d{2}-\d{2}"
-                                required>
+                            <input id="payment-date" class="form-control" type="date" pattern="\d{4}-\d{2}-\d{2}" required>
                         </div>
                         <div class="form-group">
                             <label>{% trans "Payment Value" %}</label>
@@ -123,8 +115,7 @@
             </div>
             <div class="modal-footer">
                 <a data-dismiss="modal">{% trans "Cancel" %}</a>
-                <button id="save-payment" type="button" class="btn btn-primary"
-                    data-url="/contracts/api/contractpayment/" data-id="{{ contract_id }}">{% trans "Save" %}</button>
+                <button id="save-payment" type="button" class="btn btn-primary" data-id="{{ contract.id }}">{% trans "Save" %}</button>
             </div>
         </div>
     </div>

@@ -193,7 +193,7 @@
                             </div>
                         </div>
                     </section>
-                    <section>
+                    <section class="no-max-width">
                         <div class="form-group">
                             <label>{ window.gettext("Total Count per Vehicle Type") }</label>
                             <div if="{state.currentRowData.values}" class="form-inline vehicle-field-height"
@@ -226,17 +226,13 @@
         import Data_Table from "./data_table.riot.html";
 
         import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
-        import {getSurveysForAsset} from "../assets/editUtilities";
+        import {checkRequiredFields, getSurveysForAsset} from "../assets/editUtilities";
         import {withinMaxDigits} from "../assets/utilities";
 
         import { makeEstradaRoad } from "../assets/models/road";
         import { EstradaSurvey, makeEstradaSurvey } from "../assets/models/survey";
 
         import $ from "jquery";
-
-        function checkRequiredFields(fieldNames, data, errors) {
-            return fieldNames.filter((fieldName) => {return !data[fieldName];});
-        }
 
         export default {
             state: {

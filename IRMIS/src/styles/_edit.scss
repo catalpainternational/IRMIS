@@ -81,6 +81,10 @@ edit_history {
         &:last-of-type {
             margin-bottom: 20px;
         }
+        
+        &.no-max-width {
+            max-width: unset;
+        }
 
         h6 {
             border-bottom: 1px solid $lighter-gray;
@@ -130,7 +134,7 @@ edit_condition {
     }
 }
 
-feedback_banner, #feedback-banner {
+feedback_banner, .feedback-banner {
     & > div {
         box-shadow: 0 0 10px 0 rgba(61, 71, 88, 0.5);
         border-bottom-right-radius: $radius;
@@ -141,10 +145,10 @@ feedback_banner, #feedback-banner {
         padding-right: 30px;
         padding-left: 30px;
         position: absolute;
+        z-index: 1051;
         height: 71px;
         margin: auto;
         width: 376px;
-        z-index: 1;
         right: 0;
         left: 0;
         top: 0;
@@ -183,8 +187,9 @@ traffic_data_details {
     }
 
     .date-input-field {
-        width: 192px;
         height: 28px;
+        width: 192px;
+        padding: 0;
     }
 
     .traffic-width {
@@ -201,8 +206,9 @@ traffic_data_details {
     }
 
     .vehicle-input {
-        height: 28px;
+        width: 115px !important;
         margin: 0 36px 0 16px;
+        height: 28px;
     }
 
     .details-modal-type-spacing {

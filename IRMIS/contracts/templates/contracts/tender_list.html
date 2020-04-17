@@ -37,7 +37,7 @@
                     {% else %}
                     <a class="image pencil" href="{% url 'contract-tender-update' tender.code %}"></a>
                     <span></span>
-                    <a class="image delete delete-link" data-delete="/contracts/api/tender/{{ tender.code }}"></a>
+                    <a class="image delete delete-link" data-delete="/contracts/api/tender/{{ tender.code }}/"></a>
                     {% endif %}
                 </td>
                 {% endif %}
