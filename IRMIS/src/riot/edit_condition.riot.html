@@ -12,11 +12,11 @@
         </stacked_bar>
 
         <div class="d-flex">
-            <a class="{!state.viewAllAssetCondition ? 'active' : '' } table-toggle"
+            <a class="{state.viewAllAssetCondition ? 'active' : '' } table-toggle"
                 onclick="{viewCurrentAssetCondition}">
                 { window.gettext("Current surface condition") }
             </a>
-            <a class="{state.viewAllAssetCondition ? 'active' : '' } table-toggle" onclick="{viewAllAssetCondition}">
+            <a class="{!state.viewAllAssetCondition ? 'active' : '' } table-toggle" onclick="{viewAllAssetCondition}">
                 { window.gettext("View all data entries") }
             </a>
         </div>
