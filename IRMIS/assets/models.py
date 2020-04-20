@@ -1636,11 +1636,7 @@ class DriftQuerySet(models.QuerySet):
 
         float_fields = dict(length="length", width="width", thickness="thickness",)
 
-        int_fields = dict(
-            chainage="chainage",
-            construction_year="construction_year",
-            number_cells="number_cells",
-        )
+        int_fields = dict(chainage="chainage", construction_year="construction_year",)
 
         asset_type = "DRFT"
         structures = get_structures_with_survey_data(
@@ -1777,12 +1773,6 @@ class Drift(models.Model):
         null=True,
         validators=[MinValueValidator(0.1)],
         help_text=_("Enter structure thickness"),
-    )
-    number_cells = models.IntegerField(
-        verbose_name=_("Number of Cells"),
-        blank=True,
-        null=True,
-        validators=[MinValueValidator(1)],
     )
     material = models.ForeignKey(
         "DriftMaterialType",

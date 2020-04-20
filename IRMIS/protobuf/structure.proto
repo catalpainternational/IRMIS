@@ -111,5 +111,4 @@ message Drift {
     repeated Photo survey_photos = 23;
     // NON-SHARED FIELDS (#26 and onwards)
     float thickness = 28;
-    int32 number_cells = 29;
 }

@@ -837,7 +837,6 @@ def drift_create(req_pb):
             "chainage": req_pb.chainage,
             "structure_type": req_pb.structure_type,
             "thickness": req_pb.thickness,
-            "number_cells": req_pb.number_cells,
             "material": req_pb.material,
             "protection_upstream": req_pb.protection_upstream,
             "protection_downstream": req_pb.protection_downstream,
@@ -1025,7 +1024,6 @@ def drift_update(drift, req_pb, db_pb):
         "length",
         "width",
         "thickness",
-        "number_cells",
         "chainage",
     ]
     for field in numeric_fields:

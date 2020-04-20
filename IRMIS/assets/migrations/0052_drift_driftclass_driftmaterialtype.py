@@ -229,15 +229,6 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "number_cells",
-                    models.IntegerField(
-                        blank=True,
-                        null=True,
-                        validators=[django.core.validators.MinValueValidator(1)],
-                        verbose_name="Number of Cells",
-                    ),
-                ),
-                (
                     "geojson_file",
                     models.ForeignKey(
                         blank=True,

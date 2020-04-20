@@ -379,9 +379,6 @@ export class Drift extends jspb.Message {
   getThickness(): number;
   setThickness(value: number): void;
 
-  getNumberCells(): number;
-  setNumberCells(value: number): void;
-
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Drift.AsObject;
   static toObject(includeInstance: boolean, msg: Drift): Drift.AsObject;
@@ -418,7 +415,6 @@ export namespace Drift {
     inventoryPhotosList: Array<photo_pb.Photo.AsObject>,
     surveyPhotosList: Array<photo_pb.Photo.AsObject>,
     thickness: number,
-    numberCells: number,
   }
 }
 

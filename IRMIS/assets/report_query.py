@@ -110,7 +110,7 @@ class ReportQuery:
                 "  geojson_file_id AS geojson_file,\n"
                 "  construction_year, length, width,\n"
                 "  NULL::DECIMAL AS height, thickness, NULL::DECIMAL AS span_length,\n"
-                "  number_cells, NULL::INTEGER AS number_spans,\n"
+                "  NULL::INTEGER AS number_cells, NULL::INTEGER AS number_spans,\n"
                 "  NULL AS river_name,\n"
                 "  protection_downstream_id AS protection_downstream, protection_upstream_id AS protection_upstream,\n"
                 "  material_id AS material, structure_type_id AS structure_type,\n"
