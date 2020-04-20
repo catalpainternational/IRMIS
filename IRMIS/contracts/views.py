@@ -326,6 +326,13 @@ class ContractListView(ListView):
     template_name = "contracts/contract_list.html"
     model = models.Contract
     paginate_by = 100
+    queryset = models.Contract.objects.annotate(
+        projects_total_budget=Func(
+            Sum("tender__projects__budgets__approved_value"),
+            function="TRUNC",
+            template="%(function)s(%(expressions)s, 2)",
+        )
+    )
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
