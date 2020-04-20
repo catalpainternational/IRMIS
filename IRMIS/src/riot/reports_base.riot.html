@@ -13,7 +13,7 @@
                         <!-- <li class="{ state.page === 'reports_builder' ? 'active' : '' }" data-page="reports_builder"
                             onclick="{ selectTab }">{ window.gettext("Reports Builder") }
                         </li> -->
-                        <li class="{state.page === 'contracts' ? 'active' : '' }" data-page="contracts"
+                        <li if={ window.canViewContractReports } class="{state.page === 'contracts' ? 'active' : '' }" data-page="contracts"
                             onclick="{ selectTab }">{ window.gettext("Contract Reports") }
                         </li>
                     </ul>
