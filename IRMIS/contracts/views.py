@@ -242,9 +242,14 @@ class ProjectDocumentDetailView(DetailView):
 # Tender
 @method_decorator(login_required, name="dispatch")
 class TenderListView(ListView):
-    model = models.Tender
     template_name = "contracts/tender_list.html"
+    model = models.Tender
     paginate_by = 100
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context["status_list"] = models.TenderStatus.objects.all()
+        return context
 
 
 @method_decorator(login_required, name="dispatch")
