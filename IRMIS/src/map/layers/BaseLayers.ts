@@ -66,6 +66,12 @@ export class BaseLayers {
             "Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
     };
 
+    private static thunderforestAccessToken = "a3c846cef468496cb5759eff6b05136a";
+    private static spinalMapUrlTemplate = `https://tile.thunderforest.com/spinal-map/{z}/{x}/{y}.png?apikey=${BaseLayers.thunderforestAccessToken}`;
+    private static spinalMapUrlLayerOptions = {
+        attribution: "Maps &copy; <a href='https://www.thunderforest.com'>Thunderforest</a>, " + BaseLayers.mapDataAttribution,
+    };
+
     public static get baseLayers() {
         const mapbox = L.tileLayer(BaseLayers.mapboxUrlTemplate, BaseLayers.mapboxLayerOptions);
         const stamenWatercolor = L.tileLayer(BaseLayers.stamenWatercolorUrlTemplate, BaseLayers.stamenWatercolorLayerOptions);
@@ -74,6 +80,7 @@ export class BaseLayers {
         const osmMapnik = L.tileLayer(BaseLayers.osmMapnikUrlTemplate, BaseLayers.osmMapnikLayerOptions);
         const osmHOT = L.tileLayer(BaseLayers.osmHOTUrlTemplate, BaseLayers.osmHOTLayerOptions);
         const esriWorldImagery = L.tileLayer(BaseLayers.esriWorldImageryUrlTemplate, BaseLayers.esriWorldImageryLayerOptions);
+        const spinalMap = L.tileLayer(BaseLayers.spinalMapUrlTemplate, BaseLayers.spinalMapUrlLayerOptions);
 
         // tslint:disable: object-literal-sort-keys
         return {
@@ -84,6 +91,7 @@ export class BaseLayers {
             "Satellite Mapbox": mapbox,
             "Satellite Esri": esriWorldImagery,
             "Watercolor": stamenWatercolor,
+            "<span onmouseover='this.innerHTML=\"SpinalMap\"' onmouseout='this.innerHTML=\"&nbsp;&nbsp;&nbsp;\"'>&nbsp;&nbsp;&nbsp;</span>": spinalMap,
         } as {[key: string]: any};
     }
 }
