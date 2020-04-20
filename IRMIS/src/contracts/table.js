@@ -161,6 +161,17 @@ function initializeContractsListTable(table) {
     document.getElementById("type_of_work_select2").addEventListener("change", (e) => {
         dataTable.columns(7).search(e.srcElement.value).draw();
     });
+
+    document.getElementById("value_select").addEventListener("change", (e) => {
+        dataTable.draw();
+    });
+
+    $.fn.dataTableExt.afnFiltering.push(
+        function (oSettings, _aData, iDataIndex) {
+            let row = oSettings.aoData[iDataIndex]._aData;
+            return valueRangeFilter(row, 6);
+        }
+    );
 }
 
 function initializeCompaniesListTable(table) {
