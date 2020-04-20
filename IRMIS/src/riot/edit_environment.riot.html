@@ -12,10 +12,10 @@
         </stacked_bar>
 
         <div class="d-flex">
-            <a class="{ !state.viewAllTerrain ? 'active' : '' } table-toggle" onclick="{ viewCurrentTerrain }">
+            <a class="{ state.viewAllTerrain ? 'active' : '' } table-toggle" onclick="{ viewCurrentTerrain }">
                 { window.gettext("Current terrain") }
             </a>
-            <a class="{ state.viewAllTerrain ? 'active' : '' } table-toggle" onclick="{ viewAllTerrain }">
+            <a class="{ !state.viewAllTerrain ? 'active' : '' } table-toggle" onclick="{ viewAllTerrain }">
                 { window.gettext("View all data entries") }
             </a>
         </div>
@@ -41,10 +41,10 @@
         </stacked_bar> -->
 
         <div class="d-flex">
-            <a class="{ !state.viewAllRainfall ? 'active' : '' } table-toggle" onclick="{ viewCurrentRainfall }">
+            <a class="{ state.viewAllRainfall ? 'active' : '' } table-toggle" onclick="{ viewCurrentRainfall }">
                 { window.gettext("Current rainfall") }
             </a>
-            <a class="{ state.viewAllRainfall ? 'active' : '' } table-toggle" onclick="{ viewAllRainfall }">
+            <a class="{ !state.viewAllRainfall ? 'active' : '' } table-toggle" onclick="{ viewAllRainfall }">
                 { window.gettext("View all data entries") }
             </a>
         </div>

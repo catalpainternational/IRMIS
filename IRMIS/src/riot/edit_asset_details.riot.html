@@ -101,11 +101,11 @@
         </div>
 
         <div class="d-flex">
-            <a class="{ !state.viewAllCarriageway ? 'active' : '' } table-toggle"
+            <a class="{ state.viewAllCarriageway ? 'active' : '' } table-toggle"
                 onclick="{ viewCurrentCarriageway }">
                 { window.gettext("Current carriageway width") }
             </a>
-            <a class="{ state.viewAllCarriageway ? 'active' : '' } table-toggle" onclick="{ viewAllCarriageway }">
+            <a class="{ !state.viewAllCarriageway ? 'active' : '' } table-toggle" onclick="{ viewAllCarriageway }">
                 { window.gettext("View all data entries") }
             </a>
         </div>
@@ -131,11 +131,11 @@
         </div>
 
         <div class="d-flex">
-            <a class="{ !state.viewAllTotalWidth ? 'active' : '' } table-toggle"
+            <a class="{ state.viewAllTotalWidth ? 'active' : '' } table-toggle"
                 onclick="{ viewCurrentTotalWidth }">
                 { window.gettext("Current total width") }
             </a>
-            <a class="{ state.viewAllTotalWidth ? 'active' : '' } table-toggle" onclick="{ viewAllTotalWidth }">
+            <a class="{ !state.viewAllTotalWidth ? 'active' : '' } table-toggle" onclick="{ viewAllTotalWidth }">
                 { window.gettext("View all data entries") }
             </a>
         </div>
@@ -160,10 +160,10 @@
         </div>
 
         <div class="d-flex">
-            <a class="{ !state.viewAllLanes ? 'active' : '' } table-toggle" onclick="{ viewCurrentLanes }">
+            <a class="{ state.viewAllLanes ? 'active' : '' } table-toggle" onclick="{ viewCurrentLanes }">
                 { window.gettext("Current number of lanes") }
             </a>
-            <a class="{ state.viewAllLanes ? 'active' : '' } table-toggle" onclick="{ viewAllLanes }">
+            <a class="{ !state.viewAllLanes ? 'active' : '' } table-toggle" onclick="{ viewAllLanes }">
                 { window.gettext("View all data entries") }
             </a>
         </div>
@@ -186,10 +186,10 @@
         </div>
 
         <div class="d-flex">
-            <a class="{ !state.viewAllTechnical ? 'active' : '' } table-toggle" onclick="{ viewCurrentTechnical }">
+            <a class="{ state.viewAllTechnical ? 'active' : '' } table-toggle" onclick="{ viewCurrentTechnical }">
                 { window.gettext("Current technical class") }
             </a>
-            <a class="{ state.viewAllTechnical ? 'active' : '' } table-toggle" onclick="{ viewAllTechnical }">
+            <a class="{ !state.viewAllTechnical ? 'active' : '' } table-toggle" onclick="{ viewAllTechnical }">
                 { window.gettext("View all data entries") }
             </a>
         </div>

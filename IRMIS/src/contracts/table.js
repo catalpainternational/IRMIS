@@ -1,40 +1,72 @@
 import "datatables.net-bs4";
 import $ from "jquery";
 
-if (window.canChangeProjects) initializeProjectsTable($("#project-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
-else initializeProjectsTable($("#project-list-table"), [], [[1, 'asc']]);
+window.addEventListener("load", () => {
+    const projectPlaceholderText = window.gettext("Search by Asset Code, Project Code or Project Name");
+    const tenderPlaceholderText = window.gettext("Search by Asset Code or Tender Code");
+    const contractPlaceholderText = window.gettext("Search by Asset Code or Contract Code");
+    const companyPlaceholderText = window.gettext("Search by Company Name or Company TIN");
 
-if (window.canChangeTenders) initializeProjectsTable($("#tender-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
-else initializeProjectsTable($("#tender-list-table"), [], [[1, 'asc']]);
+    if (window.canChangeProjects) {
+        initializeSearchableTable($("#project-list-table"), [{ orderable: false, targets: 0 }, { visible: false, targets: [-2, -1] }], [[1, 'asc']], projectPlaceholderText);
+    } else {
+        initializeSearchableTable($("#project-list-table"), [{ visible: false, targets: [-2, -1] }], [[1, 'asc']], projectPlaceholderText);
+    }
 
-if (window.canChangeContracts) initializeProjectsTable($("#contract-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
-else initializeProjectsTable($("#contract-list-table"), [], [[1, 'asc']]);
+    if (window.canChangeTenders) {
+        initializeSearchableTable($("#tender-list-table"), [{ orderable: false, targets: 0 }, { visible: false, targets: -1 }], [[1, 'asc']], tenderPlaceholderText);
+    } else {
+        initializeSearchableTable($("#tender-list-table"), [{ visible: false, targets: -1 }], [[1, 'asc']], tenderPlaceholderText);
+    }
 
-if (window.canChangeCompanies) initializeProjectsTable($("#company-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
-else initializeProjectsTable($("#company-list-table"), [], [[1, 'asc']]);
+    if (window.canChangeContracts) {
+        initializeSearchableTable($("#contract-list-table"), [{ orderable: false, targets: 0 }, { visible: false, targets: -1 }], [[1, 'asc']], contractPlaceholderText);
+    } else {
+        initializeSearchableTable($("#contract-list-table"), [{ visible: false, targets: -1 }], [[1, 'asc']], contractPlaceholderText);
+    }
 
-initializeProjectsTable($("#project-document-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
-initializeProjectsTable($("#project-document-view-list-table"), [], [[0, 'asc']]);
-initializeProjectsTable($("#tender-document-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
-initializeProjectsTable($("#tender-document-view-list-table"), [], [[0, 'asc']]);
-initializeProjectsTable($("#contract-inspection-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
-initializeProjectsTable($("#contract-inspection-view-list-table"), [], [[0, 'asc']]);
-initializeProjectsTable($("#contract-payment-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
-initializeProjectsTable($("#contract-payment-view-list-table"), [], [[0, 'asc']]);
-initializeProjectsTable($("#contract-social-safeguard-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
-initializeProjectsTable($("#contract-social-safeguard-view-list-table"), [], [[0, 'asc']]);
-initializeProjectsTable($("#contract-document-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
-initializeProjectsTable($("#contract-document-view-list-table"), [], [[0, 'asc']]);
-initializeProjectsTable($("#company-document-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
-initializeProjectsTable($("#company-document-view-list-table"), [], [[0, 'asc']]);
+    if (window.canChangeCompanies) {
+        initializeSearchableTable($("#company-list-table"), [{ orderable: false, targets: 0 }, { visible: false, targets: -1 }], [[1, 'asc']], companyPlaceholderText);
+    } else {
+        initializeSearchableTable($("#company-list-table"), [{ visible: false, targets: -1 }], [[1, 'asc']], companyPlaceholderText);
+    }
 
-initializeProjectsPrintableTable($("#project-document-print-list-table"), []);
-initializeProjectsPrintableTable($("#tender-document-print-list-table"), []);
-initializeProjectsPrintableTable($("#contract-inspection-print-list-table"), []);
-initializeProjectsPrintableTable($("#contract-payment-print-list-table"), []);
-initializeProjectsPrintableTable($("#contract-social-safeguard-print-list-table"), []);
-initializeProjectsPrintableTable($("#contract-document-print-list-table"), []);
-initializeProjectsPrintableTable($("#company-document-print-list-table"), []);
+    initializeProjectsTable($("#project-document-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
+    initializeProjectsTable($("#project-document-view-list-table"), [], [[0, 'asc']]);
+    initializeProjectsTable($("#tender-document-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
+    initializeProjectsTable($("#tender-document-view-list-table"), [], [[0, 'asc']]);
+    initializeProjectsTable($("#contract-inspection-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
+    initializeProjectsTable($("#contract-inspection-view-list-table"), [], [[0, 'asc']]);
+    initializeProjectsTable($("#contract-payment-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
+    initializeProjectsTable($("#contract-payment-view-list-table"), [], [[0, 'asc']]);
+    initializeProjectsTable($("#contract-social-safeguard-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
+    initializeProjectsTable($("#contract-social-safeguard-view-list-table"), [], [[0, 'asc']]);
+    initializeProjectsTable($("#contract-document-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
+    initializeProjectsTable($("#contract-document-view-list-table"), [], [[0, 'asc']]);
+    initializeProjectsTable($("#company-document-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
+    initializeProjectsTable($("#company-document-view-list-table"), [], [[0, 'asc']]);
+
+    initializeProjectsPrintableTable($("#project-document-print-list-table"), []);
+    initializeProjectsPrintableTable($("#tender-document-print-list-table"), []);
+    initializeProjectsPrintableTable($("#contract-inspection-print-list-table"), []);
+    initializeProjectsPrintableTable($("#contract-payment-print-list-table"), []);
+    initializeProjectsPrintableTable($("#contract-social-safeguard-print-list-table"), []);
+    initializeProjectsPrintableTable($("#contract-document-print-list-table"), []);
+    initializeProjectsPrintableTable($("#company-document-print-list-table"), []);
+});
+
+function initializeSearchableTable(table, columnDefs, order, searchPlaceholder) {
+    if (table.length) {
+        table.DataTable({
+            dom: "<'row'<'col-12'f>><'row'<'col-sm-12'tr>><'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>", // https://datatables.net/reference/option/dom#Styling
+            columnDefs: columnDefs,
+            order: order,
+        });
+
+        const searchBox = document.querySelector(".dataTables_filter input[type='search']");
+        searchBox.attributes.getNamedItem("placeholder").value = searchPlaceholder;
+    }
+}
 
 function initializeProjectsTable(table, columnDefs, order) {
     if (table.length) {

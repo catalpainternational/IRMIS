@@ -27,9 +27,11 @@
 
 
                 <div class="form-group position-relative">
-                    <label>{ window.gettext("File") }</label>
+                    <label>{ window.gettext("Choose Excel File") }</label>
                     <p if="{ state.hasFile }" class="file-name">{ state.editingPlan.fileName }</p>
-                    <input type="file" name="file" oninput="{ checkPlanFile }" required>
+                    <input type="file" name="file" oninput="{ checkPlanFile }"
+                        accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                        required>
                     <div if="{ state.errors.file }" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.file }</li>
@@ -283,23 +285,35 @@
                 });
             },
             checkPlanFile(e) {
-                const file = e.currentTarget.files[0];
+                const allowed_types = ["application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"];
                 const fieldName = e.currentTarget.name;
                 const value = e.currentTarget.value.trim();
-                const testResult = value.length !== 0;
-                const errorText = window.gettext("You need to provide a plan file");
+                const file = e.currentTarget.files[0];
+                let testResult = false;
+                let errorText = "";
 
+                if (e.currentTarget.files.length == 0) {
+                    errorText = window.gettext("You need to provide a Plan file");
+                } else if (file) {
+                    if (allowed_types.indexOf(file.type) == -1) {
+                        errorText = window.gettext("Incorrect file type. Must be an Excel file.");
+                    } else if (file.size > 20 * 1024 * 1024) {
+                        errorText = window.gettext("Exceeded size limit of 20MB");
+                    } else {
+                        testResult = true;
+                    }
+                }
                 if (!testResult) {
                     this.state.hasFile = false;
-                } else {
+                } else if (testResult && file) {
                     const reader = new FileReader();
                     reader.readAsArrayBuffer(file);
                     reader.onloadend = (ev) => {
                         const bytes = new Uint8Array(reader.result);
                         this.state.editingPlan.setFile(bytes);
                     };
-                    this.state.editingPlan.setFileName(file.name);
                     this.state.hasFile = true;
+                    this.state.editingPlan.setFileName(file.name);
                 }
 
                 this.validate(fieldName, value, testResult, errorText);
