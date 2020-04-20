@@ -314,9 +314,14 @@ class TenderDocumentDetailView(DetailView):
 # Contract
 @method_decorator(login_required, name="dispatch")
 class ContractListView(ListView):
+    template_name = "contracts/contract_list.html"
     model = models.Contract
     paginate_by = 100
-    template_name = "contracts/contract_list.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context["status_list"] = models.ContractStatus.objects.all()
+        return context
 
 
 @method_decorator(login_required, name="dispatch")
