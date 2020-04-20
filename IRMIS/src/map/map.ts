@@ -28,6 +28,7 @@ export class Map {
     private lMap = {} as L.Map;
     private zoomControl = {} as L.Control.Zoom;
     private currentLayer = {} as L.TileLayer;
+    private keySequence: string[] = [];
 
     /** Call this in window.onload, or after */
     public loadMap(): L.Map {
