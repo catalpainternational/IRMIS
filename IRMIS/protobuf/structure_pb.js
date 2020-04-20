@@ -2398,8 +2398,7 @@ proto.assets.Drift.toObject = function(includeInstance, msg) {
     photo_pb.Photo.toObject, includeInstance),
     surveyPhotosList: jspb.Message.toObjectList(msg.getSurveyPhotosList(),
     photo_pb.Photo.toObject, includeInstance),
-    height: jspb.Message.getFloatingPointFieldWithDefault(msg, 28, 0.0),
-    numberCells: jspb.Message.getFieldWithDefault(msg, 29, 0)
+    thickness: jspb.Message.getFloatingPointFieldWithDefault(msg, 28, 0.0)
   };
 
   if (includeInstance) {
@@ -2535,11 +2534,7 @@ proto.assets.Drift.deserializeBinaryFromReader = function(msg, reader) {
       break;
     case 28:
       var value = /** @type {number} */ (reader.readFloat());
-      msg.setHeight(value);
-      break;
-    case 29:
-      var value = /** @type {number} */ (reader.readInt32());
-      msg.setNumberCells(value);
+      msg.setThickness(value);
       break;
     default:
       reader.skipField();
@@ -2736,17 +2731,10 @@ proto.assets.Drift.serializeBinaryToWriter = function(message, writer) {
       photo_pb.Photo.serializeBinaryToWriter
     );
   }
-  f = message.getHeight();
+  f = message.getThickness();
   if (f !== 0.0) {
     writer.writeFloat(
       28,
-      f
-    );
-  }
-  f = message.getNumberCells();
-  if (f !== 0) {
-    writer.writeInt32(
-      29,
       f
     );
   }
@@ -3265,10 +3253,10 @@ proto.assets.Drift.prototype.clearSurveyPhotosList = function() {
 
 
 /**
- * optional float height = 28;
+ * optional float thickness = 28;
  * @return {number}
  */
-proto.assets.Drift.prototype.getHeight = function() {
+proto.assets.Drift.prototype.getThickness = function() {
   return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 28, 0.0));
 };
 
@@ -3277,26 +3265,8 @@ proto.assets.Drift.prototype.getHeight = function() {
  * @param {number} value
  * @return {!proto.assets.Drift} returns this
  */
-proto.assets.Drift.prototype.setHeight = function(value) {
+proto.assets.Drift.prototype.setThickness = function(value) {
   return jspb.Message.setProto3FloatField(this, 28, value);
-};
-
-
-/**
- * optional int32 number_cells = 29;
- * @return {number}
- */
-proto.assets.Drift.prototype.getNumberCells = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 29, 0));
-};
-
-
-/**
- * @param {number} value
- * @return {!proto.assets.Drift} returns this
- */
-proto.assets.Drift.prototype.setNumberCells = function(value) {
-  return jspb.Message.setProto3IntField(this, 29, value);
 };
 
 

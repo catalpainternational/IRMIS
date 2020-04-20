@@ -50,12 +50,19 @@
                 state.structureType = props.structure.getStructureType();
                 state.material = props.structure.getMaterial();
 
-                if (props.assetType === 'BRDG') {
-                    state.structureTypes = this.structure_type_BRDG;
-                    state.structureMaterials = this.material_BRDG;
-                } else {
-                    state.structureTypes = this.structure_type_CULV;
-                    state.structureMaterials = this.material_CULV;
+                switch (props.assetType) {
+                    case "BRDG":
+                        state.structureTypes = this.structure_type_BRDG;
+                        state.structureMaterials = this.material_BRDG;
+                        break;
+                    case "CULV":
+                        state.structureTypes = this.structure_type_CULV;
+                        state.structureMaterials = this.material_CULV;
+                        break;
+                    case "DRFT":
+                        state.structureTypes = this.structure_type_DRFT;
+                        state.structureMaterials = this.material_DRFT;
+                        break;
                 }
             },
             save(e) {
@@ -73,8 +80,10 @@
             },
             structure_type_BRDG: window.asset_schema.structure_type_BRDG,
             structure_type_CULV: window.asset_schema.structure_type_CULV,
+            structure_type_DRFT: window.asset_schema.structure_type_DRFT,
             material_BRDG: window.asset_schema.material_BRDG,
             material_CULV: window.asset_schema.material_CULV,
+            material_DRFT: window.asset_schema.material_DRFT,
         }
     </script>
 </edit_structure_type>

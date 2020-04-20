@@ -382,7 +382,8 @@ STRUCTURE_SURVEY_VALUE_MAPPINGS = [
     # The following values are not 'expected' to change during the lifespan of the Asset, but...
     ("length", "length", str_transform),
     ("width", "width", str_transform),
-    ("height", "height", str_transform),  # Culvert, Drift only
+    ("height", "height", str_transform),  # Culvert only
+    ("thickness", "thickness", str_transform),  # Drift only
     ("material", "material", code_value_transform),
     ("structure_type", "structure_type", code_value_transform),
     ("protection_upstream", "protection_upstream", code_value_transform),

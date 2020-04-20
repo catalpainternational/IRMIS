@@ -1429,7 +1429,8 @@ class CulvertQuerySet(models.QuerySet):
                 structure_protobuf,
                 asset_type,
                 regular_fields,
-                numeric_fields,
+                float_fields,
+                int_fields,
             )
 
         return structures_protobuf
@@ -1614,7 +1615,7 @@ class DriftMaterialType(models.Model):
 class DriftQuerySet(models.QuerySet):
     def to_protobuf(self):
         """ returns a Structure protobuf object from the queryset with a Drifts list """
-        # See sturcture.proto --> Structures --> Drifts --> Drift
+        # See structure.proto --> Structures --> Drifts --> Drift
         structures_protobuf = ProtoStructures()
 
         regular_fields = dict(
@@ -1634,13 +1635,9 @@ class DriftQuerySet(models.QuerySet):
             date_created="date_created", last_modified="last_modified",
         )
 
-        float_fields = dict(length="length", width="width", height="height",)
+        float_fields = dict(length="length", width="width", thickness="thickness",)
 
-        int_fields = dict(
-            chainage="chainage",
-            construction_year="construction_year",
-            number_cells="number_cells",
-        )
+        int_fields = dict(chainage="chainage", construction_year="construction_year",)
 
         asset_type = "DRFT"
         structures = get_structures_with_survey_data(
@@ -1654,7 +1651,8 @@ class DriftQuerySet(models.QuerySet):
                 structure_protobuf,
                 asset_type,
                 regular_fields,
-                numeric_fields,
+                float_fields,
+                int_fields,
             )
 
         return structures_protobuf
@@ -1738,7 +1736,7 @@ class Drift(models.Model):
         decimal_places=3,
         blank=True,
         null=True,
-        validators=[MinValueValidator(0)],
+        validators=[MinValueValidator(0.1)],
         help_text=_("Enter structure length"),
     )
     width = models.DecimalField(
@@ -1747,7 +1745,7 @@ class Drift(models.Model):
         decimal_places=3,
         blank=True,
         null=True,
-        validators=[MinValueValidator(0)],
+        validators=[MinValueValidator(0.1)],
         help_text=_("Enter structure width"),
     )
     chainage = models.IntegerField(
@@ -1769,20 +1767,14 @@ class Drift(models.Model):
         null=True,
         help_text=_("Choose the drift type"),
     )
-    height = models.DecimalField(
-        verbose_name=_("Structure Height (m)"),
+    thickness = models.DecimalField(
+        verbose_name=_("Structure Thickness (m)"),
         max_digits=8,
         decimal_places=3,
         blank=True,
         null=True,
-        validators=[MinValueValidator(0)],
-        help_text=_("Enter structure height"),
-    )
-    number_cells = models.IntegerField(
-        verbose_name=_("Number of Cells"),
-        blank=True,
-        null=True,
-        validators=[MinValueValidator(1)],
+        validators=[MinValueValidator(0.1)],
+        help_text=_("Enter structure thickness"),
     )
     material = models.ForeignKey(
         "DriftMaterialType",

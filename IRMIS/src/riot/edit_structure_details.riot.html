@@ -85,8 +85,8 @@
             </div>
         </section>
 
-        <!-- Culvert and Drift -specific fields -->
-        <template if="{ props.assetType === 'CULV' || props.assetType === 'DRFT' }">
+        <!-- Culvert -specific fields -->
+        <template if="{ props.assetType === 'CULV' }">
             <section>
                 <div class="form-group">
                     <label>{ window.gettext("Height (meters)") }</label>
@@ -104,7 +104,6 @@
                     </div>
                 </div>
             </section>
-
             <section>
                 <div class="form-group">
                     <label>{ window.gettext("Number of cells") }</label>
@@ -119,6 +118,27 @@
                     <div if="{ state.errors.structureCells }" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.structureCells }.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </template>
+
+        <!-- Drift -specific fields -->
+        <template if="{ props.assetType === 'DRFT' }">
+            <section>
+                <div class="form-group">
+                    <label>{ window.gettext("Thickness (meters)") }</label>
+                    <small class="form-text text-muted">
+                        { window.gettext("Enter the structure's thickness in meters") }
+                    </small>
+                    <input
+                        class="{ state.errors.thickness ? 'danger' : null } { state.thickness !== -1 && state.thickness !== '' ? '' : 'inactive' } form-control"
+                        type="number" placeholder="42" value="{ state.thickness !== -1 ? state.thickness : '' }" min="0.1"
+                        step="0.01" oninput="{ checkThickness }">
+                    <div if="{ state.errors.thickness }" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.thickness }.</li>
                         </ul>
                     </div>
                 </div>
@@ -184,6 +204,7 @@
                 widthDigits: 4,
                 widthDecimals: 2,
                 heightDecimals: 2,
+                thicknessDecimals: 2,
                 numberCellsDigits: 2,
                 numberSpansDigits: 3,
                 spanLengthDecimals: 2,
@@ -200,13 +221,19 @@
                 state.length = props.structure.getLength();
                 state.width = props.structure.getWidth();
 
-                if (props.assetType === 'BRDG') {
-                    state.riverName = props.structure.getRiverName();
-                    state.numberSpans = props.structure.getNumberSpans();
-                    state.spanLength = props.structure.getSpanLength();
-                } else {
-                    state.height = props.structure.getHeight();
-                    state.numberCells = props.structure.getNumberCells();
+                switch (props.assetType) {
+                    case "BRDG":
+                        state.riverName = props.structure.getRiverName();
+                        state.numberSpans = props.structure.getNumberSpans();
+                        state.spanLength = props.structure.getSpanLength();
+                        break;
+                    case "CULV":
+                        state.numberCells = props.structure.getNumberCells();
+                        state.height = props.structure.getHeight();
+                        break;
+                    case "DRFT":
+                        state.thickness = props.structure.getThickness();
+                        break;
                 }
             },
             save(e) {
@@ -269,6 +296,17 @@
                 }
                 this.update();
             },
+            checkThickness(e) {
+                const value = e.currentTarget.value;
+                if (!withinMaxDigits(value, 19, this.state.thicknessDecimals)) {
+                    this.state.errors.thickness = window.gettext(`Thickness cannot contain more than ${this.state.thicknessDecimals} decimals`);
+                } else {
+                    delete this.state.errors.thickness;
+                    this.state.structureThickness = value;
+                    this.props.structure.setThickness(value);
+                }
+                this.update();
+            },
             checkNumberCells(e) {
                 const value = e.currentTarget.value;
                 if (!withinMaxDigits(value, this.state.numberCellsDigits)) {
@@ -293,7 +331,7 @@
             checkSpanLength(e) {
                 const value = e.currentTarget.value;
                 if (!withinMaxDigits(value, 19, this.state.spanLengthDecimals)) {
-                    this.state.errors.spanLength = window.gettext(`Span length cannot contain more than ${this.state.heightDecimals} decimals`);
+                    this.state.errors.spanLength = window.gettext(`Span length cannot contain more than ${this.state.spanLengthDecimals} decimals`);
                 } else {
                     delete this.state.errors.spanLength;
                     this.state.spanLength = value;
