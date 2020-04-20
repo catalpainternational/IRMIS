@@ -250,6 +250,7 @@ class TenderListView(ListView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context["status_list"] = models.TenderStatus.objects.all()
+        context["type_of_work_list"] = models.TypeOfWork.objects.all()
         return context
 
 
