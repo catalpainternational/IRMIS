@@ -2,81 +2,161 @@ import "datatables.net-bs4";
 import $ from "jquery";
 
 window.addEventListener("load", () => {
-    const projectPlaceholderText = window.gettext("Search by Asset Code, Project Code or Project Name");
-    const tenderPlaceholderText = window.gettext("Search by Asset Code or Tender Code");
-    const contractPlaceholderText = window.gettext("Search by Asset Code or Contract Code");
-    const companyPlaceholderText = window.gettext("Search by Company Name or Company TIN");
+    const projectsListTable = $("#project-list-table");
+    const tendersListTable = $("#tender-list-table");
+    const contractsListTable = $("#contract-list-table");
+    const companiesListTable = $("#company-list-table");
 
-    if (window.canChangeProjects) {
-        initializeSearchableTable($("#project-list-table"), [{ orderable: false, targets: 0 }, { visible: false, targets: [-2, -1] }], [[1, 'asc']], projectPlaceholderText);
-    } else {
-        initializeSearchableTable($("#project-list-table"), [{ visible: false, targets: [-2, -1] }], [[1, 'asc']], projectPlaceholderText);
-    }
+    if (projectsListTable.length) initializeProjectsListTable(projectsListTable);
+    if (tendersListTable.length) initializeTendersListTable(tendersListTable);
+    if (contractsListTable.length) initializeContractsListTable(contractsListTable);
+    if (companiesListTable.length) initializeCompaniesListTable(companiesListTable);
 
-    if (window.canChangeTenders) {
-        initializeSearchableTable($("#tender-list-table"), [{ orderable: false, targets: 0 }, { visible: false, targets: -1 }], [[1, 'asc']], tenderPlaceholderText);
-    } else {
-        initializeSearchableTable($("#tender-list-table"), [{ visible: false, targets: -1 }], [[1, 'asc']], tenderPlaceholderText);
-    }
+    initializeListTable($("#project-document-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
+    initializeListTable($("#project-document-view-list-table"), [], [[0, 'asc']]);
+    initializeListTable($("#tender-document-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
+    initializeListTable($("#tender-document-view-list-table"), [], [[0, 'asc']]);
+    initializeListTable($("#contract-inspection-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
+    initializeListTable($("#contract-inspection-view-list-table"), [], [[0, 'asc']]);
+    initializeListTable($("#contract-payment-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
+    initializeListTable($("#contract-payment-view-list-table"), [], [[0, 'asc']]);
+    initializeListTable($("#contract-social-safeguard-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
+    initializeListTable($("#contract-social-safeguard-view-list-table"), [], [[0, 'asc']]);
+    initializeListTable($("#contract-document-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
+    initializeListTable($("#contract-document-view-list-table"), [], [[0, 'asc']]);
+    initializeListTable($("#company-document-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
+    initializeListTable($("#company-document-view-list-table"), [], [[0, 'asc']]);
 
-    if (window.canChangeContracts) {
-        initializeSearchableTable($("#contract-list-table"), [{ orderable: false, targets: 0 }, { visible: false, targets: -1 }], [[1, 'asc']], contractPlaceholderText);
-    } else {
-        initializeSearchableTable($("#contract-list-table"), [{ visible: false, targets: -1 }], [[1, 'asc']], contractPlaceholderText);
-    }
-
-    if (window.canChangeCompanies) {
-        initializeSearchableTable($("#company-list-table"), [{ orderable: false, targets: 0 }, { visible: false, targets: -1 }], [[1, 'asc']], companyPlaceholderText);
-    } else {
-        initializeSearchableTable($("#company-list-table"), [{ visible: false, targets: -1 }], [[1, 'asc']], companyPlaceholderText);
-    }
-
-    initializeProjectsTable($("#project-document-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
-    initializeProjectsTable($("#project-document-view-list-table"), [], [[0, 'asc']]);
-    initializeProjectsTable($("#tender-document-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
-    initializeProjectsTable($("#tender-document-view-list-table"), [], [[0, 'asc']]);
-    initializeProjectsTable($("#contract-inspection-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
-    initializeProjectsTable($("#contract-inspection-view-list-table"), [], [[0, 'asc']]);
-    initializeProjectsTable($("#contract-payment-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
-    initializeProjectsTable($("#contract-payment-view-list-table"), [], [[0, 'asc']]);
-    initializeProjectsTable($("#contract-social-safeguard-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
-    initializeProjectsTable($("#contract-social-safeguard-view-list-table"), [], [[0, 'asc']]);
-    initializeProjectsTable($("#contract-document-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
-    initializeProjectsTable($("#contract-document-view-list-table"), [], [[0, 'asc']]);
-    initializeProjectsTable($("#company-document-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
-    initializeProjectsTable($("#company-document-view-list-table"), [], [[0, 'asc']]);
-
-    initializeProjectsPrintableTable($("#project-document-print-list-table"), []);
-    initializeProjectsPrintableTable($("#tender-document-print-list-table"), []);
-    initializeProjectsPrintableTable($("#contract-inspection-print-list-table"), []);
-    initializeProjectsPrintableTable($("#contract-payment-print-list-table"), []);
-    initializeProjectsPrintableTable($("#contract-social-safeguard-print-list-table"), []);
-    initializeProjectsPrintableTable($("#contract-document-print-list-table"), []);
-    initializeProjectsPrintableTable($("#company-document-print-list-table"), []);
+    initializePrintableTable($("#project-document-print-list-table"), []);
+    initializePrintableTable($("#tender-document-print-list-table"), []);
+    initializePrintableTable($("#contract-inspection-print-list-table"), []);
+    initializePrintableTable($("#contract-payment-print-list-table"), []);
+    initializePrintableTable($("#contract-social-safeguard-print-list-table"), []);
+    initializePrintableTable($("#contract-document-print-list-table"), []);
+    initializePrintableTable($("#company-document-print-list-table"), []);
 });
 
-function initializeSearchableTable(table, columnDefs, order, searchPlaceholder) {
-    if (table.length) {
-        const dataTable = table.DataTable({
-            dom: "<'row'<'col-12'f>><'row'<'col-sm-12'tr>><'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>", // https://datatables.net/reference/option/dom#Styling
-            columnDefs: columnDefs,
-            order: order,
-        });
+function initializeProjectsListTable(table) {
+    let columnDefs;
+    let order;
 
-        const searchBox = document.querySelector(".dataTables_filter input[type='search']");
-        const statusFilter = document.getElementById("status_select2");
-
-        searchBox.attributes.getNamedItem("placeholder").value = searchPlaceholder;
-
-        if (statusFilter) {
-            statusFilter.addEventListener("change", (e) => {
-                dataTable.columns(2).search(e.srcElement.value).draw();
-            });
-        }
+    if (window.canChangeProjects) {
+        order = [[1, 'asc']];
+        columnDefs = [
+            { orderable: false, targets: 0 },
+            { visible: false, targets: [-2, -1] }
+        ];
+    } else {
+        order = [[0, 'asc']];
+        columnDefs = [
+            { visible: false, targets: [-2, -1] }
+        ];
     }
+
+    const dataTable = table.DataTable({
+        dom: "<'row'<'col-12'f>><'row'<'col-sm-12'tr>><'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>", // https://datatables.net/reference/option/dom#Styling
+        columnDefs: columnDefs,
+        order: order,
+    });
+
+    const searchBox = document.querySelector(".dataTables_filter input[type='search']");
+    searchBox.attributes.getNamedItem("placeholder").value = window.gettext("Search by Asset Code, Project Code or Project Name");
+
+    document.getElementById("status_select2").addEventListener("change", (e) => {
+        dataTable.columns(2).search(e.srcElement.value).draw();
+    });
 }
 
-function initializeProjectsTable(table, columnDefs, order) {
+function initializeTendersListTable(table) {
+    let columnDefs;
+    let order;
+
+    if (window.canChangeTenders) {
+        order = [[1, 'asc']];
+        columnDefs = [
+            { orderable: false, targets: 0 },
+            { visible: false, targets: -1 }
+        ];
+    } else {
+        order = [[0, 'asc']];
+        columnDefs = [
+            { visible: false, targets: -1 }
+        ];
+    }
+
+    const dataTable = table.DataTable({
+        dom: "<'row'<'col-12'f>><'row'<'col-sm-12'tr>><'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>", // https://datatables.net/reference/option/dom#Styling
+        columnDefs: columnDefs,
+        order: order,
+    });
+
+    const searchBox = document.querySelector(".dataTables_filter input[type='search']");
+    searchBox.attributes.getNamedItem("placeholder").value = window.gettext("Search by Asset Code or Tender Code");
+
+    document.getElementById("status_select2").addEventListener("change", (e) => {
+        dataTable.columns(4).search(e.srcElement.value).draw();
+    });
+}
+
+function initializeContractsListTable(table) {
+    let columnDefs;
+    let order;
+
+    if (window.canChangeProjects) {
+        order = [[1, 'asc']];
+        columnDefs = [
+            { orderable: false, targets: 0 },
+            { visible: false, targets: -1 }
+        ];
+    } else {
+        order = [[0, 'asc']];
+        columnDefs = [
+            { visible: false, targets: -1 }
+        ];
+    }
+
+    const dataTable = table.DataTable({
+        dom: "<'row'<'col-12'f>><'row'<'col-sm-12'tr>><'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>", // https://datatables.net/reference/option/dom#Styling
+        columnDefs: columnDefs,
+        order: order,
+    });
+
+    const searchBox = document.querySelector(".dataTables_filter input[type='search']");
+    searchBox.attributes.getNamedItem("placeholder").value = window.gettext("Search by Asset Code or Contract Code");
+
+    document.getElementById("status_select2").addEventListener("change", (e) => {
+        dataTable.columns(5).search(e.srcElement.value).draw();
+    });
+}
+
+function initializeCompaniesListTable(table) {
+    let columnDefs;
+    let order;
+
+    if (window.canChangeProjects) {
+        order = [[1, 'asc']];
+        columnDefs = [
+            { orderable: false, targets: 0 },
+            { visible: false, targets: -1 }
+        ];
+    } else {
+        order = [[0, 'asc']];
+        columnDefs = [
+            { visible: false, targets: -1 }
+        ];
+    }
+
+    table.DataTable({
+        dom: "<'row'<'col-12'f>><'row'<'col-sm-12'tr>><'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>", // https://datatables.net/reference/option/dom#Styling
+        columnDefs: columnDefs,
+        order: order,
+    });
+
+    const searchBox = document.querySelector(".dataTables_filter input[type='search']");
+    searchBox.attributes.getNamedItem("placeholder").value = window.gettext("Search by Company Name or Company TIN");
+}
+
+function initializeListTable(table, columnDefs, order) {
     if (table.length) {
         table.DataTable({
             dom: "<'row'<'col-12'>><'row'<'col-sm-12'tr>><'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>", // https://datatables.net/reference/option/dom#Styling
@@ -86,7 +166,7 @@ function initializeProjectsTable(table, columnDefs, order) {
     }
 }
 
-function initializeProjectsPrintableTable(table, columnDefs) {
+function initializePrintableTable(table, columnDefs) {
     if (table.length) {
         table.DataTable({
             dom: "<'row'<'col-12'>><'row'<'col-sm-12'tr>>", // https://datatables.net/reference/option/dom#Styling
