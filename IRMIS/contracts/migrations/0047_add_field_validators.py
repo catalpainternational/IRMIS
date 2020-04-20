@@ -7,28 +7,50 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('contracts', '0046_merge_20200413_2338'),
+        ("contracts", "0046_merge_20200413_2338"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='contract',
-            name='amendment_duration',
-            field=models.IntegerField(blank=True, help_text='Enter new duration in days', null=True, validators=[django.core.validators.MinValueValidator(0)], verbose_name='Contract duration'),
+            model_name="contract",
+            name="amendment_duration",
+            field=models.IntegerField(
+                blank=True,
+                help_text="Enter new duration in days",
+                null=True,
+                validators=[django.core.validators.MinValueValidator(0)],
+                verbose_name="Contract duration",
+            ),
         ),
         migrations.AlterField(
-            model_name='contract',
-            name='defect_liability_days',
-            field=models.IntegerField(blank=True, help_text='Duration of DLP in days', null=True, validators=[django.core.validators.MinValueValidator(0)], verbose_name='Defect liability period (days)'),
+            model_name="contract",
+            name="defect_liability_days",
+            field=models.IntegerField(
+                blank=True,
+                help_text="Duration of DLP in days",
+                null=True,
+                validators=[django.core.validators.MinValueValidator(0)],
+                verbose_name="Defect liability period (days)",
+            ),
         ),
         migrations.AlterField(
-            model_name='contract',
-            name='duration',
-            field=models.IntegerField(help_text='Duration in days', validators=[django.core.validators.MinValueValidator(0)], verbose_name='Duration (days)'),
+            model_name="contract",
+            name="duration",
+            field=models.IntegerField(
+                help_text="Duration in days",
+                validators=[django.core.validators.MinValueValidator(0)],
+                verbose_name="Duration (days)",
+            ),
         ),
         migrations.AlterField(
-            model_name='project',
-            name='duration',
-            field=models.IntegerField(blank=True, help_text='Estimated duration of the work', null=True, validators=[django.core.validators.MinValueValidator(0)], verbose_name='Duration (days)'),
+            model_name="project",
+            name="duration",
+            field=models.IntegerField(
+                blank=True,
+                help_text="Estimated duration of the work",
+                null=True,
+                validators=[django.core.validators.MinValueValidator(0)],
+                verbose_name="Duration (days)",
+            ),
         ),
     ]

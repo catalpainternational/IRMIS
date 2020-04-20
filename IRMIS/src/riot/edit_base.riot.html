@@ -26,7 +26,7 @@
                                 onclick="{ selectPage }">{window.gettext("Media") }</li>
                         </ul>
                     </template>
-                    <template if="{ props.assetType === 'BRDG' || props.assetType === 'CULV' }">
+                    <template if="{ props.assetType === 'BRDG' || props.assetType === 'CULV' || props.assetType === 'DRFT' }">
                         <li class="text-uppercase">{ window.gettext("Edit structure") }</li>
                         <ul>
                             <li class="{ state.page === 'structure_type' ? 'active' : '' }" data-page="structure_type"
@@ -147,7 +147,7 @@
         import {saveRoad} from "../roadManager";
         import {getPhotos} from "../photoManager";
         import {EstradaRoad, makeEstradaRoad} from "../assets/models/road";
-        import {makeEstradaBridge, makeEstradaCulvert} from "../assets/models/structures";
+        import {makeEstradaBridge, makeEstradaCulvert, makeEstradaDrift} from "../assets/models/structures";
         import {updateStructure} from "../structureManager";
 
         import {compareProtoBufObjects} from "../assets/protoBufUtilities";
@@ -283,9 +283,20 @@
             },
             initStructure(structure) {
                 this.state.baseStructure = structure;
-                this.state.editingStructure = this.state.baseStructure.assetType === "BRDG"
-                    ? makeEstradaBridge(this.state.baseStructure)
-                    : makeEstradaCulvert(this.state.baseStructure);
+                switch (this.state.baseStructure.assetType) {
+                    case "BRDG":
+                        this.state.editingStructure = makeEstradaBridge(this.state.baseStructure);
+                        break;
+                    case "CULV":
+                        this.state.editingStructure = makeEstradaCulvert(this.state.baseStructure);
+                        break;
+                    case "DRFT":
+                        this.state.editingStructure = makeEstradaDrift(this.state.baseStructure);
+                        break;
+                    default:
+                        // Ending up here is a programmer error - but we're not doing anything about it
+                        break;
+                }
             },
             continueMounting() {
                 // Set up other data on editingRoad that is commonly used on the child tags
@@ -336,7 +347,7 @@
                 });
             },
             hasChanges() {
-                return (this.props.assetType === "BRDG" || this.props.assetType === "CULV")
+                return (this.props.assetType === "BRDG" || this.props.assetType === "CULV" || this.props.assetType === "DRFT")
                     ? compareProtoBufObjects(this.state.baseStructure, this.state.editingStructure)
                     : compareProtoBufObjects(this.state.baseRoad, this.state.editingRoad);
             },
@@ -376,9 +387,20 @@
                 if (this.state.editingRoad) {
                     this.state.editingRoad = makeEstradaRoad(this.state.baseRoad);
                 } else {
-                    this.state.editingStructure = this.state.baseStructure.assetType === "BRDG"
-                        ? makeEstradaBridge(this.state.baseStructure)
-                        : makeEstradaCulvert(this.state.baseStructure);
+                    switch (this.state.baseStructure.assetType) {
+                        case "BRDG":
+                            this.state.editingStructure = makeEstradaBridge(this.state.baseStructure);
+                            break;
+                        case "CULV":
+                            this.state.editingStructure = makeEstradaCulvert(this.state.baseStructure);
+                            break;
+                        case "DRFT":
+                            this.state.editingStructure = makeEstradaDrift(this.state.baseStructure);
+                            break;
+                        default:
+                            // Ending up here is a programmer error - but we're not doing anything about it
+                            break;
+                    }
                 }
                 window.location.hash = this.state.nextPage;
                 this.update();

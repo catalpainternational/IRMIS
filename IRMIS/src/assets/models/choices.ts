@@ -27,5 +27,7 @@ export const STRUCTURE_DOWNSTREAM_PROTECTION_TYPE_CHOICES
     = humanizeChoices(assetSchema, "protection_downstream", "code", "name");
 export const STRUCTURE_TYPE_BRIDGE_CHOICES = humanizeChoices(assetSchema, "structure_type_BRDG", "code", "name");
 export const STRUCTURE_TYPE_CULVERT_CHOICES = humanizeChoices(assetSchema, "structure_type_CULV", "code", "name");
+export const STRUCTURE_TYPE_DRIFT_CHOICES = humanizeChoices(assetSchema, "structure_type_DRFT", "code", "name");
 export const MATERIAL_TYPE_BRIDGE_CHOICES = humanizeChoices(assetSchema, "material_BRDG", "code", "name");
 export const MATERIAL_TYPE_CULVERT_CHOICES = humanizeChoices(assetSchema, "material_CULV", "code", "name");
+export const MATERIAL_TYPE_DRIFT_CHOICES = humanizeChoices(assetSchema, "material_DRFT", "code", "name");

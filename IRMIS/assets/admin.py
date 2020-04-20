@@ -21,6 +21,9 @@ from .models import (
     Culvert,
     CulvertClass,
     CulvertMaterialType,
+    Drift,
+    DriftClass,
+    DriftMaterialType,
 )
 
 
@@ -36,7 +39,7 @@ class RoadAdmin(VersionAdmin, admin.OSMGeoAdmin):
         super().reversion_register(model, **options)
 
 
-@admin.register(Bridge, Culvert)
+@admin.register(Bridge, Culvert, Drift)
 class StructureAdmin(VersionAdmin, admin.OSMGeoAdmin):
     list_display = ["structure_code", "structure_name", "asset_class"]
     list_filter = ["asset_class"]  # was structure_class
@@ -61,3 +64,5 @@ admin.site.register(BridgeClass)
 admin.site.register(BridgeMaterialType)
 admin.site.register(CulvertClass)
 admin.site.register(CulvertMaterialType)
+admin.site.register(DriftClass)
+admin.site.register(DriftMaterialType)

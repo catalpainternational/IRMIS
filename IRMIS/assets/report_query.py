@@ -30,9 +30,9 @@ class ReportQuery:
             "assets_to_use": (
                 # This is a template for "assets_to_chart"
                 # Notes:
-                # * road_id and road_code are only returned for Bridges and Culverts
-                #   i.e. they refer to the road associated with the Bridge or Culvert
-                # * material_id and structure_type_id have different meanings for bridge and culvert
+                # * road_id and road_code are only returned for Bridges, Culverts and Drifts
+                #   i.e. they refer to the road associated with the Bridge, Culvert or Drift
+                # * material_id and structure_type_id have different meanings for bridge, culvert and drift
                 # * asset_code (relative to a road) may not be set properly and requires special handling
                 "SELECT asset_type, asset_id, asset_code, asset_name,\n"
                 " asset_condition, asset_class,\n"
@@ -59,20 +59,20 @@ class ReportQuery:
                 " FROM assets_survey s, assets_road r\n"
                 " WHERE s.asset_id = CONCAT('ROAD', '-', r.id::text)\n"
                 "UNION\n"
-                "SELECT DISTINCT bc.asset_type, bc.asset_id,\n"
-                " bc.asset_code, bc.asset_name,\n"
-                " bc.asset_condition, bc.asset_class,\n"
-                " bc.geom_chainage, bc.municipality,\n"
-                " bc.geojson_file,\n"
+                "SELECT DISTINCT bcd.asset_type, bcd.asset_id,\n"
+                " bcd.asset_code, bcd.asset_name,\n"
+                " bcd.asset_condition, bcd.asset_class,\n"
+                " bcd.geom_chainage, bcd.municipality,\n"
+                " bcd.geojson_file,\n"
                 " NULL::DECIMAL AS geom_length, NULL::BOOLEAN AS core,\n"
                 " NULL::INTEGER AS surface_type,\n"
                 " CASE\n"
-                "  WHEN COALESCE(bc.road_id, 0) = 0 THEN NULL\n"
-                "  ELSE bc.road_id\n"
+                "  WHEN COALESCE(bcd.road_id, 0) = 0 THEN NULL\n"
+                "  ELSE bcd.road_id\n"
                 " END AS road_id,\n"
                 " CASE\n"
-                "  WHEN COALESCE(bc.road_code, '') = '' THEN NULL\n"
-                "  ELSE bc.road_code\n"
+                "  WHEN COALESCE(bcd.road_code, '') = '' THEN NULL\n"
+                "  ELSE bcd.road_code\n"
                 " END AS road_code\n"
                 " FROM assets_survey s, (\n"
                 "  SELECT 'BRDG' AS asset_type, id AS asset_id,\n"
@@ -81,7 +81,7 @@ class ReportQuery:
                 "  chainage AS geom_chainage, administrative_area AS municipality,\n"
                 "  geojson_file_id AS geojson_file,\n"
                 "  construction_year, length, width,\n"
-                "  NULL::DECIMAL AS height, span_length,\n"
+                "  NULL::DECIMAL AS height, NULL::DECIMAL AS thickness, span_length,\n"
                 "  NULL::INTEGER AS number_cells, number_spans,\n"
                 "  river_name,\n"
                 "  protection_downstream_id AS protection_downstream, protection_upstream_id AS protection_upstream,\n"
@@ -95,14 +95,28 @@ class ReportQuery:
                 "  chainage AS geom_chainage, administrative_area AS municipality,\n"
                 "  geojson_file_id AS geojson_file,\n"
                 "  construction_year, length, width,\n"
-                "  height, NULL::DECIMAL AS span_length,\n"
+                "  height, NULL::DECIMAL AS thickness, NULL::DECIMAL AS span_length,\n"
                 "  number_cells, NULL::INTEGER AS number_spans,\n"
                 "  NULL AS river_name,\n"
                 "  protection_downstream_id AS protection_downstream, protection_upstream_id AS protection_upstream,\n"
                 "  material_id AS material, structure_type_id AS structure_type,\n"
                 "  road_id, road_code\n"
                 "  FROM assets_culvert\n"
-                " ) bc\n"
+                "  UNION\n"
+                "  SELECT 'DRFT' AS asset_type, id AS asset_id,\n"
+                "  structure_code AS asset_code, structure_name AS asset_name,\n"
+                "  NULL AS asset_condition, asset_class,\n"
+                "  chainage AS geom_chainage, administrative_area AS municipality,\n"
+                "  geojson_file_id AS geojson_file,\n"
+                "  construction_year, length, width,\n"
+                "  NULL::DECIMAL AS height, thickness, NULL::DECIMAL AS span_length,\n"
+                "  NULL::INTEGER AS number_cells, NULL::INTEGER AS number_spans,\n"
+                "  NULL AS river_name,\n"
+                "  protection_downstream_id AS protection_downstream, protection_upstream_id AS protection_upstream,\n"
+                "  material_id AS material, structure_type_id AS structure_type,\n"
+                "  road_id, road_code\n"
+                "  FROM assets_drift\n"
+                " ) bcd\n"
                 ") a\n"
             ),
             "usernames": (
@@ -202,7 +216,7 @@ class ReportQuery:
             ),
             # If the survey is actually the end value we NULLify the value
             # rather than using the attribute, we use this in final_results below
-            # also road_id and road_code will only have values if the result relates to a Bridge or a Culvert
+            # also road_id and road_code will only have values if the result relates to a Bridge, Culvert or Drift
             "results": (
                 "SELECT rank, asset_type, asset_id, asset_code, c, break_attr, geom_chainage,\n"
                 " CASE\n"
@@ -400,11 +414,12 @@ class ReportQuery:
             "width",
             "source_roughness",
             "roughness",
+            "thickness",
         ]
 
         # Ideally for these asset filters we'd drill down (in time) through the surveys instead
         asset_filters = [
-            # road.*, bridge.*, culvert.* have several commonly named fields in the query above
+            # road.*, bridge.*, culvert.*, drift.* have several commonly named fields in the query above
             # Common fields
             "asset_type",  # relevant for the query
             "asset_id",
@@ -440,10 +455,11 @@ class ReportQuery:
             "served_facilities",
             "served_economic_areas",
             "served_connection_types",
-            # Structure specific - some are specific to only bridge or only culvert
+            # Structure specific - some are specific to only bridge, culvert or drift
             "length",
             "width",
             "height",
+            "thickness",
             "span_length",
             "number_cells",
             "number_spans",
@@ -453,7 +469,7 @@ class ReportQuery:
             "protection_upstream",
             "material",
             "structure_type",
-            # Only used for the relationship of a road to bridge, culvert
+            # Only used for the relationship of a road to bridge, culvert, drift
             # NOT used by road
             "road_id",
             "road_code",
@@ -488,6 +504,10 @@ class ReportQuery:
             value_filter_keys.remove("culvert_id")
         if "culvert_code" in value_filter_keys:
             value_filter_keys.remove("culvert_code")
+        if "drift_id" in value_filter_keys:
+            value_filter_keys.remove("drift_id")
+        if "drift_code" in value_filter_keys:
+            value_filter_keys.remove("drift_code")
 
         has_asset_id = "asset_id" in value_filter_keys
         has_road_id = "road_id" in value_filter_keys

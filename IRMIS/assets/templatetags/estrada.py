@@ -11,6 +11,9 @@ from ..models import (
     Culvert,
     CulvertClass,
     CulvertMaterialType,
+    Drift,
+    DriftClass,
+    DriftMaterialType,
     EconomicArea,
     FacilityType,
     MaintenanceNeed,
@@ -96,6 +99,15 @@ def get_schema_data():
             Culvert._meta.fields,
         )
     )
+    drift_fields = list(
+        filter(
+            lambda x: (
+                x.name
+                not in ["id", "geom", "properties_content_type", "properties_object_id"]
+            ),
+            Drift._meta.fields,
+        )
+    )
 
     asset_schema = {}
     # Special asset_schema definitions
@@ -111,11 +123,19 @@ def get_schema_data():
         "display": _("Structure Condition"),
         "slug": "asset_condition",
     }
+    asset_schema["asset_condition_DRFT"] = {
+        "display": _("Structure Condition"),
+        "slug": "asset_condition",
+    }
     asset_schema["structure_type_BRDG"] = {
         "display": _("Structure Type"),
         "slug": "structure_type",
     }
     asset_schema["structure_type_CULV"] = {
+        "display": _("Structure Type"),
+        "slug": "structure_type",
+    }
+    asset_schema["structure_type_DRFT"] = {
         "display": _("Structure Type"),
         "slug": "structure_type",
     }
@@ -125,6 +145,10 @@ def get_schema_data():
     }
     asset_schema["material_CULV"] = {
         "display": _("Structure Material"),
+        "slug": "material",
+    }
+    asset_schema["material_DRFT"] = {
+        "display": _("Structure Type"),
         "slug": "material",
     }
 
@@ -164,12 +188,22 @@ def get_schema_data():
                 "slug": field_name,
                 "help_text": x.help_text,
             }
+    for x in drift_fields:
+        field_name = field_name_standardisation(
+            x.name, [], structures_common_yet_different_fields, "drift"
+        )
+        if not field_name in asset_schema:
+            asset_schema[field_name] = {
+                "display": x.verbose_name,
+                "slug": field_name,
+                "help_text": x.help_text,
+            }
 
     # Asset Type
     asset_schema["asset_type"].update({"options": Asset.ASSET_TYPE_CHOICES})
 
     # Schemas that are common to all asset types
-    # note that many road_code values will not have any matching Bridge or Culvert asset
+    # note that many road_code values will not have any matching Bridge, Culvert or Drift asset
     asset_schema["road_code"].update(
         {"options": list(Road.objects.all().distinct("road_code").values("road_code"))}
     )
@@ -221,7 +255,7 @@ def get_schema_data():
         {"options": list(ConnectionType.objects.all().values())}
     )
 
-    # Structure Specific Schema Values (Bridges & Culverts)
+    # Structure Specific Schema Values (Bridges, Culverts & Drifts)
     # Schemas that are common to both types
     asset_schema["structure_code"].update(
         {
@@ -231,6 +265,11 @@ def get_schema_data():
                 .values("structure_code")
                 .union(
                     Culvert.objects.all()
+                    .distinct("structure_code")
+                    .values("structure_code")
+                )
+                .union(
+                    Drift.objects.all()
                     .distinct("structure_code")
                     .values("structure_code")
                 )
@@ -268,6 +307,20 @@ def get_schema_data():
     asset_schema["material_CULV"].update(
         {
             "options": list(CulvertMaterialType.objects.all().values()),
+            "default_value": _("Select the Material"),
+        }
+    )
+
+    # Drift specific schema values
+    asset_schema["structure_type_DRFT"].update(
+        {
+            "options": list(DriftClass.objects.all().values()),
+            "default_value": _("Select the type"),
+        }
+    )
+    asset_schema["material_DRFT"].update(
+        {
+            "options": list(DriftMaterialType.objects.all().values()),
             "default_value": _("Select the Material"),
         }
     )

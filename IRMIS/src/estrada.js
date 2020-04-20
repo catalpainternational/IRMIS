@@ -49,9 +49,21 @@ window.addEventListener("load", () => {
                         // for filtering and for styling
                         geoJson.features.forEach((feature) => {
                             feature.properties.featureType = featureType;
-                            const idPrefix = ["bridge", "culvert"].includes(featureType)
-                                ? featureType === "culvert" ? "CULV-" : "BRDG-"
-                                : "";
+                            let idPrefix = "";
+                            switch (featureType) {
+                                case "bridge":
+                                    idPrefix = "BRDG-";
+                                    break;
+                                case "culvert":
+                                    idPrefix = "CULV-";
+                                    break;
+                                case "drift":
+                                    idPrefix = "DRFT-";
+                                    break;
+                                default:
+                                    idPrefix = "";
+                                    break;
+                            }
                             feature.properties.id = idPrefix + (Number(feature.properties.pk) || 0);
                         });
 
@@ -97,7 +109,7 @@ function hashCheck() {
     if (editHash !== null && !editBase) {
         if (planningBase) riot.unmount("planning_base", true);
         if (reportsBase) riot.unmount("reports_base", true);
-        if (editHash[1] === "BRDG" || editHash[1] === "CULV") {
+        if (editHash[1] === "BRDG" || editHash[1] === "CULV" || editHash[1] === "DRFT") {
             const globalId = editHash[1] + "-" + editHash[2];
             const structurePromise = getStructure(globalId);
             riot.mount("edit_base", { structurePromise: structurePromise, assetType: editHash[1], page: editHash[3] });

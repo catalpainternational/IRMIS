@@ -391,12 +391,12 @@ export const reportAssetsContent: { [name: string]: any } = {
         noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed Structure Class information for structures"),
         noReportData: (window as any).gettext("Sorry, data for structures is not available yet"),
         fixedFilter: {
-            reportassettype: ["BRDG", "CULV"],
+            reportassettype: ["BRDG", "CULV", "DRFT"],
             primaryattribute: ["asset_type"],
             secondaryattribute: {
                 asset_type: ["asset_class"],
             },
-            asset_type: ["BRDG", "CULV"],
+            asset_type: ["BRDG", "CULV", "DRFT"],
         },
         visibleFilters: {
             municipality: true,
@@ -416,12 +416,12 @@ export const reportAssetsContent: { [name: string]: any } = {
         noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed Structure Condition information for structures"),
         noReportData: (window as any).gettext("Sorry, data for structures is not available yet"),
         fixedFilter: {
-            reportassettype: ["BRDG", "CULV"],
+            reportassettype: ["BRDG", "CULV", "DRFT"],
             primaryattribute: ["asset_type"],
             secondaryattribute: {
                 asset_type: ["asset_condition"],
             },
-            asset_type: ["BRDG", "CULV"],
+            asset_type: ["BRDG", "CULV", "DRFT"],
         },
         visibleFilters: {
             municipality: true,

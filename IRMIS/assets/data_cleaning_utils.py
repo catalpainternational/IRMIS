@@ -9,7 +9,7 @@ import reversion
 
 from reversion.models import Version
 
-from assets.models import Bridge, Culvert, Road, RoadFeatureAttributes, Survey
+from assets.models import Bridge, Culvert, Drift, Road, RoadFeatureAttributes, Survey
 
 
 ## General purpose data cleansing functions
@@ -239,33 +239,50 @@ def refresh_roads():
 ## Structure related data cleansing functions
 #############################################
 def get_current_structure_codes():
-    return [
-        bc["structure_code"]
-        for bc in Bridge.objects.distinct("structure_code")
-        .exclude(structure_code="Unknown")
-        .values("structure_code")
-    ] + [
-        cc["structure_code"]
-        for cc in Culvert.objects.distinct("structure_code")
-        .exclude(structure_code="Unknown")
-        .values("structure_code")
-    ]
+    return (
+        [
+            bc["structure_code"]
+            for bc in Bridge.objects.distinct("structure_code")
+            .exclude(structure_code="Unknown")
+            .values("structure_code")
+        ]
+        + [
+            cc["structure_code"]
+            for cc in Culvert.objects.distinct("structure_code")
+            .exclude(structure_code="Unknown")
+            .values("structure_code")
+        ]
+        + [
+            dc["structure_code"]
+            for dc in Drift.objects.distinct("structure_code")
+            .exclude(structure_code="Unknown")
+            .values("structure_code")
+        ]
+    )
 
 
 def get_structure_by_structure_code(sc):
-    """ pull a bridge or culvert for a given structure code """
+    """ pull a bridge, culvert, or drift for a given structure code """
 
     hasBridge = Bridge.objects.filter(structure_code=sc).exists()
+    hasCulvert = Culvert.objects.filter(structure_code=sc).exists()
+    hasDrift = Drift.objects.filter(structure_code=sc).exists()
 
-    structure_object = (
-        Bridge.objects.get(structure_code=sc)
-        if hasBridge
-        else Culvert.objects.get(structure_code=sc)
-    )
+    if hasBridge:
+        structure_object = Bridge.objects.get(structure_code=sc)
+    elif hasCulvert:
+        structure_object = Culvert.objects.get(structure_code=sc)
+    else:
+        structure_object = Drift.objects.filter(structure_code=sc)
 
     structure = structure_object.__dict__
 
-    structure["prefix"] = "BRDG" if hasBridge else "CULV"
+    if hasBridge:
+        structure["prefix"] = "BRDG"
+    elif hasCulvert:
+        structure["prefix"] = "CULV"
+    else:
+        structure["prefix"] = "DRFT"
 
     return structure
 
@@ -366,6 +383,7 @@ STRUCTURE_SURVEY_VALUE_MAPPINGS = [
     ("length", "length", str_transform),
     ("width", "width", str_transform),
     ("height", "height", str_transform),  # Culvert only
+    ("thickness", "thickness", str_transform),  # Drift only
     ("material", "material", code_value_transform),
     ("structure_type", "structure_type", code_value_transform),
     ("protection_upstream", "protection_upstream", code_value_transform),
@@ -603,7 +621,7 @@ def create_programmatic_surveys_for_structure(management_command, structure):
     returns a count of the total number of surveys that were created """
     created = 0  # counter for surveys created for the supplied structure
 
-    # There's only going to be one structure supplied, either a Bridge or Culvert
+    # There's only going to be one structure supplied, either a Bridge, Culvert, or Drift
     # however we're still following the same pattern as applied to Roads
 
     survey_data = {
