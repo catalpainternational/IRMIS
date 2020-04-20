@@ -15,6 +15,19 @@
     </div>
 
     {% if contract_list.exists %}
+    <div class="contract-filters">
+        <h6>{% trans "Filters" %}</h6>
+        <div class="d-flex justify-content-between">
+            <div class="d-flex flex-wrap">
+                <select id="status_select2">
+                    {% for status in status_list %}
+                    <option value="{{ status.name }}">{{ status.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+
     <table id="contract-list-table" class="contracts-profile-table d-block table table-hover w-100">
         <thead>
             <tr>
