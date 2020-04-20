@@ -57,14 +57,22 @@ window.addEventListener("load", () => {
 
 function initializeSearchableTable(table, columnDefs, order, searchPlaceholder) {
     if (table.length) {
-        table.DataTable({
+        const dataTable = table.DataTable({
             dom: "<'row'<'col-12'f>><'row'<'col-sm-12'tr>><'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>", // https://datatables.net/reference/option/dom#Styling
             columnDefs: columnDefs,
             order: order,
         });
 
         const searchBox = document.querySelector(".dataTables_filter input[type='search']");
+        const statusFilter = document.getElementById("status_select2");
+
         searchBox.attributes.getNamedItem("placeholder").value = searchPlaceholder;
+
+        if (statusFilter) {
+            statusFilter.addEventListener("change", (e) => {
+                dataTable.columns(2).search(e.srcElement.value).draw();
+            });
+        }
     }
 }
 
