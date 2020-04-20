@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block contracts_profile %}
-<header>
+<header class="d-flex">
     <a class="caret-dark discard-link left image" data-back="{% url 'contract-company-list' %}"></a>
     {% if company.id is not None %}
     <h1>{% trans "Edit Company" %} — {{ company.name }}</h1>
