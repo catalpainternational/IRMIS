@@ -156,9 +156,7 @@ export const estradaTableColumns = [
         data: "linkLength",
         defaultContent: "",
         className: "text-right",
-        render: (data, type) => {
-            return (type === "display" && data) ? parseFloat(data).toFixed(2) : data;
-        },
+        render: (data, type) => numberTemplate(data, type, 2, ""),
     },
     {
         // data-column="8"
@@ -298,6 +296,7 @@ export const estradaTableColumns = [
         data: "population",
         defaultContent: "",
         visible: false,
+        render: (data, type) => numberTemplate(data, type, 0, ""),
     },
     {
         // data-column="26"
@@ -342,6 +341,7 @@ export const estradaTableColumns = [
         data: "constructionYear",
         defaultContent: "",
         visible: false,
+        render: (data, type) => numberTemplate(data, type, 0, ""),
     },
     {
         // data-column="32"
@@ -445,17 +445,16 @@ export const structuresTableColumns = [
     {
         title: EstradaBridge.getFieldName("length"),
         data: "length",
-        render: (n) => { return (n > 0) ? n : ""; },
         className: "text-right",
         defaultContent: "",
+        render: (data, type) => numberTemplate(data, type, 2, "N/A"),
     },
     {
         title: EstradaBridge.getFieldName("width"),
         data: "width",
-        render: (n) => { return (n > 0) ? n : ""; },
         className: "text-right",
         defaultContent: "",
-
+        render: (data, type) => numberTemplate(data, type, 2, "N/A"),
     },
     {
         title: EstradaCulvert.getFieldName("height"),
@@ -463,6 +462,7 @@ export const structuresTableColumns = [
         className: "text-right",
         defaultContent: "N/A",
         visible: false,
+        render: (data, type) => numberTemplate(data, type, 2, "N/A"),
     },
     {
         title: EstradaDrift.getFieldName("thickness"),
@@ -470,6 +470,7 @@ export const structuresTableColumns = [
         className: "text-right",
         defaultContent: "N/A",
         visible: false,
+        render: (data, type) => numberTemplate(data, type, 2, "N/A"),
     },
     {
         title: EstradaBridge.getFieldName("number_spans"),
@@ -477,6 +478,7 @@ export const structuresTableColumns = [
         className: "text-right",
         defaultContent: "N/A",
         visible: false,
+        render: (data, type) => numberTemplate(data, type, 0, "N/A"),
     },
     {
         title: EstradaBridge.getFieldName("span_length"),
@@ -484,6 +486,7 @@ export const structuresTableColumns = [
         className: "text-right",
         defaultContent: "N/A",
         visible: false,
+        render: (data, type) => numberTemplate(data, type, 2, "N/A"),
     },
     {
         title: EstradaCulvert.getFieldName("number_cells"),
@@ -491,6 +494,7 @@ export const structuresTableColumns = [
         className: "text-right",
         defaultContent: "N/A",
         visible: false,
+        render: (data, type) => numberTemplate(data, type, 0, "N/A"),
     },
     {
         title: EstradaBridge.getFieldName("protection_upstream"),
@@ -507,10 +511,10 @@ export const structuresTableColumns = [
     {
         title: EstradaBridge.getFieldName("construction_year"),
         data: "constructionYear",
-        render: (n) => { return (n > 0) ? n : ""; },
         className: "text-right",
         defaultContent: "",
         visible: false,
+        render: (data, type) => numberTemplate(data, type, 0, ""),
     },
     {
         title: window.gettext("Inventory Photos"),
@@ -565,6 +569,13 @@ function getStructureTypeName(structureType) {
     };
 
     return window.gettext(structureTypeToName[structureType] || structureType);
+}
+
+function numberTemplate(data, type, dp = 0, defaultContent = "") {
+    if (type === "display" && data) {
+        return data > 0 ? parseFloat(data).toFixed(dp) : defaultContent;
+    }
+    return data;
 }
 
 // function getStructureFieldData(field, structure) { return null; }
