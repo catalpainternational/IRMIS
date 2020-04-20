@@ -111,6 +111,11 @@ class ProjectListView(ListView):
         )
     )
 
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context["status_list"] = models.ProjectStatus.objects.all()
+        return context
+
 
 @method_decorator(login_required, name="dispatch")
 class ProjectCreateFormView(AddedFormsetMixin, CreateView):
