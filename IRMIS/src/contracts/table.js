@@ -65,6 +65,10 @@ function initializeProjectsListTable(table) {
     document.getElementById("status_select2").addEventListener("change", (e) => {
         dataTable.columns(2).search(e.srcElement.value).draw();
     });
+
+    document.getElementById("type_of_work_select2").addEventListener("change", (e) => {
+        dataTable.columns(4).search(e.srcElement.value).draw();
+    });
 }
 
 function initializeTendersListTable(table) {
