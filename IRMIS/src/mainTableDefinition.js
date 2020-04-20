@@ -447,14 +447,14 @@ export const structuresTableColumns = [
         data: "length",
         className: "text-right",
         defaultContent: "",
-        render: (data, type) => numberTemplate(data, type, 2, "N/A"),
+        render: (data, type) => numberTemplate(data, type, 2, ""),
     },
     {
         title: EstradaBridge.getFieldName("width"),
         data: "width",
         className: "text-right",
         defaultContent: "",
-        render: (data, type) => numberTemplate(data, type, 2, "N/A"),
+        render: (data, type) => numberTemplate(data, type, 2, ""),
     },
     {
         title: EstradaCulvert.getFieldName("height"),
