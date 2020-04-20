@@ -1429,7 +1429,8 @@ class CulvertQuerySet(models.QuerySet):
                 structure_protobuf,
                 asset_type,
                 regular_fields,
-                numeric_fields,
+                float_fields,
+                int_fields,
             )
 
         return structures_protobuf
@@ -1650,7 +1651,8 @@ class DriftQuerySet(models.QuerySet):
                 structure_protobuf,
                 asset_type,
                 regular_fields,
-                numeric_fields,
+                float_fields,
+                int_fields,
             )
 
         return structures_protobuf
