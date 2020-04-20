@@ -24,6 +24,12 @@
                     <option value="{{ status.name }}">{{ status.name }}</option>
                     {% endfor %}
                 </select>
+
+                <select id="type_of_work_select2">
+                    {% for type in type_of_work_list %}
+                    <option value="{{ type.name }}">{{ type.name }}</option>
+                    {% endfor %}
+                </select>
             </div>
         </div>
     </div>
