@@ -54,6 +54,7 @@
                 <th>{% trans "Status" %}</th>
                 <th></th> <!-- hidden project assets column -->
                 <th></th> <!-- hidden type of work column -->
+                <th></th> <!-- hidden project budgets column -->
             </tr>
         </thead>
         <tbody>
@@ -92,6 +93,7 @@
                     <div>{{ project.type_of_work }}</div>
                     {% endfor %}
                 </td>
+                <td>$ {{ tender.projects_total_budget }}</td>
             </tr>
             {% endfor %}
         </tbody>

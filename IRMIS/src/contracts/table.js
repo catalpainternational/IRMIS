@@ -76,8 +76,8 @@ function initializeProjectsListTable(table) {
 
     $.fn.dataTableExt.afnFiltering.push(
         function (oSettings, _aData, iDataIndex) {
-            let asset = oSettings.aoData[iDataIndex]._aData;
-            return valueRangeFilter(asset);
+            let row = oSettings.aoData[iDataIndex]._aData;
+            return valueRangeFilter(row, 5);
         }
     );
 }
@@ -90,12 +90,12 @@ function initializeTendersListTable(table) {
         order = [[1, 'asc']];
         columnDefs = [
             { orderable: false, targets: 0 },
-            { visible: false, targets: [-2, -1] }
+            { visible: false, targets: [-3, -2, -1] }
         ];
     } else {
         order = [[0, 'asc']];
         columnDefs = [
-            { visible: false, targets: [-2, -1] }
+            { visible: false, targets: [-3, -2, -1] }
         ];
     }
 
@@ -115,6 +115,17 @@ function initializeTendersListTable(table) {
     document.getElementById("type_of_work_select2").addEventListener("change", (e) => {
         dataTable.columns(6).search(e.srcElement.value).draw();
     });
+
+    document.getElementById("value_select").addEventListener("change", (e) => {
+        dataTable.draw();
+    });
+
+    $.fn.dataTableExt.afnFiltering.push(
+        function (oSettings, _aData, iDataIndex) {
+            let row = oSettings.aoData[iDataIndex]._aData;
+            return valueRangeFilter(row, 7);
+        }
+    );
 }
 
 function initializeContractsListTable(table) {
@@ -199,15 +210,15 @@ function initializePrintableTable(table, columnDefs) {
     }
 }
 
-let valueRangeFilter = (asset) => {
+let valueRangeFilter = (row, columnIdx) => {
     const valueFilter = document.getElementById("value_select").selectedOptions.item(0);
     const minValue = parseInt(valueFilter.dataset.min, 10);
     const maxValue = valueFilter.dataset.max ? parseInt(valueFilter.dataset.max, 10) : null;
 
-    let assetValue = asset[5].split(" ")[1]; // e.g. "$ 500.000" or "None"
+    let value = row[columnIdx].split(" ")[1]; // e.g. "$ 500.000" or "None"
 
-    assetValue = assetValue === "None" ? 0 : parseInt(assetValue, 10);
+    value = value === "None" ? 0 : parseInt(value, 10);
 
-    if (maxValue) return assetValue >= minValue && assetValue <= maxValue;
-    else return assetValue >= minValue;
+    if (maxValue) return value >= minValue && value <= maxValue;
+    else return value >= minValue;
 }
