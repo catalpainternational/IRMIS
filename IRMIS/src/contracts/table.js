@@ -69,6 +69,17 @@ function initializeProjectsListTable(table) {
     document.getElementById("type_of_work_select2").addEventListener("change", (e) => {
         dataTable.columns(4).search(e.srcElement.value).draw();
     });
+
+    document.getElementById("value_select").addEventListener("change", (e) => {
+        dataTable.draw();
+    });
+
+    $.fn.dataTableExt.afnFiltering.push(
+        function (oSettings, _aData, iDataIndex) {
+            let asset = oSettings.aoData[iDataIndex]._aData;
+            return valueRangeFilter(asset);
+        }
+    );
 }
 
 function initializeTendersListTable(table) {
@@ -186,4 +197,17 @@ function initializePrintableTable(table, columnDefs) {
             columnDefs: columnDefs,
         });
     }
+}
+
+let valueRangeFilter = (asset) => {
+    const valueFilter = document.getElementById("value_select").selectedOptions.item(0);
+    const minValue = parseInt(valueFilter.dataset.min, 10);
+    const maxValue = valueFilter.dataset.max ? parseInt(valueFilter.dataset.max, 10) : null;
+
+    let assetValue = asset[5].split(" ")[1]; // e.g. "$ 500.000" or "None"
+
+    assetValue = assetValue === "None" ? 0 : parseInt(assetValue, 10);
+
+    if (maxValue) return assetValue >= minValue && assetValue <= maxValue;
+    else return assetValue >= minValue;
 }
