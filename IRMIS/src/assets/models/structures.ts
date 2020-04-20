@@ -579,10 +579,6 @@ export class EstradaDrift extends Drift implements IAsset {
         return this.getNullableThickness();
     }
 
-    get numberCells() {
-        return this.getNullableNumberCells();
-    }
-
     get assetClass() {
         return choice_or_default(this.getAssetClass(), ASSET_CLASS_CHOICES);
     }
@@ -659,12 +655,6 @@ export class EstradaDrift extends Drift implements IAsset {
     public getNullableThickness() {
         const thickness = super.getThickness();
         return (thickness >= 0 || this.isSerialising) ? thickness : null;
-    }
-
-    /** A Null or None in the protobuf is indicated by a negative value */
-    public getNullableNumberCells() {
-        const numberCells = super.getNumberCells();
-        return (numberCells >= 0 || this.isSerialising) ? numberCells : null;
     }
 }
 

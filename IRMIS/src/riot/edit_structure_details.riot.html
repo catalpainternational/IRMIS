@@ -104,6 +104,24 @@
                     </div>
                 </div>
             </section>
+            <section>
+                <div class="form-group">
+                    <label>{ window.gettext("Number of cells") }</label>
+                    <small class="form-text text-muted">
+                        { window.gettext("Enter the number of cells in the structure") }
+                    </small>
+                    <input
+                        class="{ state.errors.structureCells ? 'danger' : null } { state.structureCells !== -1 && state.structureCells !== '' ? '' : 'inactive' } form-control"
+                        type="number" placeholder="2"
+                        value="{ state.structureCells !== -1 ? state.structureCells : '' }" min="0" max="99"
+                        oninput="{ checkNumberCells }">
+                    <div if="{ state.errors.structureCells }" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.structureCells }.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
         </template>
 
         <!-- Drift -specific fields -->
@@ -121,28 +139,6 @@
                     <div if="{ state.errors.thickness }" class="invalid-tooltip">
                         <ul>
                             <li>{ state.errors.thickness }.</li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
-        </template>
-
-        <!-- Culvert and Drift -specific fields -->
-        <template if="{ props.assetType === 'CULV' || props.assetType === 'DRFT' }">
-            <section>
-                <div class="form-group">
-                    <label>{ window.gettext("Number of cells") }</label>
-                    <small class="form-text text-muted">
-                        { window.gettext("Enter the number of cells in the structure") }
-                    </small>
-                    <input
-                        class="{ state.errors.structureCells ? 'danger' : null } { state.structureCells !== -1 && state.structureCells !== '' ? '' : 'inactive' } form-control"
-                        type="number" placeholder="2"
-                        value="{ state.structureCells !== -1 ? state.structureCells : '' }" min="0" max="99"
-                        oninput="{ checkNumberCells }">
-                    <div if="{ state.errors.structureCells }" class="invalid-tooltip">
-                        <ul>
-                            <li>{ state.errors.structureCells }.</li>
                         </ul>
                     </div>
                 </div>
@@ -225,17 +221,19 @@
                 state.length = props.structure.getLength();
                 state.width = props.structure.getWidth();
 
-                if (props.assetType === "BRDG") {
-                    state.riverName = props.structure.getRiverName();
-                    state.numberSpans = props.structure.getNumberSpans();
-                    state.spanLength = props.structure.getSpanLength();
-                } else {
-                    if (props.assetType === "CULV") {
+                switch (props.assetType) {
+                    case "BRDG":
+                        state.riverName = props.structure.getRiverName();
+                        state.numberSpans = props.structure.getNumberSpans();
+                        state.spanLength = props.structure.getSpanLength();
+                        break;
+                    case "CULV":
+                        state.numberCells = props.structure.getNumberCells();
                         state.height = props.structure.getHeight();
-                    } else {
+                        break;
+                    case "DRFT":
                         state.thickness = props.structure.getThickness();
-                    }
-                    state.numberCells = props.structure.getNumberCells();
+                        break;
                 }
             },
             save(e) {
