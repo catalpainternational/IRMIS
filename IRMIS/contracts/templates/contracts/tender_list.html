@@ -45,6 +45,7 @@
                 <th>{% trans "Project(s) name" %}</th>
                 <th>{% trans "Status" %}</th>
                 <th>Project Assets</th> <!-- hidden column -->
+                <th>Type of Work</th> <!-- hidden column -->
             </tr>
         </thead>
         <tbody>
@@ -76,6 +77,11 @@
                     {% for asset in project.assets.all %}
                     <div>{{ asset.asset_code }}</div>
                     {% endfor %}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for project in tender.projects.all %}
+                    <div>{{ project.type_of_work }}</div>
                     {% endfor %}
                 </td>
             </tr>

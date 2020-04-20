@@ -79,12 +79,12 @@ function initializeTendersListTable(table) {
         order = [[1, 'asc']];
         columnDefs = [
             { orderable: false, targets: 0 },
-            { visible: false, targets: -1 }
+            { visible: false, targets: [-2, -1] }
         ];
     } else {
         order = [[0, 'asc']];
         columnDefs = [
-            { visible: false, targets: -1 }
+            { visible: false, targets: [-2, -1] }
         ];
     }
 
@@ -99,6 +99,10 @@ function initializeTendersListTable(table) {
 
     document.getElementById("status_select2").addEventListener("change", (e) => {
         dataTable.columns(4).search(e.srcElement.value).draw();
+    });
+
+    document.getElementById("type_of_work_select2").addEventListener("change", (e) => {
+        dataTable.columns(6).search(e.srcElement.value).draw();
     });
 }
 
