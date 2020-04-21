@@ -221,8 +221,8 @@ function initializePrintableTable(table, columnDefs) {
     }
 }
 
-let valueRangeFilter = (row, columnIdx) => {
-    const valueFilter = document.getElementById("value_select").selectedOptions.item(0);
+let valueRangeFilter = (row, columnIdx, elementId) => {
+    const valueFilter = document.getElementById(elementId).selectedOptions.item(0);
     const minValue = valueFilter.dataset.min ? parseInt(valueFilter.dataset.min, 10) : null;
     const maxValue = valueFilter.dataset.max ? parseInt(valueFilter.dataset.max, 10) : null;
 
@@ -233,4 +233,17 @@ let valueRangeFilter = (row, columnIdx) => {
     if (minValue == null) return true;
     else if (maxValue == null) return value >= minValue;
     else return value >= minValue && value <= maxValue;
+}
+
+let textFilter = (row, columnIdx, elementId) => {
+    const selectedValues = document.getElementById(elementId).selectedOptions;
+    const columnValue = row[columnIdx];
+
+    if (!selectedValues.length) return true;
+
+    for (let value of selectedValues) {
+        if (columnValue === value.text) return true;
+    };
+
+    return false;
 }
