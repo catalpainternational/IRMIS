@@ -117,25 +117,37 @@ function initializeTendersListTable(table) {
         order: order,
     });
 
+    // Search box
     const searchBox = document.querySelector(".dataTables_filter input[type='search']");
     searchBox.attributes.getNamedItem("placeholder").value = window.gettext("Search by Asset Code or Tender Code");
 
-    document.getElementById("status_select2").addEventListener("change", (e) => {
-        dataTable.columns(4).search(e.srcElement.value).draw();
-    });
-
-    document.getElementById("type_of_work_select2").addEventListener("change", (e) => {
-        dataTable.columns(6).search(e.srcElement.value).draw();
-    });
-
-    document.getElementById("value_select").addEventListener("change", (e) => {
-        dataTable.draw();
-    });
-
+    // Budget value range filter
+    const valueSelectId = "value_select";
+    document.getElementById(valueSelectId).addEventListener("change", () => dataTable.draw());
     $.fn.dataTableExt.afnFiltering.push(
         function (oSettings, _aData, iDataIndex) {
             let row = oSettings.aoData[iDataIndex]._aData;
-            return valueRangeFilter(row, 7);
+            return valueRangeFilter(row, 7, valueSelectId);
+        }
+    );
+
+    // Status select2 filter
+    const statusSelectId = "status_select2";
+    document.dispatchEvent(new CustomEvent("prepare-select2", { detail: { dataTable: dataTable, id: statusSelectId, placeHolder: window.gettext("Tender status") } }));
+    $.fn.dataTableExt.afnFiltering.push(
+        function (oSettings, _aData, iDataIndex) {
+            let row = oSettings.aoData[iDataIndex]._aData;
+            return textFilter(row, 4, statusSelectId);
+        }
+    );
+
+    // Type of work select2 filter
+    const typeOfWorkSelectId = "type_of_work_select2";
+    document.dispatchEvent(new CustomEvent("prepare-select2", { detail: { dataTable: dataTable, id: typeOfWorkSelectId, placeHolder: window.gettext("Type of work") } }));
+    $.fn.dataTableExt.afnFiltering.push(
+        function (oSettings, _aData, iDataIndex) {
+            let row = oSettings.aoData[iDataIndex]._aData;
+            return multipleTextFilter(row, 6, typeOfWorkSelectId);
         }
     );
 }
