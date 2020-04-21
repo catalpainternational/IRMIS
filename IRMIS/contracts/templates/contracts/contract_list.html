@@ -79,7 +79,6 @@
                 <th>{% trans "Type of Works" %}</th>
                 <th>{% trans "Status" %}</th>
                 <th></th> <!-- hidden project assets column -->
-                <th></th> <!-- hidden type of work column -->
                 <th></th> <!-- hidden project budgets column -->
             </tr>
         </thead>
@@ -118,11 +117,6 @@
                     {% for asset in project.assets.all %}
                     <div>{{ asset.asset_code }}</div>
                     {% endfor %}
-                    {% endfor %}
-                </td>
-                <td>
-                    {% for project in contract.tender.projects.all %}
-                    <div>{{ project.type_of_work }}</div>
                     {% endfor %}
                 </td>
             </tr>
