@@ -175,10 +175,19 @@ form.contract-form > div:not(.dataTables_wrapper) {
     padding-bottom: 10px;
 }
 
+div#project-list-table_filter,
+div#tender-list-table_filter,
+div#contract-list-table_filter {
+    top: -133px;
+}
+
+div#company-list-table_filter {
+    top: -50px;
+}
+
 div.dataTables_wrapper div.dataTables_filter {
     position: absolute;
     right: 15px;
-    top: -50px;
 
     label {
         color: transparent;
@@ -190,5 +199,15 @@ div.dataTables_wrapper div.dataTables_filter {
         border-radius: 15px;
         height: 30px;
         width: 400px;
+    }
+}
+
+.contract-filters {
+    margin-bottom: 14px;
+    margin-top: 20px;
+
+    select, .select2 {
+        margin-bottom: 10px;
+        margin-right: 10px;
     }
 }
