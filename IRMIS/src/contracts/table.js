@@ -259,3 +259,25 @@ let textFilter = (row, columnIdx, elementId) => {
 
     return false;
 }
+
+let multipleTextFilter = (row, columnIdx, elementId) => {
+    const selectedValues = document.getElementById(elementId).selectedOptions;
+
+    if (!selectedValues.length) return true;
+
+    const stripedValues = row[columnIdx].split("<div>");
+    let columnValues = [];
+
+    for (let index = 1; index < stripedValues.length; index++) {
+        const value = stripedValues[index].replace(/<\/?[^>]+(>|$)/g, "").trim();
+        columnValues.push(value);
+    }
+
+    for (let selectedValue of selectedValues) {
+        for (let columnValue of columnValues) {
+            if (columnValue === selectedValue.text) return true;
+        };
+    };
+
+    return false;
+}
