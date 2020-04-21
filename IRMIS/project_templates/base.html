@@ -47,6 +47,10 @@
             window.canEditPlans = true;
             {% endif %}
 
+            {% if perms.contracts.view_contract_reports %}
+            window.canViewContractReports = true;
+            {% endif %}
+
             {% if perms.contracts.change_project or perms.contracts.delete_project %}
             window.canChangeProjects = true;
             {% endif %}

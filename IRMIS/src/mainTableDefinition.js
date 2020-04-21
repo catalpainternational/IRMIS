@@ -1,4 +1,4 @@
-import { EstradaBridge, EstradaCulvert } from "./assets/models/structures";
+import { EstradaBridge, EstradaCulvert, EstradaDrift } from "./assets/models/structures";
 import { EstradaRoad } from "./assets/models/road";
 import { currentFilter } from "./side_menu";
 
@@ -156,9 +156,7 @@ export const estradaTableColumns = [
         data: "linkLength",
         defaultContent: "",
         className: "text-right",
-        render: (data, type) => {
-            return (type === "display" && data) ? parseFloat(data).toFixed(2) : data;
-        },
+        render: (data, type) => numberTemplate(data, type, 2, ""),
     },
     {
         // data-column="8"
@@ -298,6 +296,7 @@ export const estradaTableColumns = [
         data: "population",
         defaultContent: "",
         visible: false,
+        render: (data, type) => numberTemplate(data, type, 0, ""),
     },
     {
         // data-column="26"
@@ -342,6 +341,7 @@ export const estradaTableColumns = [
         data: "constructionYear",
         defaultContent: "",
         visible: false,
+        render: (data, type) => numberTemplate(data, type, 0, ""),
     },
     {
         // data-column="32"
@@ -360,7 +360,7 @@ export const estradaTableColumns = [
 ];
 
 /** Defines the columns for the Structures table on the Estrada main page
- * In many cases Bridge and Culvert use the same field names and are interchangeable
+ * In many cases Bridge, Culvert and Drift use the same field names and are interchangeable
  *
  * For those that don't we'll use the simpler title
  */
@@ -427,7 +427,7 @@ export const structuresTableColumns = [
         visible: false,
     },
     {
-        // Bridges "Deck Material", Culverts "Material"
+        // Bridges "Deck Material", Culverts and Drifts "Material"
         // however we show both together
         // so we'll use the simpler title
         title: window.gettext("Material"),
@@ -435,7 +435,7 @@ export const structuresTableColumns = [
         defaultContent: "-",
     },
     {
-        // Bridges "Bridge Type", Culverts "Culvert Type"
+        // Bridges "Bridge Type", Culverts "Culvert Type", Drifts "Drift Type"
         // however we show both together
         // so we'll use the common title "Structure Type"
         title: window.gettext("Structure Type"),
@@ -445,17 +445,16 @@ export const structuresTableColumns = [
     {
         title: EstradaBridge.getFieldName("length"),
         data: "length",
-        render: (n) => { return (n > 0) ? n : ""; },
         className: "text-right",
         defaultContent: "",
+        render: (data, type) => numberTemplate(data, type, 2, ""),
     },
     {
         title: EstradaBridge.getFieldName("width"),
         data: "width",
-        render: (n) => { return (n > 0) ? n : ""; },
         className: "text-right",
         defaultContent: "",
-
+        render: (data, type) => numberTemplate(data, type, 2, ""),
     },
     {
         title: EstradaCulvert.getFieldName("height"),
@@ -463,6 +462,15 @@ export const structuresTableColumns = [
         className: "text-right",
         defaultContent: "N/A",
         visible: false,
+        render: (data, type) => numberTemplate(data, type, 2, "N/A"),
+    },
+    {
+        title: EstradaDrift.getFieldName("thickness"),
+        data: "thickness",
+        className: "text-right",
+        defaultContent: "N/A",
+        visible: false,
+        render: (data, type) => numberTemplate(data, type, 2, "N/A"),
     },
     {
         title: EstradaBridge.getFieldName("number_spans"),
@@ -470,6 +478,7 @@ export const structuresTableColumns = [
         className: "text-right",
         defaultContent: "N/A",
         visible: false,
+        render: (data, type) => numberTemplate(data, type, 0, "N/A"),
     },
     {
         title: EstradaBridge.getFieldName("span_length"),
@@ -477,6 +486,7 @@ export const structuresTableColumns = [
         className: "text-right",
         defaultContent: "N/A",
         visible: false,
+        render: (data, type) => numberTemplate(data, type, 2, "N/A"),
     },
     {
         title: EstradaCulvert.getFieldName("number_cells"),
@@ -484,6 +494,7 @@ export const structuresTableColumns = [
         className: "text-right",
         defaultContent: "N/A",
         visible: false,
+        render: (data, type) => numberTemplate(data, type, 0, "N/A"),
     },
     {
         title: EstradaBridge.getFieldName("protection_upstream"),
@@ -500,10 +511,10 @@ export const structuresTableColumns = [
     {
         title: EstradaBridge.getFieldName("construction_year"),
         data: "constructionYear",
-        render: (n) => { return (n > 0) ? n : ""; },
         className: "text-right",
         defaultContent: "",
         visible: false,
+        render: (data, type) => numberTemplate(data, type, 0, ""),
     },
     {
         title: window.gettext("Inventory Photos"),
@@ -553,10 +564,18 @@ function getStructureTypeName(structureType) {
         "ROAD": "Road",
         "BRDG": "Bridge",
         "CULV": "Culvert",
+        "DRFT": "Drift",
         "STRC": "Structure",
     };
 
     return window.gettext(structureTypeToName[structureType] || structureType);
+}
+
+function numberTemplate(data, type, dp = 0, defaultContent = "") {
+    if (type === "display" && data) {
+        return data > 0 ? parseFloat(data).toFixed(dp) : defaultContent;
+    }
+    return data;
 }
 
 // function getStructureFieldData(field, structure) { return null; }
@@ -571,6 +590,9 @@ function buttonSegmentsTemplate(attrib, asset, fallbackLabel) {
             break;
         case "CULV":
             getFieldName = EstradaCulvert.getFieldName;
+            break;
+        case "DRFT":
+            getFieldName = EstradaDrift.getFieldName;
             break;
         default:
             break;

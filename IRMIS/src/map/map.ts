@@ -126,7 +126,7 @@ export class Map {
 
             if (clickedFeature.properties.switchStyle) {
                 // This feature will be in the table
-                const assetType = ["bridge", "culvert"].includes(featureType) ? "STRC" : "ROAD";
+                const assetType = ["bridge", "culvert", "drift"].includes(featureType) ? "STRC" : "ROAD";
                 const eventName = assetType === "STRC"
                     ? "estrada.structureTable.rowSelected"
                     : "estrada.roadTable.rowSelected";

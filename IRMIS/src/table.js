@@ -352,7 +352,7 @@ function applyTableSelectionToMap(rowId) {
  * @return [{label: string, value: string}]
  */
 export function GetDataForMapPopup(id, featureType) {
-    const assetType = ["BRDG", "CULV", "bridge", "culvert"].includes(featureType) ? "STRC" : "ROAD";
+    const assetType = ["BRDG", "CULV", "DRFT", "bridge", "culvert", "drift"].includes(featureType) ? "STRC" : "ROAD";
     if (assetType !== currentFilter.assetType) {
         return [{ label: window.gettext("Asset Type"), value: featureType }];
     }

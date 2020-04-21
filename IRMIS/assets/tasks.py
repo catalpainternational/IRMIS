@@ -19,6 +19,7 @@ from reversion.models import Version
 from .models import (
     Bridge,
     Culvert,
+    Drift,
     CollatedGeoJsonFile,
     Road,
     RoadFeatureAttributes,
@@ -120,6 +121,8 @@ def import_shapefiles(management_command, shape_file_folder, asset="road"):
         asset_model = Bridge
     elif asset == "culvert":
         asset_model = Culvert
+    elif asset == "drift":
+        asset_model = Drift
 
     # delete appropriate exisiting DB objects and their revisions
     asset_model.objects.all().delete()
@@ -148,6 +151,10 @@ def import_shapefiles(management_command, shape_file_folder, asset="road"):
     elif asset == "culvert":
         database_srid = Culvert._meta.fields[1].srid
         # no sources for culverts...yet
+        sources = ()
+    elif asset == "drift":
+        database_srid = Drift._meta.fields[1].srid
+        # no sources for drifts...yet
         sources = ()
     else:
         management_command.stderr.write(
@@ -201,6 +208,8 @@ def import_shapefiles(management_command, shape_file_folder, asset="road"):
                 asset_obj = Bridge(geom=asset_geometry.wkt)
             elif asset == "culvert":
                 asset_obj = Culvert(geom=asset_geometry.wkt)
+            elif asset == "drift":
+                asset_obj = Drift(geom=asset_geometry.wkt)
 
             # populate the asset object from shapefile properties
             populate(asset_obj, feature)
@@ -262,6 +271,15 @@ def import_shapefiles(management_command, shape_file_folder, asset="road"):
         management_command.stdout.write(
             management_command.style.SUCCESS(
                 "imported %s culverts" % Culvert.objects.all().count()
+            )
+        )
+    elif asset == "drift":
+        set_unknown_structure_codes()
+        set_structure_municipalities(asset)
+        collate_geometries(asset)
+        management_command.stdout.write(
+            management_command.style.SUCCESS(
+                "imported %s drifts" % Drift.objects.all().count()
             )
         )
 
@@ -483,6 +501,8 @@ def collate_geometries(asset="all"):
         geometry_sets["bridge"] = Bridge.objects.all()
     if asset == "all" or asset == "culvert":
         geometry_sets["culvert"] = Culvert.objects.all()
+    if asset == "all" or asset == "drift":
+        geometry_sets["drift"] = Drift.objects.all()
 
     for key, geometry_set in geometry_sets.items():
         collated_geojson, created = CollatedGeoJsonFile.objects.get_or_create(key=key)
@@ -495,7 +515,7 @@ def collate_geometries(asset="all"):
         geometry_set.update(geojson_file_id=collated_geojson.id)
 
         # set asset_type field (defaults to 'road')
-        if key in ["bridge", "culvert"]:
+        if key in ["bridge", "culvert", "drift"]:
             collated_geojson.asset_type = key
 
 
@@ -537,6 +557,13 @@ def set_unknown_structure_codes():
     for index, culvert in enumerate(culverts):
         culvert.structure_code = "XC{:>03}".format(index + 1)
         culvert.save()
+
+    drifts = Drift.objects.filter(
+        Q(structure_code__isnull=True) | Q(structure_code__in=["X", "", "-", "Unknown"])
+    )
+    for index, drift in enumerate(drifts):
+        drift.structure_code = "XD{:>03}".format(index + 1)
+        drift.save()
 
 
 def set_road_municipalities():
@@ -580,6 +607,8 @@ def set_structure_municipalities(structure_type):
         structure_model = Bridge
     elif structure_type == "culvert":
         structure_model = Culvert
+    elif structure_type == "drift":
+        structure_model = Drift
 
     with connection.cursor() as cursor:
         # all the structures
