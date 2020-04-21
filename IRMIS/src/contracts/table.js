@@ -63,16 +63,6 @@ function initializeProjectsListTable(table) {
     const searchBox = document.querySelector(".dataTables_filter input[type='search']");
     searchBox.attributes.getNamedItem("placeholder").value = window.gettext("Search by Asset Code, Project Code or Project Name");
 
-    // Budget value range filter
-    const valueSelectId = "value_select";
-    document.getElementById(valueSelectId).addEventListener("change", () => dataTable.draw());
-    $.fn.dataTableExt.afnFiltering.push(
-        function (oSettings, _aData, iDataIndex) {
-            let row = oSettings.aoData[iDataIndex]._aData;
-            return valueRangeFilter(row, 5, valueSelectId);
-        }
-    );
-
     // Status select2 filter
     const statusSelectId = "status_select2";
     document.dispatchEvent(new CustomEvent("prepare-select2", { detail: { dataTable: dataTable, id: statusSelectId, placeHolder: window.gettext("Project status") } }));
@@ -90,6 +80,16 @@ function initializeProjectsListTable(table) {
         function (oSettings, _aData, iDataIndex) {
             let row = oSettings.aoData[iDataIndex]._aData;
             return textFilter(row, 4, typeOfWorkSelectId);
+        }
+    );
+
+    // Budget value range filter
+    const valueSelectId = "value_select";
+    document.getElementById(valueSelectId).addEventListener("change", () => dataTable.draw());
+    $.fn.dataTableExt.afnFiltering.push(
+        function (oSettings, _aData, iDataIndex) {
+            let row = oSettings.aoData[iDataIndex]._aData;
+            return valueRangeFilter(row, 5, valueSelectId);
         }
     );
 }
@@ -121,16 +121,6 @@ function initializeTendersListTable(table) {
     const searchBox = document.querySelector(".dataTables_filter input[type='search']");
     searchBox.attributes.getNamedItem("placeholder").value = window.gettext("Search by Asset Code or Tender Code");
 
-    // Budget value range filter
-    const valueSelectId = "value_select";
-    document.getElementById(valueSelectId).addEventListener("change", () => dataTable.draw());
-    $.fn.dataTableExt.afnFiltering.push(
-        function (oSettings, _aData, iDataIndex) {
-            let row = oSettings.aoData[iDataIndex]._aData;
-            return valueRangeFilter(row, 7, valueSelectId);
-        }
-    );
-
     // Status select2 filter
     const statusSelectId = "status_select2";
     document.dispatchEvent(new CustomEvent("prepare-select2", { detail: { dataTable: dataTable, id: statusSelectId, placeHolder: window.gettext("Tender status") } }));
@@ -148,6 +138,16 @@ function initializeTendersListTable(table) {
         function (oSettings, _aData, iDataIndex) {
             let row = oSettings.aoData[iDataIndex]._aData;
             return multipleTextFilter(row, 6, typeOfWorkSelectId);
+        }
+    );
+
+    // Budget value range filter
+    const valueSelectId = "value_select";
+    document.getElementById(valueSelectId).addEventListener("change", () => dataTable.draw());
+    $.fn.dataTableExt.afnFiltering.push(
+        function (oSettings, _aData, iDataIndex) {
+            let row = oSettings.aoData[iDataIndex]._aData;
+            return valueRangeFilter(row, 7, valueSelectId);
         }
     );
 }
