@@ -223,13 +223,14 @@ function initializePrintableTable(table, columnDefs) {
 
 let valueRangeFilter = (row, columnIdx) => {
     const valueFilter = document.getElementById("value_select").selectedOptions.item(0);
-    const minValue = parseInt(valueFilter.dataset.min, 10);
+    const minValue = valueFilter.dataset.min ? parseInt(valueFilter.dataset.min, 10) : null;
     const maxValue = valueFilter.dataset.max ? parseInt(valueFilter.dataset.max, 10) : null;
 
     let value = row[columnIdx].split(" ")[1]; // e.g. "$ 500.000" or "None"
 
     value = value === "None" ? 0 : parseInt(value, 10);
 
-    if (maxValue) return value >= minValue && value <= maxValue;
-    else return value >= minValue;
+    if (minValue == null) return true;
+    else if (maxValue == null) return value >= minValue;
+    else return value >= minValue && value <= maxValue;
 }
