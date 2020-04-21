@@ -1,5 +1,7 @@
 from django import template
 
+from assets.templatetags.assets import get_schema_data
+
 from ..models import (
     TypeOfWork,
     Program,
@@ -13,7 +15,10 @@ register = template.Library()
 
 @register.inclusion_tag("assets/contract_schema.html")
 def contract_schema_data():
-    return {"contract_schema": get_contract_schema()}
+    return {
+        "contract_schema": get_contract_schema(),
+        "asset_schema": get_schema_data(),
+    }
 
 
 def get_contract_schema():
