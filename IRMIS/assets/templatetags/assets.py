@@ -62,6 +62,131 @@ def field_name_standardisation(field_name, mtom_names, shared_names, type_suffix
     return field_name + "_" + type_suffix
 
 
+def simple_asset_list():
+    # All Assets in one, as simple Id, Code pair
+    asset_roads = list(
+        Road.objects.all()
+        .distinct("link_code")
+        .annotate(
+            asset_id=Concat(Value("ROAD-"), Cast("id", TextField())),
+            asset_code=ExpressionWrapper(F("link_code"), output_field=TextField()),
+        )
+        .values_list(
+            "asset_id",
+            "asset_code",
+        )
+    )
+    asset_bridges = list(Bridge.objects.all()
+        .distinct("structure_code")
+        .annotate(
+            asset_id=Concat(Value("BRDG-"), Cast("id", TextField())),
+            asset_code=ExpressionWrapper(F("structure_code"), output_field=TextField()),
+        )
+        .values_list(
+            "asset_id",
+            "asset_code",
+        )
+    )
+    asset_culverts = list(Culvert.objects.all()
+        .distinct("structure_code")
+        .annotate(
+            asset_id=Concat(Value("CULV-"), Cast("id", TextField())),
+            asset_code=ExpressionWrapper(F("structure_code"), output_field=TextField()),
+        )
+        .values_list(
+            "asset_id",
+            "asset_code",
+        )
+    )
+    asset_drifts = list(Drift.objects.all()
+        .distinct("structure_code")
+        .annotate(
+            asset_id=Concat(Value("DRFT-"), Cast("id", TextField())),
+            asset_code=ExpressionWrapper(F("structure_code"), output_field=TextField()),
+        )
+        .values_list(
+            "asset_id",
+            "asset_code",
+        )
+    )
+    return asset_roads + asset_bridges + asset_culverts + asset_drifts
+
+
+def asset_list():
+    # All Assets in one, with their relationship to the Road
+    asset_roads = list(
+        Road.objects.all()
+        .distinct("road_code")
+        .annotate(
+            asset_id=Concat(Value("ROAD-"), Cast("id", TextField())),
+            asset_code=ExpressionWrapper(F("road_code"), output_field=TextField()),
+            road_id=F("id"),
+            chainage_start=F("geom_start_chainage"),
+            chainage_end=F("geom_end_chainage"),
+        )
+        .values(
+            "asset_id",
+            "asset_code",
+            "road_id",
+            "road_code",
+            "chainage_start",
+            "chainage_end",
+        )
+    )
+    asset_bridges = list(Bridge.objects.all()
+        .distinct("structure_code")
+        .annotate(
+            asset_id=Concat(Value("BRDG-"), Cast("id", TextField())),
+            asset_code=ExpressionWrapper(F("structure_code"), output_field=TextField()),
+            chainage_start=F("chainage"),
+            chainage_end=F("chainage"),
+        )
+        .values(
+            "asset_id",
+            "asset_code",
+            "road_id",
+            "road_code",
+            "chainage_start",
+            "chainage_end",
+        )
+    )
+    asset_culverts = list(Culvert.objects.all()
+        .distinct("structure_code")
+        .annotate(
+            asset_id=Concat(Value("CULV-"), Cast("id", TextField())),
+            asset_code=ExpressionWrapper(F("structure_code"), output_field=TextField()),
+            chainage_start=F("chainage"),
+            chainage_end=F("chainage"),
+        )
+        .values(
+            "asset_id",
+            "asset_code",
+            "road_id",
+            "road_code",
+            "chainage_start",
+            "chainage_end",
+        )
+    )
+    asset_drifts = list(Drift.objects.all()
+        .distinct("structure_code")
+        .annotate(
+            asset_id=Concat(Value("DRFT-"), Cast("id", TextField())),
+            asset_code=ExpressionWrapper(F("structure_code"), output_field=TextField()),
+            chainage_start=F("chainage"),
+            chainage_end=F("chainage"),
+        )
+        .values(
+            "asset_id",
+            "asset_code",
+            "road_id",
+            "road_code",
+            "chainage_start",
+            "chainage_end",
+        )
+    )
+    return asset_roads + asset_bridges + asset_culverts + asset_drifts
+
+
 def get_schema_data():
     road_fields = list(
         filter(
@@ -213,81 +338,7 @@ def get_schema_data():
     )
 
     # All Assets in one
-    asset_roads = list(
-        Road.objects.all()
-        .distinct("road_code")
-        .annotate(
-            asset_id=Concat(Value("ROAD-"), Cast("id", TextField())),
-            asset_code=ExpressionWrapper(F("road_code"), output_field=TextField()),
-            road_id=F("id"),
-            chainage_start=F("geom_start_chainage"),
-            chainage_end=F("geom_end_chainage"),
-        )
-        .values(
-            "asset_id",
-            "asset_code",
-            "road_id",
-            "road_code",
-            "chainage_start",
-            "chainage_end",
-        )
-    )
-    asset_bridges = list(Bridge.objects.all()
-        .distinct("structure_code")
-        .annotate(
-            asset_id=Concat(Value("BRDG-"), Cast("id", TextField())),
-            asset_code=ExpressionWrapper(F("structure_code"), output_field=TextField()),
-            chainage_start=F("chainage"),
-            chainage_end=F("chainage"),
-        )
-        .values(
-            "asset_id",
-            "asset_code",
-            "road_id",
-            "road_code",
-            "chainage_start",
-            "chainage_end",
-        )
-    )
-    asset_culverts = list(Culvert.objects.all()
-        .distinct("structure_code")
-        .annotate(
-            asset_id=Concat(Value("CULV-"), Cast("id", TextField())),
-            asset_code=ExpressionWrapper(F("structure_code"), output_field=TextField()),
-            chainage_start=F("chainage"),
-            chainage_end=F("chainage"),
-        )
-        .values(
-            "asset_id",
-            "asset_code",
-            "road_id",
-            "road_code",
-            "chainage_start",
-            "chainage_end",
-        )
-    )
-    asset_drifts = list(Drift.objects.all()
-        .distinct("structure_code")
-        .annotate(
-            asset_id=Concat(Value("DRFT-"), Cast("id", TextField())),
-            asset_code=ExpressionWrapper(F("structure_code"), output_field=TextField()),
-            chainage_start=F("chainage"),
-            chainage_end=F("chainage"),
-        )
-        .values(
-            "asset_id",
-            "asset_code",
-            "road_id",
-            "road_code",
-            "chainage_start",
-            "chainage_end",
-        )
-    )
-    asset_schema["asset"].update(
-        {
-            "options": asset_roads + asset_bridges + asset_culverts + asset_drifts
-        }
-    )
+    # asset_schema["asset"].update({"options": asset_list()})
 
     # Schemas that have the same values for all asset types
     # Asset Class - AKA structure_class

@@ -2,23 +2,45 @@ import "select2/dist/js/select2.full.min.js";
 import $ from "jquery";
 
 const contractSelects = {
-    id_projects: {
-        style: {
+    "#id_projects": {
+        options: {
             width: "100%",
             containerCssClass: "form-control contracts-select2",
             dropdownCssClass: "contracts-dropdown-select2",
         },
         on: toggleMultipleSelect2,
         off: toggleMultipleSelect2,
+    },
+    ".form-control.asset-code": {
+        options: {
+            width: "100%",
+            tags: true,
+            containerCssClass: "form-control form-control-lg contracts-select2 asset-code",
+            dropdownCssClass: "contracts-dropdown-select2",
+        },
+   
     }
 };
 
 window.addEventListener("load", () => {
+    // Convert class selectors to actual Ids
     Object.keys(contractSelects).forEach((selectKey) => {
-        const tagId = `#${selectKey}`;
-        $(tagId).select2(contractSelects[selectKey].style);
-        $(tagId).on('select2:select', contractSelects[selectKey].on);
-        $(tagId).on('select2:unselect', contractSelects[selectKey].off);
+        if (selectKey.startsWith(".")) {
+            const elements = $(selectKey);
+            elements.each((ix, element) => {
+                const id = `#${element.id}`;
+                const definition = JSON.parse(JSON.stringify(contractSelects[selectKey]));
+                contractSelects[id] = definition;
+            });
+        }
+    })
+
+    Object.keys(contractSelects).forEach((selectKey) => {
+        if (selectKey.startsWith("#")) {
+            $(selectKey).select2(contractSelects[selectKey].options);
+            $(selectKey).on('select2:select', contractSelects[selectKey].on);
+            $(selectKey).on('select2:unselect', contractSelects[selectKey].off);
+        }
     });
 });
 

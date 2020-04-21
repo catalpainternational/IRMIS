@@ -277,6 +277,11 @@
     border: 1px solid $green;
 }
 
+.select2-selection--single.asset-code {
+    height: calc(1.5em + 0.75rem + 2px);
+    font-size: inherit;
+}
+
 .filter-dropdown-select2 {
     @extend %select2-dropdown-shared;
     background-color: $darker-gray;

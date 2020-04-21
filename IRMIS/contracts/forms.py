@@ -1,6 +1,9 @@
-from django.forms import ModelForm, ModelMultipleChoiceField
+from django.forms import ModelForm, ModelChoiceField, ModelMultipleChoiceField, Select
 from django.forms import modelformset_factory, inlineformset_factory
 from django.utils.translation import ugettext_lazy as _
+
+from assets.templatetags.assets import simple_asset_list
+
 from . import models
 
 
@@ -80,9 +83,13 @@ class ProjectConstructionScheduleForm(ModelForm):
 
 
 class ProjectAssetForm(ModelForm):
+    asset_code = ModelChoiceField(widget=Select, queryset=None, help_text=_("Select project's asset"))
+    asset_code.choices = simple_asset_list
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.label_suffix = ""
+
         self.fields["asset_code"].widget.attrs.update(
             {"class": "asset-code form-control form-control-lg", "placeholder": "A01-1"}
         )
