@@ -130,7 +130,9 @@ urlpatterns = [
         name="protobuf_structure_surveys",
     ),
     path(
-        "contractreports/", protobuf_contract_reports, name="protobuf_contract_reports"
+        "contractreports/<slug:report_type>",
+        protobuf_contract_reports,
+        name="protobuf_contract_reports",
     ),
     path("reports/", protobuf_reports, name="protobuf_reports"),
     path("remote/<slug:slug>.iqy", ExcelDataSourceIqy.as_view()),

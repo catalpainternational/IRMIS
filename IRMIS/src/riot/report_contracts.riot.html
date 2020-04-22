@@ -209,7 +209,7 @@
 
             if (tableName === "typeOfWorkYear" || tableName === "assetClassYear") {
                 let currentYear = new Date().getFullYear();
-                
+
                 for (var year=0; year < 5; year++) {
                     let yearColumn = JSON.parse(JSON.stringify(reportContractsTableColumns.year));
                     yearColumn.title = currentYear - year + "";
@@ -369,50 +369,47 @@
 
                 const reportId = parseInt(e.currentTarget.dataset.id, 10);
 
-                generateReport().then(() => {
-                    this.state.reportData = {
-                        dateCreated: currentDateTime(),
-                        formattedFilters: [{
-                            key: "assetClass",
-                            title: "Asset Class",
-                            values: ["National"],
-                        }],
-                        total: 450,
-                    };
-                    switch (reportId) {
-                        case 1:
-                            this.state.reportData["program"] = [];
-                            break;
-                        case 2:
-                            this.state.reportData["contractCode"] = [];
-                            break;
-                        case 3:
-                            this.state.reportData["assetClassTypeOfWork"] = [];
-                            this.state.reportData["typeOfWorkYear"] = [];
-                            this.state.reportData["assetClassYear"] = [];
-                            break;
-                        case 4:
-                            this.state.reportData["numberEmployees"] = [];
-                            this.state.reportData["wages"] = [];
-                            this.state.reportData["workedDays"] = [];
-                            break;
-                        case 5:
-                            this.state.reportData["numberEmployees"] = [];
-                            this.state.reportData["wages"] = [];
-                            this.state.reportData["workedDays"] = [];
-                            break;
-                        default:
-                            break;
-                    };
-                    this.props.showFeedback();
-                    this.state.noReport = false;
-                }).catch(err => {
-                    this.props.showFeedback(true);
-                    this.state.noReport = true;
-                }).finally((r) => {
-                    $('#loading').modal('hide');
-                    this.update();
-                });
+                generateReport()
+                    .then((reportData) => {
+                        this.state.reportData = {
+                            dateCreated: currentDateTime(),
+                            formattedFilters: [],
+                            total: reportData.summary.contracts,
+                        };
+                        switch (reportId) {
+                            case 1:
+                                this.state.reportData["program"] = [];
+                                break;
+                            case 2:
+                                this.state.reportData["contractCode"] = [];
+                                break;
+                            case 3:
+                                this.state.reportData["assetClassTypeOfWork"] = [];
+                                this.state.reportData["typeOfWorkYear"] = [];
+                                this.state.reportData["assetClassYear"] = [];
+                                break;
+                            case 4:
+                                this.state.reportData["numberEmployees"] = [];
+                                this.state.reportData["wages"] = [];
+                                this.state.reportData["workedDays"] = [];
+                                break;
+                            case 5:
+                                this.state.reportData["numberEmployees"] = [];
+                                this.state.reportData["wages"] = [];
+                                this.state.reportData["workedDays"] = [];
+                                break;
+                            default:
+                                break;
+                        };
+                        this.props.showFeedback();
+                        this.state.noReport = false;
+                    }).catch(err => {
+                        this.props.showFeedback(true);
+                        this.state.noReport = true;
+                    }).finally((r) => {
+                        $('#loading').modal('hide');
+                        this.update();
+                    });
             },
         }
 

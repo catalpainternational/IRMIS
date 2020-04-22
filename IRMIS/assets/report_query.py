@@ -949,6 +949,11 @@ class ContractReport:
 
         return rows
 
+    def compile_summary_stats(self, rows):
+        """ Takes the rows returned by the aggregate query and returns a 'summary' dict for conversion to JSON """
+        summary = {"contracts": float(rows[0]["total_length"])}
+        return summary
+
 
 def dictfetchall(cursor):
     "Return all rows from a cursor as a dict"
