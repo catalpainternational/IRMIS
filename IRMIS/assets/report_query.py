@@ -707,7 +707,6 @@ class ContractReport:
         self.report_type = report_type
         self.filters = filters
         self.filter_cases = []
-        self.reportSQL = ""
 
         # These build up the main body of the report
         self.report_clauses = {
@@ -836,7 +835,7 @@ class ContractReport:
                 "    dlp_start_date,\n"
                 "    (dlp_start_date + defect_liability_days) as dlp_end_date\n"
                 "FROM contracts_core\n"
-                "GROUP BY contract_id, contract_code, program_name, physical_progress, dlp_start_date, defect_liability_days;\n"
+                "GROUP BY contract_id, contract_code, program_name, physical_progress, dlp_start_date, defect_liability_days\n"
             ),
             "financial_physical_progress_summary": (
                 "SELECT\n"
@@ -867,7 +866,7 @@ class ContractReport:
                 "    JOIN contracts_program as prg on (prj.program_id = prg.id)\n"
                 "    GROUP BY prg.id\n"
                 ") as prg_corps on (prg_corps.name = contracts_core.program_name)\n"
-                "GROUP BY program_name, program_status, corp_cnt;\n"
+                "GROUP BY program_name, program_status, corp_cnt\n"
             ),
             "length_completed_work": (
                 "SELECT\n"
@@ -879,7 +878,7 @@ class ContractReport:
                 "    SUM(total_assets_length) as total_assets_length\n"
                 "FROM contracts_core\n"
                 "WHERE status = 'Completed'\n"
-                "GROUP BY type_of_work, year;\n"
+                "GROUP BY type_of_work, year\n"
             ),
             "social_safeguards": (
                 "SELECT contract_id,\n"
@@ -909,22 +908,29 @@ class ContractReport:
                 "    AVG(average_gross_wage) as average_gross_wage,\n"
                 "    AVG(average_net_wage) as average_net_wage\n"
                 "FROM contracts_socialsafeguarddata\n"
-                "GROUP BY Contract_id, year, quarter, month;\n"
+                "GROUP BY Contract_id, year, quarter, month\n"
+            ),
+            "get_all": ("SELECT *\n" "FROM final_results;\n"),
+            "get_aggregate": (
+                "SELECT COUNT(*) as total_length\n" "FROM final_results;"
             ),
         }
 
     def build_query_body(self):
+        self.reportSQL = ""
         if self.report_type is not "social_safeguards":
             self.reportSQL = (
                 "WITH contracts_core AS (\n"
                 + self.report_clauses["contracts_core"]
-                + ") "
+                + "), "
             )
-        self.reportSQL += "\n" + self.report_clauses[self.report_type]
+        self.reportSQL += (
+            "\n final_results AS ( %s )" % self.report_clauses[self.report_type]
+        )
 
     def execute_main_query(self):
-        if not self.reportSQL:
-            self.build_query_body()
+        self.build_query_body()
+        self.reportSQL += "\n%s" % self.report_clauses["get_all"]
 
         with connection.cursor() as cursor:
             cursor.execute(self.reportSQL, self.filter_cases)
@@ -934,11 +940,8 @@ class ContractReport:
 
     def execute_aggregate_query(self):
         """ Aggregate the rows by attribute and value returning total length """
-        if not self.reportSQL:
-            self.build_query_body()
-
-        self.reportSQL += " " + self.report_clauses["get_aggregate_select"]
-        self.reportSQL += " " + self.report_clauses["get_aggregate_ordering"] + ";"
+        self.build_query_body()
+        self.reportSQL += "\n%s" % self.report_clauses["get_aggregate"]
 
         with connection.cursor() as cursor:
             cursor.execute(self.reportSQL, self.filter_cases)
