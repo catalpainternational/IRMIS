@@ -113,7 +113,7 @@ class ProjectAssetForm(ModelForm):
                     "class": "asset-code form-control form-control-lg",
                     "placeholder": "A01-1",
                 },
-                choices=simple_asset_list(),
+                choices=tuple([(u"", "")] + simple_asset_list())
             ),
         }
 

@@ -15,6 +15,8 @@ const contractSelects = {
         options: {
             width: "100%",
             tags: true,
+            placeholder: "Select asset ...",
+            allowClear: true,
             containerCssClass: "form-control form-control-lg contracts-select2 asset-code",
             dropdownCssClass: "contracts-dropdown-select2",
         },

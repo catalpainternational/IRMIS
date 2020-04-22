@@ -169,8 +169,18 @@ class ProjectAsset(models.Model):
         if self.asset_id == None or len(self.asset_id.strip()) == 0:
             return None
 
+        road = self.get_road()
+        if road != None:
+            return road.road_code
+
         codes = list(filter(lambda x: x[0] == self.asset_id, simple_asset_list()))
         return codes[0][1] if len(codes) == 1 else self.asset_id
+
+    def get_road(self):
+        if self.asset_id.startswith("ROAD-"):
+            road_id = int(self.asset_id.replace("ROAD-", ""))
+            return Road.objects.get(pk=road_id)
+        return None
 
     def clean(self):
         # Clean the asset_id
@@ -192,8 +202,7 @@ class ProjectAsset(models.Model):
                     }
                 )
 
-            road_id = int(self.asset_id.replace("ROAD-", ""))
-            road = Road.objects.get(pk=road_id)
+            road = self.get_road()
             if road != None:
                 road_links = get_roads_by_road_code(road.road_code)
 
