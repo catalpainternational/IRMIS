@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 
 from assets.data_cleaning_utils import (
+    clean_link_codes,
     delete_redundant_surveys,
     get_current_road_codes,
     refresh_roads,
@@ -39,6 +40,7 @@ class Command(BaseCommand):
                     "Refreshing road links before refreshing road surveys"
                 )
             )
+            clean_link_codes()
             roads_updated = refresh_roads()
             self.stdout.write(
                 self.style.SUCCESS("~~~ Updated %s Road Links ~~~ " % roads_updated)

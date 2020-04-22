@@ -45,6 +45,25 @@ def int_try_parse(value):
     return int(value)
 
 
+def get_first_road_link_for_chainage(rc, chainage):
+    """ for a given road code and chainage this returns the first matching relevant road link
+
+    This assumes that all the supplied road links are for the same road code,
+    and that they are in the correct order """
+    roads = get_roads_by_road_code(rc)
+
+    road_link = next(
+        (
+            r
+            for r in roads
+            if r.geom_start_chainage <= chainage
+            and r.geom_end_chainage > chainage
+        ),
+        None,
+    )
+    return road_link
+
+
 ## Road related data cleansing functions
 ########################################
 ROAD_CODE_FORCE_REFRESH = ["A03", "AL003"]
@@ -108,6 +127,40 @@ def get_roads_by_road_code(rc):
 def get_attributes_by_road_ids(road_ids):
     """ pull all of the attributes from the original shapefile import for these road ids """
     return RoadFeatureAttributes.objects.filter(road_id__in=road_ids)
+
+
+def clean_link_codes():
+    # all link_codes that are empty strings - reset to None
+    # all single road_code roads with an empty link_code, copy the road_code to the link_code
+    bad_link_roads = Road.objects.filter(link_code__exact="")
+    for bad_link_road in bad_link_roads:
+        with reversion.create_revision():
+            bad_link_road.link_code = None
+            bad_link_road.save()
+            reversion.set_comment(
+                "Road Link Code was an empty string, reset it to None"
+            )
+
+    road_codes = [
+        rc["road_code"]
+        for rc in Road.objects.distinct("road_code")
+        .filter(link_code__isnull=True)
+        .exclude(road_code="Unknown")
+        .values("road_code")
+    ]
+
+    for rc in road_codes:
+        null_link_roads = get_roads_by_road_code(rc)
+        if len(null_link_roads) == 1:
+            for null_link_road in null_link_roads:
+                # the link_code should be null, this is just me being paranoid
+                if null_link_road.link_code == None:
+                    with reversion.create_revision():
+                        null_link_road.link_code = null_link_road.road_code
+                        null_link_road.save()
+                        reversion.set_comment(
+                            "Road Link Code was None, reset it to match the Road Code"
+                        )
 
 
 def update_road_geometry_data(
@@ -692,20 +745,12 @@ def update_non_programmatic_surveys_by_road_code(
     returns the number of surveys updated(includes those created) """
     roads = get_roads_by_road_code(rc)
 
-    road_survey = next(
-        (
-            r
-            for r in roads
-            if r.geom_start_chainage <= survey.chainage_start
-            and r.geom_end_chainage > survey.chainage_start
-        ),
-        None,
-    )
+    road_survey = get_first_road_link_for_chainage(rc, survey.chainage_start)
     if not road_survey:
         if management_command:
             management_command.stderr.write(
                 management_command.style.ERROR(
-                    "Error: User entered survey Id:%s for road '%s' has problems"
+                    "Error: User entered survey Id:%s for road '%s' is outside the road's chainage"
                     % (survey.id, rc)
                 )
             )

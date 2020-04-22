@@ -5,6 +5,7 @@ import os.path
 from os import path
 
 from assets.data_cleaning_utils import (
+    clean_link_codes,
     create_programmatic_survey_for_traffic_csv,
     delete_programmatic_surveys_for_traffic_surveys_by_road_code,
     get_current_road_codes,
@@ -60,6 +61,7 @@ class Command(BaseCommand):
                     "Refreshing road links before importing traffic surveys"
                 )
             )
+            clean_link_codes()
             roads_updated = refresh_roads()
             self.stdout.write(
                 self.style.SUCCESS("~~~ Updated %s Road Links ~~~ " % roads_updated)
