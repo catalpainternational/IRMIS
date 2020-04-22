@@ -10,6 +10,7 @@ from .views import (
     protobuf_structure_audit,
     protobuf_structure_surveys,
     protobuf_structures,
+    protobuf_contract_reports,
     protobuf_reports,
     protobuf_road,
     protobuf_road_audit,
@@ -127,6 +128,9 @@ urlpatterns = [
         "protobuf_structure_surveys/<slug:pk>/<slug:survey_attribute>/",
         protobuf_structure_surveys,
         name="protobuf_structure_surveys",
+    ),
+    path(
+        "contractreports/", protobuf_contract_reports, name="protobuf_contract_reports"
     ),
     path("reports/", protobuf_reports, name="protobuf_reports"),
     path("remote/<slug:slug>.iqy", ExcelDataSourceIqy.as_view()),

@@ -2122,3 +2122,48 @@ class BreakpointRelationshipsReport(TemplateView):
             survey_params=self.request.GET.getlist("survey_param"),
         )
         return context
+
+
+@login_required
+def protobuf_contract_reports(request):
+    """ returns a protobuf object with a contract report determined by the filter conditions supplied """
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+    if request.method != "GET":
+        raise MethodNotAllowed(request.method)
+
+    # get/initialise the Filters
+    primary_attributes = request.GET.getlist("primaryattribute", [])
+
+    # Ensure a minimum set of filters have been provided
+    if len(primary_attributes) == 0:
+        return HttpResponseBadRequest(
+            "primaryattribute must contain at least one reportable attribute"
+        )
+
+    report_protobuf = report_pb2.Report()
+
+    # Initialise the Report
+    asset_report = ReportQuery(final_filters)
+    final_lengths = asset_report.compile_summary_stats(
+        asset_report.execute_aggregate_query()
+    )
+
+    report_protobuf.filter = json.dumps(final_filters)
+    report_protobuf.lengths = json.dumps(final_lengths)
+
+    if asset_id or asset_code:
+        report_contracts = asset_report.execute_main_query()
+        if len(report_contracts):
+            for report_contract in report_contracts:
+                report_attribute = report_pb2.Attribute()
+                report_attribute.asset_id = report_contract["asset_id"]
+                report_attribute.asset_code = report_contract["asset_code"]
+                report_attribute.primary_attribute = report_contract["attribute"]
+                report_attribute.survey_id = report_contract["survey_id"]
+
+                report_protobuf.attributes.append(report_attribute)
+
+    return HttpResponse(
+        report_protobuf.SerializeToString(), content_type="application/octet-stream"
+    )
