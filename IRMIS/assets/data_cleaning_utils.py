@@ -56,8 +56,7 @@ def get_first_road_link_for_chainage(rc, chainage):
         (
             r
             for r in roads
-            if r.geom_start_chainage <= chainage
-            and r.geom_end_chainage > chainage
+            if r.geom_start_chainage <= chainage and r.geom_end_chainage > chainage
         ),
         None,
     )
