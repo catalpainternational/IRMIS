@@ -1,4 +1,4 @@
-from django.forms import ModelForm, ModelChoiceField, ModelMultipleChoiceField, Select
+from django.forms import ModelForm, ModelMultipleChoiceField, Select
 from django.forms import modelformset_factory, inlineformset_factory
 from django.utils.translation import ugettext_lazy as _
 
