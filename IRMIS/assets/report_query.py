@@ -703,14 +703,15 @@ class ReportQuery:
 
 
 class ContractReport:
-    def __init__(self, filters):
+    def __init__(self, report_type, filters):
+        self.report_type = report_type
         self.filters = filters
         self.filter_cases = []
+        self.reportSQL = ""
 
         # These build up the main body of the report
         self.report_clauses = {
             "contracts_core": (
-                "-- Core Contracts Report Query\n"
                 "SELECT\n"
                 "    con.id as contract_id,\n"
                 "    con.contract_code as contract_code,\n"
@@ -761,7 +762,6 @@ class ContractReport:
                 "JOIN contracts_program as prg on (prj.program_id = prg.id)\n"
                 "LEFT JOIN contracts_typeofwork as ptow on (ptow.id = prj.type_of_work_id)\n"
                 "LEFT JOIN contracts_fundingsource as pfs on (pfs.id = prj.funding_source_id)\n"
-                "-- Project Asset Information (Asset Class, Lengths, counts)\n"
                 "LEFT JOIN (\n"
                 "    SELECT pa.project_id,\n"
                 "        COUNT(pa.id) as total_assets_cnt,\n"
@@ -776,7 +776,6 @@ class ContractReport:
                 "    JOIN assets_road as r on (r.road_code = pa.asset_code)\n"
                 "    GROUP BY project_id, asset_class\n"
                 ") as pas on (pas.project_id = prj.id)\n"
-                "-- Inspections (tells progress & if/when DLP started)\n"
                 "LEFT JOIN (\n"
                 "    SELECT inspections.contract_id,\n"
                 "        progress,\n"
@@ -796,7 +795,6 @@ class ContractReport:
                 "    ) as dlpStart on (dlpStart.contract_id = inspections.contract_id)\n"
                 "    WHERE date = maxDate\n"
                 ") as insp on (insp.contract_id = con.id)\n"
-                "-- Values (ie. Contract Budgets) info (amendments noted, if existing)\n"
                 "LEFT JOIN (\n"
                 "    SELECT bdg.contract_id,\n"
                 "        bdg.year,\n"
@@ -809,7 +807,6 @@ class ContractReport:
                 "    FROM contracts_contractbudget as bdg\n"
                 "    LEFT JOIN contracts_contractamendment as amnd on (bdg.contract_id = amnd.contract_id and bdg.year = amnd.year)\n"
                 ") as val on (val.contract_id = con.id)\n"
-                "-- Payment info (Year, Amnt, Sources, Destinations)\n"
                 "LEFT JOIN (\n"
                 "    SELECT\n"
                 "        contract_id,\n"
@@ -820,7 +817,6 @@ class ContractReport:
                 ") as pay on (pay.contract_id = con.id AND val.year = pay.year)\n"
             ),
             "financial_physical_progress_details": (
-                "-- Financial and physical progress details report\n"
                 "SELECT\n"
                 "    contract_id,\n"
                 "    contract_code,\n"
@@ -843,7 +839,6 @@ class ContractReport:
                 "GROUP BY contract_id, contract_code, program_name, physical_progress, dlp_start_date, defect_liability_days;\n"
             ),
             "financial_physical_progress_summary": (
-                "-- Financial and physical progress summary report\n"
                 "SELECT\n"
                 "    program_name,\n"
                 "    STRING_AGG(DISTINCT funding_source, ', ') as funding_sources,\n"
@@ -875,7 +870,6 @@ class ContractReport:
                 "GROUP BY program_name, program_status, corp_cnt;\n"
             ),
             "length_completed_work": (
-                "-- Length Completed work by type of work breakdown\n"
                 "SELECT\n"
                 "    type_of_work,\n"
                 "    year,\n"
@@ -887,8 +881,7 @@ class ContractReport:
                 "WHERE status = 'Completed'\n"
                 "GROUP BY type_of_work, year;\n"
             ),
-            "social_safegurads": (
-                "-- Social Safeguards (breakdown by gender, age & disabilities)\n"
+            "social_safeguards": (
                 "SELECT contract_id,\n"
                 "    year,\n"
                 "    month,\n"
@@ -920,17 +913,18 @@ class ContractReport:
             ),
         }
 
-    def build_query_body(self, report_type):
-        if report_type is not "social_safeguards":
+    def build_query_body(self):
+        if self.report_type is not "social_safeguards":
             self.reportSQL = (
                 "WITH contracts_core AS (\n"
                 + self.report_clauses["contracts_core"]
-                + ")"
+                + ") "
             )
-        self.reportSQL = "\n" + self.report_clauses[report_type]
+        self.reportSQL += "\n" + self.report_clauses[self.report_type]
 
     def execute_main_query(self):
-        self.build_query_body(True)
+        if not self.reportSQL:
+            self.build_query_body()
 
         with connection.cursor() as cursor:
             cursor.execute(self.reportSQL, self.filter_cases)
@@ -940,7 +934,9 @@ class ContractReport:
 
     def execute_aggregate_query(self):
         """ Aggregate the rows by attribute and value returning total length """
-        self.build_query_body(False)
+        if not self.reportSQL:
+            self.build_query_body()
+
         self.reportSQL += " " + self.report_clauses["get_aggregate_select"]
         self.reportSQL += " " + self.report_clauses["get_aggregate_ordering"] + ";"
 
