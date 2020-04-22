@@ -190,7 +190,7 @@
     <script>
         import "select2/dist/js/select2.full.min.js";
         import $ from "jquery";
-
+        import {getContractReport} from "../reportManager";
         import { maxDate, currentDate, currentDateTime } from "../assets/reportUtilities";
         import {
             reportContractsTableIds,
@@ -369,7 +369,7 @@
 
                 const reportId = parseInt(e.currentTarget.dataset.id, 10);
 
-                generateReport()
+                getContractReport()
                     .then((reportData) => {
                         this.state.reportData = {
                             dateCreated: currentDateTime(),
@@ -411,17 +411,6 @@
                         this.update();
                     });
             },
-        }
-
-        // mocked report generation api functions
-        function generateReport() {
-            return later(500, null);
-        }
-        function later(delay, value) {
-            return new Promise(resolve => setTimeout(resolve, delay, value));
-        }
-        function fail_later(delay, error) {
-            return new Promise((resolve, reject) => setTimeout(reject, delay, error));
         }
     </script>
 </report_assets>
