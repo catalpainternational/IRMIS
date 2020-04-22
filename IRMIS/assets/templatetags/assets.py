@@ -1,6 +1,6 @@
 from django import template
 from django.db.models import ExpressionWrapper, F, TextField, Value
-from django.db.models.functions import Cast, Concat
+from django.db.models.functions import Cast, Coalesce, Concat
 from django.utils.translation import ugettext_lazy as _
 
 from basemap.models import Municipality
@@ -66,38 +66,36 @@ def simple_asset_list():
     # All Assets in one, as simple Id, Code pair
     asset_roads = list(
         Road.objects.all()
-        .distinct("link_code")
-        .annotate(
-            asset_id=Concat(Value("ROAD-"), Cast("id", TextField())),
-            asset_code=ExpressionWrapper(F("link_code"), output_field=TextField()),
-        )
+        .annotate(asset_code=Coalesce("link_code", "road_code"))
+        .distinct("asset_code")
+        .annotate(asset_id=Concat(Value("ROAD-"), Cast("id", TextField())))
         .values_list("asset_id", "asset_code",)
     )
     asset_bridges = list(
         Bridge.objects.all()
-        .distinct("structure_code")
         .annotate(
-            asset_id=Concat(Value("BRDG-"), Cast("id", TextField())),
-            asset_code=ExpressionWrapper(F("structure_code"), output_field=TextField()),
+            asset_code=ExpressionWrapper(F("structure_code"), output_field=TextField())
         )
+        .distinct("asset_code")
+        .annotate(asset_id=Concat(Value("BRDG-"), Cast("id", TextField())))
         .values_list("asset_id", "asset_code",)
     )
     asset_culverts = list(
         Culvert.objects.all()
-        .distinct("structure_code")
         .annotate(
-            asset_id=Concat(Value("CULV-"), Cast("id", TextField())),
-            asset_code=ExpressionWrapper(F("structure_code"), output_field=TextField()),
+            asset_code=ExpressionWrapper(F("structure_code"), output_field=TextField())
         )
+        .distinct("asset_code")
+        .annotate(asset_id=Concat(Value("CULV-"), Cast("id", TextField())))
         .values_list("asset_id", "asset_code",)
     )
     asset_drifts = list(
         Drift.objects.all()
-        .distinct("structure_code")
         .annotate(
-            asset_id=Concat(Value("DRFT-"), Cast("id", TextField())),
-            asset_code=ExpressionWrapper(F("structure_code"), output_field=TextField()),
+            asset_code=ExpressionWrapper(F("structure_code"), output_field=TextField())
         )
+        .distinct("asset_code")
+        .annotate(asset_id=Concat(Value("DRFT-"), Cast("id", TextField())))
         .values_list("asset_id", "asset_code",)
     )
     return asset_roads + asset_bridges + asset_culverts + asset_drifts

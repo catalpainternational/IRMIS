@@ -1,14 +1,24 @@
-from django.db import models
-from django.core import validators
 from django.contrib.postgres.fields import DateRangeField, JSONField
-from django.db.models import Q, Sum, Count
-from django.utils.translation import ugettext_lazy as _
-from django.urls import reverse
+from django.core import validators
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
+from django.db.models import Q, Sum, Count, OuterRef, Subquery
+from django.urls import reverse
+from django.utils.translation import ugettext_lazy as _
+
+from assets.templatetags.assets import simple_asset_list
+
 import json
 import datetime
-from django.db.models import OuterRef, Subquery
+
+
+def no_spaces(value):
+    if " " in value:
+        raise ValidationError(
+            _("%(value)s should not contain spaces"), params={"value": value}
+        )
+
 
 # Project
 class Project(models.Model):
@@ -131,8 +141,15 @@ class ProjectAsset(models.Model):
     project = models.ForeignKey(
         Project, on_delete=models.CASCADE, related_name="assets"
     )
-    asset_code = models.CharField(
-        max_length=128, verbose_name=_("Assets"), help_text=_("Select project's asset"),
+    # Global ID for an asset the project links to (ex. ROAD-322, BRDG-42)
+    asset_id = models.CharField(
+        verbose_name=_("Asset Id"),
+        validators=[no_spaces],
+        blank=True,
+        null=True,
+        db_index=True,
+        max_length=15,
+        help_text=_("Select project's asset"),
     )
     asset_start_chainage = models.IntegerField(
         verbose_name=_("Start Chainage"),
@@ -144,11 +161,19 @@ class ProjectAsset(models.Model):
         verbose_name=_("End Chainage"), blank=True, null=True, help_text=_("In meters"),
     )
 
+    @property
+    def asset_code(self):
+        if self.asset_id == None or len(self.asset_id.strip()) == 0:
+            return None
+
+        codes = list(filter(lambda x: x[0] == self.asset_id, simple_asset_list()))
+        return codes[0][1] if len(codes) == 1 else self.asset_id
+
     def __str__(self):
-        if self.asset_end_chainage:
-            return "{id}: {code} @ {project} ({start} - {end})".format(
+        if self.asset_id.startswith("ROAD"):
+            return "{id}: {asset_code} @ {project} ({start} - {end})".format(
                 id=self.id,
-                code=self.asset_code,
+                asset_code=self.asset_code,
                 project=self.project_id,
                 start="{0:0.3f}".format(
                     (self.asset_start_chainage or 0) / 1000
@@ -158,8 +183,8 @@ class ProjectAsset(models.Model):
                 ),
             )
         else:
-            return "{id}: {code} @ {project}".format(
-                id=self.id, code=self.asset_code, project=self.project_id
+            return "{id}: {asset_code} @ {project}".format(
+                id=self.id, asset_code=self.asset_code, project=self.project_id
             )
 
 

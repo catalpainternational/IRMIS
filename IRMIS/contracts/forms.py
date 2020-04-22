@@ -103,12 +103,12 @@ class ProjectAssetForm(ModelForm):
     class Meta:
         model = models.ProjectAsset
         fields = [
-            "asset_code",
+            "asset_id",
             "asset_start_chainage",
             "asset_end_chainage",
         ]
         widgets = {
-            "asset_code": Select(
+            "asset_id": Select(
                 attrs={
                     "class": "asset-code form-control form-control-lg",
                     "placeholder": "A01-1",
