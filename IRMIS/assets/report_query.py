@@ -912,7 +912,7 @@ class ContractReport:
             ),
             "get_all": ("SELECT *\n" "FROM final_results;\n"),
             "get_aggregate": (
-                "SELECT COUNT(*) as total_length\n" "FROM final_results;"
+                "SELECT COUNT(*) as total_records\n" "FROM final_results;"
             ),
         }
 
@@ -939,7 +939,7 @@ class ContractReport:
         return rows
 
     def execute_aggregate_query(self):
-        """ Aggregate the rows by attribute and value returning total length """
+        """ Aggregate the rows by attribute and value returning total records """
         self.build_query_body()
         self.reportSQL += "\n%s" % self.report_clauses["get_aggregate"]
 
@@ -951,7 +951,7 @@ class ContractReport:
 
     def compile_summary_stats(self, rows):
         """ Takes the rows returned by the aggregate query and returns a 'summary' dict for conversion to JSON """
-        summary = {"contracts": float(rows[0]["total_length"])}
+        summary = {"total_records": float(rows[0]["total_records"])}
         return summary
 
 
