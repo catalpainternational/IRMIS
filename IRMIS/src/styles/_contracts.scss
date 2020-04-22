@@ -178,7 +178,7 @@ form.contract-form > div:not(.dataTables_wrapper) {
 div#project-list-table_filter,
 div#tender-list-table_filter,
 div#contract-list-table_filter {
-    top: -133px;
+    top: -144px;
 }
 
 div#company-list-table_filter {
@@ -204,11 +204,17 @@ div.dataTables_wrapper div.dataTables_filter {
 }
 
 .contract-filters {
+    border-bottom: 1px solid $light-gray;
     margin-bottom: 14px;
     margin-top: 20px;
 
     select, .select2 {
         margin-bottom: 10px;
         margin-right: 10px;
+    }
+
+    select#value_select {
+        height: 31px;
+        width: 225px;
     }
 }

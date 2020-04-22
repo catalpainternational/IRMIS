@@ -17,9 +17,9 @@ document.addEventListener("prepare-select2", (data) => {
     const placeHolder = data.detail.placeHolder;
 
     $(select2Element).select2({
-        width: "225px",
-        containerCssClass: "contracts-select2",
-        dropdownCssClass: "contracts-dropdown-select2",
+        width: "unset",
+        containerCssClass: "contract-criteria-select2",
+        dropdownCssClass: "contract-criteria-dropdown-select2",
         placeholder: placeHolder,
     });
     $(select2Element).on('select2:select', (e) => searchDataTable(dataTable, e));
