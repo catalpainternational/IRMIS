@@ -50,6 +50,7 @@ admin.site.register(models.Tender)
 
 admin.site.register(models.ContractDocumentType)
 admin.site.register(models.Company)
+admin.site.register(models.CompanyCategory)
 
 admin.site.register(models.Contract, ContractAdmin)
 admin.site.register(models.ContractAmendment)
