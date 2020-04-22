@@ -513,6 +513,7 @@ class CompanyForm(ModelForm):
             {"class": "form-control", "placeholder": "maria@construction.tl"}
         )
         self.fields["woman_led"].widget.attrs.update({"class": "form-control"})
+        self.fields["category"].widget.attrs.update({"class": "form-control"})
 
     class Meta:
         model = models.Company
@@ -529,6 +530,7 @@ class CompanyForm(ModelForm):
             "rep_phone",
             "rep_email",
             "woman_led",
+            "category",
         ]
 
 
