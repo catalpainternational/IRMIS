@@ -60,8 +60,14 @@ This entire sequence must be performed to completion before users are allowed to
   C. `./manage.py collate_geometries <optional: "all", "road", "bridge", "culvert" or "drift">`
     - you have edited roads, bridges, culverts, drifts, so re-collate
 
+### Additional Step - this is automatically performed by the survey commands below
+  D. `./manage.py set_unknown_link_codes`
+    - Fixes roads with bad link codes, and tries to set as many `None` link codes to the road's road code if there are no clashes.
+
+    Note: this is not performed by the `survey` commands below if their `--no-road-refresh` option is specified
+
 4. `./manage.py make_road_surveys <optional: --no-road-refresh>`
-  - Refresh the calculated Road record geometry data (unless you specify --no-road-refresh)
+  - Refresh the calculated Road record geometry data and clean the link codes (unless you specify --no-road-refresh)
   - Then from those Road records recreate all of the 'programmatic' Surveys for Roads, and
   - Refresh all user entered Surveys for Roads
 
@@ -70,7 +76,7 @@ This entire sequence must be performed to completion before users are allowed to
   Note: This management command is SLOW.  It has to work road_code by road_code so it runs a LOT of queries.
 
 5. `./manage.py import_traffic_surveys ../../path/to/the/traffic/survey/csv <optional: --no-road-refresh>`
-  - Refresh the calculated Road record geometry data (unless you specify --no-road-refresh)
+  - Refresh the calculated Road record geometry data and clean the link codes (unless you specify --no-road-refresh)
   - Then recreate the programmatic traffic surveys from the csv file
 
   Note: Refreshing the programmatic traffic Surveys relies on completeness of the Road record geometry data.  Therefore it is recommended to not use the `--no-road-refresh` option unless you've literally just run `make_road_surveys` or `import_traffic_surveys` immediately before.
