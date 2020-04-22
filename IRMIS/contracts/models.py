@@ -1,5 +1,6 @@
 from django.contrib.postgres.fields import DateRangeField, JSONField
 from django.core import validators
+from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -7,6 +8,8 @@ from django.db.models import Q, Sum, Count, OuterRef, Subquery
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
+from assets.data_cleaning_utils import get_roads_by_road_code
+from assets.models import Road
 from assets.templatetags.assets import simple_asset_list
 
 import json
@@ -168,6 +171,53 @@ class ProjectAsset(models.Model):
 
         codes = list(filter(lambda x: x[0] == self.asset_id, simple_asset_list()))
         return codes[0][1] if len(codes) == 1 else self.asset_id
+
+    def clean(self):
+        # Clean the asset_id
+        if self.asset_id.startswith("ROAD-"):
+            if self.asset_start_chainage == None:
+                raise ValidationError(
+                    {
+                        "asset_start_chainage": _(
+                            "Start Chainage must be specified for roads"
+                        )
+                    }
+                )
+            if self.asset_end_chainage == None:
+                raise ValidationError(
+                    {
+                        "asset_end_chainage": _(
+                            "End Chainage must be specified for roads"
+                        )
+                    }
+                )
+
+            road_id = int(self.asset_id.replace("ROAD-", ""))
+            road = Road.objects.get(pk=road_id)
+            if road != None:
+                road_links = get_roads_by_road_code(road.road_code)
+
+                # to be replaced by call to updated functionality from data_cleaning_utils (coming soon in another :pr:)
+                road_link = next(
+                    (
+                        r
+                        for r in road_links
+                        if r.geom_start_chainage <= self.asset_start_chainage
+                        and r.geom_end_chainage > self.asset_start_chainage
+                    ),
+                    None,
+                )
+                if not road_link:
+                    raise ValidationError(
+                        {
+                            "asset_start_chainage": _(
+                                "Start Chainage is too large for this road"
+                            )
+                        }
+                    )
+
+                # 'correct' the asset_id to point to the first matching road link
+                self.asset_id = "ROAD-" + str(road_link.id)
 
     def __str__(self):
         if self.asset_id.startswith("ROAD"):
