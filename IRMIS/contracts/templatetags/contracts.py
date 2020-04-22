@@ -13,7 +13,7 @@ register = template.Library()
 
 @register.inclusion_tag("assets/contract_schema.html")
 def contract_schema_data():
-    return { "contract_schema": get_contract_schema() }
+    return {"contract_schema": get_contract_schema()}
 
 
 def get_contract_schema():

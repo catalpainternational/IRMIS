@@ -71,43 +71,34 @@ def simple_asset_list():
             asset_id=Concat(Value("ROAD-"), Cast("id", TextField())),
             asset_code=ExpressionWrapper(F("link_code"), output_field=TextField()),
         )
-        .values_list(
-            "asset_id",
-            "asset_code",
-        )
+        .values_list("asset_id", "asset_code",)
     )
-    asset_bridges = list(Bridge.objects.all()
+    asset_bridges = list(
+        Bridge.objects.all()
         .distinct("structure_code")
         .annotate(
             asset_id=Concat(Value("BRDG-"), Cast("id", TextField())),
             asset_code=ExpressionWrapper(F("structure_code"), output_field=TextField()),
         )
-        .values_list(
-            "asset_id",
-            "asset_code",
-        )
+        .values_list("asset_id", "asset_code",)
     )
-    asset_culverts = list(Culvert.objects.all()
+    asset_culverts = list(
+        Culvert.objects.all()
         .distinct("structure_code")
         .annotate(
             asset_id=Concat(Value("CULV-"), Cast("id", TextField())),
             asset_code=ExpressionWrapper(F("structure_code"), output_field=TextField()),
         )
-        .values_list(
-            "asset_id",
-            "asset_code",
-        )
+        .values_list("asset_id", "asset_code",)
     )
-    asset_drifts = list(Drift.objects.all()
+    asset_drifts = list(
+        Drift.objects.all()
         .distinct("structure_code")
         .annotate(
             asset_id=Concat(Value("DRFT-"), Cast("id", TextField())),
             asset_code=ExpressionWrapper(F("structure_code"), output_field=TextField()),
         )
-        .values_list(
-            "asset_id",
-            "asset_code",
-        )
+        .values_list("asset_id", "asset_code",)
     )
     return asset_roads + asset_bridges + asset_culverts + asset_drifts
 
@@ -133,7 +124,8 @@ def asset_list():
             "chainage_end",
         )
     )
-    asset_bridges = list(Bridge.objects.all()
+    asset_bridges = list(
+        Bridge.objects.all()
         .distinct("structure_code")
         .annotate(
             asset_id=Concat(Value("BRDG-"), Cast("id", TextField())),
@@ -150,7 +142,8 @@ def asset_list():
             "chainage_end",
         )
     )
-    asset_culverts = list(Culvert.objects.all()
+    asset_culverts = list(
+        Culvert.objects.all()
         .distinct("structure_code")
         .annotate(
             asset_id=Concat(Value("CULV-"), Cast("id", TextField())),
@@ -167,7 +160,8 @@ def asset_list():
             "chainage_end",
         )
     )
-    asset_drifts = list(Drift.objects.all()
+    asset_drifts = list(
+        Drift.objects.all()
         .distinct("structure_code")
         .annotate(
             asset_id=Concat(Value("DRFT-"), Cast("id", TextField())),
