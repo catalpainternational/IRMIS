@@ -99,6 +99,9 @@ class ProjectAssetForm(ModelForm):
                 "placeholder": "3000",
             }
         )
+        self.fields["asset_id"].widget.choices = tuple(
+            [(u"", "")] + simple_asset_list(self.instance.asset_id)
+        )
 
     class Meta:
         model = models.ProjectAsset
@@ -112,8 +115,7 @@ class ProjectAssetForm(ModelForm):
                 attrs={
                     "class": "asset-code form-control form-control-lg",
                     "placeholder": "A01-1",
-                },
-                choices=tuple([(u"", "")] + simple_asset_list())
+                }
             ),
         }
 

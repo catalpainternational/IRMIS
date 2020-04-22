@@ -62,8 +62,8 @@ def field_name_standardisation(field_name, mtom_names, shared_names, type_suffix
     return field_name + "_" + type_suffix
 
 
-def simple_asset_list():
-    # All Assets in one, as simple Id, Code pair
+def simple_asset_list(selected_asset_id=None):
+    """ All Assets in one, as simple Id, Code pairs """
     asset_roads = list(
         Road.objects.all()
         .annotate(asset_code=Coalesce("link_code", "road_code"))
@@ -71,6 +71,19 @@ def simple_asset_list():
         .annotate(asset_id=Concat(Value("ROAD-"), Cast("id", TextField())))
         .values_list("asset_id", "asset_code",)
     )
+
+    if selected_asset_id != None and selected_asset_id.startswith("ROAD-"):
+        # Reset the Id for the matching road_code to match what's 'selected'
+        road_id = int(selected_asset_id.replace("ROAD-", ""))
+        road = Road.objects.get(pk=road_id)
+        if road != None:
+            asset_roads[:] = [
+                (selected_asset_id, asset_road[1])
+                if asset_road[1] == road.road_code
+                else asset_road
+                for asset_road in asset_roads
+            ]
+
     asset_bridges = list(
         Bridge.objects.all()
         .annotate(
@@ -80,6 +93,7 @@ def simple_asset_list():
         .annotate(asset_id=Concat(Value("BRDG-"), Cast("id", TextField())))
         .values_list("asset_id", "asset_code",)
     )
+
     asset_culverts = list(
         Culvert.objects.all()
         .annotate(
@@ -89,6 +103,7 @@ def simple_asset_list():
         .annotate(asset_id=Concat(Value("CULV-"), Cast("id", TextField())))
         .values_list("asset_id", "asset_code",)
     )
+
     asset_drifts = list(
         Drift.objects.all()
         .annotate(
@@ -98,6 +113,7 @@ def simple_asset_list():
         .annotate(asset_id=Concat(Value("DRFT-"), Cast("id", TextField())))
         .values_list("asset_id", "asset_code",)
     )
+
     return asset_roads + asset_bridges + asset_culverts + asset_drifts
 
 

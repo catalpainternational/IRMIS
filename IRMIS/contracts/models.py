@@ -8,7 +8,7 @@ from django.db.models import Q, Sum, Count, OuterRef, Subquery
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
-from assets.data_cleaning_utils import get_roads_by_road_code
+from assets.data_cleaning_utils import get_first_road_link_for_chainage
 from assets.models import Road
 from assets.templatetags.assets import simple_asset_list
 
@@ -173,7 +173,9 @@ class ProjectAsset(models.Model):
         if road != None:
             return road.road_code
 
-        codes = list(filter(lambda x: x[0] == self.asset_id, simple_asset_list()))
+        codes = list(
+            filter(lambda x: x[0] == self.asset_id, simple_asset_list(self.asset_id))
+        )
         return codes[0][1] if len(codes) == 1 else self.asset_id
 
     def get_road(self):
@@ -204,17 +206,8 @@ class ProjectAsset(models.Model):
 
             road = self.get_road()
             if road != None:
-                road_links = get_roads_by_road_code(road.road_code)
-
-                # to be replaced by call to updated functionality from data_cleaning_utils (coming soon in another :pr:)
-                road_link = next(
-                    (
-                        r
-                        for r in road_links
-                        if r.geom_start_chainage <= self.asset_start_chainage
-                        and r.geom_end_chainage > self.asset_start_chainage
-                    ),
-                    None,
+                road_link = get_first_road_link_for_chainage(
+                    road.road_code, self.asset_start_chainage
                 )
                 if not road_link:
                     raise ValidationError(
