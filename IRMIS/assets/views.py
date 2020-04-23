@@ -2134,9 +2134,17 @@ def protobuf_contract_reports(request, report_type=None):
     if not report_type:
         return HttpResponse(status=400)
 
+    report_types = {
+        "1": "financial_physical_progress_details",
+        "2": "financial_physical_progress_summary",
+        "3": "length_completed_work",
+        "4": "social_safeguards",
+        "5": "???",
+    }
+
     try:
         # Initialise the Contract Report
-        asset_report = ContractReport(report_type, [])
+        asset_report = ContractReport(report_types[report_type], [])
         # Build out Contract Report data to return
         report_data = {
             "filters": [],

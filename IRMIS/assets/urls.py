@@ -56,6 +56,11 @@ urlpatterns = [
     path("photo_delete", photo_delete, name="photo_delete"),
     # Report URLs
     path("reports/", protobuf_reports, name="protobuf_reports"),
+    path(
+        "contractreports/<slug:report_type>",
+        protobuf_contract_reports,
+        name="protobuf_contract_reports",
+    ),
     # Roads URLs
     path("road_chunks", road_chunks_set, name="road_chunks"),
     path("road_update", road_update, name="road_update"),
@@ -129,12 +134,6 @@ urlpatterns = [
         protobuf_structure_surveys,
         name="protobuf_structure_surveys",
     ),
-    path(
-        "contractreports/<slug:report_type>",
-        protobuf_contract_reports,
-        name="protobuf_contract_reports",
-    ),
-    path("reports/", protobuf_reports, name="protobuf_reports"),
     path("remote/<slug:slug>.iqy", ExcelDataSourceIqy.as_view()),
     path(
         "remote/survey.html", ExcelDataSource.as_view(), name="surveyexceldatasource",
