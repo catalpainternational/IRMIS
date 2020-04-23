@@ -32,3 +32,24 @@ export function getReports(filters: { [name: string]: any }) {
             return makeEstradaNetworkSurveyReport(Report.deserializeBinary(uintArray));
         });
 }
+
+/** getContractReports
+ *
+ * Retrieves contract report data from the server
+ */
+export function getContractReports(reportType: string, filters: { [name: string]: [] }) {
+    const filterParams = ConfigAPI.objectToQueryString(filters);
+    const reportUrl = `${ConfigAPI.requestContractReportUrl}/${reportType}${filterParams}`;
+
+    const request = ConfigAPI.requestInit();
+
+    return fetch(reportUrl, request)
+        .then((metadataResponse) => {
+            if (metadataResponse.ok) {
+                return metadataResponse.json();
+            } else {
+                // Handle all fetch level errors
+                return undefined;
+            }
+        });
+}

@@ -683,11 +683,7 @@ class ReportQuery:
         return rows
 
     def compile_summary_stats(self, rows):
-        """ Takes the rows returned by the aggregate query and returns a 'lengths' dict for conversion to JSON
-
-        Note: While the report query can report on multiple asset types in one go,
-        and this aggregation could easily be changed to support it,
-        it will not be changed because of the changes required in the client."""
+        """ Takes the rows returned by the aggregate query and returns a 'lengths' dict for conversion to JSON """
         lengths = {}
 
         for aggregate_row in rows:
@@ -704,6 +700,274 @@ class ReportQuery:
             lengths[attribute_type][attribute_value]["value"] += attribute_total
 
         return lengths
+
+
+class ContractReport:
+    def __init__(self, report_type, filters):
+        self.report_type = report_type
+        self.filters = filters
+        self.filter_cases = []
+
+        # These build up the main body of the report
+        self.report_clauses = {
+            "contracts_core": (
+                "SELECT\n"
+                "    con.id as contract_id,\n"
+                "    con.contract_code as contract_code,\n"
+                "    con.start_date,\n"
+                "    con.end_date,\n"
+                "    con.defect_liability_days,\n"
+                "    con_status.name as status,\n"
+                "    contractor_corp.name as contractor,\n"
+                "    subcontractor_corp.name as subcontractor,\n"
+                "    prg.name as program_name,\n"
+                "    prj.name as project_name,\n"
+                "    ptow.name as type_of_work,\n"
+                "    pfs.name as funding_source,\n"
+                "    pas.total_assets_cnt,\n"
+                "    pas.total_assets_length,\n"
+                "    pas.nat_length,\n"
+                "    pas.mun_length,\n"
+                "    pas.rur_length,\n"
+                "    pas.nat_cnt,\n"
+                "    pas.mun_cnt,\n"
+                "    pas.rur_cnt,\n"
+                "    val.year,\n"
+                "    val.original as orig_value,\n"
+                "    val.amended as amend_value,\n"
+                "    val.final_value,\n"
+                "    CASE\n"
+                "        WHEN val.year = extract(year from CURRENT_DATE)::integer THEN val.final_value\n"
+                "        ELSE NULL\n"
+                "    END as value_curr_year,\n"
+                "    pay.payment_amt,\n"
+                "    CASE\n"
+                "        WHEN pay.year = extract(year from CURRENT_DATE)::integer THEN pay.payment_amt\n"
+                "        ELSE NULL\n"
+                "    END as paid_curr_year,\n"
+                "    CASE\n"
+                "        WHEN pay.year = extract(year from (CURRENT_DATE-365))::integer THEN pay.payment_amt\n"
+                "        ELSE NULL\n"
+                "    END as paid_last_year,\n"
+                "    insp.progress as physical_progress,\n"
+                "    insp.last_inspection_date,\n"
+                "    insp.dlp_start_date\n"
+                "FROM contracts_contract as con\n"
+                "JOIN contracts_contractstatus as con_status on (con_status.id = con.status_id)\n"
+                "JOIN contracts_company as contractor_corp on (con.contractor_id = contractor_corp.id)\n"
+                "JOIN contracts_company as subcontractor_corp on (con.subcontractor_id = subcontractor_corp.id)\n"
+                "JOIN contracts_tender as tnd on (con.tender_id = tnd.code)\n"
+                "JOIN contracts_project as prj on (tnd.code = prj.tender_id)\n"
+                "JOIN contracts_program as prg on (prj.program_id = prg.id)\n"
+                "LEFT JOIN contracts_typeofwork as ptow on (ptow.id = prj.type_of_work_id)\n"
+                "LEFT JOIN contracts_fundingsource as pfs on (pfs.id = prj.funding_source_id)\n"
+                "LEFT JOIN (\n"
+                "    SELECT pa.project_id,\n"
+                "        COUNT(pa.id) as total_assets_cnt,\n"
+                "        SUM(r.geom_length) as total_assets_length,\n"
+                "        COUNT(pa.id) FILTER (WHERE r.asset_class = 'NAT') as nat_cnt,\n"
+                "        SUM(r.geom_length) FILTER (WHERE r.asset_class = 'NAT') as nat_length,\n"
+                "        COUNT(pa.id) FILTER (WHERE r.asset_class = 'MUN') as mun_cnt,\n"
+                "        SUM(r.geom_length) FILTER (WHERE r.asset_class = 'MUN') as mun_length,\n"
+                "        COUNT(pa.id) FILTER (WHERE r.asset_class = 'RUR') as rur_cnt,\n"
+                "        SUM(r.geom_length) FILTER (WHERE r.asset_class = 'RUR') as rur_length\n"
+                "    FROM contracts_projectasset as pa\n"
+                "    JOIN assets_road as r on (r.road_code = pa.asset_code)\n"
+                "    GROUP BY project_id, asset_class\n"
+                ") as pas on (pas.project_id = prj.id)\n"
+                "LEFT JOIN (\n"
+                "    SELECT inspections.contract_id,\n"
+                "        progress,\n"
+                "        date as last_inspection_date,\n"
+                "        dlp_start_date\n"
+                "    FROM contracts_contractinspection as inspections\n"
+                "    INNER JOIN (\n"
+                "        SELECT contract_id, max(date) as maxDate\n"
+                "        FROM contracts_contractinspection\n"
+                "        GROUP BY contract_id\n"
+                "    ) as maxInspDate on (maxInspDate.contract_id = inspections.contract_id)\n"
+                "    LEFT JOIN (\n"
+                "        SELECT contract_id, MIN(date) dlp_start_date\n"
+                "        FROM contracts_contractinspection\n"
+                "        WHERE defect_liability_period is TRUE\n"
+                "        GROUP BY contract_id\n"
+                "    ) as dlpStart on (dlpStart.contract_id = inspections.contract_id)\n"
+                "    WHERE date = maxDate\n"
+                ") as insp on (insp.contract_id = con.id)\n"
+                "LEFT JOIN (\n"
+                "    SELECT bdg.contract_id,\n"
+                "        bdg.year,\n"
+                "        bdg.value as original,\n"
+                "        amnd.value as amended,\n"
+                "        CASE\n"
+                "            WHEN amnd.value is not NULL THEN amnd.value\n"
+                "            ELSE bdg.value\n"
+                "        END as final_value\n"
+                "    FROM contracts_contractbudget as bdg\n"
+                "    LEFT JOIN contracts_contractamendment as amnd on (bdg.contract_id = amnd.contract_id and bdg.year = amnd.year)\n"
+                ") as val on (val.contract_id = con.id)\n"
+                "LEFT JOIN (\n"
+                "    SELECT\n"
+                "        contract_id,\n"
+                "        extract(year from date)::integer as year,\n"
+                "        SUM(value) as payment_amt\n"
+                "    FROM contracts_contractpayment\n"
+                "    GROUP BY contract_id, year\n"
+                ") as pay on (pay.contract_id = con.id AND val.year = pay.year)\n"
+            ),
+            "financial_physical_progress_details": (
+                "SELECT\n"
+                "    program_name as title,\n"
+                "    COUNT(DISTINCT project_name) as projects,\n"
+                "    STRING_AGG(DISTINCT project_name, ', ') as projectName,\n"
+                "    STRING_AGG(DISTINCT type_of_work, ', ') as typeOfWork,\n"
+                "    STRING_AGG(DISTINCT funding_source, ', ') as fundingSources,\n"
+                "    SUM(total_assets_cnt) as assets,\n"
+                "    TO_CHAR(SUM(final_value),'FM999999999999.00') as totalContractValue,\n"
+                "    TO_CHAR(SUM(value_curr_year),'FM999999999999.00') as valueCurrentYear,\n"
+                "    TO_CHAR(SUM(payment_amt),'FM999999999999.00') as totalPayment,\n"
+                "    TO_CHAR(SUM(paid_curr_year),'FM999999999999.00') as paymentCurrentYear,\n"
+                "    TO_CHAR(SUM(paid_last_year),'FM999999999999.00') as paymentPreviousYear,\n"
+                "    TO_CHAR(SUM(payment_amt)/SUM(final_value)*100,'FM999.00') as totalProgressPayment,\n"
+                "    TO_CHAR(physical_progress,'FM999.00') as physicalProgress,\n"
+                "    dlp_start_date as dlpStartDate,\n"
+                "    (dlp_start_date + defect_liability_days) as dlpEndDate,\n"
+                "    CASE\n"
+                "        WHEN status in ('ongoing', 'contract variations request', 'dlp', 'final inspection', 'request of final payment', 'submitted', 'project approved') THEN 'Ongoing'\n"
+                "        ELSE ''\n"
+                "    END as status\n"
+                "FROM contracts_core\n"
+                "GROUP BY contract_id, contract_code, program_name, physical_progress, dlp_start_date, defect_liability_days, status\n"
+            ),
+            "financial_physical_progress_summary": (
+                "SELECT\n"
+                "    program_name as title,\n"
+                "    STRING_AGG(DISTINCT funding_source, ', ') as fundingSource,\n"
+                "    COUNT(DISTINCT project_name) as projects,\n"
+                "    COUNT(contract_id) as contracts,\n"
+                "    corp_cnt as companies,\n"
+                "    TO_CHAR(SUM(final_value),'FM999999999999.00') as contractValue,\n"
+                "    TO_CHAR(SUM(value_curr_year),'FM999999999999.00') as valueCurrentYear,\n"
+                "    TO_CHAR(SUM(payment_amt),'FM999999999999.00') as totalPayment,\n"
+                "    TO_CHAR(SUM(paid_curr_year),'FM999999999999.00') as paymentCurrentYear,\n"
+                "    TO_CHAR(SUM(paid_last_year),'FM999999999999.00') as paymentPreviousYear,\n"
+                "    TO_CHAR(SUM(final_value)-SUM(payment_amt),'FM999999999999.00') as balance,\n"
+                "    TO_CHAR(SUM(payment_amt)/SUM(final_value)*100,'FM999999999999.00') as paymentProgress,\n"
+                "    TO_CHAR(AVG(physical_progress),'FM999.00') as averagePhysicalProgress,\n"
+                "    CASE\n"
+                "        WHEN status in ('ongoing', 'contract variations request', 'dlp', 'final inspection', 'request of final payment', 'submitted', 'project approved') THEN 'Ongoing'\n"
+                "        ELSE ''\n"
+                "    END as status\n"
+                "FROM contracts_core\n"
+                "JOIN (\n"
+                "    SELECT prg.name, COUNT(DISTINCT corp.id) as corp_cnt\n"
+                "    FROM contracts_company corp\n"
+                "    JOIN contracts_contract as con on (con.contractor_id = corp.id OR con.subcontractor_id = corp.id)\n"
+                "    JOIN contracts_tender as tnd on (con.tender_id = tnd.code)\n"
+                "    JOIN contracts_project as prj on (tnd.code = prj.tender_id)\n"
+                "    JOIN contracts_program as prg on (prj.program_id = prg.id)\n"
+                "    GROUP BY prg.id\n"
+                ") as prg_corps on (prg_corps.name = contracts_core.program_name)\n"
+                "GROUP BY program_name, status, corp_cnt\n"
+            ),
+            "length_completed_work": (
+                "SELECT\n"
+                "    type_of_work,\n"
+                "    year,\n"
+                "    SUM(nat_length) as nat_length,\n"
+                "    SUM(mun_length) as mun_length,\n"
+                "    SUM(rur_length) as rur_length,\n"
+                "    SUM(total_assets_length) as total_assets_length\n"
+                "FROM contracts_core\n"
+                "WHERE status = 'Completed'\n"
+                "GROUP BY type_of_work, year\n"
+            ),
+            "social_safeguards": (
+                "SELECT\n"
+                "    con.contract_code,\n"
+                "    year,\n"
+                "    month,\n"
+                "    CASE\n"
+                "        WHEN month <= 3 THEN 1\n"
+                "        WHEN month <= 6 THEN 2\n"
+                "        WHEN month <= 9 THEN 3\n"
+                "        ELSE 4\n"
+                "    END as quarter,\n"
+                "    SUM(employees) as employees,\n"
+                "    SUM(international_employees) as international_employees,\n"
+                "    SUM(national_employees) as national_employees,\n"
+                "    SUM(employees_with_disabilities) as employees_with_disabilities,\n"
+                "    SUM(female_employees_with_disabilities) as female_employees_with_disabilities,\n"
+                "    SUM(young_employees) as young_employees,\n"
+                "    SUM(young_female_employees) as young_female_employees,\n"
+                "    SUM(young_female_employees_worked_days) as young_female_employees_worked_days,\n"
+                "    SUM(female_employees) as female_employees,\n"
+                "    SUM(total_worked_days) as total_worked_days,\n"
+                "    SUM(female_employees_worked_days) as female_employees_worked_days,\n"
+                "    SUM(employees_with_disabilities_worked_days) as employees_with_disabilities_worked_days,\n"
+                "    SUM(female_employees_with_disabilities_worked_days) as female_employees_with_disabilities_worked_days,\n"
+                "    SUM(young_employees_worked_days) as young_employees_worked_days,\n"
+                "    SUM(total_wage) as total_wage,\n"
+                "    AVG(average_gross_wage) as average_gross_wage,\n"
+                "    AVG(average_net_wage) as average_net_wage\n"
+                "FROM contracts_socialsafeguarddata as social\n"
+                "JOIN contracts_contract as con on (con.id = social.contract_id)\n"
+            ),
+            "get_all": ("SELECT * FROM final_results;"),
+            "get_aggregate": (
+                "SELECT COUNT(*) as total_records\n" "FROM final_results;"
+            ),
+        }
+
+    def build_query_body(self):
+        self.reportSQL = "WITH "
+        if "social_safeguards" not in self.report_type:
+            self.reportSQL += (
+                "contracts_core AS (\n" + self.report_clauses["contracts_core"] + "), "
+            )
+            self.reportSQL += (
+                "final_results AS ( %s )" % self.report_clauses[self.report_type]
+            )
+        else:
+            # check if summary or single social safeguards, based on if contract_code was provided in filters
+            contract_code = getattr(self.filters, "contract_code", None)
+            if contract_code:
+                self.reportSQL += "final_results AS ( %s )" % (
+                    self.report_clauses["social_safeguards"]
+                    + "WHERE contract_code = %s\n" % contract_code
+                    + "GROUP BY contract_code, year, quarter, month\n"
+                )
+            else:
+                self.reportSQL += "final_results AS ( %s )" % (
+                    self.report_clauses["social_safeguards"]
+                    + "GROUP BY contract_code, year, quarter, month\n"
+                )
+
+    def execute_main_query(self):
+        self.build_query_body()
+        self.reportSQL += "\n%s" % self.report_clauses["get_all"]
+
+        with connection.cursor() as cursor:
+            cursor.execute(self.reportSQL, self.filter_cases)
+            rows = dictfetchall(cursor)
+
+        return rows
+
+    def execute_aggregate_query(self):
+        """ Aggregate the rows by attribute and value returning total records """
+        self.build_query_body()
+        self.reportSQL += "\n%s" % self.report_clauses["get_aggregate"]
+
+        with connection.cursor() as cursor:
+            cursor.execute(self.reportSQL, self.filter_cases)
+            rows = dictfetchall(cursor)
+
+        return rows
+
+    def compile_summary_stats(self, rows):
+        """ Takes the rows returned by the aggregate query and returns a 'summary' dict for conversion to JSON """
+        summary = {"total_records": float(rows[0]["total_records"])}
+        return summary
 
 
 def dictfetchall(cursor):
