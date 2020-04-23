@@ -1,66 +1,122 @@
 from django.contrib import admin
-from . import models
+
+from reversion.admin import VersionAdmin
+
+from .models import (
+    Project,
+    ProjectAsset,
+    ProjectBudget,
+    ProjectDonor,
+    ProjectMilestone,
+    ProjectStatus,
+    Contract,
+    ContractAmendment,
+    ContractBudget,
+    ContractDocument,
+    ContractDocumentType,
+    ContractInspection,
+    ContractInspectionEntity,
+    ContractPayment,
+    ContractPaymentDonor,
+    ContractPaymentSource,
+    ContractStatus,
+    ContractSupervisor,
+    Tender,
+    TenderStatus,
+    Company,
+    CompanyCategory,
+    FundingSource,
+    Program,
+    SocialSafeguardData,
+    TypeOfWork,
+)
 
 
 class ProjectBudgetInline(admin.TabularInline):
-    model = models.ProjectBudget
+    model = ProjectBudget
 
 
 class ProjectAssetInline(admin.TabularInline):
-    model = models.ProjectAsset
+    model = ProjectAsset
 
 
 class ProjectMilestonesInline(admin.TabularInline):
-    model = models.ProjectMilestone
+    model = ProjectMilestone
 
 
-class ProjectAdmin(admin.ModelAdmin):
+@admin.register(Project)
+class ProjectAdmin(VersionAdmin, admin.ModelAdmin):
     inlines = [ProjectBudgetInline, ProjectMilestonesInline, ProjectAssetInline]
+
+    def reversion_register(self, model, **options):
+        options["exclude"] = self.exclude
+        super().reversion_register(model, **options)
 
 
 class ContractContractBudgetInline(admin.TabularInline):
-    model = models.ContractBudget
+    model = ContractBudget
 
 
 class ContractContractInspectionInline(admin.TabularInline):
-    model = models.ContractInspection
+    model = ContractInspection
 
 
-class ContractAdmin(admin.ModelAdmin):
+@admin.register(Contract)
+class ContractAdmin(VersionAdmin, admin.ModelAdmin):
     inlines = [
         ContractContractBudgetInline,
         ContractContractInspectionInline,
     ]
 
+    def reversion_register(self, model, **options):
+        options["exclude"] = self.exclude
+        super().reversion_register(model, **options)
 
-admin.site.register(models.Project, ProjectAdmin)
 
-admin.site.register(models.TypeOfWork)
-admin.site.register(models.Program)
-admin.site.register(models.ProjectStatus)
-admin.site.register(models.FundingSource)
-admin.site.register(models.ProjectDonor)
+@admin.register(Tender)
+class TenderAdmin(VersionAdmin, admin.ModelAdmin):
+    def reversion_register(self, model, **options):
+        options["exclude"] = self.exclude
+        super().reversion_register(model, **options)
 
-admin.site.register(models.ProjectMilestone)
-admin.site.register(models.ProjectBudget)
-admin.site.register(models.ProjectAsset)
-admin.site.register(models.ContractDocument)
-admin.site.register(models.TenderStatus)
-admin.site.register(models.Tender)
 
-admin.site.register(models.ContractDocumentType)
-admin.site.register(models.Company)
-admin.site.register(models.CompanyCategory)
+@admin.register(Company)
+class CompanyAdmin(VersionAdmin, admin.ModelAdmin):
+    def reversion_register(self, model, **options):
+        options["exclude"] = self.exclude
+        super().reversion_register(model, **options)
 
-admin.site.register(models.Contract, ContractAdmin)
-admin.site.register(models.ContractAmendment)
-admin.site.register(models.ContractStatus)
-admin.site.register(models.ContractSupervisor)
-admin.site.register(models.ContractBudget)
 
-admin.site.register(models.ContractInspectionEntity)
-admin.site.register(models.ContractPaymentDonor)
-admin.site.register(models.ContractPaymentSource)
-admin.site.register(models.ContractPayment)
-admin.site.register(models.ContractInspection)
-admin.site.register(models.SocialSafeguardData)
+@admin.register(ContractDocument)
+class ContractDocumentAdmin(VersionAdmin, admin.ModelAdmin):
+    def reversion_register(self, model, **options):
+        options["exclude"] = self.exclude
+        super().reversion_register(model, **options)
+
+
+admin.site.register(TypeOfWork)
+admin.site.register(Program)
+admin.site.register(ProjectStatus)
+admin.site.register(FundingSource)
+admin.site.register(ProjectDonor)
+
+admin.site.register(ProjectMilestone)
+admin.site.register(ProjectBudget)
+admin.site.register(ProjectAsset)
+admin.site.register(TenderStatus)
+
+admin.site.register(ContractDocumentType)
+
+admin.site.register(ContractAmendment)
+admin.site.register(ContractStatus)
+admin.site.register(ContractSupervisor)
+admin.site.register(ContractBudget)
+
+admin.site.register(ContractInspectionEntity)
+admin.site.register(ContractPaymentDonor)
+admin.site.register(ContractPaymentSource)
+admin.site.register(ContractPayment)
+admin.site.register(ContractInspection)
+admin.site.register(SocialSafeguardData)
+
+admin.site.register(CompanyCategory)

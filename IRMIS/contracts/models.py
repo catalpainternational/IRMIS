@@ -14,6 +14,7 @@ from assets.templatetags.assets import simple_asset_list
 
 import json
 import datetime
+import reversion
 
 
 def no_spaces(value):
@@ -24,6 +25,7 @@ def no_spaces(value):
 
 
 # Project
+@reversion.register()
 class Project(models.Model):
     """
     On the Contract Manager, users will start by creating a project. That project will result in a tender. The tender will result in a contract.
@@ -281,6 +283,7 @@ class ProjectMilestone(models.Model):
 
 
 # Tender
+@reversion.register()
 class Tender(models.Model):
     code = models.SlugField(
         primary_key=True,
@@ -331,6 +334,7 @@ class TenderStatus(models.Model):
 
 
 # Contract
+@reversion.register()
 class Contract(models.Model):
     contract_code = models.SlugField(help_text=_("Enter contract code"))
     description = models.TextField(
@@ -647,6 +651,7 @@ class SocialSafeguardData(models.Model):
 
 
 # Company
+@reversion.register()
 class Company(models.Model):
     WOMAN_LED_CHOICES = ((None, _("Unknown")), (True, _("Yes")), (False, _("No")))
 
@@ -752,6 +757,7 @@ class CompanyCategory(models.Model):
 
 
 # Document
+@reversion.register()
 class ContractDocument(models.Model):
     """
     A Document may be associated with Projects, Tenders, Contracts or Companies

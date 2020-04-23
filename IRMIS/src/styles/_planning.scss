@@ -87,10 +87,11 @@ planning {
     }
 }
 
+$max-width: 600px;
+
 planning_templates {
     .instructions {
-        margin-right: 40px;
-        max-width: 600px;
+        max-width: $max-width;
 
         & > ul {
             list-style-position: outside;
@@ -106,22 +107,20 @@ planning_templates {
                 margin-left: 3px;
             }
         }
-    
-        & + span.image {
-            background-color: $lighter-gray;
-            height: 400px;
-            width: 100%;
+    }
+
+    .token {
+        max-width: $max-width;
+
+        p.generated-token {
+            word-break: break-word;
+            margin-right: 10px;
+            margin-bottom: 0;
         }
-    }
-
-    p.generated-token {
-        word-break: break-word;
-        margin-right: 10px;
-        margin-bottom: 0;
-    }
-
-    strong {
-        margin-right: 3px;
+    
+        strong {
+            margin-right: 3px;
+        }
     }
 
     .templates-list {

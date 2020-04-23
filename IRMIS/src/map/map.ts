@@ -6,7 +6,7 @@ import { Config } from "./config";
 import { BaseLayers } from "./layers/BaseLayers";
 import { KnownGeometries } from "./layers/KnownGeometries";
 import { getFilterStyles } from "./utilities/filterGeoJSON";
-import { buildBBox, getFlatCoords } from "./utilities/GeoJsonUtilities";
+import { getBbox } from "./utilities/GeoJsonUtilities";
 import { getFeatureType } from "./utilities/propertiesGeoJSON";
 
 import { FallbackLayerStyle, FixLayerStyleDefaults, styleGeometry, stylePoint } from "./utilities/leaflet-style";
@@ -104,7 +104,7 @@ export class Map {
         });
 
         if (featureZoomSet.features.length) {
-            bb = buildBBox(getFlatCoords(featureZoomSet));
+            bb = getBbox(featureZoomSet);
         }
 
         // Don't use flyToBounds

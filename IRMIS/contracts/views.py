@@ -2,7 +2,8 @@ from django.apps import apps
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.decorators import login_required
-from django.db.models import Sum, Count
+from django.db import transaction
+from django.db.models import Sum, Count, Func
 from django.db.models.base import ModelBase
 from django.forms import inlineformset_factory
 from django.forms.widgets import DateInput, NumberInput, TextInput
@@ -13,8 +14,10 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from django.db import transaction
-from django.db.models import Func
+
+import reversion
+from reversion.models import Version
+
 from . import forms, models
 
 
@@ -57,10 +60,14 @@ class AddedFormsetMixin:
     def form_valid(self, form, dependents):
         """If the form is valid save the associated model."""
         context = self.get_context_data()
-        with transaction.atomic():
-            self.object = form.save()
-            for dependent in dependents.values():
-                dependent.save()
+        with reversion.create_revision():
+            with transaction.atomic():
+                self.object = form.save()
+                for dependent in dependents.values():
+                    dependent.save()
+            # store the user who made the changes
+            reversion.set_user(self.request.user)
+
         response = HttpResponseRedirect(self.get_success_url())
         success_message = self.get_success_message(form.cleaned_data)
         if success_message:

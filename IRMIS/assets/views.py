@@ -1,19 +1,25 @@
+from collections import Counter, defaultdict, namedtuple
+from datetime import datetime
+
 import hashlib
 import json
 import pytz
-import reversion
 import xlrd
+
+import reversion
 from reversion.models import Version
-from datetime import datetime
-from collections import Counter, defaultdict
-import pytz
+
 import importlib_resources as resources
-from .models import sql_scripts
-from django.db import connection
+
+from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.gis.db import models
 from django.core.files.base import ContentFile
-from django.shortcuts import get_object_or_404
+from django.db import connection
+from django.db.models import Value, CharField, OuterRef, Prefetch, Q, Subquery
+from django.db.models.functions import Cast, Substr
 from django.http import (
     HttpResponse,
     HttpResponseForbidden,
@@ -21,15 +27,11 @@ from django.http import (
     JsonResponse,
     HttpResponseNotFound,
 )
+from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import TemplateView
-from django.contrib.admin.models import LogEntry, CHANGE
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.contenttypes.models import ContentType
-from django.db.models import Value, CharField, OuterRef, Prefetch, Q, Subquery
-from django.db.models.functions import Cast, Substr
 from django.views.generic import TemplateView, ListView
 
 from rest_framework_jwt.settings import api_settings
@@ -41,7 +43,6 @@ from rest_framework.viewsets import ViewSet
 from rest_framework_condition import condition
 
 from google.protobuf.timestamp_pb2 import Timestamp
-
 from protobuf import (
     photo_pb2,
     plan_pb2,
@@ -51,9 +52,6 @@ from protobuf import (
     survey_pb2,
     version_pb2,
 )
-from .report_query import ReportQuery
-
-from collections import namedtuple
 
 from .models import (
     Bridge,
@@ -81,10 +79,12 @@ from .models import (
     Survey,
     TechnicalClass,
     BreakpointRelationships,
+    sql_scripts,
 )
-from .serializers import RoadSerializer, RoadMetaOnlySerializer, RoadToWGSSerializer
 
 from .data_cleaning_utils import update_non_programmatic_surveys_by_road_code
+from .report_query import ReportQuery, ContractReport
+from .serializers import RoadSerializer, RoadMetaOnlySerializer, RoadToWGSSerializer
 from .token_mixin import JWTRequiredMixin
 
 
@@ -2122,3 +2122,36 @@ class BreakpointRelationshipsReport(TemplateView):
             survey_params=self.request.GET.getlist("survey_param"),
         )
         return context
+
+
+@login_required
+def protobuf_contract_reports(request, report_type):
+    """ returns a protobuf object with a contract report determined by the filter conditions supplied """
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+    if request.method != "GET":
+        raise MethodNotAllowed(request.method)
+
+    filters = request.GET.getlist("contract_code", [])
+    report_types = {
+        1: "financial_physical_progress_details",
+        2: "financial_physical_progress_summary",
+        3: "length_completed_work",
+        4: "social_safeguards",  # summary
+        5: "social_safeguards",  # single contract
+    }
+
+    try:
+        # Initialise the Contract Report
+        contract_report = ContractReport(report_types[report_type], filters)
+        # Build out Contract Report data to return
+        report_data = {
+            "filters": filters,
+            "summary": contract_report.compile_summary_stats(
+                contract_report.execute_aggregate_query()
+            ),
+            "attributes": contract_report.execute_main_query(),
+        }
+        return JsonResponse(report_data)
+    except Exception:
+        return HttpResponse(status=400)
