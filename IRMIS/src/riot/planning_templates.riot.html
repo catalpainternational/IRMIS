@@ -44,18 +44,18 @@
             <table class="d-block planning-table table table-hover w-100">
                 <thead>
                     <tr>
+                        <th></th>
                         <th>{ window.gettext("Title") }</th>
                         <th>{ window.gettext("Road Class") }</th>
                         <th>{ window.gettext("Uploaded On") }</th>
-                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr each={file in state.templateFiles}>
+                        <td><a class="image document" href="{ file.filePath }" download="{ file.fileName }"></a></td>
                         <td>{ file.title }</td>
                         <td>{ file.type }</td>
                         <td>{ file.dateUploaded }</td>
-                        <td><a class="image document" href="{file.filePath}" download="{file.fileName}"></a></td>
                     </tr>
                 </tbody>
             </table>
