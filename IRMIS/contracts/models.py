@@ -1,16 +1,19 @@
-from django.db import models
-from django.core import validators
 from django.contrib.postgres.fields import DateRangeField, JSONField
-from django.db.models import Q, Sum, Count
-from django.utils.translation import ugettext_lazy as _
-from django.urls import reverse
+from django.core import validators
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
+from django.db.models import Q, Sum, Count, OuterRef, Subquery
+from django.urls import reverse
+from django.utils.translation import ugettext_lazy as _
+
 import json
 import datetime
-from django.db.models import OuterRef, Subquery
+import reversion
+
 
 # Project
+@reversion.register()
 class Project(models.Model):
     """
     On the Contract Manager, users will start by creating a project. That project will result in a tender. The tender will result in a contract.
@@ -204,6 +207,7 @@ class ProjectMilestone(models.Model):
 
 
 # Tender
+@reversion.register()
 class Tender(models.Model):
     code = models.SlugField(
         primary_key=True,
@@ -254,6 +258,7 @@ class TenderStatus(models.Model):
 
 
 # Contract
+@reversion.register()
 class Contract(models.Model):
     contract_code = models.SlugField(help_text=_("Enter contract code"))
     description = models.TextField(
@@ -570,6 +575,7 @@ class SocialSafeguardData(models.Model):
 
 
 # Company
+@reversion.register()
 class Company(models.Model):
     WOMAN_LED_CHOICES = ((None, _("Unknown")), (True, _("Yes")), (False, _("No")))
 
@@ -633,6 +639,15 @@ class Company(models.Model):
         help_text=_("Is the company director/owner a woman?"),
     )
 
+    category = models.ForeignKey(
+        "contracts.CompanyCategory",
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        verbose_name=_("Company category"),
+        help_text=_("Choose category"),
+    )
+
     def __str__(self):
         return self.name
 
@@ -658,7 +673,15 @@ class Company(models.Model):
         )
 
 
+class CompanyCategory(models.Model):
+    name = models.CharField(max_length=16, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
 # Document
+@reversion.register()
 class ContractDocument(models.Model):
     """
     A Document may be associated with Projects, Tenders, Contracts or Companies

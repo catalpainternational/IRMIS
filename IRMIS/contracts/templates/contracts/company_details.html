@@ -163,6 +163,20 @@
                 </div>
                 {% endif %}
             </div>
+            <div class="form-group">
+                {{ form.category.label_tag }}
+                <small class="form-text text-muted">{{ form.category.help_text }}</small>
+                {{ form.category }}
+                {% if form.category.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.category.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
         </section>
 
         <div class="d-flex justify-content-end">

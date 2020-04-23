@@ -347,10 +347,12 @@ documentFormModal.on('hidden.bs.modal', () => {
 function saveDocument(e) {
     const fetchURL = requestData ? "/contracts/api/contractdocument/" + requestData.id + "/" : "/contracts/api/contractdocument/";
     const formElement = $("#doc-upload-form").get(0);
+    const saveBtn = document.getElementById("save-document");
 
     let formData = new FormData(formElement);
 
     formData.append(e.target.dataset.profile, [e.target.dataset.id]);
+    saveBtn.disabled = true;
 
     fetch(fetchURL, {
         method: requestMethod,
@@ -364,5 +366,7 @@ function saveDocument(e) {
         } else {
             document.dispatchEvent(new CustomEvent("show-banner", { detail: { banner: document.getElementById("error-banner") } }));
         }
+    }).finally(() => {
+        saveBtn.disabled = false;
     });
 }

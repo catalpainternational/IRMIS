@@ -2,7 +2,8 @@ from django.apps import apps
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.decorators import login_required
-from django.db.models import Sum, Count
+from django.db import transaction
+from django.db.models import Sum, Count, Func
 from django.db.models.base import ModelBase
 from django.forms import inlineformset_factory
 from django.forms.widgets import DateInput, NumberInput, TextInput
@@ -13,8 +14,10 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from django.db import transaction
-from django.db.models import Func
+
+import reversion
+from reversion.models import Version
+
 from . import forms, models
 
 
@@ -57,10 +60,14 @@ class AddedFormsetMixin:
     def form_valid(self, form, dependents):
         """If the form is valid save the associated model."""
         context = self.get_context_data()
-        with transaction.atomic():
-            self.object = form.save()
-            for dependent in dependents.values():
-                dependent.save()
+        with reversion.create_revision():
+            with transaction.atomic():
+                self.object = form.save()
+                for dependent in dependents.values():
+                    dependent.save()
+            # store the user who made the changes
+            reversion.set_user(self.request.user)
+
         response = HttpResponseRedirect(self.get_success_url())
         success_message = self.get_success_message(form.cleaned_data)
         if success_message:
@@ -110,6 +117,12 @@ class ProjectListView(ListView):
             template="%(function)s(%(expressions)s, 2)",
         )
     )
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context["status_list"] = models.ProjectStatus.objects.all()
+        context["type_of_work_list"] = models.TypeOfWork.objects.all()
+        return context
 
 
 @method_decorator(login_required, name="dispatch")
@@ -237,9 +250,22 @@ class ProjectDocumentDetailView(DetailView):
 # Tender
 @method_decorator(login_required, name="dispatch")
 class TenderListView(ListView):
-    model = models.Tender
     template_name = "contracts/tender_list.html"
+    model = models.Tender
     paginate_by = 100
+    queryset = models.Tender.objects.annotate(
+        projects_total_budget=Func(
+            Sum("projects__budgets__approved_value"),
+            function="TRUNC",
+            template="%(function)s(%(expressions)s, 2)",
+        )
+    )
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context["status_list"] = models.TenderStatus.objects.all()
+        context["type_of_work_list"] = models.TypeOfWork.objects.all()
+        return context
 
 
 @method_decorator(login_required, name="dispatch")
@@ -304,9 +330,22 @@ class TenderDocumentDetailView(DetailView):
 # Contract
 @method_decorator(login_required, name="dispatch")
 class ContractListView(ListView):
+    template_name = "contracts/contract_list.html"
     model = models.Contract
     paginate_by = 100
-    template_name = "contracts/contract_list.html"
+    queryset = models.Contract.objects.annotate(
+        projects_total_budget=Func(
+            Sum("tender__projects__budgets__approved_value"),
+            function="TRUNC",
+            template="%(function)s(%(expressions)s, 2)",
+        )
+    )
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context["status_list"] = models.ContractStatus.objects.all()
+        context["type_of_work_list"] = models.TypeOfWork.objects.all()
+        return context
 
 
 @method_decorator(login_required, name="dispatch")

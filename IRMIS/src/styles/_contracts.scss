@@ -175,10 +175,19 @@ form.contract-form > div:not(.dataTables_wrapper) {
     padding-bottom: 10px;
 }
 
+div#project-list-table_filter,
+div#tender-list-table_filter,
+div#contract-list-table_filter {
+    top: -144px;
+}
+
+div#company-list-table_filter {
+    top: -50px;
+}
+
 div.dataTables_wrapper div.dataTables_filter {
     position: absolute;
     right: 15px;
-    top: -50px;
 
     label {
         color: transparent;
@@ -188,7 +197,24 @@ div.dataTables_wrapper div.dataTables_filter {
     input[type="search"] {
         border: 1px solid $gray;
         border-radius: 15px;
+        font-size: 14px;
         height: 30px;
         width: 400px;
+    }
+}
+
+.contract-filters {
+    border-bottom: 1px solid $light-gray;
+    margin-bottom: 14px;
+    margin-top: 20px;
+
+    select, .select2 {
+        margin-bottom: 10px;
+        margin-right: 10px;
+    }
+
+    select#value_select {
+        height: 31px;
+        width: 225px;
     }
 }

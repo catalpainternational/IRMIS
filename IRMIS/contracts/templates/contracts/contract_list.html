@@ -4,7 +4,7 @@
 {% block contracts_profile %}
 <header class="align-items-center d-flex justify-content-between no-back-button">
     <h1>{% trans "Contract Manager" %}</h1>
-    {% if perms.assets.add_contract %}
+    {% if perms.contracts.add_contract %}
     <a class="btn btn-primary" href="{% url 'contract-contract-create' %}">{% trans "Create New Contract" %}</a>
     {% endif %}
 </header>
@@ -15,6 +15,58 @@
     </div>
 
     {% if contract_list.exists %}
+    <div class="contract-filters">
+        <h6>{% trans "Filters" %}</h6>
+        <div class="d-flex justify-content-between">
+            <div class="d-flex flex-wrap">
+                <select id="status_select2" multiple="true">
+                    {% for status in status_list %}
+                    <option value="{{ status.name }}">{{ status.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <select id="type_of_work_select2" multiple="true">
+                    {% for type in type_of_work_list %}
+                    <option value="{{ type.name }}">{{ type.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <select id="asset_class_select2" hidden>
+                    <option value="NAT">{% trans "National" %}</option>
+                    <option value="HIGH">{% trans "Highway" %}</option>
+                    <option value="MUN">{% trans "Municipal" %}</option>
+                    <option value="URB">{% trans "Urban" %}</option>
+                    <option value="RUR">{% trans "Rural" %}</option>
+                </select>
+
+                <select id="municipality_select2" hidden>
+                    <option value="Ainaro">Ainaro</option>
+                    <option value="Aileu">Aileu</option>
+                    <option value="Baucau">Baucau</option>
+                    <option value="Bobonaro">Bobonaro</option>
+                    <option value="Covalima">Covalima</option>
+                    <option value="Dili">Dili</option>
+                    <option value="Ermera">Ermera</option>
+                    <option value="Liquica">Liquica</option>
+                    <option value="Lautem">Lautem</option>
+                    <option value="Manufahi">Manufahi</option>
+                    <option value="Manatuto">Manatuto</option>
+                    <option value="Oecusse">Oecusse</option>
+                    <option value="Viqueque">Viqueque</option>
+                </select>
+
+                <select id="value_select" class="form-control form-control-sm">
+                    <option selected>{% trans "Value range" %}</option>
+                    <option data-min="0" data-max="49999">$0 - $49.999</option>
+                    <option data-min="50000" data-max="99999">$50.000 - $99.999</option>
+                    <option data-min="100000" data-max="499999">$100.000 - $499.999</option>
+                    <option data-min="500000" data-max="999999">$500.000 - $999.999</option>
+                    <option data-min="1000000">{% trans "over" %} $1.000.000</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
     <table id="contract-list-table" class="contracts-profile-table d-block table table-hover w-100">
         <thead>
             <tr>
@@ -26,7 +78,8 @@
                 <th>{% trans "Project(s) Name" %}</th>
                 <th>{% trans "Type of Works" %}</th>
                 <th>{% trans "Status" %}</th>
-                <th>Project Assets</th> <!-- hidden column -->
+                <th></th> <!-- hidden project assets column -->
+                <th></th> <!-- hidden project budgets column -->
             </tr>
         </thead>
         <tbody>
@@ -58,6 +111,7 @@
                     {% endfor %}
                 </td>
                 <td>{{ contract.status }}</td>
+                <td>$ {{ contract.projects_total_budget }}</td>
                 <td>
                     {% for project in contract.tender.projects.all %}
                     {% for asset in project.assets.all %}
