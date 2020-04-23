@@ -4,9 +4,9 @@
     </header>
 
     <div class="content-wrapper">
-        <div class="d-flex">
+        <div class="d-flex flex-column">
+            <h5>{ window.gettext("How to use the planning tool, step by step") }</h5>
             <div class="instructions">
-                <h5>{ window.gettext("How to use the planning tool, step by step") }</h5>
                 <ul>
                     <li>{ window.gettext("From the list below, download the Excel template for the road class you will be preparing the planning for. Example, if you want to prepare a 5-year plan for National Roads, download the Excel for National Roads") }</li>
                     <li>{ window.gettext('Open the Excel template on your computer and click on "Enable connection". If you need to get updated data on your file, click on Data > Refresh all from the Excel menu') }</li>
@@ -22,10 +22,10 @@
                     { window.gettext("You can find detailed guidelines on how to use the planning tools") }
                     <a href="/static/Estrada-How-to-use-Planning-tool.pdf" download="Estrada-How-to-use-Planning-tool.pdf"> { window.gettext("here") }</a>
                 </p>
-                <h5>{ window.gettext("Access token") }</h5>
-                <p>
-                    { window.gettext("Token to get information from the Estrada database to your Excel planning file (valid for 24 hours from issuance)") }
-                </p>
+            </div>
+            <h5>{ window.gettext("Access token") }</h5>
+            <div class="token">
+                <p>{ window.gettext("Token to get information from the Estrada database to your Excel planning file (valid for 24 hours from issuance)") }</p>
                 <div if="{!state.accessToken}">
                     <button class="btn btn-primary btn-sm" type="submit" onclick="{ requestAccessToken }">{ window.gettext("Request Access Token") }</button>
                 </div>
@@ -38,7 +38,6 @@
                     </div>
                 </div>
             </div>
-            <span class="image"></span>
         </div>
         <div class="templates-list">
             <h5>{ window.gettext("List of templates") }</h5>
