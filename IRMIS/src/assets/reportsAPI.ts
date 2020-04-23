@@ -37,9 +37,9 @@ export function getReports(filters: { [name: string]: any }) {
  *
  * Retrieves contract report data from the server
  */
-export function getContractReports(report_type: string, filters: { [name: string]: [] }) {
+export function getContractReports(reportType: string, filters: { [name: string]: [] }) {
     const filterParams = ConfigAPI.objectToQueryString(filters);
-    const reportUrl = `${ConfigAPI.requestContractReportUrl}/${report_type}${filterParams}`;
+    const reportUrl = `${ConfigAPI.requestContractReportUrl}/${reportType}${filterParams}`;
 
     const request = ConfigAPI.requestInit();
 
