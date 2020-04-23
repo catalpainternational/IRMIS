@@ -51,7 +51,7 @@ from protobuf import (
     survey_pb2,
     version_pb2,
 )
-from .report_query import ReportQuery
+from .report_query import ReportQuery, ContractReport
 
 from collections import namedtuple
 
@@ -2125,21 +2125,19 @@ class BreakpointRelationshipsReport(TemplateView):
 
 
 @login_required
-def protobuf_contract_reports(request, report_type=None):
+def protobuf_contract_reports(request, report_type):
     """ returns a protobuf object with a contract report determined by the filter conditions supplied """
     if not request.user.is_authenticated:
         return HttpResponseForbidden()
     if request.method != "GET":
         raise MethodNotAllowed(request.method)
-    if not report_type:
-        return HttpResponse(status=400)
 
     report_types = {
-        "1": "financial_physical_progress_details",
-        "2": "financial_physical_progress_summary",
-        "3": "length_completed_work",
-        "4": "social_safeguards",
-        "5": "???",
+        1: "financial_physical_progress_details",
+        2: "financial_physical_progress_summary",
+        3: "length_completed_work",
+        4: "social_safeguards",
+        5: "???",
     }
 
     try:
