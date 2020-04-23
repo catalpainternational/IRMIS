@@ -881,7 +881,8 @@ class ContractReport:
                 "GROUP BY type_of_work, year\n"
             ),
             "social_safeguards": (
-                "SELECT contract_id,\n"
+                "SELECT\n"
+                "    con.contract_code,\n"
                 "    year,\n"
                 "    month,\n"
                 "    CASE\n"
@@ -907,9 +908,10 @@ class ContractReport:
                 "    SUM(total_wage) as total_wage,\n"
                 "    AVG(average_gross_wage) as average_gross_wage,\n"
                 "    AVG(average_net_wage) as average_net_wage\n"
-                "FROM contracts_socialsafeguarddata\n"
+                "FROM contracts_socialsafeguarddata as social\n"
+                "JOIN contracts_contract as con on (con.id = social.contract_id)\n"
             ),
-            "get_all": ("SELECT *\n" "FROM final_results;\n"),
+            "get_all": ("SELECT * FROM final_results;"),
             "get_aggregate": (
                 "SELECT COUNT(*) as total_records\n" "FROM final_results;"
             ),
@@ -918,25 +920,25 @@ class ContractReport:
     def build_query_body(self):
         self.reportSQL = "WITH "
         if "social_safeguards" not in self.report_type:
-            self.reportSQL = (
+            self.reportSQL += (
                 "contracts_core AS (\n" + self.report_clauses["contracts_core"] + "), "
             )
             self.reportSQL += (
                 "final_results AS ( %s )" % self.report_clauses[self.report_type]
             )
         else:
-            # check if summary or single social safeguards, based on if contract_id was provided in filters
-            contract_id = getattr(filters, "contract_id", None)
-            if contract_id:
+            # check if summary or single social safeguards, based on if contract_code was provided in filters
+            contract_code = getattr(self.filters, "contract_code", None)
+            if contract_code:
                 self.reportSQL += "final_results AS ( %s )" % (
                     self.report_clauses["social_safeguards"]
-                    + "WHERE contract_id = %s" % contract_id
-                    + "GROUP BY contract_id, year, quarter, month\n"
+                    + "WHERE contract_code = %s\n" % contract_code
+                    + "GROUP BY contract_code, year, quarter, month\n"
                 )
             else:
                 self.reportSQL += "final_results AS ( %s )" % (
                     self.report_clauses["social_safeguards"]
-                    + "GROUP BY contract_id, year, quarter, month\n"
+                    + "GROUP BY contract_code, year, quarter, month\n"
                 )
 
     def execute_main_query(self):
