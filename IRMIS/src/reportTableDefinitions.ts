@@ -786,6 +786,7 @@ export const reportContractsContent: { [name: string]: any } = {
         noReportTitle: (window as any).gettext("Click on Create Report button to access the financial and physical progress summary report"),
         noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed financial and physical progress information. You can use filters to generate a customized report"),
         noReportData: (window as any).gettext("Sorry, data for financial and physical progress is not available yet"),
+        fixedFilter: {},
         visibleFilters: {
             assetClass: true,
             typeOfWork: true,
@@ -807,6 +808,7 @@ export const reportContractsContent: { [name: string]: any } = {
         noReportTitle: (window as any).gettext("Click on Create Report button to access the financial and physical progress report"),
         noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed financial and physical progress information. You can use filters to generate a customized report"),
         noReportData: (window as any).gettext("Sorry, data for financial and physical progress is not available yet"),
+        fixedFilter: {},
         visibleFilters: {
             assetClass: true,
             typeOfWork: true,
@@ -828,6 +830,7 @@ export const reportContractsContent: { [name: string]: any } = {
         noReportTitle: (window as any).gettext("Click on Create Report button to access the completed contracts report"),
         noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed completed contracts information. You can use filters to generate a customized report"),
         noReportData: (window as any).gettext("Sorry, data for completed contracts is not available yet"),
+        fixedFilter: {},
         visibleFilters: {
             fundingSource: true,
             donor: true,
@@ -848,6 +851,7 @@ export const reportContractsContent: { [name: string]: any } = {
         noReportTitle: (window as any).gettext("Click on Create Report button to access social safeguard report"),
         noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed social safeguard information. You can use filters to generate a customized report"),
         noReportData: (window as any).gettext("Sorry, data for social safeguard is not available yet"),
+        fixedFilter: {},
         visibleFilters: {
             year: true,
             quarter: true,
@@ -868,6 +872,7 @@ export const reportContractsContent: { [name: string]: any } = {
         noReportTitle: (window as any).gettext("Click on Create Report button to access social safeguard contracts report"),
         noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed social safeguard information. You can use filters to generate a customized report"),
         noReportData: (window as any).gettext("Sorry, data for social safeguard is not available yet"),
+        fixedFilter: {},
         visibleFilters: {
             contractCode: true,
             fromDate: true,
