@@ -788,13 +788,13 @@ export const reportContractsContent: { [name: string]: any } = {
         noReportData: (window as any).gettext("Sorry, data for financial and physical progress is not available yet"),
         fixedFilter: {},
         visibleFilters: {
-            assetClass: true,
-            typeOfWork: true,
-            program: true,
-            fundingSource: true,
-            donor: true,
-            fromDate: true,
-            toDate: true,
+            // assetClass: true,
+            // typeOfWork: true,
+            // program: true,
+            // fundingSource: true,
+            // donor: true,
+            // fromDate: true,
+            // toDate: true,
         },
         reportElements: {
             filters: true,
@@ -810,13 +810,13 @@ export const reportContractsContent: { [name: string]: any } = {
         noReportData: (window as any).gettext("Sorry, data for financial and physical progress is not available yet"),
         fixedFilter: {},
         visibleFilters: {
-            assetClass: true,
-            typeOfWork: true,
-            program: true,
-            fundingSource: true,
-            donor: true,
-            fromDate: true,
-            toDate: true,
+            // assetClass: true,
+            // typeOfWork: true,
+            // program: true,
+            // fundingSource: true,
+            // donor: true,
+            // fromDate: true,
+            // toDate: true,
         },
         reportElements: {
             filters: true,
@@ -832,8 +832,8 @@ export const reportContractsContent: { [name: string]: any } = {
         noReportData: (window as any).gettext("Sorry, data for completed contracts is not available yet"),
         fixedFilter: {},
         visibleFilters: {
-            fundingSource: true,
-            donor: true,
+            // fundingSource: true,
+            // donor: true,
         },
         reportElements: {
             filters: true,
@@ -853,9 +853,9 @@ export const reportContractsContent: { [name: string]: any } = {
         noReportData: (window as any).gettext("Sorry, data for social safeguard is not available yet"),
         fixedFilter: {},
         visibleFilters: {
-            year: true,
-            quarter: true,
-            month: true,
+            // year: true,
+            // quarter: true,
+            // month: true,
         },
         reportElements: {
             filters: true,
@@ -875,8 +875,8 @@ export const reportContractsContent: { [name: string]: any } = {
         fixedFilter: {},
         visibleFilters: {
             contractCode: true,
-            fromDate: true,
-            toDate: true,
+            // fromDate: true,
+            // toDate: true,
         },
         reportElements: {
             filters: true,
