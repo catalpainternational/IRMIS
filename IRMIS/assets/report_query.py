@@ -868,7 +868,7 @@ class ContractReport:
                 "    JOIN contracts_program as prg on (prj.program_id = prg.id)\n"
                 "    GROUP BY prg.id\n"
                 ") as prg_corps on (prg_corps.name = contracts_core.program_name)\n"
-                "GROUP BY program_name, program_status, corp_cnt\n"
+                "GROUP BY program_name, status, corp_cnt\n"
             ),
             "length_completed_work": (
                 "SELECT\n"
