@@ -4,7 +4,7 @@
 {% block contracts_profile %}
 <header class="align-items-center d-flex justify-content-between no-back-button">
     <h1>{% trans "Tender Manager" %}</h1>
-    {% if perms.assets.add_tender %}
+    {% if perms.contracts.add_tender %}
     <a class="btn btn-primary" href="{% url 'contract-tender-create' %}">{% trans "Create New Tender" %}</a>
     {% endif %}
 </header>

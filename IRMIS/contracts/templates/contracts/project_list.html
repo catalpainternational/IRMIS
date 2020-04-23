@@ -4,7 +4,7 @@
 {% block contracts_profile %}
 <header class="align-items-center d-flex justify-content-between no-back-button">
     <h1>{% trans "Project Manager" %}</h1>
-    {% if perms.assets.add_project %}
+    {% if perms.contracts.add_project %}
     <a class="btn btn-primary" href="{% url 'contract-project-create' %}">{% trans "Create New Project" %}</a>
     {% endif %}
 </header>
