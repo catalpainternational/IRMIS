@@ -16,11 +16,10 @@ class Migration(migrations.Migration):
             model_name="projectasset",
             name="asset_id",
             field=models.CharField(
-                blank=True,
                 db_index=True,
                 help_text="Select project's asset",
                 max_length=15,
-                null=True,
+                default="",
                 validators=[contracts.models.no_spaces],
                 verbose_name="Asset Id",
             ),

@@ -152,6 +152,7 @@ class ProjectAsset(models.Model):
         validators=[no_spaces],
         db_index=True,
         max_length=15,
+        default="",
         help_text=_("Select project's asset"),
     )
     asset_start_chainage = models.IntegerField(
