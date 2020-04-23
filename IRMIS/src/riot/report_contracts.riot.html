@@ -192,6 +192,14 @@
         import $ from "jquery";
         import {getContractReport} from "../reportManager";
         import { maxDate, currentDate, currentDateTime } from "../assets/reportUtilities";
+        import {copyData} from "../assets/utilities";
+        import {
+            ADMINISTRATIVE_AREA_CHOICES, // municipality
+            ASSET_CLASS_CHOICES, // asset_class - previously road_class / road_type, structure_class
+            ASSET_CONDITION_CHOICES, // asset_condition - previously surface_condition, structure_condition
+            ASSET_TYPE_CHOICES, // asset_type
+            SURFACE_TYPE_CHOICES, // surface_type
+        } from "../assets/models/choices";
         import {
             reportContractsTableIds,
             reportContractsTitleColumnMapping,
@@ -364,12 +372,127 @@
                 const reportId = this.props.id;
                 return reportContractsContent[reportId];
             },
+            assembleFilterSet() {
+                const filterSet = copyData(this.reportContractsContent().fixedFilter);
+
+                // Handle the select filters
+                this.state.filterDefinitions.forEach((filterDefinition) => {
+                    const requestFilterName = filterDefinition.filterName || "";
+                    if (requestFilterName !== "asset_type" && (!requestFilterName || filterSet[requestFilterName])) {
+                        // If the fixedFilters already defines this request filter
+                        // then we will not accept this user defined one
+                        // unless it is asset_type on a structure report
+                        return;
+                    }
+
+                    const selectData = $(`#${filterDefinition.selectId}`).select2("data");
+                    if (!selectData || selectData.length === 0) {
+                        return;
+                    }
+                    const selection = selectData.map((data) => {return data.id;});
+
+                    if (requestFilterName !== "asset_type") {
+                        filterSet[requestFilterName] = selection;
+                    } else {
+                        // override the master report asset type selection instead
+                        filterSet["reportassettype"] = selection;
+                    }
+                });
+                // Check for the other filters
+                if (this.state.reportDate) {
+                    filterSet["reportdate"] = this.state.reportDate;
+                }
+                if (this.state.reportStartChainage) {
+                    filterSet["chainagestart"] = this.state.reportStartChainage;
+                }
+                if (this.state.reportEndChainage) {
+                    filterSet["chainageend"] = this.state.reportEndChainage;
+                }
+
+                return filterSet;
+            },
+            buildFilterSets(filterSet) {
+                let filters = [];
+
+                // Secondary Attributes are handled in a special way
+                // They result in multiple requests to the reports API
+                // In effect each 'parent' primaryattribute (the keys in secondaryattribute)
+                // is expanded out as a series of individual report requests
+                let parentPrimaries = [];
+                if (filterSet.secondaryattribute) {
+                    // Verify the secondaryAttributes are correctly refencing their 'parents'
+                    parentPrimaries = Object.keys(filterSet.secondaryattribute)
+                        .filter((secondaryattribute) => {
+                            return filterSet.primaryattribute.includes(secondaryattribute);
+                        });
+                }
+
+                if (parentPrimaries.length === 0) {
+                    // There were no secondary attributes or they didn't reference primaries properly
+                    filters = [filterSet];
+                    delete filterSet.secondaryattribute;
+                } else {
+                    // Build up the combinations of secondary attribute report filterSets
+                    // by expanding out the relevant primary attributes
+                    const expandedPrimaries = {};
+                    parentPrimaries.forEach((parentPrimary) => {
+                        // Check whether we have a relevant additional filter on a primary attribute
+                        if (filterSet[parentPrimary]) {
+                            expandedPrimaries[parentPrimary] = filterSet[parentPrimary];
+                        } else {
+                            let selectSource = "";
+                            // For each 'parent' primaryattribute of secondaryattribute values
+                            // add their reference data here
+                            switch (parentPrimary) {
+                                case "municipality": selectSource = ADMINISTRATIVE_AREA_CHOICES; break;
+                                case "asset_class": selectSource = ASSET_CLASS_CHOICES; break;
+                                case "asset_condition": selectSource = ASSET_CONDITION_CHOICES; break;
+                                case "surface_type": selectSource = SURFACE_TYPE_CHOICES; break;
+                                case "asset_type": selectSource = ASSET_TYPE_CHOICES; break;
+                            }
+                            if (selectSource) {
+                                expandedPrimaries[parentPrimary] = Object.keys(selectSource);
+                            }
+                        }
+                    });
+                    const expandedPrimaryKeys = Object.keys(expandedPrimaries);
+                    if (expandedPrimaryKeys.length === 0) {
+                        // Somehow none of our expanded primaries matched up
+                        // Have you (the programmer) made relevant code changes to support this secondaryattribute?
+                        filters = [filterSet];
+                        delete filterSet.secondaryattribute;
+                    } else {
+                        // The revised primary attributes will not included any that are 'expanded'
+                        const revisedPrimary = filterSet.primaryattribute.filter((primaryattribute) => {
+                            return !expandedPrimaryKeys.includes(primaryattribute);
+                        });
+                        // Build up a new collection of filterSets for every permutation we need
+                        expandedPrimaryKeys.forEach((expandedPrimary) => {
+                            // The new primary attributes will include the revised list
+                            // plus the secondary attributes that relate to the expanded primary
+                            const newPrimaryAttributes = [].concat(revisedPrimary, filterSet.secondaryattribute[expandedPrimary]);
+                            expandedPrimaries[expandedPrimary].forEach((ep) => {
+                                const newFilterSet = copyData(filterSet);
+                                newFilterSet.primaryattribute = newPrimaryAttributes;
+                                newFilterSet[expandedPrimary] = [ep];
+                                delete newFilterSet.secondaryattribute;
+                                filters.push(newFilterSet);
+                            });
+                        });
+                    }
+                }
+
+                return filters;
+            },
             createReport(e) {
                 $('#loading').modal('show');
 
-                const reportId = parseInt(e.currentTarget.dataset.id, 10);
+                const reportId = parseInt(e.currentTarget.dataset.id);
+                const baseFilterSet = this.assembleFilterSet();
+                const filters = this.buildFilterSets(baseFilterSet);
+                const getReports = filters.map((f) => {return getContractReport(reportId, f);});
 
-                getContractReport()
+                Promise.all(getReports)
                     .then((reportData) => {
                         this.state.reportData = {
                             dateCreated: currentDateTime(),
