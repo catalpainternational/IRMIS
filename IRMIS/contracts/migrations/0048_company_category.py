@@ -7,20 +7,35 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('contracts', '0047_add_field_validators'),
+        ("contracts", "0047_add_field_validators"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='CompanyCategory',
+            name="CompanyCategory",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=16, unique=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=16, unique=True)),
             ],
         ),
         migrations.AddField(
-            model_name='company',
-            name='category',
-            field=models.ForeignKey(blank=True, help_text='Choose category', null=True, on_delete=django.db.models.deletion.PROTECT, to='contracts.CompanyCategory', verbose_name='Company category'),
+            model_name="company",
+            name="category",
+            field=models.ForeignKey(
+                blank=True,
+                help_text="Choose category",
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="contracts.CompanyCategory",
+                verbose_name="Company category",
+            ),
         ),
     ]
