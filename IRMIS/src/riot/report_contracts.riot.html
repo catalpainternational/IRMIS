@@ -490,9 +490,7 @@
                 const reportId = parseInt(e.currentTarget.dataset.id);
                 const baseFilterSet = this.assembleFilterSet();
                 const filters = this.buildFilterSets(baseFilterSet);
-                const getReports = filters.map((f) => {return getContractReport(reportId, f);});
-
-                Promise.all(getReports)
+                getContractReport(reportId, [])
                     .then((reportData) => {
                         this.state.reportData = {
                             dateCreated: currentDateTime(),
@@ -501,25 +499,25 @@
                         };
                         switch (reportId) {
                             case 1:
-                                this.state.reportData["program"] = [];
+                                this.state.reportData["program"] = reportData.attributes;
                                 break;
                             case 2:
-                                this.state.reportData["contractCode"] = [];
+                                this.state.reportData["contractCode"] = reportData.attributes;
                                 break;
                             case 3:
-                                this.state.reportData["assetClassTypeOfWork"] = [];
-                                this.state.reportData["typeOfWorkYear"] = [];
-                                this.state.reportData["assetClassYear"] = [];
+                                this.state.reportData["assetClassTypeOfWork"] = reportData.attributes;
+                                this.state.reportData["typeOfWorkYear"] = reportData.attributes;
+                                this.state.reportData["assetClassYear"] = reportData.attributes;
                                 break;
                             case 4:
-                                this.state.reportData["numberEmployees"] = [];
-                                this.state.reportData["wages"] = [];
-                                this.state.reportData["workedDays"] = [];
+                                this.state.reportData["numberEmployees"] = reportData.attributes;
+                                this.state.reportData["wages"] = reportData.attributes;
+                                this.state.reportData["workedDays"] = reportData.attributes;
                                 break;
                             case 5:
-                                this.state.reportData["numberEmployees"] = [];
-                                this.state.reportData["wages"] = [];
-                                this.state.reportData["workedDays"] = [];
+                                this.state.reportData["numberEmployees"] = reportData.attributes;
+                                this.state.reportData["wages"] = reportData.attributes;
+                                this.state.reportData["workedDays"] = reportData.attributes;
                                 break;
                             default:
                                 break;
