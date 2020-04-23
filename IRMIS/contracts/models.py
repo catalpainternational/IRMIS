@@ -710,6 +710,15 @@ class Company(models.Model):
         help_text=_("Is the company director/owner a woman?"),
     )
 
+    category = models.ForeignKey(
+        "contracts.CompanyCategory",
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        verbose_name=_("Company category"),
+        help_text=_("Choose category"),
+    )
+
     def __str__(self):
         return self.name
 
@@ -733,6 +742,13 @@ class Company(models.Model):
             .values("v"),
             output_field=models.IntegerField(),
         )
+
+
+class CompanyCategory(models.Model):
+    name = models.CharField(max_length=16, unique=True)
+
+    def __str__(self):
+        return self.name
 
 
 # Document

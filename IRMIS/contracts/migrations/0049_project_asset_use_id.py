@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("contracts", "0047_add_field_validators"),
+        ("contracts", "0048_company_category"),
     ]
 
     operations = [
