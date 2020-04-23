@@ -94,10 +94,10 @@
             updatePhoto() {
                 putPhotoData(this.state.photo)
                     .then((data) => {
-                        document.dispatchEvent(new CustomEvent(`${this.props.photoId}.photoNeedsLinking`, {detail: {photo: this.state.photo}}));
+                        document.dispatchEvent(new CustomEvent(`${this.props.photoId}.photoNeedsLinking`, {detail: {photo: data}}));
                     }).catch((err) => {
                         this.props.showFeedback(true);
-                    }).finally((r) => {
+                    }).finally(() => {
                         this.update();
                     });
             },
@@ -106,17 +106,17 @@
                 deletePhotoData(this.state.photo)
                     .then((data) => {
                         // before resetting state.photo, remove from the NeedsLinkingQueue, if present.
-                        document.dispatchEvent(new CustomEvent(`${this.props.photoId}.photoNeedsRemoval`, {detail: {photo: this.state.photo}}));
+                        document.dispatchEvent(new CustomEvent(`${this.props.photoId}.photoNeedsRemoval`, {detail: {photo: data}}));
                         if (!this.props.surveyPhoto) {
                             // only if NOT a survey Photo, show feedback
                             this.props.showFeedback();
                         }
                         this.state.photo = new EstradaPhoto();
                         // show the dropzone
-                        document.getElementById("dropzone-" + props.photoId).style.display = 'inline-block';
+                        document.getElementById(`dropzone-${this.props.photoId}`).style.display = 'inline-block';
                     }).catch((err) => {
                         this.props.showFeedback(true);
-                    }).finally((r) => {
+                    }).finally(() => {
                         this.update();
                     });
             },

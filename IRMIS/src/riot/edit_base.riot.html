@@ -31,15 +31,12 @@
                         <ul>
                             <li class="{ state.page === 'structure_type' ? 'active' : '' }" data-page="structure_type"
                                 onclick="{ selectPage }">{ window.gettext("Type") }</li>
-                            <li class="{ state.page === 'structure_details' ? 'active' : '' }"
-                                data-page="structure_details" onclick="{ selectPage }">{ window.gettext("Asset Details")
-                                }</li>
-                            <li if="{ props.assetType === 'BRDG' }"
-                                class="{ state.page === 'protection' ? 'active' : '' }" data-page="protection"
+                            <li class="{ state.page === 'structure_details' ? 'active' : '' }" data-page="structure_details"
+                                onclick="{ selectPage }">{ window.gettext("Asset Details") }</li>
+                            <li class="{ state.page === 'protection' ? 'active' : '' }" data-page="protection"
                                 onclick="{ selectPage }">{ window.gettext("Protection") }</li>
-                            <li class="{ state.page === 'structure_condition' ? 'active' : '' }"
-                                data-page="structure_condition" onclick="{ selectPage }">{ window.gettext("Condition") }
-                            </li>
+                            <li class="{ state.page === 'structure_condition' ? 'active' : '' }" data-page="structure_condition"
+                                onclick="{ selectPage }">{ window.gettext("Condition") }</li>
                             <li class="{ state.page === 'media' ? 'active' : '' }" data-page="media"
                                 onclick="{ selectPage }">{ window.gettext("Media") }</li>
                         </ul>

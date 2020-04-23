@@ -1,19 +1,25 @@
+from collections import Counter, defaultdict, namedtuple
+from datetime import datetime
+
 import hashlib
 import json
 import pytz
-import reversion
 import xlrd
+
+import reversion
 from reversion.models import Version
-from datetime import datetime
-from collections import Counter, defaultdict
-import pytz
+
 import importlib_resources as resources
-from .models import sql_scripts
-from django.db import connection
+
+from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.gis.db import models
 from django.core.files.base import ContentFile
-from django.shortcuts import get_object_or_404
+from django.db import connection
+from django.db.models import Value, CharField, OuterRef, Prefetch, Q, Subquery
+from django.db.models.functions import Cast, Substr
 from django.http import (
     HttpResponse,
     HttpResponseForbidden,
@@ -21,15 +27,11 @@ from django.http import (
     JsonResponse,
     HttpResponseNotFound,
 )
+from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import TemplateView
-from django.contrib.admin.models import LogEntry, CHANGE
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.contenttypes.models import ContentType
-from django.db.models import Value, CharField, OuterRef, Prefetch, Q, Subquery
-from django.db.models.functions import Cast, Substr
 from django.views.generic import TemplateView, ListView
 
 from rest_framework_jwt.settings import api_settings
@@ -41,7 +43,6 @@ from rest_framework.viewsets import ViewSet
 from rest_framework_condition import condition
 
 from google.protobuf.timestamp_pb2 import Timestamp
-
 from protobuf import (
     photo_pb2,
     plan_pb2,
@@ -51,9 +52,6 @@ from protobuf import (
     survey_pb2,
     version_pb2,
 )
-from .report_query import ReportQuery, ContractReport
-
-from collections import namedtuple
 
 from .models import (
     Bridge,
@@ -81,10 +79,12 @@ from .models import (
     Survey,
     TechnicalClass,
     BreakpointRelationships,
+    sql_scripts,
 )
-from .serializers import RoadSerializer, RoadMetaOnlySerializer, RoadToWGSSerializer
 
 from .data_cleaning_utils import update_non_programmatic_surveys_by_road_code
+from .report_query import ReportQuery, ContractReport
+from .serializers import RoadSerializer, RoadMetaOnlySerializer, RoadToWGSSerializer
 from .token_mixin import JWTRequiredMixin
 
 
