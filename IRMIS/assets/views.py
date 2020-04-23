@@ -2132,24 +2132,25 @@ def protobuf_contract_reports(request, report_type):
     if request.method != "GET":
         raise MethodNotAllowed(request.method)
 
+    filters = request.GET.getlist("contract_code", [])
     report_types = {
         1: "financial_physical_progress_details",
         2: "financial_physical_progress_summary",
         3: "length_completed_work",
-        4: "social_safeguards",
-        5: "???",
+        4: "social_safeguards",  # summary
+        5: "social_safeguards",  # single contract
     }
 
     try:
         # Initialise the Contract Report
-        asset_report = ContractReport(report_types[report_type], [])
+        contract_report = ContractReport(report_types[report_type], filters)
         # Build out Contract Report data to return
         report_data = {
-            "filters": [],
-            "summary": asset_report.compile_summary_stats(
-                asset_report.execute_aggregate_query()
+            "filters": filters,
+            "summary": contract_report.compile_summary_stats(
+                contract_report.execute_aggregate_query()
             ),
-            "attributes": asset_report.execute_main_query(),
+            "attributes": contract_report.execute_main_query(),
         }
         return JsonResponse(report_data)
     except Exception:

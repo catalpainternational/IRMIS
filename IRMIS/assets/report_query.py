@@ -908,7 +908,6 @@ class ContractReport:
                 "    AVG(average_gross_wage) as average_gross_wage,\n"
                 "    AVG(average_net_wage) as average_net_wage\n"
                 "FROM contracts_socialsafeguarddata\n"
-                "GROUP BY Contract_id, year, quarter, month\n"
             ),
             "get_all": ("SELECT *\n" "FROM final_results;\n"),
             "get_aggregate": (
@@ -917,16 +916,28 @@ class ContractReport:
         }
 
     def build_query_body(self):
-        self.reportSQL = ""
-        if self.report_type is not "social_safeguards":
+        self.reportSQL = "WITH "
+        if "social_safeguards" not in self.report_type:
             self.reportSQL = (
-                "WITH contracts_core AS (\n"
-                + self.report_clauses["contracts_core"]
-                + "), "
+                "contracts_core AS (\n" + self.report_clauses["contracts_core"] + "), "
             )
-        self.reportSQL += (
-            "\n final_results AS ( %s )" % self.report_clauses[self.report_type]
-        )
+            self.reportSQL += (
+                "final_results AS ( %s )" % self.report_clauses[self.report_type]
+            )
+        else:
+            # check if summary or single social safeguards, based on if contract_id was provided in filters
+            contract_id = getattr(filters, "contract_id", None)
+            if contract_id:
+                self.reportSQL += "final_results AS ( %s )" % (
+                    self.report_clauses["social_safeguards"]
+                    + "WHERE contract_id = %s" % contract_id
+                    + "GROUP BY contract_id, year, quarter, month\n"
+                )
+            else:
+                self.reportSQL += "final_results AS ( %s )" % (
+                    self.report_clauses["social_safeguards"]
+                    + "GROUP BY contract_id, year, quarter, month\n"
+                )
 
     def execute_main_query(self):
         self.build_query_body()
