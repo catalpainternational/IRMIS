@@ -150,8 +150,6 @@ class ProjectAsset(models.Model):
     asset_id = models.CharField(
         verbose_name=_("Asset Id"),
         validators=[no_spaces],
-        blank=True,
-        null=True,
         db_index=True,
         max_length=15,
         help_text=_("Select project's asset"),
