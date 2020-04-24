@@ -408,6 +408,30 @@ class Contract(models.Model):
     def __str__(self):
         return f"{self.contract_code}"
 
+    @classmethod
+    def _total_budgets(cls):
+        """
+        A subquery returning the total budgets
+        """
+        return Subquery(
+            cls.objects.filter(pk=OuterRef("pk"))
+            .annotate(total=Sum("budgets__value"))
+            .values("total"),
+            output_field=models.IntegerField(),
+        )
+
+    @classmethod
+    def _total_amendments(cls):
+        """
+        A subquery returning the total amendments
+        """
+        return Subquery(
+            cls.objects.filter(pk=OuterRef("pk"))
+            .annotate(total=Sum("amendments__value"))
+            .values("total"),
+            output_field=models.IntegerField(),
+        )
+
 
 class ContractStatus(models.Model):
     name = models.CharField(max_length=256)

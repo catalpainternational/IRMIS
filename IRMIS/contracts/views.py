@@ -385,16 +385,8 @@ class ContractDetailView(DetailView):
     template_name = "contracts/contract_details_view.html"
     model = models.Contract
     queryset = models.Contract.objects.annotate(
-        total_budget=Func(
-            Sum("budgets__value"),
-            function="TRUNC",
-            template="%(function)s(%(expressions)s, 2)",
-        ),
-        total_amendments=Func(
-            Sum("amendments__value"),
-            function="TRUNC",
-            template="%(function)s(%(expressions)s, 2)",
-        ),
+        total_budget=models.Contract._total_budgets(),
+        total_amendments=models.Contract._total_amendments(),
     )
 
     def get_context_data(self, *args, **kwargs):
