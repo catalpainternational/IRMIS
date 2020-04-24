@@ -273,8 +273,3 @@
 <div id="collapsed-side-menu" class="d-none justify-content-center">
     <span class="arrow image"></span>
 </div>
-
-{{ asset_schema|json_script:"asset_schema" }}
-<script>
-    var asset_schema = JSON.parse(document.getElementById('asset_schema').textContent);
-</script>

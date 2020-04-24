@@ -83,7 +83,7 @@ from .models import (
 )
 
 from .data_cleaning_utils import update_non_programmatic_surveys_by_road_code
-from .report_query import ReportQuery
+from .report_query import ReportQuery, ContractReport
 from .serializers import RoadSerializer, RoadMetaOnlySerializer, RoadToWGSSerializer
 from .token_mixin import JWTRequiredMixin
 
@@ -2122,3 +2122,36 @@ class BreakpointRelationshipsReport(TemplateView):
             survey_params=self.request.GET.getlist("survey_param"),
         )
         return context
+
+
+@login_required
+def protobuf_contract_reports(request, report_type):
+    """ returns a protobuf object with a contract report determined by the filter conditions supplied """
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+    if request.method != "GET":
+        raise MethodNotAllowed(request.method)
+
+    filters = request.GET.getlist("contract_code", [])
+    report_types = {
+        1: "financial_physical_progress_details",
+        2: "financial_physical_progress_summary",
+        3: "length_completed_work",
+        4: "social_safeguards",  # summary
+        5: "social_safeguards",  # single contract
+    }
+
+    # try:
+    # Initialise the Contract Report
+    contract_report = ContractReport(report_types[report_type], filters)
+    # Build out Contract Report data to return
+    report_data = {
+        "filters": filters,
+        "summary": contract_report.compile_summary_stats(
+            contract_report.execute_aggregate_query()
+        ),
+        "attributes": contract_report.execute_main_query(),
+    }
+    return JsonResponse(report_data)
+    # except Exception:
+    #     return HttpResponse(status=400)

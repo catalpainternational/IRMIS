@@ -36,6 +36,16 @@ window.addEventListener("load", () => {
     initializePrintableTable($("#company-document-print-list-table"), []);
 });
 
+function setupSelectFilter(dataTable, selectId, placeHolder, filterFunc, columnNo) {
+    document.dispatchEvent(new CustomEvent("prepare-select2", { detail: { dataTable, id: selectId, placeHolder } }));
+    $.fn.dataTableExt.afnFiltering.push(
+        function (oSettings, _aData, iDataIndex) {
+            let row = oSettings.aoData[iDataIndex]._aData;
+            return filterFunc(row, columnNo, selectId);
+        }
+    );
+}
+
 function initializeProjectsListTable(table) {
     let columnDefs;
     let order;
@@ -63,25 +73,9 @@ function initializeProjectsListTable(table) {
     const searchBox = document.querySelector(".dataTables_filter input[type='search']");
     searchBox.attributes.getNamedItem("placeholder").value = window.gettext("Search by Asset Code, Project Code or Project Name");
 
-    // Status select2 filter
-    const statusSelectId = "status_select2";
-    document.dispatchEvent(new CustomEvent("prepare-select2", { detail: { dataTable: dataTable, id: statusSelectId, placeHolder: window.gettext("Project status") } }));
-    $.fn.dataTableExt.afnFiltering.push(
-        function (oSettings, _aData, iDataIndex) {
-            let row = oSettings.aoData[iDataIndex]._aData;
-            return textFilter(row, 2, statusSelectId);
-        }
-    );
-
-    // Type of work select2 filter
-    const typeOfWorkSelectId = "type_of_work_select2";
-    document.dispatchEvent(new CustomEvent("prepare-select2", { detail: { dataTable: dataTable, id: typeOfWorkSelectId, placeHolder: window.gettext("Type of work") } }));
-    $.fn.dataTableExt.afnFiltering.push(
-        function (oSettings, _aData, iDataIndex) {
-            let row = oSettings.aoData[iDataIndex]._aData;
-            return textFilter(row, 4, typeOfWorkSelectId);
-        }
-    );
+    // Select Filters
+    setupSelectFilter(dataTable, "project_status_select2", window.gettext("Project status"), textFilter, 2);
+    setupSelectFilter(dataTable, "project_type_of_work_select2", window.gettext("Type of work"), textFilter, 4);
 
     // Budget value range filter
     const valueSelectId = "value_select";
@@ -121,25 +115,9 @@ function initializeTendersListTable(table) {
     const searchBox = document.querySelector(".dataTables_filter input[type='search']");
     searchBox.attributes.getNamedItem("placeholder").value = window.gettext("Search by Asset Code or Tender Code");
 
-    // Status select2 filter
-    const statusSelectId = "status_select2";
-    document.dispatchEvent(new CustomEvent("prepare-select2", { detail: { dataTable: dataTable, id: statusSelectId, placeHolder: window.gettext("Tender status") } }));
-    $.fn.dataTableExt.afnFiltering.push(
-        function (oSettings, _aData, iDataIndex) {
-            let row = oSettings.aoData[iDataIndex]._aData;
-            return textFilter(row, 4, statusSelectId);
-        }
-    );
-
-    // Type of work select2 filter
-    const typeOfWorkSelectId = "type_of_work_select2";
-    document.dispatchEvent(new CustomEvent("prepare-select2", { detail: { dataTable: dataTable, id: typeOfWorkSelectId, placeHolder: window.gettext("Type of work") } }));
-    $.fn.dataTableExt.afnFiltering.push(
-        function (oSettings, _aData, iDataIndex) {
-            let row = oSettings.aoData[iDataIndex]._aData;
-            return multipleTextFilter(row, 6, typeOfWorkSelectId);
-        }
-    );
+    // Select Filters
+    setupSelectFilter(dataTable, "tender_status_select2", window.gettext("Tender status"), textFilter, 4);
+    setupSelectFilter(dataTable, "tender_type_of_work_select2", window.gettext("Type of work"), multipleTextFilter, 6);
 
     // Budget value range filter
     const valueSelectId = "value_select";
@@ -179,25 +157,9 @@ function initializeContractsListTable(table) {
     const searchBox = document.querySelector(".dataTables_filter input[type='search']");
     searchBox.attributes.getNamedItem("placeholder").value = window.gettext("Search by Asset Code or Contract Code");
 
-    // Type of work select2 filter
-    const typeOfWorkSelectId = "type_of_work_select2";
-    document.dispatchEvent(new CustomEvent("prepare-select2", { detail: { dataTable: dataTable, id: typeOfWorkSelectId, placeHolder: window.gettext("Type of work") } }));
-    $.fn.dataTableExt.afnFiltering.push(
-        function (oSettings, _aData, iDataIndex) {
-            let row = oSettings.aoData[iDataIndex]._aData;
-            return multipleTextFilter(row, 4, typeOfWorkSelectId);
-        }
-    );
-
-    // Status select2 filter
-    const statusSelectId = "status_select2";
-    document.dispatchEvent(new CustomEvent("prepare-select2", { detail: { dataTable: dataTable, id: statusSelectId, placeHolder: window.gettext("Contract status") } }));
-    $.fn.dataTableExt.afnFiltering.push(
-        function (oSettings, _aData, iDataIndex) {
-            let row = oSettings.aoData[iDataIndex]._aData;
-            return textFilter(row, 5, statusSelectId);
-        }
-    );
+    // Select Filters
+    setupSelectFilter(dataTable, "contract_type_of_work_select2", window.gettext("Type of work"), multipleTextFilter, 4);
+    setupSelectFilter(dataTable, "contract_status_select2", window.gettext("Contract status"), textFilter, 5);
 
     // Budget value range filter
     const valueSelectId = "value_select";
@@ -258,7 +220,7 @@ function initializePrintableTable(table, columnDefs) {
     }
 }
 
-let valueRangeFilter = (row, columnIdx, elementId) => {
+const valueRangeFilter = (row, columnIdx, elementId) => {
     const valueFilter = document.getElementById(elementId).selectedOptions.item(0);
     const minValue = valueFilter.dataset.min ? parseInt(valueFilter.dataset.min, 10) : null;
     const maxValue = valueFilter.dataset.max ? parseInt(valueFilter.dataset.max, 10) : null;
@@ -272,7 +234,7 @@ let valueRangeFilter = (row, columnIdx, elementId) => {
     else return value >= minValue && value <= maxValue;
 }
 
-let textFilter = (row, columnIdx, elementId) => {
+const textFilter = (row, columnIdx, elementId) => {
     const selectedValues = document.getElementById(elementId).selectedOptions;
     const columnValue = row[columnIdx];
 
@@ -285,7 +247,7 @@ let textFilter = (row, columnIdx, elementId) => {
     return false;
 }
 
-let multipleTextFilter = (row, columnIdx, elementId) => {
+const multipleTextFilter = (row, columnIdx, elementId) => {
     const selectedValues = document.getElementById(elementId).selectedOptions;
 
     if (!selectedValues.length) return true;

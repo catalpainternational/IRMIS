@@ -19,13 +19,13 @@
         <h6>{% trans "Filters" %}</h6>
         <div class="d-flex justify-content-between">
             <div class="d-flex flex-wrap">
-                <select id="status_select2" multiple="true">
+                <select id="tender_status_select2" multiple="true">
                     {% for status in status_list %}
                     <option value="{{ status.name }}">{{ status.name }}</option>
                     {% endfor %}
                 </select>
 
-                <select id="type_of_work_select2" multiple="true">
+                <select id="tender_type_of_work_select2" multiple="true">
                     {% for type in type_of_work_list %}
                     <option value="{{ type.name }}">{{ type.name }}</option>
                     {% endfor %}

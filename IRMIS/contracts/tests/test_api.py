@@ -21,7 +21,7 @@ class TestData:
             "name": "Hello WOrld",
             "code": "1243",
             "description": "1243",
-            "asset_code": "1324",
+            "asset_id": "ROAD-1324",
             "funding_source": models.FundingSource.objects.get_or_create(
                 name="Unknown"
             )[0].pk,
