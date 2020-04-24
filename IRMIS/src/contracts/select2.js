@@ -11,11 +11,10 @@ const contractSelects = {
         on: toggleMultipleSelect2,
         off: toggleMultipleSelect2,
     },
-    ".form-control.asset-code": {
+    ".asset-code": {
         options: {
             width: "100%",
-            tags: true,
-            placeholder: "Select asset ...",
+            placeholder: "A01-01",
             allowClear: true,
             containerCssClass: "form-control form-control-lg contracts-select2 asset-code",
             dropdownCssClass: "contracts-dropdown-select2",
@@ -37,7 +36,7 @@ document.addEventListener("prepare-select2", (data) => {
             placeholder: placeHolder,
         },
         on: (e) => searchDataTable(dataTable, e),
-        off: (e) => searchDataTable(dataTable, e),            
+        off: (e) => searchDataTable(dataTable, e),
     };
 
     processContractSelects();
@@ -48,27 +47,24 @@ window.addEventListener("load", () => {
 });
 
 function processContractSelects() {
-    // Convert class selectors to actual Ids
     Object.keys(contractSelects).forEach((selectKey) => {
         if (selectKey.startsWith(".") && !contractSelects[selectKey].processed) {
             const elements = $(selectKey);
-            elements.each((ix, element) => {
+            elements.each((_ix, element) => {
                 const id = `#${element.id}`;
-                const definition = JSON.parse(JSON.stringify(contractSelects[selectKey]));
-                contractSelects[id] = definition;
+                contractSelects[id] = JSON.parse(JSON.stringify(contractSelects[selectKey]));
+                instantiateSelect2(id);
             });
-            contractSelects[selectKey].processed = true;
-        }
-    })
-
-    Object.keys(contractSelects).forEach((selectKey) => {
-        if (selectKey.startsWith("#") && !contractSelects[selectKey].processed) {
-            $(selectKey).select2(contractSelects[selectKey].options);
-            $(selectKey).on('select2:select', contractSelects[selectKey].on);
-            $(selectKey).on('select2:unselect', contractSelects[selectKey].off);
-            contractSelects[selectKey].processed = true;
+        } else {
+            instantiateSelect2(selectKey);
         }
     });
+
+    function instantiateSelect2(selectKey) {
+        $(selectKey).select2(contractSelects[selectKey].options);
+        $(selectKey).on('select2:select', contractSelects[selectKey].on);
+        $(selectKey).on('select2:unselect', contractSelects[selectKey].off);
+    }
 }
 
 function toggleMultipleSelect2(e) {

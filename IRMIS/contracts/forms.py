@@ -111,12 +111,7 @@ class ProjectAssetForm(ModelForm):
             "asset_end_chainage",
         ]
         widgets = {
-            "asset_id": Select(
-                attrs={
-                    "class": "asset-code form-control form-control-lg",
-                    "placeholder": "A01-1",
-                }
-            ),
+            "asset_id": Select(attrs={"class": "asset-code"}),
         }
 
 
