@@ -1,5 +1,6 @@
 from django.contrib.postgres.fields import DateRangeField, JSONField
 from django.core import validators
+from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -7,9 +8,20 @@ from django.db.models import Q, Sum, Count, OuterRef, Subquery
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
+from assets.data_cleaning_utils import get_first_road_link_for_chainage
+from assets.models import Road
+from assets.templatetags.assets import simple_asset_list
+
 import json
 import datetime
 import reversion
+
+
+def no_spaces(value):
+    if " " in value:
+        raise ValidationError(
+            _("%(value)s should not contain spaces"), params={"value": value}
+        )
 
 
 # Project
@@ -134,8 +146,14 @@ class ProjectAsset(models.Model):
     project = models.ForeignKey(
         Project, on_delete=models.CASCADE, related_name="assets"
     )
-    asset_code = models.CharField(
-        max_length=128, verbose_name=_("Assets"), help_text=_("Select project’s asset"),
+    # Global ID for an asset the project links to (ex. ROAD-322, BRDG-42)
+    asset_id = models.CharField(
+        verbose_name=_("Asset Id"),
+        validators=[no_spaces],
+        db_index=True,
+        max_length=15,
+        default="",
+        help_text=_("Select project's asset"),
     )
     asset_start_chainage = models.IntegerField(
         verbose_name=_("Start Chainage"),
@@ -147,11 +165,68 @@ class ProjectAsset(models.Model):
         verbose_name=_("End Chainage"), blank=True, null=True, help_text=_("In meters"),
     )
 
+    @property
+    def asset_code(self):
+        if self.asset_id == None or len(self.asset_id.strip()) == 0:
+            return None
+
+        road = self.get_road()
+        if road != None:
+            return road.road_code
+
+        codes = list(
+            filter(lambda x: x[0] == self.asset_id, simple_asset_list(self.asset_id))
+        )
+        return codes[0][1] if len(codes) == 1 else self.asset_id
+
+    def get_road(self):
+        if self.asset_id.startswith("ROAD-"):
+            road_id = int(self.asset_id.replace("ROAD-", ""))
+            return Road.objects.get(pk=road_id)
+        return None
+
+    def clean(self):
+        # Clean the asset_id
+        if self.asset_id.startswith("ROAD-"):
+            if self.asset_start_chainage == None:
+                raise ValidationError(
+                    {
+                        "asset_start_chainage": _(
+                            "Start Chainage must be specified for roads"
+                        )
+                    }
+                )
+            if self.asset_end_chainage == None:
+                raise ValidationError(
+                    {
+                        "asset_end_chainage": _(
+                            "End Chainage must be specified for roads"
+                        )
+                    }
+                )
+
+            road = self.get_road()
+            if road != None:
+                road_link = get_first_road_link_for_chainage(
+                    road.road_code, self.asset_start_chainage
+                )
+                if not road_link:
+                    raise ValidationError(
+                        {
+                            "asset_start_chainage": _(
+                                "Start Chainage is too large for this road"
+                            )
+                        }
+                    )
+
+                # 'correct' the asset_id to point to the first matching road link
+                self.asset_id = "ROAD-" + str(road_link.id)
+
     def __str__(self):
-        if self.asset_end_chainage:
-            return "{id}: {code} @ {project} ({start} - {end})".format(
+        if self.asset_id.startswith("ROAD"):
+            return "{id}: {asset_code} @ {project} ({start} - {end})".format(
                 id=self.id,
-                code=self.asset_code,
+                asset_code=self.asset_code,
                 project=self.project_id,
                 start="{0:0.3f}".format(
                     (self.asset_start_chainage or 0) / 1000
@@ -161,8 +236,8 @@ class ProjectAsset(models.Model):
                 ),
             )
         else:
-            return "{id}: {code} @ {project}".format(
-                id=self.id, code=self.asset_code, project=self.project_id
+            return "{id}: {asset_code} @ {project}".format(
+                id=self.id, asset_code=self.asset_code, project=self.project_id
             )
 
 

@@ -1,6 +1,9 @@
-from django.forms import ModelForm, ModelMultipleChoiceField
+from django.forms import ModelForm, ModelMultipleChoiceField, Select
 from django.forms import modelformset_factory, inlineformset_factory
 from django.utils.translation import ugettext_lazy as _
+
+from assets.templatetags.assets import simple_asset_list
+
 from . import models
 
 
@@ -83,9 +86,7 @@ class ProjectAssetForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.label_suffix = ""
-        self.fields["asset_code"].widget.attrs.update(
-            {"class": "asset-code form-control form-control-lg", "placeholder": "A01-1"}
-        )
+
         self.fields["asset_start_chainage"].widget.attrs.update(
             {
                 "class": "asset-start-chainage form-control form-control-sm",
@@ -98,14 +99,25 @@ class ProjectAssetForm(ModelForm):
                 "placeholder": "3000",
             }
         )
+        self.fields["asset_id"].widget.choices = tuple(
+            [(u"", "")] + simple_asset_list(self.instance.asset_id)
+        )
 
     class Meta:
         model = models.ProjectAsset
         fields = [
-            "asset_code",
+            "asset_id",
             "asset_start_chainage",
             "asset_end_chainage",
         ]
+        widgets = {
+            "asset_id": Select(
+                attrs={
+                    "class": "asset-code form-control form-control-lg",
+                    "placeholder": "A01-1",
+                }
+            ),
+        }
 
 
 class ProjectBudgetForm(ModelForm):

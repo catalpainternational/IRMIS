@@ -1,30 +1,75 @@
 import "select2/dist/js/select2.full.min.js";
 import $ from "jquery";
 
-window.addEventListener("load", () => {
-    $("#id_projects").select2({
-        width: "100%",
-        containerCssClass: "form-control contracts-select2",
-        dropdownCssClass: "contracts-dropdown-select2",
-    });
-    $("#id_projects").on('select2:select', toggleMultipleSelect2);
-    $("#id_projects").on('select2:unselect', toggleMultipleSelect2);
-});
+const contractSelects = {
+    "#id_projects": {
+        options: {
+            width: "100%",
+            containerCssClass: "form-control contracts-select2",
+            dropdownCssClass: "contracts-dropdown-select2",
+        },
+        on: toggleMultipleSelect2,
+        off: toggleMultipleSelect2,
+    },
+    ".form-control.asset-code": {
+        options: {
+            width: "100%",
+            tags: true,
+            placeholder: "Select asset ...",
+            allowClear: true,
+            containerCssClass: "form-control form-control-lg contracts-select2 asset-code",
+            dropdownCssClass: "contracts-dropdown-select2",
+        },
+    }
+};
 
 document.addEventListener("prepare-select2", (data) => {
     const dataTable = data.detail.dataTable;
     const select2Element = `#${data.detail.id}`;
     const placeHolder = data.detail.placeHolder;
 
-    $(select2Element).select2({
-        width: "unset",
-        containerCssClass: "contract-criteria-select2",
-        dropdownCssClass: "contract-criteria-dropdown-select2",
-        placeholder: placeHolder,
-    });
-    $(select2Element).on('select2:select', (e) => searchDataTable(dataTable, e));
-    $(select2Element).on('select2:unselect', (e) => searchDataTable(dataTable, e));
+    contractSelects[select2Element] = contractSelects[select2Element] ||
+    {
+        options: {
+            width: "unset",
+            containerCssClass: "contract-criteria-select2",
+            dropdownCssClass: "contract-criteria-dropdown-select2",
+            placeholder: placeHolder,
+        },
+        on: (e) => searchDataTable(dataTable, e),
+        off: (e) => searchDataTable(dataTable, e),            
+    };
+
+    processContractSelects();
 });
+
+window.addEventListener("load", () => {
+    processContractSelects();
+});
+
+function processContractSelects() {
+    // Convert class selectors to actual Ids
+    Object.keys(contractSelects).forEach((selectKey) => {
+        if (selectKey.startsWith(".") && !contractSelects[selectKey].processed) {
+            const elements = $(selectKey);
+            elements.each((ix, element) => {
+                const id = `#${element.id}`;
+                const definition = JSON.parse(JSON.stringify(contractSelects[selectKey]));
+                contractSelects[id] = definition;
+            });
+            contractSelects[selectKey].processed = true;
+        }
+    })
+
+    Object.keys(contractSelects).forEach((selectKey) => {
+        if (selectKey.startsWith("#") && !contractSelects[selectKey].processed) {
+            $(selectKey).select2(contractSelects[selectKey].options);
+            $(selectKey).on('select2:select', contractSelects[selectKey].on);
+            $(selectKey).on('select2:unselect', contractSelects[selectKey].off);
+            contractSelects[selectKey].processed = true;
+        }
+    });
+}
 
 function toggleMultipleSelect2(e) {
     const selectElement = e.currentTarget;
