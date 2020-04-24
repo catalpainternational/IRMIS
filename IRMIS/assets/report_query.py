@@ -772,7 +772,7 @@ class ContractReport:
                 "        COUNT(pa.id) FILTER (WHERE r.asset_class = 'RUR') as rur_cnt,\n"
                 "        SUM(r.geom_length) FILTER (WHERE r.asset_class = 'RUR') as rur_length\n"
                 "    FROM contracts_projectasset as pa\n"
-                "    JOIN assets_road as r on (r.road_code = pa.asset_code)\n"
+                "    JOIN assets_road as r on (r.road_code = pa.asset_id)\n"
                 "    GROUP BY project_id, asset_class\n"
                 ") as pas on (pas.project_id = prj.id)\n"
                 "LEFT JOIN (\n"

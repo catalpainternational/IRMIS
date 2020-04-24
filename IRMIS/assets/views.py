@@ -2141,17 +2141,17 @@ def protobuf_contract_reports(request, report_type):
         5: "social_safeguards",  # single contract
     }
 
-    try:
-        # Initialise the Contract Report
-        contract_report = ContractReport(report_types[report_type], filters)
-        # Build out Contract Report data to return
-        report_data = {
-            "filters": filters,
-            "summary": contract_report.compile_summary_stats(
-                contract_report.execute_aggregate_query()
-            ),
-            "attributes": contract_report.execute_main_query(),
-        }
-        return JsonResponse(report_data)
-    except Exception:
-        return HttpResponse(status=400)
+    # try:
+    # Initialise the Contract Report
+    contract_report = ContractReport(report_types[report_type], filters)
+    # Build out Contract Report data to return
+    report_data = {
+        "filters": filters,
+        "summary": contract_report.compile_summary_stats(
+            contract_report.execute_aggregate_query()
+        ),
+        "attributes": contract_report.execute_main_query(),
+    }
+    return JsonResponse(report_data)
+    # except Exception:
+    #     return HttpResponse(status=400)
