@@ -1,3 +1,6 @@
+import json
+from datetime import date, datetime, timezone
+
 from django.contrib.postgres.fields import DateRangeField, JSONField
 from django.core import validators
 from django.core.exceptions import ValidationError
@@ -9,12 +12,13 @@ from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from assets.data_cleaning_utils import get_first_road_link_for_chainage
-from assets.models import Road
+from assets.models import Road, Bridge, Culvert, Drift
 from assets.templatetags.assets import simple_asset_list
 
-import json
-import datetime
+from basemap.models import Municipality
+
 import reversion
+from reversion.models import Version
 
 
 def no_spaces(value):
@@ -185,9 +189,13 @@ class ProjectAsset(models.Model):
             return Road.objects.get(pk=road_id)
         return None
 
+    def clean_asset_id(self):
+        # ignore it, we clean this in clean below ...
+        pass
+
     def clean(self):
-        # Clean the asset_id
-        if self.asset_id.startswith("ROAD-"):
+        # First check the chainages if this is a Road
+        if self.asset_id.startswith("ROAD-") or self.asset_id.startswith("ROAD|"):
             if self.asset_start_chainage == None:
                 raise ValidationError(
                     {
@@ -205,6 +213,106 @@ class ProjectAsset(models.Model):
                     }
                 )
 
+        # Check if the asset_id is actually a new Asset in disguise
+        if "|" in self.asset_id:
+            new_asset_details = self.asset_id.split("|")
+            if len(new_asset_details) < 3:
+                raise ValidationError(
+                    {
+                        "asset_id": _(
+                            "Asset Id must identify a current Asset, or provide enough information to create a new Asset"
+                        )
+                    }
+                )
+            asset_type = new_asset_details[0]
+            asset_class = new_asset_details[1]
+            asset_municipality = new_asset_details[2]
+
+            # preset asset_code from the asset_type
+            # and check the asset_type's validity
+            if asset_type == "ROAD":
+                asset_code = "XX"
+            elif asset_type == "BRDG":
+                asset_code = "XB"
+            elif asset_type == "CULV":
+                asset_code = "XC"
+            elif asset_type == "DRFT":
+                asset_code = "XD"
+            else:
+                raise ValidationError(
+                    {
+                        "asset_id": _(
+                            "Could not create a new Asset, because the asset_type in the 'special' Asset Id is not valid."
+                        )
+                    }
+                )
+
+            # validate the asset_class
+            if asset_class not in ["NAT", "MUN", "RUR", "HIGH", "URB"]:
+                raise ValidationError(
+                    {
+                        "asset_id": _(
+                            "Could not create a new Asset, because the asset_class in the 'special' Asset Id is not valid."
+                        )
+                    }
+                )
+
+            # validate the asset_municipality
+            try:
+                municipality_id = int(asset_municipality)
+                municipality = Municipality.objects.get(pk=municipality_id)
+            except Municipality.DoesNotExist:
+                raise ValidationError(
+                    {
+                        "asset_id": _(
+                            "Could not create a new Asset, because the asset_municipality in the 'special' Asset Id is not valid."
+                        )
+                    }
+                )
+
+            if len(new_asset_details) > 3:
+                # we've been supplied with an asset_code
+                asset_code = new_asset_details[3]
+            else:
+                # Fudge up an asset code from now() as a timestamp
+                dt = datetime.now() 
+                utc_time = dt.replace(tzinfo = timezone.utc) 
+                utc_timestamp = utc_time.timestamp()
+                asset_code = asset_code + str(utc_timestamp).replace(".", "")[0:13]
+                
+            # Now we can build up our 'basic' asset
+            if asset_type == "ROAD":
+                asset_model = Road
+            elif asset_type == "BRDG":
+                asset_model = Bridge
+            elif asset_type == "CULV":
+                asset_model = Culvert
+            elif asset_type == "DRFT":
+                asset_model = Drift
+
+            asset_obj = asset_model(asset_class=asset_class, administrative_area=asset_municipality)
+            if asset_type == "ROAD":
+                asset_obj.road_code = asset_code
+                asset_obj.link_code = asset_code
+                asset_obj.link_start_chainage = self.asset_start_chainage
+                asset_obj.geom_start_chainage = self.asset_start_chainage
+                asset_obj.link_end_chainage = self.asset_end_chainage
+                asset_obj.geom_end_chainage = self.asset_end_chainage
+            else:
+                asset_obj.structure_code = asset_code
+
+            # save the asset object with a revision comment
+            with reversion.create_revision():
+                asset_obj.save()
+                reversion.set_comment("Created as a new asset for project %s" % self.project.name)
+                # we don't set the user here - because we don't want to fudge things
+
+            # and now we can get it's Id
+            self.asset_id = "%s-%s" % (asset_type, asset_obj.id)
+            print(self.asset_id)
+
+        elif self.asset_id.startswith("ROAD-"):
+            # Clean the asset_id for exsiting roads
             road = self.get_road()
             if road != None:
                 road_link = get_first_road_link_for_chainage(
@@ -244,7 +352,7 @@ class ProjectAsset(models.Model):
 class ProjectBudget(models.Model):
     YEAR_CHOICES = [
         (r, r)
-        for r in range(datetime.date.today().year - 10, datetime.date.today().year + 11)
+        for r in range(date.today().year - 10, date.today().year + 11)
     ]
 
     year = models.IntegerField(
@@ -426,7 +534,7 @@ class ContractSupervisor(models.Model):
 
 
 class ContractBudget(models.Model):
-    YEAR_CHOICES = [(r, r) for r in range(2010, datetime.date.today().year + 1)]
+    YEAR_CHOICES = [(r, r) for r in range(2010, date.today().year + 1)]
 
     contract = models.ForeignKey(
         "Contract", on_delete=models.CASCADE, related_name="budgets"
@@ -455,7 +563,7 @@ class ContractMilestone(models.Model):
 
 
 class ContractAmendment(models.Model):
-    YEAR_CHOICES = [(r, r) for r in range(2010, datetime.date.today().year + 1)]
+    YEAR_CHOICES = [(r, r) for r in range(2010, date.today().year + 1)]
 
     contract = models.ForeignKey(
         "Contract", on_delete=models.CASCADE, related_name="amendments"

@@ -125,7 +125,7 @@ def import_shapefiles(management_command, shape_file_folder, asset="road"):
         asset_model = Drift
 
     # delete appropriate exisiting DB objects and their revisions
-    asset_model.objects.all().delete()
+    asset_model.objects.exclude(geojson_file_id__isnull=True).delete()
     Version.objects.get_deleted(asset_model).delete()
     CollatedGeoJsonFile.objects.filter(asset_type=asset).all().delete()
 
