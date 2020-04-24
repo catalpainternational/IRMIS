@@ -12,9 +12,9 @@ window.addEventListener("load", () => {
     if (contractsListTable.length) initializeContractsListTable(contractsListTable);
     if (companiesListTable.length) initializeCompaniesListTable(companiesListTable);
 
-    initializeListTable($("#project-document-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
+    initializeListTable($("#project-document-list-table"), [{ orderable: false, targets: [0, 1] }], [[2, 'asc']]);
     initializeListTable($("#project-document-view-list-table"), [], [[0, 'asc']]);
-    initializeListTable($("#tender-document-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
+    initializeListTable($("#tender-document-list-table"), [{ orderable: false, targets: [0, 1] }], [[2, 'asc']]);
     initializeListTable($("#tender-document-view-list-table"), [], [[0, 'asc']]);
     initializeListTable($("#contract-inspection-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
     initializeListTable($("#contract-inspection-view-list-table"), [], [[0, 'asc']]);
@@ -22,9 +22,9 @@ window.addEventListener("load", () => {
     initializeListTable($("#contract-payment-view-list-table"), [], [[0, 'asc']]);
     initializeListTable($("#contract-social-safeguard-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
     initializeListTable($("#contract-social-safeguard-view-list-table"), [], [[0, 'asc']]);
-    initializeListTable($("#contract-document-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
+    initializeListTable($("#contract-document-list-table"), [{ orderable: false, targets: [0, 1] }], [[2, 'asc']]);
     initializeListTable($("#contract-document-view-list-table"), [], [[0, 'asc']]);
-    initializeListTable($("#company-document-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
+    initializeListTable($("#company-document-list-table"), [{ orderable: false, targets: [0, 1] }], [[2, 'asc']]);
     initializeListTable($("#company-document-view-list-table"), [], [[0, 'asc']]);
 
     initializePrintableTable($("#project-document-print-list-table"), []);
