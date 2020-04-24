@@ -566,7 +566,6 @@ class SocialSafeguardData(models.Model):
         constraints = [
             models.CheckConstraint(check=models.Q(year__gte=2010), name="year_gt_2010"),
             models.CheckConstraint(check=models.Q(year__lte=2100), name="year_gt_2100"),
-            models.UniqueConstraint(fields=["year", "month"], name="unique_month"),
         ]
 
     MONTHS_CHOICES = [
