@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import Q, Sum, Count, OuterRef, Subquery
+from django.db.models import Q, Count, OuterRef, Subquery
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
@@ -407,30 +407,6 @@ class Contract(models.Model):
 
     def __str__(self):
         return f"{self.contract_code}"
-
-    @classmethod
-    def _total_budgets(cls):
-        """
-        A subquery returning the total budgets
-        """
-        return Subquery(
-            cls.objects.filter(pk=OuterRef("pk"))
-            .annotate(total=Sum("budgets__value"))
-            .values("total"),
-            output_field=models.IntegerField(),
-        )
-
-    @classmethod
-    def _total_amendments(cls):
-        """
-        A subquery returning the total amendments
-        """
-        return Subquery(
-            cls.objects.filter(pk=OuterRef("pk"))
-            .annotate(total=Sum("amendments__value"))
-            .values("total"),
-            output_field=models.IntegerField(),
-        )
 
 
 class ContractStatus(models.Model):
