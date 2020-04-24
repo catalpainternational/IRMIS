@@ -275,11 +275,11 @@ class ProjectAsset(models.Model):
                 asset_code = new_asset_details[3]
             else:
                 # Fudge up an asset code from now() as a timestamp
-                dt = datetime.now() 
-                utc_time = dt.replace(tzinfo = timezone.utc) 
+                dt = datetime.now()
+                utc_time = dt.replace(tzinfo=timezone.utc)
                 utc_timestamp = utc_time.timestamp()
                 asset_code = asset_code + str(utc_timestamp).replace(".", "")[0:13]
-                
+
             # Now we can build up our 'basic' asset
             if asset_type == "ROAD":
                 asset_model = Road
@@ -290,7 +290,9 @@ class ProjectAsset(models.Model):
             elif asset_type == "DRFT":
                 asset_model = Drift
 
-            asset_obj = asset_model(asset_class=asset_class, administrative_area=asset_municipality)
+            asset_obj = asset_model(
+                asset_class=asset_class, administrative_area=asset_municipality
+            )
             if asset_type == "ROAD":
                 asset_obj.road_code = asset_code
                 asset_obj.link_code = asset_code
@@ -304,7 +306,9 @@ class ProjectAsset(models.Model):
             # save the asset object with a revision comment
             with reversion.create_revision():
                 asset_obj.save()
-                reversion.set_comment("Created as a new asset for project %s" % self.project.name)
+                reversion.set_comment(
+                    "Created as a new asset for project %s" % self.project.name
+                )
                 # we don't set the user here - because we don't want to fudge things
 
             # and now we can get it's Id
@@ -351,8 +355,7 @@ class ProjectAsset(models.Model):
 
 class ProjectBudget(models.Model):
     YEAR_CHOICES = [
-        (r, r)
-        for r in range(date.today().year - 10, date.today().year + 11)
+        (r, r) for r in range(date.today().year - 10, date.today().year + 11)
     ]
 
     year = models.IntegerField(
