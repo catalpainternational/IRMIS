@@ -13,7 +13,7 @@ class ProjectForm(ModelForm):
         super().__init__(*args, **kwargs)
         self.label_suffix = ""
         self.fields["status"].widget.attrs.update({"class": "form-control"})
-        self.fields["program"].widget.attrs.update({"class": "form-control"})
+        self.fields["program"].widget.attrs.update({"class": "form-control inactive"})
         self.fields["name"].widget.attrs.update(
             {"class": "form-control", "placeholder": _("Rehabilitation road X")}
         )

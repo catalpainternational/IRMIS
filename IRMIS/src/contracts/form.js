@@ -61,6 +61,10 @@ window.addEventListener("load", () => {
 
     saveFormValues(originalForm);
 
+    if (program) {
+        isElementValid(program);
+    }
+
     if (startDate) {
         startDate.type = "date";
     }
@@ -85,6 +89,18 @@ window.addEventListener("load", () => {
         amendmentStartDate.type = "date";
     }
 });
+
+function isElementValid(element) {
+    isValid(element);
+    element.addEventListener("change", () => {
+        isValid(element);
+    });
+
+    function isValid(element) {
+        if (element.value) element.classList.remove("inactive");
+        else element.classList.add("inactive");
+    }
+}
 
 function saveFormValues(state) {
     saveValue(state, status);
