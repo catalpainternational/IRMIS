@@ -212,6 +212,21 @@ class ProjectAsset(models.Model):
                         )
                     }
                 )
+            if self.asset_start_chainage < 0:
+                raise ValidationError(
+                    {"asset_start_chainage": _("Start Chainage must be 0 or greater")}
+                )
+            if self.asset_start_chainage >= self.asset_end_chainage:
+                raise ValidationError(
+                    {
+                        "asset_start_chainage": _(
+                            "Start Chainage must be less than End Chainage"
+                        ),
+                        "asset_end_chainage": _(
+                            "End Chainage must be greater than Start Chainage"
+                        ),
+                    }
+                )
 
         # Check if the asset_id is actually a new Asset in disguise
         if "|" in self.asset_id:
