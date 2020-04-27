@@ -227,6 +227,10 @@ window.addEventListener("load", () => {
         isFormsetElementValid(amendmentValue);
     }
 
+    if (amendmentStartDate) {
+        isElementValid(amendmentStartDate);
+    }
+
 });
 
 function isElementValid(element) {
