@@ -133,6 +133,7 @@ window.addEventListener("load", () => {
 
     if (submissionDate) {
         submissionDate.type = "date";
+        isElementValid(submissionDate);
     }
 
     if (evaluationDate) {
