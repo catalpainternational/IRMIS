@@ -123,10 +123,6 @@ window.addEventListener("load", () => {
         isFormsetElementValid(milestoneProgress);
     }
 
-    if (endDate) {
-        endDate.type = "date";
-    }
-
     if (announcementDate) {
         announcementDate.type = "date";
         isElementValid(announcementDate);
@@ -212,6 +208,11 @@ window.addEventListener("load", () => {
 
     if (supervisorPhone) {
         isFormsetElementValid(supervisorPhone);
+    }
+
+    if (endDate) {
+        endDate.type = "date";
+        isElementValid(endDate);
     }
 
 });
