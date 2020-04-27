@@ -161,6 +161,10 @@ window.addEventListener("load", () => {
         isElementValid(email);
     }
 
+    if (tin) {
+        isElementValid(tin);
+    }
+
 });
 
 function isElementValid(element) {
