@@ -110,6 +110,10 @@ window.addEventListener("load", () => {
         isElementValid(startDate);
     }
 
+    if (duration) {
+        isElementValid(duration);
+    }
+
     if (endDate) {
         endDate.type = "date";
     }
