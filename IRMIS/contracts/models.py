@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import Q, Sum, Count, OuterRef, Subquery
+from django.db.models import Q, Count, OuterRef, Subquery
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 

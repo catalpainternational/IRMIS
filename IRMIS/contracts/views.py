@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
-from django.db.models import Sum, Count, Func
+from django.db.models import Sum, Count, Func, IntegerField, OuterRef, Subquery
 from django.db.models.base import ModelBase
 from django.forms import inlineformset_factory
 from django.forms.widgets import DateInput, NumberInput, TextInput
@@ -385,15 +385,17 @@ class ContractDetailView(DetailView):
     template_name = "contracts/contract_details_view.html"
     model = models.Contract
     queryset = models.Contract.objects.annotate(
-        total_budget=Func(
-            Sum("budgets__value"),
-            function="TRUNC",
-            template="%(function)s(%(expressions)s, 2)",
+        total_budget=Subquery(
+            models.Contract.objects.filter(pk=OuterRef("pk"))
+            .annotate(total=Sum("budgets__value"))
+            .values("total"),
+            output_field=IntegerField(),
         ),
-        total_amendments=Func(
-            Sum("amendments__value"),
-            function="TRUNC",
-            template="%(function)s(%(expressions)s, 2)",
+        total_amendments=Subquery(
+            models.Contract.objects.filter(pk=OuterRef("pk"))
+            .annotate(total=Sum("amendments__value"))
+            .values("total"),
+            output_field=IntegerField(),
         ),
     )
 
