@@ -3,7 +3,7 @@ import * as L from "leaflet";
 import { FallbackLayerStyle, FixLayerStyleDefaults } from "./leaflet-style";
 
 import { KnownGeometries } from "../layers/KnownGeometries";
-import { GeoDataStyle, PointToLayerStyle } from "models/geo-data-style";
+import { GeoDataStyle, PointToLayerStyle } from "../models/geo-data-style";
 
 export function getFilterStyles(layerName: string): { [name: string]: PointToLayerStyle } {
     const layerNameOn = `${layerName}.on`;
