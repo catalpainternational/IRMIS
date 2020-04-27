@@ -77,6 +77,14 @@ window.addEventListener("load", () => {
         isElementValid(description);
     }
 
+    if (assetStartChainage) {
+        isFormsetElementValid(assetStartChainage);
+    }
+
+    if (assetEndChainage) {
+        isFormsetElementValid(assetEndChainage);
+    }
+
     if (startDate) {
         startDate.type = "date";
     }
@@ -112,6 +120,12 @@ function isElementValid(element) {
         if (element.value) element.classList.remove("inactive");
         else element.classList.add("inactive");
     }
+}
+
+function isFormsetElementValid(elements) {
+    elements.forEach((element) => {
+        isElementValid(element);
+    });
 }
 
 function saveFormValues(state) {
