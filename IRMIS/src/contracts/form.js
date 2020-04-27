@@ -219,6 +219,10 @@ window.addEventListener("load", () => {
         isElementValid(dlp);
     }
 
+    if (amendmentYear) {
+        isFormsetElementValid(amendmentYear);
+    }
+
 });
 
 function isElementValid(element) {
