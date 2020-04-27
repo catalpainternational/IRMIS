@@ -194,6 +194,10 @@ window.addEventListener("load", () => {
         isElementValid(tender);
     }
 
+    if (contractCode) {
+        isElementValid(contractCode);
+    }
+
 });
 
 function isElementValid(element) {
