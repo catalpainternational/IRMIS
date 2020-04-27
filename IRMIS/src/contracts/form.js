@@ -29,6 +29,7 @@ const representativeName = document.getElementById("id_rep_name");
 const representativePhone = document.getElementById("id_rep_phone");
 const representativeEmail = document.getElementById("id_rep_email");
 const womanLed = document.getElementById("id_woman_led");
+const category = document.getElementById("id_category");
 const tender = document.getElementById("id_tender");
 const contractCode = document.getElementById("id_contract_code");
 const contractor = document.getElementById("id_contractor");
@@ -185,6 +186,9 @@ window.addEventListener("load", () => {
         isElementValid(womanLed);
     }
 
+    if (category) {
+        isElementValid(category);
+    }
 });
 
 function isElementValid(element) {
