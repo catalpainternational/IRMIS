@@ -181,6 +181,10 @@ window.addEventListener("load", () => {
         isElementValid(representativeEmail);
     }
 
+    if (womanLed) {
+        isElementValid(womanLed);
+    }
+
 });
 
 function isElementValid(element) {
