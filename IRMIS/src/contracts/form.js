@@ -101,6 +101,10 @@ window.addEventListener("load", () => {
         isFormsetElementValid(budgetYear);
     }
 
+    if (budgetValue) {
+        isFormsetElementValid(budgetValue);
+    }
+
     if (startDate) {
         startDate.type = "date";
     }
