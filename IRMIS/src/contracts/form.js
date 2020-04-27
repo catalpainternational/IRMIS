@@ -290,6 +290,7 @@ function saveFormValues(state) {
     saveValue(state, representativePhone);
     saveValue(state, representativeEmail);
     saveValue(state, womanLed);
+    saveValue(state, category);
     saveValue(state, tender);
     saveValue(state, contractCode);
     saveValue(state, contractor);
