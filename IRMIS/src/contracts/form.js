@@ -153,6 +153,10 @@ window.addEventListener("load", () => {
         isElementValid(address);
     }
 
+    if (phone) {
+        isElementValid(phone);
+    }
+
 });
 
 function isElementValid(element) {
