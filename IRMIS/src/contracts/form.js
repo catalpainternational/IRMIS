@@ -235,6 +235,9 @@ window.addEventListener("load", () => {
         isElementValid(amendmentDuration);
     }
 
+    if (amendmentDescription) {
+        isElementValid(amendmentDescription);
+    }
 });
 
 function isElementValid(element) {
