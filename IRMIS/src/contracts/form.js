@@ -78,11 +78,11 @@ window.addEventListener("load", () => {
         isElementValid(description);
     }
 
-    if (assetStartChainage) {
+    if (assetStartChainage.length) {
         isFormsetElementValid(assetStartChainage);
     }
 
-    if (assetEndChainage) {
+    if (assetEndChainage.length) {
         isFormsetElementValid(assetEndChainage);
     }
 
@@ -98,11 +98,11 @@ window.addEventListener("load", () => {
         isElementValid(donor);
     }
 
-    if (budgetYear) {
+    if (budgetYear.length) {
         isFormsetElementValid(budgetYear);
     }
 
-    if (budgetValue) {
+    if (budgetValue.length) {
         isFormsetElementValid(budgetValue);
     }
 
@@ -115,11 +115,11 @@ window.addEventListener("load", () => {
         isElementValid(duration);
     }
 
-    if (milestoneDaysOfWork) {
+    if (milestoneDaysOfWork.length) {
         isFormsetElementValid(milestoneDaysOfWork);
     }
 
-    if (milestoneProgress) {
+    if (milestoneProgress.length) {
         isFormsetElementValid(milestoneProgress);
     }
 
@@ -202,11 +202,11 @@ window.addEventListener("load", () => {
         isElementValid(subcontractor);
     }
 
-    if (supervisorName) {
+    if (supervisorName.length) {
         isFormsetElementValid(supervisorName);
     }
 
-    if (supervisorPhone) {
+    if (supervisorPhone.length) {
         isFormsetElementValid(supervisorPhone);
     }
 
@@ -219,11 +219,11 @@ window.addEventListener("load", () => {
         isElementValid(dlp);
     }
 
-    if (amendmentYear) {
+    if (amendmentYear.length) {
         isFormsetElementValid(amendmentYear);
     }
 
-    if (amendmentValue) {
+    if (amendmentValue.length) {
         isFormsetElementValid(amendmentValue);
     }
 
