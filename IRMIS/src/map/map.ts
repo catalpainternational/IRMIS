@@ -28,6 +28,7 @@ export class Map {
     private lMap = {} as L.Map;
     private zoomControl = {} as L.Control.Zoom;
     private currentLayer = {} as L.TileLayer;
+    private keySequence: string[] = [];
 
     /** Call this in window.onload, or after */
     public loadMap(): L.Map {
@@ -64,6 +65,8 @@ export class Map {
         document.addEventListener("estrada.map.idFilter.applied", (data: Event) => {
             this.handleFilter(data);
         });
+
+        this.mapTrap();
 
         return this.lMap;
     }
@@ -193,5 +196,36 @@ export class Map {
         });
 
         return html;
+    }
+
+    private mapTrap() {
+        const mapDiv = document.getElementById("map-irmis");
+        if (mapDiv) {
+            mapDiv.addEventListener("keydown", (event) => {
+                const keyName = event.key;
+
+                if (keyName === "Control") {
+                  return;
+                }
+
+                this.keySequence.push(keyName);
+                const searchResult = this.keySequence.join("").search(/^(b|bl|bl\d{1})$/i);
+                if (searchResult === -1) {
+                    this.keySequence = [keyName];
+                } else if (this.keySequence.join("").search(/^bl\d{1}$/i) === 0) {
+                    const blIndex = Number(this.keySequence.join("").substr(2));
+                    const bl = BaseLayers.baseLayers;
+                    this.keySequence = [];
+                    const blKeys = Object.keys(bl);
+                    if (blKeys.length > blIndex) {
+                        this.currentLayer.remove();
+                        this.currentLayer = Object.values(bl)[blIndex];
+                        this.currentLayer.addTo(this.lMap);
+                        // this.layerControl = L.control.layers(bl, {});
+                    }
+                }
+
+              }, false);
+        }
     }
 }
