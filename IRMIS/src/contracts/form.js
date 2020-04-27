@@ -206,6 +206,14 @@ window.addEventListener("load", () => {
         isElementValid(subcontractor);
     }
 
+    if (supervisorName) {
+        isFormsetElementValid(supervisorName);
+    }
+
+    if (supervisorPhone) {
+        isFormsetElementValid(supervisorPhone);
+    }
+
 });
 
 function isElementValid(element) {
