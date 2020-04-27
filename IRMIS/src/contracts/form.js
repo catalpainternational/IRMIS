@@ -69,6 +69,10 @@ window.addEventListener("load", () => {
         isElementValid(name);
     }
 
+    if (code) {
+        isElementValid(code);
+    }
+
     if (startDate) {
         startDate.type = "date";
     }
