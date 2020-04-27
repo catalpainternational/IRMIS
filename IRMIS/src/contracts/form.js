@@ -93,6 +93,10 @@ window.addEventListener("load", () => {
         isElementValid(fundingSource);
     }
 
+    if (donor) {
+        isElementValid(donor);
+    }
+
     if (startDate) {
         startDate.type = "date";
     }
