@@ -238,6 +238,8 @@ Reports filter criteria select2
 Contract form select2
 */
 .select2 .contracts-select2 {
+    border: 1px solid $light-gray;
+
     &::after {
         content: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSI3Ij48cGF0aCBkPSJNOS4wNCAxLjJMNSA1LjY2Ljk2IDEuMnoiIGZpbGw9IiMzZDQ3NTgiIHN0cm9rZT0iIzNkNDc1OCIgc3Ryb2tlLXdpZHRoPSIxLjM5IiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48L3N2Zz4=');
         transform: translate(-50%,-50%);
@@ -284,7 +286,7 @@ Contract form select2
 }
 
 .select2-selection--single.contracts-select2 {
-    border: 1px solid $green;
+    // border: 1px solid $green;
 }
 
 .select2-selection--single.asset-code {
