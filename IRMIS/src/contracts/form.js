@@ -148,6 +148,11 @@ window.addEventListener("load", () => {
     if (amendmentStartDate) {
         amendmentStartDate.type = "date";
     }
+
+    if (address) {
+        isElementValid(address);
+    }
+
 });
 
 function isElementValid(element) {
