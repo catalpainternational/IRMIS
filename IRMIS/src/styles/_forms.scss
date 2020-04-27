@@ -35,7 +35,7 @@ textarea.form-control {
     padding-left: 10px;
 
     &.inactive {
-        border: 1px solid $light-gray;
+        border: 1px solid $light-gray !important;
     }
 
     &.danger {
@@ -48,7 +48,12 @@ textarea.form-control {
 
     &:focus {
         box-shadow: 0 0 2px 1px rgba(16, 165, 150, 0.5);
-        border: 1px solid $green;
+        border: 1px solid $green !important;
+
+        &.danger {
+            box-shadow: 0 0 2px 1px rgba(255, 90, 95, 0.5);
+            border: 1px solid $red !important;
+        }
     }
 
     &::-webkit-input-placeholder { color: $gray; } /* Chrome/Opera/Safari */
