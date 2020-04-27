@@ -231,6 +231,10 @@ window.addEventListener("load", () => {
         isElementValid(amendmentStartDate);
     }
 
+    if (amendmentDuration) {
+        isElementValid(amendmentDuration);
+    }
+
 });
 
 function isElementValid(element) {
