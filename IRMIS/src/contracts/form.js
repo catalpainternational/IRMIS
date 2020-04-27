@@ -118,6 +118,10 @@ window.addEventListener("load", () => {
         isFormsetElementValid(milestoneDaysOfWork);
     }
 
+    if (milestoneProgress) {
+        isFormsetElementValid(milestoneProgress);
+    }
+
     if (endDate) {
         endDate.type = "date";
     }
