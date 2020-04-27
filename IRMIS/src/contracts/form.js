@@ -85,6 +85,10 @@ window.addEventListener("load", () => {
         isFormsetElementValid(assetEndChainage);
     }
 
+    if (typeOfWork) {
+        isElementValid(typeOfWork);
+    }
+
     if (startDate) {
         startDate.type = "date";
     }
