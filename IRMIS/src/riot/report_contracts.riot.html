@@ -201,6 +201,7 @@
             SURFACE_TYPE_CHOICES, // surface_type
         } from "../assets/models/choices";
         import {
+            allContractReportElements,
             reportContractsTableIds,
             reportContractsTitleColumnMapping,
             reportContractsTableColumns,
@@ -315,7 +316,7 @@
                 });
             },
             reportElements() {
-                return this.reportContractsContent().reportElements;
+                return this.reportContractsContent().reportElements || allContractReportElements;
             },
             hasTotal() {
                 return this.reportElements().total;
@@ -369,6 +370,7 @@
                 window.location.hash = "reports/contracts/";
             },
             reportContractsContent() {
+                // For the definitions of the reports themselves see reportContractsContent in reportTableDefinitions                
                 const reportId = this.props.id;
                 return reportContractsContent[reportId];
             },
@@ -484,6 +486,43 @@
 
                 return filters;
             },
+            groupBy(arr, criteria) {
+                return arr.reduce(function(obj, item) {
+                    // Check if the criteria is a function to run on the item or a property of it
+                    var key = typeof criteria === 'function' ? criteria(item) : item[criteria];
+
+                    // If the key doesn't exist yet, create it
+                    if (!obj.hasOwnProperty(key)) { obj[key] = []; }
+                    obj[key].push(item);
+
+                    return obj;
+                }, {});
+            },
+            prepareTableData(reportTableId, tableData) {
+                if (tableData.length > 0) {
+                    // This block of code that calculates totals and percentages is probably not required
+                    this.state.reportData.totalLength = this.state.reportData.totalLength || tableData.reduce((acc, cur) => acc += cur.distance || 0, 0);
+                    tableData.forEach((entry) => {
+                        if (this.state.reportData.totalLength > 0) {
+                            entry.percent = Math.round((entry.distance / this.state.reportData.totalLength) * 10000) / 100;
+                        } else {
+                            // 100% of 0km - but this won't appear in the label
+                            entry.percent = 100;
+                        }
+                        entry.getId = () => {return entry.key;};
+                        entry.title = window.gettext(entry.title || entry.key);
+                    });
+
+                    // But this block definitely is required
+                    const eventName = `${reportTableId}.dataAdded`;
+                    const eventDetail = {detail: {pendingRows: tableData, clearRows: true}};
+                    document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+
+                    return tableData || [];
+                }
+
+                return null;
+            },
             createReport(e) {
                 $('#loading').modal('show');
 
@@ -492,36 +531,28 @@
                 const filters = this.buildFilterSets(baseFilterSet);
                 getContractReport(reportId, [])
                     .then((reportData) => {
+                        this.state.noReport = false;
+                        this.state.noReportData = true;
+
                         this.state.reportData = {
+                            // These two totals might not be needed
+                            totalLength: 0,
+                            totalCount: 0,
+                            dateCreated: currentDateTime(),                            
                             dateCreated: currentDateTime(),
                             formattedFilters: [],
                             total: reportData.summary.total_records,
                         };
-                        switch (reportId) {
-                            case 1:
-                                this.state.reportData["program"] = reportData.attributes;
-                                break;
-                            case 2:
-                                this.state.reportData["contractCode"] = reportData.attributes;
-                                break;
-                            case 3:
-                                this.state.reportData["assetClassTypeOfWork"] = reportData.attributes;
-                                this.state.reportData["typeOfWorkYear"] = reportData.attributes;
-                                this.state.reportData["assetClassYear"] = reportData.attributes;
-                                break;
-                            case 4:
-                                this.state.reportData["numberEmployees"] = reportData.attributes;
-                                this.state.reportData["wages"] = reportData.attributes;
-                                this.state.reportData["workedDays"] = reportData.attributes;
-                                break;
-                            case 5:
-                                this.state.reportData["numberEmployees"] = reportData.attributes;
-                                this.state.reportData["wages"] = reportData.attributes;
-                                this.state.reportData["workedDays"] = reportData.attributes;
-                                break;
-                            default:
-                                break;
-                        };
+
+                        this.reportContractsContent().reportElements.dataTables.forEach((dataTableId, ix) => {
+                            const attributeName = this.reportContractsContent().reportElements.attributeNames[ix] || "";
+                            // Change reportData.attributes here to reflect the correct names of the returned reportData
+                            this.state.reportData[attributeName] = this.prepareTableData(dataTableId, reportData[attributeName]);
+                            if (this.state.noReportData) {
+                                this.state.noReportData = !this.state.reportData[attributeName];
+                            }
+                        });
+
                         this.props.showFeedback();
                         this.state.noReport = false;
                     }).catch(err => {
