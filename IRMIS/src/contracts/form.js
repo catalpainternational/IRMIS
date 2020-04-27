@@ -169,6 +169,10 @@ window.addEventListener("load", () => {
         isElementValid(iban);
     }
 
+    if (representativeName) {
+        isElementValid(representativeName);
+    }
+
 });
 
 function isElementValid(element) {
