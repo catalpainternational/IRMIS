@@ -173,6 +173,10 @@ window.addEventListener("load", () => {
         isElementValid(representativeName);
     }
 
+    if (representativePhone) {
+        isElementValid(representativePhone);
+    }
+
 });
 
 function isElementValid(element) {
