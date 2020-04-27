@@ -215,6 +215,10 @@ window.addEventListener("load", () => {
         isElementValid(endDate);
     }
 
+    if (dlp) {
+        isElementValid(dlp);
+    }
+
 });
 
 function isElementValid(element) {
