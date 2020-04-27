@@ -114,6 +114,10 @@ window.addEventListener("load", () => {
         isElementValid(duration);
     }
 
+    if (milestoneDaysOfWork) {
+        isFormsetElementValid(milestoneDaysOfWork);
+    }
+
     if (endDate) {
         endDate.type = "date";
     }
