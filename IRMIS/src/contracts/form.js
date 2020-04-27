@@ -142,6 +142,7 @@ window.addEventListener("load", () => {
 
     if (evaluationDate) {
         evaluationDate.type = "date";
+        isElementValid(evaluationDate);
     }
 
     if (amendmentStartDate) {
