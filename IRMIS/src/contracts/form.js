@@ -198,6 +198,14 @@ window.addEventListener("load", () => {
         isElementValid(contractCode);
     }
 
+    if (contractor) {
+        isElementValid(contractor);
+    }
+
+    if (subcontractor) {
+        isElementValid(subcontractor);
+    }
+
 });
 
 function isElementValid(element) {
