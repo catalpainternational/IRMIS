@@ -189,6 +189,11 @@ window.addEventListener("load", () => {
     if (category) {
         isElementValid(category);
     }
+
+    if (tender) {
+        isElementValid(tender);
+    }
+
 });
 
 function isElementValid(element) {
