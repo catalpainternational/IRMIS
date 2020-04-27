@@ -246,7 +246,7 @@ function isElementValid(element) {
         isValid(element);
     });
 
-    function isValid(element) {
+    function isValid() {
         if (element.value) element.classList.remove("inactive");
         else element.classList.add("inactive");
     }
