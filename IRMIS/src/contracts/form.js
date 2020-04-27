@@ -136,6 +136,10 @@ window.addEventListener("load", () => {
         isElementValid(submissionDate);
     }
 
+    if (tenderingCompanies) {
+        isElementValid(tenderingCompanies);
+    }
+
     if (evaluationDate) {
         evaluationDate.type = "date";
     }
