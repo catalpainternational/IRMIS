@@ -955,9 +955,9 @@ class ContractReport:
             "wages": (
                 "SELECT\n"
                 "    contract_code as title,\n"
-                "    SUM(totalWage) as totalWage,\n"
-                "    AVG(averageGrossWage) as averageGrossWage,\n"
-                "    AVG(averageNetWage) as averageNetWage\n"
+                "    TO_CHAR(SUM(totalWage),'FM9999999.00') as totalWage,\n"
+                "    TO_CHAR(AVG(averageGrossWage),'FM9999999.00') as averageGrossWage,\n"
+                "    TO_CHAR(AVG(averageNetWage),'FM9999999.00') as averageNetWage\n"
                 "FROM social_safeguards\n"
             ),
             "workedDays": (

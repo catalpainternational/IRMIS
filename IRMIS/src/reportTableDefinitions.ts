@@ -751,25 +751,25 @@ export const reportContractsTableColumns: { [name: string]: any } = {
     },
     totalWorkedDays: {
         title: (window as any).gettext("Worked Days"),
-        data: "workeddaystotal",
+        data: "totalworkeddays",
         defaultContent: "",
         orderable: false,
     },
     femaleEmployeesWorkedDays: {
         title: (window as any).gettext("Female Employees"),
-        data: "femaleemployeesworkedday",
+        data: "femaleemployeesworkeddays",
         defaultContent: "",
         orderable: false,
     },
     employeesWithDisabilitiesWorkedDays: {
         title: (window as any).gettext("Employees With Disabilities"),
-        data: "employeeswithdisabilitie",
+        data: "employeeswithdisabilitiesworkeddays",
         defaultContent: "",
         orderable: false,
     },
     femaleEmployeesWithDisabilitiesWorkedDays: {
         title: (window as any).gettext("Female Employees With Disabilities"),
-        data: "femaleemployeeswithdisab",
+        data: "femaleemployeeswithdisabilitiesworkeddays",
         defaultContent: "",
         orderable: false,
     },
@@ -781,7 +781,7 @@ export const reportContractsTableColumns: { [name: string]: any } = {
     },
     youngFemaleEmployeesWorkedDay: {
         title: (window as any).gettext("Young Female Employees"),
-        data: "youngfemaleemployeeswork",
+        data: "youngfemaleemployeesworkedday",
         defaultContent: "",
         orderable: false,
     },
