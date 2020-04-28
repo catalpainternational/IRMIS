@@ -78,11 +78,15 @@ window.addEventListener("load", () => {
         isElementValid(description);
     }
 
-    if (assetStartChainage) {
+    if (assetCode.length) {
+        isSelect2FormsetValid(assetCode);
+    }
+
+    if (assetStartChainage.length) {
         isFormsetElementValid(assetStartChainage);
     }
 
-    if (assetEndChainage) {
+    if (assetEndChainage.length) {
         isFormsetElementValid(assetEndChainage);
     }
 
@@ -98,11 +102,11 @@ window.addEventListener("load", () => {
         isElementValid(donor);
     }
 
-    if (budgetYear) {
+    if (budgetYear.length) {
         isFormsetElementValid(budgetYear);
     }
 
-    if (budgetValue) {
+    if (budgetValue.length) {
         isFormsetElementValid(budgetValue);
     }
 
@@ -115,12 +119,16 @@ window.addEventListener("load", () => {
         isElementValid(duration);
     }
 
-    if (milestoneDaysOfWork) {
+    if (milestoneDaysOfWork.length) {
         isFormsetElementValid(milestoneDaysOfWork);
     }
 
-    if (milestoneProgress) {
+    if (milestoneProgress.length) {
         isFormsetElementValid(milestoneProgress);
+    }
+
+    if (projects) {
+        isSelect2Valid(projects);
     }
 
     if (announcementDate) {
@@ -202,11 +210,11 @@ window.addEventListener("load", () => {
         isElementValid(subcontractor);
     }
 
-    if (supervisorName) {
+    if (supervisorName.length) {
         isFormsetElementValid(supervisorName);
     }
 
-    if (supervisorPhone) {
+    if (supervisorPhone.length) {
         isFormsetElementValid(supervisorPhone);
     }
 
@@ -219,11 +227,11 @@ window.addEventListener("load", () => {
         isElementValid(dlp);
     }
 
-    if (amendmentYear) {
+    if (amendmentYear.length) {
         isFormsetElementValid(amendmentYear);
     }
 
-    if (amendmentValue) {
+    if (amendmentValue.length) {
         isFormsetElementValid(amendmentValue);
     }
 
@@ -256,6 +264,32 @@ function isFormsetElementValid(elements) {
     elements.forEach((element) => {
         isElementValid(element);
     });
+}
+
+function isSelect2FormsetValid(elements) {
+    elements.forEach((element) => {
+        if (element.classList.contains("select2-selection")) {
+            if (element.classList.contains("select2-selection--multiple")) {
+                if (element.firstChild.children.length > 1) element.classList.add("active");
+                else element.classList.remove("active");
+            } else {
+                if (element.firstChild.getAttribute("title")) element.classList.add("active");
+                else element.classList.remove("active");
+            }
+        }
+    });
+}
+
+function isSelect2Valid(element) {
+    const select2Selection = element.nextSibling.children.item(0).firstElementChild;
+
+    if (element.getAttribute("multiple") != null) {
+        if (select2Selection.firstChild.children.length > 1) select2Selection.classList.add("active");
+        else select2Selection.classList.remove("active");
+    } else {
+        if (select2Selection.value) select2Selection.classList.add("active");
+        else select2Selection.classList.remove("active");
+    }
 }
 
 function saveFormValues(state) {

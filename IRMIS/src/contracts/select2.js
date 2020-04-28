@@ -8,18 +8,21 @@ const contractSelects = {
             containerCssClass: "form-control contracts-select2",
             dropdownCssClass: "contracts-dropdown-select2",
         },
-        on: toggleMultipleSelect2,
-        off: toggleMultipleSelect2,
+        on: toggleSelect2,
+        off: toggleSelect2,
     },
     ".asset-code": {
         options: {
             width: "100%",
-            tags: true,            
+            tags: true,
             placeholder: "A01-01",
             allowClear: true,
             containerCssClass: "form-control form-control-lg contracts-select2 asset-code",
             dropdownCssClass: "contracts-dropdown-select2",
+            multiple: false,
         },
+        on: toggleSelect2,
+        off: toggleSelect2,
     }
 };
 
@@ -54,6 +57,8 @@ function processContractSelects() {
             elements.each((_ix, element) => {
                 const id = `#${element.id}`;
                 contractSelects[id] = JSON.parse(JSON.stringify(contractSelects[selectKey]));
+                contractSelects[id].on = contractSelects[selectKey].on;
+                contractSelects[id].off = contractSelects[selectKey].off;
                 instantiateSelect2(id);
             });
         } else {
@@ -68,7 +73,7 @@ function processContractSelects() {
     }
 }
 
-function toggleMultipleSelect2(e) {
+function toggleSelect2(e) {
     const selectElement = e.currentTarget;
     const inputElement = selectElement.nextSibling.children.item(0).firstElementChild;
 
