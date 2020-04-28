@@ -201,7 +201,14 @@ function setupSelectFilter(dataTable, selectId, placeHolder, filterFunc, columnN
 
 function setupValueRangeFilter(dataTable, columnNo) {
     const valueSelectId = "value_select";
-    document.getElementById(valueSelectId).addEventListener("change", () => dataTable.draw());
+    document.getElementById(valueSelectId).addEventListener("change", (e) => {
+        const element = e.currentTarget;
+
+        if (element.selectedIndex > 0) element.classList.remove("inactive");
+        else element.classList.add("inactive");
+
+        dataTable.draw()
+    });
     $.fn.dataTableExt.afnFiltering.push(
         function (oSettings, _aData, iDataIndex) {
             let row = oSettings.aoData[iDataIndex]._aData;
