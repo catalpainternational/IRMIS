@@ -188,7 +188,9 @@ class ProjectAsset(models.Model):
     def get_road(self):
         if self.asset_id.startswith("ROAD-"):
             road_id = int(self.asset_id.replace("ROAD-", ""))
-            return get_object_or_404(Road.objects.filter(pk=road_id))
+            roads = Road.objects.filter(pk=road_id)
+            if len(roads) == 1:
+                return roads.first()
         return None
 
     def clean_asset_id(self):
@@ -365,7 +367,7 @@ class ProjectAsset(models.Model):
         if asset_id_len > 15:
             raise ValidationError(
                 {
-                    "asset_start_chainage": _(
+                    "asset_id": _(
                         "Ensure this value has at most 15 characters (it has %s)"
                         % asset_id_len
                     )
