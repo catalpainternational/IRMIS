@@ -677,30 +677,115 @@ export const reportContractsTableColumns: { [name: string]: any } = {
         defaultContent: "",
         orderable: false,
     },
-    employeesTotal: {
-        title: (window as any).gettext("Total"),
-        data: "employeestotal",
+    totalEmployees: {
+        title: (window as any).gettext("Total Employees"),
+        data: "totalemployees",
         defaultContent: "",
         orderable: false,
     },
-    employeesTotalPercentage: {
-        title: "%",
-        data: "employeestotalpercentage",
+    internationalEmployees: {
+        title: (window as any).gettext("International Employees"),
+        data: "internationalemployees",
         defaultContent: "",
         orderable: false,
     },
-    wagesTotal: {
-        title: (window as any).gettext("Total"),
-        data: "wagestotal",
+    nationalEmployees: {
+        title: (window as any).gettext("National Employees"),
+        data: "nationalemployees",
         defaultContent: "",
         orderable: false,
     },
-    workedDaysTotal: {
-        title: (window as any).gettext("Total"),
+    employeesWithDisabilities: {
+        title: (window as any).gettext("Employees With Disabilities"),
+        data: "employeeswithdisabilities",
+        defaultContent: "",
+        orderable: false,
+    },
+    femaleEmployeesWithDisabilities: {
+        title: (window as any).gettext("Female Employees With Disabilities"),
+        data: "femaleemployeeswithdisabilities",
+        defaultContent: "",
+        orderable: false,
+    },
+    youngEmployees: {
+        title: (window as any).gettext("Young Employees"),
+        data: "youngemployees",
+        defaultContent: "",
+        orderable: false,
+    },
+    youngFemaleEmployees: {
+        title: (window as any).gettext("Young Female Employees"),
+        data: "youngfemaleemployees",
+        defaultContent: "",
+        orderable: false,
+    },
+    femaleEmployees: {
+        title: (window as any).gettext("Female Employees"),
+        data: "femaleemployees",
+        defaultContent: "",
+        orderable: false,
+    },
+    // employeesTotalPercentage: {
+    //     title: "%",
+    //     data: "employeestotalpercentage",
+    //     defaultContent: "",
+    //     orderable: false,
+    // },
+    totalWage: {
+        title: (window as any).gettext("Total Wage"),
+        data: "totalwage",
+        defaultContent: "",
+        orderable: false,
+    },
+    averageGrossWage: {
+        title: (window as any).gettext("Average Gross Wage"),
+        data: "averagegrosswage",
+        defaultContent: "",
+        orderable: false,
+    },
+    averageNetWage: {
+        title: (window as any).gettext("Average Net Wage"),
+        data: "averagenetwage",
+        defaultContent: "",
+        orderable: false,
+    },
+    totalWorkedDays: {
+        title: (window as any).gettext("Worked Days"),
         data: "workeddaystotal",
         defaultContent: "",
         orderable: false,
     },
+    femaleEmployeesWorkedDays: {
+        title: (window as any).gettext("Female Employees"),
+        data: "femaleemployeesworkedday",
+        defaultContent: "",
+        orderable: false,
+    },
+    employeesWithDisabilitiesWorkedDays: {
+        title: (window as any).gettext("Employees With Disabilities"),
+        data: "employeeswithdisabilitie",
+        defaultContent: "",
+        orderable: false,
+    },
+    femaleEmployeesWithDisabilitiesWorkedDays: {
+        title: (window as any).gettext("Female Employees With Disabilities"),
+        data: "femaleemployeeswithdisab",
+        defaultContent: "",
+        orderable: false,
+    },
+    youngEmployeesWorkedDays: {
+        title: (window as any).gettext("Young Employees"),
+        data: "youngemployeesworkeddays",
+        defaultContent: "",
+        orderable: false,
+    },
+    youngFemaleEmployeesWorkedDay: {
+        title: (window as any).gettext("Young Female Employees"),
+        data: "youngfemaleemployeeswork",
+        defaultContent: "",
+        orderable: false,
+    },
+
 };
 
 /** The various columns for each dataTable used in the contract reports */
@@ -771,16 +856,30 @@ export const reportContractsColumnSets: { [name: string]: string[] } = {
     ],
     numberEmployees: [
         reportContractsTableColumns.title,
-        reportContractsTableColumns.employeesTotal,
-        reportContractsTableColumns.employeesTotalPercentage,
+        reportContractsTableColumns.totalEmployees,
+        reportContractsTableColumns.internationalEmployees,
+        reportContractsTableColumns.nationalEmployees,
+        reportContractsTableColumns.employeesWithDisabilities,
+        reportContractsTableColumns.femaleEmployeesWithDisabilities,
+        reportContractsTableColumns.youngEmployees,
+        reportContractsTableColumns.youngFemaleEmployees,
+        reportContractsTableColumns.femaleEmployees,
+
     ],
     wages: [
         reportContractsTableColumns.title,
-        reportContractsTableColumns.wagesTotal,
+        reportContractsTableColumns.totalWage,
+        reportContractsTableColumns.averageGrossWage,
+        reportContractsTableColumns.averageNetWage,
     ],
     workedDays: [
         reportContractsTableColumns.title,
-        reportContractsTableColumns.workedDaysTotal,
+        reportContractsTableColumns.totalWorkedDays,
+        reportContractsTableColumns.femaleEmployeesWorkedDays,
+        reportContractsTableColumns.employeesWithDisabilitiesWorkedDays,
+        reportContractsTableColumns.femaleEmployeesWithDisabilitiesWorkedDays,
+        reportContractsTableColumns.youngEmployeesWorkedDays,
+        reportContractsTableColumns.youngFemaleEmployeesWorkedDay,
     ],
 };
 

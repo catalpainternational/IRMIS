@@ -2141,22 +2141,22 @@ def protobuf_contract_reports(request, report_id):
         5: ["numberEmployees", "wages", "workedDays"],  # single contract
     }
 
-    try:
-        # Build out Contract Report data to return
-        report_data = {"filters": filters, "summary": 0}
-        for rt in report_types[report_id]:
-            # Initialise a new Contract Report
-            contract_report = ContractReport(rt, filters)
-            report_data[rt] = contract_report.execute_main_query()
+    # try:
+    # Build out Contract Report data to return
+    report_data = {"filters": filters, "summary": 0}
+    for rt in report_types[report_id]:
+        # Initialise a new Contract Report
+        contract_report = ContractReport(rt, filters)
+        report_data[rt] = contract_report.execute_main_query()
 
-            # add the Summary data for certain reports
-            if report_id in [1, 2]:
-                report_data["summary"] = (
-                    contract_report.compile_summary_stats(
-                        contract_report.execute_aggregate_query()
-                    ),
-                )
+        # add the Summary data for certain reports
+        if report_id in [1, 2]:
+            report_data["summary"] = (
+                contract_report.compile_summary_stats(
+                    contract_report.execute_aggregate_query()
+                ),
+            )
 
-        return JsonResponse(report_data)
-    except Exception:
-        return HttpResponse(status=400)
+    return JsonResponse(report_data)
+    # except Exception:
+    #     return HttpResponse(status=400)
