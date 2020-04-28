@@ -505,25 +505,25 @@ export const reportContractsTableColumns: { [name: string]: any } = {
     },
     programName: {
         title: (window as any).gettext("Program name"),
-        data: "programName",
+        data: "programname",
         defaultContent: "",
         orderable: false,
     },
     projectName: {
         title: (window as any).gettext("Project names"),
-        data: "projectName",
+        data: "projectname",
         defaultContent: "",
         orderable: false,
     },
     typeOfWork: {
         title: (window as any).gettext("Type of work"),
-        data: "typeOfWork",
+        data: "typeofwork",
         defaultContent: "",
         orderable: false,
     },
     fundingSource: {
         title: (window as any).gettext("Funding source"),
-        data: "fundingSource",
+        data: "fundingsource",
         defaultContent: "",
         orderable: false,
     },
@@ -565,43 +565,43 @@ export const reportContractsTableColumns: { [name: string]: any } = {
     },
     totalBudget: {
         title: (window as any).gettext("Total budget ($)"),
-        data: "totalBudget",
+        data: "totalbudget",
         defaultContent: "",
         orderable: false,
     },
     totalContractValue: {
         title: (window as any).gettext("Total contract value ($)"),
-        data: "totalContractValue",
+        data: "totalcontractvalue",
         defaultContent: "",
         orderable: false,
     },
     contractValue: {
         title: (window as any).gettext("Value of the contract - including variations (amendments) ($)"),
-        data: "contractValue",
+        data: "contractvalue",
         defaultContent: "",
         orderable: false,
     },
     paymentPreviousYear: {
         title: (window as any).gettext("Payments previous year ($)"),
-        data: "paymentPreviousYear",
+        data: "paymentpreviousyear",
         defaultContent: "",
         orderable: false,
     },
     paymentCurrentYear: {
         title: (window as any).gettext("Payments current year ($)"),
-        data: "paymentCurrentYear",
+        data: "paymentcurrentyear",
         defaultContent: "",
         orderable: false,
     },
     totalPayment: {
         title: (window as any).gettext("Total payment ($)"),
-        data: "totalPayment",
+        data: "totalpayment",
         defaultContent: "",
         orderable: false,
     },
     totalProgressPayment: {
         title: (window as any).gettext("Total progress payment (%)"),
-        data: "totalProgressPayment",
+        data: "totalprogresspayment",
         defaultContent: "",
         orderable: false,
     },
@@ -613,7 +613,7 @@ export const reportContractsTableColumns: { [name: string]: any } = {
     },
     physicalProgress: {
         title: (window as any).gettext("Physical progress"),
-        data: "physicalProgress",
+        data: "physicalprogress",
         defaultContent: "",
         orderable: false,
     },
@@ -625,43 +625,43 @@ export const reportContractsTableColumns: { [name: string]: any } = {
     },
     startDate: {
         title: (window as any).gettext("Start date"),
-        data: "startDate",
+        data: "startdate",
         defaultContent: "",
         orderable: false,
     },
     amendmentStartDate: {
         title: (window as any).gettext("Amendment start date"),
-        data: "amendmentStartDate",
+        data: "amendmentstartdate",
         defaultContent: "",
         orderable: false,
     },
     endDate: {
         title: (window as any).gettext("End date"),
-        data: "endDate",
+        data: "enddate",
         defaultContent: "",
         orderable: false,
     },
     amendmentEndDate: {
         title: (window as any).gettext("Amendment end date"),
-        data: "amendmentEndDate",
+        data: "amendmentenddate",
         defaultContent: "",
         orderable: false,
     },
     lastUpdateDate: {
         title: (window as any).gettext("Date of last update"),
-        data: "lastUpdateDate",
+        data: "lastupdatedate",
         defaultContent: "",
         orderable: false,
     },
     dlpStartDate: {
         title: (window as any).gettext("DLP start date"),
-        data: "dlpStartDate",
+        data: "dlpstartdate",
         defaultContent: "",
         orderable: false,
     },
     dlpEndDate: {
         title: (window as any).gettext("DLP end date"),
-        data: "dlpEndDate",
+        data: "dlpenddate",
         defaultContent: "",
         orderable: false,
     },
@@ -671,30 +671,121 @@ export const reportContractsTableColumns: { [name: string]: any } = {
         defaultContent: "",
         orderable: false,
     },
-    employeesTotal: {
-        title: (window as any).gettext("Total"),
-        data: "employeesTotal",
+    assetClass: {
+        title: (window as any).gettext("Asset Class"),
+        data: "assetclass",
         defaultContent: "",
         orderable: false,
     },
-    employeesTotalPercentage: {
-        title: "%",
-        data: "employeesTotalPercentage",
+    totalEmployees: {
+        title: (window as any).gettext("Total Employees"),
+        data: "totalemployees",
         defaultContent: "",
         orderable: false,
     },
-    wagesTotal: {
-        title: (window as any).gettext("Total"),
-        data: "wagesTotal",
+    internationalEmployees: {
+        title: (window as any).gettext("International Employees"),
+        data: "internationalemployees",
         defaultContent: "",
         orderable: false,
     },
-    workedDaysTotal: {
-        title: (window as any).gettext("Total"),
-        data: "workedDaysTotal",
+    nationalEmployees: {
+        title: (window as any).gettext("National Employees"),
+        data: "nationalemployees",
         defaultContent: "",
         orderable: false,
     },
+    employeesWithDisabilities: {
+        title: (window as any).gettext("Employees With Disabilities"),
+        data: "employeeswithdisabilities",
+        defaultContent: "",
+        orderable: false,
+    },
+    femaleEmployeesWithDisabilities: {
+        title: (window as any).gettext("Female Employees With Disabilities"),
+        data: "femaleemployeeswithdisabilities",
+        defaultContent: "",
+        orderable: false,
+    },
+    youngEmployees: {
+        title: (window as any).gettext("Young Employees"),
+        data: "youngemployees",
+        defaultContent: "",
+        orderable: false,
+    },
+    youngFemaleEmployees: {
+        title: (window as any).gettext("Young Female Employees"),
+        data: "youngfemaleemployees",
+        defaultContent: "",
+        orderable: false,
+    },
+    femaleEmployees: {
+        title: (window as any).gettext("Female Employees"),
+        data: "femaleemployees",
+        defaultContent: "",
+        orderable: false,
+    },
+    // employeesTotalPercentage: {
+    //     title: "%",
+    //     data: "employeestotalpercentage",
+    //     defaultContent: "",
+    //     orderable: false,
+    // },
+    totalWage: {
+        title: (window as any).gettext("Total Wage"),
+        data: "totalwage",
+        defaultContent: "",
+        orderable: false,
+    },
+    averageGrossWage: {
+        title: (window as any).gettext("Average Gross Wage"),
+        data: "averagegrosswage",
+        defaultContent: "",
+        orderable: false,
+    },
+    averageNetWage: {
+        title: (window as any).gettext("Average Net Wage"),
+        data: "averagenetwage",
+        defaultContent: "",
+        orderable: false,
+    },
+    totalWorkedDays: {
+        title: (window as any).gettext("Worked Days"),
+        data: "totalworkeddays",
+        defaultContent: "",
+        orderable: false,
+    },
+    femaleEmployeesWorkedDays: {
+        title: (window as any).gettext("Female Employees"),
+        data: "femaleemployeesworkeddays",
+        defaultContent: "",
+        orderable: false,
+    },
+    employeesWithDisabilitiesWorkedDays: {
+        title: (window as any).gettext("Employees With Disabilities"),
+        data: "employeeswithdisabilitiesworkeddays",
+        defaultContent: "",
+        orderable: false,
+    },
+    femaleEmployeesWithDisabilitiesWorkedDays: {
+        title: (window as any).gettext("Female Employees With Disabilities"),
+        data: "femaleemployeeswithdisabilitiesworkeddays",
+        defaultContent: "",
+        orderable: false,
+    },
+    youngEmployeesWorkedDays: {
+        title: (window as any).gettext("Young Employees"),
+        data: "youngemployeesworkeddays",
+        defaultContent: "",
+        orderable: false,
+    },
+    youngFemaleEmployeesWorkedDay: {
+        title: (window as any).gettext("Young Female Employees"),
+        data: "youngfemaleemployeesworkedday",
+        defaultContent: "",
+        orderable: false,
+    },
+
 };
 
 /** The various columns for each dataTable used in the contract reports */
@@ -725,30 +816,30 @@ export const reportContractsColumnSets: { [name: string]: string[] } = {
         reportContractsTableColumns.projects,
         reportContractsTableColumns.assets,
         reportContractsTableColumns.contractor,
-        reportContractsTableColumns.totalBudget,
-        reportContractsTableColumns.budget,
-        reportContractsTableColumns.totalContractValue,
+        // reportContractsTableColumns.totalBudget,
+        // reportContractsTableColumns.budget,
+        // reportContractsTableColumns.totalContractValue,
         reportContractsTableColumns.contractValue,
         reportContractsTableColumns.paymentPreviousYear,
         reportContractsTableColumns.paymentCurrentYear,
         reportContractsTableColumns.totalPayment,
         reportContractsTableColumns.totalProgressPayment,
         reportContractsTableColumns.balance,
-        reportContractsTableColumns.startDate,
-        reportContractsTableColumns.amendmentStartDate,
-        reportContractsTableColumns.endDate,
-        reportContractsTableColumns.amendmentEndDate,
+        // reportContractsTableColumns.startDate,
+        // reportContractsTableColumns.amendmentStartDate,
+        // reportContractsTableColumns.endDate,
+        // reportContractsTableColumns.amendmentEndDate,
         reportContractsTableColumns.physicalProgress,
         reportContractsTableColumns.lastUpdateDate,
         reportContractsTableColumns.dlpStartDate,
         reportContractsTableColumns.dlpEndDate,
     ],
     assetClassTypeOfWork: [
-        reportContractsTableColumns.title,
+        reportContractsTableColumns.assetClass,
         reportContractsTableColumns.typeOfWork,
     ],
     typeOfWorkYear: [
-        reportContractsTableColumns.title,
+        reportContractsTableColumns.typeOfWork,
         reportContractsTableColumns.year,
         reportContractsTableColumns.year,
         reportContractsTableColumns.year,
@@ -756,7 +847,7 @@ export const reportContractsColumnSets: { [name: string]: string[] } = {
         reportContractsTableColumns.year,
     ],
     assetClassYear: [
-        reportContractsTableColumns.title,
+        reportContractsTableColumns.assetClass,
         reportContractsTableColumns.year,
         reportContractsTableColumns.year,
         reportContractsTableColumns.year,
@@ -765,16 +856,30 @@ export const reportContractsColumnSets: { [name: string]: string[] } = {
     ],
     numberEmployees: [
         reportContractsTableColumns.title,
-        reportContractsTableColumns.employeesTotal,
-        reportContractsTableColumns.employeesTotalPercentage,
+        reportContractsTableColumns.totalEmployees,
+        reportContractsTableColumns.internationalEmployees,
+        reportContractsTableColumns.nationalEmployees,
+        reportContractsTableColumns.employeesWithDisabilities,
+        reportContractsTableColumns.femaleEmployeesWithDisabilities,
+        reportContractsTableColumns.youngEmployees,
+        reportContractsTableColumns.youngFemaleEmployees,
+        reportContractsTableColumns.femaleEmployees,
+
     ],
     wages: [
         reportContractsTableColumns.title,
-        reportContractsTableColumns.wagesTotal,
+        reportContractsTableColumns.totalWage,
+        reportContractsTableColumns.averageGrossWage,
+        reportContractsTableColumns.averageNetWage,
     ],
     workedDays: [
         reportContractsTableColumns.title,
-        reportContractsTableColumns.workedDaysTotal,
+        reportContractsTableColumns.totalWorkedDays,
+        reportContractsTableColumns.femaleEmployeesWorkedDays,
+        reportContractsTableColumns.employeesWithDisabilitiesWorkedDays,
+        reportContractsTableColumns.femaleEmployeesWithDisabilitiesWorkedDays,
+        reportContractsTableColumns.youngEmployeesWorkedDays,
+        reportContractsTableColumns.youngFemaleEmployeesWorkedDay,
     ],
 };
 
@@ -799,6 +904,7 @@ export const reportContractsContent: { [name: string]: any } = {
         reportElements: {
             filters: true,
             total: true,
+            attributeNames: ["program"],
             dataTables: [reportContractsTableIds.program],
         },
     },
@@ -821,6 +927,7 @@ export const reportContractsContent: { [name: string]: any } = {
         reportElements: {
             filters: true,
             total: true,
+            attributeNames: ["contractCode"],
             dataTables: [reportContractsTableIds.contractCode],
         },
     },
@@ -838,6 +945,7 @@ export const reportContractsContent: { [name: string]: any } = {
         reportElements: {
             filters: true,
             total: true,
+            attributeNames: ["assetClassTypeOfWork", "typeOfWorkYear", "assetClassYear"],
             dataTables: [
                 reportContractsTableIds.assetClassTypeOfWork,
                 reportContractsTableIds.typeOfWorkYear,
@@ -859,6 +967,7 @@ export const reportContractsContent: { [name: string]: any } = {
         },
         reportElements: {
             filters: true,
+            attributeNames: ["numberEmployees", "wages", "workedDays"],
             dataTables: [
                 reportContractsTableIds.numberEmployees,
                 reportContractsTableIds.wages,
@@ -880,6 +989,7 @@ export const reportContractsContent: { [name: string]: any } = {
         },
         reportElements: {
             filters: true,
+            attributeNames: ["numberEmployees", "wages", "workedDays"],
             dataTables: [
                 reportContractsTableIds.numberEmployees,
                 reportContractsTableIds.wages,
@@ -887,4 +997,18 @@ export const reportContractsContent: { [name: string]: any } = {
             ],
         },
     },
+};
+
+/** IDs of the contract report elements */
+export const allContractReportElements = {
+    tables: [
+        reportContractsTableIds.program,
+        reportContractsTableIds.contractCode,
+        reportContractsTableIds.assetClassTypeOfWork,
+        reportContractsTableIds.typeOfWorkYear,
+        reportContractsTableIds.assetClassYear,
+        reportContractsTableIds.numberEmployees,
+        reportContractsTableIds.wages,
+        reportContractsTableIds.workedDays,
+    ],
 };

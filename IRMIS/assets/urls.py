@@ -57,7 +57,7 @@ urlpatterns = [
     # Report URLs
     path("reports/", protobuf_reports, name="protobuf_reports"),
     path(
-        "contractreports/<int:report_type>",
+        "contractreports/<int:report_id>",
         protobuf_contract_reports,
         name="protobuf_contract_reports",
     ),

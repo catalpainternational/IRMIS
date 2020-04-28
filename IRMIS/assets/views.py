@@ -2125,7 +2125,7 @@ class BreakpointRelationshipsReport(TemplateView):
 
 
 @login_required
-def protobuf_contract_reports(request, report_type):
+def protobuf_contract_reports(request, report_id):
     """ returns a protobuf object with a contract report determined by the filter conditions supplied """
     if not request.user.is_authenticated:
         return HttpResponseForbidden()
@@ -2134,24 +2134,29 @@ def protobuf_contract_reports(request, report_type):
 
     filters = request.GET.getlist("contract_code", [])
     report_types = {
-        1: "financial_physical_progress_details",
-        2: "financial_physical_progress_summary",
-        3: "length_completed_work",
-        4: "social_safeguards",  # summary
-        5: "social_safeguards",  # single contract
+        1: ["program"],
+        2: ["contractCode"],
+        3: ["assetClassTypeOfWork", "typeOfWorkYear", "assetClassYear"],
+        4: ["numberEmployees", "wages", "workedDays"],  # summary
+        5: ["numberEmployees", "wages", "workedDays"],  # single contract
     }
 
-    # try:
-    # Initialise the Contract Report
-    contract_report = ContractReport(report_types[report_type], filters)
-    # Build out Contract Report data to return
-    report_data = {
-        "filters": filters,
-        "summary": contract_report.compile_summary_stats(
-            contract_report.execute_aggregate_query()
-        ),
-        "attributes": contract_report.execute_main_query(),
-    }
-    return JsonResponse(report_data)
-    # except Exception:
-    #     return HttpResponse(status=400)
+    try:
+        # Build out Contract Report data to return
+        report_data = {"filters": filters, "summary": 0}
+        for rt in report_types[report_id]:
+            # Initialise a new Contract Report
+            contract_report = ContractReport(rt, filters)
+            report_data[rt] = contract_report.execute_main_query()
+
+            # add the Summary data for certain reports
+            if report_id in [1, 2]:
+                report_data["summary"] = (
+                    contract_report.compile_summary_stats(
+                        contract_report.execute_aggregate_query()
+                    ),
+                )
+
+        return JsonResponse(report_data)
+    except Exception:
+        return HttpResponse(status=400)
