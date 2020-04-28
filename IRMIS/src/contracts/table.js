@@ -36,16 +36,6 @@ window.addEventListener("load", () => {
     initializePrintableTable($("#company-document-print-list-table"), []);
 });
 
-function setupSelectFilter(dataTable, selectId, placeHolder, filterFunc, columnNo) {
-    document.dispatchEvent(new CustomEvent("prepare-select2", { detail: { dataTable, id: selectId, placeHolder } }));
-    $.fn.dataTableExt.afnFiltering.push(
-        function (oSettings, _aData, iDataIndex) {
-            let row = oSettings.aoData[iDataIndex]._aData;
-            return filterFunc(row, columnNo, selectId);
-        }
-    );
-}
-
 function initializeProjectsListTable(table) {
     let columnDefs;
     let order;
@@ -218,6 +208,16 @@ function initializePrintableTable(table, columnDefs) {
             columnDefs: columnDefs,
         });
     }
+}
+
+function setupSelectFilter(dataTable, selectId, placeHolder, filterFunc, columnNo) {
+    document.dispatchEvent(new CustomEvent("prepare-select2", { detail: { dataTable, id: selectId, placeHolder } }));
+    $.fn.dataTableExt.afnFiltering.push(
+        function (oSettings, _aData, iDataIndex) {
+            let row = oSettings.aoData[iDataIndex]._aData;
+            return filterFunc(row, columnNo, selectId);
+        }
+    );
 }
 
 const valueRangeFilter = (row, columnIdx, elementId) => {
