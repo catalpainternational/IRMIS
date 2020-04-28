@@ -57,8 +57,8 @@ function processContractSelects() {
             elements.each((_ix, element) => {
                 const id = `#${element.id}`;
                 contractSelects[id] = JSON.parse(JSON.stringify(contractSelects[selectKey]));
-                contractSelects[id]["on"] = contractSelects[selectKey].on;
-                contractSelects[id]["off"] = contractSelects[selectKey].off;
+                contractSelects[id].on = contractSelects[selectKey].on;
+                contractSelects[id].off = contractSelects[selectKey].off;
                 instantiateSelect2(id);
             });
         } else {
