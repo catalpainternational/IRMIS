@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0 VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-30 02:27+0000\n"
+"POT-Creation-Date: 2020-04-28 05:30+0000\n"
 "PO-Revision-Date: 2019-10-09 05:43+0000\n"
 "Last-Translator: b'  <januario@catalpa.io>'\n"
 "Language-Team: Catalpa International <info@catalpa.io>\n"
@@ -138,6 +138,33 @@ msgstr ""
 msgid "Connects to airport"
 msgstr ""
 
+msgid "No protection works"
+msgstr ""
+
+msgid "RCC concrete wall"
+msgstr ""
+
+msgid "Stone masonry"
+msgstr ""
+
+msgid "Plum concrete"
+msgstr ""
+
+msgid "PCC"
+msgstr ""
+
+msgid "Gabions"
+msgstr ""
+
+msgid "Precast concrete bricks"
+msgstr ""
+
+msgid "Clay bricks"
+msgstr ""
+
+msgid "PC"
+msgstr ""
+
 #, python-format
 msgid "%(value)s should not contain spaces"
 msgstr "%(value)s Labele inklui espasu "
@@ -147,6 +174,22 @@ msgstr "Kodigu "
 
 msgid "Name"
 msgstr "Naran "
+
+msgid "Date Created"
+msgstr "Data Kria"
+
+msgid "last modified"
+msgstr "Modifika ikus"
+
+#, fuzzy
+#| msgid "Road Condition Data"
+msgid "Description"
+msgstr "Dadus Kondisaun Estrada"
+
+#, fuzzy
+#| msgid "Username"
+msgid "User"
+msgstr "Naran utilisador "
 
 #, fuzzy
 #| msgid "Asset"
@@ -167,16 +210,8 @@ msgid "Road Code"
 msgstr "Kodigu Estrada "
 
 #, fuzzy
-#| msgid "Username"
-msgid "User"
-msgstr "Naran utilisador "
-
-#, fuzzy
 #| msgid "Date Created"
 msgid "Date Surveyed"
-msgstr "Data Kria"
-
-msgid "Date Created"
 msgstr "Data Kria"
 
 #, fuzzy
@@ -252,6 +287,9 @@ msgstr ""
 msgid "Culvert"
 msgstr ""
 
+msgid "Drift"
+msgstr ""
+
 msgid "Low"
 msgstr "Kraik"
 
@@ -278,9 +316,6 @@ msgstr ""
 
 msgid "Core"
 msgstr ""
-
-msgid "last modified"
-msgstr "Modifika ikus"
 
 #, fuzzy
 #| msgid "Municipal"
@@ -629,10 +664,38 @@ msgstr ""
 msgid "Choose the culvert material"
 msgstr "Hili klase pavimentu husi estrada"
 
+#, fuzzy
+#| msgid "Surface Type"
+msgid "Drift Type"
+msgstr "Tipu Pavimentu"
+
+#, fuzzy
+#| msgid "Choose the pavement class of the road"
+msgid "Choose the drift type"
+msgstr "Hili klase pavimentu husi estrada"
+
+#, fuzzy
+#| msgid "Carriageway Width"
+msgid "Structure Thickness (m)"
+msgstr "Carriageaway nia luan"
+
+#, fuzzy
+#| msgid "Enter road link length (in Km)"
+msgid "Enter structure thickness"
+msgstr "Hatama linha estrada nia naruk (iha Km) "
+
+#, fuzzy
+#| msgid "Choose the pavement class of the road"
+msgid "Choose the drift material"
+msgstr "Hili klase pavimentu husi estrada"
+
 msgid "Title"
 msgstr ""
 
 msgid "Approved"
+msgstr ""
+
+msgid "Planning Period"
 msgstr ""
 
 #, fuzzy
@@ -678,6 +741,16 @@ msgstr "Typu Estrada"
 msgid "Choose the work type"
 msgstr "Hili klase pavimentu husi estrada"
 
+#, fuzzy
+#| msgid "Date Created"
+msgid "Date of first Survey"
+msgstr "Data Kria"
+
+#, fuzzy
+#| msgid "Date Created"
+msgid "Date of second Survey"
+msgstr "Data Kria"
+
 msgid "Road Inventory"
 msgstr "Inventoriu Estrada "
 
@@ -696,6 +769,14 @@ msgstr "Kodigu estrada"
 msgid "Road name"
 msgstr "Naran Estrada"
 
+#, fuzzy
+#| msgid "Pavement class"
+msgid "Asset class"
+msgstr "klase pavimentu"
+
+msgid "Technical class"
+msgstr "Klase tekniku"
+
 msgid "Link code"
 msgstr "Kodigu linha"
 
@@ -713,20 +794,20 @@ msgstr "Naran linha komesa"
 msgid "Link start chainage"
 msgstr "Linha estasaun komesa"
 
+msgid "Start Point - DMS"
+msgstr "Pontu Komesa - DMS"
+
+msgid "Start Point - UTM"
+msgstr "Pontu Komesa - UTM"
+
 msgid "Link end name"
 msgstr "Naran linha ikus "
 
 msgid "Link end chainage"
 msgstr "Linha estasaun ikus"
 
-msgid "Start Point - DMS"
-msgstr "Pontu Komesa - DMS"
-
 msgid "End Point - DMS"
 msgstr "Pontu Ikus - DMS"
-
-msgid "Start Point - UTM"
-msgstr "Pontu Komesa - UTM"
 
 msgid "End Point - UTM"
 msgstr "Pontu Ikus - UTM"
@@ -747,26 +828,18 @@ msgid "Number of lanes"
 msgstr ""
 
 #, fuzzy
-#| msgid "Pavement class"
-msgid "Asset class"
-msgstr "klase pavimentu"
+#| msgid "Technical Class"
+msgid "Terrain Class"
+msgstr "Klase Tekniku "
 
-msgid "Technical class"
-msgstr "Klase tekniku"
+#, fuzzy
+#| msgid "Road Inventory Data"
+msgid "Inventory Photos"
+msgstr "Dadus Inventoriu Estrada"
 
-msgid "Funding source"
-msgstr "Fontes orsamentu"
-
-msgid "Road status"
-msgstr "Estatutu estrada "
-
-msgid "Project"
-msgstr "Projetu "
-
-msgid "Construction Year"
-msgstr ""
-
-msgid "Road Condition Data"
+#, fuzzy
+#| msgid "Road Condition Data"
+msgid "Condition and Traffic"
 msgstr "Dadus Kondisaun Estrada"
 
 msgid "Roughness (IRI)"
@@ -782,9 +855,21 @@ msgid "Traffic data"
 msgstr "Dadus trafiku"
 
 #, fuzzy
-#| msgid "Technical Class"
-msgid "Terrain Class"
-msgstr "Klase Tekniku "
+#| msgid "Project Name"
+msgid "Project Data"
+msgstr "Naran Projetu"
+
+msgid "Road status"
+msgstr "Estatutu estrada "
+
+msgid "Construction Year"
+msgstr ""
+
+msgid "Funding source"
+msgstr "Fontes orsamentu"
+
+msgid "Project"
+msgstr "Projetu "
 
 msgid "Return to default selection"
 msgstr "Fila fali ba selesaun padraun "
@@ -824,6 +909,9 @@ msgstr ""
 msgid "Height"
 msgstr ""
 
+msgid "Thickness"
+msgstr ""
+
 #, fuzzy
 #| msgid "Link Length"
 msgid "Span Length"
@@ -845,9 +933,9 @@ msgid "Condition Description"
 msgstr "Dadus Kondisaun Estrada"
 
 #, fuzzy
-#| msgid "Road Inventory Data"
-msgid "Inventory Photos"
-msgstr "Dadus Inventoriu Estrada"
+#| msgid "Road Condition Data"
+msgid "Condition Photos"
+msgstr "Dadus Kondisaun Estrada"
 
 #, fuzzy
 #| msgid "Designed & developed by Catalpa International"
@@ -898,8 +986,21 @@ msgstr ""
 msgid "Culverts"
 msgstr ""
 
+msgid "Drifts"
+msgstr ""
+
 msgid "Asset condition"
 msgstr "Kondisaun sasan/aset"
+
+#, fuzzy
+#| msgid "Link Start Name"
+msgid "Structure Type"
+msgstr "Naran Linha Komesa"
+
+#, fuzzy
+#| msgid "Link Start Name"
+msgid "Structure Material"
+msgstr "Naran Linha Komesa"
 
 #, fuzzy
 #| msgid "Select data"
@@ -913,6 +1014,1041 @@ msgstr ""
 #| msgid "Select data"
 msgid "Select the Material"
 msgstr "Hili dadus "
+
+msgid "Rehabilitation road X"
+msgstr ""
+
+msgid "Project for the rehabilitation of road X"
+msgstr ""
+
+msgid "Associated projects"
+msgstr ""
+
+msgid "Select one or more projects for the tender"
+msgstr ""
+
+msgid "Contract for the upgrade of road A01-1 to technical class R1"
+msgstr ""
+
+msgid "Due to unforeseen events, the contract start was postponed by 1 month"
+msgstr ""
+
+#, fuzzy
+#| msgid "Project Name"
+msgid "Project Status"
+msgstr "Naran Projetu"
+
+#, fuzzy
+#| msgid "Road status"
+msgid "Choose status"
+msgstr "Estatutu estrada "
+
+#, fuzzy
+#| msgid "Project Name"
+msgid "Program Name"
+msgstr "Naran Projetu"
+
+#, fuzzy
+#| msgid "Choose the pavement class of the road"
+msgid "Choose the program for the project"
+msgstr "Hili klase pavimentu husi estrada"
+
+msgid "Type of Work"
+msgstr ""
+
+#, fuzzy
+#| msgid "Choose the pavement class of the road"
+msgid "Choose from the list"
+msgstr "Hili klase pavimentu husi estrada"
+
+#, fuzzy
+#| msgid "Enter road link project name"
+msgid "Enter project’s name"
+msgstr "Hatama naran projetu linha estrada"
+
+#, fuzzy
+#| msgid "Project Name"
+msgid "Project Code"
+msgstr "Naran Projetu"
+
+#, fuzzy
+#| msgid "Enter road link project name"
+msgid "Enter project’s code"
+msgstr "Hatama naran projetu linha estrada"
+
+msgid "Enter a description of the project"
+msgstr ""
+
+#, fuzzy
+#| msgid "Funding source"
+msgid "Choose the funding source"
+msgstr "Fontes orsamentu"
+
+#, fuzzy
+#| msgid "Choose the pavement class of the road"
+msgid "Choose the donor"
+msgstr "Hili klase pavimentu husi estrada"
+
+msgid "Enter schedule start date"
+msgstr ""
+
+msgid "Duration (days)"
+msgstr ""
+
+msgid "Estimated duration of the work"
+msgstr ""
+
+msgid "Donor"
+msgstr ""
+
+msgid "Select project's asset"
+msgstr ""
+
+#, fuzzy
+#| msgid "Link Start Chainage (Km)"
+msgid "Start Chainage"
+msgstr "Linha Estasaun Komesa (Km)"
+
+msgid "In meters"
+msgstr ""
+
+#, fuzzy
+#| msgid "Link End Chainage (Km)"
+msgid "End Chainage"
+msgstr "Linha Estasaun Ikus (Km)"
+
+msgid "Start Chainage must be specified for roads"
+msgstr ""
+
+msgid "End Chainage must be specified for roads"
+msgstr ""
+
+msgid "Start Chainage must be 0 or greater"
+msgstr ""
+
+msgid "Start Chainage must be less than End Chainage"
+msgstr ""
+
+msgid "End Chainage must be greater than Start Chainage"
+msgstr ""
+
+msgid "Asset Id must identify a current Asset, or provide enough information to create a new Asset"
+msgstr ""
+
+msgid "Could not create a new Asset, because the asset_type in the 'special' Asset Id is not valid."
+msgstr ""
+
+msgid "Could not create a new Asset, because the asset_class in the 'special' Asset Id is not valid."
+msgstr ""
+
+msgid "Could not create a new Asset, because the asset_municipality in the 'special' Asset Id is not valid."
+msgstr ""
+
+msgid "Start Chainage is too large for this road"
+msgstr ""
+
+#, python-format
+msgid "Ensure this value has at most 15 characters (it has %s)"
+msgstr ""
+
+msgid "Enter year"
+msgstr ""
+
+msgid "In USD"
+msgstr ""
+
+msgid "Estimated days of work"
+msgstr ""
+
+msgid "Physical progress (%)"
+msgstr ""
+
+msgid "Estimated physical progress"
+msgstr ""
+
+#, fuzzy
+#| msgid "Road Code"
+msgid "Tender Code"
+msgstr "Kodigu Estrada "
+
+#, fuzzy
+#| msgid "Enter road link length (in Km)"
+msgid "Enter tender code"
+msgstr "Hatama linha estrada nia naruk (iha Km) "
+
+msgid "Announcement Date"
+msgstr ""
+
+msgid "Tender announcement date"
+msgstr ""
+
+msgid "Bid Submission Deadline"
+msgstr ""
+
+msgid "Date of fid submission deadline"
+msgstr ""
+
+msgid "Number of Companies Tendering"
+msgstr ""
+
+#, fuzzy
+#| msgid "Enter the source funding for the road link"
+msgid "Enter the number of companies tendering"
+msgstr "Hatama fontes orsamentu ba linha estrada"
+
+msgid "Evaluation Date"
+msgstr ""
+
+msgid "Bids evaluation date"
+msgstr ""
+
+#, fuzzy
+#| msgid "Road Status"
+msgid "Tender Status"
+msgstr "Estatutu Estrada"
+
+msgid "Enter contract code"
+msgstr ""
+
+#, fuzzy
+#| msgid "Enter chainage for link starting point"
+msgid "Enter a description of the contract"
+msgstr "Hatama estasaun ba linha nia pontu komesa"
+
+msgid "Associated tender"
+msgstr ""
+
+msgid "Choose a tender to create a contract"
+msgstr ""
+
+msgid "Select a company from the list"
+msgstr ""
+
+msgid "Contract start date"
+msgstr ""
+
+msgid "Enter contract start date"
+msgstr ""
+
+msgid "Contract end date"
+msgstr ""
+
+#, fuzzy
+#| msgid "Enter road link length (in Km)"
+msgid "Enter contract end date"
+msgstr "Hatama linha estrada nia naruk (iha Km) "
+
+msgid "Duration in days"
+msgstr ""
+
+msgid "Defect liability period (days)"
+msgstr ""
+
+msgid "Duration of DLP in days"
+msgstr ""
+
+msgid "Enter new start date"
+msgstr ""
+
+msgid "Contract duration"
+msgstr ""
+
+msgid "Enter new duration in days"
+msgstr ""
+
+msgid "Description (Reasons for Variations)"
+msgstr ""
+
+msgid "Enter a reason for variations to the contract"
+msgstr ""
+
+msgid "Enter supervisor's name"
+msgstr ""
+
+msgid "Supervisor's phone number"
+msgstr ""
+
+#, fuzzy
+#| msgid "Select data"
+msgid "Select year"
+msgstr "Hili dadus "
+
+msgid "Budget per year in USD"
+msgstr ""
+
+msgid "Days of work for the milestone"
+msgstr ""
+
+msgid "Milestone physical progress"
+msgstr ""
+
+msgid "Yes"
+msgstr ""
+
+msgid "No"
+msgstr ""
+
+msgid "January"
+msgstr ""
+
+msgid "February"
+msgstr ""
+
+msgid "March"
+msgstr ""
+
+msgid "April"
+msgstr ""
+
+#, fuzzy
+#| msgid "Map"
+msgid "May"
+msgstr "Mapa"
+
+msgid "June"
+msgstr ""
+
+msgid "July"
+msgstr ""
+
+msgid "August"
+msgstr ""
+
+msgid "September"
+msgstr ""
+
+msgid "October"
+msgstr ""
+
+msgid "November"
+msgstr ""
+
+msgid "December"
+msgstr ""
+
+msgid "Unknown"
+msgstr ""
+
+msgid "Company Name"
+msgstr ""
+
+#, fuzzy
+#| msgid "Enter road link length (in Km)"
+msgid "Enter company name"
+msgstr "Hatama linha estrada nia naruk (iha Km) "
+
+#, fuzzy
+#| msgid "Email address"
+msgid "Enter company address"
+msgstr "Email"
+
+#, fuzzy
+#| msgid "Enter road link project name"
+msgid "Enter company phone number"
+msgstr "Hatama naran projetu linha estrada"
+
+#, fuzzy
+#| msgid "Enter road link length (in Km)"
+msgid "Enter company email"
+msgstr "Hatama linha estrada nia naruk (iha Km) "
+
+msgid "Enter company TIN number"
+msgstr ""
+
+msgid "Bank Account Number"
+msgstr ""
+
+msgid "Enter company bank account number"
+msgstr ""
+
+msgid "Representative name"
+msgstr ""
+
+#, fuzzy
+#| msgid "Enter road link project name"
+msgid "Enter company representative name"
+msgstr "Hatama naran projetu linha estrada"
+
+msgid "Representative phone"
+msgstr ""
+
+msgid "Enter company representative phone number"
+msgstr ""
+
+msgid "Representative email"
+msgstr ""
+
+msgid "Enter company representative email"
+msgstr ""
+
+msgid "Woman-Led Company"
+msgstr ""
+
+msgid "Is the company director/owner a woman?"
+msgstr ""
+
+msgid "Company category"
+msgstr ""
+
+#, fuzzy
+#| msgid "Choose the pavement class of the road"
+msgid "Choose category"
+msgstr "Hili klase pavimentu husi estrada"
+
+#, fuzzy
+#| msgid "Project"
+msgid "project"
+msgstr "Projetu "
+
+msgid "tender"
+msgstr ""
+
+msgid "contract"
+msgstr ""
+
+msgid "company"
+msgstr ""
+
+msgid "Edit Company"
+msgstr ""
+
+msgid "Create Company"
+msgstr ""
+
+msgid "Company Details"
+msgstr ""
+
+msgid "Documents"
+msgstr ""
+
+msgid "Cancel"
+msgstr "Kansela "
+
+msgid "Save"
+msgstr ""
+
+#, fuzzy
+#| msgid "Date Created"
+msgid "Create"
+msgstr "Data Kria"
+
+msgid "Company"
+msgstr ""
+
+msgid "Print"
+msgstr ""
+
+#, fuzzy
+#| msgid "Email address"
+msgid "Address"
+msgstr "Email"
+
+msgid "Phone"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "TIN"
+msgstr ""
+
+msgid "Representative Name"
+msgstr ""
+
+msgid "Representative Phone"
+msgstr ""
+
+msgid "Representative Email"
+msgstr ""
+
+msgid "Uploaded Documents"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "Document Date"
+msgstr ""
+
+msgid "Save Document"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "File"
+msgstr ""
+
+#, fuzzy
+#| msgid "Asset"
+msgid "Document Type"
+msgstr "Sasan (aset)"
+
+msgid "Delete Document"
+msgstr ""
+
+msgid "Are you sure you want to delete this document?"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Don't delete"
+msgstr ""
+
+msgid "List of documents"
+msgstr ""
+
+msgid "Company Manager"
+msgstr ""
+
+#, fuzzy
+#| msgid "Create a new password"
+msgid "Create New Company"
+msgstr "Kria seña foun"
+
+msgid "List of companies"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Total Contracts"
+msgstr ""
+
+msgid "Active Contracts"
+msgstr ""
+
+msgid "Welcome to the Company Manager"
+msgstr ""
+
+msgid "No companies were created yet"
+msgstr ""
+
+msgid "Delete Company"
+msgstr ""
+
+msgid "Are you sure you want to delete this company?"
+msgstr ""
+
+msgid "Edit Contract"
+msgstr ""
+
+msgid "Create Contract"
+msgstr ""
+
+msgid "Contract Details"
+msgstr ""
+
+msgid "Inspections"
+msgstr ""
+
+#, fuzzy
+#| msgid "Pavement Class"
+msgid "Payments"
+msgstr "Klase Pavimentu "
+
+msgid "Social Safeguard"
+msgstr ""
+
+msgid "Supervisor"
+msgstr ""
+
+msgid "Contract Value Total"
+msgstr ""
+
+msgid "Schedule"
+msgstr ""
+
+msgid "Milestones"
+msgstr ""
+
+msgid "Amendments"
+msgstr ""
+
+msgid "Contract"
+msgstr ""
+
+#, fuzzy
+#| msgid "Road Status"
+msgid "Status"
+msgstr "Estatutu Estrada"
+
+msgid "Associated Tender"
+msgstr ""
+
+msgid "Projects in the Tender"
+msgstr ""
+
+#, fuzzy
+#| msgid "Road Code"
+msgid "Contract Code"
+msgstr "Kodigu Estrada "
+
+#, fuzzy
+#| msgid "Road Condition Data"
+msgid "Contract Description"
+msgstr "Dadus Kondisaun Estrada"
+
+msgid "Contractor"
+msgstr ""
+
+msgid "Sub-Contractor"
+msgstr ""
+
+msgid "Supervisor Name"
+msgstr ""
+
+msgid "Phone Number"
+msgstr ""
+
+msgid "Total Budget"
+msgstr ""
+
+msgid "Value"
+msgstr ""
+
+msgid "Defect Liability Period (Days)"
+msgstr ""
+
+msgid "Contract Start Date"
+msgstr ""
+
+msgid "Contract End Date"
+msgstr ""
+
+msgid "Contract Duration"
+msgstr ""
+
+msgid "Days of Work"
+msgstr ""
+
+msgid "Progress"
+msgstr ""
+
+msgid "List of inspections"
+msgstr ""
+
+msgid "Inspection Date"
+msgstr ""
+
+msgid "Inspection Entity"
+msgstr ""
+
+msgid "Physical Progress"
+msgstr ""
+
+msgid "Defect Liability Period"
+msgstr ""
+
+msgid "Save Inspection"
+msgstr ""
+
+#, fuzzy
+#| msgid "Select data"
+msgid "Select inspection date"
+msgstr "Hili dadus "
+
+msgid "Choose entity that performed the inspection"
+msgstr ""
+
+msgid "Enter physical progress as inspected"
+msgstr ""
+
+msgid "Start Defect Liability Period"
+msgstr ""
+
+msgid "When DLP starts with the inspection"
+msgstr ""
+
+msgid "Delete Inspection"
+msgstr ""
+
+msgid "Are you sure you want to delete this inspection?"
+msgstr ""
+
+msgid "Contract Manager"
+msgstr ""
+
+#, fuzzy
+#| msgid "Create a new password"
+msgid "Create New Contract"
+msgstr "Kria seña foun"
+
+msgid "List of contracts"
+msgstr ""
+
+#, fuzzy
+#| msgid "Save changes"
+msgid "Value range"
+msgstr "Salva mudansa"
+
+msgid "over"
+msgstr ""
+
+msgid "Number of Projects"
+msgstr ""
+
+#, fuzzy
+#| msgid "Project Name"
+msgid "Project(s) Name"
+msgstr "Naran Projetu"
+
+msgid "Type of Works"
+msgstr ""
+
+msgid "Welcome to the Contract Manager"
+msgstr ""
+
+msgid "No contracts were created yet"
+msgstr ""
+
+msgid "Delete Contract"
+msgstr ""
+
+msgid "Are you sure you want to delete this contract?"
+msgstr ""
+
+msgid "List of payments"
+msgstr ""
+
+#, fuzzy
+#| msgid "Pavement Class"
+msgid "Payment Date"
+msgstr "Klase Pavimentu "
+
+msgid "Payment Value"
+msgstr ""
+
+msgid "Destination"
+msgstr ""
+
+msgid "Save Payment"
+msgstr ""
+
+#, fuzzy
+#| msgid "Select data"
+msgid "Select payment date"
+msgstr "Hili dadus "
+
+#, fuzzy
+#| msgid "Enter road link project name"
+msgid "Enter total payment value"
+msgstr "Hatama naran projetu linha estrada"
+
+msgid "Choose donor from the list"
+msgstr ""
+
+#, fuzzy
+#| msgid "Select data"
+msgid "Select donor"
+msgstr "Hili dadus "
+
+#, fuzzy
+#| msgid "Choose the administrative area of the road"
+msgid "Choose funding source from the list"
+msgstr "Hili area administrativu husi estrada ne"
+
+#, fuzzy
+#| msgid "Choose the administrative area of the road"
+msgid "Choose from the list the recipient of the payment"
+msgstr "Hili area administrativu husi estrada ne"
+
+msgid "Delete Payment"
+msgstr ""
+
+msgid "Are you sure you want to delete this payment?"
+msgstr ""
+
+msgid "List of Social Safeguard Data"
+msgstr ""
+
+msgid "Reporting Month"
+msgstr ""
+
+msgid "Total Employees"
+msgstr ""
+
+msgid "Total Female Employees"
+msgstr ""
+
+msgid "Total Employees With Disabilities"
+msgstr ""
+
+msgid "Female Employees With Disabilities"
+msgstr ""
+
+msgid "Save Social Safeguard Report"
+msgstr ""
+
+msgid "Number of Employees"
+msgstr ""
+
+msgid "Select month of the report"
+msgstr ""
+
+#, fuzzy
+#| msgid "National"
+msgid "National Employees"
+msgstr "Nasional"
+
+msgid "International Employees"
+msgstr ""
+
+msgid "Non timorese employees"
+msgstr ""
+
+msgid "Female Employees"
+msgstr ""
+
+msgid "Employees With Disabilities"
+msgstr ""
+
+msgid "Young Employees"
+msgstr ""
+
+msgid "Young Female Employees"
+msgstr ""
+
+msgid "Worker-days"
+msgstr ""
+
+msgid "Total Worker-days"
+msgstr ""
+
+msgid "Worker-days of all employees"
+msgstr ""
+
+msgid "Female Employees Worker-days"
+msgstr ""
+
+msgid "Employees With Disabilities Worker-days"
+msgstr ""
+
+msgid "Female Employees With Disabilities Worker-days"
+msgstr ""
+
+msgid "Young Employees Worker-days"
+msgstr ""
+
+msgid "Young Female Employees Worker-days"
+msgstr ""
+
+msgid "Wages"
+msgstr ""
+
+msgid "Total Wages"
+msgstr ""
+
+msgid "All salaries paid in USD"
+msgstr ""
+
+msgid "Average Gross Wages"
+msgstr ""
+
+msgid "Average of gross salaries in USD"
+msgstr ""
+
+msgid "Average Net Wages"
+msgstr ""
+
+msgid "Average of net salaries in USD"
+msgstr ""
+
+msgid "Delete Social Safeguard Data"
+msgstr ""
+
+msgid "Are you sure you want to delete this data?"
+msgstr ""
+
+#, fuzzy
+#| msgid "Project"
+msgid "Projects"
+msgstr "Projetu "
+
+msgid "Tenders"
+msgstr ""
+
+msgid "Contracts"
+msgstr ""
+
+msgid "Companies"
+msgstr ""
+
+msgid "Democratic Republic of Timor-Leste"
+msgstr "República Democrática de Timor-Leste"
+
+msgid "Ministry of Public Works"
+msgstr "Ministério das Obras Públicas"
+
+#, fuzzy
+#| msgid "Ministry of Public Works"
+msgid "Directorate General for Public Works"
+msgstr "Ministério das Obras Públicas"
+
+msgid "National Directorate for Roads, Bridges and Flood Control"
+msgstr ""
+
+msgid "Exported from Estrada on"
+msgstr ""
+
+msgid "at"
+msgstr ""
+
+#, fuzzy
+#| msgid "Save changes"
+msgid "Unsaved Changes"
+msgstr "Salva mudansa"
+
+msgid "You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?"
+msgstr ""
+
+msgid "Discard"
+msgstr ""
+
+#, fuzzy
+#| msgid "Continue"
+msgid "Continue Editing"
+msgstr "Kontinua"
+
+msgid "Error"
+msgstr ""
+
+msgid "Success"
+msgstr ""
+
+msgid "You have successfully saved"
+msgstr ""
+
+msgid "Something went wrong"
+msgstr ""
+
+#, fuzzy
+#| msgid "Project"
+msgid "Edit Project"
+msgstr "Projetu "
+
+#, fuzzy
+#| msgid "Project"
+msgid "Create Project"
+msgstr "Projetu "
+
+#, fuzzy
+#| msgid "Project Name"
+msgid "Project Details"
+msgstr "Naran Projetu"
+
+msgid "Financials"
+msgstr ""
+
+#, fuzzy
+#| msgid "Road Condition Data"
+msgid "Construction Schedule"
+msgstr "Dadus Kondisaun Estrada"
+
+msgid "Estimated Schedule"
+msgstr ""
+
+#, fuzzy
+#| msgid "Road Condition Data"
+msgid "Estimated Construction Milestones"
+msgstr "Dadus Kondisaun Estrada"
+
+#, fuzzy
+#| msgid "Link Start Name"
+msgid "Start Date"
+msgstr "Naran Linha Komesa"
+
+#, fuzzy
+#| msgid "Pavement Class"
+msgid "Asset Details"
+msgstr "Klase Pavimentu "
+
+#, fuzzy
+#| msgid "Funding Source"
+msgid "Funding"
+msgstr "Fontes Orsamentu"
+
+msgid "Total"
+msgstr ""
+
+msgid "Approved Value"
+msgstr ""
+
+#, fuzzy
+#| msgid "Project Name"
+msgid "Project Manager"
+msgstr "Naran Projetu"
+
+msgid "Create New Project"
+msgstr ""
+
+msgid "List of projects"
+msgstr ""
+
+msgid "Program"
+msgstr ""
+
+msgid "Estimated Budget"
+msgstr ""
+
+msgid "No projects were created yet"
+msgstr ""
+
+#, fuzzy
+#| msgid "Project"
+msgid "Delete Project"
+msgstr "Projetu "
+
+msgid "Are you sure you want to delete this project?"
+msgstr ""
+
+msgid "Edit Tender"
+msgstr ""
+
+msgid "Create Tender"
+msgstr ""
+
+msgid "Tender Details"
+msgstr ""
+
+msgid "Bids and Evaluation"
+msgstr ""
+
+msgid "Tender"
+msgstr ""
+
+msgid "Associated Projects"
+msgstr ""
+
+msgid "Numbering of Companies Tendering"
+msgstr ""
+
+msgid "Tender Manager"
+msgstr ""
+
+msgid "Create New Tender"
+msgstr ""
+
+msgid "List of tenders"
+msgstr ""
+
+#, fuzzy
+#| msgid "Project Name"
+msgid "Project(s) name"
+msgstr "Naran Projetu"
+
+msgid "Welcome to the Tender Manager"
+msgstr ""
+
+msgid "No tenders were created yet"
+msgstr ""
+
+msgid "Delete Tender"
+msgstr ""
+
+msgid "Are you sure you want to delete this tender?"
+msgstr ""
 
 msgid "Please enter a correct username and password. Note that both fields may be case-sensitive"
 msgstr "Favor hatama naran utilisador ho seña nebe los. Nota Katak linha rua ne talvez sensitivu"
@@ -943,12 +2079,6 @@ msgstr "Haluha ita bot nia seña?"
 
 msgid "Log in"
 msgstr "Tama"
-
-msgid "Democratic Republic of Timor-Leste"
-msgstr "República Democrática de Timor-Leste"
-
-msgid "Ministry of Public Works"
-msgstr "Ministério das Obras Públicas"
 
 msgid "Designed & developed by Catalpa International"
 msgstr "Dezenho & dezenvolve husi Catalpa International "
@@ -988,9 +2118,6 @@ msgstr "Seña foun"
 
 msgid "New password confirmation"
 msgstr "Konfirmasaun seña foun "
-
-msgid "Cancel"
-msgstr "Kansela "
 
 msgid "Save changes"
 msgstr "Salva mudansa"
