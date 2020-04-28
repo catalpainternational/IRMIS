@@ -151,11 +151,13 @@ class ProjectAsset(models.Model):
         Project, on_delete=models.CASCADE, related_name="assets"
     )
     # Global ID for an asset the project links to (ex. ROAD-322, BRDG-42)
+    # Here it is 30, to allow us to use the asset_id when creating a new asset
+    # But 'normally' it is only 15
     asset_id = models.CharField(
         verbose_name=_("Asset Id"),
         validators=[no_spaces],
         db_index=True,
-        max_length=15,
+        max_length=30,
         default="",
         help_text=_("Select project's asset"),
     )
@@ -186,7 +188,9 @@ class ProjectAsset(models.Model):
     def get_road(self):
         if self.asset_id.startswith("ROAD-"):
             road_id = int(self.asset_id.replace("ROAD-", ""))
-            return Road.objects.get(pk=road_id)
+            roads = Road.objects.filter(pk=road_id)
+            if len(roads) == 1:
+                return roads.first()
         return None
 
     def clean_asset_id(self):
@@ -311,10 +315,20 @@ class ProjectAsset(models.Model):
             if asset_type == "ROAD":
                 asset_obj.road_code = asset_code
                 asset_obj.link_code = asset_code
+
                 asset_obj.link_start_chainage = self.asset_start_chainage
-                asset_obj.geom_start_chainage = self.asset_start_chainage
                 asset_obj.link_end_chainage = self.asset_end_chainage
+                # link_length is in kilometers
+                asset_obj.link_length = (
+                    self.asset_end_chainage - self.asset_start_chainage
+                ) / 1000
+
+                asset_obj.geom_start_chainage = self.asset_start_chainage
                 asset_obj.geom_end_chainage = self.asset_end_chainage
+                # geom_length is in meters
+                asset_obj.geom_length = (
+                    self.asset_end_chainage - self.asset_start_chainage
+                )
             else:
                 asset_obj.structure_code = asset_code
 
@@ -328,10 +342,9 @@ class ProjectAsset(models.Model):
 
             # and now we can get it's Id
             self.asset_id = "%s-%s" % (asset_type, asset_obj.id)
-            print(self.asset_id)
 
         elif self.asset_id.startswith("ROAD-"):
-            # Clean the asset_id for exsiting roads
+            # Clean the asset_id for existing roads
             road = self.get_road()
             if road != None:
                 road_link = get_first_road_link_for_chainage(
@@ -348,6 +361,18 @@ class ProjectAsset(models.Model):
 
                 # 'correct' the asset_id to point to the first matching road link
                 self.asset_id = "ROAD-" + str(road_link.id)
+
+        # Finally check the asset_id is not too long (because we've fudged the length on the model)
+        asset_id_len = len(self.asset_id)
+        if asset_id_len > 15:
+            raise ValidationError(
+                {
+                    "asset_id": _(
+                        "Ensure this value has at most 15 characters (it has %s)"
+                        % asset_id_len
+                    )
+                }
+            )
 
     def __str__(self):
         if self.asset_id.startswith("ROAD"):
