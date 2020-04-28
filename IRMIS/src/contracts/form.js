@@ -78,6 +78,10 @@ window.addEventListener("load", () => {
         isElementValid(description);
     }
 
+    if (assetCode.length) {
+        isSelect2FormsetValid(assetCode);
+    }
+
     if (assetStartChainage.length) {
         isFormsetElementValid(assetStartChainage);
     }
@@ -121,6 +125,10 @@ window.addEventListener("load", () => {
 
     if (milestoneProgress.length) {
         isFormsetElementValid(milestoneProgress);
+    }
+
+    if (projects) {
+        isSelect2Valid(projects);
     }
 
     if (announcementDate) {
@@ -256,6 +264,32 @@ function isFormsetElementValid(elements) {
     elements.forEach((element) => {
         isElementValid(element);
     });
+}
+
+function isSelect2FormsetValid(elements) {
+    elements.forEach((element) => {
+        if (element.classList.contains("select2-selection")) {
+            if (element.classList.contains("select2-selection--multiple")) {
+                if (element.firstChild.children.length > 1) element.classList.add("active");
+                else element.classList.remove("active");
+            } else {
+                if (element.firstChild.getAttribute("title")) element.classList.add("active");
+                else element.classList.remove("active");
+            }
+        }
+    });
+}
+
+function isSelect2Valid(element) {
+    const select2Selection = element.nextSibling.children.item(0).firstElementChild;
+
+    if (element.getAttribute("multiple") != null) {
+        if (select2Selection.firstChild.children.length > 1) select2Selection.classList.add("active");
+        else select2Selection.classList.remove("active");
+    } else {
+        if (select2Selection.value) select2Selection.classList.add("active");
+        else select2Selection.classList.remove("active");
+    }
 }
 
 function saveFormValues(state) {
