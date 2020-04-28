@@ -68,14 +68,7 @@ function initializeProjectsListTable(table) {
     setupSelectFilter(dataTable, "project_type_of_work_select2", window.gettext("Type of work"), textFilter, 4);
 
     // Budget value range filter
-    const valueSelectId = "value_select";
-    document.getElementById(valueSelectId).addEventListener("change", () => dataTable.draw());
-    $.fn.dataTableExt.afnFiltering.push(
-        function (oSettings, _aData, iDataIndex) {
-            let row = oSettings.aoData[iDataIndex]._aData;
-            return valueRangeFilter(row, 5, valueSelectId);
-        }
-    );
+    setupValueRangeFilter(dataTable, 5);
 }
 
 function initializeTendersListTable(table) {
@@ -110,14 +103,7 @@ function initializeTendersListTable(table) {
     setupSelectFilter(dataTable, "tender_type_of_work_select2", window.gettext("Type of work"), multipleTextFilter, 6);
 
     // Budget value range filter
-    const valueSelectId = "value_select";
-    document.getElementById(valueSelectId).addEventListener("change", () => dataTable.draw());
-    $.fn.dataTableExt.afnFiltering.push(
-        function (oSettings, _aData, iDataIndex) {
-            let row = oSettings.aoData[iDataIndex]._aData;
-            return valueRangeFilter(row, 7, valueSelectId);
-        }
-    );
+    setupValueRangeFilter(dataTable, 7);
 }
 
 function initializeContractsListTable(table) {
@@ -152,14 +138,7 @@ function initializeContractsListTable(table) {
     setupSelectFilter(dataTable, "contract_status_select2", window.gettext("Contract status"), textFilter, 5);
 
     // Budget value range filter
-    const valueSelectId = "value_select";
-    document.getElementById(valueSelectId).addEventListener("change", () => dataTable.draw());
-    $.fn.dataTableExt.afnFiltering.push(
-        function (oSettings, _aData, iDataIndex) {
-            let row = oSettings.aoData[iDataIndex]._aData;
-            return valueRangeFilter(row, 6, valueSelectId);
-        }
-    );
+    setupValueRangeFilter(dataTable, 6);
 }
 
 function initializeCompaniesListTable(table) {
@@ -216,6 +195,17 @@ function setupSelectFilter(dataTable, selectId, placeHolder, filterFunc, columnN
         function (oSettings, _aData, iDataIndex) {
             let row = oSettings.aoData[iDataIndex]._aData;
             return filterFunc(row, columnNo, selectId);
+        }
+    );
+}
+
+function setupValueRangeFilter(dataTable, columnNo) {
+    const valueSelectId = "value_select";
+    document.getElementById(valueSelectId).addEventListener("change", () => dataTable.draw());
+    $.fn.dataTableExt.afnFiltering.push(
+        function (oSettings, _aData, iDataIndex) {
+            let row = oSettings.aoData[iDataIndex]._aData;
+            return valueRangeFilter(row, columnNo, valueSelectId);
         }
     );
 }
