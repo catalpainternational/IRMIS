@@ -28,6 +28,9 @@ def no_spaces(value):
         )
 
 
+YEAR_CHOICES = [(r, r) for r in range(date.today().year - 10, date.today().year + 11)]
+
+
 # Project
 @reversion.register()
 class Project(models.Model):
@@ -394,10 +397,6 @@ class ProjectAsset(models.Model):
 
 
 class ProjectBudget(models.Model):
-    YEAR_CHOICES = [
-        (r, r) for r in range(date.today().year - 10, date.today().year + 11)
-    ]
-
     year = models.IntegerField(
         choices=YEAR_CHOICES, null=True, blank=True, help_text=_("Enter year"),
     )
@@ -577,8 +576,6 @@ class ContractSupervisor(models.Model):
 
 
 class ContractBudget(models.Model):
-    YEAR_CHOICES = [(r, r) for r in range(2010, date.today().year + 1)]
-
     contract = models.ForeignKey(
         "Contract", on_delete=models.CASCADE, related_name="budgets"
     )
@@ -606,8 +603,6 @@ class ContractMilestone(models.Model):
 
 
 class ContractAmendment(models.Model):
-    YEAR_CHOICES = [(r, r) for r in range(2010, date.today().year + 1)]
-
     contract = models.ForeignKey(
         "Contract", on_delete=models.CASCADE, related_name="amendments"
     )
