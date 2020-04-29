@@ -1051,11 +1051,11 @@ class ContractReport:
                 + "), "
             )
             # check if summary or single social safeguards, based on if contract_code was provided in filters
-            contract_code = getattr(self.filters, "contract_code", None)
-            if contract_code:
+            if len(self.filters) > 0:
+                contract_code = self.filters[0]
                 self.reportSQL += "final_results AS ( %s )" % (
                     self.report_clauses[self.report_type]
-                    + "WHERE contract_code = %s\n" % contract_code
+                    + "WHERE contract_code = '%s'\n" % contract_code
                     + "GROUP BY contract_code\n"
                 )
             else:

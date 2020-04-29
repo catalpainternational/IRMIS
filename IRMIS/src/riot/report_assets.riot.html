@@ -30,7 +30,7 @@
                             </option>
                         </select>
                     </div>
-    
+
                     <div if="{ reportAssetsContent().visibleFilters.assetClass }" class="options">
                         <select id="asset_class_select2" multiple="true">
                             <option each="{ asset_class in window.asset_schema.asset_class.options }"
@@ -141,7 +141,7 @@
                 <h1>{ state.reportData.totalLength.toFixed(0) } Structures</h1>
             </div>
 
-            <stacked_bar class="{!state.road_status || !hasStackedBar(stackedBarIds.roadStatus) ? 'hidden' : 'show'}" 
+            <stacked_bar class="{!state.road_status || !hasStackedBar(stackedBarIds.roadStatus) ? 'hidden' : 'show'}"
                 id="{ stackedBarIds.roadStatus }" title="{ window.gettext('Road Status') }"
                 entries="{ state.road_status }" total_title="{ window.gettext('Total road chainage') }">
             </stacked_bar>
@@ -443,7 +443,7 @@
                 // Add in the extra columns needed by any secondaryattributes
                 // This assumes that the reportColumns definitions have been generated
                 // in the defineReportColumn in surveyReport.js
-                if (tableData.length > 0 && hasSecondaryAttributes) {                
+                if (tableData.length > 0 && hasSecondaryAttributes) {
                     // Initialise the new set of columns
                     // For totalLength (or unknown): with the distance column (but not percent)
                     // For totalCount: with the count column (but not percent)

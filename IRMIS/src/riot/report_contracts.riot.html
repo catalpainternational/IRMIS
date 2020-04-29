@@ -505,9 +505,15 @@
                 $('#loading').modal('show');
 
                 const reportId = parseInt(e.currentTarget.dataset.id);
-                const baseFilterSet = this.assembleFilterSet();
-                const filters = this.buildFilterSets(baseFilterSet);
-                getContractReport(reportId, [])
+                // const baseFilterSet = this.assembleFilterSet();
+                // const filters = this.buildFilterSets(baseFilterSet);
+                let filters = [];
+                if (reportId == 5) {
+                    const code = document.getElementById("contract_code_select2").value;
+                    filters = {contractCode: code};
+                }
+
+                getContractReport(reportId, filters)
                     .then((reportData) => {
                         this.state.noReport = false;
                         this.state.noReportData = true;
