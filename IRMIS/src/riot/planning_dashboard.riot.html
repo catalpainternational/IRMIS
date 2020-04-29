@@ -79,7 +79,7 @@
                 'rehab': window.gettext('Rehabilitation'),
                 'spot': window.gettext('Spot Improvement'),
             },
-            assetClasses: window.asset_schema.asset_class.options,
+            assetClasses: window.asset_schema.asset_class.options.filter((item) => item[0] !== "HIGH"),
             years: getYears(),
             onMounted() {
                 $("#loading").modal("show");
