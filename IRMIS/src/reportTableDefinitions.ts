@@ -901,11 +901,10 @@ export const reportContractsColumnSets: { [name: string]: string[] } = {
     ],
     assetClassYear: [
         reportContractsTableColumns.title,
-        reportContractsTableColumns.yrZero,
-        reportContractsTableColumns.yrOne,
-        reportContractsTableColumns.yrTwo,
-        reportContractsTableColumns.yrThree,
-        reportContractsTableColumns.yrFour,
+        reportContractsTableColumns.national,
+        reportContractsTableColumns.municipal,
+        reportContractsTableColumns.rural,
+        reportContractsTableColumns.totalLength,
     ],
     numberEmployees: [
         reportContractsTableColumns.title,
