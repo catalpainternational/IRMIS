@@ -1067,11 +1067,11 @@ class ContractReport:
         self.build_query_body()
         self.reportSQL += "\n%s" % self.report_clauses["get_all"]
 
-        print(
-            self.reportSQL.replace(r"ANY(%s)", r"ANY('{}'::text[])"),
-            "\n-- ",
-            self.filter_cases,
-        )
+        # print(
+        #     self.reportSQL.replace(r"ANY(%s)", r"ANY('{}'::text[])"),
+        #     "\n-- ",
+        #     self.filter_cases,
+        # )
 
         with connection.cursor() as cursor:
             cursor.execute(self.reportSQL, self.filter_cases)
