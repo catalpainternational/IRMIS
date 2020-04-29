@@ -38,12 +38,12 @@
                                 { assetClass[1][1] }
                             </td>
                             <template each="{ year in years }">
-                                <td>
+                                <td class="text-right">
                                     { ( state.summaryData[workType[0]][assetClass[1][0]][year].budget == 0) ? "-" :
                                     (parseFloat(state.summaryData[workType[0]][assetClass[1][0]][year].budget)/1000000).toFixed(2)
                                     }
                                 </td>
-                                <td>
+                                <td class="text-right">
                                     { ( state.summaryData[workType[0]][assetClass[1][0]][year].length == 0) ? "-" :
                                     parseFloat(state.summaryData[workType[0]][assetClass[1][0]][year].length).toFixed(2)
                                     }
