@@ -559,7 +559,7 @@ export const reportContractsTableColumns: { [name: string]: any } = {
     },
     budget: {
         title: (window as any).gettext("Budget current year ($)"),
-        data: "budget",
+        data: "valuecurrentyear",
         defaultContent: "",
         orderable: false,
     },
@@ -817,7 +817,7 @@ export const reportContractsColumnSets: { [name: string]: string[] } = {
         reportContractsTableColumns.assets,
         reportContractsTableColumns.contractor,
         // reportContractsTableColumns.totalBudget,
-        // reportContractsTableColumns.budget,
+        reportContractsTableColumns.budget,
         // reportContractsTableColumns.totalContractValue,
         reportContractsTableColumns.contractValue,
         reportContractsTableColumns.paymentPreviousYear,
