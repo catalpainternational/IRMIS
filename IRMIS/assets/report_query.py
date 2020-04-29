@@ -821,7 +821,7 @@ class ContractReport:
                 "    program_name as title,\n"
                 "    STRING_AGG(DISTINCT funding_source, ', ') as fundingSource,\n"
                 "    COUNT(DISTINCT project_name) as projects,\n"
-                "    COUNT(contract_id) as contracts,\n"
+                "    COUNT(DISTINCT contract_code) as contracts,\n"
                 "    corp_cnt as companies,\n"
                 "    TO_CHAR(SUM(final_value),'FM999999999999.00') as contractValue,\n"
                 "    TO_CHAR(SUM(value_curr_year),'FM999999999999.00') as valueCurrentYear,\n"
