@@ -2132,7 +2132,7 @@ def protobuf_contract_reports(request, report_id):
     if request.method != "GET":
         raise MethodNotAllowed(request.method)
 
-    filters = request.GET.getlist("contract_code", [])
+    filters = request.GET.getlist("contractCode", [])
     report_types = {
         1: ["program"],
         2: ["contractCode"],
