@@ -867,7 +867,9 @@ def refresh_surveys_by_structure_code(management_command, sc):
     # management_command.stdout.write(management_command.style.MIGRATE_HEADING("  deleted programmatic surveys for '%s'" % sc))
     structure, prefix = get_structure_by_structure_code(sc)
     # management_command.stdout.write(management_command.style.MIGRATE_HEADING("  got structure for '%s'" % sc))
-    created += create_programmatic_surveys_for_structure(management_command, structure, prefix)
+    created += create_programmatic_surveys_for_structure(
+        management_command, structure, prefix
+    )
     # management_command.stdout.write(management_command.style.MIGRATE_HEADING("  created programmatic surveys for '%s'" % sc))
 
     # Refresh all of the non-programmatic surveys

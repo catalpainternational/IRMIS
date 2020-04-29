@@ -476,9 +476,17 @@ def populate_from_csv(road, row):
             road.link_start_name = link_start_name
         if road.link_end_name == None:
             road.link_end_name = link_end_name
-    link_start_chainage = decimal_from_chainage(row["Chainage start"]) if row["Chainage start"] else None
-    link_end_chainage = decimal_from_chainage(row["Chainage end"]) if row["Chainage end"] else None
-    link_length = link_end_chainage - link_start_chainage if link_start_chainage != None and link_end_chainage != None else None
+    link_start_chainage = (
+        decimal_from_chainage(row["Chainage start"]) if row["Chainage start"] else None
+    )
+    link_end_chainage = (
+        decimal_from_chainage(row["Chainage end"]) if row["Chainage end"] else None
+    )
+    link_length = (
+        link_end_chainage - link_start_chainage
+        if link_start_chainage != None and link_end_chainage != None
+        else None
+    )
 
     if link_start_chainage != None and road.link_start_chainage == None:
         road.link_start_chainage = link_start_chainage

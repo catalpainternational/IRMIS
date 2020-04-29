@@ -10,7 +10,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.stdout.write(
-            self.style.MIGRATE_HEADING("~~~ Starting import of Road data from CSV files ~~~ ")
+            self.style.MIGRATE_HEADING(
+                "~~~ Starting import of Road data from CSV files ~~~ "
+            )
         )
         import_csv(self, options["folder"])
 
@@ -21,5 +23,7 @@ class Command(BaseCommand):
         )
 
         self.stdout.write(
-            self.style.MIGRATE_HEADING("Please run `make_road_surveys` to refresh the programmatic surveys ")
+            self.style.MIGRATE_HEADING(
+                "Please run `make_road_surveys` to refresh the programmatic surveys "
+            )
         )
