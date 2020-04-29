@@ -216,16 +216,6 @@
                 reportContractsColumnSets[tableName][0] = titleColumn;
             }
 
-            if (tableName === "typeOfWorkYear" || tableName === "assetClassYear") {
-                let currentYear = new Date().getFullYear();
-
-                for (var year=0; year < 5; year++) {
-                    let yearColumn = JSON.parse(JSON.stringify(reportContractsTableColumns.year));
-                    yearColumn.title = currentYear - year + "";
-                    reportContractsColumnSets[tableName][year + 1] = yearColumn;
-                }
-            }
-
             return reportContractsColumnSets[tableName];
         };
 
@@ -370,7 +360,7 @@
                 window.location.hash = "reports/contracts/";
             },
             reportContractsContent() {
-                // For the definitions of the reports themselves see reportContractsContent in reportTableDefinitions                
+                // For the definitions of the reports themselves see reportContractsContent in reportTableDefinitions
                 const reportId = this.props.id;
                 return reportContractsContent[reportId];
             },
@@ -486,18 +476,6 @@
 
                 return filters;
             },
-            groupBy(arr, criteria) {
-                return arr.reduce(function(obj, item) {
-                    // Check if the criteria is a function to run on the item or a property of it
-                    var key = typeof criteria === 'function' ? criteria(item) : item[criteria];
-
-                    // If the key doesn't exist yet, create it
-                    if (!obj.hasOwnProperty(key)) { obj[key] = []; }
-                    obj[key].push(item);
-
-                    return obj;
-                }, {});
-            },
             prepareTableData(reportTableId, tableData) {
                 if (tableData.length > 0) {
                     // This block of code that calculates totals and percentages is probably not required
@@ -538,7 +516,7 @@
                             // These two totals might not be needed
                             totalLength: 0,
                             totalCount: 0,
-                            dateCreated: currentDateTime(),                            
+                            dateCreated: currentDateTime(),
                             dateCreated: currentDateTime(),
                             formattedFilters: [],
                             total: reportData.summary.total_records,

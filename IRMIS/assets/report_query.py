@@ -877,35 +877,78 @@ class ContractReport:
             ),
             "assetClassTypeOfWork": (
                 "SELECT \n"
-                "    CASE \n"
-                "        WHEN nat_length is not NULL THEN 'National'\n"
-                "        WHEN rur_length is not NULL THEN 'Rural'\n"
-                "        WHEN mun_length is not NULL THEN 'Municipal'\n"
-                "        ELSE 'Unknown'\n"
-                "    END as assetClass,\n"
-                "STRING_AGG(DISTINCT type_of_work, ', ') as typeOfWork\n"
-                "FROM contracts_core\n"
-                "WHERE status = 'Completed'\n"
-                "GROUP BY assetClass\n"
+                "    title,\n"
+                "    sum(national) as national,\n"
+                "    sum(municipal) as municipal,\n"
+                "    sum(rural) as rural,\n"
+                "    sum(totalLength) as totalLength\n"
+                "FROM (\n"
+                "    SELECT \n"
+                "        type_of_work as title,\n"
+                "        nat_length as national,\n"
+                "        mun_length as municipal,\n"
+                "        rur_length as rural,\n"
+                "        total_assets_length as totalLength\n"
+                "    FROM contracts_core\n"
+                "    WHERE status = 'Completed'\n"
+                "    GROUP BY type_of_work, national, municipal, rural, totalLength\n"
+                ") as prj_assets\n"
+                "GROUP BY title\n"
             ),
             "typeOfWorkYear": (
-                "SELECT type_of_work as typeOfWork, year, SUM(total_assets_length) as length\n"
-                "FROM contracts_core\n"
-                "GROUP BY type_of_work, year\n"
+                "SELECT\n"
+                "    type_of_work as title,\n"
+                "    SUM(yrZero) as yrZero,\n"
+                "    SUM(yrOne) as yrOne,\n"
+                "    SUM(yrTwo) as yrTwo,\n"
+                "    SUM(yrThree) as yrThree,\n"
+                "    SUM(yrFour) as yrFour\n"
+                "FROM (\n"
+                "    SELECT\n"
+                "        type_of_work,\n"
+                "        CASE\n"
+                "            WHEN year = extract(year from current_date)::integer\n"
+                "            THEN length\n"
+                "            ELSE 0\n"
+                "        END as yrZero,\n"
+                "        CASE\n"
+                "            WHEN (year - 1) = extract(year from current_date)::integer\n"
+                "            THEN length\n"
+                "            ELSE 0\n"
+                "        END as yrOne,\n"
+                "        CASE\n"
+                "            WHEN (year - 2) = extract(year from current_date)::integer\n"
+                "            THEN length\n"
+                "            ELSE 0\n"
+                "        END as yrTwo,\n"
+                "        CASE\n"
+                "            WHEN (year - 3) = extract(year from current_date)::integer\n"
+                "            THEN length\n"
+                "            ELSE 0\n"
+                "        END as yrThree,\n"
+                "        CASE\n"
+                "            WHEN (year - 4) = extract(year from current_date)::integer\n"
+                "            THEN length\n"
+                "            ELSE 0\n"
+                "        END as yrFour\n"
+                "    FROM (\n"
+                "        SELECT type_of_work,\n"
+                "        year,\n"
+                "        total_assets_length as length\n"
+                "        FROM contracts_core\n"
+                "        WHERE status = 'Completed'\n"
+                "        AND year >= (extract(year from current_date)::integer - 4)\n"
+                "        GROUP BY type_of_work, year, total_assets_length\n"
+                "    ) as work_types\n"
+                ") as work_year\n"
+                "GROUP BY type_of_work\n"
             ),
             "assetClassYear": (
-                "SELECT\n"
-                "    CASE \n"
-                "        WHEN nat_length is not NULL THEN 'National'\n"
-                "        WHEN rur_length is not NULL THEN 'Rural'\n"
-                "        WHEN mun_length is not NULL THEN 'Municipal'\n"
-                "        ELSE 'Unknown'\n"
-                "    END as assetClass,\n"
-                "    year, \n"
-                "    SUM(total_assets_length) as length\n"
+                "SELECT contract_id as title, year as yrOne\n"
                 "FROM contracts_core\n"
                 "WHERE status = 'Completed'\n"
-                "GROUP BY assetClass, year\n"
+                "AND year >= (extract(year from current_date)::integer - 5)\n"
+                "GROUP BY contract_id, year\n"
             ),
             "social_safeguards": (
                 "SELECT\n"
@@ -1009,11 +1052,11 @@ class ContractReport:
         self.build_query_body()
         self.reportSQL += "\n%s" % self.report_clauses["get_all"]
 
-        # print(
-        #     self.reportSQL.replace(r"ANY(%s)", r"ANY('{}'::text[])"),
-        #     "\n-- ",
-        #     self.filter_cases,
-        # )
+        print(
+            self.reportSQL.replace(r"ANY(%s)", r"ANY('{}'::text[])"),
+            "\n-- ",
+            self.filter_cases,
+        )
 
         with connection.cursor() as cursor:
             cursor.execute(self.reportSQL, self.filter_cases)

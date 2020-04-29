@@ -1,6 +1,8 @@
 import { toChainageFormat } from "./assets/protoBufUtilities";
 
 // tslint:disable: object-literal-sort-keys
+const currentDate = new Date();
+const currentYr = currentDate.getFullYear();
 
 /** The list of sections for the different types of asset reports */
 export const reportAssetsSections: { [name: string]: string }[] = [
@@ -665,16 +667,64 @@ export const reportContractsTableColumns: { [name: string]: any } = {
         defaultContent: "",
         orderable: false,
     },
-    year: {
-        title: (window as any).gettext("Year"),
-        data: "year",
-        defaultContent: "",
-        orderable: false,
-    },
     assetClass: {
         title: (window as any).gettext("Asset Class"),
         data: "assetclass",
         defaultContent: "",
+        orderable: false,
+    },
+    national: {
+        title: (window as any).gettext("National"),
+        data: "national",
+        defaultContent: 0,
+        orderable: false,
+    },
+    rural: {
+        title: (window as any).gettext("Rural"),
+        data: "rural",
+        defaultContent: 0,
+        orderable: false,
+    },
+    municipal: {
+        title: (window as any).gettext("Municipal"),
+        data: "municipal",
+        defaultContent: 0,
+        orderable: false,
+    },
+    totalLength: {
+        title: (window as any).gettext("Total"),
+        data: "totallength",
+        defaultContent: 0,
+        orderable: false,
+    },
+    yrZero: {
+        title: (currentYr).toString(),
+        data: "yrzero",
+        defaultContent: 0,
+        orderable: false,
+    },
+    yrOne: {
+        title: (currentYr - 1).toString(),
+        data: "yrone",
+        defaultContent: 0,
+        orderable: false,
+    },
+    yrTwo: {
+        title: (currentYr - 2).toString(),
+        data: "yrtwo",
+        defaultContent: 0,
+        orderable: false,
+    },
+    yrThree: {
+        title: (currentYr - 3).toString(),
+        data: "yrthree",
+        defaultContent: 0,
+        orderable: false,
+    },
+    yrFour: {
+        title: (currentYr - 4).toString(),
+        data: "yrfour",
+        defaultContent: 0,
         orderable: false,
     },
     totalEmployees: {
@@ -830,29 +880,32 @@ export const reportContractsColumnSets: { [name: string]: string[] } = {
         // reportContractsTableColumns.endDate,
         // reportContractsTableColumns.amendmentEndDate,
         reportContractsTableColumns.physicalProgress,
-        reportContractsTableColumns.lastUpdateDate,
+        // reportContractsTableColumns.lastUpdateDate,
         reportContractsTableColumns.dlpStartDate,
         reportContractsTableColumns.dlpEndDate,
     ],
     assetClassTypeOfWork: [
-        reportContractsTableColumns.assetClass,
-        reportContractsTableColumns.typeOfWork,
+        reportContractsTableColumns.title,
+        reportContractsTableColumns.national,
+        reportContractsTableColumns.municipal,
+        reportContractsTableColumns.rural,
+        reportContractsTableColumns.totalLength,
     ],
     typeOfWorkYear: [
-        reportContractsTableColumns.typeOfWork,
-        reportContractsTableColumns.year,
-        reportContractsTableColumns.year,
-        reportContractsTableColumns.year,
-        reportContractsTableColumns.year,
-        reportContractsTableColumns.year,
+        reportContractsTableColumns.title,
+        reportContractsTableColumns.yrZero,
+        reportContractsTableColumns.yrOne,
+        reportContractsTableColumns.yrTwo,
+        reportContractsTableColumns.yrThree,
+        reportContractsTableColumns.yrFour,
     ],
     assetClassYear: [
-        reportContractsTableColumns.assetClass,
-        reportContractsTableColumns.year,
-        reportContractsTableColumns.year,
-        reportContractsTableColumns.year,
-        reportContractsTableColumns.year,
-        reportContractsTableColumns.year,
+        reportContractsTableColumns.title,
+        reportContractsTableColumns.yrZero,
+        reportContractsTableColumns.yrOne,
+        reportContractsTableColumns.yrTwo,
+        reportContractsTableColumns.yrThree,
+        reportContractsTableColumns.yrFour,
     ],
     numberEmployees: [
         reportContractsTableColumns.title,
