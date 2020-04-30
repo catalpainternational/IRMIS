@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.gis.db import models
+from django.contrib.gis.geos import Point
 from django.contrib.postgres.indexes import GistIndex
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
@@ -1227,7 +1228,9 @@ class Bridge(models.Model):
 
     objects = BridgeManager()
 
-    geom = models.PointField(srid=32751, dim=2, blank=True, null=True)
+    geom = models.PointField(
+        srid=32751, dim=2, default=Point([783704.8069473179, 9053463.951656755])
+    )
 
     # a disconnected reference to the road record this structure relates to
     road_id = models.IntegerField(verbose_name=_("Road Id"), blank=True, null=True)
@@ -1461,7 +1464,9 @@ class Culvert(models.Model):
 
     objects = CulvertManager()
 
-    geom = models.PointField(srid=32751, dim=2, blank=True, null=True)
+    geom = models.PointField(
+        srid=32751, dim=2, default=Point([783704.8069473179, 9053463.951656755])
+    )
 
     # a disconnected reference to the road record this structure relates to
     road_id = models.IntegerField(verbose_name=_("Road Id"), blank=True, null=True)
@@ -1683,7 +1688,9 @@ class Drift(models.Model):
 
     objects = DriftManager()
 
-    geom = models.PointField(srid=32751, dim=2, blank=True, null=True)
+    geom = models.PointField(
+        srid=32751, dim=2, default=Point([783704.8069473179, 9053463.951656755])
+    )
 
     # a disconnected reference to the road record this structure relates to
     road_id = models.IntegerField(verbose_name=_("Road Id"), blank=True, null=True)
