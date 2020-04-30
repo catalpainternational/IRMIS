@@ -1,6 +1,7 @@
 from django.db import IntegrityError
 from django.db.models import CharField, F, Min, Value
 from django.db.models.functions import Concat
+from django.forms.models import model_to_dict
 from django.utils.timezone import make_aware
 
 import datetime
@@ -589,8 +590,14 @@ def create_programmatic_survey(management_command, data, mappings, audit_source_
         }
 
         create_programmatic_survey_values(
-            survey_data["values"], data["values"], mappings
+            survey_data["values"], data["source_values"], mappings
         )
+        # Get any values that are present in the survey only, that do not have a field in the original asset
+        survey_values = {k: data["values"][k] for k in set(data["values"]) - set(model_to_dict(data["source_values"]))}
+        if len(survey_values) > 0:
+            create_programmatic_survey_values(
+                survey_data["values"], survey_values, mappings
+            )
 
         # check that values is not empty before saving survey
         if len(survey_data["values"].keys()) > 0:
@@ -637,7 +644,8 @@ def create_programmatic_surveys_for_roads(management_command, roads, attributes)
             "asset_code": road.road_code,
             "chainage_start": road.geom_start_chainage,
             "chainage_end": road.geom_end_chainage,
-            "values": road,
+            "source_values": road,
+            "values": model_to_dict(road),
         }
 
         # For each road get all of the numeric attributes that were imported with it
@@ -654,7 +662,14 @@ def create_programmatic_surveys_for_roads(management_command, roads, attributes)
                         road_attributes.attributes, source_attributes
                     )
                     if survey_value:
-                        survey_data["values"][survey_attribute] = survey_value
+                        if hasattr(survey_data["source_values"], survey_attribute):
+                            setattr(survey_data["source_values"], survey_attribute, survey_value)
+                        else:
+                            # For values in the survey only, but not in the original object
+                            # such as `total_width`
+                            # Note that ultimately all values should be coming this way
+                            # and we remove all of the asset attributes that really belong in surveys
+                            survey_data["values"][survey_attribute] = survey_value
 
         created += create_programmatic_survey(
             management_command, survey_data, ROAD_SURVEY_VALUE_MAPPINGS, "Road Link"
@@ -679,7 +694,8 @@ def create_programmatic_surveys_for_structure(management_command, structure, pre
         "asset_code": structure.structure_code,
         "road_id": getattr(structure, "road_id", None),
         "road_code": getattr(structure, "road_code", None),
-        "values": structure,
+        "source_values": structure,
+        "values": model_to_dict(structure),
     }
 
     created += create_programmatic_survey(
@@ -710,6 +726,7 @@ def create_programmatic_survey_for_traffic_csv(management_command, data, roads):
                 "asset_code": road.road_code,
                 "chainage_start": road.geom_start_chainage,
                 "chainage_end": road.geom_end_chainage,
+                "source_values": data,
                 "values": data,
                 "date_surveyed": make_aware(datetime.datetime(int(data[3]), 1, 1)),
             }
