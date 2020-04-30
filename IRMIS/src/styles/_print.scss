@@ -26,7 +26,10 @@
         margin: 0;
     }
 
-    #dashboard, #report-assets, #report-contracts {
+    #dashboard,
+    #report-assets,
+    #report-contracts,
+    #planning {
         overflow-y: unset !important;
         height: unset !important;
         width: unset !important;
