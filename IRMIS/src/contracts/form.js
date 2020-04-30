@@ -45,6 +45,9 @@ const amendmentDuration = document.getElementById("id_amendment_duration");
 const amendmentDescription = document.getElementById("id_amendment_description");
 
 window.addEventListener("load", () => {
+    const displayNewAssetFields = document.getElementById("display-new-asset-fields");
+    const newAssetFields = document.getElementById("new-asset-fields");
+
     let originalForm = {};
     let currentForm = {};
 
@@ -59,6 +62,78 @@ window.addEventListener("load", () => {
             location.href = nextUrl;
         }
     });
+
+    if (displayNewAssetFields) {
+        displayNewAssetFields.addEventListener("click", prepareNewAssetFields);
+
+        function prepareNewAssetFields() {
+            const totalForms = document.getElementById("id_assets-TOTAL_FORMS");
+            const newId = parseInt(document.getElementById("id_assets-TOTAL_FORMS").value, 10);
+            const newAssetId = document.getElementById("new-asset-id");
+            const newAssetProject = document.getElementById("new-asset-project");
+            const newAssetCode = document.getElementById("new-asset-code");
+            const newAssetType = document.getElementById("new-asset-type");
+            const newAssetClass = document.getElementById("new-asset-class");
+            const newAssetMunicipality = document.getElementById("new-asset-municipality");
+            const newAssetStartChainage = document.getElementById("new-asset-start-chainage");
+            const newAssetEndChainage = document.getElementById("new-asset-end-chainage");
+
+            displayNewAssetFields.removeEventListener("click", prepareNewAssetFields);
+
+            newAssetFields.hidden = false;
+
+            totalForms.value = newId + 1;
+
+            newAssetId.id = "id_assets-" + newId + "-asset_id";
+            newAssetId.name = "assets-" + newId + "-asset_id";
+
+            newAssetProject.id = "id_assets-" + newId + "-project";
+            newAssetProject.name = "assets-" + newId + "-project";
+
+            newAssetCode.addEventListener("change", () => {
+                saveAsAssetId();
+                saveValue(currentForm, newAssetCode);
+            });
+
+            newAssetType.addEventListener("change", () => {
+                saveAsAssetId();
+                saveValue(currentForm, newAssetType);
+            });
+
+            newAssetClass.addEventListener("change", () => {
+                saveAsAssetId();
+                saveValue(currentForm, newAssetClass);
+            });
+
+            newAssetMunicipality.addEventListener("change", () => {
+                saveAsAssetId();
+                saveValue(currentForm, newAssetMunicipality);
+            });
+
+            newAssetStartChainage.id = "id_assets-" + newId + "-asset_start_chainage";
+            newAssetStartChainage.name = "assets-" + newId + "-asset_start_chainage";
+            newAssetStartChainage.addEventListener("change", () => {
+                saveValue(currentForm, newAssetStartChainage);
+            });
+
+            newAssetEndChainage.id = "id_assets-" + newId + "-asset_end_chainage";
+            newAssetEndChainage.name = "assets-" + newId + "-asset_end_chainage";
+            newAssetEndChainage.addEventListener("change", () => {
+                saveValue(currentForm, newAssetEndChainage);
+            });
+
+            function saveAsAssetId() {
+                newAssetId.value = newAssetType.value + "|" + newAssetClass.value + "|" + newAssetMunicipality.value + "|" + newAssetCode.value;
+            };
+
+            isElementValid(newAssetCode);
+            isElementValid(newAssetType);
+            isElementValid(newAssetClass);
+            isElementValid(newAssetMunicipality);
+            isElementValid(newAssetStartChainage);
+            isElementValid(newAssetEndChainage);
+        };
+    }
 
     saveFormValues(originalForm);
 

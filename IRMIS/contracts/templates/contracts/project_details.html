@@ -140,6 +140,55 @@
                 </div>
                 {% endfor %}
             </div>
+
+            <div class="flex-column form-row new-asset">
+                <span>{% trans "Couldn't find the asset you are looking for?" %}</span>
+                <a id="display-new-asset-fields">+ {% trans "Add information for the new asset" %}</a>
+
+                <div id="new-asset-fields" class="col flex-wrap" hidden>
+                    <input id="new-asset-id" type="hidden">
+                    <input id="new-asset-project" value="{{ project.id }}" type="hidden">
+
+                    <div class="form-group">
+                        <label>{% trans "Asset Code" %}</label>
+                        <input id="new-asset-code" class="form-control form-control-sm inactive" type="text" placeholder="A01-01">
+                    </div>
+                    <div class="form-group">
+                        <label>{% trans "Asset Type" %}</label>
+                        <select id="new-asset-type" class="form-control form-control-sm">
+                            {% for asset_type in asset_types %}
+                            <option value="{{ asset_type.0 }}">{{ asset_type.1 }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>{% trans "Asset Class" %}</label>
+                        <select id="new-asset-class" class="form-control form-control-sm inactive">
+                            <option value="">---------</option>
+                            {% for asset_class in asset_classes %}
+                            <option value="{{ asset_class.0 }}">{{ asset_class.1 }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>{% trans "Municipality" %}</label>
+                        <select id="new-asset-municipality" class="form-control form-control-sm inactive">
+                            <option value="">---------</option>
+                            {% for municipality in municipalities %}
+                            <option value="{{ municipality.id }}">{{ municipality.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>{% trans "Chainage Start" %}</label>
+                        <input id="new-asset-start-chainage" class="form-control form-control-sm inactive" type="text" placeholder="2000">
+                    </div>
+                    <div class="form-group">
+                        <label>{% trans "Chainage End" %}</label>
+                        <input id="new-asset-end-chainage" class="form-control form-control-sm inactive" type="text" placeholder="3000">
+                    </div>
+                </div>
+            </div>
         </section>
 
         <section>

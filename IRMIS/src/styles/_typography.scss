@@ -83,6 +83,17 @@ a {
     }
 }
 
+.new-asset > a {
+    line-height: 14px;
+    font-weight: 700;
+    font-size: 12px;
+    color: $green;
+
+    &:hover {
+        color: $green;
+    }
+}
+
 span {
     color: $dark-green;
     line-height: 17px;
@@ -143,6 +154,12 @@ span.required {
 
 .report-content .filters-applied span {
     line-height: 16px;
+    font-size: 14px;
+}
+
+.new-asset > span {
+    color: $darker-gray;
+    line-height: 12px;
     font-size: 14px;
 }
 

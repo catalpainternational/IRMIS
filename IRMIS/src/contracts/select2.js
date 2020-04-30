@@ -14,7 +14,6 @@ const contractSelects = {
     ".asset-code": {
         options: {
             width: "100%",
-            tags: true,
             placeholder: "A01-01",
             allowClear: true,
             containerCssClass: "form-control form-control-lg contracts-select2 asset-code",

@@ -141,6 +141,16 @@ $max-width: 400px;
                 display: none;
             }
         }
+
+        .new-asset {
+            & > span, & > a {
+                margin-bottom: 10px;
+            }
+
+            #new-asset-fields {
+                display: flex;
+            }
+        }
     }
 }
 

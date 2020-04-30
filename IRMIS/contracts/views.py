@@ -19,6 +19,8 @@ import reversion
 from reversion.models import Version
 
 from . import forms, models
+from basemap.models import Municipality
+from assets.models import Asset
 
 
 class AddedFormsetMixin:
@@ -128,9 +130,16 @@ class ProjectListView(ListView):
 @method_decorator(login_required, name="dispatch")
 class ProjectCreateFormView(AddedFormsetMixin, CreateView):
     template_name = "contracts/project_details.html"
-    form_class = forms.ProjectForm
     model = models.Project
+    form_class = forms.ProjectForm
     formsets = {"formset": forms.ProjectAssetInline}
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context["municipalities"] = Municipality.objects.all().values("id", "name")
+        context["asset_classes"] = Asset.ASSET_CLASS_CHOICES
+        context["asset_types"] = Asset.ASSET_TYPE_CHOICES
+        return context
 
     def get_success_url(self):
         return reverse_lazy("contract-project-update", kwargs={"pk": self.object.id})
@@ -142,6 +151,13 @@ class ProjectUpdateFormView(AddedFormsetMixin, UpdateView):
     model = models.Project
     form_class = forms.ProjectForm
     formsets = {"formset": forms.ProjectAssetInline}
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context["municipalities"] = Municipality.objects.all().values("id", "name")
+        context["asset_classes"] = Asset.ASSET_CLASS_CHOICES
+        context["asset_types"] = Asset.ASSET_TYPE_CHOICES
+        return context
 
     def get_success_url(self):
         return reverse_lazy("contract-project-update", kwargs={"pk": self.object.id})
