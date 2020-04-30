@@ -138,7 +138,7 @@ function initializeContractsListTable(table) {
     setupSelectFilter(dataTable, "contract_status_select2", window.gettext("Contract status"), textFilter, 5);
 
     // Budget value range filter
-    setupValueRangeFilter(dataTable, 6);
+    setupValueRangeFilter(dataTable, 7);
 }
 
 function initializeCompaniesListTable(table) {

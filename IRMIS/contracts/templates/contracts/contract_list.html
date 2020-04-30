@@ -79,7 +79,7 @@
                 <th>{% trans "Type of Works" %}</th>
                 <th>{% trans "Status" %}</th>
                 <th></th> <!-- hidden project assets column -->
-                <th></th> <!-- hidden project budgets column -->
+                <th></th> <!-- hidden contract budgets/amendments column -->
             </tr>
         </thead>
         <tbody>
@@ -111,7 +111,6 @@
                     {% endfor %}
                 </td>
                 <td>{{ contract.status }}</td>
-                <td>$ {{ contract.projects_total_budget }}</td>
                 <td>
                     {% for project in contract.tender.projects.all %}
                     {% for asset in project.assets.all %}
@@ -119,6 +118,7 @@
                     {% endfor %}
                     {% endfor %}
                 </td>
+                <td>$ {{ contract.total_amendments|default_if_none:contract.total_budget }}</td>
             </tr>
             {% endfor %}
         </tbody>

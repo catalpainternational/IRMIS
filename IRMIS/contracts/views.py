@@ -350,11 +350,18 @@ class ContractListView(ListView):
     model = models.Contract
     paginate_by = 100
     queryset = models.Contract.objects.annotate(
-        projects_total_budget=Func(
-            Sum("tender__projects__budgets__approved_value"),
-            function="TRUNC",
-            template="%(function)s(%(expressions)s, 2)",
-        )
+        total_budget=Subquery(
+            models.Contract.objects.filter(pk=OuterRef("pk"))
+            .annotate(total=Sum("budgets__value"))
+            .values("total"),
+            output_field=IntegerField(),
+        ),
+        total_amendments=Subquery(
+            models.Contract.objects.filter(pk=OuterRef("pk"))
+            .annotate(total=Sum("amendments__value"))
+            .values("total"),
+            output_field=IntegerField(),
+        ),
     )
 
     def get_context_data(self, *args, **kwargs):
