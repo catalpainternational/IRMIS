@@ -1,6 +1,9 @@
 <planning_dashboard>
-    <header class="align-items-center d-flex">
+    <header class="align-items-center d-flex justify-content-between">
         <h1>{ window.gettext("Planning and Budgetting Dashboard") }</h1>
+        <button class="btn btn-secondary btn-sm" onclick="{ () => window.print() }">
+            { window.gettext("Print") }
+        </button>
     </header>
 
     <div class="content-wrapper">
