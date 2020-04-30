@@ -467,15 +467,33 @@ def populate_from_csv(road, row):
         ("traffic_level", "Traffic data", TRAFFIC_LEVEL_MAPPING_EXCEL),
     ]
     for attr, key, mapping in mapping_assignments:
-        if row[key]:
+        if row[key] and getattr(road, attr, None) == None:
             setattr(road, attr, mapping[row[key]])
 
     if row["Road link name"]:
-        road.link_start_name, road.link_end_name = row["Road link name"].split("-", 1)
-    if row["Chainage start"]:
-        road.link_start_chainage = decimal_from_chainage(row["Chainage start"])
-    if row["Chainage end"]:
-        road.link_end_chainage = decimal_from_chainage(row["Chainage end"])
+        link_start_name, link_end_name = row["Road link name"].split("-", 1)
+        if road.link_start_name == None:
+            road.link_start_name = link_start_name
+        if road.link_end_name == None:
+            road.link_end_name = link_end_name
+    link_start_chainage = (
+        decimal_from_chainage(row["Chainage start"]) if row["Chainage start"] else None
+    )
+    link_end_chainage = (
+        decimal_from_chainage(row["Chainage end"]) if row["Chainage end"] else None
+    )
+    link_length = (
+        link_end_chainage - link_start_chainage
+        if link_start_chainage != None and link_end_chainage != None
+        else None
+    )
+
+    if link_start_chainage != None and road.link_start_chainage == None:
+        road.link_start_chainage = link_start_chainage
+    if link_end_chainage != None and road.link_end_chainage == None:
+        road.link_end_chainage = link_end_chainage
+    if link_length != None and road.link_length == None:
+        road.link_length = link_length
 
 
 def decimal_from_chainage(chainage):

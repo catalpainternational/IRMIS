@@ -1,6 +1,7 @@
 from django.db import IntegrityError
 from django.db.models import CharField, F, Min, Value
 from django.db.models.functions import Concat
+from django.forms.models import model_to_dict
 from django.utils.timezone import make_aware
 
 import datetime
@@ -225,6 +226,10 @@ def assess_road_geometries(roads, reset_geom):
                 break
 
     for road in roads:
+        # Can't do anything more with this set of roads if there's no geometry
+        if road.geom == None:
+            break
+
         # Note that the 'link_' values from Road are considered highly unreliable
         if reset_geom:
             # Force the chainage to be recalculated
@@ -321,22 +326,13 @@ def get_structure_by_structure_code(sc):
     hasDrift = Drift.objects.filter(structure_code=sc).exists()
 
     if hasBridge:
-        structure_object = Bridge.objects.get(structure_code=sc)
+        return Bridge.objects.get(structure_code=sc), "BRDG"
     elif hasCulvert:
-        structure_object = Culvert.objects.get(structure_code=sc)
-    else:
-        structure_object = Drift.objects.filter(structure_code=sc)
+        return Culvert.objects.get(structure_code=sc), "CULV"
+    elif hasDrift:
+        return Drift.objects.get(structure_code=sc), "DRFT"
 
-    structure = structure_object.__dict__
-
-    if hasBridge:
-        structure["prefix"] = "BRDG"
-    elif hasCulvert:
-        structure["prefix"] = "CULV"
-    else:
-        structure["prefix"] = "DRFT"
-
-    return structure
+    return None, None
 
 
 ## Survey related data cleansing functions
@@ -594,8 +590,17 @@ def create_programmatic_survey(management_command, data, mappings, audit_source_
         }
 
         create_programmatic_survey_values(
-            survey_data["values"], data["values"], mappings
+            survey_data["values"], data["source_values"], mappings
         )
+        # Get any values that are present in the survey only, that do not have a field in the original asset
+        survey_values = {
+            k: data["values"][k]
+            for k in set(data["values"]) - set(model_to_dict(data["source_values"]))
+        }
+        if len(survey_values) > 0:
+            create_programmatic_survey_values(
+                survey_data["values"], survey_values, mappings
+            )
 
         # check that values is not empty before saving survey
         if len(survey_data["values"].keys()) > 0:
@@ -642,7 +647,8 @@ def create_programmatic_surveys_for_roads(management_command, roads, attributes)
             "asset_code": road.road_code,
             "chainage_start": road.geom_start_chainage,
             "chainage_end": road.geom_end_chainage,
-            "values": road.__dict__,
+            "source_values": road,
+            "values": model_to_dict(road),
         }
 
         # For each road get all of the numeric attributes that were imported with it
@@ -659,7 +665,18 @@ def create_programmatic_surveys_for_roads(management_command, roads, attributes)
                         road_attributes.attributes, source_attributes
                     )
                     if survey_value:
-                        survey_data["values"][survey_attribute] = survey_value
+                        if hasattr(survey_data["source_values"], survey_attribute):
+                            setattr(
+                                survey_data["source_values"],
+                                survey_attribute,
+                                survey_value,
+                            )
+                        else:
+                            # For values in the survey only, but not in the original object
+                            # such as `total_width`
+                            # Note that ultimately all values should be coming this way
+                            # and we remove all of the asset attributes that really belong in surveys
+                            survey_data["values"][survey_attribute] = survey_value
 
         created += create_programmatic_survey(
             management_command, survey_data, ROAD_SURVEY_VALUE_MAPPINGS, "Road Link"
@@ -668,7 +685,7 @@ def create_programmatic_surveys_for_roads(management_command, roads, attributes)
     return created
 
 
-def create_programmatic_surveys_for_structure(management_command, structure):
+def create_programmatic_surveys_for_structure(management_command, structure, prefix):
     """ creates programmatic surveys for a structure and
     returns a count of the total number of surveys that were created """
     created = 0  # counter for surveys created for the supplied structure
@@ -676,12 +693,16 @@ def create_programmatic_surveys_for_structure(management_command, structure):
     # There's only going to be one structure supplied, either a Bridge, Culvert, or Drift
     # however we're still following the same pattern as applied to Roads
 
+    if prefix == None:
+        return created
+
     survey_data = {
-        "asset_id": "%s-%s" % (structure["prefix"], structure["id"]),
-        "asset_code": structure["structure_code"],
-        "road_id": structure["road_id"] if "road_id" in structure else None,
-        "road_code": structure["road_code"] if "road_code" in structure else None,
-        "values": structure,
+        "asset_id": "%s-%s" % (prefix, structure.pk),
+        "asset_code": structure.structure_code,
+        "road_id": getattr(structure, "road_id", None),
+        "road_code": getattr(structure, "road_code", None),
+        "source_values": structure,
+        "values": model_to_dict(structure),
     }
 
     created += create_programmatic_survey(
@@ -712,6 +733,7 @@ def create_programmatic_survey_for_traffic_csv(management_command, data, roads):
                 "asset_code": road.road_code,
                 "chainage_start": road.geom_start_chainage,
                 "chainage_end": road.geom_end_chainage,
+                "source_values": data,
                 "values": data,
                 "date_surveyed": make_aware(datetime.datetime(int(data[3]), 1, 1)),
             }
@@ -867,18 +889,22 @@ def refresh_surveys_by_structure_code(management_command, sc):
     # Recreate all of the programmatic surveys
     delete_programmatic_surveys_for_structure_by_structure_code(sc)
     # management_command.stdout.write(management_command.style.MIGRATE_HEADING("  deleted programmatic surveys for '%s'" % sc))
-    structure = get_structure_by_structure_code(sc)
+    structure, prefix = get_structure_by_structure_code(sc)
     # management_command.stdout.write(management_command.style.MIGRATE_HEADING("  got structure for '%s'" % sc))
-    created += create_programmatic_surveys_for_structure(management_command, structure)
+    created += create_programmatic_surveys_for_structure(
+        management_command, structure, prefix
+    )
     # management_command.stdout.write(management_command.style.MIGRATE_HEADING("  created programmatic surveys for '%s'" % sc))
 
     # Refresh all of the non-programmatic surveys
     surveys = get_non_programmatic_surveys_by_structure_code(sc)
     if len(surveys) > 0:
         for survey in surveys:
-            updated += update_non_programmatic_surveys_by_structure_code(
-                management_command, survey, sc
-            )
+            # We have no update routine for non-programmatic surveys for structures - yet
+            # updated += update_non_programmatic_surveys_by_structure_code(
+            #     management_command, survey, sc
+            # )
+            pass
         # management_command.stdout.write(management_command.style.MIGRATE_HEADING("  refreshed %s user entered surveys" % len(surveys)))
 
     return created, updated
