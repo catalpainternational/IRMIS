@@ -12,8 +12,11 @@
         </div>
     </div>
 
-    <header class="align-items-center d-flex">
+    <header class="align-items-center d-flex justify-content-between">
         <h1>{ window.gettext("Road Network Overview") }</h1>
+        <button class="btn btn-secondary btn-sm" onclick="{ () => window.print() }">
+            { window.gettext("Print") }
+        </button>
     </header>
 
     <div class="content-wrapper report-content">
@@ -38,17 +41,19 @@
     </div>
 
     <div class="print-footer">
-        <div class="d-flex align-items-center" if="{ state.reportData.dateCreated }">
-            { window.gettext("Exported from Estrada on") } { state.reportData.dateCreated() }</div>
-        <span class="app-logo image"></span>
+        <div class="d-flex align-items-center justify-content-between">
+            <span class="app-logo image"></span>
+            <p if="{ state.reportData.dateCreated }">{ window.gettext("Exported from Estrada on") } { state.reportData.dateCreated }</p>
+        </div>
     </div>
 
     <script>
         import Stacked_Bar from "./stacked_bar.riot.html";
 
-        import {getAssetReport} from "../reportManager";
-        import {reportBarIds} from "../reportTableDefinitions";
-        import {updateReportAttributeSummary} from "../roadAttributes";
+        import { getAssetReport } from "../reportManager";
+        import { reportBarIds } from "../reportTableDefinitions";
+        import { updateReportAttributeSummary } from "../roadAttributes";
+        import { currentDateTime } from "../assets/reportUtilities";
 
         import $ from "jquery";
         import dayjs from "dayjs";
@@ -111,7 +116,7 @@
                                 road_status: surveyReportData.roadStatuses,
                                 asset_condition: surveyReportData.assetConditions,
                                 pavement_class: surveyReportData.pavementClasses,
-                                dateCreated: () => dayjs(new Date()).format('DD MMMM YYYY [at] HH:mm'),
+                                dateCreated: currentDateTime(),
                             };
 
                             if (!!surveyReportData.lengths) {
