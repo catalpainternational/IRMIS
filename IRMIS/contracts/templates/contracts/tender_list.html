@@ -31,28 +31,16 @@
                     {% endfor %}
                 </select>
 
-                <select id="asset_class_select2" hidden>
-                    <option value="NAT">{% trans "National" %}</option>
-                    <option value="HIGH">{% trans "Highway" %}</option>
-                    <option value="MUN">{% trans "Municipal" %}</option>
-                    <option value="URB">{% trans "Urban" %}</option>
-                    <option value="RUR">{% trans "Rural" %}</option>
+                <select id="asset_class_select2" multiple="true">
+                    {% for asset_class in asset_classes %}
+                    <option value="{{ asset_class.0 }}">{{ asset_class.1 }}</option>
+                    {% endfor %}
                 </select>
 
-                <select id="municipality_select2" hidden>
-                    <option value="Ainaro">Ainaro</option>
-                    <option value="Aileu">Aileu</option>
-                    <option value="Baucau">Baucau</option>
-                    <option value="Bobonaro">Bobonaro</option>
-                    <option value="Covalima">Covalima</option>
-                    <option value="Dili">Dili</option>
-                    <option value="Ermera">Ermera</option>
-                    <option value="Liquica">Liquica</option>
-                    <option value="Lautem">Lautem</option>
-                    <option value="Manufahi">Manufahi</option>
-                    <option value="Manatuto">Manatuto</option>
-                    <option value="Oecusse">Oecusse</option>
-                    <option value="Viqueque">Viqueque</option>
+                <select id="municipality_select2" multiple="true">
+                    {% for municipality in municipalities %}
+                    <option value="{{ municipality.id }}">{{ municipality.name }}</option>
+                    {% endfor %}
                 </select>
 
                 <select id="value_select" class="form-control form-control-sm inactive">
@@ -77,9 +65,11 @@
                 <th>{% trans "Number of Projects" %}</th>
                 <th>{% trans "Project(s) name" %}</th>
                 <th>{% trans "Status" %}</th>
-                <th></th> <!-- hidden project assets column -->
+                <th></th> <!-- hidden project assets code column -->
                 <th></th> <!-- hidden type of work column -->
                 <th></th> <!-- hidden project budgets column -->
+                <th></th> <!-- hidden project assets class column -->
+                <th></th> <!-- hidden project municipality column -->
             </tr>
         </thead>
         <tbody>
@@ -119,6 +109,20 @@
                     {% endfor %}
                 </td>
                 <td>$ {{ tender.projects_total_budget }}</td>
+                <td>
+                    {% for project in tender.projects.all %}
+                    {% for asset in project.assets.all %}
+                    <div>{{ asset.asset_class }}</div>
+                    {% endfor %}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for project in tender.projects.all %}
+                    {% for asset in project.assets.all %}
+                    <div>{{ asset.municipality }}</div>
+                    {% endfor %}
+                    {% endfor %}
+                </td>
             </tr>
             {% endfor %}
         </tbody>

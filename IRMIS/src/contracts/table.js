@@ -44,12 +44,12 @@ function initializeProjectsListTable(table) {
         order = [[1, 'asc']];
         columnDefs = [
             { orderable: false, targets: 0 },
-            { visible: false, targets: [-2, -1] }
+            { visible: false, targets: [-4, -3, -2, -1] }
         ];
     } else {
         order = [[0, 'asc']];
         columnDefs = [
-            { visible: false, targets: [-2, -1] }
+            { visible: false, targets: [-4, -3, -2, -1] }
         ];
     }
 
@@ -66,6 +66,8 @@ function initializeProjectsListTable(table) {
     // Select Filters
     setupSelectFilter(dataTable, "project_status_select2", window.gettext("Project status"), textFilter, 2);
     setupSelectFilter(dataTable, "project_type_of_work_select2", window.gettext("Type of work"), textFilter, 4);
+    setupSelectFilter(dataTable, "asset_class_select2", window.gettext("Asset class"), multipleTextFilter, 9);
+    setupSelectFilter(dataTable, "municipality_select2", window.gettext("Municipality"), multipleTextFilter, 10);
 
     // Budget value range filter
     setupValueRangeFilter(dataTable, 5);
@@ -79,12 +81,12 @@ function initializeTendersListTable(table) {
         order = [[1, 'asc']];
         columnDefs = [
             { orderable: false, targets: 0 },
-            { visible: false, targets: [-3, -2, -1] }
+            { visible: false, targets: [-5, -4, -3, -2, -1] }
         ];
     } else {
         order = [[0, 'asc']];
         columnDefs = [
-            { visible: false, targets: [-3, -2, -1] }
+            { visible: false, targets: [-5, -4, -3, -2, -1] }
         ];
     }
 
@@ -101,6 +103,8 @@ function initializeTendersListTable(table) {
     // Select Filters
     setupSelectFilter(dataTable, "tender_status_select2", window.gettext("Tender status"), textFilter, 4);
     setupSelectFilter(dataTable, "tender_type_of_work_select2", window.gettext("Type of work"), multipleTextFilter, 6);
+    setupSelectFilter(dataTable, "asset_class_select2", window.gettext("Asset class"), multipleTextFilter, 8);
+    setupSelectFilter(dataTable, "municipality_select2", window.gettext("Municipality"), multipleTextFilter, 9);
 
     // Budget value range filter
     setupValueRangeFilter(dataTable, 7);
@@ -114,12 +118,12 @@ function initializeContractsListTable(table) {
         order = [[1, 'asc']];
         columnDefs = [
             { orderable: false, targets: 0 },
-            { visible: false, targets: [-2, -1] }
+            { visible: false, targets: [-4, -3, -2, -1] }
         ];
     } else {
         order = [[0, 'asc']];
         columnDefs = [
-            { visible: false, targets: [-2, -1] }
+            { visible: false, targets: [-4, -3, -2, -1] }
         ];
     }
 
@@ -136,6 +140,8 @@ function initializeContractsListTable(table) {
     // Select Filters
     setupSelectFilter(dataTable, "contract_type_of_work_select2", window.gettext("Type of work"), multipleTextFilter, 4);
     setupSelectFilter(dataTable, "contract_status_select2", window.gettext("Contract status"), textFilter, 5);
+    setupSelectFilter(dataTable, "asset_class_select2", window.gettext("Asset class"), multipleTextFilter, 8);
+    setupSelectFilter(dataTable, "municipality_select2", window.gettext("Municipality"), multipleTextFilter, 9);
 
     // Budget value range filter
     setupValueRangeFilter(dataTable, 7);
@@ -238,7 +244,7 @@ const textFilter = (row, columnIdx, elementId) => {
     if (!selectedValues.length) return true;
 
     for (let value of selectedValues) {
-        if (columnValue === value.text) return true;
+        if (columnValue === value.value) return true;
     };
 
     return false;
@@ -259,7 +265,7 @@ const multipleTextFilter = (row, columnIdx, elementId) => {
 
     for (let selectedValue of selectedValues) {
         for (let columnValue of columnValues) {
-            if (columnValue === selectedValue.text) return true;
+            if (columnValue === selectedValue.value) return true;
         };
     };
 

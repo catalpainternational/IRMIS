@@ -188,6 +188,28 @@ class ProjectAsset(models.Model):
         )
         return codes[0][1] if len(codes) == 1 else self.asset_id
 
+    @property
+    def asset_class(self):
+        if self.asset_id == None or len(self.asset_id.strip()) == 0:
+            return None
+
+        road = self.get_road()
+        if road != None:
+            return road.asset_class
+
+        return None
+
+    @property
+    def municipality(self):
+        if self.asset_id == None or len(self.asset_id.strip()) == 0:
+            return None
+
+        road = self.get_road()
+        if road != None:
+            return road.administrative_area
+
+        return None
+
     def get_road(self):
         if self.asset_id.startswith("ROAD-"):
             road_id = int(self.asset_id.replace("ROAD-", ""))

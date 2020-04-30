@@ -124,6 +124,8 @@ class ProjectListView(ListView):
         context = super().get_context_data(*args, **kwargs)
         context["status_list"] = models.ProjectStatus.objects.all()
         context["type_of_work_list"] = models.TypeOfWork.objects.all()
+        context["municipalities"] = Municipality.objects.all().values("id", "name")
+        context["asset_classes"] = Asset.ASSET_CLASS_CHOICES
         return context
 
 
@@ -281,6 +283,8 @@ class TenderListView(ListView):
         context = super().get_context_data(*args, **kwargs)
         context["status_list"] = models.TenderStatus.objects.all()
         context["type_of_work_list"] = models.TypeOfWork.objects.all()
+        context["municipalities"] = Municipality.objects.all().values("id", "name")
+        context["asset_classes"] = Asset.ASSET_CLASS_CHOICES
         return context
 
 
@@ -368,6 +372,8 @@ class ContractListView(ListView):
         context = super().get_context_data(*args, **kwargs)
         context["status_list"] = models.ContractStatus.objects.all()
         context["type_of_work_list"] = models.TypeOfWork.objects.all()
+        context["municipalities"] = Municipality.objects.all().values("id", "name")
+        context["asset_classes"] = Asset.ASSET_CLASS_CHOICES
         return context
 
 
