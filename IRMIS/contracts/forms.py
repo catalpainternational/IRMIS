@@ -165,7 +165,7 @@ ProjectAssetInline = inlineformset_factory(
     models.ProjectAsset,
     form=ProjectAssetForm,
     extra=3,
-    can_delete=False,
+    can_delete=True,
 )
 
 ProjectBudgetInline = inlineformset_factory(
