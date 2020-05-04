@@ -1,6 +1,22 @@
 <planning_dashboard>
-    <header class="align-items-center d-flex">
+    <div class="print-header">
+        <div class="align-items-center d-flex">
+            <span class="image rdtl"></span>
+            <div class="d-flex flex-column">
+                <span>{ window.gettext("Democratic Republic of Timor-Leste") }</span>
+                <span>{ window.gettext("Ministry of Public Works") }</span>
+                <span>{ window.gettext("Directorate General for Public Works") }</span>
+                <span>{ window.gettext("National Directorate for Roads, Bridges and Flood Control") }</span>
+                <small>Avenida da Restauração, Rai Kotu, Díli, Timor-Leste, Telf. +670 3311408</small>
+            </div>
+        </div>
+    </div>
+
+    <header class="align-items-center d-flex justify-content-between">
         <h1>{ window.gettext("Planning and Budgetting Dashboard") }</h1>
+        <button class="btn btn-secondary btn-sm" onclick="{ () => window.print() }">
+            { window.gettext("Print") }
+        </button>
     </header>
 
     <div class="content-wrapper">
@@ -64,14 +80,24 @@
         </template>
     </div>
 
+    <div class="print-footer">
+        <div class="d-flex align-items-center justify-content-between">
+            <span class="app-logo image"></span>
+            <p>{ window.gettext("Exported from Estrada on") } { state.dateCreated }</p>
+        </div>
+    </div>
+
     <script>
         import $ from "jquery";
-        import {createPlan, getSnapshots, getPlan, getPlans, updatePlan} from "../planManager";
+
+        import { createPlan, getSnapshots, getPlan, getPlans, updatePlan } from "../planManager";
+        import { currentDateTime } from "../assets/reportUtilities";
 
         export default {
             state: {
                 summaries: [],
                 summaryData: [],
+                dateCreated: currentDateTime(),
             },
             workTypes: {
                 'routine': window.gettext('Routine Maintenance'),
