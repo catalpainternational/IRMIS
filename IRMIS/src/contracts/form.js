@@ -98,6 +98,14 @@ window.addEventListener("load", () => {
             newAssetType.addEventListener("change", () => {
                 saveAsAssetId();
                 saveValue(currentForm, newAssetType);
+
+                if (newAssetType.value === "ROAD") {
+                    newAssetStartChainage.disabled = false;
+                    newAssetEndChainage.disabled = false;
+                } else {
+                    newAssetStartChainage.disabled = true;
+                    newAssetEndChainage.disabled = true;
+                }
             });
 
             newAssetClass.addEventListener("change", () => {
