@@ -20,7 +20,7 @@ from reversion.models import Version
 
 from . import forms, models
 from basemap.models import Municipality
-from assets.models import Asset
+from assets.models import Asset, Bridge, Culvert, Drift, Road
 
 
 class AddedFormsetMixin:
@@ -61,12 +61,19 @@ class AddedFormsetMixin:
 
     def form_valid(self, form, dependents):
         """If the form is valid save the associated model."""
+        
+        assets_to_delete = self.get_deleted_assets(dependents)
+
         context = self.get_context_data()
         with reversion.create_revision():
             with transaction.atomic():
                 self.object = form.save()
                 for dependent in dependents.values():
                     dependent.save()
+                if len(assets_to_delete) > 0:
+                    for assets_as_new in assets_to_delete:
+                        for asset_to_delete in assets_as_new:
+                            asset_to_delete.delete()
             # store the user who made the changes
             reversion.set_user(self.request.user)
 
@@ -88,6 +95,36 @@ class AddedFormsetMixin:
         if error_message:
             messages.error(self.request, error_message)
         return response
+
+    def get_deleted_assets(self, dependents):
+        # Note that this method assumes the only inline formset that has `can_delete=True` is ProjectAssetInline
+        assets_to_delete = []
+
+        for form in dependents["formset"].deleted_forms:
+            # Check all deleted ProjectAssets to see if the associated Asset should also be deleted
+            asset_id = form.cleaned_data["asset_id"]
+            project_asset_references = models.ProjectAsset.objects.filter(asset_id=asset_id).count()
+            if project_asset_references > 1:
+                continue
+
+            asset_type = asset_id[:4]
+            asset_pk = int(asset_id[5:])
+            if asset_type == "ROAD":
+                asset_model = Road
+            elif asset_type == "BRDG":
+                asset_model = Bridge
+            elif asset_type == "CULV":
+                asset_model = Culvert
+            elif asset_type == "DRFT":
+                asset_model = Drift
+
+            # The main test for assessing whether an asset is still 'as new' is whether it has a geojson_file_id associated with it,
+            # another simple test is to check construction_year (which is common to all asset types) although this field is often still None
+            assets_as_new = asset_model.objects.filter(pk=asset_pk, construction_year=None, geojson_file_id=None)
+            if len(assets_as_new) == 1:
+                assets_to_delete.append(assets_as_new)
+
+        return assets_to_delete
 
     def get_success_message(self, cleaned_data):
         if hasattr(self, "success_message"):
