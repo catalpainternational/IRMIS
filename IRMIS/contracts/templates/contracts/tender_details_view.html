@@ -31,10 +31,12 @@
             <p>{{ tender.code }}</p>
         </div>
         <div>
+            {% if tender.projects.all %}
             <label>{% trans "Associated Projects" %}</label>
             {% for project in tender.projects.all %}
             <div><a href="{% url 'contract-project-detail' project.id %}">{{ project.name }}</a></div>
             {% endfor %}
+            {% endif %}
         </div>
         <div>
             <label>{% trans "Associated Contracts" %}</label>
