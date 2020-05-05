@@ -619,10 +619,10 @@ class CompanyDetailView(DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
 
-        context["contractor"] = models.Contract.objects.filter(
+        context["contractor_contracts"] = models.Contract.objects.filter(
             contractor_id=self.object.id
         )
-        context["subcontractor"] = models.Contract.objects.filter(
+        context["subcontractor_contracts"] = models.Contract.objects.filter(
             subcontractor_id=self.object.id
         )
 

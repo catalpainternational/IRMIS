@@ -68,13 +68,13 @@
         </div>
         <div>
             <label>{% trans "Associated as a contractor" %}</label>
-            {% for contract in contractor %}
+            {% for contract in contractor_contracts %}
             <div><a href="{% url 'contract-contract-detail' contract.id %}">{{ contract.contract_code }}</a></div>
             {% endfor %}
         </div>
         <div>
             <label>{% trans "Associated as a subcontractor" %}</label>
-            {% for contract in subcontractor %}
+            {% for contract in subcontractor_contracts %}
             <div><a href="{% url 'contract-contract-detail' contract.id %}">{{ contract.contract_code }}</a></div>
             {% endfor %}
         </div>
