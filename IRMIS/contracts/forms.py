@@ -122,7 +122,7 @@ class ProjectBudgetForm(ModelForm):
         self.fields["approved_value"].widget.attrs.update(
             {
                 "class": "budget-value form-control form-control-sm",
-                "placeholder": "$100.000",
+                "placeholder": "$1000000",
             }
         )
         self.fields["year"].widget.attrs.update(
@@ -341,7 +341,7 @@ class ContractBudgetForm(ModelForm):
         self.fields["value"].widget.attrs.update(
             {
                 "class": "budget-value form-control form-control-sm",
-                "placeholder": "$100.000",
+                "placeholder": "$1000000",
             }
         )
 
@@ -382,7 +382,7 @@ class ContractAmendmentForm(ModelForm):
         self.fields["value"].widget.attrs.update(
             {
                 "class": "amendment-value form-control form-control-sm",
-                "placeholder": "$100.000",
+                "placeholder": "$1000000",
             }
         )
 

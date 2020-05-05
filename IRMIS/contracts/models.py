@@ -422,9 +422,7 @@ class ProjectBudget(models.Model):
     year = models.IntegerField(
         choices=YEAR_CHOICES, null=True, blank=True, help_text=_("Enter year"),
     )
-    approved_value = models.DecimalField(
-        max_digits=14, decimal_places=4, null=True, blank=True, help_text=_("In USD"),
-    )
+    approved_value = models.IntegerField(null=True, blank=True, help_text=_("In USD"))
     project = models.ForeignKey(
         Project, on_delete=models.CASCADE, related_name="budgets"
     )
@@ -602,9 +600,7 @@ class ContractBudget(models.Model):
         "Contract", on_delete=models.CASCADE, related_name="budgets"
     )
     year = models.IntegerField(choices=YEAR_CHOICES, help_text=_("Select year"))
-    value = models.DecimalField(
-        max_digits=14, decimal_places=4, help_text=_("Budget per year in USD")
-    )
+    value = models.IntegerField(help_text=_("Budget per year in USD"))
 
 
 class ContractMilestone(models.Model):
@@ -631,12 +627,8 @@ class ContractAmendment(models.Model):
     year = models.IntegerField(
         choices=YEAR_CHOICES, null=True, blank=True, help_text=_("Select year")
     )
-    value = models.DecimalField(
-        max_digits=14,
-        decimal_places=4,
-        null=True,
-        blank=True,
-        help_text=_("Budget per year in USD"),
+    value = models.IntegerField(
+        null=True, blank=True, help_text=_("Budget per year in USD")
     )
 
 
@@ -684,7 +676,7 @@ class ContractInspectionEntity(models.Model):
 class ContractPayment(models.Model):
     contract = models.ForeignKey("contracts.Contract", on_delete=models.CASCADE)
     date = models.DateField()
-    value = models.DecimalField(max_digits=14, decimal_places=4)
+    value = models.IntegerField()
     donor = models.ForeignKey(
         "contracts.ContractPaymentDonor",
         null=True,
