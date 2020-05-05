@@ -49,6 +49,12 @@
             <label>{% trans "Description" %}</label>
             <p>{{ project.description }}</p>
         </div>
+        <div>
+            {% if project.tender %}
+            <label>{% trans "Associated Tender" %}</label>
+            <div><a href="{% url 'contract-tender-detail' project.tender.code %}">{{ project.tender.code }}</a></div>
+            {% endif %}
+        </div>
     </section>
 
     <section>
