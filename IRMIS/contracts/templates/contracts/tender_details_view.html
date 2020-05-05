@@ -37,6 +37,12 @@
             {% endfor %}
         </div>
         <div>
+            <label>{% trans "Associated Contracts" %}</label>
+            {% for contract in contracts %}
+            <div><a href="{% url 'contract-contract-detail' contract.id %}">{{ contract.contract_code }}</a></div>
+            {% endfor %}
+        </div>
+        <div>
             <label>{% trans "Announcement Date" %}</label>
             <p>{{ tender.announcement_date }}</p>
         </div>

@@ -315,6 +315,11 @@ class TenderDetailView(DetailView):
     template_name = "contracts/tender_details_view.html"
     model = models.Tender
 
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context["contracts"] = models.Contract.objects.filter(tender=self.object.code)
+        return context
+
 
 @method_decorator(login_required, name="dispatch")
 class TenderDocumentListView(ListView):
