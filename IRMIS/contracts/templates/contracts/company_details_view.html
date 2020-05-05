@@ -66,6 +66,18 @@
             <label>{% trans "Company category" %}</label>
             <p>{{ company.category }}</p>
         </div>
+        <div>
+            <label>{% trans "Associated as a contractor" %}</label>
+            {% for contract in contractor %}
+            <div><a href="{% url 'contract-contract-detail' contract.id %}">{{ contract.contract_code }}</a></div>
+            {% endfor %}
+        </div>
+        <div>
+            <label>{% trans "Associated as a subcontractor" %}</label>
+            {% for contract in subcontractor %}
+            <div><a href="{% url 'contract-contract-detail' contract.id %}">{{ contract.contract_code }}</a></div>
+            {% endfor %}
+        </div>
     </section>
 </div>
 {% endblock %}
