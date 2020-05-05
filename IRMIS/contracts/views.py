@@ -111,22 +111,19 @@ class AddedFormsetMixin:
 
             asset_type = asset_id[:4]
             asset_pk = int(asset_id[5:])
-            if asset_type == "ROAD":
-                asset_model = Road
-            elif asset_type == "BRDG":
-                asset_model = Bridge
-            elif asset_type == "CULV":
-                asset_model = Culvert
-            elif asset_type == "DRFT":
-                asset_model = Drift
 
-            # The main test for assessing whether an asset is still 'as new' is whether it has a geojson_file_id associated with it,
-            # another simple test is to check construction_year (which is common to all asset types) although this field is often still None
-            assets_as_new = asset_model.objects.filter(
-                pk=asset_pk, construction_year=None, geojson_file_id=None
-            )
-            if len(assets_as_new) == 1:
-                assets_to_delete.append(assets_as_new)
+            if asset_type == "ROAD":
+                asset = Road.objects.get(pk=asset_pk)
+            elif asset_type == "BRDG":
+                asset = Bridge.objects.get(pk=asset_pk)
+            elif asset_type == "CULV":
+                asset = Culvert.objects.get(pk=asset_pk)
+            elif asset_type == "DRFT":
+                asset = Drift.objects.get(pk=asset_pk)
+
+            reversions = Version.objects.get_for_object(asset)
+            if len(reversions) == 1:
+                assets_to_delete.append(asset)
 
         return assets_to_delete
 
