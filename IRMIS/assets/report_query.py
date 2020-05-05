@@ -573,7 +573,7 @@ class ReportQuery:
             try:
                 report_date = datetime.strptime(self.filters["report_date"], "%Y-%m-%d")
             except ValueError as e:
-                has_report_date = false
+                has_report_date = False
             if has_report_date:
                 self.report_clauses["suc"] += (
                     "AND s.date_surveyed <= '%s 11:59:59'"
@@ -703,7 +703,8 @@ class ReportQuery:
 
 
 class ContractReport:
-    def __init__(self, report_type, filters):
+    def __init__(self, report_id, report_type, filters):
+        self.report_id = report_id
         self.report_type = report_type
         self.filters = filters
         self.filter_cases = []
@@ -828,13 +829,13 @@ class ContractReport:
                 "    COUNT(DISTINCT project_name) as projects,\n"
                 "    COUNT(DISTINCT contract_code) as contracts,\n"
                 "    corp_cnt as companies,\n"
-                "    TO_CHAR(SUM(final_value),'FM999999999999.00') as contractValue,\n"
-                "    TO_CHAR(SUM(value_curr_year),'FM999999999999.00') as valueCurrentYear,\n"
-                "    TO_CHAR(SUM(payment_amt),'FM999999999999.00') as totalPayment,\n"
-                "    TO_CHAR(SUM(paid_curr_year),'FM999999999999.00') as paymentCurrentYear,\n"
-                "    TO_CHAR(SUM(paid_last_year),'FM999999999999.00') as paymentPreviousYear,\n"
-                "    TO_CHAR(SUM(final_value)-SUM(payment_amt),'FM999999999999.00') as balance,\n"
-                "    TO_CHAR(SUM(payment_amt)/SUM(final_value)*100,'FM999999999999.00') as totalProgressPayment,\n"
+                "    TO_CHAR(SUM(prgm_budget.amount) FILTER (WHERE prgm_budget.year = extract(year from CURRENT_DATE)::integer),'FM999999999999') as prjBudgetCurrentYear,\n"
+                "    TO_CHAR(SUM(final_value),'FM999999999999') as contractValueAmdTotal,\n"
+                "    TO_CHAR(SUM(payment_amt),'FM999999999999') as totalPayment,\n"
+                "    TO_CHAR(SUM(paid_curr_year),'FM999999999999') as paymentCurrentYear,\n"
+                "    TO_CHAR(SUM(paid_last_year),'FM999999999999') as paymentPreviousYear,\n"
+                "    TO_CHAR(SUM(final_value)-SUM(payment_amt),'FM999999999999') as balance,\n"
+                "    TO_CHAR(SUM(payment_amt)/SUM(final_value)*100,'FM999999999999') as totalProgressPayment,\n"
                 "    TO_CHAR(AVG(physical_progress),'FM999.00') as physicalProgress,\n"
                 "    CASE\n"
                 "        WHEN status in ('Ongoing', 'Contract Variations Request', 'DLP', 'Final Inspection', 'Request of Final Payment', 'Submitted', 'Project Approved') THEN 'Ongoing'\n"
@@ -850,6 +851,16 @@ class ContractReport:
                 "    JOIN contracts_program as prg on (prj.program_id = prg.id)\n"
                 "    GROUP BY prg.id\n"
                 ") as prg_corps on (prg_corps.name = contracts_core.program_name)\n"
+                "LEFT JOIN (\n"
+                "    SELECT \n"
+                "        prgm.name,\n"
+                "        pb.year,\n"
+                "        sum(pb.approved_value) as amount\n"
+                "    FROM contracts_projectbudget as pb\n"
+                "    JOIN contracts_project as prj ON (prj.id = pb.project_id)\n"
+                "    JOIN contracts_program as prgm ON (prgm.id = prj.program_id)\n"
+                "    GROUP BY prgm.name, pb.year\n"
+                ") as prgm_budget ON (prgm_budget.name = contracts_core.program_name)\n"
                 "GROUP BY program_name, status, corp_cnt\n"
             ),
             # Financial and Physical Progress
@@ -863,12 +874,14 @@ class ContractReport:
                 "    STRING_AGG(DISTINCT funding_source, ', ') as fundingSource,\n"
                 "    STRING_AGG(DISTINCT contractor, ', ')as contractor,\n"
                 "    total_assets_cnt as assets,\n"
-                "    TO_CHAR(SUM(final_value),'FM999999999999.00') as contractValue,\n"
-                "    TO_CHAR(SUM(value_curr_year),'FM999999999999.00') as valueCurrentYear,\n"
-                "    TO_CHAR(SUM(payment_amt),'FM999999999999.00') as totalPayment,\n"
-                "    TO_CHAR(SUM(final_value)-SUM(payment_amt),'FM999999999999.00') as balance,\n"
-                "    TO_CHAR(SUM(paid_curr_year),'FM999999999999.00') as paymentCurrentYear,\n"
-                "    TO_CHAR(SUM(paid_last_year),'FM999999999999.00') as paymentPreviousYear,\n"
+                "    TO_CHAR(SUM(prgm_budget.amount),'FM999999999999') as prjBudgetTotal,\n"
+                "    TO_CHAR(SUM(prgm_budget.amount) FILTER (WHERE prgm_budget.year = extract(year from CURRENT_DATE)::integer),'FM999999999999') as prjBudgetCurrentYear,\n"
+                "    TO_CHAR(SUM(final_value),'FM999999999999') as contractValueAmdTotal,\n"
+                "    TO_CHAR(SUM(orig_value),'FM999999999999') as contractValueOrigTotal,\n"
+                "    TO_CHAR(SUM(payment_amt),'FM999999999999') as totalPayment,\n"
+                "    TO_CHAR(SUM(final_value)-SUM(payment_amt),'FM999999999999') as balance,\n"
+                "    TO_CHAR(SUM(paid_curr_year),'FM999999999999') as paymentCurrentYear,\n"
+                "    TO_CHAR(SUM(paid_last_year),'FM999999999999') as paymentPreviousYear,\n"
                 "    TO_CHAR(SUM(payment_amt)/SUM(final_value)*100,'FM999.00') as totalProgressPayment,\n"
                 "    TO_CHAR(physical_progress,'FM999.00') as physicalProgress,\n"
                 "    start_date as contractStartDate,\n"
@@ -882,6 +895,16 @@ class ContractReport:
                 "        ELSE ''\n"
                 "    END as status\n"
                 "FROM contracts_core\n"
+                "LEFT JOIN (\n"
+                "    SELECT \n"
+                "        prgm.name,\n"
+                "        pb.year,\n"
+                "        sum(pb.approved_value) as amount\n"
+                "    FROM contracts_projectbudget as pb\n"
+                "    JOIN contracts_project as prj ON (prj.id = pb.project_id)\n"
+                "    JOIN contracts_program as prgm ON (prgm.id = prj.program_id)\n"
+                "    GROUP BY prgm.name, pb.year\n"
+                ") as prgm_budget ON (prgm_budget.name = contracts_core.program_name AND  prgm_budget.year = extract(year from start_date)::integer)\n"
                 "GROUP BY contract_id, contract_code, program_name, physical_progress, start_date, end_date, dlp_start_date, amendment_start_date, amendment_end_date, defect_liability_days, status, assets\n"
             ),
             "assetClassTypeOfWork": (
@@ -1011,20 +1034,53 @@ class ContractReport:
                 "    contract_code as title,\n"
                 "    SUM(totalEmployees) as totalEmployees,\n"
                 "    SUM(internationalEmployees) as internationalEmployees,\n"
+                "    TO_CHAR(SUM(internationalEmployees)/SUM(totalEmployees)*100,'FM999.00') as internationalEmployees_percent,\n"
                 "    SUM(nationalEmployees) as nationalEmployees,\n"
+                "    TO_CHAR(SUM(nationalEmployees)/SUM(totalEmployees)*100,'FM999.00') as nationalEmployees_percent,\n"
                 "    SUM(employeesWithDisabilities) as employeesWithDisabilities,\n"
+                "    TO_CHAR(SUM(employeesWithDisabilities)/SUM(totalEmployees)*100,'FM999.00') as employeesWithDisabilities_percent,\n"
                 "    SUM(femaleEmployeesWithDisabilities) as femaleEmployeesWithDisabilities,\n"
+                "    TO_CHAR(SUM(femaleEmployeesWithDisabilities)/SUM(totalEmployees)*100,'FM999.00') as femaleEmployeesWithDisabilities_percent,\n"
                 "    SUM(youngEmployees) as youngEmployees,\n"
+                "    TO_CHAR(SUM(youngEmployees)/SUM(totalEmployees)*100,'FM999.00') as youngEmployees_percent,\n"
                 "    SUM(youngFemaleEmployees) as youngFemaleEmployees,\n"
-                "    SUM(femaleEmployees) as femaleEmployees\n"
+                "    TO_CHAR(SUM(youngFemaleEmployees)/SUM(totalEmployees)*100,'FM999.00') as youngFemaleEmployees_percent,\n"
+                "    SUM(femaleEmployees) as femaleEmployees,\n"
+                "    TO_CHAR(SUM(femaleEmployees)/SUM(totalEmployees)*100,'FM999.00') as femaleEmployees_percent\n"
+                "FROM social_safeguards\n"
+            ),
+            "numberEmployees_summary": (
+                "SELECT\n"
+                "    SUM(totalEmployees) as totalEmployees,\n"
+                "    SUM(internationalEmployees) as internationalEmployees,\n"
+                "    TO_CHAR(SUM(internationalEmployees)/SUM(totalEmployees)*100,'FM999.00') as internationalEmployees_percent,\n"
+                "    SUM(nationalEmployees) as nationalEmployees,\n"
+                "    TO_CHAR(SUM(nationalEmployees)/SUM(totalEmployees)*100,'FM999.00') as nationalEmployees_percent,\n"
+                "    SUM(employeesWithDisabilities) as employeesWithDisabilities,\n"
+                "    TO_CHAR(SUM(employeesWithDisabilities)/SUM(totalEmployees)*100,'FM999.00') as employeesWithDisabilities_percent,\n"
+                "    SUM(femaleEmployeesWithDisabilities) as femaleEmployeesWithDisabilities,\n"
+                "    TO_CHAR(SUM(femaleEmployeesWithDisabilities)/SUM(totalEmployees)*100,'FM999.00') as femaleEmployeesWithDisabilities_percent,\n"
+                "    SUM(youngEmployees) as youngEmployees,\n"
+                "    TO_CHAR(SUM(youngEmployees)/SUM(totalEmployees)*100,'FM999.00') as youngEmployees_percent,\n"
+                "    SUM(youngFemaleEmployees) as youngFemaleEmployees,\n"
+                "    TO_CHAR(SUM(youngFemaleEmployees)/SUM(totalEmployees)*100,'FM999.00') as youngFemaleEmployees_percent,\n"
+                "    SUM(femaleEmployees) as femaleEmployees,\n"
+                "    TO_CHAR(SUM(femaleEmployees)/SUM(totalEmployees)*100,'FM999.00') as femaleEmployees_percent\n"
                 "FROM social_safeguards\n"
             ),
             "wages": (
                 "SELECT\n"
                 "    contract_code as title,\n"
-                "    TO_CHAR(SUM(totalWage),'FM9999999.00') as totalWage,\n"
-                "    TO_CHAR(AVG(averageGrossWage),'FM9999999.00') as averageGrossWage,\n"
-                "    TO_CHAR(AVG(averageNetWage),'FM9999999.00') as averageNetWage\n"
+                "    TO_CHAR(SUM(totalWage),'FM9999999') as totalWage,\n"
+                "    TO_CHAR(AVG(averageGrossWage),'FM9999999') as averageGrossWage,\n"
+                "    TO_CHAR(AVG(averageNetWage),'FM9999999') as averageNetWage\n"
+                "FROM social_safeguards\n"
+            ),
+            "wages_summary": (
+                "SELECT\n"
+                "    TO_CHAR(SUM(totalWage),'FM9999999') as totalWage,\n"
+                "    TO_CHAR(AVG(averageGrossWage),'FM9999999') as averageGrossWage,\n"
+                "    TO_CHAR(AVG(averageNetWage),'FM9999999') as averageNetWage\n"
                 "FROM social_safeguards\n"
             ),
             "workedDays": (
@@ -1032,10 +1088,30 @@ class ContractReport:
                 "    contract_code as title,\n"
                 "    SUM(totalWorkedDays) as totalWorkedDays,\n"
                 "    SUM(femaleEmployeesWorkedDays) as femaleEmployeesWorkedDays,\n"
+                "    TO_CHAR(SUM(femaleEmployeesWorkedDays)/SUM(totalWorkedDays)*100,'FM999.00') as femaleEmployeesWorkedDays_percent,\n"
                 "    SUM(employeesWithDisabilitiesWorkedDays) as employeesWithDisabilitiesWorkedDays,\n"
+                "    TO_CHAR(SUM(employeesWithDisabilitiesWorkedDays)/SUM(totalWorkedDays)*100,'FM999.00') as employeesWithDisabilitiesWorkedDays_percent,\n"
                 "    SUM(femaleEmployeesWithDisabilitiesWorkedDays) as femaleEmployeesWithDisabilitiesWorkedDays,\n"
+                "    TO_CHAR(SUM(femaleEmployeesWithDisabilitiesWorkedDays)/SUM(totalWorkedDays)*100,'FM999.00') as femaleEmployeesWithDisabilitiesWorkedDays_percent,\n"
                 "    SUM(youngEmployeesWorkedDays) as youngEmployeesWorkedDays,\n"
-                "    SUM(youngFemaleEmployeesWorkedDays) as youngFemaleEmployeesWorkedDays\n"
+                "    TO_CHAR(SUM(youngEmployeesWorkedDays)/SUM(totalWorkedDays)*100,'FM999.00') as youngEmployeesWorkedDays_percent,\n"
+                "    SUM(youngFemaleEmployeesWorkedDays) as youngFemaleEmployeesWorkedDays,\n"
+                "    TO_CHAR(SUM(youngFemaleEmployeesWorkedDays)/SUM(totalWorkedDays)*100,'FM999.00') as youngFemaleEmployeesWorkedDays_percent\n"
+                "FROM social_safeguards\n"
+            ),
+            "workedDays_summary": (
+                "SELECT\n"
+                "    SUM(totalWorkedDays) as totalWorkedDays,\n"
+                "    SUM(femaleEmployeesWorkedDays) as femaleEmployeesWorkedDays,\n"
+                "    TO_CHAR(SUM(femaleEmployeesWorkedDays)/SUM(totalWorkedDays)*100,'FM999.00') as femaleEmployeesWorkedDays_percent,\n"
+                "    SUM(employeesWithDisabilitiesWorkedDays) as employeesWithDisabilitiesWorkedDays,\n"
+                "    TO_CHAR(SUM(employeesWithDisabilitiesWorkedDays)/SUM(totalWorkedDays)*100,'FM999.00') as employeesWithDisabilitiesWorkedDays_percent,\n"
+                "    SUM(femaleEmployeesWithDisabilitiesWorkedDays) as femaleEmployeesWithDisabilitiesWorkedDays,\n"
+                "    TO_CHAR(SUM(femaleEmployeesWithDisabilitiesWorkedDays)/SUM(totalWorkedDays)*100,'FM999.00') as femaleEmployeesWithDisabilitiesWorkedDays_percent,\n"
+                "    SUM(youngEmployeesWorkedDays) as youngEmployeesWorkedDays,\n"
+                "    TO_CHAR(SUM(youngEmployeesWorkedDays)/SUM(totalWorkedDays)*100,'FM999.00') as youngEmployeesWorkedDays_percent,\n"
+                "    SUM(youngFemaleEmployeesWorkedDays) as youngFemaleEmployeesWorkedDays,\n"
+                "    TO_CHAR(SUM(youngFemaleEmployeesWorkedDays)/SUM(totalWorkedDays)*100,'FM999.00') as youngFemaleEmployeesWorkedDays_percent\n"
                 "FROM social_safeguards\n"
             ),
             "get_all": ("SELECT * FROM final_results;"),
@@ -1046,7 +1122,7 @@ class ContractReport:
 
     def build_query_body(self):
         self.reportSQL = "WITH "
-        if self.report_type not in ["numberEmployees", "wages", "workedDays"]:
+        if self.report_id not in [4, 5]:
             self.reportSQL += (
                 "contracts_core AS (\n" + self.report_clauses["contracts_core"] + "), "
             )
@@ -1059,18 +1135,43 @@ class ContractReport:
                 + self.report_clauses["social_safeguards"]
                 + "), "
             )
-            # check if summary or single social safeguards, based on if contract_code was provided in filters
-            if len(self.filters) > 0:
-                contract_code = self.filters[0]
-                self.reportSQL += "final_results AS ( %s )" % (
-                    self.report_clauses[self.report_type]
-                    + "WHERE contract_code = '%s'\n" % contract_code
-                    + "GROUP BY contract_code\n"
-                )
+            if self.report_id == 4:
+                final_query = self.report_clauses[self.report_type + "_summary"]
+                counter = 0
+                for k in self.filters.keys():
+                    if counter == 0:
+                        final_query += "WHERE %s = %s\n" % (k, int(self.filters[k]))
+                    else:
+                        final_query += "AND %s = %s\n" % (k, int(self.filters[k]))
+                    counter += 1
             else:
-                self.reportSQL += "final_results AS ( %s )" % (
-                    self.report_clauses[self.report_type] + "GROUP BY contract_code\n"
+                final_query = self.report_clauses[self.report_type]
+                final_query += (
+                    "WHERE contract_code = '%s'\n" % self.filters["contractCode"]
                 )
+
+                filter_keys = self.filters.keys()
+                if "startYr" in filter_keys and "endYr" in filter_keys:
+                    final_query += "AND year BETWEEN %s AND %s\n" % (
+                        int(self.filters["startYr"]),
+                        int(self.filters["endYr"]),
+                    )
+                    final_query += "AND month BETWEEN %s AND %s\n" % (
+                        int(self.filters["startMn"]),
+                        int(self.filters["endMn"]),
+                    )
+                else:
+                    if "startYr" in filter_keys:
+                        final_query += "AND year >= %s\n" % int(self.filters["startYr"])
+                        final_query += "AND month >= %s\n" % int(
+                            self.filters["startMn"]
+                        )
+                    if "endYr" in filter_keys:
+                        final_query += "AND year >= %s\n" % int(self.filters["endYr"])
+                        final_query += "AND month >= %s\n" % int(self.filters["endMn"])
+                final_query += "GROUP BY contract_code\n"
+
+            self.reportSQL += "final_results AS ( %s )" % final_query
 
     def execute_main_query(self):
         self.build_query_body()
