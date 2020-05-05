@@ -6,7 +6,7 @@ from django.core import validators
 from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.validators import MaxValueValidator, MinValueValidator
-from django.db import models
+from django.db import models, IntegrityError
 from django.db.models import Q, Count, OuterRef, Subquery
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -358,12 +358,22 @@ class ProjectAsset(models.Model):
                 asset_obj.structure_code = asset_code
 
             # save the asset object with a revision comment
-            with reversion.create_revision():
-                asset_obj.save()
-                reversion.set_comment(
-                    "Created as a new asset for project %s" % self.project.name
+            try:
+                with reversion.create_revision():
+                    asset_obj.save()
+                    reversion.set_comment(
+                        "Created as a new asset for project %s" % self.project.name
+                    )
+                    # we don't set the user here - because we don't want to fudge things
+            except IntegrityError:
+                raise ValidationError(
+                    {
+                        "asset_id": _(
+                            "The Asset Code must be unique for this type of asset"
+                        )
+                    }
                 )
-                # we don't set the user here - because we don't want to fudge things
+
 
             # and now we can get it's Id
             self.asset_id = "%s-%s" % (asset_type, asset_obj.id)
