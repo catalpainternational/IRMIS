@@ -61,7 +61,7 @@ class AddedFormsetMixin:
 
     def form_valid(self, form, dependents):
         """If the form is valid save the associated model."""
-        
+
         assets_to_delete = self.get_deleted_assets(dependents)
 
         context = self.get_context_data()
@@ -103,7 +103,9 @@ class AddedFormsetMixin:
         for form in dependents["formset"].deleted_forms:
             # Check all deleted ProjectAssets to see if the associated Asset should also be deleted
             asset_id = form.cleaned_data["asset_id"]
-            project_asset_references = models.ProjectAsset.objects.filter(asset_id=asset_id).count()
+            project_asset_references = models.ProjectAsset.objects.filter(
+                asset_id=asset_id
+            ).count()
             if project_asset_references > 1:
                 continue
 
@@ -120,7 +122,9 @@ class AddedFormsetMixin:
 
             # The main test for assessing whether an asset is still 'as new' is whether it has a geojson_file_id associated with it,
             # another simple test is to check construction_year (which is common to all asset types) although this field is often still None
-            assets_as_new = asset_model.objects.filter(pk=asset_pk, construction_year=None, geojson_file_id=None)
+            assets_as_new = asset_model.objects.filter(
+                pk=asset_pk, construction_year=None, geojson_file_id=None
+            )
             if len(assets_as_new) == 1:
                 assets_to_delete.append(assets_as_new)
 

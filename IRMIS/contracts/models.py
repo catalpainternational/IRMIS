@@ -374,7 +374,6 @@ class ProjectAsset(models.Model):
                     }
                 )
 
-
             # and now we can get it's Id
             self.asset_id = "%s-%s" % (asset_type, asset_obj.id)
 
