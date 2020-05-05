@@ -6,23 +6,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('contracts', '0052_alter_contract_budget_amendment_year'),
+        ("contracts", "0052_alter_contract_budget_amendment_year"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='contractamendment',
-            name='value',
-            field=models.IntegerField(blank=True, help_text='Budget per year in USD', null=True),
+            model_name="contractamendment",
+            name="value",
+            field=models.IntegerField(
+                blank=True, help_text="Budget per year in USD", null=True
+            ),
         ),
         migrations.AlterField(
-            model_name='contractbudget',
-            name='value',
-            field=models.IntegerField(help_text='Budget per year in USD'),
+            model_name="contractbudget",
+            name="value",
+            field=models.IntegerField(help_text="Budget per year in USD"),
         ),
         migrations.AlterField(
-            model_name='projectbudget',
-            name='approved_value',
-            field=models.IntegerField(blank=True, help_text='In USD', null=True),
+            model_name="contractpayment", name="value", field=models.IntegerField(),
+        ),
+        migrations.AlterField(
+            model_name="projectbudget",
+            name="approved_value",
+            field=models.IntegerField(blank=True, help_text="In USD", null=True),
         ),
     ]

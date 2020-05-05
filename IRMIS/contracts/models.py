@@ -676,7 +676,7 @@ class ContractInspectionEntity(models.Model):
 class ContractPayment(models.Model):
     contract = models.ForeignKey("contracts.Contract", on_delete=models.CASCADE)
     date = models.DateField()
-    value = models.DecimalField(max_digits=14, decimal_places=4)
+    value = models.IntegerField()
     donor = models.ForeignKey(
         "contracts.ContractPaymentDonor",
         null=True,
