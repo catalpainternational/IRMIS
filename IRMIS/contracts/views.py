@@ -616,6 +616,18 @@ class CompanyDetailView(DetailView):
     template_name = "contracts/company_details_view.html"
     model = models.Company
 
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+
+        context["contractor"] = models.Contract.objects.filter(
+            contractor_id=self.object.id
+        )
+        context["subcontractor"] = models.Contract.objects.filter(
+            subcontractor_id=self.object.id
+        )
+
+        return context
+
 
 @method_decorator(login_required, name="dispatch")
 class CompanyDocumentListView(ListView):
