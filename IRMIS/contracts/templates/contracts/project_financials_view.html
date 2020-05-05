@@ -60,7 +60,7 @@
                     {% for budget in budgets %}
                     <tr>
                         <td>{{ budget.year }}</td>
-                        <td>{{ budget.approved_value|floatformat:2 }}</td>
+                        <td>{{ budget.approved_value }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

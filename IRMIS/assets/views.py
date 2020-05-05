@@ -2132,7 +2132,6 @@ def protobuf_contract_reports(request, report_id):
     if request.method != "GET":
         raise MethodNotAllowed(request.method)
 
-    filters = request.GET.getlist("contractCode", [])
     report_types = {
         1: ["program"],
         2: ["contractCode"],
@@ -2143,10 +2142,10 @@ def protobuf_contract_reports(request, report_id):
 
     try:
         # Build out Contract Report data to return
-        report_data = {"filters": filters, "summary": 0}
+        report_data = {"filters": request.GET, "summary": 0}
         for rt in report_types[report_id]:
             # Initialise a new Contract Report
-            contract_report = ContractReport(rt, filters)
+            contract_report = ContractReport(report_id, rt, request.GET)
             report_data[rt] = contract_report.execute_main_query()
 
             # add the Summary data for certain reports
