@@ -140,24 +140,21 @@
                     });
             },
             buildSummaryData() {
-                // splits an array of summaries into { length, budget } objects nested by workTypes.assetClass.year
-                //this.state.summaryData[workTypes][assetClass][year].length
-                //this.state.summaryData[workTypes][assetClass][year].budget
-                this.state.summaryData = {};
-
-                // build the data object containing the keys we want in the summary
-                Object.entries(this.workTypes).forEach(workType => {
-                    const wt = workType[0];
-                    this.state.summaryData[wt] = {};
-                    Object.entries(this.assetClasses).forEach(assetClass => {
-                        const ac = assetClass[1]; // access the option info for lookups
-                        this.state.summaryData[wt][ac[0]] = {};
-                        this.years.forEach(year => {
-                            this.state.summaryData[wt][ac[0]][year] = {length: 0, budget: 0};
-                        });
-                    });
+                // populate an empty years data
+                const empty_years_data = {};
+                Object.entries(this.assetClasses).forEach(assetClass => {
+                    empty_years_data[assetClass[1]] = {length: 0, budget: 0};
                 });
-                // fill the data object with values we have from the summaries
+
+                // build the SummaryData object containing the keys we want in the summary
+                this.state.summaryData = {
+                    'routine': empty_years_data,
+                    'periodic': empty_years_data,
+                    'rehab': empty_years_data,
+                    'spot': empty_years_data
+                };
+
+                // sort an array of summaries into { length, budget } objects nested by workTypes.assetClass.year
                 this.state.summaries.forEach(summary => {
                     // do nothing if the summary does not have keys we are interested in
                     if (!this.state.summaryData.hasOwnProperty(summary.workType)) return;
