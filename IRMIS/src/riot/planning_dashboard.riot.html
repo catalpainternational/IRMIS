@@ -140,19 +140,23 @@
                     });
             },
             buildSummaryData() {
-                // populate an empty years data
-                const empty_years_data = {};
+                // populate empty Years object
+                const empty_years = {};
+                this.years.forEach((year) => {
+                    empty_years[year] = {length: 0, budget: 0};
+                });
+
+                // populate empty Asset Classes object with above empty Years object
+                const empty_asset_classes = {};
                 Object.entries(this.assetClasses).forEach(assetClass => {
-                    empty_years_data[assetClass[1]] = {length: 0, budget: 0};
+                    empty_asset_classes[assetClass[1][0]] =  empty_years;
                 });
 
                 // build the SummaryData object containing the keys we want in the summary
-                this.state.summaryData = {
-                    'routine': empty_years_data,
-                    'periodic': empty_years_data,
-                    'rehab': empty_years_data,
-                    'spot': empty_years_data
-                };
+                this.state.summaryData = {};
+                Object.entries(this.workTypes).forEach(wt => {
+                    this.state.summaryData[wt[0]] = JSON.parse(JSON.stringify(empty_asset_classes));
+                });
 
                 // sort an array of summaries into { length, budget } objects nested by workTypes.assetClass.year
                 this.state.summaries.forEach(summary => {
