@@ -136,9 +136,16 @@ $max-width: 400px;
             display: none;
         }
         
-        .formset .col:not(:first-of-type) {
-            label, small {
-                display: none;
+        .formset {
+            .col:not(:first-of-type) {
+                label, small {
+                    display: none;
+                }
+            }
+
+            .col input[type="checkbox"] {
+                vertical-align: middle;
+                height: 38px;
             }
         }
 
