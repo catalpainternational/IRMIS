@@ -210,6 +210,7 @@ class ProjectDetailView(DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context["assets"] = models.ProjectAsset.objects.filter(project=self.object.id)
+        context["contracts"] = models.Contract.objects.filter(tender=self.object.tender)
         return context
 
 

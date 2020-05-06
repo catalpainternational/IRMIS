@@ -49,6 +49,20 @@
             <label>{% trans "Description" %}</label>
             <p>{{ project.description }}</p>
         </div>
+        <div>
+            {% if project.tender %}
+            <label>{% trans "Associated Tender" %}</label>
+            <div><a href="{% url 'contract-tender-detail' project.tender.code %}">{{ project.tender.code }}</a></div>
+            {% endif %}
+        </div>
+        <div>
+            {% if contracts %}
+            <label>{% trans "Associated Contracts" %}</label>
+            {% for contract in contracts %}
+            <div><a href="{% url 'contract-contract-detail' contract.id %}">{{ contract.contract_code }}</a></div>
+            {% endfor %}
+            {% endif %}
+        </div>
     </section>
 
     <section>
