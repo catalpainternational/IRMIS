@@ -20,7 +20,7 @@ from reversion.models import Version
 
 from . import forms, models
 from basemap.models import Municipality
-from assets.models import Asset
+from assets.models import Asset, Bridge, Culvert, Drift, Road
 
 
 class AddedFormsetMixin:
@@ -61,12 +61,18 @@ class AddedFormsetMixin:
 
     def form_valid(self, form, dependents):
         """If the form is valid save the associated model."""
+
+        assets_to_delete = self.get_deleted_assets(dependents)
+
         context = self.get_context_data()
         with reversion.create_revision():
             with transaction.atomic():
                 self.object = form.save()
                 for dependent in dependents.values():
                     dependent.save()
+                if len(assets_to_delete) > 0:
+                    for assets_as_new in assets_to_delete:
+                        assets_as_new.delete()
             # store the user who made the changes
             reversion.set_user(self.request.user)
 
@@ -88,6 +94,37 @@ class AddedFormsetMixin:
         if error_message:
             messages.error(self.request, error_message)
         return response
+
+    def get_deleted_assets(self, dependents):
+        # Note that this method assumes the only inline formset that has `can_delete=True` is ProjectAssetInline
+        assets_to_delete = []
+
+        for form in dependents["formset"].deleted_forms:
+            # Check all deleted ProjectAssets to see if the associated Asset should also be deleted
+            asset_id = form.cleaned_data["asset_id"]
+            project_asset_references = models.ProjectAsset.objects.filter(
+                asset_id=asset_id
+            ).count()
+            if project_asset_references > 1:
+                continue
+
+            asset_type = asset_id[:4]
+            asset_pk = int(asset_id[5:])
+
+            if asset_type == "ROAD":
+                asset = Road.objects.get(pk=asset_pk)
+            elif asset_type == "BRDG":
+                asset = Bridge.objects.get(pk=asset_pk)
+            elif asset_type == "CULV":
+                asset = Culvert.objects.get(pk=asset_pk)
+            elif asset_type == "DRFT":
+                asset = Drift.objects.get(pk=asset_pk)
+
+            reversions = Version.objects.get_for_object(asset)
+            if len(reversions) == 1:
+                assets_to_delete.append(asset)
+
+        return assets_to_delete
 
     def get_success_message(self, cleaned_data):
         if hasattr(self, "success_message"):

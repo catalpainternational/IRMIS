@@ -47,6 +47,7 @@ const amendmentDescription = document.getElementById("id_amendment_description")
 window.addEventListener("load", () => {
     const displayNewAssetFields = document.getElementById("display-new-asset-fields");
     const newAssetFields = document.getElementById("new-asset-fields");
+    const formsetDelete = document.getElementById("id_assets-0-DELETE");
 
     let originalForm = {};
     let currentForm = {};
@@ -62,6 +63,11 @@ window.addEventListener("load", () => {
             location.href = nextUrl;
         }
     });
+
+    // Add help text on asset details formset delete element
+    if (formsetDelete) {
+        formsetDelete.previousElementSibling.innerText = window.gettext("Delete asset from the project");
+    }
 
     if (displayNewAssetFields) {
         displayNewAssetFields.addEventListener("click", prepareNewAssetFields);
