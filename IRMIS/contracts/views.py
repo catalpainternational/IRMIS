@@ -72,8 +72,7 @@ class AddedFormsetMixin:
                     dependent.save()
                 if len(assets_to_delete) > 0:
                     for assets_as_new in assets_to_delete:
-                        for asset_to_delete in assets_as_new:
-                            asset_to_delete.delete()
+                        assets_as_new.delete()
             # store the user who made the changes
             reversion.set_user(self.request.user)
 
