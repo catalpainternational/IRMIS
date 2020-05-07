@@ -140,24 +140,25 @@
                     });
             },
             buildSummaryData() {
-                // splits an array of summaries into { length, budget } objects nested by workTypes.assetClass.year
-                //this.state.summaryData[workTypes][assetClass][year].length
-                //this.state.summaryData[workTypes][assetClass][year].budget
-                this.state.summaryData = {};
-
-                // build the data object containing the keys we want in the summary
-                Object.entries(this.workTypes).forEach(workType => {
-                    const wt = workType[0];
-                    this.state.summaryData[wt] = {};
-                    Object.entries(this.assetClasses).forEach(assetClass => {
-                        const ac = assetClass[1]; // access the option info for lookups
-                        this.state.summaryData[wt][ac[0]] = {};
-                        this.years.forEach(year => {
-                            this.state.summaryData[wt][ac[0]][year] = {length: 0, budget: 0};
-                        });
-                    });
+                // populate empty Years object
+                const empty_years = {};
+                this.years.forEach((year) => {
+                    empty_years[year] = {length: 0, budget: 0};
                 });
-                // fill the data object with values we have from the summaries
+
+                // populate empty Asset Classes object with above empty Years object
+                const empty_asset_classes = {};
+                Object.entries(this.assetClasses).forEach(assetClass => {
+                    empty_asset_classes[assetClass[1][0]] =  empty_years;
+                });
+
+                // build the SummaryData object containing the keys we want in the summary
+                this.state.summaryData = {};
+                Object.entries(this.workTypes).forEach(wt => {
+                    this.state.summaryData[wt[0]] = JSON.parse(JSON.stringify(empty_asset_classes));
+                });
+
+                // sort an array of summaries into { length, budget } objects nested by workTypes.assetClass.year
                 this.state.summaries.forEach(summary => {
                     // do nothing if the summary does not have keys we are interested in
                     if (!this.state.summaryData.hasOwnProperty(summary.workType)) return;
