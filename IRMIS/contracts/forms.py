@@ -150,6 +150,7 @@ class ProjectMilestoneForm(ModelForm):
         self.fields["progress"].widget.attrs.update(
             {
                 "class": "milestone-progress form-control form-control-sm",
+                "placeholder": "25%",
                 "min": 0,
                 "max": 100,
             }

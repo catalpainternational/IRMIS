@@ -445,7 +445,6 @@ class ProjectMilestone(models.Model):
         null=True, blank=True, help_text=_("Estimated days of work")
     )
     progress = models.IntegerField(
-        default=0,
         validators=[MaxValueValidator(100), MinValueValidator(0)],
         null=True,
         blank=True,
