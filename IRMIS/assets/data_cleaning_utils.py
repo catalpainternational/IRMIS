@@ -592,15 +592,19 @@ def create_programmatic_survey(management_command, data, mappings, audit_source_
         create_programmatic_survey_values(
             survey_data["values"], data["source_values"], mappings
         )
-        # Get any values that are present in the survey only, that do not have a field in the original asset
-        survey_values = {
-            k: data["values"][k]
-            for k in set(data["values"]) - set(model_to_dict(data["source_values"]))
-        }
-        if len(survey_values) > 0:
-            create_programmatic_survey_values(
-                survey_data["values"], survey_values, mappings
+        # For everything except original import of traffic surveys, do this...
+        if not (
+            isinstance(data["values"], list) and isinstance(data["source_values"], list)
+        ):
+            # Get any values that are present in the survey only, that do not have a field in the original asset
+            survey_only_keys = set(data["values"]) - set(
+                model_to_dict(data["source_values"])
             )
+            survey_values = {k: data["values"][k] for k in survey_only_keys}
+            if len(survey_values) > 0:
+                create_programmatic_survey_values(
+                    survey_data["values"], survey_values, mappings
+                )
 
         # check that values is not empty before saving survey
         if len(survey_data["values"].keys()) > 0:
@@ -722,6 +726,7 @@ def create_programmatic_survey_for_traffic_csv(management_command, data, roads):
     if len(roads) == 0:
         survey_data = {
             "asset_code": data[0],
+            "source_values": data,
             "values": data,
             "date_surveyed": make_aware(datetime.datetime(int(data[3]), 1, 1)),
         }
