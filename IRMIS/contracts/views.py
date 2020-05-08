@@ -99,6 +99,9 @@ class AddedFormsetMixin:
         # Note that this method assumes the only inline formset that has `can_delete=True` is ProjectAssetInline
         assets_to_delete = []
 
+        if not hasattr(dependents, "formset"):
+            return assets_to_delete
+
         for form in dependents["formset"].deleted_forms:
             # Check all deleted ProjectAssets to see if the associated Asset should also be deleted
             asset_id = form.cleaned_data["asset_id"]
