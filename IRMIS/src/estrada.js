@@ -7,6 +7,7 @@ import "./polyfills/nodelist_foreach";
 import "./dayjs/dayjs";
 import * as riot from "riot";
 
+import Loading from "./riot/loading.riot.html";
 import Planning_Base from "./riot/planning_base.riot.html";
 import Reports_Base from "./riot/reports_base.riot.html";
 import Data_Table from "./riot/data_table.riot.html";
@@ -32,6 +33,9 @@ import "./styles/vendor.scss";
 import "./assets/models/monkeyPatch";
 
 export const estradaMap = new Map();
+
+riot.register("loading", Loading);
+riot.mount("loading", { messageHeader: window.gettext("Please wait!"), messageBody: window.gettext("Loading Estrada assets") });
 
 window.addEventListener("load", () => {
     // Set up the map and table - but without any data for either

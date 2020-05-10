@@ -2,12 +2,15 @@ import { getRoadMetadata, getRoadsMetadata, getRoadsMetadataChunks, putRoadMetad
 import { dispatch } from "./assets/utilities";
 import { filterAssets } from "./assets/filterUtilities";
 
+import $ from "jquery";
+
 export const roads = {};
 let filteredRoads = {};
 
 // Get the road metadata chunk details
 getRoadsMetadataChunks()
     .then((chunks) => {
+        $("#loading").modal("show");
         const big_chunks = {};
         chunks.forEach((chunk) => {
             big_chunks[chunk.asset_class] = big_chunks[chunk.asset_class] || {
@@ -28,12 +31,14 @@ getRoadsMetadataChunks()
             }
         });
         // for each chunk, download the roads
+        let estradaRoads = [];
         prepared_chunks.forEach((chunk) => {
-            getRoadsMetadata(`${chunk.asset_class}_${chunk.asset_code_prefix}`)
-                .then((roadList) => {
-                    // add the roads to the road manager
-                    addRoadMetadata(roadList);
-                });
+            estradaRoads.push(getRoadsMetadata(`${chunk.asset_class}_${chunk.asset_code_prefix}`));
+        });
+        Promise.all(estradaRoads).then((values) => {
+            const flattenValues = [].concat(...values);
+            addRoadMetadata(flattenValues);
+            $("#loading").modal("hide");
         });
     });
 
