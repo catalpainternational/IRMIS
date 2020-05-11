@@ -15,7 +15,6 @@
             </div>
         </div>
         <div id="planning">
-            <loading messageHeader="{ window.gettext('Please Wait') }"></loading>
             <planning_dashboard if="{ state.page === 'dashboard' }"></planning_dashboard>
             <planning if="{ state.page === 'plans' }"></planning>
             <planning_templates if="{ state.page === 'create' }"></planning_templates>
@@ -30,7 +29,6 @@
         import Planning_Dashboard from './planning_dashboard.riot.html';
         import Planning from './planning.riot.html';
         import Planning_Templates from './planning_templates.riot.html';
-        import Loading from "./loading.riot.html";
 
         export default {
             state: {
@@ -41,7 +39,6 @@
                 Planning_Dashboard,
                 Planning,
                 Planning_Templates,
-                Loading,
             },
             onBeforeMount(props, state) {
                 state.page = props.page;
