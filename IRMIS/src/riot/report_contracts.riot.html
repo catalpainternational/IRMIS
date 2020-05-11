@@ -20,7 +20,7 @@
     <div class="content-wrapper">
         <div class="report-criteria">
             <p class="report-description">{ reportContractsContent().description }.</p>
-            <h6>{ window.gettext("Select report criteria") }</h6>
+            <h6 if="{ props.id == 4 || props.id == 5 }">{ window.gettext("Select report criteria") }</h6>
             <div class="d-flex justify-content-between">
                 <div class="d-flex flex-wrap">
                     <div if="{ reportContractsContent().visibleFilters.assetClass }" class="options">
