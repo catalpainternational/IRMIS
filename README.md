@@ -8,7 +8,7 @@
 4. Install [pip-tools](https://pypi.org/project/pip-tools/).
 5. Install project `requirements-dev` with pip-tools.
 6. Install [Yarn](https://yarnpkg.com/en/docs/install).
-7. Install all yarn-managed packages (`yarn`) and compile the JS/CSS files (`yarn run dev`).
+7. Install all yarn-managed packages (`yarn`) and compile the JS/CSS files (`yarn dev`).
 8. Install the Google Protobuf compiler (for Mac OS, using Homebrew `brew install protobuf` is easiest).
 9. Get a copy of the Estrada DB from Production server (https://estrada-production.catalapa.build) and load the DB.
 10. Build local geometry files with Django management command `collate_geometries`.
