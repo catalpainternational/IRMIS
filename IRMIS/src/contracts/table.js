@@ -1,6 +1,8 @@
 import "datatables.net-bs4";
 import $ from "jquery";
 
+import { exportCsv } from "exportCsv";
+
 window.addEventListener("load", () => {
     const projectsListTable = $("#project-list-table");
     const tendersListTable = $("#tender-list-table");
@@ -59,6 +61,19 @@ function initializeProjectsListTable(table) {
         order: order,
     });
 
+    // Export projects table as CSV
+    document.getElementById("export-csv").addEventListener("click", () => {
+        const headers = [
+            window.gettext("Project Name"),
+            window.gettext("Status"),
+            window.gettext("Program"),
+            window.gettext("Type of Work"),
+            window.gettext("Estimated Budget"),
+            window.gettext("Funding Source")
+        ];
+        exportTable(dataTable, headers, 7, [1]);
+    });
+
     // Search box
     const searchBox = document.querySelector(".dataTables_filter input[type='search']");
     searchBox.attributes.getNamedItem("placeholder").value = window.gettext("Search by Asset Code, Project Code or Project Name");
@@ -94,6 +109,17 @@ function initializeTendersListTable(table) {
         dom: "<'row'<'col-12'f>><'row'<'col-sm-12'tr>><'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>", // https://datatables.net/reference/option/dom#Styling
         columnDefs: columnDefs,
         order: order,
+    });
+
+    // Export tenders table as CSV
+    document.getElementById("export-csv").addEventListener("click", () => {
+        const headers = [
+            window.gettext("Tender Code"),
+            window.gettext("Number of Projects"),
+            window.gettext("Project(s) Name"),
+            window.gettext("Status")
+        ];
+        exportTable(dataTable, headers, 5, [1, 3]);
     });
 
     // Search box
@@ -133,6 +159,18 @@ function initializeContractsListTable(table) {
         order: order,
     });
 
+    // Export contracts table as CSV
+    document.getElementById("export-csv").addEventListener("click", () => {
+        const headers = [
+            window.gettext("Contract Code"),
+            window.gettext("Number of Projects"),
+            window.gettext("Project(s) Name"),
+            window.gettext("Type of Work"),
+            window.gettext("Status")
+        ];
+        exportTable(dataTable, headers, 6, [1, 3, 4]);
+    });
+
     // Search box
     const searchBox = document.querySelector(".dataTables_filter input[type='search']");
     searchBox.attributes.getNamedItem("placeholder").value = window.gettext("Search by Asset Code or Contract Code");
@@ -164,10 +202,20 @@ function initializeCompaniesListTable(table) {
         ];
     }
 
-    table.DataTable({
+    const dataTable = table.DataTable({
         dom: "<'row'<'col-12'f>><'row'<'col-sm-12'tr>><'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>", // https://datatables.net/reference/option/dom#Styling
         columnDefs: columnDefs,
         order: order,
+    });
+
+    // Export companies table as CSV
+    document.getElementById("export-csv").addEventListener("click", () => {
+        const headers = [
+            window.gettext("Name"),
+            window.gettext("Total Contracts"),
+            window.gettext("Active Contracts")
+        ];
+        exportTable(dataTable, headers, 4, [1]);
     });
 
     // Search box
@@ -193,6 +241,24 @@ function initializePrintableTable(table, columnDefs) {
             columnDefs: columnDefs,
         });
     }
+}
+
+function exportTable(dataTable, headers, columnsLength, indexes) {
+    const rowsData = dataTable.rows().data();
+    const rows = Object.keys(rowsData).map((rowKey) => {
+        let rowFields = [];
+        for (let index = 1; index < columnsLength; index++) {
+            let data = rowsData[rowKey][index];
+            if (data == null || data === "None") {
+                data = "";
+            } else if (indexes.includes(index)) {
+                data = data.replace(/<\/?[^>]+(>|$)/g, ""); // strip HTML tags
+            }
+            rowFields.push(data);
+        }
+        return rowFields;
+    });
+    exportCsv(headers, rows);
 }
 
 function setupSelectFilter(dataTable, selectId, placeHolder, filterFunc, columnNo) {

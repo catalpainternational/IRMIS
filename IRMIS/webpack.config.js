@@ -2,7 +2,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const path = require('path');
 
 module.exports = {
-    context: path.resolve(__dirname, './src'),
+    context: path.resolve(__dirname, 'src'),
     entry: {
         estrada: ['whatwg-fetch', './estrada.js'],
         contracts: ['./contracts.js'],
@@ -14,6 +14,9 @@ module.exports = {
     },
     resolve: {
         extensions: ['.ts', '.js'],
+        alias: {
+            exportCsv: path.resolve(__dirname, 'src/exportCsv.js'),
+        },
     },
     module: {
         rules: [

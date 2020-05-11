@@ -3,7 +3,7 @@ import $ from "jquery";
 
 import { dispatch } from "./assets/utilities";
 
-import { exportCsv } from "./exportCsv";
+import { exportCsv } from "exportCsv";
 import { currentFilter } from "./side_menu";
 import { estradaTableColumns, estradaRoadTableEventListeners, estradaStructureTableEventListeners, structuresTableColumns } from "./mainTableDefinition";
 import {
@@ -72,7 +72,7 @@ const attributeModalMapping = {
         reportDataTableId: "inventory-total-width-table",
         reportTable: null,
         title: gettext("Total Width segments"),
-    },    
+    },
     rainfall: {
         columns: rainfallColumns,
         reportDataTableId: "inventory-rainfall-table",
@@ -447,11 +447,11 @@ $.extend($.fn.dataTableExt.oSort, {
 
 $.fn.dataTable.Api.register('row().show()', function () {
     const page = this.table().page;
-    const tableRows = this.table().rows({ order:"current", page:"all", search: "applied" });
+    const tableRows = this.table().rows({ order: "current", page: "all", search: "applied" });
     const rowIndex = this.index();
-    const rowPosition = tableRows[0].indexOf( rowIndex );
+    const rowPosition = tableRows[0].indexOf(rowIndex);
 
-    if( rowPosition >= page.info().start && rowPosition < page.info().end ) {
+    if (rowPosition >= page.info().start && rowPosition < page.info().end) {
         // On the correct page - return the row
         return this;
     }
@@ -513,8 +513,8 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
                     return (a > b) ? -1 : (a < b) ? 1 : 0;
                 })[0] || false;
                 if (latestSurvey) {
-                    getPhotos("SURV-"+latestSurvey.id)
-                        .then((photosData)=>{
+                    getPhotos("SURV-" + latestSurvey.id)
+                        .then((photosData) => {
                             photos = photosData;
                         }).finally(() => {
                             // update the inventory modal tag with current data
