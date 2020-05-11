@@ -2,6 +2,8 @@ import json
 import csv
 from pathlib import Path
 from io import StringIO
+from celery.task import periodic_task
+from celery.schedules import crontab
 
 from django.core.files.base import ContentFile
 from django.core.serializers import serialize
@@ -501,6 +503,7 @@ def decimal_from_chainage(chainage):
     return int(chainage.replace("+", ""))
 
 
+@periodic_task(run_every=crontab(minute=0, hour="12,24"))
 def collate_geometries(asset="all"):
     """ Collate geometry models into geobuf files
 
