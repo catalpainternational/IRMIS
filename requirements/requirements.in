@@ -12,3 +12,4 @@ django-reversion
 django-sendfile
 importlib-resources
 xlrd
+celery
