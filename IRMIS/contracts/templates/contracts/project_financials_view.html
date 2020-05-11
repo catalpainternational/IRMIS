@@ -34,20 +34,22 @@
         </div>
         <div>
             <label>{% trans "Funding Source" %}</label>
-            <p>{{ project.funding_source }}</p>
+            <p>{{ project.funding_source|default_if_none:"" }}</p>
         </div>
         <div>
             <label>{% trans "Donor" %}</label>
-            <p>{{ project.donor }}</p>
+            <p>{{ project.donor|default_if_none:"" }}</p>
         </div>
     </section>
 
     <section>
         <h6>{% trans "Budget" %}</h6>
+        {% if project.total_budget %}
         <div class="total-budget">
             <p>{% trans "Total" %}</p>
             <h1>$ {{ project.total_budget }}</h1>
         </div>
+        {% endif %}
         <div>
             <table class="contract-details-table d-block table table-hover w-100">
                 <thead>
