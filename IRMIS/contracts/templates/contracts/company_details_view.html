@@ -32,31 +32,31 @@
         </div>
         <div>
             <label>{% trans "Phone" %}</label>
-            <p>{{ company.phone }}</p>
+            <p>{{ company.phone|default_if_none:"" }}</p>
         </div>
         <div>
             <label>{% trans "Email" %}</label>
-            <p>{{ company.email }}</p>
+            <p>{{ company.email|default_if_none:"" }}</p>
         </div>
         <div>
             <label>{% trans "TIN" %}</label>
-            <p>{{ company.TIN }}</p>
+            <p>{{ company.TIN|default_if_none:"" }}</p>
         </div>
         <div>
             <label>{% trans "Bank Account Number" %}</label>
-            <p>{{ company.iban }}</p>
+            <p>{{ company.iban|default_if_none:"" }}</p>
         </div>
         <div>
             <label>{% trans "Representative Name" %}</label>
-            <p>{{ company.rep_name }}</p>
+            <p>{{ company.rep_name|default_if_none:"" }}</p>
         </div>
         <div>
             <label>{% trans "Representative Phone" %}</label>
-            <p>{{ company.rep_phone }}</p>
+            <p>{{ company.rep_phone|default_if_none:"" }}</p>
         </div>
         <div>
             <label>{% trans "Representative Email" %}</label>
-            <p>{{ company.rep_email }}</p>
+            <p>{{ company.rep_email|default_if_none:"" }}</p>
         </div>
         <div>
             <label>{% trans "Woman-Led Company" %}</label>
@@ -64,7 +64,7 @@
         </div>
         <div>
             <label>{% trans "Company category" %}</label>
-            <p>{{ company.category }}</p>
+            <p>{{ company.category|default_if_none:"" }}</p>
         </div>
         <div>
             {% if contractor_contracts %}
