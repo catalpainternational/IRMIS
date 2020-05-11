@@ -2,6 +2,8 @@ import json
 import csv
 from pathlib import Path
 from io import StringIO
+from celery.task import periodic_task
+from celery.schedules import crontab
 
 from django.core.files.base import ContentFile
 from django.core.serializers import serialize
@@ -644,3 +646,8 @@ def set_structure_municipalities(structure_type):
                 structure.administrative_area = row[1]
                 structure.save()
                 reversion.set_comment("Administrative area set from geometry")
+
+
+@periodic_task(run_every=crontab(minute=0, hour="12,24"))
+def build_new_geometries():
+    collate_geometries()
