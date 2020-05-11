@@ -2,7 +2,7 @@
 
 ## Bemvindu! Let's get setup quickly!
 
-1. Clone this repository.
+1. Clone this repository, making sure to use the `--recurse-submodules` flag.
 2. Clone the  ` estrada-data-sources` repository (https://github.com/catalpainternational/estrada-data-sources) to get source shape files.
 3. Create a virtual environment with Python 3.6+.
 4. Install [pip-tools](https://pypi.org/project/pip-tools/).
