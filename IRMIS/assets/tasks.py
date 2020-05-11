@@ -503,6 +503,7 @@ def decimal_from_chainage(chainage):
     return int(chainage.replace("+", ""))
 
 
+@periodic_task(run_every=crontab(minute=0, hour="12,24"))
 def collate_geometries(asset="all"):
     """ Collate geometry models into geobuf files
 
@@ -646,8 +647,3 @@ def set_structure_municipalities(structure_type):
                 structure.administrative_area = row[1]
                 structure.save()
                 reversion.set_comment("Administrative area set from geometry")
-
-
-@periodic_task(run_every=crontab(minute=0, hour="12,24"))
-def build_new_geometries():
-    collate_geometries()
