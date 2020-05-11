@@ -10,10 +10,10 @@
 6. Install [Yarn](https://yarnpkg.com/en/docs/install).
 7. Install all yarn-managed packages (`yarn`) and compile the JS/CSS files (`yarn dev`).
 8. Install the Google Protobuf compiler (for Mac OS, using Homebrew `brew install protobuf` is easiest).
-9. Get a copy of the Estrada DB from Production server (https://estrada-production.catalapa.build) and load the DB.
-10. Build local geometry files with Django management command `collate_geometries`.
-11. Run the server.
-
+9. Install the POSTGIS extension for Postgresql (https://docs.djangoproject.com/en/3.0/ref/contrib/gis/install/postgis/).
+10. Get a copy of the Estrada DB from Production server (https://estrada-production.catalapa.build) and load the DB.
+11. Build local geometry files with Django management command `collate_geometries`.
+12. Run the server.
 
 
 ## Extra Information and Details On Specific Management Commands & Project Technologies Used
