@@ -97,8 +97,8 @@
                 <td>{{ project.status }}</td>
                 <td>{{ project.program }}</td>
                 <td>{{ project.type_of_work }}</td>
-                <td>$ {{ project.total_budget }}</td>
-                <td>{{ project.funding_source }}</td>
+                <td>{% if project.total_budget %}$ {{ project.total_budget }}{% endif %}</td>
+                <td>{{ project.funding_source|default_if_none:"" }}</td>
                 <td>{{ project.code }}</td>
                 <td>
                     {% for asset in project.assets.all %}
