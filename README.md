@@ -1,14 +1,22 @@
 # ILO Integrated Roads Management Information System
 
-## Installation
+## Bemvindu! Let's get setup quickly!
 
-1. git clone this repository using `--recurse-submodules` and cd into it
-  - If you forgot to `--recurse-submodules` then `git submodule init && git submodule update`
-2. create a python 3.6 virtual environment and install pip-tools `pip install pip-tools`
-3. install requirements with `pip-sync requirements/requirements-dev.txt`
-4. we require GEODJANGO support, create a `irmis_db` postgresql database with the POSTGIS extension
-  - see https://docs.djangoproject.com/en/2.2/ref/contrib/gis/ for installation instructions
-5. In your virtual environment run `manage.py migrate` `manage.py createsuperuser` `manage.py runserver`
+1. Clone this repository.
+2. Clone the  ` estrada-data-sources` repository (https://github.com/catalpainternational/estrada-data-sources) to get source shape files.
+3. Create a virtual environment with Python 3.6+.
+4. Install [pip-tools](https://pypi.org/project/pip-tools/).
+5. Install project `requirements-dev` with pip-tools.
+6. Install [Yarn](https://yarnpkg.com/en/docs/install).
+7. Install all yarn-managed packages (`yarn`) and compile the JS/CSS files (`yarn run dev`).
+8. Install the Google Protobuf compiler (for Mac OS, using Homebrew `brew install protobuf` is easiest).
+9. Get a copy of the Estrada DB from Production server (https://estrada-production.catalapa.build) and load the DB.
+10. Build local geometry files with Django management command `collate_geometries`.
+11. Run the server.
+
+
+
+## Extra Information and Details On Specific Management Commands & Project Technologies Used
 
 ## Pip-tools
 
@@ -22,14 +30,14 @@ Run `pip-compile requirements/requirements-dev.in` to produce `requirements/requ
 
 Use `pip-compile --upgrade` to upgrade versions of libraries, then test the result!
 
-## Set up front-end
+## Setting up the front-end
 
 1. Install [Yarn](https://yarnpkg.com/en/docs/install).
 2. Navigate to the project's root directory and run `yarn` to install dependencies.
 3. You can compile SASS and JavaScript assets with `yarn run dev`.
 4. Yarn can detect changes in these assets and rebuild them automatically. Use `yarn run watch`.
 
-## How to Import Initial data from sources
+## How to import initial data from sources
 
 The initial data for the estrada system  is commited to the repository here https://github.com/catalpainternational/estrada-data-sources
 Clone this repository before performing import. It's README contains information about the source of that data and the processes used to create it
