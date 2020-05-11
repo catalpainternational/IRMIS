@@ -31,7 +31,7 @@
         <div class="d-flex justify-content-between">
             <div>
                 <label>{% trans "Start Date" %}</label>
-                <p>{{ project.start_date }}</p>
+                <p>{{ project.start_date|default_if_none:"" }}</p>
             </div>
             <div>
                 <label>{% trans "Duration (days)" %}</label>

@@ -31,8 +31,8 @@
             <p>{{ tender.code }}</p>
         </div>
         <div>
-            {% if tender.projects.all %}
             <label>{% trans "Associated Projects" %}</label>
+            {% if tender.projects.all %}
             {% for project in tender.projects.all %}
             <div><a href="{% url 'contract-project-detail' project.id %}">{{ project.name }}</a></div>
             {% endfor %}
@@ -46,22 +46,22 @@
         </div>
         <div>
             <label>{% trans "Announcement Date" %}</label>
-            <p>{{ tender.announcement_date }}</p>
+            <p>{{ tender.announcement_date|default_if_none:"" }}</p>
         </div>
     </section>
     <section>
         <h6>{% trans "Bids and Evaluation" %}</h6>
         <div>
             <label>{% trans "Bid Submission Deadline" %}</label>
-            <p>{{ tender.submission_date }}</p>
+            <p>{{ tender.submission_date|default_if_none:"" }}</p>
         </div>
         <div>
             <label>{% trans "Numbering of Companies Tendering" %}</label>
-            <p>{{ tender.tendering_companies }}</p>
+            <p>{{ tender.tendering_companies|default_if_none:"" }}</p>
         </div>
         <div>
             <label>{% trans "Evaluation Date" %}</label>
-            <p>{{ tender.evaluation_date }}</p>
+            <p>{{ tender.evaluation_date|default_if_none:"" }}</p>
         </div>
     </section>
 </div>

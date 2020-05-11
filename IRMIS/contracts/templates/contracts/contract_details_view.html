@@ -38,16 +38,16 @@
         <div>
             <label>{% trans "Associated Tender" %}</label>
             <p><a href="{% url 'contract-tender-detail' contract.tender.code %}">{{ contract.tender }}</a></p>
-            {% if contract.tender.projects.all %}
             <div class="projects-list">
                 <label>{% trans "Projects in the Tender" %}</label>
+                {% if contract.tender.projects.all %}
                 <ul>
                     {% for project in contract.tender.projects.all %}
                     <li><a href="{% url 'contract-project-detail' project.id %}">{{ project.name }}</a></li>
                     {% endfor %}
                 </ul>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
         <div>
             <label>{% trans "Contract Code" %}</label>
@@ -59,11 +59,11 @@
         </div>
         <div>
             <label>{% trans "Contractor" %}</label>
-            <p>{{ contract.contractor }}</p>
+            <p>{{ contract.contractor|default_if_none:"" }}</p>
         </div>
         <div>
             <label>{% trans "Sub-Contractor" %}</label>
-            <p>{{ contract.subcontractor }}</p>
+            <p>{{ contract.subcontractor|default_if_none:"" }}</p>
         </div>
     </section>
     <section>
@@ -87,10 +87,12 @@
     </section>
     <section>
         <h6>{% trans "Contract Value Total" %}</h6>
+        {% if contract.total_budget %}
         <div class="total-budget">
             <p>{% trans "Total Budget" %}</p>
             <h1>$ {{ contract.total_budget }}</h1>
         </div>
+        {% endif %}
         <div>
             <table class="contract-details-table d-block table table-hover w-100">
                 <thead>
@@ -111,7 +113,7 @@
         </div>
         <div>
             <label>{% trans "Defect Liability Period (Days)" %}</label>
-            <p>{{ contract.defect_liability_days }}</p>
+            <p>{{ contract.defect_liability_days|default_if_none:"" }}</p>
         </div>
     </section>
     <section>
@@ -154,10 +156,12 @@
     </section>
     <section>
         <h6>{% trans "Amendments" %}</h6>
+        {% if contract.total_amendments %}
         <div class="total-budget">
             <p>{% trans "Total Budget" %}</p>
             <h1>$ {{ contract.total_amendments }}</h1>
         </div>
+        {% endif %}
         <div>
             <table class="contract-details-table d-block table table-hover w-100">
                 <thead>
@@ -179,11 +183,11 @@
         <div class="d-flex justify-content-between">
             <div>
                 <label>{% trans "Contract Start Date" %}</label>
-                <p>{{ contract.amendment_start_date }}</p>
+                <p>{{ contract.amendment_start_date|default_if_none:"" }}</p>
             </div>
             <div>
                 <label>{% trans "Contract Duration" %}</label>
-                <p>{{ contract.amendment_duration }}</p>
+                <p>{{ contract.amendment_duration|default_if_none:"" }}</p>
             </div>
         </div>
         <div>

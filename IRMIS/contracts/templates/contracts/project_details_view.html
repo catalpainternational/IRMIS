@@ -43,21 +43,21 @@
         </div>
         <div>
             <label>{% trans "Project Code" %}</label>
-            <p>{{ project.code }}</p>
+            <p>{{ project.code|default_if_none:"" }}</p>
         </div>
         <div>
             <label>{% trans "Description" %}</label>
             <p>{{ project.description }}</p>
         </div>
         <div>
-            {% if project.tender %}
             <label>{% trans "Associated Tender" %}</label>
+            {% if project.tender %}
             <div><a href="{% url 'contract-tender-detail' project.tender.code %}">{{ project.tender.code }}</a></div>
             {% endif %}
         </div>
         <div>
-            {% if contracts %}
             <label>{% trans "Associated Contracts" %}</label>
+            {% if contracts %}
             {% for contract in contracts %}
             <div><a href="{% url 'contract-contract-detail' contract.id %}">{{ contract.contract_code }}</a></div>
             {% endfor %}

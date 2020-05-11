@@ -68,14 +68,10 @@
         errorMessage="{ window.gettext('Something went wrong') }" error="{ state.error }">
     </feedback_banner>
 
-    <loading messageHeader="{ window.gettext('Creating Report') }"
-        messageBody="{ window.gettext('We are preparing your report. Please wait!') }"></loading>
-
     <script>
         import { reportAssetsSections, reportContractsSections, assetReports, contractReports } from "../reportTableDefinitions";
 
         import Feedback_Banner from './feedback_banner.riot.html';
-        import Loading from './loading.riot.html';
         import Report_Assets from './report_assets.riot.html';
         import Report_Contracts from './report_contracts.riot.html';
         import Report_Dashboard from './report_dashboard.riot.html';
@@ -92,7 +88,7 @@
                 contractReports: contractReports,
             },
             components: {
-                Feedback_Banner, Loading, Report_Dashboard, Report_Assets, Report_Contracts,
+                Feedback_Banner, Report_Dashboard, Report_Assets, Report_Contracts,
             },
             onBeforeMount(props, state) {
                 state.page = props.page;

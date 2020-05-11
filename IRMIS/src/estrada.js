@@ -35,7 +35,7 @@ import "./assets/models/monkeyPatch";
 export const estradaMap = new Map();
 
 riot.register("loading", Loading);
-riot.mount("loading", { messageHeader: window.gettext("Please wait!"), messageBody: window.gettext("Loading Estrada assets") });
+riot.mount("loading");
 
 window.addEventListener("load", () => {
     // Set up the map and table - but without any data for either

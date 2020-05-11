@@ -130,8 +130,6 @@
                 <small>{ window.gettext("Created by Catalpa International") }</small>
             </footer>
         </div>
-
-        <loading messageHeader="{ window.gettext('Please Wait') }"></loading>
     </div>
 
     <script>
@@ -151,7 +149,6 @@
 
         import Feedback_Banner from './feedback_banner.riot.html';
         import Edit_Stop_Alert from "./edit_stop_alert.riot.html";
-        import Loading from "./loading.riot.html";
 
         // ASSETS EDIT TAGS
         import Edit_Location_Type from "./edit_location_type.riot.html";
@@ -193,7 +190,7 @@
                 stopAlertResult: null,
             },
             components: {
-                Feedback_Banner, Edit_Stop_Alert, Loading,
+                Feedback_Banner, Edit_Stop_Alert,
                 Edit_Location_Type, Edit_Asset_Details, Edit_Pavement,
                 Edit_Environment, Edit_Traffic,
                 Edit_Social_Economic, Edit_Condition, Edit_Maintenance,

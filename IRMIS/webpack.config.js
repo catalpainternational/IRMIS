@@ -96,6 +96,6 @@ module.exports = {
         }
     },
     plugins: [
-        new CleanWebpackPlugin(),
+        new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
     ],
 };
