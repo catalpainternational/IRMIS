@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-28 05:30+0000\n"
+"POT-Creation-Date: 2020-05-12 01:21+0000\n"
 "PO-Revision-Date: 2019-10-09 01:05+0000\n"
 "Last-Translator: b'  <juliana@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1145,6 +1145,9 @@ msgstr ""
 msgid "Could not create a new Asset, because the asset_municipality in the 'special' Asset Id is not valid."
 msgstr ""
 
+msgid "The Asset Code must be unique for this type of asset"
+msgstr ""
+
 msgid "Start Chainage is too large for this road"
 msgstr ""
 
@@ -1462,6 +1465,12 @@ msgstr ""
 msgid "Representative Email"
 msgstr ""
 
+msgid "Associated as a contractor"
+msgstr ""
+
+msgid "Associated as a subcontractor"
+msgstr ""
+
 msgid "Uploaded Documents"
 msgstr ""
 
@@ -1510,6 +1519,11 @@ msgstr "Alterar palavra-passe"
 
 msgid "List of companies"
 msgstr ""
+
+#, fuzzy
+#| msgid "Export all"
+msgid "Export table"
+msgstr "Exportar tudo"
 
 msgid "Edit"
 msgstr ""
@@ -1964,6 +1978,27 @@ msgstr "Nome do início da secção"
 #| msgid "Pavement Class"
 msgid "Asset Details"
 msgstr "Classe de Pavimento"
+
+msgid "Couldn't find the asset you are looking for?"
+msgstr ""
+
+msgid "Add information for the new asset"
+msgstr ""
+
+#, fuzzy
+#| msgid "Link End Chainage (Km)"
+msgid "Chainage Start"
+msgstr "Chainage do final da secção (Km)"
+
+#, fuzzy
+#| msgid "Link End Chainage (Km)"
+msgid "Chainage End"
+msgstr "Chainage do final da secção (Km)"
+
+#, fuzzy
+#| msgid "Create a new password"
+msgid "Associated Contracts"
+msgstr "Alterar palavra-passe"
 
 #, fuzzy
 #| msgid "Funding Source"

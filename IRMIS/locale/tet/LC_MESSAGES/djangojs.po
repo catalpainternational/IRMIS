@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-28 05:30+0000\n"
+"POT-Creation-Date: 2020-05-12 01:21+0000\n"
 "PO-Revision-Date: 2019-10-09 05:39+0000\n"
 "Last-Translator: b'  <januario@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -231,9 +231,6 @@ msgid "Close"
 msgstr "Taka "
 
 msgid "Created by Catalpa International"
-msgstr ""
-
-msgid "Please Wait"
 msgstr ""
 
 msgid "Surface Condition Data (SDI)"
@@ -631,6 +628,9 @@ msgstr "Susesu"
 msgid "Error"
 msgstr "Erru"
 
+msgid "Please wait!"
+msgstr ""
+
 msgid "Previous"
 msgstr ""
 
@@ -704,7 +704,22 @@ msgstr ""
 msgid "Planning Templates"
 msgstr ""
 
+msgid "Democratic Republic of Timor-Leste"
+msgstr ""
+
+msgid "Ministry of Public Works"
+msgstr ""
+
+msgid "Directorate General for Public Works"
+msgstr ""
+
+msgid "National Directorate for Roads, Bridges and Flood Control"
+msgstr ""
+
 msgid "Planning and Budgetting Dashboard"
+msgstr ""
+
+msgid "Print"
 msgstr ""
 
 msgid "5-Year Plan and Budget Summary"
@@ -728,6 +743,9 @@ msgid "Welcome to the planning and budgetting tool"
 msgstr ""
 
 msgid "No plans available yet"
+msgstr ""
+
+msgid "Exported from Estrada on"
 msgstr ""
 
 msgid "Routine Maintenance"
@@ -828,18 +846,6 @@ msgstr ""
 msgid "Municipal"
 msgstr ""
 
-msgid "Democratic Republic of Timor-Leste"
-msgstr ""
-
-msgid "Ministry of Public Works"
-msgstr ""
-
-msgid "Directorate General for Public Works"
-msgstr ""
-
-msgid "National Directorate for Roads, Bridges and Flood Control"
-msgstr ""
-
 msgid "Select report criteria"
 msgstr ""
 
@@ -850,9 +856,6 @@ msgid "Road Asset Management"
 msgstr ""
 
 msgid "Report"
-msgstr ""
-
-msgid "Print"
 msgstr ""
 
 msgid "Road"
@@ -896,9 +899,6 @@ msgstr "Hili Tipu Superfície"
 #| msgid "Condition"
 msgid "Roughness Condition (IRI)"
 msgstr "Kondisaun "
-
-msgid "Exported from Estrada on"
-msgstr ""
 
 msgid "Year"
 msgstr ""
@@ -1013,14 +1013,6 @@ msgstr "Kondisaun "
 msgid "Report successfully created"
 msgstr "Ita bot salva ho susesu "
 
-#, fuzzy
-#| msgid "Condition"
-msgid "Creating Report"
-msgstr "Kondisaun "
-
-msgid "We are preparing your report. Please wait!"
-msgstr ""
-
 msgid "Asset Manager"
 msgstr ""
 
@@ -1068,6 +1060,20 @@ msgstr ""
 msgid "on"
 msgstr ""
 
+msgid "Delete asset from the project"
+msgstr ""
+
+#, fuzzy
+#| msgid "Project"
+msgid "Project Name"
+msgstr "Projeitu "
+
+msgid "Status"
+msgstr ""
+
+msgid "Estimated Budget"
+msgstr ""
+
 msgid "Search by Asset Code, Project Code or Project Name"
 msgstr ""
 
@@ -1079,16 +1085,43 @@ msgstr "Projeitu "
 msgid "Type of work"
 msgstr ""
 
+msgid "Tender Code"
+msgstr ""
+
+msgid "Number of Projects"
+msgstr ""
+
+#, fuzzy
+#| msgid "Project"
+msgid "Project(s) Name"
+msgstr "Projeitu "
+
 msgid "Search by Asset Code or Tender Code"
 msgstr ""
 
 msgid "Tender status"
 msgstr ""
 
+#, fuzzy
+#| msgid "Condition"
+msgid "Contract Code"
+msgstr "Kondisaun "
+
 msgid "Search by Asset Code or Contract Code"
 msgstr ""
 
 msgid "Contract status"
+msgstr ""
+
+#, fuzzy
+#| msgid "Link Name"
+msgid "Name"
+msgstr "Naran Linha"
+
+msgid "Total Contracts"
+msgstr ""
+
+msgid "Active Contracts"
 msgstr ""
 
 msgid "Search by Company Name or Company TIN"
@@ -1205,9 +1238,9 @@ msgid "Code"
 msgstr "Hili Tipu Estrada"
 
 #, fuzzy
-#| msgid "Link Name"
-msgid "Name"
-msgstr "Naran Linha"
+#~| msgid "Condition"
+#~ msgid "Creating Report"
+#~ msgstr "Kondisaun "
 
 #, fuzzy
 #~| msgid "Condition"
