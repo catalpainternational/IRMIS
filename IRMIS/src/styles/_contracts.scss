@@ -1,0 +1,237 @@
+$max-width: 400px;
+
+#contracts-base {
+    padding-right: 7px;
+
+    #contracts {
+        height: calc(100vh - #{$top-menu-height} - 5px);
+        width: calc(100% - #{$side-menu-width});
+        padding-right: 8px;
+        overflow-y: auto;
+
+        & > div {
+            min-height: calc(100% - #{$footer-height});
+        }
+
+        header {
+            border-bottom: 1px solid $light-gray;
+            background-color: $white;
+            padding-right: 60px;
+            align-items: center;
+            padding-left: 20px;
+            height: 70px;
+
+            &.no-back-button {
+                padding-left: 45px;
+            }
+
+            .caret-dark {
+                background-size: 16px 10px;
+                height: 25px;
+                width: 25px;
+            }
+
+            h1 {
+                margin-left: 15px;
+                margin-bottom: 0;
+                margin-top: 5px;
+            }
+        }
+
+        .title-header {
+            border-bottom: 1px solid $light-gray;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        nav {
+            background-color:#f7f7f9;
+            white-space: nowrap;
+            align-items: center;
+            overflow-x: auto;
+            display: flex;
+            height: 55px;
+
+            a {
+                padding-right: 5px;
+                padding-left: 5px;
+            }
+
+            a:first-child {
+                margin-left: 55px;
+            }
+
+            a:not(:first-child) {
+                margin-left: 20px;
+            }
+
+            a:not(:last-child) {
+                margin-right: 20px;
+            }
+
+            a.selected {
+                position: relative;
+
+                &:after {
+                    content: '';
+                    border-radius: 2px;
+                    position: absolute;
+                    background: #03A59A;
+                    height: 4px;
+                    bottom: 0;
+                    top: 33px;
+                    right: 0;
+                    left: 0;
+                }
+            }
+
+            h6 {
+                margin-bottom: 0;
+            }
+        }
+
+        .content {
+            background-color: #FFFFFF;
+            padding: 30px 60px 60px;
+            display: block;
+        }
+
+        section {
+            max-width: $max-width;
+            margin-bottom: 40px;
+
+            &:last-of-type {
+                margin-bottom: 20px;
+            }
+
+            &.no-max-width {
+                max-width: unset;
+            }
+
+            h6 {
+                border-bottom: 1px solid $lighter-gray;
+                padding-bottom: 5px;
+                margin-bottom: 15px;
+            }
+
+            & > div {
+                margin-bottom: 20px;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+            }
+        }
+
+        p.file-name {
+            margin-bottom: 5px;
+        }
+
+        input[type="file"] {
+            color: transparent; // hides selected file name
+            display: block;
+        }
+
+        .print-header, .print-footer {
+            display: none;
+        }
+        
+        .formset {
+            .col:not(:first-of-type) {
+                label, small {
+                    display: none;
+                }
+            }
+
+            .col input[type="checkbox"] {
+                vertical-align: middle;
+                height: 38px;
+            }
+        }
+
+        .new-asset {
+            & > span, & > a {
+                margin-bottom: 10px;
+            }
+
+            #new-asset-fields {
+                display: flex;
+            }
+        }
+    }
+}
+
+.projects-list {
+    margin-left: 20px;
+    margin-top: 10px;
+
+    ul {
+        margin-bottom: 0;
+        padding-left: 0;
+    }
+}
+
+div.total-budget {
+    margin-bottom: 15px;
+
+    p, h1 {
+        margin-bottom: 0;
+    }
+}
+
+div.buttons {
+    margin-top: 10px;
+
+    a {
+        margin-right: 40px;
+    }
+}
+
+form.contract-form > div:not(.dataTables_wrapper) {
+    border-bottom: 1px solid $lighter-gray;
+    padding-bottom: 10px;
+}
+
+div#project-list-table_filter,
+div#tender-list-table_filter,
+div#contract-list-table_filter {
+    top: -169px;
+}
+
+div#company-list-table_filter {
+    top: -75px;
+}
+
+div.dataTables_wrapper div.dataTables_filter {
+    position: absolute;
+    right: 15px;
+
+    label {
+        color: transparent;
+        margin-bottom: 0;
+    }
+
+    input[type="search"] {
+        border: 1px solid $gray;
+        border-radius: 15px;
+        font-size: 14px;
+        height: 30px;
+        width: 400px;
+    }
+}
+
+.contract-filters {
+    border-bottom: 1px solid $light-gray;
+    margin-bottom: 14px;
+    margin-top: 20px;
+
+    select, .select2 {
+        margin-bottom: 10px;
+        margin-right: 10px;
+    }
+
+    select#value_select {
+        height: 31px;
+        width: 225px;
+    }
+}

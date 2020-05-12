@@ -1,0 +1,68 @@
+{% extends "contracts/contracts.html" %}
+{% load i18n %}
+
+{% block contracts_profile %}
+<header class="d-flex justify-content-between">
+    <div class="align-items-center d-flex">
+        <a class="caret-dark left image" href="{% url 'contract-tender-list' %}"></a>
+        <h1>{% trans "Tender" %} — {{ tender.code }}</h1>
+    </div>
+    <button class="btn btn-secondary btn-sm print-profile">{% trans "Print" %}</button>
+</header>
+
+<nav>
+    <a class="selected">
+        <h6>{% trans "Tender Details" %}</h6>
+    </a>
+    <a href="{% url 'contract-tenderdocument-detail' tender.code %}">
+        <h6>{% trans "Documents" %}</h6>
+    </a>
+</nav>
+
+<div class="content">
+    <section>
+        <h6>{% trans "Tender Details" %}</h6>
+        <div>
+            <label>{% trans "Status" %}</label>
+            <p>{{ tender.status }}</p>
+        </div>
+        <div>
+            <label>{% trans "Tender Code" %}</label>
+            <p>{{ tender.code }}</p>
+        </div>
+        <div>
+            <label>{% trans "Associated Projects" %}</label>
+            {% if tender.projects.all %}
+            {% for project in tender.projects.all %}
+            <div><a href="{% url 'contract-project-detail' project.id %}">{{ project.name }}</a></div>
+            {% endfor %}
+            {% endif %}
+        </div>
+        <div>
+            <label>{% trans "Associated Contracts" %}</label>
+            {% for contract in contracts %}
+            <div><a href="{% url 'contract-contract-detail' contract.id %}">{{ contract.contract_code }}</a></div>
+            {% endfor %}
+        </div>
+        <div>
+            <label>{% trans "Announcement Date" %}</label>
+            <p>{{ tender.announcement_date|default_if_none:"" }}</p>
+        </div>
+    </section>
+    <section>
+        <h6>{% trans "Bids and Evaluation" %}</h6>
+        <div>
+            <label>{% trans "Bid Submission Deadline" %}</label>
+            <p>{{ tender.submission_date|default_if_none:"" }}</p>
+        </div>
+        <div>
+            <label>{% trans "Numbering of Companies Tendering" %}</label>
+            <p>{{ tender.tendering_companies|default_if_none:"" }}</p>
+        </div>
+        <div>
+            <label>{% trans "Evaluation Date" %}</label>
+            <p>{{ tender.evaluation_date|default_if_none:"" }}</p>
+        </div>
+    </section>
+</div>
+{% endblock %}

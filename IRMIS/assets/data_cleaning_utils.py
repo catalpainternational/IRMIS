@@ -1,6 +1,7 @@
 from django.db import IntegrityError
 from django.db.models import CharField, F, Min, Value
 from django.db.models.functions import Concat
+from django.forms.models import model_to_dict
 from django.utils.timezone import make_aware
 
 import datetime
@@ -9,7 +10,7 @@ import reversion
 
 from reversion.models import Version
 
-from assets.models import Bridge, Culvert, Road, RoadFeatureAttributes, Survey
+from assets.models import Bridge, Culvert, Drift, Road, RoadFeatureAttributes, Survey
 
 
 ## General purpose data cleansing functions
@@ -43,6 +44,24 @@ def ignore_exception(exception=Exception, default_val=None):
 @ignore_exception(ValueError, 0)
 def int_try_parse(value):
     return int(value)
+
+
+def get_first_road_link_for_chainage(rc, chainage):
+    """ for a given road code and chainage this returns the first matching relevant road link
+
+    This assumes that all the supplied road links are for the same road code,
+    and that they are in the correct order """
+    roads = get_roads_by_road_code(rc)
+
+    road_link = next(
+        (
+            r
+            for r in roads
+            if r.geom_start_chainage <= chainage and r.geom_end_chainage > chainage
+        ),
+        None,
+    )
+    return road_link
 
 
 ## Road related data cleansing functions
@@ -110,6 +129,40 @@ def get_attributes_by_road_ids(road_ids):
     return RoadFeatureAttributes.objects.filter(road_id__in=road_ids)
 
 
+def clean_link_codes():
+    # all link_codes that are empty strings - reset to None
+    # all single road_code roads with an empty link_code, copy the road_code to the link_code
+    bad_link_roads = Road.objects.filter(link_code__exact="")
+    for bad_link_road in bad_link_roads:
+        with reversion.create_revision():
+            bad_link_road.link_code = None
+            bad_link_road.save()
+            reversion.set_comment(
+                "Road Link Code was an empty string, reset it to None"
+            )
+
+    road_codes = [
+        rc["road_code"]
+        for rc in Road.objects.distinct("road_code")
+        .filter(link_code__isnull=True)
+        .exclude(road_code="Unknown")
+        .values("road_code")
+    ]
+
+    for rc in road_codes:
+        null_link_roads = get_roads_by_road_code(rc)
+        if len(null_link_roads) == 1:
+            for null_link_road in null_link_roads:
+                # the link_code should be null, this is just me being paranoid
+                if null_link_road.link_code == None:
+                    with reversion.create_revision():
+                        null_link_road.link_code = null_link_road.road_code
+                        null_link_road.save()
+                        reversion.set_comment(
+                            "Road Link Code was None, reset it to match the Road Code"
+                        )
+
+
 def update_road_geometry_data(
     road, link_start, link_end, link_length, reset_geom=False
 ):
@@ -173,6 +226,10 @@ def assess_road_geometries(roads, reset_geom):
                 break
 
     for road in roads:
+        # Can't do anything more with this set of roads if there's no geometry
+        if road.geom == None:
+            break
+
         # Note that the 'link_' values from Road are considered highly unreliable
         if reset_geom:
             # Force the chainage to be recalculated
@@ -239,35 +296,43 @@ def refresh_roads():
 ## Structure related data cleansing functions
 #############################################
 def get_current_structure_codes():
-    return [
-        bc["structure_code"]
-        for bc in Bridge.objects.distinct("structure_code")
-        .exclude(structure_code="Unknown")
-        .values("structure_code")
-    ] + [
-        cc["structure_code"]
-        for cc in Culvert.objects.distinct("structure_code")
-        .exclude(structure_code="Unknown")
-        .values("structure_code")
-    ]
+    return (
+        [
+            bc["structure_code"]
+            for bc in Bridge.objects.distinct("structure_code")
+            .exclude(structure_code="Unknown")
+            .values("structure_code")
+        ]
+        + [
+            cc["structure_code"]
+            for cc in Culvert.objects.distinct("structure_code")
+            .exclude(structure_code="Unknown")
+            .values("structure_code")
+        ]
+        + [
+            dc["structure_code"]
+            for dc in Drift.objects.distinct("structure_code")
+            .exclude(structure_code="Unknown")
+            .values("structure_code")
+        ]
+    )
 
 
 def get_structure_by_structure_code(sc):
-    """ pull a bridge or culvert for a given structure code """
+    """ pull a bridge, culvert, or drift for a given structure code """
 
     hasBridge = Bridge.objects.filter(structure_code=sc).exists()
+    hasCulvert = Culvert.objects.filter(structure_code=sc).exists()
+    hasDrift = Drift.objects.filter(structure_code=sc).exists()
 
-    structure_object = (
-        Bridge.objects.get(structure_code=sc)
-        if hasBridge
-        else Culvert.objects.get(structure_code=sc)
-    )
+    if hasBridge:
+        return Bridge.objects.get(structure_code=sc), "BRDG"
+    elif hasCulvert:
+        return Culvert.objects.get(structure_code=sc), "CULV"
+    elif hasDrift:
+        return Drift.objects.get(structure_code=sc), "DRFT"
 
-    structure = structure_object.__dict__
-
-    structure["prefix"] = "BRDG" if hasBridge else "CULV"
-
-    return structure
+    return None, None
 
 
 ## Survey related data cleansing functions
@@ -366,6 +431,7 @@ STRUCTURE_SURVEY_VALUE_MAPPINGS = [
     ("length", "length", str_transform),
     ("width", "width", str_transform),
     ("height", "height", str_transform),  # Culvert only
+    ("thickness", "thickness", str_transform),  # Drift only
     ("material", "material", code_value_transform),
     ("structure_type", "structure_type", code_value_transform),
     ("protection_upstream", "protection_upstream", code_value_transform),
@@ -381,6 +447,10 @@ ROAD_SURVEY_VALUE_MAPPINGS = [
     ("total_width", "total_width", str_transform),
     ("number_lanes", "number_lanes", str_transform),
     ("rainfall", "rainfall", str_transform),
+    ("population", "population", str_transform),
+    ("construction_year", "construction_year", str_transform),
+    # `core` is a `nullable boolean` - handled as an Int, and here stored as a string
+    ("core", "core", str_transform),
     # These are actually FK Ids
     ("municipality", "administrative_area", str_transform),
     ("asset_condition", "asset_condition", str_transform),
@@ -397,7 +467,6 @@ ROAD_SURVEY_VALUE_MAPPINGS = [
     ("served_economic_areas", "served_economic_areas", codes_values_transform),
     ("served_connection_types", "served_connection_types", codes_values_transform),
 ]
-
 
 TRAFFIC_CSV_VALUE_MAPPINGS = [
     ("forecastYear", 4, int_transform),
@@ -454,7 +523,9 @@ def delete_redundant_surveys():
         "user",
     ).annotate(minid=Min("id"))
     surveys_to_keep = [s["minid"] for s in surveys]
-    Survey.objects.exclude(id__in=surveys_to_keep).delete()
+    Survey.objects.exclude(id__in=surveys_to_keep).exclude(
+        values__has_key="roughness"
+    ).delete()
     # delete revisions associated with the deleted surveys
     Version.objects.get_deleted(Survey).delete()
 
@@ -463,14 +534,16 @@ def delete_programmatic_surveys_for_road_by_road_code(rc):
     """ deletes programmatic surveys generated from road link records for a given road code """
     Survey.objects.filter(source="programmatic", asset_code=rc).exclude(
         values__has_key="trafficType"
-    ).delete()
+    ).exclude(values__has_key="roughness").delete()
     # delete revisions associated with the now deleted "programmatic" surveys
     Version.objects.get_deleted(Survey).delete()
 
 
 def delete_programmatic_surveys_for_structure_by_structure_code(sc):
     """ deletes programmatic surveys generated from structure records for a given structure code """
-    Survey.objects.filter(source="programmatic", asset_code=sc).delete()
+    Survey.objects.filter(source="programmatic", asset_code=sc).exclude(
+        values__has_key="roughness"
+    ).delete()
     # delete revisions associated with the now deleted "programmatic" surveys
     Version.objects.get_deleted(Survey).delete()
 
@@ -517,8 +590,21 @@ def create_programmatic_survey(management_command, data, mappings, audit_source_
         }
 
         create_programmatic_survey_values(
-            survey_data["values"], data["values"], mappings
+            survey_data["values"], data["source_values"], mappings
         )
+        # For everything except original import of traffic surveys, do this...
+        if not (
+            isinstance(data["values"], list) and isinstance(data["source_values"], list)
+        ):
+            # Get any values that are present in the survey only, that do not have a field in the original asset
+            survey_only_keys = set(data["values"]) - set(
+                model_to_dict(data["source_values"])
+            )
+            survey_values = {k: data["values"][k] for k in survey_only_keys}
+            if len(survey_values) > 0:
+                create_programmatic_survey_values(
+                    survey_data["values"], survey_values, mappings
+                )
 
         # check that values is not empty before saving survey
         if len(survey_data["values"].keys()) > 0:
@@ -554,7 +640,7 @@ def get_first_available_numeric_value(feature, field_names):
 
 def create_programmatic_surveys_for_roads(management_command, roads, attributes):
     """ creates programmatic surveys from data sourced from the shapefiles
-    
+
     returns a count of the total number of surveys that were created """
     created = 0  # counter for surveys created for the supplied roads
 
@@ -565,7 +651,8 @@ def create_programmatic_surveys_for_roads(management_command, roads, attributes)
             "asset_code": road.road_code,
             "chainage_start": road.geom_start_chainage,
             "chainage_end": road.geom_end_chainage,
-            "values": road,
+            "source_values": road,
+            "values": model_to_dict(road),
         }
 
         # For each road get all of the numeric attributes that were imported with it
@@ -582,7 +669,18 @@ def create_programmatic_surveys_for_roads(management_command, roads, attributes)
                         road_attributes.attributes, source_attributes
                     )
                     if survey_value:
-                        survey_data["values"].__dict__[survey_attribute] = survey_value
+                        if hasattr(survey_data["source_values"], survey_attribute):
+                            setattr(
+                                survey_data["source_values"],
+                                survey_attribute,
+                                survey_value,
+                            )
+                        else:
+                            # For values in the survey only, but not in the original object
+                            # such as `total_width`
+                            # Note that ultimately all values should be coming this way
+                            # and we remove all of the asset attributes that really belong in surveys
+                            survey_data["values"][survey_attribute] = survey_value
 
         created += create_programmatic_survey(
             management_command, survey_data, ROAD_SURVEY_VALUE_MAPPINGS, "Road Link"
@@ -591,20 +689,24 @@ def create_programmatic_surveys_for_roads(management_command, roads, attributes)
     return created
 
 
-def create_programmatic_surveys_for_structure(management_command, structure):
+def create_programmatic_surveys_for_structure(management_command, structure, prefix):
     """ creates programmatic surveys for a structure and
     returns a count of the total number of surveys that were created """
     created = 0  # counter for surveys created for the supplied structure
 
-    # There's only going to be one structure supplied, either a Bridge or Culvert
+    # There's only going to be one structure supplied, either a Bridge, Culvert, or Drift
     # however we're still following the same pattern as applied to Roads
 
+    if prefix == None:
+        return created
+
     survey_data = {
-        "asset_id": "%s-%s" % (structure["prefix"], structure["id"]),
-        "asset_code": structure["structure_code"],
-        "road_id": structure["road_id"] if "road_id" in structure else None,
-        "road_code": structure["road_code"] if "road_code" in structure else None,
-        "values": structure,
+        "asset_id": "%s-%s" % (prefix, structure.pk),
+        "asset_code": structure.structure_code,
+        "road_id": getattr(structure, "road_id", None),
+        "road_code": getattr(structure, "road_code", None),
+        "source_values": structure,
+        "values": model_to_dict(structure),
     }
 
     created += create_programmatic_survey(
@@ -624,6 +726,7 @@ def create_programmatic_survey_for_traffic_csv(management_command, data, roads):
     if len(roads) == 0:
         survey_data = {
             "asset_code": data[0],
+            "source_values": data,
             "values": data,
             "date_surveyed": make_aware(datetime.datetime(int(data[3]), 1, 1)),
         }
@@ -635,6 +738,7 @@ def create_programmatic_survey_for_traffic_csv(management_command, data, roads):
                 "asset_code": road.road_code,
                 "chainage_start": road.geom_start_chainage,
                 "chainage_end": road.geom_end_chainage,
+                "source_values": data,
                 "values": data,
                 "date_surveyed": make_aware(datetime.datetime(int(data[3]), 1, 1)),
             }
@@ -659,29 +763,44 @@ def update_non_programmatic_surveys_by_road_code(
     This assumes that all the supplied road links are for the same road code,
     and that they are in the correct order
 
+    It will fix the start and end chainages for user entered traffic surveys
+
     It will 'split' user entered surveys if they span more than one road link,
     creating new user surveys
 
     returns the number of surveys updated(includes those created) """
     roads = get_roads_by_road_code(rc)
 
-    road_survey = next(
-        (
-            r
-            for r in roads
-            if r.geom_start_chainage <= survey.chainage_start
-            and r.geom_end_chainage > survey.chainage_start
-        ),
-        None,
-    )
+    road_survey = get_first_road_link_for_chainage(rc, survey.chainage_start)
     if not road_survey:
-        management_command.stderr.write(
-            management_command.style.ERROR(
-                "Error: User entered survey Id:%s for road '%s' has problems"
-                % (survey.id, rc)
+        if management_command:
+            management_command.stderr.write(
+                management_command.style.ERROR(
+                    "Error: User entered survey Id:%s for road '%s' is outside the road's chainage"
+                    % (survey.id, rc)
+                )
             )
-        )
         return updated
+
+    # Test if this survey is for traffic, and needs its chainages corrected
+    if survey.values.get("trafficType", "") != "" and (
+        survey.chainage_start != road_survey.geom_start_chainage
+        or survey.chainage_end != road_survey.geom_end_chainage
+    ):
+        if management_command:
+            management_command.stdout.write(
+                management_command.style.NOTICE(
+                    "User entered traffic survey Id:%s for road '%s' - corrected chainages"
+                    % (survey.id, rc)
+                )
+            )
+        reversion_comment = "Survey chainages updated programmatically"
+        with reversion.create_revision():
+            survey.chainage_start = road_survey.geom_start_chainage
+            survey.chainage_end = road_survey.geom_end_chainage
+            survey.save()
+            reversion.set_comment(reversion_comment)
+        return updated + 1
 
     # Test if this survey exists wholly within the road link
     if survey.chainage_end <= road_survey.geom_end_chainage:
@@ -700,12 +819,15 @@ def update_non_programmatic_surveys_by_road_code(
 
     # This survey spans more than one road link
     # So 'split' it and create a new survey for the rest
-    management_command.stderr.write(
-        management_command.style.NOTICE(
-            "User entered survey Id:%s spans multiple road links for road '%s'"
-            % (survey.id, rc)
-        )
+    splitSurveyComment = (
+        "User entered survey Id:%s spans multiple road links for road '%s'"
+        % (survey.id, rc)
     )
+    if management_command:
+        management_command.stderr.write(
+            management_command.style.NOTICE(splitSurveyComment)
+        )
+
     prev_chainage_end = survey.chainage_end
     with reversion.create_revision():
         survey.asset_id = "ROAD-%s" % road_survey.id
@@ -772,18 +894,22 @@ def refresh_surveys_by_structure_code(management_command, sc):
     # Recreate all of the programmatic surveys
     delete_programmatic_surveys_for_structure_by_structure_code(sc)
     # management_command.stdout.write(management_command.style.MIGRATE_HEADING("  deleted programmatic surveys for '%s'" % sc))
-    structure = get_structure_by_structure_code(sc)
+    structure, prefix = get_structure_by_structure_code(sc)
     # management_command.stdout.write(management_command.style.MIGRATE_HEADING("  got structure for '%s'" % sc))
-    created += create_programmatic_surveys_for_structure(management_command, structure)
+    created += create_programmatic_surveys_for_structure(
+        management_command, structure, prefix
+    )
     # management_command.stdout.write(management_command.style.MIGRATE_HEADING("  created programmatic surveys for '%s'" % sc))
 
     # Refresh all of the non-programmatic surveys
     surveys = get_non_programmatic_surveys_by_structure_code(sc)
     if len(surveys) > 0:
         for survey in surveys:
-            updated += update_non_programmatic_surveys_by_structure_code(
-                management_command, survey, sc
-            )
+            # We have no update routine for non-programmatic surveys for structures - yet
+            # updated += update_non_programmatic_surveys_by_structure_code(
+            #     management_command, survey, sc
+            # )
+            pass
         # management_command.stdout.write(management_command.style.MIGRATE_HEADING("  refreshed %s user entered surveys" % len(surveys)))
 
     return created, updated

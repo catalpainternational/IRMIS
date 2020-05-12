@@ -252,14 +252,20 @@ def test_survey_create(client, django_user_model):
     client.force_login(user)
     # create a road
     road_code = "A01"
-    road = Road.objects.create(**{"road_code": road_code})
+    road = Road.objects.create(
+        **{
+            "road_code": road_code,
+            "geom_start_chainage": 1234,
+            "geom_end_chainage": 7890,
+        }
+    )
     # build protobuf to send new survey
     pb = survey_pb2.Survey()
     pb.user = user.pk
     pb.asset_id = "ROAD-%s" % road.id
     pb.asset_code = road_code
-    pb.chainage_start = 6000.0
-    pb.chainage_end = 7000.0
+    pb.chainage_start = 6000
+    pb.chainage_end = 7000
     pb.values = json.dumps({"traffic_level": "None", "asset_condition": "2"})
     ts = Timestamp()
     ts.FromDatetime(timezone.now())
@@ -283,7 +289,13 @@ def test_survey_edit_update(client, django_user_model):
     client.force_login(user)
     # create a road
     road_code = "A01"
-    road = Road.objects.create(**{"road_code": road_code})
+    road = Road.objects.create(
+        **{
+            "road_code": road_code,
+            "geom_start_chainage": 1234,
+            "geom_end_chainage": 7890,
+        }
+    )
     # create a survey
     with reversion.create_revision():
         survey = Survey.objects.create(
@@ -291,8 +303,8 @@ def test_survey_edit_update(client, django_user_model):
                 "asset_id": "ROAD-%s" % road.id,
                 "asset_code": road_code,
                 "user": user,
-                "chainage_start": 600.0,
-                "chainage_end": 700.25,
+                "chainage_start": 600,
+                "chainage_end": 700,
                 "date_surveyed": timezone.now(),
                 "values": {"asset_condition": "2", "traffic_level": "L"},
             }
@@ -301,7 +313,7 @@ def test_survey_edit_update(client, django_user_model):
         reversion.set_user(user)
     # build protobuf to send with road modifications
     pb = Survey.objects.filter(id=survey.id).to_protobuf().surveys[0]
-    pb.chainage_start = 500.0
+    pb.chainage_start = 500
     # hit the survey api
     url = reverse("survey_update")
     response = client.put(
@@ -364,7 +376,13 @@ def test_survey_delete(client, django_user_model):
     client.force_login(user)
     # create a road
     road_code = "A01"
-    road = Road.objects.create(**{"road_code": road_code})
+    road = Road.objects.create(
+        **{
+            "road_code": road_code,
+            "geom_start_chainage": 1234,
+            "geom_end_chainage": 7890,
+        }
+    )
     # create a survey
     with reversion.create_revision():
         survey = Survey.objects.create(
@@ -372,8 +390,8 @@ def test_survey_delete(client, django_user_model):
                 "asset_id": "ROAD-%s" % road.id,
                 "asset_code": road_code,
                 "user": user,
-                "chainage_start": 600.0,
-                "chainage_end": 700.25,
+                "chainage_start": 600,
+                "chainage_end": 700,
                 "date_surveyed": timezone.now(),
                 "values": {"asset_condition": "2", "traffic_level": "L"},
             }

@@ -1,0 +1,468 @@
+<report_assets>
+    <div class="print-header">
+        <div class="align-items-center d-flex">
+            <span class="image rdtl"></span>
+            <div class="d-flex flex-column">
+                <span>{ window.gettext("Democratic Republic of Timor-Leste") }</span>
+                <span>{ window.gettext("Ministry of Public Works") }</span>
+                <span>{ window.gettext("Directorate General for Public Works") }</span>
+                <span>{ window.gettext("National Directorate for Roads, Bridges and Flood Control") }</span>
+                <small>Avenida da Restauração, Rai Kotu, Díli, Timor-Leste, Telf. +670 3311408</small>
+            </div>
+        </div>
+    </div>
+
+    <header>
+        <a class="caret-dark left image" onclick="{ backToReports }"></a>
+        <h1>{ reportContractsContent().title }</h1>
+    </header>
+
+    <div class="content-wrapper">
+        <div class="report-criteria">
+            <p class="report-description">{ reportContractsContent().description }.</p>
+            <h6 if="{ props.id == 4 || props.id == 5 }">{ window.gettext("Select report criteria") }</h6>
+            <div class="d-flex justify-content-between">
+                <div class="d-flex flex-wrap">
+                    <div if="{ reportContractsContent().visibleFilters.assetClass }" class="options">
+                        <select id="asset_class_select2" multiple="true">
+                            <option each="{ asset_class in window.asset_schema.asset_class.options }" value="{ asset_class[0] }">
+                                { asset_class[1] }
+                            </option>
+                        </select>
+                    </div>
+                    <div if="{ reportContractsContent().visibleFilters.typeOfWork }" class="options">
+                        <select id="type_of_work_select2" multiple="true">
+                            <option each="{ type_of_work in window.contract_schema.type_of_work.options }" value="{ type_of_work.id }">
+                                { type_of_work.name }
+                            </option>
+                        </select>
+                    </div>
+                    <div if="{ reportContractsContent().visibleFilters.program }" class="options">
+                        <select id="program_select2" multiple="true">
+                            <option each="{ program in window.contract_schema.program.options }" value="{ program.id }">
+                                { program.name }
+                            </option>
+                        </select>
+                    </div>
+                    <div if="{ reportContractsContent().visibleFilters.fundingSource }" class="options">
+                        <select id="funding_source_select2" multiple="true">
+                            <option each="{ funding_source in window.contract_schema.funding_source.options }" value="{ funding_source.id }">
+                                { funding_source.name }
+                            </option>
+                        </select>
+                    </div>
+                    <div if="{ reportContractsContent().visibleFilters.donor }" class="options">
+                        <select id="donor_select2" multiple="true">
+                            <option each="{ donor in window.contract_schema.donor.options }" value="{ donor.id }">
+                                { donor.name }
+                            </option>
+                        </select>
+                    </div>
+                    <div if="{ reportContractsContent().visibleFilters.contractCode }" class="options">
+                        <select id="contract_code_select2" multiple="true">
+                            <option each="{ contract in window.contract_schema.contract_code.options }" value="{ contract.contract_code }">
+                                { contract.contract_code }
+                            </option>
+                        </select>
+                    </div>
+                    <div if="{ reportContractsContent().visibleFilters.year }" class="options">
+                        <select id="year_select2" class="{ state.reportYear ? '' : 'inactive' } form-control form-control-sm">
+                            <option value="year">{ window.gettext('Year') }</option>
+                            <option each="{ year in yearValues }" value="{ year.id }">
+                                { year.name }
+                            </option>
+                        </select>
+                    </div>
+                    <div if="{ reportContractsContent().visibleFilters.quarter }" class="options">
+                        <select id="quarter_select2" class="{ state.reportQuarter ? '' : 'inactive' } form-control form-control-sm"
+                            disabled="{ state.filters.month_select2 || state.filters.month_select2 != '' }"
+                            onchange="{updateFilters}">
+                            <option value="">{ window.gettext('Quarter') }</option>
+                            <option each="{ quarter in quarterValues }" value="{ quarter.id }">
+                                { quarter.name }
+                            </option>
+                        </select>
+                    </div>
+                    <div if="{ reportContractsContent().visibleFilters.month }" class="options">
+                        <select id="month_select2" class="{ state.reportMonth ? '' : 'inactive' } form-control form-control-sm"
+                            disabled="{ state.filters.quarter_select2 || state.filters.quarter_select2 != '' }"
+                            onchange="{updateFilters}">
+                            <option value="">{ window.gettext('Month') }</option>
+                            <option each="{ month in monthValues }" value="{ month.id }">
+                                { month.name }
+                            </option>
+                        </select>
+                    </div>
+                    <input if="{ reportContractsContent().visibleFilters.fromDate }"
+                        id="date_start_select2"
+                        class="{ state.reportFromDate ? '' : 'inactive' } form-control form-control-sm" type="date"
+                        oninput="{ selectFromDate }" value="{ state.reportFromDate }" max="{ state.max_date }" placeholder="Select From Date">
+                    <input if="{ reportContractsContent().visibleFilters.toDate }"
+                        id="date_end_select2"
+                        class="{ state.reportToDate ? '' : 'inactive' } form-control form-control-sm" type="date"
+                        oninput="{ selectToDate }" value="{ state.reportToDate }" max="{ state.max_date }" placeholder="Select To Date">
+                </div>
+                <div>
+                    <button type="button" class="btn btn-primary" onclick="{ createReport }" data-id="{ props.id }">
+                        { window.gettext("Create Report") }
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div hidden="{ state.noReport || state.noReportData }" class="report-content">
+            <div class="align-items-center d-flex justify-content-between">
+                <h1 class="print-title">{ reportContractsContent().title }</h1>
+                <h6>{ reportContractsContent().title } { window.gettext("Report") }</h6>
+                <button class="btn btn-secondary btn-sm" onclick="{ () => window.print() }">
+                    { window.gettext("Print") }
+                </button>
+            </div>
+
+            <span class="report-date" if="{ state.reportData.dateCreated }">
+                { window.gettext("Created on") } { state.reportData.dateCreated }
+            </span>
+
+            <div class="filters-applied" hidden="{ !hasFilters() || !state.reportData.formattedFilters || !state.reportData.formattedFilters.length }">
+                <p>{ window.gettext("Filters applied") }</p>
+                <div class="d-flex">
+                    <div class="d-flex flex-column filter" each="{ filter in state.reportData.formattedFilters }">
+                        <span>{filter.title}: </span>
+                        <span>{filter.values.join(", ")}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div if="{ state.reportData.total && hasTotal() }" class="d-flex flex-column total">
+                <p>{ window.gettext("Total") }</p>
+                <h1>{ state.reportData.total }</h1>
+            </div>
+
+            <data_table hidden="{ !state.reportData.program || !hasDataTable(reportContractsTableIds.program) }"
+                table_id="{ reportContractsTableIds.program }" title="{ window.gettext('Summary financial and physical progress of projects and contracts') }" columns="{ columns.program() }"
+                columnSortOrder="{ [[0, 'asc']] }" paging="false" canexport>
+            </data_table>
+            <data_table hidden="{ !state.reportData.contractCode || !hasDataTable(reportContractsTableIds.contractCode) }"
+                table_id="{ reportContractsTableIds.contractCode }" title="{ window.gettext('Contracts detailed financial and physical progress') }" columns="{ columns.contractCode() }"
+                columnSortOrder="{ [[0, 'asc']] }" paging="false" canexport>
+            </data_table>
+            <data_table hidden="{ !state.reportData.assetClassTypeOfWork || !hasDataTable(reportContractsTableIds.assetClassTypeOfWork) }"
+                table_id="{ reportContractsTableIds.assetClassTypeOfWork }" title="{ window.gettext('By asset class and type of work') }" columns="{ columns.assetClassTypeOfWork() }"
+                columnSortOrder="{ [[0, 'asc']] }" paging="false" canexport>
+            </data_table>
+            <data_table hidden="{ !state.reportData.typeOfWorkYear || !hasDataTable(reportContractsTableIds.typeOfWorkYear) }"
+                table_id="{ reportContractsTableIds.typeOfWorkYear }" title="{ window.gettext('By type of work and year') }" columns="{ columns.typeOfWorkYear() }"
+                columnSortOrder="{ [[0, 'asc']] }" paging="false" canexport>
+            </data_table>
+            <data_table hidden="{ !state.reportData.assetClassYear || !hasDataTable(reportContractsTableIds.assetClassYear) }"
+                table_id="{ reportContractsTableIds.assetClassYear }" title="{ window.gettext('By asset class and year') }" columns="{ columns.assetClassYear() }"
+                columnSortOrder="{ [[0, 'asc']] }" paging="false" canexport>
+            </data_table>
+            <data_table hidden="{ !state.reportData.numberEmployees || !hasDataTable(reportContractsTableIds.numberEmployees) }"
+                table_id="{ reportContractsTableIds.numberEmployees }" title="{ window.gettext('Number of employees') }" columns="{ columns.numberEmployees() }"
+                columnSortOrder="{ [[0, 'asc']] }" paging="false" canexport>
+            </data_table>
+            <data_table hidden="{ !state.reportData.wages || !hasDataTable(reportContractsTableIds.wages) }"
+                table_id="{ reportContractsTableIds.wages }" title="{ window.gettext('Wages') }" columns="{ columns.wages() }"
+                columnSortOrder="{ [[0, 'asc']] }" paging="false" canexport>
+            </data_table>
+            <data_table hidden="{ !state.reportData.workedDays || !hasDataTable(reportContractsTableIds.workedDays) }"
+                table_id="{ reportContractsTableIds.workedDays }" title="{ window.gettext('Worker-days') }" columns="{ columns.workedDays() }"
+                columnSortOrder="{ [[0, 'asc']] }" paging="false" canexport>
+            </data_table>
+        </div>
+
+        <div if="{ state.noReport }" class="align-items-center d-flex flex-column justify-content-center no-data-wrapper">
+            <span class="no-data image"></span>
+            <h6 class="text-center">{ reportContractsContent().noReportTitle }</h6>
+            <p class="text-center">{ reportContractsContent().noReportDescription }</p>
+        </div>
+
+        <div if="{ state.noReportData }" class="align-items-center d-flex flex-column justify-content-center no-data-wrapper">
+            <span class="no-data image"></span>
+            <h6 class="text-center">{ reportContractsContent().noReportData }</h6>
+        </div>
+    </div>
+
+    <div class="print-footer">
+        <div class="d-flex align-items-center justify-content-between">
+            <span class="app-logo image"></span>
+            <p if="{ state.reportData.dateCreated }">{ window.gettext("Exported from Estrada on") } { state.reportData.dateCreated }</p>
+        </div>
+    </div>
+
+    <script>
+        import "select2/dist/js/select2.full.min.js";
+        import $ from "jquery";
+        import {getContractReport} from "../reportManager";
+        import { maxDate, currentDate, currentDateTime } from "../assets/reportUtilities";
+        import {copyData} from "../assets/utilities";
+        import {
+            ADMINISTRATIVE_AREA_CHOICES, // municipality
+            ASSET_CLASS_CHOICES, // asset_class - previously road_class / road_type, structure_class
+            ASSET_CONDITION_CHOICES, // asset_condition - previously surface_condition, structure_condition
+            ASSET_TYPE_CHOICES, // asset_type
+            SURFACE_TYPE_CHOICES, // surface_type
+        } from "../assets/models/choices";
+        import {
+            allContractReportElements,
+            reportContractsTableIds,
+            reportContractsTitleColumnMapping,
+            reportContractsTableColumns,
+            reportContractsColumnSets,
+            reportContractsContent
+        } from "../reportTableDefinitions";
+
+        function setColumnsTitles(tableName) {
+            if (reportContractsTitleColumnMapping[tableName]) {
+                const titleColumn = JSON.parse(JSON.stringify(reportContractsTableColumns.title))
+                titleColumn.title = reportContractsTitleColumnMapping[tableName];
+                reportContractsColumnSets[tableName][0] = titleColumn;
+            }
+
+            return reportContractsColumnSets[tableName];
+        };
+
+        function getPastTenYears() {
+            let currentYear = new Date().getFullYear();
+            let pastTenYears = [];
+            for (var year=currentYear; year>=currentYear-10; year--) {
+                pastTenYears.push({ id: year, name: year });
+            }
+
+            return pastTenYears;
+        };
+
+        export default {
+            state: {
+                filterDefinitions: [
+                    { selectId: "asset_class_select2", placeHolder: window.gettext("Asset class"), dataIn: "reportAssetClass" },
+                    { selectId: "type_of_work_select2", placeHolder: window.gettext("Type of Work"), dataIn: "reportTypeOfWork" },
+                    { selectId: "program_select2", placeHolder: window.gettext("Program"), dataIn: "reportProgram" },
+                    { selectId: "funding_source_select2", placeHolder: window.gettext("Funding Source"), dataIn: "reportFundingSource" },
+                    { selectId: "donor_select2", placeHolder: window.gettext("Donor"), dataIn: "reportDonor" },
+                    { selectId: "contract_code_select2", placeHolder: "Contract code", dataIn: "reportContractCode", isSingle: true },
+                ],
+                reportAssetClass: [],
+                reportTypeOfWork: [],
+                reportProgram: [],
+                reportFundingSource: [],
+                reportDonor: [],
+                reportContractCode: null,
+                reportYear: null,
+                reportQuarter: null,
+                reportMonth: null,
+                reportFromDate: null,
+                reportToDate: null,
+                reportData: {},
+                noReport: true,
+                noReportData: false,
+                filters: {
+                    month_select2: '',
+                    quarter_select2: '',
+                },
+            },
+            yearValues: getPastTenYears(),
+            quarterValues: [
+                { id: 1, name: "Q1" },
+                { id: 2, name: "Q2" },
+                { id: 3, name: "Q3" },
+                { id: 4, name: "Q4" },
+            ],
+            monthValues: [
+                { id: 1, name: window.gettext("January") },
+                { id: 2, name: window.gettext("February") },
+                { id: 3, name: window.gettext("March") },
+                { id: 4, name: window.gettext("April") },
+                { id: 5, name: window.gettext("May") },
+                { id: 6, name: window.gettext("June") },
+                { id: 7, name: window.gettext("July") },
+                { id: 8, name: window.gettext("August") },
+                { id: 9, name: window.gettext("September") },
+                { id: 10, name: window.gettext("October") },
+                { id: 11, name: window.gettext("November") },
+                { id: 12, name: window.gettext("December") },
+            ],
+            reportContractsTableIds: reportContractsTableIds,
+            columns: {
+                program: () => setColumnsTitles("program"),
+                contractCode: () => setColumnsTitles("contractCode"),
+                assetClassTypeOfWork: () => setColumnsTitles("assetClassTypeOfWork"),
+                typeOfWorkYear: () => setColumnsTitles("typeOfWorkYear"),
+                assetClassYear: () => setColumnsTitles("assetClassYear"),
+                numberEmployees: () => setColumnsTitles("numberEmployees"),
+                wages: () => setColumnsTitles("wages"),
+                workedDays: () => setColumnsTitles("workedDays"),
+            },
+            onBeforeMount(props, state) {
+                state.reportFromDate = currentDate();
+                state.reportToDate = currentDate();
+                state.max_date = maxDate();
+            },
+            onMounted(props, state) {
+                state.filterDefinitions.forEach((filterDefinition) => {
+                    if (filterDefinition.isSingle) {
+                        this.prepareSelects(filterDefinition, this.toggleSingleSelect2);
+                    } else {
+                        this.prepareSelects(filterDefinition, this.toggleMultipleSelect2);
+                    }
+                });
+            },
+            reportElements() {
+                return this.reportContractsContent().reportElements || allContractReportElements;
+            },
+            hasTotal() {
+                return this.reportElements().total;
+            },
+            hasFilters() {
+                return this.reportElements().filters;
+            },
+            hasDataTable(dataTableId) {
+                return (this.reportElements().dataTables || []).indexOf(dataTableId) > -1;
+            },
+            prepareSelects(filterDefinition, toggleSelect2) {
+                const selectOptions = {
+                    width: "225px",
+                    containerCssClass: "report-criteria-select2",
+                    dropdownCssClass: "report-criteria-dropdown-select2",
+                    placeholder: filterDefinition.placeHolder,
+                    multiple: filterDefinition.isSingle ? false : true,
+                };
+
+                $(`#${filterDefinition.selectId}`).select2(selectOptions);
+                $(`#${filterDefinition.selectId}`).on('select2:select', null, filterDefinition.dataIn, toggleSelect2);
+                $(`#${filterDefinition.selectId}`).on('select2:unselect', null, filterDefinition.dataIn, toggleSelect2);
+            },
+            toggleMultipleSelect2(e) {
+                const selectElement = e.currentTarget;
+                const inputElement = selectElement.nextSibling.children.item(0).firstElementChild;
+                const selectedOptions = selectElement.selectedOptions;
+                let values = [];
+
+                for (let option of selectedOptions) {
+                    values.push(option.text)
+                };
+                this.state[e.data] = values;
+
+                if (selectElement.value !== "") {
+                    inputElement.classList.add("active");
+                } else {
+                    inputElement.classList.remove("active");
+                }
+            },
+            toggleSingleSelect2(e) {
+                this.state[e.data] = e.currentTarget.value;
+            },
+            selectFromDate(e) {
+                this.update({ reportFromDate: e.currentTarget.value });
+            },
+            selectToDate(e) {
+                this.update({ reportToDate: e.currentTarget.value });
+            },
+            backToReports() {
+                window.location.hash = "reports/contracts/";
+            },
+            reportContractsContent() {
+                // For the definitions of the reports themselves see reportContractsContent in reportTableDefinitions
+                const reportId = this.props.id;
+                return reportContractsContent[reportId];
+            },
+            updateFilters(e) {
+                this.state.filters[e.currentTarget.id] = e.currentTarget.value;
+                this.update();
+            },
+            prepareTableData(reportTableId, tableData) {
+                if (tableData.length > 0) {
+                    // This block of code that calculates totals and percentages is probably not required
+                    this.state.reportData.totalLength = this.state.reportData.totalLength || tableData.reduce((acc, cur) => acc += cur.distance || 0, 0);
+                    tableData.forEach((entry) => {
+                        if (this.state.reportData.totalLength > 0) {
+                            entry.percent = Math.round((entry.distance / this.state.reportData.totalLength) * 10000) / 100;
+                        } else {
+                            // 100% of 0km - but this won't appear in the label
+                            entry.percent = 100;
+                        }
+                        entry.getId = () => {return entry.key;};
+                        entry.title = window.gettext(entry.title || entry.key);
+                    });
+
+                    // But this block definitely is required
+                    const eventName = `${reportTableId}.dataAdded`;
+                    const eventDetail = {detail: {pendingRows: tableData, clearRows: true}};
+                    document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+
+                    return tableData || [];
+                }
+
+                return null;
+            },
+            createReport(e) {
+                $('#loading').modal('show');
+
+                const reportId = parseInt(e.currentTarget.dataset.id);
+                let filters = [];
+
+                if (reportId == 4) {
+                    const year = document.getElementById("year_select2").value;
+                    const month = document.getElementById("month_select2").value;
+                    const quarter = document.getElementById("quarter_select2").value;
+                    filters = {
+                        year: (year != "year") ? year : "",
+                        month: (month != "month") ? month : "",
+                        quarter: (quarter != "quarter") ? quarter : "",
+                    };
+                } else if (reportId == 5) {
+                    filters = {contractCode: document.getElementById("contract_code_select2").value};
+
+                    const dateStart = document.getElementById("date_start_select2").value;
+                    if (dateStart) {
+                        const dt = new Date(dateStart);
+                        filters["startYr"] = dt.getFullYear();
+                        filters["startMn"] = dt.getMonth();
+                    }
+
+                    const dateEnd = document.getElementById("date_end_select2").value;
+                    if (dateEnd) {
+                        const dt = new Date(dateEnd);
+                        filters["endYr"] = dt.getFullYear();
+                        filters["endMn"] = dt.getMonth();
+                    }
+                }
+
+                getContractReport(reportId, filters)
+                    .then((reportData) => {
+                        this.state.noReport = false;
+                        this.state.noReportData = true;
+
+                        this.state.reportData = {
+                            // These two totals might not be needed
+                            totalLength: 0,
+                            totalCount: 0,
+                            dateCreated: currentDateTime(),
+                            dateCreated: currentDateTime(),
+                            formattedFilters: [],
+                            total: reportData.summary.total_records,
+                        };
+
+                        this.reportContractsContent().reportElements.dataTables.forEach((dataTableId, ix) => {
+                            const attributeName = this.reportContractsContent().reportElements.attributeNames[ix] || "";
+                            // Change reportData.attributes here to reflect the correct names of the returned reportData
+                            this.state.reportData[attributeName] = this.prepareTableData(dataTableId, reportData[attributeName]);
+                            if (this.state.noReportData) {
+                                this.state.noReportData = !this.state.reportData[attributeName];
+                            }
+                        });
+
+                        this.props.showFeedback();
+                        this.state.noReport = false;
+                    }).catch(err => {
+                        this.props.showFeedback(true);
+                        this.state.noReport = true;
+                    }).finally((r) => {
+                        $('#loading').modal('hide');
+                        this.update();
+                    });
+            },
+        }
+    </script>
+</report_assets>

@@ -18,12 +18,16 @@
     }
 }
 
+%datatable-shared {
+    border-bottom: 1px solid $light-gray !important;
+    border-right: 1px solid $light-gray !important;
+    border-left: 1px solid $light-gray !important;
+}
+
 #structure-condition-table,
 #traffic-table,
 #history-table {
-    border-bottom: 1px solid $light-gray;
-    border-right: 1px solid $light-gray;
-    border-left: 1px solid $light-gray;
+    @extend %datatable-shared;
     margin-top: 0 !important;
     overflow-x: auto;
 }
@@ -37,43 +41,48 @@
 #rainfall-table, #rainfall-report-table,
 #pavement-class-table, #pavement-class-report-table,
 #asset-condition-table, #asset-condition-report-table {
-    border-bottom: 1px solid $light-gray;
-    border-right: 1px solid $light-gray;
-    border-left: 1px solid $light-gray;
+    @extend %datatable-shared;
     overflow-x: auto;
 }
 
-#inventory-asset-condition-table,
-#inventory-surface-type-table,
-#inventory-technical-class-table,
-#inventory-number-lanes-table,
-#inventory-carriageway-width-table,
-#inventory-total-width-table,
-#inventory-terrain-class-table,
-#inventory-rainfall-table,
-#inventory-pavement-class-table,
-#inventory-traffic-level-table,
-#inventory-structure-photos-table,
-#inventory-structure-condition-table,
-#inventory-structure-condition-description-table {
-    border-right: 1px solid $light-gray;
-    border-left: 1px solid $light-gray;
+.inventory-table,
+#inventory-photos {
+    @extend %datatable-shared;
+    border-bottom: 1px solid $light-gray;
     margin-bottom: 0 !important;
     margin-top: 0 !important;
     max-height: 353px; // table's height with 10 rows
     overflow-y: auto;
 }
 
-#report-municipality-table,
-#report-asset-class-table,
-#report-surface-type-table,
-#report-technical-class-table,
-#report-asset-condition-table,
-#report-road-status-table,
-#report-technical-class-table {
-    border-bottom: 1px solid $light-gray;
-    border-right: 1px solid $light-gray;
-    border-left: 1px solid $light-gray;
+.report-table {
+    & > div:first-of-type {
+        margin-top: 10px !important;
+    }
+    
+    & > div.dataTables_wrapper {
+        margin-bottom: 20px !important;
+        
+        table.dataTable {
+            @extend %datatable-shared;
+            overflow-x: auto;
+
+            .dark-left {
+                border-left: 1px solid $dark-gray;
+            }     
+        }
+    }
+}
+
+#report-program-table,
+#report-contract-code-table,
+#report-asset-class-type-work-table,
+#report-type-work-year-table,
+#report-asset-class-year-table,
+#report-number-employees-table,
+#report-wages-table,
+#report-worked-days-table {
+    @extend %datatable-shared;
     margin-bottom: 20px !important;
     margin-top: 10px !important;
     overflow-x: auto;
@@ -83,13 +92,91 @@
     }
 }
 
-#plan-rural-roads {
-    border-bottom: 1px solid $light-gray;
-    border-right: 1px solid $light-gray;
-    border-left: 1px solid $light-gray;
+table.planning-dashboard-table {
+    @extend %datatable-shared;
     margin-bottom: 0 !important;
     margin-top: 10px !important;
     overflow-x: auto;
+
+    thead th, tbody td {
+        border-left: none;
+    }
+
+    thead th:last-child, tbody td:last-child {
+        border-right: none;
+    }
+
+    tbody tr:last-child td {
+        border-bottom: none;
+    }
+}
+
+table.planning-table {
+    overflow-x: auto;
+
+    thead tr th {
+        border-bottom-width: 1px;
+        border-right: none;
+        border-top: none;
+    }
+
+    tbody tr td {
+        border-right: none;
+        height: 55px;
+
+        span {
+            border-right: 1px solid $light-gray;
+            margin: 0 10px;
+        }
+    }
+}
+
+table.contracts-profile-table {
+    overflow-x: auto;
+
+    thead tr th {
+        border-bottom-width: 1px;
+        border-top: none;
+        width: 100%;
+
+        &:first-child {
+            width: 60px;
+        }
+
+        &:nth-child(2) {
+            width: 30px;
+        }
+    }
+
+    tbody tr td {
+        height: 55px;
+        width: 100%;
+
+        &:first-child {
+            width: 60px;
+        }
+
+        &:nth-child(2) {
+            width: 30px;
+        }
+
+        span {
+            border-right: 1px solid $light-gray;
+            margin: 0 10px;
+        }
+    }
+}
+
+.contract-details-table {
+    overflow-x: auto;
+
+    thead th {
+        border-top: none;
+    }
+
+    thead th, tbody td {
+        height: 40px;
+    }
 }
 
 .table-spacing {
@@ -146,20 +233,7 @@ div.dataTables_wrapper {
     }
 }
 
-#all-data-table_wrapper ul.pagination {
-    li.paginate_button.page-item {
-        &.active a.page-link {
-            background-color: $white;
-            color: $darker-gray;
-        }
-
-        a.page-link {
-            background-color: $darker-gray;
-            color: $white;
-        }
-    }
-}
-
+#all-data-table_wrapper ul.pagination,
 #structures-data-table_wrapper ul.pagination {
     li.paginate_button.page-item {
         &.active a.page-link {
@@ -174,7 +248,36 @@ div.dataTables_wrapper {
     }
 }
 
-#history-table_wrapper ul.pagination, .content-wrapper ul.pagination {
+#project-document-print-list-table_wrapper,
+#tender-document-print-list-table_wrapper,
+#contract-inspection-print-list-table_wrapper,
+#contract-payment-print-list-table_wrapper,
+#contract-social-safeguard-print-list-table_wrapper,
+#contract-document-print-list-table_wrapper,
+#company-document-print-list-table_wrapper {
+    display: none;
+}
+
+#project-list-table_wrapper ul.pagination,
+#project-document-list-table_wrapper ul.pagination,
+#project-document-view-list-table_wrapper ul.pagination,
+#tender-list-table_wrapper ul.pagination,
+#tender-document-list-table_wrapper ul.pagination,
+#tender-document-view-list-table_wrapper ul.pagination,
+#contract-list-table_wrapper ul.pagination,
+#contract-inspection-list-table_wrapper ul.pagination,
+#contract-inspection-view-list-table_wrapper ul.pagination,
+#contract-payment-list-table_wrapper ul.pagination,
+#contract-payment-view-list-table_wrapper ul.pagination,
+#contract-social-safeguard-list-table_wrapper ul.pagination,
+#contract-social-safeguard-view-list-table_wrapper ul.pagination,
+#contract-document-list-table_wrapper ul.pagination,
+#contract-document-view-list-table_wrapper ul.pagination,
+#company-list-table_wrapper ul.pagination,
+#company-document-list-table_wrapper ul.pagination,
+#company-document-view-list-table_wrapper ul.pagination,
+#history-table_wrapper ul.pagination,
+.content-wrapper ul.pagination {
     li.paginate_button.page-item {
         &.active a.page-link {
             background-color: $darker-gray;

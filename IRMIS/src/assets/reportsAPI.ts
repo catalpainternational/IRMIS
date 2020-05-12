@@ -3,11 +3,11 @@ import { Report } from "../../protobuf/report_pb";
 import { ConfigAPI } from "./configAPI";
 import { makeEstradaNetworkSurveyReport } from "./models/surveyReport";
 
-/** getRoadReports
+/** getReports
  *
- * Retrieves the road report data from the server
+ * Retrieves asset/structure report data from the server
  */
-export function getRoadReports(filters: { [name: string]: any }) {
+export function getReports(filters: { [name: string]: any }) {
     const filterParams = ConfigAPI.objectToQueryString(filters);
     const reportUrl = `${ConfigAPI.requestReportUrl}/${filterParams}`;
 
@@ -30,5 +30,26 @@ export function getRoadReports(filters: { [name: string]: any }) {
 
             const uintArray = new Uint8Array(protobufBytes);
             return makeEstradaNetworkSurveyReport(Report.deserializeBinary(uintArray));
+        });
+}
+
+/** getContractReports
+ *
+ * Retrieves contract report data from the server
+ */
+export function getContractReports(reportType: string, filters: { [name: string]: [] }) {
+    const filterParams = ConfigAPI.objectToQueryString(filters);
+    const reportUrl = `${ConfigAPI.requestContractReportUrl}/${reportType}${filterParams}`;
+
+    const request = ConfigAPI.requestInit();
+
+    return fetch(reportUrl, request)
+        .then((metadataResponse) => {
+            if (metadataResponse.ok) {
+                return metadataResponse.json();
+            } else {
+                // Handle all fetch level errors
+                return undefined;
+            }
         });
 }

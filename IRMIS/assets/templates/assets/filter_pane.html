@@ -180,6 +180,10 @@
                             <span class="checkbox image"></span>
                             {% trans "Culverts" %}
                         </li>
+                        <li class="align-items-center d-flex optionToggle" data-option="DRFT">
+                            <span class="checkbox image"></span>
+                            {% trans "Drifts" %}
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -269,8 +273,3 @@
 <div id="collapsed-side-menu" class="d-none justify-content-center">
     <span class="arrow image"></span>
 </div>
-
-{{ asset_schema|json_script:"asset_schema" }}
-<script>
-    var asset_schema = JSON.parse(document.getElementById('asset_schema').textContent);
-</script>

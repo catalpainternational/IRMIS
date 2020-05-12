@@ -3,7 +3,7 @@ import $ from "jquery";
 
 import { dispatch } from "./assets/utilities";
 
-import { exportCsv } from "./exportCsv";
+import { exportCsv } from "exportCsv";
 import { currentFilter } from "./side_menu";
 import { estradaTableColumns, estradaRoadTableEventListeners, estradaStructureTableEventListeners, structuresTableColumns } from "./mainTableDefinition";
 import {
@@ -11,9 +11,6 @@ import {
     numberLanesColumns,
     pavementClassColumns,
     rainfallColumns,
-    structureConditionColumns,
-    structureConditionDescriptionColumns,
-    structurePhotosColumns,
     surfaceConditionColumns,
     surfaceTypeColumns,
     technicalClassColumns,
@@ -24,7 +21,7 @@ import { datatableTranslations } from "./datatableTranslations";
 
 import { getRoad, roads } from "./roadManager";
 import { getStructure, structures } from "./structureManager";
-
+import { getPhotos } from "./photoManager";
 import { getAssetReport } from "./reportManager";
 import { getAssetSurveys, getStructureSurveys } from "./surveyManager";
 
@@ -44,7 +41,7 @@ const attributeModalMapping = {
         columns: surfaceConditionColumns,
         reportDataTableId: "inventory-asset-condition-table",
         reportTable: null,
-        title: gettext("Surface Condition segments"),
+        title: gettext("Asset Condition segments"),
     },
     surface_type: {
         columns: surfaceTypeColumns,
@@ -75,7 +72,7 @@ const attributeModalMapping = {
         reportDataTableId: "inventory-total-width-table",
         reportTable: null,
         title: gettext("Total Width segments"),
-    },    
+    },
     rainfall: {
         columns: rainfallColumns,
         reportDataTableId: "inventory-rainfall-table",
@@ -94,12 +91,6 @@ const attributeModalMapping = {
         reportTable: null,
         title: gettext("Pavement Class segments"),
     },
-    // structure_photos: {
-    //     columns: structurePhotosColumns,
-    //     reportDataTableId: "inventory-structure-photos-table",
-    //     reportTable: null,
-    //     title: gettext("Inventory Photos details"),
-    // },
 }
 
 function initializeDataTable() {
@@ -176,6 +167,10 @@ function initializeDataTable() {
             rowId: ".id",
             dom: "<'row'<'col-sm-12'tr>>", // https://datatables.net/reference/option/dom#Styling
             language: datatableTranslations,
+            // Do NOT turn on scrolling for these modal tables, it screws up the headers in unfixable ways
+            // scrollY: "" - defines vertical scrolling as off
+            scrollY: "",
+            paging: false,
             // This turns off filtering for all tables ( DO NOT SET THIS TO TRUE )
             // dataTables has a bug where the searching / filtering clause passes from one table to another
             // We only want it for the main tables
@@ -357,7 +352,7 @@ function applyTableSelectionToMap(rowId) {
  * @return [{label: string, value: string}]
  */
 export function GetDataForMapPopup(id, featureType) {
-    const assetType = ["BRDG", "CULV", "bridge", "culvert"].includes(featureType) ? "STRC" : "ROAD";
+    const assetType = ["BRDG", "CULV", "DRFT", "bridge", "culvert", "drift"].includes(featureType) ? "STRC" : "ROAD";
     if (assetType !== currentFilter.assetType) {
         return [{ label: window.gettext("Asset Type"), value: featureType }];
     }
@@ -452,11 +447,11 @@ $.extend($.fn.dataTableExt.oSort, {
 
 $.fn.dataTable.Api.register('row().show()', function () {
     const page = this.table().page;
-    const tableRows = this.table().rows({ order:"current", page:"all", search: "applied" });
+    const tableRows = this.table().rows({ order: "current", page: "all", search: "applied" });
     const rowIndex = this.index();
-    const rowPosition = tableRows[0].indexOf( rowIndex );
+    const rowPosition = tableRows[0].indexOf(rowIndex);
 
-    if( rowPosition >= page.info().start && rowPosition < page.info().end ) {
+    if (rowPosition >= page.info().start && rowPosition < page.info().end) {
         // On the correct page - return the row
         return this;
     }
@@ -478,13 +473,15 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
             $("#" + repTableId + "_wrapper").hide();
         }
     });
-    // Hide special traffic data div
+    // Hide special traffic data div & photos details box div
     document.dispatchEvent(new CustomEvent("inventory-traffic-level-table.hideData"));
+    document.dispatchEvent(new CustomEvent("photos-details-modal.hideData"));
 
     const button = $(event.relatedTarget); // Button that triggered the modal
     const assetCode = button.data("code"); // Extract info from data-* attributes
     const assetId = button.data("id");
     const attr = button.data("attr");
+    const assetType = button.data("type");
     const modal = $(this);
 
     if (attr === "traffic_level") {
@@ -504,19 +501,40 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
                 // update the traffic details inventory modal tag with current data
                 document.dispatchEvent(new CustomEvent("inventory-traffic-level-table.updateTrafficData", { detail: { currentRowData: latestSurvey } }));
             });
-    } else if (["structure_condition", "condition_description"].indexOf(attr) >= 0) {
-        const reportDataTableId = attributeModalMapping[attr].reportDataTableId;
-        const reportTable = attributeModalMapping[attr].reportTable;
-        modal.find(".modal-title").text(assetCode + " " + attributeModalMapping[attr].title);
-        reportTable.clear(); // remove all rows in the table
-
-        getStructureSurveys(assetId, attr)
+    } else if (attr === "structure_condition_photos") {
+        modal.find(".modal-title").text(assetCode + " Condition Photos");
+        let latestSurvey = false;
+        let photos = undefined;
+        getStructureSurveys(assetId, "asset_condition")
             .then((surveyData) => {
-                reportTable.clear(); // remove all rows in the table - again
-                reportTable.rows.add(surveyData);
+                latestSurvey = surveyData.sort((a, b) => {
+                    a = new Date(a.dateSurveyed);
+                    b = new Date(b.dateSurveyed);
+                    return (a > b) ? -1 : (a < b) ? 1 : 0;
+                })[0] || false;
+                if (latestSurvey) {
+                    getPhotos("SURV-" + latestSurvey.id)
+                        .then((photosData) => {
+                            photos = photosData;
+                        }).finally(() => {
+                            // update the inventory modal tag with current data
+                            document.dispatchEvent(new CustomEvent("photos-details-modal.updateModalData", { detail: { currentPhotosData: photos } }));
+                        });
+                }
             }).finally(() => {
-                reportTable.draw();
-                $("#" + reportDataTableId + "_wrapper").show();
+                // update the inventory modal tag with current data
+                document.dispatchEvent(new CustomEvent("photos-details-modal.updateModalData", { detail: { currentPhotosData: photos } }));
+            });
+    } else if (attr == "inventory_photos") {
+        modal.find(".modal-title").text(assetCode + " Inventory Photos");
+        let photos = undefined;
+        let globalId = (assetType == "ROAD") ? assetType + "-" + assetId : assetId;
+        getPhotos(globalId)
+            .then((photosData) => {
+                photos = photosData;
+            }).finally(() => {
+                // update the inventory modal tag with current data
+                document.dispatchEvent(new CustomEvent("photos-details-modal.updateModalData", { detail: { currentPhotosData: photos } }));
             });
     } else {
         const reportDataTableId = attributeModalMapping[attr].reportDataTableId;
@@ -527,6 +545,7 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
         const getAsset = currentFilter.assetType === "ROAD" ? getRoad : getStructure;
         const getAssetFilters = (assetData) => {
             let filters = {
+                reportassettype: [currentFilter.assetType],
                 primaryattribute: attr,
             };
 

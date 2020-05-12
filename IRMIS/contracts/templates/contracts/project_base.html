@@ -1,0 +1,16 @@
+{% extends "contracts/contracts.html" %}
+{% load i18n %}
+
+{% block contracts_profile %}
+<header class="d-flex">
+    <a class="caret-dark discard-link left image" data-back="{% url 'contract-project-list' %}"></a>
+    {% if project.id is not None %}
+    <h1>{% trans "Edit Project" %} — {{ project.name }}</h1>
+    {% else %}
+    <h1>{% trans "Create Project" %}</h1>
+    {% endif %}
+</header>
+
+{% block project_content %}
+{% endblock %}
+{% endblock %}

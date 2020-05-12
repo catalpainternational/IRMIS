@@ -1,5 +1,5 @@
 <traffic_data_details>
-    <span if={!state.hidden}>
+    <div id="inventory-traffic-level-table_wrapper" if="{ !state.hidden }">
         <span if={state.errors.length}>
             <p class="small">{ window.gettext(state.errors[0]) }</p>
         </span>
@@ -68,7 +68,7 @@
                 <span class="details-total-number">{ state.currentRowData.values.countTotal }</span>
             </div>
         </span>
-    </span>
+    </div>
 
     <script>
         export default {

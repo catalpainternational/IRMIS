@@ -1,9 +1,4 @@
-import bbox from "@turf/bbox";
-import envelope from "@turf/envelope";
-import { AllGeoJSON } from "@turf/helpers";
-import { FeatureCollection } from "geojson";
-
-import { Feature, GeoJSON, Geometry } from "geojson";
+import { Feature, FeatureCollection, GeoJSON, Geometry } from "geojson";
 import * as L from "leaflet";
 
 import { Config } from "./config";
@@ -11,6 +6,7 @@ import { Config } from "./config";
 import { BaseLayers } from "./layers/BaseLayers";
 import { KnownGeometries } from "./layers/KnownGeometries";
 import { getFilterStyles } from "./utilities/filterGeoJSON";
+import { getBbox } from "./utilities/GeoJsonUtilities";
 import { getFeatureType } from "./utilities/propertiesGeoJSON";
 
 import { FallbackLayerStyle, FixLayerStyleDefaults, styleGeometry, stylePoint } from "./utilities/leaflet-style";
@@ -32,6 +28,7 @@ export class Map {
     private lMap = {} as L.Map;
     private zoomControl = {} as L.Control.Zoom;
     private currentLayer = {} as L.TileLayer;
+    private keySequence: string[] = [];
 
     /** Call this in window.onload, or after */
     public loadMap(): L.Map {
@@ -69,6 +66,8 @@ export class Map {
             this.handleFilter(data);
         });
 
+        this.mapTrap();
+
         return this.lMap;
     }
 
@@ -86,6 +85,7 @@ export class Map {
     }
 
     private handleFilter(data: Event) {
+        let bb = Config.tlBBox;
         const featureZoomSet: FeatureCollection = { type: "FeatureCollection", features: [] };
         const featureTypeSet: any = {};
         Object.values(featureLookup).forEach((feature: any) => {
@@ -106,10 +106,8 @@ export class Map {
             geoLayer.setStyle(switchStyle ? layerFilterStyles.styleOn : layerFilterStyles.styleOff);
         });
 
-        let bb = Config.tlBBox;
         if (featureZoomSet.features.length) {
-            const bounds = envelope(featureZoomSet as AllGeoJSON);
-            bb = bbox(bounds) as number[];
+            bb = getBbox(featureZoomSet);
         }
 
         // Don't use flyToBounds
@@ -131,7 +129,7 @@ export class Map {
 
             if (clickedFeature.properties.switchStyle) {
                 // This feature will be in the table
-                const assetType = ["bridge", "culvert"].includes(featureType) ? "STRC" : "ROAD";
+                const assetType = ["bridge", "culvert", "drift"].includes(featureType) ? "STRC" : "ROAD";
                 const eventName = assetType === "STRC"
                     ? "estrada.structureTable.rowSelected"
                     : "estrada.roadTable.rowSelected";
@@ -198,5 +196,36 @@ export class Map {
         });
 
         return html;
+    }
+
+    private mapTrap() {
+        const mapDiv = document.getElementById("map-irmis");
+        if (mapDiv) {
+            mapDiv.addEventListener("keydown", (event) => {
+                const keyName = event.key;
+
+                if (keyName === "Control") {
+                  return;
+                }
+
+                this.keySequence.push(keyName);
+                const searchResult = this.keySequence.join("").search(/^(b|bl|bl\d{1})$/i);
+                if (searchResult === -1) {
+                    this.keySequence = [keyName];
+                } else if (this.keySequence.join("").search(/^bl\d{1}$/i) === 0) {
+                    const blIndex = Number(this.keySequence.join("").substr(2));
+                    const bl = BaseLayers.baseLayers;
+                    this.keySequence = [];
+                    const blKeys = Object.keys(bl);
+                    if (blKeys.length > blIndex) {
+                        this.currentLayer.remove();
+                        this.currentLayer = Object.values(bl)[blIndex];
+                        this.currentLayer.addTo(this.lMap);
+                        // this.layerControl = L.control.layers(bl, {});
+                    }
+                }
+
+              }, false);
+        }
     }
 }

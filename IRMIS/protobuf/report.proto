@@ -1,5 +1,6 @@
 syntax = "proto3";
 import "google/protobuf/timestamp.proto";
+import "photo.proto";
 
 package assets;
 
@@ -18,8 +19,8 @@ message Attribute {
     string asset_id = 1; // asset_id + primary_attribute + survey_id = unique key for this data
     string asset_code = 2;
     string primary_attribute = 3;
-    float chainage_start = 4;
-    float chainage_end = 5;
+    uint32 chainage_start = 4;
+    uint32 chainage_end = 5;
     uint32 survey_id = 6;
     uint32 user_id = 7;
     google.protobuf.Timestamp date_surveyed = 8;
@@ -27,4 +28,5 @@ message Attribute {
     string value = 10;
     uint32 road_id = 11;
     string road_code = 12;
+    repeated Photo photos = 13;
 }

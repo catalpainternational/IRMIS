@@ -2,6 +2,7 @@
 // file: roads.proto
 
 import * as jspb from "google-protobuf";
+import * as photo_pb from "./photo_pb";
 
 export class Projection extends jspb.Message {
   getX(): number;
@@ -137,6 +138,16 @@ export class Road extends jspb.Message {
   setServedConnectionTypesList(value: Array<number>): void;
   addServedConnectionTypes(value: number, index?: number): number;
 
+  clearInventoryPhotosList(): void;
+  getInventoryPhotosList(): Array<photo_pb.Photo>;
+  setInventoryPhotosList(value: Array<photo_pb.Photo>): void;
+  addInventoryPhotos(value?: photo_pb.Photo, index?: number): photo_pb.Photo;
+
+  clearSurveyPhotosList(): void;
+  getSurveyPhotosList(): Array<photo_pb.Photo>;
+  setSurveyPhotosList(value: Array<photo_pb.Photo>): void;
+  addSurveyPhotos(value?: photo_pb.Photo, index?: number): photo_pb.Photo;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Road.AsObject;
   static toObject(includeInstance: boolean, msg: Road): Road.AsObject;
@@ -182,6 +193,8 @@ export namespace Road {
     servedFacilitiesList: Array<number>,
     servedEconomicAreasList: Array<number>,
     servedConnectionTypesList: Array<number>,
+    inventoryPhotosList: Array<photo_pb.Photo.AsObject>,
+    surveyPhotosList: Array<photo_pb.Photo.AsObject>,
   }
 }
 

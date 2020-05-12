@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<body>
+    <table id="data">
+        <thead>
+            <tr>
+                <th>val</th>
+                <th>road_code</th>
+                <th>chainage_start</th>
+                <th>chainage_end</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for o in objects %}
+            <tr>
+                <td>{{o.val}}</td>
+                <td>{{o.road_code}}</td>
+                <td>{{o.chainage_start}}</td>
+                <td>{{o.chainage_end}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>

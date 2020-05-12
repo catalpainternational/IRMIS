@@ -1,6 +1,10 @@
-import { Bridge, Culvert, Structures } from "../../protobuf/structure_pb";
+import { Bridge, Culvert, Drift, Structures } from "../../protobuf/structure_pb";
 
-import { EstradaBridge, EstradaCulvert, makeEstradaBridge, makeEstradaCulvert, makeEstradaStructures } from "./models/structures";
+import {
+    EstradaBridge, EstradaCulvert, EstradaDrift,
+    makeEstradaBridge, makeEstradaCulvert, makeEstradaDrift,
+    makeEstradaStructures,
+} from "./models/structures";
 
 import { ConfigAPI } from "./configAPI";
 
@@ -38,8 +42,10 @@ export function getStructureMetadata(structureId: string) {
             const structures = makeEstradaStructures(Structures.deserializeBinary(uintArray));
             if (structureId.includes("BRDG")) {
                 return structures.bridges[0];
-            } else {
+            } else if (structureId.includes("CULV")) {
                 return structures.culverts[0];
+            } else {
+                return structures.drifts[0];
             }
         });
 }
@@ -69,7 +75,7 @@ export function getRoadStructuresMetadata(roadId: string | number) {
  *
  * @returns 200 (success) or 400 (failure)
  */
-export function postStructureData(structure: EstradaBridge | EstradaCulvert, structureType: string) {
+export function postStructureData(structure: EstradaBridge | EstradaCulvert | EstradaDrift, structureType: string) {
     const structureTypeUrlFragment = "structure_create";
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${structureTypeUrlFragment}/${structureType}/`;
 
@@ -83,10 +89,16 @@ export function postStructureData(structure: EstradaBridge | EstradaCulvert, str
         })
         .then((protobufBytes) => {
             const uintArray = new Uint8Array(protobufBytes);
-            if (structureType === "BRDG") {
-                return makeEstradaBridge(Bridge.deserializeBinary(uintArray));
-            } else {
-                return makeEstradaCulvert(Culvert.deserializeBinary(uintArray));
+            switch (structureType) {
+                case "BRDG":
+                    return makeEstradaBridge(Bridge.deserializeBinary(uintArray));
+                case "CULV":
+                    return makeEstradaCulvert(Culvert.deserializeBinary(uintArray));
+                case "DRFT":
+                    return makeEstradaDrift(Drift.deserializeBinary(uintArray));
+                default:
+                    // Ending up here is a programmer error
+                    throw new Error(`Structure conversion failed for assetType: ${structureType}`);
             }
         });
 }
@@ -97,7 +109,7 @@ export function postStructureData(structure: EstradaBridge | EstradaCulvert, str
  *
  * @returns 200 (success) or 400 (failure)
  */
-export function putStructureData(structure: EstradaBridge | EstradaCulvert) {
+export function putStructureData(structure: EstradaBridge | EstradaCulvert | EstradaDrift) {
     const structureTypeUrlFragment = "structure_update";
     const metadataUrl = `${ConfigAPI.requestAssetUrl}/${structureTypeUrlFragment}/${structure.id}`;
 
@@ -106,15 +118,23 @@ export function putStructureData(structure: EstradaBridge | EstradaCulvert) {
 
     return fetch(metadataUrl, putAssetInit)
         .then((metadataResponse) => {
-            if (metadataResponse.ok) { return metadataResponse.arrayBuffer(); }
+            if (metadataResponse.ok) {
+                return metadataResponse.arrayBuffer();
+            }
             throw new Error(`Structure creation failed: ${metadataResponse.statusText}`);
         })
         .then((protobufBytes) => {
             const uintArray = new Uint8Array(protobufBytes);
-            try {
-                return makeEstradaBridge(Bridge.deserializeBinary(uintArray));
-            } catch (err) {
-                return makeEstradaCulvert(Culvert.deserializeBinary(uintArray));
+            switch (structure.assetType) {
+                case "BRDG":
+                    return makeEstradaBridge(Bridge.deserializeBinary(uintArray));
+                case "CULV":
+                    return makeEstradaCulvert(Culvert.deserializeBinary(uintArray));
+                case "DRFT":
+                    return makeEstradaDrift(Drift.deserializeBinary(uintArray));
+                default:
+                    // Ending up here is a programmer error
+                    throw new Error(`Structure conversion failed for assetType: ${structure.assetType}`);
             }
         });
 }

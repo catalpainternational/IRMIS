@@ -1,7 +1,9 @@
 import dayjs from "dayjs";
 
 import { Survey } from "../../../protobuf/survey_pb";
+
 import { IEstrada } from "./estradaBase";
+import { makeEstradaPhoto, EstradaPhoto, Photo } from "./photo";
 
 import { getFieldName, getHelpText, makeEstradaObject } from "../protoBufUtilities";
 
@@ -179,10 +181,22 @@ export class EstradaSurvey extends Survey implements IEstrada {
         this.setValue(value, "trafficType");
     }
 
+    get photos(): EstradaPhoto[] | undefined {
+        const photosListRaw = this.getPhotosList();
+        return photosListRaw ? photosListRaw.map(makeEstradaPhoto) : photosListRaw;
+    }
+
+    set photos(values: EstradaPhoto[] | undefined) {
+        this.setPhotosList(values as Photo[]);
+    }
+
     get values() {
         const jsonValues = this.getValues() || "{}";
         return JSON.parse(jsonValues);
     }
+
+    /** title is set according to the 'shape' of the data returned */
+    public title: string = "";
 
     private setValue(value: any, fieldName: string) {
         const values = this.values;

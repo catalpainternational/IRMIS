@@ -1,4 +1,20 @@
+textarea.form-control {
+    height: 100px;
+}
+
+.chainages .form-control-sm {
+    width: inherit;
+}
+
 // Override Bootstrap form styles
+
+.form-row .form-group {
+    margin-right: 10px;
+
+    &:last-child {
+        margin-right: 0;
+    }
+}
 
 .form-group {
     margin-bottom: 10px;
@@ -19,7 +35,7 @@
     padding-left: 10px;
 
     &.inactive {
-        border: 1px solid $light-gray;
+        border: 1px solid $light-gray !important;
     }
 
     &.danger {
@@ -32,7 +48,12 @@
 
     &:focus {
         box-shadow: 0 0 2px 1px rgba(16, 165, 150, 0.5);
-        border: 1px solid $green;
+        border: 1px solid $green !important;
+
+        &.danger {
+            box-shadow: 0 0 2px 1px rgba(255, 90, 95, 0.5);
+            border: 1px solid $red !important;
+        }
     }
 
     &::-webkit-input-placeholder { color: $gray; } /* Chrome/Opera/Safari */
@@ -41,6 +62,24 @@
     &::-moz-placeholder { color: $gray; } /* Firefox 19+ */
     &:-moz-placeholder { color: $gray; } /* Firefox 18- */
     &::placeholder { color: $gray; } /* Most modern browsers */
+}
+
+.form-control-lg {
+    height: calc(1.5em + 0.75rem + 2px); // copied from .form-control
+    font-size: 1rem; // copied from .form-control
+    width: 400px;
+}
+
+.form-control-sm {
+    height: calc(1.5em + 0.75rem + 2px); // copied from .form-control
+    font-size: 1rem; // copied from .form-control
+    width: 195px;
+}
+
+.form-inline {
+    & > :first-child {
+        margin-right: 15px;
+    }
 }
 
 .form-text {

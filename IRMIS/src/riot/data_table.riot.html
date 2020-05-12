@@ -1,17 +1,17 @@
 <data_table>
     <div class="align-items-center d-flex justify-content-between">
         <p if="{ state.title }">{ state.title }</p>
-        <button if="{ state.canExport }" onclick="{ exportTable }" class="btn btn-secondary btn-sm">
+        <button if="{ state.canExport }" onclick="{ state.exportTable }" class="btn btn-secondary btn-sm">
             { window.gettext("Export table") }
         </button>
     </div>
-    <table if="{ state.id }" id="{ state.id }" class="d-block table table-bordered table-hover w-100"></table>
+    <table if="{ state.id }" id="{ state.id }" class="d-block table table-bordered table-hover w-100 { props.cssClass }"></table>
 
     <script>
         import {datatableTranslations} from "../datatableTranslations";
-        import {exportCsv} from "../exportCsv";
+        import {exportCsv} from "exportCsv";
 
-        import { currentFilter } from "../side_menu";
+        import {currentFilter} from "../side_menu";
 
         import "bootstrap/js/dist/modal";
         import $ from "jquery";
@@ -40,6 +40,7 @@
             state.pendingRows = props.pendingRows || [];
             state.pageLength = props.pageLength || 10;
             state.showTotal = !!props.showTotal;
+            state.showTotalCount = !!props.showTotalCount;
 
             if (state.canEdit) {
                 state.columnSortOrder.forEach((columnOrder) => {
@@ -99,8 +100,8 @@
             state.dataTableConfig.ajax = function(data, callback, settings) {
                 // This is only here so that dataTables will change its internal state
             }
-            if (state.showTotal) {
-                state.dataTableConfig.footerCallback = ( tfoot, data, start, end, display ) => {
+            if (state.showTotal || state.showTotalCount) {
+                state.dataTableConfig.footerCallback = (tfoot, data, start, end, display) => {
                     if (!state.table) {
                         // If the actual dataTable is not defined yet - then exit
                         return;
@@ -117,14 +118,15 @@
                             if (columnTotal) {
                                 if (state.columns[colIdx].data !== "percent") {
                                     // If the column.data is not explicitly called 'percent'
-                                    // we assume that it is in meters and convert it to kilometers
-                                    columnTotal = columnTotal / 1000;
+                                    // we assume that it is either a count
+                                    // or is in meters and convert it to kilometers
+                                    columnTotal = state.showTotalCount ? columnTotal : columnTotal / 1000;
                                 } else {
-                                    // But if it is percent - then we knw that the total is ...
+                                    // But if it is percent - then we know that the total is ...
                                     columnTotal = 100.00;
                                 }
                                 if (!isNaN(columnTotal)) {
-                                    $(currentColumn.footer()).html(columnTotal.toFixed(2));
+                                    $(currentColumn.footer()).html(columnTotal.toFixed(state.showTotalCount ? 0 : 2));
                                 }
                             }
                         }
@@ -180,7 +182,7 @@
         export default {
             onMounted(props, state) {
                 initialiseStateFromProps(props, state);
-              
+
                 // Wraps the handling for the 'changedTitle' event, and includes this tag's state
                 state.changedTitle = (data) => this.processTitleChanged(data, state);
                 // Wraps the handling for the 'changedColumns' event, and includes this tag's state
@@ -189,6 +191,9 @@
                 state.dataAdded = (data) => this.processDataAdded(data, state);
                 // Wrap the Row Data lookup function for event to take tag's state and data
                 state.getRowData = (data) => this.getRowData(data, state);
+
+                // Wrap the export CSV function, so we can get the current state into it
+                state.exportTable = (data) => this.exportTableAsCsv(data, state);
 
                 this.update();
 
@@ -205,11 +210,11 @@
                 document.removeEventListener(`${state.id}.dataAdded`, state.dataAdded);
                 document.removeEventListener(`${state.id}.getRowData`, state.getRowData);
             },
-            getTableData() {
-                const headers = this.state.columns
+            getTableData(state) {
+                const headers = state.columns
                     .filter((c) => c.title !== "")
                     .map((c) => ({title: c.title, data: c.data}));
-                const table = $(`#${this.state.id}`).dataTable().api();
+                const table = $(`#${state.id}`).dataTable().api();
                 const rowsData = table.rows().data();
                 const rows = Object.keys(rowsData).map((rowKey) => {
                     const rowFields = [];
@@ -225,9 +230,14 @@
                 });
                 return {headers: headers.map((h) => h.title), rows: rows};
             },
-            exportTable() {
-                const tableData = this.getTableData();
+            exportTableAsCsv(data, state) {
+                if (!data) {
+                    return;
+                }
+                const tableData = this.getTableData(state);
                 exportCsv(tableData.headers, tableData.rows);
+
+                data.stopPropagation();
             },
             processTitleChanged(data, state) {
                 if (data.detail.title) {
@@ -246,7 +256,7 @@
                     $(`#${state.id}`).empty();
                     // Argh - just shoot the zombie in the head
                     state.table = undefined;
-                    
+
                     setColumns(state, data.detail.columns);
                     setDataTableConfig(state);
 

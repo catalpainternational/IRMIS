@@ -4,9 +4,12 @@ sentry-sdk
 django-rosetta
 psycopg2-binary
 djangorestframework-gis
+djangorestframework-jwt
 django-rest-framework-condition
 geobuf
 protobuf
 django-reversion
 django-sendfile
-importlib_resources
+importlib-resources
+xlrd
+celery

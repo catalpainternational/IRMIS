@@ -43,3 +43,9 @@ export function withinMaxDigits(text: string, limit: number, decimals: number = 
 export function containsWhiteSpaces(text: string) {
     return /\s/.test(text);
 }
+
+/** Deep copy the supplied data to a new object
+ */
+export function copyData<T>(data: T): T {
+    return JSON.parse(JSON.stringify(data)) as T;
+};

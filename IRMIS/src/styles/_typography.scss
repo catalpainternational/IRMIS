@@ -42,7 +42,7 @@ body {
 label {
     color: $darker-gray;
     line-height: 17px;
-    font-weight: 700;
+    font-weight: 800;
     font-size: 14px;
 }
 
@@ -51,16 +51,20 @@ label {
 }
 
 a {
-    color: $dark-green;
     line-height: 11px;
     font-weight: 700;
     font-size: 14px;
+    color: $green;
 
     &:hover {
         text-decoration: none;
         color: $dark-green;
         cursor: pointer;
     }
+}
+
+.registration-content a {
+    color: $darker-gray;
 }
 
 #side-menu a {
@@ -76,6 +80,17 @@ a {
 
     &.selected {
         font-weight: 700;
+    }
+}
+
+.new-asset > a {
+    line-height: 14px;
+    font-weight: 700;
+    font-size: 12px;
+    color: $green;
+
+    &:hover {
+        color: $green;
     }
 }
 
@@ -142,6 +157,12 @@ span.required {
     font-size: 14px;
 }
 
+.new-asset > span {
+    color: $darker-gray;
+    line-height: 12px;
+    font-size: 14px;
+}
+
 p {
     color: $dark-green;
 }
@@ -152,13 +173,20 @@ p {
     font-size: 16px;
 }
 
-reports_base p, planning_base p {
+reports_base p, planning_base p, .no-data-wrapper p {
     color: $darker-gray;
     line-height: 16px;
     font-size: 14px;
 }
 
 .report-content p {
+    line-height: 17px;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.total-budget p {
+    color: $darker-gray;
     line-height: 17px;
     font-weight: 700;
     font-size: 14px;
@@ -219,6 +247,16 @@ h1, h1 span {
     font-size: 22px;
 }
 
+.total-length h1, .total-budget h1 {
+    line-height: 44px;
+    font-size: 30px;
+
+    &.highlight {
+        color: #03A59A;
+        font-size: 36px;
+    }
+}
+
 h5 {
     color: $dark-green;
     line-height: 22px;
@@ -230,6 +268,23 @@ edit_base h5 {
     color: $darker-gray;
 }
 
+h5.title {
+    color: $darker-gray;
+    line-height: 24px;
+    margin-bottom: 0;
+    font-size: 20px;
+}
+
+planning_base h5 {
+    color: $darker-gray;
+    line-height: 24px;
+    font-size: 20px;
+}
+
+loading h5, stacked_bar h5 {
+    color: $darker-gray;
+}
+
 h6 {
     line-height: 19px;
     font-weight: 700;
@@ -237,7 +292,32 @@ h6 {
     color: $white;
 }
 
-reports_base h6, planning_base h6 {
+.contract-filters h6 {
+    color: $darker-gray;
+}
+
+nav {
+    a h6 {
+        color: $darker-gray;
+        font-weight: 500;
+    }
+
+    a.selected h6 {
+        font-weight: 700;
+    }
+
+    a.disabled {
+        pointer-events: none;
+
+        h6 {
+            color: rgba(61, 71, 88, 0.5);
+        }
+    }
+}
+
+reports_base h6,
+planning_base h6,
+.no-data-wrapper h6 {
     color: $darker-gray;
 }
 
@@ -249,13 +329,41 @@ reports_base h6, planning_base h6 {
 }
 
 section h6, .modal section h6 {
-    line-height: 17px;
+    color: $darker-gray;
+    line-height: 24px;
     font-weight: 700;
-    font-size: 14px;
-    color: $green;
+    font-size: 20px;
 }
 
-table {
+section p {
+    color: $darker-gray;
+    line-height: 16px;
+    font-size: 16px;
+}
+
+section a {
+    line-height: 16px;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+table:not(.dataTable) {
+    th {
+        color: $darker-gray;
+        line-height: 17px;
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+    td {
+        color: $darker-gray;
+        line-height: 12px;
+        font-size: 14px;
+    }
+}
+
+// Override DataTables.net styles
+table.dataTable {
     th, td {
         color: $darker-gray;
         line-height: 17px;
@@ -263,8 +371,8 @@ table {
     }
 
     a {
-        color: $green !important;
         font-weight: 400;
+        color: $green;
     }
 
     tr.selected {
@@ -278,8 +386,6 @@ table {
     }
 }
 
-// Override DataTables.net styles
-
 .dt-buttons h6 {
     color: $darker-gray;
     line-height: 17px;
@@ -287,7 +393,7 @@ table {
     font-size: 14px;
 }
 
-.dataTables_info, .page-link {
+ul.pagination li, .dataTables_info, .page-link {
     line-height: 17px;
     font-weight: 700;
     font-size: 14px;
@@ -395,5 +501,11 @@ table {
     .print-header span {
         text-transform: uppercase;
         color: $darker-gray;
+    }
+
+    .print-footer p {
+        color: $darker-gray;
+        line-height: 20px;
+        font-size: 18px;
     }
 }

@@ -1,14 +1,22 @@
 # ILO Integrated Roads Management Information System
 
-## Installation
+## Bemvindu! Let's get setup quickly!
 
-1. git clone this repository using `--recurse-submodules` and cd into it
-  - If you forgot to `--recurse-submodules` then `git submodule init && git submodule update`
-2. create a python 3.6 virtual environment and install pip-tools `pip install pip-tools`
-3. install requirements with `pip-sync requirements/requirements-dev.txt`
-4. we require GEODJANGO support, create a `irmis_db` postgresql database with the POSTGIS extension
-  - see https://docs.djangoproject.com/en/2.2/ref/contrib/gis/ for installation instructions
-5. In your virtual environment run `manage.py migrate` `manage.py createsuperuser` `manage.py runserver`
+1. Clone this repository, making sure to use the `--recurse-submodules` flag.
+2. Clone the  ` estrada-data-sources` repository (https://github.com/catalpainternational/estrada-data-sources) to get source shape files.
+3. Create a virtual environment with Python 3.6+.
+4. Install [pip-tools](https://pypi.org/project/pip-tools/).
+5. Install project `requirements-dev` with pip-tools.
+6. Install [Yarn](https://yarnpkg.com/en/docs/install).
+7. Install all yarn-managed packages (`yarn`) and compile the JS/CSS files (`yarn dev`).
+8. Install the Google Protobuf compiler (for Mac OS, using Homebrew `brew install protobuf` is easiest).
+9. Install the POSTGIS extension for Postgresql (https://docs.djangoproject.com/en/3.0/ref/contrib/gis/install/postgis/).
+10. Get a copy of the Estrada DB from Production server (https://estrada-production.catalapa.build) and load the DB.
+11. Build local geometry files with Django management command `collate_geometries`.
+12. Run the server.
+
+
+## Extra Information and Details On Specific Management Commands & Project Technologies Used
 
 ## Pip-tools
 
@@ -22,14 +30,14 @@ Run `pip-compile requirements/requirements-dev.in` to produce `requirements/requ
 
 Use `pip-compile --upgrade` to upgrade versions of libraries, then test the result!
 
-## Set up front-end
+## Setting up the front-end
 
 1. Install [Yarn](https://yarnpkg.com/en/docs/install).
 2. Navigate to the project's root directory and run `yarn` to install dependencies.
 3. You can compile SASS and JavaScript assets with `yarn run dev`.
 4. Yarn can detect changes in these assets and rebuild them automatically. Use `yarn run watch`.
 
-## How to Import Initial data from sources
+## How to import initial data from sources
 
 The initial data for the estrada system  is commited to the repository here https://github.com/catalpainternational/estrada-data-sources
 Clone this repository before performing import. It's README contains information about the source of that data and the processes used to create it
@@ -39,7 +47,7 @@ This entire sequence must be performed to completion before users are allowed to
 
 1. `./manage.py import_shapefiles ../../path/to/the/data-sources/repo/shapefiles <asset_type>`
   - imports the shapefile geometries and copies properties across where useful
-  - `<asset_type>` is one of "road", "bridge", or "culvert"
+  - `<asset_type>` is one of "road", "bridge", "culvert", or "drift"
   - also calls `set_municipalities` and `collate_geometries` automatically
 
 2. `./manage.py import_csv ../../path/to/the/data-sources/repo/csv`
@@ -52,28 +60,43 @@ This entire sequence must be performed to completion before users are allowed to
   A. `./manage.py set_unknown_road_codes`
     - Fixes roads with missing road codes, assigning these roads a unique `XX_` `road_code`.
 
-  B. `./manage.py set_municipalities <optional: "all", "road", "bridge", or "culvert">`
+  B. `./manage.py set_municipalities <optional: "all", "road", "bridge", "culvert" or "drift">`
     - Sets the administrative areas for each asset/structure, based the centroids of their respective geometries
     - Takes an optional argument to restrict the municipalities getting set to objects of a single type
     - If 'all' argument is given all of the assets/structures will have their municipalities set
 
-  C. `./manage.py collate_geometries <optional: "all", "road", "bridge", or "culvert">`
-    - you have edited roads, bridges, culverts so re-collate
+  C. `./manage.py collate_geometries <optional: "all", "road", "bridge", "culvert" or "drift">`
+    - you have edited roads, bridges, culverts, drifts, so re-collate
 
-4. `./manage.py make_road_surveys <optional: --no-road-refresh>` 
-  - Refresh the calculated Road record geometry data (unless you specify --no-road-refresh)
+### Additional Step - this is automatically performed by the survey commands below
+  D. `./manage.py set_unknown_link_codes`
+    - Fixes roads with bad link codes, and tries to set as many `None` link codes to the road's road code if there are no clashes.
+
+    Note: this is not performed by the `survey` commands below if their `--no-road-refresh` option is specified
+
+4. `./manage.py make_road_surveys <optional: --no-road-refresh>`
+  - Refresh the calculated Road record geometry data and clean the link codes (unless you specify --no-road-refresh)
   - Then from those Road records recreate all of the 'programmatic' Surveys for Roads, and
   - Refresh all user entered Surveys for Roads
-  
+
   Note: Refreshing the programmatic Surveys relies on completeness of the Road record geometry data.  Therefore it is recommended to not use the `--no-road-refresh` option unless you've literally just run `make_road_surveys` or `import_traffic_surveys` immediately before.
 
   Note: This management command is SLOW.  It has to work road_code by road_code so it runs a LOT of queries.
 
-5. `./manage.py import_traffic_surveys ../../path/to/the/traffic/survey/csv <optional: --no-road-refresh>` 
-  - Refresh the calculated Road record geometry data (unless you specify --no-road-refresh)
+5. `./manage.py import_traffic_surveys ../../path/to/the/traffic/survey/csv <optional: --no-road-refresh>`
+  - Refresh the calculated Road record geometry data and clean the link codes (unless you specify --no-road-refresh)
   - Then recreate the programmatic traffic surveys from the csv file
-  
+
   Note: Refreshing the programmatic traffic Surveys relies on completeness of the Road record geometry data.  Therefore it is recommended to not use the `--no-road-refresh` option unless you've literally just run `make_road_surveys` or `import_traffic_surveys` immediately before.
+
+6. `./manage.py roughness_and_breakpoints`
+  - Create (if not existing) Roughness Surveys and...
+  - Refresh the Roughness Survey aggregates & Breakpoint relationships
+
+  Note: Should ONLY be run after the appropriate topology load and import commands have been run as well:
+    - `loaddata /var/www/estrada/estrada-data-sources/topology/fixtures/topology.estradaroad.json`
+    - `init_topology_functions`
+    - `import_csv_source roughness /var/www/estrada/estrada-data-sources/csv/<file-path>.csv`
 
 ## Pre-Commit (Black formatter)
 

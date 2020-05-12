@@ -24,6 +24,9 @@ export class KnownGeometries {
         "culvert": { style: { color: "#674194", opacity: 1 } },
         "culvert.on": { style: { color: "#674194", opacity: 1 } },
         "culvert.off": { style: { color: "#674194", opacity: 0.2 } },
+        "drift": { style: { color: "#8A057F", opacity: 1 } },
+        "drift.on": { style: { color: "#8A057F", opacity: 1 } },
+        "drift.off": { style: { color: "#8A057F", opacity: 0.2 } },
 
         "highway": { style: { color: "#03A568", opacity: 1 } },
         "highway.on": { style: { color: "#03A568", opacity: 1 } },

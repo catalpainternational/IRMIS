@@ -9,4 +9,21 @@ class Command(BaseCommand):
         parser.add_argument("folder")
 
     def handle(self, *args, **options):
+        self.stdout.write(
+            self.style.MIGRATE_HEADING(
+                "~~~ Starting import of Road data from CSV files ~~~ "
+            )
+        )
         import_csv(self, options["folder"])
+
+        self.stdout.write(
+            self.style.SUCCESS(
+                "~~~ COMPLETE: Importing of Road data from CSV files. ~~~ "
+            )
+        )
+
+        self.stdout.write(
+            self.style.MIGRATE_HEADING(
+                "Please run `make_road_surveys` to refresh the programmatic surveys "
+            )
+        )

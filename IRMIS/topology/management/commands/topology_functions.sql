@@ -13,6 +13,7 @@ $$ LANGUAGE SQL;
 
 COMMENT ON FUNCTION closest_roadcode_to_point(geometry) IS 'Given an input point, return the nearest road code and the fraction along the line which the input point is closest to';
 
+
 DROP FUNCTION IF EXISTS closest_roadcode_to_point(geometry, text);
 CREATE OR REPLACE FUNCTION closest_roadcode_to_point(IN inputpoint geometry, IN in_roadcode text, OUT roadcode text, OUT linefraction float)
 AS $$
@@ -45,6 +46,23 @@ WITH index_query AS (
 $$ LANGUAGE SQL;
 
 COMMENT ON FUNCTION closest_roadid_to_point(geometry, text) IS 'Given an input point, and a specified road code, return the ID of the nearest "assets road"';
+
+
+DROP FUNCTION IF EXISTS closest_assetclass_to_point(geometry, text);
+CREATE OR REPLACE FUNCTION closest_assetclass_to_point(IN inputpoint geometry, IN roadcode text, OUT asset_class text)
+AS $$
+WITH index_query AS (
+	SELECT st_distance(geom, inputpoint) as d, assets_road.*
+		FROM assets_road
+		WHERE assets_road.road_code = roadcode
+		ORDER BY geom <-> inputpoint limit 4 -- Choose the four "best" candidates
+) SELECT
+	asset_class
+	FROM index_query ORDER BY d LIMIT 1 -- Choose the closest from the "best" candidates
+$$ LANGUAGE SQL;
+
+COMMENT ON FUNCTION closest_assetclass_to_point(geometry, text) IS 'Given an input point, and a specified road code, return the asset_class of the nearest "assets road"';
+
 
 DROP FUNCTION IF EXISTS point_to_chainage(geometry);
 CREATE OR REPLACE FUNCTION point_to_chainage(IN inputpoint geometry, OUT chainage float, OUT road_code text )

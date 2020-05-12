@@ -9,13 +9,16 @@
     }
 }
 
+#contracts-base #side-menu > div,
 planning_base #side-menu > div,
 reports_base #side-menu > div,
 edit_base #side-menu > div,
 #edit-base,
 #planning,
-#reports,
 #dashboard,
+#contracts,
+#report-assets,
+#report-contracts,
 .filters {
     @extend %scrollbar-shared;
 }
@@ -57,14 +60,17 @@ edit_base #side-menu > div,
 #number-lanes-table,
 #number-lanes-report-table,
 #structure-condition-table,
-#report-municipality-table,
-#report-asset-class-table,
-#report-surface-type-table,
-#report-technical-class-table,
-#report-asset-condition-table,
-#report-road-status-table,
-#report-technical-class-table,
-#plan-rural-roads {
+#report-program-table,
+#report-contract-code-table,
+#report-asset-class-type-work-table,
+#report-type-work-year-table,
+#report-asset-class-year-table,
+#report-number-employees-table,
+#report-wages-table,
+#report-worked-days-table,
+.report-table table,
+.planning-dashboard-table,
+.planning-table {
     @extend %scrollbar-shared;
 
     &::-webkit-scrollbar:horizontal {
@@ -73,11 +79,21 @@ edit_base #side-menu > div,
     }
 }
 
-#inventory-asset-condition-table, #inventory-surface-type-table, #inventory-technical-class-table {
+.inventory-table {
     @extend %scrollbar-shared;
 
     &::-webkit-scrollbar:vertical {
         border-left: 1px solid $light-gray;
         border-top: 1px solid $light-gray;
+    }
+}
+
+.contracts-profile-table,
+#project-assets-table,
+#project-milestones-table {
+    @extend %scrollbar-shared;
+
+    &::-webkit-scrollbar:horizontal {
+        height: 6px;
     }
 }

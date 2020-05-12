@@ -39,7 +39,7 @@
 .checkbox {
     background-image: url("../images/checkbox.svg");
     vertical-align: middle;
-    height: 15px;
+    height: 14px;
     width: 14px;
 
     &.selected {
@@ -111,6 +111,10 @@
     vertical-align: middle;
     height: 16px;
     width: 15px;
+
+    &.button {
+        margin-right: 10px;
+    }
 }
 
 tr.selected .pencil {
@@ -120,8 +124,16 @@ tr.selected .pencil {
 .delete {
     background-image: url("../images/delete.svg");
     vertical-align: middle;
-    height: 10px;
-    width: 10px;
+    height: 14px;
+    width: 13px;
+}
+
+.document {
+    background-image: url("../images/document.svg");
+    background-size: contain;
+    vertical-align: middle;
+    height: 25px;
+    width: 20px;
 }
 
 .close {
@@ -164,16 +176,13 @@ tr.selected .pencil {
     width: 26px;
 }
 
-.no-report {
-    background-image: url("../images/no_report.svg");
+.no-data {
+    background-image: url("../images/no_data.svg");
+    background-position: center;
+    background-size: contain;
+    max-width: 100%;
     height: 269px;
-    width: 444px;
-}
-
-.no-report-data {
-    background-image: url("../images/no_report_data.svg");
-    height: 282px;
-    width: 432px;
+    width: 566px;
 }
 
 .loading {
@@ -243,7 +252,7 @@ tr.selected .pencil {
 }
 
 .upload-cloud {
-    background-image: url("../images/upload-cloud.svg");
+    background-image: url("../images/upload_cloud.svg");
     height: 55px;
     width: 85px;
 }

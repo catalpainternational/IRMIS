@@ -14,6 +14,8 @@ var global = Function('return this')();
 
 var google_protobuf_timestamp_pb = require('google-protobuf/google/protobuf/timestamp_pb.js');
 goog.object.extend(proto, google_protobuf_timestamp_pb);
+var photo_pb = require('./photo_pb.js');
+goog.object.extend(proto, photo_pb);
 goog.exportSymbol('proto.assets.Survey', null, global);
 goog.exportSymbol('proto.assets.Surveys', null, global);
 /**
@@ -27,7 +29,7 @@ goog.exportSymbol('proto.assets.Surveys', null, global);
  * @constructor
  */
 proto.assets.Survey = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.assets.Survey.repeatedFields_, null);
 };
 goog.inherits(proto.assets.Survey, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -58,6 +60,13 @@ if (goog.DEBUG && !COMPILED) {
    */
   proto.assets.Surveys.displayName = 'proto.assets.Surveys';
 }
+
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.assets.Survey.repeatedFields_ = [14];
 
 
 
@@ -99,10 +108,12 @@ proto.assets.Survey.toObject = function(includeInstance, msg) {
     source: jspb.Message.getFieldWithDefault(msg, 9, ""),
     dateUpdated: (f = msg.getDateUpdated()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
     dateSurveyed: (f = msg.getDateSurveyed()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
-    chainageStart: jspb.Message.getFloatingPointFieldWithDefault(msg, 5, 0.0),
-    chainageEnd: jspb.Message.getFloatingPointFieldWithDefault(msg, 6, 0.0),
+    chainageStart: jspb.Message.getFieldWithDefault(msg, 5, 0),
+    chainageEnd: jspb.Message.getFieldWithDefault(msg, 6, 0),
     values: jspb.Message.getFieldWithDefault(msg, 7, ""),
-    addedBy: jspb.Message.getFieldWithDefault(msg, 11, "")
+    addedBy: jspb.Message.getFieldWithDefault(msg, 11, ""),
+    photosList: jspb.Message.toObjectList(msg.getPhotosList(),
+    photo_pb.Photo.toObject, includeInstance)
   };
 
   if (includeInstance) {
@@ -178,11 +189,11 @@ proto.assets.Survey.deserializeBinaryFromReader = function(msg, reader) {
       msg.setDateSurveyed(value);
       break;
     case 5:
-      var value = /** @type {number} */ (reader.readFloat());
+      var value = /** @type {number} */ (reader.readUint32());
       msg.setChainageStart(value);
       break;
     case 6:
-      var value = /** @type {number} */ (reader.readFloat());
+      var value = /** @type {number} */ (reader.readUint32());
       msg.setChainageEnd(value);
       break;
     case 7:
@@ -192,6 +203,11 @@ proto.assets.Survey.deserializeBinaryFromReader = function(msg, reader) {
     case 11:
       var value = /** @type {string} */ (reader.readString());
       msg.setAddedBy(value);
+      break;
+    case 14:
+      var value = new photo_pb.Photo;
+      reader.readMessage(value,photo_pb.Photo.deserializeBinaryFromReader);
+      msg.addPhotos(value);
       break;
     default:
       reader.skipField();
@@ -288,15 +304,15 @@ proto.assets.Survey.serializeBinaryToWriter = function(message, writer) {
     );
   }
   f = message.getChainageStart();
-  if (f !== 0.0) {
-    writer.writeFloat(
+  if (f !== 0) {
+    writer.writeUint32(
       5,
       f
     );
   }
   f = message.getChainageEnd();
-  if (f !== 0.0) {
-    writer.writeFloat(
+  if (f !== 0) {
+    writer.writeUint32(
       6,
       f
     );
@@ -313,6 +329,14 @@ proto.assets.Survey.serializeBinaryToWriter = function(message, writer) {
     writer.writeString(
       11,
       f
+    );
+  }
+  f = message.getPhotosList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      14,
+      f,
+      photo_pb.Photo.serializeBinaryToWriter
     );
   }
 };
@@ -519,11 +543,11 @@ proto.assets.Survey.prototype.hasDateSurveyed = function() {
 
 
 /**
- * optional float chainage_start = 5;
+ * optional uint32 chainage_start = 5;
  * @return {number}
  */
 proto.assets.Survey.prototype.getChainageStart = function() {
-  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 5, 0.0));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 5, 0));
 };
 
 
@@ -532,16 +556,16 @@ proto.assets.Survey.prototype.getChainageStart = function() {
  * @return {!proto.assets.Survey} returns this
  */
 proto.assets.Survey.prototype.setChainageStart = function(value) {
-  return jspb.Message.setProto3FloatField(this, 5, value);
+  return jspb.Message.setProto3IntField(this, 5, value);
 };
 
 
 /**
- * optional float chainage_end = 6;
+ * optional uint32 chainage_end = 6;
  * @return {number}
  */
 proto.assets.Survey.prototype.getChainageEnd = function() {
-  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 6, 0.0));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 6, 0));
 };
 
 
@@ -550,7 +574,7 @@ proto.assets.Survey.prototype.getChainageEnd = function() {
  * @return {!proto.assets.Survey} returns this
  */
 proto.assets.Survey.prototype.setChainageEnd = function(value) {
-  return jspb.Message.setProto3FloatField(this, 6, value);
+  return jspb.Message.setProto3IntField(this, 6, value);
 };
 
 
@@ -587,6 +611,44 @@ proto.assets.Survey.prototype.getAddedBy = function() {
  */
 proto.assets.Survey.prototype.setAddedBy = function(value) {
   return jspb.Message.setProto3StringField(this, 11, value);
+};
+
+
+/**
+ * repeated Photo photos = 14;
+ * @return {!Array<!proto.assets.Photo>}
+ */
+proto.assets.Survey.prototype.getPhotosList = function() {
+  return /** @type{!Array<!proto.assets.Photo>} */ (
+    jspb.Message.getRepeatedWrapperField(this, photo_pb.Photo, 14));
+};
+
+
+/**
+ * @param {!Array<!proto.assets.Photo>} value
+ * @return {!proto.assets.Survey} returns this
+*/
+proto.assets.Survey.prototype.setPhotosList = function(value) {
+  return jspb.Message.setRepeatedWrapperField(this, 14, value);
+};
+
+
+/**
+ * @param {!proto.assets.Photo=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.assets.Photo}
+ */
+proto.assets.Survey.prototype.addPhotos = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 14, opt_value, proto.assets.Photo, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.assets.Survey} returns this
+ */
+proto.assets.Survey.prototype.clearPhotosList = function() {
+  return this.setPhotosList([]);
 };
 
 

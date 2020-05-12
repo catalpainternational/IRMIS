@@ -12,15 +12,20 @@
         </div>
     </div>
 
-    <header class="align-items-center d-flex">
+    <header class="align-items-center d-flex justify-content-between">
         <h1>{ window.gettext("Road Network Overview") }</h1>
+        <button class="btn btn-secondary btn-sm" onclick="{ () => window.print() }">
+            { window.gettext("Print") }
+        </button>
     </header>
 
     <div class="content-wrapper report-content">
         <div class="d-flex flex-column total-length">
             <p>{ window.gettext("Total Length of Road Network") }</p>
             <h1 if="{!state.reportData.totalLength}">Loading</h1>
-            <h1 if="{state.reportData.totalLength}" class="highlight">{ (state.reportData.totalLength / 1000).toFixed(2) } km</h1>
+            <h1 if="{state.reportData.totalLength}" class="highlight">
+                { (state.reportData.totalLength / 1000).toFixed(2)} km
+            </h1>
         </div>
 
         <div if="{state.reportData.totalLength && state.asset_class}" class="d-flex">
@@ -36,9 +41,10 @@
     </div>
 
     <div class="print-footer">
-        <div class="d-flex align-items-center" if="{ state.reportData.dateCreated }">
-            { window.gettext("Exported from Estrada on") } { state.reportData.dateCreated() }</div>
-        <span class="app-logo image"></span>
+        <div class="d-flex align-items-center justify-content-between">
+            <span class="app-logo image"></span>
+            <p if="{ state.reportData.dateCreated }">{ window.gettext("Exported from Estrada on") } { state.reportData.dateCreated }</p>
+        </div>
     </div>
 
     <script>
@@ -47,11 +53,12 @@
         import { getAssetReport } from "../reportManager";
         import { reportBarIds } from "../reportTableDefinitions";
         import { updateReportAttributeSummary } from "../roadAttributes";
+        import { currentDateTime } from "../assets/reportUtilities";
 
         import $ from "jquery";
         import dayjs from "dayjs";
 
-        const emptyEntries = [{ key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading") }];
+        const emptyEntries = [{key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading")}];
 
         export default {
             state: {
@@ -65,10 +72,10 @@
                 Stacked_Bar
             },
             stackedBars: [
-                { id: reportBarIds.assetClass, title: window.gettext("Asset Class"), filterName: "asset_class" },
-                { id: reportBarIds.roadStatus, title: window.gettext("Road Status"), filterName: "road_status" },
-                { id: reportBarIds.assetCondition, title: window.gettext("Surface Condition (SDI)"), filterName: "asset_condition" },
-                { id: reportBarIds.pavementClass, title: window.gettext("Pavement Class"), filterName: "pavement_class" },
+                {id: reportBarIds.assetClass, title: window.gettext("Asset Class"), filterName: "asset_class"},
+                {id: reportBarIds.roadStatus, title: window.gettext("Road Status"), filterName: "road_status"},
+                {id: reportBarIds.assetCondition, title: window.gettext("Surface Condition (SDI)"), filterName: "asset_condition"},
+                {id: reportBarIds.pavementClass, title: window.gettext("Pavement Class"), filterName: "pavement_class"},
             ],
             onMounted(props, state) {
                 this.stackedBars.forEach((stackedBar) => {
@@ -80,7 +87,7 @@
                 this.createReport();
             },
             backToReports() {
-                window.location.hash = "reports/";
+                window.location.hash = "reports/assets/";
             },
             prepareStackedBar(barName, barData, filterName) {
                 if (barData && barData.length) {
@@ -89,16 +96,16 @@
                     this.state.reportData.totalLength = this.state.reportData.totalLength || barData.reduce((acc, cur) => acc += cur.distance || 0, 0);
 
                     const eventName = `${barName}.dataUpdated`;
-                    const eventDetail = { detail: { entries: this.state[filterName], barName } };
+                    const eventDetail = {detail: {entries: this.state[filterName], barName}};
                     document.dispatchEvent(new CustomEvent(eventName, eventDetail));
                 } else {
-                    this.state[filterName] = [{ key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("unknown") }];
+                    this.state[filterName] = [{key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("unknown")}];
                 }
             },
             createReport() {
                 $('#loading').modal('show');
 
-                const filter = { primaryattribute: this.stackedBars.map((stackedBar) => stackedBar.filterName) };
+                const filter = {reportassettype: ["ROAD"], primaryattribute: this.stackedBars.map((stackedBar) => stackedBar.filterName)};
 
                 getAssetReport(filter)
                     .then((surveyReportData) => {
@@ -109,7 +116,7 @@
                                 road_status: surveyReportData.roadStatuses,
                                 asset_condition: surveyReportData.assetConditions,
                                 pavement_class: surveyReportData.pavementClasses,
-                                dateCreated: () => dayjs(new Date()).format('DD MMMM YYYY [at] HH:mm'),
+                                dateCreated: currentDateTime(),
                             };
 
                             if (!!surveyReportData.lengths) {

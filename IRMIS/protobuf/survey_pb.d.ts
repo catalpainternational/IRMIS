@@ -3,6 +3,7 @@
 
 import * as jspb from "google-protobuf";
 import * as google_protobuf_timestamp_pb from "google-protobuf/google/protobuf/timestamp_pb";
+import * as photo_pb from "./photo_pb";
 
 export class Survey extends jspb.Message {
   getId(): number;
@@ -48,6 +49,11 @@ export class Survey extends jspb.Message {
   getAddedBy(): string;
   setAddedBy(value: string): void;
 
+  clearPhotosList(): void;
+  getPhotosList(): Array<photo_pb.Photo>;
+  setPhotosList(value: Array<photo_pb.Photo>): void;
+  addPhotos(value?: photo_pb.Photo, index?: number): photo_pb.Photo;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Survey.AsObject;
   static toObject(includeInstance: boolean, msg: Survey): Survey.AsObject;
@@ -73,6 +79,7 @@ export namespace Survey {
     chainageEnd: number,
     values: string,
     addedBy: string,
+    photosList: Array<photo_pb.Photo.AsObject>,
   }
 }
 

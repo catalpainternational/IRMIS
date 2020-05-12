@@ -12,6 +12,8 @@ var jspb = require('google-protobuf');
 var goog = jspb;
 var global = Function('return this')();
 
+var photo_pb = require('./photo_pb.js');
+goog.object.extend(proto, photo_pb);
 goog.exportSymbol('proto.assets.Projection', null, global);
 goog.exportSymbol('proto.assets.Road', null, global);
 goog.exportSymbol('proto.assets.Roads', null, global);
@@ -244,7 +246,7 @@ proto.assets.Projection.prototype.setY = function(value) {
  * @private {!Array<number>}
  * @const
  */
-proto.assets.Road.repeatedFields_ = [33,34,35];
+proto.assets.Road.repeatedFields_ = [33,34,35,36,37];
 
 
 
@@ -285,9 +287,9 @@ proto.assets.Road.toObject = function(includeInstance, msg) {
     roadStatus: jspb.Message.getFieldWithDefault(msg, 20, ""),
     linkCode: jspb.Message.getFieldWithDefault(msg, 5, ""),
     linkStartName: jspb.Message.getFieldWithDefault(msg, 16, ""),
-    linkStartChainage: jspb.Message.getFloatingPointFieldWithDefault(msg, 11, 0.0),
+    linkStartChainage: jspb.Message.getFieldWithDefault(msg, 11, 0),
     linkEndName: jspb.Message.getFieldWithDefault(msg, 17, ""),
-    linkEndChainage: jspb.Message.getFloatingPointFieldWithDefault(msg, 12, 0.0),
+    linkEndChainage: jspb.Message.getFieldWithDefault(msg, 12, 0),
     linkLength: jspb.Message.getFloatingPointFieldWithDefault(msg, 7, 0.0),
     surfaceType: jspb.Message.getFieldWithDefault(msg, 8, ""),
     assetCondition: jspb.Message.getFieldWithDefault(msg, 9, ""),
@@ -309,7 +311,11 @@ proto.assets.Road.toObject = function(includeInstance, msg) {
     core: jspb.Message.getFieldWithDefault(msg, 32, 0),
     servedFacilitiesList: (f = jspb.Message.getRepeatedField(msg, 33)) == null ? undefined : f,
     servedEconomicAreasList: (f = jspb.Message.getRepeatedField(msg, 34)) == null ? undefined : f,
-    servedConnectionTypesList: (f = jspb.Message.getRepeatedField(msg, 35)) == null ? undefined : f
+    servedConnectionTypesList: (f = jspb.Message.getRepeatedField(msg, 35)) == null ? undefined : f,
+    inventoryPhotosList: jspb.Message.toObjectList(msg.getInventoryPhotosList(),
+    photo_pb.Photo.toObject, includeInstance),
+    surveyPhotosList: jspb.Message.toObjectList(msg.getSurveyPhotosList(),
+    photo_pb.Photo.toObject, includeInstance)
   };
 
   if (includeInstance) {
@@ -379,7 +385,7 @@ proto.assets.Road.deserializeBinaryFromReader = function(msg, reader) {
       msg.setLinkStartName(value);
       break;
     case 11:
-      var value = /** @type {number} */ (reader.readFloat());
+      var value = /** @type {number} */ (reader.readInt32());
       msg.setLinkStartChainage(value);
       break;
     case 17:
@@ -387,7 +393,7 @@ proto.assets.Road.deserializeBinaryFromReader = function(msg, reader) {
       msg.setLinkEndName(value);
       break;
     case 12:
-      var value = /** @type {number} */ (reader.readFloat());
+      var value = /** @type {number} */ (reader.readInt32());
       msg.setLinkEndChainage(value);
       break;
     case 7:
@@ -480,6 +486,16 @@ proto.assets.Road.deserializeBinaryFromReader = function(msg, reader) {
       var value = /** @type {!Array<number>} */ (reader.readPackedInt32());
       msg.setServedConnectionTypesList(value);
       break;
+    case 36:
+      var value = new photo_pb.Photo;
+      reader.readMessage(value,photo_pb.Photo.deserializeBinaryFromReader);
+      msg.addInventoryPhotos(value);
+      break;
+    case 37:
+      var value = new photo_pb.Photo;
+      reader.readMessage(value,photo_pb.Photo.deserializeBinaryFromReader);
+      msg.addSurveyPhotos(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -566,8 +582,8 @@ proto.assets.Road.serializeBinaryToWriter = function(message, writer) {
     );
   }
   f = message.getLinkStartChainage();
-  if (f !== 0.0) {
-    writer.writeFloat(
+  if (f !== 0) {
+    writer.writeInt32(
       11,
       f
     );
@@ -580,8 +596,8 @@ proto.assets.Road.serializeBinaryToWriter = function(message, writer) {
     );
   }
   f = message.getLinkEndChainage();
-  if (f !== 0.0) {
-    writer.writeFloat(
+  if (f !== 0) {
+    writer.writeInt32(
       12,
       f
     );
@@ -742,6 +758,22 @@ proto.assets.Road.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
+  f = message.getInventoryPhotosList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      36,
+      f,
+      photo_pb.Photo.serializeBinaryToWriter
+    );
+  }
+  f = message.getSurveyPhotosList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      37,
+      f,
+      photo_pb.Photo.serializeBinaryToWriter
+    );
+  }
 };
 
 
@@ -890,11 +922,11 @@ proto.assets.Road.prototype.setLinkStartName = function(value) {
 
 
 /**
- * optional float link_start_chainage = 11;
+ * optional int32 link_start_chainage = 11;
  * @return {number}
  */
 proto.assets.Road.prototype.getLinkStartChainage = function() {
-  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 11, 0.0));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 11, 0));
 };
 
 
@@ -903,7 +935,7 @@ proto.assets.Road.prototype.getLinkStartChainage = function() {
  * @return {!proto.assets.Road} returns this
  */
 proto.assets.Road.prototype.setLinkStartChainage = function(value) {
-  return jspb.Message.setProto3FloatField(this, 11, value);
+  return jspb.Message.setProto3IntField(this, 11, value);
 };
 
 
@@ -926,11 +958,11 @@ proto.assets.Road.prototype.setLinkEndName = function(value) {
 
 
 /**
- * optional float link_end_chainage = 12;
+ * optional int32 link_end_chainage = 12;
  * @return {number}
  */
 proto.assets.Road.prototype.getLinkEndChainage = function() {
-  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 12, 0.0));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 12, 0));
 };
 
 
@@ -939,7 +971,7 @@ proto.assets.Road.prototype.getLinkEndChainage = function() {
  * @return {!proto.assets.Road} returns this
  */
 proto.assets.Road.prototype.setLinkEndChainage = function(value) {
-  return jspb.Message.setProto3FloatField(this, 12, value);
+  return jspb.Message.setProto3IntField(this, 12, value);
 };
 
 
@@ -1431,6 +1463,82 @@ proto.assets.Road.prototype.addServedConnectionTypes = function(value, opt_index
  */
 proto.assets.Road.prototype.clearServedConnectionTypesList = function() {
   return this.setServedConnectionTypesList([]);
+};
+
+
+/**
+ * repeated Photo inventory_photos = 36;
+ * @return {!Array<!proto.assets.Photo>}
+ */
+proto.assets.Road.prototype.getInventoryPhotosList = function() {
+  return /** @type{!Array<!proto.assets.Photo>} */ (
+    jspb.Message.getRepeatedWrapperField(this, photo_pb.Photo, 36));
+};
+
+
+/**
+ * @param {!Array<!proto.assets.Photo>} value
+ * @return {!proto.assets.Road} returns this
+*/
+proto.assets.Road.prototype.setInventoryPhotosList = function(value) {
+  return jspb.Message.setRepeatedWrapperField(this, 36, value);
+};
+
+
+/**
+ * @param {!proto.assets.Photo=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.assets.Photo}
+ */
+proto.assets.Road.prototype.addInventoryPhotos = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 36, opt_value, proto.assets.Photo, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.assets.Road} returns this
+ */
+proto.assets.Road.prototype.clearInventoryPhotosList = function() {
+  return this.setInventoryPhotosList([]);
+};
+
+
+/**
+ * repeated Photo survey_photos = 37;
+ * @return {!Array<!proto.assets.Photo>}
+ */
+proto.assets.Road.prototype.getSurveyPhotosList = function() {
+  return /** @type{!Array<!proto.assets.Photo>} */ (
+    jspb.Message.getRepeatedWrapperField(this, photo_pb.Photo, 37));
+};
+
+
+/**
+ * @param {!Array<!proto.assets.Photo>} value
+ * @return {!proto.assets.Road} returns this
+*/
+proto.assets.Road.prototype.setSurveyPhotosList = function(value) {
+  return jspb.Message.setRepeatedWrapperField(this, 37, value);
+};
+
+
+/**
+ * @param {!proto.assets.Photo=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.assets.Photo}
+ */
+proto.assets.Road.prototype.addSurveyPhotos = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 37, opt_value, proto.assets.Photo, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.assets.Road} returns this
+ */
+proto.assets.Road.prototype.clearSurveyPhotosList = function() {
+  return this.setSurveyPhotosList([]);
 };
 
 

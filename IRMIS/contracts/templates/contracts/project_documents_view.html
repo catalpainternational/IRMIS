@@ -1,0 +1,73 @@
+{% extends "contracts/contracts.html" %}
+{% load i18n %}
+
+{% block contracts_profile %}
+<header class="d-flex justify-content-between">
+    <div class="align-items-center d-flex">
+        <a class="caret-dark left image" href="{% url 'contract-project-list' %}"></a>
+        <h1>{% trans "Project" %} — {{ project.name }}</h1>
+    </div>
+    <button class="btn btn-secondary btn-sm print-profile">{% trans "Print" %}</button>
+</header>
+
+<nav>
+    <a href="{% url 'contract-project-detail' project.id %}">
+        <h6>{% trans "Project Details" %}</h6>
+    </a>
+    <a href="{% url 'contract-projectfinancials-detail' project.id %}">
+        <h6>{% trans "Financials" %}</h6>
+    </a>
+    <a href="{% url 'contract-projectconstructionschedule-detail' project.id %}">
+        <h6>{% trans "Construction Schedule" %}</h6>
+    </a>
+    <a class="selected">
+        <h6>{% trans "Documents" %}</h6>
+    </a>
+</nav>
+
+<div class="content">
+    <div class="title-header">
+        <h5 class="title">{% trans "List of documents" %}</h5>
+    </div>
+    <table id="project-document-view-list-table" class="contracts-profile-table d-block table table-hover">
+        <thead>
+            <tr>
+                <th>{% trans "Title" %}</th>
+                <th>{% trans "Type" %}</th>
+                <th>{% trans "Document Date" %}</th>
+                <th>{% trans "Description" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for document in document_list %}
+            <tr>
+                <td>{{ document.title }}</td>
+                <td>{{ document.document_type.name }}</td>
+                <td>{{ document.document_date }}</td>
+                <td>{{ document.description }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <table id="project-document-print-list-table" class="contracts-profile-table d-block table table-hover">
+        <thead>
+            <tr>
+                <th>{% trans "Title" %}</th>
+                <th>{% trans "Type" %}</th>
+                <th>{% trans "Document Date" %}</th>
+                <th>{% trans "Description" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for document in document_list %}
+            <tr>
+                <td>{{ document.title }}</td>
+                <td>{{ document.document_type.name }}</td>
+                <td>{{ document.document_date }}</td>
+                <td>{{ document.description }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

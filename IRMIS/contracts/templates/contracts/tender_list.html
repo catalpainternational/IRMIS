@@ -1,0 +1,161 @@
+{% extends "contracts/contracts.html" %}
+{% load i18n %}
+
+{% block contracts_profile %}
+<header class="align-items-center d-flex justify-content-between no-back-button">
+    <h1>{% trans "Tender Manager" %}</h1>
+    {% if perms.contracts.add_tender %}
+    <a class="btn btn-primary" href="{% url 'contract-tender-create' %}">{% trans "Create New Tender" %}</a>
+    {% endif %}
+</header>
+
+<div class="content">
+    <div class="title-header">
+        <h5 class="title">{% trans "List of tenders" %}</h5>
+    </div>
+
+    {% if tender_list.exists %}
+    <div class="contract-filters">
+        <h6>{% trans "Filters" %}</h6>
+        <div class="d-flex justify-content-between">
+            <div class="d-flex flex-wrap">
+                <select id="tender_status_select2" multiple="true">
+                    {% for status in status_list %}
+                    <option value="{{ status.name }}">{{ status.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <select id="tender_type_of_work_select2" multiple="true">
+                    {% for type in type_of_work_list %}
+                    <option value="{{ type.name }}">{{ type.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <select id="asset_class_select2" multiple="true">
+                    {% for asset_class in asset_classes %}
+                    <option value="{{ asset_class.0 }}">{{ asset_class.1 }}</option>
+                    {% endfor %}
+                </select>
+
+                <select id="municipality_select2" multiple="true">
+                    {% for municipality in municipalities %}
+                    <option value="{{ municipality.id }}">{{ municipality.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <select id="value_select" class="form-control form-control-sm inactive">
+                    <option selected>{% trans "Value range" %}</option>
+                    <option data-min="0" data-max="49999">$0 - $49.999</option>
+                    <option data-min="50000" data-max="99999">$50.000 - $99.999</option>
+                    <option data-min="100000" data-max="499999">$100.000 - $499.999</option>
+                    <option data-min="500000" data-max="999999">$500.000 - $999.999</option>
+                    <option data-min="1000000">{% trans "over" %} $1.000.000</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end">
+        <button id="export-csv" class="btn btn-secondary btn-sm">{% trans "Export table" %}</button>
+    </div>
+    <table id="tender-list-table" class="contracts-profile-table d-block table table-hover w-100">
+        <thead>
+            <tr>
+                {% if perms.contracts.change_tender or perms.contracts.delete_tender %}
+                <th>{% trans "Edit" %}</th>
+                {% endif %}
+                <th>{% trans "Tender Code" %}</th>
+                <th>{% trans "Number of Projects" %}</th>
+                <th>{% trans "Project(s) name" %}</th>
+                <th>{% trans "Status" %}</th>
+                <th></th> <!-- hidden project assets code column -->
+                <th></th> <!-- hidden type of work column -->
+                <th></th> <!-- hidden project budgets column -->
+                <th></th> <!-- hidden project assets class column -->
+                <th></th> <!-- hidden project municipality column -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for tender in tender_list %}
+            <tr>
+                {% if perms.contracts.change_tender or perms.contracts.delete_tender %}
+                <td class="text-center">
+                    {% if perms.contracts.change_tender and not perms.contracts.delete_tender %}
+                    <a class="image pencil" href="{% url 'contract-tender-update' tender.code %}"></a>
+                    {% elif not perms.contracts.change_tender and perms.contracts.delete_tender %}
+                    <a class="image delete" href=""></a>
+                    {% else %}
+                    <a class="image pencil" href="{% url 'contract-tender-update' tender.code %}"></a>
+                    <span></span>
+                    <a class="image delete delete-link" data-delete="/contracts/api/tender/{{ tender.code }}/"></a>
+                    {% endif %}
+                </td>
+                {% endif %}
+                <td><a href="{% url 'contract-tender-detail' tender.code %}">{{ tender.code }}</a></td>
+                <td>{{ tender.projects.count }}</td>
+                <td>
+                    {% for project in tender.projects.all %}
+                    <div>{{ project.name }}</div>
+                    {% endfor %}
+                </td>
+                <td>{{ tender.status }}</td>
+                <td>
+                    {% for project in tender.projects.all %}
+                    {% for asset in project.assets.all %}
+                    <div>{{ asset.asset_code }}</div>
+                    {% endfor %}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for project in tender.projects.all %}
+                    <div>{{ project.type_of_work }}</div>
+                    {% endfor %}
+                </td>
+                <td>$ {{ tender.projects_total_budget }}</td>
+                <td>
+                    {% for project in tender.projects.all %}
+                    {% for asset in project.assets.all %}
+                    <div>{{ asset.asset_class }}</div>
+                    {% endfor %}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for project in tender.projects.all %}
+                    {% for asset in project.assets.all %}
+                    <div>{{ asset.municipality }}</div>
+                    {% endfor %}
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="align-items-center d-flex flex-column justify-content-center no-data-wrapper">
+        <span class="no-data image"></span>
+        <h6 class="text-center">{% trans "Welcome to the Tender Manager" %}</h6>
+        <p class="text-center">{% trans "No tenders were created yet" %}</p>
+    </div>
+    {% endif %}
+</div>
+
+<div class="action-modal delete-modal modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="d-flex justify-content-center modal-header">
+                <span class="alert stop image"></span>
+                <span class="close image" data-dismiss="modal" aria-label="{% trans 'Close' %}"
+                    aria-hidden="true"></span>
+            </div>
+            <div class="modal-body text-center">
+                <h6>{% trans "Delete Tender" %}</h6>
+                <p>{% trans "Are you sure you want to delete this tender?" %}</p>
+            </div>
+            <div class="d-flex justify-content-center modal-footer">
+                <button type="button" class="btn btn-danger delete-item">{% trans "Delete" %}</button>
+                <button type="button" class="btn btn-light" data-dismiss="modal">{% trans "Don't delete" %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

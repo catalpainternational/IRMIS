@@ -2,21 +2,17 @@ from django.apps import apps
 from django.contrib.gis.db import models
 from django.contrib.gis.db.models.functions import Transform
 from django.contrib.postgres.fields import HStoreField
-from typing import Dict
 from django.db.models import (
     Case,
-    CharField,
-    DateTimeField,
     F,
-    FloatField,
     Func,
-    OuterRef,
     Q,
-    Subquery,
     Value,
     When,
 )
 from django.db import connection
+import importlib_resources as resources
+from . import sql_scripts
 
 
 class HstoreFieldAsFloat(Func):
@@ -26,6 +22,16 @@ class HstoreFieldAsFloat(Func):
 
     template = """(%(expressions)s -> '%(fieldname)s')::numeric"""
     output_field = models.FloatField()
+    default_alias = "value"
+
+
+class HstoreFieldAsChar(Func):
+    """
+    Brain dead django tries to CAST the whole HSTORE field if you use CAST.
+    """
+
+    template = """(%(expressions)s -> '%(fieldname)s')::text"""
+    output_field = models.TextField()
     default_alias = "value"
 
 
@@ -48,7 +54,7 @@ class RoughnessRoadCode(Func):
         from 1 for 3
     )))
     """
-    output_field = CharField()
+    output_field = models.TextField()
     default_alias = "road_code"
 
 
@@ -58,7 +64,7 @@ class RoughnessLinkCode(Func):
     """
 
     template = "(data::json->>'Link Code')"
-    output_field = CharField()
+    output_field = models.TextField()
     default_alias = "link_code"
 
 
@@ -68,7 +74,7 @@ class Roughness(Func):
     """
 
     template = "(data::json->>'roughness')::numeric"
-    output_field = FloatField()
+    output_field = models.FloatField()
     default_alias = "roughness"
 
 
@@ -80,8 +86,8 @@ class RoughnessDate(Func):
     template = (
         "to_timestamp((data::json->>'Survey date and time'), 'HH24:MI:SS YYY-Month-DD')"
     )
-    output_field = DateTimeField()
-    default_alias = "time"
+    output_field = models.DateTimeField()
+    default_alias = "date_surveyed"
 
 
 class RoughnessStartPoint(Func):
@@ -112,17 +118,21 @@ class Chainage(Func):
 
 
 class chainage_to_point(Func):
-    template = "%(function)s(%(expressions)s)"
     function = "chainage_to_point"
     output_field = models.PointField()
     default_alias = "geom"
 
 
 class NearestAssetRoadId(Func):
-    template = "%(function)s(%(expressions)s)"
     function = "closest_roadid_to_point"
     output_field = models.IntegerField()
     default_alias = "road_id"
+
+
+class NearestAssetRoadAssetClass(Func):
+    function = "closest_assetclass_to_point"
+    output_field = models.TextField()
+    default_alias = "asset_class"
 
 
 class ST_DWithin(Func):
@@ -134,29 +144,6 @@ class ST_DWithin(Func):
 
     function = "ST_DWithin"
     output_field = models.BooleanField()
-    template = "%(function)s(%(expressions)s)"
-
-
-def road_field_subquery(
-    road_model_field: str, annotation_field_name: str = None
-) -> Dict[str, Subquery]:
-    """
-    For models with a pseudo-foreign-key to a Road ID, fetch a relevant field on the
-    road model
-
-    >>> Survey.objects.annotate(**road_field_subquery('asset_class')).values('road_id', 'road_asset_class')
-    <SurveyQuerySet [... {'road_id': 133, 'road_asset_class': 'MUN'}, {'road_id': 133, 'road_asset_class': 'MUN'},...']>
-    """
-
-    # When it's not defined, the returned annotation field is generated below
-    field_name = annotation_field_name or "road_%s" % (road_model_field,)
-
-    road_model = apps.get_model("assets", "road")
-    return {
-        field_name: Subquery(
-            road_model.objects.filter(pk=OuterRef("road_id")).values(road_model_field)
-        )
-    }
 
 
 def update_roughness_survey_values():
@@ -171,7 +158,7 @@ def update_roughness_survey_values():
         """
         A CASE statement generator for road roughness
         """
-        road_asset_class = "road_asset_class"  # Assumes that .annotate(**road_field_subquery("asset_class")) has been added to your Survey qs
+        road_asset_class = "road_asset_class"
 
         mun = Q(**{road_asset_class: "MUN"})
         nat = Q(**{road_asset_class: "NAT"})
@@ -199,11 +186,11 @@ def update_roughness_survey_values():
                 ("good", roughness_range(None, 4) & nat),
                 ("fair", roughness_range(4, 6) & nat),
                 ("poor", roughness_range(6, 10) & nat),
-                ("verypoor", roughness_range(10, None) & nat),
+                ("bad", roughness_range(10, None) & nat),
                 ("good", roughness_range(None, 6) & mun),
                 ("fair", roughness_range(6, 10) & mun),
                 ("poor", roughness_range(10, 14) & mun),
-                ("verypoor", roughness_range(14, None) & mun),
+                ("bad", roughness_range(14, None) & mun),
             )
         ]
 
@@ -212,11 +199,11 @@ def update_roughness_survey_values():
     return (
         apps.get_model("assets", "Survey")
         .objects.filter(values__has_key="source_roughness")
-        .annotate(**road_field_subquery("asset_class"))
         .annotate(
+            road_asset_class=HstoreFieldAsChar(F("values"), fieldname="asset_class"),
             roughness_as_float=HstoreFieldAsFloat(
                 F("values"), fieldname="source_roughness"
-            )
+            ),
         )
         .annotate(
             new_values=Func(
@@ -277,11 +264,18 @@ class CsvSurveyQueryset(models.QuerySet):
             .annotate(
                 start_utm=Transform(RoughnessStartPoint(), srid=32751),
                 end_utm=Transform(RoughnessEndPoint(), srid=32751),
+                date_surveyed=F("date_surveyed"),
+                asset_code=F("road_code"),
             )
             .annotate(
-                chainage_start=Chainage(F("start_utm"), F("road_code")),
-                chainage_end=Chainage(F("end_utm"), F("road_code")),
+                chainage_start=Func(
+                    Chainage(F("start_utm"), F("road_code")), function="ROUND"
+                ),
+                chainage_end=Func(
+                    Chainage(F("end_utm"), F("road_code")), function="ROUND"
+                ),
                 road_id=NearestAssetRoadId(F("start_utm"), F("road_code")),
+                asset_class=NearestAssetRoadAssetClass(F("start_utm"), F("road_code")),
             )
             .annotate(
                 chainage_start_utm=chainage_to_point(
@@ -342,12 +336,15 @@ class RoughnessManager(models.Manager):
         model.objects.bulk_create(
             [
                 model(
-                    road_code=from_row.road_code,
+                    asset_id=f"ROAD-{from_row.road_id}",
+                    asset_code=from_row.asset_code,
+                    date_surveyed=from_row.date_surveyed,
                     chainage_start=min(
                         (from_row.chainage_start, from_row.chainage_end)
                     ),
                     chainage_end=max((from_row.chainage_start, from_row.chainage_end)),
                     values={
+                        "asset_class": from_row.asset_class,
                         "source_roughness": from_row.roughness,
                         "csv_data_source_id": from_row.source_id,
                         "csv_data_row_index": from_row.row_index,
@@ -355,7 +352,6 @@ class RoughnessManager(models.Manager):
                         if from_row.chainage_start > from_row.chainage_end
                         else 1,
                     },
-                    road_id=from_row.road_id,
                     user=user,
                     source="programmatic",
                 )

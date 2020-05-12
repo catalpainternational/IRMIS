@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<body>
+    <table id="data">
+        <thead>
+            <tr>
+                <th>Road class</th>
+                <th>Road code</th>
+                <th>Road name</th>
+                <th>Chainage start (of the segment)</th>
+                <th>Chainage end (of the segment)</th>
+                <th>Length (of the segment)</th>
+                <th>Surface type</th>
+                <th>Terrain</th>
+                <th>Last treatment (year of the last rehabilitation or periodic maintenance</th>
+                <th>In the future this data should come from the completed contracts</th>
+                <th>IRI numeric value (average for the segment)</th>
+                <th>IRI qualitative value (e.g. Good, Fair, Poor, Bad)</th>
+                <th>Traffic (current year or latest year available)</th>
+            </tr>
+        </thead>
+        <tbody> {% for survey in object_list %}
+                <td>Road class</td>
+                <td>Road code</td>
+                <td>Road name</td>
+                <td>Chainage start (of the segment)</td>
+                <td>Chainage end (of the segment)</td>
+                <td>Length (of the segment)</td>
+                <td>Surface type</td>
+                <td>Terrain</td>
+                <td>Last treatment (year of the last rehabilitation or periodic maintenance</td>
+                <td>In the future this data should come from the completed contracts</td>
+                <td>IRI numeric value (average for the segment)</td>
+                <td>IRI qualitative value (e.g. Good, Fair, Poor, Bad)</td>
+                <td>Traffic (current year or latest year available)</td>
+                {% endfor %}
+        </tbody>
+    </table>
+</body>

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from datetime import timedelta
 
 import django.conf.locale
 from django.utils.translation import ugettext_lazy as _
@@ -67,6 +68,7 @@ INSTALLED_APPS = [
     # IRMIS
     "IRMIS_wagtail",
     "assets",
+    "contracts",
     "csv_data_sources",
     "protected_downloads",
     "basemap",
@@ -176,6 +178,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "dist"),
     os.path.join(BASE_DIR, "src/favicon"),
+    os.path.join(BASE_DIR, "src/planning/templates"),
 )
 
 # Media files (user uploaded files)
@@ -191,6 +194,21 @@ LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 WAGTAIL_FRONTEND_LOGIN_URL = "/accounts/login/"
 PASSWORD_REQUIRED_TEMPLATE = "home/password_required.html"
+
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_jwt.authentication.JSONWebTokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.BasicAuthentication",
+    ),
+}
+
+JWT_AUTH = {
+    "JWT_SECRET_KEY": SECRET_KEY,
+    "JWT_ALGORITHM": "HS256",
+    "JWT_EXPIRATION_DELTA": timedelta(hours=24),
+}
 
 try:
     from .local_settings import *  # noqa
