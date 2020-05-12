@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-28 05:30+0000\n"
+"POT-Creation-Date: 2020-05-12 01:21+0000\n"
 "PO-Revision-Date: 2019-10-11 00:57+0000\n"
 "Last-Translator: b'  <juliana@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -232,9 +232,6 @@ msgid "Close"
 msgstr "Fechar"
 
 msgid "Created by Catalpa International"
-msgstr ""
-
-msgid "Please Wait"
 msgstr ""
 
 msgid "Surface Condition Data (SDI)"
@@ -630,6 +627,9 @@ msgstr "Sucesso"
 msgid "Error"
 msgstr "Erro"
 
+msgid "Please wait!"
+msgstr ""
+
 msgid "Previous"
 msgstr "Anterior"
 
@@ -703,7 +703,22 @@ msgstr ""
 msgid "Planning Templates"
 msgstr ""
 
+msgid "Democratic Republic of Timor-Leste"
+msgstr ""
+
+msgid "Ministry of Public Works"
+msgstr ""
+
+msgid "Directorate General for Public Works"
+msgstr ""
+
+msgid "National Directorate for Roads, Bridges and Flood Control"
+msgstr ""
+
 msgid "Planning and Budgetting Dashboard"
+msgstr ""
+
+msgid "Print"
 msgstr ""
 
 msgid "5-Year Plan and Budget Summary"
@@ -730,6 +745,9 @@ msgstr ""
 #| msgid "No data available in table"
 msgid "No plans available yet"
 msgstr "Não há dados disponíveis na tabela"
+
+msgid "Exported from Estrada on"
+msgstr ""
 
 msgid "Routine Maintenance"
 msgstr ""
@@ -829,18 +847,6 @@ msgstr ""
 msgid "Municipal"
 msgstr ""
 
-msgid "Democratic Republic of Timor-Leste"
-msgstr ""
-
-msgid "Ministry of Public Works"
-msgstr ""
-
-msgid "Directorate General for Public Works"
-msgstr ""
-
-msgid "National Directorate for Roads, Bridges and Flood Control"
-msgstr ""
-
 msgid "Select report criteria"
 msgstr ""
 
@@ -851,9 +857,6 @@ msgid "Road Asset Management"
 msgstr ""
 
 msgid "Report"
-msgstr ""
-
-msgid "Print"
 msgstr ""
 
 msgid "Road"
@@ -897,9 +900,6 @@ msgstr "Seleccione o Tipo de Pavimento"
 #| msgid "Condition"
 msgid "Roughness Condition (IRI)"
 msgstr "Condição"
-
-msgid "Exported from Estrada on"
-msgstr ""
 
 msgid "Year"
 msgstr ""
@@ -1014,14 +1014,6 @@ msgstr "Condição"
 msgid "Report successfully created"
 msgstr "As suas alterações foram gravadas com sucesso"
 
-#, fuzzy
-#| msgid "Condition"
-msgid "Creating Report"
-msgstr "Condição"
-
-msgid "We are preparing your report. Please wait!"
-msgstr ""
-
 msgid "Asset Manager"
 msgstr ""
 
@@ -1071,6 +1063,20 @@ msgstr ""
 msgid "on"
 msgstr ""
 
+msgid "Delete asset from the project"
+msgstr ""
+
+#, fuzzy
+#| msgid "Project"
+msgid "Project Name"
+msgstr "Projecto"
+
+msgid "Status"
+msgstr ""
+
+msgid "Estimated Budget"
+msgstr ""
+
 msgid "Search by Asset Code, Project Code or Project Name"
 msgstr ""
 
@@ -1082,16 +1088,43 @@ msgstr "Projecto"
 msgid "Type of work"
 msgstr ""
 
+msgid "Tender Code"
+msgstr ""
+
+msgid "Number of Projects"
+msgstr ""
+
+#, fuzzy
+#| msgid "Project"
+msgid "Project(s) Name"
+msgstr "Projecto"
+
 msgid "Search by Asset Code or Tender Code"
 msgstr ""
 
 msgid "Tender status"
 msgstr ""
 
+#, fuzzy
+#| msgid "Condition"
+msgid "Contract Code"
+msgstr "Condição"
+
 msgid "Search by Asset Code or Contract Code"
 msgstr ""
 
 msgid "Contract status"
+msgstr ""
+
+#, fuzzy
+#| msgid "Link Name"
+msgid "Name"
+msgstr "Nome da secção"
+
+msgid "Total Contracts"
+msgstr ""
+
+msgid "Active Contracts"
 msgstr ""
 
 msgid "Search by Company Name or Company TIN"
@@ -1208,9 +1241,9 @@ msgid "Code"
 msgstr "Seleccione o Tipo de Estrada"
 
 #, fuzzy
-#| msgid "Link Name"
-msgid "Name"
-msgstr "Nome da secção"
+#~| msgid "Condition"
+#~ msgid "Creating Report"
+#~ msgstr "Condição"
 
 #, fuzzy
 #~| msgid "Condition"
