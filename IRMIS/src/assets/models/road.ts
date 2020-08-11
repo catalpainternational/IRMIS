@@ -1,6 +1,6 @@
 import { Road } from "../../../protobuf/roads_pb";
 import { IAsset } from "./estradaBase";
-import { EstradaPhoto, makeEstradaPhoto, Photo } from "./photo";
+import { EstradaMedia, makeEstradaMedia, Media } from "./media";
 import { makeEstradaProjection } from "./projection";
 
 import {
@@ -101,7 +101,7 @@ export class EstradaRoad extends Road implements IAsset {
     }
 
     get linkStartChainage() {
-        return toChainageFormat(this.getNullableLinkStartChainage());
+        return this.getNullableLinkStartChainage();
     }
 
     get linkEndName() {
@@ -109,7 +109,7 @@ export class EstradaRoad extends Road implements IAsset {
     }
 
     get linkEndChainage() {
-        return toChainageFormat(this.getNullableLinkEndChainage());
+        return this.getNullableLinkEndChainage();
     }
 
     get linkCode() {
@@ -206,9 +206,14 @@ export class EstradaRoad extends Road implements IAsset {
             .map((id) => choice_or_default(id.toString(), CONNECTION_TYPE_CHOICES));
     }
 
-    get rainfall() {
-        return this.getNullableRainfall();
+    get rainfallMaximum() {
+        return this.getNullableRainfallMaximum();
     }
+
+    get rainfallMinimum() {
+        return this.getNullableRainfallMinimum();
+    }
+
 
     get projectionStart() {
         const projectionStartRaw = this.getProjectionStart();
@@ -240,22 +245,22 @@ export class EstradaRoad extends Road implements IAsset {
         return this.getNullableNumberLanes();
     }
 
-    get inventoryPhotos(): EstradaPhoto[] | undefined {
-        const inventoryPhotosListRaw = this.getInventoryPhotosList();
-        return inventoryPhotosListRaw ? inventoryPhotosListRaw.map(makeEstradaPhoto) : inventoryPhotosListRaw;
+    get inventoryMedia(): EstradaMedia[] | undefined {
+        const inventoryMediaListRaw = this.getInventoryMediaList();
+        return inventoryMediaListRaw ? inventoryMediaListRaw.map(makeEstradaMedia) : inventoryMediaListRaw;
     }
 
-    set inventoryPhotos(values: EstradaPhoto[] | undefined) {
-        this.setInventoryPhotosList(values as Photo[]);
+    set inventoryMedia(values: EstradaMedia[] | undefined) {
+        this.setInventoryMediaList(values as Media[]);
     }
 
-    get surveyPhotos(): EstradaPhoto[] | undefined {
-        const surveyPhotosListRaw = this.getSurveyPhotosList();
-        return surveyPhotosListRaw ? surveyPhotosListRaw.map(makeEstradaPhoto) : surveyPhotosListRaw;
+    get surveyMedia(): EstradaMedia[] | undefined {
+        const surveyMediaListRaw = this.getSurveyMediaList();
+        return surveyMediaListRaw ? surveyMediaListRaw.map(makeEstradaMedia) : surveyMediaListRaw;
     }
 
-    set surveyPhotos(values: EstradaPhoto[] | undefined) {
-        this.setSurveyPhotosList(values as Photo[]);
+    set surveyMedia(values: EstradaMedia[] | undefined) {
+        this.setSurveyMediaList(values as Media[]);
     }
 
     get population() {
@@ -263,8 +268,14 @@ export class EstradaRoad extends Road implements IAsset {
     }
 
     /** A Null or None in the protobuf is indicated by a negative value */
-    public getNullableRainfall() {
-        const rainfall = super.getRainfall();
+    public getNullableRainfallMaximum() {
+        const rainfall = super.getRainfallMaximum();
+        return (rainfall >= 0 || this.isSerialising) ? rainfall : null;
+    }
+
+    /** A Null or None in the protobuf is indicated by a negative value */
+    public getNullableRainfallMinimum() {
+        const rainfall = super.getRainfallMinimum();
         return (rainfall >= 0 || this.isSerialising) ? rainfall : null;
     }
 

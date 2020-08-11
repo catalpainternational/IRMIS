@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-12 01:21+0000\n"
-"PO-Revision-Date: 2019-10-09 01:05+0000\n"
-"Last-Translator: b'  <juliana@catalpa.io>'\n"
+"POT-Creation-Date: 2020-08-11 03:20+0000\n"
+"PO-Revision-Date: 2020-08-04 07:15+0000\n"
+"Last-Translator: b'  <sergio@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -23,148 +23,148 @@ msgid "IRMIS"
 msgstr "IRMIS"
 
 msgid "Gabion works"
-msgstr ""
+msgstr "Gabião"
 
 msgid "Masonry works"
-msgstr ""
+msgstr "Alvenaria"
 
 msgid "RCC"
-msgstr ""
+msgstr "RCC"
 
 msgid "PCC concrete wall"
-msgstr ""
+msgstr "Parede de betão PCC"
 
 msgid "Beam"
-msgstr ""
+msgstr "Viga"
 
 msgid "Temporary"
-msgstr ""
+msgstr "Temporária"
 
 msgid "Truss"
-msgstr ""
+msgstr "Treliças"
 
 msgid "Arch"
-msgstr ""
+msgstr "Arco"
 
 msgid "Reinforced cement"
-msgstr ""
+msgstr "Cimento reforçado"
 
 msgid "Concrete (RCC)"
-msgstr ""
+msgstr "Betão (RCC)"
 
 msgid "Timber"
-msgstr ""
+msgstr "Viga"
 
 msgid "Suspension"
-msgstr ""
+msgstr "Suspensa"
 
 msgid "RCC box"
-msgstr ""
+msgstr "Caixa RCC"
 
 msgid "RCC pipe"
-msgstr ""
+msgstr "Tubo RCC"
 
 msgid "RCC slab"
-msgstr ""
+msgstr "Placa RCC"
 
 msgid "Steel pipe"
-msgstr ""
+msgstr "Tubo de aço"
 
 msgid "Stone scupper"
-msgstr ""
+msgstr "Scupper de pedra"
 
 msgid "Wooden"
-msgstr ""
+msgstr "Madeira"
 
 msgid "Concrete"
-msgstr ""
+msgstr "Betão"
 
 msgid "Steel"
-msgstr ""
+msgstr "Aço"
 
 msgid "Stone"
-msgstr ""
+msgstr "Pedra"
 
 msgid "Health facility"
-msgstr ""
+msgstr "Estabelecimento de saúde"
 
 msgid "School"
-msgstr ""
+msgstr "Escola"
 
 msgid "Police/security station"
-msgstr ""
+msgstr "Polícia/Segurança"
 
 msgid "Fire station"
-msgstr ""
+msgstr "Estação de bombeiros"
 
 msgid "Recreational area"
-msgstr ""
+msgstr "Área recreativa"
 
 msgid "Fishing"
-msgstr ""
+msgstr "Pesca"
 
 msgid "Farming"
-msgstr ""
+msgstr "Agricultura"
 
 msgid "Market"
-msgstr ""
+msgstr "Mercado"
 
 msgid "Tourism"
-msgstr ""
+msgstr "Turística"
 
 msgid "Commercial"
-msgstr ""
+msgstr "Comercial"
 
 msgid "Industrial"
-msgstr ""
+msgstr "Industrial"
 
 msgid "Cash crops"
-msgstr ""
+msgstr "Agricultura comercial"
 
 msgid "Connects municipalities"
-msgstr ""
+msgstr "Ligação municípios"
 
 msgid "Connects Dili to municipal centers"
-msgstr ""
+msgstr "Ligação Dili ao centro de municípios"
 
 msgid "Connects administrative posts"
-msgstr ""
+msgstr "Ligação postos administrativos"
 
 msgid "Connects to land border"
-msgstr ""
+msgstr "Ligação a fronteira terrestre"
 
 msgid "Connects to seaport"
-msgstr ""
+msgstr "Ligação a porto marítimo"
 
 msgid "Connects to airport"
-msgstr ""
+msgstr "Ligação a aeroporto"
 
 msgid "No protection works"
-msgstr ""
+msgstr "Sem trabalho de proteção"
 
 msgid "RCC concrete wall"
-msgstr ""
+msgstr "Parede de betão RCC"
 
 msgid "Stone masonry"
-msgstr ""
+msgstr "Alvenaria de pedra"
 
 msgid "Plum concrete"
-msgstr ""
+msgstr "Betão ciclópico"
 
 msgid "PCC"
-msgstr ""
+msgstr "PCC"
 
 msgid "Gabions"
-msgstr ""
+msgstr "Gabiões"
 
 msgid "Precast concrete bricks"
-msgstr ""
+msgstr "Tijolos de betão pré-fabricados"
 
 msgid "Clay bricks"
-msgstr ""
+msgstr "Tijolos de barro"
 
 msgid "PC"
-msgstr ""
+msgstr "PC"
 
 #, python-format
 msgid "%(value)s should not contain spaces"
@@ -182,79 +182,50 @@ msgstr "Data de criação"
 msgid "last modified"
 msgstr "última alteração"
 
-#, fuzzy
-#| msgid "Road Condition Data"
 msgid "Description"
-msgstr "Dados de Condição de Estrada"
+msgstr "Descrição"
 
-#, fuzzy
-#| msgid "Username"
 msgid "User"
-msgstr "Nome de utilizador"
+msgstr "Utilizador"
 
-#, fuzzy
-#| msgid "Asset"
 msgid "Asset Id"
-msgstr "Infra-estrutura"
+msgstr "ID Infra-estrutura"
 
-#, fuzzy
-#| msgid "Asset"
 msgid "Asset Code"
-msgstr "Infra-estrutura"
+msgstr "Código Infra-estrutura"
 
-#, fuzzy
-#| msgid "Road Code"
 msgid "Road Id"
-msgstr "Código de estrada"
+msgstr "ID estrada"
 
 msgid "Road Code"
 msgstr "Código de estrada"
 
-#, fuzzy
-#| msgid "Date Created"
 msgid "Date Surveyed"
-msgstr "Data de criação"
+msgstr "Data do levantamento"
 
-#, fuzzy
-#| msgid "Date Created"
 msgid "Date Updated"
-msgstr "Data de criação"
+msgstr "Data de actualização"
 
-#, fuzzy
-#| msgid "Link Start Chainage (Km)"
 msgid "Start Chainage (Km)"
-msgstr "Chainage do início da secção (Km)"
+msgstr "Início do Segmento (Km)"
 
-#, fuzzy
-#| msgid "Enter chainage for link starting point"
 msgid "Enter chainage for survey starting point"
-msgstr "Introduza a chainage do ponto inicial da secção"
+msgstr "Insira o ponto inicial do segmento (Km)"
 
-#, fuzzy
-#| msgid "Link End Chainage (Km)"
 msgid "End Chainage (Km)"
-msgstr "Chainage do final da secção (Km)"
+msgstr "Final do Segmento (Km)"
 
-#, fuzzy
-#| msgid "Enter chainage for link ending point"
 msgid "Enter chainage for survey ending point"
-msgstr "Introduza a chainage do ponto final da secção"
+msgstr "Insira o ponto final da segmento levantado"
 
-#, fuzzy
-#| msgid "Funding Source"
 msgid "Source"
-msgstr "Fonte de financiamento"
+msgstr "Fonte"
 
-#, fuzzy
-#| msgid "Choose the administrative area of the road"
 msgid "Choose the source of the survey"
-msgstr "Escolha a área administrativa da estrada"
+msgstr "Escolha a fonte do levantamento"
 
 msgid "National"
 msgstr "Nacional"
-
-msgid "Highway"
-msgstr "Via rápida"
 
 msgid "Municipal"
 msgstr "Municipal"
@@ -277,19 +248,17 @@ msgstr "Fraco"
 msgid "Bad"
 msgstr "Mau"
 
-#, fuzzy
-#| msgid "Road Status"
 msgid "Road"
-msgstr "Estrado da Estrada"
+msgstr "Estrada"
 
 msgid "Bridge"
-msgstr ""
+msgstr "Ponte"
 
 msgid "Culvert"
-msgstr ""
+msgstr "Bueiro"
 
 msgid "Drift"
-msgstr ""
+msgstr "Drift"
 
 msgid "Low"
 msgstr "Baixo"
@@ -301,32 +270,28 @@ msgid "High"
 msgstr "Alto"
 
 msgid "Flat"
-msgstr ""
+msgstr "Plano"
 
 msgid "Rolling"
-msgstr ""
+msgstr "Ondulado"
 
 msgid "Mountainous"
-msgstr ""
+msgstr "Montanhoso"
 
 msgid "Undefined"
-msgstr ""
+msgstr "Não definido"
 
 msgid "Non-core"
-msgstr ""
+msgstr "Não principal"
 
 msgid "Core"
-msgstr ""
+msgstr "Principal"
 
-#, fuzzy
-#| msgid "Municipal"
 msgid "Municipality"
-msgstr "Municipal"
+msgstr "Municipalidade"
 
-#, fuzzy
-#| msgid "Choose the pavement class of the road"
 msgid "Choose the municipality for the road"
-msgstr "Escolha a classe de pavimento da estrada"
+msgstr "Escolha a municipalidade da estrada"
 
 msgid "Funding Source"
 msgstr "Fonte de financiamento"
@@ -338,7 +303,7 @@ msgid "Link Code"
 msgstr "Código da secção da estrada"
 
 msgid "Enter link code according to DRBFC standard"
-msgstr "Introduza o código "
+msgstr "Insira o código "
 
 msgid "Link Start Name"
 msgstr "Nome do início da secção"
@@ -352,49 +317,35 @@ msgstr "Nome do fim da secção"
 msgid "Enter the name of the link end location (municipal center, administrative post or nearest suco)"
 msgstr "Introduza o nome da localidade do fim da secção da estrada (centro municipal, posto administrativo ou suco mais próximo)"
 
-#, fuzzy
-#| msgid "Link end chainage"
 msgid "Link End Chainage"
-msgstr "Chainage do final da secção"
+msgstr "Final da secção"
 
 msgid "Enter chainage for link ending point"
-msgstr "Introduza a chainage do ponto final da secção"
+msgstr "Insira o ponto final da secção"
 
-#, fuzzy
-#| msgid "Link start chainage"
 msgid "Link Start Chainage"
-msgstr "Chinage do início da secção"
+msgstr "Início da secção"
 
 msgid "Enter chainage for link starting point"
-msgstr "Introduza a chainage do ponto inicial da secção"
+msgstr "Insira o ponto inicial da secção"
 
-#, fuzzy
-#| msgid "Link Length"
 msgid "Link Length (Km)"
-msgstr "Extensão da secção"
+msgstr "Extensão da secção (Km)"
 
-#, fuzzy
-#| msgid "Enter road link length (in Km)"
 msgid "Enter road link length"
-msgstr "Introduza a extensão da secção da estrada (em Km)"
+msgstr "Insira o comprimento da secção da estrada"
 
-#, fuzzy
-#| msgid "Link Length"
 msgid "Geometry Length (m)"
-msgstr "Extensão da secção"
+msgstr "Comprimento da geometria (m)"
 
 msgid "Do not edit"
-msgstr ""
+msgstr "Não editar"
 
-#, fuzzy
-#| msgid "Link start chainage"
 msgid "Geometry Start Chainage"
-msgstr "Chinage do início da secção"
+msgstr "Geometria do início do segmento"
 
-#, fuzzy
-#| msgid "Link end chainage"
 msgid "Geometry End Chainage"
-msgstr "Chainage do final da secção"
+msgstr "Geometria do fim do segmento"
 
 msgid "Surface Type"
 msgstr "Tipo de pavimento"
@@ -408,42 +359,32 @@ msgstr "Classe de Pavimento"
 msgid "Choose the pavement class of the road"
 msgstr "Escolha a classe de pavimento da estrada"
 
-#, fuzzy
-#| msgid "Carriageway width"
 msgid "Carriageway Width"
 msgstr "Largura da faixa de rodagem"
 
-#, fuzzy
-#| msgid "Enter the width (in meters) of the link carriageway"
 msgid "Enter the width of the link carriageway"
-msgstr "Introduza a largura (em metros) da faixa de rodagem da secção da estrada"
+msgstr "Insira a largura da faixa de rodagem da secção da estrada"
 
-#, fuzzy
-#| msgid "Pavement Class"
 msgid "Asset Class"
-msgstr "Classe de Pavimento"
+msgstr "Classe da Infra-estrutura"
 
-#, fuzzy
-#| msgid "Choose the pavement class of the road"
 msgid "Choose the asset class"
-msgstr "Escolha a classe de pavimento da estrada"
+msgstr "Escolha a classe da infra-estrutura"
 
 msgid "Road Status"
-msgstr "Estrado da Estrada"
+msgstr "Estado da Estrada"
 
 msgid "Enter road link current status"
-msgstr "Introduza o actual estado da secção da estrada"
+msgstr "Insira o actual estado da secção da estrada"
 
 msgid "Project Name"
 msgstr "Nome do Projecto"
 
 msgid "Enter road link project name"
-msgstr "Introduza o nome do projecto da secção da estrada"
+msgstr "Insira o nome do projecto da secção da estrada"
 
-#, fuzzy
-#| msgid "Traffic data"
 msgid "Traffic Data"
-msgstr "Volume de trânsito"
+msgstr "Dados de trânsito"
 
 msgid "Choose the traffic volume for the road link"
 msgstr "Escolha o volume de trânsito para a secção da estrada"
@@ -452,7 +393,7 @@ msgid "Surface Condition (SDI)"
 msgstr "Condição do pavimento (SDI)"
 
 msgid "Choose road link surface condition according to the Surface Distress Index (SDI): Good (SDI<=2), fair (2<SDI<=3), poor (3<SDI<=4) or bad (SDI>4)"
-msgstr "Escolha a condição do pavimento para a secção da estrada de acordo com o Surface Distress Index:  Bom (SDI<=2), Razoável (2<SDI<=3), Fraco (3<SDI<=4) or Mau (SDI>4"
+msgstr "Escolha a condição do pavimento para a secção da estrada de acordo com o Surface Distress Index:  Bom (SDI<=2), Razoável (2<SDI<=3), Fraco (3<SDI<=4) or Mau (SDI>4)"
 
 msgid "Maintenance Needs"
 msgstr "Tipo de Manutenção"
@@ -467,290 +408,226 @@ msgid "Choose road link technical class according to the 2010 Road Geometric Des
 msgstr "Escolha o tipo de classe técnica de acordo com o \"2010 Road Geometric Design standards\" e os standards da DNEPCC"
 
 msgid "Set if the road is a high priority `core` road"
-msgstr ""
+msgstr "Defina Principal se for uma estrada de alta prioridade"
 
 msgid "Population Served"
-msgstr ""
+msgstr "População Servida"
 
 msgid "Set the size of population served by this road"
-msgstr ""
+msgstr "Defina o total da população servida pela estrada"
 
-#, fuzzy
-#| msgid "Road Condition Data"
 msgid "Road Construction Year"
-msgstr "Dados de Condição de Estrada"
+msgstr "Ano de Construção da Estrada"
 
-#, fuzzy
-#| msgid "Technical class"
 msgid "Terrain class"
-msgstr "Classe técnica"
+msgstr "Classe do terreno"
 
-#, fuzzy
-#| msgid "Choose the administrative class of the road"
 msgid "Choose what terrain class the road runs through"
-msgstr "Escolha a classe administrativa da secção da estrada"
+msgstr "Escolha a classe the terreno pela qual a estrada passa"
 
-msgid "Rainfall"
-msgstr ""
+msgid "Rainfall Maximum"
+msgstr "Pluviosidade máxima"
 
-msgid "Enter the amount of rainfall"
-msgstr ""
+msgid "Enter the maximum amount of rainfall"
+msgstr "Insira o valor máximo da pluviosidade"
+
+msgid "Rainfall Minimum"
+msgstr "Pluviosidade mínima"
+
+msgid "Enter the minimum amount of rainfall"
+msgstr "Insira o valor mínimo da pluviosidade"
 
 msgid "Number of Lanes"
-msgstr ""
+msgstr "Número de faixas"
 
-#, fuzzy
-#| msgid "Enter the source funding for the road link"
 msgid "Enter the number of lanes of the road"
-msgstr "Adicione a fonte de financiamento para a secção da estrada"
+msgstr "Insira o número de faixas da estrada"
 
 msgid "Facilities Served"
-msgstr ""
+msgstr "Áreas servidas"
 
-#, fuzzy
-#| msgid "Choose the pavement class of the road"
 msgid "Choose facilities served by this road"
-msgstr "Escolha a classe de pavimento da estrada"
+msgstr "Escolha as áreas servidas pela estrada"
 
 msgid "Economic Areas Served"
-msgstr ""
+msgstr "Áreas económicas servidas"
 
 msgid "Choose economic areas served by this road"
-msgstr ""
+msgstr "Escola as áreas económicas servidas pela estrada"
 
 msgid "Connections Served"
-msgstr ""
+msgstr "Ligações servidas"
 
-#, fuzzy
-#| msgid "Choose the type of maintenace needs for the road link"
 msgid "Choose the types of connections facilitated by this road"
-msgstr "Escolha o tipo de manutenção necessária para a secção da estrada"
+msgstr "Escolha o tipo de ligaçōes que a estrada serve"
 
 msgid "Attributes"
-msgstr ""
+msgstr "Atributos"
 
-#, fuzzy
-#| msgid "Asset"
 msgid "Asset Type"
-msgstr "Infra-estrutura"
+msgstr "Tipo de Infra-estrutura"
 
 msgid "Structure Code"
-msgstr ""
+msgstr "Código de Estrutura"
 
 msgid "Structure Class"
-msgstr ""
+msgstr "Classe de Estrutura"
 
-#, fuzzy
-#| msgid "Choose the pavement class of the road"
 msgid "Choose the structure class"
-msgstr "Escolha a classe de pavimento da estrada"
+msgstr "Escolha a classe da estrutura"
 
-#, fuzzy
-#| msgid "Choose the pavement class of the road"
 msgid "Choose the municipality for the structure"
-msgstr "Escolha a classe de pavimento da estrada"
+msgstr "Escolha a municipalidade da estrutura"
 
 msgid "Enter the Road Code associated with the structure"
-msgstr ""
+msgstr "Insira o Código da Estrada onde se localiza a estrutura"
 
 msgid "Structure Construction Year"
-msgstr ""
+msgstr "Ano de Construção da Estrutura"
 
-#, fuzzy
-#| msgid "Link Length"
 msgid "Structure Length (m)"
-msgstr "Extensão da secção"
+msgstr "Comprimento da Estrutura (m)"
 
-#, fuzzy
-#| msgid "Enter road link length (in Km)"
 msgid "Enter structure length"
-msgstr "Introduza a extensão da secção da estrada (em Km)"
+msgstr "Insira o comprimento da estrutura"
 
-#, fuzzy
-#| msgid "Carriageway Width"
 msgid "Structure Width (m)"
-msgstr "Largura da faixa de rodagem"
+msgstr "Largura da Estrutura (m)"
 
 msgid "Enter structure width"
-msgstr ""
+msgstr "Insira a largura da estrutura"
 
-#, fuzzy
-#| msgid "Link End Chainage (Km)"
 msgid "Chainage"
-msgstr "Chainage do final da secção (Km)"
+msgstr "Segmento"
 
-#, fuzzy
-#| msgid "Enter chainage for link starting point"
 msgid "Enter chainage point for the structure"
-msgstr "Introduza a chainage do ponto inicial da secção"
+msgstr "Insira o ponto de localização da estrutura"
 
-#, fuzzy
-#| msgid "Surface Type"
 msgid "Bridge Type"
-msgstr "Tipo de pavimento"
+msgstr "Tipo de Ponte"
 
-#, fuzzy
-#| msgid "Choose the pavement class of the road"
 msgid "Choose the bridge type"
-msgstr "Escolha a classe de pavimento da estrada"
+msgstr "Escolha o tipo de ponte"
 
 msgid "River Name"
-msgstr ""
+msgstr "Nome do rio"
 
 msgid "Enter the name of the river the bridge crosses over"
-msgstr ""
+msgstr "Insira o nome do rio atravessado pela ponte"
 
 msgid "Number of Spans"
-msgstr ""
+msgstr "Número de \"spans\""
 
-#, fuzzy
-#| msgid "Enter the source funding for the road link"
 msgid "Enter number of spans"
-msgstr "Adicione a fonte de financiamento para a secção da estrada"
+msgstr "Insira o número de \"spans\" da ponte"
 
-#, fuzzy
-#| msgid "Link Length"
 msgid "Span Length (m)"
-msgstr "Extensão da secção"
+msgstr "Comprimento do \"Span\" (m)"
 
-#, fuzzy
-#| msgid "Enter road link length (in Km)"
 msgid "Enter span length"
-msgstr "Introduza a extensão da secção da estrada (em Km)"
+msgstr "Insira o comprimento do \"span\""
 
 msgid "Deck Material"
-msgstr ""
+msgstr "Material do Tabuleiro"
 
-#, fuzzy
-#| msgid "Choose the pavement class of the road"
 msgid "Choose the bridge deck material"
-msgstr "Escolha a classe de pavimento da estrada"
+msgstr "Escolha o material do tabuleiro da ponte"
 
 msgid "Protection Upstream"
-msgstr ""
+msgstr "Protecção a montante"
 
-#, fuzzy
-#| msgid "Choose the administrative area of the road"
 msgid "Choose the upstream protection type"
-msgstr "Escolha a área administrativa da estrada"
+msgstr "Escolha o tipo de protecção"
 
 msgid "Protection Downstream"
-msgstr ""
+msgstr "Protecção a jusante"
 
-#, fuzzy
-#| msgid "Choose the administrative area of the road"
 msgid "Choose the downstream protection type"
-msgstr "Escolha a área administrativa da estrada"
+msgstr "Escolha o tipo de protecção"
 
 msgid "Culvert Type"
-msgstr ""
+msgstr "Tipo de Bueiro"
 
 msgid "Choose the culvert type"
-msgstr ""
+msgstr "Escolha o tipo de bueiro"
 
 msgid "Structure Height (m)"
-msgstr ""
+msgstr "Altura da estrutura (m)"
 
 msgid "Enter structure height"
-msgstr ""
+msgstr "Insira a altura da estrutura"
 
 msgid "Number of Cells"
-msgstr ""
+msgstr "Número de células"
 
 msgid "Material"
-msgstr ""
+msgstr "Material"
 
-#, fuzzy
-#| msgid "Choose the pavement class of the road"
 msgid "Choose the culvert material"
-msgstr "Escolha a classe de pavimento da estrada"
+msgstr "Escolha o material do bueiro"
 
-#, fuzzy
-#| msgid "Surface Type"
 msgid "Drift Type"
-msgstr "Tipo de pavimento"
+msgstr "Tipo de \"Drift\""
 
-#, fuzzy
-#| msgid "Choose the pavement class of the road"
 msgid "Choose the drift type"
-msgstr "Escolha a classe de pavimento da estrada"
+msgstr "Escolha o tipo de \"drift\""
 
-#, fuzzy
-#| msgid "Carriageway Width"
 msgid "Structure Thickness (m)"
-msgstr "Largura da faixa de rodagem"
+msgstr "Espessura da estrutura (m)"
 
-#, fuzzy
-#| msgid "Enter road link length (in Km)"
 msgid "Enter structure thickness"
-msgstr "Introduza a extensão da secção da estrada (em Km)"
+msgstr "Insira a espessura da estrutura"
 
-#, fuzzy
-#| msgid "Choose the pavement class of the road"
 msgid "Choose the drift material"
-msgstr "Escolha a classe de pavimento da estrada"
+msgstr "Escolha o tipo de material do \"drift\""
 
 msgid "Title"
-msgstr ""
+msgstr "Título"
 
 msgid "Approved"
-msgstr ""
+msgstr "Aprovado"
 
 msgid "Planning Period"
-msgstr ""
+msgstr "Período do Planeamento"
 
-#, fuzzy
-#| msgid "Maintenance Needs"
 msgid "Routine Maintenance"
-msgstr "Tipo de Manutenção"
+msgstr "Manutenção de rotina"
 
 msgid "Periodic Maintenance"
-msgstr ""
+msgstr "Manutenção Periódica"
 
 msgid "Rehabilitation"
-msgstr ""
+msgstr "Reabilitação"
 
 msgid "Spot Improvement"
-msgstr ""
+msgstr "Melhoria de pontos"
 
 msgid "Year"
-msgstr ""
+msgstr "Ano"
 
 msgid "Budget"
-msgstr ""
+msgstr "Orçamento"
 
 msgid "Enter the budget amount"
-msgstr ""
+msgstr "Insira o valor do orçamento"
 
-#, fuzzy
-#| msgid "Link Length"
 msgid "Length"
-msgstr "Extensão da secção"
+msgstr "Comprimento"
 
-#, fuzzy
-#| msgid "Enter road link length (in Km)"
 msgid "Enter the length"
-msgstr "Introduza a extensão da secção da estrada (em Km)"
+msgstr "Insira o comprimento"
 
-#, fuzzy
-#| msgid "Road Type"
 msgid "Work Type"
-msgstr "Tipo de Estrada"
+msgstr "Tipo de Trabalho"
 
-#, fuzzy
-#| msgid "Choose the pavement class of the road"
 msgid "Choose the work type"
-msgstr "Escolha a classe de pavimento da estrada"
+msgstr "Escolha o tipo de trabalho"
 
-#, fuzzy
-#| msgid "Date Created"
 msgid "Date of first Survey"
-msgstr "Data de criação"
+msgstr "Data do primeiro levantamento"
 
-#, fuzzy
-#| msgid "Date Created"
 msgid "Date of second Survey"
-msgstr "Data de criação"
+msgstr "Data do segundo levantamento"
 
 msgid "Road Inventory"
 msgstr "Inventário de Estradas"
@@ -770,10 +647,8 @@ msgstr "Código da estrada"
 msgid "Road name"
 msgstr "Nome da estrada"
 
-#, fuzzy
-#| msgid "Pavement class"
 msgid "Asset class"
-msgstr "Classe do pavimento"
+msgstr "Classe da Infra-estrutura"
 
 msgid "Technical class"
 msgstr "Classe técnica"
@@ -784,8 +659,6 @@ msgstr "Código da secção da estrada"
 msgid "Link name"
 msgstr "Nome da secção da estrada"
 
-#, fuzzy
-#| msgid "Link Length"
 msgid "Link length"
 msgstr "Extensão da secção"
 
@@ -793,7 +666,7 @@ msgid "Link start name"
 msgstr "Nome do início da secção da estrada"
 
 msgid "Link start chainage"
-msgstr "Chinage do início da secção"
+msgstr "Ponto do início da secção"
 
 msgid "Start Point - DMS"
 msgstr "Ponto inicial - DMS"
@@ -805,7 +678,7 @@ msgid "Link end name"
 msgstr "Nome do fim da secção da estrada"
 
 msgid "Link end chainage"
-msgstr "Chainage do final da secção"
+msgstr "Ponto do fim da secção"
 
 msgid "End Point - DMS"
 msgstr "Ponto final - DMS"
@@ -823,48 +696,43 @@ msgid "Carriageway width"
 msgstr "Largura da faixa de rodagem"
 
 msgid "Total width"
-msgstr ""
+msgstr "Largura total"
 
 msgid "Number of lanes"
-msgstr ""
+msgstr "Número de faixas de rodagem"
 
-#, fuzzy
-#| msgid "Technical Class"
+msgid "Rainfall"
+msgstr "Pluviosidade"
+
 msgid "Terrain Class"
-msgstr "Classe Técnica"
+msgstr "Classe do Terreno"
 
-#, fuzzy
-#| msgid "Road Inventory Data"
-msgid "Inventory Photos"
-msgstr "Dados do Inventário de Estradas"
+msgid "Inventory Photos/Videos"
+msgstr "Fotos/Vídeos de Inventário"
 
-#, fuzzy
-#| msgid "Road Condition Data"
 msgid "Condition and Traffic"
-msgstr "Dados de Condição de Estrada"
+msgstr "Condição e trânsito"
 
 msgid "Roughness (IRI)"
-msgstr ""
+msgstr "Rugosidade (IRI)"
 
 msgid "Surface condition"
 msgstr "Condição do pavimento"
 
 msgid "Maintenance needs"
-msgstr "Tipo de manutenção"
+msgstr "Manutenção necessária"
 
 msgid "Traffic data"
-msgstr "Volume de trânsito"
+msgstr "Dados de trânsito"
 
-#, fuzzy
-#| msgid "Project Name"
 msgid "Project Data"
-msgstr "Nome do Projecto"
+msgstr "Dados do Projecto"
 
 msgid "Road status"
 msgstr "Estado da estrada"
 
 msgid "Construction Year"
-msgstr ""
+msgstr "Ano de Construção"
 
 msgid "Funding source"
 msgstr "Fontes de financiamento"
@@ -875,73 +743,59 @@ msgstr "Projecto"
 msgid "Return to default selection"
 msgstr "Voltar à selecção inicial"
 
-#, fuzzy
-#| msgid "Road Inventory"
 msgid "Structure Inventory"
-msgstr "Inventário de Estradas"
+msgstr "Inventário de Estruturas"
 
-#, fuzzy
-#| msgid "Road Inventory Data"
 msgid "Structure Inventory Data"
-msgstr "Dados do Inventário de Estradas"
+msgstr "Dados do Inventário de Estruturas"
 
 msgid "Structure"
-msgstr ""
+msgstr "Estrutura"
 
-#, fuzzy
-#| msgid "Link Start Name"
 msgid "Structure Name"
-msgstr "Nome do início da secção"
+msgstr "Nome da Estrutura"
 
 msgid "GPS Latitude"
-msgstr ""
+msgstr "Latitude GPS"
 
 msgid "GPS Longitude"
-msgstr ""
+msgstr "Longitude GPS"
 
-#, fuzzy
-#| msgid "Road Type"
 msgid "Type"
-msgstr "Tipo de Estrada"
+msgstr "Tipo"
 
 msgid "Width"
-msgstr ""
+msgstr "Largura"
 
 msgid "Height"
-msgstr ""
+msgstr "Altura"
 
 msgid "Thickness"
-msgstr ""
+msgstr "Espessura"
 
-#, fuzzy
-#| msgid "Link Length"
 msgid "Span Length"
-msgstr "Extensão da secção"
+msgstr "Comprimento do \"Span\""
 
-#, fuzzy
-#| msgid "Road Condition Data"
 msgid "Structure Condition Data"
-msgstr "Dados de Condição de Estrada"
+msgstr "Dados de Condição da Estrutura"
 
-#, fuzzy
-#| msgid "Surface condition"
 msgid "Structure Condition"
-msgstr "Condição do pavimento"
+msgstr "Condição da Estrutura"
 
-#, fuzzy
-#| msgid "Road Condition Data"
 msgid "Condition Description"
-msgstr "Dados de Condição de Estrada"
+msgstr "Descrição da Condição"
 
-#, fuzzy
-#| msgid "Road Condition Data"
-msgid "Condition Photos"
-msgstr "Dados de Condição de Estrada"
+msgid "Condition Photos/Videos"
+msgstr "Fotos/Vídeos de Condição"
 
-#, fuzzy
-#| msgid "Designed & developed by Catalpa International"
+msgid "Democratic Republic of Timor-Leste"
+msgstr "República Democrática de Timor-Leste"
+
+msgid "Ministry of Public Works"
+msgstr "Ministério das Obras Públicas"
+
 msgid "Created by Catalpa International"
-msgstr "Desenhado & desenvolvido por Catalpa International"
+msgstr "Desenvolvido por Catalpa International"
 
 msgid "View"
 msgstr "Ver"
@@ -958,13 +812,11 @@ msgstr "Mapa"
 msgid "Table"
 msgstr "Tabela"
 
-#, fuzzy
-#| msgid "Road Status"
 msgid "Roads"
-msgstr "Estrado da Estrada"
+msgstr "Estradas"
 
 msgid "Structures"
-msgstr ""
+msgstr "Estruturas"
 
 msgid "Filters"
 msgstr "Filtros"
@@ -982,1109 +834,971 @@ msgid "Asset"
 msgstr "Infra-estrutura"
 
 msgid "Bridges"
-msgstr ""
+msgstr "Pontes"
 
 msgid "Culverts"
-msgstr ""
+msgstr "Bueiros"
 
 msgid "Drifts"
-msgstr ""
+msgstr "Drifts"
 
 msgid "Asset condition"
 msgstr "Condição da infra-estrutura"
 
-#, fuzzy
-#| msgid "Link Start Name"
 msgid "Structure Type"
-msgstr "Nome do início da secção"
+msgstr "Tipo de Estrutura"
 
-#, fuzzy
-#| msgid "Link Start Name"
 msgid "Structure Material"
-msgstr "Nome do início da secção"
+msgstr "Material da Estrutura"
 
-#, fuzzy
-#| msgid "Select data"
 msgid "Select the type"
-msgstr "Selecção de dados"
+msgstr "Escolha o tipo"
 
 msgid "Select the Deck Material"
-msgstr ""
+msgstr "Seleccione o material do tabuleiro"
 
-#, fuzzy
-#| msgid "Select data"
 msgid "Select the Material"
-msgstr "Selecção de dados"
+msgstr "Seleccione o Material"
 
 msgid "Rehabilitation road X"
-msgstr ""
+msgstr "Reabilitação da estrada X"
 
 msgid "Project for the rehabilitation of road X"
-msgstr ""
+msgstr "Projecto para a reabilitação da estrada X"
 
 msgid "Associated projects"
-msgstr ""
+msgstr "Projectos associados"
 
 msgid "Select one or more projects for the tender"
-msgstr ""
+msgstr "Seleccione um ou mais projectos ao concurso"
 
 msgid "Contract for the upgrade of road A01-1 to technical class R1"
-msgstr ""
+msgstr "Contracto para o upgrade da estrada A01-1 para classe técnica R1"
 
 msgid "Due to unforeseen events, the contract start was postponed by 1 month"
-msgstr ""
+msgstr "Devido a eventos inesperados, o início do contracto foi atrasado por 1 mês"
 
-#, fuzzy
-#| msgid "Project Name"
 msgid "Project Status"
-msgstr "Nome do Projecto"
+msgstr "Estado do Projecto"
 
-#, fuzzy
-#| msgid "Road status"
 msgid "Choose status"
-msgstr "Estado da estrada"
+msgstr "Escolha o estado"
 
-#, fuzzy
-#| msgid "Project Name"
 msgid "Program Name"
-msgstr "Nome do Projecto"
+msgstr "Nome do Programa"
 
-#, fuzzy
-#| msgid "Choose the pavement class of the road"
 msgid "Choose the program for the project"
-msgstr "Escolha a classe de pavimento da estrada"
+msgstr "Escolha o programa do projecto"
 
 msgid "Type of Work"
-msgstr ""
+msgstr "Tipo de Trabalho"
 
-#, fuzzy
-#| msgid "Choose the pavement class of the road"
 msgid "Choose from the list"
-msgstr "Escolha a classe de pavimento da estrada"
+msgstr "Escolha da lista"
 
-#, fuzzy
-#| msgid "Enter road link project name"
 msgid "Enter project’s name"
-msgstr "Introduza o nome do projecto da secção da estrada"
+msgstr "Insira o nome do projecto"
 
-#, fuzzy
-#| msgid "Project Name"
 msgid "Project Code"
-msgstr "Nome do Projecto"
+msgstr "Código do Projecto"
 
-#, fuzzy
-#| msgid "Enter road link project name"
 msgid "Enter project’s code"
-msgstr "Introduza o nome do projecto da secção da estrada"
+msgstr "Insira o código do projecto"
 
 msgid "Enter a description of the project"
-msgstr ""
+msgstr "Insira a descrição do projecto"
 
-#, fuzzy
-#| msgid "Funding source"
 msgid "Choose the funding source"
-msgstr "Fontes de financiamento"
+msgstr "Escolha a fonte de financiamento"
 
-#, fuzzy
-#| msgid "Choose the pavement class of the road"
 msgid "Choose the donor"
-msgstr "Escolha a classe de pavimento da estrada"
+msgstr "Escolha o doador"
 
 msgid "Enter schedule start date"
-msgstr ""
+msgstr "Escolha a data de início prevista"
 
 msgid "Duration (days)"
-msgstr ""
+msgstr "Duração (dias)"
 
 msgid "Estimated duration of the work"
-msgstr ""
+msgstr "Duração estimada do trabalho"
 
 msgid "Donor"
-msgstr ""
+msgstr "Doador"
 
 msgid "Select project's asset"
-msgstr ""
+msgstr "Escolha a infra-estrutura associada ao projecto"
 
-#, fuzzy
-#| msgid "Link Start Chainage (Km)"
 msgid "Start Chainage"
-msgstr "Chainage do início da secção (Km)"
+msgstr "Início do segmento"
 
 msgid "In meters"
-msgstr ""
+msgstr "Em metros"
 
-#, fuzzy
-#| msgid "Link End Chainage (Km)"
 msgid "End Chainage"
-msgstr "Chainage do final da secção (Km)"
+msgstr "Fim do segmento"
 
 msgid "Start Chainage must be specified for roads"
-msgstr ""
+msgstr "O ponto de início do segmento deve ser inserido para estradas"
 
 msgid "End Chainage must be specified for roads"
-msgstr ""
+msgstr "O ponto final do segmento deve ser inserido para estrada"
 
 msgid "Start Chainage must be 0 or greater"
-msgstr ""
+msgstr "O Ponto de início do segmento deve ser 0 our maior"
 
 msgid "Start Chainage must be less than End Chainage"
-msgstr ""
+msgstr "O Ponto inicial deve ser anterior ao ponto final"
 
 msgid "End Chainage must be greater than Start Chainage"
-msgstr ""
+msgstr "O Ponto final deve ser posterior ao ponto inicial"
 
 msgid "Asset Id must identify a current Asset, or provide enough information to create a new Asset"
-msgstr ""
+msgstr "ID da infra-estrutura deve corresponder a uma já existente ou fornecer informação para a criação de uma nova"
 
 msgid "Could not create a new Asset, because the asset_type in the 'special' Asset Id is not valid."
-msgstr ""
+msgstr "Não foi possível criar uma nova infra-estrutura pois o asset_type no seu ID 'special' não é válido"
 
 msgid "Could not create a new Asset, because the asset_class in the 'special' Asset Id is not valid."
-msgstr ""
+msgstr "Não foi possível criar uma nova infra-estrutura pois o asset_class no seu ID 'special' não é válido"
 
 msgid "Could not create a new Asset, because the asset_municipality in the 'special' Asset Id is not valid."
-msgstr ""
+msgstr "Não foi possível criar uma nova infra-estrutura pois o asset_municipality no seu ID 'special' não é válido"
 
 msgid "The Asset Code must be unique for this type of asset"
-msgstr ""
+msgstr "O código da infra-estrutura tem que ser único"
 
 msgid "Start Chainage is too large for this road"
-msgstr ""
+msgstr "O ponto de início do segmento é demasiado alto para esta estrada"
 
 #, python-format
 msgid "Ensure this value has at most 15 characters (it has %s)"
-msgstr ""
+msgstr "Garanta que este valor tem pelo menos 15 caracteres (it has %s)"
 
 msgid "Enter year"
-msgstr ""
+msgstr "Insira o ano"
 
 msgid "In USD"
-msgstr ""
+msgstr "Em USD"
 
 msgid "Estimated days of work"
-msgstr ""
+msgstr "Dias estimados de trabalho"
 
 msgid "Physical progress (%)"
-msgstr ""
+msgstr "Progresso físico (%)"
 
 msgid "Estimated physical progress"
-msgstr ""
+msgstr "Progresso físico estimado"
 
-#, fuzzy
-#| msgid "Road Code"
 msgid "Tender Code"
-msgstr "Código de estrada"
+msgstr "Código do Concurso"
 
-#, fuzzy
-#| msgid "Enter road link length (in Km)"
-msgid "Enter tender code"
-msgstr "Introduza a extensão da secção da estrada (em Km)"
+msgid "Enter tender's code"
+msgstr "Insira o código do concurso"
 
 msgid "Announcement Date"
-msgstr ""
+msgstr "Data do Anúncio"
 
 msgid "Tender announcement date"
-msgstr ""
+msgstr "Data do anúncio do concurso"
 
 msgid "Bid Submission Deadline"
-msgstr ""
+msgstr "Prazo de Submissão de Propostas"
 
 msgid "Date of fid submission deadline"
-msgstr ""
+msgstr "Data limite para a submissão de propostas"
 
 msgid "Number of Companies Tendering"
-msgstr ""
+msgstr "Número de Empresas em Concurso"
 
-#, fuzzy
-#| msgid "Enter the source funding for the road link"
 msgid "Enter the number of companies tendering"
-msgstr "Adicione a fonte de financiamento para a secção da estrada"
+msgstr "Insira o número de empresas a concorrer"
 
 msgid "Evaluation Date"
-msgstr ""
+msgstr "Data de Avaliação"
 
 msgid "Bids evaluation date"
-msgstr ""
+msgstr "Data de avaliação das propostas"
 
-#, fuzzy
-#| msgid "Road Status"
 msgid "Tender Status"
-msgstr "Estrado da Estrada"
+msgstr "Estado do Concurso"
 
 msgid "Enter contract code"
-msgstr ""
+msgstr "Insira o código do contrato"
 
-#, fuzzy
-#| msgid "Enter chainage for link starting point"
 msgid "Enter a description of the contract"
-msgstr "Introduza a chainage do ponto inicial da secção"
+msgstr "Insira a descrição do contrato"
 
 msgid "Associated tender"
-msgstr ""
+msgstr "Concurso Associado"
 
 msgid "Choose a tender to create a contract"
-msgstr ""
+msgstr "Escolha o concurso para a criação do contracto"
 
 msgid "Select a company from the list"
-msgstr ""
+msgstr "Selecione a empresa a partir da lista"
 
 msgid "Contract start date"
-msgstr ""
+msgstr "Data de início do contrato"
 
 msgid "Enter contract start date"
-msgstr ""
+msgstr "Insira a data de início do contrato"
 
 msgid "Contract end date"
-msgstr ""
+msgstr "Data de fim de contrato"
 
-#, fuzzy
-#| msgid "Enter road link length (in Km)"
 msgid "Enter contract end date"
-msgstr "Introduza a extensão da secção da estrada (em Km)"
+msgstr "Insira a data de fim do contrato"
 
 msgid "Duration in days"
-msgstr ""
+msgstr "Duração em dias"
 
 msgid "Defect liability period (days)"
-msgstr ""
+msgstr "Período de responsabilidade pelos defeitos (dias)"
 
 msgid "Duration of DLP in days"
-msgstr ""
+msgstr "Duração do Período de Responsabilidade em dias"
 
 msgid "Enter new start date"
-msgstr ""
+msgstr "Insira uma nova data de início"
 
 msgid "Contract duration"
-msgstr ""
+msgstr "Duração do contrato"
 
 msgid "Enter new duration in days"
-msgstr ""
+msgstr "Insira uma nova duração em dias"
 
 msgid "Description (Reasons for Variations)"
-msgstr ""
+msgstr "Descrição (motivo para a alteração)"
 
 msgid "Enter a reason for variations to the contract"
-msgstr ""
+msgstr "Insira o motivo para a alteração ao contrato"
 
 msgid "Enter supervisor's name"
-msgstr ""
+msgstr "Insira o nome do supervisor"
 
 msgid "Supervisor's phone number"
-msgstr ""
+msgstr "Telefone do supervisor"
 
-#, fuzzy
-#| msgid "Select data"
 msgid "Select year"
-msgstr "Selecção de dados"
+msgstr "Seleccione o ano"
 
 msgid "Budget per year in USD"
-msgstr ""
+msgstr "Orçamento por ano em USD"
 
 msgid "Days of work for the milestone"
-msgstr ""
+msgstr "Dias de trabalho para a meta"
 
 msgid "Milestone physical progress"
-msgstr ""
+msgstr "Meta para o progresso físico"
 
 msgid "Yes"
-msgstr ""
+msgstr "Sim"
 
 msgid "No"
-msgstr ""
+msgstr "Não"
 
 msgid "January"
-msgstr ""
+msgstr "Janeiro"
 
 msgid "February"
-msgstr ""
+msgstr "Fevereiro"
 
 msgid "March"
-msgstr ""
+msgstr "Março"
 
 msgid "April"
-msgstr ""
+msgstr "Abril"
 
-#, fuzzy
-#| msgid "Map"
 msgid "May"
-msgstr "Mapa"
+msgstr "Maio"
 
 msgid "June"
-msgstr ""
+msgstr "Junho"
 
 msgid "July"
-msgstr ""
+msgstr "Julho"
 
 msgid "August"
-msgstr ""
+msgstr "Agosto"
 
 msgid "September"
-msgstr ""
+msgstr "Setembro"
 
 msgid "October"
-msgstr ""
+msgstr "Outubro"
 
 msgid "November"
-msgstr ""
+msgstr "Novembro"
 
 msgid "December"
-msgstr ""
+msgstr "Dezembro"
 
 msgid "Unknown"
-msgstr ""
+msgstr "Desconhecido"
 
 msgid "Company Name"
-msgstr ""
+msgstr "Nome da Empresa"
 
-#, fuzzy
-#| msgid "Enter road link length (in Km)"
 msgid "Enter company name"
-msgstr "Introduza a extensão da secção da estrada (em Km)"
+msgstr "Insira o nome da empresa"
 
-#, fuzzy
-#| msgid "Email address"
 msgid "Enter company address"
-msgstr "Endereço de email"
+msgstr "Insira a morada da empresa"
 
-#, fuzzy
-#| msgid "Enter road link project name"
 msgid "Enter company phone number"
-msgstr "Introduza o nome do projecto da secção da estrada"
+msgstr "Insira o telefone da empresa"
 
-#, fuzzy
-#| msgid "Enter road link length (in Km)"
 msgid "Enter company email"
-msgstr "Introduza a extensão da secção da estrada (em Km)"
+msgstr "Insira o email da empresa"
 
 msgid "Enter company TIN number"
-msgstr ""
+msgstr "Insira o número TIN da empresa"
 
 msgid "Bank Account Number"
-msgstr ""
+msgstr "Número da Conta Bancária"
 
 msgid "Enter company bank account number"
-msgstr ""
+msgstr "Insira o número da conta bancária da empresa"
 
 msgid "Representative name"
-msgstr ""
+msgstr "Nome do representante"
 
-#, fuzzy
-#| msgid "Enter road link project name"
 msgid "Enter company representative name"
-msgstr "Introduza o nome do projecto da secção da estrada"
+msgstr "Insira o nome do representante da empresa"
 
 msgid "Representative phone"
-msgstr ""
+msgstr "Telefone do representante"
 
 msgid "Enter company representative phone number"
-msgstr ""
+msgstr "Insira o número de telefone do representante da empresa"
 
 msgid "Representative email"
-msgstr ""
+msgstr "Email do representante"
 
 msgid "Enter company representative email"
-msgstr ""
+msgstr "Insira o email do representante da empresa"
 
 msgid "Woman-Led Company"
-msgstr ""
+msgstr "Empresa liderada por uma Mulher"
 
 msgid "Is the company director/owner a woman?"
-msgstr ""
+msgstr "O director/dono da empresa é uma mulher?"
 
 msgid "Company category"
-msgstr ""
+msgstr "Categoria da empresa"
 
-#, fuzzy
-#| msgid "Choose the pavement class of the road"
 msgid "Choose category"
-msgstr "Escolha a classe de pavimento da estrada"
+msgstr "Escolha a categoria"
 
-#, fuzzy
-#| msgid "Project"
 msgid "project"
-msgstr "Projecto"
+msgstr "projecto"
 
 msgid "tender"
-msgstr ""
+msgstr "concurso"
 
 msgid "contract"
-msgstr ""
+msgstr "contrato"
 
 msgid "company"
-msgstr ""
+msgstr "empresa"
 
 msgid "Edit Company"
-msgstr ""
+msgstr "Editar Empresa"
 
 msgid "Create Company"
-msgstr ""
+msgstr "Adicionar Empresa"
 
 msgid "Company Details"
-msgstr ""
+msgstr "Detalhes da Empresa"
 
 msgid "Documents"
-msgstr ""
+msgstr "Documentos"
 
 msgid "Cancel"
 msgstr "Cancelar"
 
 msgid "Save"
-msgstr ""
+msgstr "Guardar"
 
-#, fuzzy
-#| msgid "Date Created"
 msgid "Create"
-msgstr "Data de criação"
+msgstr "Adicionar"
 
 msgid "Company"
-msgstr ""
+msgstr "Empresa"
 
 msgid "Print"
-msgstr ""
+msgstr "Imprimir"
 
-#, fuzzy
-#| msgid "Email address"
 msgid "Address"
-msgstr "Endereço de email"
+msgstr "Morada"
 
 msgid "Phone"
-msgstr ""
+msgstr "Telefone"
 
 msgid "Email"
-msgstr ""
+msgstr "Email"
 
 msgid "TIN"
-msgstr ""
+msgstr "TIN"
 
 msgid "Representative Name"
-msgstr ""
+msgstr "Nome do representante"
 
 msgid "Representative Phone"
-msgstr ""
+msgstr "Telefone do representante"
 
 msgid "Representative Email"
-msgstr ""
+msgstr "Email do representante"
 
 msgid "Associated as a contractor"
-msgstr ""
+msgstr "Associado como contratado"
 
 msgid "Associated as a subcontractor"
-msgstr ""
+msgstr "Associado como sub-contratado"
 
 msgid "Uploaded Documents"
-msgstr ""
+msgstr "Documentos carregados"
 
 msgid "Add"
-msgstr ""
+msgstr "Adicionar"
 
 msgid "Document Date"
-msgstr ""
+msgstr "Data do documento"
 
 msgid "Save Document"
-msgstr ""
+msgstr "Salvar documento"
 
 msgid "Close"
-msgstr ""
+msgstr "Fechar"
 
 msgid "File"
-msgstr ""
+msgstr "Ficheiro"
 
-#, fuzzy
-#| msgid "Asset"
 msgid "Document Type"
-msgstr "Infra-estrutura"
+msgstr "Tipo de documento"
 
 msgid "Delete Document"
-msgstr ""
+msgstr "Apagar documento"
 
 msgid "Are you sure you want to delete this document?"
-msgstr ""
+msgstr "Tem a certeza que pretende apagar este documento?"
 
 msgid "Delete"
-msgstr ""
+msgstr "Apagar"
 
 msgid "Don't delete"
-msgstr ""
+msgstr "Manter"
 
 msgid "List of documents"
-msgstr ""
+msgstr "Lista de documentos"
 
 msgid "Company Manager"
-msgstr ""
+msgstr "Gestor da Empresa"
 
-#, fuzzy
-#| msgid "Create a new password"
 msgid "Create New Company"
-msgstr "Alterar palavra-passe"
+msgstr "Adicionar nova empresa"
 
 msgid "List of companies"
-msgstr ""
+msgstr "Lista de empresas"
 
-#, fuzzy
-#| msgid "Export all"
 msgid "Export table"
-msgstr "Exportar tudo"
+msgstr "Exportar tabela"
 
 msgid "Edit"
-msgstr ""
+msgstr "Editar"
 
 msgid "Total Contracts"
-msgstr ""
+msgstr "Total de Contratos"
 
 msgid "Active Contracts"
-msgstr ""
+msgstr "Contratos Activos"
 
 msgid "Welcome to the Company Manager"
-msgstr ""
+msgstr "Bem-vindo ao gestor de Empresas"
 
 msgid "No companies were created yet"
-msgstr ""
+msgstr "Ainda não foram adicionadas empresas"
 
 msgid "Delete Company"
-msgstr ""
+msgstr "Apagar Empresa"
 
 msgid "Are you sure you want to delete this company?"
-msgstr ""
+msgstr "Tem a certeza que deseja apagar esta empresa?"
 
 msgid "Edit Contract"
-msgstr ""
+msgstr "Editar Contrato"
 
 msgid "Create Contract"
-msgstr ""
+msgstr "Adicionar Contrato"
 
 msgid "Contract Details"
-msgstr ""
+msgstr "Detalhes do Contrato"
 
 msgid "Inspections"
-msgstr ""
+msgstr "Inspecções"
 
-#, fuzzy
-#| msgid "Pavement Class"
 msgid "Payments"
-msgstr "Classe de Pavimento"
+msgstr "Pagamentos"
 
 msgid "Social Safeguard"
-msgstr ""
+msgstr "Protecção Social"
 
 msgid "Supervisor"
-msgstr ""
+msgstr "Supervisor"
 
 msgid "Contract Value Total"
-msgstr ""
+msgstr "Valor Total do Contrato"
 
 msgid "Schedule"
-msgstr ""
+msgstr "Calendário"
 
 msgid "Milestones"
-msgstr ""
+msgstr "Metas"
 
 msgid "Amendments"
-msgstr ""
+msgstr "Aditamentos"
 
 msgid "Contract"
-msgstr ""
+msgstr "Contrato"
 
-#, fuzzy
-#| msgid "Road Status"
 msgid "Status"
-msgstr "Estrado da Estrada"
+msgstr "Estado"
 
 msgid "Associated Tender"
-msgstr ""
+msgstr "Concurso Associado"
 
 msgid "Projects in the Tender"
-msgstr ""
+msgstr "Projectos neste Concurso"
 
-#, fuzzy
-#| msgid "Road Code"
 msgid "Contract Code"
-msgstr "Código de estrada"
+msgstr "Código do Contrato"
 
-#, fuzzy
-#| msgid "Road Condition Data"
 msgid "Contract Description"
-msgstr "Dados de Condição de Estrada"
+msgstr "Descrição do Contrato"
 
 msgid "Contractor"
-msgstr ""
+msgstr "Empresa contratada"
 
 msgid "Sub-Contractor"
-msgstr ""
+msgstr "Empresa sub-contratada"
 
 msgid "Supervisor Name"
-msgstr ""
+msgstr "Nome do Supervisor"
 
 msgid "Phone Number"
-msgstr ""
+msgstr "Número de Telefone"
 
 msgid "Total Budget"
-msgstr ""
+msgstr "Orçamento Total"
 
 msgid "Value"
-msgstr ""
+msgstr "Valor"
 
 msgid "Defect Liability Period (Days)"
-msgstr ""
+msgstr "Período de Responsabilidade de Defeitos (Dias)"
 
 msgid "Contract Start Date"
-msgstr ""
+msgstr "Data de Início do Contrato"
 
 msgid "Contract End Date"
-msgstr ""
+msgstr "Data de Fim do Contrato"
 
 msgid "Contract Duration"
-msgstr ""
+msgstr "Duração do Contrato"
 
 msgid "Days of Work"
-msgstr ""
+msgstr "Dias de Trabalho"
 
 msgid "Progress"
-msgstr ""
+msgstr "Progresso"
 
 msgid "List of inspections"
-msgstr ""
+msgstr "Lista de Inspecções"
 
 msgid "Inspection Date"
-msgstr ""
+msgstr "Data da Inspecção"
 
 msgid "Inspection Entity"
-msgstr ""
+msgstr "Entidade Inspectora"
 
 msgid "Physical Progress"
-msgstr ""
+msgstr "Progresso Físico"
 
 msgid "Defect Liability Period"
-msgstr ""
+msgstr "Período de Responsabilidade de Defeitos"
 
 msgid "Save Inspection"
-msgstr ""
+msgstr "Guardar Inspecção"
 
-#, fuzzy
-#| msgid "Select data"
 msgid "Select inspection date"
-msgstr "Selecção de dados"
+msgstr "Seleccionar data da inspecção"
 
 msgid "Choose entity that performed the inspection"
-msgstr ""
+msgstr "Escolha a entidade que realizou a inspecção"
 
 msgid "Enter physical progress as inspected"
-msgstr ""
+msgstr "Insira o progresso físico verificado na inspecção"
 
 msgid "Start Defect Liability Period"
-msgstr ""
+msgstr "Início do Período de Responsabilidade de Defeitos"
 
 msgid "When DLP starts with the inspection"
-msgstr ""
+msgstr "O Período de Responsabilidade começou com após esta inspecção?"
 
 msgid "Delete Inspection"
-msgstr ""
+msgstr "Apagar Inspecção"
 
 msgid "Are you sure you want to delete this inspection?"
-msgstr ""
+msgstr "Tem a certeza que deseja apagar esta inspecção?"
 
 msgid "Contract Manager"
-msgstr ""
+msgstr "Gestor de Contratos"
 
-#, fuzzy
-#| msgid "Create a new password"
 msgid "Create New Contract"
-msgstr "Alterar palavra-passe"
+msgstr "Adicionar um Novo Contrato"
 
 msgid "List of contracts"
-msgstr ""
+msgstr "Lista de contratos"
 
-#, fuzzy
-#| msgid "Save changes"
 msgid "Value range"
-msgstr "Guardar alterações"
+msgstr "Faixa de valores"
 
 msgid "over"
-msgstr ""
+msgstr "acima"
 
 msgid "Number of Projects"
-msgstr ""
+msgstr "Número de Projectos"
 
-#, fuzzy
-#| msgid "Project Name"
 msgid "Project(s) Name"
-msgstr "Nome do Projecto"
+msgstr "Nome(s) do Projecto(s)"
 
 msgid "Type of Works"
-msgstr ""
+msgstr "Tipo de Trabalho"
 
 msgid "Welcome to the Contract Manager"
-msgstr ""
+msgstr "Bem-vindo ao Gestor de Contratos"
 
 msgid "No contracts were created yet"
-msgstr ""
+msgstr "Ainda não foram adicionados contratos"
 
 msgid "Delete Contract"
-msgstr ""
+msgstr "Apagar Contrato"
 
 msgid "Are you sure you want to delete this contract?"
-msgstr ""
+msgstr "Tem a certeza que deseja apagar este contrato?"
 
 msgid "List of payments"
-msgstr ""
+msgstr "Lista de pagamentos"
 
-#, fuzzy
-#| msgid "Pavement Class"
+msgid "To add a payment, at least one company needs to first be created in the Company section"
+msgstr "Para adicionar um pagamento, pelo uma empresa terá que ser criada na secção de Empresas"
+
 msgid "Payment Date"
-msgstr "Classe de Pavimento"
+msgstr "Data do Pagamento"
 
-msgid "Payment Value"
-msgstr ""
+msgid "Payment Value (in USD)"
+msgstr "Valor do Pagamento (em USD)"
 
 msgid "Destination"
-msgstr ""
+msgstr "Destino"
 
 msgid "Save Payment"
-msgstr ""
+msgstr "Guardar Pagamento"
 
-#, fuzzy
-#| msgid "Select data"
 msgid "Select payment date"
-msgstr "Selecção de dados"
+msgstr "Seleccione a data do pagamento"
 
-#, fuzzy
-#| msgid "Enter road link project name"
+msgid "Payment Value"
+msgstr "Valor do Pagamento"
+
 msgid "Enter total payment value"
-msgstr "Introduza o nome do projecto da secção da estrada"
+msgstr "Insira o valor total do pagamento"
 
 msgid "Choose donor from the list"
-msgstr ""
+msgstr "Escolha um doador da lista"
 
-#, fuzzy
-#| msgid "Select data"
 msgid "Select donor"
-msgstr "Selecção de dados"
+msgstr "Seleccione um doador"
 
-#, fuzzy
-#| msgid "Choose the administrative area of the road"
 msgid "Choose funding source from the list"
-msgstr "Escolha a área administrativa da estrada"
+msgstr "Escolha a fonte de financiamento a partir da lista"
 
-#, fuzzy
-#| msgid "Choose the administrative area of the road"
 msgid "Choose from the list the recipient of the payment"
-msgstr "Escolha a área administrativa da estrada"
+msgstr "Escolha o destinatário do pagamento a partir da lista"
 
 msgid "Delete Payment"
-msgstr ""
+msgstr "Apagar Pagamento"
 
 msgid "Are you sure you want to delete this payment?"
-msgstr ""
+msgstr "Tem a certeza que deseja apagar este pagamento?"
 
 msgid "List of Social Safeguard Data"
-msgstr ""
+msgstr "Lista de dados da Protecção Social"
 
 msgid "Reporting Month"
-msgstr ""
+msgstr "Mês Reportado"
 
 msgid "Total Employees"
-msgstr ""
+msgstr "Total de Trabalhadores"
 
 msgid "Total Female Employees"
-msgstr ""
+msgstr "Total de Trabalhadores Mulheres"
 
 msgid "Total Employees With Disabilities"
-msgstr ""
+msgstr "Total de Trabalhadores com Deficiência"
 
 msgid "Female Employees With Disabilities"
-msgstr ""
+msgstr "Total de Trabalhadores Mulheres com Deficiência"
 
 msgid "Save Social Safeguard Report"
-msgstr ""
+msgstr "Guardar Informação da Protecção Social"
 
 msgid "Number of Employees"
-msgstr ""
+msgstr "Número de trabalhadores"
 
 msgid "Select month of the report"
-msgstr ""
+msgstr "Seleccione o mês reportado"
 
-#, fuzzy
-#| msgid "National"
 msgid "National Employees"
-msgstr "Nacional"
+msgstr "Trabalhadores Nacional"
 
 msgid "International Employees"
-msgstr ""
+msgstr "Trabalhadores Internacionais"
 
 msgid "Non timorese employees"
-msgstr ""
+msgstr "Trabalhadores Não-Timorenses"
 
 msgid "Female Employees"
-msgstr ""
+msgstr "Trabalhadores Mulheres"
 
 msgid "Employees With Disabilities"
-msgstr ""
+msgstr "Trabalhadores com Deficiência"
 
 msgid "Young Employees"
-msgstr ""
+msgstr "Trabalhadores Jovens"
 
 msgid "Young Female Employees"
-msgstr ""
+msgstr "Trabalhadores Mulheres Jovens"
 
 msgid "Worker-days"
-msgstr ""
+msgstr "Trabalhador-dias"
 
 msgid "Total Worker-days"
-msgstr ""
+msgstr "Total Trabalhador-dias"
 
 msgid "Worker-days of all employees"
-msgstr ""
+msgstr "Trabalhador dias de todos os empregados"
 
 msgid "Female Employees Worker-days"
-msgstr ""
+msgstr "Trabalhador-dias Empregadas Mulheres"
 
 msgid "Employees With Disabilities Worker-days"
-msgstr ""
+msgstr "Trabalhador-dias Empregados com Deficiência"
 
 msgid "Female Employees With Disabilities Worker-days"
-msgstr ""
+msgstr "Trabalhador-dias Empregadas Mulheres com Deficiência"
 
 msgid "Young Employees Worker-days"
-msgstr ""
+msgstr "Trabalhador-dias Empregados Jovens"
 
 msgid "Young Female Employees Worker-days"
-msgstr ""
+msgstr "Trabalhador-dias Empregados Mulheres Jovens"
 
 msgid "Wages"
-msgstr ""
+msgstr "Remunerações"
 
 msgid "Total Wages"
-msgstr ""
+msgstr "Total remunerações"
 
 msgid "All salaries paid in USD"
-msgstr ""
+msgstr "Todos os salários pagos em USD"
 
 msgid "Average Gross Wages"
-msgstr ""
+msgstr "Média de Salários Brutos"
 
 msgid "Average of gross salaries in USD"
-msgstr ""
+msgstr "Média de salários brutos em USD"
 
 msgid "Average Net Wages"
-msgstr ""
+msgstr "Média de Salários Líquidos"
 
 msgid "Average of net salaries in USD"
-msgstr ""
+msgstr "Média de salários líquidos em USD"
 
 msgid "Delete Social Safeguard Data"
-msgstr ""
+msgstr "Apagar Dados de Protecção Social"
 
 msgid "Are you sure you want to delete this data?"
-msgstr ""
+msgstr "Tem a certeza que deseja apagar estes dados?"
 
-#, fuzzy
-#| msgid "Project"
 msgid "Projects"
-msgstr "Projecto"
+msgstr "Projectos"
 
 msgid "Tenders"
-msgstr ""
+msgstr "Concursos"
 
 msgid "Contracts"
-msgstr ""
+msgstr "Contratos"
 
 msgid "Companies"
-msgstr ""
+msgstr "Empresas"
 
-msgid "Democratic Republic of Timor-Leste"
-msgstr "República Democrática de Timor-Leste"
-
-msgid "Ministry of Public Works"
-msgstr "Ministério das Obras Públicas"
-
-#, fuzzy
-#| msgid "Ministry of Public Works"
 msgid "Directorate General for Public Works"
-msgstr "Ministério das Obras Públicas"
+msgstr "Direcção Geral das Obras Públicas"
 
 msgid "National Directorate for Roads, Bridges and Flood Control"
-msgstr ""
+msgstr "Direcção Nacional de Estradas, Pontes e Controlo de Cheias"
 
 msgid "Exported from Estrada on"
-msgstr ""
+msgstr "Exportado do Estrada em"
 
 msgid "at"
-msgstr ""
+msgstr "em"
 
-#, fuzzy
-#| msgid "Save changes"
 msgid "Unsaved Changes"
-msgstr "Guardar alterações"
+msgstr "Alterações não gravadas"
 
 msgid "You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?"
-msgstr ""
+msgstr "Tem alterações não gravadas que serão perdidas se sair desta página. Deseja continuar a editar?"
 
 msgid "Discard"
-msgstr ""
+msgstr "Descartar"
 
-#, fuzzy
-#| msgid "Continue"
 msgid "Continue Editing"
-msgstr "Continuar"
+msgstr "Continuar edição"
 
 msgid "Error"
-msgstr ""
+msgstr "Erro"
 
 msgid "Success"
-msgstr ""
+msgstr "Sucesso"
 
 msgid "You have successfully saved"
-msgstr ""
+msgstr "As alterações foram gravas com sucesso"
 
 msgid "Something went wrong"
-msgstr ""
+msgstr "Algo errado aconteceu"
 
-#, fuzzy
-#| msgid "Project"
 msgid "Edit Project"
-msgstr "Projecto"
+msgstr "Editar Projecto"
 
-#, fuzzy
-#| msgid "Project"
 msgid "Create Project"
-msgstr "Projecto"
+msgstr "Adicionar Projecto"
 
-#, fuzzy
-#| msgid "Project Name"
 msgid "Project Details"
-msgstr "Nome do Projecto"
+msgstr "Detalhes do Projecto"
 
 msgid "Financials"
-msgstr ""
+msgstr "Dados Financeiros"
 
-#, fuzzy
-#| msgid "Road Condition Data"
 msgid "Construction Schedule"
-msgstr "Dados de Condição de Estrada"
+msgstr "Calendário de Construção"
 
 msgid "Estimated Schedule"
-msgstr ""
+msgstr "Calendário Estimado"
 
-#, fuzzy
-#| msgid "Road Condition Data"
 msgid "Estimated Construction Milestones"
-msgstr "Dados de Condição de Estrada"
+msgstr "Metas de Construção Estimadas"
 
-#, fuzzy
-#| msgid "Link Start Name"
 msgid "Start Date"
-msgstr "Nome do início da secção"
+msgstr "Data de Início"
 
-#, fuzzy
-#| msgid "Pavement Class"
 msgid "Asset Details"
-msgstr "Classe de Pavimento"
+msgstr "Detalhes da Infra-estrutura"
 
 msgid "Couldn't find the asset you are looking for?"
-msgstr ""
+msgstr "Não encontrou a infra-estrutura que procura?"
 
 msgid "Add information for the new asset"
-msgstr ""
+msgstr "Adicionar informação sobre uma nova infra-estrutura"
 
-#, fuzzy
-#| msgid "Link End Chainage (Km)"
 msgid "Chainage Start"
-msgstr "Chainage do final da secção (Km)"
+msgstr "Início do segmento"
 
-#, fuzzy
-#| msgid "Link End Chainage (Km)"
 msgid "Chainage End"
-msgstr "Chainage do final da secção (Km)"
+msgstr "Fim do segmento"
 
-#, fuzzy
-#| msgid "Create a new password"
 msgid "Associated Contracts"
-msgstr "Alterar palavra-passe"
+msgstr "Contratos Associados"
 
-#, fuzzy
-#| msgid "Funding Source"
 msgid "Funding"
-msgstr "Fonte de financiamento"
+msgstr "Financiamento"
 
 msgid "Total"
-msgstr ""
+msgstr "Total"
 
 msgid "Approved Value"
-msgstr ""
+msgstr "Valor Approvado"
 
-#, fuzzy
-#| msgid "Project Name"
 msgid "Project Manager"
-msgstr "Nome do Projecto"
+msgstr "Gestor de Projecto"
 
 msgid "Create New Project"
-msgstr ""
+msgstr "Adicionar Novo Projecto"
 
 msgid "List of projects"
-msgstr ""
+msgstr "Lista de projectos"
 
 msgid "Program"
-msgstr ""
+msgstr "Programa"
 
 msgid "Estimated Budget"
-msgstr ""
+msgstr "Orçamento Estimado"
 
 msgid "No projects were created yet"
-msgstr ""
+msgstr "Ainda nenhum projecto foi adicionado"
 
-#, fuzzy
-#| msgid "Project"
 msgid "Delete Project"
-msgstr "Projecto"
+msgstr "Apagar Projecto"
 
 msgid "Are you sure you want to delete this project?"
-msgstr ""
+msgstr "Tem a certeza que deseja apagar este projecto?"
 
 msgid "Edit Tender"
-msgstr ""
+msgstr "Editar Concurso"
 
 msgid "Create Tender"
-msgstr ""
+msgstr "Adicionar Concurso"
 
 msgid "Tender Details"
-msgstr ""
+msgstr "Detalhes do Concurso"
 
 msgid "Bids and Evaluation"
-msgstr ""
+msgstr "Propostas e Avaliação"
 
 msgid "Tender"
-msgstr ""
+msgstr "Concurso"
 
 msgid "Associated Projects"
-msgstr ""
+msgstr "Projectos Associados"
 
 msgid "Numbering of Companies Tendering"
-msgstr ""
+msgstr "Número de Empresas a Concorrer"
 
 msgid "Tender Manager"
-msgstr ""
+msgstr "Gestor de Concursos"
 
 msgid "Create New Tender"
-msgstr ""
+msgstr "Adicionar Novo Concurso"
 
 msgid "List of tenders"
-msgstr ""
+msgstr "Lista de concursos"
 
-#, fuzzy
-#| msgid "Project Name"
 msgid "Project(s) name"
-msgstr "Nome do Projecto"
+msgstr "Nome(s) do Projecto(s)"
 
 msgid "Welcome to the Tender Manager"
-msgstr ""
+msgstr "Bem-vindo ao Gestor de Concursos"
 
 msgid "No tenders were created yet"
-msgstr ""
+msgstr "Nenhum concurso foi ainda criado"
 
 msgid "Delete Tender"
-msgstr ""
+msgstr "Apagar Concurso"
 
 msgid "Are you sure you want to delete this tender?"
-msgstr ""
+msgstr "Tem a certeza que deseja apagar este concurso?"
 
 msgid "Please enter a correct username and password. Note that both fields may be case-sensitive"
 msgstr "O nome de utilizar ou palavra-passe estão incorrectos. Confirme se está a usar correctamente as maiúsculas e minúsculas"
@@ -2116,14 +1830,14 @@ msgstr "Esqueceu-se da sua palavra-passe?"
 msgid "Log in"
 msgstr "Entrar"
 
-msgid "Designed & developed by Catalpa International"
-msgstr "Desenhado & desenvolvido por Catalpa International"
+msgid "This road asset and project management system (Estrada), has been designed and developed by Catalpa International with funding from the Australian Government’s Departmentof Foreign Affairs and Trade (DFAT) and technical assistance from the International Labour Organization (ILO)"
+msgstr "Este sistema de gestão de infra-estruturas rodoviárias e projectos (Estrada) foi desenhado e desenvolvido pela Catalpa Internacional com fundos do Governo da Austrália através do seu Departamento dos Assuntos e Negócios Estrangeiros (DFAT) e assistência técnica da Organização Internacional do Trabalho (ILO)."
 
 msgid "Logged out"
 msgstr "Não autenticado"
 
 msgid "Well done!"
-msgstr "Sucesso"
+msgstr "Sucesso!"
 
 msgid "Your password has been reset successfully"
 msgstr "A sua palavra-passe foi alterada com sucesso"
@@ -2190,43 +1904,3 @@ msgstr "Endereço de email"
 
 msgid "Send"
 msgstr "Enviar"
-
-#, fuzzy
-#~| msgid "Hello there"
-#~ msgid "Hello"
-#~ msgstr "Viva"
-
-#~ msgid "Change password"
-#~ msgstr "Alterar palavra-passe"
-
-#~ msgid "Log out"
-#~ msgstr "Sair"
-
-#~ msgid "Traffic Level"
-#~ msgstr "Volume de trânsito"
-
-#, fuzzy
-#~| msgid "Road Status"
-#~ msgid "Road class"
-#~ msgstr "Estrado da Estrada"
-
-#~ msgid "Link End Chainage (Km)"
-#~ msgstr "Chainage do final da secção (Km)"
-
-#~ msgid "Link Start Chainage (Km)"
-#~ msgstr "Chainage do início da secção (Km)"
-
-#~ msgid "Administrative Area"
-#~ msgstr "Área administrativa"
-
-#~ msgid "Administrative area"
-#~ msgstr "Área administrativa"
-
-#~ msgid "Road type"
-#~ msgstr "Tipo de estrada"
-
-#~ msgid "Reset password at %(site_name)s"
-#~ msgstr "Redefinir palavra-passe em %(site_name)s"
-
-#~ msgid "Password reset failed"
-#~ msgstr "A alteração de palavra-passe falhou"

@@ -29,6 +29,7 @@ from .models import (
     SurfaceType,
     MaintenanceNeed,
 )
+from contracts.models import FundingSource
 from basemap.models import Municipality
 
 SURFACE_COND_MAPPING_MUNI = {"G": "1", "F": "2", "P": "3", "VP": "4"}
@@ -125,6 +126,8 @@ def import_shapefiles(management_command, shape_file_folder, asset="road"):
         asset_model = Culvert
     elif asset == "drift":
         asset_model = Drift
+    else:
+        raise NotImplementedError("Asset model %s not supported" % (asset,))
 
     # delete appropriate exisiting DB objects and their revisions
     asset_model.objects.exclude(geojson_file_id__isnull=True).delete()
@@ -142,7 +145,11 @@ def import_shapefiles(management_command, shape_file_folder, asset="road"):
         database_srid = Road._meta.fields[1].srid
         sources = (
             ("National_Road.shp", "NAT", populate_road_national),
-            ("Highway_Suai.shp", "HIGH", populate_road_highway),
+            (
+                "Highway_Suai.shp",
+                "NAT",
+                populate_road_highway,
+            ),  # Used to be a Highway Class, but was moved under National Class
             ("Municipal_Road.shp", "MUN", populate_road_municipal),
             ("Rural_Road_R4D_Timor_Leste.shp", "RUR", populate_road_r4d),
             ("RRMPIS_2014.shp", "RUR", populate_road_rrpmis),
@@ -503,7 +510,7 @@ def decimal_from_chainage(chainage):
     return int(chainage.replace("+", ""))
 
 
-@periodic_task(run_every=crontab(minute=0, hour="12,24"))
+@periodic_task(run_every=crontab(minute=0, hour="12,23"))
 def collate_geometries(asset="all"):
     """ Collate geometry models into geobuf files
 
@@ -513,17 +520,24 @@ def collate_geometries(asset="all"):
 
     geometry_sets = {}
     if asset == "all" or asset == "road":
-        geometry_sets["highway"] = Road.objects.filter(asset_class="HIGH")
-        geometry_sets["national"] = Road.objects.filter(asset_class="NAT")
-        geometry_sets["municipal"] = Road.objects.filter(asset_class="MUN")
-        geometry_sets["urban"] = Road.objects.filter(asset_class="URB")
-        geometry_sets["rural"] = Road.objects.filter(asset_class="RUR")
+        geometry_sets["national"] = Road.objects.filter(asset_class="NAT").exclude(
+            geom=None
+        )
+        geometry_sets["municipal"] = Road.objects.filter(asset_class="MUN").exclude(
+            geom=None
+        )
+        geometry_sets["urban"] = Road.objects.filter(asset_class="URB").exclude(
+            geom=None
+        )
+        geometry_sets["rural"] = Road.objects.filter(asset_class="RUR").exclude(
+            geom=None
+        )
     if asset == "all" or asset == "bridge":
-        geometry_sets["bridge"] = Bridge.objects.all()
+        geometry_sets["bridge"] = Bridge.objects.exclude(geom=None)
     if asset == "all" or asset == "culvert":
-        geometry_sets["culvert"] = Culvert.objects.all()
+        geometry_sets["culvert"] = Culvert.objects.exclude(geom=None)
     if asset == "all" or asset == "drift":
-        geometry_sets["drift"] = Drift.objects.all()
+        geometry_sets["drift"] = Drift.objects.exclude(geom=None)
 
     for key, geometry_set in geometry_sets.items():
         collated_geojson, created = CollatedGeoJsonFile.objects.get_or_create(key=key)
@@ -538,6 +552,22 @@ def collate_geometries(asset="all"):
         # set asset_type field (defaults to 'road')
         if key in ["bridge", "culvert", "drift"]:
             collated_geojson.asset_type = key
+
+
+def update_funding_sources():
+    """ Examine the Funding Source field in assets.Roads and add any missing values to contracts.FundingSource """
+
+    funding_sources = FundingSource.objects.all().values_list("name", flat=True)
+    road_funding_sources = (
+        Road.objects.all()
+        .exclude(funding_source__in=funding_sources)
+        .exclude(funding_source__isnull=True)
+        .values_list("funding_source", flat=True)
+        .distinct()
+    )
+    for road_funding_source in road_funding_sources:
+        funding_source = FundingSource(name=road_funding_source)
+        funding_source.save()
 
 
 def make_geojson(*args, **kwargs):

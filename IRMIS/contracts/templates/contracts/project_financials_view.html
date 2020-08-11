@@ -47,7 +47,7 @@
         {% if project.total_budget %}
         <div class="total-budget">
             <p>{% trans "Total" %}</p>
-            <h1>$ {{ project.total_budget }}</h1>
+            <h1 class="to-format">$ {{ project.total_budget }}</h1>
         </div>
         {% endif %}
         <div>
@@ -62,7 +62,7 @@
                     {% for budget in budgets %}
                     <tr>
                         <td>{{ budget.year }}</td>
-                        <td>{{ budget.approved_value }}</td>
+                        <td class="text-right to-format">$ {{ budget.approved_value }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

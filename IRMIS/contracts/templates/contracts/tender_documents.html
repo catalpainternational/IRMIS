@@ -3,7 +3,7 @@
 
 {% block tender_content %}
 <nav>
-    <a href="{% url 'contract-tender-update' tender.code %}">
+    <a href="{% url 'contract-tender-update' tender.id %}">
         <h6>{% trans "Tender Details" %}</h6>
     </a>
     <a class="selected">
@@ -40,7 +40,7 @@
                 </td>
                 <td>{{ document.title }}</td>
                 <td>{{ document.document_type.name }}</td>
-                <td>{{ document.document_date }}</td>
+                <td>{{ document.document_date|date:"Y-m-d" }}</td>
                 <td>{{ document.description }}</td>
             </tr>
             {% endfor %}
@@ -94,7 +94,7 @@
             </div>
             <div class="modal-footer">
                 <a data-dismiss="modal">{% trans "Cancel" %}</a>
-                <button id="save-document" type="button" class="btn btn-primary" data-profile="tenders" data-id="{{ tender.code }}">{% trans "Save" %}</button>
+                <button id="save-document" type="button" class="btn btn-primary" data-profile="tenders" data-id="{{ tender.id }}">{% trans "Save" %}</button>
             </div>
         </div>
     </div>

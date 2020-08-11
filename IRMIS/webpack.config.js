@@ -21,7 +21,7 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.riot.html$/,
+                test: /\.riot$/,
                 exclude: /node_modules/,
                 use: {
                     loader: '@riotjs/webpack-loader',
@@ -93,6 +93,7 @@ module.exports = {
     optimization: {
         splitChunks: {
             chunks: 'all', // include all types of chunks
+            minSize: 30000,
         }
     },
     plugins: [

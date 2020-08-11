@@ -3,7 +3,7 @@
 
 import * as jspb from "google-protobuf";
 import * as google_protobuf_timestamp_pb from "google-protobuf/google/protobuf/timestamp_pb";
-import * as photo_pb from "./photo_pb";
+import * as media_pb from "./media_pb";
 import * as roads_pb from "./roads_pb";
 
 export class Structures extends jspb.Message {
@@ -110,15 +110,15 @@ export class Bridge extends jspb.Message {
   getConditionDescription(): string;
   setConditionDescription(value: string): void;
 
-  clearInventoryPhotosList(): void;
-  getInventoryPhotosList(): Array<photo_pb.Photo>;
-  setInventoryPhotosList(value: Array<photo_pb.Photo>): void;
-  addInventoryPhotos(value?: photo_pb.Photo, index?: number): photo_pb.Photo;
+  clearInventoryMediaList(): void;
+  getInventoryMediaList(): Array<media_pb.Media>;
+  setInventoryMediaList(value: Array<media_pb.Media>): void;
+  addInventoryMedia(value?: media_pb.Media, index?: number): media_pb.Media;
 
-  clearSurveyPhotosList(): void;
-  getSurveyPhotosList(): Array<photo_pb.Photo>;
-  setSurveyPhotosList(value: Array<photo_pb.Photo>): void;
-  addSurveyPhotos(value?: photo_pb.Photo, index?: number): photo_pb.Photo;
+  clearSurveyMediaList(): void;
+  getSurveyMediaList(): Array<media_pb.Media>;
+  setSurveyMediaList(value: Array<media_pb.Media>): void;
+  addSurveyMedia(value?: media_pb.Media, index?: number): media_pb.Media;
 
   getRiverName(): string;
   setRiverName(value: string): void;
@@ -162,8 +162,8 @@ export namespace Bridge {
     geojsonId: number,
     assetCondition: string,
     conditionDescription: string,
-    inventoryPhotosList: Array<photo_pb.Photo.AsObject>,
-    surveyPhotosList: Array<photo_pb.Photo.AsObject>,
+    inventoryMediaList: Array<media_pb.Media.AsObject>,
+    surveyMediaList: Array<media_pb.Media.AsObject>,
     riverName: string,
     numberSpans: number,
     spanLength: number,
@@ -240,15 +240,15 @@ export class Culvert extends jspb.Message {
   getConditionDescription(): string;
   setConditionDescription(value: string): void;
 
-  clearInventoryPhotosList(): void;
-  getInventoryPhotosList(): Array<photo_pb.Photo>;
-  setInventoryPhotosList(value: Array<photo_pb.Photo>): void;
-  addInventoryPhotos(value?: photo_pb.Photo, index?: number): photo_pb.Photo;
+  clearInventoryMediaList(): void;
+  getInventoryMediaList(): Array<media_pb.Media>;
+  setInventoryMediaList(value: Array<media_pb.Media>): void;
+  addInventoryMedia(value?: media_pb.Media, index?: number): media_pb.Media;
 
-  clearSurveyPhotosList(): void;
-  getSurveyPhotosList(): Array<photo_pb.Photo>;
-  setSurveyPhotosList(value: Array<photo_pb.Photo>): void;
-  addSurveyPhotos(value?: photo_pb.Photo, index?: number): photo_pb.Photo;
+  clearSurveyMediaList(): void;
+  getSurveyMediaList(): Array<media_pb.Media>;
+  setSurveyMediaList(value: Array<media_pb.Media>): void;
+  addSurveyMedia(value?: media_pb.Media, index?: number): media_pb.Media;
 
   getHeight(): number;
   setHeight(value: number): void;
@@ -289,8 +289,8 @@ export namespace Culvert {
     geojsonId: number,
     assetCondition: string,
     conditionDescription: string,
-    inventoryPhotosList: Array<photo_pb.Photo.AsObject>,
-    surveyPhotosList: Array<photo_pb.Photo.AsObject>,
+    inventoryMediaList: Array<media_pb.Media.AsObject>,
+    surveyMediaList: Array<media_pb.Media.AsObject>,
     height: number,
     numberCells: number,
   }
@@ -366,15 +366,15 @@ export class Drift extends jspb.Message {
   getConditionDescription(): string;
   setConditionDescription(value: string): void;
 
-  clearInventoryPhotosList(): void;
-  getInventoryPhotosList(): Array<photo_pb.Photo>;
-  setInventoryPhotosList(value: Array<photo_pb.Photo>): void;
-  addInventoryPhotos(value?: photo_pb.Photo, index?: number): photo_pb.Photo;
+  clearInventoryMediaList(): void;
+  getInventoryMediaList(): Array<media_pb.Media>;
+  setInventoryMediaList(value: Array<media_pb.Media>): void;
+  addInventoryMedia(value?: media_pb.Media, index?: number): media_pb.Media;
 
-  clearSurveyPhotosList(): void;
-  getSurveyPhotosList(): Array<photo_pb.Photo>;
-  setSurveyPhotosList(value: Array<photo_pb.Photo>): void;
-  addSurveyPhotos(value?: photo_pb.Photo, index?: number): photo_pb.Photo;
+  clearSurveyMediaList(): void;
+  getSurveyMediaList(): Array<media_pb.Media>;
+  setSurveyMediaList(value: Array<media_pb.Media>): void;
+  addSurveyMedia(value?: media_pb.Media, index?: number): media_pb.Media;
 
   getThickness(): number;
   setThickness(value: number): void;
@@ -412,8 +412,8 @@ export namespace Drift {
     geojsonId: number,
     assetCondition: string,
     conditionDescription: string,
-    inventoryPhotosList: Array<photo_pb.Photo.AsObject>,
-    surveyPhotosList: Array<photo_pb.Photo.AsObject>,
+    inventoryMediaList: Array<media_pb.Media.AsObject>,
+    surveyMediaList: Array<media_pb.Media.AsObject>,
     thickness: number,
   }
 }

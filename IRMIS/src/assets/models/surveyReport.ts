@@ -5,7 +5,7 @@ import { Timestamp } from "google-protobuf/google/protobuf/timestamp_pb";
 import { Attribute, Report } from "../../../protobuf/report_pb";
 
 import { IEstrada } from "./estradaBase";
-import { makeEstradaPhoto, EstradaPhoto, Photo } from "./photo";
+import { makeEstradaMedia, EstradaMedia, Media } from "./media";
 
 import { reportColumns } from "../../reportTableDefinitions";
 import { choice_or_default, getFieldName, getHelpText, invertChoices, makeEstradaObject } from "../protoBufUtilities";
@@ -16,6 +16,7 @@ import {
     TECHNICAL_CLASS_CHOICES,
     TERRAIN_CLASS_CHOICES, TRAFFIC_LEVEL_CHOICES,
 } from "./choices";
+import { formatNumber } from "../utilities";
 
 // tslint:disable: object-literal-sort-keys
 // tslint:disable: max-classes-per-file
@@ -46,16 +47,16 @@ const attributeSchema: { [name: string]: any } = {
 
 // These are the response filters returned from reports.py and views.py
 const filterTitles: { [name: string]: any } = {
-    road_id: { display: (window as any).gettext("Road Id") },
-    asset_id: { display: (window as any).gettext("Asset Id") },
-    asset_code: { display: (window as any).gettext("Asset Code") },
-    asset_type: { display: (window as any).gettext("Asset Type"), choices: ASSET_TYPE_CHOICES },
     asset_class: { display: (window as any).gettext("Asset Class"), choices: ASSET_CLASS_CHOICES },
+    asset_code: { display: (window as any).gettext("Asset Code") },
     asset_condition: { display: (window as any).gettext("Surface Condition"), choices: ASSET_CONDITION_CHOICES },
-    surface_type: { display: (window as any).gettext("Surface Type"), choices: SURFACE_TYPE_CHOICES },
+    asset_id: { display: (window as any).gettext("Asset Id") },
+    asset_type: { display: (window as any).gettext("Asset Type"), choices: ASSET_TYPE_CHOICES },
+    date_surveyed: { display: (window as any).gettext("Date Surveyed") },
     municipality: { display: (window as any).gettext("Municipality"), choices: ADMINISTRATIVE_AREA_CHOICES },
     pavement_class: { display: (window as any).gettext("Pavement Class"), choices: PAVEMENT_CLASS_CHOICES },
-    date_surveyed: { display: (window as any).gettext("Date Surveyed") },
+    road_id: { display: (window as any).gettext("Road Id") },
+    surface_type: { display: (window as any).gettext("Surface Type"), choices: SURFACE_TYPE_CHOICES },
     // The following filters are handled 'specially'
     // primary_attribute: { display: (window as any).gettext("Attribute") },
     // road_code: { display: (window as any).gettext("Road Code") },
@@ -63,20 +64,21 @@ const filterTitles: { [name: string]: any } = {
 };
 
 const lengthTypeChoices: { [name: string]: any } = {
+    asset_class: ASSET_CLASS_CHOICES,
+    asset_condition: ASSET_CONDITION_CHOICES,
+    asset_type: ASSET_TYPE_CHOICES,
     municipality: ADMINISTRATIVE_AREA_CHOICES,
     number_lanes: {},
     pavement_class: PAVEMENT_CLASS_CHOICES,
-    rainfall: {},
-    asset_type: ASSET_TYPE_CHOICES,
-    asset_class: ASSET_CLASS_CHOICES,
+    rainfall_maximum: {},
+    rainfall_minimum: {},
     road_status: ROAD_STATUS_CHOICES,
-    asset_condition: ASSET_CONDITION_CHOICES,
+    roughness: {},
+    source_roughness: {},
     surface_type: SURFACE_TYPE_CHOICES,
     technical_class: TECHNICAL_CLASS_CHOICES,
     terrain_class: TERRAIN_CLASS_CHOICES,
     traffic_level: TRAFFIC_LEVEL_CHOICES,
-    source_roughness: {},
-    roughness: {},
 };
 
 export function testKeyIsReal(key: any): boolean {
@@ -98,7 +100,7 @@ function defineReportColumn(title: string, columnData: string, isCount = false):
         orderable: false,
         render: (data: any, type: string) => {
             return (type === "display" && typeof data === "number")
-                ? isCount ? data.toFixed(0) : (data / 1000).toFixed(2)
+                ? isCount ? formatNumber(data.toFixed(0)) : formatNumber((data / 1000).toFixed(2))
                 : data;
         },
     };
@@ -215,7 +217,7 @@ export class EstradaNetworkSurveyReport extends Report implements IEstrada {
 
     /** Clears the filter, leaving it with 'report_asset_type' and 'primary_attribute' members with empty lists */
     public clearFilter() {
-        this.setFilter(JSON.stringify({report_asset_type: [], primary_attribute: []}));
+        this.setFilter(JSON.stringify({ report_asset_type: [], primary_attribute: [] }));
     }
 
     /** Sets a key (member) in the filter to a specific list of values
@@ -317,7 +319,8 @@ export class EstradaNetworkSurveyReport extends Report implements IEstrada {
             "municipality",
             "number_lanes",
             "pavement_class",
-            "rainfall",
+            "rainfall_maximum",
+            "rainfall_minimum",
             "asset_class",
             "asset_condition",
             "surface_type",
@@ -477,8 +480,12 @@ export class EstradaNetworkSurveyReport extends Report implements IEstrada {
         return this.makeSpecificLengths("pavement_class");
     }
 
-    get rainfalls() {
-        return this.makeSpecificLengths("rainfall");
+    get rainfallMaximums() {
+        return this.makeSpecificLengths("rainfallMaximum");
+    }
+
+    get rainfallMinimums() {
+        return this.makeSpecificLengths("rainfallMinimum");
     }
 
     get assetClasses() {
@@ -545,7 +552,7 @@ export class EstradaNetworkSurveyReport extends Report implements IEstrada {
         });
 
         if (filteredAttributes.length === 0) {
-            return {date_surveyed: undefined, attributeEntries: []};
+            return { date_surveyed: undefined, attributeEntries: [] };
         }
 
         // Descending sort most recent dateSurveyed, down to null dateSurveyed
@@ -699,11 +706,15 @@ export class EstradaSurveyAttribute extends Attribute implements IEstrada {
         return this.extractChoiceValue("pavement_class", PAVEMENT_CLASS_CHOICES);
     }
 
-    get rainfall(): number | string {
-        return this.extractIntValue("rainfall");
+    get rainfallMaximum(): number | string {
+        return this.extractIntValue("rainfallMaximum");
     }
 
-    get trafficCounts(): { [name: string]: any }  {
+    get rainfallMinimum(): number | string {
+        return this.extractIntValue("rainfallMinimum");
+    }
+
+    get trafficCounts(): { [name: string]: any } {
         return this.value ? JSON.parse(this.value).counts : {} || {};
     }
 
@@ -749,13 +760,13 @@ export class EstradaSurveyAttribute extends Attribute implements IEstrada {
         return this.extractStringValue("roughness");
     }
 
-    get photos(): EstradaPhoto[] | undefined {
-        const photosListRaw = this.getPhotosList();
-        return photosListRaw ? photosListRaw.map(makeEstradaPhoto) : photosListRaw;
+    get media(): EstradaMedia[] | undefined {
+        const mediaListRaw = this.getMediaList();
+        return mediaListRaw ? mediaListRaw.map(makeEstradaMedia) : mediaListRaw;
     }
 
-    set photos(values: EstradaPhoto[] | undefined) {
-        this.setPhotosList(values as Photo[]);
+    set media(values: EstradaMedia[] | undefined) {
+        this.setMediaList(values as Media[]);
     }
 
     private unknownI8n(): string {
@@ -814,7 +825,7 @@ export class EstradaSurveyAttribute extends Attribute implements IEstrada {
             ? numericValue.toFixed(0) : this.unknownI8n();
     }
 
-    private extractChoiceValue(primaryAttribute: string, choices: {[name: string]: any}): string {
+    private extractChoiceValue(primaryAttribute: string, choices: { [name: string]: any }): string {
         const extractedValue = this.extractAnyValue(primaryAttribute);
 
         if (!extractedValue) {

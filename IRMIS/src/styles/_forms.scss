@@ -39,7 +39,7 @@ textarea.form-control {
     }
 
     &.danger {
-        border: 1px solid $red;
+        border: 1px solid $red !important;
     }
 
     &:-moz-ui-invalid {
@@ -119,4 +119,9 @@ textarea.form-control {
         margin-bottom: 0;
         padding-left: 0;
     }
+}
+
+#no-companies-tooltip.invalid-tooltip {
+    left: 5px;
+    top: 35px;
 }

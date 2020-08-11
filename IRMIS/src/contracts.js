@@ -1,3 +1,4 @@
+import "./contracts/format_numbers";
 import "./contracts/side_menu";
 import "./contracts/feedback";
 import "./contracts/select2";

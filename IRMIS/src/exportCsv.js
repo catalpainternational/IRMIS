@@ -1,9 +1,9 @@
 import { LocalSave } from "./localFileAccess";
 
-export function exportCsv(headers, rows) {
+export function exportCsv(headers, rows, name) {
     const date = new Date();
     const month = date.getMonth() + 1;
-    const title = "Estrada_" + date.getFullYear() + "-" + month + "-" + date.getDate();
+    const title = "Estrada_" + name + "_" + date.getFullYear() + "-" + month + "-" + date.getDate();
     const fileName = title + ".csv";
 
     const csvDump = [];

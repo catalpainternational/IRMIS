@@ -47,8 +47,8 @@
                 </td>
                 {% endif %}
                 <td><a href="{% url 'contract-company-detail' company.id %}">{{ company.name }}</a></td>
-                <td>{{ company.total_contracts }}</td>
-                <td>{{ company.total_contracts_amount|default_if_none:"0" }}</td>
+                <td class="text-right to-format">{{ company.total_contracts }}</td>
+                <td class="text-right to-format">{{ company.total_contracts_amount|default_if_none:"0" }}</td>
                 <td>{{ company.TIN }}</td>
             </tr>
             {% endfor %}

@@ -50,6 +50,7 @@ $toggle-views-height: calc(72px + 40px);
         height: calc(100% - #{$toggle-views-height} - #{$toggle-views-height} - #{$footer-height});
         padding-right: 6px;
         overflow-y: auto;
+        z-index: 1;
 
         .filter {
             @extend %filter-shared;

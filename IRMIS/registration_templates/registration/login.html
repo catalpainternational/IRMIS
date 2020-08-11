@@ -1,6 +1,16 @@
 {% extends "base_registration.html" %}
 {% load i18n %}
 
+{% block rdtl %}
+<div class="align-items-center d-flex flex-column rdtl">
+    <span class="image rdtl-logo"></span>
+    <div class="align-items-center d-flex flex-column">
+        <span>{% trans "Democratic Republic of Timor-Leste" %}</span>
+        <span>{% trans "Ministry of Public Works" %}</span>
+    </div>
+</div>
+{% endblock %}
+
 {% block registration %}
 <form method="post" action=".">
     {% csrf_token %}
@@ -25,14 +35,14 @@
 </form>
 
 <div class="ownership">
-    <div class="align-items-center d-flex">
-        <span class="image rdtl"></span>
-        <div class="d-flex flex-column">
-            <span>{% trans "Democratic Republic of Timor-Leste" %}</span>
-            <span>{% trans "Ministry of Public Works" %}</span>
-        </div>
+    <span class="d-flex justify-content-center">
+        {% trans "This road asset and project management system (Estrada), has been designed and developed by Catalpa International with funding from the Australian Government’s Departmentof Foreign Affairs and Trade (DFAT) and technical assistance from the International Labour Organization (ILO)" %}.
+    </span>
+    <div class="align-items-center d-flex justify-content-center">
+        <span class="image ausaid-logo"></span>
+        <span class="image aus-embassy-logo"></span>
+        <span class="image ilo-logo"></span>
     </div>
-    <span class="d-flex justify-content-center">{% trans "Designed & developed by Catalpa International" %}</span>
 </div>
 
 <script>

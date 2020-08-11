@@ -7,16 +7,15 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import HStoreField, JSONField, DecimalRangeField
 from django.contrib.postgres.indexes import GistIndex
 from django.contrib.postgres.aggregates.general import ArrayAgg
-from django.utils.translation import get_language, ugettext, ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 from django.core.cache import caches
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
-from django.db.models import Count, Max, OuterRef, Prefetch, Subquery, F, Value
+from django.db.models import Count, Max, OuterRef, Prefetch, Subquery
 from django.db.models.functions import Cast, Substr, Upper
-from django.db import connection, OperationalError, ProgrammingError
+from django.db import connection, ProgrammingError
 from warnings import warn
-from psycopg2 import sql
-from typing import Iterable, Union
+from typing import Iterable
 from warnings import warn
 
 import importlib_resources as resources
@@ -32,7 +31,7 @@ import reversion
 from datetime import datetime
 from collections import namedtuple
 
-from protobuf.photo_pb2 import Photos as ProtoPhotos
+from protobuf.media_pb2 import Medias as ProtoMedias
 from protobuf.roads_pb2 import Roads as ProtoRoads, Projection
 from protobuf.survey_pb2 import Surveys as ProtoSurveys
 from protobuf.structure_pb2 import Structures as ProtoStructures
@@ -40,7 +39,6 @@ from protobuf.plan_pb2 import Plans as ProtoPlans
 from protobuf.plan_pb2 import PlanSnapshots as ProtoPlanSnapshots
 
 from google.protobuf.timestamp_pb2 import Timestamp
-from google.protobuf.wrappers_pb2 import FloatValue, UInt32Value
 
 from .geodjango_utils import start_end_point_annos
 from csv_data_sources.models import CsvData
@@ -108,6 +106,16 @@ class SchemaError(TypeError):
     pass
 
 
+def getattr_protobuf(query_obj, query_key, default=None):
+    if "__" not in query_key:
+        return getattr(query_obj, query_key, default)
+
+    related_obj_name, related_obj_member = query_key.split("__", 2)
+    related_obj = getattr(query_obj, related_obj_name, None)
+
+    return getattr(related_obj, related_obj_member, default) if related_obj else None
+
+
 def namedtuple_query(sql, params=None, nt_result=None):
     """
     Return the executed SQL as a NamedTuple
@@ -170,34 +178,35 @@ class TechnicalClass(models.Model):
         return self.name
 
 
-class PhotoQuerySet(models.QuerySet):
+class MediaQuerySet(models.QuerySet):
     def to_protobuf(self):
-        """ returns a protobuf object from the queryset with a Photos list """
-        # See photos.proto
-        photos_protobuf = ProtoPhotos()
+        """ returns a protobuf object from the queryset with a Media list """
+        # See media.proto
+        medias_protobuf = ProtoMedias()
 
-        regular_fields = dict(id="id", description="description")
+        regular_fields = dict(id="id", description="description",)
+
+        related_fields = dict(url="file__url")
 
         datetime_fields = dict(
             date_created="date_created", last_modified="last_modified",
         )
 
-        photos = self.order_by("id")
-
-        for photo in photos:
-            photo_protobuf = photos_protobuf.photos.add()
+        for media in self.order_by("id"):
+            media_protobuf = medias_protobuf.medias.add()
 
             for protobuf_key, query_key in regular_fields.items():
-                if getattr(photo, query_key, None):
-                    setattr(
-                        photo_protobuf, protobuf_key, getattr(photo, query_key, None)
-                    )
+                field_value = getattr(media, query_key, None)
+                if field_value != None:
+                    setattr(media_protobuf, protobuf_key, field_value)
 
-            if getattr(photo, "file", None):
-                setattr(photo_protobuf, "url", photo.file.url)
+            for protobuf_key, query_key in related_fields.items():
+                field_value = getattr_protobuf(media, query_key, None)
+                if field_value != None:
+                    setattr(media_protobuf, protobuf_key, field_value)
 
-            if getattr(photo, "content_object", None):
-                model = photo.content_type.model
+            if getattr(media, "content_object", None):
+                model = media.content_type.model
                 if model == "bridge":
                     prefix = "BRDG-"
                 elif model == "culvert":
@@ -208,49 +217,51 @@ class PhotoQuerySet(models.QuerySet):
                     prefix = "SURV-"
                 elif model == "road":
                     prefix = "ROAD-"
-                setattr(photo_protobuf, "fk_link", prefix + str(photo.object_id))
+                setattr(media_protobuf, "fk_link", prefix + str(media.object_id))
 
-            if getattr(photo, "date_created", None):
-                ts = timestamp_from_datetime(photo.date_created)
-                photo_protobuf.date_created.CopyFrom(ts)
+            field_value = getattr(media, "date_created", None)
+            if field_value != None:
+                ts = timestamp_from_datetime(field_value)
+                media_protobuf.date_created.CopyFrom(ts)
 
-            if getattr(photo, "last_modified", None):
-                ts = timestamp_from_datetime(photo.last_modified)
-                photo_protobuf.last_modified.CopyFrom(ts)
+            field_value = getattr(media, "last_modified", None)
+            if field_value != None:
+                ts = timestamp_from_datetime(field_value)
+                media_protobuf.last_modified.CopyFrom(ts)
 
-        return photos_protobuf
+        return medias_protobuf
 
 
-class PhotoManager(models.Manager):
+class MediaManager(models.Manager):
     def get_queryset(self):
-        return PhotoQuerySet(self.model, using=self._db)
+        return MediaQuerySet(self.model, using=self._db)
 
     def to_protobuf(self):
-        """ returns a photos protobuf object from the manager """
+        """ returns a medias protobuf object from the manager """
         return self.get_queryset().to_protobuf()
 
 
 @reversion.register()
-class Photo(models.Model):
-    """ Generic Photo model """
+class Media(models.Model):
+    """ Generic Media model """
 
-    objects = PhotoManager()
+    objects = MediaManager()
 
     date_created = models.DateTimeField(
         verbose_name=_("Date Created"), auto_now_add=True
     )
     last_modified = models.DateTimeField(verbose_name=_("last modified"), auto_now=True)
-    file = models.ImageField(upload_to="photos/")
+    file = models.FileField(upload_to="multimedia/")
     description = models.CharField(
         max_length=140, verbose_name=_("Description"), default="", blank=True,
     )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, verbose_name=_("User"), on_delete=models.CASCADE,
     )
-    # photos generic fk links back to the various models
+    # medias generic fk links back to the various models
     content_type = models.ForeignKey(
         ContentType,
-        related_name="content_type_photos",
+        related_name="content_type_medias",
         on_delete=models.CASCADE,
         blank=True,
         null=True,
@@ -296,44 +307,35 @@ class SurveyQuerySet(models.QuerySet):
             asset_code="asset_code",
             road_id="road_id",
             road_code="road_code",
-            user="user__id",
             chainage_start="chainage_start",
             chainage_end="chainage_end",
             source="source",
         )
 
-        # fields from User used to build the added_by field
-        name_fields = dict(
-            username="user__username",
-            last_name="user__last_name",
-            first_name="user__first_name",
-        )
-
-        date_fields = dict(date_updated="date_updated", date_surveyed="date_surveyed",)
-
-        photos_prefetch = Prefetch(
-            "photos",
-            queryset=Photo.objects.select_related("user").filter(
+        media_prefetch = Prefetch(
+            "media",
+            queryset=Media.objects.select_related("user").filter(
                 survey__id__in=self.values("id")
             ),
         )
 
-        surveys = self.order_by("id").prefetch_related(photos_prefetch)
+        surveys = self.order_by("id").prefetch_related(media_prefetch)
 
         for survey in surveys:
             survey_protobuf = surveys_protobuf.surveys.add()
             for protobuf_key, query_key in regular_fields.items():
-                if getattr(survey, query_key, None):
-                    setattr(
-                        survey_protobuf, protobuf_key, getattr(survey, query_key, None)
-                    )
+                field_value = getattr(survey, query_key, None)
+                if field_value != None:
+                    setattr(survey_protobuf, protobuf_key, field_value)
 
-            if survey.date_updated:
-                ts = timestamp_from_datetime(survey.date_updated)
+            field_value = getattr(survey, "date_updated", None)
+            if field_value != None:
+                ts = timestamp_from_datetime(field_value)
                 survey_protobuf.date_updated.CopyFrom(ts)
 
-            if survey.date_surveyed:
-                ts = timestamp_from_datetime(survey.date_surveyed)
+            field_value = getattr(survey, "date_surveyed", None)
+            if field_value != None:
+                ts = timestamp_from_datetime(field_value)
                 survey_protobuf.date_surveyed.CopyFrom(ts)
 
             if survey.user:
@@ -358,18 +360,17 @@ class SurveyQuerySet(models.QuerySet):
                     survey.values, separators=(",", ":")
                 )
 
-            photos = survey.photos.all()
-            for photo in photos:
-                photo_protobuf = survey_protobuf.photos.add()
-                setattr(photo_protobuf, "id", photo.id)
-                setattr(photo_protobuf, "url", photo.file.url)
-                setattr(photo_protobuf, "fk_link", "SURV-" + str(survey.id))
-                if photo.description:
-                    setattr(photo_protobuf, "description", photo.description)
-                setattr(photo_protobuf, "added_by", photo.user.username)
+            for media in survey.media.all():
+                media_protobuf = survey_protobuf.media.add()
+                setattr(media_protobuf, "id", media.id)
+                setattr(media_protobuf, "url", media.file.url)
+                setattr(media_protobuf, "fk_link", "SURV-" + str(survey.id))
+                if media.description:
+                    setattr(media_protobuf, "description", media.description)
+                setattr(media_protobuf, "added_by", media.user.username)
                 # set the info for create / modified dates
-                ts = timestamp_from_datetime(photo.date_created)
-                photo_protobuf.date_created.CopyFrom(ts)
+                ts = timestamp_from_datetime(media.date_created)
+                media_protobuf.date_created.CopyFrom(ts)
 
         return surveys_protobuf
 
@@ -451,7 +452,7 @@ class Survey(models.Model):
         help_text=_("Choose the source of the survey"),
     )
     values = HStoreField()
-    photos = GenericRelation(Photo, related_query_name="survey")
+    media = GenericRelation(Media, related_query_name="survey")
 
     @property
     def prefix(self):
@@ -481,7 +482,6 @@ class Asset:
 
     ASSET_CLASS_CHOICES = [
         ("NAT", _("National")),
-        ("HIGH", _("Highway")),
         ("MUN", _("Municipal")),
         ("URB", _("Urban")),
         ("RUR", _("Rural")),
@@ -557,19 +557,21 @@ class RoadQuerySet(models.QuerySet):
             road_code="road_code",
             road_name="road_name",
             asset_class="asset_class",
-            road_status="road_status__code",
             link_code="link_code",
             link_start_name="link_start_name",
             link_end_name="link_end_name",
-            surface_type="surface_type__code",
             asset_condition="asset_condition",
-            pavement_class="pavement_class__code",
             administrative_area="administrative_area",
-            technical_class="technical_class__code",
             project="project",
             funding_source="funding_source",
-            maintenance_need="maintenance_need__code",
             traffic_level="traffic_level",
+        )
+        related_fields = dict(
+            road_status="road_status__code",
+            surface_type="surface_type__code",
+            pavement_class="pavement_class__code",
+            technical_class="technical_class__code",
+            maintenance_need="maintenance_need__code",
         )
         float_fields = dict(
             link_length="link_length",
@@ -580,7 +582,8 @@ class RoadQuerySet(models.QuerySet):
             link_start_chainage="link_start_chainage",
             link_end_chainage="link_end_chainage",
             number_lanes="number_lanes",
-            rainfall="rainfall",
+            rainfall_maximum="rainfall_maximum",
+            rainfall_minimum="rainfall_minimum",
             population="population",
             construction_year="construction_year",
             # `core` is a nullable boolean
@@ -600,18 +603,40 @@ class RoadQuerySet(models.QuerySet):
             .order_by("-date_surveyed")
         )
         annotations = start_end_point_annos("geom")
-        photos_prefetch = Prefetch(
-            "photos",
-            queryset=Photo.objects.select_related("user").filter(
+
+        road_status_prefetch = Prefetch(
+            "road_status", queryset=RoadStatus.objects.all()
+        )
+        surface_type_prefetch = Prefetch(
+            "surface_type", queryset=SurfaceType.objects.all()
+        )
+        pavement_class_prefetch = Prefetch(
+            "pavement_class", queryset=PavementClass.objects.all()
+        )
+        technical_class_prefetch = Prefetch(
+            "technical_class", queryset=TechnicalClass.objects.all()
+        )
+        maintenance_need_prefetch = Prefetch(
+            "maintenance_need", queryset=MaintenanceNeed.objects.all()
+        )
+        media_prefetch = Prefetch(
+            "media",
+            queryset=Media.objects.select_related("user").filter(
                 road__id__in=self.values("id")
             ),
         )
+
         roads = (
             self.order_by("id")
             .prefetch_related(
                 "served_facilities", "served_economic_areas", "served_connection_types"
             )
-            .prefetch_related(photos_prefetch)
+            .prefetch_related(road_status_prefetch)
+            .prefetch_related(surface_type_prefetch)
+            .prefetch_related(pavement_class_prefetch)
+            .prefetch_related(technical_class_prefetch)
+            .prefetch_related(maintenance_need_prefetch)
+            .prefetch_related(media_prefetch)
             .annotate(
                 **annotations,
                 total_width=Subquery(survey.values("values__total_width")[:1]),
@@ -626,8 +651,14 @@ class RoadQuerySet(models.QuerySet):
             road_protobuf.id = road.id
 
             for protobuf_key, query_key in regular_fields.items():
-                if getattr(road, query_key, None):
-                    setattr(road_protobuf, protobuf_key, getattr(road, query_key, None))
+                field_value = getattr(road, query_key, None)
+                if field_value != None:
+                    setattr(road_protobuf, protobuf_key, field_value)
+
+            for protobuf_key, query_key in related_fields.items():
+                field_value = getattr_protobuf(road, query_key, None)
+                if field_value != None:
+                    setattr(road_protobuf, protobuf_key, field_value)
 
             for protobuf_key, query_key in float_fields.items():
                 # nullable_value = prepare_protobuf_nullable_float(road.get(query_key))
@@ -644,23 +675,25 @@ class RoadQuerySet(models.QuerySet):
                 setattr(road_protobuf, protobuf_key, nullable_value)
 
             # Add the total_width from the survey
-            if getattr(road, "total_width", None):
-                nullable_value = prepare_protobuf_nullable_float(
-                    getattr(road, "total_width", None)
-                )
+            field_value = getattr(road, "total_width", None)
+            if field_value != None:
+                nullable_value = prepare_protobuf_nullable_float(field_value)
                 setattr(road_protobuf, "total_width", nullable_value)
 
             # Add any many to many fields
-            if getattr(road, "facility_types", None):
-                mtom_ids = getattr(road, "facility_types", None)
+            field_value = getattr(road, "facility_types", None)
+            if field_value != None:
+                mtom_ids = field_value
                 if mtom_ids != None and len(mtom_ids) > 0 and mtom_ids[0] != None:
                     road_protobuf.served_facilities[:] = mtom_ids
-            if getattr(road, "economic_areas", None):
-                mtom_ids = getattr(road, "economic_areas", None)
+            field_value = getattr(road, "economic_areas", None)
+            if field_value != None:
+                mtom_ids = field_value
                 if mtom_ids != None and len(mtom_ids) > 0 and mtom_ids[0] != None:
                     road_protobuf.served_economic_areas[:] = mtom_ids
-            if getattr(road, "connection_types", None):
-                mtom_ids = getattr(road, "connection_types", None)
+            field_value = getattr(road, "connection_types", None)
+            if field_value != None:
+                mtom_ids = field_value
                 if mtom_ids != None and len(mtom_ids) > 0 and mtom_ids[0] != None:
                     road_protobuf.served_connection_types[:] = mtom_ids
 
@@ -670,17 +703,17 @@ class RoadQuerySet(models.QuerySet):
             road_protobuf.projection_start.CopyFrom(start)
             road_protobuf.projection_end.CopyFrom(end)
 
-            for photo in road.photos.all()[:2]:
-                photo_protobuf = road_protobuf.inventory_photos.add()
-                setattr(photo_protobuf, "id", photo.id)
-                setattr(photo_protobuf, "url", photo.file.url)
-                setattr(photo_protobuf, "fk_link", "ROAD-" + str(road.id))
-                if photo.description:
-                    setattr(photo_protobuf, "description", photo.description)
-                setattr(photo_protobuf, "added_by", photo.user.username)
+            for media in road.media.all()[:2]:
+                media_protobuf = road_protobuf.inventory_media.add()
+                setattr(media_protobuf, "id", media.id)
+                setattr(media_protobuf, "url", media.file.url)
+                setattr(media_protobuf, "fk_link", "ROAD-" + str(road.id))
+                if media.description:
+                    setattr(media_protobuf, "description", media.description)
+                setattr(media_protobuf, "added_by", media.user.username)
                 # set the info for create / modified dates
-                ts = timestamp_from_datetime(photo.date_created)
-                photo_protobuf.date_created.CopyFrom(ts)
+                ts = timestamp_from_datetime(media.date_created)
+                media_protobuf.date_created.CopyFrom(ts)
 
         return roads_protobuf
 
@@ -837,8 +870,8 @@ class Road(models.Model):
     carriageway_width = models.DecimalField(
         verbose_name=_("Carriageway Width"),
         validators=[MinValueValidator(0)],
-        max_digits=5,
-        decimal_places=3,
+        max_digits=3,
+        decimal_places=1,
         blank=True,
         null=True,
         help_text=_("Enter the width of the link carriageway"),
@@ -924,11 +957,17 @@ class Road(models.Model):
         choices=Asset.TERRAIN_CLASS_CHOICES,
         help_text=_("Choose what terrain class the road runs through"),
     )
-    rainfall = models.IntegerField(
-        verbose_name=_("Rainfall"),
+    rainfall_maximum = models.IntegerField(
+        verbose_name=_("Rainfall Maximum"),
         blank=True,
         null=True,
-        help_text=_("Enter the amount of rainfall"),
+        help_text=_("Enter the maximum amount of rainfall"),
+    )
+    rainfall_minimum = models.IntegerField(
+        verbose_name=_("Rainfall Minimum"),
+        blank=True,
+        null=True,
+        help_text=_("Enter the minimum amount of rainfall"),
     )
     number_lanes = models.IntegerField(
         verbose_name=_("Number of Lanes"),
@@ -936,7 +975,7 @@ class Road(models.Model):
         null=True,
         help_text=_("Enter the number of lanes of the road"),
     )
-    photos = GenericRelation(Photo, related_query_name="road")
+    media = GenericRelation(Media, related_query_name="road")
     # a reference to the collated geojson file this road's geometry is in
     geojson_file = models.ForeignKey(
         "CollatedGeoJsonFile", on_delete=models.DO_NOTHING, blank=True, null=True
@@ -1007,12 +1046,7 @@ class StructureProtectionType(models.Model):
 
 
 def get_structures_with_survey_data(
-    self_structure,
-    asset_type,
-    regular_fields,
-    datetime_fields,
-    float_fields,
-    int_fields,
+    self_structure, asset_type,
 ):
     """ Get the structures (Bridges, Culverts or Drifts) with the survey data that we're interested in"""
 
@@ -1024,27 +1058,53 @@ def get_structures_with_survey_data(
         .filter(parent_id=OuterRef("id"))
         .order_by("-date_surveyed")
     )
+
     if asset_type == "BRDG":
-        photos_prefetch = Prefetch(
-            "photos",
-            queryset=Photo.objects.select_related("user").filter(
+        structure_type_prefetch = Prefetch(
+            "structure_type", queryset=BridgeClass.objects.all()
+        )
+        material_prefetch = Prefetch(
+            "material", queryset=BridgeMaterialType.objects.all()
+        )
+        media_prefetch = Prefetch(
+            "media",
+            queryset=Media.objects.select_related("user").filter(
                 bridge__id__in=self_structure.values("id")
             ),
         )
     elif asset_type == "CULV":
-        photos_prefetch = Prefetch(
-            "photos",
-            queryset=Photo.objects.select_related("user").filter(
+        structure_type_prefetch = Prefetch(
+            "structure_type", queryset=CulvertClass.objects.all()
+        )
+        material_prefetch = Prefetch(
+            "material", queryset=CulvertMaterialType.objects.all()
+        )
+        media_prefetch = Prefetch(
+            "media",
+            queryset=Media.objects.select_related("user").filter(
                 culvert__id__in=self_structure.values("id")
             ),
         )
     elif asset_type == "DRFT":
-        photos_prefetch = Prefetch(
-            "photos",
-            queryset=Photo.objects.select_related("user").filter(
+        structure_type_prefetch = Prefetch(
+            "structure_type", queryset=DriftClass.objects.all()
+        )
+        material_prefetch = Prefetch(
+            "material", queryset=DriftMaterialType.objects.all()
+        )
+        media_prefetch = Prefetch(
+            "media",
+            queryset=Media.objects.select_related("user").filter(
                 drift__id__in=self_structure.values("id")
             ),
         )
+
+    protection_upstream_prefetch = Prefetch(
+        "protection_upstream", queryset=StructureProtectionType.objects.all()
+    )
+    protection_downstream_prefetch = Prefetch(
+        "protection_downstream", queryset=StructureProtectionType.objects.all()
+    )
 
     structures = (
         self_structure.order_by("id")
@@ -1055,7 +1115,11 @@ def get_structures_with_survey_data(
                 survey.values("values__condition_description")[:1]
             ),
         )
-        .prefetch_related(photos_prefetch)
+        .prefetch_related(structure_type_prefetch)
+        .prefetch_related(material_prefetch)
+        .prefetch_related(protection_upstream_prefetch)
+        .prefetch_related(protection_downstream_prefetch)
+        .prefetch_related(media_prefetch)
     )
     return structures
 
@@ -1066,27 +1130,31 @@ def structure_to_protobuf(
     """ Take an individual structure (Bridge, Culvert or Drift)
     and use it to fill in an empty corresponding protobuf object """
 
+    related_fields = dict(
+        structure_type="structure_type__code",
+        material="material__code",
+        protection_upstream="protection_upstream__code",
+        protection_downstream="protection_downstream__code",
+    )
+
     structure_id = "%s-%s" % (asset_type, structure.id)
     structure_protobuf.id = structure_id
-    if getattr(structure, "geojson_file_id", None):
-        structure_protobuf.geojson_id = int(structure.geojson_file_id)
+    field_value = getattr(structure, "geojson_file_id", None)
+    if field_value != None:
+        structure_protobuf.geojson_id = int(field_value)
     # else:
     # Raise a warning to go into the logs that collate_geometries
     # functionality requires executing
 
     for protobuf_key, query_key in regular_fields.items():
-        attr = getattr(structure, query_key, None)
-        if attr:
-            # check if it is a special "code" field
-            if protobuf_key in [
-                "structure_type",
-                "material",
-                "protection_upstream",
-                "protection_downstream",
-            ]:
-                setattr(structure_protobuf, protobuf_key, attr.code)
-            else:
-                setattr(structure_protobuf, protobuf_key, attr)
+        field_value = getattr(structure, query_key, None)
+        if field_value != None:
+            setattr(structure_protobuf, protobuf_key, field_value)
+
+    for protobuf_key, query_key in related_fields.items():
+        field_value = getattr_protobuf(structure, query_key, None)
+        if field_value != None:
+            setattr(structure_protobuf, protobuf_key, field_value)
 
     for protobuf_key, query_key in float_fields.items():
         # nullable_value = prepare_protobuf_nullable_float(structure.get(query_key))
@@ -1102,38 +1170,40 @@ def structure_to_protobuf(
         )
         setattr(structure_protobuf, protobuf_key, nullable_value)
 
-    if getattr(structure, "date_created", None):
-        ts = timestamp_from_datetime(structure.date_created)
+    field_value = getattr(structure, "date_created", None)
+    if field_value != None:
+        ts = timestamp_from_datetime(field_value)
         structure_protobuf.date_created.CopyFrom(ts)
 
-    if getattr(structure, "last_modified", None):
-        ts = timestamp_from_datetime(structure.last_modified)
+    field_value = getattr(structure, "last_modified", None)
+    if field_value != None:
+        ts = timestamp_from_datetime(field_value)
         structure_protobuf.last_modified.CopyFrom(ts)
 
-    if getattr(structure, "to_wgs", None):
-        wgs = getattr(structure, "to_wgs", None)
+    wgs = getattr(structure, "to_wgs", None)
+    if wgs != None:
         pt = Projection(x=wgs.x, y=wgs.y)
         structure_protobuf.geom_point.CopyFrom(pt)
 
-    if getattr(structure, "asset_condition", None):
-        structure_protobuf.asset_condition = getattr(structure, "asset_condition", None)
+    field_value = getattr(structure, "asset_condition", None)
+    if field_value != None:
+        structure_protobuf.asset_condition = field_value
 
-    if getattr(structure, "condition_description", None):
-        structure_protobuf.condition_description = getattr(
-            structure, "condition_description", None
-        )
+    field_value = getattr(structure, "condition_description", None)
+    if field_value != None:
+        structure_protobuf.condition_description = field_value
 
-    for photo in structure.photos.all()[:2]:
-        photo_protobuf = structure_protobuf.inventory_photos.add()
-        setattr(photo_protobuf, "id", photo.id)
-        setattr(photo_protobuf, "url", photo.file.url)
-        setattr(photo_protobuf, "fk_link", structure_id)
-        if photo.description:
-            setattr(photo_protobuf, "description", photo.description)
-        setattr(photo_protobuf, "added_by", photo.user.username)
+    for media in structure.media.all()[:2]:
+        media_protobuf = structure_protobuf.inventory_media.add()
+        setattr(media_protobuf, "id", media.id)
+        setattr(media_protobuf, "url", media.file.url)
+        setattr(media_protobuf, "fk_link", structure_id)
+        if media.description:
+            setattr(media_protobuf, "description", media.description)
+        setattr(media_protobuf, "added_by", media.user.username)
         # set the info for create / modified dates
-        ts = timestamp_from_datetime(photo.date_created)
-        photo_protobuf.date_created.CopyFrom(ts)
+        ts = timestamp_from_datetime(media.date_created)
+        media_protobuf.date_created.CopyFrom(ts)
 
 
 class BridgeClass(models.Model):
@@ -1165,15 +1235,7 @@ class BridgeQuerySet(models.QuerySet):
             structure_name="structure_name",
             asset_class="asset_class",
             administrative_area="administrative_area",
-            structure_type="structure_type",
             river_name="river_name",
-            material="material",
-            protection_upstream="protection_upstream",
-            protection_downstream="protection_downstream",
-        )
-
-        datetime_fields = dict(
-            date_created="date_created", last_modified="last_modified",
         )
 
         float_fields = dict(length="length", width="width", span_length="span_length",)
@@ -1185,9 +1247,7 @@ class BridgeQuerySet(models.QuerySet):
         )
 
         asset_type = "BRDG"
-        structures = get_structures_with_survey_data(
-            self, asset_type, regular_fields, datetime_fields, float_fields, int_fields
-        )
+        structures = get_structures_with_survey_data(self, asset_type)
 
         for structure in structures:
             structure_protobuf = structures_protobuf.bridges.add()
@@ -1363,7 +1423,7 @@ class Bridge(models.Model):
         null=True,
         help_text=_("Choose the downstream protection type"),
     )
-    photos = GenericRelation(Photo, related_query_name="bridge")
+    media = GenericRelation(Media, related_query_name="bridge")
 
     @property
     def prefix(self):
@@ -1402,14 +1462,6 @@ class CulvertQuerySet(models.QuerySet):
             structure_name="structure_name",
             asset_class="asset_class",
             administrative_area="administrative_area",
-            structure_type="structure_type",
-            material="material",
-            protection_upstream="protection_upstream",
-            protection_downstream="protection_downstream",
-        )
-
-        datetime_fields = dict(
-            date_created="date_created", last_modified="last_modified",
         )
 
         float_fields = dict(length="length", width="width", height="height",)
@@ -1421,9 +1473,7 @@ class CulvertQuerySet(models.QuerySet):
         )
 
         asset_type = "CULV"
-        structures = get_structures_with_survey_data(
-            self, asset_type, regular_fields, datetime_fields, float_fields, int_fields
-        )
+        structures = get_structures_with_survey_data(self, asset_type)
 
         for structure in structures:
             structure_protobuf = structures_protobuf.culverts.add()
@@ -1591,7 +1641,7 @@ class Culvert(models.Model):
         null=True,
         help_text=_("Choose the downstream protection type"),
     )
-    photos = GenericRelation(Photo, related_query_name="culvert")
+    media = GenericRelation(Media, related_query_name="culvert")
 
     @property
     def prefix(self):
@@ -1630,14 +1680,6 @@ class DriftQuerySet(models.QuerySet):
             structure_name="structure_name",
             asset_class="asset_class",
             administrative_area="administrative_area",
-            structure_type="structure_type",
-            material="material",
-            protection_upstream="protection_upstream",
-            protection_downstream="protection_downstream",
-        )
-
-        datetime_fields = dict(
-            date_created="date_created", last_modified="last_modified",
         )
 
         float_fields = dict(length="length", width="width", thickness="thickness",)
@@ -1645,9 +1687,7 @@ class DriftQuerySet(models.QuerySet):
         int_fields = dict(chainage="chainage", construction_year="construction_year",)
 
         asset_type = "DRFT"
-        structures = get_structures_with_survey_data(
-            self, asset_type, regular_fields, datetime_fields, float_fields, int_fields
-        )
+        structures = get_structures_with_survey_data(self, asset_type)
 
         for structure in structures:
             structure_protobuf = structures_protobuf.drifts.add()
@@ -1809,7 +1849,7 @@ class Drift(models.Model):
         null=True,
         help_text=_("Choose the downstream protection type"),
     )
-    photos = GenericRelation(Photo, related_query_name="drift")
+    media = GenericRelation(Media, related_query_name="drift")
 
     @property
     def prefix(self):
@@ -1851,21 +1891,13 @@ class PlanQuerySet(models.QuerySet):
             planning_period="planning_period",
         )
 
-        datetime_fields = dict(
-            date_created="date_created", last_modified="last_modified",
-        )
-
         plans = self.prefetch_related("user").prefetch_related("summary")
         for plan in plans:
             plan_protobuf = plans_protobuf.plans.add()
             for protobuf_key, query_key in regular_fields.items():
-                if getattr(plan, query_key, None):
-                    setattr(plan_protobuf, protobuf_key, getattr(plan, query_key))
-
-            for protobuf_key, query_key in datetime_fields.items():
-                if getattr(plan, query_key, None):
-                    ts = timestamp_from_datetime(getattr(plan, query_key))
-                    getattr(plan_protobuf, protobuf_key).CopyFrom(ts)
+                field_value = getattr(plan, query_key, None)
+                if field_value != None:
+                    setattr(plan_protobuf, protobuf_key, field_value)
 
             if plan.user:
                 if plan.user.first_name and plan.user.last_name:
@@ -1879,12 +1911,14 @@ class PlanQuerySet(models.QuerySet):
             else:
                 setattr(plan_protobuf, "added_by", "")
 
-            if getattr(plan, "date_created", None):
-                ts = timestamp_from_datetime(getattr(plan, "date_created"))
+            field_value = getattr(plan, "date_created", None)
+            if field_value != None:
+                ts = timestamp_from_datetime(field_value)
                 plan_protobuf.date_created.CopyFrom(ts)
 
-            if getattr(plan, "last_modified", None):
-                ts = timestamp_from_datetime(getattr(plan, "last_modified"))
+            field_value = getattr(plan, "last_modified", None)
+            if field_value != None:
+                ts = timestamp_from_datetime(field_value)
                 plan_protobuf.last_modified.CopyFrom(ts)
 
             # set informational protobuf file fields (name/url) for frontend use
@@ -1953,11 +1987,10 @@ class PlanSnapshotQuerySet(models.QuerySet):
         plansnapshots_protobuf = ProtoPlanSnapshots()
         asset_type = "SNAP"
 
-        regular_fields = dict(
-            id="id", plan="plan__id", asset_class="asset_class", work_type="work_type",
-        )
-        float_fields = dict(length="length", budget="budget",)
-        int_fields = dict(year="year",)
+        regular_fields = dict(id="id", asset_class="asset_class", work_type="work_type")
+        related_fields = dict(plan="plan__id")
+        float_fields = dict(length="length", budget="budget")
+        int_fields = dict(year="year")
 
         snapshots = (
             self.order_by("-last_modified")
@@ -1970,8 +2003,14 @@ class PlanSnapshotQuerySet(models.QuerySet):
         for snap in snapshots:
             snap_protobuf = plansnapshots_protobuf.snapshots.add()
             for protobuf_key, query_key in regular_fields.items():
-                if getattr(snap, query_key, None):
-                    setattr(snap_protobuf, protobuf_key, getattr(snap, query_key, None))
+                field_value = getattr(snap, query_key, None)
+                if field_value != None:
+                    setattr(snap_protobuf, protobuf_key, field_value)
+
+            for protobuf_key, query_key in related_fields.items():
+                field_value = getattr_protobuf(snap, query_key, None)
+                if field_value != None:
+                    setattr(snap_protobuf, protobuf_key, field_value)
 
             for protobuf_key, query_key in float_fields.items():
                 nullable_value = prepare_protobuf_nullable_float(

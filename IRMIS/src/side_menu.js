@@ -175,7 +175,7 @@ function toggleAssetType(e) {
     });
 
     // communicate this basic filter to the map
-    dispatch("estrada.map.idFilter.applied", { detail: { idMap } });
+    dispatch("estrada.map.idFilter.applied", { detail: { idMap: idMap, adjustZoomLevel: false } });
 }
 
 function toggleFilterSelect2(e) {

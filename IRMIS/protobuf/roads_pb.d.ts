@@ -2,7 +2,7 @@
 // file: roads.proto
 
 import * as jspb from "google-protobuf";
-import * as photo_pb from "./photo_pb";
+import * as media_pb from "./media_pb";
 
 export class Projection extends jspb.Message {
   getX(): number;
@@ -111,8 +111,11 @@ export class Road extends jspb.Message {
   getNumberLanes(): number;
   setNumberLanes(value: number): void;
 
-  getRainfall(): number;
-  setRainfall(value: number): void;
+  getRainfallMaximum(): number;
+  setRainfallMaximum(value: number): void;
+
+  getRainfallMinimum(): number;
+  setRainfallMinimum(value: number): void;
 
   getConstructionYear(): number;
   setConstructionYear(value: number): void;
@@ -138,15 +141,15 @@ export class Road extends jspb.Message {
   setServedConnectionTypesList(value: Array<number>): void;
   addServedConnectionTypes(value: number, index?: number): number;
 
-  clearInventoryPhotosList(): void;
-  getInventoryPhotosList(): Array<photo_pb.Photo>;
-  setInventoryPhotosList(value: Array<photo_pb.Photo>): void;
-  addInventoryPhotos(value?: photo_pb.Photo, index?: number): photo_pb.Photo;
+  clearInventoryMediaList(): void;
+  getInventoryMediaList(): Array<media_pb.Media>;
+  setInventoryMediaList(value: Array<media_pb.Media>): void;
+  addInventoryMedia(value?: media_pb.Media, index?: number): media_pb.Media;
 
-  clearSurveyPhotosList(): void;
-  getSurveyPhotosList(): Array<photo_pb.Photo>;
-  setSurveyPhotosList(value: Array<photo_pb.Photo>): void;
-  addSurveyPhotos(value?: photo_pb.Photo, index?: number): photo_pb.Photo;
+  clearSurveyMediaList(): void;
+  getSurveyMediaList(): Array<media_pb.Media>;
+  setSurveyMediaList(value: Array<media_pb.Media>): void;
+  addSurveyMedia(value?: media_pb.Media, index?: number): media_pb.Media;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Road.AsObject;
@@ -186,15 +189,16 @@ export namespace Road {
     projectionStart?: Projection.AsObject,
     projectionEnd?: Projection.AsObject,
     numberLanes: number,
-    rainfall: number,
+    rainfallMaximum: number,
+    rainfallMinimum: number,
     constructionYear: number,
     population: number,
     core: number,
     servedFacilitiesList: Array<number>,
     servedEconomicAreasList: Array<number>,
     servedConnectionTypesList: Array<number>,
-    inventoryPhotosList: Array<photo_pb.Photo.AsObject>,
-    surveyPhotosList: Array<photo_pb.Photo.AsObject>,
+    inventoryMediaList: Array<media_pb.Media.AsObject>,
+    surveyMediaList: Array<media_pb.Media.AsObject>,
   }
 }
 

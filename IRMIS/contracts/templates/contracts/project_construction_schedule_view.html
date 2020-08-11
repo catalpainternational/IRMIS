@@ -31,11 +31,11 @@
         <div class="d-flex justify-content-between">
             <div>
                 <label>{% trans "Start Date" %}</label>
-                <p>{{ project.start_date|default_if_none:"" }}</p>
+                <p>{{ project.start_date|default_if_none:""|date:"Y-m-d" }}</p>
             </div>
             <div>
                 <label>{% trans "Duration (days)" %}</label>
-                <p>{{ duration }}</p>
+                <p class="to-format">{{ project.duration }}</p>
             </div>
         </div>
     </section>
@@ -53,8 +53,8 @@
                 <tbody>
                     {% for milestone in milestones %}
                     <tr>
-                        <td>{{ milestone.days_of_work }}</td>
-                        <td>{{ milestone.progress }}%</td>
+                        <td class="text-right to-format">{{ milestone.days_of_work }}</td>
+                        <td class="text-right">{{ milestone.progress }}%</td>
                     </tr>
                     {% endfor %}
                 </tbody>

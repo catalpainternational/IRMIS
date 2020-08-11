@@ -45,11 +45,11 @@
         <tbody>
             {% for social_data in social_list_data %}
             <tr>
-                <td>{{ social_data.month }}</td>
-                <td>{{ social_data.employees }}</td>
-                <td>{{ social_data.female_employees }}</td>
-                <td>{{ social_data.employees_with_disabilities }}</td>
-                <td>{{ social_data.female_employees_with_disabilities }}</td>
+                <td>{{ social_data.year }}-{{ social_data.month|stringformat:"02d" }}</td>
+                <td class="text-right to-format">{{ social_data.employees|default_if_none:"" }}</td>
+                <td class="text-right to-format">{{ social_data.female_employees|default_if_none:"" }}</td>
+                <td class="text-right to-format">{{ social_data.employees_with_disabilities|default_if_none:"" }}</td>
+                <td class="text-right to-format">{{ social_data.female_employees_with_disabilities|default_if_none:"" }}</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -68,11 +68,11 @@
         <tbody>
             {% for social_data in social_list_data %}
             <tr>
-                <td>{{ social_data.month }}</td>
-                <td>{{ social_data.employees }}</td>
-                <td>{{ social_data.female_employees }}</td>
-                <td>{{ social_data.employees_with_disabilities }}</td>
-                <td>{{ social_data.female_employees_with_disabilities }}</td>
+                <td>{{ social_data.year }}-{{ social_data.month|stringformat:"02d" }}</td>
+                <td class="text-right to-format">{{ social_data.employees|default_if_none:"" }}</td>
+                <td class="text-right to-format">{{ social_data.female_employees|default_if_none:"" }}</td>
+                <td class="text-right to-format">{{ social_data.employees_with_disabilities|default_if_none:"" }}</td>
+                <td class="text-right to-format">{{ social_data.female_employees_with_disabilities|default_if_none:"" }}</td>
             </tr>
             {% endfor %}
         </tbody>

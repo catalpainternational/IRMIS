@@ -1,6 +1,7 @@
 import "datatables.net-bs4";
 import $ from "jquery";
 
+import { datatableTranslations } from "../datatableTranslations";
 import { exportCsv } from "exportCsv";
 
 window.addEventListener("load", () => {
@@ -20,10 +21,10 @@ window.addEventListener("load", () => {
     initializeListTable($("#tender-document-view-list-table"), [], [[0, 'asc']]);
     initializeListTable($("#contract-inspection-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
     initializeListTable($("#contract-inspection-view-list-table"), [], [[0, 'asc']]);
-    initializeListTable($("#contract-payment-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
-    initializeListTable($("#contract-payment-view-list-table"), [], [[0, 'asc']]);
-    initializeListTable($("#contract-social-safeguard-list-table"), [{ orderable: false, targets: 0 }], [[1, 'asc']]);
-    initializeListTable($("#contract-social-safeguard-view-list-table"), [], [[0, 'asc']]);
+    initializeListTable($("#contract-payment-list-table"), [{ orderable: false, targets: 0 }, { targets: 2, type: "sort-currency" }], [[1, 'asc']]);
+    initializeListTable($("#contract-payment-view-list-table"), [{ targets: 1, type: "sort-currency" }], [[0, 'asc']]);
+    initializeListTable($("#contract-social-safeguard-list-table"), [{ orderable: false, targets: 0 }, { targets: [2, 3, 4, 5], type: "sort-integer" }], [[1, 'asc']]);
+    initializeListTable($("#contract-social-safeguard-view-list-table"), [{ targets: [1, 2, 3, 4], type: "sort-integer" }], [[0, 'asc']]);
     initializeListTable($("#contract-document-list-table"), [{ orderable: false, targets: [0, 1] }], [[2, 'asc']]);
     initializeListTable($("#contract-document-view-list-table"), [], [[0, 'asc']]);
     initializeListTable($("#company-document-list-table"), [{ orderable: false, targets: [0, 1] }], [[2, 'asc']]);
@@ -46,12 +47,14 @@ function initializeProjectsListTable(table) {
         order = [[1, 'asc']];
         columnDefs = [
             { orderable: false, targets: 0 },
-            { visible: false, targets: [-4, -3, -2, -1] }
+            { visible: false, targets: [-4, -3, -2, -1] },
+            { targets: 5, type: "sort-currency" }
         ];
     } else {
         order = [[0, 'asc']];
         columnDefs = [
-            { visible: false, targets: [-4, -3, -2, -1] }
+            { visible: false, targets: [-4, -3, -2, -1] },
+            { targets: 4, type: "sort-currency" }
         ];
     }
 
@@ -59,6 +62,7 @@ function initializeProjectsListTable(table) {
         dom: "<'row'<'col-12'f>><'row'<'col-sm-12'tr>><'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>", // https://datatables.net/reference/option/dom#Styling
         columnDefs: columnDefs,
         order: order,
+        language: datatableTranslations,
     });
 
     // Export projects table as CSV
@@ -71,7 +75,7 @@ function initializeProjectsListTable(table) {
             window.gettext("Estimated Budget"),
             window.gettext("Funding Source")
         ];
-        exportTable(dataTable, headers, 7, [1]);
+        exportTable(dataTable, headers, 7, [1], window.gettext("Projects"));
     });
 
     // Search box
@@ -96,12 +100,14 @@ function initializeTendersListTable(table) {
         order = [[1, 'asc']];
         columnDefs = [
             { orderable: false, targets: 0 },
-            { visible: false, targets: [-5, -4, -3, -2, -1] }
+            { visible: false, targets: [-5, -4, -3, -2, -1] },
+            { targets: 2, type: "sort-integer" },
         ];
     } else {
         order = [[0, 'asc']];
         columnDefs = [
-            { visible: false, targets: [-5, -4, -3, -2, -1] }
+            { visible: false, targets: [-5, -4, -3, -2, -1] },
+            { targets: 1, type: "sort-integer" }
         ];
     }
 
@@ -109,6 +115,7 @@ function initializeTendersListTable(table) {
         dom: "<'row'<'col-12'f>><'row'<'col-sm-12'tr>><'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>", // https://datatables.net/reference/option/dom#Styling
         columnDefs: columnDefs,
         order: order,
+        language: datatableTranslations,
     });
 
     // Export tenders table as CSV
@@ -119,7 +126,7 @@ function initializeTendersListTable(table) {
             window.gettext("Project(s) Name"),
             window.gettext("Status")
         ];
-        exportTable(dataTable, headers, 5, [1, 3]);
+        exportTable(dataTable, headers, 5, [1, 3], window.gettext("Tenders"));
     });
 
     // Search box
@@ -144,12 +151,14 @@ function initializeContractsListTable(table) {
         order = [[1, 'asc']];
         columnDefs = [
             { orderable: false, targets: 0 },
-            { visible: false, targets: [-4, -3, -2, -1] }
+            { visible: false, targets: [-4, -3, -2, -1] },
+            { targets: 2, type: "sort-integer" }
         ];
     } else {
         order = [[0, 'asc']];
         columnDefs = [
-            { visible: false, targets: [-4, -3, -2, -1] }
+            { visible: false, targets: [-4, -3, -2, -1] },
+            { targets: 1, type: "sort-integer" }
         ];
     }
 
@@ -157,6 +166,7 @@ function initializeContractsListTable(table) {
         dom: "<'row'<'col-12'f>><'row'<'col-sm-12'tr>><'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>", // https://datatables.net/reference/option/dom#Styling
         columnDefs: columnDefs,
         order: order,
+        language: datatableTranslations,
     });
 
     // Export contracts table as CSV
@@ -168,7 +178,7 @@ function initializeContractsListTable(table) {
             window.gettext("Type of Work"),
             window.gettext("Status")
         ];
-        exportTable(dataTable, headers, 6, [1, 3, 4]);
+        exportTable(dataTable, headers, 6, [1, 3, 4], window.gettext("Contracts"));
     });
 
     // Search box
@@ -193,12 +203,14 @@ function initializeCompaniesListTable(table) {
         order = [[1, 'asc']];
         columnDefs = [
             { orderable: false, targets: 0 },
-            { visible: false, targets: -1 }
+            { visible: false, targets: -1 },
+            { targets: [2, 3], type: "sort-integer" }
         ];
     } else {
         order = [[0, 'asc']];
         columnDefs = [
-            { visible: false, targets: -1 }
+            { visible: false, targets: -1 },
+            { targets: [1, 2], type: "sort-integer" }
         ];
     }
 
@@ -206,6 +218,7 @@ function initializeCompaniesListTable(table) {
         dom: "<'row'<'col-12'f>><'row'<'col-sm-12'tr>><'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>", // https://datatables.net/reference/option/dom#Styling
         columnDefs: columnDefs,
         order: order,
+        language: datatableTranslations,
     });
 
     // Export companies table as CSV
@@ -215,7 +228,7 @@ function initializeCompaniesListTable(table) {
             window.gettext("Total Contracts"),
             window.gettext("Active Contracts")
         ];
-        exportTable(dataTable, headers, 4, [1]);
+        exportTable(dataTable, headers, 4, [1], window.gettext("Companies"));
     });
 
     // Search box
@@ -229,6 +242,7 @@ function initializeListTable(table, columnDefs, order) {
             dom: "<'row'<'col-12'>><'row'<'col-sm-12'tr>><'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>", // https://datatables.net/reference/option/dom#Styling
             columnDefs: columnDefs,
             order: order,
+            language: datatableTranslations,
         });
     }
 }
@@ -239,11 +253,12 @@ function initializePrintableTable(table, columnDefs) {
             dom: "<'row'<'col-12'>><'row'<'col-sm-12'tr>>", // https://datatables.net/reference/option/dom#Styling
             paging: false,
             columnDefs: columnDefs,
+            language: datatableTranslations,
         });
     }
 }
 
-function exportTable(dataTable, headers, columnsLength, indexes) {
+function exportTable(dataTable, headers, columnsLength, indexes, fileName) {
     const rowsData = dataTable.rows().data();
     const rows = Object.keys(rowsData).map((rowKey) => {
         let rowFields = [];
@@ -258,7 +273,7 @@ function exportTable(dataTable, headers, columnsLength, indexes) {
         }
         return rowFields;
     });
-    exportCsv(headers, rows);
+    exportCsv(headers, rows, fileName);
 }
 
 function setupSelectFilter(dataTable, selectId, placeHolder, filterFunc, columnNo) {
@@ -294,9 +309,9 @@ const valueRangeFilter = (row, columnIdx, elementId) => {
     const minValue = valueFilter.dataset.min ? parseInt(valueFilter.dataset.min, 10) : null;
     const maxValue = valueFilter.dataset.max ? parseInt(valueFilter.dataset.max, 10) : null;
 
-    let value = row[columnIdx].split(" ")[1]; // e.g. "$ 500.000" or "None"
+    let value = row[columnIdx].split(" ")[1]; // e.g. "$ 500.000" or null
 
-    value = value === "None" ? 0 : parseInt(value, 10);
+    value = value == null ? 0 : parseInt(value.replace(/\./g, ""), 10);
 
     if (minValue == null) return true;
     else if (maxValue == null) return value >= minValue;
@@ -337,3 +352,32 @@ const multipleTextFilter = (row, columnIdx, elementId) => {
 
     return false;
 }
+
+// Custom currency sorting function
+$.fn.dataTable.ext.type.order['sort-currency-asc'] = function (next, prev) {
+    const unformattedNext = next === "" ? undefined : parseInt(next.split(" ")[1].split(".").join(""), 10);
+    const unformattedPrev = prev === "" ? undefined : parseInt(prev.split(" ")[1].split(".").join(""), 10);
+    if (unformattedNext === undefined) return 1;
+    if (unformattedPrev === undefined) return -1;
+    return ((unformattedNext < unformattedPrev) ? -1 : ((unformattedNext > unformattedPrev) ? 1 : 0));
+};
+
+$.fn.dataTable.ext.type.order['sort-currency-desc'] = function (next, prev) {
+    const unformattedNext = next === "" ? undefined : parseInt(next.split(" ")[1].split(".").join(""), 10);
+    const unformattedPrev = prev === "" ? undefined : parseInt(prev.split(" ")[1].split(".").join(""), 10);
+    return ((unformattedNext < unformattedPrev) ? 1 : ((unformattedNext > unformattedPrev) ? -1 : 0));
+};
+
+// Custom integer sorting function
+$.fn.dataTable.ext.type.order['sort-integer-asc'] = function (next, prev) {
+    const unformattedNext = next === "" ? undefined : parseInt(next.split(".").join(""), 10);
+    const unformattedPrev = prev === "" ? undefined : parseInt(prev.split(".").join(""), 10);
+    if (unformattedNext === undefined) return 1;
+    if (unformattedPrev === undefined) return -1;
+    return ((unformattedNext < unformattedPrev) ? -1 : ((unformattedNext > unformattedPrev) ? 1 : 0));
+};
+$.fn.dataTable.ext.type.order['sort-integer-desc'] = function (next, prev) {
+    const unformattedNext = next === "" ? undefined : parseInt(next.split(".").join(""), 10);
+    const unformattedPrev = prev === "" ? undefined : parseInt(prev.split(".").join(""), 10);
+    return ((unformattedNext < unformattedPrev) ? 1 : ((unformattedNext > unformattedPrev) ? -1 : 0));
+};

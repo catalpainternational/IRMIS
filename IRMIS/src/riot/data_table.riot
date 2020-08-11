@@ -1,0 +1,303 @@
+<data_table>
+    <div class="align-items-center d-flex justify-content-between">
+        <p if="{ state.title }">{ state.title }</p>
+        <button if="{ state.canExport }" onclick="{ state.exportTable }" class="btn btn-secondary btn-sm">
+            { window.gettext("Export table") }
+        </button>
+    </div>
+    <table if="{ state.id }" id="{ state.id }" class="d-block table table-bordered table-hover w-100 { props.cssClass }"></table>
+    <small if="{ props.helpText }" class="text-muted">{ props.helpText }</small>
+
+    <script>
+        import {datatableTranslations} from "../datatableTranslations";
+        import {exportCsv} from "exportCsv";
+        import { formatNumber } from "../assets/utilities";
+        import {currentFilter} from "../side_menu";
+
+        import "bootstrap/js/dist/modal";
+        import $ from "jquery";
+
+        const initialiseStateFromProps = function(props, state) {
+            state = state || {};
+
+            state.canExport = !!props.canexport;
+            state.canEdit = !!props.canedit;
+            state.canDelete = !!props.candelete;
+            state.canOrder  = !!props.canorder;
+
+            // paging is true by default
+            state.paging = true;
+            if (typeof props.paging === "string" && props.paging.toLowerCase() === "false") {
+                state.paging = false;
+            } else if (typeof props.paging === "number") {
+                state.paging = !!props.paging;
+            } else if (typeof props.paging === "boolean") {
+                state.paging = props.paging;
+            }
+
+            state.id = props.table_id;
+            state.title = props.title;
+            state.columnSortOrder = props.columnSortOrder || [[0, "asc"]];
+            state.clearRows = false;
+            state.pendingRows = props.pendingRows || [];
+            state.pageLength = props.pageLength || 10;
+            state.showTotal = !!props.showTotal;
+            state.showTotalCount = !!props.showTotalCount;
+
+            if (state.canEdit) {
+                state.columnSortOrder.forEach((columnOrder) => {
+                    columnOrder[0]++;
+                });
+            }
+
+            setColumns(state, props.columns);
+            setDataTableConfig(state, props.datatableconfig);
+        }
+
+        const setColumns = function(state, columns) {
+            state.columns = columns || [];
+            const optionColumns = state.columns.filter((column) => (column.name && column.name === "Option"));
+
+            if (state.canEdit) {
+                const firstEditPage = currentFilter.assetType === "STRC" ? "structure_type" : "location_type";
+                state.columns.unshift({
+                    title: "",
+                    data: null,
+                    render: r => `<a class="image pencil" href="#edit/${r.assetType}/${r.assetId}/${firstEditPage}"></a>`,
+                    orderable: false,
+                    className: "edit-col"
+                });
+            }
+
+            if (state.canDelete && optionColumns.length === 1) {
+                optionColumns[0].render = (data, type, row) => {
+                    // If there is an addedBy member in this data, then
+                    // check it to tell us whether this was a generated survey or not
+                    return row && (!row.getAddedBy || row.getAddedBy())
+                        ? button_template("delete", button_event_template(state.id, "deleteRow", row.id))
+                        : "";
+                };
+            }
+        }
+
+        const setDataTableConfig = function(state, datatableconfig = undefined) {
+            let dom = "<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>"; // https://datatables.net/reference/option/dom#Styling
+            if (!state.paging) {
+                dom = "<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>>";
+            }
+
+            state.dataTableConfig = datatableconfig || {
+                columns: state.columns,
+                rowId: ".id",
+                order: state.columnSortOrder,
+                pageLength: state.pageLength,
+                dom: dom,
+                paging: state.paging,
+                // This turns off filtering for all tables ( DO NOT SET THIS TO TRUE )
+                // dataTables has a bug where the searching / filtering clause passes from one table to another
+                // We only want it for the main table
+                searching: false,
+                ordering: state.canOrder,
+            };
+            state.dataTableConfig.language = state.dataTableConfig.language || datatableTranslations;
+            state.dataTableConfig.ajax = function(data, callback, settings) {
+                // This is only here so that dataTables will change its internal state
+            }
+            if (state.showTotal || state.showTotalCount) {
+                state.dataTableConfig.footerCallback = (tfoot, data, start, end, display) => {
+                    if (!state.table) {
+                        // If the actual dataTable is not defined yet - then exit
+                        return;
+                    }
+
+                    state.table.columns().flatten().each((colIdx) => {
+                        const currentColumn = state.table.column(colIdx);
+                        if (colIdx === 0) {
+                            $(currentColumn.footer()).html(window.gettext("Total"));
+                        } else {
+                            let columnTotal = currentColumn.data().reduce((acc, cur) => {
+                                return !cur ? acc : acc + cur;
+                            }, 0);
+                            if (columnTotal) {
+                                if (state.columns[colIdx].data !== "percent") {
+                                    // If the column.data is not explicitly called 'percent'
+                                    // we assume that it is either a count
+                                    // or is in meters and convert it to kilometers
+                                    columnTotal = state.showTotalCount ? columnTotal : columnTotal / 1000;
+                                } else {
+                                    // But if it is percent - then we know that the total is ...
+                                    columnTotal = 100.00;
+                                }
+                                if (!isNaN(columnTotal)) {
+                                    $(currentColumn.footer()).html(formatNumber(columnTotal.toFixed(state.showTotalCount ? 0 : 2)));
+                                }
+                            }
+                        }
+                    });
+                };
+            }
+        }
+
+        const button_template = function(buttonClass, clickAction) {
+            return `<span class="${buttonClass} image" onclick="${clickAction}"></span>`;
+        }
+
+        const button_event_template = function(tableId, eventName, rowId) {
+            return `document.dispatchEvent(new CustomEvent('${tableId}.${eventName}',{detail:{rowId:${rowId},tableId:'${tableId}'}}))`;
+        }
+
+        const initialiseDataTable = function(state) {
+            const newTable = !state.table;
+
+            // Inject a footer if a "footerCallback" is defined in the dataTableConfig
+            if (newTable && state.dataTableConfig.footerCallback) {
+                const colCount = state.dataTableConfig.columns.length;
+                let emptyFooter = "<tfoot><tr role='row'><th></th>";
+                for (let ix = 1; ix < colCount; ix++) {
+                    emptyFooter += "<td></td>";
+                }
+                emptyFooter += "</tr></tfoot>";
+                $(`#${state.id}`).append(emptyFooter);
+            }
+
+            state.table = state.table || $(`#${state.id}`).DataTable(state.dataTableConfig);
+
+            // add any rows the caller has delivered before initialization
+            updateDataTable(state);
+        }
+
+        const updateDataTable = function(state) {
+            if (state.pendingRows && state.pendingRows.length) {
+                state.table.clear().rows.add(state.pendingRows);
+            } else {
+                if (state.clearRows) {
+                    // No pendingRows so 'clear the table'
+                    state.table.clear();
+                }
+            }
+
+            state.table.draw();
+
+            // This calls the ajax function above, resulting in dataTables internal state change
+            state.table.ajax.reload();
+        }
+
+        export default {
+            onMounted(props, state) {
+                initialiseStateFromProps(props, state);
+
+                // Wraps the handling for the 'changedTitle' event, and includes this tag's state
+                state.changedTitle = (data) => this.processTitleChanged(data, state);
+                // Wraps the handling for the 'changedColumns' event, and includes this tag's state
+                state.changedColumns = (data) => this.processColumnsChanged(data, state);
+                // Wraps the actual processing for 'dataAdded' event, and includes this tag's state
+                state.dataAdded = (data) => this.processDataAdded(data, state);
+                // Wrap the Row Data lookup function for event to take tag's state and data
+                state.getRowData = (data) => this.getRowData(data, state);
+
+                // Wrap the export CSV function, so we can get the current state into it
+                state.exportTable = (data) => this.exportTableAsCsv(data, state);
+
+                this.update();
+
+                initialiseDataTable(state);
+
+                document.addEventListener(`${state.id}.changedTitle`, state.changedTitle);
+                document.addEventListener(`${state.id}.changedColumns`, state.changedColumns);
+                document.addEventListener(`${state.id}.dataAdded`, state.dataAdded);
+                document.addEventListener(`${state.id}.getRowData`, state.getRowData);
+            },
+            onBeforeUnmount(props, state) {
+                document.removeEventListener(`${state.id}.changedTitle`, state.changedTitle);
+                document.removeEventListener(`${state.id}.changedColumns`, state.changedColumns);
+                document.removeEventListener(`${state.id}.dataAdded`, state.dataAdded);
+                document.removeEventListener(`${state.id}.getRowData`, state.getRowData);
+            },
+            getTableData(state) {
+                const headers = state.columns
+                    .filter((c) => c.title !== "")
+                    .map((c) => ({title: c.title, data: c.data}));
+                const table = $(`#${state.id}`).dataTable().api();
+                const rowsData = table.rows().data();
+                const rows = Object.keys(table.rows()[0]).map((rowKey) => {
+                    const rowFields = [];
+                    headers.forEach((h) => {
+                        let data = rowsData[rowKey][h.data];
+                        // Check if data is null, or implicitly, undefined
+                        if (data == null) {
+                            data = "";
+                        } else if (h.data === "distance") {
+                            data = (data / 1000).toFixed(2); // converting m to Km
+                        }
+                        rowFields.push(data);
+                    })
+                    return rowFields;
+                });
+
+                if (table.table().footer()) {
+                    const footerFields = [];
+                    Object.keys(state.columns).forEach(columnKey => {
+                        let value = table.column(columnKey).footer().innerText;
+                        value = value.split(".").join("").replace(",", "."); // remove thousands separator (dots) and replace decimal separator (comma) with a dot
+                        footerFields.push(value);
+                    });
+                    rows.push(footerFields);
+                }
+
+                return {headers: headers.map((h) => h.title), rows: rows};
+            },
+            exportTableAsCsv(data, state) {
+                if (!data) {
+                    return;
+                }
+                const tableData = this.getTableData(state);
+                exportCsv(tableData.headers, tableData.rows, this.props.title);
+
+                data.stopPropagation();
+            },
+            processTitleChanged(data, state) {
+                if (data.detail.title) {
+                    this.update({
+                        title: data.detail.title,
+                    });
+                }
+
+                data.stopPropagation();
+            },
+            processColumnsChanged(data, state) {
+                if (data.detail.columns) {
+                    // We want the dataTable gone
+                    state.table.destroy();
+                    // No seriously, we want it gone
+                    $(`#${state.id}`).empty();
+                    // Argh - just shoot the zombie in the head
+                    state.table = undefined;
+
+                    setColumns(state, data.detail.columns);
+                    setDataTableConfig(state);
+
+                    initialiseDataTable(state);
+                }
+
+                data.stopPropagation();
+            },
+            processDataAdded(data, state) {
+                const haveClearRows = typeof (data.detail.clearRows) === "boolean";
+                const clearRows = haveClearRows ? data.detail.clearRows : true;
+
+                state.clearRows = clearRows;
+                state.pendingRows = data.detail.pendingRows;
+
+                updateDataTable(state);
+
+                data.stopPropagation();
+            },
+            getRowData(data, state) {
+                const r = state.pendingRows.find((r) => {
+                    return r.id == data.detail.rowId;
+                });
+                data.detail.state.currentRowData = r;
+            },
+        };
+    </script>
+</data_table>

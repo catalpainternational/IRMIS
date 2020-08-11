@@ -1,5 +1,5 @@
 syntax = "proto3";
-import "photo.proto";
+import "media.proto";
 
 package assets;
 
@@ -46,7 +46,8 @@ message Road {
   Projection projection_end = 26;
   // number_lanes is uint - we use int32 so that we can set it to -ve to indicate when it is null / None
   int32 number_lanes = 27;
-  int32 rainfall = 28;
+  int32 rainfall_maximum = 28;
+  int32 rainfall_minimum = 38;
   int32 construction_year = 30;
   int32 population = 31;
   // core is a nullable boolean - we use int32 so that we can set it to -ve to indicate when it is null / None
@@ -54,8 +55,8 @@ message Road {
   repeated int32 served_facilities = 33;
   repeated int32 served_economic_areas = 34;
   repeated int32 served_connection_types = 35;
-  repeated Photo inventory_photos = 36;
-  repeated Photo survey_photos = 37;
+  repeated Media inventory_media = 36;
+  repeated Media survey_media = 37;
 }
 
 message Roads {

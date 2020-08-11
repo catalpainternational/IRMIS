@@ -1,3 +1,4 @@
+$form-control-lg-width: 300px;
 $form-control-width: 225px;
 
 #dashboard, #report-assets, #report-contracts {
@@ -86,9 +87,26 @@ report_dashboard, report_assets, report_contracts {
             padding-bottom: 20px;
             margin-bottom: 20px;
 
-            input[type="date"], input[type="number"], select {
+            input[type="date"], input[type="month"] {
+                width: $form-control-width;
+                padding-left: 15px;
+                padding-bottom: 0;
+                margin-bottom: 0;
+                padding-top: 0;
                 height: 31px;
             }
+
+            input[type="number"] {
+                padding-left: 15px;
+                padding-bottom: 0;
+                padding-top: 0;
+                height: 31px;
+            }
+
+            select {
+                height: 31px;
+            }
+
         }
 
         .report-content {
@@ -166,34 +184,32 @@ report_assets, report_contracts {
         margin-bottom: 25px;
     }
 
-    input.form-control {
-        margin-bottom: 10px;
-    }
-
-    input[type="date"] {
-        width: $form-control-width;
-        margin-bottom: 10px;
-        margin-right: 10px;
-    }
-
     .options {
         margin-bottom: 10px;
         margin-right: 10px;
-        height: 31px;
     }
 
     .chainages {
         & > div {
-            width: calc(#{$form-control-width} / 2);
+            width: calc((#{$form-control-lg-width} - 5px) / 2); // -5px because of margins
         }
 
         & > div:first-child {
-            padding-right: 2.5px;
+            margin-right: 2.5px;
         }
 
         & > div:last-child {
-            padding-left: 2.5px;
+            margin-left: 2.5px;
         }
+    }
+
+    small.text-muted {
+        margin-bottom: 20px;
+        display: block;
+    }
+
+    button.create-report {
+        margin-top: 13px;
     }
 }
 

@@ -1,0 +1,452 @@
+<edit_base>
+    <loading modalId="asset-manager-loading"></loading>
+
+    <div class="row">
+        <div id="side-menu">
+            <div>
+                <ul class="navigation">
+                    <template if="{ props.assetType === 'ROAD' }">
+                        <li class="text-uppercase">{ window.gettext("Edit asset") }</li>
+                        <ul>
+                            <li class="{ state.page === 'location_type' ? 'active' : '' }" data-page="location_type"
+                                onclick="{ selectPage }">{ window.gettext("Location & Type") }</li>
+                            <li class="{ state.page === 'asset_details' ? 'active' : '' }" data-page="asset_details"
+                                onclick="{ selectPage }">{ window.gettext("Asset Details") }</li>
+                            <li class="{ state.page === 'pavement' ? 'active' : '' }" data-page="pavement"
+                                onclick="{ selectPage }">{ window.gettext("Pavement") }</li>
+                            <li class="{ state.page === 'traffic' ? 'active' : '' }" data-page="traffic"
+                                onclick="{ selectPage }">{ window.gettext("Traffic") }</li>
+                            <li class="{ state.page === 'social_economic' ? 'active' : '' }" data-page="social_economic"
+                                onclick="{ selectPage }">{ window.gettext("Social & Economic") }</li>
+                            <li class="{ state.page === 'condition' ? 'active' : '' }" data-page="condition"
+                                onclick="{ selectPage }">{ window.gettext("Condition") }</li>
+                            <li class="{ state.page === 'maintenance' ? 'active' : '' }" data-page="maintenance"
+                                onclick="{ selectPage }">{ window.gettext("Maintenance") }</li>
+                            <li class="{ state.page === 'environment' ? 'active' : '' }" data-page="environment"
+                                onclick="{ selectPage }">{ window.gettext("Environment") }</li>
+                            <li class="{ state.page === 'media' ? 'active' : '' }" data-page="media"
+                                onclick="{ selectPage }">{window.gettext("Photos and Videos") }</li>
+                        </ul>
+                    </template>
+                    <template if="{ props.assetType === 'BRDG' || props.assetType === 'CULV' || props.assetType === 'DRFT' }">
+                        <li class="text-uppercase">{ window.gettext("Edit structure") }</li>
+                        <ul>
+                            <li class="{ state.page === 'structure_type' ? 'active' : '' }" data-page="structure_type"
+                                onclick="{ selectPage }">{ window.gettext("Type") }</li>
+                            <li class="{ state.page === 'structure_details' ? 'active' : '' }" data-page="structure_details"
+                                onclick="{ selectPage }">{ window.gettext("Asset Details") }</li>
+                            <li class="{ state.page === 'protection' ? 'active' : '' }" data-page="protection"
+                                onclick="{ selectPage }">{ window.gettext("Protection") }</li>
+                            <li class="{ state.page === 'structure_condition' ? 'active' : '' }" data-page="structure_condition"
+                                onclick="{ selectPage }">{ window.gettext("Condition") }</li>
+                            <li class="{ state.page === 'media' ? 'active' : '' }" data-page="media"
+                                onclick="{ selectPage }">{ window.gettext("Photos and Videos") }</li>
+                        </ul>
+                    </template>
+                </ul>
+                <ul class="navigation">
+                    <li class="text-uppercase">{ window.gettext("History") }</li>
+                    <ul>
+                        <li class="{ state.page === 'history' ? 'active' : '' }" data-page="history"
+                            onclick="{ selectPage }">{ window.gettext("Change log") }</li>
+                    </ul>
+                </ul>
+            </div>
+        </div>
+
+        <edit_stop_alert modalId="stop-alert" title="{ window.gettext('Unsaved Changes') }"
+            description="{ window.gettext('You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?') }"
+            proceedLabel="{ window.gettext('Discard') }" proceedResult="discard"
+            stopLabel="{ window.gettext('Continue editing') }" stopResult="continueEdit">
+        </edit_stop_alert>
+
+        <div id="edit-base">
+            <div if="{ !state.loading }">
+                <header class="align-items-center d-flex">
+                    <a class="caret-dark left image" onclick="{ goBack }"></a>
+                    <h1 if={state.editingRoad}>{ state.editingRoad.code } { state.editingRoad.name }</h1>
+                    <h1 if={state.editingStructure}>{ state.editingStructure.code } { state.editingStructure.name }</h1>
+                </header>
+
+                <feedback_banner if="{ state.showFeedback }" close="{ closeFeedback }"
+                    successMessage="{ window.gettext('You have successfully saved') }"
+                    errorMessage="{ window.gettext('Something went wrong') }" error="{ state.error }">
+                </feedback_banner>
+
+                <edit_location_type if="{ state.page === 'location_type' }" road="{ state.editingRoad }"
+                    saving="{ state.saving }" parent="{parentFunctions}"></edit_location_type>
+                <edit_asset_details if="{ state.page === 'asset_details' }" road="{ state.editingRoad }"
+                    saving="{ state.saving }" showFeedback="{ showFeedback }" parent="{parentFunctions}">
+                </edit_asset_details>
+                <edit_pavement if="{ state.page === 'pavement' }" road="{ state.editingRoad }" saving="{ state.saving }"
+                    showFeedback="{ showFeedback }" parent="{parentFunctions}"></edit_pavement>
+                <edit_condition if="{ state.page === 'condition' }" road="{ state.editingRoad }"
+                    showFeedback="{ showFeedback }" parent="{parentFunctions}"></edit_condition>
+                <edit_traffic if="{ state.page === 'traffic' }" road="{ state.editingRoad }"
+                    showFeedback="{ showFeedback }" parent="{parentFunctions}"></edit_traffic>
+                <edit_social_economic if="{ state.page === 'social_economic' }" road="{ state.editingRoad }"
+                    showFeedback="{ showFeedback }" parent="{parentFunctions}"></edit_social_economic>
+                <edit_maintenance if="{ state.page === 'maintenance' }" road="{ state.editingRoad }"
+                    saving="{ state.saving }" parent="{parentFunctions}"></edit_maintenance>
+                <edit_environment if="{ state.page === 'environment' }" road="{ state.editingRoad }"
+                    saving="{ state.saving }" showFeedback="{ showFeedback }" parent="{parentFunctions}">
+                </edit_environment>
+                <edit_history if="{ state.page === 'history' }" road="{ state.baseRoad }"
+                    structure="{ state.editingStructure }" parent="{parentFunctions}">
+                </edit_history>
+                <edit_structure_type if="{ state.page === 'structure_type' }" structure="{ state.editingStructure }"
+                    assetType="{ props.assetType }" saving="{ state.saving }" parent="{parentFunctions}">
+                </edit_structure_type>
+                <edit_structure_details if="{ state.page === 'structure_details' }"
+                    structure="{ state.editingStructure }" assetType="{ props.assetType }" saving="{ state.saving }"
+                    parent="{parentFunctions}">
+                </edit_structure_details>
+                <edit_structure_protection if="{ state.page === 'protection' }" structure="{ state.editingStructure }"
+                    saving="{ state.saving }" parent="{parentFunctions}"></edit_structure_protection>
+                <edit_structure_condition if="{ state.page === 'structure_condition' }"
+                    structure="{ state.editingStructure }" saving="{ state.saving }" showFeedback="{ showFeedback }"
+                    parent="{parentFunctions}">
+                </edit_structure_condition>
+                <edit_media if="{ state.page === 'media' }" showFeedback="{ showFeedback }" saving="{ state.saving }"
+                    parent="{parentFunctions}" asset="{ state.editingRoad }" structure="{ state.editingStructure }">
+                </edit_media>
+            </div>
+            <div id="survey-media-modal" class="modal inventory-modal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title"></h1>
+                            <span class="close image" data-dismiss="modal" aria-label="{ window.gettext('Close') }"
+                                aria-hidden="true"></span>
+                        </div>
+                        <div class="modal-body">
+                            <div id="survey-media_wrapper">
+                                <media_details_box></media_details_box>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer>
+                <small>{ window.gettext("Democratic Republic of Timor-Leste") } / { window.gettext("Ministry of Public Works") }</small>
+                <small>{ window.gettext("Created by Catalpa International") }</small>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        import * as riot from "riot";
+        import $ from "jquery";
+
+        import {getStructureSurveys} from "../surveyManager";
+
+        // We really should NOT be importing road specific stuff here
+        import {saveRoad} from "../roadManager";
+        import {getMedias} from "../mediaManager";
+        import {EstradaRoad, makeEstradaRoad} from "../assets/models/road";
+        import {makeEstradaBridge, makeEstradaCulvert, makeEstradaDrift} from "../assets/models/structures";
+        import {updateStructure} from "../structureManager";
+
+        import {compareProtoBufObjects} from "../assets/protoBufUtilities";
+
+        import Feedback_Banner from './feedback_banner.riot';
+        import Edit_Stop_Alert from "./edit_stop_alert.riot";
+
+        // ASSETS EDIT TAGS
+        import Edit_Location_Type from "./edit_location_type.riot";
+        import Edit_Asset_Details from "./edit_asset_details.riot";
+        import Edit_Pavement from "./edit_pavement.riot";
+        import Edit_Traffic from "./edit_traffic.riot";
+        import Edit_Social_Economic from "./edit_social_economic.riot";
+        import Edit_Condition from "./edit_condition.riot";
+        import Edit_Maintenance from "./edit_maintenance.riot";
+        import Edit_Environment from "./edit_environment.riot";
+
+        // STRUCTURES EDIT TAGS
+        import Edit_Structure_Type from "./edit_structure_type.riot";
+        import Edit_Structure_Details from "./edit_structure_details.riot";
+        import Edit_Structure_Protection from "./edit_structure_protection.riot";
+        import Edit_Structure_Condition from "./edit_structure_condition.riot";
+
+        // SHARED EDIT TAGS
+        import Edit_Media from "./edit_media.riot";
+        import Edit_History from "./edit_history.riot";
+
+        export default {
+            state: {
+                loading: true,
+                saving: false,
+                /** editingRoad is the object to use to actually make changes */
+                editingRoad: null,
+                /** baseRoad is the original object */
+                baseRoad: null,
+                /** editingStructure is the object to actually make changes **/
+                editingStructure: null,
+                /** baseStructure is the original object **/
+                baseStructure: null,
+                error: false,
+                page: "location_type",
+                nextPage: null,
+                hasChanges: false,
+                showFeedback: false,
+                stopAlertResult: null,
+            },
+            components: {
+                Feedback_Banner, Edit_Stop_Alert,
+                Edit_Location_Type, Edit_Asset_Details, Edit_Pavement,
+                Edit_Environment, Edit_Traffic,
+                Edit_Social_Economic, Edit_Condition, Edit_Maintenance,
+                Edit_History, Edit_Structure_Type, Edit_Structure_Details,
+                Edit_Structure_Protection, Edit_Media, Edit_Structure_Condition,
+            },
+            onBeforeMount(props, state) {
+                state.page = props.page;
+                window.onbeforeunload = () => {
+                    return this.hasChanges() ? "You have changes" : null;
+                }
+                window.goBack = this.goBack;
+            },
+            onBeforeUnmount() {
+                window.onbeforeunload = null;
+                window.goBack = () => {};
+            },
+            onMounted(props, state) {
+                $("#asset-manager-loading").modal("show");
+
+                this.parentFunctions = {
+                    getHelpText: this.getHelpText,
+                    save: this.save,
+                    saveStructure: this.saveStructure,
+                    getStructureSurveys: this.getStructureSurveys,
+                };
+
+                if (props.roadPromise) {
+                    props.roadPromise.then(road => {
+                        state.loading = false;
+                        this.initRoad(road);
+                        this.continueMounting();
+                    }).catch(err => {
+                        state.error = err;
+                    }).finally((r) => {
+                        $("#asset-manager-loading").modal("hide");
+                        this.update();
+                    });
+                } else if (props.structurePromise) {
+                    props.structurePromise.then(structure => {
+                        state.loading = false;
+                        this.initStructure(structure);
+                    }).catch(err => {
+                        state.error = err;
+                    }).finally((r) => {
+                        $("#asset-manager-loading").modal("hide");
+                        this.update();
+                    });
+                }
+
+                this.showSurveyMediaListener = (data) => {
+                    const assetId = data.detail.rowId;
+                    const modal = $('#survey-media-modal');
+                    let media = undefined;
+
+                    // clear the modal of existing media data that might be there
+                    document.dispatchEvent(new CustomEvent("media-details-modal.updateModalData", {detail: {currentMediaData: undefined}}));
+
+                    modal.find(".modal-title").text("Survey Media");
+                    modal.modal('show');
+
+                    if (assetId) {
+                        getMedias("SURV-" + assetId)
+                            .then((mediaData) => {
+                                media = mediaData;
+                            }).finally(() => {
+                                // update the inventory modal tag with current data
+                                document.dispatchEvent(new CustomEvent("media-details-modal.updateModalData", {detail: {currentMediaData: media}}));
+                            });
+                    }
+                }
+                document.addEventListener(`asset-condition-table.showSurveyMedia`, this.showSurveyMediaListener);
+                document.addEventListener(`structure-condition-table.showSurveyMedia`, this.showSurveyMediaListener);
+            },
+            onUnmount(props, state) {
+                document.removeEventListener(`asset-condition-table.showSurveyMedia`, this.showSurveyMediaListener);
+                document.removeEventListener(`structure-condition-table.showSurveyMedia`, this.showSurveyMediaListener);
+            },
+            initRoad(road) {
+                this.state.baseRoad = road;
+                this.state.editingRoad = makeEstradaRoad(this.state.baseRoad);
+            },
+            initStructure(structure) {
+                this.state.baseStructure = structure;
+                switch (this.state.baseStructure.assetType) {
+                    case "BRDG":
+                        this.state.editingStructure = makeEstradaBridge(this.state.baseStructure);
+                        break;
+                    case "CULV":
+                        this.state.editingStructure = makeEstradaCulvert(this.state.baseStructure);
+                        break;
+                    case "DRFT":
+                        this.state.editingStructure = makeEstradaDrift(this.state.baseStructure);
+                        break;
+                    default:
+                        // Ending up here is a programmer error - but we're not doing anything about it
+                        break;
+                }
+            },
+            continueMounting() {
+                // Set up other data on editingRoad that is commonly used on the child tags
+                // Use the protobuf object get members here, because we want chainage unformatted
+                let roadDistance = (this.state.editingRoad.getLinkEndChainage() || 0)
+                    - (this.state.editingRoad.getLinkStartChainage() || 0);
+                if (!roadDistance || roadDistance < 0) {
+                    roadDistance = this.state.editingRoad.linkLength;
+                }
+                this.state.editingRoad.distance = roadDistance;
+
+                this.parentFunctions.emptyAttributes = [{
+                    key: 0,
+                    title: "unknown",
+                    distance: roadDistance
+                }];
+            },
+            save() {
+                this.update({saving: true});
+                saveRoad(this.state.editingRoad).then((road) => {
+                    if (road) {
+                        this.state.error = false;
+                        this.initRoad(road);
+                    } else {
+                        this.state.error = true;
+                    }
+                }).catch(err => {
+                    this.state.error = true;
+                }).finally((r) => {
+                    this.update({saving: false});
+                    this.showFeedback(this.state.error);
+                });
+            },
+            saveStructure() {
+                this.update({saving: true});
+                updateStructure(this.state.editingStructure).then((structure) => {
+                    if (structure) {
+                        this.state.error = false;
+                        this.initStructure(structure);
+                    } else {
+                        this.state.error = true;
+                    }
+                }).catch(err => {
+                    this.state.error = true;
+                }).finally((r) => {
+                    this.update({saving: false});
+                    this.showFeedback(this.state.error);
+                });
+            },
+            hasChanges() {
+                return (this.props.assetType === "BRDG" || this.props.assetType === "CULV" || this.props.assetType === "DRFT")
+                    ? compareProtoBufObjects(this.state.baseStructure, this.state.editingStructure)
+                    : compareProtoBufObjects(this.state.baseRoad, this.state.editingRoad);
+            },
+            goBack(e) {
+                this.state.nextPage = "#";
+                if (this.hasChanges()) {
+                    this.modalHandler();
+                } else {
+                    window.location.hash = this.state.nextPage;
+                }
+            },
+            selectPage(e) {
+                const assetId = (this.state.editingRoad) ? this.state.editingRoad.id : this.state.editingStructure.id.split("-")[1];
+                this.state.page = e.currentTarget.dataset.page;
+                this.state.nextPage = `#edit/${this.props.assetType}/${assetId}/${this.state.page}`;
+                if (this.hasChanges()) {
+                    this.modalHandler();
+                } else {
+                    this.discardChanges();
+                }
+            },
+            modalHandler() {
+                document.addEventListener("edit.stop-alert.result", (data) => {
+                    const stopAlertResult = data.detail.result;
+
+                    // Ensure that the dialog gets hidden
+                    $("#stop-alert").modal("hide");
+
+                    if (stopAlertResult === "discard") {
+                        this.discardChanges();
+                    }
+                }, {once: true});
+
+                $("#stop-alert").modal("show");
+            },
+            discardChanges() {
+                if (this.state.editingRoad) {
+                    this.state.editingRoad = makeEstradaRoad(this.state.baseRoad);
+                } else {
+                    switch (this.state.baseStructure.assetType) {
+                        case "BRDG":
+                            this.state.editingStructure = makeEstradaBridge(this.state.baseStructure);
+                            break;
+                        case "CULV":
+                            this.state.editingStructure = makeEstradaCulvert(this.state.baseStructure);
+                            break;
+                        case "DRFT":
+                            this.state.editingStructure = makeEstradaDrift(this.state.baseStructure);
+                            break;
+                        default:
+                            // Ending up here is a programmer error - but we're not doing anything about it
+                            break;
+                    }
+                }
+                window.location.hash = this.state.nextPage;
+                this.update();
+            },
+            showFeedback(error) {
+                this.update({
+                    showFeedback: true,
+                    error: error,
+                });
+                setTimeout(() => this.closeFeedback(), 2000);
+            },
+            closeFeedback() {
+                const feedback = document.getElementsByClassName("slide-in").item(0);
+
+                if (feedback) {
+                    feedback.classList.add("slide-out");
+                    setTimeout(() => {
+                        feedback.classList.remove("slide-out");
+                        this.update({showFeedback: false});
+                    }, 300);
+                }
+            },
+            getStructureSurveys(state, allDataTableId, primaryAttribute, reportAttribute) {
+                const structureId = state.structure.id;
+
+                getStructureSurveys(structureId, primaryAttribute)
+                    .then((surveyData) => {
+                        if (surveyData) {
+                            state.pendingRows = surveyData.map((data) => {
+                                data.title = data[reportAttribute] || data.values[primaryAttribute] || "";
+                                return data;
+                            });
+
+                            const eventName = `${allDataTableId}.dataAdded`;
+                            const eventDetail = {detail: {pendingRows: state.pendingRows, clearRows: true}};
+                            document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+
+                            state.error = false;
+                        } else {
+                            state.error = true;
+                        }
+                    }).catch(err => {
+                        state.error = true;
+                    }).finally((r) => {
+                        state.loading = false;
+                        this.update();
+                    });
+            },
+            getHelpText(field) {
+                // TODO: Fix this, because it's specific to 'Roads'
+                return EstradaRoad.getHelpText(field);
+            }
+        };
+    </script>
+</edit_base>

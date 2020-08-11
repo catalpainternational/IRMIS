@@ -46,7 +46,7 @@
                 </td>
                 <td>{{ document.title }}</td>
                 <td>{{ document.document_type.name }}</td>
-                <td>{{ document.document_date }}</td>
+                <td>{{ document.document_date|date:"Y-m-d" }}</td>
                 <td>{{ document.description }}</td>
             </tr>
             {% endfor %}

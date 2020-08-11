@@ -44,9 +44,9 @@
         <tbody>
             {% for inspection in inspections %}
             <tr>
-                <td>{{ inspection.date }}</td>
+                <td>{{ inspection.date|date:"Y-m-d" }}</td>
                 <td>{{ inspection.entity }}</td>
-                <td>{{ inspection.progress }}</td>
+                <td class="text-right to-format">{{ inspection.progress }} %</td>
                 <td>{{ inspection.get_defect_liability_period_display }}</td>
             </tr>
             {% endfor %}
@@ -65,9 +65,9 @@
         <tbody>
             {% for inspection in inspections %}
             <tr>
-                <td>{{ inspection.date }}</td>
+                <td>{{ inspection.date|date:"Y-m-d" }}</td>
                 <td>{{ inspection.entity }}</td>
-                <td>{{ inspection.progress }}</td>
+                <td class="text-right to-format">{{ inspection.progress }}</td>
                 <td>{{ inspection.get_defect_liability_period_display }}</td>
             </tr>
             {% endfor %}

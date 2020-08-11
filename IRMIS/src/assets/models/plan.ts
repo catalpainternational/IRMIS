@@ -93,7 +93,8 @@ export class EstradaPlan extends Plan implements IEstrada {
     }
 
     get summary() {
-        return this.getSummaryList() || [];
+        const summaryListRaw = this.getSummaryList();
+        return summaryListRaw ? summaryListRaw.map(makeEstradaSnapshot) : summaryListRaw;
     }
 }
 
@@ -132,7 +133,13 @@ export class EstradaSnapshot extends Snapshot implements IEstrada {
 }
 
 export function makeEstradaPlan(pbplan: { [name: string]: any }): EstradaPlan {
-    return makeEstradaObject(EstradaPlan, pbplan) as EstradaPlan;
+    const plan = makeEstradaObject(EstradaPlan, pbplan) as EstradaPlan;
+
+    // Force the conversion of the summaries from simple data to actual objects
+    const summaries = plan.summary;
+    plan.setSummaryList(summaries);
+
+    return plan;
 }
 
 export function makeEstradaSnapshot(pbsnapshot: { [name: string]: any }): EstradaSnapshot {

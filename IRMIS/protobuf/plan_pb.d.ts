@@ -23,6 +23,9 @@ export class Snapshot extends jspb.Message {
   getWorkType(): string;
   setWorkType(value: string): void;
 
+  getPlan(): number;
+  setPlan(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Snapshot.AsObject;
   static toObject(includeInstance: boolean, msg: Snapshot): Snapshot.AsObject;
@@ -41,6 +44,7 @@ export namespace Snapshot {
     length: number,
     assetClass: string,
     workType: string,
+    plan: number,
   }
 }
 

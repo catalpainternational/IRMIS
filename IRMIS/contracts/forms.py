@@ -1,5 +1,5 @@
 from django.forms import ModelForm, ModelMultipleChoiceField, Select
-from django.forms import modelformset_factory, inlineformset_factory
+from django.forms import inlineformset_factory
 from django.utils.translation import ugettext_lazy as _
 
 from assets.templatetags.assets import simple_asset_list
@@ -194,7 +194,7 @@ class TenderForm(ModelForm):
 
     projects = ModelMultipleChoiceField(
         queryset=models.Project.objects.all(),
-        required=False,
+        required=True,
         label=_("Associated projects"),
         help_text=_("Select one or more projects for the tender"),
     )
@@ -417,13 +417,13 @@ class ContractPaymentForm(ModelForm):
 
 class ContractPaymentDonorForm(ModelForm):
     class Meta:
-        model = models.ContractPaymentDonor
+        model = models.FundingDonor
         fields = ["name"]
 
 
 class ContractPaymentSourceForm(ModelForm):
     class Meta:
-        model = models.ContractPaymentSource
+        model = models.FundingSource
         fields = ["name"]
 
 

@@ -62,22 +62,22 @@ urlpatterns = [
         name="contract-tender-create",
     ),
     path(
-        "forms/tender/<str:pk>/details/",
+        "forms/tender/<int:pk>/details/",
         views.TenderUpdateFormView.as_view(),
         name="contract-tender-update",
     ),
     path(
-        "tender/<str:pk>/details/",
+        "tender/<int:pk>/details/",
         views.TenderDetailView.as_view(),
         name="contract-tender-detail",
     ),
     path(
-        "tender/<str:pk>/document/",
+        "tender/<int:pk>/document/",
         views.TenderDocumentListView.as_view(),
         name="contract-tenderdocument-list",
     ),
     path(
-        "tender/<str:pk>/document/view/",
+        "tender/<int:pk>/document/view/",
         views.TenderDocumentDetailView.as_view(),
         name="contract-tenderdocument-detail",
     ),

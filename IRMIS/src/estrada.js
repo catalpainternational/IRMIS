@@ -7,13 +7,13 @@ import "./polyfills/nodelist_foreach";
 import "./dayjs/dayjs";
 import * as riot from "riot";
 
-import Loading from "./riot/loading.riot.html";
-import Planning_Base from "./riot/planning_base.riot.html";
-import Reports_Base from "./riot/reports_base.riot.html";
-import Data_Table from "./riot/data_table.riot.html";
-import Edit_Base from "./riot/edit_base.riot.html";
-import TrafficDataDetails from "./riot/traffic_data_details.riot.html";
-import PhotosDetailsBox from "./riot/photos_details_box.riot.html";
+import Loading from "./riot/loading.riot";
+import Planning_Base from "./riot/planning_base.riot";
+import Reports_Base from "./riot/reports_base.riot";
+import Data_Table from "./riot/data_table.riot";
+import Edit_Base from "./riot/edit_base.riot";
+import TrafficDataDetails from "./riot/traffic_data_details.riot";
+import MediaDetailsBox from "./riot/media_details_box.riot";
 
 import { getGeoJsonDetails, getGeoJsonDetail } from "./assets/geoJsonAPI.js";
 
@@ -25,6 +25,8 @@ import "./side_menu";
 import "./top_menu";
 import { Map } from "./map/map";
 
+import "./translations";
+
 import "./styles/estrada.scss";
 import "./styles/vendor.scss";
 
@@ -35,7 +37,7 @@ import "./assets/models/monkeyPatch";
 export const estradaMap = new Map();
 
 riot.register("loading", Loading);
-riot.mount("loading");
+riot.mount("loading", { modalId: "assets-loading" });
 
 window.addEventListener("load", () => {
     // Set up the map and table - but without any data for either
@@ -84,8 +86,8 @@ window.addEventListener("load", () => {
     riot.register("traffic_data_details", TrafficDataDetails);
     riot.mount("traffic_data_details");
 
-    riot.register("photos_details_box", PhotosDetailsBox);
-    riot.mount("photos_details_box");
+    riot.register("media_details_box", MediaDetailsBox);
+    riot.mount("media_details_box");
 
     if (window.canEdit) {
         riot.register("edit_base", Edit_Base);

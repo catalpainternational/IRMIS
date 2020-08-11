@@ -9,16 +9,13 @@ import xlrd
 import reversion
 from reversion.models import Version
 
-import importlib_resources as resources
-
 from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.gis.db import models
 from django.core.files.base import ContentFile
-from django.db import connection
-from django.db.models import Value, CharField, OuterRef, Prefetch, Q, Subquery
+from django.db.models import OuterRef, Q, Subquery
 from django.db.models.functions import Cast, Substr
 from django.http import (
     HttpResponse,
@@ -30,21 +27,15 @@ from django.http import (
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import TemplateView
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView
 
 from rest_framework_jwt.settings import api_settings
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.exceptions import MethodNotAllowed
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework.viewsets import ViewSet
-from rest_framework_condition import condition
 
 from google.protobuf.timestamp_pb2 import Timestamp
 from protobuf import (
-    photo_pb2,
+    media_pb2,
     plan_pb2,
     report_pb2,
     roads_pb2,
@@ -69,7 +60,7 @@ from .models import (
     FacilityType,
     MaintenanceNeed,
     PavementClass,
-    Photo,
+    Media,
     Plan,
     PlanSnapshot,
     Road,
@@ -79,12 +70,11 @@ from .models import (
     Survey,
     TechnicalClass,
     BreakpointRelationships,
-    sql_scripts,
 )
 
 from .data_cleaning_utils import update_non_programmatic_surveys_by_road_code
 from .report_query import ReportQuery, ContractReport
-from .serializers import RoadSerializer, RoadMetaOnlySerializer, RoadToWGSSerializer
+from .serializers import RoadSerializer
 from .token_mixin import JWTRequiredMixin
 
 
@@ -99,13 +89,6 @@ def display_user(user):
         return ""
     user_display = user.get_full_name()
     return user_display or user.username
-
-
-def namedtuplefetchall(cursor):
-    "Return all rows from a cursor as a namedtuple"
-    desc = cursor.description
-    nt_result = namedtuple("Result", [col[0] for col in desc])
-    return [nt_result(*row) for row in cursor.fetchall()]
 
 
 def user_can_edit(user):
@@ -123,7 +106,7 @@ def user_can_plan(user):
     if (
         user.is_staff
         or user.is_superuser
-        or user.permissions.filter(name__contains="can_edit_plan").exists()
+        or user.user_permissions.filter(codename="can_edit_plan").exists()
     ):
         return True
 
@@ -374,13 +357,21 @@ def protobuf_road_set(request, chunk_name=None):
 
 @login_required
 def protobuf_road_surveys(request, pk, survey_attribute=None):
-    """ returns a protobuf object with the set of surveys for a particular road pk"""
+    """ returns a protobuf object with the set of surveys for a particular road pk
+
+    Note that if the survey_attribute is specified then only surveys with a non-null value
+    for that attribute will be returned """
+
     # get the Road link requested
     road = get_object_or_404(Road.objects.all(), pk=pk)
     # pull any Surveys that cover the Road Code above
     # note: road_* fields in the surveys are ONLY relevant for Bridges, Culverts or Drifts
     # the asset_* fields in a survey correspond to the road_* fields in a Road
-    queryset = Survey.objects.filter(asset_code=road.road_code)
+    queryset = (
+        Survey.objects.filter(asset_code=road.road_code)
+        .filter(chainage_start__gte=road.geom_start_chainage)
+        .filter(chainage_end__lte=road.geom_end_chainage)
+    )
 
     filter_attribute = survey_attribute
 
@@ -754,16 +745,16 @@ def protobuf_reports(request):
                     report_attribute.road_id = report_survey["road_id"]
                 if report_survey["road_code"]:
                     report_attribute.road_code = report_survey["road_code"]
-                # check for survey photos to assign to the report
-                # we packed the photos data as a JSON string in the Custom Reports SQL query
-                # so the photos column will need to be unpacked first
-                if report_survey["photos"]:
-                    photos = json.loads(report_survey["photos"])
-                    for photo in photos:
-                        photo_protobuf = report_attribute.photos.add()
-                        setattr(photo_protobuf, "id", photo["id"])
-                        setattr(photo_protobuf, "url", photo["url"])
-                        setattr(photo_protobuf, "description", photo["description"])
+                # check for survey media to assign to the report
+                # we packed the media data as a JSON string in the Custom Reports SQL query
+                # so the media column will need to be unpacked first
+                if report_survey["media"]:
+                    media = json.loads(report_survey["media"])
+                    for media in media:
+                        media_protobuf = report_attribute.media.add()
+                        setattr(media_protobuf, "id", media["id"])
+                        setattr(media_protobuf, "url", media["url"])
+                        setattr(media_protobuf, "description", media["description"])
 
                 report_protobuf.attributes.append(report_attribute)
 
@@ -1134,7 +1125,6 @@ def plan_create(request):
 
         asset_classes = {
             "National": "NAT",
-            "Highway": "HIGH",
             "Municipal": "MUN",
             "Urban": "URB",
             "Rural": "RUR",
@@ -1353,8 +1343,12 @@ def survey_create(request):
                     "road_id": req_pb.road_id,
                     "road_code": req_pb.road_code,
                     "user": get_user_model().objects.get(pk=req_pb.user),
-                    "chainage_start": req_pb.chainage_start,
-                    "chainage_end": req_pb.chainage_end,
+                    "chainage_start": req_pb.chainage_start
+                    if req_pb.chainage_start
+                    else survey_asset.geom_start_chainage,
+                    "chainage_end": req_pb.chainage_end
+                    if req_pb.chainage_end
+                    else survey_asset.geom_end_chainage,
                     "date_surveyed": pbtimestamp_to_pydatetime(req_pb.date_surveyed),
                     "source": req_pb.source,
                     "values": req_values,
@@ -1366,22 +1360,22 @@ def survey_create(request):
 
         initial_survey_id = survey.id
 
-        # link the orphan Photos up to the newly created Survey
+        # link the orphan Media up to the newly created Survey
         survey_id = "SURV-" + str(initial_survey_id)
 
-        for pb_photo in req_pb.photos:
-            # check there's a Photo instance first
-            photo = get_object_or_404(Photo.objects.filter(pk=pb_photo.id))
-            photo.object_id = initial_survey_id
-            photo.content_type = ContentType.objects.get_for_model(survey)
-            photo.fk_link = survey_id
-            photo.save()
+        for pb_media in req_pb.media:
+            # check there's a Media instance first
+            media = get_object_or_404(Media.objects.filter(pk=pb_media.id))
+            media.object_id = initial_survey_id
+            media.content_type = ContentType.objects.get_for_model(survey)
+            media.fk_link = survey_id
+            media.save()
 
         # ensure that Road surveys have correct ids and chainage ranges
         if survey.asset_id.startswith("ROAD-"):
             # This may correct the asset_id that points to the road link
             # And split the survey across multiple road links according to its chainage
-            # only the first survey (in chainage order) will have any photos attached to it
+            # only the first survey (in chainage order) will have any media attached to it
             updated = update_non_programmatic_surveys_by_road_code(
                 None, survey, survey.asset_code, 0
             )
@@ -1397,7 +1391,6 @@ def survey_create(request):
 
         return response
     except Exception as err:
-        print(err)
         return HttpResponse(status=400)
 
 
@@ -1751,6 +1744,9 @@ def structure_update(request, pk):
         db_pb = mapping["model"].objects.filter(pk=django_pk).to_protobuf().culverts[0]
     elif mapping["model"] == Drift:
         db_pb = mapping["model"].objects.filter(pk=django_pk).to_protobuf().drifts[0]
+    else:
+        raise ValueError("Model mapping not found")
+
     if db_pb == req_pb:
         return HttpResponse(
             req_pb.SerializeToString(),
@@ -1788,59 +1784,58 @@ def structure_update(request, pk):
 
 
 @login_required
-def protobuf_photo(request, pk):
-    """ returns a protobuf object with the set of all audit history items for a Structure """
-
+def protobuf_media(request, pk):
+    """ returns a protobuf serialized Media object for a given Media PK """
     if request.method != "GET":
         return HttpResponse(status=405)
 
-    photo = Photo.objects.filter(pk=pk)
-    if not photo.exists():
+    media = Media.objects.filter(pk=pk)
+    if not media.exists():
         return HttpResponseNotFound()
 
-    photo_protobuf = photo.to_protobuf()
+    media_protobuf = media.to_protobuf()
 
     return HttpResponse(
-        photo_protobuf.photos[0].SerializeToString(),
+        media_protobuf.media[0].SerializeToString(),
         content_type="application/octet-stream",
     )
 
 
 @login_required
-def protobuf_photos(request, pk):
-    """ returns a list of protobuf serialized Photo objects for a given Structure/Asset/Survey PK """
+def protobuf_medias(request, pk):
+    """ returns a list of protobuf serialized Media objects for a given Structure/Asset/Survey PK """
 
     if request.method != "GET":
         return HttpResponse(status=405)
 
-    # check there's a model instance to attach this photo to
+    # check there's a model instance to attach this media to
     prefix, django_pk, mapping = get_asset_mapping(pk)
     linked_obj = get_object_or_404(mapping["model"].objects.filter(pk=django_pk))
     content_type = ContentType.objects.get_for_model(linked_obj)
 
-    photos = Photo.objects.filter(object_id=linked_obj.id, content_type=content_type)
-    if not photos.exists():
+    media = Media.objects.filter(object_id=linked_obj.id, content_type=content_type)
+    if not media.exists():
         return HttpResponseNotFound()
 
-    photos_protobuf = photos.to_protobuf()
+    media_protobuf = media.to_protobuf()
 
     return HttpResponse(
-        photos_protobuf.SerializeToString(), content_type="application/octet-stream",
+        media_protobuf.SerializeToString(), content_type="application/octet-stream",
     )
 
 
 @login_required
-def photo_create(request):
+def media_create(request):
     if request.method != "POST":
         raise MethodNotAllowed(request.method)
     elif request.content_type != "multipart/form-data":
         return HttpResponse(status=400)
 
-    # check that required form data was passed: Photo
+    # check that required form data was passed: Media
     if not request.FILES:
         return HttpResponse(status=400)
 
-    photo_data = {
+    media_data = {
         "file": request.FILES["file"],
         "user": request.user,
         "description": request.POST["description"]
@@ -1850,44 +1845,44 @@ def photo_create(request):
     }
     res_data = {}
     if request.POST["fk_link"] and request.POST["fk_link"] not in ["", "undefined"]:
-        # check there's a model instance to attach this photo to
+        # check there's a model instance to attach this media to
         prefix, django_pk, mapping = get_asset_mapping(request.POST["fk_link"])
 
         linked_obj = get_object_or_404(mapping["model"].objects.filter(pk=django_pk))
-        photo_data["object_id"] = linked_obj.id
+        media_data["object_id"] = linked_obj.id
 
         content_type = ContentType.objects.get_for_model(linked_obj)
-        photo_data["content_type"] = content_type
+        media_data["content_type"] = content_type
         res_data["fk_link"] = request.POST["fk_link"]
     else:
         res_data["fk_link"] = ""
 
     try:
         with reversion.create_revision():
-            photo = Photo.objects.create(**photo_data)
-            # store the user who created the photo
+            media = Media.objects.create(**media_data)
+            # store the user who created the media
             reversion.set_user(request.user)
-            res_data["id"] = photo.id
-            res_data["url"] = photo.file.url
-            res_data["description"] = photo.description
-            res_data["date_created"] = photo.date_created.strftime("%Y-%m-%d")
-            res_data["last_modified"] = photo.last_modified.strftime("%Y-%m-%d")
-            res_data["user"] = photo.user.id
-            res_data["added_by"] = photo.user.username
+            res_data["id"] = media.id
+            res_data["url"] = media.file.url
+            res_data["description"] = media.description
+            res_data["date_created"] = media.date_created.strftime("%Y-%m-%d")
+            res_data["last_modified"] = media.last_modified.strftime("%Y-%m-%d")
+            res_data["user"] = media.user.id
+            res_data["added_by"] = media.user.username
         return JsonResponse(res_data)
     except Exception as err:
         return HttpResponse(status=400)
 
 
 @login_required
-def photo_update(request):
+def media_update(request):
     if request.method != "PUT":
         raise MethodNotAllowed(request.method)
     elif request.content_type != "application/octet-stream":
         return HttpResponse(status=400)
 
-    # parse Photo from protobuf in request body
-    req_pb = photo_pb2.Photo()
+    # parse Media from protobuf in request body
+    req_pb = media_pb2.Media()
     req_pb = req_pb.FromString(request.body)
 
     # check that Protobuf parsed
@@ -1895,25 +1890,25 @@ def photo_update(request):
         return HttpResponse(status=400)
 
     try:
-        # assert Photo ID given exists in the DB & there are changes to make
-        photo = get_object_or_404(Photo.objects.filter(pk=req_pb.id))
-        # update the Photo instance from PB fields
-        photo.description = req_pb.description
+        # assert Media ID given exists in the DB & there are changes to make
+        media = get_object_or_404(Media.objects.filter(pk=req_pb.id))
+        # update the Media instance from PB fields
+        media.description = req_pb.description
 
         if req_pb.fk_link:
-            # check there's a model instance to attach this photo to
+            # check there's a model instance to attach this media to
             prefix, django_pk, mapping = get_asset_mapping(req_pb.fk_link)
 
             linked_obj = get_object_or_404(
                 mapping["model"].objects.filter(pk=django_pk)
             )
-            photo.object_id = linked_obj.id
+            media.object_id = linked_obj.id
 
             content_type = ContentType.objects.get_for_model(linked_obj)
-            photo.content_type = content_type
+            media.content_type = content_type
 
         with reversion.create_revision():
-            photo.save()
+            media.save()
             # store the user who made the changes
             reversion.set_user(request.user)
     except Exception:
@@ -1928,25 +1923,25 @@ def photo_update(request):
 
 
 @login_required
-def photo_delete(request):
+def media_delete(request):
     if request.method != "PUT":
         raise MethodNotAllowed(request.method)
     elif request.content_type != "application/octet-stream":
         return HttpResponse(status=400)
 
-    # parse Photos from protobuf in request body
-    req_pb = photo_pb2.Photo()
+    # parse Medias from protobuf in request body
+    req_pb = media_pb2.Media()
     req_pb = req_pb.FromString(request.body)
 
     # check that protobuf parsed
     if not req_pb.id:
         return HttpResponse(status=400)
 
-    # assert Photo ID given exists in the DB
-    photo = get_object_or_404(Photo.objects.filter(pk=req_pb.id))
+    # assert Media ID given exists in the DB
+    media = get_object_or_404(Media.objects.filter(pk=req_pb.id))
 
     with reversion.create_revision():
-        photo.delete()
+        media.delete()
         # store the user who made the changes
         reversion.set_user(request.user)
 
@@ -1998,7 +1993,7 @@ class ExcelDataSource(TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-
+        asset_codes = []
         if "asset_code" in self.request.GET:
             asset_codes = self.request.GET.getlist("asset_code")
 
@@ -2136,7 +2131,7 @@ def protobuf_contract_reports(request, report_id):
         1: ["program"],
         2: ["contractCode"],
         3: ["assetClassTypeOfWork", "typeOfWorkYear", "assetClassYear"],
-        4: ["numberEmployees", "wages", "workedDays"],  # summary
+        4: ["numberEmployeesSummary", "wagesSummary", "workedDaysSummary"],  # summary
         5: ["numberEmployees", "wages", "workedDays"],  # single contract
     }
 

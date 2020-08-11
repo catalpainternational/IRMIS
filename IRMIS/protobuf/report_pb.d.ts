@@ -3,7 +3,7 @@
 
 import * as jspb from "google-protobuf";
 import * as google_protobuf_timestamp_pb from "google-protobuf/google/protobuf/timestamp_pb";
-import * as photo_pb from "./photo_pb";
+import * as media_pb from "./media_pb";
 
 export class Report extends jspb.Message {
   getFilter(): string;
@@ -74,10 +74,10 @@ export class Attribute extends jspb.Message {
   getRoadCode(): string;
   setRoadCode(value: string): void;
 
-  clearPhotosList(): void;
-  getPhotosList(): Array<photo_pb.Photo>;
-  setPhotosList(value: Array<photo_pb.Photo>): void;
-  addPhotos(value?: photo_pb.Photo, index?: number): photo_pb.Photo;
+  clearMediaList(): void;
+  getMediaList(): Array<media_pb.Media>;
+  setMediaList(value: Array<media_pb.Media>): void;
+  addMedia(value?: media_pb.Media, index?: number): media_pb.Media;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Attribute.AsObject;
@@ -103,7 +103,7 @@ export namespace Attribute {
     value: string,
     roadId: number,
     roadCode: string,
-    photosList: Array<photo_pb.Photo.AsObject>,
+    mediaList: Array<media_pb.Media.AsObject>,
   }
 }
 

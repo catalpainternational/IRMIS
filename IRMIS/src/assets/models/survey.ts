@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { Survey } from "../../../protobuf/survey_pb";
 
 import { IEstrada } from "./estradaBase";
-import { makeEstradaPhoto, EstradaPhoto, Photo } from "./photo";
+import { makeEstradaMedia, EstradaMedia, Media } from "./media";
 
 import { getFieldName, getHelpText, makeEstradaObject } from "../protoBufUtilities";
 
@@ -141,12 +141,68 @@ export class EstradaSurvey extends Survey implements IEstrada {
         this.setValue(value, "total_width");
     }
 
-    get rainfall() {
-        return this.values.rainfall as number;
+    get latitude() {
+        return this.values.latitude;
     }
 
-    set rainfall(value: number) {
-        this.setValue(value, "rainfall");
+    set latitude(value: string) {
+        this.setValue(value, "latitude");
+    }
+
+    get longitude() {
+        return this.values.longitude;
+    }
+
+    set longitude(value: string) {
+        this.setValue(value, "longitude");
+    }
+
+    get period() {
+        return this.values.period;
+    }
+
+    set period(value: string) {
+        this.setValue(value, "period");
+    }
+
+    get year() {
+        return this.values.year;
+    }
+
+    set year(value: string) {
+        this.setValue(value, "year");
+    }
+
+    get stationName() {
+        return this.values.station_name;
+    }
+
+    set stationName(value: string) {
+        this.setValue(value, "station_name");
+    }
+
+    get sourceData() {
+        return this.values.source_data;
+    }
+
+    set sourceData(value: string) {
+        this.setValue(value, "source_data");
+    }
+
+    get rainfallMaximum() {
+        return this.values.rainfall_maximum as number;
+    }
+
+    set rainfallMaximum(value: number) {
+        this.setValue(value, "rainfall_maximum");
+    }
+
+    get rainfallMinimum() {
+        return this.values.rainfall_minimum as number;
+    }
+
+    set rainfallMinimum(value: number) {
+        this.setValue(value, "rainfall_minimum");
     }
 
     get trafficSurveyedDate() {
@@ -181,13 +237,13 @@ export class EstradaSurvey extends Survey implements IEstrada {
         this.setValue(value, "trafficType");
     }
 
-    get photos(): EstradaPhoto[] | undefined {
-        const photosListRaw = this.getPhotosList();
-        return photosListRaw ? photosListRaw.map(makeEstradaPhoto) : photosListRaw;
+    get media(): EstradaMedia[] | undefined {
+        const mediaListRaw = this.getMediaList();
+        return mediaListRaw ? mediaListRaw.map(makeEstradaMedia) : mediaListRaw;
     }
 
-    set photos(values: EstradaPhoto[] | undefined) {
-        this.setPhotosList(values as Photo[]);
+    set media(values: EstradaMedia[] | undefined) {
+        this.setMediaList(values as Media[]);
     }
 
     get values() {

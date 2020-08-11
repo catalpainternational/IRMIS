@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 const status = document.getElementById("id_status");
 const program = document.getElementById("id_program");
 const name = document.getElementById("id_name");
@@ -202,6 +204,7 @@ window.addEventListener("load", () => {
     if (startDate) {
         startDate.type = "date";
         isElementValid(startDate);
+        startDate.addEventListener("change", computeDuration);
     }
 
     if (duration) {
@@ -310,6 +313,7 @@ window.addEventListener("load", () => {
     if (endDate) {
         endDate.type = "date";
         isElementValid(endDate);
+        endDate.addEventListener("change", computeDuration);
     }
 
     if (dlp) {
@@ -336,6 +340,21 @@ window.addEventListener("load", () => {
         isElementValid(amendmentDescription);
     }
 });
+
+const computeDuration = () => {
+    const start = dayjs(startDate.value);
+    const end = dayjs(endDate.value);
+
+    if (start && end) {
+        const dateDiff = end.diff(start, "day");
+
+        if (dateDiff >= 0) {
+            duration.value = dateDiff + 1;
+        } else {
+            duration.value = "";
+        }
+    }
+}
 
 function isElementValid(element) {
     isValid(element);

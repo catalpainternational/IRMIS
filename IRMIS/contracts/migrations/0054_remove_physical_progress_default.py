@@ -7,13 +7,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('contracts', '0053_auto_20200504_0309'),
+        ("contracts", "0053_auto_20200504_0309"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='projectmilestone',
-            name='progress',
-            field=models.IntegerField(blank=True, help_text='Estimated physical progress', null=True, validators=[django.core.validators.MaxValueValidator(100), django.core.validators.MinValueValidator(0)], verbose_name='Physical progress (%)'),
+            model_name="projectmilestone",
+            name="progress",
+            field=models.IntegerField(
+                blank=True,
+                help_text="Estimated physical progress",
+                null=True,
+                validators=[
+                    django.core.validators.MaxValueValidator(100),
+                    django.core.validators.MinValueValidator(0),
+                ],
+                verbose_name="Physical progress (%)",
+            ),
         ),
     ]

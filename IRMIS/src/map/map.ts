@@ -63,7 +63,7 @@ export class Map {
         });
 
         document.addEventListener("estrada.map.idFilter.applied", (data: Event) => {
-            this.handleFilter(data);
+            this.handleFilter(data, (data as CustomEvent).detail.adjustZoomLevel);
         });
 
         this.mapTrap();
@@ -84,8 +84,7 @@ export class Map {
         this.lMap.invalidateSize();
     }
 
-    private handleFilter(data: Event) {
-        let bb = Config.tlBBox;
+    private handleFilter(data: Event, adjustZoomLevel: boolean = true) {
         const featureZoomSet: FeatureCollection = { type: "FeatureCollection", features: [] };
         const featureTypeSet: any = {};
         Object.values(featureLookup).forEach((feature: any) => {
@@ -106,13 +105,17 @@ export class Map {
             geoLayer.setStyle(switchStyle ? layerFilterStyles.styleOn : layerFilterStyles.styleOff);
         });
 
-        if (featureZoomSet.features.length) {
-            bb = getBbox(featureZoomSet);
-        }
+        if (adjustZoomLevel) {
+            let bb = Config.tlBBox;
 
-        // Don't use flyToBounds
-        // - it sounds nice, but screws up tile and geoJSON alignment when the zoom level remains the same
-        this.lMap.fitBounds(new L.LatLngBounds([bb[1], bb[0]], [bb[3], bb[2]]));
+            if (featureZoomSet.features.length) {
+                bb = getBbox(featureZoomSet);
+            }
+
+            // Don't use flyToBounds
+            // - it sounds nice, but screws up tile and geoJSON alignment when the zoom level remains the same
+            this.lMap.fitBounds(new L.LatLngBounds([bb[1], bb[0]], [bb[3], bb[2]]));
+        }
     }
 
     private registerFeature(feature: Feature<Geometry, any>, layer: L.Layer) {
@@ -205,7 +208,7 @@ export class Map {
                 const keyName = event.key;
 
                 if (keyName === "Control") {
-                  return;
+                    return;
                 }
 
                 this.keySequence.push(keyName);
@@ -225,7 +228,7 @@ export class Map {
                     }
                 }
 
-              }, false);
+            }, false);
         }
     }
 }

@@ -101,6 +101,7 @@
             </div>
             <div class="form-group">
                 {{ form.contractor.label_tag }}
+                <span class="required">*</span>
                 <small class="form-text text-muted">{{ form.contractor.help_text }}</small>
                 {{ form.contractor }}
                 {% if form.contractor.errors %}
@@ -224,7 +225,7 @@
                         {{ form.duration.label_tag }}
                         <span class="required">*</span>
                         <small class="form-text text-muted">{{ form.duration.help_text }}</small>
-                        {{ form.duration }}
+                        <input id="id_duration" class="form-control form-control-sm" type="number" name="duration" value="{{ form.duration.value|default_if_none:0 }}"  placeholder="365" min="0" required readonly>
                         {% if form.duration.errors %}
                         <div class="invalid-tooltip">
                             {% for error in form.duration.errors %}

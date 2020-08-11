@@ -36,7 +36,7 @@
         <thead>
             <tr>
                 <th>{% trans "Payment Date" %}</th>
-                <th>{% trans "Payment Value" %}</th>
+                <th>{% trans "Payment Value (in USD)" %}</th>
                 <th>{% trans "Donor" %}</th>
                 <th>{% trans "Funding Source" %}</th>
                 <th>{% trans "Destination" %}</th>
@@ -45,9 +45,9 @@
         <tbody>
             {% for payment in payments %}
             <tr>
-                <td>{{ payment.date }}</td>
-                <td>{{ payment.value }}</td>
-                <td>{{ payment.donor }}</td>
+                <td>{{ payment.date|date:"Y-m-d" }}</td>
+                <td class="text-right to-format">$ {{ payment.value }}</td>
+                <td>{{ payment.donor|default_if_none:"" }}</td>
                 <td>{{ payment.source }}</td>
                 <td>{{ payment.destination }}</td>
             </tr>
@@ -68,9 +68,9 @@
         <tbody>
             {% for payment in payments %}
             <tr>
-                <td>{{ payment.date }}</td>
-                <td>{{ payment.value }}</td>
-                <td>{{ payment.donor }}</td>
+                <td>{{ payment.date|date:"Y-m-d" }}</td>
+                <td class="text-right to-format">{{ payment.value }}</td>
+                <td>{{ payment.donor|default_if_none:"" }}</td>
                 <td>{{ payment.source }}</td>
                 <td>{{ payment.destination }}</td>
             </tr>

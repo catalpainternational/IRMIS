@@ -7,7 +7,7 @@ from os import path
 from assets.data_cleaning_utils import (
     clean_link_codes,
     create_programmatic_survey_for_traffic_csv,
-    delete_programmatic_surveys_for_traffic_surveys_by_road_code,
+    delete_programmatic_surveys_for_traffic_surveys,
     get_current_road_codes,
     int_try_parse,
     refresh_roads,
@@ -25,6 +25,13 @@ class Command(BaseCommand):
             "--no-road-refresh",
             action="store_true",
             help="Don't refresh road links before the import",
+        )
+        parser.add_argument(
+            "-t",
+            "--tolerance",
+            default=50,
+            type=int,
+            help="Tolerance in meters for refreshing road 'link_' chainage and length values",
         )
 
     def handle(self, *args, **options):
@@ -62,7 +69,7 @@ class Command(BaseCommand):
                 )
             )
             clean_link_codes()
-            roads_updated = refresh_roads()
+            roads_updated = refresh_roads(options["tolerance"])
             self.stdout.write(
                 self.style.SUCCESS("~~~ Updated %s Road Links ~~~ " % roads_updated)
             )
@@ -75,8 +82,7 @@ class Command(BaseCommand):
                 "Deleting programmatic surveys for traffic surveys"
             )
         )
-        for rc in get_current_road_codes():
-            delete_programmatic_surveys_for_traffic_surveys_by_road_code(rc)
+        delete_programmatic_surveys_for_traffic_surveys()
 
         self.stdout.write(
             self.style.MIGRATE_HEADING(
@@ -95,26 +101,23 @@ class Command(BaseCommand):
                 line.append(int_try_parse(line[6]) + int_try_parse(line[7]))
 
                 roads = Road.objects.none()
-
                 try:
-                    if road_code != "" or link_code != "":
-                        if road_code != "" and link_code != "":
-                            roads = Road.objects.filter(
-                                road_code=road_code, link_code=link_code
-                            ).all()
-                        if len(roads) == 0:
-                            if road_code != "":
-                                roads = Road.objects.filter(road_code=road_code).all()
-                        if len(roads) == 0:
-                            if link_code != "":
-                                roads = Road.objects.filter(link_code=link_code).all()
+                    if road_code != "" and link_code != "":
+                        roads = Road.objects.filter(
+                            road_code=road_code, link_code=link_code
+                        )
+                    # Nothing turned up? Try using only the more specific link_code
+                    if len(roads) == 0 and link_code != "":
+                        roads = Road.objects.filter(link_code=link_code).all()
+                    # Still nothing? Try using just the general road_code
+                    if len(roads) == 0 and road_code != "":
+                        roads = Road.objects.filter(road_code=road_code).all()
                 except Exception:
                     self.stderr.write(
                         self.style.ERROR(
                             "Survey Skipped: Road Code provided was not valid ~~~ "
                         )
                     )
-
                 programmatic_created += create_programmatic_survey_for_traffic_csv(
                     self, line, roads
                 )

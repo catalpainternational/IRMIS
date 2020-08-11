@@ -75,9 +75,9 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_gis",
     "reversion",
+    "topology",
     # CATALPA UTILS
     "catalpa_django_apps.google_analytics",
-    "topology",
 ]
 
 MIDDLEWARE = [
@@ -168,7 +168,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
@@ -209,6 +208,9 @@ JWT_AUTH = {
     "JWT_ALGORITHM": "HS256",
     "JWT_EXPIRATION_DELTA": timedelta(hours=24),
 }
+
+# Rosetta wrapping turned off for easier git diffs
+ROSETTA_POFILE_WRAP_WIDTH = 0
 
 try:
     from .local_settings import *  # noqa

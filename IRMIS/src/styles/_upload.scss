@@ -1,4 +1,4 @@
-upload_photo {
+upload_media {
     .cloud-box {
         border: 1px solid $light-gray;
         padding: 70px 85px 20px 85px;
@@ -22,7 +22,7 @@ upload_photo {
         font-size: 14px;
     }
 
-    .photo-management-area {
+    .media-management-area {
         margin-bottom: 20px;
         max-width: 400px;
 
@@ -48,15 +48,15 @@ upload_photo {
     }
 }
 
-img.uploaded-photo {
+video.uploaded-media, img.uploaded-media {
     border-radius: 4px;
     max-width: 100%;
 }
 
-photos_details_box {
+media_details_box {
     ul.pagination {
         margin-bottom: 20px;
-        margin-top: 10px;
+        margin-top: 20px;
 
         li {
             border-radius: 4px;

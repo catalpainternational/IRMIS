@@ -1,6 +1,7 @@
-import {getAssetSurveys} from "../surveyManager";
-import {getAssetReport} from "../reportManager";
-import {updateReportAttributeSummary} from "../roadAttributes";
+import { getAssetSurveys } from "../surveyManager";
+import { getAssetReport } from "../reportManager";
+import { updateReportAttributeSummary } from "../roadAttributes";
+import { EstradaMedia } from "./models/media";
 
 
 export function getSurveysForAsset(
@@ -19,7 +20,7 @@ export function getSurveysForAsset(
                 });
 
                 const eventName = `${identifiers.allDataTableId}.dataAdded`;
-                const eventDetail = {detail: {pendingRows: state.pendingRows, clearRows: true}};
+                const eventDetail = { detail: { pendingRows: state.pendingRows, clearRows: true } };
                 document.dispatchEvent(new CustomEvent(eventName, eventDetail));
 
                 state.error = false;
@@ -68,7 +69,7 @@ function getSurveyReportsForAsset(state: { [name: string]: any }, identifiers: {
                     state.reportRows = surveyReportData.attributes(identifiers.primaryAttribute).attributeEntries;
 
                     const eventName = `${identifiers.reportDataTableId}.dataAdded`;
-                    const eventDetail = {detail: {pendingRows: state.reportRows, clearRows: true}};
+                    const eventDetail = { detail: { pendingRows: state.reportRows, clearRows: true } };
                     document.dispatchEvent(new CustomEvent(eventName, eventDetail));
 
                     if (surveyReportData.id === null) {
@@ -108,4 +109,18 @@ export function checkRequiredFields(fieldNames: string[], data: { [name: string]
     return fieldNames.filter((fieldName) => {
         return typeof data[fieldName] === "undefined" || data[fieldName] === null;
     });
+}
+
+export function isImage(media: EstradaMedia) {
+    const mediaExtension = media.url.substring(media.url.lastIndexOf(".") + 1, media.url.length).toLowerCase();
+    return mediaExtension === 'jpeg' || mediaExtension === 'jpg' || mediaExtension === 'gif' ||
+        mediaExtension === 'png';
+}
+
+export function isVideo(media: EstradaMedia) {
+    const mediaExtension = media.url.substring(media.url.lastIndexOf(".") + 1, media.url.length).toLowerCase();
+    return mediaExtension === 'mov' || mediaExtension === 'mp4' || mediaExtension === 'mpg' ||
+        mediaExtension === 'avi' || mediaExtension === 'wmv' || mediaExtension === '3gp' ||
+        mediaExtension === 'ts' || mediaExtension === 'asf' || mediaExtension === 'mng' ||
+        mediaExtension === 'm4v' || mediaExtension === 'flv' || mediaExtension === 'webm';
 }

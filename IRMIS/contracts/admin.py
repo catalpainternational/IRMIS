@@ -6,7 +6,6 @@ from .models import (
     Project,
     ProjectAsset,
     ProjectBudget,
-    ProjectDonor,
     ProjectMilestone,
     ProjectStatus,
     Contract,
@@ -17,14 +16,13 @@ from .models import (
     ContractInspection,
     ContractInspectionEntity,
     ContractPayment,
-    ContractPaymentDonor,
-    ContractPaymentSource,
     ContractStatus,
     ContractSupervisor,
     Tender,
     TenderStatus,
     Company,
     CompanyCategory,
+    FundingDonor,
     FundingSource,
     Program,
     SocialSafeguardData,
@@ -97,8 +95,9 @@ class ContractDocumentAdmin(VersionAdmin, admin.ModelAdmin):
 admin.site.register(TypeOfWork)
 admin.site.register(Program)
 admin.site.register(ProjectStatus)
+
+admin.site.register(FundingDonor)
 admin.site.register(FundingSource)
-admin.site.register(ProjectDonor)
 
 admin.site.register(ProjectMilestone)
 admin.site.register(ProjectBudget)
@@ -113,8 +112,6 @@ admin.site.register(ContractSupervisor)
 admin.site.register(ContractBudget)
 
 admin.site.register(ContractInspectionEntity)
-admin.site.register(ContractPaymentDonor)
-admin.site.register(ContractPaymentSource)
 admin.site.register(ContractPayment)
 admin.site.register(ContractInspection)
 admin.site.register(SocialSafeguardData)

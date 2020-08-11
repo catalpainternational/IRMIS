@@ -1,0 +1,89 @@
+<edit_structure_type>
+    <h5>{ window.gettext("Structure Type") }</h5>
+
+    <div>
+        <section>
+            <div class="form-group">
+                <label>{ state.structureTypes.display }</label>
+                <small class="form-text text-muted">{ state.structureTypes.help_text }</small>
+                <select class="{ state.structureType ? '' : 'inactive' } form-control"
+                    onchange="{ checkStructureType }">
+                    <option value="">{ state.structureTypes.default_value }</option>
+                    <option each="{ structureType in state.structureTypes.options }" value="{ structureType.code }"
+                        selected="{ structureType.code == state.structureType }">{ structureType.name }</option>
+                </select>
+            </div>
+        </section>
+
+        <section>
+            <div class="form-group">
+                <label>{ state.structureMaterials.display }</label>
+                <small class="form-text text-muted">{ state.structureMaterials.help_text }</small>
+                <select class="{ state.material ? '' : 'inactive' } form-control" onchange="{ checkStructureMaterial }">
+                    <option value="">{ state.structureMaterials.default_value }</option>
+                    <option each="{ material in state.structureMaterials.options }" value="{ material.code }"
+                        selected="{ material.code == state.material }">{ material.name }</option>
+                </select>
+            </div>
+        </section>
+    </div>
+
+    <div class="button-wrapper d-flex justify-content-end">
+        <button class="btn btn-primary" onclick="{ save }" disabled="{ props.saving }">
+            { window.gettext("Save and continue") }
+        </button>
+    </div>
+
+    <script>
+        import Edit_Stop_Alert from "./edit_stop_alert.riot";
+
+        export default {
+            state: {
+                canSave: false,
+                errors: {},
+            },
+            components: {
+                Edit_Stop_Alert
+            },
+            onBeforeMount(props, state) {
+                state.loading = true;
+                state.structureType = props.structure.getStructureType();
+                state.material = props.structure.getMaterial();
+
+                switch (props.assetType) {
+                    case "BRDG":
+                        state.structureTypes = this.structure_type_BRDG;
+                        state.structureMaterials = this.material_BRDG;
+                        break;
+                    case "CULV":
+                        state.structureTypes = this.structure_type_CULV;
+                        state.structureMaterials = this.material_CULV;
+                        break;
+                    case "DRFT":
+                        state.structureTypes = this.structure_type_DRFT;
+                        state.structureMaterials = this.material_DRFT;
+                        break;
+                }
+            },
+            save(e) {
+                this.props.parent.saveStructure();
+            },
+            checkStructureType(e) {
+                this.state.structureType = e.currentTarget.value;
+                this.props.structure.setStructureType(this.state.structureType);
+                this.update();
+            },
+            checkStructureMaterial(e) {
+                this.state.material = e.currentTarget.value;
+                this.props.structure.setMaterial(this.state.material);
+                this.update();
+            },
+            structure_type_BRDG: window.asset_schema.structure_type_BRDG,
+            structure_type_CULV: window.asset_schema.structure_type_CULV,
+            structure_type_DRFT: window.asset_schema.structure_type_DRFT,
+            material_BRDG: window.asset_schema.material_BRDG,
+            material_CULV: window.asset_schema.material_CULV,
+            material_DRFT: window.asset_schema.material_DRFT,
+        }
+    </script>
+</edit_structure_type>

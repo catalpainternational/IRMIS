@@ -4,7 +4,7 @@ from ..models import (
     TypeOfWork,
     Program,
     FundingSource,
-    ProjectDonor,
+    FundingDonor,
     Contract,
 )
 
@@ -36,7 +36,7 @@ def get_contract_schema():
     )
 
     contract_schema["donor"].update(
-        {"options": list(ProjectDonor.objects.all().values())}
+        {"options": list(FundingDonor.objects.all().values())}
     )
 
     contract_schema["contract_code"].update(

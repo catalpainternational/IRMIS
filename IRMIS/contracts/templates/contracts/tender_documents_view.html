@@ -11,7 +11,7 @@
 </header>
 
 <nav>
-    <a href="{% url 'contract-tender-detail' tender.code %}">
+    <a href="{% url 'contract-tender-detail' tender.id %}">
         <h6>{% trans "Tender Details" %}</h6>
     </a>
     <a class="selected">
@@ -37,7 +37,7 @@
             <tr>
                 <td>{{ document.title }}</td>
                 <td>{{ document.document_type.name }}</td>
-                <td>{{ document.document_date }}</td>
+                <td>{{ document.document_date|date:"Y-m-d" }}</td>
                 <td>{{ document.description }}</td>
             </tr>
             {% endfor %}
@@ -57,7 +57,7 @@
             <tr>
                 <td>{{ document.title }}</td>
                 <td>{{ document.document_type.name }}</td>
-                <td>{{ document.document_date }}</td>
+                <td>{{ document.document_date|date:"Y-m-d" }}</td>
                 <td>{{ document.description }}</td>
             </tr>
             {% endfor %}

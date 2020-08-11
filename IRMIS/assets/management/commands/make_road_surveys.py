@@ -18,6 +18,13 @@ class Command(BaseCommand):
             action="store_true",
             help="Don't refresh road links before the import",
         )
+        parser.add_argument(
+            "-t",
+            "--tolerance",
+            default=50,
+            type=int,
+            help="Tolerance in meters for refreshing road 'link_' chainage and length values",
+        )
 
     def handle(self, *args, **options):
         # counters for data cleansing
@@ -41,7 +48,7 @@ class Command(BaseCommand):
                 )
             )
             clean_link_codes()
-            roads_updated = refresh_roads()
+            roads_updated = refresh_roads(options["tolerance"])
             self.stdout.write(
                 self.style.SUCCESS("~~~ Updated %s Road Links ~~~ " % roads_updated)
             )

@@ -1,15 +1,6 @@
-import json
-
-from datetime import datetime, date
+from datetime import datetime
 from numbers import Number
-
 from django.db import connection
-from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotFound
-
-from rest_framework.exceptions import MethodNotAllowed
-
-from google.protobuf.timestamp_pb2 import Timestamp
-from protobuf import report_pb2
 
 
 class ReportQuery:
@@ -29,42 +20,30 @@ class ReportQuery:
             ),
             "assets_to_use": (
                 # This is a template for "assets_to_chart"
-                # Notes:
+                # Note:
                 # * road_id and road_code are only returned for Bridges, Culverts and Drifts
                 #   i.e. they refer to the road associated with the Bridge, Culvert or Drift
-                # * material_id and structure_type_id have different meanings for bridge, culvert and drift
-                # * asset_code (relative to a road) may not be set properly and requires special handling
+                # * the additional fields of asset_condition, asset_class, municipality and surface_type
+                #   are included to enable their selection as report filters
                 "SELECT asset_type, asset_id, asset_code, asset_name,\n"
                 " asset_condition, asset_class,\n"
                 " geom_chainage::INTEGER, municipality,\n"
-                " geojson_file,\n"
-                " geom_length, core,\n"
                 " surface_type,\n"
                 " road_id, road_code\n"
                 "FROM (\n"
                 "SELECT DISTINCT 'ROAD' AS asset_type, r.id AS asset_id,\n"
-                " CASE\n"
-                " WHEN s.asset_code IS NOT NULL THEN s.asset_code\n"
-                " WHEN s.asset_code IS NULL AND s.road_code IS NOT NULL THEN s.road_code\n"
-                " WHEN r.road_code IS NOT NULL THEN r.road_code\n"
-                " ELSE NULL\n"
-                " END AS asset_code,\n"
+                " r.asset_condition, r.road_code AS asset_code,\n"
                 " r.road_name AS asset_name,\n"
-                " r.asset_condition, r.asset_class,\n"
+                " r.asset_class,\n"
                 " r.geom_end_chainage AS geom_chainage, r.administrative_area AS municipality,\n"
-                " r.geojson_file_id AS geojson_file,\n"
-                " r.geom_length, r.core,\n"
                 " r.surface_type_id AS surface_type,\n"
                 " NULL::INTEGER AS road_id, NULL AS road_code\n"
-                " FROM assets_survey s, assets_road r\n"
-                " WHERE s.asset_id = CONCAT('ROAD', '-', r.id::text)\n"
+                " FROM assets_road r\n"
                 "UNION\n"
                 "SELECT DISTINCT bcd.asset_type, bcd.asset_id,\n"
                 " bcd.asset_code, bcd.asset_name,\n"
-                " bcd.asset_condition, bcd.asset_class,\n"
+                " NULL AS asset_condition, bcd.asset_class,\n"
                 " bcd.geom_chainage, bcd.municipality,\n"
-                " bcd.geojson_file,\n"
-                " NULL::DECIMAL AS geom_length, NULL::BOOLEAN AS core,\n"
                 " NULL::INTEGER AS surface_type,\n"
                 " CASE\n"
                 "  WHEN COALESCE(bcd.road_id, 0) = 0 THEN NULL\n"
@@ -74,46 +53,25 @@ class ReportQuery:
                 "  WHEN COALESCE(bcd.road_code, '') = '' THEN NULL\n"
                 "  ELSE bcd.road_code\n"
                 " END AS road_code\n"
-                " FROM assets_survey s, (\n"
+                " FROM (\n"
                 "  SELECT 'BRDG' AS asset_type, id AS asset_id,\n"
                 "  structure_code AS asset_code, structure_name AS asset_name,\n"
-                "  NULL AS asset_condition, asset_class,\n"
+                "  asset_class,\n"
                 "  chainage AS geom_chainage, administrative_area AS municipality,\n"
-                "  geojson_file_id AS geojson_file,\n"
-                "  construction_year, length, width,\n"
-                "  NULL::DECIMAL AS height, NULL::DECIMAL AS thickness, span_length,\n"
-                "  NULL::INTEGER AS number_cells, number_spans,\n"
-                "  river_name,\n"
-                "  protection_downstream_id AS protection_downstream, protection_upstream_id AS protection_upstream,\n"
-                "  material_id AS material, structure_type_id AS structure_type,\n"
                 "  road_id, road_code\n"
                 "  FROM assets_bridge\n"
                 "  UNION\n"
                 "  SELECT 'CULV' AS asset_type, id AS asset_id,\n"
                 "  structure_code AS asset_code, structure_name AS asset_name,\n"
-                "  NULL AS asset_condition, asset_class,\n"
+                "  asset_class,\n"
                 "  chainage AS geom_chainage, administrative_area AS municipality,\n"
-                "  geojson_file_id AS geojson_file,\n"
-                "  construction_year, length, width,\n"
-                "  height, NULL::DECIMAL AS thickness, NULL::DECIMAL AS span_length,\n"
-                "  number_cells, NULL::INTEGER AS number_spans,\n"
-                "  NULL AS river_name,\n"
-                "  protection_downstream_id AS protection_downstream, protection_upstream_id AS protection_upstream,\n"
-                "  material_id AS material, structure_type_id AS structure_type,\n"
                 "  road_id, road_code\n"
                 "  FROM assets_culvert\n"
                 "  UNION\n"
                 "  SELECT 'DRFT' AS asset_type, id AS asset_id,\n"
                 "  structure_code AS asset_code, structure_name AS asset_name,\n"
-                "  NULL AS asset_condition, asset_class,\n"
+                "  asset_class,\n"
                 "  chainage AS geom_chainage, administrative_area AS municipality,\n"
-                "  geojson_file_id AS geojson_file,\n"
-                "  construction_year, length, width,\n"
-                "  NULL::DECIMAL AS height, thickness, NULL::DECIMAL AS span_length,\n"
-                "  NULL::INTEGER AS number_cells, NULL::INTEGER AS number_spans,\n"
-                "  NULL AS river_name,\n"
-                "  protection_downstream_id AS protection_downstream, protection_upstream_id AS protection_upstream,\n"
-                "  material_id AS material, structure_type_id AS structure_type,\n"
                 "  road_id, road_code\n"
                 "  FROM assets_drift\n"
                 " ) bcd\n"
@@ -127,23 +85,23 @@ class ReportQuery:
                 "  WHEN TRIM(FROM username) != '' THEN TRIM(FROM username)\n"
                 "  ELSE ''\n"
                 " END AS username\n"
-                " FROM auth_user\n"
+                "FROM auth_user\n"
             ),
-            "surveyphotos": (
-                " SELECT jp.object_id as object_id, CONCAT('[', string_agg(jp.photos_json::text, ','), ']') as photos\n"
-                " FROM (\n"
-                "     SELECT object_id, json_build_object(\n"
-                "         'id', id,\n"
-                "         'url', CONCAT('media/', file),\n"
-                "         'description', description,\n"
-                "         'date_created', date_created,\n"
-                "         'fk_link', CONCAT('SURV-', object_id)\n"
-                "     ) AS photos_json\n"
-                "     FROM assets_photo AS new_p\n"
-                "     WHERE object_id IS NOT NULL\n"
-                "     AND content_type_id = 42\n"
-                " ) jp\n"
-                " GROUP BY jp.object_id"
+            "surveymedia": (
+                "SELECT jp.object_id as object_id, CONCAT('[', string_agg(jp.media_json::text, ','), ']') as media\n"
+                "FROM (\n"
+                " SELECT object_id, json_build_object(\n"
+                "  'id', id,\n"
+                "  'url', CONCAT('media/', file),\n"
+                "  'description', description,\n"
+                "  'date_created', date_created,\n"
+                "  'fk_link', CONCAT('SURV-', object_id)\n"
+                " ) AS media_json\n"
+                " FROM assets_media AS new_p\n"
+                " WHERE object_id IS NOT NULL\n"
+                " AND content_type_id = 42\n"
+                ") jp\n"
+                "GROUP BY jp.object_id"
             ),
             # This is a template for "suc"
             # Surveys which match the given values and assets
@@ -153,7 +111,7 @@ class ReportQuery:
                 "SELECT\n"
                 " atc.asset_type, atc.asset_id, atc.asset_code,\n"
                 " s.date_created, s.date_updated, s.date_surveyed,\n"
-                " p.photos,\n"
+                " p.media,\n"
                 " CASE\n"
                 " WHEN atc.asset_type = 'ROAD' THEN s.chainage_start::INTEGER\n"
                 " ELSE 0\n"
@@ -166,6 +124,7 @@ class ReportQuery:
                 " WHEN atc.asset_type = 'ROAD' THEN atc.geom_chainage::INTEGER\n"
                 " ELSE 1\n"
                 " END AS geom_chainage,\n"
+                " s.id AS survey_id,\n"
                 " atc.road_id, atc.road_code,\n"
                 " CASE\n"
                 "  WHEN s.user_id IS NULL THEN TRIM(FROM s.source)\n"
@@ -178,7 +137,7 @@ class ReportQuery:
                 " JOIN assets_to_chart atc ON s.asset_id = CONCAT(atc.asset_type, '-', atc.asset_id::text)\n"
                 " JOIN values_to_chart vtc ON s.values ? vtc.attr\n"
                 " LEFT OUTER JOIN usernames u ON s.user_id = u.user_id\n"
-                " LEFT OUTER JOIN surveyphotos p ON s.id = p.object_id\n"
+                " LEFT OUTER JOIN surveymedia p ON s.id = p.object_id\n"
                 " WHERE ((atc.asset_type = 'ROAD' AND s.chainage_start != s.chainage_end)\n"
                 " OR (atc.asset_type <> 'ROAD'))\n"
             ),
@@ -191,18 +150,22 @@ class ReportQuery:
                 "  SELECT attr, asset_type, asset_id, asset_code, chainage_end::INTEGER c\n"
                 "  FROM suc\n"
                 " ) xxxx\n"
+                " ORDER BY asset_type, asset_code, attr, c, asset_id\n"
             ),
             # merge and rank breakpoints (by date)
             "merge_breakpoints": (
                 "SELECT bp.attr AS break_attr, bp.c, suc.*,\n"
                 " bp.c = suc.chainage_end AS isend,\n"
                 " RANK() OVER (\n"
-                "  PARTITION BY bp.asset_type, bp.asset_id, bp.asset_code, bp.c, bp.attr\n"
+                "  PARTITION\n"
+                "  BY bp.asset_type, bp.asset_code, bp.attr, bp.c, suc.survey_id, bp.asset_id\n"
                 "  ORDER BY\n"
+                "  bp.asset_type, bp.asset_code, bp.attr, suc.survey_id,\n"
                 "  CASE\n"
                 "   WHEN bp.c = suc.chainage_end THEN 1\n"
                 "   ELSE 0\n"
                 "  END,\n"
+                "  bp.asset_id,\n"
                 "  date_surveyed DESC NULLS LAST\n"
                 " )\n"
                 " FROM breakpoints bp, suc\n"
@@ -213,35 +176,48 @@ class ReportQuery:
                 " AND bp.c <= suc.chainage_end\n"
                 " AND ((suc.asset_type = 'ROAD' AND suc.chainage_start != suc.chainage_end)\n"
                 " OR (suc.asset_type <> 'ROAD'))\n"
+                " ORDER BY asset_type, asset_code, attr, c, asset_id\n"
             ),
             # If the survey is actually the end value we NULLify the value
             # rather than using the attribute, we use this in final_results below
             # also road_id and road_code will only have values if the result relates to a Bridge, Culvert or Drift
             "results": (
                 "SELECT rank, asset_type, asset_id, asset_code, c, break_attr, geom_chainage,\n"
-                " CASE\n"
-                "  WHEN NOT isend THEN values -> break_attr\n"
-                "  ELSE NULL\n"
-                " END AS value,\n"
+                " values -> break_attr AS value,\n"
                 " values,\n"
-                " photos,\n"
+                " media,\n"
                 " user_id, added_by, date_surveyed,\n"
+                " survey_id,\n"
                 " road_id, road_code\n"
                 " FROM merge_breakpoints\n"
-                " WHERE rank = 1\n"
-                " ORDER BY asset_type, asset_id, asset_code, c\n"
+                " WHERE rank = 1 AND NOT isend\n"
+                " ORDER BY asset_type, asset_code, break_attr, c, date_surveyed DESC NULLS LAST, asset_id\n"
             ),
             # Filters out situations where the value does not actually change between surveys
             "with_unchanged": (
                 "SELECT *,\n"
-                " rank() over (\n"
+                " RANK() over (\n"
                 "  PARTITION\n"
-                "    BY asset_type, asset_id, asset_code,\n"
-                "    break_attr, value, user_id, added_by, date_surveyed,\n"
-                "    road_id, road_code\n"
+                "  BY asset_type, asset_code, break_attr, value, survey_id, asset_id\n"
                 "  ORDER BY c\n"
                 " ) AS filtered\n"
-                " FROM results\n"
+                " FROM (\n"
+                " SELECT *,\n"
+                "  RANK() OVER (\n"
+                "   PARTITION\n"
+                "   BY asset_type, asset_code, break_attr, c, asset_id\n"
+                "   ORDER BY date_surveyed DESC NULLS LAST\n"
+                "  ) AS datefiltered,\n"
+                "  LEAD(survey_id) OVER (\n"
+                "   PARTITION\n"
+                "   BY asset_type, asset_code, break_attr, c, asset_id\n"
+                "   ORDER BY date_surveyed DESC NULLS LAST\n"
+                "  ) AS next_survey\n"
+                "  FROM results\n"
+                "  WHERE c != geom_chainage\n"
+                " ) ffff\n"
+                " WHERE datefiltered = 1\n"
+                " ORDER BY asset_type, asset_code, break_attr, asset_id, c\n"
             ),
             "with_lead_values": (
                 "SELECT\n"
@@ -249,24 +225,21 @@ class ReportQuery:
                 " break_attr,\n"
                 " c AS start_chainage,\n"
                 # Pick the previous end point
-                " lead(c) over (\n"
+                " LEAD(c) OVER (\n"
                 "  PARTITION\n"
-                "  BY asset_type, asset_id, asset_code, break_attr\n"
-                "  ORDER BY c\n"
+                "  BY asset_type, asset_code, break_attr, asset_id\n"
+                "  ORDER BY asset_type, asset_code, break_attr, c\n"
                 " ) AS end_chainage,\n"
                 " geom_chainage,\n"
                 " value,\n"
-                " photos,\n"
+                " media,\n"
                 " user_id, added_by, date_surveyed,\n"
+                " survey_id,\n"
                 " road_id, road_code\n"
                 " FROM with_unchanged\n"
                 " WHERE filtered = 1\n"
+                " OR next_survey IS NULL\n"
             ),
-            # Note that we shouldn't need both
-            # CONCAT(asset_type, '-', wlv.asset_id::text) = s.asset_id
-            # and
-            # wlv.asset_code = s.asset_code
-            # to correctly attach the survey_id, but there has been some bad data
             "final_results": (
                 "SELECT asset_type, CONCAT(asset_type, '-', wlv.asset_id::text) AS asset_id, wlv.asset_code,\n"
                 " break_attr AS attribute,\n"
@@ -278,18 +251,15 @@ class ReportQuery:
                 " value,\n"
                 " CASE\n"
                 " WHEN s.id IS NOT NULL THEN s.id\n"
+                " WHEN wlv.survey_id IS NOT NULL AND value IS NOT NULL THEN wlv.survey_id\n"
                 " ELSE 0\n"
                 " END AS survey_id,\n"
-                " photos,\n"
+                " media,\n"
                 " wlv.user_id, added_by, wlv.date_surveyed,\n"
                 " wlv.road_id, wlv.road_code\n"
                 " FROM with_lead_values wlv\n"
                 " LEFT OUTER JOIN assets_survey s\n"
-                " ON CONCAT(asset_type, '-', wlv.asset_id::text) = s.asset_id\n"
-                " AND wlv.asset_code = s.asset_code\n"
-                " AND wlv.start_chainage = s.chainage_start\n"
-                " AND wlv.end_chainage = s.chainage_end\n"
-                " AND wlv.date_surveyed = s.date_surveyed\n"
+                " ON wlv.survey_id = s.id\n"
                 " AND s.values ? wlv.break_attr\n"
                 " WHERE start_chainage != end_chainage\n"
                 " OR (end_chainage IS NULL AND start_chainage != geom_chainage)\n"
@@ -318,12 +288,12 @@ class ReportQuery:
             "retrieve_aggregate_select": (
                 "SELECT *\n"
                 " FROM (\n"
-                " SELECT 'ROAD' AS asset_type, 'rainfall' AS attribute,\n"
+                " SELECT 'ROAD' AS asset_type, 'rainfall_maximum' AS attribute,\n"
                 " CONCAT(r_from, '-', r_to, ' ', units) AS value,\n"
                 " (\n"
                 "  SELECT SUM(end_chainage - start_chainage)\n"
                 "  FROM final_results\n"
-                "  WHERE attribute = 'rainfall'\n"
+                "  WHERE attribute = 'rainfall_maximum'\n"
                 "  AND CAST(CEIL(CAST(value AS FLOAT)) AS INTEGER) BETWEEN r_from AND r_to\n"
                 " ) AS total_length\n"
                 " FROM rainfall_range\n"
@@ -350,13 +320,13 @@ class ReportQuery:
                 " UNION\n"
                 " SELECT asset_type, attribute, value, SUM(end_chainage - start_chainage) AS total_length\n"
                 " FROM final_results\n"
-                " WHERE attribute IN ('rainfall', 'carriageway_width', 'total_width')\n"
+                " WHERE attribute IN ('rainfall_maximum', 'carriageway_width', 'total_width')\n"
                 " AND value IS NULL\n"
                 " GROUP BY asset_type, attribute, value\n"
                 " UNION\n"
                 " SELECT asset_type, attribute, value, SUM(end_chainage - start_chainage) AS total_length\n"
                 " FROM final_results\n"
-                " WHERE attribute NOT IN ('rainfall', 'carriageway_width', 'total_width')\n"
+                " WHERE attribute NOT IN ('rainfall_maximum', 'carriageway_width', 'total_width')\n"
                 " GROUP BY asset_type, attribute, value\n"
                 ") totals\n"
                 " WHERE total_length IS NOT NULL\n"
@@ -387,7 +357,7 @@ class ReportQuery:
             "number_lanes",
             "pavement_class",
             "project",
-            "rainfall",
+            "rainfall_maximum",
             "road_status",
             "surface_type",
             "terrain_class",
@@ -435,7 +405,7 @@ class ReportQuery:
             "carriageway_width",
             "total_width",
             "number_lanes",
-            "rainfall",
+            "rainfall_maximum",
             "terrain_class",
             "population",
             "traffic_level",
@@ -622,7 +592,7 @@ class ReportQuery:
         self.add_report_clause("values_to_exclude")
         self.add_report_clause("assets_to_chart")
         self.add_report_clause("usernames")
-        self.add_report_clause("surveyphotos")
+        self.add_report_clause("surveymedia")
         self.add_report_clause("suc")
         self.add_report_clause("breakpoints")
         self.add_report_clause("merge_breakpoints")
@@ -630,12 +600,16 @@ class ReportQuery:
         self.add_report_clause("with_unchanged")
         self.add_report_clause("with_lead_values")
         self.add_report_clause("final_results")
-        self.add_report_clause("rainfall_series")
-        self.add_report_clause("rainfall_range")
-        self.add_report_clause("carriageway_width_series")
-        self.add_report_clause("carriageway_width_range")
-        self.add_report_clause("total_width_series")
-        self.add_report_clause("total_width_range")
+
+        if not get_all_surveys:
+            # Include the ranges for certain attributes that are put into 'buckets'
+            # as part of aggregation reporting
+            self.add_report_clause("rainfall_series")
+            self.add_report_clause("rainfall_range")
+            self.add_report_clause("carriageway_width_series")
+            self.add_report_clause("carriageway_width_range")
+            self.add_report_clause("total_width_series")
+            self.add_report_clause("total_width_range")
 
         # strip off the final trailling comma
         self.reportSQL = self.reportSQL[:-1]
@@ -762,21 +736,21 @@ class ContractReport:
                 "JOIN contracts_contractstatus as con_status on (con_status.id = con.status_id)\n"
                 "LEFT JOIN contracts_company as contractor_corp on (con.contractor_id = contractor_corp.id)\n"
                 "LEFT JOIN contracts_company as subcontractor_corp on (con.subcontractor_id = subcontractor_corp.id)\n"
-                "JOIN contracts_tender as tnd on (con.tender_id = tnd.code)\n"
-                "JOIN contracts_project as prj on (tnd.code = prj.tender_id)\n"
-                "JOIN contracts_program as prg on (prj.program_id = prg.id)\n"
+                "LEFT JOIN contracts_tender as tnd on (con.tender_id = tnd.id)\n"
+                "LEFT JOIN contracts_project as prj on (tnd.id = prj.tender_id)\n"
+                "LEFT JOIN contracts_program as prg on (prj.program_id = prg.id)\n"
                 "LEFT JOIN contracts_typeofwork as ptow on (ptow.id = prj.type_of_work_id)\n"
                 "LEFT JOIN contracts_fundingsource as pfs on (pfs.id = prj.funding_source_id)\n"
                 "LEFT JOIN (\n"
                 "    SELECT pa.project_id,\n"
                 "        COUNT(pa.id) as total_assets_cnt,\n"
-                "        SUM(r.geom_length) as total_assets_length,\n"
+                "        SUM(pa.asset_end_chainage-pa.asset_start_chainage) as total_assets_length,\n"
                 "        COUNT(pa.id) FILTER (WHERE r.asset_class = 'NAT') as nat_cnt,\n"
-                "        SUM(r.geom_length) FILTER (WHERE r.asset_class = 'NAT') as nat_length,\n"
+                "        SUM(pa.asset_end_chainage-pa.asset_start_chainage) FILTER (WHERE r.asset_class = 'NAT') as nat_length,\n"
                 "        COUNT(pa.id) FILTER (WHERE r.asset_class = 'MUN') as mun_cnt,\n"
-                "        SUM(r.geom_length) FILTER (WHERE r.asset_class = 'MUN') as mun_length,\n"
+                "        SUM(pa.asset_end_chainage-pa.asset_start_chainage) FILTER (WHERE r.asset_class = 'MUN') as mun_length,\n"
                 "        COUNT(pa.id) FILTER (WHERE r.asset_class = 'RUR') as rur_cnt,\n"
-                "        SUM(r.geom_length) FILTER (WHERE r.asset_class = 'RUR') as rur_length\n"
+                "        SUM(pa.asset_end_chainage-pa.asset_start_chainage) FILTER (WHERE r.asset_class = 'RUR') as rur_length\n"
                 "    FROM contracts_projectasset as pa\n"
                 "    JOIN assets_road as r on (CONCAT('ROAD-', r.id) = pa.asset_id)\n"
                 "    GROUP BY project_id\n"
@@ -828,40 +802,40 @@ class ContractReport:
                 "    STRING_AGG(DISTINCT funding_source, ', ') as fundingSource,\n"
                 "    COUNT(DISTINCT project_name) as projects,\n"
                 "    COUNT(DISTINCT contract_code) as contracts,\n"
-                "    corp_cnt as companies,\n"
-                "    TO_CHAR(SUM(prgm_budget.amount) FILTER (WHERE prgm_budget.year = extract(year from CURRENT_DATE)::integer),'FM999999999999') as prjBudgetCurrentYear,\n"
+                "    TO_CHAR(AVG(corp_cnt), 'FM999999') as companies\n,"
+                "    TO_CHAR(AVG(prgm_budget.amount),'FM999999999999') as prjBudgetCurrentYear,\n"
                 "    TO_CHAR(SUM(final_value),'FM999999999999') as contractValueAmdTotal,\n"
                 "    TO_CHAR(SUM(payment_amt),'FM999999999999') as totalPayment,\n"
                 "    TO_CHAR(SUM(paid_curr_year),'FM999999999999') as paymentCurrentYear,\n"
                 "    TO_CHAR(SUM(paid_last_year),'FM999999999999') as paymentPreviousYear,\n"
                 "    TO_CHAR(SUM(final_value)-SUM(payment_amt),'FM999999999999') as balance,\n"
-                "    TO_CHAR(SUM(payment_amt)/SUM(final_value)*100,'FM999999999999') as totalProgressPayment,\n"
-                "    TO_CHAR(AVG(physical_progress),'FM999.00') as physicalProgress,\n"
-                "    CASE\n"
+                "    TO_CHAR(SUM(payment_amt)/SUM(final_value)*100.0,'FM9990D90') as totalProgressPayment,\n"
+                "    TO_CHAR(AVG(physical_progress)::float,'FM9990D90') as physicalProgress,\n"
+                "    STRING_AGG(CASE\n"
                 "        WHEN status in ('Ongoing', 'Contract Variations Request', 'DLP', 'Final Inspection', 'Request of Final Payment', 'Submitted', 'Project Approved') THEN 'Ongoing'\n"
                 "        ELSE ''\n"
-                "    END as status\n"
+                "    END, ', ') as status\n"
                 "FROM contracts_core\n"
-                "JOIN (\n"
+                "LEFT JOIN (\n"
                 "    SELECT prg.name, COUNT(DISTINCT corp.id) as corp_cnt\n"
                 "    FROM contracts_company corp\n"
                 "    JOIN contracts_contract as con on (con.contractor_id = corp.id OR con.subcontractor_id = corp.id)\n"
-                "    JOIN contracts_tender as tnd on (con.tender_id = tnd.code)\n"
-                "    JOIN contracts_project as prj on (tnd.code = prj.tender_id)\n"
+                "    JOIN contracts_tender as tnd on (con.tender_id = tnd.id)\n"
+                "    JOIN contracts_project as prj on (tnd.id = prj.tender_id)\n"
                 "    JOIN contracts_program as prg on (prj.program_id = prg.id)\n"
                 "    GROUP BY prg.id\n"
                 ") as prg_corps on (prg_corps.name = contracts_core.program_name)\n"
                 "LEFT JOIN (\n"
                 "    SELECT \n"
                 "        prgm.name,\n"
-                "        pb.year,\n"
-                "        sum(pb.approved_value) as amount\n"
+                "        SUM(pb.approved_value) as amount\n"
                 "    FROM contracts_projectbudget as pb\n"
                 "    JOIN contracts_project as prj ON (prj.id = pb.project_id)\n"
                 "    JOIN contracts_program as prgm ON (prgm.id = prj.program_id)\n"
-                "    GROUP BY prgm.name, pb.year\n"
+                "    WHERE pb.year = extract(year from CURRENT_DATE)::integer\n"
+                "    GROUP BY prgm.name\n"
                 ") as prgm_budget ON (prgm_budget.name = contracts_core.program_name)\n"
-                "GROUP BY program_name, status, corp_cnt\n"
+                "GROUP BY program_name\n"
             ),
             # Financial and Physical Progress
             "contractCode": (
@@ -874,38 +848,44 @@ class ContractReport:
                 "    STRING_AGG(DISTINCT funding_source, ', ') as fundingSource,\n"
                 "    STRING_AGG(DISTINCT contractor, ', ')as contractor,\n"
                 "    total_assets_cnt as assets,\n"
-                "    TO_CHAR(SUM(prgm_budget.amount),'FM999999999999') as prjBudgetTotal,\n"
-                "    TO_CHAR(SUM(prgm_budget.amount) FILTER (WHERE prgm_budget.year = extract(year from CURRENT_DATE)::integer),'FM999999999999') as prjBudgetCurrentYear,\n"
+                "    TO_CHAR(prgm_budget.amount,'FM999999999999') as prjBudgetTotal,\n"
+                "    TO_CHAR(prgm_budget_curr_yr.amount,'FM999999999999') as prjBudgetCurrentYear,\n"
                 "    TO_CHAR(SUM(final_value),'FM999999999999') as contractValueAmdTotal,\n"
                 "    TO_CHAR(SUM(orig_value),'FM999999999999') as contractValueOrigTotal,\n"
                 "    TO_CHAR(SUM(payment_amt),'FM999999999999') as totalPayment,\n"
                 "    TO_CHAR(SUM(final_value)-SUM(payment_amt),'FM999999999999') as balance,\n"
                 "    TO_CHAR(SUM(paid_curr_year),'FM999999999999') as paymentCurrentYear,\n"
                 "    TO_CHAR(SUM(paid_last_year),'FM999999999999') as paymentPreviousYear,\n"
-                "    TO_CHAR(SUM(payment_amt)/SUM(final_value)*100,'FM999.00') as totalProgressPayment,\n"
-                "    TO_CHAR(physical_progress,'FM999.00') as physicalProgress,\n"
+                "    TO_CHAR(SUM(payment_amt)/SUM(final_value)::float*100.0,'FM9990D90') as totalProgressPayment,\n"
+                "    TO_CHAR(physical_progress::float,'FM9990D90') as physicalProgress,\n"
                 "    start_date as contractStartDate,\n"
                 "    end_date as contractEndDate,\n"
                 "    amendment_start_date as amendmentStartDate,\n"
                 "    amendment_end_date as amendmentEndDate,\n"
                 "    dlp_start_date as dlpStartDate,\n"
                 "    (dlp_start_date + defect_liability_days) as dlpEndDate,\n"
-                "    CASE\n"
-                "        WHEN status in ('Ongoing', 'Contract Variations Request', 'DLP', 'Final Inspection', 'Request of Final Payment', 'Submitted', 'Project Approved') THEN 'Ongoing'\n"
-                "        ELSE ''\n"
-                "    END as status\n"
+                "    status\n"
                 "FROM contracts_core\n"
                 "LEFT JOIN (\n"
                 "    SELECT \n"
                 "        prgm.name,\n"
-                "        pb.year,\n"
                 "        sum(pb.approved_value) as amount\n"
                 "    FROM contracts_projectbudget as pb\n"
                 "    JOIN contracts_project as prj ON (prj.id = pb.project_id)\n"
                 "    JOIN contracts_program as prgm ON (prgm.id = prj.program_id)\n"
+                "    GROUP BY prgm.name\n"
+                ") as prgm_budget ON (prgm_budget.name = contracts_core.program_name)\n"
+                "LEFT JOIN (\n"
+                "    SELECT \n"
+                "        prgm.name,\n"
+                "        SUM(pb.approved_value) as amount\n"
+                "    FROM contracts_projectbudget as pb\n"
+                "    JOIN contracts_project as prj ON (prj.id = pb.project_id)\n"
+                "    JOIN contracts_program as prgm ON (prgm.id = prj.program_id)\n"
+                "    WHERE pb.year = extract(year from CURRENT_DATE)::integer\n"
                 "    GROUP BY prgm.name, pb.year\n"
-                ") as prgm_budget ON (prgm_budget.name = contracts_core.program_name AND  prgm_budget.year = extract(year from start_date)::integer)\n"
-                "GROUP BY contract_id, contract_code, program_name, physical_progress, start_date, end_date, dlp_start_date, amendment_start_date, amendment_end_date, defect_liability_days, status, assets\n"
+                ") as prgm_budget_curr_yr ON (prgm_budget_curr_yr.name = contracts_core.program_name)\n"
+                "GROUP BY contract_id, contract_code, program_name, physical_progress, start_date, end_date, dlp_start_date, amendment_start_date, amendment_end_date, defect_liability_days, status, assets, prgm_budget_curr_yr.amount, prgm_budget.amount\n"
             ),
             "assetClassTypeOfWork": (
                 "SELECT \n"
@@ -1002,6 +982,8 @@ class ContractReport:
                 "    con.contract_code,\n"
                 "    year,\n"
                 "    month,\n"
+                "    CONCAT(year, month)::int as yearMonth,\n"
+                "    CONCAT(CONCAT(year, '-'), month) as yearMonthFormatted,\n"
                 "    CASE\n"
                 "        WHEN month <= 3 THEN 1\n"
                 "        WHEN month <= 6 THEN 2\n"
@@ -1027,56 +1009,56 @@ class ContractReport:
                 "    AVG(average_net_wage) as averageNetWage\n"
                 "FROM contracts_socialsafeguarddata as social\n"
                 "JOIN contracts_contract as con on (con.id = social.contract_id)\n"
-                "GROUP BY contract_code, year, quarter, month\n"
+                "GROUP BY contract_code, yearMonth, yearMonthFormatted, quarter, year, month\n"
             ),
             "numberEmployees": (
                 "SELECT\n"
-                "    contract_code as title,\n"
+                "    yearMonthFormatted as yearMonth,\n"
                 "    SUM(totalEmployees) as totalEmployees,\n"
                 "    SUM(internationalEmployees) as internationalEmployees,\n"
-                "    TO_CHAR(SUM(internationalEmployees)/SUM(totalEmployees)*100,'FM999.00') as internationalEmployees_percent,\n"
+                "    TO_CHAR(SUM(internationalEmployees)/SUM(totalEmployees)::float*100,'FM9990D90') as internationalEmployees_percent,\n"
                 "    SUM(nationalEmployees) as nationalEmployees,\n"
-                "    TO_CHAR(SUM(nationalEmployees)/SUM(totalEmployees)*100,'FM999.00') as nationalEmployees_percent,\n"
+                "    TO_CHAR(SUM(nationalEmployees)/SUM(totalEmployees)::float*100,'FM9990D90') as nationalEmployees_percent,\n"
                 "    SUM(employeesWithDisabilities) as employeesWithDisabilities,\n"
-                "    TO_CHAR(SUM(employeesWithDisabilities)/SUM(totalEmployees)*100,'FM999.00') as employeesWithDisabilities_percent,\n"
+                "    TO_CHAR(SUM(employeesWithDisabilities)/SUM(totalEmployees)::float*100,'FM9990D90') as employeesWithDisabilities_percent,\n"
                 "    SUM(femaleEmployeesWithDisabilities) as femaleEmployeesWithDisabilities,\n"
-                "    TO_CHAR(SUM(femaleEmployeesWithDisabilities)/SUM(totalEmployees)*100,'FM999.00') as femaleEmployeesWithDisabilities_percent,\n"
+                "    TO_CHAR(SUM(femaleEmployeesWithDisabilities)/SUM(totalEmployees)::float*100,'FM9990D90') as femaleEmployeesWithDisabilities_percent,\n"
                 "    SUM(youngEmployees) as youngEmployees,\n"
-                "    TO_CHAR(SUM(youngEmployees)/SUM(totalEmployees)*100,'FM999.00') as youngEmployees_percent,\n"
+                "    TO_CHAR(SUM(youngEmployees)/SUM(totalEmployees)::float*100,'FM9990D90') as youngEmployees_percent,\n"
                 "    SUM(youngFemaleEmployees) as youngFemaleEmployees,\n"
-                "    TO_CHAR(SUM(youngFemaleEmployees)/SUM(totalEmployees)*100,'FM999.00') as youngFemaleEmployees_percent,\n"
+                "    TO_CHAR(SUM(youngFemaleEmployees)/SUM(totalEmployees)::float*100,'FM9990D90') as youngFemaleEmployees_percent,\n"
                 "    SUM(femaleEmployees) as femaleEmployees,\n"
-                "    TO_CHAR(SUM(femaleEmployees)/SUM(totalEmployees)*100,'FM999.00') as femaleEmployees_percent\n"
+                "    TO_CHAR(SUM(femaleEmployees)/SUM(totalEmployees)::float*100,'FM9990D90') as femaleEmployees_percent\n"
                 "FROM social_safeguards\n"
             ),
-            "numberEmployees_summary": (
+            "numberEmployeesSummary": (
                 "SELECT\n"
                 "    SUM(totalEmployees) as totalEmployees,\n"
                 "    SUM(internationalEmployees) as internationalEmployees,\n"
-                "    TO_CHAR(SUM(internationalEmployees)/SUM(totalEmployees)*100,'FM999.00') as internationalEmployees_percent,\n"
+                "    TO_CHAR(SUM(internationalEmployees)/SUM(totalEmployees)::float*100,'FM9990D90') as internationalEmployees_percent,\n"
                 "    SUM(nationalEmployees) as nationalEmployees,\n"
-                "    TO_CHAR(SUM(nationalEmployees)/SUM(totalEmployees)*100,'FM999.00') as nationalEmployees_percent,\n"
+                "    TO_CHAR(SUM(nationalEmployees)/SUM(totalEmployees)::float*100,'FM9990D90') as nationalEmployees_percent,\n"
                 "    SUM(employeesWithDisabilities) as employeesWithDisabilities,\n"
-                "    TO_CHAR(SUM(employeesWithDisabilities)/SUM(totalEmployees)*100,'FM999.00') as employeesWithDisabilities_percent,\n"
+                "    TO_CHAR(SUM(employeesWithDisabilities)/SUM(totalEmployees)::float*100,'FM9990D90') as employeesWithDisabilities_percent,\n"
                 "    SUM(femaleEmployeesWithDisabilities) as femaleEmployeesWithDisabilities,\n"
-                "    TO_CHAR(SUM(femaleEmployeesWithDisabilities)/SUM(totalEmployees)*100,'FM999.00') as femaleEmployeesWithDisabilities_percent,\n"
+                "    TO_CHAR(SUM(femaleEmployeesWithDisabilities)/SUM(totalEmployees)::float*100,'FM9990D90') as femaleEmployeesWithDisabilities_percent,\n"
                 "    SUM(youngEmployees) as youngEmployees,\n"
-                "    TO_CHAR(SUM(youngEmployees)/SUM(totalEmployees)*100,'FM999.00') as youngEmployees_percent,\n"
+                "    TO_CHAR(SUM(youngEmployees)/SUM(totalEmployees)::float*100,'FM9990D90') as youngEmployees_percent,\n"
                 "    SUM(youngFemaleEmployees) as youngFemaleEmployees,\n"
-                "    TO_CHAR(SUM(youngFemaleEmployees)/SUM(totalEmployees)*100,'FM999.00') as youngFemaleEmployees_percent,\n"
+                "    TO_CHAR(SUM(youngFemaleEmployees)/SUM(totalEmployees)::float*100,'FM9990D90') as youngFemaleEmployees_percent,\n"
                 "    SUM(femaleEmployees) as femaleEmployees,\n"
-                "    TO_CHAR(SUM(femaleEmployees)/SUM(totalEmployees)*100,'FM999.00') as femaleEmployees_percent\n"
+                "    TO_CHAR(SUM(femaleEmployees)/SUM(totalEmployees)::float*100,'FM9990D90') as femaleEmployees_percent\n"
                 "FROM social_safeguards\n"
             ),
             "wages": (
                 "SELECT\n"
-                "    contract_code as title,\n"
+                "    yearMonthFormatted as yearMonth,\n"
                 "    TO_CHAR(SUM(totalWage),'FM9999999') as totalWage,\n"
                 "    TO_CHAR(AVG(averageGrossWage),'FM9999999') as averageGrossWage,\n"
                 "    TO_CHAR(AVG(averageNetWage),'FM9999999') as averageNetWage\n"
                 "FROM social_safeguards\n"
             ),
-            "wages_summary": (
+            "wagesSummary": (
                 "SELECT\n"
                 "    TO_CHAR(SUM(totalWage),'FM9999999') as totalWage,\n"
                 "    TO_CHAR(AVG(averageGrossWage),'FM9999999') as averageGrossWage,\n"
@@ -1085,33 +1067,23 @@ class ContractReport:
             ),
             "workedDays": (
                 "SELECT\n"
-                "    contract_code as title,\n"
+                "    yearMonthFormatted as yearMonth,\n"
                 "    SUM(totalWorkedDays) as totalWorkedDays,\n"
                 "    SUM(femaleEmployeesWorkedDays) as femaleEmployeesWorkedDays,\n"
-                "    TO_CHAR(SUM(femaleEmployeesWorkedDays)/SUM(totalWorkedDays)*100,'FM999.00') as femaleEmployeesWorkedDays_percent,\n"
                 "    SUM(employeesWithDisabilitiesWorkedDays) as employeesWithDisabilitiesWorkedDays,\n"
-                "    TO_CHAR(SUM(employeesWithDisabilitiesWorkedDays)/SUM(totalWorkedDays)*100,'FM999.00') as employeesWithDisabilitiesWorkedDays_percent,\n"
                 "    SUM(femaleEmployeesWithDisabilitiesWorkedDays) as femaleEmployeesWithDisabilitiesWorkedDays,\n"
-                "    TO_CHAR(SUM(femaleEmployeesWithDisabilitiesWorkedDays)/SUM(totalWorkedDays)*100,'FM999.00') as femaleEmployeesWithDisabilitiesWorkedDays_percent,\n"
                 "    SUM(youngEmployeesWorkedDays) as youngEmployeesWorkedDays,\n"
-                "    TO_CHAR(SUM(youngEmployeesWorkedDays)/SUM(totalWorkedDays)*100,'FM999.00') as youngEmployeesWorkedDays_percent,\n"
-                "    SUM(youngFemaleEmployeesWorkedDays) as youngFemaleEmployeesWorkedDays,\n"
-                "    TO_CHAR(SUM(youngFemaleEmployeesWorkedDays)/SUM(totalWorkedDays)*100,'FM999.00') as youngFemaleEmployeesWorkedDays_percent\n"
+                "    SUM(youngFemaleEmployeesWorkedDays) as youngFemaleEmployeesWorkedDays\n"
                 "FROM social_safeguards\n"
             ),
-            "workedDays_summary": (
+            "workedDaysSummary": (
                 "SELECT\n"
                 "    SUM(totalWorkedDays) as totalWorkedDays,\n"
                 "    SUM(femaleEmployeesWorkedDays) as femaleEmployeesWorkedDays,\n"
-                "    TO_CHAR(SUM(femaleEmployeesWorkedDays)/SUM(totalWorkedDays)*100,'FM999.00') as femaleEmployeesWorkedDays_percent,\n"
                 "    SUM(employeesWithDisabilitiesWorkedDays) as employeesWithDisabilitiesWorkedDays,\n"
-                "    TO_CHAR(SUM(employeesWithDisabilitiesWorkedDays)/SUM(totalWorkedDays)*100,'FM999.00') as employeesWithDisabilitiesWorkedDays_percent,\n"
                 "    SUM(femaleEmployeesWithDisabilitiesWorkedDays) as femaleEmployeesWithDisabilitiesWorkedDays,\n"
-                "    TO_CHAR(SUM(femaleEmployeesWithDisabilitiesWorkedDays)/SUM(totalWorkedDays)*100,'FM999.00') as femaleEmployeesWithDisabilitiesWorkedDays_percent,\n"
                 "    SUM(youngEmployeesWorkedDays) as youngEmployeesWorkedDays,\n"
-                "    TO_CHAR(SUM(youngEmployeesWorkedDays)/SUM(totalWorkedDays)*100,'FM999.00') as youngEmployeesWorkedDays_percent,\n"
-                "    SUM(youngFemaleEmployeesWorkedDays) as youngFemaleEmployeesWorkedDays,\n"
-                "    TO_CHAR(SUM(youngFemaleEmployeesWorkedDays)/SUM(totalWorkedDays)*100,'FM999.00') as youngFemaleEmployeesWorkedDays_percent\n"
+                "    SUM(youngFemaleEmployeesWorkedDays) as youngFemaleEmployeesWorkedDays\n"
                 "FROM social_safeguards\n"
             ),
             "get_all": ("SELECT * FROM final_results;"),
@@ -1136,7 +1108,7 @@ class ContractReport:
                 + "), "
             )
             if self.report_id == 4:
-                final_query = self.report_clauses[self.report_type + "_summary"]
+                final_query = self.report_clauses[self.report_type]
                 counter = 0
                 for k in self.filters.keys():
                     if counter == 0:
@@ -1149,27 +1121,21 @@ class ContractReport:
                 final_query += (
                     "WHERE contract_code = '%s'\n" % self.filters["contractCode"]
                 )
-
-                filter_keys = self.filters.keys()
-                if "startYr" in filter_keys and "endYr" in filter_keys:
-                    final_query += "AND year BETWEEN %s AND %s\n" % (
-                        int(self.filters["startYr"]),
-                        int(self.filters["endYr"]),
+                filters = self.filters.keys()
+                if "startYrMnth" in filters and "endYrMnth" in filters:
+                    final_query += "AND yearMonth BETWEEN %s AND %s\n" % (
+                        int(self.filters["startYrMnth"]),
+                        int(self.filters["endYrMnth"]),
                     )
-                    final_query += "AND month BETWEEN %s AND %s\n" % (
-                        int(self.filters["startMn"]),
-                        int(self.filters["endMn"]),
+                elif "startYrMnth" in filters:
+                    final_query += "AND yearMonth > %s\n" % int(
+                        self.filters["startYrMnth"]
                     )
-                else:
-                    if "startYr" in filter_keys:
-                        final_query += "AND year >= %s\n" % int(self.filters["startYr"])
-                        final_query += "AND month >= %s\n" % int(
-                            self.filters["startMn"]
-                        )
-                    if "endYr" in filter_keys:
-                        final_query += "AND year >= %s\n" % int(self.filters["endYr"])
-                        final_query += "AND month >= %s\n" % int(self.filters["endMn"])
-                final_query += "GROUP BY contract_code\n"
+                elif "endYrMnth" in filters:
+                    final_query += "AND yearMonth < %s\n" % int(
+                        self.filters["endYrMnth"]
+                    )
+                final_query += "GROUP BY yearMonthFormatted\n"
 
             self.reportSQL += "final_results AS ( %s )" % final_query
 

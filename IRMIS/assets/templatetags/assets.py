@@ -206,6 +206,8 @@ def get_schema_data():
                     "properties_content_type",
                     "properties_object_id",
                     "roadfeatureattributes",
+                    "roadhash",  # Roads should not do drugs
+                    "singlepartdump",  # :poop:
                 ]
             ),
             Road._meta.get_fields(),

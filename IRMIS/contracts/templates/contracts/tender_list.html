@@ -81,18 +81,18 @@
                 {% if perms.contracts.change_tender or perms.contracts.delete_tender %}
                 <td class="text-center">
                     {% if perms.contracts.change_tender and not perms.contracts.delete_tender %}
-                    <a class="image pencil" href="{% url 'contract-tender-update' tender.code %}"></a>
+                    <a class="image pencil" href="{% url 'contract-tender-update' tender.id %}"></a>
                     {% elif not perms.contracts.change_tender and perms.contracts.delete_tender %}
                     <a class="image delete" href=""></a>
                     {% else %}
-                    <a class="image pencil" href="{% url 'contract-tender-update' tender.code %}"></a>
+                    <a class="image pencil" href="{% url 'contract-tender-update' tender.id %}"></a>
                     <span></span>
-                    <a class="image delete delete-link" data-delete="/contracts/api/tender/{{ tender.code }}/"></a>
+                    <a class="image delete delete-link" data-delete="/contracts/api/tender/{{ tender.id }}/"></a>
                     {% endif %}
                 </td>
                 {% endif %}
-                <td><a href="{% url 'contract-tender-detail' tender.code %}">{{ tender.code }}</a></td>
-                <td>{{ tender.projects.count }}</td>
+                <td><a href="{% url 'contract-tender-detail' tender.id %}">{{ tender.code }}</a></td>
+                <td class="text-right to-format">{{ tender.projects.count }}</td>
                 <td>
                     {% for project in tender.projects.all %}
                     <div>{{ project.name }}</div>

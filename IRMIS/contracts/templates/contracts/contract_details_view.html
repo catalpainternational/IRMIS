@@ -37,7 +37,7 @@
         </div>
         <div>
             <label>{% trans "Associated Tender" %}</label>
-            <p><a href="{% url 'contract-tender-detail' contract.tender.code %}">{{ contract.tender }}</a></p>
+            <p><a href="{% url 'contract-tender-detail' contract.tender.id %}">{{ contract.tender }}</a></p>
             <div class="projects-list">
                 <label>{% trans "Projects in the Tender" %}</label>
                 {% if contract.tender.projects.all %}
@@ -90,7 +90,7 @@
         {% if contract.total_budget %}
         <div class="total-budget">
             <p>{% trans "Total Budget" %}</p>
-            <h1>$ {{ contract.total_budget }}</h1>
+            <h1 class="to-format">$ {{ contract.total_budget }}</h1>
         </div>
         {% endif %}
         <div>
@@ -105,7 +105,7 @@
                     {% for budget in budgets %}
                     <tr>
                         <td>{{ budget.year }}</td>
-                        <td>{{ budget.value }}</td>
+                        <td class="text-right to-format">$ {{ budget.value }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -113,7 +113,7 @@
         </div>
         <div>
             <label>{% trans "Defect Liability Period (Days)" %}</label>
-            <p>{{ contract.defect_liability_days|default_if_none:"" }}</p>
+            <p class="to-format">{{ contract.defect_liability_days|default_if_none:"" }}</p>
         </div>
     </section>
     <section>
@@ -121,15 +121,15 @@
         <div class="d-flex justify-content-between">
             <div>
                 <label>{% trans "Contract Start Date" %}</label>
-                <p>{{ contract.start_date }}</p>
+                <p>{{ contract.start_date|date:"Y-m-d" }}</p>
             </div>
             <div>
                 <label>{% trans "Contract End Date" %}</label>
-                <p>{{ contract.end_date }}</p>
+                <p>{{ contract.end_date|date:"Y-m-d" }}</p>
             </div>
             <div>
                 <label>{% trans "Contract Duration" %}</label>
-                <p>{{ contract.duration }}</p>
+                <p class="to-format">{{ contract.duration }}</p>
             </div>
         </div>
     </section>
@@ -146,8 +146,8 @@
                 <tbody>
                     {% for milestone in milestones %}
                     <tr>
-                        <td>{{ milestone.days_of_work }}</td>
-                        <td>{{ milestone.progress }}</td>
+                        <td class="text-right to-format">{{ milestone.days_of_work }}</td>
+                        <td class="text-right">{{ milestone.progress }}%</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -159,7 +159,7 @@
         {% if contract.total_amendments %}
         <div class="total-budget">
             <p>{% trans "Total Budget" %}</p>
-            <h1>$ {{ contract.total_amendments }}</h1>
+            <h1 class="to-format">$ {{ contract.total_amendments }}</h1>
         </div>
         {% endif %}
         <div>
@@ -174,7 +174,7 @@
                     {% for amendment in amendments %}
                     <tr>
                         <td>{{ amendment.year }}</td>
-                        <td>{{ amendment.value }}</td>
+                        <td class="text-right to-format">$ {{ amendment.value }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -183,11 +183,11 @@
         <div class="d-flex justify-content-between">
             <div>
                 <label>{% trans "Contract Start Date" %}</label>
-                <p>{{ contract.amendment_start_date|default_if_none:"" }}</p>
+                <p>{{ contract.amendment_start_date|default_if_none:""|date:"Y-m-d" }}</p>
             </div>
             <div>
                 <label>{% trans "Contract Duration" %}</label>
-                <p>{{ contract.amendment_duration|default_if_none:"" }}</p>
+                <p class="to-format">{{ contract.amendment_duration|default_if_none:"" }}</p>
             </div>
         </div>
         <div>

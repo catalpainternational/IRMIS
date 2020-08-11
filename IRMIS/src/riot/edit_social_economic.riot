@@ -1,0 +1,67 @@
+<edit_social_economic>
+    <div class="content-wrapper">
+        <h5>{ window.gettext("Social and Economic Data") }</h5>
+
+        <section>
+            <h6>{ window.gettext("Social Data") }</h6>
+            <edit_field_population asset="{ props.road }"></edit_field_population>
+            <edit_field_type_multi_select options="{ state.facilityOptions }"></edit_field_type_multi_select>
+        </section>
+
+        <section>
+            <h6>{ window.gettext("Economic Data") }</h6>
+            <edit_field_type_multi_select options="{ state.economicAreaOptions }"></edit_field_type_multi_select>
+        </section>
+        <section>
+            <h6>{ window.gettext("Connections Data") }</h6>
+            <edit_field_type_multi_select options="{ state.connectionOptions }"></edit_field_type_multi_select>
+        </section>
+
+        <div class="button-wrapper d-flex justify-content-end">
+            <button class="btn btn-primary" onclick="{ save }" disabled="{ props.saving }">
+                { window.gettext("Save and continue") }
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // EDIT FIELD TAGS
+        import Edit_Field_Population from "./edit_field_population.riot";
+        import Edit_Field_Type_Multi_Select from "./edit_field_type_multi_select.riot";
+
+        export default {
+            state: {
+                errors: {},
+            },
+            components: {
+                Edit_Field_Population,
+                Edit_Field_Type_Multi_Select,
+            },
+            onBeforeMount(props, state) {
+                state.loading = true;
+                state.facilityOptions = {
+                    options: window.asset_schema.facility_type,
+                    // These should be the protobuf object get and set members here, because we want the raw codes
+                    getSelectionList: () => props.road.getServedFacilitiesList(),
+                    setSelectionList: (value) => props.road.setServedFacilitiesList(value),
+                }
+                state.economicAreaOptions = {
+                    options: window.asset_schema.economic_area,
+                    // These should be the protobuf object get and set members here, because we want the raw codes
+                    getSelectionList: () => props.road.getServedEconomicAreasList(),
+                    setSelectionList: (value) => props.road.setServedEconomicAreasList(value),
+                }
+                state.connectionOptions = {
+                    options: window.asset_schema.connection_type,
+                    // These should be the protobuf object get and set members here, because we want the raw codes
+                    getSelectionList: () => props.road.getServedConnectionTypesList(),
+                    setSelectionList: (value) => props.road.setServedConnectionTypesList(value),
+                }
+                state.road = props.road;
+            },
+            save(e) {
+                this.props.parent.save();
+            },
+        }
+    </script>
+</edit_social_economic>

@@ -92,7 +92,7 @@
                 </td>
                 {% endif %}
                 <td><a href="{% url 'contract-contract-detail' contract.id %}">{{ contract.contract_code }}</a></td>
-                <td>{{ contract.tender.projects.count }}</td>
+                <td class="text-right to-format">{{ contract.tender.projects.count }}</td>
                 <td>
                     {% for project in contract.tender.projects.all %}
                     <div>{{ project.name }}</div>

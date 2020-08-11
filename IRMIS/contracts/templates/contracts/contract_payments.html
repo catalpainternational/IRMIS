@@ -23,14 +23,23 @@
 <div class="content">
     <div class="align-items-center d-flex justify-content-between title-header">
         <h5 class="title">{% trans "List of payments" %}</h5>
-        <button class="btn btn-primary form-modal-link" type="button" data-method="POST">{% trans "Add" %}</button>
+        <div class="position-relative">
+            <button class="btn btn-primary form-modal-link" type="button" data-method="POST">{% trans "Add" %}</button>
+            <div id="no-companies-tooltip" class="invalid-tooltip" hidden>
+                <ul>
+                    <li>
+                        {% trans "To add a payment, at least one company needs to first be created in the Company section" %}
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
     <table id="contract-payment-list-table" class="contracts-profile-table d-block table table-hover">
         <thead>
             <tr>
                 <th></th>
                 <th>{% trans "Payment Date" %}</th>
-                <th>{% trans "Payment Value" %}</th>
+                <th>{% trans "Payment Value (in USD)" %}</th>
                 <th>{% trans "Donor" %}</th>
                 <th>{% trans "Funding Source" %}</th>
                 <th>{% trans "Destination" %}</th>
@@ -44,9 +53,9 @@
                     <span></span>
                     <a class="image delete delete-link" data-delete="/contracts/api/contractpayment/{{ payment.id }}/"></a>
                 </td>
-                <td>{{ payment.date }}</td>
-                <td>{{ payment.value }}</td>
-                <td>{{ payment.donor }}</td>
+                <td>{{ payment.date|date:"Y-m-d" }}</td>
+                <td class="text-right to-format">$ {{ payment.value }}</td>
+                <td>{{ payment.donor|default_if_none:"" }}</td>
                 <td>{{ payment.source }}</td>
                 <td>{{ payment.destination }}</td>
             </tr>

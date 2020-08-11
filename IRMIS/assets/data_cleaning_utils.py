@@ -1,5 +1,5 @@
 from django.db import IntegrityError
-from django.db.models import CharField, F, Min, Value
+from django.db.models import F, Min, Value
 from django.db.models.functions import Concat
 from django.forms.models import model_to_dict
 from django.utils.timezone import make_aware
@@ -190,6 +190,67 @@ def update_road_geometry_data(
     return 0
 
 
+def update_road_link_data(road, link_start=-1, tolerance=50, reset_geom=False):
+    """ after updating the road link start/end chainage & length from its geometry
+    update the user editable start/end chainage values & length if they are too far out of range
+
+    the link_start parameter is the previous road link's link_end_chainage value, if that value was altered
+
+    returns the new link_end_chainage value if changed, otherwise -1 """
+    reset_start = reset_geom
+    reset_end = reset_geom
+    reset_length = reset_geom
+
+    if not reset_start and (
+        not road.link_start_chainage
+        or abs(road.link_start_chainage - road.geom_start_chainage) > tolerance
+        or (link_start != -1 and road.link_start_chainage != link_start)
+        or road.link_start_chainage >= road.link_end_chainage
+    ):
+        reset_start = True
+
+    if not reset_end and (
+        not road.link_end_chainage
+        or abs(road.link_end_chainage - road.geom_end_chainage) > tolerance
+        or road.link_start_chainage >= road.link_end_chainage
+    ):
+        reset_end = True
+
+    if (
+        reset_start
+        or reset_end
+        or (
+            not reset_length
+            and (
+                not road.link_length
+                or abs((road.link_length * 1000) - road.geom_length) > tolerance
+            )
+        )
+    ):
+        reset_length = True
+
+    next_link_start = -1
+    if reset_start or reset_end or reset_length:
+        with reversion.create_revision():
+            if reset_start:
+                road.link_start_chainage = (
+                    road.geom_start_chainage if link_start == -1 else link_start
+                )
+            if reset_end:
+                road.link_end_chainage = road.geom_end_chainage
+                next_link_start = road.link_end_chainage
+            if reset_length:
+                road.link_length = (
+                    road.link_end_chainage - road.link_start_chainage
+                ) / 1000
+            road.save()
+            reversion.set_comment(
+                "Road Link start/end chainages & length updated to align with its geometry"
+            )
+
+    return next_link_start
+
+
 def clear_road_geometries(roads):
     """ clears the geom_ fields from the roads """
     for road in roads:
@@ -204,7 +265,7 @@ def clear_road_geometries(roads):
                 )
 
 
-def assess_road_geometries(roads, reset_geom):
+def assess_road_geometries(roads, tolerance, reset_geom):
     """ Assess the road geom_* fields for a (query)set of road links that belong to the same road code.
 
     This function expects these road links to be in the correct order (by geometry)
@@ -225,12 +286,15 @@ def assess_road_geometries(roads, reset_geom):
                 reset_geom = True
                 break
 
+    next_link_start = -1
     for road in roads:
         # Can't do anything more with this set of roads if there's no geometry
         if road.geom == None:
             break
 
         # Note that the 'link_' values from Road are considered highly unreliable
+        # so we use the 'geom_' values for all calculations
+        # and clean the 'link_' values below to at least get them within tolerance
         if reset_geom:
             # Force the chainage to be recalculated
             road.geom_start_chainage = None
@@ -255,13 +319,19 @@ def assess_road_geometries(roads, reset_geom):
             road, link_start, link_end, link_length, reset_geom
         )
 
+        # now we can finally clean up the 'link_' values to bring them within tolerance of the 'geom_'
+        # next_link_start will not always equal the 'link_end'
+        next_link_start = update_road_link_data(
+            road, next_link_start, tolerance, reset_geom
+        )
+
         # carry over the start chainage for the next link in the road
         start_chainage = link_end
 
     return updated
 
 
-def refresh_roads_by_road_code(rc, reset_geom=False):
+def refresh_roads_by_road_code(rc, tolerance=50, reset_geom=False):
     """ Assess all road links for a given road code and identify corrections to be made
 
     returns a count of the total number of road links that were updated """
@@ -271,10 +341,10 @@ def refresh_roads_by_road_code(rc, reset_geom=False):
         clear_road_geometries(errata_roads)
 
     roads = get_roads_by_road_code(rc)
-    return assess_road_geometries(roads, reset_geom)
+    return assess_road_geometries(roads, tolerance, reset_geom)
 
 
-def refresh_roads():
+def refresh_roads(tolerance=50):
     # counters for data cleansing
     roads_updated = 0
 
@@ -288,7 +358,9 @@ def refresh_roads():
             clear_road_geometries(errata_roads)
 
         # Refresh the road links
-        roads_updated += refresh_roads_by_road_code(rc, rc in ROAD_CODE_FORCE_REFRESH)
+        roads_updated += refresh_roads_by_road_code(
+            rc, tolerance, rc in ROAD_CODE_FORCE_REFRESH
+        )
 
     return roads_updated
 
@@ -342,7 +414,9 @@ def get_data_field(data, field_id):
         return None
 
     if type(data) == list or type(data) == dict:
-        if field_id in data:
+        if type(data) == list and type(field_id) == int and len(data) > field_id:
+            return data[field_id]
+        if type(data) == dict and field_id in data:
             return data[field_id]
         else:
             return None
@@ -446,7 +520,8 @@ ROAD_SURVEY_VALUE_MAPPINGS = [
     ("carriageway_width", "carriageway_width", str_transform),
     ("total_width", "total_width", str_transform),
     ("number_lanes", "number_lanes", str_transform),
-    ("rainfall", "rainfall", str_transform),
+    ("rainfall_maximum", "rainfall_maximum", str_transform),
+    ("rainfall_minimum", "rainfall_minimum", str_transform),
     ("population", "population", str_transform),
     ("construction_year", "construction_year", str_transform),
     # `core` is a `nullable boolean` - handled as an Int, and here stored as a string
@@ -470,8 +545,8 @@ ROAD_SURVEY_VALUE_MAPPINGS = [
 
 TRAFFIC_CSV_VALUE_MAPPINGS = [
     ("forecastYear", 4, int_transform),
-    ("surveyFromDate", 4, date_soy_transform),
-    ("surveyToDate", 4, date_eoy_transform),
+    ("surveyFromDate", 3, date_soy_transform),
+    ("surveyToDate", 3, date_eoy_transform),
     ("trafficType", 2, str_transform),
     ("countTotal", 14, int_transform),
     ("counts.carCount", 15, int_transform),
@@ -502,8 +577,9 @@ def get_non_programmatic_surveys_by_structure_code(sc):
 
 def delete_redundant_surveys():
     """ deletes redundant surveys, where:
-    Start and End Chainage are the same (for Road Surveys only),
-    Surveys are duplicated (all fields excluding ids) """
+    * Start and End Chainage are the same (for Road Surveys only),
+    * Surveys are duplicated (all fields excluding ids),
+    * Surveys are 'orphaned' from an asset """
 
     # start and end chainage are the same for a Road survey
     Survey.objects.filter(
@@ -525,7 +601,35 @@ def delete_redundant_surveys():
     surveys_to_keep = [s["minid"] for s in surveys]
     Survey.objects.exclude(id__in=surveys_to_keep).exclude(
         values__has_key="roughness"
+    ).exclude(values__has_key="trafficType").delete()
+
+    # 'Orphaned' surveys (asset code changed, linked to wrong asset code, asset id is null)
+    road_codes = Road.objects.filter(road_code__isnull=False).values_list(
+        "road_code", flat=True
+    )
+    Survey.objects.filter(source="programmatic", asset_id__startswith="ROAD-").exclude(
+        asset_code__in=road_codes
     ).delete()
+    bridge_codes = Bridge.objects.filter(structure_code__isnull=False).values_list(
+        "structure_code", flat=True
+    )
+    Survey.objects.filter(source="programmatic", asset_id__startswith="BRDG-").exclude(
+        asset_code__in=bridge_codes
+    ).delete()
+    culvert_codes = Culvert.objects.filter(structure_code__isnull=False).values_list(
+        "structure_code", flat=True
+    )
+    Survey.objects.filter(source="programmatic", asset_id__startswith="CULV-").exclude(
+        asset_code__in=culvert_codes
+    ).delete()
+    drift_codes = Drift.objects.filter(structure_code__isnull=False).values_list(
+        "structure_code", flat=True
+    )
+    Survey.objects.filter(source="programmatic", asset_id__startswith="DRFT-").exclude(
+        asset_code__in=drift_codes
+    ).delete()
+    Survey.objects.filter(asset_id__isnull=True).delete()
+
     # delete revisions associated with the deleted surveys
     Version.objects.get_deleted(Survey).delete()
 
@@ -548,11 +652,9 @@ def delete_programmatic_surveys_for_structure_by_structure_code(sc):
     Version.objects.get_deleted(Survey).delete()
 
 
-def delete_programmatic_surveys_for_traffic_surveys_by_road_code(rc):
-    """ deletes programmatic surveys generated from traffic surveys for a given road code """
-    Survey.objects.filter(
-        source="programmatic", asset_code=rc, values__has_key="trafficType"
-    ).delete()
+def delete_programmatic_surveys_for_traffic_surveys():
+    """ deletes programmatic surveys generated from traffic surveys """
+    Survey.objects.filter(source="programmatic", values__has_key="trafficType").delete()
     # delete revisions associated with the now deleted "programmatic" surveys
     Version.objects.get_deleted(Survey).delete()
 
@@ -602,8 +704,12 @@ def create_programmatic_survey(management_command, data, mappings, audit_source_
             )
             survey_values = {k: data["values"][k] for k in survey_only_keys}
             if len(survey_values) > 0:
+                survey_mappings = []
+                for mapping in mappings:
+                    if mapping[0] in survey_only_keys:
+                        survey_mappings.append(mapping)
                 create_programmatic_survey_values(
-                    survey_data["values"], survey_values, mappings
+                    survey_data["values"], survey_values, survey_mappings
                 )
 
         # check that values is not empty before saving survey
@@ -724,25 +830,27 @@ def create_programmatic_survey_for_traffic_csv(management_command, data, roads):
 
     surveys_data = []
     if len(roads) == 0:
-        survey_data = {
-            "asset_code": data[0],
-            "source_values": data,
-            "values": data,
-            "date_surveyed": make_aware(datetime.datetime(int(data[3]), 1, 1)),
-        }
-        surveys_data.append(survey_data)
-    else:
-        for road in roads:
-            survey_data = {
-                "asset_id": "ROAD-%s" % road.id,
-                "asset_code": road.road_code,
-                "chainage_start": road.geom_start_chainage,
-                "chainage_end": road.geom_end_chainage,
+        surveys_data.append(
+            {
+                "asset_code": data[0],
                 "source_values": data,
                 "values": data,
                 "date_surveyed": make_aware(datetime.datetime(int(data[3]), 1, 1)),
             }
-            surveys_data.append(survey_data)
+        )
+    else:
+        for road in roads:
+            surveys_data.append(
+                {
+                    "asset_id": "ROAD-%s" % road.id,
+                    "asset_code": road.road_code,
+                    "chainage_start": road.geom_start_chainage,
+                    "chainage_end": road.geom_end_chainage,
+                    "source_values": data,
+                    "values": data,
+                    "date_surveyed": make_aware(datetime.datetime(int(data[3]), 1, 1)),
+                }
+            )
 
     for survey_data in surveys_data:
         created += create_programmatic_survey(
@@ -769,17 +877,28 @@ def update_non_programmatic_surveys_by_road_code(
     creating new user surveys
 
     returns the number of surveys updated(includes those created) """
-    roads = get_roads_by_road_code(rc)
 
-    road_survey = get_first_road_link_for_chainage(rc, survey.chainage_start)
+    road_survey = (
+        get_first_road_link_for_chainage(rc, survey.chainage_start)
+        if survey.chainage_start != None and survey.chainage_start >= 0
+        else None
+    )
     if not road_survey:
-        if management_command:
-            management_command.stderr.write(
-                management_command.style.ERROR(
-                    "Error: User entered survey Id:%s for road '%s' is outside the road's chainage"
-                    % (survey.id, rc)
-                )
+        if survey.chainage_start != None and survey.chainage_start >= 0:
+            management_message = (
+                "Error: User entered survey Id:%s for road '%s' is outside the road's chainage"
+                % (survey.id, rc)
             )
+            if survey.id:
+                management_message += ", and has been deleted"
+                Survey.objects.filter(pk=survey.id).delete()
+                # delete revisions associated with the now deleted bad chainage surveys
+                Version.objects.get_deleted(Survey).delete()
+                updated += 1
+            if management_command:
+                management_command.stderr.write(
+                    management_command.style.ERROR(management_message)
+                )
         return updated
 
     # Test if this survey is for traffic, and needs its chainages corrected

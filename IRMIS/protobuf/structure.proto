@@ -1,6 +1,6 @@
 syntax = "proto3";
 import "google/protobuf/timestamp.proto";
-import "photo.proto";
+import "media.proto";
 import "roads.proto";
 
 package assets;
@@ -38,8 +38,8 @@ message Bridge {
     // it comes from the surveys - NOT from the bridge
     string asset_condition = 20;
     string condition_description = 21;
-    repeated Photo inventory_photos = 22;
-    repeated Photo survey_photos = 23;
+    repeated Media inventory_media = 22;
+    repeated Media survey_media = 23;
     // NON-SHARED FIELDS (#26 and onwards)
     string river_name = 28;
     int32 number_spans = 29;
@@ -73,8 +73,8 @@ message Culvert {
     // it comes from the surveys - NOT from the culvert
     string asset_condition = 20;
     string condition_description = 21;
-    repeated Photo inventory_photos = 22;
-    repeated Photo survey_photos = 23;
+    repeated Media inventory_media = 22;
+    repeated Media survey_media = 23;
     // NON-SHARED FIELDS (#26 and onwards)
     float height = 28;
     int32 number_cells = 29;
@@ -107,8 +107,8 @@ message Drift {
     // it comes from the surveys - NOT from the drift
     string asset_condition = 20;
     string condition_description = 21;
-    repeated Photo inventory_photos = 22;
-    repeated Photo survey_photos = 23;
+    repeated Media inventory_media = 22;
+    repeated Media survey_media = 23;
     // NON-SHARED FIELDS (#26 and onwards)
     float thickness = 28;
 }

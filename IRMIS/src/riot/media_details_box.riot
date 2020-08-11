@@ -1,0 +1,115 @@
+<media_details_box>
+    <div if="{ !state.hidden }" id="inventory-media_wrapper">
+        <template if="{ state.errors.length }">
+            <p class="small">{ window.gettext(state.errors[0]) }</p>
+        </template>
+        <div if="{ !state.errors.length && state.currentMediaData }">
+            <div if="{ state.currentMedia === 1 }" class="text-center">
+                <img if="{ isImage(state.currentMediaData[0]) }" class="uploaded-media" src="{ state.currentMediaData[0].url }" />
+                <template if="{ isVideo(state.currentMediaData[0]) }">
+                    <video class="uploaded-media" controls>
+                        <source src="{ state.currentMediaData[0].url }"></source>
+                        <a target="_blank">{ state.currentMediaData[0].url }</a>
+                    </video>
+                </template>
+            </div>
+            <div if="{ state.currentMedia === 2 }" class="text-center">
+                <img if="{ isImage(state.currentMediaData[1]) }" class="uploaded-media" src="{ state.currentMediaData[1].url }" />
+                <template if="{ isVideo(state.currentMediaData[1]) }">
+                    <video class="uploaded-media" controls>
+                        <source src="{ state.currentMediaData[1].url }"></source>
+                        <a target="_blank">{ state.currentMediaData[1].url }</a>
+                    </video>
+                </template>
+            </div>
+            <div if="{ state.currentMedia === 3 }" class="text-center">
+                <img if="{ isImage(state.currentMediaData[2]) }" class="uploaded-media" src="{ state.currentMediaData[2].url }" />
+                <template if="{ isVideo(state.currentMediaData[2]) }">
+                    <video class="uploaded-media" controls>
+                        <source src="{ state.currentMediaData[2].url }"></source>
+                        <a target="_blank">{ state.currentMediaData[2].url }</a>
+                    </video>
+                </template>
+            </div>
+            <template if="{ state.currentMediaData.length > 1 }">
+                <ul class="d-flex justify-content-center pagination">
+                    <li onclick="{ showPreviousMedia }">{ window.gettext("Previous") }</li>
+                    <li class="{ state.currentMedia === 1 ? 'active' : '' }" onclick="{ showMedia1 }">1</li>
+                    <li class="{ state.currentMedia === 2 ? 'active' : '' }" onclick="{ showMedia2 }">2</li>
+                    <li if="{ state.currentMediaData.length > 2 }" class="{ state.currentMedia === 3 ? 'active' : '' }" onclick="{ showMedia3 }">3</li>
+                    <li onclick="{ showNextMedia }">{ window.gettext("Next") }</li>
+                </ul>
+            </template>
+            <p if="{ state.currentMedia === 1 }">{ state.currentMediaData[0].description }</p>
+            <p if="{ state.currentMedia === 2 }">{ state.currentMediaData[1].description }</p>
+            <p if="{ state.currentMedia === 3 }">{ state.currentMediaData[2].description }</p>
+        </div>
+    </div>
+
+    <script>
+        import { isImage, isVideo } from "../assets/editUtilities";
+
+        export default {
+            state: {
+                hidden: true,
+                errors: [],
+                currentMediaData: undefined,
+                currentMedia: null,
+                noDescription: window.gettext("No media description provided"),
+            },
+            onMounted(props, state) {
+                this.mediaModalListener = (data) => {
+                    if (data.detail.currentMediaData == undefined) {
+                        this.state.hidden = true;
+                    }
+                    else if (data.detail.currentMediaData != []) {
+                        this.state.currentMediaData = data.detail.currentMediaData;
+                        this.state.currentMedia = 1;
+                        this.state.hidden = false;
+                    } else {
+                        this.state.errors = ["No inventory photos and videos to show"];
+                        this.state.hidden = false;
+                    }
+                    this.update();
+                };
+                document.addEventListener("media-details-modal.updateModalData", this.mediaModalListener);
+
+                this.mediaHideData = () => {
+                    this.state.hidden = true;
+                    this.update();
+                };
+                document.addEventListener("media-details-modal.hideData", this.mediaHideData);
+            },
+            onUnmount(props, state) {
+                document.removeEventListener("media-details-modal.updateModalData", this.mediaModalListener);
+                document.removeEventListener("media-details-modal.hideData", this.mediaHideData);
+            },
+            isImage(media) {
+                return isImage(media);
+            },
+            isVideo(media) {
+                return isVideo(media);
+            },
+            showMedia1() {
+                this.state.currentMedia = 1;
+                this.update();
+            },
+            showMedia2() {
+                this.state.currentMedia = 2;
+                this.update();
+            },
+            showMedia3() {
+                this.state.currentMedia = 3;
+                this.update();
+            },
+            showPreviousMedia() {
+                if (this.state.currentMedia > 1) this.state.currentMedia = this.state.currentMedia - 1;
+                this.update();
+            },
+            showNextMedia() {
+                if (this.state.currentMedia < this.state.currentMediaData.length) this.state.currentMedia = this.state.currentMedia + 1;
+                this.update();
+            },
+        }
+    </script>
+</media_details_box>

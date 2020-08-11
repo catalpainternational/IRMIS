@@ -25,15 +25,25 @@ deleteLink.forEach(link => {
 });
 
 formModalLink.forEach(link => {
-    link.addEventListener("click", () => {
-        requestMethod = link.dataset.method;
-        requestData = link.dataset.object ? JSON.parse(link.dataset.object) : null;
+    if (paymentFormModal.length) {
+        var addPayment = document.getElementById("payment-destination");
+        if (!addPayment.options.length) {
+            link.disabled = true;
+            document.getElementById("no-companies-tooltip").hidden = false;
+        }
+    }
 
-        if (inspectionFormModal.length) inspectionFormModal.modal("show");
-        else if (paymentFormModal.length) paymentFormModal.modal("show");
-        else if (socialDataFormModal.length) socialDataFormModal.modal("show");
-        else if (documentFormModal.length) documentFormModal.modal("show");
-    });
+    if (!link.disabled) {
+        link.addEventListener("click", () => {
+            requestMethod = link.dataset.method;
+            requestData = link.dataset.object ? JSON.parse(link.dataset.object) : null;
+
+            if (inspectionFormModal.length) inspectionFormModal.modal("show");
+            else if (paymentFormModal.length) paymentFormModal.modal("show");
+            else if (socialDataFormModal.length) socialDataFormModal.modal("show");
+            else if (documentFormModal.length) documentFormModal.modal("show");
+        });
+    }
 });
 
 deleteAlert.on('shown.bs.modal', () => {

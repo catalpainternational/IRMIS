@@ -1,4 +1,5 @@
 import { toChainageFormat } from "./assets/protoBufUtilities";
+import { formatNumber } from "./assets/utilities";
 
 // tslint:disable: object-literal-sort-keys
 const currentDate = new Date();
@@ -6,8 +7,8 @@ const currentYr = currentDate.getFullYear();
 
 /** The list of sections for the different types of asset reports */
 export const reportAssetsSections: { [name: string]: string }[] = [
-    { section: "network", title: (window as any).gettext("Road Network Report") },
-    { section: "condition", title: (window as any).gettext("Road Condition Report") },
+    { section: "network", title: (window as any).gettext("Road Network Reports") },
+    { section: "condition", title: (window as any).gettext("Road Condition Reports") },
     { section: "roadClass", title: (window as any).gettext("Road Network Reports by Road Class") },
     { section: "structures", title: (window as any).gettext("Structures Reports") },
 ];
@@ -21,10 +22,9 @@ export const assetReports: { [name: string]: number | string }[] = [
     { id: 5, section: "roadClass", title: (window as any).gettext("Road Network Length - National Class") },
     { id: 6, section: "roadClass", title: (window as any).gettext("Road Network Length - Municipal Class") },
     { id: 7, section: "roadClass", title: (window as any).gettext("Road Network Length - Rural Class") },
-    { id: 8, section: "roadClass", title: (window as any).gettext("Road Network Length - Highway Class") },
-    { id: 9, section: "roadClass", title: (window as any).gettext("Road Network Length - Urban Class") },
-    { id: 10, section: "structures", title: (window as any).gettext("Structures Overview Report") },
-    { id: 11, section: "structures", title: (window as any).gettext("Structures Condition Report") },
+    { id: 8, section: "roadClass", title: (window as any).gettext("Road Network Length - Urban Class") },
+    { id: 9, section: "structures", title: (window as any).gettext("Structures Overview") },
+    { id: 10, section: "structures", title: (window as any).gettext("Structures Condition") },
 ];
 
 /** The names given to the dataTables used in the asset reports */
@@ -74,14 +74,14 @@ export const reportColumns: { [name: string]: any } = {
         orderable: false,
     },
     distance: {
-        title: (window as any).gettext("Length (km)"),
+        title: (window as any).gettext("Length (Km)"),
         data: "distance",
         defaultContent: "",
         className: "text-right",
         orderable: false,
         render: (data: any, type: string) => {
-            return (type === "display")
-                ? (data / 1000).toFixed(2)
+            return (type === "display" && data)
+                ? formatNumber((data / 1000).toFixed(2))
                 : data;
         },
     },
@@ -92,8 +92,8 @@ export const reportColumns: { [name: string]: any } = {
         className: "text-right",
         orderable: false,
         render: (data: any, type: string) => {
-            return (type === "display")
-                ? data.toFixed(0)
+            return (type === "display" && data)
+                ? formatNumber(data.toFixed(0))
                 : data;
         },
     },
@@ -103,6 +103,11 @@ export const reportColumns: { [name: string]: any } = {
         defaultContent: "",
         className: "text-right",
         orderable: false,
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     percent: {
         title: (window as any).gettext("Percentages (%)"),
@@ -110,6 +115,11 @@ export const reportColumns: { [name: string]: any } = {
         defaultContent: "",
         className: "text-right",
         orderable: false,
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data.toFixed(2))
+                : data;
+        },
     },
     chainageStart: {
         title: (window as any).gettext("Chainage Start"),
@@ -118,7 +128,7 @@ export const reportColumns: { [name: string]: any } = {
         className: "text-right",
         orderable: false,
         render: (data: any, type: string) => {
-            return (type === "display") ? toChainageFormat(data) : data;
+            return (type === "display" && data) ? toChainageFormat(data) : data;
         },
     },
     chainageEnd: {
@@ -128,7 +138,7 @@ export const reportColumns: { [name: string]: any } = {
         className: "text-right",
         orderable: false,
         render: (data: any, type: string) => {
-            return (type === "display") ? toChainageFormat(data) : data;
+            return (type === "display" && data) ? toChainageFormat(data) : data;
         },
     },
     municipality: {
@@ -154,6 +164,12 @@ export const reportColumns: { [name: string]: any } = {
         data: "sourceRoughness",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     roughnessCondition: {
         title: (window as any).gettext("Roughness Condition"),
@@ -209,8 +225,8 @@ export const reportColumnSets: { [name: string]: string[] } = {
  * Note:
  * - fixedFilters uses snake_case for various field names
  * this excludes 'reportassettype', 'primaryattribute' and 'secondaryattribute' because they are not field names
- * within report_assets.riot.html it also excludes several fields that a heavily verified/manipulated as filters
- * - visibleFilters uses camelCase for various html id names within report.riot.html
+ * within report_assets.riot it also excludes several fields that a heavily verified/manipulated as filters
+ * - visibleFilters uses camelCase for various html id names within report.riot
  */
 export const reportAssetsContent: { [name: string]: any } = {
     1: {
@@ -266,7 +282,7 @@ export const reportAssetsContent: { [name: string]: any } = {
         },
     },
     3: {
-        title: (window as any).gettext("Surface Condition"),
+        title: (window as any).gettext("Surface Condition (SDI)"),
         description: (window as any).gettext("A report on Road Surface Condition. This report provides detailed Surface Condition information per segment"),
         noReportTitle: (window as any).gettext("Please select a road above to view Surface Condition reports"),
         noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed Surface Condition information per segment of the selected road"),
@@ -355,22 +371,6 @@ export const reportAssetsContent: { [name: string]: any } = {
         reportElements: { totalLength: true, dataTables: [reportTableIds.roadStatus, reportTableIds.technicalClass] },
     },
     8: {
-        title: (window as any).gettext("Road Network Length - Highway Class"),
-        description: (window as any).gettext("A report on the total length of Highways. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Highways"),
-        noReportTitle: (window as any).gettext("Click on Create Report button to access the Road Network Length report for Highways"),
-        noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed Road Network Length information for Highway class roads"),
-        noReportData: (window as any).gettext("Sorry, data for Highway Class roads is not available yet"),
-        fixedFilter: {
-            reportassettype: ["ROAD"],
-            primaryattribute: ["road_status", "technical_class"],
-            asset_class: "HIGH",
-        },
-        visibleFilters: {
-            reportDate: true,
-        },
-        reportElements: { totalLength: true, dataTables: [reportTableIds.roadStatus, reportTableIds.technicalClass] },
-    },
-    9: {
         title: (window as any).gettext("Road Network Length - Urban Class"),
         description: (window as any).gettext("A report on the total length of Urban Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Urban Roads"),
         noReportTitle: (window as any).gettext("Click on Create Report button to access the Road Network Length report for Urban roads"),
@@ -386,8 +386,8 @@ export const reportAssetsContent: { [name: string]: any } = {
         },
         reportElements: { totalLength: true, dataTables: [reportTableIds.roadStatus, reportTableIds.technicalClass] },
     },
-    10: {
-        title: (window as any).gettext("Structures"),
+    9: {
+        title: (window as any).gettext("Structures Overview"),
         description: (window as any).gettext("A report on Structures data. This report provides detailed Structure totals and percentages according to structure type as well as by structure class"),
         noReportTitle: (window as any).gettext("Click on Create Report button to access the Structure Class Report for structures"),
         noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed Structure Class information for structures"),
@@ -411,8 +411,8 @@ export const reportAssetsContent: { [name: string]: any } = {
             dataTables: [reportTableIds.structureForm, reportTableIds.structureClass],
         },
     },
-    11: {
-        title: (window as any).gettext("Condition of Structures"),
+    10: {
+        title: (window as any).gettext("Structures Condition"),
         description: (window as any).gettext("A report on Structures conditions. This report provides detailed Structure condition information by structure type"),
         noReportTitle: (window as any).gettext("Click on Create Report button to access the Structure Condition Report for structures"),
         noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed Structure Condition information for structures"),
@@ -468,7 +468,7 @@ export const reportContractsSections: { [name: string]: string }[] = [
 export const contractReports: { [name: string]: number | string }[] = [
     { id: 1, section: "contract", title: (window as any).gettext("Financial and Physical Progress Summary") },
     { id: 2, section: "contract", title: (window as any).gettext("Financial and Physical Progress") },
-    { id: 3, section: "contract", title: (window as any).gettext("Completed Contracts") },
+    { id: 3, section: "contract", title: (window as any).gettext("Completed Contracts Length") },
     { id: 4, section: "socialSafeguard", title: (window as any).gettext("Social Safeguard") },
     { id: 5, section: "socialSafeguard", title: (window as any).gettext("Contract's Social Safeguard") },
 ];
@@ -483,6 +483,9 @@ export const reportContractsTableIds: { [name: string]: string } = {
     numberEmployees: "report-number-employees-table",
     wages: "report-wages-table",
     workedDays: "report-worked-days-table",
+    numberEmployeesSummary: "report-number-employees-summary-table",
+    wagesSummary: "report-wages-summary-table",
+    workedDaysSummary: "report-worked-days-summary-table",
 };
 
 /** The various titles given to the dataTables used in the contract reports */
@@ -531,24 +534,48 @@ export const reportContractsTableColumns: { [name: string]: any } = {
         data: "assets",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     projects: {
         title: (window as any).gettext("Number of projects"),
         data: "projects",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     contracts: {
         title: (window as any).gettext("Number of contracts"),
         data: "contracts",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     companies: {
         title: (window as any).gettext("Number of companies"),
         data: "companies",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     contractor: {
         title: (window as any).gettext("Contractor"),
@@ -561,60 +588,120 @@ export const reportContractsTableColumns: { [name: string]: any } = {
         data: "prjbudgetcurrentyear",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     prjBudgetTotal: {
         title: (window as any).gettext("Total budget ($)"),
         data: "prjbudgettotal",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     contractValueOrigTotal: {
         title: (window as any).gettext("Total contract value ($)"),
         data: "contractvalueorigtotal",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     contractValueAmdTotal: {
         title: (window as any).gettext("Value of the contract - including variations (amendments) ($)"),
         data: "contractvalueamdtotal",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     paymentPreviousYear: {
         title: (window as any).gettext("Payments previous year ($)"),
         data: "paymentpreviousyear",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     paymentCurrentYear: {
         title: (window as any).gettext("Payments current year ($)"),
         data: "paymentcurrentyear",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     totalPayment: {
         title: (window as any).gettext("Total payment ($)"),
         data: "totalpayment",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     totalProgressPayment: {
         title: (window as any).gettext("Total progress payment (%)"),
         data: "totalprogresspayment",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     balance: {
-        title: (window as any).gettext("Balance"),
+        title: (window as any).gettext("Balance ($)"),
         data: "balance",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     physicalProgress: {
-        title: (window as any).gettext("Physical progress"),
+        title: (window as any).gettext("Physical progress (%)"),
         data: "physicalprogress",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     status: {
         title: (window as any).gettext("Status"),
@@ -675,53 +762,113 @@ export const reportContractsTableColumns: { [name: string]: any } = {
         data: "national",
         defaultContent: 0,
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber((data / 1000).toFixed(2))
+                : data;
+        },
     },
     rural: {
         title: (window as any).gettext("Rural"),
         data: "rural",
         defaultContent: 0,
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber((data / 1000).toFixed(2))
+                : data;
+        },
     },
     municipal: {
         title: (window as any).gettext("Municipal"),
         data: "municipal",
         defaultContent: 0,
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber((data / 1000).toFixed(2))
+                : data;
+        },
     },
     totalLength: {
         title: (window as any).gettext("Total"),
         data: "totallength",
         defaultContent: 0,
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber((data / 1000).toFixed(2))
+                : data;
+        },
     },
     yrZero: {
         title: (currentYr).toString(),
         data: "yrzero",
         defaultContent: 0,
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber((data / 1000).toFixed(2))
+                : data;
+        },
     },
     yrOne: {
         title: (currentYr - 1).toString(),
         data: "yrone",
         defaultContent: 0,
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber((data / 1000).toFixed(2))
+                : data;
+        },
     },
     yrTwo: {
         title: (currentYr - 2).toString(),
         data: "yrtwo",
         defaultContent: 0,
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber((data / 1000).toFixed(2))
+                : data;
+        },
     },
     yrThree: {
         title: (currentYr - 3).toString(),
         data: "yrthree",
         defaultContent: 0,
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber((data / 1000).toFixed(2))
+                : data;
+        },
     },
     yrFour: {
         title: (currentYr - 4).toString(),
         data: "yrfour",
         defaultContent: 0,
+        orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber((data / 1000).toFixed(2))
+                : data;
+        },
+    },
+    yearMonth: {
+        title: (window as any).gettext("Year/Month"),
+        data: "yearmonth",
+        defaultContent: "",
         orderable: false,
     },
     totalEmployees: {
@@ -729,176 +876,289 @@ export const reportContractsTableColumns: { [name: string]: any } = {
         data: "totalemployees",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     internationalEmployees: {
         title: (window as any).gettext("Internationals"),
         data: "internationalemployees",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     nationalEmployees: {
         title: (window as any).gettext("Nationals"),
         data: "nationalemployees",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     employeesWithDisabilities: {
         title: (window as any).gettext("Employees With Disabilities"),
         data: "employeeswithdisabilities",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     femaleEmployeesWithDisabilities: {
         title: (window as any).gettext("Females With Disabilities"),
         data: "femaleemployeeswithdisabilities",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     youngEmployees: {
         title: (window as any).gettext("Young"),
         data: "youngemployees",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     youngFemaleEmployees: {
         title: (window as any).gettext("Young Females"),
         data: "youngfemaleemployees",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     femaleEmployees: {
         title: (window as any).gettext("Female Employees"),
         data: "femaleemployees",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     internationalEmployees_percent: {
-        title: (window as any).gettext("%"),
+        title: (window as any).gettext("Internationals (%)"),
         data: "internationalemployees_percent",
         defaultContent: "",
         orderable: true,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     nationalEmployees_percent: {
-        title: (window as any).gettext("%"),
+        title: (window as any).gettext("Nationals (%)"),
         data: "nationalemployees_percent",
         defaultContent: "",
         orderable: true,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     employeesWithDisabilities_percent: {
-        title: (window as any).gettext("%"),
+        title: (window as any).gettext("Employees With Disabilities (%)"),
         data: "employeeswithdisabilities_percent",
         defaultContent: "",
         orderable: true,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     femaleEmployeesWithDisabilities_percent: {
-        title: (window as any).gettext("%"),
+        title: (window as any).gettext("Females With Disabilities (%)"),
         data: "femaleemployeeswithdisabilities_percent",
         defaultContent: "",
         orderable: true,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     youngEmployees_percent: {
-        title: (window as any).gettext("%"),
+        title: (window as any).gettext("Young (%)"),
         data: "youngemployees_percent",
         defaultContent: "",
         orderable: true,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     youngFemaleEmployees_percent: {
-        title: (window as any).gettext("%"),
+        title: (window as any).gettext("Young Females (%)"),
         data: "youngfemaleemployees_percent",
         defaultContent: "",
         orderable: true,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     femaleEmployees_percent: {
-        title: (window as any).gettext("%"),
+        title: (window as any).gettext("Female Employees (%)"),
         data: "femaleemployees_percent",
         defaultContent: "",
         orderable: true,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     totalWage: {
-        title: (window as any).gettext("Total Wage"),
+        title: (window as any).gettext("Total Wage (in USD)"),
         data: "totalwage",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     averageGrossWage: {
-        title: (window as any).gettext("Average Gross Wage"),
+        title: (window as any).gettext("Average Gross Wage (in USD)"),
         data: "averagegrosswage",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     averageNetWage: {
-        title: (window as any).gettext("Average Net Wage"),
+        title: (window as any).gettext("Average Net Wage (in USD)"),
         data: "averagenetwage",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     totalWorkedDays: {
-        title: (window as any).gettext("Worked Days"),
+        title: (window as any).gettext("Total Worker-Days"),
         data: "totalworkeddays",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     femaleEmployeesWorkedDays: {
         title: (window as any).gettext("Females"),
         data: "femaleemployeesworkeddays",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     employeesWithDisabilitiesWorkedDays: {
         title: (window as any).gettext("Employees With Disabilities"),
         data: "employeeswithdisabilitiesworkeddays",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     femaleEmployeesWithDisabilitiesWorkedDays: {
         title: (window as any).gettext("Females With Disabilities"),
         data: "femaleemployeeswithdisabilitiesworkeddays",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     youngEmployeesWorkedDays: {
         title: (window as any).gettext("Young"),
         data: "youngemployeesworkeddays",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
     youngFemaleEmployeesWorkedDays: {
         title: (window as any).gettext("Young Females"),
         data: "youngfemaleemployeesworkeddays",
         defaultContent: "",
         orderable: false,
+        className: "text-right",
+        render: (data: any, type: string) => {
+            return (type === "display" && data)
+                ? formatNumber(data)
+                : data;
+        },
     },
-    femaleEmployeesWorkedDays_percent: {
-        title: (window as any).gettext("%"),
-        data: "femaleemployeesworkeddays_percent",
-        defaultContent: "",
-        orderable: false,
-    },
-    employeesWithDisabilitiesWorkedDays_percent: {
-        title: (window as any).gettext("%"),
-        data: "employeeswithdisabilitiesworkeddays_percent",
-        defaultContent: "",
-        orderable: false,
-    },
-    femaleEmployeesWithDisabilitiesWorkedDays_percent: {
-        title: (window as any).gettext("%"),
-        data: "femaleemployeeswithdisabilitiesworkeddays_percent",
-        defaultContent: "",
-        orderable: false,
-    },
-    youngEmployeesWorkedDays_percent: {
-        title: (window as any).gettext("%"),
-        data: "youngemployeesworkeddays_percent",
-        defaultContent: "",
-        orderable: false,
-    },
-    youngFemaleEmployeesWorkedDays_percent: {
-        title: (window as any).gettext("%"),
-        data: "youngfemaleemployeesworkeddays_percent",
-        defaultContent: "",
-        orderable: false,
-    },
-
 };
 
 /** The various columns for each dataTable used in the contract reports */
@@ -969,12 +1229,14 @@ export const reportContractsColumnSets: { [name: string]: string[] } = {
         reportContractsTableColumns.rural,
         reportContractsTableColumns.totalLength,
     ],
-    numberEmployees: [
+    numberEmployeesSummary: [
         reportContractsTableColumns.totalEmployees,
         reportContractsTableColumns.internationalEmployees,
         reportContractsTableColumns.internationalEmployees_percent,
         reportContractsTableColumns.nationalEmployees,
         reportContractsTableColumns.nationalEmployees_percent,
+        reportContractsTableColumns.femaleEmployees,
+        reportContractsTableColumns.femaleEmployees_percent,
         reportContractsTableColumns.employeesWithDisabilities,
         reportContractsTableColumns.employeesWithDisabilities_percent,
         reportContractsTableColumns.femaleEmployeesWithDisabilities,
@@ -983,27 +1245,53 @@ export const reportContractsColumnSets: { [name: string]: string[] } = {
         reportContractsTableColumns.youngEmployees_percent,
         reportContractsTableColumns.youngFemaleEmployees,
         reportContractsTableColumns.youngFemaleEmployees_percent,
+    ],
+    numberEmployees: [
+        reportContractsTableColumns.yearMonth,
+        reportContractsTableColumns.totalEmployees,
+        reportContractsTableColumns.internationalEmployees,
+        reportContractsTableColumns.internationalEmployees_percent,
+        reportContractsTableColumns.nationalEmployees,
+        reportContractsTableColumns.nationalEmployees_percent,
         reportContractsTableColumns.femaleEmployees,
         reportContractsTableColumns.femaleEmployees_percent,
+        reportContractsTableColumns.employeesWithDisabilities,
+        reportContractsTableColumns.employeesWithDisabilities_percent,
+        reportContractsTableColumns.femaleEmployeesWithDisabilities,
+        reportContractsTableColumns.femaleEmployeesWithDisabilities_percent,
+        reportContractsTableColumns.youngEmployees,
+        reportContractsTableColumns.youngEmployees_percent,
+        reportContractsTableColumns.youngFemaleEmployees,
+        reportContractsTableColumns.youngFemaleEmployees_percent,
 
     ],
-    wages: [
+    wagesSummary: [
         reportContractsTableColumns.totalWage,
         reportContractsTableColumns.averageGrossWage,
         reportContractsTableColumns.averageNetWage,
     ],
-    workedDays: [
+    wages: [
+        reportContractsTableColumns.yearMonth,
+        reportContractsTableColumns.totalWage,
+        reportContractsTableColumns.averageGrossWage,
+        reportContractsTableColumns.averageNetWage,
+    ],
+    workedDaysSummary: [
         reportContractsTableColumns.totalWorkedDays,
         reportContractsTableColumns.femaleEmployeesWorkedDays,
-        // reportContractsTableColumns.femaleEmployeesWorkedDays_percent,
         reportContractsTableColumns.employeesWithDisabilitiesWorkedDays,
-        // reportContractsTableColumns.employeesWithDisabilitiesWorkedDays_percent,
         reportContractsTableColumns.femaleEmployeesWithDisabilitiesWorkedDays,
-        // reportContractsTableColumns.femaleEmployeesWithDisabilitiesWorkedDays_percent,
         reportContractsTableColumns.youngEmployeesWorkedDays,
-        // reportContractsTableColumns.youngEmployeesWorkedDays_percent,
         reportContractsTableColumns.youngFemaleEmployeesWorkedDays,
-        // reportContractsTableColumns.youngFemaleEmployeesWorkedDays_percent,
+    ],
+    workedDays: [
+        reportContractsTableColumns.yearMonth,
+        reportContractsTableColumns.totalWorkedDays,
+        reportContractsTableColumns.femaleEmployeesWorkedDays,
+        reportContractsTableColumns.employeesWithDisabilitiesWorkedDays,
+        reportContractsTableColumns.femaleEmployeesWithDisabilitiesWorkedDays,
+        reportContractsTableColumns.youngEmployeesWorkedDays,
+        reportContractsTableColumns.youngFemaleEmployeesWorkedDays,
     ],
 };
 
@@ -1011,7 +1299,7 @@ export const reportContractsColumnSets: { [name: string]: string[] } = {
 export const reportContractsContent: { [name: string]: any } = {
     1: {
         title: (window as any).gettext("Financial and Physical Progress Summary"),
-        description: (window as any).gettext("A report on the financial and physical progress of all projects and contracts. This report provides detailed information per contract"),
+        description: (window as any).gettext("A summary report on the financial and physical progress of all projects and contracts. This report provides aggregated information per program"),
         noReportTitle: (window as any).gettext("Click on Create Report button to access the financial and physical progress summary report"),
         noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed financial and physical progress information. You can use filters to generate a customized report"),
         noReportData: (window as any).gettext("Sorry, data for financial and physical progress is not available yet"),
@@ -1034,7 +1322,7 @@ export const reportContractsContent: { [name: string]: any } = {
     },
     2: {
         title: (window as any).gettext("Financial and Physical Progress"),
-        description: (window as any).gettext("A summary report on the financial and physical progress of all projects and contracts. This report provides aggregated information per program"),
+        description: (window as any).gettext("A report on the financial and physical progress of all projects and contracts. This report provides detailed information per contract"),
         noReportTitle: (window as any).gettext("Click on Create Report button to access the financial and physical progress report"),
         noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed financial and physical progress information. You can use filters to generate a customized report"),
         noReportData: (window as any).gettext("Sorry, data for financial and physical progress is not available yet"),
@@ -1056,7 +1344,7 @@ export const reportContractsContent: { [name: string]: any } = {
         },
     },
     3: {
-        title: (window as any).gettext("Completed Contracts"),
+        title: (window as any).gettext("Completed Contracts Length"),
         description: (window as any).gettext("A summary report on the total length of works completed by type of work, breakdown by road class and year"),
         noReportTitle: (window as any).gettext("Click on Create Report button to access the completed contracts report"),
         noReportDescription: (window as any).gettext("The report will be shown in this area and will provide you with detailed completed contracts information. You can use filters to generate a customized report"),
@@ -1091,11 +1379,11 @@ export const reportContractsContent: { [name: string]: any } = {
         },
         reportElements: {
             filters: true,
-            attributeNames: ["numberEmployees", "wages", "workedDays"],
+            attributeNames: ["numberEmployeesSummary", "wagesSummary", "workedDaysSummary"],
             dataTables: [
-                reportContractsTableIds.numberEmployees,
-                reportContractsTableIds.wages,
-                reportContractsTableIds.workedDays
+                reportContractsTableIds.numberEmployeesSummary,
+                reportContractsTableIds.wagesSummary,
+                reportContractsTableIds.workedDaysSummary
             ],
         },
     },
@@ -1131,8 +1419,12 @@ export const allContractReportElements = {
         reportContractsTableIds.assetClassTypeOfWork,
         reportContractsTableIds.typeOfWorkYear,
         reportContractsTableIds.assetClassYear,
+        reportContractsTableIds.numberEmployeesSummary,
+        reportContractsTableIds.wagesSummary,
+        reportContractsTableIds.workedDaysSummary,
         reportContractsTableIds.numberEmployees,
         reportContractsTableIds.wages,
         reportContractsTableIds.workedDays,
+
     ],
 };

@@ -1,5 +1,9 @@
 import { EstradaBridge, EstradaCulvert, EstradaDrift } from "./assets/models/structures";
 import { EstradaRoad } from "./assets/models/road";
+
+import { toChainageFormat } from "./assets/protoBufUtilities";
+import { formatNumber } from "./assets/utilities";
+
 import { currentFilter } from "./side_menu";
 
 /** Define the general events that the main tables will respond to
@@ -176,6 +180,9 @@ export const estradaTableColumns = [
         data: "linkStartChainage",
         defaultContent: "",
         className: "text-right",
+        render: (data, type) => {
+            return (type === 'display') ? toChainageFormat(data) : data;
+        },
     },
     {
         // data-column="11"
@@ -203,6 +210,9 @@ export const estradaTableColumns = [
         data: "linkEndChainage",
         defaultContent: "",
         className: "text-right",
+        render: (data, type) => {
+            return (type === 'display') ? toChainageFormat(data) : data;
+        },
     },
     {
         // data-column="15"
@@ -264,10 +274,10 @@ export const estradaTableColumns = [
     },
     {
         // data-column="22"
-        title: EstradaRoad.getFieldName("rainfall"),
+        title: window.gettext("Rainfall"),
         data: null,
         defaultContent: "",
-        render: r => buttonSegmentsTemplate("rainfall", r),
+        render: r => buttonSegmentsTemplate("rainfall_maximum", r, "Max. Rainfall"),
         visible: false,
         orderable: false,
     },
@@ -282,10 +292,10 @@ export const estradaTableColumns = [
     },
     {
         // data-column="24"
-        title: window.gettext("Inventory Photos"),
+        title: window.gettext("Inventory Photos/Videos"),
         data: null,
         defaultContent: "",
-        render: (r) => r.inventoryPhotos.length ? buttonSegmentsTemplate("inventory_photos", r, "Photos") : "",
+        render: (r) => r.inventoryMedia.length ? buttonSegmentsTemplate("inventory_media", r, "Photos/Videos") : "",
         className: "text-center",
         visible: false,
         orderable: false,
@@ -341,7 +351,7 @@ export const estradaTableColumns = [
         data: "constructionYear",
         defaultContent: "",
         visible: false,
-        render: (data, type) => numberTemplate(data, type, 0, ""),
+        render: (data, type) => numberTemplate(data, type, 0, "", false),
     },
     {
         // data-column="32"
@@ -514,13 +524,13 @@ export const structuresTableColumns = [
         className: "text-right",
         defaultContent: "",
         visible: false,
-        render: (data, type) => numberTemplate(data, type, 0, ""),
+        render: (data, type) => numberTemplate(data, type, 0, "", false),
     },
     {
-        title: window.gettext("Inventory Photos"),
+        title: window.gettext("Inventory Photos/Videos"),
         data: null,
         defaultContent: "",
-        render: (r) => r.inventoryPhotos.length ? buttonSegmentsTemplate("inventory_photos", r, "Photos") : "",
+        render: (r) => r.inventoryMedia.length ? buttonSegmentsTemplate("inventory_media", r, "Photos/Videos") : "",
         className: "text-center",
         visible: false,
         orderable: false,
@@ -538,10 +548,10 @@ export const structuresTableColumns = [
         className: "clip-text-ellipsis",
     },
     {
-        title: window.gettext("Condition Photos"),
+        title: window.gettext("Condition Photos/Videos"),
         data: null,
         defaultContent: "",
-        render: (r) => r.assetCondition ? buttonSegmentsTemplate("structure_condition_photos", r, "Photos") : "",
+        render: (r) => r.assetCondition ? buttonSegmentsTemplate("structure_condition_media", r, "Photos/Videos") : "",
         className: "text-center",
         visible: false,
         orderable: false,
@@ -571,9 +581,11 @@ function getStructureTypeName(structureType) {
     return window.gettext(structureTypeToName[structureType] || structureType);
 }
 
-function numberTemplate(data, type, dp = 0, defaultContent = "") {
+function numberTemplate(data, type, dp = 0, defaultContent = "", toFormat = true) {
     if (type === "display" && data) {
-        return data > 0 ? parseFloat(data).toFixed(dp) : defaultContent;
+        let value = parseFloat(data).toFixed(dp);
+        if (toFormat) value = formatNumber(parseFloat(data).toFixed(dp));
+        return data > 0 ? value : defaultContent;
     }
     return data;
 }
@@ -606,7 +618,7 @@ function buttonSegmentsTemplate(attrib, asset, fallbackLabel) {
     const data_id = ' data-id="' + asset.id + '"';
     const data_attr = ' data-attr="' + attrib + '"';
     const data_type = ' data-type="' + asset.assetType + '"';
-    const viewTitle = window.gettext("View") + " " + (getFieldName(attrib) || window.gettext(fallbackLabel));
+    const viewTitle = window.gettext("View") + " " + (window.gettext(fallbackLabel) || getFieldName(attrib));
 
     return "<a" + data_toggle + data_target + data_code + data_id + data_attr + data_type + ">" + viewTitle + "</a>";
 }

@@ -36,6 +36,32 @@
     }
 }
 
+.rdtl-logo {
+    background-image: url("../images/RDTL.png");
+    background-size: contain;
+    height: 77px;
+    width: 80px;
+}
+
+.ausaid-logo {
+    background-image: url("../images/ausaid_logo.svg");
+    height: 36px;
+    width: 80px;
+}
+
+.aus-embassy-logo {
+    background-image: url("../images/aus_embassy_logo.svg");
+    background-size: cover;
+    height: 62px;
+    width: 92px;
+}
+
+.ilo-logo {
+    background-image: url("../images/ilo_logo.svg");
+    height: 41px;
+    width: 47px;
+}
+
 .checkbox {
     background-image: url("../images/checkbox.svg");
     vertical-align: middle;
@@ -161,13 +187,6 @@ tr.selected .pencil {
     background-image: url("../images/stop_alert.svg");
     height: 117px;
     width: 124px;
-}
-
-.rdtl {
-    background-image: url("../images/RDTL.png");
-    background-size: contain;
-    height: 77px;
-    width: 80px;
 }
 
 .paper {

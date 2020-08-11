@@ -1,19 +1,15 @@
-from django.apps import apps
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.db.models import Sum, Count, Func, IntegerField, OuterRef, Subquery
-from django.db.models.base import ModelBase
-from django.forms import inlineformset_factory
-from django.forms.widgets import DateInput, NumberInput, TextInput
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
-from django.urls import NoReverseMatch, reverse, reverse_lazy
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DetailView, ListView, TemplateView
-from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView
 
 import reversion
 from reversion.models import Version
@@ -278,7 +274,6 @@ class ProjectConstructionScheduleDetailView(DetailView):
 class ProjectDocumentListView(ListView):
     template_name = "contracts/project_documents.html"
     model = models.Project
-    paginate_by = 100
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -311,7 +306,6 @@ class ProjectDocumentDetailView(DetailView):
 class TenderListView(ListView):
     template_name = "contracts/tender_list.html"
     model = models.Tender
-    paginate_by = 100
     queryset = models.Tender.objects.annotate(
         projects_total_budget=Func(
             Sum("projects__budgets__approved_value"),
@@ -337,7 +331,7 @@ class TenderCreateFormView(SuccessMessageMixin, CreateView):
     success_message = _("You have successfully saved")
 
     def get_success_url(self):
-        return reverse_lazy("contract-tender-update", kwargs={"pk": self.object.code})
+        return reverse_lazy("contract-tender-update", kwargs={"pk": self.object.id})
 
 
 @method_decorator(login_required, name="dispatch")
@@ -348,7 +342,7 @@ class TenderUpdateFormView(SuccessMessageMixin, UpdateView):
     success_message = _("You have successfully saved")
 
     def get_success_url(self):
-        return reverse_lazy("contract-tender-update", kwargs={"pk": self.object.code})
+        return reverse_lazy("contract-tender-update", kwargs={"pk": self.object.id})
 
 
 @method_decorator(login_required, name="dispatch")
@@ -358,7 +352,7 @@ class TenderDetailView(DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context["contracts"] = models.Contract.objects.filter(tender=self.object.code)
+        context["contracts"] = models.Contract.objects.filter(tender=self.object.id)
         return context
 
 
@@ -366,15 +360,14 @@ class TenderDetailView(DetailView):
 class TenderDocumentListView(ListView):
     template_name = "contracts/tender_documents.html"
     model = models.Tender
-    paginate_by = 100
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
 
-        tender = get_object_or_404(self.model.objects.filter(code=self.kwargs["pk"]))
+        tender = get_object_or_404(self.model.objects.filter(id=self.kwargs["pk"]))
 
         context["tender"] = {}
-        context["tender"]["code"] = self.kwargs["pk"]
+        context["tender"]["id"] = self.kwargs["pk"]
         context["document_types"] = models.ContractDocumentType.objects.filter(
             category="tender"
         )
@@ -398,7 +391,6 @@ class TenderDocumentDetailView(DetailView):
 class ContractListView(ListView):
     template_name = "contracts/contract_list.html"
     model = models.Contract
-    paginate_by = 100
     queryset = models.Contract.objects.annotate(
         total_budget=Subquery(
             models.Contract.objects.filter(pk=OuterRef("pk"))
@@ -495,7 +487,6 @@ class ContractDetailView(DetailView):
 class ContractInspectionListView(ListView):
     template_name = "contracts/contract_inspections.html"
     model = models.Contract
-    paginate_by = 100
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -528,7 +519,6 @@ class ContractInspectionDetailView(DetailView):
 class ContractPaymentListView(ListView):
     template_name = "contracts/contract_payments.html"
     model = models.Contract
-    paginate_by = 100
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -540,8 +530,8 @@ class ContractPaymentListView(ListView):
         context["payment_list"] = models.ContractPayment.objects.filter(
             contract=self.kwargs["pk"]
         )
-        context["payments_donor"] = models.ContractPaymentDonor.objects.all()
-        context["payments_funding_source"] = models.ContractPaymentSource.objects.all()
+        context["payments_donor"] = models.FundingDonor.objects.all()
+        context["payments_funding_source"] = models.FundingSource.objects.all()
         context["payments_destination"] = models.Company.objects.all()
         return context
 
@@ -563,7 +553,6 @@ class ContractPaymentDetailView(DetailView):
 class SocialSafeguardDataListView(ListView):
     template_name = "contracts/contract_social_safeguard_data.html"
     model = models.Contract
-    paginate_by = 100
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -595,7 +584,6 @@ class SocialSafeguardDataDetailView(DetailView):
 class ContractDocumentListView(ListView):
     template_name = "contracts/contract_documents.html"
     model = models.Contract
-    paginate_by = 100
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -632,7 +620,6 @@ class CompanyListView(ListView):
         total_contracts=Count("contractor_for"),
     )
     template_name = "contracts/company_list.html"
-    paginate_by = 100
 
 
 @method_decorator(login_required, name="dispatch")
@@ -679,7 +666,6 @@ class CompanyDetailView(DetailView):
 class CompanyDocumentListView(ListView):
     template_name = "contracts/company_documents.html"
     model = models.Company
-    paginate_by = 100
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)

@@ -1,11 +1,11 @@
 import * as riot from "riot";
 
-import Top_Menu from "./riot/top_menu.riot.html";
+import Top_Menu from "./riot/top_menu.riot";
 
 riot.register("top_menu", Top_Menu);
 riot.mount("top_menu");
 
-window.addEventListener("load", function() {
+window.addEventListener("load", function () {
     const menuToggle = document.getElementById("topmenu_toggle");
     const dropdown = document.getElementById("settings");
 

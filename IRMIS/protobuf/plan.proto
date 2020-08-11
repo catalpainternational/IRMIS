@@ -13,6 +13,7 @@ message Snapshot {
   float length = 4;
   string asset_class = 5;
   string work_type = 6;
+  uint32 plan = 7;
 }
 
 message Plan {

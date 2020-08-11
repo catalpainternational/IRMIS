@@ -136,7 +136,8 @@ proto.assets.Snapshot.toObject = function(includeInstance, msg) {
     budget: +jspb.Message.getFieldWithDefault(msg, 3, 0.0),
     length: +jspb.Message.getFieldWithDefault(msg, 4, 0.0),
     assetClass: jspb.Message.getFieldWithDefault(msg, 5, ""),
-    workType: jspb.Message.getFieldWithDefault(msg, 6, "")
+    workType: jspb.Message.getFieldWithDefault(msg, 6, ""),
+    plan: jspb.Message.getFieldWithDefault(msg, 7, 0)
   };
 
   if (includeInstance) {
@@ -196,6 +197,10 @@ proto.assets.Snapshot.deserializeBinaryFromReader = function(msg, reader) {
     case 6:
       var value = /** @type {string} */ (reader.readString());
       msg.setWorkType(value);
+      break;
+    case 7:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setPlan(value);
       break;
     default:
       reader.skipField();
@@ -265,6 +270,13 @@ proto.assets.Snapshot.serializeBinaryToWriter = function(message, writer) {
   if (f.length > 0) {
     writer.writeString(
       6,
+      f
+    );
+  }
+  f = message.getPlan();
+  if (f !== 0) {
+    writer.writeUint32(
+      7,
       f
     );
   }
@@ -358,6 +370,21 @@ proto.assets.Snapshot.prototype.getWorkType = function() {
 /** @param {string} value */
 proto.assets.Snapshot.prototype.setWorkType = function(value) {
   jspb.Message.setProto3StringField(this, 6, value);
+};
+
+
+/**
+ * optional uint32 plan = 7;
+ * @return {number}
+ */
+proto.assets.Snapshot.prototype.getPlan = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 7, 0));
+};
+
+
+/** @param {number} value */
+proto.assets.Snapshot.prototype.setPlan = function(value) {
+  jspb.Message.setProto3IntField(this, 7, value);
 };
 
 

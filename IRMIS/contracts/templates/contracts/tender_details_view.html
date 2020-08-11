@@ -14,7 +14,7 @@
     <a class="selected">
         <h6>{% trans "Tender Details" %}</h6>
     </a>
-    <a href="{% url 'contract-tenderdocument-detail' tender.code %}">
+    <a href="{% url 'contract-tenderdocument-detail' tender.id %}">
         <h6>{% trans "Documents" %}</h6>
     </a>
 </nav>
@@ -46,22 +46,22 @@
         </div>
         <div>
             <label>{% trans "Announcement Date" %}</label>
-            <p>{{ tender.announcement_date|default_if_none:"" }}</p>
+            <p>{{ tender.announcement_date|default_if_none:""|date:"Y-m-d" }}</p>
         </div>
     </section>
     <section>
         <h6>{% trans "Bids and Evaluation" %}</h6>
         <div>
             <label>{% trans "Bid Submission Deadline" %}</label>
-            <p>{{ tender.submission_date|default_if_none:"" }}</p>
+            <p>{{ tender.submission_date|default_if_none:""|date:"Y-m-d" }}</p>
         </div>
         <div>
             <label>{% trans "Numbering of Companies Tendering" %}</label>
-            <p>{{ tender.tendering_companies|default_if_none:"" }}</p>
+            <p class="to-format">{{ tender.tendering_companies|default_if_none:"" }}</p>
         </div>
         <div>
             <label>{% trans "Evaluation Date" %}</label>
-            <p>{{ tender.evaluation_date|default_if_none:"" }}</p>
+            <p>{{ tender.evaluation_date|default_if_none:""|date:"Y-m-d" }}</p>
         </div>
     </section>
 </div>

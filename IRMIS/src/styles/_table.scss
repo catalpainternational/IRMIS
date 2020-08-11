@@ -46,7 +46,7 @@
 }
 
 .inventory-table,
-#inventory-photos {
+#inventory-media {
     @extend %datatable-shared;
     border-bottom: 1px solid $light-gray;
     margin-bottom: 0 !important;
@@ -59,17 +59,17 @@
     & > div:first-of-type {
         margin-top: 10px !important;
     }
-    
+
     & > div.dataTables_wrapper {
         margin-bottom: 20px !important;
-        
+
         table.dataTable {
             @extend %datatable-shared;
             overflow-x: auto;
 
             .dark-left {
                 border-left: 1px solid $dark-gray;
-            }     
+            }
         }
     }
 }
@@ -79,17 +79,36 @@
 #report-asset-class-type-work-table,
 #report-type-work-year-table,
 #report-asset-class-year-table,
+#report-number-employees-summary-table,
 #report-number-employees-table,
+#report-wages-summary-table,
 #report-wages-table,
+#report-worked-days-summary-table,
 #report-worked-days-table {
     @extend %datatable-shared;
-    margin-bottom: 20px !important;
     margin-top: 10px !important;
     overflow-x: auto;
 
     .dark-left {
         border-left: 1px solid $dark-gray;
     }
+}
+
+#report-program-table,
+#report-contract-code-table,
+#report-number-employees-summary-table,
+#report-number-employees-table,
+#report-wages-summary-table,
+#report-wages-table,
+#report-worked-days-summary-table,
+#report-worked-days-table {
+    margin-bottom: 20px !important;
+}
+
+#report-asset-class-type-work-table,
+#report-type-work-year-table,
+#report-asset-class-year-table {
+    margin-bottom: 5px !important;
 }
 
 table.planning-dashboard-table {
@@ -142,10 +161,6 @@ table.contracts-profile-table {
         &:first-child {
             width: 60px;
         }
-
-        &:nth-child(2) {
-            width: 30px;
-        }
     }
 
     tbody tr td {
@@ -154,10 +169,6 @@ table.contracts-profile-table {
 
         &:first-child {
             width: 60px;
-        }
-
-        &:nth-child(2) {
-            width: 30px;
         }
 
         span {
@@ -245,6 +256,15 @@ div.dataTables_wrapper {
             background-color: $darker-gray;
             color: $white;
         }
+    }
+}
+
+#project-document-list-table,
+#tender-document-list-table,
+#contract-document-list-table,
+#company-document-list-table {
+    thead tr th:nth-child(2), tbody tr td:nth-child(2) {
+        width: 30px;
     }
 }
 

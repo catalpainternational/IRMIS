@@ -1,4 +1,5 @@
 import { toChainageFormat } from "./assets/protoBufUtilities";
+import { formatNumber } from "./assets/utilities";
 
 /** Defines base columns needed in all segments modal tables **/
 const baseSegmentColumns = [
@@ -32,18 +33,18 @@ export const surfaceConditionColumns = baseSegmentColumns.concat([
         orderable: false,
     },
     {
-        title: window.gettext("Photos"),
-        data: "photos",
+        title: window.gettext("Photos/Videos"),
+        data: "media",
         defaultContent: "",
-        render: (photos) => {
+        className: "text-center",
+        orderable: false,
+        render: (media) => {
             let links = [];
-            photos.forEach((photo, i) => {
-                links.push(`<a class="image" href="${photo.url}" target="_blank">Photo ${i+1}</a>`);
+            media.forEach((m, i) => {
+                links.push(`<div><a class="image" href="${m.url}" target="_blank">Photo/Video ${i + 1}</a></div>`);
             });
             return links.join(" ");
         },
-        className: "text-center",
-        orderable: false,
     },
 ]);
 
@@ -72,7 +73,7 @@ export const numberLanesColumns = baseSegmentColumns.concat([
         defaultContent: "",
         orderable: false,
         render: (data, type) => {
-            return (type === "display" && typeof data === "number") ? data.toFixed(0) : data;
+            return (type === "display" && typeof data === "number") ? formatNumber(data.toFixed(0)) : data;
         },
     },
 ]);
@@ -84,7 +85,7 @@ export const carriagewayWidthColumns = baseSegmentColumns.concat([
         defaultContent: "",
         orderable: false,
         render: (data, type) => {
-            return (type === "display" && typeof data === "number") ? data.toFixed(1) : data;
+            return (type === "display" && typeof data === "number") ? formatNumber(data.toFixed(1)) : data;
         },
     },
 ]);
@@ -96,19 +97,19 @@ export const totalWidthColumns = baseSegmentColumns.concat([
         defaultContent: "",
         orderable: false,
         render: (data, type) => {
-            return (type === "display" && typeof data === "number") ? data.toFixed(1) : data;
+            return (type === "display" && typeof data === "number") ? formatNumber(data.toFixed(1)) : data;
         },
     },
 ]);
 
 export const rainfallColumns = baseSegmentColumns.concat([
     {
-        title: window.gettext("Rainfall (mm)"),
-        data: "rainfall",
+        title: window.gettext("Max. Rainfall (mm)"),
+        data: "value",
         defaultContent: "",
         orderable: false,
         render: (data, type) => {
-            return (type === "display" && typeof data === "number") ? data.toFixed(0) : data;
+            return (data == "") ? window.gettext("Unknown") : formatNumber(data);
         },
     },
 ]);

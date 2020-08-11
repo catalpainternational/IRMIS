@@ -28,16 +28,8 @@ export function getPlansMetadata() {
  * @returns a plan_object
  */
 export function getPlanMetadata(planId: string | number) {
-    const planTypeUrlFragment = "protobuf_plan";
-
-    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${planTypeUrlFragment}/${planId}`;
-
-    return fetch(metadataUrl, ConfigAPI.requestInit())
-        .then((metadataResponse) => (metadataResponse.arrayBuffer()))
-        .then((protobufBytes) => {
-            const uintArray = new Uint8Array(protobufBytes);
-            return makeEstradaPlan(Plan.deserializeBinary(uintArray));
-        });
+    const { metadataUrl, requestInit } = buildRequestInit("protobuf_plan", planId);
+    return performPlanFetch(metadataUrl, requestInit, "metadata retrieval");
 }
 
 /** postPlanData
@@ -47,21 +39,8 @@ export function getPlanMetadata(planId: string | number) {
  * @returns 200 (success) or 400 (failure)
  */
 export function postPlanData(plan: EstradaPlan) {
-    const assetTypeUrlFragment = "plan_create";
-    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}`;
-
-    const postAssetInit = ConfigAPI.requestInit("POST");
-    postAssetInit.body = plan.serializeBinary();
-
-    return fetch(metadataUrl, postAssetInit)
-        .then((metadataResponse) => {
-            if (metadataResponse.ok) { return metadataResponse.arrayBuffer(); }
-            throw new Error(`Plan creation failed: ${metadataResponse.statusText}`);
-        })
-        .then((protobufBytes) => {
-            const uintArray = new Uint8Array(protobufBytes);
-            return makeEstradaPlan(Plan.deserializeBinary(uintArray));
-        });
+    const { metadataUrl, requestInit } = buildRequestInit("plan_create", undefined, "POST", plan);
+    return performPlanFetch(metadataUrl, requestInit, "creation");
 }
 
 /** putPlanData
@@ -71,21 +50,8 @@ export function postPlanData(plan: EstradaPlan) {
  * @returns 200 (success) or 400 (failure)
  */
 export function putPlanData(plan: EstradaPlan) {
-    const assetTypeUrlFragment = "plan_update";
-    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}`;
-
-    const postAssetInit = ConfigAPI.requestInit("PUT");
-    postAssetInit.body = plan.serializeBinary();
-
-    return fetch(metadataUrl, postAssetInit)
-        .then((metadataResponse) => {
-            if (metadataResponse.ok) { return metadataResponse.arrayBuffer(); }
-            throw new Error(`Plan creation failed: ${metadataResponse.statusText}`);
-        })
-        .then((protobufBytes) => {
-            const uintArray = new Uint8Array(protobufBytes);
-            return makeEstradaPlan(Plan.deserializeBinary(uintArray));
-        });
+    const { metadataUrl, requestInit } = buildRequestInit("plan_update", undefined, "PUT", plan);
+    return performPlanFetch(metadataUrl, requestInit, "update");
 }
 
 /** approvePlanData
@@ -95,19 +61,8 @@ export function putPlanData(plan: EstradaPlan) {
  * @returns 200 (success) or 400 (failure)
  */
 export function approvePlanData(plan: EstradaPlan) {
-    const assetTypeUrlFragment = "plan_approve";
-    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${plan.id}`;
-    const postAssetInit = ConfigAPI.requestInit("PUT");
-
-    return fetch(metadataUrl, postAssetInit)
-        .then((metadataResponse) => {
-            if (metadataResponse.ok) { return metadataResponse.arrayBuffer(); }
-            throw new Error(`Plan creation failed: ${metadataResponse.statusText}`);
-        })
-        .then((protobufBytes) => {
-            const uintArray = new Uint8Array(protobufBytes);
-            return makeEstradaPlan(Plan.deserializeBinary(uintArray));
-        });
+    const { metadataUrl, requestInit } = buildRequestInit("plan_approve", plan.id, "PUT", plan);
+    return performPlanFetch(metadataUrl, requestInit, "approval");
 }
 
 /** deletePlanData
@@ -117,15 +72,31 @@ export function approvePlanData(plan: EstradaPlan) {
  * @returns 200 (success) or 400 (failure)
  */
 export function deletePlanData(planId: number | string) {
-    const assetTypeUrlFragment = "plan_delete";
-    const metadataUrl = `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${planId}`;
+    const { metadataUrl, requestInit } = buildRequestInit("plan_delete", planId, "PUT");
+    return performPlanFetch(metadataUrl, requestInit, "deletion");
+}
 
-    const postAssetInit = ConfigAPI.requestInit("PUT");
+function buildRequestInit(
+    assetTypeUrlFragment: string, planId: number | string | undefined, method?: any, plan?: EstradaPlan) {
+    const metadataUrl = !planId
+        ? `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}`
+        : `${ConfigAPI.requestAssetUrl}/${assetTypeUrlFragment}/${planId}`;
 
-    return fetch(metadataUrl, postAssetInit)
+    const requestInit = ConfigAPI.requestInit(method);
+    if (plan && (method === "PUT" || method === "POST")) {
+        requestInit.body = plan.serializeBinary();
+    }
+
+    return { metadataUrl, requestInit };
+}
+
+function performPlanFetch(metadataUrl: RequestInfo, requestInit: RequestInit, failureMessage: string) {
+    return fetch(metadataUrl, requestInit)
         .then((metadataResponse) => {
-            if (metadataResponse.ok) { return metadataResponse.arrayBuffer(); }
-            throw new Error(`Plan deletion failed: ${metadataResponse.statusText}`);
+            if (metadataResponse.ok) {
+                return metadataResponse.arrayBuffer();
+            }
+            throw new Error(`Plan ${failureMessage} failed: ${metadataResponse.statusText}`);
         })
         .then((protobufBytes) => {
             const uintArray = new Uint8Array(protobufBytes);

@@ -10,7 +10,7 @@ let filteredRoads = {};
 // Get the road metadata chunk details
 getRoadsMetadataChunks()
     .then((chunks) => {
-        $("#loading").modal("show");
+        $("#assets-loading").modal("show");
         const big_chunks = {};
         chunks.forEach((chunk) => {
             big_chunks[chunk.asset_class] = big_chunks[chunk.asset_class] || {
@@ -38,7 +38,7 @@ getRoadsMetadataChunks()
         Promise.all(estradaRoads).then((values) => {
             const flattenValues = [].concat(...values);
             addRoadMetadata(flattenValues);
-            $("#loading").modal("hide");
+            $("#assets-loading").modal("hide");
         });
     });
 

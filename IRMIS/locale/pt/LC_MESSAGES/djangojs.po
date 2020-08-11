@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-12 01:21+0000\n"
-"PO-Revision-Date: 2019-10-11 00:57+0000\n"
-"Last-Translator: b'  <juliana@catalpa.io>'\n"
+"POT-Creation-Date: 2020-08-11 03:20+0000\n"
+"PO-Revision-Date: 2020-08-04 07:13+0000\n"
+"Last-Translator: b'  <sergio@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -19,11 +19,701 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Translated-Using: django-rosetta 0.9.3\n"
 
-msgid "Export table"
-msgstr ""
+msgid "Delete asset from the project"
+msgstr "Apagar a infra-estrutura deste projecto"
+
+msgid "Project Name"
+msgstr "Nome do Projecto"
+
+msgid "Status"
+msgstr "Estado"
+
+msgid "Program"
+msgstr "Programa"
+
+msgid "Type of Work"
+msgstr "Tipo de Trabalho"
+
+msgid "Estimated Budget"
+msgstr "Orçamento Estimado"
+
+msgid "Funding Source"
+msgstr "Fonte de Financiamento"
+
+msgid "Projects"
+msgstr "Projectos"
+
+msgid "Search by Asset Code, Project Code or Project Name"
+msgstr "Pesquisa por Código da Infra-estrutura, de Projecto ou Nome do Projecto"
+
+msgid "Project status"
+msgstr "Estado do Projecto"
+
+msgid "Type of work"
+msgstr "Tipo de trabalho"
+
+msgid "Asset class"
+msgstr "Classe da infra-estrutura"
+
+msgid "Municipality"
+msgstr "Município"
+
+msgid "Tender Code"
+msgstr "Código do Concurso"
+
+msgid "Number of Projects"
+msgstr "Número de Projectos"
+
+msgid "Project(s) Name"
+msgstr "Nome(s) do Projecto(s)"
+
+msgid "Tenders"
+msgstr "Concursos"
+
+msgid "Search by Asset Code or Tender Code"
+msgstr "Pesquisa por Código da Infra-estrutura ou do Concurso"
+
+msgid "Tender status"
+msgstr "Estado do Concurso"
+
+msgid "Contract Code"
+msgstr "Código do Contrato"
+
+msgid "Contracts"
+msgstr "Contratos"
+
+msgid "Search by Asset Code or Contract Code"
+msgstr "Pesquisar por Código da Infra-estrutura ou do Contrato"
+
+msgid "Contract status"
+msgstr "Estado do Contrato"
+
+msgid "Name"
+msgstr "Nome"
+
+msgid "Total Contracts"
+msgstr "Total de Contratos"
+
+msgid "Active Contracts"
+msgstr "Contratos Activos"
+
+msgid "Companies"
+msgstr "Empresas"
+
+msgid "Search by Company Name or Company TIN"
+msgstr "Pesquisar por Nome ou TIN da Empresa"
+
+msgid "No matching records found"
+msgstr "Não foram encontradas entradas"
+
+msgid "No data available in table"
+msgstr "Não há dados disponíveis na tabela"
+
+msgid "Showing _START_ to _END_ of _TOTAL_ entries"
+msgstr "Mostrando _START_ a _END_ de _TOTAL_ entradas"
+
+msgid "Showing 0 to 0 of 0 entries"
+msgstr "Mostrando 0 a 0 de 0 entradas"
+
+msgid "Loading..."
+msgstr "A carregar..."
+
+msgid "Processing..."
+msgstr "A processar..."
+
+msgid "First"
+msgstr "Primeiro"
+
+msgid "Previous"
+msgstr "Anterior"
+
+msgid "Next"
+msgstr "Próximo"
+
+msgid "Last"
+msgstr "Último"
+
+msgid "Asset Class"
+msgstr "Classe da infra-estrutura"
+
+msgid "Link Name"
+msgstr "Nome da secção"
+
+msgid "Start Point (DMS)"
+msgstr "Ponto Inicial (DMS)"
+
+msgid "Start Point (UTM)"
+msgstr "Ponto Inicial (UTM)"
+
+msgid "End Point (DMS)"
+msgstr "Ponto final (DMS)"
+
+msgid "End Point (UTM)"
+msgstr "Ponto final (UTM)"
+
+msgid "Rainfall"
+msgstr "Pluviosidade"
+
+msgid "Inventory Photos/Videos"
+msgstr "Fotos/vídeos de Inventário"
+
+msgid "Roughness (IRI)"
+msgstr "Rugosidade (IRI)"
+
+msgid "Traffic data"
+msgstr "Dados de Trânsito"
+
+msgid "Structure"
+msgstr "Estrutura"
+
+msgid "unknown"
+msgstr "Indefinido"
+
+msgid "GPS Latitude"
+msgstr "Latitude GPS"
+
+msgid "GPS Longitude"
+msgstr "Longitude GPS"
+
+msgid "Material"
+msgstr "Material"
+
+msgid "Structure Type"
+msgstr "Tipo de Estrutura"
+
+msgid "Structure Condition"
+msgstr "Condição da Estrutura"
+
+msgid "Condition Description"
+msgstr "Descrição da Condição"
+
+msgid "Condition Photos/Videos"
+msgstr "Fotos/Vídeos da Condição"
+
+msgid "View"
+msgstr "Ver"
+
+msgid "Chainage start"
+msgstr "Início do segmento"
+
+msgid "Chainage end"
+msgstr "Fim do segmento"
+
+msgid "Surface condition"
+msgstr "Condição da Superfície"
+
+msgid "Photos/Videos"
+msgstr "Fotos/Vídeos"
+
+msgid "Surface Type"
+msgstr "Tipo de Superfície"
+
+msgid "Technical class"
+msgstr "Classe Técnica"
+
+msgid "Number of lanes"
+msgstr "Número de faixas de rodagem"
+
+msgid "Carriageway width (m)"
+msgstr "Largura da faixa de rodagem (m)"
+
+msgid "Total width (m)"
+msgstr "Largura total (m)"
+
+msgid "Max. Rainfall (mm)"
+msgstr "Pluviosidade máxima (mm)"
+
+msgid "Unknown"
+msgstr "Desconhecido"
+
+msgid "Terrain class"
+msgstr "Classe do Terreno"
+
+msgid "Pavement class"
+msgstr "Classe do pavimento"
+
+msgid "Asset Condition segments"
+msgstr "Segmentos por Condição"
+
+msgid "Surface Type segments"
+msgstr "Segmentos por Tipo de Superfície"
+
+msgid "Technical Class segments"
+msgstr "Segmentos por Classe Técnica"
+
+msgid "Number of Lanes segments"
+msgstr "Segmentos por Número de Faixas"
+
+msgid "Carriageway Width segments"
+msgstr "Segmentos por Largura da Faixa de rodagem"
+
+msgid "Total Width segments"
+msgstr "Segmentos por Largura Total"
+
+msgid "Rainfall segments"
+msgstr "Segmentos por pluviosidade"
+
+msgid "Terrain Class segments"
+msgstr "Segmentos por Classe de Terreno"
+
+msgid "Pavement Class segments"
+msgstr "Segmentos por Classe de Pavimento"
+
+msgid "Asset Type"
+msgstr "Tipo de Infra-estrutura"
+
+msgid "Loading"
+msgstr "A carregar"
+
+msgid "Code"
+msgstr "Código"
+
+msgid "Roads"
+msgstr "Estradas"
+
+msgid "Structures"
+msgstr "Estruturas"
+
+msgid "Road Network Reports"
+msgstr "Relatórios da Rede Rodoviária"
+
+msgid "Road Condition Reports"
+msgstr "Relatórios de Condição da Estrada"
+
+msgid "Road Network Reports by Road Class"
+msgstr "Relatório da Rede Rodoviária por Classe de Estrada"
+
+msgid "Structures Reports"
+msgstr "Relatórios de Estrutura"
+
+msgid "Road Network Length"
+msgstr "Comprimento da Rede Rodoviária"
+
+msgid "Road Network Length Breakdown"
+msgstr "Comprimento da Rede Rodoviária Desagregada"
+
+msgid "Surface Condition (SDI)"
+msgstr "Condição da Superfície (SDI)"
+
+msgid "IRI Roughness"
+msgstr "IRI Rugosidade"
+
+msgid "Road Network Length - National Class"
+msgstr "Comprimento da Rede Rodoviária - Classe Nacional"
+
+msgid "Road Network Length - Municipal Class"
+msgstr "Comprimento da Rede Rodoviária - Classe Municipal"
+
+msgid "Road Network Length - Rural Class"
+msgstr "Comprimento da Rede Rodoviária - Classe Rural"
+
+msgid "Road Network Length - Urban Class"
+msgstr "Comprimento da Rede Rodoviária - Classe Urbana"
+
+msgid "Structures Overview"
+msgstr "Relatórios Gerais de Estruturas"
+
+msgid "Structures Condition"
+msgstr "Condição de Estruturas"
+
+msgid "Title"
+msgstr "Título"
+
+msgid "Length (Km)"
+msgstr "Comprimento (Km)"
 
 msgid "Total"
-msgstr ""
+msgstr "Total"
+
+msgid "Number of structures"
+msgstr "Número de estruturas"
+
+msgid "Percentages (%)"
+msgstr "Percentagens (%)"
+
+msgid "Chainage Start"
+msgstr "Início do Segmento"
+
+msgid "Chainage End"
+msgstr "Fim do Segmento"
+
+msgid "Roughness Condition"
+msgstr "Condição de Rugosidade"
+
+msgid "Survey Date"
+msgstr "Data do levantamento"
+
+msgid "A report on the total length of the road network. The report provides total length in kilometers and percentages according to Road Status and Technical Class. A number of filters can be selected in order to generate a length report according to the required criteria"
+msgstr "Relatório da extensão total da rede rodoviária. Este relatório oferece o comprimento total em quilometros e percentagens de acordo com o Estado da Estrada e a sua Classe Técnica. Vários filtros podem ser seleccionados de forma a gerar relatórios customizados de acordo com os critérios necessários."
+
+msgid "Click on Create Report button to access the Road Network Length report"
+msgstr "Click no botão de Gerar Relatório para aceder ao Relatório do Comprimento da Rede Rodoviária"
+
+msgid "The report will be shown in this area and will provide you with detailed Road Network Length information. You can use filters to generate a customized report"
+msgstr "O relatório contendo informação detalhada sobre a extensão da rede rodoviária será apresentado nesta área e disponibiliza. Pode aplicar filtros para gerar um relatório personalizado."
+
+msgid "Sorry, data for the road network is not available yet"
+msgstr "Desculpe, não existem dados da rede para a sua selecção"
+
+msgid "A breakdown report on the total length of the road network. The report provides information on total length in kilometers and percentages as well as Road Status and Technical Class, according to a breakdown by Municipality, Road Class and Surface Type"
+msgstr "Relatório com informação desagregada do comprimento total da rede rodoviária. Este relatório fornece informação do comprimento total em quilómetros e respectiva percentagem pelo o Estado da Estrada e Classe Técnica, desagregado por Município, Classe da Estrada e Tipo de Superfície"
+
+msgid "Click on Create Report button to access the Road Network Length Breakdown report"
+msgstr "Click no botão de Gerar Relatório para aceder ao Relatório Desagregado do Comprimento da Rede Rodoviária"
+
+msgid "The report will be shown in this area and will provide you with detailed Road Network Length Breakdown information. You can use filters to generate a customized report"
+msgstr "O relatório contendo contendo informação detalhada e desagregada sobre a extensão da rede rodoviária será apresentado nesta área e disponibiliza. Pode aplicar filtros para gerar um relatório personalizado."
+
+msgid "A report on Road Surface Condition. This report provides detailed Surface Condition information per segment"
+msgstr "Relatório da Condição da Superfície de uma estrada. Este relatório fornece informação detalhada por segmentos da estrada relativamente à Condição da Superfície"
+
+msgid "Please select a road above to view Surface Condition reports"
+msgstr "Por favor seleccione acima a estrada para aceder ao Relatório da Condição da Superfície"
+
+msgid "The report will be shown in this area and will provide you with detailed Surface Condition information per segment of the selected road"
+msgstr "O relatório contendo contendo informação detalhada sobre a Condição da Superfície da estrada seleccionada de acordo com os seus segmentos será apresentado nesta área e disponibiliza. "
+
+msgid "Sorry, Surface Condition data is not available for the selected road"
+msgstr "Desculpe, não existem dados sobre a Condição da Superfície para a estrada seleccionada"
+
+msgid "A report on Road IRI data. This report provides detailed information on a Road's Roughness per segment"
+msgstr "Relatório da Rugosidade (IRI) de estradas. Este relatório fornece informação detalhada por segmento de estrada sobre a sua rugosidade."
+
+msgid "Please select a road above to view IRI Roughness reports"
+msgstr "Por favor seleccione acima a estrada para ver o relatório da sua Rugosidade (IRI)"
+
+msgid "The report will be shown in this area and will provide you with detailed IRI Roughness information per segment of the selected road"
+msgstr "O relatório contendo contendo informação detalhada sobre a Rugosidade (IRI) da estrada seleccionada de acordo com os seus segmentos será apresentado nesta área e disponibiliza. "
+
+msgid "Sorry, IRI Roughness data is not available for the selected road"
+msgstr "Desculpe, não existem dados sobre a Rugosidade (IRI) para a estrada seleccionada"
+
+msgid "A report on the total length of National Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for National Roads"
+msgstr "Relatório com informação detalhada do comprimento total das Estradas de Classe Nacional da rede rodoviária. Este relatório fornece informação do comprimento total em quilómetros e respectiva percentagem de acordo com Estado da Estrada e Classe Técnica para Estradas de Classe Nacional"
+
+msgid "Click on Create Report button to access the Road Network Length report for National roads"
+msgstr "Click no botão de Gerar Relatório para aceder ao Relatório sobre a extensão das estradas de classe Nacional da rede rodoviária"
+
+msgid "The report will be shown in this area and will provide you with detailed Road Network Length information for National class roads"
+msgstr "O relatório contendo informação detalhada sobre a extensão das estradas de classe Nacional da rede rodoviária será apresentado nesta área e disponibiliza."
+
+msgid "Sorry, data for National Class roads is not available yet"
+msgstr "Desculpe, não existem dados sobre estradas de classe Nacional"
+
+msgid "A report on the total length of Municipal Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Municipal Roads"
+msgstr "Relatório com informação detalhada do comprimento total das Estradas de Classe Municipal da rede rodoviária. Este relatório fornece informação do comprimento total em quilómetros e respectiva percentagem de acordo com Estado da Estrada e Classe Técnica para Estradas de Classe Municipal"
+
+msgid "Click on Create Report button to access the Road Network Length report for Municipal roads"
+msgstr "Click no botão de Gerar Relatório para aceder ao Relatório sobre a extensão das estradas de classe Municipal da rede rodoviária"
+
+msgid "The report will be shown in this area and will provide you with detailed Road Network Length information for Municipal class roads"
+msgstr "O relatório contendo informação detalhada sobre a extensão das estradas de classe Municipal da rede rodoviária será apresentado nesta área e disponibiliza."
+
+msgid "Sorry, data for Municipal Class roads is not available yet"
+msgstr "Desculpe, não existem dados sobre estradas de Classe Municipal"
+
+msgid "A report on the total length of Rural Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Rural Roads"
+msgstr "Relatório com informação detalhada do comprimento total das Estradas de Classe Rural da rede rodoviária. Este relatório fornece informação do comprimento total em quilómetros e respectiva percentagem de acordo com Estado da Estrada e Classe Técnica para Estradas de Classe Rural"
+
+msgid "Click on Create Report button to access the Road Network Length report for Rural roads"
+msgstr "Click no botão de Gerar Relatório para aceder ao Relatório sobre a extensão das estradas de classe Rural da rede rodoviária"
+
+msgid "The report will be shown in this area and will provide you with detailed Road Network Length information for Rural class roads"
+msgstr "O relatório contendo informação detalhada sobre a extensão das estradas de classe Rural da rede rodoviária será apresentado nesta área e disponibiliza."
+
+msgid "Sorry, data for Rural Class roads is not available yet"
+msgstr "Desculpe, não existem dados sobre estradas de Classe Rural"
+
+msgid "A report on the total length of Urban Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Urban Roads"
+msgstr "Relatório com informação detalhada do comprimento total das Estradas de Classe Urbana da rede rodoviária. Este relatório fornece informação do comprimento total em quilómetros e respectiva percentagem de acordo com Estado da Estrada e Classe Técnica para Estradas de Classe Urbana"
+
+msgid "Click on Create Report button to access the Road Network Length report for Urban roads"
+msgstr "Click no botão de Gerar Relatório para aceder ao Relatório sobre a extensão das estradas de classe Urbana da rede rodoviária"
+
+msgid "The report will be shown in this area and will provide you with detailed Road Network Length information for Urban class roads"
+msgstr "O relatório contendo informação detalhada sobre a extensão das estradas de classe Urbana da rede rodoviária será apresentado nesta área e disponibiliza."
+
+msgid "Sorry, data for Urban Class roads is not available yet"
+msgstr "Desculpe, não existem dados sobre estradas de Classe Urbana"
+
+msgid "A report on Structures data. This report provides detailed Structure totals and percentages according to structure type as well as by structure class"
+msgstr "Relatório de Estruturas. Este relatório fornece informação sobre o número de estruturas e percentagens de acordo com o tipo de estrutura e a sua classe"
+
+msgid "Click on Create Report button to access the Structure Class Report for structures"
+msgstr "Click no botão de Gerar Relatório para aceder ao Relatório sobre as Estruturas de acordo com a sua Classe"
+
+msgid "The report will be shown in this area and will provide you with detailed Structure Class information for structures"
+msgstr "O relatório contendo informação detalhada sobre estruturas de acordo com a sua classe será apresentado nesta área e disponibiliza."
+
+msgid "Sorry, data for structures is not available yet"
+msgstr "Desculpe, não existem dados disponíveis sobre estruturas"
+
+msgid "A report on Structures conditions. This report provides detailed Structure condition information by structure type"
+msgstr "Relatório sobre a Condição das Estruturas. Este relatório fornece informação detalhada da condição das estruturas de acordo com o tipo de estrutura"
+
+msgid "Click on Create Report button to access the Structure Condition Report for structures"
+msgstr "Click no botão de Gerar Relatório para aceder ao Relatório sobre a Condição das Estruturas"
+
+msgid "The report will be shown in this area and will provide you with detailed Structure Condition information for structures"
+msgstr "O relatório contendo informação detalhada sobre a condição das estruturas será apresentado nesta área e disponibiliza."
+
+msgid "Contract Reports"
+msgstr "Relatórios de Contratos"
+
+msgid "Social Safeguard Reports"
+msgstr "Relatórios de Protecção Social"
+
+msgid "Financial and Physical Progress Summary"
+msgstr "Sumário de Progresso Financeiro e Físico"
+
+msgid "Financial and Physical Progress"
+msgstr "Progresso Financeiro e Físico"
+
+msgid "Completed Contracts Length"
+msgstr "Comprimento de Contratos Completados"
+
+msgid "Social Safeguard"
+msgstr "Protecção Social"
+
+msgid "Contract's Social Safeguard"
+msgstr "Protecção Social de Contracto"
+
+msgid "Program name"
+msgstr "Nome do Programa"
+
+msgid "Contract code"
+msgstr "Código do Contrato"
+
+msgid "Project names"
+msgstr "Nome(S) do Projecto(s)"
+
+msgid "Funding source"
+msgstr "Fonte de financiamento"
+
+msgid "Number of assets"
+msgstr "Número de infra-estruturas"
+
+msgid "Number of projects"
+msgstr "Número de projectos"
+
+msgid "Number of contracts"
+msgstr "Número de contratos"
+
+msgid "Number of companies"
+msgstr "Número de empresas"
+
+msgid "Contractor"
+msgstr "Empresa contratada"
+
+msgid "Budget current year ($)"
+msgstr "Orçamento para o ano em curso ($)"
+
+msgid "Total budget ($)"
+msgstr "Orçamento total ($)"
+
+msgid "Total contract value ($)"
+msgstr "Valor total do contrato ($)"
+
+msgid "Value of the contract - including variations (amendments) ($)"
+msgstr "Valor do contrato - incluindo variações (aditamentos)"
+
+msgid "Payments previous year ($)"
+msgstr "Pagamentos do ano anterior ($)"
+
+msgid "Payments current year ($)"
+msgstr "Pagamentos do ano em curso ($)"
+
+msgid "Total payment ($)"
+msgstr "Total de pagamentos ($)"
+
+msgid "Total progress payment (%)"
+msgstr "Progresso total de pagamentos (%)"
+
+msgid "Balance ($)"
+msgstr "Balanço ($)"
+
+msgid "Physical progress (%)"
+msgstr "Progresso físico (%)"
+
+msgid "Start date"
+msgstr "Data de início"
+
+msgid "End date"
+msgstr "Data de fim"
+
+msgid "Amendment start date"
+msgstr "Data de início rectificada"
+
+msgid "Amendment end date"
+msgstr "Data de fim rectificada"
+
+msgid "Date of last update"
+msgstr "Data da última actualização"
+
+msgid "DLP start date"
+msgstr "Data de início da DLP"
+
+msgid "DLP end date"
+msgstr "Data de fim da DLP"
+
+msgid "National"
+msgstr "Nacional"
+
+msgid "Rural"
+msgstr "Rural"
+
+msgid "Municipal"
+msgstr "Municipal"
+
+msgid "Year/Month"
+msgstr "Ano/Mês"
+
+msgid "Internationals"
+msgstr "Internacionais"
+
+msgid "Nationals"
+msgstr "Nacionais"
+
+msgid "Employees With Disabilities"
+msgstr "Trabalhadores com Deficiências"
+
+msgid "Females With Disabilities"
+msgstr "Mulheres com Deficiências"
+
+msgid "Young"
+msgstr "Jovens"
+
+msgid "Young Females"
+msgstr "Mulheres Jovens"
+
+msgid "Female Employees"
+msgstr "Trabalhadores Mulheres"
+
+msgid "Internationals (%)"
+msgstr "Internacionais (%)"
+
+msgid "Nationals (%)"
+msgstr "Nacionais (%)"
+
+msgid "Employees With Disabilities (%)"
+msgstr "Trabalhadores com Deficiências (%)"
+
+msgid "Females With Disabilities (%)"
+msgstr "Mulheres com Deficiências (%)"
+
+msgid "Young (%)"
+msgstr "Jovens (%)"
+
+msgid "Young Females (%)"
+msgstr "Mulheres jovens (%)"
+
+msgid "Female Employees (%)"
+msgstr "Trabalhadores Mulheres (%)"
+
+msgid "Total Wage (in USD)"
+msgstr "Remunerações totais (em USD)"
+
+msgid "Average Gross Wage (in USD)"
+msgstr "Média Salários Brutos (em USD)"
+
+msgid "Average Net Wage (in USD)"
+msgstr "Média Salários Líquidos (em USD)"
+
+msgid "Total Worker-Days"
+msgstr "Total Trabalhador-Dias"
+
+msgid "Females"
+msgstr "Mulheres"
+
+msgid "A summary report on the financial and physical progress of all projects and contracts. This report provides aggregated information per program"
+msgstr "Relatório sumário do progresso financeiro e físico dos projectos e contratos. Este relatório fornece informação agregada por programa"
+
+msgid "Click on Create Report button to access the financial and physical progress summary report"
+msgstr "Click no botão de Gerar Relatório para aceder ao Relatório Sumário do Progresso Financeiro e Físico dos Contractos"
+
+msgid "The report will be shown in this area and will provide you with detailed financial and physical progress information. You can use filters to generate a customized report"
+msgstr "O relatório contendo informação detalhada sobre o progresso financeiro e físico dos contractos será apresentado nesta área. Pode aplicar filtros para gerar relatórios personalizados"
+
+msgid "Sorry, data for financial and physical progress is not available yet"
+msgstr "Desculpe, ainda não existem dados sobre o progresso financeiro e físico dos contratos"
+
+msgid "A report on the financial and physical progress of all projects and contracts. This report provides detailed information per contract"
+msgstr "Relatório do progresso financeiro e físico de todos os projectos e contractos. Este relatório fornece informação detalhada por contracto"
+
+msgid "Click on Create Report button to access the financial and physical progress report"
+msgstr "Click no botão de Gerar Relatório para aceder ao Relatório do Progresso Financeiro e Físico dos Contractos"
+
+msgid "A summary report on the total length of works completed by type of work, breakdown by road class and year"
+msgstr "Relatório sumário da extensão concluída pelos contratos finalizados por tipo de trabalho com desagregação por classe de estrada e ano"
+
+msgid "Click on Create Report button to access the completed contracts report"
+msgstr "Click no botão de Gerar Relatório para aceder ao Relatório sobre Contractos Finalizados"
+
+msgid "The report will be shown in this area and will provide you with detailed completed contracts information. You can use filters to generate a customized report"
+msgstr "O relatório contendo informação detalhada sobre os contractos finalizados será apresentado nesta área. Pode aplicar filtros para gerar relatórios personalizados"
+
+msgid "Sorry, data for completed contracts is not available yet"
+msgstr "Desculpe, ainda não existem dados sobre os contratos terminados"
+
+msgid "A summary report on the social safeguard data for all contracts for the selected period. The report provides information on number of employees, wages and number of worker-days, with a breakdown by gender, age and disabilities"
+msgstr "Relatório sumário da informação sobre Protecção Social dos contratos por um período seleccionado. Este relatório fornece informação sobre o número de trabalhadores, remunerações e tralhador-dias, com uma desagregação por género, idade e deficiência"
+
+msgid "Click on Create Report button to access social safeguard report"
+msgstr "Click no botão de Gerar Relatório para aceder ao Relatório de informação sobre Protecção Social"
+
+msgid "The report will be shown in this area and will provide you with detailed social safeguard information. You can use filters to generate a customized report"
+msgstr "O relatório contendo informação detalhada sobre Protecção Social dos contratos será apresentado nesta área. Pode aplicar filtros para gerar relatórios personalizados"
+
+msgid "Sorry, data for social safeguard is not available yet"
+msgstr "Desculpe, ainda não existem dados de protecção social"
+
+msgid "A report on the social safeguard data for a selected contract and period. The report provides information on number of employees, wages and number of worker-days, with a breakdown by gender, age and disabilities"
+msgstr "Relatório sobre Protecção Social para um contrato e período seleccionado. O relatório fornece informação sobre o número de trabalhadores, remunerações e tralhador-dias, com uma desagregação por género, idade e deficiência"
+
+msgid "Click on Create Report button to access social safeguard contracts report"
+msgstr "Click no botão de Gerar Relatório para aceder ao Relatório de informação de Protecção Social dos Contractos"
+
+msgid "Earth"
+msgstr "Terra"
+
+msgid "Gravel"
+msgstr "Gravilha"
+
+msgid "Paved"
+msgstr "Pavimentado"
+
+msgid "Routine"
+msgstr "Rotina"
+
+msgid "Periodic"
+msgstr "Periódico"
+
+msgid "Emergency"
+msgstr "Emergência"
+
+msgid "Rehab"
+msgstr "Reabilitação"
+
+msgid "Rehab Pave"
+msgstr "Pavimento reabilitado"
+
+msgid "Unpaved"
+msgstr "Não pavimentado"
+
+msgid "Planned"
+msgstr "Planeado"
+
+msgid "Pending"
+msgstr "Pendente"
+
+msgid "Ongoing"
+msgstr "Em curso"
+
+msgid "Complete"
+msgstr "Completo"
+
+msgid "Export table"
+msgstr "Exportar tabela"
 
 msgid "Asset"
 msgstr "Infra-estrutura"
@@ -34,134 +724,110 @@ msgstr "Código e nome da secção"
 msgid "Link chainage"
 msgstr "Chainage da secção"
 
-#, fuzzy
-#| msgid "Link width and length"
 msgid "Link length"
-msgstr "Extensão e largura da secção"
+msgstr "Comprimento da secção"
 
 msgid "Save and continue"
 msgstr "Guardar e continuar"
 
 msgid "Carriageway Width Data"
-msgstr ""
+msgstr "Dados da Largura da Faixa de Rodagem"
 
 msgid "Add"
-msgstr ""
+msgstr "Adicionar"
 
 msgid "Current carriageway width"
-msgstr ""
+msgstr "Largura da faixa de rodagem actual"
 
 msgid "View all data entries"
-msgstr ""
+msgstr "Ver todas as entradas de dados"
 
 msgid "Total Width Data"
-msgstr ""
+msgstr "Dados da Largura Total"
 
-#, fuzzy
-#| msgid "Condition"
 msgid "Current total width"
-msgstr "Condição"
+msgstr "Largura total actual"
 
 msgid "Number of Lanes Data"
-msgstr ""
+msgstr "Número de Faixas"
 
 msgid "Current number of lanes"
-msgstr ""
+msgstr "Número de faixas actual"
 
 msgid "Technical Class Data"
-msgstr ""
+msgstr "Dados da Classe Técnica"
 
 msgid "Current technical class"
-msgstr ""
+msgstr "Classe técnica actual"
 
 msgid "Add Carriageway Width Information"
-msgstr ""
+msgstr "Adicionar informação sobre a largura da faixa de rodagem"
 
-msgid "Survey Date"
-msgstr ""
-
-#, fuzzy
-#| msgid "Link chainage"
 msgid "Chainage"
-msgstr "Chainage da secção"
-
-msgid "Chainage start"
-msgstr ""
-
-msgid "Chainage end"
-msgstr ""
+msgstr "Segmento"
 
 msgid "Carriageway width"
-msgstr ""
+msgstr "Largura da faixa de rodagem"
 
-msgid "Carriageway width (m)"
-msgstr ""
-
-#, fuzzy
-#| msgid "Select a Surface Type"
 msgid "Add Total Width Information"
-msgstr "Seleccione o Tipo de Pavimento"
+msgstr "Adicionar Largura Total"
 
 msgid "Total width"
-msgstr ""
-
-msgid "Total width (m)"
-msgstr ""
+msgstr "Largura total"
 
 msgid "Add Technical Class Information"
-msgstr ""
+msgstr "Adicionar Classe Técnuca"
 
 msgid "Road class"
-msgstr ""
-
-msgid "Technical class"
-msgstr ""
+msgstr "Classe da Estrada"
 
 msgid "Add Number Lanes Information"
-msgstr ""
+msgstr "Adicionar número de Faixas"
 
 msgid "Number lanes"
-msgstr ""
+msgstr "Número de faixas"
 
 msgid "Delete"
-msgstr ""
+msgstr "Apagar"
 
 msgid "Are you sure you want to delete this data entry?"
-msgstr ""
-
-msgid "Loading"
-msgstr "A carregar"
+msgstr "Tem a certeza que deseja apagar esta entrada de dados?"
 
 msgid "Survey date"
-msgstr ""
+msgstr "Data do levantamento"
 
 msgid "Added by"
-msgstr ""
+msgstr "Adicionado por"
 
 msgid "Technical Class"
-msgstr ""
+msgstr "Classe Técnica"
 
 msgid "This field is required"
-msgstr ""
+msgstr "Este campo é obrigatório"
 
 msgid "Survey date cannot be in the future"
-msgstr ""
+msgstr "Data de levantamento não pode ser posterior ao dia de hoje"
 
 msgid "Link code cannot contain white spaces"
 msgstr "O código da secção não pode contar espaços em branco"
 
+msgid "Chainage end-chainage start must be within 50m of link length."
+msgstr "A chainage de início e de fim deve estar dentro do comprimento da ligação com uma variação máxima de 50m"
+
 #, javascript-format
-msgid "Link length cannot contain more than %s digits, of which %s are decimals"
-msgstr "A extensão da secção não pode conter mais do que %s dígitos, dos quais %s são decimais"
+msgid "Link length cannot contain more than %s digits, of which %s are decimals."
+msgstr "O comprimento da secção não pode conter mais do que %s dígitos, dos quais %s são decimais."
+
+msgid "Link length must be within 50m of chainage end-chainage start."
+msgstr "O comprimento da ligaçã0 deve estar dentro da chainage inicial e final com uma variação máxima de 50m"
 
 #, javascript-format
 msgid "Carriage width cannot contain more than %s digits, of which %s are decimals"
 msgstr "A largura da faixa de rodagem não pode conter mais do que %s dígitos, dos quais %s são decimais"
 
-#, fuzzy, javascript-format
-#| msgid "Link length cannot contain more than %s digits, of which %s are decimals"
+#, javascript-format
 msgid "Total width cannot contain more than %s digits, of which %s are decimals"
-msgstr "A extensão da secção não pode conter mais do que %s dígitos, dos quais %s são decimais"
+msgstr "A largura total não pode conter mais do que %s dígitos, dos quais %s são decimais"
 
 msgid "Edit asset"
 msgstr "Editar infra-estrutura"
@@ -176,33 +842,31 @@ msgid "Pavement"
 msgstr "Pavimento"
 
 msgid "Traffic"
-msgstr ""
+msgstr "Trânsito"
 
 msgid "Social & Economic"
-msgstr ""
+msgstr "Sócio-económico"
 
 msgid "Condition"
 msgstr "Condição"
 
 msgid "Maintenance"
-msgstr ""
+msgstr "Manutenção"
 
 msgid "Environment"
-msgstr ""
+msgstr "Ambiente"
 
-msgid "Media"
-msgstr ""
+msgid "Photos and Videos"
+msgstr "Fotos e Vídeos"
 
 msgid "Edit structure"
-msgstr ""
+msgstr "Editar estrutura"
 
 msgid "Type"
-msgstr ""
+msgstr "Tipo"
 
-#, fuzzy
-#| msgid "Location"
 msgid "Protection"
-msgstr "Localização"
+msgstr "Protecção"
 
 msgid "History"
 msgstr "Histórico"
@@ -231,395 +895,366 @@ msgstr "Ocorreu um erro"
 msgid "Close"
 msgstr "Fechar"
 
+msgid "Democratic Republic of Timor-Leste"
+msgstr "República Democrática de Timor-Leste"
+
+msgid "Ministry of Public Works"
+msgstr "Ministério das Obras Públicas"
+
 msgid "Created by Catalpa International"
-msgstr ""
+msgstr "Desenvolvido por Catalpa Internacional"
 
 msgid "Surface Condition Data (SDI)"
-msgstr ""
+msgstr "Dados da Condição da Superfície (SDI)"
 
 msgid "Total road chainage"
-msgstr ""
+msgstr "Segmento total da estrada"
 
-#, fuzzy
-#| msgid "Condition"
 msgid "Current surface condition"
-msgstr "Condição"
+msgstr "Condição actual da superfície"
 
 msgid "Add Surface Condition Information"
-msgstr ""
+msgstr "Adicionar Condição da Superfície"
 
-msgid "Upload photos"
-msgstr ""
+msgid "Upload Photos and Videos"
+msgstr "Carregar Fotos e Vídeos"
 
-msgid "Photo 1"
-msgstr ""
+msgid "Photo/Video 1"
+msgstr "Foto/Vídeo 1"
 
-msgid "Photo 2"
-msgstr ""
+msgid "Photo/Video 2"
+msgstr "Foto/Vídeo 2"
 
-#, fuzzy
-#| msgid "Condition"
-msgid "Road Conditions Photos"
-msgstr "Condição"
+msgid "Photo/Video 3"
+msgstr "Foto/Vídeo 3"
 
-#, fuzzy
-#| msgid "Condition"
-msgid "Surface condition"
-msgstr "Condição"
+msgid "Road Conditions Media"
+msgstr "Mídia de Condição da Estrada"
 
-msgid "Photos"
-msgstr ""
-
-msgid "View Photos"
-msgstr ""
+msgid "View Photos/Videos"
+msgstr "Ver Fotos/Vídeos"
 
 msgid "Terrain Class Data"
-msgstr ""
+msgstr "Classe do Terreno"
 
-#, fuzzy
-#| msgid "Condition"
 msgid "Current terrain"
-msgstr "Condição"
+msgstr "Terreno actual"
 
 msgid "Rainfall Data"
-msgstr ""
+msgstr "Pluviosidade"
 
-#, fuzzy
-#| msgid "Condition"
 msgid "Current rainfall"
-msgstr "Condição"
+msgstr "Pluviosidade actual"
 
 msgid "Add Terrain Class Information"
-msgstr ""
+msgstr "Adicionar Classe de Terreno"
 
-#, fuzzy
-#| msgid "Link chainage"
 msgid "Chainage start (m)"
-msgstr "Chainage da secção"
+msgstr "Início do segmento (m)"
 
-#, fuzzy
-#| msgid "Link chainage"
 msgid "Chainage end (m)"
-msgstr "Chainage da secção"
+msgstr "Fim do segmento (m)"
 
 msgid "Terrain Class"
-msgstr ""
+msgstr "Classe do Terreno"
 
 msgid "Add Rainfall Information"
-msgstr ""
+msgstr "Adicionar informação de Pluviosidade"
 
-msgid "Rainfall"
-msgstr ""
+msgid "Source of data"
+msgstr "Fonte dos dados"
 
-msgid "Terrain class"
-msgstr ""
+msgid "Station name"
+msgstr "Nome da Estação"
 
-msgid "Rainfall (mm)"
-msgstr ""
+msgid "Location coordinates"
+msgstr "Coordenadas da localização"
+
+msgid "Latitude (DMS)"
+msgstr "Latitude (DMS)"
+
+msgid "Longitude (DMS)"
+msgstr "Longitude (DMS)"
+
+msgid "Period of Survey"
+msgstr "Período do levantamento"
+
+msgid "Period"
+msgstr "Período"
+
+msgid "Select survey period"
+msgstr "Selecciono o período do levantamento"
+
+msgid "Year"
+msgstr "Ano"
+
+msgid "Select survey year"
+msgstr "Seleccione o ano do levantamento"
+
+msgid "Rainfall Maximum"
+msgstr "Pluviosidade máxima"
+
+msgid "Rainfall Minimum"
+msgstr "Pluviosidade mínima"
+
+msgid "Maximum Rainfall (mm)"
+msgstr "Pluviosidade máxima (mm)"
+
+msgid "Minimum Rainfall (mm)"
+msgstr "Pluviosidade mínima (mm)"
 
 msgid "Construction Year"
-msgstr ""
+msgstr "Ano da Construção"
 
 msgid "Enter the construction year"
-msgstr ""
+msgstr "Insira o ano da construção"
 
 msgid "Changed"
-msgstr "Alterações"
+msgstr "Alterado"
 
 msgid "Location"
 msgstr "Localização"
 
 msgid "Select a Municipality"
-msgstr ""
+msgstr "Seleccione o Município"
 
-#, fuzzy
-#| msgid "Select a Road Type"
 msgid "Select an Asset Class"
-msgstr "Seleccione o Tipo de Estrada"
-
-msgid "Inventory Photos"
-msgstr ""
+msgstr "Seleccione a Classe da Infra-estrutura"
 
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 msgid "Save"
-msgstr ""
+msgstr "Guardar"
 
-#, fuzzy
-#| msgid "Select a Surface Type"
 msgid "Surface Type Data"
-msgstr "Seleccione o Tipo de Pavimento"
+msgstr "Dados do tipo de superfície"
 
-#, fuzzy
-#| msgid "Select a Surface Type"
 msgid "Current surface type"
-msgstr "Seleccione o Tipo de Pavimento"
+msgstr "Tipo de superfície actual"
 
 msgid "Pavement Class Data"
-msgstr ""
+msgstr "Dados da Classe do Pavimento"
 
-#, fuzzy
-#| msgid "Condition"
 msgid "Current pavement"
-msgstr "Condição"
+msgstr "Pavimento actual"
 
-#, fuzzy
-#| msgid "Select a Surface Type"
 msgid "Add Surface Type Information"
-msgstr "Seleccione o Tipo de Pavimento"
-
-#, fuzzy
-#| msgid "Select a Surface Type"
-msgid "Surface Type"
-msgstr "Seleccione o Tipo de Pavimento"
+msgstr "Adicione Tipo de Superfície"
 
 msgid "Select a Surface Type"
-msgstr "Seleccione o Tipo de Pavimento"
+msgstr "Seleccione Tipo de Superfície"
 
 msgid "Add Pavement Class Information"
-msgstr ""
+msgstr "Adicionar Classe de Pavimento"
 
-#, fuzzy
-#| msgid "Pavement"
 msgid "Pavement Class"
-msgstr "Pavimento"
+msgstr "Classe de Pavimento"
 
-#, fuzzy
-#| msgid "Select a Surface Type"
 msgid "Surface type"
-msgstr "Seleccione o Tipo de Pavimento"
-
-#, fuzzy
-#| msgid "Pavement"
-msgid "Pavement class"
-msgstr "Pavimento"
+msgstr "Tipo de Superfície"
 
 msgid "Social and Economic Data"
-msgstr ""
+msgstr "Dados sócio-económicos"
 
 msgid "Social Data"
-msgstr ""
+msgstr "Dados sociais"
 
 msgid "Economic Data"
-msgstr ""
+msgstr "Dados económicos"
 
 msgid "Connections Data"
-msgstr ""
+msgstr "Dados de ligações"
 
-#, fuzzy
-#| msgid "Condition"
-msgid "Structure Condition"
-msgstr "Condição"
-
-#, fuzzy
-#| msgid "Select a Surface Type"
 msgid "Add Structure Condition Information"
-msgstr "Seleccione o Tipo de Pavimento"
+msgstr "Adicionar Condição da Estrutura"
 
-#, fuzzy
-#| msgid "Condition"
 msgid "Structure Conditions"
-msgstr "Condição"
+msgstr "Condição da Estrutura"
 
-#, fuzzy
-#| msgid "Condition"
 msgid "Choose the structure condition"
-msgstr "Condição"
+msgstr "Escolha a condição da estrutura"
 
-#, fuzzy
-#| msgid "Description"
-msgid "Condition Description"
-msgstr "Descrição"
-
-#, fuzzy
-#| msgid "Condition"
 msgid "Enter a description of the structure's condition"
-msgstr "Condição"
+msgstr "Insira uma descrição da condição da estrutura"
+
+msgid "Upload media"
+msgstr "Carregar mídia"
 
 msgid "Description"
 msgstr "Descrição"
 
+msgid "Media"
+msgstr "Mídia"
+
 msgid "Structure Code"
-msgstr ""
+msgstr "Código da Estrutura"
 
 msgid "Enter the code of the structure"
-msgstr ""
+msgstr "Insira o código da estrutura"
 
 msgid "Structure Name"
-msgstr ""
+msgstr "Nome da Estrutura"
 
 msgid "Enter the name of the structure"
-msgstr ""
+msgstr "Insira o nome da estrutura"
 
-#, fuzzy
-#| msgid "Link Name"
 msgid "River Name"
-msgstr "Nome da secção"
+msgstr "Nome do Rio"
 
 msgid "Enter the name of the river where the structure is located"
-msgstr ""
+msgstr "Insira o nome do rio onde a estrutura se localiza"
 
 msgid "Length (meters)"
-msgstr ""
+msgstr "Comprimento (metros)"
 
 msgid "Enter the structure's length in meters"
-msgstr ""
+msgstr "Insira o comprimento em metros da estrutura"
 
 msgid "Width (meters)"
-msgstr ""
+msgstr "Comprimento (metros)"
 
 msgid "Enter the structure's width in meters"
-msgstr ""
+msgstr "Insira o comprimento da estrutura em metros"
 
 msgid "Height (meters)"
-msgstr ""
+msgstr "Altura (metros)"
 
 msgid "Enter the structure's height in meters"
-msgstr ""
+msgstr "Insira a altura da estrutura em metros"
 
 msgid "Number of cells"
-msgstr ""
+msgstr "Número de células"
 
 msgid "Enter the number of cells in the structure"
-msgstr ""
+msgstr "Insira o número de células da estrutura"
 
 msgid "Thickness (meters)"
-msgstr ""
+msgstr "Espessura (metros)"
 
 msgid "Enter the structure's thickness in meters"
-msgstr ""
+msgstr "Insira a espessura da estrutura em metros"
 
 msgid "Number of spans"
-msgstr ""
+msgstr "Número de \"spans\""
 
 msgid "Enter the number of spans in the structure"
-msgstr ""
+msgstr "Insira o número de \"spans\" da estrutura"
 
 msgid "Span Length"
-msgstr ""
+msgstr "Comprimento do \"span\""
 
 msgid "Enter the span length for the structure"
-msgstr ""
+msgstr "Insira o comprimento do \"span' da estrutura"
 
-#, fuzzy
-#| msgid "Link code cannot contain white spaces"
 msgid "Code cannot contain white spaces"
-msgstr "O código da secção não pode contar espaços em branco"
+msgstr "O código não pode contar espaços em branco"
 
-#, fuzzy, javascript-format
-#| msgid "Link length cannot contain more than %s digits, of which %s are decimals"
+#, javascript-format
 msgid "Width cannot contain more than %s digits, of which %s are decimals"
-msgstr "A extensão da secção não pode conter mais do que %s dígitos, dos quais %s são decimais"
-
-#, fuzzy
-#| msgid "Select a Surface Type"
-msgid "Structure Type"
-msgstr "Seleccione o Tipo de Pavimento"
+msgstr "O comprimento não pode conter mais do que %s dígitos, dos quais %s são decimais"
 
 msgid "Add Traffic Data"
-msgstr ""
+msgstr "Adicionar Dados de Trânsito"
 
 msgid "Survey"
-msgstr ""
+msgstr "Levantamento"
 
 msgid "From"
-msgstr ""
+msgstr "De"
 
 msgid "To"
-msgstr ""
+msgstr "Até"
 
 msgid "Forecast Year"
-msgstr ""
+msgstr "Ano da previsão"
 
 msgid "Select forecast year"
-msgstr ""
+msgstr "Seleccione o ano da previsão"
 
 msgid "Total Count per Vehicle Type"
-msgstr ""
+msgstr "Total de veículos pelo seu tipo"
 
 msgid "Total Vehicles Breakdown"
-msgstr ""
+msgstr "Total de veículos desagregado"
 
-#, fuzzy
-#| msgid "Select a Surface Type"
 msgid "Survey Type"
-msgstr "Seleccione o Tipo de Pavimento"
+msgstr "Tipo de levantamento"
 
 msgid "Traffic Data Type"
-msgstr ""
+msgstr "Tipo de dados de Trânsito"
 
 msgid "Choose the traffic type for the road link"
-msgstr ""
+msgstr "Escolha o tipo de dados de trânsito para a secção da estrada"
 
 msgid "AADT (Annual Average Daily Traffic)"
-msgstr ""
+msgstr "AADT (Média Anual de Trânsito Diário)"
 
 msgid "ADT (Average Daily Traffic)"
-msgstr ""
+msgstr "ADT (Média de Trânsito Diário)"
 
 msgid "Forecast"
-msgstr ""
+msgstr "Previsão"
 
 msgid "Traffic Counting Method"
-msgstr ""
+msgstr "Método de contagem de Trânsito"
 
 msgid "Choose the method of counting the traffic for the road link"
-msgstr ""
+msgstr "Escolha o método de contagem de trânsito para a secção da estrada"
 
 msgid "Electronic"
-msgstr ""
+msgstr "Electrónico"
 
 msgid "Manual"
-msgstr ""
+msgstr "Manual"
 
 msgid "Motorcycle"
-msgstr ""
+msgstr "Motociclos"
 
 msgid "2 axles, 2 wheels"
-msgstr ""
+msgstr "2 eixos, 2 rodas"
 
 msgid "Passenger Car"
-msgstr ""
+msgstr "Ligeiro de passageiros"
 
 msgid "2 axles, 4 wheels"
-msgstr ""
+msgstr "2 eixos, 4 rodas"
 
 msgid "Pickup/4WD"
-msgstr ""
+msgstr "Pickup/4X4"
 
 msgid "Mini Bus"
-msgstr ""
+msgstr "Mini autocarro"
 
 msgid "Large Bus"
-msgstr ""
+msgstr "Pesado de Passageiros"
 
 msgid "2-3 axles, 6-10 wheels"
-msgstr ""
+msgstr "2-3 eixos, 6-10 rodas"
 
 msgid "Light Truck"
-msgstr ""
+msgstr "Camião Ligeiro"
 
 msgid "Medium Truck"
-msgstr ""
+msgstr "Camião Médio"
 
 msgid "Large Truck"
-msgstr ""
+msgstr "Camião Pesado"
 
 msgid "5 axles, 18 wheels"
-msgstr ""
+msgstr "5 eixos, 18 rodas"
 
 msgid "Non Defined"
-msgstr ""
+msgstr "Não definido"
 
 msgid "Data type"
-msgstr ""
+msgstr "Tipo de dados"
 
 msgid "Total vehicles"
-msgstr ""
+msgstr "Total de veículos"
 
 msgid "Survey TO date cannot be less than Survey FROM date"
-msgstr ""
+msgstr "Data de levantamento TO não pode ser menor que data de levantamento FROM"
 
 msgid "Success"
 msgstr "Sucesso"
@@ -628,659 +1263,367 @@ msgid "Error"
 msgstr "Erro"
 
 msgid "Please wait!"
-msgstr ""
+msgstr "Por favor aguarde!"
 
-msgid "Previous"
-msgstr "Anterior"
-
-msgid "Next"
-msgstr "Próximo"
-
-#, fuzzy
-#| msgid "Continue editing"
-msgid "No photo description provided"
-msgstr "Continuar a editar"
+msgid "No media description provided"
+msgstr "Sem descrição do mídia"
 
 msgid "Detailed Plans and Budgets"
-msgstr ""
+msgstr "Planos e Orçamentos detalhados"
 
 msgid "Upload 5-Year Plan"
-msgstr ""
+msgstr "Carregar Plano a 5 anos"
 
 msgid "List of plans"
-msgstr ""
+msgstr "Lista de planos"
 
 msgid "Select the Excel file with the plan you prepared using the template and upload it here. Enter a simple and descriptive title, for example \"5-year Plan for National Roads 2020-2024\". Once the plan is approved, you can mark it as \"Approved\" on the plans list using the check box"
-msgstr ""
+msgstr "Seleccione um ficheiro Excel com o plano preparado usando o template/modelo e carregue-o aqui. Inserir um título simples e descritivo, por exemplo \"Plano 5 anos Estradas Nacionais 2020-2024\". Assim que o plano for aprovado, marque-o como \"Aprovado\" na lista de planos utilizando a check box."
 
 msgid "Choose Excel File"
-msgstr ""
-
-msgid "Title"
-msgstr ""
+msgstr "Escolher ficheiro Excel"
 
 msgid "Enter the plan title"
-msgstr ""
+msgstr "Inserir título do plano"
 
 msgid "Are you sure you want to delete this plan?"
-msgstr ""
+msgstr "Tem a certeza que quer apagar este ano?"
 
 msgid "Approved"
-msgstr ""
-
-#, fuzzy
-#| msgid "Asset Details"
-msgid "Asset Class"
-msgstr "Detalhes da infra-estrutura"
+msgstr "Aprovado"
 
 msgid "Planning Period"
-msgstr ""
+msgstr "Período do Planeamento"
 
 msgid "Date Uploaded"
-msgstr ""
+msgstr "Data de Carregamento"
 
 msgid "Added By"
-msgstr ""
+msgstr "Adicionar por"
 
 msgid "You need to provide a Plan file"
-msgstr ""
+msgstr "Precisa de escolher um ficheiro com o plano"
 
 msgid "Incorrect file type. Must be an Excel file."
-msgstr ""
+msgstr "Formato incorrecto. O ficheiro deve ser um Excel"
 
 msgid "Exceeded size limit of 20MB"
-msgstr ""
+msgstr "O ficheiro excede o limite de 20MB"
 
 msgid "You need to provide a plan title"
-msgstr ""
+msgstr "Indique o título do plano"
 
 msgid "Dashboard"
-msgstr ""
+msgstr "Dashboard"
 
 msgid "Plans"
-msgstr ""
+msgstr "Planos"
 
 msgid "Planning Templates"
-msgstr ""
-
-msgid "Democratic Republic of Timor-Leste"
-msgstr ""
-
-msgid "Ministry of Public Works"
-msgstr ""
+msgstr "Modelos de Planos"
 
 msgid "Directorate General for Public Works"
-msgstr ""
+msgstr "Direcção Geral das Obras Públicas"
 
 msgid "National Directorate for Roads, Bridges and Flood Control"
-msgstr ""
+msgstr "Direcção Nacional de Estradas, Pontes e Controlo de Cheias"
 
 msgid "Planning and Budgetting Dashboard"
-msgstr ""
+msgstr "Dashboard the Planos e Orçamentos"
 
 msgid "Print"
-msgstr ""
+msgstr "Imprimir"
 
 msgid "5-Year Plan and Budget Summary"
-msgstr ""
+msgstr "Sumário do Plano a 5 anos e Orçamento"
 
 msgid "Total Budget"
-msgstr ""
+msgstr "Orçamento Total"
 
 msgid "Budget"
-msgstr ""
+msgstr "Orçamento"
 
-#, fuzzy
-#| msgid "Link width and length"
 msgid "Length"
-msgstr "Extensão e largura da secção"
+msgstr "Comprimento"
 
-msgid "Budget are in million USD and Length in KM"
-msgstr ""
+msgid "Budget values in the table are in million USD and length in Km"
+msgstr "Valor do orçamento em milhões de dólares americanos e valor do comprimento em Km"
 
 msgid "Welcome to the planning and budgetting tool"
-msgstr ""
+msgstr "Bem-vindo à ferramenta de planeamento e orçamentação"
 
-#, fuzzy
-#| msgid "No data available in table"
 msgid "No plans available yet"
-msgstr "Não há dados disponíveis na tabela"
+msgstr "Ainda mão existem planos disponíveis"
 
 msgid "Exported from Estrada on"
-msgstr ""
+msgstr "Exportado do Estrada em"
 
 msgid "Routine Maintenance"
-msgstr ""
+msgstr "Manutenção de Rotina"
 
 msgid "Periodic Maintenance"
-msgstr ""
+msgstr "Manutenção Periódica"
 
 msgid "Rehabilitation"
-msgstr ""
+msgstr "Reabilitação"
 
 msgid "Spot Improvement"
-msgstr ""
+msgstr "Melhorias de Pontos"
+
+msgid "Budget ($)"
+msgstr "Orçamento ($)"
 
 msgid "How to use the planning tool, step by step"
-msgstr ""
+msgstr "Como usar a ferramenta de planeamento, passo a passo"
 
 msgid "From the list below, download the Excel template for the road class you will be preparing the planning for. Example, if you want to prepare a 5-year plan for National Roads, download the Excel for National Roads"
-msgstr ""
+msgstr "Da lista abaixo, descarregue os templates/modelos de Excel para a classe de estrada para a qual pretende preparar o plano. Por exemplo, se pretende preparar um plano a 5 anos para as Estradas Nacionais, descarregue o Excel para Estrada Nacionais"
 
 msgid "Open the Excel template on your computer and click on \"Enable connection\". If you need to get updated data on your file, click on Data > Refresh all from the Excel menu"
-msgstr ""
+msgstr "Abra o template/modelo de Excel no seu computador e click em \"Enable connection\"/\"Permitir Conecção\". Se precisar de actualizar os dados da estrada no seu ficheiro, click em \"Data\"/\"Dados\" > \"Refresh all\"/Actualizar todos\" no menu do Excel"
 
 msgid "Start preparing your plan"
-msgstr ""
+msgstr "Comece a preparar o plano"
 
 msgid "Review criteria such as type of work criteria, unit costs and prioritization of facilities and connections"
-msgstr ""
+msgstr "Reveja os critérios tais como critério do tipo de trabalho, custos unitários e prioritização de instalações e ligações"
 
 msgid "Pick the planned year of treatment for segments of roads that requires Rehabilitation, Spot Improvement or Periodic Maintenance"
-msgstr ""
+msgstr "Escolha o ano planeado para o tratamento de cada segmento das estradas que necessitem de trabalhos de Reabilitação, Melhoria de Pontos ou Manutenção Periódica"
 
 msgid "Access annual pans for each of the 5 years. Access a summary of the plan"
-msgstr ""
+msgstr "Aceda aos planos anuais para cada um dos 5 anos. Aceda ao sumário do plano"
 
 msgid "On the \"Plans\" page, upload your plan to the Estrada and mark it as approved once the approval process is completed"
-msgstr ""
+msgstr "Na página \"Planos\" no Estrada, carregue o seu plano e marque-o como aprovado assim que o processo de aprovação estiver concluído"
 
 msgid "Access the Planning dashboard to have an overview of all approved plans for the next 5 years for all road classes"
-msgstr ""
+msgstr "Aceda ao Dashboard de Planos para ter um resumo de todos os planos aprovados para os próximos 5 anos para cada classe de estrada"
 
 msgid "When reviews to the plan are required, download the most up-to-date plan from the Estrada and follow steps 2 to 7 as needed"
-msgstr ""
+msgstr "Quando for necessário realizar revisões a um plano já preparado, descarregue o plano mais recente disponível no Estrada e siga os pontos 2 a 7"
 
 msgid "You can find detailed guidelines on how to use the planning tools"
-msgstr ""
+msgstr "Pode encontrar as instruções detalhadas de como usar a ferramenta de planeamento"
 
 msgid "here"
-msgstr ""
+msgstr "aqui"
 
 msgid "Access token"
-msgstr ""
+msgstr "Token de acesso"
 
 msgid "Token to get information from the Estrada database to your Excel planning file (valid for 24 hours from issuance)"
-msgstr ""
+msgstr "Token para aceder à informação mais actualizada da base de dados do Estrada no seu ficheiro de planeamento de Excel (válido por 24 horas após a sua geração)"
 
 msgid "Request Access Token"
-msgstr ""
+msgstr "Pedir Token de Acesso"
 
 msgid "Issued"
-msgstr ""
+msgstr "Emitido"
 
 msgid "Copy"
-msgstr ""
+msgstr "Copiar"
 
 msgid "List of templates"
-msgstr ""
+msgstr "Lista de templates/modelos"
 
 msgid "Road Class"
-msgstr ""
+msgstr "Classe da Estrada"
 
 msgid "Uploaded On"
-msgstr ""
+msgstr "Carregado em"
 
 msgid "5 year plan national roads"
-msgstr ""
-
-#, fuzzy
-#| msgid "Location"
-msgid "National"
-msgstr "Localização"
+msgstr "Plano a 5 anos de estradas nacionais"
 
 msgid "5 year plan urban roads"
-msgstr ""
+msgstr "Plano a 5 anos de estradas urbanas"
 
 msgid "Urban"
-msgstr ""
+msgstr "Urbanas"
 
 msgid "5 year plan rural roads"
-msgstr ""
-
-msgid "Rural"
-msgstr ""
+msgstr "Plano a 5 anos de estradas rurais"
 
 msgid "5 year plan municipal roads"
-msgstr ""
-
-msgid "Municipal"
-msgstr ""
+msgstr "Plano a 5 anos de estradas municipais"
 
 msgid "Select report criteria"
-msgstr ""
+msgstr "Seleccione o critério para o relatório"
+
+msgid "Structure form"
+msgstr "Forma da estrutura"
+
+msgid "Asset condition"
+msgstr "Condição da infra-estrutura"
+
+msgid "Road code"
+msgstr "Código da estrada"
+
+msgid "Report date"
+msgstr "Data do relatório"
 
 msgid "Create Report"
-msgstr ""
+msgstr "Gerar Relatório"
 
 msgid "Road Asset Management"
-msgstr ""
+msgstr "Gestor de infra-estruturas das Estradas"
 
 msgid "Report"
-msgstr ""
+msgstr "Relatório"
 
 msgid "Road"
-msgstr ""
+msgstr "Estrada"
 
 msgid "to"
-msgstr ""
+msgstr "para"
 
 msgid "Created on"
-msgstr ""
+msgstr "Gerado em"
 
 msgid "Filters applied"
-msgstr ""
+msgstr "Filtros aplicados"
 
 msgid "Total Length"
-msgstr ""
+msgstr "Comprimento Total"
 
 msgid "Total Count"
-msgstr ""
+msgstr "Contagem Total"
 
 msgid "Road Status"
-msgstr ""
+msgstr "Estado da Estrada"
 
-msgid "Surface Condition (SDI)"
-msgstr ""
-
-#, fuzzy
-#| msgid "Condition"
-msgid "Roughness Condition"
-msgstr "Condição"
-
-msgid "Municipality"
-msgstr ""
-
-#, fuzzy
-#| msgid "Select a Surface Type"
 msgid "Structure Form"
-msgstr "Seleccione o Tipo de Pavimento"
+msgstr "Forma da Estrutura"
 
-#, fuzzy
-#| msgid "Condition"
 msgid "Roughness Condition (IRI)"
-msgstr "Condição"
-
-msgid "Year"
-msgstr ""
-
-msgid "Quarter"
-msgstr ""
-
-msgid "Month"
-msgstr ""
-
-msgid "Summary financial and physical progress of projects and contracts"
-msgstr ""
-
-msgid "Contracts detailed financial and physical progress"
-msgstr ""
-
-msgid "By asset class and type of work"
-msgstr ""
-
-msgid "By type of work and year"
-msgstr ""
-
-msgid "By asset class and year"
-msgstr ""
-
-msgid "Number of employees"
-msgstr ""
-
-msgid "Wages"
-msgstr ""
-
-msgid "Worker-days"
-msgstr ""
-
-#, fuzzy
-#| msgid "Asset Details"
-msgid "Asset class"
-msgstr "Detalhes da infra-estrutura"
-
-msgid "Type of Work"
-msgstr ""
-
-msgid "Program"
-msgstr ""
-
-msgid "Funding Source"
-msgstr ""
+msgstr "Condição Rugosidade (IRI)"
 
 msgid "Donor"
-msgstr ""
+msgstr "Doador"
+
+msgid "Quarter"
+msgstr "Trimestre"
+
+msgid "Month"
+msgstr "Mês"
+
+msgid "Summary financial and physical progress of projects and contracts"
+msgstr "Sumário do progresso financeiro e físico de projectos e contratos"
+
+msgid "Contracts detailed financial and physical progress"
+msgstr "Progresso financeiro e físico dos contratos detalhado"
+
+msgid "By asset class and type of work"
+msgstr "Por classe da infra-estrutura e tipo de trabalho"
+
+msgid "Table shows completed contracts length. All values in Km."
+msgstr "A tabela mostra o comprimento total de trabalhos completos. Todos os valores são apresentados em Km."
+
+msgid "By type of work and year"
+msgstr "Por tipo de trabalho e ano"
+
+msgid "By asset class and year"
+msgstr "Por classe de infra-estrutura e ano"
+
+msgid "Number of employees"
+msgstr "Número de trabalhadores"
+
+msgid "Wages"
+msgstr "Remunerações"
+
+msgid "Worker-days"
+msgstr "Trabalhador-Dias"
 
 msgid "January"
-msgstr ""
+msgstr "Janeiro"
 
 msgid "February"
-msgstr ""
+msgstr "Fevereiro"
 
 msgid "March"
-msgstr ""
+msgstr "Março"
 
 msgid "April"
-msgstr ""
+msgstr "Abril"
 
 msgid "May"
-msgstr ""
+msgstr "Maio"
 
 msgid "June"
-msgstr ""
+msgstr "Junho"
 
 msgid "July"
-msgstr ""
+msgstr "Julho"
 
 msgid "August"
-msgstr ""
+msgstr "Agosto"
 
 msgid "September"
-msgstr ""
+msgstr "Setembro"
 
 msgid "October"
-msgstr ""
+msgstr "Outubro"
 
 msgid "November"
-msgstr ""
+msgstr "Novembro"
 
 msgid "December"
-msgstr ""
+msgstr "Dezembro"
 
 msgid "Road Network Overview"
-msgstr ""
+msgstr "Visão Geral da Rede Rodoviária"
 
 msgid "Total Length of Road Network"
-msgstr ""
+msgstr "Comprimento Total da Rede Rodoviária"
 
-msgid "unknown"
-msgstr ""
-
-#, fuzzy
-#| msgid "Asset Details"
 msgid "Asset Reports"
-msgstr "Detalhes da infra-estrutura"
+msgstr "Relatório da infra-estrutura"
 
 msgid "Reports Builder"
-msgstr ""
+msgstr "Criação de Relatórios"
 
-#, fuzzy
-#| msgid "Condition"
-msgid "Contract Reports"
-msgstr "Condição"
-
-#, fuzzy
-#| msgid "You have successfully saved"
 msgid "Report successfully created"
-msgstr "As suas alterações foram gravadas com sucesso"
+msgstr "O relatório foi gerado com sucesso"
 
 msgid "Asset Manager"
-msgstr ""
+msgstr "Gestor de Infra-estruturas"
 
 msgid "Reports"
-msgstr ""
+msgstr "Relatórios"
 
 msgid "Planning"
-msgstr ""
-
-msgid "Contracts"
-msgstr ""
+msgstr "Planeamento"
 
 msgid "Hello"
-msgstr ""
+msgstr "Viva"
 
-#, fuzzy
-#| msgid "Change log"
 msgid "Change password"
-msgstr "Registro de alterações"
+msgstr "Alterar palavra-passe"
 
 msgid "Log out"
-msgstr ""
+msgstr "Sair"
 
 msgid "Counting Method"
-msgstr ""
+msgstr "Método de Contagem"
 
 msgid "Click to upload"
-msgstr ""
+msgstr "Click para carregar"
 
-msgid "Maximum file size 500KB"
-msgstr ""
+msgid "Maximum file size 25MB"
+msgstr "Tamanho máximo do ficheiro 25MB"
 
-msgid "Accepted file formats: JPEG, GIF, PNG"
-msgstr ""
+msgid "Accepted file formats: JPEG, GIF, PNG, MP4, MOV, MPG, AVI, WMV, 3GP, TS, ASF, MNG, M4V, FLV, or WEBM"
+msgstr "Formatos de ficheiro aceites: JPEG, GIF, PNG, MP4, MOV, MPG, AVI, WMV, 3GP, TS, ASF, MNG, M4V, FLV, or WEBM"
 
-msgid "Delete Photo"
-msgstr ""
+msgid "Delete Photo/Video"
+msgstr "Apagar Foto/Vídeo"
 
-#, fuzzy
-#| msgid "Condition"
-msgid "Enter a description of the photo"
-msgstr "Condição"
+msgid "Enter a description of the photo/video"
+msgstr "Inserir descrição da foto/vídeo"
 
 msgid "Uploaded by"
-msgstr ""
+msgstr "Carregado por"
 
 msgid "on"
-msgstr ""
-
-msgid "Delete asset from the project"
-msgstr ""
-
-#, fuzzy
-#| msgid "Project"
-msgid "Project Name"
-msgstr "Projecto"
-
-msgid "Status"
-msgstr ""
-
-msgid "Estimated Budget"
-msgstr ""
-
-msgid "Search by Asset Code, Project Code or Project Name"
-msgstr ""
-
-#, fuzzy
-#| msgid "Project"
-msgid "Project status"
-msgstr "Projecto"
-
-msgid "Type of work"
-msgstr ""
-
-msgid "Tender Code"
-msgstr ""
-
-msgid "Number of Projects"
-msgstr ""
-
-#, fuzzy
-#| msgid "Project"
-msgid "Project(s) Name"
-msgstr "Projecto"
-
-msgid "Search by Asset Code or Tender Code"
-msgstr ""
-
-msgid "Tender status"
-msgstr ""
-
-#, fuzzy
-#| msgid "Condition"
-msgid "Contract Code"
-msgstr "Condição"
-
-msgid "Search by Asset Code or Contract Code"
-msgstr ""
-
-msgid "Contract status"
-msgstr ""
-
-#, fuzzy
-#| msgid "Link Name"
-msgid "Name"
-msgstr "Nome da secção"
-
-msgid "Total Contracts"
-msgstr ""
-
-msgid "Active Contracts"
-msgstr ""
-
-msgid "Search by Company Name or Company TIN"
-msgstr ""
-
-msgid "No matching records found"
-msgstr "Não foram encontradas entradas"
-
-msgid "No data available in table"
-msgstr "Não há dados disponíveis na tabela"
-
-msgid "Showing _START_ to _END_ of _TOTAL_ entries"
-msgstr "Mostrando _START_ a _END_ de _TOTAL_ entradas"
-
-msgid "Showing 0 to 0 of 0 entries"
-msgstr "Mostrando 0 a 0 de 0 entradas"
-
-#, fuzzy
-#| msgid "Loading"
-msgid "Loading..."
-msgstr "A carregar"
-
-msgid "Processing..."
-msgstr ""
-
-msgid "First"
-msgstr "Primeiro"
-
-msgid "Last"
-msgstr "Último"
-
-msgid "Link Name"
-msgstr "Nome da secção"
-
-msgid "Start Point (DMS)"
-msgstr "Ponto Inicial (DMS)"
-
-msgid "Start Point (UTM)"
-msgstr "Ponto Inicial (UTM)"
-
-msgid "End Point (DMS)"
-msgstr "Ponto final (DMS)"
-
-msgid "End Point (UTM)"
-msgstr "Ponto final (UTM)"
-
-msgid "Roughness (IRI)"
-msgstr ""
-
-msgid "Traffic data"
-msgstr ""
-
-msgid "Structure"
-msgstr ""
-
-msgid "GPS Latitude"
-msgstr ""
-
-msgid "GPS Longitude"
-msgstr ""
-
-msgid "Material"
-msgstr ""
-
-#, fuzzy
-#| msgid "Condition"
-msgid "Condition Photos"
-msgstr "Condição"
-
-msgid "View"
-msgstr ""
-
-#, fuzzy
-#| msgid "Condition"
-msgid "Asset Condition segments"
-msgstr "Condição"
-
-#, fuzzy
-#| msgid "Select a Surface Type"
-msgid "Surface Type segments"
-msgstr "Seleccione o Tipo de Pavimento"
-
-msgid "Technical Class segments"
-msgstr ""
-
-msgid "Number of Lanes segments"
-msgstr ""
-
-msgid "Carriageway Width segments"
-msgstr ""
-
-msgid "Total Width segments"
-msgstr ""
-
-msgid "Rainfall segments"
-msgstr ""
-
-msgid "Terrain Class segments"
-msgstr ""
-
-#, fuzzy
-#| msgid "Pavement"
-msgid "Pavement Class segments"
-msgstr "Pavimento"
-
-#, fuzzy
-#| msgid "Asset"
-msgid "Asset Type"
-msgstr "Infra-estrutura"
-
-#, fuzzy
-#| msgid "Select a Road Type"
-msgid "Code"
-msgstr "Seleccione o Tipo de Estrada"
-
-#, fuzzy
-#~| msgid "Condition"
-#~ msgid "Creating Report"
-#~ msgstr "Condição"
-
-#, fuzzy
-#~| msgid "Condition"
-#~ msgid "Structure condition"
-#~ msgstr "Condição"
-
-#~ msgid "Date"
-#~ msgstr "Data"
-
-#~ msgid "User"
-#~ msgstr "Utilizador"
-
-#, fuzzy
-#~| msgid "Link chainage"
-#~ msgid "Chainage Start"
-#~ msgstr "Chainage da secção"
-
-#, fuzzy
-#~| msgid "Link chainage"
-#~ msgid "Chainage End"
-#~ msgstr "Chainage da secção"
-
-#, fuzzy
-#~| msgid "Condition"
-#~ msgid "Structure Condition details"
-#~ msgstr "Condição"
-
-#~ msgid "Link start chainage cannot contain more than %s digits, of which %s are decimals"
-#~ msgstr "O valor da chainage não pode conter mais de %s dígitos, dos quais %s saã0 decimais"
-
-#~ msgid "Link end chainage cannot contain more than %s digits, of which %s are decimals"
-#~ msgstr "O valor da chainage não pode conter mais de %s dígitos, dos quais %s saã0 decimais"
-
-#, fuzzy
-#~| msgid "Carriage width cannot contain more than %s digits, of which %s are decimals"
-#~ msgid "Chainage cannot contain more than %s digits, of which %s are decimals"
-#~ msgstr "A largura da faixa de rodagem não pode conter mais do que %s dígitos, dos quais %s são decimais"
-
-#~ msgid "Select an Administrative Area"
-#~ msgstr "Seleccione a Área Administrativa"
+msgstr "em"

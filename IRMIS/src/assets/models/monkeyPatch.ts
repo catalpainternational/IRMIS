@@ -11,7 +11,7 @@
 
 import * as jspb from "google-protobuf";
 
-import { EstradaPhoto, Photo } from "./photo";
+import { EstradaMedia, Media } from "./media";
 import { makeEstradaObject } from "../protoBufUtilities";
 
 // The affected 'nested' Messages
@@ -59,22 +59,22 @@ function serializeProjectionBinaryToWriter(message: Projection | any, writer: js
 /**
  * Serializes the given Message data (not the Message object)
  * to binary data (in protobuf wire format), writing to the given BinaryWriter.
- * @param {!proto.assets.Photo} message
+ * @param {!proto.assets.Media} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-function serializePhotoBinaryToWriter(message: EstradaPhoto | Photo | any, writer: jspb.BinaryWriter): void {
+function serializeMediaBinaryToWriter(message: EstradaMedia | Media | any, writer: jspb.BinaryWriter): void {
     if (!message) {
         return;
     }
 
-    // We have to switch to testing against our wrapper object because making a `Photo` object doesn't work
+    // We have to switch to testing against our wrapper object because making a `Media` object doesn't work
     // thanks protobuf
-    if (message instanceof (EstradaPhoto)) {
-        (window as any).proto.assets.Photo.baseSerializeBinaryToWriter(message, writer);
+    if (message instanceof (EstradaMedia)) {
+        (window as any).proto.assets.Media.baseSerializeBinaryToWriter(message, writer);
     } else {
-        const photoMessage = makeEstradaObject(EstradaPhoto, message) as EstradaPhoto
-        (window as any).proto.assets.Photo.baseSerializeBinaryToWriter(photoMessage, writer);
+        const photoMessage = makeEstradaObject(EstradaMedia, message) as EstradaMedia
+        (window as any).proto.assets.Media.baseSerializeBinaryToWriter(photoMessage, writer);
     }
 }
 
@@ -82,6 +82,6 @@ function serializePhotoBinaryToWriter(message: EstradaPhoto | Photo | any, write
 (window as any).proto.google.protobuf.Timestamp.serializeBinaryToWriter = serializeTimestampBinaryToWriter;
 (window as any).proto.assets.Projection.serializeBinaryToWriter = serializeProjectionBinaryToWriter;
 // Copy the original photo serializer to a new name
-(window as any).proto.assets.Photo.baseSerializeBinaryToWriter
-    = (window as any).proto.assets.Photo.serializeBinaryToWriter;
-(window as any).proto.assets.Photo.serializeBinaryToWriter = serializePhotoBinaryToWriter;
+(window as any).proto.assets.Media.baseSerializeBinaryToWriter
+    = (window as any).proto.assets.Media.serializeBinaryToWriter;
+(window as any).proto.assets.Media.serializeBinaryToWriter = serializeMediaBinaryToWriter;

@@ -1,0 +1,131 @@
+<planning_templates>
+    <header class="align-items-center d-flex">
+        <h1>{ window.gettext("Planning Templates") }</h1>
+    </header>
+
+    <div class="content-wrapper">
+        <div class="d-flex flex-column">
+            <h5>{ window.gettext("How to use the planning tool, step by step") }</h5>
+            <div class="instructions">
+                <ul>
+                    <li>{ window.gettext("From the list below, download the Excel template for the road class you will be preparing the planning for. Example, if you want to prepare a 5-year plan for National Roads, download the Excel for National Roads") }</li>
+                    <li>{ window.gettext('Open the Excel template on your computer and click on "Enable connection". If you need to get updated data on your file, click on Data > Refresh all from the Excel menu') }</li>
+                    <li>{ window.gettext("Start preparing your plan") }</li>
+                    <li>{ window.gettext("Review criteria such as type of work criteria, unit costs and prioritization of facilities and connections") }</li>
+                    <li>{ window.gettext("Pick the planned year of treatment for segments of roads that requires Rehabilitation, Spot Improvement or Periodic Maintenance") }</li>
+                    <li>{ window.gettext("Access annual pans for each of the 5 years. Access a summary of the plan") }</li>
+                    <li>{ window.gettext('On the "Plans" page, upload your plan to the Estrada and mark it as approved once the approval process is completed') }</li>
+                    <li>{ window.gettext("Access the Planning dashboard to have an overview of all approved plans for the next 5 years for all road classes") }</li>
+                    <li>{ window.gettext("When reviews to the plan are required, download the most up-to-date plan from the Estrada and follow steps 2 to 7 as needed") }</li>
+                </ul>
+                <p class="download-guidelines">
+                    { window.gettext("You can find detailed guidelines on how to use the planning tools") }
+                    <a href="/static/Estrada-How-to-use-Planning-tool.pdf" download="Estrada-How-to-use-Planning-tool.pdf"> { window.gettext("here") }</a>
+                </p>
+            </div>
+            <h5>{ window.gettext("Access token") }</h5>
+            <div class="token">
+                <p>{ window.gettext("Token to get information from the Estrada database to your Excel planning file (valid for 24 hours from issuance)") }</p>
+                <div if="{!state.accessToken}">
+                    <button class="btn btn-primary btn-sm" type="submit" onclick="{ requestAccessToken }">{ window.gettext("Request Access Token") }</button>
+                </div>
+                <div if="{state.accessToken}">
+                    <p><strong>{ window.gettext("Issued") }: </strong>{ state.accessToken.issue_date }</p>
+                    <div class="align-items-center d-flex justify-content-between">
+                        <input id="access-token" type="hidden" value="{ state.accessToken.token }">
+                        <p class="generated-token">{ state.accessToken.token }</p>
+                        <button class="btn btn-primary btn-sm" onclick="{ copyToClipboard }">{ window.gettext("Copy") }</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="templates-list">
+            <h5>{ window.gettext("List of templates") }</h5>
+            <table class="d-block planning-table table table-hover w-100">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>{ window.gettext("Title") }</th>
+                        <th>{ window.gettext("Road Class") }</th>
+                        <th>{ window.gettext("Uploaded On") }</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr each={file in state.templateFiles}>
+                        <td><a class="image document" href="{ file.filePath }" download="{ file.fileName }"></a></td>
+                        <td>{ file.title }</td>
+                        <td>{ file.type }</td>
+                        <td>{ file.dateUploaded }</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        import {requestApiToken} from "../assets/tokenAPI";
+        import $ from 'jquery';
+
+        const cacheBuster = Date.now();
+
+        export default {
+            state: {
+                accessToken: null,
+                templateFiles: [
+                    {
+                        'title': window.gettext("5 year plan national roads"),
+                        'type': window.gettext("National"),
+                        'fileName': "5year-plan-NationalRoads-Template.xlsx",
+                        'filePath': `/static/5year-plan-NationalRoads-Template.xlsx?t=${cacheBuster}`,
+                        'dateUploaded': '2020-07-04'
+                    },
+                    {
+                        'title': window.gettext("5 year plan urban roads"),
+                        'type': window.gettext("Urban"),
+                        'fileName': "5year-plan-UrbanRoads-Template.xlsx",
+                        'filePath': `/static/5year-plan-UrbanRoads-Template.xlsx?t=${cacheBuster}`,
+                        'dateUploaded': '2020-07-04'
+                    },
+                    {
+                        'title': window.gettext("5 year plan rural roads"),
+                        'type': window.gettext("Rural"),
+                        'fileName': "5year-plan-RuralRoads-Template.xlsx",
+                        'filePath': `/static/5year-plan-RuralRoads-Template.xlsx?t=${cacheBuster}`,
+                        'dateUploaded': '2020-07-04'
+                    },
+                    {
+                        'title': window.gettext("5 year plan municipal roads"),
+                        'type': window.gettext("Municipal"),
+                        'fileName': "5year-plan-MunicipalRoads-Template.xlsx",
+                        'filePath': `/static/5year-plan-MunicipalRoads-Template.xlsx?t=${cacheBuster}`,
+                        'dateUploaded': '2020-07-04'
+                    },
+                ],
+            },
+            copyToClipboard() {
+                const accessToken = document.getElementById("access-token");
+                accessToken.type = "text";
+                accessToken.select();
+                document.execCommand("copy");
+                accessToken.type = "hidden";
+            },
+            showFeedback(error) {
+                this.update({
+                    showFeedback: true,
+                    error: error,
+                });
+                setTimeout(() => this.closeFeedback(), 2000);
+            },
+            requestAccessToken(e) {
+                requestApiToken()
+                    .then((tokenData) => {
+                        this.state.accessToken = tokenData;
+                    }).catch((err) => {
+                        this.showFeedback(err);
+                    }).finally(() => {
+                        this.update();
+                    })
+            },
+        }
+    </script>
+</planning_templates>

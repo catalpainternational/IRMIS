@@ -49,3 +49,11 @@ export function containsWhiteSpaces(text: string) {
 export function copyData<T>(data: T): T {
     return JSON.parse(JSON.stringify(data)) as T;
 };
+
+/** Format the supplied number with dots for thousands separator and comma for decimal points
+ * Works for numbers with 3 decimal points maximum
+ * @param {number} value -the value to be formatted
+ */
+export function formatNumber(value: any) {
+    return value.toString().replace(".", ",").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+};

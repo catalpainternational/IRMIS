@@ -200,7 +200,9 @@ def update_roughness_survey_values():
         apps.get_model("assets", "Survey")
         .objects.filter(values__has_key="source_roughness")
         .annotate(
-            road_asset_class=HstoreFieldAsChar(F("values"), fieldname="asset_class"),
+            road_asset_class=HstoreFieldAsChar(
+                F("values"), fieldname="road_asset_class"
+            ),
             roughness_as_float=HstoreFieldAsFloat(
                 F("values"), fieldname="source_roughness"
             ),
@@ -275,7 +277,9 @@ class CsvSurveyQueryset(models.QuerySet):
                     Chainage(F("end_utm"), F("road_code")), function="ROUND"
                 ),
                 road_id=NearestAssetRoadId(F("start_utm"), F("road_code")),
-                asset_class=NearestAssetRoadAssetClass(F("start_utm"), F("road_code")),
+                road_asset_class=NearestAssetRoadAssetClass(
+                    F("start_utm"), F("road_code")
+                ),
             )
             .annotate(
                 chainage_start_utm=chainage_to_point(
@@ -333,6 +337,7 @@ class RoughnessManager(models.Manager):
         )
 
         # Survey instance creation time!
+        # road_asset_class is as synonym for asset_class - it is used to avoid screwing up asset_class reports
         model.objects.bulk_create(
             [
                 model(
@@ -344,7 +349,7 @@ class RoughnessManager(models.Manager):
                     ),
                     chainage_end=max((from_row.chainage_start, from_row.chainage_end)),
                     values={
-                        "asset_class": from_row.asset_class,
+                        "road_asset_class": from_row.road_asset_class,
                         "source_roughness": from_row.roughness,
                         "csv_data_source_id": from_row.source_id,
                         "csv_data_row_index": from_row.row_index,

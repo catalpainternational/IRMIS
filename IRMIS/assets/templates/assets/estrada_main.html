@@ -130,7 +130,7 @@
                                         </div>
                                         <div class="align-items-center d-flex text-nowrap" data-column="24">
                                             <span class="checkbox image"></span>
-                                            {% trans "Inventory Photos" %}
+                                            {% trans "Inventory Photos/Videos" %}
                                         </div>
                                         <div class="align-items-center d-flex text-nowrap" data-column="25">
                                             <span class="checkbox image"></span>
@@ -301,7 +301,7 @@
                                         </div>
                                         <div class="align-items-center d-flex text-nowrap" data-column="22">
                                             <span class="checkbox image"></span>
-                                            {% trans "Inventory Photos" %}
+                                            {% trans "Inventory Photos/Videos" %}
                                         </div>
                                     </div>
                                 </div>
@@ -319,7 +319,7 @@
                                     </div>
                                     <div class="align-items-center d-flex text-nowrap" data-column="25">
                                         <span class="checkbox image"></span>
-                                        {% trans "Condition Photos" %}
+                                        {% trans "Condition Photos/Videos" %}
                                     </div>
                                 </div>
                                 <button class="btn btn-sm btn-secondary restore-structure text-nowrap">
@@ -335,7 +335,7 @@
         </div>
 
         <footer>
-            <small>República Democrática de Timor-Leste / Ministério das Obras Públicas</small>
+            <small>{% trans "Democratic Republic of Timor-Leste" %} / {% trans "Ministry of Public Works" %}</small>
             <small>{% trans "Created by Catalpa International" %}</small>
         </footer>
     </div>
@@ -346,35 +346,24 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title"></h1>
-                <span class="close image" data-dismiss="modal" aria-label="{ window.gettext('Close') }"
-                    aria-hidden="true"></span>
+                <span class="close image" data-dismiss="modal" aria-label="{ window.gettext('Close') }" aria-hidden="true"></span>
             </div>
             <div class="modal-body">
                 {% comment %} Common table - for both surface_condition and structure_condition {% endcomment %}
-                <table id="inventory-asset-condition-table" class="d-block table table-bordered table-hover w-100 inventory-table">
-                </table>
+                <table id="inventory-asset-condition-table" class="d-block table table-bordered table-hover w-100 inventory-table"></table>
                 {% comment %} ROAD COLUMN MODALS TABLES {% endcomment %}
                 <table id="inventory-surface-type-table" class="d-block table table-bordered table-hover w-100 inventory-table"></table>
-                <table id="inventory-technical-class-table" class="d-block table table-bordered table-hover w-100 inventory-table">
-                </table>
+                <table id="inventory-technical-class-table" class="d-block table table-bordered table-hover w-100 inventory-table"></table>
                 <table id="inventory-number-lanes-table" class="d-block table table-bordered table-hover w-100 inventory-table"></table>
-                <table id="inventory-carriageway-width-table" class="d-block table table-bordered table-hover w-100 inventory-table">
-                </table>
+                <table id="inventory-carriageway-width-table" class="d-block table table-bordered table-hover w-100 inventory-table"></table>
                 <table id="inventory-total-width-table" class="d-block table table-bordered table-hover w-100 inventory-table"></table>
-                <table id="inventory-terrain-class-table" class="d-block table table-bordered table-hover w-100 inventory-table">
-                </table>
+                <table id="inventory-terrain-class-table" class="d-block table table-bordered table-hover w-100 inventory-table"></table>
                 <table id="inventory-rainfall-table" class="d-block table table-bordered table-hover w-100 inventory-table"></table>
-                <table id="inventory-pavement-class-table" class="d-block table table-bordered table-hover w-100 inventory-table">
-                </table>
-                {% comment %} STRUCTURES COLUMN MODALS TABLES {% endcomment %}
-                <!-- <table id="inventory-structure-photos-table" class="d-block table table-bordered table-hover w-100 inventory-table">
-                </table> -->
+                <table id="inventory-pavement-class-table" class="d-block table table-bordered table-hover w-100 inventory-table"></table>
                 {% comment %} Special Snowflake - Road Traffic Data modal {% endcomment %}
                 <traffic_data_details></traffic_data_details>
-                {% comment %} Shared Photos Information Modal {% endcomment %}
-                <div id="inventory-photos_wrapper">
-                    <photos_details_box></photos_details_box>
-                </div>
+                {% comment %} Shared Media Information Modal {% endcomment %}
+                <media_details_box></media_details_box>
             </div>
         </div>
     </div>

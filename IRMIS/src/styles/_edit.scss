@@ -46,12 +46,14 @@ edit_base {
         a.table-toggle {
             color: $darker-gray;
             margin-top: 25px;
+            cursor: default;
 
             &:first-of-type {
                 margin-right: 20px;
             }
 
             &.active, &.active:hover {
+                cursor: pointer;
                 color: $green;
             }
         }

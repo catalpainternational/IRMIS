@@ -21,7 +21,7 @@ import { datatableTranslations } from "./datatableTranslations";
 
 import { getRoad, roads } from "./roadManager";
 import { getStructure, structures } from "./structureManager";
-import { getPhotos } from "./photoManager";
+import { getMedias } from "./mediaManager";
 import { getAssetReport } from "./reportManager";
 import { getAssetSurveys, getStructureSurveys } from "./surveyManager";
 
@@ -73,7 +73,7 @@ const attributeModalMapping = {
         reportTable: null,
         title: gettext("Total Width segments"),
     },
-    rainfall: {
+    rainfall_maximum: {
         columns: rainfallColumns,
         reportDataTableId: "inventory-rainfall-table",
         reportTable: null,
@@ -115,8 +115,8 @@ function initializeDataTable() {
         columns: estradaTableColumns,
         autoWidth: false,
         rowId: ".id",
-        // default order is ascending by: road code, link code, & link start chainage
-        order: window.canEdit ? [[1, 'asc'], [3, 'asc'], [7, 'asc']] : [[0, 'asc'], [2, 'asc'], [6, 'asc']],
+        // default order is ascending by: road code, link start chainage & link code 
+        order: window.canEdit ? [[1, 'asc'], [11, 'asc'], [6, 'asc']] : [[0, 'asc'], [10, 'asc'], [5, 'asc']],
         dom: "<'row'<'col-12'B>> + <'row'<'col-sm-12'tr>> + <'row'<'col-md-12 col-lg-5'i><'col-md-12 col-lg-7'p>>", // https://datatables.net/reference/option/dom#Styling
         language: datatableTranslations,
         search: {
@@ -175,6 +175,7 @@ function initializeDataTable() {
             // dataTables has a bug where the searching / filtering clause passes from one table to another
             // We only want it for the main tables
             searching: false,
+            ordering: false,
         });
     }
 
@@ -342,7 +343,7 @@ function applyTableSelectionToMap(rowId) {
 
     // communicate the filter
     const eventName = "estrada.map.idFilter.applied";
-    dispatch(eventName, { detail: { idMap } });
+    dispatch(eventName, { detail: { idMap: idMap, adjustZoomLevel: true } });
 }
 
 /**
@@ -404,12 +405,12 @@ function getTableData(mainTableType = "ROAD") {
 
 function exportRoadsTable() {
     const tableData = getTableData("ROAD");
-    exportCsv(tableData.headers, tableData.rows);
+    exportCsv(tableData.headers, tableData.rows, window.gettext("Roads"));
 }
 
 function exportStructuresTable() {
     const structuresData = getTableData("STRC");
-    exportCsv(structuresData.headers, structuresData.rows);
+    exportCsv(structuresData.headers, structuresData.rows, window.gettext("Structures"));
 }
 
 // Filter functionality
@@ -473,9 +474,9 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
             $("#" + repTableId + "_wrapper").hide();
         }
     });
-    // Hide special traffic data div & photos details box div
+    // Hide special traffic data div & medias details box div
     document.dispatchEvent(new CustomEvent("inventory-traffic-level-table.hideData"));
-    document.dispatchEvent(new CustomEvent("photos-details-modal.hideData"));
+    document.dispatchEvent(new CustomEvent("media-details-modal.hideData"));
 
     const button = $(event.relatedTarget); // Button that triggered the modal
     const assetCode = button.data("code"); // Extract info from data-* attributes
@@ -501,10 +502,10 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
                 // update the traffic details inventory modal tag with current data
                 document.dispatchEvent(new CustomEvent("inventory-traffic-level-table.updateTrafficData", { detail: { currentRowData: latestSurvey } }));
             });
-    } else if (attr === "structure_condition_photos") {
-        modal.find(".modal-title").text(assetCode + " Condition Photos");
+    } else if (attr === "structure_condition_media") {
+        modal.find(".modal-title").text(assetCode + " Condition Media");
         let latestSurvey = false;
-        let photos = undefined;
+        let media = undefined;
         getStructureSurveys(assetId, "asset_condition")
             .then((surveyData) => {
                 latestSurvey = surveyData.sort((a, b) => {
@@ -513,28 +514,28 @@ $("#inventory-segments-modal").on("show.bs.modal", function (event) {
                     return (a > b) ? -1 : (a < b) ? 1 : 0;
                 })[0] || false;
                 if (latestSurvey) {
-                    getPhotos("SURV-" + latestSurvey.id)
-                        .then((photosData) => {
-                            photos = photosData;
+                    getMedias("SURV-" + latestSurvey.id)
+                        .then((mediaData) => {
+                            media = mediaData;
                         }).finally(() => {
                             // update the inventory modal tag with current data
-                            document.dispatchEvent(new CustomEvent("photos-details-modal.updateModalData", { detail: { currentPhotosData: photos } }));
+                            document.dispatchEvent(new CustomEvent("media-details-modal.updateModalData", { detail: { currentMediaData: media } }));
                         });
                 }
             }).finally(() => {
                 // update the inventory modal tag with current data
-                document.dispatchEvent(new CustomEvent("photos-details-modal.updateModalData", { detail: { currentPhotosData: photos } }));
+                document.dispatchEvent(new CustomEvent("media-details-modal.updateModalData", { detail: { currentMediaData: media } }));
             });
-    } else if (attr == "inventory_photos") {
-        modal.find(".modal-title").text(assetCode + " Inventory Photos");
-        let photos = undefined;
+    } else if (attr == "inventory_media") {
+        modal.find(".modal-title").text(assetCode + " Inventory Photos and Videos");
+        let media = undefined;
         let globalId = (assetType == "ROAD") ? assetType + "-" + assetId : assetId;
-        getPhotos(globalId)
-            .then((photosData) => {
-                photos = photosData;
+        getMedias(globalId)
+            .then((mediaData) => {
+                media = mediaData;
             }).finally(() => {
                 // update the inventory modal tag with current data
-                document.dispatchEvent(new CustomEvent("photos-details-modal.updateModalData", { detail: { currentPhotosData: photos } }));
+                document.dispatchEvent(new CustomEvent("media-details-modal.updateModalData", { detail: { currentMediaData: media } }));
             });
     } else {
         const reportDataTableId = attributeModalMapping[attr].reportDataTableId;

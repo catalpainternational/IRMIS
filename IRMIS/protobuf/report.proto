@@ -1,6 +1,6 @@
 syntax = "proto3";
 import "google/protobuf/timestamp.proto";
-import "photo.proto";
+import "media.proto";
 
 package assets;
 
@@ -28,5 +28,5 @@ message Attribute {
     string value = 10;
     uint32 road_id = 11;
     string road_code = 12;
-    repeated Photo photos = 13;
+    repeated Media media = 13;
 }

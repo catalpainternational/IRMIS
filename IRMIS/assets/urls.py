@@ -1,7 +1,4 @@
-from django.conf.urls import url
 from django.urls import include, path
-from rest_framework import routers
-from django.views.decorators.cache import cache_page
 
 from .views import (
     api_token_request,
@@ -17,8 +14,8 @@ from .views import (
     protobuf_road_set,
     protobuf_road_structures,
     protobuf_road_surveys,
-    protobuf_photo,
-    protobuf_photos,
+    protobuf_media,
+    protobuf_medias,
     protobuf_plan_set,
     protobuf_plan,
     protobuf_plansnapshot_set,
@@ -29,9 +26,9 @@ from .views import (
     structure_update,
     survey_create,
     survey_update,
-    photo_create,
-    photo_update,
-    photo_delete,
+    media_create,
+    media_update,
+    media_delete,
     plan_create,
     plan_approve,
     plan_delete,
@@ -51,9 +48,9 @@ urlpatterns = [
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     path("geojson_details", geojson_details, name="geojson_details"),
     # Photo URLs
-    path("photo_create", photo_create, name="photo_create"),
-    path("photo_update", photo_update, name="photo_update"),
-    path("photo_delete", photo_delete, name="photo_delete"),
+    path("media_create", media_create, name="media_create"),
+    path("media_update", media_update, name="media_update"),
+    path("media_delete", media_delete, name="media_delete"),
     # Report URLs
     path("reports/", protobuf_reports, name="protobuf_reports"),
     path(
@@ -80,8 +77,8 @@ urlpatterns = [
     ),
     path("structure_update/<slug:pk>", structure_update, name="structure_update",),
     # Protobuf URLs
-    path("protobuf_photo/<int:pk>", protobuf_photo, name="protobuf_photo"),
-    path("protobuf_photos/<slug:pk>/", protobuf_photos, name="protobuf_photos"),
+    path("protobuf_media/<int:pk>", protobuf_media, name="protobuf_media"),
+    path("protobuf_medias/<slug:pk>/", protobuf_medias, name="protobuf_medias"),
     path("protobuf_plans", protobuf_plan_set, name="protobuf_plans"),
     path("protobuf_plan/<slug:pk>/", protobuf_plan, name="protobuf_plan"),
     path(
