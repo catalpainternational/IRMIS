@@ -54,6 +54,7 @@
             </div>
             <div class="form-group">
                 {{ form.projects.label_tag }}
+                <span class="required">*</span>
                 <small class="form-text text-muted">{{ form.projects.help_text }}</small>
                 {{ form.projects }}
                 {% if form.projects.errors %}
