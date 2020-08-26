@@ -79,6 +79,7 @@
         </thead>
         <tbody>
             {% for project in project_list %}
+            {% with prj_assets=project.assets.all %}
             <tr>
                 {% if perms.contracts.change_project or perms.contracts.delete_project %}
                 <td class="text-center">
@@ -101,21 +102,22 @@
                 <td>{{ project.funding_source|default_if_none:"" }}</td>
                 <td>{{ project.code }}</td>
                 <td>
-                    {% for asset in project.assets.all %}
+                    {% for asset in prj_assets %}
                     <div>{{ asset.asset_code }}</div>
                     {% endfor %}
                 </td>
                 <td>
-                    {% for asset in project.assets.all %}
+                    {% for asset in prj_assets %}
                     <div>{{ asset.asset_class }}</div>
                     {% endfor %}
                 </td>
                 <td>
-                    {% for asset in project.assets.all %}
+                    {% for asset in prj_assets %}
                     <div>{{ asset.municipality }}</div>
                     {% endfor %}
                 </td>
             </tr>
+            {% endwith %}
             {% endfor %}
         </tbody>
     </table>
