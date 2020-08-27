@@ -66,7 +66,7 @@ This entire sequence must be performed to completion before users are allowed to
     - Takes an optional argument to restrict the municipalities getting set to objects of a single type
     - If 'all' argument is given all of the assets/structures will have their municipalities set
 
-  C. `./manage.py collate_geometries <optional: "all", "road", "bridge", "culvert" or "drift">`
+  C. `./manage.py collate_geometries`
     - you have edited roads, bridges, culverts, drifts, so re-collate
 
 ### Additional Step - this is automatically performed by the survey commands below
