@@ -13,7 +13,8 @@
 9. Install the POSTGIS extension for Postgresql (https://docs.djangoproject.com/en/3.0/ref/contrib/gis/install/postgis/).
 10. Get a copy of the Estrada DB from Production server (https://estrada-production.catalapa.build) and load the DB.
 11. Build local geometry files with Django management command `collate_geometries`.
-12. Run the server.
+12. Setup cache tables with Django management command `createcachetable`.
+13. Run the server.
 
 
 ## Extra Information and Details On Specific Management Commands & Project Technologies Used
