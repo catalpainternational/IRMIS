@@ -978,7 +978,7 @@ class Road(models.Model):
     media = GenericRelation(Media, related_query_name="road")
     # a reference to the collated geojson file this road's geometry is in
     geojson_file = models.ForeignKey(
-        "CollatedGeoJsonFile", on_delete=models.DO_NOTHING, blank=True, null=True
+        "CollatedGeoJsonFile", on_delete=models.SET_NULL, blank=True, null=True
     )
 
     # How this road link `serves`
@@ -1589,7 +1589,7 @@ class Culvert(models.Model):
     )
     # a reference to the collated geojson file this Structure's geometry is in
     geojson_file = models.ForeignKey(
-        "CollatedGeoJsonFile", on_delete=models.DO_NOTHING, blank=True, null=True
+        "CollatedGeoJsonFile", on_delete=models.SET_NULL, blank=True, null=True
     )
 
     structure_type = models.ForeignKey(
@@ -1803,7 +1803,7 @@ class Drift(models.Model):
     )
     # a reference to the collated geojson file this Structure's geometry is in
     geojson_file = models.ForeignKey(
-        "CollatedGeoJsonFile", on_delete=models.DO_NOTHING, blank=True, null=True
+        "CollatedGeoJsonFile", on_delete=models.SET_NULL, blank=True, null=True
     )
 
     structure_type = models.ForeignKey(

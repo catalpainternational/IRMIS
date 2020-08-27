@@ -511,7 +511,7 @@ def decimal_from_chainage(chainage):
 
 
 @periodic_task(run_every=crontab(minute=0, hour="12,23"))
-def collate_geometries(asset="all"):
+def collate_geometries():
     """ Collate geometry models into geobuf files
 
     Groups geometry models into sets, builds GeoJson, encodes to geobuf
@@ -519,25 +519,20 @@ def collate_geometries(asset="all"):
     """
 
     geometry_sets = {}
-    if asset == "all" or asset == "road":
-        geometry_sets["national"] = Road.objects.filter(asset_class="NAT").exclude(
-            geom=None
-        )
-        geometry_sets["municipal"] = Road.objects.filter(asset_class="MUN").exclude(
-            geom=None
-        )
-        geometry_sets["urban"] = Road.objects.filter(asset_class="URB").exclude(
-            geom=None
-        )
-        geometry_sets["rural"] = Road.objects.filter(asset_class="RUR").exclude(
-            geom=None
-        )
-    if asset == "all" or asset == "bridge":
-        geometry_sets["bridge"] = Bridge.objects.exclude(geom=None)
-    if asset == "all" or asset == "culvert":
-        geometry_sets["culvert"] = Culvert.objects.exclude(geom=None)
-    if asset == "all" or asset == "drift":
-        geometry_sets["drift"] = Drift.objects.exclude(geom=None)
+    geometry_sets["national"] = Road.objects.filter(asset_class="NAT").exclude(
+        geom=None
+    )
+    geometry_sets["municipal"] = Road.objects.filter(asset_class="MUN").exclude(
+        geom=None
+    )
+    geometry_sets["urban"] = Road.objects.filter(asset_class="URB").exclude(geom=None)
+    geometry_sets["rural"] = Road.objects.filter(asset_class="RUR").exclude(geom=None)
+    geometry_sets["bridge"] = Bridge.objects.exclude(geom=None)
+    geometry_sets["culvert"] = Culvert.objects.exclude(geom=None)
+    geometry_sets["drift"] = Drift.objects.exclude(geom=None)
+
+    # clear existing GeoJson Files
+    CollatedGeoJsonFile.objects.all().delete()
 
     for key, geometry_set in geometry_sets.items():
         collated_geojson, created = CollatedGeoJsonFile.objects.get_or_create(key=key)
