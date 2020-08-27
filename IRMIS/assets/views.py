@@ -1808,7 +1808,6 @@ def structure_update(request, pk):
     # clear any report caches
     delete_cache_key("primary_attribute", multiple=True)
 
-
     response = HttpResponse(
         req_pb.SerializeToString(), status=200, content_type="application/octet-stream"
     )
