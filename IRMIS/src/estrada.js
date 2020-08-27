@@ -37,7 +37,7 @@ import "./assets/models/monkeyPatch";
 export const estradaMap = new Map();
 
 riot.register("loading", Loading);
-riot.mount("loading", { modalId: "assets-loading" });
+riot.mount("loading", { modalid: "assets-loading" });
 
 window.addEventListener("load", () => {
     // Set up the map and table - but without any data for either
