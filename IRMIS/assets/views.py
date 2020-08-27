@@ -344,7 +344,7 @@ def road_chunks_set(request):
 @login_required
 def protobuf_road_set(request, chunk_name=None):
     """ returns a protobuf object with the set of all Roads """
-    cached_pb = cache.get("roadchunk_" + chunk_name, None)
+    cached_pb = cache.get("roadchunk_%s" % chunk_name, None)
     if cached_pb:
         return HttpResponse(cached_pb, content_type="application/octet-stream")
 
@@ -359,7 +359,7 @@ def protobuf_road_set(request, chunk_name=None):
             )
 
     roads_protobuf = roads.to_protobuf().SerializeToString()
-    cache.set("roadchunk_" + chunk_name, roads_protobuf)
+    cache.set("roadchunk_%s" % chunk_name, roads_protobuf)
     return HttpResponse(roads_protobuf, content_type="application/octet-stream")
 
 
