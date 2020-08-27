@@ -682,14 +682,15 @@ def set_structure_municipalities(structure_type):
                 reversion.set_comment("Administrative area set from geometry")
 
 
-def clear_single_cache(key):
-    """ Takes cache key string as input and clears cache of it (if it exists) """
-    cache.delete(key)
-
-
-def bust_asset_report_caches():
-    """ Clears the cache for all Asset Reports """
-    with connection.cursor() as cursor:
-        cursor.execute(
-            "DELETE FROM roads_cache_table WHERE cache_key LIKE '%primary_attribute%';"
-        )
+def delete_cache_key(key, multiple=False):
+    """ Takes cache key string as input and clears cache of it (if it exists).
+        If multiple argument is False, delete a single key. If True, try to
+        delete all keys that match the  key string.
+    """
+    if not multiple:
+        cache.delete(key)
+    else:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "DELETE FROM roads_cache_table WHERE cache_key LIKE '%" + key + "%';"
+            )

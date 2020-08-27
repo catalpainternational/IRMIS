@@ -73,7 +73,7 @@ from .models import (
     BreakpointRelationships,
 )
 
-from .tasks import bust_asset_report_caches, clear_single_cache
+from .tasks import delete_cache_key
 from .data_cleaning_utils import update_non_programmatic_surveys_by_road_code
 from .report_query import ReportQuery, ContractReport
 from .serializers import RoadSerializer
@@ -299,8 +299,8 @@ def road_update(request):
             change_message,
         )
 
-    clear_single_cache("roads_protobuf")
-    bust_asset_report_caches()
+    delete_cache_key("roadchunk_", multiple=True)
+    delete_cache_key("primary_attribute", multiple=True)
 
     versions = Version.objects.get_for_object(road)
     response = HttpResponse(
@@ -344,7 +344,7 @@ def road_chunks_set(request):
 @login_required
 def protobuf_road_set(request, chunk_name=None):
     """ returns a protobuf object with the set of all Roads """
-    cached_pb = cache.get("roads_" + chunk_name, None)
+    cached_pb = cache.get("roadchunk_" + chunk_name, None)
     if cached_pb:
         return HttpResponse(cached_pb, content_type="application/octet-stream")
 
@@ -359,7 +359,7 @@ def protobuf_road_set(request, chunk_name=None):
             )
 
     roads_protobuf = roads.to_protobuf().SerializeToString()
-    cache.set("roads_" + chunk_name, roads_protobuf)
+    cache.set("roadchunk_" + chunk_name, roads_protobuf)
     return HttpResponse(roads_protobuf, content_type="application/octet-stream")
 
 
@@ -1398,7 +1398,7 @@ def survey_create(request):
         pb_survey = Survey.objects.filter(pk=initial_survey_id).to_protobuf().surveys[0]
 
         # clear any report caches
-        bust_asset_report_caches()
+        delete_cache_key("primary_attribute", multiple=True)
 
         response = HttpResponse(
             pb_survey.SerializeToString(),
@@ -1499,7 +1499,7 @@ def survey_update(request):
         reversion.set_user(request.user)
 
     # clear any report caches
-    bust_asset_report_caches()
+    delete_cache_key("primary_attribute", multiple=True)
 
     response = HttpResponse(
         req_pb.SerializeToString(), status=200, content_type="application/octet-stream"
@@ -1738,9 +1738,9 @@ def structure_create(request, structure_type):
             content_type="application/octet-stream",
         )
 
-        clear_single_cache("structures_protobuf")
+        delete_cache_key("structures_protobuf")
         # clear any report caches
-        bust_asset_report_caches()
+        delete_cache_key("primary_attribute", multiple=True)
 
         return response
     except Exception as err:
@@ -1804,9 +1804,10 @@ def structure_update(request, pk):
             change_message,
         )
 
-    clear_single_cache("structures_protobuf")
+    delete_cache_key("structures_protobuf")
     # clear any report caches
-    bust_asset_report_caches()
+    delete_cache_key("primary_attribute", multiple=True)
+
 
     response = HttpResponse(
         req_pb.SerializeToString(), status=200, content_type="application/octet-stream"
