@@ -124,6 +124,13 @@ DATABASES = {
     "default": {"ENGINE": "django.contrib.gis.db.backends.postgis", "NAME": "irmis_db"}
 }
 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "roads_cache_table",
+        "TIMEOUT": None,
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

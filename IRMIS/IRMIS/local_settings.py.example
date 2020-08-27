@@ -9,6 +9,8 @@ DATABASES = {
     }
 }
 
+CACHES = {'default': {'BACKEND': 'django.core.cache.backends.dummy.DummyCache',}}
+
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 SENDFILE_BACKEND = "sendfile.backends.development"
