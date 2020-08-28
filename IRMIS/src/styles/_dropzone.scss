@@ -125,6 +125,10 @@
   .dz-message {
     text-align: center;
     margin: 2em 0;
+
+    .dz-button {
+      display: none;
+    }
   }
 
   .dz-preview {
