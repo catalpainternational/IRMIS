@@ -300,7 +300,7 @@ def road_update(request):
         )
 
     delete_cache_key("roadchunk_", multiple=True)
-    delete_cache_key("primary_attribute", multiple=True)
+    delete_cache_key("report_", multiple=True)
 
     versions = Version.objects.get_for_object(road)
     response = HttpResponse(
@@ -344,7 +344,7 @@ def road_chunks_set(request):
 @login_required
 def protobuf_road_set(request, chunk_name=None):
     """ returns a protobuf object with the set of all Roads """
-    cached_pb = cache.get("roadchunk_" + chunk_name, None)
+    cached_pb = cache.get("roadchunk_%s" % abs(hash(chunk_name)), None)
     if cached_pb:
         return HttpResponse(cached_pb, content_type="application/octet-stream")
 
@@ -359,7 +359,7 @@ def protobuf_road_set(request, chunk_name=None):
             )
 
     roads_protobuf = roads.to_protobuf().SerializeToString()
-    cache.set("roadchunk_" + chunk_name, roads_protobuf)
+    cache.set("roadchunk_%s" % abs(hash(chunk_name)), roads_protobuf)
     return HttpResponse(roads_protobuf, content_type="application/octet-stream")
 
 
@@ -718,7 +718,7 @@ def protobuf_reports(request):
     #     final_filters["chainage"] = chainage
 
     # check the cache for pre-built version of the report
-    cached_report_pb = cache.get(json.dumps(final_filters), None)
+    cached_report_pb = cache.get("report_%s" % abs(hash(str(final_filters))), None)
     if cached_report_pb:
         return HttpResponse(cached_report_pb, content_type="application/octet-stream")
 
@@ -773,7 +773,7 @@ def protobuf_reports(request):
 
     # add the serialized report to the cache for future requests
     report_pb_serialized = report_protobuf.SerializeToString()
-    cache.set(json.dumps(final_filters), report_pb_serialized)
+    cache.set("report_%s" % abs(hash(str(final_filters))), report_pb_serialized)
     return HttpResponse(report_pb_serialized, content_type="application/octet-stream")
 
 
@@ -1398,7 +1398,7 @@ def survey_create(request):
         pb_survey = Survey.objects.filter(pk=initial_survey_id).to_protobuf().surveys[0]
 
         # clear any report caches
-        delete_cache_key("primary_attribute", multiple=True)
+        delete_cache_key("report_", multiple=True)
 
         response = HttpResponse(
             pb_survey.SerializeToString(),
@@ -1499,7 +1499,7 @@ def survey_update(request):
         reversion.set_user(request.user)
 
     # clear any report caches
-    delete_cache_key("primary_attribute", multiple=True)
+    delete_cache_key("report_", multiple=True)
 
     response = HttpResponse(
         req_pb.SerializeToString(), status=200, content_type="application/octet-stream"
@@ -1740,7 +1740,7 @@ def structure_create(request, structure_type):
 
         delete_cache_key("structures_protobuf")
         # clear any report caches
-        delete_cache_key("primary_attribute", multiple=True)
+        delete_cache_key("report_", multiple=True)
 
         return response
     except Exception as err:
@@ -1806,7 +1806,7 @@ def structure_update(request, pk):
 
     delete_cache_key("structures_protobuf")
     # clear any report caches
-    delete_cache_key("primary_attribute", multiple=True)
+    delete_cache_key("report_", multiple=True)
 
     response = HttpResponse(
         req_pb.SerializeToString(), status=200, content_type="application/octet-stream"
