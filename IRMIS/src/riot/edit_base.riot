@@ -5,7 +5,7 @@
         <div id="side-menu">
             <div>
                 <ul class="navigation">
-                    <template if="{ props.assetType === 'ROAD' }">
+                    <template if="{ props.assettype === 'ROAD' }">
                         <li class="text-uppercase">{ window.gettext("Edit asset") }</li>
                         <ul>
                             <li class="{ state.page === 'location_type' ? 'active' : '' }" data-page="location_type"
@@ -28,7 +28,7 @@
                                 onclick="{ selectPage }">{window.gettext("Photos and Videos") }</li>
                         </ul>
                     </template>
-                    <template if="{ props.assetType === 'BRDG' || props.assetType === 'CULV' || props.assetType === 'DRFT' }">
+                    <template if="{ props.assettype === 'BRDG' || props.assettype === 'CULV' || props.assettype === 'DRFT' }">
                         <li class="text-uppercase">{ window.gettext("Edit structure") }</li>
                         <ul>
                             <li class="{ state.page === 'structure_type' ? 'active' : '' }" data-page="structure_type"
@@ -74,41 +74,46 @@
                 </feedback_banner>
 
                 <edit_location_type if="{ state.page === 'location_type' }" road="{ state.editingRoad }"
-                    saving="{ state.saving }" parent="{parentFunctions}"></edit_location_type>
+                    saving="{ state.saving }" parent="{ parentFunctions }">
+                </edit_location_type>
                 <edit_asset_details if="{ state.page === 'asset_details' }" road="{ state.editingRoad }"
-                    saving="{ state.saving }" showFeedback="{ showFeedback }" parent="{parentFunctions}">
+                    saving="{ state.saving }" showfeedback="{ showFeedback }" parent="{ parentFunctions }">
                 </edit_asset_details>
-                <edit_pavement if="{ state.page === 'pavement' }" road="{ state.editingRoad }" saving="{ state.saving }"
-                    showFeedback="{ showFeedback }" parent="{parentFunctions}"></edit_pavement>
+                <edit_pavement if="{ state.page === 'pavement' }" road="{ state.editingRoad }"
+                    saving="{ state.saving }" showfeedback="{ showFeedback }" parent="{ parentFunctions }">
+                </edit_pavement>
                 <edit_condition if="{ state.page === 'condition' }" road="{ state.editingRoad }"
-                    showFeedback="{ showFeedback }" parent="{parentFunctions}"></edit_condition>
+                    showfeedback="{ showFeedback }" parent="{ parentFunctions }">
+                </edit_condition>
                 <edit_traffic if="{ state.page === 'traffic' }" road="{ state.editingRoad }"
-                    showFeedback="{ showFeedback }" parent="{parentFunctions}"></edit_traffic>
+                    showfeedback="{ showFeedback }" parent="{ parentFunctions }">
+                </edit_traffic>
                 <edit_social_economic if="{ state.page === 'social_economic' }" road="{ state.editingRoad }"
-                    showFeedback="{ showFeedback }" parent="{parentFunctions}"></edit_social_economic>
+                    showfeedback="{ showFeedback }" parent="{ parentFunctions }">
+                </edit_social_economic>
                 <edit_maintenance if="{ state.page === 'maintenance' }" road="{ state.editingRoad }"
-                    saving="{ state.saving }" parent="{parentFunctions}"></edit_maintenance>
+                    saving="{ state.saving }" parent="{ parentFunctions }">
+                </edit_maintenance>
                 <edit_environment if="{ state.page === 'environment' }" road="{ state.editingRoad }"
-                    saving="{ state.saving }" showFeedback="{ showFeedback }" parent="{parentFunctions}">
+                    saving="{ state.saving }" showfeedback="{ showFeedback }" parent="{ parentFunctions }">
                 </edit_environment>
                 <edit_history if="{ state.page === 'history' }" road="{ state.baseRoad }"
-                    structure="{ state.editingStructure }" parent="{parentFunctions}">
+                    structure="{ state.editingStructure }" parent="{ parentFunctions }">
                 </edit_history>
                 <edit_structure_type if="{ state.page === 'structure_type' }" structure="{ state.editingStructure }"
-                    assetType="{ props.assetType }" saving="{ state.saving }" parent="{parentFunctions}">
+                    assetType="{ props.assettype }" saving="{ state.saving }" parent="{ parentFunctions }">
                 </edit_structure_type>
-                <edit_structure_details if="{ state.page === 'structure_details' }"
-                    structure="{ state.editingStructure }" assetType="{ props.assetType }" saving="{ state.saving }"
-                    parent="{parentFunctions}">
+                <edit_structure_details if="{ state.page === 'structure_details' }" structure="{ state.editingStructure }"
+                    assetType="{ props.assettype }" saving="{ state.saving }" parent="{ parentFunctions }">
                 </edit_structure_details>
                 <edit_structure_protection if="{ state.page === 'protection' }" structure="{ state.editingStructure }"
-                    saving="{ state.saving }" parent="{parentFunctions}"></edit_structure_protection>
-                <edit_structure_condition if="{ state.page === 'structure_condition' }"
-                    structure="{ state.editingStructure }" saving="{ state.saving }" showFeedback="{ showFeedback }"
-                    parent="{parentFunctions}">
+                    saving="{ state.saving }" parent="{ parentFunctions }">
+                </edit_structure_protection>
+                <edit_structure_condition if="{ state.page === 'structure_condition' }" structure="{ state.editingStructure }"
+                    saving="{ state.saving }" showfeedback="{ showFeedback }" parent="{ parentFunctions }">
                 </edit_structure_condition>
-                <edit_media if="{ state.page === 'media' }" showfeedback="{ showFeedback }" saving="{ state.saving }"
-                    parent="{ parentFunctions }" asset="{ state.editingRoad }" structure="{ state.editingStructure }">
+                <edit_media if="{ state.page === 'media' }" showfeedback="{ showFeedback }" structure="{ state.editingStructure }"
+                    asset="{ state.editingRoad }" saving="{ state.saving }" parent="{ parentFunctions }">
                 </edit_media>
             </div>
             <div id="survey-media-modal" class="modal inventory-modal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -220,8 +225,8 @@
                     getStructureSurveys: this.getStructureSurveys,
                 };
 
-                if (props.roadPromise) {
-                    props.roadPromise.then(road => {
+                if (props.roadpromise) {
+                    props.roadpromise.then(road => {
                         state.loading = false;
                         this.initRoad(road);
                         this.continueMounting();
@@ -231,8 +236,8 @@
                         $("#asset-manager-loading").modal("hide");
                         this.update();
                     });
-                } else if (props.structurePromise) {
-                    props.structurePromise.then(structure => {
+                } else if (props.structurepromise) {
+                    props.structurepromise.then(structure => {
                         state.loading = false;
                         this.initStructure(structure);
                     }).catch(err => {
@@ -341,7 +346,7 @@
                 });
             },
             hasChanges() {
-                return (this.props.assetType === "BRDG" || this.props.assetType === "CULV" || this.props.assetType === "DRFT")
+                return (this.props.assettype === "BRDG" || this.props.assettype === "CULV" || this.props.assettype === "DRFT")
                     ? compareProtoBufObjects(this.state.baseStructure, this.state.editingStructure)
                     : compareProtoBufObjects(this.state.baseRoad, this.state.editingRoad);
             },
@@ -356,7 +361,7 @@
             selectPage(e) {
                 const assetId = (this.state.editingRoad) ? this.state.editingRoad.id : this.state.editingStructure.id.split("-")[1];
                 this.state.page = e.currentTarget.dataset.page;
-                this.state.nextPage = `#edit/${this.props.assetType}/${assetId}/${this.state.page}`;
+                this.state.nextPage = `#edit/${this.props.assettype}/${assetId}/${this.state.page}`;
                 if (this.hasChanges()) {
                     this.modalHandler();
                 } else {

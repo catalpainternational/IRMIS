@@ -77,11 +77,11 @@
             <section>
                 <h6>{ window.gettext("Upload media") }</h6>
                 <label>{ window.gettext("Photo/Video 1") }</label>
-                <upload_media mediaid="{ mediaId1 }" media="{ state.media1 }" fklink="{ props.fkLink }" surveymedia="{ true }" showfeedback="{ props.showFeedback }"></upload_media>
+                <upload_media mediaid="{ mediaId1 }" media="{ state.media1 }" surveymedia="{ true }" showfeedback="{ props.showfeedback }"></upload_media>
                 <label>{ window.gettext("Photo/Video 2") }</label>
-                <upload_media mediaid="{ mediaId2 }" media="{ state.media2 }" fklink="{ props.fkLink }" surveymedia="{ true }" showfeedback="{ props.showFeedback }"></upload_media>
+                <upload_media mediaid="{ mediaId2 }" media="{ state.media2 }" surveymedia="{ true }" showfeedback="{ props.showfeedback }"></upload_media>
                 <label>{ window.gettext("Photo/Video 3") }</label>
-                <upload_media mediaid="{ mediaId3 }" media="{ state.media3 }" fklink="{ props.fkLink }" surveymedia="{ true }" showfeedback="{ props.showFeedback }"></upload_media>
+                <upload_media mediaid="{ mediaId3 }" media="{ state.media3 }" surveymedia="{ true }" showfeedback="{ props.showfeedback }"></upload_media>
             </section>
             <div class="d-flex justify-content-end">
                 <span>[</span><span class="required">*</span><span>]: Mandatory</span>
@@ -380,10 +380,10 @@
                             survey: makeEstradaSurvey(this.state.baseSurvey), // clear input values
                         });
                         this.clearMedias();
-                        this.props.showFeedback();
+                        this.props.showfeedback();
                     })
                     .catch((err) => {
-                        this.props.showFeedback(true);
+                        this.props.showfeedback(true);
                     })
                     .finally((r) => {
                         $("#asset-manager-loading").modal("hide");

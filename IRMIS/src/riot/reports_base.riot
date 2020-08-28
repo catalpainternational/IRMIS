@@ -94,7 +94,7 @@
             },
             onBeforeMount(props, state) {
                 state.page = props.page;
-                state.pageId = props.pageId;
+                state.pageId = props.pageid;
                 window.addEventListener("hashchange", this.hashCheck);
                 window.goBack = () => window.location.hash = "#";
             },

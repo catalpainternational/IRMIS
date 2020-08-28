@@ -751,12 +751,12 @@
                     .then((surveyReportData) => {
                         switch (surveyReportData.length) {
                             case 0:
-                                this.props.showFeedback(true);
+                                this.props.showfeedback(true);
                                 this.state.noReport = true;
                                 break;
                             case 1:
                                 this.assembleSurveyReportData(surveyReportData[0]);
-                                this.props.showFeedback();
+                                this.props.showfeedback();
                                 break;
                             default:
                                 // A report with secondaryattributes defined
@@ -813,11 +813,11 @@
                                 });
 
                                 this.assembleSurveyReportData(assembledReportData);
-                                this.props.showFeedback();
+                                this.props.showfeedback();
                                 break;
                         }
                     }).catch(err => {
-                        this.props.showFeedback(true);
+                        this.props.showfeedback(true);
                         this.state.noReport = true;
                     }).finally((r) => {
                         $("#reports-loading").modal("hide");

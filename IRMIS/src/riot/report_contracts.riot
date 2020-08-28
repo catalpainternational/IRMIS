@@ -474,10 +474,10 @@
                             }
                         });
 
-                        this.props.showFeedback();
+                        this.props.showfeedback();
                         this.state.noReport = false;
                     }).catch(err => {
-                        this.props.showFeedback(true);
+                        this.props.showfeedback(true);
                         this.state.noReport = true;
                         this.state.noReportData = false;
                     }).finally((r) => {

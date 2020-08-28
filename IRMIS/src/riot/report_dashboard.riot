@@ -126,13 +126,13 @@
                                 });
                             }
 
-                            this.props.showFeedback();
+                            this.props.showfeedback();
                         } else {
                             // An id of null should tell us that there was an error fetching the data
-                            this.props.showFeedback(true);
+                            this.props.showfeedback(true);
                         }
                     }).catch(err => {
-                        this.props.showFeedback(true);
+                        this.props.showfeedback(true);
                     }).finally((r) => {
                         $("#reports-loading").modal("hide");
                         this.update();
