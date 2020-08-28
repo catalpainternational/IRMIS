@@ -680,12 +680,12 @@ def set_structure_municipalities(structure_type):
 def delete_cache_key(key, multiple=False):
     """ Takes cache key string as input and clears cache of it (if it exists).
         If multiple argument is False, delete a single key. If True, try to
-        delete all keys that match the  key string.
+        delete all keys that are a match for a key string prefix.
     """
     if not multiple:
         cache.delete(key)
     else:
         with connection.cursor() as cursor:
             cursor.execute(
-                "DELETE FROM roads_cache_table WHERE cache_key LIKE '%" + key + "%';"
+                "DELETE FROM roads_cache_table WHERE cache_key LIKE '%s%';" % key
             )
