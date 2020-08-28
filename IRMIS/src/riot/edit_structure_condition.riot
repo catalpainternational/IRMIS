@@ -8,8 +8,8 @@
         </div>
 
         <div class="table-spacing">
-            <data_table table_id="{data_table_id}" columns="{data_table_columns}"
-                columnSortOrder="{data_table_columns_order}" canorder candelete>
+            <data_table tableid="{ data_table_id }" columns="{ data_table_columns }"
+                columnsortorder="{ data_table_columns_order }" canorder="{ true }" candelete="{ true }">
             </data_table>
         </div>
     </div>
@@ -226,7 +226,7 @@
                     orderable: false,
                 },
                 {
-                    // To add a 'Delete' button include the attribute candelete
+                    // To add a 'Delete' button include the attribute candelete="{ true }"
                     // on the Riot dataTable tag as well
                     title: window.gettext("Delete"),
                     name: "Option", // Do NOT translate this

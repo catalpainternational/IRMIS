@@ -20,13 +20,13 @@
                 { window.gettext("View all data entries") }
             </a>
         </div>
-        <data_table if="{state.viewAllAssetCondition}" table_id="{identifiers.asset_condition.allDataTableId}"
-            columns="{all_data_table_columns}" columnSortOrder="{all_data_table_columns_order}"
-            getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows}" canorder candelete>
+        <data_table if="{ state.viewAllAssetCondition }" tableid="{ identifiers.asset_condition.allDataTableId }"
+            columns="{ all_data_table_columns }" columnsortorder="{ all_data_table_columns_order }"
+            pendingrows="{ state.pendingRows }" canorder="{ true }" candelete="{ true }">
         </data_table>
-        <data_table if="{!state.viewAllAssetCondition}" table_id="{identifiers.asset_condition.reportDataTableId}"
-            columns="{current_data_table_columns}" columnSortOrder="{current_data_table_columns_order}"
-            getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows}" canorder>
+        <data_table if="{ !state.viewAllAssetCondition }" tableid="{ identifiers.asset_condition.reportDataTableId }"
+            columns="{ current_data_table_columns }" columnsortorder="{ current_data_table_columns_order }"
+            pendingrows="{ state.pendingRows }" canorder="{ true }">
         </data_table>
     </div>
 
@@ -382,7 +382,7 @@
                     orderable: false,
                 },
                 {
-                    // To add a 'Delete' button include the attribute candelete
+                    // To add a 'Delete' button include the attribute candelete="{ true }"
                     // on the Riot dataTable tag as well
                     title: window.gettext("Delete"),
                     name: "Option", // Do NOT translate this

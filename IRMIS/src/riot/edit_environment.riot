@@ -19,13 +19,13 @@
                 { window.gettext("View all data entries") }
             </a>
         </div>
-        <data_table if="{ state.viewAllTerrain }" table_id="{identifiers.terrain_class.allDataTableId}"
-            columns="{terrain_all_data_table_columns}" columnSortOrder="{terrain_all_data_table_columns_order}"
-            getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows['terrain_class']}" canorder candelete>
+        <data_table if="{ state.viewAllTerrain }" tableid="{ identifiers.terrain_class.allDataTableId }"
+            columns="{terrain_all_data_table_columns}" columnsortorder="{ terrain_all_data_table_columns_order }"
+            pendingrows="{ state.pendingRows['terrain_class'] }" canorder="{ true }" candelete="{ true }">
         </data_table>
-        <data_table if="{ !state.viewAllTerrain }" table_id="{identifiers.terrain_class.reportDataTableId}"
-            columns="{terrain_current_data_table_columns}" columnSortOrder="{terrain_current_data_table_columns_order}"
-            getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows['terrain_class']}" canorder>
+        <data_table if="{ !state.viewAllTerrain }" tableid="{ identifiers.terrain_class.reportDataTableId }"
+            columns="{terrain_current_data_table_columns}" columnsortorder="{ terrain_current_data_table_columns_order }"
+            pendingrows="{ state.pendingRows['terrain_class'] }" canorder="{ true }">
         </data_table>
     </div>
 
@@ -48,13 +48,13 @@
                 { window.gettext("View all data entries") }
             </a>
         </div>
-        <data_table if="{ state.viewAllRainfall }" table_id="{identifiers.rainfall.allDataTableId}"
-            columns="{rainfall_all_data_table_columns}" columnSortOrder="{rainfall_all_data_table_columns_order}"
-            getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows['rainfall']}" canorder candelete>
+        <data_table if="{ state.viewAllRainfall }" tableid="{ identifiers.rainfall.allDataTableId }"
+            columns="{ rainfall_all_data_table_columns }" columnsortorder="{ rainfall_all_data_table_columns_order }"
+            pendingrows="{ state.pendingRows['rainfall'] }" canorder="{ true }" candelete="{ true }">
         </data_table>
-        <data_table if="{ !state.viewAllRainfall }" table_id="{identifiers.rainfall.reportDataTableId}"
-            columns="{rainfall_current_data_table_columns}" columnSortOrder="{rainfall_current_data_table_columns_order}"
-            getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows['rainfall']}" canorder>
+        <data_table if="{ !state.viewAllRainfall }" tableid="{ identifiers.rainfall.reportDataTableId }"
+            columns="{ rainfall_current_data_table_columns }" columnsortorder="{ rainfall_current_data_table_columns_order }"
+            pendingrows="{ state.pendingRows['rainfall'] }" canorder="{ true }">
         </data_table>
     </div>
 
@@ -557,7 +557,7 @@
                     orderable: false,
                 },
                 {
-                    // To add a 'Delete' button include the attribute candelete
+                    // To add a 'Delete' button include the attribute candelete="{ true }"
                     // on the Riot dataTable tag as well
                     title: window.gettext("Delete"),
                     name: "Option", // Do NOT translate this
@@ -693,7 +693,7 @@
                     orderable: false,
                 },
                 {
-                    // To add a 'Delete' button include the attribute candelete
+                    // To add a 'Delete' button include the attribute candelete="{ true }"
                     // on the Riot dataTable tag as well
                     title: window.gettext("Delete"),
                     name: "Option", // Do NOT translate this
