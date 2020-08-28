@@ -395,7 +395,7 @@ table.dataTable {
         font-size: 14px;
     }
 
-    a {
+    a, a:not([href]) {
         font-weight: 400;
         color: $green;
     }
