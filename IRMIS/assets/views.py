@@ -484,15 +484,17 @@ def clean_id_filter(id_value, prefix):
 
 
 def id_filter_consistency(primary_id, drift_id, culvert_id, bridge_id, road_id=None):
-    if primary_id != None:
-        if drift_id != None and "DRFT-" + str(primary_id) == drift_id:
-            primary_id = drift_id
-        if culvert_id != None and "CULV-" + str(primary_id) == culvert_id:
-            primary_id = culvert_id
-        if bridge_id != None and "BRDG-" + str(primary_id) == bridge_id:
-            primary_id = bridge_id
-        if road_id != None and "ROAD-" + str(primary_id) == road_id:
-            primary_id = road_id
+    if primary_id:
+        prefix_id_mappings = [
+            ("DRFT-", drift_id),
+            ("CULV-", culvert_id),
+            ("BRDG-", bridge_id),
+            ("ROAD-", road_id),
+        ]
+        for prefix, obj_id in prefix_id_mappings:
+            if obj_id and prefix + str(primary_id) == obj_id:
+                primary_id = obj_id
+                break
 
     return primary_id
 
@@ -500,36 +502,23 @@ def id_filter_consistency(primary_id, drift_id, culvert_id, bridge_id, road_id=N
 def filter_consistency(asset, drift, culvert, bridge, road):
     """ If asset is not set, then it is set to a structure (bridge, culvert, drift),
     in preference to be set to a road value """
-    if asset == None and (
-        bridge != None or culvert != None or drift != None or road != None
-    ):
-        if bridge != None or culvert != None or drift != None:
-            if bridge != None:
-                asset = bridge
-            elif culvert != None:
-                asset = culvert
-            else:
-                asset = drift
-        else:
-            asset = road
+    validObjects = [
+        asset for asset in (bridge, culvert, drift, road) if asset is not None
+    ]
+    if asset == None and len(validObjects) == 1:
+        asset = validObjects[0]
 
     return asset
 
 
 def filters_consistency(assets, structures, drifts, culverts, bridges, roads):
-    if len(structures) == 0 and (
-        len(bridges) > 0 or len(culverts) > 0 or len(drifts) > 0
-    ):
-        if len(bridges) > 0:
-            structures = bridges
-        if len(culverts) > 0:
-            structures = culverts
-        else:
-            structures = drifts
-    if len(assets) == 0 and (len(structures) > 0 or len(roads) > 0):
-        if len(structures) > 0:
+    structureObjs = [objs for objs in (bridges, culverts, drifts) if len(objs)]
+    if not len(structures) and len(structureObjs) == 1:
+        structures = structureObjs[0]
+    if not len(assets):
+        if len(structures):
             assets = structures
-        else:
+        elif len(roads):
             assets = roads
 
     return assets, structures
