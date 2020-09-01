@@ -14,7 +14,7 @@
                 </div>
                 <div class="modal-footer">
                     <a onclick="{ cancel }">{window.gettext("Cancel")}</a>
-                    <button type="button" class="btn btn-primary" onclick="{ save }" disabled="{ props.disableSave }">{ window.gettext("Save") }</button>
+                    <button type="button" class="btn btn-primary" onclick="{ save }" disabled="{ props.disablesave }">{ window.gettext("Save") }</button>
                 </div>
             </div>
         </div>
@@ -30,7 +30,7 @@
         const initialiseStateFromProps = function(props, state) {
             state = state || {};
 
-            state.id = props.modal_id || "editModal";
+            state.id = props.modalid || "editModal";
             state.modalLabel = `${state.id}Label`;
             state.selector = `#${state.id}`;
             state.resultEventName = `${state.id}.result`;
