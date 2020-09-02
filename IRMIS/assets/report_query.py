@@ -919,7 +919,7 @@ class ContractReport:
                 "    TO_CHAR(paymentCurrentYear,'FM999999999999') as paymentCurrentYear,\n"
                 "    TO_CHAR(paymentPreviousYear,'FM999999999999') as paymentPreviousYear,\n"
                 "    TO_CHAR(totalProgressPayment,'FM9990D90') as totalProgressPayment,\n"
-                "    TO_CHAR(SUM(physicalProgress),'FM9990D90') as physicalProgress,\n"
+                "    TO_CHAR(physicalProgress,'FM9990D90') as physicalProgress,\n"
                 "    contractStartDate,\n"
                 "    contractEndDate,\n"
                 "    amendmentStartDate,\n"
@@ -930,7 +930,7 @@ class ContractReport:
                 "FROM contracts_core as con\n"
                 "JOIN projects_core as prj on (con.tender_id = prj.tender_id)\n"
                 "JOIN programs_core as prgm ON (prgm.id = prj.program_id)\n"
-                "GROUP BY contract_id, contract_code, prgm.name, contractStartDate, contractEndDate, amendmentStartDate, amendmentEndDate, dlpStartDate, dlpEndDate, con.status, assets, contractValueAmdTotal, contractValueOrigTotal, totalPayment, balance, paymentCurrentYear, paymentPreviousYear, totalProgressPayment\n"
+                "GROUP BY contract_id, contract_code, prgm.name, contractStartDate, contractEndDate, amendmentStartDate, amendmentEndDate, dlpStartDate, dlpEndDate, con.status, assets, contractValueAmdTotal, contractValueOrigTotal, totalPayment, balance, paymentCurrentYear, paymentPreviousYear, totalProgressPayment, physicalProgress\n"
             ),
             "assetClassTypeOfWork": (
                 "SELECT \n"
