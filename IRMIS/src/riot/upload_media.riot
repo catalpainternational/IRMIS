@@ -1,5 +1,5 @@
 <upload_media>
-    <form id="dropzone-{props.mediaId}" class="dropzone">
+    <form id="dropzone-{ props.mediaid }" class="dropzone">
         <div class="cloud-box">
             <span class="image upload-cloud"></span>
             <div class="upload-instructions">{ window.gettext("Click to upload") }</div>
@@ -50,8 +50,8 @@
                     url: `${ConfigAPI.requestAssetUrl}/media_create`,
                     method: "post",
                     headers: {'X-CSRFToken': document.cookie.replace(/(?:(?:^|.*;\s*)csrftoken\s*\=\s*([^;]*).*$)|^.*$/, "$1")},
-                    params: {fk_link: props.fkLink},
-                    clickable: `#dropzone-${ props.mediaId } > div.cloud-box`,
+                    params: {fk_link: props.fklink},
+                    clickable: `#dropzone-${ props.mediaid } > div.cloud-box`,
                     maxFiles: 1,
                     maxFilesize: 25.0, // MB
                     acceptedFiles: '.jpeg,.jpg,.gif,.png,.mp4,.mov,.mpg,.avi,.wmv,.3gp,.ts,.asf,.mng,.m4v,.flv,.webm',
@@ -65,7 +65,7 @@
 
                 // hide the dropzone on mount if there's a media on hand to show
                 if (state.media.url != state.baseMedia.url) {
-                    document.getElementById("dropzone-" + props.mediaId).style.display = 'none';
+                    document.getElementById("dropzone-" + props.mediaid).style.display = 'none';
                 }
 
                 this.mediaCreationListener = (data) => {
@@ -78,24 +78,24 @@
                     this.state.media.date_created = media.date_created;
 
                     // add it to the NeedsLinkingQueue
-                    document.dispatchEvent(new CustomEvent(`${props.mediaId}.mediaNeedsLinking`, {detail: {media: this.state.media}}));
+                    document.dispatchEvent(new CustomEvent(`${props.mediaid}.mediaNeedsLinking`, {detail: {media: this.state.media}}));
 
                     this.update();
                 };
 
-                document.addEventListener(`${props.mediaId}.mediaCreated`, this.mediaCreationListener);
+                document.addEventListener(`${props.mediaid}.mediaCreated`, this.mediaCreationListener);
 
                 this.mediaClearedListener = (data) => {
                     this.state.media = new EstradaMedia();
                     this.update();
                 }
-                document.addEventListener(`${props.mediaId}.mediaCleared`, this.mediaClearedListener);
+                document.addEventListener(`${props.mediaid}.mediaCleared`, this.mediaClearedListener);
 
                 myDropzone.on("success", function(file, res) {
                     myDropzone.removeAllFiles();
                     // hide the dropzone
-                    document.getElementById("dropzone-" + props.mediaId).style.display = 'none';
-                    document.dispatchEvent(new CustomEvent(`${props.mediaId}.mediaCreated`, {detail: {media: res}}));
+                    document.getElementById("dropzone-" + props.mediaid).style.display = 'none';
+                    document.dispatchEvent(new CustomEvent(`${props.mediaid}.mediaCreated`, {detail: {media: res}}));
                 });
                 this.update();
             },
@@ -108,9 +108,9 @@
             updateMedia() {
                 putMediaData(this.state.media)
                     .then((data) => {
-                        document.dispatchEvent(new CustomEvent(`${this.props.mediaId}.mediaNeedsLinking`, {detail: {media: data}}));
+                        document.dispatchEvent(new CustomEvent(`${this.props.mediaid}.mediaNeedsLinking`, {detail: {media: data}}));
                     }).catch((err) => {
-                        this.props.showFeedback(true);
+                        this.props.showfeedback(true);
                     }).finally(() => {
                         this.update();
                     });
@@ -120,16 +120,16 @@
                 deleteMediaData(this.state.media)
                     .then((data) => {
                         // before resetting state.media, remove from the NeedsLinkingQueue, if present.
-                        document.dispatchEvent(new CustomEvent(`${this.props.mediaId}.mediaNeedsRemoval`, {detail: {media: data}}));
-                        if (!this.props.surveyMedia) {
+                        document.dispatchEvent(new CustomEvent(`${this.props.mediaid}.mediaNeedsRemoval`, {detail: {media: data}}));
+                        if (!this.props.surveymedia) {
                             // only if NOT a survey Media, show feedback
-                            this.props.showFeedback();
+                            this.props.showfeedback();
                         }
                         this.state.media = new EstradaMedia();
                         // show the dropzone
-                        document.getElementById(`dropzone-${this.props.mediaId}`).style.display = 'inline-block';
+                        document.getElementById(`dropzone-${this.props.mediaid}`).style.display = 'inline-block';
                     }).catch((err) => {
-                        this.props.showFeedback(true);
+                        this.props.showfeedback(true);
                     }).finally(() => {
                         this.update();
                     });

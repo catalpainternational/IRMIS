@@ -148,48 +148,48 @@
             </div>
 
             <data_table hidden="{ !state.reportData.program || !hasDataTable(reportContractsTableIds.program) }"
-                table_id="{ reportContractsTableIds.program }" title="{ window.gettext('Summary financial and physical progress of projects and contracts') }" columns="{ columns.program() }"
-                columnSortOrder="{ [[0, 'asc']] }" paging="false" canexport>
+                tableid="{ reportContractsTableIds.program }" title="{ window.gettext('Summary financial and physical progress of projects and contracts') }" columns="{ columns.program() }"
+                columnsortorder="{ [[0, 'asc']] }" paging="{ false }" canexport="{ true }">
             </data_table>
             <data_table hidden="{ !state.reportData.contractCode || !hasDataTable(reportContractsTableIds.contractCode) }"
-                table_id="{ reportContractsTableIds.contractCode }" title="{ window.gettext('Contracts detailed financial and physical progress') }" columns="{ columns.contractCode() }"
-                columnSortOrder="{ [[0, 'asc']] }" paging="false" canexport>
+                tableid="{ reportContractsTableIds.contractCode }" title="{ window.gettext('Contracts detailed financial and physical progress') }" columns="{ columns.contractCode() }"
+                columnsortorder="{ [[0, 'asc']] }" paging="{ false }" canexport="{ true }">
             </data_table>
             <data_table hidden="{ !state.reportData.assetClassTypeOfWork || !hasDataTable(reportContractsTableIds.assetClassTypeOfWork) }"
-                table_id="{ reportContractsTableIds.assetClassTypeOfWork }" title="{ window.gettext('By asset class and type of work') }" columns="{ columns.assetClassTypeOfWork() }"
-                columnSortOrder="{ [[0, 'asc']] }" helpText="{ window.gettext('Table shows completed contracts length. All values in Km.') }" paging="false" canexport>
+                tableid="{ reportContractsTableIds.assetClassTypeOfWork }" title="{ window.gettext('By asset class and type of work') }" columns="{ columns.assetClassTypeOfWork() }"
+                columnsortorder="{ [[0, 'asc']] }" helpText="{ window.gettext('Table shows completed contracts length. All values in Km.') }" paging="{ false }" canexport="{ true }">
             </data_table>
             <data_table hidden="{ !state.reportData.typeOfWorkYear || !hasDataTable(reportContractsTableIds.typeOfWorkYear) }"
-                table_id="{ reportContractsTableIds.typeOfWorkYear }" title="{ window.gettext('By type of work and year') }" columns="{ columns.typeOfWorkYear() }"
-                columnSortOrder="{ [[0, 'asc']] }" paging="false" helpText="{ window.gettext('Table shows completed contracts length. All values in Km.') }" canexport>
+                tableid="{ reportContractsTableIds.typeOfWorkYear }" title="{ window.gettext('By type of work and year') }" columns="{ columns.typeOfWorkYear() }"
+                columnsortorder="{ [[0, 'asc']] }" paging="{ false }" helpText="{ window.gettext('Table shows completed contracts length. All values in Km.') }" canexport="{ true }">
             </data_table>
             <data_table hidden="{ !state.reportData.assetClassYear || !hasDataTable(reportContractsTableIds.assetClassYear) }"
-                table_id="{ reportContractsTableIds.assetClassYear }" title="{ window.gettext('By asset class and year') }" columns="{ columns.assetClassYear() }"
-                columnSortOrder="{ [[0, 'asc']] }" paging="false" helpText="{ window.gettext('Table shows completed contracts length. All values in Km.') }" canexport>
+                tableid="{ reportContractsTableIds.assetClassYear }" title="{ window.gettext('By asset class and year') }" columns="{ columns.assetClassYear() }"
+                columnsortorder="{ [[0, 'asc']] }" paging="{ false }" helpText="{ window.gettext('Table shows completed contracts length. All values in Km.') }" canexport="{ true }">
             </data_table>
             <data_table hidden="{ !state.reportData.numberEmployees || !hasDataTable(reportContractsTableIds.numberEmployees) }"
-                table_id="{ reportContractsTableIds.numberEmployees }" title="{ window.gettext('Number of employees') }" columns="{ columns.numberEmployees() }"
-                columnSortOrder="{ [[0, 'asc']] }" paging="false" canexport>
+                tableid="{ reportContractsTableIds.numberEmployees }" title="{ window.gettext('Number of employees') }" columns="{ columns.numberEmployees() }"
+                columnsortorder="{ [[0, 'asc']] }" paging="{ false }" canexport="{ true }">
             </data_table>
             <data_table hidden="{ !state.reportData.wages || !hasDataTable(reportContractsTableIds.wages) }"
-                table_id="{ reportContractsTableIds.wages }" title="{ window.gettext('Wages') }" columns="{ columns.wages() }"
-                columnSortOrder="{ [[0, 'asc']] }" paging="false" canexport>
+                tableid="{ reportContractsTableIds.wages }" title="{ window.gettext('Wages') }" columns="{ columns.wages() }"
+                columnsortorder="{ [[0, 'asc']] }" paging="{ false }" canexport="{ true }">
             </data_table>
             <data_table hidden="{ !state.reportData.workedDays || !hasDataTable(reportContractsTableIds.workedDays) }"
-                table_id="{ reportContractsTableIds.workedDays }" title="{ window.gettext('Worker-days') }" columns="{ columns.workedDays() }"
-                columnSortOrder="{ [[0, 'asc']] }" paging="false" canexport>
+                tableid="{ reportContractsTableIds.workedDays }" title="{ window.gettext('Worker-days') }" columns="{ columns.workedDays() }"
+                columnsortorder="{ [[0, 'asc']] }" paging="{ false }" canexport="{ true }">
             </data_table>
             <data_table hidden="{ !state.reportData.numberEmployeesSummary || !hasDataTable(reportContractsTableIds.numberEmployeesSummary) }"
-                table_id="{ reportContractsTableIds.numberEmployeesSummary }" title="{ window.gettext('Number of employees') }"
-                columns="{ columns.numberEmployeesSummary() }" columnSortOrder="{ [[0, 'asc']] }" paging="false" canexport>
+                tableid="{ reportContractsTableIds.numberEmployeesSummary }" title="{ window.gettext('Number of employees') }"
+                columns="{ columns.numberEmployeesSummary() }" columnsortorder="{ [[0, 'asc']] }" paging="{ false }" canexport="{ true }">
             </data_table>
             <data_table hidden="{ !state.reportData.wagesSummary || !hasDataTable(reportContractsTableIds.wagesSummary) }"
-                table_id="{ reportContractsTableIds.wagesSummary }" title="{ window.gettext('Wages') }" columns="{ columns.wagesSummary() }"
-                columnSortOrder="{ [[0, 'asc']] }" paging="false" canexport>
+                tableid="{ reportContractsTableIds.wagesSummary }" title="{ window.gettext('Wages') }" columns="{ columns.wagesSummary() }"
+                columnsortorder="{ [[0, 'asc']] }" paging="{ false }" canexport="{ true }">
             </data_table>
             <data_table hidden="{ !state.reportData.workedDaysSummary || !hasDataTable(reportContractsTableIds.workedDaysSummary) }"
-                table_id="{ reportContractsTableIds.workedDaysSummary }" title="{ window.gettext('Worker-days') }"
-                columns="{ columns.workedDaysSummary() }" columnSortOrder="{ [[0, 'asc']] }" paging="false" canexport>
+                tableid="{ reportContractsTableIds.workedDaysSummary }" title="{ window.gettext('Worker-days') }"
+                columns="{ columns.workedDaysSummary() }" columnsortorder="{ [[0, 'asc']] }" paging="{ false }" canexport="{ true }">
             </data_table>
         </div>
 
@@ -474,10 +474,10 @@
                             }
                         });
 
-                        this.props.showFeedback();
+                        this.props.showfeedback();
                         this.state.noReport = false;
                     }).catch(err => {
-                        this.props.showFeedback(true);
+                        this.props.showfeedback(true);
                         this.state.noReport = true;
                         this.state.noReportData = false;
                     }).finally((r) => {

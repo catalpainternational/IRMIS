@@ -1,5 +1,5 @@
 <loading>
-    <div id="{ props.modalId }" class="modal" tabindex="-1" role="dialog" data-backdrop="static">
+    <div id="{ props.modalid }" class="modal" tabindex="-1" role="dialog" data-backdrop="static">
         <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
             <div class="align-items-center modal-content">
                 <div class="modal-header">
@@ -24,8 +24,8 @@
                 result: null,
             },
             onMounted(props, state) {
-                state.selector = `#${ props.modalId }`;
-                state.resultEventName = `edit.${ props.modalId }.result`,
+                state.selector = `#${ props.modalid }`;
+                state.resultEventName = `edit.${ props.modalid }.result`,
                 
                 // To respond to bootstrap modal events properly you must use the full
                 // jQuery `.on` event handler syntax

@@ -2,11 +2,11 @@
     <h5>{ window.gettext("Upload Photos and Videos") }</h5>
     <section>
         <label>{ window.gettext("Photo/Video 1") }</label>
-        <upload_media mediaId="{ mediaId1 }" media="{ state.media1 }" fkLink="{ state.fkLink }" showFeedback="{ props.showFeedback }"></upload_media>
+        <upload_media mediaid="{ mediaId1 }" media="{ state.media1 }" fklink="{ state.fkLink }" showfeedback="{ props.showfeedback }"></upload_media>
         <label>{ window.gettext("Photo/Video 2") }</label>
-        <upload_media mediaId="{ mediaId2 }" media="{ state.media2 }" fkLink="{ state.fkLink }" showFeedback="{ props.showFeedback }"></upload_media>
+        <upload_media mediaid="{ mediaId2 }" media="{ state.media2 }" fklink="{ state.fkLink }" showfeedback="{ props.showfeedback }"></upload_media>
         <label>{ window.gettext("Photo/Video 3") }</label>
-        <upload_media mediaId="{ mediaId3 }" media="{ state.media3 }" fkLink="{ state.fkLink }" showFeedback="{ props.showFeedback }"></upload_media>
+        <upload_media mediaid="{ mediaId3 }" media="{ state.media3 }" fklink="{ state.fkLink }" showfeedback="{ props.showfeedback }"></upload_media>
     </section>
     <div class="button-wrapper d-flex justify-content-end">
         <button class="btn btn-primary" onclick="{ save }" disabled="{ props.saving }">

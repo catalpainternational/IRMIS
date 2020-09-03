@@ -5,8 +5,8 @@
             { window.gettext("Export table") }
         </button>
     </div>
-    <table if="{ state.id }" id="{ state.id }" class="d-block table table-bordered table-hover w-100 { props.cssClass }"></table>
-    <small if="{ props.helpText }" class="text-muted">{ props.helpText }</small>
+    <table if="{ state.id }" id="{ state.id }" class="d-block table table-bordered table-hover w-100 { props.cssclass }"></table>
+    <small if="{ props.helptext }" class="text-muted">{ props.helptext }</small>
 
     <script>
         import {datatableTranslations} from "../datatableTranslations";
@@ -26,23 +26,16 @@
             state.canOrder  = !!props.canorder;
 
             // paging is true by default
-            state.paging = true;
-            if (typeof props.paging === "string" && props.paging.toLowerCase() === "false") {
-                state.paging = false;
-            } else if (typeof props.paging === "number") {
-                state.paging = !!props.paging;
-            } else if (typeof props.paging === "boolean") {
-                state.paging = props.paging;
-            }
+            state.paging = props.paging != null ? props.paging : true;
 
-            state.id = props.table_id;
+            state.id = props.tableid;
             state.title = props.title;
-            state.columnSortOrder = props.columnSortOrder || [[0, "asc"]];
+            state.columnSortOrder = props.columnsortorder || [[0, "asc"]];
             state.clearRows = false;
-            state.pendingRows = props.pendingRows || [];
-            state.pageLength = props.pageLength || 10;
-            state.showTotal = !!props.showTotal;
-            state.showTotalCount = !!props.showTotalCount;
+            state.pendingRows = props.pendingrows || [];
+            state.pageLength = props.pagelength || 10;
+            state.showTotal = !!props.showtotal;
+            state.showTotalCount = !!props.showtotalcount;
 
             if (state.canEdit) {
                 state.columnSortOrder.forEach((columnOrder) => {

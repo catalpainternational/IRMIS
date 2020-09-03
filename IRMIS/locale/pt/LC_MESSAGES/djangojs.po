@@ -511,8 +511,8 @@ msgstr "Orçamento para o ano em curso ($)"
 msgid "Total budget ($)"
 msgstr "Orçamento total ($)"
 
-msgid "Total contract value ($)"
-msgstr "Valor total do contrato ($)"
+msgid "Initial contract amount ($)"
+msgstr "Valor inicial do contrato ($)"
 
 msgid "Value of the contract - including variations (amendments) ($)"
 msgstr "Valor do contrato - incluindo variações (aditamentos)"

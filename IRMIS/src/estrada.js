@@ -37,7 +37,7 @@ import "./assets/models/monkeyPatch";
 export const estradaMap = new Map();
 
 riot.register("loading", Loading);
-riot.mount("loading", { modalId: "assets-loading" });
+riot.mount("loading", { modalid: "assets-loading" });
 
 window.addEventListener("load", () => {
     // Set up the map and table - but without any data for either
@@ -118,16 +118,16 @@ function hashCheck() {
         if (editHash[1] === "BRDG" || editHash[1] === "CULV" || editHash[1] === "DRFT") {
             const globalId = editHash[1] + "-" + editHash[2];
             const structurePromise = getStructure(globalId);
-            riot.mount("edit_base", { structurePromise: structurePromise, assetType: editHash[1], page: editHash[3] });
+            riot.mount("edit_base", { structurepromise: structurePromise, assettype: editHash[1], page: editHash[3] });
         } else {
             const roadPromise = getRoad(editHash[2]);
-            riot.mount("edit_base", { roadPromise: roadPromise, assetType: editHash[1], page: editHash[3] });
+            riot.mount("edit_base", { roadpromise: roadPromise, assettype: editHash[1], page: editHash[3] });
         }
         mainContent.hidden = true;
     } else if (reportsHash !== null && !reportsBase) {
         if (planningBase) riot.unmount("planning_base", true);
         if (editBase) riot.unmount("edit_base", true);
-        riot.mount("reports_base", { page: reportsHash[1], pageId: reportsHash[2] });
+        riot.mount("reports_base", { page: reportsHash[1], pageid: reportsHash[2] });
         mainContent.hidden = true;
     } else if (planningHash !== null && !planningBase) {
         if (editBase) riot.unmount("edit_base", true);

@@ -608,7 +608,7 @@ export const reportContractsTableColumns: { [name: string]: any } = {
         },
     },
     contractValueOrigTotal: {
-        title: (window as any).gettext("Total contract value ($)"),
+        title: (window as any).gettext("Initial contract amount ($)"),
         data: "contractvalueorigtotal",
         defaultContent: "",
         orderable: false,

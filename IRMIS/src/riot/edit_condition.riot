@@ -20,17 +20,17 @@
                 { window.gettext("View all data entries") }
             </a>
         </div>
-        <data_table if="{state.viewAllAssetCondition}" table_id="{identifiers.asset_condition.allDataTableId}"
-            columns="{all_data_table_columns}" columnSortOrder="{all_data_table_columns_order}"
-            getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows}" canorder candelete>
+        <data_table if="{ state.viewAllAssetCondition }" tableid="{ identifiers.asset_condition.allDataTableId }"
+            columns="{ all_data_table_columns }" columnsortorder="{ all_data_table_columns_order }"
+            pendingrows="{ state.pendingRows }" canorder="{ true }" candelete="{ true }">
         </data_table>
-        <data_table if="{!state.viewAllAssetCondition}" table_id="{identifiers.asset_condition.reportDataTableId}"
-            columns="{current_data_table_columns}" columnSortOrder="{current_data_table_columns_order}"
-            getHelpText="{props.parent.getHelpText}" pendingRows="{state.pendingRows}" canorder>
+        <data_table if="{ !state.viewAllAssetCondition }" tableid="{ identifiers.asset_condition.reportDataTableId }"
+            columns="{ current_data_table_columns }" columnsortorder="{ current_data_table_columns_order }"
+            pendingrows="{ state.pendingRows }" canorder="{ true }">
         </data_table>
     </div>
 
-    <edit_modal modal_id="{modal_id}" disableSave="{!state.canSave}">
+    <edit_modal modalid="{ modal_id }" disablesave="{ !state.canSave }">
         <span slot="modal_title">{window.gettext("Add Surface Condition Information")}</span>
 
         <form slot="modal_body">
@@ -108,11 +108,11 @@
             <section>
                 <h6>{ window.gettext("Upload Photos and Videos") }</h6>
                 <label>{ window.gettext("Photo/Video 1") }</label>
-                <upload_media mediaId="{ mediaId1 }" media="{ state.media1 }" fkLink="{ props.fkLink }" surveyMedia="{ true }" showFeedback="{ props.showFeedback }"></upload_media>
+                <upload_media mediaid="{ mediaId1 }" media="{ state.media1 }" surveymedia="{ true }" showfeedback="{ props.showfeedback }"></upload_media>
                 <label>{ window.gettext("Photo/Video 2") }</label>
-                <upload_media mediaId="{ mediaId2 }" media="{ state.media2 }" fkLink="{ props.fkLink }" surveyMedia="{ true }" showFeedback="{ props.showFeedback }"></upload_media>
+                <upload_media mediaid="{ mediaId2 }" media="{ state.media2 }" surveymedia="{ true }" showfeedback="{ props.showfeedback }"></upload_media>
                 <label>{ window.gettext("Photo/Video 3") }</label>
-                <upload_media mediaId="{ mediaId3 }" media="{ state.media3 }" fkLink="{ state.fkLink }" surveyMedia="{ true }" showFeedback="{ props.showFeedback }"></upload_media>
+                <upload_media mediaid="{ mediaId3 }" media="{ state.media3 }" surveymedia="{ true }" showfeedback="{ props.showfeedback }"></upload_media>
             </section>
 
             <div class="d-flex justify-content-end">
@@ -121,10 +121,10 @@
         </form>
     </edit_modal>
 
-    <edit_stop_alert modalId="delete-alert" title="{window.gettext('Delete')}"
-        description="{window.gettext('Are you sure you want to delete this data entry?')}"
-        proceedLabel="{window.gettext('Delete')}" proceedResult="delete" stopLabel="{window.gettext('Don\'t delete')}"
-        stopResult="keep">
+    <edit_stop_alert modalid="delete-alert" title="{ window.gettext('Delete') }"
+        description="{ window.gettext('Are you sure you want to delete this data entry?') }"
+        proceedlabel="{ window.gettext('Delete') }" proceedresult="delete" stoplabel="{ window.gettext('Don\'t delete') }"
+        stopresult="keep">
     </edit_stop_alert>
 
     <div id="media-modal" class="modal inventory-modal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -382,7 +382,7 @@
                     orderable: false,
                 },
                 {
-                    // To add a 'Delete' button include the attribute candelete
+                    // To add a 'Delete' button include the attribute candelete="{ true }"
                     // on the Riot dataTable tag as well
                     title: window.gettext("Delete"),
                     name: "Option", // Do NOT translate this
@@ -522,11 +522,11 @@
                             this.update({
                                 survey: new EstradaSurvey({}), // clear input values
                             });
-                            this.props.showFeedback();
+                            this.props.showfeedback();
                         });
                     })
                     .catch((err) => {
-                        this.props.showFeedback(true);
+                        this.props.showfeedback(true);
                     })
                     .finally((r) => {
                         $("#asset-manager-loading").modal("hide");
