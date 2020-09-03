@@ -685,7 +685,10 @@ def delete_cache_key(key, multiple=False):
     if not multiple:
         cache.delete(key)
     else:
-        with connection.cursor() as cursor:
-            cursor.execute(
-                "DELETE FROM roads_cache_table WHERE cache_key LIKE '%s%';" % key
-            )
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "DELETE FROM roads_cache_table WHERE cache_key LIKE '%s%';" % key
+                )
+        except TypeError:
+            pass
