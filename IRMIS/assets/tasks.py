@@ -5,6 +5,7 @@ from io import StringIO
 from celery.task import periodic_task
 from celery.schedules import crontab
 
+from django.core.cache import caches
 from django.core.files.base import ContentFile
 from django.core.serializers import serialize
 from django.contrib.gis.geos import GEOSGeometry, LineString, MultiLineString, Point
@@ -31,6 +32,8 @@ from .models import (
 )
 from contracts.models import FundingSource
 from basemap.models import Municipality
+
+cache = caches["default"]
 
 SURFACE_COND_MAPPING_MUNI = {"G": "1", "F": "2", "P": "3", "VP": "4"}
 SURFACE_COND_MAPPING_RRMPIS = {"Good": "1", "Fair": "2", "Poor": "3", "Bad": "4"}
@@ -672,3 +675,20 @@ def set_structure_municipalities(structure_type):
                 structure.administrative_area = row[1]
                 structure.save()
                 reversion.set_comment("Administrative area set from geometry")
+
+
+def delete_cache_key(key, multiple=False):
+    """ Takes cache key string as input and clears cache of it (if it exists).
+        If multiple argument is False, delete a single key. If True, try to
+        delete all keys that are a match for a key string prefix.
+    """
+    if not multiple:
+        cache.delete(key)
+    else:
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "DELETE FROM roads_cache_table WHERE cache_key LIKE '%s%';" % key
+                )
+        except TypeError:
+            pass

@@ -14,6 +14,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.gis.db import models
+from django.core.cache import caches
 from django.core.files.base import ContentFile
 from django.db.models import OuterRef, Q, Subquery
 from django.db.models.functions import Cast, Substr
@@ -72,10 +73,13 @@ from .models import (
     BreakpointRelationships,
 )
 
+from .tasks import delete_cache_key
 from .data_cleaning_utils import update_non_programmatic_surveys_by_road_code
 from .report_query import ReportQuery, ContractReport
 from .serializers import RoadSerializer
 from .token_mixin import JWTRequiredMixin
+
+cache = caches["default"]
 
 
 @method_decorator(login_required, name="dispatch")
@@ -295,6 +299,9 @@ def road_update(request):
             change_message,
         )
 
+    delete_cache_key("roadchunk_", multiple=True)
+    delete_cache_key("report_", multiple=True)
+
     versions = Version.objects.get_for_object(road)
     response = HttpResponse(
         req_pb.SerializeToString(), status=200, content_type="application/octet-stream"
@@ -337,6 +344,9 @@ def road_chunks_set(request):
 @login_required
 def protobuf_road_set(request, chunk_name=None):
     """ returns a protobuf object with the set of all Roads """
+    cached_pb = cache.get("roadchunk_%s" % abs(hash(chunk_name)), None)
+    if cached_pb:
+        return HttpResponse(cached_pb, content_type="application/octet-stream")
 
     roads = Road.objects.all()
     if chunk_name:
@@ -348,11 +358,9 @@ def protobuf_road_set(request, chunk_name=None):
                 Q(road_code__startswith=rc) | Q(road_code__startswith=rc.upper())
             )
 
-    roads_protobuf = roads.to_protobuf()
-
-    return HttpResponse(
-        roads_protobuf.SerializeToString(), content_type="application/octet-stream"
-    )
+    roads_protobuf = roads.to_protobuf().SerializeToString()
+    cache.set("roadchunk_%s" % abs(hash(chunk_name)), roads_protobuf)
+    return HttpResponse(roads_protobuf, content_type="application/octet-stream")
 
 
 @login_required
@@ -698,6 +706,11 @@ def protobuf_reports(request):
     # ) and chainage:
     #     final_filters["chainage"] = chainage
 
+    # check the cache for pre-built version of the report
+    cached_report_pb = cache.get("report_%s" % abs(hash(str(final_filters))), None)
+    if cached_report_pb:
+        return HttpResponse(cached_report_pb, content_type="application/octet-stream")
+
     # Initialise the Report
     asset_report = ReportQuery(final_filters)
     final_lengths = asset_report.compile_summary_stats(
@@ -747,9 +760,10 @@ def protobuf_reports(request):
 
                 report_protobuf.attributes.append(report_attribute)
 
-    return HttpResponse(
-        report_protobuf.SerializeToString(), content_type="application/octet-stream"
-    )
+    # add the serialized report to the cache for future requests
+    report_pb_serialized = report_protobuf.SerializeToString()
+    cache.set("report_%s" % abs(hash(str(final_filters))), report_pb_serialized)
+    return HttpResponse(report_pb_serialized, content_type="application/octet-stream")
 
 
 def bridge_create(req_pb):
@@ -1372,6 +1386,9 @@ def survey_create(request):
         # get the full new survey
         pb_survey = Survey.objects.filter(pk=initial_survey_id).to_protobuf().surveys[0]
 
+        # clear any report caches
+        delete_cache_key("report_", multiple=True)
+
         response = HttpResponse(
             pb_survey.SerializeToString(),
             status=200,
@@ -1469,6 +1486,9 @@ def survey_update(request):
         survey.save()
         # store the user who made the changes
         reversion.set_user(request.user)
+
+    # clear any report caches
+    delete_cache_key("report_", multiple=True)
 
     response = HttpResponse(
         req_pb.SerializeToString(), status=200, content_type="application/octet-stream"
@@ -1614,14 +1634,18 @@ def protobuf_structure_surveys(request, pk, survey_attribute=None):
 @login_required
 def protobuf_structures(request):
     """ returns a protobuf Structures object with sets of all available structure types """
+    cached_pb = cache.get("structures_protobuf", None)
+    if cached_pb:
+        return HttpResponse(cached_pb, content_type="application/octet-stream")
+
     structures_protobuf = structure_pb2.Structures()
     structures_protobuf.bridges.extend(Bridge.objects.all().to_protobuf().bridges)
     structures_protobuf.culverts.extend(Culvert.objects.all().to_protobuf().culverts)
     structures_protobuf.drifts.extend(Drift.objects.all().to_protobuf().drifts)
 
-    return HttpResponse(
-        structures_protobuf.SerializeToString(), content_type="application/octet-stream"
-    )
+    pb_string = structures_protobuf.SerializeToString()
+    cache.set("structures_protobuf", pb_string)
+    return HttpResponse(pb_string, content_type="application/octet-stream")
 
 
 @login_required
@@ -1703,6 +1727,10 @@ def structure_create(request, structure_type):
             content_type="application/octet-stream",
         )
 
+        delete_cache_key("structures_protobuf")
+        # clear any report caches
+        delete_cache_key("report_", multiple=True)
+
         return response
     except Exception as err:
         return HttpResponse(status=400)
@@ -1765,7 +1793,10 @@ def structure_update(request, pk):
             change_message,
         )
 
-    versions = Version.objects.get_for_object(structure)
+    delete_cache_key("structures_protobuf")
+    # clear any report caches
+    delete_cache_key("report_", multiple=True)
+
     response = HttpResponse(
         req_pb.SerializeToString(), status=200, content_type="application/octet-stream"
     )
