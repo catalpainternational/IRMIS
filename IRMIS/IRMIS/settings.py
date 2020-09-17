@@ -79,7 +79,7 @@ INSTALLED_APPS = [
     # CATALPA UTILS
     "catalpa_django_apps.google_analytics",
     "django_shapefiles",
-    "django_ajax_form"
+    "django_ajax_form",
 ]
 
 MIDDLEWARE = [
