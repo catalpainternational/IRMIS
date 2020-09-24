@@ -46,18 +46,21 @@ Clone this repository before performing import. It's README contains information
 **Important**
 This entire sequence must be performed to completion before users are allowed to edit the imported features (roads).
 
-1. `./manage.py import_shapefiles ../../path/to/the/data-sources/repo/shapefiles <asset_type>`
-  - imports the shapefile geometries and copies properties across where useful
+** Step 1 below has been temporarily disabled while we work on doing a more nuanced per file reimport process. **
+** Please use import_shapefile instead.  Note that import_shapefile does not yet support deleting of any previous attempt at importing a file.  It can only be used once. **
+
+1. `./manage.py reimport_shapefiles ../../path/to/the/data-sources/repo/shapefiles <asset_type>`
+  - reimports the shapefile geometries and copies properties across where useful (note this does delete all existing assets for the `<asset_type>` being imported)
   - `<asset_type>` is one of "road", "bridge", "culvert", or "drift"
   - also calls `set_municipalities` and `collate_geometries` automatically
 
 2. `./manage.py import_csv ../../path/to/the/data-sources/repo/csv`
   - copies road attributes from the csv ( from program excel files )
 
-3. `./manage.py set_bridge_fields`
-  - determines the closest road to each bridge, and sets the bridge `road_id`, `road_code` and `asset_class` to match
+3. `./manage.py set_structure_fields`
+  - determines the closest road to each structure (bridge, culvert, drift), and sets the `road_id`, `road_code` and `asset_class` to match
 
-### Additional Steps - these are automatically performed after `import_shapefiles`
+### Additional Steps - these are automatically performed after `reimport_shapefiles`
   A. `./manage.py set_unknown_road_codes`
     - Fixes roads with missing road codes, assigning these roads a unique `XX_` `road_code`.
 
@@ -156,9 +159,9 @@ usage : `./manage.py make_geojson ainaro > ainaro.json`
 
 ## Periodic / Conditional Tasks
 
-### Set Bridge Fields
+### Set Structure Fields
 
-This command updates certain fields on the Bridge model which relate to the road the bridge is closest to. This is necessary as 'bridge' has a weak reference to a Road ID. This command does a nearest neighbour search and sets `road_id`, `asset_class` and `road_code` based on the nearest matching road.
+This command updates certain fields on the Bridge, Culvert and Drift models that relate to the road the bridge, culvert or drift is closest to. This is necessary as these models have a weak reference to a Road ID. This command does a nearest neighbour search and sets `road_id`, `asset_class` and `road_code` based on the nearest matching road.
 ```
-./manage.py set_bridge_fields
+./manage.py set_structure_fields
 ```
