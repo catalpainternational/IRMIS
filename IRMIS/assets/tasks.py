@@ -21,7 +21,9 @@ from reversion.models import Version
 
 from .models import (
     Bridge,
+    BridgeMaterialType,
     Culvert,
+    CulvertMaterialType,
     Drift,
     CollatedGeoJsonFile,
     Road,
@@ -118,18 +120,35 @@ def update_from_shapefiles(management_command, shape_file_folder):
     )
 
 
-def import_shapefiles(management_command, shape_file_folder, asset="road"):
-    """ creates Road models from source shapefiles """
+def import_shapefile(management_command, shape_file, asset, asset_class):
+    """ creates Asset models from source shapefile """
 
-    if asset == "road":
-        asset_model = Road
-    elif asset == "bridge":
-        asset_model = Bridge
-    elif asset == "culvert":
-        asset_model = Culvert
-    elif asset == "drift":
-        asset_model = Drift
-    else:
+    asset_model = get_asset_model(asset)
+    if not asset_model:
+        raise NotImplementedError("Asset model %s not supported" % (asset,))
+    if not validate_asset_class(asset, asset_class):
+        raise NotImplementedError(
+            "Asset class %s not supported for asset type %s" % (asset_class, asset)
+        )
+
+    populate = get_asset_populate(asset)
+    if not populate:
+        raise NotImplementedError(
+            "Asset model %s does not have a populate method defined for it" % (asset,)
+        )
+    database_srid = get_asset_database_srid(asset)
+    process_shapefile(
+        management_command, shape_file, asset, asset_class, populate, database_srid
+    )
+
+    post_shapefile_import_steps(management_command, asset)
+
+
+def reimport_shapefiles(management_command, shape_file_folder, asset="road"):
+    """ recreates Asset models from source shapefiles """
+
+    asset_model = get_asset_model(asset)
+    if not asset_model:
         raise NotImplementedError("Asset model %s not supported" % (asset,))
 
     # delete appropriate exisiting DB objects and their revisions
@@ -144,8 +163,108 @@ def import_shapefiles(management_command, shape_file_folder, asset="road"):
     with connection.cursor() as cursor:
         cursor.execute(reset_sql)
 
+    # define the known (initial) sources
+    sources = get_shapefile_sources(asset)
+
+    database_srid = get_asset_database_srid(asset)
+    for file_name, asset_class, populate in sources:
+        shape_file = str(Path(shape_file_folder) / file_name)
+        process_shapefile(
+            management_command, shape_file, asset, asset_class, populate, database_srid
+        )
+
+    post_shapefile_import_steps(management_command, asset)
+
+
+def process_shapefile(
+    management_command, shape_file, asset, asset_class, populate, database_srid
+):
+    shp_file = DataSource(shape_file)
+    file_name = Path(shape_file).name
+
+    # iterate over the shape file features
+    for feature in shp_file[0]:
+        try:
+            if asset == "road":
+                # check the geometry is a multiline string and convert it if it is not
+                if isinstance(feature.geom.geos, LineString):
+                    geom = MultiLineString(feature.geom.geos)
+                elif isinstance(feature.geom.geos, MultiLineString):
+                    geom = feature.geom.geos
+            else:
+                # structure's geometry should be a Point
+                if isinstance(feature.geom.geos, Point):
+                    point = feature.geom.clone()
+                    point.coord_dim = 2
+                    geom = point.geos
+                else:
+                    if management_command:
+                        management_command.stderr.write(
+                            management_command.style.NOTICE(
+                                "Not a Point geom - skipping"
+                            )
+                        )
+        except GDALException as ex:
+            # print and continue if we have a invalid geometry
+            if management_command:
+                management_command.stderr.write(
+                    management_command.style.NOTICE(
+                        "GDAL Exception - ignoring %s from %s" % (feature.fid, shp_path)
+                    )
+                )
+            continue
+
+        # convert the geometry to the database srid
+        asset_geometry = GEOSGeometry(geom, srid=feature.geom.srid)
+        if feature.geom.srid != database_srid:
+            asset_geometry.transform(database_srid)
+
+        # create the unsaved Asset object
+        asset_obj = get_asset_object(asset, asset_geometry, asset_class)
+
+        # populate the asset object from shapefile properties
+        populate(asset_obj, feature)
+
+        # save the asset object with a revision comment
+        with reversion.create_revision():
+            asset_obj.save()
+            reversion.set_comment(
+                "Imported - {} - feature id({})".format(file_name, feature.fid)
+            )
+
+        # populate the "original attributes" table
+        if asset == "road":
+            rfa = RoadFeatureAttributes(
+                road=asset_obj,
+                attributes={field: feature.get(field) for field in feature.fields},
+            )
+
+            rfa.attributes["SOURCE_FILE"] = file_name
+            rfa.attributes["SOURCE_FILE_FID"] = feature.fid
+
+            rfa.attributes = json.loads(
+                json.dumps(rfa.attributes, cls=DjangoJSONEncoder)
+            )
+            rfa.save()
+
+
+def get_asset_model(asset=""):
+    asset_model = None
     if asset == "road":
-        database_srid = Road._meta.fields[1].srid
+        asset_model = Road
+    elif asset == "bridge":
+        asset_model = Bridge
+    elif asset == "culvert":
+        asset_model = Culvert
+    elif asset == "drift":
+        asset_model = Drift
+
+    return asset_model
+
+
+def get_shapefile_sources(asset=""):
+    sources = None
+    if asset == "road":
         sources = (
             ("National_Road.shp", "NAT", populate_road_national),
             (
@@ -158,142 +277,106 @@ def import_shapefiles(management_command, shape_file_folder, asset="road"):
             ("RRMPIS_2014.shp", "RUR", populate_road_rrpmis),
         )
     elif asset == "bridge":
-        database_srid = Bridge._meta.fields[1].srid
         sources = (("Bridge.shp", "bridge", populate_bridge),)
     elif asset == "culvert":
-        database_srid = Culvert._meta.fields[1].srid
         # no sources for culverts...yet
         sources = ()
     elif asset == "drift":
-        database_srid = Drift._meta.fields[1].srid
         # no sources for drifts...yet
         sources = ()
-    else:
-        management_command.stderr.write(
-            management_command.style.ERROR("No asset or bad asset argument given!")
-        )
-        exit(0)
 
-    for file_name, asset_class, populate in sources:
-        shp_path = str(Path(shape_file_folder) / file_name)
-        shp_file = DataSource(shp_path)
+    return sources
 
-        # iterate over the shape file features
-        for feature in shp_file[0]:
-            try:
-                if asset == "road":
-                    # check the geometry is a multiline string and convert it if it is not
-                    if isinstance(feature.geom.geos, LineString):
-                        geom = MultiLineString(feature.geom.geos)
-                    elif isinstance(feature.geom.geos, MultiLineString):
-                        geom = feature.geom.geos
-                else:
-                    # structure's geometry should be a Point
-                    if isinstance(feature.geom.geos, Point):
-                        point = feature.geom.clone()
-                        point.coord_dim = 2
-                        geom = point.geos
-                    else:
-                        management_command.stderr.write(
-                            management_command.style.NOTICE(
-                                "Not a Point geom - skipping"
-                            )
-                        )
-            except GDALException as ex:
-                # print and continue if we have a invalid geometry
-                management_command.stderr.write(
-                    management_command.style.NOTICE(
-                        "GDAL Exception - ignoring %s from %s" % (feature.fid, shp_path)
-                    )
-                )
-                continue
 
-            # convert the geometry to the database srid
-            asset_geometry = GEOSGeometry(geom, srid=feature.geom.srid)
-            if feature.geom.srid != database_srid:
-                asset_geometry.transform(database_srid)
+def get_asset_populate(asset):
+    populate = None
+    if asset == "road":
+        # don't know what to do here - too many variations
+        pass
+    elif asset == "bridge":
+        populate = populate_bridge
+    elif asset == "culvert":
+        populate = populate_culvert
+    elif asset == "drift":
+        populate = populate_drift
 
-            # create the unsaved Asset object
-            if asset == "road":
-                asset_obj = Road(geom=asset_geometry.wkt, asset_class=asset_class)
-            elif asset == "bridge":
-                asset_obj = Bridge(geom=asset_geometry.wkt)
-            elif asset == "culvert":
-                asset_obj = Culvert(geom=asset_geometry.wkt)
-            elif asset == "drift":
-                asset_obj = Drift(geom=asset_geometry.wkt)
+    return populate
 
-            # populate the asset object from shapefile properties
-            populate(asset_obj, feature)
 
-            # save the asset object with a revision comment
-            with reversion.create_revision():
-                asset_obj.save()
-                reversion.set_comment(
-                    "Imported - {} - feature id({})".format(file_name, feature.fid)
-                )
+def validate_asset_class(asset, asset_class):
+    asset_class_ok = False
+    if asset == "road":
+        asset_class_ok = asset_class in {"NAT", "MUN", "RUR", "URB"}
+    elif asset in {"bridge", "culvert", "drift"}:
+        asset_class_ok = asset_class == asset
 
-            # populate the "original attributes" table
-            if asset == "road":
-                rfa = RoadFeatureAttributes(
-                    road=asset_obj,
-                    attributes={field: feature.get(field) for field in feature.fields},
-                )
+    return asset_class_ok
 
-                rfa.attributes["SOURCE_FILE"] = file_name
-                rfa.attributes["SOURCE_FILE_FID"] = feature.fid
 
-                rfa.attributes = json.loads(
-                    json.dumps(rfa.attributes, cls=DjangoJSONEncoder)
-                )
-                rfa.save()
+def get_asset_database_srid(asset=""):
+    database_srid = None
+    if asset == "road":
+        database_srid = Road._meta.fields[1].srid
+    elif asset == "bridge":
+        database_srid = Bridge._meta.fields[1].srid
+    elif asset == "culvert":
+        database_srid = Culvert._meta.fields[1].srid
+    elif asset == "drift":
+        database_srid = Drift._meta.fields[1].srid
 
+    return database_srid
+
+
+def get_asset_object(asset, asset_geometry, asset_class):
+    asset_obj = None
+    if asset == "road":
+        asset_obj = Road(geom=asset_geometry.wkt, asset_class=asset_class)
+    elif asset == "bridge":
+        asset_obj = Bridge(geom=asset_geometry.wkt)
+    elif asset == "culvert":
+        asset_obj = Culvert(geom=asset_geometry.wkt)
+    elif asset == "drift":
+        asset_obj = Drift(geom=asset_geometry.wkt)
+
+    return asset_obj
+
+
+def post_shapefile_import_steps(management_command, asset):
+    asset_count = 0
     if asset == "road":
         set_unknown_road_codes()
         set_road_municipalities()
-        collate_geometries(asset)
-        management_command.stdout.write(
-            management_command.style.SUCCESS(
-                "imported %s roads" % Road.objects.all().count()
-            )
-        )
-        management_command.stdout.write(
-            management_command.style.NOTICE(
-                "Please run `import_csv` to complete road data import"
-            )
-        )
-    elif asset == "bridge":
+        asset_count = Road.objects.all().count()
+    elif asset in {"bridge", "culvert", "drift"}:
         set_unknown_structure_codes()
         set_structure_municipalities(asset)
-        collate_geometries(asset)
+        if asset == "bridge":
+            asset_count = Bridge.objects.all().count()
+        elif asset == "culvert":
+            asset_count = Culvert.objects.all().count()
+        elif asset == "drift":
+            asset_count = Drift.objects.all().count()
+
+    collate_geometries(asset)
+    if management_command:
         management_command.stdout.write(
             management_command.style.SUCCESS(
-                "imported %s bridges" % Bridge.objects.all().count()
+                "new total of %ss is %s" % (asset, asset_count)
             )
         )
-        management_command.stdout.write(
-            management_command.style.NOTICE(
-                "Please run `set_bridge_fields` to complete bridge data import"
+        if asset == "road":
+            management_command.stdout.write(
+                management_command.style.NOTICE(
+                    "Please run `import_csv` to complete road data import"
+                )
             )
-        )
-    elif asset == "culvert":
-        set_unknown_structure_codes()
-        set_structure_municipalities(asset)
-        collate_geometries(asset)
-        management_command.stdout.write(
-            management_command.style.SUCCESS(
-                "imported %s culverts" % Culvert.objects.all().count()
+        elif asset in {"bridge", "culvert", "drift"}:
+            management_command.stdout.write(
+                management_command.style.NOTICE(
+                    "Please run `set_structure_fields` to complete %s data import"
+                    % asset
+                )
             )
-        )
-    elif asset == "drift":
-        set_unknown_structure_codes()
-        set_structure_municipalities(asset)
-        collate_geometries(asset)
-        management_command.stdout.write(
-            management_command.style.SUCCESS(
-                "imported %s drifts" % Drift.objects.all().count()
-            )
-        )
 
 
 def get_first_available_numeric_value(feature, field_names):
@@ -305,13 +388,45 @@ def get_first_available_numeric_value(feature, field_names):
     return None
 
 
+def get_field(feature, field_name, default):
+    return_val = default
+    try:
+        return_val = feature.get(field_name)
+    except:
+        pass
+
+    return return_val
+
+
 def populate_bridge(bridge, feature):
     """ populates a bridge from the shapefile """
     had_bad_area = False
 
-    bridge.structure_name = feature.get("nam")
+    # Don't know about these fields: Type, B__m_, H__m_
+    material = get_field(feature, "Material", "").lower()
+    if material:
+        material_name = ""
+        if material == "con":
+            material_name = "Concrete"
+        else:
+            print("Unkown bridge material %s" % material)
+        try:
+            bridge_material = BridgeMaterialType.objects.get(name=material_name)
+        except BridgeMaterialType.DoesNotExist:
+            bridge_material = None
+        if bridge_material:
+            bridge.material = bridge_material
+
+    span_m = get_field(feature, "Span__m_", None)
+    if span_m:
+        bridge.span_length = span_m
+
+    structure_name = get_field(feature, "nam", None)
+    if structure_name:
+        bridge.structure_name = structure_name
+
     # we need to map sheet_name to the administrative area Id (instead of its name)
-    area_name = feature.get("sheet_name").upper()
+    area_name = get_field(feature, "sheet_name", "").upper()
     if area_name:
         try:
             municipality = Municipality.objects.get(name=area_name)
@@ -327,6 +442,43 @@ def populate_bridge(bridge, feature):
         had_bad_area = True
 
     return had_bad_area
+
+
+def populate_culvert(culvert, feature):
+    """ populates a culvert from the shapefile """
+
+    # Don't know about these numeric fields: L__m_, B_or_Dia__, H__m_:
+    material = get_field(feature, "Type___Str", "").lower()
+    if not material:
+        material = get_field(feature, "Material", "").lower()
+    if material:
+        material_name = ""
+        if material in {"rcc", "con"}:
+            material_name = "RCC"
+        else:
+            print("Unkown culvert material %s" % material)
+        try:
+            culvert_material = CulvertMaterialType.objects.get(name=material_name)
+        except CulvertMaterialType.DoesNotExist:
+            culvert_material = None
+        if culvert_material:
+            culvert.material = culvert_material
+
+    number_cells = get_field(feature, "No_of_Cell", None)
+    if number_cells:
+        culvert.number_cells = number_cells
+
+
+def populate_drift(bridge, feature):
+    """ populates a drift from the shapefile """
+
+    # Use the following for a simple dump of the GDAL fields
+    # fieldset = ""
+    # for field in feature.fields:
+    #     fieldset = "%s %s:%s" % (fieldset, field, feature[field])
+    # print(fieldset)
+
+    # Don't know about these fields: Material, L__m_, B_or_Dia__, H__m_
 
 
 def populate_road_national(road, feature):
@@ -514,7 +666,7 @@ def decimal_from_chainage(chainage):
 
 
 @periodic_task(run_every=crontab(minute=0, hour="12,23"))
-def collate_geometries():
+def collate_geometries(asset=""):
     """ Collate geometry models into geobuf files
 
     Groups geometry models into sets, builds GeoJson, encodes to geobuf
@@ -522,17 +674,25 @@ def collate_geometries():
     """
 
     geometry_sets = {}
-    geometry_sets["national"] = Road.objects.filter(asset_class="NAT").exclude(
-        geom=None
-    )
-    geometry_sets["municipal"] = Road.objects.filter(asset_class="MUN").exclude(
-        geom=None
-    )
-    geometry_sets["urban"] = Road.objects.filter(asset_class="URB").exclude(geom=None)
-    geometry_sets["rural"] = Road.objects.filter(asset_class="RUR").exclude(geom=None)
-    geometry_sets["bridge"] = Bridge.objects.exclude(geom=None)
-    geometry_sets["culvert"] = Culvert.objects.exclude(geom=None)
-    geometry_sets["drift"] = Drift.objects.exclude(geom=None)
+    if asset == "road" or asset == "":
+        geometry_sets["national"] = Road.objects.filter(asset_class="NAT").exclude(
+            geom=None
+        )
+        geometry_sets["municipal"] = Road.objects.filter(asset_class="MUN").exclude(
+            geom=None
+        )
+        geometry_sets["urban"] = Road.objects.filter(asset_class="URB").exclude(
+            geom=None
+        )
+        geometry_sets["rural"] = Road.objects.filter(asset_class="RUR").exclude(
+            geom=None
+        )
+    if asset == "bridge" or asset == "":
+        geometry_sets["bridge"] = Bridge.objects.exclude(geom=None)
+    if asset == "culvert" or asset == "":
+        geometry_sets["culvert"] = Culvert.objects.exclude(geom=None)
+    if asset == "drift" or asset == "":
+        geometry_sets["drift"] = Drift.objects.exclude(geom=None)
 
     # clear existing GeoJson Files
     CollatedGeoJsonFile.objects.all().delete()
@@ -592,26 +752,35 @@ def set_unknown_road_codes():
 
 
 def set_unknown_structure_codes():
-    """ finds all structures with meaningless codes and assigns them XB / XC indexed codes """
+    """ finds all structures with meaningless codes and assigns them XB / XC / XD indexed codes """
     bridges = Bridge.objects.filter(
         Q(structure_code__isnull=True) | Q(structure_code__in=["X", "", "-", "Unknown"])
     )
+    bridge_index_offset = (
+        Bridge.objects.filter(structure_code__startswith="XB").count() + 1
+    )
     for index, bridge in enumerate(bridges):
-        bridge.structure_code = "XB{:>03}".format(index + 1)
+        bridge.structure_code = "XB{:>03}".format(index + bridge_index_offset)
         bridge.save()
 
     culverts = Culvert.objects.filter(
         Q(structure_code__isnull=True) | Q(structure_code__in=["X", "", "-", "Unknown"])
     )
+    culvert_index_offset = (
+        Culvert.objects.filter(structure_code__startswith="XC").count() + 1
+    )
     for index, culvert in enumerate(culverts):
-        culvert.structure_code = "XC{:>03}".format(index + 1)
+        culvert.structure_code = "XC{:>03}".format(index + culvert_index_offset)
         culvert.save()
 
     drifts = Drift.objects.filter(
         Q(structure_code__isnull=True) | Q(structure_code__in=["X", "", "-", "Unknown"])
     )
+    drift_index_offset = (
+        Drift.objects.filter(structure_code__startswith="XD").count() + 1
+    )
     for index, drift in enumerate(drifts):
-        drift.structure_code = "XD{:>03}".format(index + 1)
+        drift.structure_code = "XD{:>03}".format(index + drift_index_offset)
         drift.save()
 
 

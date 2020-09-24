@@ -10,6 +10,6 @@ class Command(BaseCommand):
         parser.add_argument("folder")
 
     def handle(self, *args, **options):
-        raise DeprecationWarning("This is moved to import_shapefiles script")
+        raise DeprecationWarning("This is moved to reimport_shapefiles script")
         return
         # update_from_shapefiles(options["folder"])
