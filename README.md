@@ -61,8 +61,8 @@ This entire sequence must be performed to completion before users are allowed to
   - determines the closest road to each structure (bridge, culvert, drift), and sets the `road_id`, `road_code` and `asset_class` to match
 
 ### Additional Steps - these are automatically performed after `reimport_shapefiles`
-  A. `./manage.py set_unknown_road_codes`
-    - Fixes roads with missing road codes, assigning these roads a unique `XX_` `road_code`.
+  A. `./manage.py set_unknown_asset_codes`
+    - Fixes assets with missing road / structure codes , assigning these roads a unique `XX_` `road_code`, `XB_`/`XC_`/`XD_` `structure_code`.
 
   B. `./manage.py set_municipalities <optional: "all", "road", "bridge", "culvert" or "drift">`
     - Sets the administrative areas for each asset/structure, based the centroids of their respective geometries
@@ -70,7 +70,7 @@ This entire sequence must be performed to completion before users are allowed to
     - If 'all' argument is given all of the assets/structures will have their municipalities set
 
   C. `./manage.py collate_geometries`
-    - you have edited roads, bridges, culverts, drifts, so re-collate
+    - you have imported / edited roads, bridges, culverts, drifts, so re-collate
 
 ### Additional Step - this is automatically performed by the survey commands below
   D. `./manage.py set_unknown_link_codes`
@@ -119,7 +119,7 @@ To run tests that match a pattern use `-k` e.g. `pytest -k api`
 ## Geobuf
 
 We use https://github.com/mapbox/geobuf for compressing GeoJson for transfer down the wire.
-`./manage.py collate_geometries` will group Road models and merge their geometries into a GeoJson FeatureCollection, then encode it into a geobuf file.
+`./manage.py collate_geometries` will group Road, Bridge, Culvert & Drift asset models and merge their geometries into a GeoJson FeatureCollection, then encode it into a geobuf file.
 The files are saved in the media root for access by the client.
 
 ## Protobuf

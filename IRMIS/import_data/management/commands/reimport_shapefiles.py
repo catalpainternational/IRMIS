@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from assets.tasks import reimport_shapefiles, update_from_shapefiles
+from import_data.tasks import reimport_shapefiles, update_from_shapefiles
 
 
 # See also import_shapefile

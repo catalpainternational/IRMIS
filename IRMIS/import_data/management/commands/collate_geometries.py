@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from assets.tasks import collate_geometries
+from import_data.tasks import collate_geometries
 
 
 class Command(BaseCommand):

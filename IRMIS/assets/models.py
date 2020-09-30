@@ -1,25 +1,25 @@
 from django.conf import settings
-from django.contrib.gis.db import models
-from django.contrib.gis.geos import Point
-from django.contrib.postgres.indexes import GistIndex
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.gis.db import models
+from django.contrib.gis.geos import Point
+from django.contrib.postgres.aggregates.general import ArrayAgg
 from django.contrib.postgres.fields import HStoreField, JSONField, DecimalRangeField
 from django.contrib.postgres.indexes import GistIndex
-from django.contrib.postgres.aggregates.general import ArrayAgg
-from django.utils.translation import ugettext_lazy as _
 from django.core.cache import caches
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db.models import Count, Max, OuterRef, Prefetch, Subquery
 from django.db.models.functions import Cast, Substr, Upper
 from django.db import connection, ProgrammingError
+from django.utils.translation import ugettext_lazy as _
+
 from warnings import warn
 from typing import Iterable
-from warnings import warn
 
 import importlib_resources as resources
 import re
+
 from . import sql_scripts
 
 import json
@@ -32,16 +32,17 @@ from datetime import datetime
 from collections import namedtuple
 
 from protobuf.media_pb2 import Medias as ProtoMedias
+from protobuf.plan_pb2 import Plans as ProtoPlans
+from protobuf.plan_pb2 import PlanSnapshots as ProtoPlanSnapshots
 from protobuf.roads_pb2 import Roads as ProtoRoads, Projection
 from protobuf.survey_pb2 import Surveys as ProtoSurveys
 from protobuf.structure_pb2 import Structures as ProtoStructures
-from protobuf.plan_pb2 import Plans as ProtoPlans
-from protobuf.plan_pb2 import PlanSnapshots as ProtoPlanSnapshots
 
 from google.protobuf.timestamp_pb2 import Timestamp
 
-from .geodjango_utils import start_end_point_annos
 from csv_data_sources.models import CsvData
+
+from .geodjango_utils import start_end_point_annos
 from .managers import RoughnessManager
 
 cache = caches["default"]
@@ -178,6 +179,22 @@ class TechnicalClass(models.Model):
         return self.name
 
 
+def get_asset_prefix(asset_type=""):
+    prefix = ""
+    if asset_type == "bridge":
+        prefix = "BRDG-"
+    elif asset_type == "culvert":
+        prefix = "CULV-"
+    elif asset_type == "drift":
+        prefix = "DRFT-"
+    elif asset_type == "survey":
+        prefix = "SURV-"
+    elif asset_type == "road":
+        prefix = "ROAD-"
+
+    return prefix
+
+
 class MediaQuerySet(models.QuerySet):
     def to_protobuf(self):
         """ returns a protobuf object from the queryset with a Media list """
@@ -206,17 +223,8 @@ class MediaQuerySet(models.QuerySet):
                     setattr(media_protobuf, protobuf_key, field_value)
 
             if getattr(media, "content_object", None):
-                model = media.content_type.model
-                if model == "bridge":
-                    prefix = "BRDG-"
-                elif model == "culvert":
-                    prefix = "CULV-"
-                elif model == "drift":
-                    prefix = "DRFT-"
-                elif model == "survey":
-                    prefix = "SURV-"
-                elif model == "road":
-                    prefix = "ROAD-"
+                asset_type = media.content_type.model
+                prefix = get_asset_prefix(asset_type)
                 setattr(media_protobuf, "fk_link", prefix + str(media.object_id))
 
             field_value = getattr(media, "date_created", None)
