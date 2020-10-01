@@ -20,12 +20,15 @@ import reversion
 from reversion.models import Version
 
 from assets.models import (
-    Bridge,
-    Culvert,
-    Drift,
-    CollatedGeoJsonFile,
     Road,
     RoadFeatureAttributes,
+    Bridge,
+    BridgeFeatureAttributes,
+    Culvert,
+    CulvertFeatureAttributes,
+    Drift,
+    DriftFeatureAttributes,
+    CollatedGeoJsonFile,
 )
 from assets.utilities import get_asset_model
 from import_data.populate_model import (
@@ -52,19 +55,39 @@ cache = caches["default"]
 # Data sources
 sources = (
     ("shapefile", "National_Road.shp", "road", "NAT", populate_road_national),
-    ("shapefile", 
-        "Highway_Suai.shp", "road",
-        "NAT",
-        populate_road_highway,
-    ),
+    ("shapefile", "Highway_Suai.shp", "road", "NAT", populate_road_highway,),
     ("shapefile", "Municipal_Road.shp", "road", "MUN", populate_road_municipal),
     ("shapefile", "Rural_Road_R4D_Timor_Leste.shp", "road", "RUR", populate_road_r4d),
     ("shapefile", "RRMPIS_2014.shp", "road", "RUR", populate_road_rrpmis),
-    ("shapefile", "Timor_Leste_RR_2019_Latest_Update_November.shp", "road", "RUR", update_road_r4d),
+    (
+        "shapefile",
+        "Timor_Leste_RR_2019_Latest_Update_November.shp",
+        "road",
+        "RUR",
+        update_road_r4d,
+    ),
     ("shapefile", "Bridge.shp", "bridge", "bridge", populate_bridge),
-    ("csv", "Estrada-DB-NationalRural.xlsx - National roads.csv", "road", "NAT", {"link_code": "Section"}),
-    ("csv", "Estrada-DB-NationalRural.xlsx - Municipal roads.csv", "road", "MUN", {"road_code": "Code"}),
-    ("csv", "Suai Highway Data from Highways department - Suai.csv", "road", "NAT", {"road_name": "Road name"}),
+    (
+        "csv",
+        "Estrada-DB-NationalRural.xlsx - National roads.csv",
+        "road",
+        "NAT",
+        {"link_code": "Section"},
+    ),
+    (
+        "csv",
+        "Estrada-DB-NationalRural.xlsx - Municipal roads.csv",
+        "road",
+        "MUN",
+        {"road_code": "Code"},
+    ),
+    (
+        "csv",
+        "Suai Highway Data from Highways department - Suai.csv",
+        "road",
+        "NAT",
+        {"road_name": "Road name"},
+    ),
 )
 
 
@@ -80,7 +103,7 @@ def update_from_shapefiles(management_command, shape_file_folder):
             continue
 
         # We're currently only processing one file here
-        if (file_name != "Timor_Leste_RR_2019_Latest_Update_November.shp"):
+        if file_name != "Timor_Leste_RR_2019_Latest_Update_November.shp":
             continue
 
         shp_path = str(Path(shape_file_folder) / file_name)
@@ -190,11 +213,25 @@ def process_shapefile(
 
     # iterate over the shape file features
     for feature in shp_file[0]:
-        process_geom_feature(management_command, feature, file_name, asset_type, asset_class, database_srid, populate)
+        process_geom_feature(
+            management_command,
+            feature,
+            file_name,
+            asset_type,
+            asset_class,
+            database_srid,
+            populate,
+        )
 
 
 def process_geom_feature(
-    management_command, feature, file_name, asset_type, asset_class, database_srid, populate
+    management_command,
+    feature,
+    file_name,
+    asset_type,
+    asset_class,
+    database_srid,
+    populate,
 ):
     try:
         if asset_type == "road":
@@ -212,9 +249,7 @@ def process_geom_feature(
             else:
                 if management_command:
                     management_command.stderr.write(
-                        management_command.style.NOTICE(
-                            "Not a Point geom - skipping"
-                        )
+                        management_command.style.NOTICE("Not a Point geom - skipping")
                     )
     except GDALException as ex:
         # print and continue if we have a invalid geometry
@@ -245,20 +280,24 @@ def process_geom_feature(
             "Imported - {} - feature id({})".format(file_name, feature.fid)
         )
 
-    # populate the "original attributes" table
+    # populate the 'asset feature attributes' with the original feature attributes
+    afa = None
+    attributes = {field: feature.get(field) for field in feature.fields}
     if asset_type == "road":
-        rfa = RoadFeatureAttributes(
-            road=asset_obj,
-            attributes={field: feature.get(field) for field in feature.fields},
-        )
+        afa = RoadFeatureAttributes(road=asset_obj, attributes=attributes,)
+    if asset_type == "bridge":
+        afa = BridgeFeatureAttributes(bridge=asset_obj, attributes=attributes,)
+    if asset_type == "culvert":
+        afa = CulvertFeatureAttributes(culvert=asset_obj, attributes=attributes,)
+    if asset_type == "drift":
+        afa = DrifttFeatureAttributes(drift=asset_obj, attributes=attributes,)
 
-        rfa.attributes["SOURCE_FILE"] = file_name
-        rfa.attributes["SOURCE_FILE_FID"] = feature.fid
+    if afa:
+        afa.attributes["SOURCE_FILE"] = file_name
+        afa.attributes["SOURCE_FILE_FID"] = feature.fid
 
-        rfa.attributes = json.loads(
-            json.dumps(rfa.attributes, cls=DjangoJSONEncoder)
-        )
-        rfa.save()
+        afa.attributes = json.loads(json.dumps(afa.attributes, cls=DjangoJSONEncoder))
+        afa.save()
 
 
 def get_asset_populate(asset_type):
@@ -295,9 +334,7 @@ def import_csv(management_command, csv_folder):
 
 def process_csv_row(management_command, row, identifying_filters):
     try:
-        filters = {
-            key: row[value] for key, value in identifying_filters.items()
-        }
+        filters = {key: row[value] for key, value in identifying_filters.items()}
         road = Road.objects.get(**filters)
     except Road.DoesNotExist:
         management_command.stderr.write(
@@ -318,8 +355,7 @@ def process_csv_row(management_command, row, identifying_filters):
 
     with reversion.create_revision():
         road.save()
-        reversion.set_comment("Excel information - {}".format(file_name))    
-
+        reversion.set_comment("Excel information - {}".format(file_name))
 
 
 ## Post import actions
@@ -397,8 +433,8 @@ def collate_geometry_set(key, asset_type, geometry_set):
     geometry_set.update(geojson_file_id=collated_geojson.id)
 
     # set asset_type field (defaults to 'road')
-    if key == asset_type: # true for bridge, culvert, drift
-        collated_geojson.asset_type = key    
+    if key == asset_type:  # true for bridge, culvert, drift
+        collated_geojson.asset_type = key
 
 
 def delete_cache_key(key, multiple=False):

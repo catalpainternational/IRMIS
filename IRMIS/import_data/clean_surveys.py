@@ -102,6 +102,8 @@ def codes_values_transform(sv, data, value_id, field_id):
 ROAD_ATTRIBUTE_SURVEY_MAPPINGS = [
     ("total_width", ["TOTWIDTH", "TotWidth_1"]),
 ]
+# No special mapping for structures - yet
+STRUCTURE_ATTRIBUTE_SURVEY_MAPPINGS = []
 
 ## All of the following 'values' must also be referenced in the `survey.js` protobuf wrapper
 STRUCTURE_SURVEY_VALUE_MAPPINGS = [
@@ -393,7 +395,9 @@ def create_programmatic_surveys_for_roads(management_command, roads, attributes)
     return created
 
 
-def create_programmatic_surveys_for_structure(management_command, structure, prefix):
+def create_programmatic_surveys_for_structure(
+    management_command, structure, prefix, attributes
+):
     """ creates programmatic surveys for a structure and
     returns a count of the total number of surveys that were created """
     created = 0  # counter for surveys created for the supplied structure
@@ -412,6 +416,45 @@ def create_programmatic_surveys_for_structure(management_command, structure, pre
         "source_values": structure,
         "values": model_to_dict(structure),
     }
+
+    # For each structure get all of the numeric attributes that were imported with it
+    # Note that 'later' sets of attributes will override values from 'earlier' sets
+    # but ONLY if they have a value that's non-zero
+    structure_attributes_set = None
+    if prefix == "BRDG":
+        structure_attributes_set = [
+            attr for attr in attributes if attr.bridge_id == structure.id
+        ]
+    elif prefix == "CULV":
+        structure_attributes_set = [
+            attr for attr in attributes if attr.culvert_id == structure.id
+        ]
+    elif prefix == "DRFT":
+        structure_attributes_set = [
+            attr for attr in attributes if attr.drift_id == structure.id
+        ]
+    if structure_attributes_set and len(structure_attributes_set) > 0:
+        for structure_attributes in structure_attributes_set:
+            for (
+                survey_attribute,
+                source_attributes,
+            ) in STRUCTURE_ATTRIBUTE_SURVEY_MAPPINGS:
+                survey_value = get_first_available_numeric_value(
+                    structure_attributes.attributes, source_attributes
+                )
+                if survey_value:
+                    if hasattr(survey_data["source_values"], survey_attribute):
+                        setattr(
+                            survey_data["source_values"],
+                            survey_attribute,
+                            survey_value,
+                        )
+                    else:
+                        # For values in the survey only, but not in the original object
+                        # such as `total_width`
+                        # Note that ultimately all values should be coming this way
+                        # and we remove all of the asset attributes that really belong in surveys
+                        survey_data["values"][survey_attribute] = survey_value
 
     created += create_programmatic_survey(
         management_command, survey_data, STRUCTURE_SURVEY_VALUE_MAPPINGS, "Structure",
@@ -461,9 +504,16 @@ def create_programmatic_survey_for_traffic_csv(management_command, data, roads):
     return created
 
 
-def get_attributes_by_road_ids(road_ids):
-    """ pull all of the attributes from the original shapefile import for these road ids """
-    return RoadFeatureAttributes.objects.filter(road_id__in=road_ids)
+def get_attributes_by_asset_ids(asset_type, asset_ids):
+    """ pull all of the attributes from the original shapefile import for these asset ids """
+    if asset_type == "road":
+        return RoadFeatureAttributes.objects.filter(road_id__in=asset_ids)
+    elif asset_type == "bridge":
+        return BridgeFeatureAttributes.objects.filter(bridge_id__in=asset_ids)
+    elif asset_type == "culvert":
+        return CulvertFeatureAttributes.objects.filter(culvert_id__in=asset_ids)
+    elif asset_type == "drift":
+        return DriftFeatureAttributes.objects.filter(drift_id__in=asset_ids)
 
 
 def refresh_surveys_by_road_code(management_command, rc):
@@ -483,7 +533,7 @@ def refresh_surveys_by_road_code(management_command, rc):
     # management_command.stdout.write(management_command.style.MIGRATE_HEADING("  deleted programmatic surveys for '%s'" % rc))
     roads = get_roads_by_road_code(rc)
     # management_command.stdout.write(management_command.style.MIGRATE_HEADING("  got road links for '%s'" % rc))
-    attributes = get_attributes_by_road_ids(roads.values_list("id", flat=True))
+    attributes = get_attributes_by_asset_ids("road", roads.values_list("id", flat=True))
     # management_command.stdout.write(management_command.style.MIGRATE_HEADING("  got associated attributes for '%s'" % rc))
     created += create_programmatic_surveys_for_roads(
         management_command, list(roads), list(attributes)
@@ -510,13 +560,13 @@ def get_structure_by_structure_code(sc):
     hasDrift = Drift.objects.filter(structure_code=sc).exists()
 
     if hasBridge:
-        return Bridge.objects.get(structure_code=sc), "BRDG"
+        return Bridge.objects.get(structure_code=sc), "BRDG", "bridge"
     elif hasCulvert:
-        return Culvert.objects.get(structure_code=sc), "CULV"
+        return Culvert.objects.get(structure_code=sc), "CULV", "culvert"
     elif hasDrift:
-        return Drift.objects.get(structure_code=sc), "DRFT"
+        return Drift.objects.get(structure_code=sc), "DRFT", "drift"
 
-    return None, None
+    return None, None, None
 
 
 def refresh_surveys_by_structure_code(management_command, sc):
@@ -532,10 +582,12 @@ def refresh_surveys_by_structure_code(management_command, sc):
     # Recreate all of the programmatic surveys
     delete_programmatic_surveys_for_structure_by_structure_code(sc)
     # management_command.stdout.write(management_command.style.MIGRATE_HEADING("  deleted programmatic surveys for '%s'" % sc))
-    structure, prefix = get_structure_by_structure_code(sc)
+    structure, prefix, asset_type = get_structure_by_structure_code(sc)
     # management_command.stdout.write(management_command.style.MIGRATE_HEADING("  got structure for '%s'" % sc))
+    attributes = get_attributes_by_asset_ids(asset_type, [structure.id])
+    # management_command.stdout.write(management_command.style.MIGRATE_HEADING("  got associated attributes for '%s'" % sc))
     created += create_programmatic_surveys_for_structure(
-        management_command, structure, prefix
+        management_command, structure, prefix, list(attributes)
     )
     # management_command.stdout.write(management_command.style.MIGRATE_HEADING("  created programmatic surveys for '%s'" % sc))
 

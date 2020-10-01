@@ -30,7 +30,6 @@ DESCRIPTOR = _descriptor.FileDescriptor(
 )
 
 
-
 _PROJECTION = _descriptor.Descriptor(
     name="Projection",
     full_name="assets.Projection",
