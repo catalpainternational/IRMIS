@@ -270,3 +270,24 @@ def set_asset_municipalities(asset_type):
                     asset.administrative_area = row[1]
                     asset.save()
                     reversion.set_comment(reversion_comment)
+
+
+def process_ocean_roads(reversion_comment):
+    # Two roads with centroids in the sea!
+    coastal_pks = []
+    coastal_1 = Road.objects.filter(link_code="A03-03").all()
+    if len(coastal_1) > 0:
+        coastal_pks.extend(coastal_1.values_list("id", flat=True))
+        with reversion.create_revision():
+            coastal_1.administrative_area = "4"
+            coastal_1.update()
+            reversion.set_comment(reversion_comment)
+    coastal_2 = Road.objects.filter(road_code="C09").all()
+    if len(coastal_2) > 0:
+        coastal_pks.extend(coastal_2.values_list("id", flat=True))
+        with reversion.create_revision():
+            coastal_2.administrative_area = "6"
+            coastal_2.update()
+            reversion.set_comment(reversion_comment)
+
+    return coastal_pks
