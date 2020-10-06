@@ -19,6 +19,15 @@ import geobuf
 import reversion
 from reversion.models import Version
 
+from assets.clean_assets import (
+    clean_link_codes,
+    set_asset_municipalities,
+    set_structure_fields,
+    set_unknown_road_codes,
+    set_unknown_bridge_codes,
+    set_unknown_culvert_codes,
+    set_unknown_drift_codes,
+)
 from assets.models import (
     Road,
     RoadFeatureAttributes,
@@ -31,6 +40,16 @@ from assets.models import (
     CollatedGeoJsonFile,
 )
 from assets.utilities import get_asset_model
+
+from import_data.clean_assets import (
+    get_current_road_codes,
+    get_current_structure_codes,
+    refresh_roads,
+)
+from import_data.clean_surveys import (
+    delete_redundant_surveys,
+    refresh_surveys_by_structure_code,
+)
 from import_data.populate_model import (
     populate_bridge,
     populate_culvert,
@@ -91,9 +110,18 @@ sources = (
 )
 
 
+def show_feedback(management_command, message, is_error=True, always_show=False):
+    if management_command:
+        if is_error == True:
+            management_command.stderr.write(management_command.style.NOTICE(message))
+        else:
+            management_command.stdout.write(management_command.style.SUCCESS(message))
+    elif always_show:
+        print(message)
+
+
 # IMPORT FROM SHAPEFILES
 def update_from_shapefiles(management_command, shape_file_folder):
-
     # set all roads to core = True
     Road.objects.all().update(core=True)
 
@@ -120,14 +148,20 @@ def update_from_shapefiles(management_command, shape_file_folder):
                 ).get(geom=feature.geom.geos)
             except GDALException as ex:
                 # print and continue if we have a invalid geometry
-                management_command.stderr.write(
-                    management_command.style.NOTICE(
-                        "GDAL Exception - ignoring %s from %s" % (feature.fid, shp_path)
-                    )
+                show_feedback(
+                    management_command,
+                    "GDAL Exception - ignoring %s from %s" % (feature.fid, shp_path),
+                    True,
+                    True,
                 )
                 continue
             except Road.DoesNotExist:
-                print("Road does not exist, nothing to update")
+                show_feedback(
+                    management_command,
+                    "Road does not exist, nothing to update",
+                    True,
+                    False,
+                )
 
             # update the road from shapefile properties
             update(road, feature)
@@ -140,10 +174,11 @@ def update_from_shapefiles(management_command, shape_file_folder):
                     "updated - {} - feature id({})".format(file_name, feature.fid)
                 )
 
-    management_command.stdout.write(
-        management_command.style.SUCCESS(
-            "updated %s roads" % Road.objects.all().count()
-        )
+    show_feedback(
+        management_command,
+        "updated %s roads" % Road.objects.all().count(),
+        False,
+        False,
     )
 
 
@@ -151,7 +186,7 @@ def import_shapefile(management_command, shape_file, asset_type, asset_class):
     """ creates Asset models from source shapefile """
 
     asset_model = get_asset_model(asset_type)
-    if not asset_model:
+    if asset_model is None:
         raise NotImplementedError("Asset model %s not supported" % (asset_type,))
     if not validate_asset_class(asset_type, asset_class):
         raise NotImplementedError(
@@ -159,7 +194,7 @@ def import_shapefile(management_command, shape_file, asset_type, asset_class):
         )
 
     populate = get_asset_populate(asset_type)
-    if not populate:
+    if populate is None:
         raise NotImplementedError(
             "Asset model %s does not have a populate method defined for it"
             % (asset_type,)
@@ -176,7 +211,7 @@ def reimport_shapefiles(management_command, shape_file_folder, asset="road"):
     """ recreates Asset models from source shapefiles """
 
     asset_model = get_asset_model(asset)
-    if not asset_model:
+    if asset_model is not None:
         raise NotImplementedError("Asset model %s not supported" % asset)
 
     # delete appropriate exisiting DB objects and their revisions
@@ -224,6 +259,49 @@ def process_shapefile(
         )
 
 
+def get_asset_features(asset_type, file_name, feature_id):
+    """ get any 'asset feature attributes' that match """
+    afa_model = None
+    if asset_type == "road":
+        afa_model = RoadFeatureAttributes
+    elif asset_type == "bridge":
+        afa_model = BridgeFeatureAttributes
+    elif asset_type == "culvert":
+        afa_model = CulvertFeatureAttributes
+    elif asset_type == "drift":
+        afa_model = DriftFeatureAttributes
+
+    afas = None
+    if afa_model is not None:
+        afas = afa_model.objects.filter(attributes__SOURCE_FILE=file_name).filter(
+            attributes__SOURCE_FILE_FID=feature_id
+        )
+
+    return afas
+
+
+def build_asset_feature(asset_type, asset_obj, feature, file_name):
+    """ build the 'asset feature attributes' with the original feature attributes """
+    afa = None
+    attributes = {field: feature.get(field) for field in feature.fields}
+    if asset_type == "road":
+        afa = RoadFeatureAttributes(road=asset_obj, attributes=attributes,)
+    if asset_type == "bridge":
+        afa = BridgeFeatureAttributes(bridge=asset_obj, attributes=attributes,)
+    if asset_type == "culvert":
+        afa = CulvertFeatureAttributes(culvert=asset_obj, attributes=attributes,)
+    if asset_type == "drift":
+        afa = DriftFeatureAttributes(drift=asset_obj, attributes=attributes,)
+
+    if afa is not None:
+        afa.attributes["SOURCE_FILE"] = file_name
+        afa.attributes["SOURCE_FILE_FID"] = feature.fid
+
+        afa.attributes = json.loads(json.dumps(afa.attributes, cls=DjangoJSONEncoder))
+
+    return afa
+
+
 def process_geom_feature(
     management_command,
     feature,
@@ -247,18 +325,17 @@ def process_geom_feature(
                 point.coord_dim = 2
                 geom = point.geos
             else:
-                if management_command:
-                    management_command.stderr.write(
-                        management_command.style.NOTICE("Not a Point geom - skipping")
-                    )
+                show_feedback(
+                    management_command, "Not a Point geom - skipping", True, True
+                )
     except GDALException as ex:
         # print and continue if we have a invalid geometry
-        if management_command:
-            management_command.stderr.write(
-                management_command.style.NOTICE(
-                    "GDAL Exception - ignoring %s from %s" % (feature.fid, shp_path)
-                )
-            )
+        show_feedback(
+            management_command,
+            "GDAL Exception - ignoring %s from %s" % (feature.fid, shp_path),
+            True,
+            True,
+        )
         return
 
     # convert the geometry to the database srid
@@ -270,34 +347,42 @@ def process_geom_feature(
     asset_obj = get_asset_object(asset_type, asset_geometry, asset_class)
 
     # populate the asset object from shapefile properties
-    if populate:
+    if populate is None:
+        populate = get_asset_populate(asset_type)
+    if populate is not None:
         populate(asset_obj, feature)
 
+    # Check for matching asset 'features attributes' - if these exist do a cleanup first
+    afas = get_asset_features(asset_type, file_name, feature.fid)
+    asset_model = get_asset_model(asset_type)
+    if afas is not None:
+        for afa in afas:
+            if asset_type == "road":
+                asset_id = afa.road.id
+            if asset_type == "bridge":
+                asset_id = afa.bridge.id
+            if asset_type == "culvert":
+                asset_id = afa.culvert.id
+            if asset_type == "drift":
+                asset_id = afa.drift.id
+            asset_model.objects.filter(pk=asset_id).delete()
+        Version.objects.get_deleted(asset_model).delete()
+        afas.delete()
+
     # save the asset object with a revision comment
+    asset_id = None
     with reversion.create_revision():
         asset_obj.save()
         reversion.set_comment(
             "Imported - {} - feature id({})".format(file_name, feature.fid)
         )
+        asset_id = asset_obj.id
 
-    # populate the 'asset feature attributes' with the original feature attributes
-    afa = None
-    attributes = {field: feature.get(field) for field in feature.fields}
-    if asset_type == "road":
-        afa = RoadFeatureAttributes(road=asset_obj, attributes=attributes,)
-    if asset_type == "bridge":
-        afa = BridgeFeatureAttributes(bridge=asset_obj, attributes=attributes,)
-    if asset_type == "culvert":
-        afa = CulvertFeatureAttributes(culvert=asset_obj, attributes=attributes,)
-    if asset_type == "drift":
-        afa = DrifttFeatureAttributes(drift=asset_obj, attributes=attributes,)
+    # build the 'asset feature attributes' with the original feature attributes
+    afa = build_asset_feature(asset_type, asset_obj, feature, file_name)
+    afa.save()
 
-    if afa:
-        afa.attributes["SOURCE_FILE"] = file_name
-        afa.attributes["SOURCE_FILE_FID"] = feature.fid
-
-        afa.attributes = json.loads(json.dumps(afa.attributes, cls=DjangoJSONEncoder))
-        afa.save()
+    return asset_id
 
 
 def get_asset_populate(asset_type):
@@ -337,17 +422,19 @@ def process_csv_row(management_command, row, identifying_filters):
         filters = {key: row[value] for key, value in identifying_filters.items()}
         road = Road.objects.get(**filters)
     except Road.DoesNotExist:
-        management_command.stderr.write(
-            management_command.style.NOTICE(
-                "Ignoring row - no road found for {}".format(filters)
-            )
+        show_feedback(
+            management_command,
+            "Ignoring row - no road found for {}".format(filters),
+            True,
+            False,
         )
         return
     except Road.MultipleObjectsReturned:
-        management_command.stderr.write(
-            management_command.style.NOTICE(
-                "Ignoring row - multiple roads found for {}".format(filters)
-            )
+        show_feedback(
+            management_command,
+            "Ignoring row - multiple roads found for {}".format(filters),
+            True,
+            False,
         )
         return
 
@@ -360,30 +447,86 @@ def process_csv_row(management_command, row, identifying_filters):
 
 ## Post import actions
 ######################
-def post_shapefile_import_steps(management_command, asset_type, asset_class=""):
+def post_shapefile_import_steps(
+    management_command, asset_type, asset_class="", asset_id=None
+):
     asset_count = 0
-    set_asset_municipalities(asset_type)
+    show_feedback(
+        management_command,
+        "Setting municipalities for %s: %s" % (asset_type, asset_id),
+        False,
+        True,
+    )
+    set_asset_municipalities(asset_type, asset_id)
 
+    show_feedback(
+        management_command,
+        "Collating geometries for %s: %s" % (asset_type, asset_class),
+        False,
+        True,
+    )
     collate_geometries(asset_type, asset_class)
     if asset_type in {"bridge", "culvert", "drift"}:
+        show_feedback(management_command, "Setting structure fields", False, True)
         set_structure_fields(None, **{})
 
-    if management_command:
-        asset_model = get_asset_model(asset_type)
-        if asset_model:
-            asset_count = asset_model.objects.all().count()
-            management_command.stdout.write(
-                management_command.style.SUCCESS(
-                    "new total of %ss is %s" % (asset_type, asset_count)
-                )
-            )
+    show_feedback(management_command, "Setting asset codes", False, True)
+    if asset_type == "road":
+        set_unknown_road_codes()
+        show_feedback(
+            management_command, "Cleaning link codes (done for all roads)", False, True
+        )
+        clean_link_codes()
+        show_feedback(management_command, "Refreshing road(s)", False, True)
+        refresh_roads(asset_id)
+    elif asset_type == "bridge":
+        set_unknown_bridge_codes()
+    elif asset_type == "culvert":
+        set_unknown_culvert_codes()
+    elif asset_type == "drift":
+        set_unknown_drift_codes()
 
-        if asset_type == "road":
-            management_command.stdout.write(
-                management_command.style.NOTICE(
-                    "Please run `import_csv` to complete road data import"
-                )
-            )
+    # Regardless of the asset_type, always do the following before the next steps
+    show_feedback(
+        management_command,
+        "Deleting redundant surveys (done for all assets)",
+        False,
+        True,
+    )
+    delete_redundant_surveys()
+
+    show_feedback(
+        management_command,
+        "Refreshing surveys for %s: %s" % (asset_type, asset_id),
+        False,
+        True,
+    )
+    if asset_type == "road":
+        road_codes = get_current_road_codes(asset_id)
+        for rc in road_codes:
+            refresh_surveys_by_road_code(management_command, rc)
+    elif asset_type in {"bridge", "culvert", "drift"}:
+        structure_codes = get_current_structure_codes(asset_id)
+        for sc in structure_codes:
+            refresh_surveys_by_structure_code(management_command, sc)
+
+    asset_model = get_asset_model(asset_type)
+    if asset_model:
+        asset_count = asset_model.objects.all().count()
+        show_feedback(
+            management_command,
+            "new total of %ss is %s" % (asset_type, asset_count),
+            False,
+            False,
+        )
+
+    if asset_type == "road":
+        show_feedback(
+            management_command,
+            "Please run `import_csv` to complete road data import",
+            False,
+            True,
+        )
 
 
 @periodic_task(run_every=crontab(minute=0, hour="12,23"))

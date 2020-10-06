@@ -1,4 +1,5 @@
 from django.db import connection
+from django.db.models import Q
 
 import reversion
 
@@ -63,7 +64,7 @@ def clean_link_codes():
         if len(null_link_roads) == 1:
             for null_link_road in null_link_roads:
                 # the link_code should be null, this is just me being paranoid
-                if null_link_road.link_code == None:
+                if null_link_road.link_code is None:
                     with reversion.create_revision():
                         null_link_road.link_code = null_link_road.road_code
                         null_link_road.save()
@@ -199,9 +200,20 @@ def set_unknown_road_codes():
     roads = Road.objects.filter(
         Q(road_code__isnull=True) | Q(road_code__in=["X", "", "-", "Unknown"])
     )
-    road_index_offset = Road.objects.filter(road_code__startswith="XX").count() + 1
+    prefix = "XX"
+    last_structure = (
+        Road.objects.filter(structure_code__startswith=prefix)
+        .order_by("-structure_code")
+        .first()
+    )
+    if last_structure is None:
+        last_structure_code = "{}000".format(prefix)
+    else:
+        last_structure_code = last_structure.structure_code
+
+    structure_index_offset = int(last_structure_code.replace(prefix, "")) + 1
     for index, road in enumerate(roads):
-        road.road_code = "XX{:>03}".format(index + road_index_offset)
+        road.road_code = "{}{:>03}".format(index + structure_index_offset)
         road.save()
 
 
@@ -210,11 +222,22 @@ def set_unknown_bridge_codes():
     bridges = Bridge.objects.filter(
         Q(structure_code__isnull=True) | Q(structure_code__in=["X", "", "-", "Unknown"])
     )
-    bridge_index_offset = (
-        Bridge.objects.filter(structure_code__startswith="XB").count() + 1
+    prefix = "XB"
+    last_structure = (
+        Bridge.objects.filter(structure_code__startswith=prefix)
+        .order_by("-structure_code")
+        .first()
     )
+    if last_structure is None:
+        last_structure_code = "{}000".format(prefix)
+    else:
+        last_structure_code = last_structure.structure_code
+
+    structure_index_offset = int(last_structure_code.replace(prefix, "")) + 1
     for index, bridge in enumerate(bridges):
-        bridge.structure_code = "XB{:>03}".format(index + bridge_index_offset)
+        bridge.structure_code = "{}{:>03}".format(
+            prefix, index + structure_index_offset
+        )
         bridge.save()
 
 
@@ -223,11 +246,22 @@ def set_unknown_culvert_codes():
     culverts = Culvert.objects.filter(
         Q(structure_code__isnull=True) | Q(structure_code__in=["X", "", "-", "Unknown"])
     )
-    culvert_index_offset = (
-        Culvert.objects.filter(structure_code__startswith="XC").count() + 1
+    prefix = "XC"
+    last_structure = (
+        Culvert.objects.filter(structure_code__startswith=prefix)
+        .order_by("-structure_code")
+        .first()
     )
+    if last_structure is None:
+        last_structure_code = "{}000".format(prefix)
+    else:
+        last_structure_code = last_structure.structure_code
+
+    structure_index_offset = int(last_structure_code.replace(prefix, "")) + 1
     for index, culvert in enumerate(culverts):
-        culvert.structure_code = "XC{:>03}".format(index + culvert_index_offset)
+        culvert.structure_code = "{}{:>03}".format(
+            prefix, index + structure_index_offset
+        )
         culvert.save()
 
 
@@ -236,15 +270,24 @@ def set_unknown_drift_codes():
     drifts = Drift.objects.filter(
         Q(structure_code__isnull=True) | Q(structure_code__in=["X", "", "-", "Unknown"])
     )
-    drift_index_offset = (
-        Drift.objects.filter(structure_code__startswith="XD").count() + 1
+    prefix = "XD"
+    last_structure = (
+        Drift.objects.filter(structure_code__startswith=prefix)
+        .order_by("-structure_code")
+        .first()
     )
+    if last_structure is None:
+        last_structure_code = "{}000".format(prefix)
+    else:
+        last_structure_code = last_structure.structure_code
+
+    structure_index_offset = int(last_structure_code.replace(prefix, "")) + 1
     for index, drift in enumerate(drifts):
-        drift.structure_code = "XD{:>03}".format(index + drift_index_offset)
+        drift.structure_code = "{}{:>03}".format(prefix, index + structure_index_offset)
         drift.save()
 
 
-def set_asset_municipalities(asset_type):
+def set_asset_municipalities(asset_type, asset_id=None):
     reversion_comment = "Administrative area set from geometry"
     coastal_pks = []  # For handling any asset with centroids in the sea!
 
@@ -254,11 +297,13 @@ def set_asset_municipalities(asset_type):
             coastal_pks = process_ocean_roads(reversion_comment)
         with connection.cursor() as cursor:
             # all the assets
-            cursor.execute(
-                "SELECT b.id, m.id FROM basemap_municipality m, assets_{} b WHERE ST_WITHIN(ST_CENTROID(b.geom), m.geom)".format(
-                    asset_type
-                )
+            select_assets = "SELECT b.id, m.id FROM basemap_municipality m, assets_{} b WHERE ST_WITHIN(ST_CENTROID(b.geom), m.geom)".format(
+                asset_type
             )
+            if asset_id is not None:
+                select_assets = select_assets + " AND b.id = {}".format(asset_id)
+
+            cursor.execute(select_assets)
             while True:
                 row = cursor.fetchone()
                 if row is None:

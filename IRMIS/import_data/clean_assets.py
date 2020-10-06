@@ -13,13 +13,21 @@ from assets.models import Bridge, Culvert, Drift, Road
 ROAD_CODE_FORCE_REFRESH = ["A03", "AL003"]
 
 
-def get_current_road_codes():
-    return [
-        rc["road_code"]
-        for rc in Road.objects.distinct("road_code")
-        .exclude(road_code="Unknown")
-        .values("road_code")
-    ]
+def get_current_road_codes(asset_id=None):
+    if asset_id is None:
+        return [
+            rc["road_code"]
+            for rc in Road.objects.distinct("road_code")
+            .exclude(road_code="Unknown")
+            .values("road_code")
+        ]
+    else:
+        return [
+            rc["road_code"]
+            for rc in Road.objects.filter(pk=asset_id)
+            .exclude(road_code="Unknown")
+            .values("road_code")
+        ]
 
 
 def get_roads_from_errata(rc):
@@ -220,11 +228,11 @@ def refresh_roads_by_road_code(rc, tolerance=50, reset_geom=False):
     return assess_road_geometries(roads, tolerance, reset_geom)
 
 
-def refresh_roads(tolerance=50):
+def refresh_roads(tolerance=50, asset_id=None):
     # counters for data cleansing
     roads_updated = 0
 
-    road_codes = get_current_road_codes()
+    road_codes = get_current_road_codes(asset_id)
 
     # Refresh the roads
     for rc in road_codes:
@@ -243,24 +251,46 @@ def refresh_roads(tolerance=50):
 
 ## Structure related data cleansing functions
 #############################################
-def get_current_structure_codes():
-    return (
-        [
-            bc["structure_code"]
-            for bc in Bridge.objects.distinct("structure_code")
-            .exclude(structure_code="Unknown")
-            .values("structure_code")
-        ]
-        + [
-            cc["structure_code"]
-            for cc in Culvert.objects.distinct("structure_code")
-            .exclude(structure_code="Unknown")
-            .values("structure_code")
-        ]
-        + [
-            dc["structure_code"]
-            for dc in Drift.objects.distinct("structure_code")
-            .exclude(structure_code="Unknown")
-            .values("structure_code")
-        ]
-    )
+def get_current_structure_codes(asset_id=None):
+    if asset_id is None:
+        return (
+            [
+                bc["structure_code"]
+                for bc in Bridge.objects.distinct("structure_code")
+                .exclude(structure_code="Unknown")
+                .values("structure_code")
+            ]
+            + [
+                cc["structure_code"]
+                for cc in Culvert.objects.distinct("structure_code")
+                .exclude(structure_code="Unknown")
+                .values("structure_code")
+            ]
+            + [
+                dc["structure_code"]
+                for dc in Drift.objects.distinct("structure_code")
+                .exclude(structure_code="Unknown")
+                .values("structure_code")
+            ]
+        )
+    else:
+        return (
+            [
+                bc["structure_code"]
+                for bc in Bridge.objects.filter(pk=asset_id)
+                .exclude(structure_code="Unknown")
+                .values("structure_code")
+            ]
+            + [
+                cc["structure_code"]
+                for cc in Culvert.objects.filter(pk=asset_id)
+                .exclude(structure_code="Unknown")
+                .values("structure_code")
+            ]
+            + [
+                dc["structure_code"]
+                for dc in Drift.objects.filter(pk=asset_id)
+                .exclude(structure_code="Unknown")
+                .values("structure_code")
+            ]
+        )

@@ -1,6 +1,10 @@
 from assets.models import Bridge, Culvert, Drift, Road
 
 
+def validate_asset_type(asset_type):
+    return asset_type in {"road", "bridge", "culvert", "drift"}
+
+
 def validate_asset_class(asset_type, asset_class):
     asset_class_ok = False
     if asset_type == "road":

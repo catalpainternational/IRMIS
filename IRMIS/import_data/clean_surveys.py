@@ -8,7 +8,17 @@ import reversion
 from reversion.models import Version
 
 from assets.clean_surveys import update_non_programmatic_surveys_by_road_code
-from assets.models import Bridge, Culvert, Drift, Road, Survey
+from assets.models import (
+    Bridge,
+    BridgeFeatureAttributes,
+    Culvert,
+    CulvertFeatureAttributes,
+    Drift,
+    DriftFeatureAttributes,
+    Road,
+    RoadFeatureAttributes,
+    Survey,
+)
 from import_data.utilities import get_first_available_numeric_value
 
 
