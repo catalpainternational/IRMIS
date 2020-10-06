@@ -578,20 +578,3 @@ def collate_geometry_set(key, asset_type, geometry_set):
     # set asset_type field (defaults to 'road')
     if key == asset_type:  # true for bridge, culvert, drift
         collated_geojson.asset_type = key
-
-
-def delete_cache_key(key, multiple=False):
-    """ Takes cache key string as input and clears cache of it (if it exists).
-        If multiple argument is False, delete a single key. If True, try to
-        delete all keys that are a match for a key string prefix.
-    """
-    if not multiple:
-        cache.delete(key)
-    else:
-        try:
-            with connection.cursor() as cursor:
-                cursor.execute(
-                    "DELETE FROM roads_cache_table WHERE cache_key LIKE '%s%';" % key
-                )
-        except TypeError:
-            pass

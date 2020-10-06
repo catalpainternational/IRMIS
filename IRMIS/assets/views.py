@@ -76,9 +76,8 @@ from .models import (
 from .clean_surveys import update_non_programmatic_surveys_by_road_code
 from .report_query import ReportQuery, ContractReport
 from .serializers import RoadSerializer
+from .tasks import delete_cache_key
 from .token_mixin import JWTRequiredMixin
-
-from import_data.tasks import delete_cache_key
 
 cache = caches["default"]
 
