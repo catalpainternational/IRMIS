@@ -14,8 +14,26 @@ from import_data.utilities import (
 )
 
 
+def user_can_edit(user):
+    if (
+        user.is_staff
+        or user.is_superuser
+        or user.groups.filter(name="Editors").exists()
+    ):
+        return True
+
+    return False
+
+
+@login_required
+@user_passes_test(user_can_edit)
 def ImportDataShapefileFeature(request, pk, feature_id):
     shapefile = get_object_or_404(EsriShapefile.objects.filter(pk=pk))
+
+    try:
+        feature = shapefile.layer[feature_id]
+    except:
+        return HttpResponseBadRequest("Feature {} does not exist in shapefile".format(feature_id))
 
     shapefile_name = shapefile.components.first().component_file.name[:-4]
     testname = shapefile_name.lower()
@@ -36,8 +54,6 @@ def ImportDataShapefileFeature(request, pk, feature_id):
     if not asset_type in ["road", "bridge", "culvert", "drift"]:
         return HttpResponseBadRequest("Unsupported asset type {}".format(asset_type))
 
-    print("Retrieved shapefile for {}:{}".format(asset_type, feature_id))
-
     # We will default asset_class to be the same as asset_type for bridge, culvert and drift
     if asset_class == "":
         if asset_type in ["bridge", "culvert", "drift"]:
@@ -53,11 +69,6 @@ def ImportDataShapefileFeature(request, pk, feature_id):
     elif asset_type != asset_class:
         valid_asset_class = False
     if valid_asset_class == False:
-        print(
-            "shapefile_name {}, asset_type: {}, asset_class: {}".format(
-                shapefile_name, asset_type, asset_class
-            )
-        )
         return HttpResponseBadRequest(
             "Unsupported asset class {} for the supplied asset type".format(asset_class)
         )
@@ -67,11 +78,6 @@ def ImportDataShapefileFeature(request, pk, feature_id):
 
     asset_id = process_geom_feature(
         None, feature, shapefile_name, asset_type, asset_class, database_srid, None
-    )
-    print(
-        "Performing post shapefile feature import steps for {}:{}".format(
-            asset_type, asset_id
-        )
     )
     post_shapefile_import_steps(None, asset_type, asset_class, asset_id)
 
