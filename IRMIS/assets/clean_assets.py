@@ -39,6 +39,24 @@ def get_roads_by_road_code(rc):
     )
 
 
+def get_first_road_link_for_chainage(rc, chainage):
+    """ for a given road code and chainage this returns the first matching relevant road link
+
+    This assumes that all the supplied road links are for the same road code,
+    and that they are in the correct order """
+    roads = get_roads_by_road_code(rc)
+
+    road_link = next(
+        (
+            r
+            for r in roads
+            if r.geom_start_chainage <= chainage and r.geom_end_chainage > chainage
+        ),
+        None,
+    )
+    return road_link
+
+
 def clean_link_codes():
     # all link_codes that are empty strings - reset to None
     # all single road_code roads with an empty link_code, copy the road_code to the link_code

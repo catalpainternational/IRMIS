@@ -1,6 +1,7 @@
 import reversion
 from reversion.models import Version
 
+from assets.clean_assets import get_first_road_link_for_chainage
 from assets.models import Survey
 
 

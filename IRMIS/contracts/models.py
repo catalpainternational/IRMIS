@@ -11,7 +11,7 @@ from django.db.models import Count, OuterRef, Subquery
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from assets.clean_assets import get_roads_by_road_code
+from assets.clean_assets import get_roads_by_road_code, get_first_road_link_for_chainage
 from assets.models import Road, Bridge, Culvert, Drift, Survey
 
 import reversion
@@ -41,24 +41,6 @@ def build_survey(asset_id, asset_code, source, values):
         values=values,
         date_surveyed=timezone.now(),
     )
-
-
-def get_first_road_link_for_chainage(rc, chainage):
-    """ for a given road code and chainage this returns the first matching relevant road link
-
-    This assumes that all the supplied road links are for the same road code,
-    and that they are in the correct order """
-    roads = get_roads_by_road_code(rc)
-
-    road_link = next(
-        (
-            r
-            for r in roads
-            if r.geom_start_chainage <= chainage and r.geom_end_chainage > chainage
-        ),
-        None,
-    )
-    return road_link
 
 
 CONTRACT_TO_ASSET_STATUS_MAPPING = {
