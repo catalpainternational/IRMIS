@@ -10,7 +10,7 @@ def validate_asset_class(asset_type, asset_class):
     if asset_type == "road":
         asset_class_ok = asset_class in {"NAT", "MUN", "RUR", "URB"}
     elif asset_type in {"bridge", "culvert", "drift"}:
-        asset_class_ok = asset_class == asset
+        asset_class_ok = asset_class == asset_type
 
     return asset_class_ok
 
