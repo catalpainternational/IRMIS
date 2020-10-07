@@ -27,21 +27,21 @@ def user_can_edit(user):
 
 @login_required
 @user_passes_test(user_can_edit)
-def ImportDataShapefileFeature(request, pk, feature_id):
+def ImportDataShapefileFeature(request, pk, feature_id, asset_type="", asset_class=""):
     shapefile = get_object_or_404(EsriShapefile.objects.filter(pk=pk))
 
     try:
         feature = shapefile.layer[feature_id]
     except:
-        return HttpResponseBadRequest("Feature {} does not exist in shapefile".format(feature_id))
+        return HttpResponseBadRequest(
+            "Feature {} does not exist in shapefile".format(feature_id)
+        )
 
     shapefile_name = shapefile.components.first().component_file.name[:-4]
     testname = shapefile_name.lower()
 
     # These values will need to be supplied by the user
     # for now we are guessing them from the shapefile_name
-    asset_type = ""
-    asset_class = ""
     if asset_type == "":
         if "bridge" in testname or "brdg" in testname:
             asset_type = "bridge"
@@ -51,7 +51,7 @@ def ImportDataShapefileFeature(request, pk, feature_id):
             asset_type = "drift"
         else:
             asset_type = "road"
-    if not asset_type in ["road", "bridge", "culvert", "drift"]:
+    if validate_asset_type(asset_type) == False:
         return HttpResponseBadRequest("Unsupported asset type {}".format(asset_type))
 
     # We will default asset_class to be the same as asset_type for bridge, culvert and drift
@@ -62,13 +62,7 @@ def ImportDataShapefileFeature(request, pk, feature_id):
             # Just a guess - for testing only
             asset_class = "NAT"
 
-    valid_asset_class = True
-    if asset_type == "road":
-        if not asset_class in ["NAT", "MUN", "URB", "RUR"]:
-            valid_asset_class = False
-    elif asset_type != asset_class:
-        valid_asset_class = False
-    if valid_asset_class == False:
+    if validate_asset_class(asset_type, asset_class) == False:
         return HttpResponseBadRequest(
             "Unsupported asset class {} for the supplied asset type".format(asset_class)
         )
