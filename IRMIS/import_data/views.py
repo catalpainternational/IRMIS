@@ -67,7 +67,6 @@ def ImportDataShapefileFeature(request, pk, feature_id, asset_type="", asset_cla
             "Unsupported asset class {} for the supplied asset type".format(asset_class)
         )
 
-    feature = shapefile.layer[feature_id]
     database_srid = get_asset_database_srid(asset_type)
 
     asset_id = process_geom_feature(
