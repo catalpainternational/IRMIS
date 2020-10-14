@@ -1,18 +1,20 @@
-import json
 import csv
+import json
+import os
 from pathlib import Path
 from io import StringIO
 
 from celery.task import periodic_task
 from celery.schedules import crontab
 
-from django.core.files.base import ContentFile
-from django.core.serializers import serialize
+from django.conf import settings
 from django.contrib.gis.geos import GEOSGeometry, LineString, MultiLineString, Point
 from django.contrib.gis.gdal import DataSource, GDALException
+from django.core.files.base import ContentFile
 from django.core.management import call_command
-from django.db import connection
+from django.core.serializers import serialize
 from django.core.serializers.json import DjangoJSONEncoder
+from django.db import connection
 
 import geobuf
 import reversion
@@ -581,7 +583,12 @@ def collate_geometry_set(key, asset_type, geometry_set):
     geobuf_bytes = geobuf.encode(json.loads(geojson))
     content = ContentFile(geobuf_bytes)
 
-    CollatedGeoJsonFile.objects.filter(key=key).delete()
+    existing_geobuffs = CollatedGeoJsonFile.objects.filter(key=key)
+    if existing_geobuffs.count() > 0:
+        for existing_geobuff in existing_geobuffs:
+            os.remove(os.path.join(settings.MEDIA_ROOT, existing_geobuff.geobuf_file.name))
+            existing_geobuff.delete()
+
     collated_geojson, created = CollatedGeoJsonFile.objects.get_or_create(key=key)
     collated_geojson.geobuf_file.save("geom.pbf", content)
     geometry_set.update(geojson_file_id=collated_geojson.id)
