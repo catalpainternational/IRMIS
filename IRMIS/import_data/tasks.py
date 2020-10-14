@@ -6,7 +6,6 @@ from io import StringIO
 from celery.task import periodic_task
 from celery.schedules import crontab
 
-from django.core.cache import caches
 from django.core.files.base import ContentFile
 from django.core.serializers import serialize
 from django.contrib.gis.geos import GEOSGeometry, LineString, MultiLineString, Point
@@ -40,6 +39,7 @@ from assets.models import (
     CollatedGeoJsonFile,
 )
 from assets.utilities import get_asset_model
+from assets.views import delete_cache_key
 
 from import_data.clean_assets import (
     get_current_road_codes,
@@ -67,8 +67,6 @@ from import_data.utilities import (
     get_asset_object,
     validate_asset_class,
 )
-
-cache = caches["default"]
 
 
 # Data sources
@@ -469,6 +467,19 @@ def post_shapefile_import_steps(
     if asset_type in {"bridge", "culvert", "drift"}:
         show_feedback(management_command, "Setting structure fields", False, True)
         set_structure_fields(None, **{})
+
+    show_feedback(
+        management_command,
+        "Clear all relevant caches",
+        False,
+        True,
+    )
+    if asset_type in {"bridge", "culvert", "drift"}:
+        delete_cache_key("structures_protobuf")
+    elif asset_type == "road":
+        delete_cache_key("roadchunk_", multiple=True)
+    # clear any report caches
+    delete_cache_key("report_", multiple=True)
 
     show_feedback(management_command, "Setting asset codes", False, True)
     if asset_type == "road":

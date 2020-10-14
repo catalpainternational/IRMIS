@@ -16,6 +16,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.gis.db import models
 from django.core.cache import caches
 from django.core.files.base import ContentFile
+from django.db import connection
 from django.db.models import OuterRef, Q, Subquery
 from django.db.models.functions import Cast, Substr
 from django.http import (
@@ -76,7 +77,6 @@ from .models import (
 from .clean_surveys import update_non_programmatic_surveys_by_road_code
 from .report_query import ReportQuery, ContractReport
 from .serializers import RoadSerializer
-from .tasks import delete_cache_key
 from .token_mixin import JWTRequiredMixin
 
 cache = caches["default"]
@@ -143,6 +143,23 @@ def get_last_modified(request, pk=None):
             return Road.objects.all().latest("last_modified").last_modified
     except Road.DoesNotExist:
         return datetime.now()
+
+
+def delete_cache_key(key, multiple=False):
+    """ Takes cache key string as input and clears cache of it (if it exists).
+        If multiple argument is False, delete a single key. If True, try to
+        delete all keys that are a match for a key string prefix.
+    """
+    if not multiple:
+        cache.delete(key)
+    else:
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "DELETE FROM roads_cache_table WHERE cache_key LIKE '%s%';" % key
+                )
+        except TypeError:
+            pass
 
 
 @login_required
