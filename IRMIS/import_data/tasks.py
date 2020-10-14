@@ -583,9 +583,12 @@ def collate_geometry_set(key, asset_type, geometry_set):
     existing_geobuffs = CollatedGeoJsonFile.objects.filter(key=key)
     if existing_geobuffs.count() > 0:
         for existing_geobuff in existing_geobuffs:
-            os.remove(
-                os.path.join(settings.MEDIA_ROOT, existing_geobuff.geobuf_file.name)
-            )
+            try:
+                os.remove(
+                    os.path.join(settings.MEDIA_ROOT, existing_geobuff.geobuf_file.name)
+                )
+            except FileNotFoundError:
+                pass
             existing_geobuff.delete()
 
     collated_geojson, created = CollatedGeoJsonFile.objects.get_or_create(key=key)
