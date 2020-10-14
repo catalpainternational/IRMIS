@@ -471,10 +471,7 @@ def post_shapefile_import_steps(
         set_structure_fields(None, **{})
 
     show_feedback(
-        management_command,
-        "Clear all relevant caches",
-        False,
-        True,
+        management_command, "Clear all relevant caches", False, True,
     )
     if asset_type in {"bridge", "culvert", "drift"}:
         delete_cache_key("structures_protobuf")
@@ -586,7 +583,9 @@ def collate_geometry_set(key, asset_type, geometry_set):
     existing_geobuffs = CollatedGeoJsonFile.objects.filter(key=key)
     if existing_geobuffs.count() > 0:
         for existing_geobuff in existing_geobuffs:
-            os.remove(os.path.join(settings.MEDIA_ROOT, existing_geobuff.geobuf_file.name))
+            os.remove(
+                os.path.join(settings.MEDIA_ROOT, existing_geobuff.geobuf_file.name)
+            )
             existing_geobuff.delete()
 
     collated_geojson, created = CollatedGeoJsonFile.objects.get_or_create(key=key)
