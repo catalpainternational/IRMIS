@@ -31,7 +31,7 @@ def ImportDataShapefileFeature(request, pk, feature_id, asset_type="", asset_cla
     shapefile = get_object_or_404(EsriShapefile.objects.filter(pk=pk))
 
     try:
-        feature = shapefile.layer[feature_id]
+        feature = shapefile.datasource[0][feature_id]
     except:
         return HttpResponseBadRequest(
             "Feature {} does not exist in shapefile".format(feature_id)
