@@ -26,7 +26,7 @@
                     <div if="{ reportContractsContent().visibleFilters.assetClass }" class="d-flex flex-column options">
                         <label for="asset_class_select2">{ window.gettext("Asset class") }</label>
                         <select id="asset_class_select2" multiple="true">
-                            <option each="{ asset_class in window.asset_schema.asset_class.options }" value="{ asset_class[0] }">
+                            <option each="{ asset_class in window.asset_schema.asset_class.options }" value="{ asset_class[0] }" data-name="{asset_class[1]}">
                                 { asset_class[1] }
                             </option>
                         </select>
@@ -34,7 +34,7 @@
                     <div if="{ reportContractsContent().visibleFilters.typeOfWork }" class="d-flex flex-column options">
                         <label for="type_of_work_select2">{ window.gettext("Type of work") }</label>
                         <select id="type_of_work_select2" multiple="true">
-                            <option each="{ type_of_work in window.contract_schema.type_of_work.options }" value="{ type_of_work.id }">
+                            <option each="{ type_of_work in window.contract_schema.type_of_work.options }" value="{ type_of_work.id }" data-name="{type_of_work.name}">
                                 { type_of_work.name }
                             </option>
                         </select>
@@ -42,7 +42,7 @@
                     <div if="{ reportContractsContent().visibleFilters.program }" class="d-flex flex-column options">
                         <label for="program_select2">{ window.gettext("Program") }</label>
                         <select id="program_select2" multiple="true">
-                            <option each="{ program in window.contract_schema.program.options }" value="{ program.id }">
+                            <option each="{ program in window.contract_schema.program.options }" value="{ program.id }" data-name="{program.name}">
                                 { program.name }
                             </option>
                         </select>
@@ -50,7 +50,7 @@
                     <div if="{ reportContractsContent().visibleFilters.fundingSource }" class="d-flex flex-column options">
                         <label for="funding_source_select2">{ window.gettext("Funding source") }</label>
                         <select id="funding_source_select2" multiple="true">
-                            <option each="{ funding_source in window.contract_schema.funding_source.options }" value="{ funding_source.id }">
+                            <option each="{ funding_source in window.contract_schema.funding_source.options }" value="{ funding_source.id }" data-name="{funding_source.name}">
                                 { funding_source.name }
                             </option>
                         </select>
@@ -58,7 +58,7 @@
                     <div if="{ reportContractsContent().visibleFilters.donor }" class="d-flex flex-column options">
                         <label for="donor_select2">{ window.gettext("Donor") }</label>
                         <select id="donor_select2" multiple="true">
-                            <option each="{ donor in window.contract_schema.donor.options }" value="{ donor.id }">
+                            <option each="{ donor in window.contract_schema.donor.options }" value="{ donor.id }" data-name="{donor.name}">
                                 { donor.name }
                             </option>
                         </select>
@@ -329,8 +329,8 @@
                 workedDaysSummary: () => setColumnsTitles("workedDaysSummary"),
             },
             onBeforeMount(props, state) {
-                state.reportFromDate = currentDate();
-                state.reportToDate = currentDate();
+                // state.reportFromDate = currentDate();
+                // state.reportToDate = currentDate();
                 state.max_date = maxDate();
             },
             onMounted(props, state) {
@@ -437,16 +437,16 @@
                 let filters = {};
 
                 if ([1, 2].includes(reportId)) {
-                    const assetClass = document.getElementById("asset_class_select2").value;
-                    const typeOfWork = document.getElementById("type_of_work_select2").value;
-                    const program = document.getElementById("program_select2").value;
-                    const fundingSource = document.getElementById("funding_source_select2").value;
-                    const donor = document.getElementById("donor_select2").value;
-                    filters['asset_class'] =  (assetClass != "assetClass") ? assetClass : "";
-                    filters['type_of_work'] =  (typeOfWork != "typeOfWork") ? typeOfWork : "";
-                    filters['program'] =  (program != "program") ? program : "";
-                    filters['funding_source'] =  (fundingSource != "fundingSource") ? fundingSource : "";
-                    filters['donor'] =  (donor != "donor") ? donor : "";
+                    const assetClass = document.getElementById("asset_class_select2");
+                    const typeOfWork = document.getElementById("type_of_work_select2");
+                    const program = document.getElementById("program_select2");
+                    const fundingSource = document.getElementById("funding_source_select2");
+                    // const donor = document.getElementById("donor_select2");
+                    filters['asset_class'] =  (assetClass.selectedOptions[0]) ? assetClass.selectedOptions[0].dataset.name : "";
+                    filters['type_of_work'] =  (typeOfWork.selectedOptions[0]) ? typeOfWork.selectedOptions[0].dataset.name : "";
+                    filters['prgm.name'] =  (program.selectedOptions[0]) ? program.selectedOptions[0].dataset.name : "";
+                    filters['funding_source'] =  (fundingSource.selectedOptions[0]) ? fundingSource.selectedOptions[0].dataset.name : "";
+                    // filters['donor'] =  (donor.selectedOptions[0]) ? donor.selectedOptions[0].dataset.name : "";
 
                     const dateStart = document.getElementById("date_start_select2").value;
                     if (dateStart) {

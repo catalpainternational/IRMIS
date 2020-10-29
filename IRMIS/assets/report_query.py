@@ -1142,7 +1142,7 @@ class ContractReport:
 
     def execute_main_query(self):
         self.build_query_body()
-        #     print(self.reportSQL)
+        # print(self.reportSQL)
 
         with connection.cursor() as cursor:
             cursor.execute(self.reportSQL + "\n%s" % self.report_clauses["get_all"])
@@ -1221,9 +1221,9 @@ class ContractReport:
 
         for key in self.filters.keys():
             if self.filter_counter == 0:
-                query += "WHERE %s = %s\n" % (key, int(self.filters[key]))
+                query += "WHERE %s = '%s'\n" % (key, self.filters[key])
             else:
-                query += "AND %s = %s\n" % (key, int(self.filters[key]))
+                query += "AND %s = '%s'\n" % (key, self.filters[key])
             self.filter_counter += 1
 
         return query
