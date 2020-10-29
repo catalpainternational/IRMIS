@@ -1220,7 +1220,6 @@ class ContractReport:
             self.filters.pop("contractCode", None)
 
         for key in self.filters.keys():
-            import ipdb; ipdb.set_trace()
             if self.filter_counter == 0:
                 query += "WHERE %s = %s\n" % (key, int(self.filters[key]))
             else:
