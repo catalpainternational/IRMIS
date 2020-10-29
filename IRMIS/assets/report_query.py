@@ -681,7 +681,7 @@ class ContractReport:
         self.report_id = report_id
         self.report_type = report_type
         self.filters = filters
-        self.filter_cases = []
+        self.filter_counter = 0
 
         # These build up the main body of the report
         self.report_clauses = {
@@ -897,7 +897,6 @@ class ContractReport:
                 "FROM programs_core as prg\n"
                 "JOIN projects_core as prj on (prj.program_id = prg.id)\n"
                 "JOIN contracts_core as con on (con.tender_id = prj.tender_id)\n"
-                "GROUP BY prg.name, prg.status, prgmBudgetCurrentYear, prgmBudgetTotal\n"
             ),
             # Financial and Physical Progress
             "contractCode": (
@@ -930,7 +929,6 @@ class ContractReport:
                 "FROM contracts_core as con\n"
                 "JOIN projects_core as prj on (con.tender_id = prj.tender_id)\n"
                 "JOIN programs_core as prgm ON (prgm.id = prj.program_id)\n"
-                "GROUP BY contract_id, contract_code, prgm.name, contractStartDate, contractEndDate, amendmentStartDate, amendmentEndDate, dlpStartDate, dlpEndDate, con.status, assets, contractValueAmdTotal, contractValueOrigTotal, totalPayment, balance, paymentCurrentYear, paymentPreviousYear, totalProgressPayment, physicalProgress\n"
             ),
             "assetClassTypeOfWork": (
                 "SELECT \n"
@@ -981,20 +979,20 @@ class ContractReport:
                 "        END as yrFour\n"
                 "    FROM (\n"
                 "        SELECT type_of_work,\n"
-                "        con.year,\n"
+                "        extract(year from contractStartDate)::integer as year,\n"
                 "        total_assets_length as length\n"
                 "        FROM contracts_core as con\n"
                 "        JOIN projects_core as prj on (con.tender_id = prj.tender_id)\n"
                 "        WHERE status = 'Completed'\n"
-                "        AND con.year >= (extract(year from current_date)::integer - 4)\n"
-                "        GROUP BY type_of_work, con.year, total_assets_length\n"
+                "        AND extract(year from contractStartDate)::integer >= (extract(year from current_date)::integer - 4)\n"
+                "        GROUP BY type_of_work, year, total_assets_length\n"
                 "    ) as work_types\n"
                 ") as work_year\n"
                 "GROUP BY type_of_work\n"
             ),
             "assetClassYear": (
                 "SELECT \n"
-                "    con.year as title, \n"
+                "    extract(year from contractStartDate)::integer as title, \n"
                 "    SUM(nat_length) as national, \n"
                 "    SUM(mun_length) as municipal,\n"
                 "    SUM(rur_length) as rural,\n"
@@ -1002,8 +1000,8 @@ class ContractReport:
                 "FROM projects_core as prj\n"
                 "JOIN contracts_core as con on (con.tender_id = prj.tender_id)\n"
                 "WHERE status = 'Completed'\n"
-                "AND  con.year >= (extract(year from current_date)::integer - 5)\n"
-                "GROUP BY con.year\n"
+                "AND  extract(year from contractStartDate)::integer >= (extract(year from current_date)::integer - 5)\n"
+                "GROUP BY extract(year from contractStartDate)::integer\n"
             ),
             "social_safeguards": (
                 "SELECT\n"
@@ -1121,66 +1119,33 @@ class ContractReport:
         }
 
     def build_query_body(self):
-        self.reportSQL = "WITH "
-        if self.report_id not in [4, 5]:
-            self.reportSQL += (
-                "contracts_core AS (\n%s), projects_core AS (\n%s), programs_core AS (\n%s), final_results AS (\n%s)"
-                % (
-                    self.report_clauses["contracts_core"],
-                    self.report_clauses["projects_core"],
-                    self.report_clauses["programs_core"],
-                    self.report_clauses[self.report_type],
-                )
+        # setup core SQL with tables for building final reports from
+        if self.report_id in [1, 2, 3]:
+            self.reportSQL = "WITH contracts_core AS (\n%s), projects_core AS (\n%s), programs_core AS (\n%s), " % (
+                self.report_clauses["contracts_core"],
+                self.report_clauses["projects_core"],
+                self.report_clauses["programs_core"],
             )
         else:
-            self.reportSQL += (
-                "social_safeguards AS (\n%s), "
-                % self.report_clauses["social_safeguards"]
-            )
-            if self.report_id == 4:
-                final_query = self.report_clauses[self.report_type]
-                counter = 0
-                for k in self.filters.keys():
-                    if counter == 0:
-                        final_query += "WHERE %s = %s\n" % (k, int(self.filters[k]))
-                    else:
-                        final_query += "AND %s = %s\n" % (k, int(self.filters[k]))
-                    counter += 1
-            else:
-                final_query = self.report_clauses[self.report_type]
-                final_query += (
-                    "WHERE contract_code = '%s'\n" % self.filters["contractCode"]
-                )
-                filters = self.filters.keys()
-                if "startYrMnth" in filters and "endYrMnth" in filters:
-                    final_query += "AND yearMonth BETWEEN %s AND %s\n" % (
-                        int(self.filters["startYrMnth"]),
-                        int(self.filters["endYrMnth"]),
-                    )
-                elif "startYrMnth" in filters:
-                    final_query += "AND yearMonth > %s\n" % int(
-                        self.filters["startYrMnth"]
-                    )
-                elif "endYrMnth" in filters:
-                    final_query += "AND yearMonth < %s\n" % int(
-                        self.filters["endYrMnth"]
-                    )
-                final_query += "GROUP BY yearMonthFormatted\n"
+            self.reportSQL = "WITH social_safeguards AS (\n%s), " % self.report_clauses["social_safeguards"]
 
-            self.reportSQL += "final_results AS ( %s )" % final_query
+        final_results = self.report_clauses[self.report_type]
+
+        if len(self.filters.keys()):
+            # apply all other filters passed from frontend
+            final_results = self.apply_frontend_filters(final_results)
+
+        # apply final grouping for report
+        final_results = self.apply_grouping(final_results)
+
+        self.reportSQL += "final_results AS (\n%s)" % final_results
 
     def execute_main_query(self):
         self.build_query_body()
-        self.reportSQL += "\n%s" % self.report_clauses["get_all"]
-
-        # print(
-        #     self.reportSQL.replace(r"ANY(%s)", r"ANY('{}'::text[])"),
-        #     "\n-- ",
-        #     self.filter_cases,
-        # )
+        #     print(self.reportSQL)
 
         with connection.cursor() as cursor:
-            cursor.execute(self.reportSQL, self.filter_cases)
+            cursor.execute(self.reportSQL + "\n%s" % self.report_clauses["get_all"])
             rows = dictfetchall(cursor)
 
         return rows
@@ -1188,10 +1153,9 @@ class ContractReport:
     def execute_aggregate_query(self):
         """ Aggregate the rows by attribute and value returning total records """
         self.build_query_body()
-        self.reportSQL += "\n%s" % self.report_clauses["get_aggregate"]
 
         with connection.cursor() as cursor:
-            cursor.execute(self.reportSQL, self.filter_cases)
+            cursor.execute(self.reportSQL + "\n%s\n" % self.report_clauses["get_aggregate"])
             rows = dictfetchall(cursor)
 
         return rows
@@ -1201,6 +1165,69 @@ class ContractReport:
         summary = {"total_records": float(rows[0]["total_records"])}
         return summary
 
+    def apply_grouping(self, query):
+        if self.report_id == 1:
+            # Financial and Physical Progress Summary
+            query += "GROUP BY prg.name, prg.status, prgmBudgetCurrentYear, prgmBudgetTotal\n"
+        elif self.report_id == 2:
+            # Financial and Physical Progress
+            query += "GROUP BY contract_id, contract_code, prgm.name, contractStartDate, contractEndDate, amendmentStartDate, amendmentEndDate, dlpStartDate, dlpEndDate, con.status, assets, contractValueAmdTotal, contractValueOrigTotal, totalPayment, balance, paymentCurrentYear, paymentPreviousYear, totalProgressPayment, physicalProgress\n"
+        elif self.report_id == 5:
+            query += "GROUP BY yearMonthFormatted\n"
+
+        return query
+
+    def apply_frontend_filters(self, query):
+        if self.report_id in [1, 2]:
+            keys = self.filters.keys()
+            if "startDate" in keys and "endDate" in keys:
+                query += "WHERE contractStartDate >= '%s' AND contractEndDate <= '%s'\n" % (
+                    self.filters["startDate"],
+                    self.filters["endDate"],
+                )
+                self.filter_counter += 1
+            elif "startDate" in keys:
+                query += "WHERE contractStartDate >= '%s'\n" % self.filters["startDate"]
+                self.filter_counter += 1
+            elif "endDate" in keys:
+                query += "WHERE contractEndDate <= '%s'\n" % self.filters["endDate"]
+                self.filter_counter += 1
+            self.filters.pop("startDate", None)
+            self.filters.pop("endDate", None)
+
+        if self.report_id is 5:
+            keys = self.filters.keys()
+            if "startYrMnth" in keys and "endYrMnth" in keys:
+                query += "WHERE yearMonth BETWEEN %s AND %s\n" % (
+                    int(self.filters["startYrMnth"]),
+                    int(self.filters["endYrMnth"]),
+                )
+                self.filter_counter += 1
+            elif "startYrMnth" in keys:
+                query += "WHERE yearMonth > %s\n" % int(self.filters["startYrMnth"])
+                self.filter_counter += 1
+            elif "endYrMnth" in keys:
+                query += "WHERE yearMonth < %s\n" % int(self.filters["endYrMnth"])
+                self.filter_counter += 1
+            self.filters.pop("startYrMnth", None)
+            self.filters.pop("endYrMnth", None)
+
+            if self.filter_counter == 0:
+                query += "WHERE contract_code = '%s'\n" % self.filters["contractCode"]
+            else:
+                query += "AND contract_code = '%s'\n" % self.filters["contractCode"]
+            self.filter_counter += 1
+            self.filters.pop("contractCode", None)
+
+        for key in self.filters.keys():
+            import ipdb; ipdb.set_trace()
+            if self.filter_counter == 0:
+                query += "WHERE %s = %s\n" % (key, int(self.filters[key]))
+            else:
+                query += "AND %s = %s\n" % (key, int(self.filters[key]))
+            self.filter_counter += 1
+
+        return query
 
 def dictfetchall(cursor):
     "Return all rows from a cursor as a dict"
