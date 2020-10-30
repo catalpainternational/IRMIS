@@ -681,7 +681,12 @@ class ContractReport:
         self.report_id = report_id
         self.report_type = report_type
         self.filters = filters
-        self.filter_counter = 0
+
+        # check if core final query report is one that has baked in filter clauses applied already
+        if self.report_type == "assetClassYear":
+            self.filter_counter = 1
+        else:
+            self.filter_counter = 0
 
         # These build up the main body of the report
         self.report_clauses = {
@@ -941,7 +946,6 @@ class ContractReport:
                 "    SUM(total_assets_length) as totalLength\n"
                 "FROM contracts_core as con\n"
                 "JOIN projects_core as prj on (con.tender_id = prj.tender_id)\n"
-                "GROUP BY title\n"
             ),
             "typeOfWorkYear": (
                 "SELECT\n"
@@ -990,7 +994,6 @@ class ContractReport:
                 "        GROUP BY type_of_work, year, total_assets_length\n"
                 "    ) as work_types\n"
                 ") as work_year\n"
-                "GROUP BY type_of_work\n"
             ),
             "assetClassYear": (
                 "SELECT \n"
@@ -1002,8 +1005,7 @@ class ContractReport:
                 "FROM projects_core as prj\n"
                 "JOIN contracts_core as con on (con.tender_id = prj.tender_id)\n"
                 "WHERE status = 'Completed'\n"
-                "AND  extract(year from contractStartDate)::integer >= (extract(year from current_date)::integer - 5)\n"
-                "GROUP BY extract(year from contractStartDate)::integer\n"
+                "AND extract(year from contractStartDate)::integer >= (extract(year from current_date)::integer - 5)\n"
             ),
             "social_safeguards": (
                 "SELECT\n"
@@ -1139,7 +1141,6 @@ class ContractReport:
 
         # apply final grouping for report
         final_results = self.apply_grouping(final_results)
-
         self.reportSQL += "final_results AS (\n%s)" % final_results
 
     def execute_main_query(self):
@@ -1174,6 +1175,13 @@ class ContractReport:
         elif self.report_id == 2:
             # Financial and Physical Progress
             query += "GROUP BY contract_id, contract_code, prgm.name, contractStartDate, contractEndDate, amendmentStartDate, amendmentEndDate, dlpStartDate, dlpEndDate, con.status, assets, contractValueAmdTotal, contractValueOrigTotal, totalPayment, balance, paymentCurrentYear, paymentPreviousYear, totalProgressPayment, physicalProgress\n"
+        elif self.report_id == 3:
+            if self.report_type == "assetClassTypeOfWork":
+                query += "GROUP BY title\n"
+            elif self.report_type == "typeOfWorkYear":
+                query += "GROUP BY type_of_work\n"
+            elif self.report_type == "assetClassYear":
+                query += "GROUP BY extract(year from contractStartDate)::integer\n"
         elif self.report_id == 5:
             query += "GROUP BY yearMonthFormatted\n"
 
@@ -1213,13 +1221,6 @@ class ContractReport:
                 self.filter_counter += 1
             self.filters.pop("startYrMnth", None)
             self.filters.pop("endYrMnth", None)
-
-            if self.filter_counter == 0:
-                query += "WHERE contract_code = '%s'\n" % self.filters["contractCode"]
-            else:
-                query += "AND contract_code = '%s'\n" % self.filters["contractCode"]
-            self.filter_counter += 1
-            self.filters.pop("contractCode", None)
 
         for key in self.filters.keys():
             if self.filter_counter == 0:

@@ -462,14 +462,14 @@
                         }
                     }
                 } else if (reportId == 4) {
-                    const year = document.getElementById("year_select2");
-                    const month = document.getElementById("month_select2");
-                    const quarter = document.getElementById("quarter_select2");
-                    filters['year'] = (year.selectedOptions[0]) ? year.value : "";
-                    filters['month'] = (month.selectedOptions[0]) ? month.value : "";
-                    filters['quarter'] = (quarter.selectedOptions[0]) ? quarter.value : "";
+                    const year = document.getElementById("year_select2").value;
+                    const month = document.getElementById("month_select2").value;
+                    const quarter = document.getElementById("quarter_select2").value;
+                    filters['year'] = (year != "year") ? year : "";
+                    filters['month'] = (month != "month") ? month : "";
+                    filters['quarter'] = (quarter != "quarter") ? quarter : "";
                 } else if (reportId == 5) {
-                    filters["contractCode"] = document.getElementById("contract_code_select2").value;
+                    filters["contract_code"] = document.getElementById("contract_code_select2").value;
 
                     const dateStart = document.getElementById("date_start_select2").value;
                     if (dateStart) {
