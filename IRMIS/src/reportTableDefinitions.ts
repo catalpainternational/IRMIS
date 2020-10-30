@@ -1309,7 +1309,7 @@ export const reportContractsContent: { [name: string]: any } = {
             typeOfWork: true,
             program: true,
             fundingSource: true,
-            // donor: true,
+            donor: true,
             fromDateFull: true,
             toDateFull: true,
         },
@@ -1332,7 +1332,7 @@ export const reportContractsContent: { [name: string]: any } = {
             typeOfWork: true,
             program: true,
             fundingSource: true,
-            // donor: true,
+            donor: true,
             fromDateFull: true,
             toDateFull: true,
         },
@@ -1351,8 +1351,8 @@ export const reportContractsContent: { [name: string]: any } = {
         noReportData: (window as any).gettext("Sorry, data for completed contracts is not available yet"),
         fixedFilter: {},
         visibleFilters: {
-            // fundingSource: true,
-            // donor: true,
+            fundingSource: true,
+            donor: true,
         },
         reportElements: {
             filters: true,

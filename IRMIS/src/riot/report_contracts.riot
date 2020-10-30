@@ -436,27 +436,30 @@
                 const reportId = parseInt(e.currentTarget.dataset.id);
                 let filters = {};
 
-                if ([1, 2].includes(reportId)) {
-                    // const assetClass = document.getElementById("asset_class_select2");
-                    const typeOfWork = document.getElementById("type_of_work_select2");
-                    const program = document.getElementById("program_select2");
-                    const fundingSource = document.getElementById("funding_source_select2");
-                    // const donor = document.getElementById("donor_select2");
-                    // filters['asset_class'] =  (assetClass.selectedOptions[0]) ? assetClass.selectedOptions[0].dataset.name : "";
-                    filters['type_of_work'] =  (typeOfWork.selectedOptions[0]) ? typeOfWork.selectedOptions[0].dataset.name : "";
-                    filters['prgm.name'] =  (program.selectedOptions[0]) ? program.selectedOptions[0].dataset.name : "";
-                    filters['funding_source'] =  (fundingSource.selectedOptions[0]) ? fundingSource.selectedOptions[0].dataset.name : "";
-                    // filters['donor'] =  (donor.selectedOptions[0]) ? donor.selectedOptions[0].dataset.name : "";
+                if ([1, 2, 3].includes(reportId)) {
+                    const fundingSource = document.getElementById("funding_source_select2").value;
+                    const donor = document.getElementById("donor_select2");
+                    filters["funding_source"] = (fundingSource.selectedOptions[0]) ? funding_source : "";
+                    filters['donor'] =  (donor.selectedOptions[0]) ? donor.selectedOptions[0].dataset.name : "";
 
-                    const dateStart = document.getElementById("date_start_select2").value;
-                    if (dateStart) {
-                        const dt = new Date(dateStart);
-                        filters["startDate"] = `${dt.getFullYear()}/${dt.getMonth()+1}/${dt.getDate()}`;
-                    }
-                    const dateEnd = document.getElementById("date_end_select2").value;
-                    if (dateEnd) {
-                        const dt = new Date(dateEnd);
-                        filters["endDate"] = `${dt.getFullYear()}/${dt.getMonth()+1}/${dt.getDate()}`;
+                    if ([1, 2].includes(reportId)) {
+                        // const assetClass = document.getElementById("asset_class_select2");
+                        const typeOfWork = document.getElementById("type_of_work_select2");
+                        const program = document.getElementById("program_select2");
+                        // filters['asset_class'] =  (assetClass.selectedOptions[0]) ? assetClass.selectedOptions[0].dataset.name : "";
+                        filters['type_of_work'] =  (typeOfWork.selectedOptions[0]) ? typeOfWork.selectedOptions[0].dataset.name : "";
+                        filters['prgm.name'] =  (program.selectedOptions[0]) ? program.selectedOptions[0].dataset.name : "";
+
+                        const dateStart = document.getElementById("date_start_select2").value;
+                        if (dateStart) {
+                            const dt = new Date(dateStart);
+                            filters["startDate"] = `${dt.getFullYear()}/${dt.getMonth()+1}/${dt.getDate()}`;
+                        }
+                        const dateEnd = document.getElementById("date_end_select2").value;
+                        if (dateEnd) {
+                            const dt = new Date(dateEnd);
+                            filters["endDate"] = `${dt.getFullYear()}/${dt.getMonth()+1}/${dt.getDate()}`;
+                        }
                     }
                 } else if (reportId == 4) {
                     const year = document.getElementById("year_select2").value;
@@ -481,7 +484,7 @@
                     }
                 }
 
-                // set empty filters if not populated
+                // set empty filters list if still not populated
                 if (filters == {}) { filters = []; }
 
                 getContractReport(reportId, filters)
