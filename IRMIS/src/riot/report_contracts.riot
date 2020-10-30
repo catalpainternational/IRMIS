@@ -437,18 +437,18 @@
                 let filters = {};
 
                 if ([1, 2, 3].includes(reportId)) {
-                    const fundingSource = document.getElementById("funding_source_select2").value;
-                    const donor = document.getElementById("donor_select2");
-                    filters["funding_source"] = (fundingSource.selectedOptions[0]) ? funding_source : "";
-                    filters['donor'] =  (donor.selectedOptions[0]) ? donor.selectedOptions[0].dataset.name : "";
+                    const fundingSource = document.getElementById("funding_source_select2").selectedOptions[0];
+                    const donor = document.getElementById("donor_select2").selectedOptions[0];
+                    filters["funding_source"] = (fundingSource) ? fundingSource.dataset.name : "";
+                    filters['donor'] =  (donor) ? donor.dataset.name : "";
 
                     if ([1, 2].includes(reportId)) {
-                        // const assetClass = document.getElementById("asset_class_select2");
-                        const typeOfWork = document.getElementById("type_of_work_select2");
-                        const program = document.getElementById("program_select2");
-                        // filters['asset_class'] =  (assetClass.selectedOptions[0]) ? assetClass.selectedOptions[0].dataset.name : "";
-                        filters['type_of_work'] =  (typeOfWork.selectedOptions[0]) ? typeOfWork.selectedOptions[0].dataset.name : "";
-                        filters['prgm.name'] =  (program.selectedOptions[0]) ? program.selectedOptions[0].dataset.name : "";
+                        // const assetClass = document.getElementById("asset_class_select2").selectedOptions[0];
+                        const typeOfWork = document.getElementById("type_of_work_select2").selectedOptions[0];
+                        const program = document.getElementById("program_select2").selectedOptions[0];
+                        // filters['asset_class'] =  (assetClass) ? assetClass.dataset.name : "";
+                        filters['type_of_work'] =  (typeOfWork) ? typeOfWork.dataset.name : "";
+                        filters['prgm.name'] =  (program) ? program.dataset.name : "";
 
                         const dateStart = document.getElementById("date_start_select2").value;
                         if (dateStart) {
@@ -462,12 +462,12 @@
                         }
                     }
                 } else if (reportId == 4) {
-                    const year = document.getElementById("year_select2").value;
-                    const month = document.getElementById("month_select2").value;
-                    const quarter = document.getElementById("quarter_select2").value;
-                    filters['year'] = (year != "year") ? year : "";
-                    filters['month'] = (month != "month") ? month : "";
-                    filters['quarter'] = (quarter != "quarter") ? quarter : "";
+                    const year = document.getElementById("year_select2");
+                    const month = document.getElementById("month_select2");
+                    const quarter = document.getElementById("quarter_select2");
+                    filters['year'] = (year.selectedOptions[0]) ? year.value : "";
+                    filters['month'] = (month.selectedOptions[0]) ? month.value : "";
+                    filters['quarter'] = (quarter.selectedOptions[0]) ? quarter.value : "";
                 } else if (reportId == 5) {
                     filters["contractCode"] = document.getElementById("contract_code_select2").value;
 
