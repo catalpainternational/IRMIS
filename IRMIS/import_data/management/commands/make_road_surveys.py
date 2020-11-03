@@ -1,10 +1,12 @@
 from django.core.management.base import BaseCommand
 
-from assets.data_cleaning_utils import (
-    clean_link_codes,
-    delete_redundant_surveys,
+from assets.clean_assets import clean_link_codes
+from import_data.clean_assets import (
     get_current_road_codes,
     refresh_roads,
+)
+from import_data.clean_surveys import (
+    delete_redundant_surveys,
     refresh_surveys_by_road_code,
 )
 

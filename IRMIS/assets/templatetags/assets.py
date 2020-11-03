@@ -217,7 +217,13 @@ def get_schema_data():
         filter(
             lambda x: (
                 x.name
-                not in ["id", "geom", "properties_content_type", "properties_object_id"]
+                not in [
+                    "id",
+                    "geom",
+                    "properties_content_type",
+                    "properties_object_id",
+                    "bridgefeatureattributes",
+                ]
             ),
             Bridge._meta.fields,
         )
@@ -226,7 +232,13 @@ def get_schema_data():
         filter(
             lambda x: (
                 x.name
-                not in ["id", "geom", "properties_content_type", "properties_object_id"]
+                not in [
+                    "id",
+                    "geom",
+                    "properties_content_type",
+                    "properties_object_id",
+                    "culvertfeatureattributes",
+                ]
             ),
             Culvert._meta.fields,
         )
@@ -235,7 +247,13 @@ def get_schema_data():
         filter(
             lambda x: (
                 x.name
-                not in ["id", "geom", "properties_content_type", "properties_object_id"]
+                not in [
+                    "id",
+                    "geom",
+                    "properties_content_type",
+                    "properties_object_id",
+                    "driftfeatureattributes",
+                ]
             ),
             Drift._meta.fields,
         )

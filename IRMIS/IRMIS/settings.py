@@ -76,6 +76,7 @@ INSTALLED_APPS = [
     "rest_framework_gis",
     "reversion",
     "topology",
+    "import_data",
     # CATALPA UTILS
     "catalpa_django_apps.google_analytics",
     "django_shapefiles",

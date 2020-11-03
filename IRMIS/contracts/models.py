@@ -11,7 +11,7 @@ from django.db.models import Count, OuterRef, Subquery
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from assets.data_cleaning_utils import get_first_road_link_for_chainage
+from assets.clean_assets import get_roads_by_road_code, get_first_road_link_for_chainage
 from assets.models import Road, Bridge, Culvert, Drift, Survey
 
 import reversion

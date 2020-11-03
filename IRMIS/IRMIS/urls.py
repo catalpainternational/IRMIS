@@ -40,6 +40,7 @@ urlpatterns = [
     path("assets/", include("assets.urls")),
     path("contracts/", include("contracts.urls")),
     path("downloads/", include("protected_downloads.urls")),
+    path("import_data/", include("import_data.urls")),
     path("admin/", admin.site.urls),
     path("sentry-debug/", trigger_error),
     re_path(r"^cms/", include(wagtailadmin_urls)),
