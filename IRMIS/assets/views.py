@@ -2150,9 +2150,21 @@ def protobuf_contract_reports(request, report_id):
     report_types = {
         1: ["program"],  # Financial and Physical Progress - Summary
         2: ["contractCode"],  # Financial and Physical Progress - Detail
-        3: ["assetClassTypeOfWork", "typeOfWorkYear", "assetClassYear"],  # Completed Contracts Length
-        4: ["numberEmployeesSummary", "wagesSummary", "workedDaysSummary"],  # Social Safeguard - summary
-        5: ["numberEmployees", "wages", "workedDays"],  # Social Safeguard - single contract
+        3: [
+            "assetClassTypeOfWork",
+            "typeOfWorkYear",
+            "assetClassYear",
+        ],  # Completed Contracts Length
+        4: [
+            "numberEmployeesSummary",
+            "wagesSummary",
+            "workedDaysSummary",
+        ],  # Social Safeguard - summary
+        5: [
+            "numberEmployees",
+            "wages",
+            "workedDays",
+        ],  # Social Safeguard - single contract
     }
 
     try:

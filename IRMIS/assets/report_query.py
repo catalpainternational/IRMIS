@@ -1125,13 +1125,19 @@ class ContractReport:
     def build_query_body(self):
         # setup core SQL with tables for building final reports from
         if self.report_id in [1, 2, 3]:
-            self.reportSQL = "WITH contracts_core AS (\n%s), projects_core AS (\n%s), programs_core AS (\n%s), " % (
-                self.report_clauses["contracts_core"],
-                self.report_clauses["projects_core"],
-                self.report_clauses["programs_core"],
+            self.reportSQL = (
+                "WITH contracts_core AS (\n%s), projects_core AS (\n%s), programs_core AS (\n%s), "
+                % (
+                    self.report_clauses["contracts_core"],
+                    self.report_clauses["projects_core"],
+                    self.report_clauses["programs_core"],
+                )
             )
         else:
-            self.reportSQL = "WITH social_safeguards AS (\n%s), " % self.report_clauses["social_safeguards"]
+            self.reportSQL = (
+                "WITH social_safeguards AS (\n%s), "
+                % self.report_clauses["social_safeguards"]
+            )
 
         final_results = self.report_clauses[self.report_type]
 
@@ -1158,7 +1164,9 @@ class ContractReport:
         self.build_query_body()
 
         with connection.cursor() as cursor:
-            cursor.execute(self.reportSQL + "\n%s\n" % self.report_clauses["get_aggregate"])
+            cursor.execute(
+                self.reportSQL + "\n%s\n" % self.report_clauses["get_aggregate"]
+            )
             rows = dictfetchall(cursor)
 
         return rows
@@ -1191,9 +1199,9 @@ class ContractReport:
         if self.report_id in [1, 2]:
             keys = self.filters.keys()
             if "startDate" in keys and "endDate" in keys:
-                query += "WHERE contractStartDate >= '%s' AND contractEndDate <= '%s'\n" % (
-                    self.filters["startDate"],
-                    self.filters["endDate"],
+                query += (
+                    "WHERE contractStartDate >= '%s' AND contractEndDate <= '%s'\n"
+                    % (self.filters["startDate"], self.filters["endDate"],)
                 )
                 self.filter_counter += 1
             elif "startDate" in keys:
@@ -1236,6 +1244,7 @@ class ContractReport:
             self.filter_counter += 1
 
         return query
+
 
 def dictfetchall(cursor):
     "Return all rows from a cursor as a dict"
