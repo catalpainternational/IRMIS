@@ -1224,9 +1224,15 @@ class ContractReport:
 
         for key in self.filters.keys():
             if self.filter_counter == 0:
-                query += "WHERE %s = '%s'\n" % (key, self.filters[key])
+                if key == "asset_class":
+                    query += "WHERE %s > 0\n" % self.filters[key]
+                else:
+                    query += "WHERE %s = '%s'\n" % (key, self.filters[key])
             else:
-                query += "AND %s = '%s'\n" % (key, self.filters[key])
+                if key == "asset_class":
+                    query += "AND %s > 0\n" % self.filters[key]
+                else:
+                    query += "AND %s = '%s'\n" % (key, self.filters[key])
             self.filter_counter += 1
 
         return query

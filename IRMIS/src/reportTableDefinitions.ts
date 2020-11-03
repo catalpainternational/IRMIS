@@ -1305,7 +1305,7 @@ export const reportContractsContent: { [name: string]: any } = {
         noReportData: (window as any).gettext("Sorry, data for financial and physical progress is not available yet"),
         fixedFilter: {},
         visibleFilters: {
-            // assetClass: true,
+            assetClass: true,
             typeOfWork: true,
             program: true,
             fundingSource: true,
@@ -1328,7 +1328,7 @@ export const reportContractsContent: { [name: string]: any } = {
         noReportData: (window as any).gettext("Sorry, data for financial and physical progress is not available yet"),
         fixedFilter: {},
         visibleFilters: {
-            // assetClass: true,
+            assetClass: true,
             typeOfWork: true,
             program: true,
             fundingSource: true,
