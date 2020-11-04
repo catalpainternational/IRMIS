@@ -779,7 +779,11 @@ def protobuf_reports(request):
 
     # add the serialized report to the cache for future requests
     report_pb_serialized = report_protobuf.SerializeToString()
-    cache.set("report_%s" % abs(hash(str(final_filters))), report_pb_serialized)
+
+    # only cache reports for more than one asset ID (ie. not for current report on asset's surveys)
+    if not asset_id and not asset_code:
+        cache.set("report_%s" % abs(hash(str(final_filters))), report_pb_serialized)
+
     return HttpResponse(report_pb_serialized, content_type="application/octet-stream")
 
 
