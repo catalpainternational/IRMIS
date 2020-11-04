@@ -453,7 +453,9 @@
                         const program = document.getElementById("program_select2").value;
                         filters['asset_class'] =  (assetClass != "") ? asset_class_mapping[assetClass] : "";
                         filters['type_of_work'] =  (typeOfWork != "") ? typeOfWork : "";
-                        filters['prgm.name'] =  (program != "") ? program : "";
+                        program_key = 'prgm.name';
+                        if (reportId == 1) { program_key = 'prg.name'; }
+                        filters[program_key] = (program != "") ? program : "";
 
                         const dateStart = document.getElementById("date_start_select2").value;
                         if (dateStart) {
