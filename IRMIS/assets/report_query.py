@@ -1246,7 +1246,6 @@ class ContractReport:
                 else:
                     query += "AND (\n"
 
-
                 if len(self.filters.getlist(key)) == 1:
                     if key == "asset_class":
                         query += "%s > 0\n" % self.filters.getlist(key)[0]
