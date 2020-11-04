@@ -1148,7 +1148,7 @@ class ContractReport:
             final_results = self.apply_frontend_filters(final_results)
 
         # typeOfYear report needs a special closing wrapper added after applying the filters, if any
-        if self.report_type == 'typeOfWorkYear':
+        if self.report_type == "typeOfWorkYear":
             final_results += self.report_clauses["typeOfWorkYearFinalWrapper"]
 
         # apply final grouping for report
@@ -1236,7 +1236,7 @@ class ContractReport:
             self.filters.pop("startYrMnth", None)
             self.filters.pop("endYrMnth", None)
 
-        if self.report_type in ['assetClassYear', 'typeOfWorkYear']:
+        if self.report_type in ["assetClassYear", "typeOfWorkYear"]:
             self.filter_counter = 1
 
         for key in self.filters.keys():
