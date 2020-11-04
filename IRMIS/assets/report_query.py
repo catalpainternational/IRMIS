@@ -1246,28 +1246,24 @@ class ContractReport:
                 else:
                     query += "AND (\n"
 
-                if key == "asset_class":
-                    if len(self.filters.getlist(key)) == 1:
+
+                if len(self.filters.getlist(key)) == 1:
+                    if key == "asset_class":
                         query += "%s > 0\n" % self.filters.getlist(key)[0]
                     else:
-                        i = 0
-                        for criteria in self.filters.getlist(key):
-                            if i != 0:
-                                query += "OR "
-                            query += "%s > 0\n" % criteria
-                            i += 1
-                else:
-                    if len(self.filters.getlist(key)) == 1:
                         query += "%s = '%s'\n" % (key, self.filters.getlist(key)[0])
-                    else:
-                        i = 0
-                        for criteria in self.filters.getlist(key):
-                            if i != 0:
-                                query += "OR "
+                else:
+                    i = 0
+                    for criteria in self.filters.getlist(key):
+                        if i != 0:
+                            query += "OR "
+                        if key == "asset_class":
+                            query += "%s > 0\n" % criteria
+                        else:
                             query += "%s = '%s'\n" % (key, criteria)
-                            i += 1
-            query += ")\n"
-            self.filter_counter += 1
+                        i += 1
+                query += ")\n"
+                self.filter_counter += 1
 
         return query
 
