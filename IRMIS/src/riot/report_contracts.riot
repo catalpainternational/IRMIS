@@ -459,7 +459,7 @@
                         const assetClass = document.getElementById("asset_class_select2").selectedOptions;
                         if (assetClass) {
                             let acOptions = [];
-                            assetClass.forEach((ac) => { acOptions.push(ac.value); });
+                            assetClass.forEach((ac) => { acOptions.push(asset_class_mapping[ac.value]); });
                             filters['asset_class'] = acOptions;
                         }
                         const typeOfWork = document.getElementById("type_of_work_select2").selectedOptions;
