@@ -58,7 +58,7 @@
                     <div if="{ reportContractsContent().visibleFilters.donor }" class="d-flex flex-column options">
                         <label for="donor_select2">{ window.gettext("Donor") }</label>
                         <select id="donor_select2" multiple="true">
-                            <option each="{ donor in window.contract_schema.donor.options }" value="{ donor.id }" data-name="{donor.name}">
+                            <option each="{ donor in window.contract_schema.donor.options }" value="{ donor.name }" data-name="{donor.name}">
                                 { donor.name }
                             </option>
                         </select>
@@ -440,7 +440,7 @@
                     const fundingSource = document.getElementById("funding_source_select2").value;
                     const donor = document.getElementById("donor_select2").value;
                     filters["funding_source"] = (fundingSource != "") ? fundingSource : "";
-                    filters['donor'] =  (donor != "") ? donor : "";
+                    filters['funding_donor'] =  (donor != "") ? donor : "";
 
                     if ([1, 2].includes(reportId)) {
                         const asset_class_mapping = {
