@@ -7,6 +7,7 @@ import datetime
 import reversion
 from reversion.models import Version
 
+from assets.clean_assets import get_roads_by_road_code
 from assets.clean_surveys import update_non_programmatic_surveys_by_road_code
 from assets.models import (
     Bridge,
