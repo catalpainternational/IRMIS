@@ -63,7 +63,9 @@ class Command(BaseCommand):
         if "roadcode" in options and options["roadcode"]:
             road_codes = [options["roadcode"]]
         else:
-            self.stdout.write(self.style.MIGRATE_HEADING("Retrieving current road codes"))
+            self.stdout.write(
+                self.style.MIGRATE_HEADING("Retrieving current road codes")
+            )
             road_codes = get_current_road_codes()
 
         self.stdout.write(self.style.MIGRATE_HEADING("Deleting redundant surveys"))
