@@ -819,7 +819,7 @@ class ContractReport:
                 "   pas.*,\n"
                 "   ptow.name as type_of_work,\n"
                 "   pfs.name as funding_source,\n"
-                "   pfd.name as donor,\n"
+                "   pfd.name as funding_donor,\n"
                 "   prjbdg.current_year as prj_budget_current_year,\n"
                 "   prjbdg.total as prj_budget_total\n"
                 "FROM contracts_project as prj\n"
