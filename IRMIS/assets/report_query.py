@@ -1240,16 +1240,33 @@ class ContractReport:
             self.filter_counter = 1
 
         for key in self.filters.keys():
-            if self.filter_counter == 0:
-                if key == "asset_class":
-                    query += "WHERE %s > 0\n" % self.filters[key]
+            if len(self.filters.getlist(key)) > 0:
+                if self.filter_counter == 0:
+                    query += "WHERE (\n"
                 else:
-                    query += "WHERE %s = '%s'\n" % (key, self.filters[key])
-            else:
+                    query += "AND (\n"
+
                 if key == "asset_class":
-                    query += "AND %s > 0\n" % self.filters[key]
+                    if len(self.filters.getlist(key)) == 1:
+                        query += "%s > 0\n" % self.filters.getlist(key)[0]
+                    else:
+                        i = 0
+                        for criteria in self.filters.getlist(key):
+                            if i != 0:
+                                query += "OR "
+                            query += "%s > 0\n" % criteria
+                            i += 1
                 else:
-                    query += "AND %s = '%s'\n" % (key, self.filters[key])
+                    if len(self.filters.getlist(key)) == 1:
+                        query += "%s = '%s'\n" % (key, self.filters.getlist(key)[0])
+                    else:
+                        i = 0
+                        for criteria in self.filters.getlist(key):
+                            if i != 0:
+                                query += "OR "
+                            query += "%s = '%s'\n" % (key, criteria)
+                            i += 1
+            query += ")\n"
             self.filter_counter += 1
 
         return query

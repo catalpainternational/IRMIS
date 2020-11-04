@@ -437,10 +437,18 @@
                 let filters = {};
 
                 if ([1, 2, 3].includes(reportId)) {
-                    const fundingSource = document.getElementById("funding_source_select2").value;
-                    const donor = document.getElementById("donor_select2").value;
-                    filters["funding_source"] = (fundingSource != "") ? fundingSource : "";
-                    filters['funding_donor'] =  (donor != "") ? donor : "";
+                    const fundingSource = document.getElementById("funding_source_select2").selectedOptions;
+                    if (fundingSource) {
+                        let fsOptions = [];
+                        fundingSource.forEach((fs) => { fsOptions.push(fs.value); });
+                        filters["funding_source"] = fsOptions;
+                    }
+                    const donor = document.getElementById("donor_select2").selectedOptions;
+                    if (donor) {
+                        let donorOptions = [];
+                        donor.forEach((d) => { donorOptions.push(d.value); });
+                        filters['funding_donor'] = donorOptions;
+                    }
 
                     if ([1, 2].includes(reportId)) {
                         const asset_class_mapping = {
@@ -448,15 +456,26 @@
                             "Municipal": "mun_cnt",
                             "Rural": "rur_cnt",
                         }
-                        const assetClass = document.getElementById("asset_class_select2").value;
-                        const typeOfWork = document.getElementById("type_of_work_select2").value;
-                        const program = document.getElementById("program_select2").value;
-                        filters['asset_class'] =  (assetClass != "") ? asset_class_mapping[assetClass] : "";
-                        filters['type_of_work'] =  (typeOfWork != "") ? typeOfWork : "";
+                        const assetClass = document.getElementById("asset_class_select2").selectedOptions;
+                        if (assetClass) {
+                            let acOptions = [];
+                            assetClass.forEach((ac) => { acOptions.push(ac.value); });
+                            filters['asset_class'] = acOptions;
+                        }
+                        const typeOfWork = document.getElementById("type_of_work_select2").selectedOptions;
+                        if (typeOfWork) {
+                            let towOptions = [];
+                            typeOfWork.forEach((tow) => { towOptions.push(tow.value); });
+                            filters['type_of_work'] = towOptions;
+                        }
+                        const programs = document.getElementById("program_select2").selectedOptions;
                         let program_key = 'prgm.name';
                         if (reportId == 1) { program_key = 'prg.name'; }
-                        filters[program_key] = (program != "") ? program : "";
-
+                        if (programs) {
+                            let programOptions = [];
+                            programs.forEach((p) => { programOptions.push(p.value); });
+                            filters[program_key] = programOptions;
+                        }
                         const dateStart = document.getElementById("date_start_select2").value;
                         if (dateStart) {
                             const dt = new Date(dateStart);
