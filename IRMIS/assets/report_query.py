@@ -991,6 +991,8 @@ class ContractReport:
                 "        JOIN projects_core as prj on (con.tender_id = prj.tender_id)\n"
                 "        WHERE status = 'Completed'\n"
                 "        AND extract(year from contractStartDate)::integer >= (extract(year from current_date)::integer - 4)\n"
+            ),
+            "typeOfWorkYearFinalWrapper": (
                 "        GROUP BY type_of_work, year, total_assets_length\n"
                 "    ) as work_types\n"
                 ") as work_year\n"
@@ -1005,7 +1007,7 @@ class ContractReport:
                 "FROM projects_core as prj\n"
                 "JOIN contracts_core as con on (con.tender_id = prj.tender_id)\n"
                 "WHERE status = 'Completed'\n"
-                "AND extract(year from contractStartDate)::integer >= (extract(year from current_date)::integer - 5)\n"
+                "AND extract(year from contractStartDate)::integer >= (extract(year from current_date)::integer - 4)\n"
             ),
             "social_safeguards": (
                 "SELECT\n"
@@ -1145,6 +1147,10 @@ class ContractReport:
             # apply all other filters passed from frontend
             final_results = self.apply_frontend_filters(final_results)
 
+        # typeOfYear report needs a special closing wrapper added after applying the filters, if any
+        if self.report_type == 'typeOfWorkYear':
+            final_results += self.report_clauses["typeOfWorkYearFinalWrapper"]
+
         # apply final grouping for report
         final_results = self.apply_grouping(final_results)
         self.reportSQL += "final_results AS (\n%s)" % final_results
@@ -1229,6 +1235,9 @@ class ContractReport:
                 self.filter_counter += 1
             self.filters.pop("startYrMnth", None)
             self.filters.pop("endYrMnth", None)
+
+        if self.report_type in ['assetClassYear', 'typeOfWorkYear']:
+            self.filter_counter = 1
 
         for key in self.filters.keys():
             if self.filter_counter == 0:
