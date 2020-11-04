@@ -2165,11 +2165,23 @@ def protobuf_contract_reports(request, report_id):
         raise MethodNotAllowed(request.method)
 
     report_types = {
-        1: ["program"],
-        2: ["contractCode"],
-        3: ["assetClassTypeOfWork", "typeOfWorkYear", "assetClassYear"],
-        4: ["numberEmployeesSummary", "wagesSummary", "workedDaysSummary"],  # summary
-        5: ["numberEmployees", "wages", "workedDays"],  # single contract
+        1: ["program"],  # Financial and Physical Progress - Summary
+        2: ["contractCode"],  # Financial and Physical Progress - Detail
+        3: [
+            "assetClassTypeOfWork",
+            "typeOfWorkYear",
+            "assetClassYear",
+        ],  # Completed Contracts Length
+        4: [
+            "numberEmployeesSummary",
+            "wagesSummary",
+            "workedDaysSummary",
+        ],  # Social Safeguard - summary
+        5: [
+            "numberEmployees",
+            "wages",
+            "workedDays",
+        ],  # Social Safeguard - single contract
     }
 
     try:
@@ -2177,7 +2189,7 @@ def protobuf_contract_reports(request, report_id):
         report_data = {"filters": request.GET, "summary": 0}
         for rt in report_types[report_id]:
             # Initialise a new Contract Report
-            contract_report = ContractReport(report_id, rt, request.GET)
+            contract_report = ContractReport(report_id, rt, request.GET.copy())
             report_data[rt] = contract_report.execute_main_query()
 
             # add the Summary data for certain reports

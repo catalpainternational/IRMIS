@@ -26,7 +26,7 @@
                     <div if="{ reportContractsContent().visibleFilters.assetClass }" class="d-flex flex-column options">
                         <label for="asset_class_select2">{ window.gettext("Asset class") }</label>
                         <select id="asset_class_select2" multiple="true">
-                            <option each="{ asset_class in window.asset_schema.asset_class.options }" value="{ asset_class[0] }">
+                            <option each="{ asset_class in window.asset_schema.asset_class.options }" value="{ asset_class[1] }">
                                 { asset_class[1] }
                             </option>
                         </select>
@@ -34,7 +34,7 @@
                     <div if="{ reportContractsContent().visibleFilters.typeOfWork }" class="d-flex flex-column options">
                         <label for="type_of_work_select2">{ window.gettext("Type of work") }</label>
                         <select id="type_of_work_select2" multiple="true">
-                            <option each="{ type_of_work in window.contract_schema.type_of_work.options }" value="{ type_of_work.id }">
+                            <option each="{ type_of_work in window.contract_schema.type_of_work.options }" value="{ type_of_work.name }">
                                 { type_of_work.name }
                             </option>
                         </select>
@@ -42,7 +42,7 @@
                     <div if="{ reportContractsContent().visibleFilters.program }" class="d-flex flex-column options">
                         <label for="program_select2">{ window.gettext("Program") }</label>
                         <select id="program_select2" multiple="true">
-                            <option each="{ program in window.contract_schema.program.options }" value="{ program.id }">
+                            <option each="{ program in window.contract_schema.program.options }" value="{ program.name }">
                                 { program.name }
                             </option>
                         </select>
@@ -50,7 +50,7 @@
                     <div if="{ reportContractsContent().visibleFilters.fundingSource }" class="d-flex flex-column options">
                         <label for="funding_source_select2">{ window.gettext("Funding source") }</label>
                         <select id="funding_source_select2" multiple="true">
-                            <option each="{ funding_source in window.contract_schema.funding_source.options }" value="{ funding_source.id }">
+                            <option each="{ funding_source in window.contract_schema.funding_source.options }" value="{ funding_source.name }">
                                 { funding_source.name }
                             </option>
                         </select>
@@ -58,7 +58,7 @@
                     <div if="{ reportContractsContent().visibleFilters.donor }" class="d-flex flex-column options">
                         <label for="donor_select2">{ window.gettext("Donor") }</label>
                         <select id="donor_select2" multiple="true">
-                            <option each="{ donor in window.contract_schema.donor.options }" value="{ donor.id }">
+                            <option each="{ donor in window.contract_schema.donor.options }" value="{ donor.id }" data-name="{donor.name}">
                                 { donor.name }
                             </option>
                         </select>
@@ -110,6 +110,16 @@
                     <div if="{ reportContractsContent().visibleFilters.toDate }" class="d-flex flex-column options">
                         <label for="date_start_select2">{ window.gettext("To") }</label>
                         <input id="date_end_select2" class="{ state.reportToDate ? '' : 'inactive' } form-control form-control-sm" type="month"
+                            oninput="{ selectToDate }" value="{ state.reportToDate }" max="{ state.max_date }" placeholder="Select To Date">
+                    </div>
+                    <div if="{ reportContractsContent().visibleFilters.fromDateFull }" class="d-flex flex-column options">
+                        <label for="date_start_select2">{ window.gettext("From") }</label>
+                        <input id="date_start_select2" class="{ state.reportFromDate ? '' : 'inactive' } form-control form-control-sm" type="date"
+                            oninput="{ selectFromDate }" value="{ state.reportFromDate }" max="{ state.max_date }" placeholder="Select From Date">
+                    </div>
+                    <div if="{ reportContractsContent().visibleFilters.toDateFull }" class="d-flex flex-column options">
+                        <label for="date_start_select2">{ window.gettext("To") }</label>
+                        <input id="date_end_select2" class="{ state.reportToDate ? '' : 'inactive' } form-control form-control-sm" type="date"
                             oninput="{ selectToDate }" value="{ state.reportToDate }" max="{ state.max_date }" placeholder="Select To Date">
                     </div>
                 </div>
@@ -319,8 +329,8 @@
                 workedDaysSummary: () => setColumnsTitles("workedDaysSummary"),
             },
             onBeforeMount(props, state) {
-                state.reportFromDate = currentDate();
-                state.reportToDate = currentDate();
+                // state.reportFromDate = currentDate();
+                // state.reportToDate = currentDate();
                 state.max_date = maxDate();
             },
             onMounted(props, state) {
@@ -424,19 +434,48 @@
                 $("#reports-loading").modal("show");
 
                 const reportId = parseInt(e.currentTarget.dataset.id);
-                let filters = [];
+                let filters = {};
 
-                if (reportId == 4) {
+                if ([1, 2, 3].includes(reportId)) {
+                    const fundingSource = document.getElementById("funding_source_select2").value;
+                    const donor = document.getElementById("donor_select2").value;
+                    filters["funding_source"] = (fundingSource != "") ? fundingSource : "";
+                    filters['donor'] =  (donor != "") ? donor : "";
+
+                    if ([1, 2].includes(reportId)) {
+                        const asset_class_mapping = {
+                            "National": "nat_cnt",
+                            "Municipal": "mun_cnt",
+                            "Rural": "rur_cnt",
+                        }
+                        const assetClass = document.getElementById("asset_class_select2").value;
+                        const typeOfWork = document.getElementById("type_of_work_select2").value;
+                        const program = document.getElementById("program_select2").value;
+                        filters['asset_class'] =  (assetClass != "") ? asset_class_mapping[assetClass] : "";
+                        filters['type_of_work'] =  (typeOfWork != "") ? typeOfWork : "";
+                        filters['prgm.name'] =  (program != "") ? program : "";
+
+                        const dateStart = document.getElementById("date_start_select2").value;
+                        if (dateStart) {
+                            const dt = new Date(dateStart);
+                            filters["startDate"] = `${dt.getFullYear()}/${dt.getMonth()+1}/${dt.getDate()}`;
+                        }
+                        const dateEnd = document.getElementById("date_end_select2").value;
+                        if (dateEnd) {
+                            const dt = new Date(dateEnd);
+                            filters["endDate"] = `${dt.getFullYear()}/${dt.getMonth()+1}/${dt.getDate()}`;
+                        }
+                    }
+                } else if (reportId == 4) {
                     const year = document.getElementById("year_select2").value;
                     const month = document.getElementById("month_select2").value;
                     const quarter = document.getElementById("quarter_select2").value;
-                    filters = {
-                        year: (year != "year") ? year : "",
-                        month: (month != "month") ? month : "",
-                        quarter: (quarter != "quarter") ? quarter : "",
-                    };
+                    filters['year'] = (year != "year") ? year : "";
+                    filters['month'] = (month != "month") ? month : "";
+                    filters['quarter'] = (quarter != "quarter") ? quarter : "";
                 } else if (reportId == 5) {
-                    filters = {contractCode: document.getElementById("contract_code_select2").value};
+                    filters["contract_code"] = document.getElementById("contract_code_select2").value;
+
                     const dateStart = document.getElementById("date_start_select2").value;
                     if (dateStart) {
                         const dt = new Date(dateStart);
@@ -449,6 +488,9 @@
                         filters["endYrMnth"] = `${dt.getFullYear()}${dt.getMonth()+1}`;
                     }
                 }
+
+                // set empty filters list if still not populated
+                if (filters == {}) { filters = []; }
 
                 getContractReport(reportId, filters)
                     .then((reportData) => {
