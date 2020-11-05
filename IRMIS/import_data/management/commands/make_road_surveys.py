@@ -27,6 +27,11 @@ class Command(BaseCommand):
             type=int,
             help="Tolerance in meters for refreshing road 'link_' chainage and length values",
         )
+        parser.add_argument(
+            "-c",
+            "--roadcode",
+            help="Enter a specific road code to create / refresh surveys for",
+        )
 
     def handle(self, *args, **options):
         # counters for data cleansing
@@ -55,11 +60,16 @@ class Command(BaseCommand):
                 self.style.SUCCESS("~~~ Updated %s Road Links ~~~ " % roads_updated)
             )
 
+        if "roadcode" in options and options["roadcode"]:
+            road_codes = [options["roadcode"]]
+        else:
+            self.stdout.write(
+                self.style.MIGRATE_HEADING("Retrieving current road codes")
+            )
+            road_codes = get_current_road_codes()
+
         self.stdout.write(self.style.MIGRATE_HEADING("Deleting redundant surveys"))
         delete_redundant_surveys()
-
-        self.stdout.write(self.style.MIGRATE_HEADING("Retrieving current road codes"))
-        road_codes = get_current_road_codes()
 
         # Refresh the roads and surveys
         self.stdout.write(self.style.MIGRATE_HEADING("Processing surveys by road code"))
