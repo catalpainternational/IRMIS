@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0 VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-11 03:20+0000\n"
+"POT-Creation-Date: 2020-11-05 09:00+0000\n"
 "PO-Revision-Date: 2020-08-11 03:00+0000\n"
 "Last-Translator: b'  <sergio@catalpa.io>'\n"
 "Language-Team: Catalpa International <info@catalpa.io>\n"
@@ -18,1888 +18,3107 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Translated-Using: django-rosetta 0.9.3\n"
 
+#: IRMIS/settings.py:200
 msgid "IRMIS"
 msgstr "IRMIS"
 
+#: assets/migrations/0029_structure_metadata.py:14
+#: assets/migrations/0052_drift_driftclass_driftmaterialtype.py:22
 msgid "Gabion works"
 msgstr "Gabion works "
 
+#: assets/migrations/0029_structure_metadata.py:15
+#: assets/migrations/0052_drift_driftclass_driftmaterialtype.py:23
 msgid "Masonry works"
 msgstr "Masonry works"
 
+#: assets/migrations/0029_structure_metadata.py:16
+#: assets/migrations/0029_structure_metadata.py:47
+#: assets/migrations/0052_drift_driftclass_driftmaterialtype.py:24
+#: assets/migrations/0052_drift_driftclass_driftmaterialtype.py:33
 msgid "RCC"
 msgstr "RCC"
 
+#: assets/migrations/0029_structure_metadata.py:17
+#: assets/migrations/0052_drift_driftclass_driftmaterialtype.py:25
 msgid "PCC concrete wall"
 msgstr "PCC concrete wall"
 
+#: assets/migrations/0029_structure_metadata.py:21
 msgid "Beam"
 msgstr "Beam"
 
+#: assets/migrations/0029_structure_metadata.py:22
 msgid "Temporary"
 msgstr "Temporariu"
 
+#: assets/migrations/0029_structure_metadata.py:23
 msgid "Truss"
 msgstr "Truss"
 
+#: assets/migrations/0029_structure_metadata.py:24
 msgid "Arch"
 msgstr "Arch"
 
+#: assets/migrations/0029_structure_metadata.py:25
 msgid "Reinforced cement"
 msgstr "Reinforced cement"
 
+#: assets/migrations/0029_structure_metadata.py:26
 msgid "Concrete (RCC)"
 msgstr "Betaun (RCC)"
 
+#: assets/migrations/0029_structure_metadata.py:27
+#: assets/migrations/0029_structure_metadata.py:43
+#: assets/migrations/0029_structure_metadata.py:50
 msgid "Timber"
 msgstr "Ai "
 
+#: assets/migrations/0029_structure_metadata.py:28
 msgid "Suspension"
 msgstr "Suspensaun "
 
+#: assets/migrations/0029_structure_metadata.py:32
 msgid "RCC box"
 msgstr "Kaixa RCC"
 
+#: assets/migrations/0029_structure_metadata.py:33
 msgid "RCC pipe"
 msgstr "Kanu RCC"
 
+#: assets/migrations/0029_structure_metadata.py:34
 msgid "RCC slab"
 msgstr "Bloku RCC"
 
+#: assets/migrations/0029_structure_metadata.py:35
 msgid "Steel pipe"
 msgstr "Kanu besi"
 
+#: assets/migrations/0029_structure_metadata.py:36
 msgid "Stone scupper"
 msgstr "Scupper fatuk"
 
+#: assets/migrations/0029_structure_metadata.py:37
 msgid "Wooden"
 msgstr "Ai "
 
+#: assets/migrations/0029_structure_metadata.py:41
 msgid "Concrete"
 msgstr "Betaun"
 
+#: assets/migrations/0029_structure_metadata.py:42
+#: assets/migrations/0029_structure_metadata.py:48
 msgid "Steel"
 msgstr "Besi"
 
+#: assets/migrations/0029_structure_metadata.py:49
 msgid "Stone"
 msgstr "Fatuk"
 
+#: assets/migrations/0041_road_serving_attributes.py:16
 msgid "Health facility"
 msgstr "Fasilidade saude"
 
+#: assets/migrations/0041_road_serving_attributes.py:17
 msgid "School"
 msgstr "Eskola"
 
+#: assets/migrations/0041_road_serving_attributes.py:18
 msgid "Police/security station"
 msgstr "Estasaun polisia/seguransa"
 
+#: assets/migrations/0041_road_serving_attributes.py:19
 msgid "Fire station"
 msgstr "Bombeiros "
 
+#: assets/migrations/0041_road_serving_attributes.py:20
 msgid "Recreational area"
 msgstr "Area rekreiu"
 
+#: assets/migrations/0041_road_serving_attributes.py:24
 msgid "Fishing"
 msgstr "Peska "
 
+#: assets/migrations/0041_road_serving_attributes.py:25
 msgid "Farming"
 msgstr "Agrikultura"
 
+#: assets/migrations/0041_road_serving_attributes.py:26
 msgid "Market"
 msgstr "Merkadu"
 
+#: assets/migrations/0041_road_serving_attributes.py:27
 msgid "Tourism"
 msgstr "Turismu"
 
+#: assets/migrations/0041_road_serving_attributes.py:28
 msgid "Commercial"
 msgstr "Komersial"
 
+#: assets/migrations/0041_road_serving_attributes.py:29
 msgid "Industrial"
 msgstr "Industrial "
 
+#: assets/migrations/0041_road_serving_attributes.py:30
 msgid "Cash crops"
 msgstr "Produtu tos"
 
+#: assets/migrations/0041_road_serving_attributes.py:34
 msgid "Connects municipalities"
 msgstr "Liga munisipiu "
 
+#: assets/migrations/0041_road_serving_attributes.py:35
 msgid "Connects Dili to municipal centers"
 msgstr "Liga Dili ba sentru munisipiu "
 
+#: assets/migrations/0041_road_serving_attributes.py:36
 msgid "Connects administrative posts"
 msgstr "Liga postu administrativu"
 
+#: assets/migrations/0041_road_serving_attributes.py:37
 msgid "Connects to land border"
 msgstr "Liga ba fronteira rai "
 
+#: assets/migrations/0041_road_serving_attributes.py:38
 msgid "Connects to seaport"
 msgstr "Liga ba portu "
 
+#: assets/migrations/0041_road_serving_attributes.py:39
 msgid "Connects to airport"
 msgstr "Liga ba aeroportu"
 
+#: assets/migrations/0052_drift_driftclass_driftmaterialtype.py:21
 msgid "No protection works"
 msgstr "Laiha protesaun serbisu"
 
+#: assets/migrations/0052_drift_driftclass_driftmaterialtype.py:26
 msgid "RCC concrete wall"
 msgstr "RCC Concrete Wall"
 
+#: assets/migrations/0052_drift_driftclass_driftmaterialtype.py:30
 msgid "Stone masonry"
 msgstr "Stone masonry"
 
+#: assets/migrations/0052_drift_driftclass_driftmaterialtype.py:31
 msgid "Plum concrete"
 msgstr "Plum concrete"
 
+#: assets/migrations/0052_drift_driftclass_driftmaterialtype.py:32
 msgid "PCC"
 msgstr "PCC"
 
+#: assets/migrations/0052_drift_driftclass_driftmaterialtype.py:34
 msgid "Gabions"
 msgstr "Gabions"
 
+#: assets/migrations/0052_drift_driftclass_driftmaterialtype.py:35
 msgid "Precast concrete bricks"
 msgstr "Precast concrete bricks"
 
+#: assets/migrations/0052_drift_driftclass_driftmaterialtype.py:36
 msgid "Clay bricks"
 msgstr "Tijolu "
 
+#: assets/migrations/0052_drift_driftclass_driftmaterialtype.py:37
 msgid "PC"
 msgstr "PC"
 
+#: assets/models.py:68 contracts/models.py:32
 #, python-format
 msgid "%(value)s should not contain spaces"
 msgstr "%(value)s Labele inklui espasu "
 
+#: assets/models.py:144 assets/models.py:152 assets/models.py:160
+#: assets/models.py:168 assets/models.py:176 assets/models.py:283
+#: assets/models.py:291 assets/models.py:299 assets/models.py:864
+#: assets/models.py:1035 assets/models.py:1043 assets/models.py:1275
+#: assets/models.py:1283 assets/models.py:1506 assets/models.py:1514
 msgid "Code"
 msgstr "Kodigu "
 
+#: assets/models.py:145 assets/models.py:153 assets/models.py:161
+#: assets/models.py:169 assets/models.py:177 assets/models.py:284
+#: assets/models.py:292 assets/models.py:300 assets/models.py:597
+#: assets/models.py:865 assets/models.py:1036 assets/models.py:1044
+#: assets/models.py:1137 assets/models.py:1276 assets/models.py:1284
+#: assets/models.py:1376 assets/models.py:1507 assets/models.py:1515
+#: assets/models.py:1603 contracts/templates/contracts/company_list.html:27
 msgid "Name"
 msgstr "Naran "
 
+#: assets/models.py:260 assets/models.py:584 assets/models.py:1124
+#: assets/models.py:1363 assets/models.py:1590 assets/models.py:1872
+#: assets/models.py:2034
 msgid "Date Created"
 msgstr "Data Kria"
 
+#: assets/models.py:262 assets/models.py:586 assets/models.py:1126
+#: assets/models.py:1365 assets/models.py:1592 assets/models.py:2036
+#: assets/models.py:2137
 msgid "last modified"
 msgstr "Modifika ikus"
 
+#: assets/models.py:265 contracts/templates/contracts/company_documents.html:27
+#: contracts/templates/contracts/company_documents.html:86
+#: contracts/templates/contracts/company_documents_view.html:32
+#: contracts/templates/contracts/company_documents_view.html:52
+#: contracts/templates/contracts/contract_documents.html:36
+#: contracts/templates/contracts/contract_documents.html:95
+#: contracts/templates/contracts/contract_documents_view.html:41
+#: contracts/templates/contracts/contract_documents_view.html:61
+#: contracts/templates/contracts/project_details_view.html:49
+#: contracts/templates/contracts/project_documents.html:33
+#: contracts/templates/contracts/project_documents.html:92
+#: contracts/templates/contracts/project_documents_view.html:38
+#: contracts/templates/contracts/project_documents_view.html:58
+#: contracts/templates/contracts/tender_documents.html:27
+#: contracts/templates/contracts/tender_documents.html:86
+#: contracts/templates/contracts/tender_documents_view.html:32
+#: contracts/templates/contracts/tender_documents_view.html:52
+#: django_shapefiles/models.py:27
 msgid "Description"
 msgstr "Deskrisaun"
 
+#: assets/models.py:268 assets/models.py:1867 assets/models.py:2029
 msgid "User"
 msgstr "Uzuáriu"
 
-msgid "Asset Id"
-msgstr "Id Sasan (aset)"
-
-msgid "Asset Code"
-msgstr "Kodigu Sasan (aset)"
-
-msgid "Road Id"
-msgstr "Id Estrada "
-
-msgid "Road Code"
-msgstr "Kodigu Estrada "
-
-msgid "Date Surveyed"
-msgstr "Data Levantamentu"
-
-msgid "Date Updated"
-msgstr "Data Atual"
-
-msgid "Start Chainage (Km)"
-msgstr "Chainage Komesa (Km)"
-
-msgid "Enter chainage for survey starting point"
-msgstr "HatamacChainage ba levantamentu pontu komesa"
-
-msgid "End Chainage (Km)"
-msgstr "Chainage Ikus (Km)"
-
-msgid "Enter chainage for survey ending point"
-msgstr "Hatama chainage ba levantamentu pontu ikus"
-
-msgid "Source"
-msgstr "Fonte"
-
-msgid "Choose the source of the survey"
-msgstr "Hili fonte husi levantamentu "
-
+#: assets/models.py:313
 msgid "National"
 msgstr "Nasional"
 
+#: assets/models.py:314
 msgid "Municipal"
 msgstr "Munisipiu "
 
+#: assets/models.py:315
 msgid "Urban"
 msgstr "Urbana"
 
+#: assets/models.py:316
 msgid "Rural"
 msgstr "Rural"
 
+#: assets/models.py:320
 msgid "Good"
 msgstr "Good"
 
+#: assets/models.py:321
 msgid "Fair"
 msgstr "Fair"
 
+#: assets/models.py:322
 msgid "Poor"
 msgstr "Poor"
 
+#: assets/models.py:323
 msgid "Bad"
 msgstr "Bad"
 
+#: assets/models.py:327 assets/models.py:856
 msgid "Road"
 msgstr "Estrada "
 
+#: assets/models.py:328 assets/models.py:1267
 msgid "Bridge"
 msgstr "Ponte"
 
+#: assets/models.py:329 assets/models.py:1498
 msgid "Culvert"
 msgstr "Culvert "
 
+#: assets/models.py:330 assets/models.py:1719
 msgid "Drift"
 msgstr "Drift "
 
+#: assets/models.py:333
 msgid "Low"
 msgstr "Kraik"
 
+#: assets/models.py:333
 msgid "Medium"
 msgstr " Mediu"
 
+#: assets/models.py:333
 msgid "High"
 msgstr "Aas"
 
+#: assets/models.py:335
 msgid "Flat"
 msgstr "Flat"
 
+#: assets/models.py:335
 msgid "Rolling"
 msgstr "Rolling"
 
+#: assets/models.py:335
 msgid "Mountainous"
 msgstr "Mountainous"
 
+#: assets/models.py:337
 msgid "Undefined"
 msgstr "La defini"
 
+#: assets/models.py:337
 msgid "Non-core"
 msgstr "Laos prioridade"
 
+#: assets/models.py:337 assets/models.py:771
+#: assets/templates/assets/estrada_main.html:51
 msgid "Core"
 msgstr "Prioridade"
 
+#: assets/models.py:589 assets/models.py:1155 assets/models.py:1394
+#: assets/models.py:1621 assets/models.py:1859
+#: assets/templates/assets/estrada_main.html:230
+msgid "Road Code"
+msgstr "Kodigu Estrada "
+
+#: assets/models.py:600 assets/models.py:1148 assets/models.py:1387
+#: assets/models.py:1614 assets/templates/assets/estrada_main.html:67
+#: assets/templates/assets/estrada_main.html:250
+#: contracts/templates/contracts/project_details.html:179
 msgid "Municipality"
 msgstr "Munisipiu "
 
+#: assets/models.py:604
 msgid "Choose the municipality for the road"
 msgstr "Hili munisipiu husi estrada ne"
 
+#: assets/models.py:607 contracts/templates/contracts/contract_payments.html:44
+#: contracts/templates/contracts/contract_payments.html:100
+#: contracts/templates/contracts/contract_payments_view.html:41
+#: contracts/templates/contracts/contract_payments_view.html:64
+#: contracts/templates/contracts/project_financials_view.html:36
+#: contracts/templates/contracts/project_list.html:73
 msgid "Funding Source"
 msgstr "Fonte Fundus"
 
+#: assets/models.py:612
 msgid "Enter the source funding for the road link"
 msgstr "Hatama fonte fundus ba linha estrada"
 
+#: assets/models.py:615
 msgid "Link Code"
 msgstr "Kodigu Linha"
 
+#: assets/models.py:621
 msgid "Enter link code according to DRBFC standard"
 msgstr "Hatama kodigu linha tuir DNEPCC nia padraun "
 
+#: assets/models.py:624
 msgid "Link Start Name"
 msgstr "Naran Linha Komesa"
 
-msgid "Enter the name of the link start location (municipal center, administrative post or nearest suco)"
-msgstr "Hatama naran husi fatin linha komesa (sentru munisipiu, postu administrativu ou suku nebe besik) "
+#: assets/models.py:629
+msgid ""
+"Enter the name of the link start location (municipal center, administrative "
+"post or nearest suco)"
+msgstr ""
+"Hatama naran husi fatin linha komesa (sentru munisipiu, postu administrativu "
+"ou suku nebe besik) "
 
+#: assets/models.py:633
 msgid "Link End Name"
 msgstr "Naran Linha Ikus "
 
-msgid "Enter the name of the link end location (municipal center, administrative post or nearest suco)"
-msgstr "Hatama naran husi fatin linha ikus (sentru munisipiu, postu administrativu ou suku nebe besik) "
+#: assets/models.py:638
+msgid ""
+"Enter the name of the link end location (municipal center, administrative "
+"post or nearest suco)"
+msgstr ""
+"Hatama naran husi fatin linha ikus (sentru munisipiu, postu administrativu "
+"ou suku nebe besik) "
 
+#: assets/models.py:645
 msgid "Link End Chainage"
 msgstr "Linha Chainage Ikus"
 
+#: assets/models.py:648
 msgid "Enter chainage for link ending point"
 msgstr "Hatama chainage ba pontu linha ikus"
 
+#: assets/models.py:651
 msgid "Link Start Chainage"
 msgstr "Linha chainage Komesa"
 
+#: assets/models.py:654
 msgid "Enter chainage for link starting point"
 msgstr "Hatama chainage ba linha nia pontu komesa"
 
+#: assets/models.py:657
 msgid "Link Length (Km)"
 msgstr "Naruk Estasaun (km)"
 
+#: assets/models.py:662
 msgid "Enter road link length"
 msgstr "Hatama linha estrada nia naruk"
 
+#: assets/models.py:667
 msgid "Geometry Length (m)"
 msgstr "Naruk Jeometria (m)"
 
+#: assets/models.py:670 assets/models.py:676 assets/models.py:682
 msgid "Do not edit"
 msgstr "Labele edita "
 
+#: assets/models.py:673
 msgid "Geometry Start Chainage"
 msgstr "Jeometria Chainage Komesa"
 
+#: assets/models.py:679
 msgid "Geometry End Chainage"
 msgstr "Jeometria Chainage Ikus"
 
+#: assets/models.py:686
 msgid "Surface Type"
 msgstr "Tipu Superfísie"
 
+#: assets/models.py:690
 msgid "Choose the type of surface of the road link carriageway"
 msgstr "Hili tipu superfísie linha estrada nia carriageway "
 
+#: assets/models.py:694
 msgid "Pavement Class"
 msgstr "Klase Pavimentu "
 
+#: assets/models.py:699
 msgid "Choose the pavement class of the road"
 msgstr "Hili klase pavimentu husi estrada"
 
+#: assets/models.py:702
 msgid "Carriageway Width"
 msgstr "Luan Carriageway "
 
+#: assets/models.py:708
 msgid "Enter the width of the link carriageway"
 msgstr "Hatama luan husi linha Carriageaway"
 
+#: assets/models.py:712 assets/models.py:2020 assets/models.py:2126
+#: assets/templates/assets/estrada_main.html:234
+#: contracts/templates/contracts/project_details.html:170
 msgid "Asset Class"
 msgstr "Klase  Sasan/Aset"
 
+#: assets/models.py:717 assets/models.py:2025 assets/models.py:2129
 msgid "Choose the asset class"
 msgstr "Hili klase sasan/aset"
 
+#: assets/models.py:721
 msgid "Road Status"
 msgstr "Estatutu Estrada"
 
+#: assets/models.py:725
 msgid "Enter road link current status"
 msgstr "Hatama linha estrada nia estatutu atual"
 
+#: assets/models.py:728 contracts/models.py:182
+#: contracts/templates/contracts/project_details_view.html:41
+#: contracts/templates/contracts/project_list.html:68
 msgid "Project Name"
 msgstr "Naran Projetu"
 
+#: assets/models.py:732
 msgid "Enter road link project name"
 msgstr "Hatama naran projetu linha estrada"
 
+#: assets/models.py:735
 msgid "Traffic Data"
 msgstr "Dadus Trafiku"
 
+#: assets/models.py:740
 msgid "Choose the traffic volume for the road link"
 msgstr "Hili volume trafiku ba linha estrada"
 
+#: assets/models.py:743
 msgid "Surface Condition (SDI)"
 msgstr "Kondisaun Superfísie (SDI)"
 
-msgid "Choose road link surface condition according to the Surface Distress Index (SDI): Good (SDI<=2), fair (2<SDI<=3), poor (3<SDI<=4) or bad (SDI>4)"
-msgstr "Hili linha estrada nia kondisaun superfísie tuir Surface Distress Index  (SDI): Good (SDI<=2), fair (2<SDI<=3), poor (3<SDI<=4) or bad (SDI>4)"
+#: assets/models.py:749
+msgid ""
+"Choose road link surface condition according to the Surface Distress Index "
+"(SDI): Good (SDI<=2), fair (2<SDI<=3), poor (3<SDI<=4) or bad (SDI>4)"
+msgstr ""
+"Hili linha estrada nia kondisaun superfísie tuir Surface Distress Index  "
+"(SDI): Good (SDI<=2), fair (2<SDI<=3), poor (3<SDI<=4) or bad (SDI>4)"
 
+#: assets/models.py:754
 msgid "Maintenance Needs"
 msgstr "Presiza Manutensaun "
 
+#: assets/models.py:758
 msgid "Choose the type of maintenace needs for the road link"
 msgstr "Hili tipu manutensaun nebe presiza ba linha estrada "
 
+#: assets/models.py:762
 msgid "Technical Class"
 msgstr "Klase Tekniku "
 
-msgid "Choose road link technical class according to the 2010 Road Geometric Design Standards, DRBFC standards"
-msgstr "Hili linha estrada nia klase tekniku tuir Padraun Dezenhu Geometriku Estrada 2010, tuir padraun DNEPCC"
+#: assets/models.py:767
+msgid ""
+"Choose road link technical class according to the 2010 Road Geometric Design "
+"Standards, DRBFC standards"
+msgstr ""
+"Hili linha estrada nia klase tekniku tuir Padraun Dezenhu Geometriku Estrada "
+"2010, tuir padraun DNEPCC"
 
+#: assets/models.py:773
 msgid "Set if the road is a high priority `core` road"
 msgstr "Hili se estrada ne tama estrada prioridade as \"prioridade\""
 
+#: assets/models.py:776 assets/templates/assets/estrada_main.html:137
 msgid "Population Served"
 msgstr "Serve populasaun"
 
+#: assets/models.py:779
 msgid "Set the size of population served by this road"
 msgstr "Hili numeru populasaun nebe serve husi estrada ne "
 
+#: assets/models.py:782
 msgid "Road Construction Year"
 msgstr "Tinan Konstrusaun Estrada "
 
+#: assets/models.py:785
 msgid "Terrain class"
 msgstr "Klase terrain"
 
+#: assets/models.py:789
 msgid "Choose what terrain class the road runs through"
 msgstr "Hili klase terrain nebe estrada ne halai tuir "
 
+#: assets/models.py:792
 msgid "Rainfall Maximum"
 msgstr "Udan-been másimu"
 
+#: assets/models.py:795
 msgid "Enter the maximum amount of rainfall"
 msgstr "Hatama montante másimu udan-been"
 
+#: assets/models.py:798
 msgid "Rainfall Minimum"
 msgstr "Udan-been minimu"
 
+#: assets/models.py:801
 msgid "Enter the minimum amount of rainfall"
 msgstr "Hatama montante minimu udan-been"
 
+#: assets/models.py:804
 msgid "Number of Lanes"
 msgstr "Numeru Pista"
 
+#: assets/models.py:807
 msgid "Enter the number of lanes of the road"
 msgstr "Hatama numeru pista estrada ne"
 
+#: assets/models.py:818
 msgid "Facilities Served"
 msgstr "Serve Fasilidade"
 
+#: assets/models.py:821
 msgid "Choose facilities served by this road"
 msgstr "Hili fasilidade nebe serve husi estrada ne"
 
+#: assets/models.py:825
 msgid "Economic Areas Served"
 msgstr "Serve Area Ekonomia "
 
+#: assets/models.py:828
 msgid "Choose economic areas served by this road"
 msgstr "Hili area ekonomia nebe serve husi estrada ne"
 
+#: assets/models.py:832
 msgid "Connections Served"
 msgstr "Serve Ligasaun"
 
+#: assets/models.py:835
 msgid "Choose the types of connections facilitated by this road"
 msgstr "Hili tipu ligasaun nebe serve husi estrada ne"
 
+#: assets/models.py:858 assets/models.py:1269 assets/models.py:1500
+#: assets/models.py:1721
 msgid "Attributes"
 msgstr "Atribuisaun"
 
-msgid "Asset Type"
-msgstr "Tipu Sasan/Aset"
+#: assets/models.py:1121 assets/models.py:1360 assets/models.py:1587
+#: assets/models.py:1857
+msgid "Road Id"
+msgstr "Id Estrada "
 
+#: assets/models.py:1129 assets/models.py:1368 assets/models.py:1595
+#: assets/templates/assets/estrada_main.html:218
 msgid "Structure Code"
 msgstr "Kodigu Estrutura"
 
+#: assets/models.py:1140 assets/models.py:1379 assets/models.py:1606
 msgid "Structure Class"
 msgstr "Klase Estrutura "
 
+#: assets/models.py:1145 assets/models.py:1384 assets/models.py:1611
 msgid "Choose the structure class"
 msgstr "Hili klase estrutura "
 
+#: assets/models.py:1152 assets/models.py:1391 assets/models.py:1618
 msgid "Choose the municipality for the structure"
 msgstr "Hili munisipiu husi estrutura "
 
+#: assets/models.py:1160 assets/models.py:1399 assets/models.py:1626
 msgid "Enter the Road Code associated with the structure"
 msgstr "Hatama Kodigu Estrada asosiadu ho estrutura"
 
+#: assets/models.py:1163 assets/models.py:1402 assets/models.py:1629
 msgid "Structure Construction Year"
 msgstr "Tinan Konstrusaun Estrutura"
 
+#: assets/models.py:1166 assets/models.py:1405 assets/models.py:1632
 msgid "Structure Length (m)"
 msgstr "Naruk Estrutura (m)"
 
+#: assets/models.py:1172 assets/models.py:1411 assets/models.py:1638
 msgid "Enter structure length"
 msgstr "Hatama naruk estrutura "
 
+#: assets/models.py:1175 assets/models.py:1414 assets/models.py:1641
 msgid "Structure Width (m)"
 msgstr "Luan Estrutura (m)"
 
+#: assets/models.py:1181 assets/models.py:1420 assets/models.py:1647
 msgid "Enter structure width"
 msgstr "Hatama luan estrutura"
 
+#: assets/models.py:1184 assets/models.py:1423 assets/models.py:1650
+#: assets/templates/assets/estrada_main.html:246
 msgid "Chainage"
 msgstr "Chainage"
 
+#: assets/models.py:1187 assets/models.py:1426 assets/models.py:1653
 msgid "Enter chainage point for the structure"
 msgstr "Hatama pontu chainage ba estrutura"
 
+#: assets/models.py:1196
 msgid "Bridge Type"
 msgstr "Tipu Ponte"
 
+#: assets/models.py:1200
 msgid "Choose the bridge type"
 msgstr "Hili tipu ponte"
 
+#: assets/models.py:1203 assets/templates/assets/estrada_main.html:226
 msgid "River Name"
 msgstr "Naran Mota"
 
+#: assets/models.py:1207
 msgid "Enter the name of the river the bridge crosses over"
 msgstr "Hatama naran mota nebe ponte iha ba"
 
+#: assets/models.py:1210 assets/templates/assets/estrada_main.html:280
 msgid "Number of Spans"
 msgstr "Numeru spans "
 
+#: assets/models.py:1214
 msgid "Enter number of spans"
 msgstr "Hatama numeru spans"
 
+#: assets/models.py:1217
 msgid "Span Length (m)"
 msgstr "Naruk span (m)"
 
+#: assets/models.py:1223
 msgid "Enter span length"
 msgstr "Hatama naruk span"
 
+#: assets/models.py:1227
 msgid "Deck Material"
 msgstr "Deck Material"
 
+#: assets/models.py:1231
 msgid "Choose the bridge deck material"
 msgstr "Hili ponte nia deck material "
 
+#: assets/models.py:1235 assets/models.py:1466 assets/models.py:1687
+#: assets/templates/assets/estrada_main.html:292
 msgid "Protection Upstream"
 msgstr "Protection Upstream"
 
+#: assets/models.py:1240 assets/models.py:1471 assets/models.py:1692
 msgid "Choose the upstream protection type"
 msgstr "Hili tipu protection upstream"
 
+#: assets/models.py:1244 assets/models.py:1475 assets/models.py:1696
+#: assets/templates/assets/estrada_main.html:296
 msgid "Protection Downstream"
 msgstr "Protection Downstream"
 
+#: assets/models.py:1249 assets/models.py:1480 assets/models.py:1701
 msgid "Choose the downstream protection type"
 msgstr "Hili tipu protection downstream"
 
+#: assets/models.py:1435
 msgid "Culvert Type"
 msgstr "Tipu Culvert"
 
+#: assets/models.py:1439
 msgid "Choose the culvert type"
 msgstr "Hili tipu culvert"
 
+#: assets/models.py:1442
 msgid "Structure Height (m)"
 msgstr "Aas Estrutura"
 
+#: assets/models.py:1448
 msgid "Enter structure height"
 msgstr "Hatama estrutura nia aas"
 
+#: assets/models.py:1451 assets/templates/assets/estrada_main.html:288
 msgid "Number of Cells"
 msgstr "Numeru Sela"
 
+#: assets/models.py:1458 assets/models.py:1679
+#: assets/templates/assets/estrada_main.html:254
 msgid "Material"
 msgstr "Material "
 
+#: assets/models.py:1462
 msgid "Choose the culvert material"
 msgstr "Hili material culvert "
 
+#: assets/models.py:1662
 msgid "Drift Type"
 msgstr "Tipu Drift"
 
+#: assets/models.py:1666
 msgid "Choose the drift type"
 msgstr "Hili tipu drift "
 
+#: assets/models.py:1669
 msgid "Structure Thickness (m)"
 msgstr "Mahar Estrutura (m)"
 
+#: assets/models.py:1675
 msgid "Enter structure thickness"
 msgstr "Hatama estrutura nia mahar "
 
+#: assets/models.py:1683
 msgid "Choose the drift material"
 msgstr "Hili material drift "
 
+#: assets/models.py:1731 assets/templates/assets/filter_pane.html:15
+#: assets/templatetags/assets.py:269
+#: contracts/templates/contracts/project_details.html:162
+msgid "Asset Type"
+msgstr "Tipu Sasan/Aset"
+
+#: assets/models.py:1839 contracts/models.py:316
+msgid "Asset Id"
+msgstr "Id Sasan (aset)"
+
+#: assets/models.py:1847 contracts/templates/contracts/project_details.html:153
+msgid "Asset Code"
+msgstr "Kodigu Sasan (aset)"
+
+#: assets/models.py:1871 assets/models.py:2185
+msgid "Date Surveyed"
+msgstr "Data Levantamentu"
+
+#: assets/models.py:1873
+msgid "Date Updated"
+msgstr "Data Atual"
+
+#: assets/models.py:1876
+msgid "Start Chainage (Km)"
+msgstr "Chainage Komesa (Km)"
+
+#: assets/models.py:1879
+msgid "Enter chainage for survey starting point"
+msgstr "HatamacChainage ba levantamentu pontu komesa"
+
+#: assets/models.py:1882
+msgid "End Chainage (Km)"
+msgstr "Chainage Ikus (Km)"
+
+#: assets/models.py:1885
+msgid "Enter chainage for survey ending point"
+msgstr "Hatama chainage ba levantamentu pontu ikus"
+
+#: assets/models.py:1888 contracts/models.py:295
+msgid "Source"
+msgstr "Fonte"
+
+#: assets/models.py:1893
+msgid "Choose the source of the survey"
+msgstr "Hili fonte husi levantamentu "
+
+#: assets/models.py:2012
+#: contracts/templates/contracts/company_documents.html:24
+#: contracts/templates/contracts/company_documents.html:68
+#: contracts/templates/contracts/company_documents_view.html:29
+#: contracts/templates/contracts/company_documents_view.html:49
+#: contracts/templates/contracts/contract_documents.html:33
+#: contracts/templates/contracts/contract_documents.html:77
+#: contracts/templates/contracts/contract_documents_view.html:38
+#: contracts/templates/contracts/contract_documents_view.html:58
+#: contracts/templates/contracts/project_documents.html:30
+#: contracts/templates/contracts/project_documents.html:74
+#: contracts/templates/contracts/project_documents_view.html:35
+#: contracts/templates/contracts/project_documents_view.html:55
+#: contracts/templates/contracts/tender_documents.html:24
+#: contracts/templates/contracts/tender_documents.html:68
+#: contracts/templates/contracts/tender_documents_view.html:29
+#: contracts/templates/contracts/tender_documents_view.html:49
+#: django_shapefiles/models.py:20
 msgid "Title"
 msgstr "Titlu "
 
+#: assets/models.py:2015
 msgid "Approved"
 msgstr "Aprova "
 
+#: assets/models.py:2017
 msgid "Planning Period"
 msgstr "Periodu Planeamentu "
 
+#: assets/models.py:2101
 msgid "Routine Maintenance"
 msgstr "Manutensaun Rutina"
 
+#: assets/models.py:2102
 msgid "Periodic Maintenance"
 msgstr "Manutensaun Periodiku "
 
+#: assets/models.py:2103
 msgid "Rehabilitation"
 msgstr "Rehabilitasaun "
 
+#: assets/models.py:2104
 msgid "Spot Improvement"
 msgstr "Spot Improvement"
 
+#: assets/models.py:2108
+#: contracts/templates/contracts/contract_details_view.html:100
+#: contracts/templates/contracts/contract_details_view.html:169
+#: contracts/templates/contracts/project_financials_view.html:57
 msgid "Year"
 msgstr "Tinan"
 
+#: assets/models.py:2110
+#: contracts/templates/contracts/contract_details_view.html:170
+#: contracts/templates/contracts/project_financials.html:57
+#: contracts/templates/contracts/project_financials_view.html:46
 msgid "Budget"
 msgstr "Orsamentu "
 
+#: assets/models.py:2115
 msgid "Enter the budget amount"
 msgstr "Hatama montante orsamentu "
 
+#: assets/models.py:2118 assets/templates/assets/estrada_main.html:264
 msgid "Length"
 msgstr "Naruk "
 
+#: assets/models.py:2123
 msgid "Enter the length"
 msgstr "Hatama naruk "
 
+#: assets/models.py:2132
 msgid "Work Type"
 msgstr "Tipu Serbisu "
 
+#: assets/models.py:2135
 msgid "Choose the work type"
 msgstr "Hili tipu serbisu "
 
+#: assets/models.py:2253
 msgid "Date of first Survey"
 msgstr "Data Levantamentu premeiru "
 
+#: assets/models.py:2254
 msgid "Date of second Survey"
 msgstr "Data Levantamentu  segundu"
 
+#: assets/templates/assets/estrada_main.html:20
 msgid "Road Inventory"
 msgstr "Inventariu Estrada "
 
+#: assets/templates/assets/estrada_main.html:23
+#: assets/templates/assets/estrada_main.html:201
 msgid "Export all"
 msgstr "Esporta hotu "
 
+#: assets/templates/assets/estrada_main.html:26
+#: assets/templates/assets/estrada_main.html:205
 msgid "Select data"
 msgstr "Hili dadus "
 
+#: assets/templates/assets/estrada_main.html:30
 msgid "Road Inventory Data"
 msgstr "Dadus Inventariu Estrada"
 
+#: assets/templates/assets/estrada_main.html:35
 msgid "Road code"
 msgstr "Kodigu estrada"
 
+#: assets/templates/assets/estrada_main.html:39
 msgid "Road name"
 msgstr "Naran estrada"
 
+#: assets/templates/assets/estrada_main.html:43
 msgid "Asset class"
 msgstr "Klase sasan/aset"
 
+#: assets/templates/assets/estrada_main.html:47
 msgid "Technical class"
 msgstr "Klase tekniku"
 
+#: assets/templates/assets/estrada_main.html:55
 msgid "Link code"
 msgstr "Kodigu linha"
 
+#: assets/templates/assets/estrada_main.html:59
 msgid "Link name"
 msgstr "Naran linha"
 
+#: assets/templates/assets/estrada_main.html:63
 msgid "Link length"
 msgstr "Naruk Estasaun"
 
+#: assets/templates/assets/estrada_main.html:71
 msgid "Link start name"
 msgstr "Naran linha komesa"
 
+#: assets/templates/assets/estrada_main.html:75
 msgid "Link start chainage"
 msgstr "Linha chainage komesa"
 
+#: assets/templates/assets/estrada_main.html:79
 msgid "Start Point - DMS"
 msgstr "Pontu Komesa - DMS"
 
+#: assets/templates/assets/estrada_main.html:83
 msgid "Start Point - UTM"
 msgstr "Pontu Komesa - UTM"
 
+#: assets/templates/assets/estrada_main.html:89
 msgid "Link end name"
 msgstr "Naran linha ikus "
 
+#: assets/templates/assets/estrada_main.html:93
 msgid "Link end chainage"
 msgstr "Linha chainage ikus"
 
+#: assets/templates/assets/estrada_main.html:97
 msgid "End Point - DMS"
 msgstr "Pontu Ikus - DMS"
 
+#: assets/templates/assets/estrada_main.html:101
 msgid "End Point - UTM"
 msgstr "Pontu Ikus - UTM"
 
+#: assets/templates/assets/estrada_main.html:105
 msgid "Surface type"
 msgstr "Tipu superfície"
 
+#: assets/templates/assets/estrada_main.html:109
 msgid "Pavement class"
 msgstr "klase pavimentu"
 
+#: assets/templates/assets/estrada_main.html:113
 msgid "Carriageway width"
 msgstr "Luan carriageway "
 
+#: assets/templates/assets/estrada_main.html:117
 msgid "Total width"
 msgstr "Total luan "
 
+#: assets/templates/assets/estrada_main.html:121
 msgid "Number of lanes"
 msgstr "Numeru pista"
 
+#: assets/templates/assets/estrada_main.html:125
 msgid "Rainfall"
 msgstr "Udan-been"
 
+#: assets/templates/assets/estrada_main.html:129
 msgid "Terrain Class"
 msgstr "Klase Terrain"
 
+#: assets/templates/assets/estrada_main.html:133
+#: assets/templates/assets/estrada_main.html:304
 msgid "Inventory Photos/Videos"
 msgstr "Foto/Video ba Inventariu"
 
+#: assets/templates/assets/estrada_main.html:145
 msgid "Condition and Traffic"
 msgstr "Kondisaun no Trafiku "
 
+#: assets/templates/assets/estrada_main.html:148
 msgid "Roughness (IRI)"
 msgstr "Roughness (IRI)"
 
+#: assets/templates/assets/estrada_main.html:152
 msgid "Surface condition"
 msgstr "Kondisaun superfície"
 
+#: assets/templates/assets/estrada_main.html:156
 msgid "Maintenance needs"
 msgstr "Presiza manutensaun"
 
+#: assets/templates/assets/estrada_main.html:160
 msgid "Traffic data"
 msgstr "Dadus trafiku"
 
+#: assets/templates/assets/estrada_main.html:164
 msgid "Project Data"
 msgstr "Dadus Projetu"
 
+#: assets/templates/assets/estrada_main.html:167
 msgid "Road status"
 msgstr "Estatutu estrada "
 
+#: assets/templates/assets/estrada_main.html:171
+#: assets/templates/assets/estrada_main.html:300
 msgid "Construction Year"
 msgstr "Tinan Konstrusaun"
 
+#: assets/templates/assets/estrada_main.html:175
 msgid "Funding source"
 msgstr "Fonte Fundus"
 
+#: assets/templates/assets/estrada_main.html:179
+#: contracts/templates/contracts/project_construction_schedule_view.html:8
+#: contracts/templates/contracts/project_details_view.html:9
+#: contracts/templates/contracts/project_documents_view.html:8
+#: contracts/templates/contracts/project_financials_view.html:8
 msgid "Project"
 msgstr "Projetu "
 
+#: assets/templates/assets/estrada_main.html:184
+#: assets/templates/assets/estrada_main.html:326
 msgid "Return to default selection"
 msgstr "Fila fali ba selesaun padraun "
 
+#: assets/templates/assets/estrada_main.html:198
 msgid "Structure Inventory"
 msgstr "Inventariu Estrutura"
 
+#: assets/templates/assets/estrada_main.html:209
 msgid "Structure Inventory Data"
 msgstr "Dadus Inventariu Estrutura "
 
+#: assets/templates/assets/estrada_main.html:214
 msgid "Structure"
 msgstr "Estrutura "
 
+#: assets/templates/assets/estrada_main.html:222
 msgid "Structure Name"
 msgstr "Naran Estrutura "
 
+#: assets/templates/assets/estrada_main.html:238
 msgid "GPS Latitude"
 msgstr "GPS Latitude"
 
+#: assets/templates/assets/estrada_main.html:242
 msgid "GPS Longitude"
 msgstr "GPS Longitude"
 
+#: assets/templates/assets/estrada_main.html:260
+#: contracts/templates/contracts/company_documents.html:25
+#: contracts/templates/contracts/company_documents_view.html:30
+#: contracts/templates/contracts/company_documents_view.html:50
+#: contracts/templates/contracts/contract_documents.html:34
+#: contracts/templates/contracts/contract_documents_view.html:39
+#: contracts/templates/contracts/contract_documents_view.html:59
+#: contracts/templates/contracts/project_documents.html:31
+#: contracts/templates/contracts/project_documents_view.html:36
+#: contracts/templates/contracts/project_documents_view.html:56
+#: contracts/templates/contracts/tender_documents.html:25
+#: contracts/templates/contracts/tender_documents_view.html:30
+#: contracts/templates/contracts/tender_documents_view.html:50
 msgid "Type"
 msgstr "Tipu"
 
+#: assets/templates/assets/estrada_main.html:268
 msgid "Width"
 msgstr "Luan"
 
+#: assets/templates/assets/estrada_main.html:272
 msgid "Height"
 msgstr "Aas"
 
+#: assets/templates/assets/estrada_main.html:276
 msgid "Thickness"
 msgstr "Mahar"
 
+#: assets/templates/assets/estrada_main.html:284
 msgid "Span Length"
 msgstr "Naruk Span"
 
+#: assets/templates/assets/estrada_main.html:310
 msgid "Structure Condition Data"
 msgstr "Dadus Kondisaun Estrutura "
 
+#: assets/templates/assets/estrada_main.html:314
+#: assets/templates/assets/filter_pane.html:264
+#: assets/templatetags/assets.py:273 assets/templatetags/assets.py:277
+#: assets/templatetags/assets.py:281
 msgid "Structure Condition"
 msgstr "Kondisaun Estrutura "
 
+#: assets/templates/assets/estrada_main.html:318
 msgid "Condition Description"
 msgstr "Deskrisaun Kondisaun"
 
+#: assets/templates/assets/estrada_main.html:322
 msgid "Condition Photos/Videos"
 msgstr "Foto/Video ba Kondisaun"
 
+#: assets/templates/assets/estrada_main.html:338
+#: contracts/templates/contracts/contracts.html:39
+#: contracts/templates/contracts/contracts.html:60
+#: registration_templates/registration/login.html:8
 msgid "Democratic Republic of Timor-Leste"
 msgstr "República Democrática de Timor-Leste"
 
+#: assets/templates/assets/estrada_main.html:338
+#: contracts/templates/contracts/contracts.html:40
+#: contracts/templates/contracts/contracts.html:60
+#: registration_templates/registration/login.html:9
 msgid "Ministry of Public Works"
 msgstr "Ministério das Obras Públicas"
 
+#: assets/templates/assets/estrada_main.html:339
+#: contracts/templates/contracts/contracts.html:61
 msgid "Created by Catalpa International"
 msgstr "Kria husi Catalpa International "
 
+#: assets/templates/assets/filter_pane.html:5
 msgid "View"
 msgstr "Visualizasaun"
 
+#: assets/templates/assets/filter_pane.html:6
 msgid "Fullscreen view"
 msgstr "Visualizasaun Kompletu"
 
+#: assets/templates/assets/filter_pane.html:8
 msgid "Map & Table"
 msgstr "Mapa & Tabela"
 
+#: assets/templates/assets/filter_pane.html:9
 msgid "Map"
 msgstr "Mapa"
 
+#: assets/templates/assets/filter_pane.html:10
 msgid "Table"
 msgstr "Tabela"
 
+#: assets/templates/assets/filter_pane.html:21
 msgid "Roads"
 msgstr "Estrada"
 
+#: assets/templates/assets/filter_pane.html:22
 msgid "Structures"
 msgstr "Estrutura "
 
+#: assets/templates/assets/filter_pane.html:29
+#: contracts/templates/contracts/contract_list.html:19
+#: contracts/templates/contracts/project_list.html:19
+#: contracts/templates/contracts/tender_list.html:19
 msgid "Filters"
 msgstr "Filtru"
 
+#: assets/templates/assets/filter_pane.html:30
 msgid "Clear all filters"
 msgstr "Hamos filtru hotu"
 
+#: assets/templates/assets/filter_pane.html:34
 msgid "Location"
 msgstr "Fatin"
 
+#: assets/templates/assets/filter_pane.html:44
+#: assets/templates/assets/filter_pane.html:72
+#: assets/templates/assets/filter_pane.html:98
+#: assets/templates/assets/filter_pane.html:121
+#: assets/templates/assets/filter_pane.html:147
+#: assets/templates/assets/filter_pane.html:179
+#: assets/templates/assets/filter_pane.html:211
+#: assets/templates/assets/filter_pane.html:237
+#: assets/templates/assets/filter_pane.html:267
 msgid "Clear"
 msgstr "Hamos"
 
+#: assets/templates/assets/filter_pane.html:62
+#: assets/templates/assets/filter_pane.html:169
+#: assets/templatetags/assets.py:265
+#: contracts/templates/contracts/project_details_view.html:71
 msgid "Asset"
 msgstr "Sasan/aset"
 
+#: assets/templates/assets/filter_pane.html:187
 msgid "Bridges"
 msgstr "Ponte"
 
+#: assets/templates/assets/filter_pane.html:191
 msgid "Culverts"
 msgstr "Culverts"
 
+#: assets/templates/assets/filter_pane.html:195
 msgid "Drifts"
 msgstr "Drifts "
 
+#: assets/templates/assets/filter_pane.html:256
 msgid "Asset condition"
 msgstr "Kondisaun sasan/aset"
 
+#: assets/templatetags/assets.py:285 assets/templatetags/assets.py:289
+#: assets/templatetags/assets.py:293 assets/templatetags/assets.py:305
 msgid "Structure Type"
 msgstr "Tipu Estrutura "
 
+#: assets/templatetags/assets.py:297 assets/templatetags/assets.py:301
 msgid "Structure Material"
 msgstr "Estrutura Material "
 
+#: assets/templatetags/assets.py:447 assets/templatetags/assets.py:461
+#: assets/templatetags/assets.py:475
 msgid "Select the type"
 msgstr "Hili tipu "
 
+#: assets/templatetags/assets.py:453
 msgid "Select the Deck Material"
 msgstr "Hili Deck Material"
 
+#: assets/templatetags/assets.py:467 assets/templatetags/assets.py:481
 msgid "Select the Material"
 msgstr "Hili Material "
 
+#: contracts/forms.py:18
 msgid "Rehabilitation road X"
 msgstr "Rehabilitasaun Estrada X"
 
+#: contracts/forms.py:26
 msgid "Project for the rehabilitation of road X"
 msgstr "Projetu ba rehabilitasaun estrada X"
 
+#: contracts/forms.py:198
 msgid "Associated projects"
 msgstr "Projetu asosiadu"
 
+#: contracts/forms.py:199
 msgid "Select one or more projects for the tender"
 msgstr "Hili  projetu ida ou liu ba konkursu "
 
+#: contracts/forms.py:264
 msgid "Contract for the upgrade of road A01-1 to technical class R1"
 msgstr "Kontratu ba hadiak estrada A01-1 ba klase tekniku R1"
 
+#: contracts/forms.py:292
 msgid "Due to unforeseen events, the contract start was postponed by 1 month"
 msgstr "Tamba sirkumtansia, data hahu kontratu tenke muda fulan 1"
 
+#: contracts/models.py:164
 msgid "Project Status"
 msgstr "Estatutu Projetu"
 
+#: contracts/models.py:166 contracts/models.py:689 contracts/models.py:766
 msgid "Choose status"
 msgstr "Hili estatutu"
 
+#: contracts/models.py:171
+#: contracts/templates/contracts/project_details_view.html:37
 msgid "Program Name"
 msgstr "Naran Programa"
 
+#: contracts/models.py:172
 msgid "Choose the program for the project"
 msgstr "Hili programa husi projetu "
 
+#: contracts/models.py:177
+#: contracts/templates/contracts/project_details_view.html:78
+#: contracts/templates/contracts/project_list.html:71
 msgid "Type of Work"
 msgstr "Tipu Serbisu "
 
+#: contracts/models.py:178
 msgid "Choose from the list"
 msgstr "Hili husi lista "
 
+#: contracts/models.py:183
 msgid "Enter project’s name"
 msgstr "Hatama naran projetu"
 
+#: contracts/models.py:190
+#: contracts/templates/contracts/project_details_view.html:45
 msgid "Project Code"
 msgstr "Kodigu Projetu"
 
+#: contracts/models.py:191
 msgid "Enter project’s code"
 msgstr "Hatama kodigu projetu"
 
+#: contracts/models.py:194
 msgid "Enter a description of the project"
 msgstr "Hatam deskrisaun ba projetu "
 
+#: contracts/models.py:202
 msgid "Choose the funding source"
 msgstr "Hili fonte fundus"
 
+#: contracts/models.py:209
 msgid "Choose the donor"
 msgstr "Hili doador"
 
+#: contracts/models.py:213
 msgid "Enter schedule start date"
 msgstr "Hatama kalendariu data komesa"
 
+#: contracts/models.py:219 contracts/models.py:752
+#: contracts/templates/contracts/project_construction_schedule_view.html:37
 msgid "Duration (days)"
 msgstr "Durasaun (loron)"
 
+#: contracts/models.py:220
 msgid "Estimated duration of the work"
 msgstr "Estimasaun durasaun serbisu "
 
+#: contracts/models.py:302
+#: contracts/templates/contracts/contract_payments.html:43
+#: contracts/templates/contracts/contract_payments.html:90
+#: contracts/templates/contracts/contract_payments_view.html:40
+#: contracts/templates/contracts/contract_payments_view.html:63
+#: contracts/templates/contracts/project_financials_view.html:40
 msgid "Donor"
 msgstr "Doador"
 
+#: contracts/models.py:320
 msgid "Select project's asset"
 msgstr "Hili projetu nia sasan/aset "
 
+#: contracts/models.py:332
 msgid "Start Chainage"
 msgstr "Chainage Komesa "
 
+#: contracts/models.py:335 contracts/models.py:338
 msgid "In meters"
 msgstr "Iha metru "
 
+#: contracts/models.py:338
 msgid "End Chainage"
 msgstr "Chainage Ikus"
 
+#: contracts/models.py:364
 msgid "Start Chainage must be specified for roads"
 msgstr "Chainage Komesa tenke espesifiku ba estrada "
 
+#: contracts/models.py:372
 msgid "End Chainage must be specified for roads"
 msgstr "Chainage Remata tenke espesifiku ba estrada "
 
+#: contracts/models.py:378
 msgid "Start Chainage must be 0 or greater"
 msgstr "Chainage Komesa tenke 0 ou boot liu "
 
+#: contracts/models.py:384
 msgid "Start Chainage must be less than End Chainage"
 msgstr "Chainage Komesa tenke kiik liu husi Chainage Remata"
 
+#: contracts/models.py:387
 msgid "End Chainage must be greater than Start Chainage"
 msgstr "Chainage Remata tenke boot liu husi Chainage Komesa"
 
-msgid "Asset Id must identify a current Asset, or provide enough information to create a new Asset"
-msgstr "Id sasan/aset tenki identifika Sasan/Aset atual, ou fornese informasaun naton hodi kria Sasan/Aset foun"
+#: contracts/models.py:403
+msgid ""
+"Asset Id must identify a current Asset, or provide enough information to "
+"create a new Asset"
+msgstr ""
+"Id sasan/aset tenki identifika Sasan/Aset atual, ou fornese informasaun "
+"naton hodi kria Sasan/Aset foun"
 
-msgid "Could not create a new Asset, because the asset_type in the 'special' Asset Id is not valid."
-msgstr "Labele kria Sasan/Aset foun, tamba tipu_sasan/aset iha \"espesial\" Id Sasan/Aset la validu"
+#: contracts/models.py:427
+msgid ""
+"Could not create a new Asset, because the asset_type in the 'special' Asset "
+"Id is not valid."
+msgstr ""
+"Labele kria Sasan/Aset foun, tamba tipu_sasan/aset iha \"espesial\" Id Sasan/"
+"Aset la validu"
 
-msgid "Could not create a new Asset, because the asset_class in the 'special' Asset Id is not valid."
-msgstr "Labele kria Sasan/Aset foun, tamba klase_sasan/aset iha \"espesial\" Id Sasan/Aset la validu"
+#: contracts/models.py:438
+msgid ""
+"Could not create a new Asset, because the asset_class in the 'special' Asset "
+"Id is not valid."
+msgstr ""
+"Labele kria Sasan/Aset foun, tamba klase_sasan/aset iha \"espesial\" Id "
+"Sasan/Aset la validu"
 
-msgid "Could not create a new Asset, because the asset_municipality in the 'special' Asset Id is not valid."
-msgstr "Labele kria Sasan/Aset foun, tamba munisipiu_sasan/aset iha \"espesial\" Id Sasan/Aset la validu"
-
+#: contracts/models.py:501
 msgid "The Asset Code must be unique for this type of asset"
 msgstr "Kódigu sasan tenke iha kódigu úniku ba tipu sasan ne'e"
 
+#: contracts/models.py:566
 msgid "Start Chainage is too large for this road"
 msgstr "Chainage Komesa boot liu ba estrada ne"
 
+#: contracts/models.py:597
 #, python-format
 msgid "Ensure this value has at most 15 characters (it has %s)"
 msgstr "Asegura katak valor ne iha karateristiku 15 (iha %s)"
 
+#: contracts/models.py:621
 msgid "Enter year"
 msgstr "Hatama tinan"
 
+#: contracts/models.py:623
 msgid "In USD"
 msgstr "iha USD"
 
+#: contracts/models.py:634
 msgid "Estimated days of work"
 msgstr "Estimasaun loron serbisu "
 
+#: contracts/models.py:640 contracts/models.py:840
 msgid "Physical progress (%)"
 msgstr "Progresu fiziku (%)"
 
+#: contracts/models.py:641
 msgid "Estimated physical progress"
 msgstr "Estimasaun progresu fiziku"
 
+#: contracts/models.py:657
+#: contracts/templates/contracts/tender_details_view.html:30
+#: contracts/templates/contracts/tender_list.html:67
 msgid "Tender Code"
 msgstr "Kodigu Konkursu"
 
+#: contracts/models.py:658
 msgid "Enter tender's code"
 msgstr "Hatama kodigu konkursu"
 
+#: contracts/models.py:663
+#: contracts/templates/contracts/tender_details_view.html:48
 msgid "Announcement Date"
 msgstr "Data avizu "
 
+#: contracts/models.py:664
 msgid "Tender announcement date"
 msgstr "Data avizu konkursu "
 
+#: contracts/models.py:669
+#: contracts/templates/contracts/tender_details_view.html:55
 msgid "Bid Submission Deadline"
 msgstr "Loron Ikus Hatama Lisita"
 
+#: contracts/models.py:670
 msgid "Date of fid submission deadline"
 msgstr "Data Loron Ikus Hatama Lisita"
 
+#: contracts/models.py:675
 msgid "Number of Companies Tendering"
 msgstr "Numeru Kompania Nebe Tuir Konkursu "
 
+#: contracts/models.py:676
 msgid "Enter the number of companies tendering"
 msgstr "Hatama numeru kompania nebe tuir konkursu "
 
+#: contracts/models.py:681
+#: contracts/templates/contracts/tender_details_view.html:63
 msgid "Evaluation Date"
 msgstr "Data Avaliasaun"
 
+#: contracts/models.py:682
 msgid "Bids evaluation date"
 msgstr "Data avaliasaun lisita"
 
+#: contracts/models.py:687
 msgid "Tender Status"
 msgstr "Estatutu Konkursu"
 
+#: contracts/models.py:720
 msgid "Enter contract code"
 msgstr "Hatama kodigu kontratu "
 
+#: contracts/models.py:722
 msgid "Enter a description of the contract"
 msgstr "Hatama deskrisaun kontratu "
 
+#: contracts/models.py:727
 msgid "Associated tender"
 msgstr "Konkursu asosiadu"
 
+#: contracts/models.py:728
 msgid "Choose a tender to create a contract"
 msgstr "Hili konkursu hodi kria kontratu "
 
+#: contracts/models.py:734 contracts/models.py:742
 msgid "Select a company from the list"
 msgstr "Hili kompania husi lista "
 
+#: contracts/models.py:745 contracts/models.py:771
 msgid "Contract start date"
 msgstr "Data kontratu komesa"
 
+#: contracts/models.py:745
 msgid "Enter contract start date"
 msgstr "Hatama data kontratu komesa"
 
+#: contracts/models.py:748
 msgid "Contract end date"
 msgstr "Data kontratu remata"
 
+#: contracts/models.py:748
 msgid "Enter contract end date"
 msgstr "Hatama data kontratu remata"
 
+#: contracts/models.py:753
 msgid "Duration in days"
 msgstr "Durasaun iha loron"
 
+#: contracts/models.py:759
 msgid "Defect liability period (days)"
 msgstr "Defect liability period (loron)"
 
+#: contracts/models.py:760
 msgid "Duration of DLP in days"
 msgstr "Durasaun DLP iha loron"
 
+#: contracts/models.py:772
 msgid "Enter new start date"
 msgstr "Hatama data komesa foun"
 
+#: contracts/models.py:778
 msgid "Contract duration"
 msgstr "Durasaun kontratu"
 
+#: contracts/models.py:779
 msgid "Enter new duration in days"
 msgstr "Hatama durasaun foun iha loron"
 
+#: contracts/models.py:784
+#: contracts/templates/contracts/contract_details_view.html:194
 msgid "Description (Reasons for Variations)"
 msgstr "Deskrisaun (Razaun ba Variasaun)"
 
+#: contracts/models.py:785
 msgid "Enter a reason for variations to the contract"
 msgstr "Hatama razaun variasaun ba kontratu ne"
 
+#: contracts/models.py:817
 msgid "Enter supervisor's name"
 msgstr "Hatama naran supervizor "
 
+#: contracts/models.py:818
 msgid "Supervisor's phone number"
 msgstr "Numeru telefone supervizor "
 
+#: contracts/models.py:828 contracts/models.py:854
 msgid "Select year"
 msgstr "Hili tinan"
 
+#: contracts/models.py:829 contracts/models.py:857
 msgid "Budget per year in USD"
 msgstr "Orsamentu kada tinan iha USD"
 
+#: contracts/models.py:834
 msgid "Days of work for the milestone"
 msgstr "Loron serbisu ba akontesimentu importante"
 
+#: contracts/models.py:841
 msgid "Milestone physical progress"
 msgstr "Akontesimentu importante progresu fiziku "
 
+#: contracts/models.py:862 contracts/models.py:1021
 msgid "Yes"
 msgstr "Loos"
 
+#: contracts/models.py:862 contracts/models.py:1021
 msgid "No"
 msgstr "Lae"
 
+#: contracts/models.py:939
 msgid "January"
 msgstr "Janeiru"
 
+#: contracts/models.py:940
 msgid "February"
 msgstr "Fevereiru"
 
+#: contracts/models.py:941
 msgid "March"
 msgstr "Marsu"
 
+#: contracts/models.py:942
 msgid "April"
 msgstr "Abril"
 
+#: contracts/models.py:943
 msgid "May"
 msgstr "Maiu"
 
+#: contracts/models.py:944
 msgid "June"
 msgstr "Junu"
 
+#: contracts/models.py:945
 msgid "July"
 msgstr "Jullu"
 
+#: contracts/models.py:946
 msgid "August"
 msgstr "Agostu"
 
+#: contracts/models.py:947
 msgid "September"
 msgstr "Setembru"
 
+#: contracts/models.py:948
 msgid "October"
 msgstr "Outubru"
 
+#: contracts/models.py:949
 msgid "November"
 msgstr "Novembru"
 
+#: contracts/models.py:950
 msgid "December"
 msgstr "Dezembru"
 
+#: contracts/models.py:1021
 msgid "Unknown"
 msgstr "Lahatene"
 
+#: contracts/models.py:1025
+#: contracts/templates/contracts/company_details_view.html:26
 msgid "Company Name"
 msgstr "Naran Kompania"
 
+#: contracts/models.py:1026
 msgid "Enter company name"
 msgstr "Hatama naran kompania"
 
+#: contracts/models.py:1029
 msgid "Enter company address"
 msgstr "Hatama enderesu kompania"
 
+#: contracts/models.py:1035
 msgid "Enter company phone number"
 msgstr "Hatama numeru telefone kompania"
 
+#: contracts/models.py:1038
 msgid "Enter company email"
 msgstr "Hatama email kompania"
 
+#: contracts/models.py:1043
 msgid "Enter company TIN number"
 msgstr "Hatama numeru TIN kompania"
 
+#: contracts/models.py:1049
+#: contracts/templates/contracts/company_details_view.html:46
 msgid "Bank Account Number"
 msgstr "Numeru Konta Bankaria"
 
+#: contracts/models.py:1050
 msgid "Enter company bank account number"
 msgstr "Hatama numeru konta bankaria kompania"
 
+#: contracts/models.py:1058
 msgid "Representative name"
 msgstr "Naran reprezentante "
 
+#: contracts/models.py:1059
 msgid "Enter company representative name"
 msgstr "Hatama naran reprezentante kompania"
 
+#: contracts/models.py:1065
 msgid "Representative phone"
 msgstr "Numeru telefone reprezentante "
 
+#: contracts/models.py:1066
 msgid "Enter company representative phone number"
 msgstr "Hatama numeru telefone reprezentante "
 
+#: contracts/models.py:1071
 msgid "Representative email"
 msgstr "Email reprezentante "
 
+#: contracts/models.py:1072
 msgid "Enter company representative email"
 msgstr "Hatama email reprezentante kompania"
 
+#: contracts/models.py:1079
+#: contracts/templates/contracts/company_details_view.html:62
 msgid "Woman-Led Company"
 msgstr "Kompania Lidera Husi Feto "
 
+#: contracts/models.py:1080
 msgid "Is the company director/owner a woman?"
 msgstr "Diretor kompania/nain feto?"
 
+#: contracts/models.py:1088
+#: contracts/templates/contracts/company_details_view.html:66
 msgid "Company category"
 msgstr "Kategoria kompania"
 
+#: contracts/models.py:1089
 msgid "Choose category"
 msgstr "Hili kategoria"
 
+#: contracts/models.py:1188
 msgid "project"
 msgstr "Projetu "
 
+#: contracts/models.py:1189
 msgid "tender"
 msgstr "Konkursu"
 
+#: contracts/models.py:1190
 msgid "contract"
 msgstr "Kontratu"
 
+#: contracts/models.py:1191
 msgid "company"
 msgstr "Kompania"
 
+#: contracts/templates/contracts/company_base.html:8
 msgid "Edit Company"
 msgstr "Edita Kompania"
 
+#: contracts/templates/contracts/company_base.html:10
 msgid "Create Company"
 msgstr "kria Kompania"
 
+#: contracts/templates/contracts/company_details.html:7
+#: contracts/templates/contracts/company_details.html:24
+#: contracts/templates/contracts/company_details_view.html:15
+#: contracts/templates/contracts/company_details_view.html:24
+#: contracts/templates/contracts/company_documents.html:7
+#: contracts/templates/contracts/company_documents_view.html:15
 msgid "Company Details"
 msgstr "Detallu Kompania"
 
+#: contracts/templates/contracts/company_details.html:11
+#: contracts/templates/contracts/company_details.html:15
+#: contracts/templates/contracts/company_details_view.html:18
+#: contracts/templates/contracts/company_documents.html:10
+#: contracts/templates/contracts/company_documents_view.html:18
+#: contracts/templates/contracts/contract_details.html:20
+#: contracts/templates/contracts/contract_details.html:33
+#: contracts/templates/contracts/contract_details_view.html:27
+#: contracts/templates/contracts/contract_documents.html:19
+#: contracts/templates/contracts/contract_documents_view.html:27
+#: contracts/templates/contracts/contract_inspections.html:19
+#: contracts/templates/contracts/contract_inspections_view.html:27
+#: contracts/templates/contracts/contract_payments.html:19
+#: contracts/templates/contracts/contract_payments_view.html:27
+#: contracts/templates/contracts/contract_social_safeguard_data.html:19
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:27
+#: contracts/templates/contracts/project_construction_schedule.html:16
+#: contracts/templates/contracts/project_construction_schedule_view.html:24
+#: contracts/templates/contracts/project_details.html:17
+#: contracts/templates/contracts/project_details.html:27
+#: contracts/templates/contracts/project_details_view.html:25
+#: contracts/templates/contracts/project_documents.html:16
+#: contracts/templates/contracts/project_documents_view.html:24
+#: contracts/templates/contracts/project_financials.html:16
+#: contracts/templates/contracts/project_financials_view.html:24
+#: contracts/templates/contracts/tender_details.html:11
+#: contracts/templates/contracts/tender_details.html:15
+#: contracts/templates/contracts/tender_details_view.html:18
+#: contracts/templates/contracts/tender_documents.html:10
+#: contracts/templates/contracts/tender_documents_view.html:18
 msgid "Documents"
 msgstr "Dokumentus"
 
+#: contracts/templates/contracts/company_details.html:187
+#: contracts/templates/contracts/company_documents.html:96
+#: contracts/templates/contracts/contract_details.html:370
+#: contracts/templates/contracts/contract_documents.html:105
+#: contracts/templates/contracts/contract_inspections.html:100
+#: contracts/templates/contracts/contract_payments.html:126
+#: contracts/templates/contracts/contract_social_safeguard_data.html:162
+#: contracts/templates/contracts/project_construction_schedule.html:95
+#: contracts/templates/contracts/project_details.html:222
+#: contracts/templates/contracts/project_documents.html:102
+#: contracts/templates/contracts/project_financials.html:92
+#: contracts/templates/contracts/tender_details.html:136
+#: contracts/templates/contracts/tender_documents.html:96
+#: registration_templates/registration/password_change_form.html:41
+#: registration_templates/registration/password_reset_confirm.html:36
+#: registration_templates/registration/password_reset_form.html:17
 msgid "Cancel"
 msgstr "Kansela "
 
+#: contracts/templates/contracts/company_details.html:189
+#: contracts/templates/contracts/company_documents.html:97
+#: contracts/templates/contracts/contract_details.html:372
+#: contracts/templates/contracts/contract_documents.html:106
+#: contracts/templates/contracts/contract_inspections.html:101
+#: contracts/templates/contracts/contract_payments.html:127
+#: contracts/templates/contracts/contract_social_safeguard_data.html:163
+#: contracts/templates/contracts/project_construction_schedule.html:96
+#: contracts/templates/contracts/project_details.html:224
+#: contracts/templates/contracts/project_documents.html:103
+#: contracts/templates/contracts/project_financials.html:93
+#: contracts/templates/contracts/tender_details.html:138
+#: contracts/templates/contracts/tender_documents.html:97
 msgid "Save"
 msgstr "Salva"
 
+#: contracts/templates/contracts/company_details.html:191
+#: contracts/templates/contracts/contract_details.html:374
+#: contracts/templates/contracts/project_details.html:226
+#: contracts/templates/contracts/tender_details.html:140
 msgid "Create"
 msgstr "Kria"
 
+#: contracts/templates/contracts/company_details_view.html:8
+#: contracts/templates/contracts/company_documents_view.html:8
 msgid "Company"
 msgstr "Kompania"
 
+#: contracts/templates/contracts/company_details_view.html:10
+#: contracts/templates/contracts/company_documents_view.html:10
+#: contracts/templates/contracts/contract_details_view.html:10
+#: contracts/templates/contracts/contract_documents_view.html:10
+#: contracts/templates/contracts/contract_inspections_view.html:10
+#: contracts/templates/contracts/contract_payments_view.html:10
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:10
+#: contracts/templates/contracts/project_construction_schedule_view.html:10
+#: contracts/templates/contracts/project_details_view.html:11
+#: contracts/templates/contracts/project_documents_view.html:10
+#: contracts/templates/contracts/project_financials_view.html:10
+#: contracts/templates/contracts/tender_details_view.html:10
+#: contracts/templates/contracts/tender_documents_view.html:10
 msgid "Print"
 msgstr "Print"
 
+#: contracts/templates/contracts/company_details_view.html:30
 msgid "Address"
 msgstr "Enderesu"
 
+#: contracts/templates/contracts/company_details_view.html:34
 msgid "Phone"
 msgstr "Numeru telefone"
 
+#: contracts/templates/contracts/company_details_view.html:38
 msgid "Email"
 msgstr "Email"
 
+#: contracts/templates/contracts/company_details_view.html:42
 msgid "TIN"
 msgstr "TIN"
 
+#: contracts/templates/contracts/company_details_view.html:50
 msgid "Representative Name"
 msgstr "Naran reprezentante"
 
+#: contracts/templates/contracts/company_details_view.html:54
 msgid "Representative Phone"
 msgstr "Numeru telefone reprezentante"
 
+#: contracts/templates/contracts/company_details_view.html:58
 msgid "Representative Email"
 msgstr "Email reprezentante"
 
+#: contracts/templates/contracts/company_details_view.html:71
 msgid "Associated as a contractor"
 msgstr "Nia hanesan Kontratór"
 
+#: contracts/templates/contracts/company_details_view.html:79
 msgid "Associated as a subcontractor"
 msgstr "Nia hanesan Sub-kontratór"
 
+#: contracts/templates/contracts/company_documents.html:16
+#: contracts/templates/contracts/contract_documents.html:25
+#: contracts/templates/contracts/project_documents.html:22
+#: contracts/templates/contracts/tender_documents.html:16
 msgid "Uploaded Documents"
 msgstr "Upload dokumentus"
 
+#: contracts/templates/contracts/company_documents.html:17
+#: contracts/templates/contracts/contract_documents.html:26
+#: contracts/templates/contracts/contract_inspections.html:26
+#: contracts/templates/contracts/contract_payments.html:27
+#: contracts/templates/contracts/contract_social_safeguard_data.html:26
+#: contracts/templates/contracts/project_documents.html:23
+#: contracts/templates/contracts/tender_documents.html:17
 msgid "Add"
 msgstr "Aumenta"
 
+#: contracts/templates/contracts/company_documents.html:26
+#: contracts/templates/contracts/company_documents.html:82
+#: contracts/templates/contracts/company_documents_view.html:31
+#: contracts/templates/contracts/company_documents_view.html:51
+#: contracts/templates/contracts/contract_documents.html:35
+#: contracts/templates/contracts/contract_documents.html:91
+#: contracts/templates/contracts/contract_documents_view.html:40
+#: contracts/templates/contracts/contract_documents_view.html:60
+#: contracts/templates/contracts/project_documents.html:32
+#: contracts/templates/contracts/project_documents.html:88
+#: contracts/templates/contracts/project_documents_view.html:37
+#: contracts/templates/contracts/project_documents_view.html:57
+#: contracts/templates/contracts/tender_documents.html:26
+#: contracts/templates/contracts/tender_documents.html:82
+#: contracts/templates/contracts/tender_documents_view.html:31
+#: contracts/templates/contracts/tender_documents_view.html:51
 msgid "Document Date"
 msgstr "Data dokumentus"
 
+#: contracts/templates/contracts/company_documents.html:55
+#: contracts/templates/contracts/contract_documents.html:64
+#: contracts/templates/contracts/project_documents.html:61
+#: contracts/templates/contracts/tender_documents.html:55
 msgid "Save Document"
 msgstr "Salva dokumentus"
 
+#: contracts/templates/contracts/company_documents.html:56
+#: contracts/templates/contracts/company_documents.html:108
+#: contracts/templates/contracts/company_list.html:71
+#: contracts/templates/contracts/contract_documents.html:65
+#: contracts/templates/contracts/contract_documents.html:117
+#: contracts/templates/contracts/contract_inspections.html:61
+#: contracts/templates/contracts/contract_inspections.html:112
+#: contracts/templates/contracts/contract_list.html:149
+#: contracts/templates/contracts/contract_payments.html:72
+#: contracts/templates/contracts/contract_payments.html:138
+#: contracts/templates/contracts/contract_social_safeguard_data.html:63
+#: contracts/templates/contracts/contract_social_safeguard_data.html:174
+#: contracts/templates/contracts/contracts.html:72
+#: contracts/templates/contracts/project_documents.html:62
+#: contracts/templates/contracts/project_documents.html:114
+#: contracts/templates/contracts/project_list.html:138
+#: contracts/templates/contracts/tender_documents.html:56
+#: contracts/templates/contracts/tender_documents.html:108
+#: contracts/templates/contracts/tender_list.html:149
 msgid "Close"
 msgstr "Taka"
 
+#: contracts/templates/contracts/company_documents.html:62
+#: contracts/templates/contracts/contract_documents.html:71
+#: contracts/templates/contracts/project_documents.html:68
+#: contracts/templates/contracts/tender_documents.html:62
 msgid "File"
 msgstr "Dokumentus"
 
+#: contracts/templates/contracts/company_documents.html:73
+#: contracts/templates/contracts/contract_documents.html:82
+#: contracts/templates/contracts/project_documents.html:79
+#: contracts/templates/contracts/tender_documents.html:73
 msgid "Document Type"
 msgstr "Tipu Dokumentus"
 
+#: contracts/templates/contracts/company_documents.html:112
+#: contracts/templates/contracts/contract_documents.html:121
+#: contracts/templates/contracts/project_documents.html:118
+#: contracts/templates/contracts/tender_documents.html:112
 msgid "Delete Document"
 msgstr "Apaga Dokumentus"
 
+#: contracts/templates/contracts/company_documents.html:113
+#: contracts/templates/contracts/contract_documents.html:122
+#: contracts/templates/contracts/project_documents.html:119
+#: contracts/templates/contracts/tender_documents.html:113
 msgid "Are you sure you want to delete this document?"
 msgstr "Ita boot hakarak apaga dokumentus ne?"
 
+#: contracts/templates/contracts/company_documents.html:116
+#: contracts/templates/contracts/company_list.html:79
+#: contracts/templates/contracts/contract_documents.html:125
+#: contracts/templates/contracts/contract_inspections.html:120
+#: contracts/templates/contracts/contract_list.html:157
+#: contracts/templates/contracts/contract_payments.html:146
+#: contracts/templates/contracts/contract_social_safeguard_data.html:182
+#: contracts/templates/contracts/project_documents.html:122
+#: contracts/templates/contracts/project_list.html:146
+#: contracts/templates/contracts/tender_documents.html:116
+#: contracts/templates/contracts/tender_list.html:157
 msgid "Delete"
 msgstr "Apaga"
 
+#: contracts/templates/contracts/company_documents.html:117
+#: contracts/templates/contracts/company_list.html:80
+#: contracts/templates/contracts/contract_documents.html:126
+#: contracts/templates/contracts/contract_inspections.html:121
+#: contracts/templates/contracts/contract_list.html:158
+#: contracts/templates/contracts/contract_payments.html:147
+#: contracts/templates/contracts/contract_social_safeguard_data.html:183
+#: contracts/templates/contracts/project_documents.html:123
+#: contracts/templates/contracts/project_list.html:147
+#: contracts/templates/contracts/tender_documents.html:117
+#: contracts/templates/contracts/tender_list.html:158
 msgid "Don't delete"
 msgstr "Labele apaga "
 
+#: contracts/templates/contracts/company_documents_view.html:24
+#: contracts/templates/contracts/contract_documents_view.html:33
+#: contracts/templates/contracts/project_documents_view.html:30
+#: contracts/templates/contracts/tender_documents_view.html:24
 msgid "List of documents"
 msgstr "Lista dokumentus "
 
+#: contracts/templates/contracts/company_list.html:6
 msgid "Company Manager"
 msgstr "Jerente Kompania"
 
+#: contracts/templates/contracts/company_list.html:8
 msgid "Create New Company"
 msgstr "Kria  Kompania Foun"
 
+#: contracts/templates/contracts/company_list.html:14
 msgid "List of companies"
 msgstr "Lista kompania "
 
+#: contracts/templates/contracts/company_list.html:19
+#: contracts/templates/contracts/contract_list.html:59
+#: contracts/templates/contracts/project_list.html:60
+#: contracts/templates/contracts/tender_list.html:59
 msgid "Export table"
 msgstr "Esporta tabela"
 
+#: contracts/templates/contracts/company_list.html:25
+#: contracts/templates/contracts/contract_list.html:65
+#: contracts/templates/contracts/project_list.html:66
+#: contracts/templates/contracts/tender_list.html:65
 msgid "Edit"
 msgstr "Edita"
 
+#: contracts/templates/contracts/company_list.html:28
 msgid "Total Contracts"
 msgstr "Total kontratu"
 
+#: contracts/templates/contracts/company_list.html:29
 msgid "Active Contracts"
 msgstr "Kontratu Ativu"
 
+#: contracts/templates/contracts/company_list.html:60
 msgid "Welcome to the Company Manager"
 msgstr "Benvindu iha Jerente Kompania"
 
+#: contracts/templates/contracts/company_list.html:61
 msgid "No companies were created yet"
 msgstr "Sedauk kria kompania "
 
+#: contracts/templates/contracts/company_list.html:75
 msgid "Delete Company"
 msgstr "Apaga kompania"
 
+#: contracts/templates/contracts/company_list.html:76
 msgid "Are you sure you want to delete this company?"
 msgstr "Ita hakarak apaga kompania ne?"
 
+#: contracts/templates/contracts/contract_base.html:8
 msgid "Edit Contract"
 msgstr "Edita Kontratu"
 
+#: contracts/templates/contracts/contract_base.html:10
 msgid "Create Contract"
 msgstr "Kria Kontratu"
 
+#: contracts/templates/contracts/contract_details.html:7
+#: contracts/templates/contracts/contract_details.html:42
+#: contracts/templates/contracts/contract_details_view.html:15
+#: contracts/templates/contracts/contract_details_view.html:33
+#: contracts/templates/contracts/contract_documents.html:7
+#: contracts/templates/contracts/contract_documents_view.html:15
+#: contracts/templates/contracts/contract_inspections.html:7
+#: contracts/templates/contracts/contract_inspections_view.html:15
+#: contracts/templates/contracts/contract_payments.html:7
+#: contracts/templates/contracts/contract_payments_view.html:15
+#: contracts/templates/contracts/contract_social_safeguard_data.html:7
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:15
 msgid "Contract Details"
 msgstr "Detallu Kontratu"
 
+#: contracts/templates/contracts/contract_details.html:11
+#: contracts/templates/contracts/contract_details.html:24
+#: contracts/templates/contracts/contract_details_view.html:18
+#: contracts/templates/contracts/contract_documents.html:10
+#: contracts/templates/contracts/contract_documents_view.html:18
+#: contracts/templates/contracts/contract_inspections.html:10
+#: contracts/templates/contracts/contract_inspections_view.html:18
+#: contracts/templates/contracts/contract_payments.html:10
+#: contracts/templates/contracts/contract_payments_view.html:18
+#: contracts/templates/contracts/contract_social_safeguard_data.html:10
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:18
 msgid "Inspections"
 msgstr "Fiskalizasaun"
 
+#: contracts/templates/contracts/contract_details.html:14
+#: contracts/templates/contracts/contract_details.html:27
+#: contracts/templates/contracts/contract_details_view.html:21
+#: contracts/templates/contracts/contract_documents.html:13
+#: contracts/templates/contracts/contract_documents_view.html:21
+#: contracts/templates/contracts/contract_inspections.html:13
+#: contracts/templates/contracts/contract_inspections_view.html:21
+#: contracts/templates/contracts/contract_payments.html:13
+#: contracts/templates/contracts/contract_payments_view.html:21
+#: contracts/templates/contracts/contract_social_safeguard_data.html:13
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:21
 msgid "Payments"
 msgstr "Pagamentu"
 
+#: contracts/templates/contracts/contract_details.html:17
+#: contracts/templates/contracts/contract_details.html:30
+#: contracts/templates/contracts/contract_details_view.html:24
+#: contracts/templates/contracts/contract_documents.html:16
+#: contracts/templates/contracts/contract_documents_view.html:24
+#: contracts/templates/contracts/contract_inspections.html:16
+#: contracts/templates/contracts/contract_inspections_view.html:24
+#: contracts/templates/contracts/contract_payments.html:16
+#: contracts/templates/contracts/contract_payments_view.html:24
+#: contracts/templates/contracts/contract_social_safeguard_data.html:16
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:24
 msgid "Social Safeguard"
 msgstr "Protesaun Sosial "
 
+#: contracts/templates/contracts/contract_details.html:133
+#: contracts/templates/contracts/contract_details_view.html:70
 msgid "Supervisor"
 msgstr "Supervizor"
 
+#: contracts/templates/contracts/contract_details.html:162
+#: contracts/templates/contracts/contract_details_view.html:89
 msgid "Contract Value Total"
 msgstr "Total Valor Kontratu"
 
+#: contracts/templates/contracts/contract_details.html:191
+#: contracts/templates/contracts/contract_details_view.html:120
 msgid "Schedule"
 msgstr "Kalendariu "
 
+#: contracts/templates/contracts/contract_details.html:257
+#: contracts/templates/contracts/contract_details_view.html:137
 msgid "Milestones"
 msgstr "Akontesimentu Importante"
 
+#: contracts/templates/contracts/contract_details.html:286
+#: contracts/templates/contracts/contract_details_view.html:158
 msgid "Amendments"
 msgstr "Emenda"
 
+#: contracts/templates/contracts/contract_details_view.html:8
+#: contracts/templates/contracts/contract_documents_view.html:8
+#: contracts/templates/contracts/contract_inspections_view.html:8
+#: contracts/templates/contracts/contract_payments_view.html:8
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:8
 msgid "Contract"
 msgstr "Kontratu"
 
+#: contracts/templates/contracts/contract_details_view.html:35
+#: contracts/templates/contracts/contract_list.html:71
+#: contracts/templates/contracts/project_details_view.html:33
+#: contracts/templates/contracts/project_financials_view.html:32
+#: contracts/templates/contracts/project_list.html:69
+#: contracts/templates/contracts/tender_details_view.html:26
+#: contracts/templates/contracts/tender_list.html:70
 msgid "Status"
 msgstr "Estatutu"
 
+#: contracts/templates/contracts/contract_details_view.html:39
+#: contracts/templates/contracts/project_details_view.html:53
 msgid "Associated Tender"
 msgstr "Konkursu Asosiadu"
 
+#: contracts/templates/contracts/contract_details_view.html:42
 msgid "Projects in the Tender"
 msgstr "Projetu iha Konkursu"
 
+#: contracts/templates/contracts/contract_details_view.html:53
+#: contracts/templates/contracts/contract_list.html:67
 msgid "Contract Code"
 msgstr "Kodigu Kontratu"
 
+#: contracts/templates/contracts/contract_details_view.html:57
 msgid "Contract Description"
 msgstr "Deskrisaun Kontratu"
 
+#: contracts/templates/contracts/contract_details_view.html:61
 msgid "Contractor"
 msgstr "Contractor"
 
+#: contracts/templates/contracts/contract_details_view.html:65
 msgid "Sub-Contractor"
 msgstr "Sub-Contractor"
 
+#: contracts/templates/contracts/contract_details_view.html:74
 msgid "Supervisor Name"
 msgstr "Naran Supervizor"
 
+#: contracts/templates/contracts/contract_details_view.html:75
 msgid "Phone Number"
 msgstr "Numeru Telefone"
 
+#: contracts/templates/contracts/contract_details_view.html:92
+#: contracts/templates/contracts/contract_details_view.html:161
 msgid "Total Budget"
 msgstr "Total Orsamentu"
 
+#: contracts/templates/contracts/contract_details_view.html:101
 msgid "Value"
 msgstr "Valor "
 
+#: contracts/templates/contracts/contract_details_view.html:115
 msgid "Defect Liability Period (Days)"
 msgstr "Defect Liability Period (Loron)"
 
+#: contracts/templates/contracts/contract_details_view.html:123
+#: contracts/templates/contracts/contract_details_view.html:185
 msgid "Contract Start Date"
 msgstr "Data Kontratu Komesa"
 
+#: contracts/templates/contracts/contract_details_view.html:127
 msgid "Contract End Date"
 msgstr "Data Kontratu Remata"
 
+#: contracts/templates/contracts/contract_details_view.html:131
+#: contracts/templates/contracts/contract_details_view.html:189
 msgid "Contract Duration"
 msgstr "Durasaun Kontratu"
 
+#: contracts/templates/contracts/contract_details_view.html:142
+#: contracts/templates/contracts/project_construction_schedule_view.html:49
 msgid "Days of Work"
 msgstr "Loron Serbisu"
 
+#: contracts/templates/contracts/contract_details_view.html:143
 msgid "Progress"
 msgstr "Progresiu"
 
+#: contracts/templates/contracts/contract_inspections.html:25
+#: contracts/templates/contracts/contract_inspections_view.html:33
 msgid "List of inspections"
 msgstr "Lista fiskalizasaun "
 
+#: contracts/templates/contracts/contract_inspections.html:32
+#: contracts/templates/contracts/contract_inspections.html:67
+#: contracts/templates/contracts/contract_inspections_view.html:38
+#: contracts/templates/contracts/contract_inspections_view.html:59
 msgid "Inspection Date"
 msgstr "Data fiskalizasaun "
 
+#: contracts/templates/contracts/contract_inspections.html:33
+#: contracts/templates/contracts/contract_inspections.html:73
+#: contracts/templates/contracts/contract_inspections_view.html:39
+#: contracts/templates/contracts/contract_inspections_view.html:60
 msgid "Inspection Entity"
 msgstr "Entidade fiskalizasaun "
 
+#: contracts/templates/contracts/contract_inspections.html:34
+#: contracts/templates/contracts/contract_inspections.html:83
+#: contracts/templates/contracts/contract_inspections_view.html:40
+#: contracts/templates/contracts/contract_inspections_view.html:61
+#: contracts/templates/contracts/project_construction_schedule_view.html:50
 msgid "Physical Progress"
 msgstr "Progresu Fiziku "
 
+#: contracts/templates/contracts/contract_inspections.html:35
+#: contracts/templates/contracts/contract_inspections_view.html:41
+#: contracts/templates/contracts/contract_inspections_view.html:62
 msgid "Defect Liability Period"
 msgstr "Defect Liability Period"
 
+#: contracts/templates/contracts/contract_inspections.html:60
 msgid "Save Inspection"
 msgstr "Salva Fiskalizasaun "
 
+#: contracts/templates/contracts/contract_inspections.html:69
 msgid "Select inspection date"
 msgstr "Hili data fiskalizasaun "
 
+#: contracts/templates/contracts/contract_inspections.html:75
 msgid "Choose entity that performed the inspection"
 msgstr "Hili entidade nebe halo fiskalizasaun "
 
+#: contracts/templates/contracts/contract_inspections.html:85
 msgid "Enter physical progress as inspected"
 msgstr "Hatama progresu inspesaun bazeia ba fiskalizasaun "
 
+#: contracts/templates/contracts/contract_inspections.html:89
 msgid "Start Defect Liability Period"
 msgstr "Komesa Defect Liability Period"
 
+#: contracts/templates/contracts/contract_inspections.html:90
 msgid "When DLP starts with the inspection"
 msgstr "Bainhira DLP komesa ho fiskalizasaun "
 
+#: contracts/templates/contracts/contract_inspections.html:116
 msgid "Delete Inspection"
 msgstr "Apaga fiskalizasaun "
 
+#: contracts/templates/contracts/contract_inspections.html:117
 msgid "Are you sure you want to delete this inspection?"
 msgstr "Ita hakarak apaga fiskalizasaun ne?"
 
+#: contracts/templates/contracts/contract_list.html:6
 msgid "Contract Manager"
 msgstr "Jerente Kontratu"
 
+#: contracts/templates/contracts/contract_list.html:8
 msgid "Create New Contract"
 msgstr "Kria kontratu foun "
 
+#: contracts/templates/contracts/contract_list.html:14
 msgid "List of contracts"
 msgstr "Lista kontratu"
 
+#: contracts/templates/contracts/contract_list.html:47
+#: contracts/templates/contracts/project_list.html:47
+#: contracts/templates/contracts/tender_list.html:47
 msgid "Value range"
 msgstr "Variadade valor "
 
+#: contracts/templates/contracts/contract_list.html:52
+#: contracts/templates/contracts/project_list.html:52
+#: contracts/templates/contracts/tender_list.html:52
 msgid "over"
 msgstr "Liu "
 
+#: contracts/templates/contracts/contract_list.html:68
+#: contracts/templates/contracts/tender_list.html:68
 msgid "Number of Projects"
 msgstr "Numeru Projetu"
 
+#: contracts/templates/contracts/contract_list.html:69
 msgid "Project(s) Name"
 msgstr "Naran Projetu"
 
+#: contracts/templates/contracts/contract_list.html:70
 msgid "Type of Works"
 msgstr "Tipu Serbisu"
 
+#: contracts/templates/contracts/contract_list.html:138
+#: contracts/templates/contracts/project_list.html:127
 msgid "Welcome to the Contract Manager"
 msgstr "Benvindu ba Jerente Kontratu "
 
+#: contracts/templates/contracts/contract_list.html:139
 msgid "No contracts were created yet"
 msgstr "Kontratu sedauk kria "
 
+#: contracts/templates/contracts/contract_list.html:153
 msgid "Delete Contract"
 msgstr "Apaga Kontratu "
 
+#: contracts/templates/contracts/contract_list.html:154
 msgid "Are you sure you want to delete this contract?"
 msgstr "Ita hakarak apaga kontratu ne?"
 
+#: contracts/templates/contracts/contract_payments.html:25
+#: contracts/templates/contracts/contract_payments_view.html:33
 msgid "List of payments"
 msgstr "Lista pagamentu"
 
-msgid "To add a payment, at least one company needs to first be created in the Company section"
-msgstr "Atu aumenta pagamentu, tenki kria uluk pelumenus kompania ida uluk iha seksaun Kompania"
+#: contracts/templates/contracts/contract_payments.html:31
+msgid ""
+"To add a payment, at least one company needs to first be created in the "
+"Company section"
+msgstr ""
+"Atu aumenta pagamentu, tenki kria uluk pelumenus kompania ida uluk iha "
+"seksaun Kompania"
 
+#: contracts/templates/contracts/contract_payments.html:41
+#: contracts/templates/contracts/contract_payments.html:78
+#: contracts/templates/contracts/contract_payments_view.html:38
+#: contracts/templates/contracts/contract_payments_view.html:61
 msgid "Payment Date"
 msgstr "Data pagamentu"
 
+#: contracts/templates/contracts/contract_payments.html:42
+#: contracts/templates/contracts/contract_payments_view.html:39
 msgid "Payment Value (in USD)"
 msgstr "Valor pagamentu (USD)"
 
+#: contracts/templates/contracts/contract_payments.html:45
+#: contracts/templates/contracts/contract_payments.html:110
+#: contracts/templates/contracts/contract_payments_view.html:42
+#: contracts/templates/contracts/contract_payments_view.html:65
 msgid "Destination"
 msgstr "Destinu"
 
+#: contracts/templates/contracts/contract_payments.html:71
 msgid "Save Payment"
 msgstr "Salva Pagamentu"
 
+#: contracts/templates/contracts/contract_payments.html:80
 msgid "Select payment date"
 msgstr "Hili data pagamentu"
 
+#: contracts/templates/contracts/contract_payments.html:84
+#: contracts/templates/contracts/contract_payments_view.html:62
 msgid "Payment Value"
 msgstr "Valor pagamentu"
 
+#: contracts/templates/contracts/contract_payments.html:86
 msgid "Enter total payment value"
 msgstr "Hatama total valor pagamentu"
 
+#: contracts/templates/contracts/contract_payments.html:91
 msgid "Choose donor from the list"
 msgstr "Hili doador husi lista"
 
+#: contracts/templates/contracts/contract_payments.html:93
 msgid "Select donor"
 msgstr "Hili doador"
 
+#: contracts/templates/contracts/contract_payments.html:102
 msgid "Choose funding source from the list"
 msgstr "Hili rekursu orsamentu husi lista "
 
+#: contracts/templates/contracts/contract_payments.html:112
 msgid "Choose from the list the recipient of the payment"
 msgstr "Hili husi lista ema nebe sei simu pagamentu ne"
 
+#: contracts/templates/contracts/contract_payments.html:142
 msgid "Delete Payment"
 msgstr "Apaga pagamentu"
 
+#: contracts/templates/contracts/contract_payments.html:143
 msgid "Are you sure you want to delete this payment?"
 msgstr "ita hakarak apaga pagamentu ne?"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:25
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:33
 msgid "List of Social Safeguard Data"
 msgstr "Lista Dadus Protesaun Sosial "
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:32
+#: contracts/templates/contracts/contract_social_safeguard_data.html:70
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:38
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:61
 msgid "Reporting Month"
 msgstr "Fulan Relatoriu"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:33
+#: contracts/templates/contracts/contract_social_safeguard_data.html:76
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:39
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:62
 msgid "Total Employees"
 msgstr "Total Empregadu "
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:34
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:40
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:63
 msgid "Total Female Employees"
 msgstr "Total Empregadu Feto "
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:35
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:41
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:64
 msgid "Total Employees With Disabilities"
 msgstr "Total Empregadu Feto ho Defisiénsia"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:36
+#: contracts/templates/contracts/contract_social_safeguard_data.html:98
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:42
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:65
 msgid "Female Employees With Disabilities"
 msgstr "Empregadu Feto ho Defisiénsia"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:62
 msgid "Save Social Safeguard Report"
 msgstr "Salva Relatoriu Protesaun Sosial"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:68
 msgid "Number of Employees"
 msgstr "Numeru Empregadu "
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:72
 msgid "Select month of the report"
 msgstr "Hili fulan relatoriu "
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:81
 msgid "National Employees"
 msgstr "Empregadu Nasional"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:85
 msgid "International Employees"
 msgstr "Empregadu Internasional "
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:86
 msgid "Non timorese employees"
 msgstr "Empregado laos Timor oan"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:90
 msgid "Female Employees"
 msgstr "Empregadu Feto "
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:94
 msgid "Employees With Disabilities"
 msgstr "Empregadu Feto ho Defisiénsia"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:102
 msgid "Young Employees"
 msgstr "Empregadu Joven"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:106
 msgid "Young Female Employees"
 msgstr "Empregadu Joven Feto "
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:111
 msgid "Worker-days"
 msgstr "Loron serbisu"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:113
 msgid "Total Worker-days"
 msgstr "Total Loron serbisu"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:114
 msgid "Worker-days of all employees"
 msgstr "Loron serbisu empregadu hotu"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:118
 msgid "Female Employees Worker-days"
 msgstr "Loron serbisu Empregadu Feto "
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:122
 msgid "Employees With Disabilities Worker-days"
 msgstr "Loron serbisu Empregadu ho Defisiénsia"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:126
 msgid "Female Employees With Disabilities Worker-days"
 msgstr "Loron serbisu Empregadu Feto ho Defisiénsia"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:130
 msgid "Young Employees Worker-days"
 msgstr "Loron serbisu Empregadu Joven"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:134
 msgid "Young Female Employees Worker-days"
 msgstr "Loron serbisu Empregadu Joven Feto"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:139
 msgid "Wages"
 msgstr "Salariu "
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:141
 msgid "Total Wages"
 msgstr "Total Salariu"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:142
 msgid "All salaries paid in USD"
 msgstr "Salariu hotu selu iha USD"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:146
 msgid "Average Gross Wages"
 msgstr "Mediu Salariu Brutu"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:147
 msgid "Average of gross salaries in USD"
 msgstr "Mediu salariu brutu iha USD"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:151
 msgid "Average Net Wages"
 msgstr "Mediu Salariu Mos/Net"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:152
 msgid "Average of net salaries in USD"
 msgstr "Mediu no salariu mos/net iha USD"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:178
 msgid "Delete Social Safeguard Data"
 msgstr "Apaga Dadus Protesaun Sosial "
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:179
 msgid "Are you sure you want to delete this data?"
 msgstr "Ita hakarak apaga dadus ne?"
 
+#: contracts/templates/contracts/contracts.html:17
 msgid "Projects"
 msgstr "Projetu "
 
+#: contracts/templates/contracts/contracts.html:20
 msgid "Tenders"
 msgstr "Konkursu"
 
+#: contracts/templates/contracts/contracts.html:23
 msgid "Contracts"
 msgstr "Kontratu"
 
+#: contracts/templates/contracts/contracts.html:26
 msgid "Companies"
 msgstr "Kompania"
 
+#: contracts/templates/contracts/contracts.html:41
 msgid "Directorate General for Public Works"
 msgstr "Direção Geral  Obras Públicas "
 
+#: contracts/templates/contracts/contracts.html:42
 msgid "National Directorate for Roads, Bridges and Flood Control"
 msgstr "Direção Nacional de Estradas, Pontes e Controlo de Cheias"
 
+#: contracts/templates/contracts/contracts.html:55
 msgid "Exported from Estrada on"
 msgstr "Esporta husi Estrada iha "
 
+#: contracts/templates/contracts/contracts.html:55
 msgid "at"
 msgstr "Iha"
 
+#: contracts/templates/contracts/contracts.html:76
 msgid "Unsaved Changes"
 msgstr "Sedauk Salva mudansa"
 
-msgid "You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?"
-msgstr "Alterasaun sedauk salva, ita boot sedauk salva ba mudansa nebe halo iha pajina ne no sei lakon kuandu ita taka. ita boot sei hakarak kontinua atu edita? "
+#: contracts/templates/contracts/contracts.html:78
+msgid ""
+"You have unsaved changes made to this page which will be lost if you "
+"navigate away. Would you like to continue editing?"
+msgstr ""
+"Alterasaun sedauk salva, ita boot sedauk salva ba mudansa nebe halo iha "
+"pajina ne no sei lakon kuandu ita taka. ita boot sei hakarak kontinua atu "
+"edita? "
 
+#: contracts/templates/contracts/contracts.html:82
 msgid "Discard"
 msgstr "Soe tiha"
 
+#: contracts/templates/contracts/contracts.html:83
 msgid "Continue Editing"
 msgstr "Kontinua Edita"
 
+#: contracts/templates/contracts/contracts.html:96
+#: contracts/templates/contracts/contracts.html:130
 msgid "Error"
 msgstr "Erru"
 
+#: contracts/templates/contracts/contracts.html:105
+#: contracts/templates/contracts/contracts.html:119
 msgid "Success"
 msgstr "Susesu"
 
+#: contracts/templates/contracts/contracts.html:120 contracts/views.py:132
+#: contracts/views.py:353 contracts/views.py:364 contracts/views.py:662
+#: contracts/views.py:673
 msgid "You have successfully saved"
 msgstr "ita boot salva ho susesu"
 
+#: contracts/templates/contracts/contracts.html:131 contracts/views.py:138
 msgid "Something went wrong"
 msgstr "Buat ruma sala"
 
+#: contracts/templates/contracts/project_base.html:8
 msgid "Edit Project"
 msgstr "Edita Projetu "
 
+#: contracts/templates/contracts/project_base.html:10
 msgid "Create Project"
 msgstr "Kria Projetu "
 
+#: contracts/templates/contracts/project_construction_schedule.html:7
+#: contracts/templates/contracts/project_construction_schedule_view.html:15
+#: contracts/templates/contracts/project_details.html:7
+#: contracts/templates/contracts/project_details.html:36
+#: contracts/templates/contracts/project_details_view.html:16
+#: contracts/templates/contracts/project_details_view.html:31
+#: contracts/templates/contracts/project_documents.html:7
+#: contracts/templates/contracts/project_documents_view.html:15
+#: contracts/templates/contracts/project_financials.html:7
+#: contracts/templates/contracts/project_financials_view.html:15
 msgid "Project Details"
 msgstr "Detallu Projetu"
 
+#: contracts/templates/contracts/project_construction_schedule.html:10
+#: contracts/templates/contracts/project_construction_schedule_view.html:18
+#: contracts/templates/contracts/project_details.html:11
+#: contracts/templates/contracts/project_details.html:21
+#: contracts/templates/contracts/project_details_view.html:19
+#: contracts/templates/contracts/project_documents.html:10
+#: contracts/templates/contracts/project_documents_view.html:18
+#: contracts/templates/contracts/project_financials.html:10
+#: contracts/templates/contracts/project_financials_view.html:18
 msgid "Financials"
 msgstr "Finanseiru"
 
+#: contracts/templates/contracts/project_construction_schedule.html:13
+#: contracts/templates/contracts/project_construction_schedule_view.html:21
+#: contracts/templates/contracts/project_details.html:14
+#: contracts/templates/contracts/project_details.html:24
+#: contracts/templates/contracts/project_details_view.html:22
+#: contracts/templates/contracts/project_documents.html:13
+#: contracts/templates/contracts/project_documents_view.html:21
+#: contracts/templates/contracts/project_financials.html:13
+#: contracts/templates/contracts/project_financials_view.html:21
 msgid "Construction Schedule"
 msgstr "Kalendariu Konstrusaun "
 
+#: contracts/templates/contracts/project_construction_schedule.html:25
+#: contracts/templates/contracts/project_construction_schedule_view.html:30
 msgid "Estimated Schedule"
 msgstr "Estimasaun Kalendariu"
 
+#: contracts/templates/contracts/project_construction_schedule.html:61
+#: contracts/templates/contracts/project_construction_schedule_view.html:44
 msgid "Estimated Construction Milestones"
 msgstr "Estimasaun  Akontesimentu Importante Konstrusaun"
 
+#: contracts/templates/contracts/project_construction_schedule_view.html:33
 msgid "Start Date"
 msgstr "Data Komesa"
 
+#: contracts/templates/contracts/project_details.html:115
+#: contracts/templates/contracts/project_details_view.html:69
 msgid "Asset Details"
 msgstr "Detallu Sasan/Aset"
 
+#: contracts/templates/contracts/project_details.html:145
 msgid "Couldn't find the asset you are looking for?"
 msgstr "La konsegue hetan sasan ita buka?"
 
+#: contracts/templates/contracts/project_details.html:146
 msgid "Add information for the new asset"
 msgstr "Aumenta informasaun kona-ba sasan foun"
 
+#: contracts/templates/contracts/project_details.html:157
+#, fuzzy
+#| msgid "Asset Details"
+msgid "Asset ID already exists"
+msgstr "Detallu Sasan/Aset"
+
+#: contracts/templates/contracts/project_details.html:188
 msgid "Chainage Start"
 msgstr "Chainage komesa"
 
+#: contracts/templates/contracts/project_details.html:192
 msgid "Chainage End"
 msgstr "Chainage remata"
 
+#: contracts/templates/contracts/project_details_view.html:59
+#: contracts/templates/contracts/tender_details_view.html:42
 msgid "Associated Contracts"
 msgstr "Kahur kontratu"
 
+#: contracts/templates/contracts/project_financials.html:25
+#: contracts/templates/contracts/project_financials_view.html:30
 msgid "Funding"
 msgstr "Fundus"
 
+#: contracts/templates/contracts/project_financials_view.html:49
 msgid "Total"
 msgstr "Total"
 
+#: contracts/templates/contracts/project_financials_view.html:58
 msgid "Approved Value"
 msgstr "Valor Aprova"
 
+#: contracts/templates/contracts/project_list.html:6
 msgid "Project Manager"
 msgstr "Jerente Projetu"
 
+#: contracts/templates/contracts/project_list.html:8
 msgid "Create New Project"
 msgstr "Kria Projetu Foun"
 
+#: contracts/templates/contracts/project_list.html:14
 msgid "List of projects"
 msgstr "Lista Projetu "
 
+#: contracts/templates/contracts/project_list.html:70
 msgid "Program"
 msgstr "Programa"
 
+#: contracts/templates/contracts/project_list.html:72
 msgid "Estimated Budget"
 msgstr "Estimasaun Orsamentu"
 
+#: contracts/templates/contracts/project_list.html:128
 msgid "No projects were created yet"
 msgstr "Projetu sedauk kria"
 
+#: contracts/templates/contracts/project_list.html:142
 msgid "Delete Project"
 msgstr "Apaga Projetu "
 
+#: contracts/templates/contracts/project_list.html:143
 msgid "Are you sure you want to delete this project?"
 msgstr "Ita hakarak apaga projetu ne?"
 
+#: contracts/templates/contracts/tender_base.html:8
 msgid "Edit Tender"
 msgstr "Edita Konkursu"
 
+#: contracts/templates/contracts/tender_base.html:10
 msgid "Create Tender"
 msgstr "Kria Konkursu"
 
+#: contracts/templates/contracts/tender_details.html:7
+#: contracts/templates/contracts/tender_details.html:24
+#: contracts/templates/contracts/tender_details_view.html:15
+#: contracts/templates/contracts/tender_details_view.html:24
+#: contracts/templates/contracts/tender_documents.html:7
+#: contracts/templates/contracts/tender_documents_view.html:15
 msgid "Tender Details"
 msgstr "Detallu Konkursu"
 
+#: contracts/templates/contracts/tender_details.html:86
+#: contracts/templates/contracts/tender_details_view.html:53
 msgid "Bids and Evaluation"
 msgstr "Lisita no Avaliasaun"
 
+#: contracts/templates/contracts/tender_details_view.html:8
+#: contracts/templates/contracts/tender_documents_view.html:8
 msgid "Tender"
 msgstr "Konkursu"
 
+#: contracts/templates/contracts/tender_details_view.html:34
 msgid "Associated Projects"
 msgstr "Projetu Asosiadu"
 
+#: contracts/templates/contracts/tender_details_view.html:59
 msgid "Numbering of Companies Tendering"
 msgstr "Numeru Kompania Nebe Tuir Konkursu"
 
+#: contracts/templates/contracts/tender_list.html:6
 msgid "Tender Manager"
 msgstr "Jerente Konkursu"
 
+#: contracts/templates/contracts/tender_list.html:8
 msgid "Create New Tender"
 msgstr "Kria Konkursu Foun"
 
+#: contracts/templates/contracts/tender_list.html:14
 msgid "List of tenders"
 msgstr "Lista Konkursu"
 
+#: contracts/templates/contracts/tender_list.html:69
 msgid "Project(s) name"
 msgstr "Naran Projetu"
 
+#: contracts/templates/contracts/tender_list.html:138
 msgid "Welcome to the Tender Manager"
 msgstr "Bemvindu ba Jerente Konkursu"
 
+#: contracts/templates/contracts/tender_list.html:139
 msgid "No tenders were created yet"
 msgstr "Konkursu sedauk kria"
 
+#: contracts/templates/contracts/tender_list.html:153
 msgid "Delete Tender"
 msgstr "Apaga Konkursu"
 
+#: contracts/templates/contracts/tender_list.html:154
 msgid "Are you sure you want to delete this tender?"
 msgstr "Ita hakarak apaga konkursu ne"
 
-msgid "Please enter a correct username and password. Note that both fields may be case-sensitive"
-msgstr "Favor hatama naran uzuáriu ho seña nebe los. Nota Katak linha rua ne talvez sensitivu"
+#: django_shapefiles/forms.py:25
+msgid ""
+"The shapefile components ( include at least .shp, .shx, .prj,  and .dbf )"
+msgstr ""
 
+#: django_shapefiles/forms.py:35
+msgid "include at least .shp, .shx, .prj, and .dbf )"
+msgstr ""
+
+#: django_shapefiles/models.py:24
+msgid "Give the shapefile a meaningful name to help identify it"
+msgstr ""
+
+#: django_shapefiles/models.py:29
+msgid ""
+"Describe the shapefiles contents, where it represents and what it contains"
+msgstr ""
+
+#: django_shapefiles/models.py:40
+msgid " .shp file: the shape format; the feature geometry itself "
+msgstr ""
+
+#: django_shapefiles/models.py:45
+msgid ""
+" .shx file: shape index format; a positional index of the feature geometry "
+"to allow seeking forwards and backwards quickly"
+msgstr ""
+
+#: django_shapefiles/models.py:50
+msgid ".dbf file: attribute format; columnar attributes for each shape"
+msgstr ""
+
+#: django_shapefiles/models.py:54
+msgid ".prj file: projection description and coordinate reference"
+msgstr ""
+
+#: registration_templates/base_registration.html:27
+msgid ""
+"Please enter a correct username and password. Note that both fields may be "
+"case-sensitive"
+msgstr ""
+"Favor hatama naran uzuáriu ho seña nebe los. Nota Katak linha rua ne talvez "
+"sensitivu"
+
+#: registration_templates/base_registration.html:28
 msgid "This password is too short. It must contain at least 8 characters"
 msgstr "Seña ne badak liu. Tenki inklui mazemeinus 8 karateristiku"
 
+#: registration_templates/base_registration.html:29
 msgid "Your old password was entered incorrectly. Please enter it again"
 msgstr "Ita nia seña tuan hatama lalos. Favor hatama fali"
 
+#: registration_templates/base_registration.html:30
 msgid "The two password fields didn't match"
 msgstr "Lina rua ba seña nian ne hatama la hanesan"
 
+#: registration_templates/base_registration.html:31
 msgid "This password is entirely numeric"
 msgstr "Seña ida ne numeru hotu "
 
+#: registration_templates/base_registration.html:32
 msgid "This password is too common"
 msgstr "Seña ida ne komun liu "
 
+#: registration_templates/registration/login.html:23
+#: registration_templates/registration/login.html:24
 msgid "Username"
 msgstr "Naran Uzuáriu "
 
+#: registration_templates/registration/login.html:27
+#: registration_templates/registration/login.html:28
 msgid "Password"
 msgstr "Seña"
 
+#: registration_templates/registration/login.html:32
+#: registration_templates/registration/password_reset_form.html:5
 msgid "Forgot your password?"
 msgstr "Haluha ita nia seña?"
 
+#: registration_templates/registration/login.html:33
 msgid "Log in"
 msgstr "Tama/log In"
 
-msgid "This road asset and project management system (Estrada), has been designed and developed by Catalpa International with funding from the Australian Government’s Departmentof Foreign Affairs and Trade (DFAT) and technical assistance from the International Labour Organization (ILO)"
-msgstr "Sistema sasan/aset estrada no jestaun projetu ida ne'e (Estrada), dezeñu no  dezenvolve husi Catalpa International ho fundus husi Governu Australia nia Departmentu Negosiu Estranjeiru no Komérsiu (DFAT) no hetan asistensia tekniku husi Organização Internacional do Trabalho (ILO)."
+#: registration_templates/registration/login.html:39
+msgid ""
+"This road asset and project management system (Estrada), has been designed "
+"and developed by Catalpa International with funding from the Australian "
+"Government’s Departmentof Foreign Affairs and Trade (DFAT) and technical "
+"assistance from the International Labour Organization (ILO)"
+msgstr ""
+"Sistema sasan/aset estrada no jestaun projetu ida ne'e (Estrada), dezeñu no  "
+"dezenvolve husi Catalpa International ho fundus husi Governu Australia nia "
+"Departmentu Negosiu Estranjeiru no Komérsiu (DFAT) no hetan asistensia "
+"tekniku husi Organização Internacional do Trabalho (ILO)."
 
+#: registration_templates/registration/logout.html:5
 msgid "Logged out"
 msgstr "Sai "
 
+#: registration_templates/registration/password_change_done.html:5
+#: registration_templates/registration/password_reset_complete.html:5
 msgid "Well done!"
 msgstr "Diak los!"
 
+#: registration_templates/registration/password_change_done.html:6
+#: registration_templates/registration/password_reset_complete.html:6
 msgid "Your password has been reset successfully"
 msgstr "Ita nia seña troka ona ho susesu"
 
+#: registration_templates/registration/password_change_done.html:7
+#: registration_templates/registration/password_reset_complete.html:7
 msgid "Continue"
 msgstr "Kontinua"
 
+#: registration_templates/registration/password_change_form.html:5
+#: registration_templates/registration/password_reset_confirm.html:7
 msgid "Create a new password"
 msgstr "Kria seña foun"
 
+#: registration_templates/registration/password_change_form.html:8
+#: registration_templates/registration/password_reset_confirm.html:10
 msgid "Your password can't be too similar to your other personal information"
 msgstr "Ita nia seña labele hanesan liu ho ita nia informasaun pesoal "
 
+#: registration_templates/registration/password_change_form.html:9
+#: registration_templates/registration/password_reset_confirm.html:11
 msgid "Your password must contain at least 8 characters"
 msgstr "Ita nia seña mazemenus tenke inklui karateristiku 8"
 
+#: registration_templates/registration/password_change_form.html:10
+#: registration_templates/registration/password_reset_confirm.html:12
 msgid "Your password can't be a commonly used password"
 msgstr "Ita labele uza seña nebe komun "
 
+#: registration_templates/registration/password_change_form.html:11
+#: registration_templates/registration/password_reset_confirm.html:13
 msgid "Your password can't be entirely numeric"
 msgstr "Ita nia seña labele uza numeru hotu "
 
+#: registration_templates/registration/password_change_form.html:25
+#: registration_templates/registration/password_change_form.html:26
 msgid "Old password"
 msgstr "Seña tuan"
 
+#: registration_templates/registration/password_change_form.html:32
+#: registration_templates/registration/password_change_form.html:33
+#: registration_templates/registration/password_reset_confirm.html:27
+#: registration_templates/registration/password_reset_confirm.html:28
 msgid "New password"
 msgstr "Seña foun"
 
+#: registration_templates/registration/password_change_form.html:36
+#: registration_templates/registration/password_change_form.html:37
+#: registration_templates/registration/password_reset_confirm.html:31
+#: registration_templates/registration/password_reset_confirm.html:32
 msgid "New password confirmation"
 msgstr "Konfirmasaun seña foun "
 
+#: registration_templates/registration/password_change_form.html:42
+#: registration_templates/registration/password_reset_confirm.html:37
 msgid "Save changes"
 msgstr "Salva mudansa"
 
+#: registration_templates/registration/password_reset_confirm.html:41
 msgid "The link to reset your password is not valid anymore."
 msgstr "Linha atu hadia ita nia seña la validu ona."
 
+#: registration_templates/registration/password_reset_confirm.html:42
 msgid "Go back to the login page"
 msgstr "Fila fali ba pagina tama nian"
 
+#: registration_templates/registration/password_reset_done.html:5
 msgid "Reset your password"
 msgstr "Troka ita nia seña"
 
-msgid "We have sent a reset password link to your email. Please, click on the link to set your new password. Thanks."
-msgstr "Ami manda ona linha atu hadia seña ba ita nia email. Favor hanehan iha linha ne atu troka ita nia seña. Obrigado.  "
+#: registration_templates/registration/password_reset_done.html:6
+msgid ""
+"We have sent a reset password link to your email. Please, click on the link "
+"to set your new password. Thanks."
+msgstr ""
+"Ami manda ona linha atu hadia seña ba ita nia email. Favor hanehan iha linha "
+"ne atu troka ita nia seña. Obrigado.  "
 
+#: registration_templates/registration/password_reset_email.html:6
 msgid "Hello there"
 msgstr "Hello"
 
-msgid "We received a request to change your Estrada password. Click the button below to create a new password"
-msgstr "Ami simu pedidu atu troka ita nia seña Estrada. Hanehan iha butaun kraik atu kria seña foun. "
+#: registration_templates/registration/password_reset_email.html:7
+msgid ""
+"We received a request to change your Estrada password. Click the button "
+"below to create a new password"
+msgstr ""
+"Ami simu pedidu atu troka ita nia seña Estrada. Hanehan iha butaun kraik atu "
+"kria seña foun. "
 
+#: registration_templates/registration/password_reset_email.html:9
 msgid "Reset my password"
 msgstr "Hadia hau nia seña "
 
-msgid "If you didn't mean to reset your password, then you can just ignore this email. Your password will not change"
-msgstr "Se ita la planu atu hadia ita nia seña , entaun ita bele ignora email ida ne. Ita nia seña sei la troka"
+#: registration_templates/registration/password_reset_email.html:11
+msgid ""
+"If you didn't mean to reset your password, then you can just ignore this "
+"email. Your password will not change"
+msgstr ""
+"Se ita la planu atu hadia ita nia seña , entaun ita bele ignora email ida "
+"ne. Ita nia seña sei la troka"
 
-msgid "Don’t worry. Resetting your password is easy, just tell us the email address you registered with Estrada."
-msgstr "Lalika tauk. Atu troka ita nia seña fasil. Dehan mai ami email ida nebe ita uza hodi halo rejistrasaun ho Estrada"
+#: registration_templates/registration/password_reset_form.html:10
+msgid ""
+"Don’t worry. Resetting your password is easy, just tell us the email address "
+"you registered with Estrada."
+msgstr ""
+"Lalika tauk. Atu troka ita nia seña fasil. Dehan mai ami email ida nebe ita "
+"uza hodi halo rejistrasaun ho Estrada"
 
+#: registration_templates/registration/password_reset_form.html:13
 msgid "Email address"
 msgstr "Email"
 
+#: registration_templates/registration/password_reset_form.html:18
 msgid "Send"
 msgstr "Haruka"
+
+#~ msgid ""
+#~ "Could not create a new Asset, because the asset_municipality in the "
+#~ "'special' Asset Id is not valid."
+#~ msgstr ""
+#~ "Labele kria Sasan/Aset foun, tamba munisipiu_sasan/aset iha \"espesial\" "
+#~ "Id Sasan/Aset la validu"

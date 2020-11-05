@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-11 03:20+0000\n"
+"POT-Creation-Date: 2020-11-05 09:00+0000\n"
 "PO-Revision-Date: 2020-08-04 07:15+0000\n"
 "Last-Translator: b'  <sergio@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,1888 +19,3109 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Translated-Using: django-rosetta 0.9.3\n"
 
+#: IRMIS/settings.py:200
 msgid "IRMIS"
 msgstr "IRMIS"
 
+#: assets/migrations/0029_structure_metadata.py:14
+#: assets/migrations/0052_drift_driftclass_driftmaterialtype.py:22
 msgid "Gabion works"
 msgstr "Gabião"
 
+#: assets/migrations/0029_structure_metadata.py:15
+#: assets/migrations/0052_drift_driftclass_driftmaterialtype.py:23
 msgid "Masonry works"
 msgstr "Alvenaria"
 
+#: assets/migrations/0029_structure_metadata.py:16
+#: assets/migrations/0029_structure_metadata.py:47
+#: assets/migrations/0052_drift_driftclass_driftmaterialtype.py:24
+#: assets/migrations/0052_drift_driftclass_driftmaterialtype.py:33
 msgid "RCC"
 msgstr "RCC"
 
+#: assets/migrations/0029_structure_metadata.py:17
+#: assets/migrations/0052_drift_driftclass_driftmaterialtype.py:25
 msgid "PCC concrete wall"
 msgstr "Parede de betão PCC"
 
+#: assets/migrations/0029_structure_metadata.py:21
 msgid "Beam"
 msgstr "Viga"
 
+#: assets/migrations/0029_structure_metadata.py:22
 msgid "Temporary"
 msgstr "Temporária"
 
+#: assets/migrations/0029_structure_metadata.py:23
 msgid "Truss"
 msgstr "Treliças"
 
+#: assets/migrations/0029_structure_metadata.py:24
 msgid "Arch"
 msgstr "Arco"
 
+#: assets/migrations/0029_structure_metadata.py:25
 msgid "Reinforced cement"
 msgstr "Cimento reforçado"
 
+#: assets/migrations/0029_structure_metadata.py:26
 msgid "Concrete (RCC)"
 msgstr "Betão (RCC)"
 
+#: assets/migrations/0029_structure_metadata.py:27
+#: assets/migrations/0029_structure_metadata.py:43
+#: assets/migrations/0029_structure_metadata.py:50
 msgid "Timber"
 msgstr "Viga"
 
+#: assets/migrations/0029_structure_metadata.py:28
 msgid "Suspension"
 msgstr "Suspensa"
 
+#: assets/migrations/0029_structure_metadata.py:32
 msgid "RCC box"
 msgstr "Caixa RCC"
 
+#: assets/migrations/0029_structure_metadata.py:33
 msgid "RCC pipe"
 msgstr "Tubo RCC"
 
+#: assets/migrations/0029_structure_metadata.py:34
 msgid "RCC slab"
 msgstr "Placa RCC"
 
+#: assets/migrations/0029_structure_metadata.py:35
 msgid "Steel pipe"
 msgstr "Tubo de aço"
 
+#: assets/migrations/0029_structure_metadata.py:36
 msgid "Stone scupper"
 msgstr "Scupper de pedra"
 
+#: assets/migrations/0029_structure_metadata.py:37
 msgid "Wooden"
 msgstr "Madeira"
 
+#: assets/migrations/0029_structure_metadata.py:41
 msgid "Concrete"
 msgstr "Betão"
 
+#: assets/migrations/0029_structure_metadata.py:42
+#: assets/migrations/0029_structure_metadata.py:48
 msgid "Steel"
 msgstr "Aço"
 
+#: assets/migrations/0029_structure_metadata.py:49
 msgid "Stone"
 msgstr "Pedra"
 
+#: assets/migrations/0041_road_serving_attributes.py:16
 msgid "Health facility"
 msgstr "Estabelecimento de saúde"
 
+#: assets/migrations/0041_road_serving_attributes.py:17
 msgid "School"
 msgstr "Escola"
 
+#: assets/migrations/0041_road_serving_attributes.py:18
 msgid "Police/security station"
 msgstr "Polícia/Segurança"
 
+#: assets/migrations/0041_road_serving_attributes.py:19
 msgid "Fire station"
 msgstr "Estação de bombeiros"
 
+#: assets/migrations/0041_road_serving_attributes.py:20
 msgid "Recreational area"
 msgstr "Área recreativa"
 
+#: assets/migrations/0041_road_serving_attributes.py:24
 msgid "Fishing"
 msgstr "Pesca"
 
+#: assets/migrations/0041_road_serving_attributes.py:25
 msgid "Farming"
 msgstr "Agricultura"
 
+#: assets/migrations/0041_road_serving_attributes.py:26
 msgid "Market"
 msgstr "Mercado"
 
+#: assets/migrations/0041_road_serving_attributes.py:27
 msgid "Tourism"
 msgstr "Turística"
 
+#: assets/migrations/0041_road_serving_attributes.py:28
 msgid "Commercial"
 msgstr "Comercial"
 
+#: assets/migrations/0041_road_serving_attributes.py:29
 msgid "Industrial"
 msgstr "Industrial"
 
+#: assets/migrations/0041_road_serving_attributes.py:30
 msgid "Cash crops"
 msgstr "Agricultura comercial"
 
+#: assets/migrations/0041_road_serving_attributes.py:34
 msgid "Connects municipalities"
 msgstr "Ligação municípios"
 
+#: assets/migrations/0041_road_serving_attributes.py:35
 msgid "Connects Dili to municipal centers"
 msgstr "Ligação Dili ao centro de municípios"
 
+#: assets/migrations/0041_road_serving_attributes.py:36
 msgid "Connects administrative posts"
 msgstr "Ligação postos administrativos"
 
+#: assets/migrations/0041_road_serving_attributes.py:37
 msgid "Connects to land border"
 msgstr "Ligação a fronteira terrestre"
 
+#: assets/migrations/0041_road_serving_attributes.py:38
 msgid "Connects to seaport"
 msgstr "Ligação a porto marítimo"
 
+#: assets/migrations/0041_road_serving_attributes.py:39
 msgid "Connects to airport"
 msgstr "Ligação a aeroporto"
 
+#: assets/migrations/0052_drift_driftclass_driftmaterialtype.py:21
 msgid "No protection works"
 msgstr "Sem trabalho de proteção"
 
+#: assets/migrations/0052_drift_driftclass_driftmaterialtype.py:26
 msgid "RCC concrete wall"
 msgstr "Parede de betão RCC"
 
+#: assets/migrations/0052_drift_driftclass_driftmaterialtype.py:30
 msgid "Stone masonry"
 msgstr "Alvenaria de pedra"
 
+#: assets/migrations/0052_drift_driftclass_driftmaterialtype.py:31
 msgid "Plum concrete"
 msgstr "Betão ciclópico"
 
+#: assets/migrations/0052_drift_driftclass_driftmaterialtype.py:32
 msgid "PCC"
 msgstr "PCC"
 
+#: assets/migrations/0052_drift_driftclass_driftmaterialtype.py:34
 msgid "Gabions"
 msgstr "Gabiões"
 
+#: assets/migrations/0052_drift_driftclass_driftmaterialtype.py:35
 msgid "Precast concrete bricks"
 msgstr "Tijolos de betão pré-fabricados"
 
+#: assets/migrations/0052_drift_driftclass_driftmaterialtype.py:36
 msgid "Clay bricks"
 msgstr "Tijolos de barro"
 
+#: assets/migrations/0052_drift_driftclass_driftmaterialtype.py:37
 msgid "PC"
 msgstr "PC"
 
+#: assets/models.py:68 contracts/models.py:32
 #, python-format
 msgid "%(value)s should not contain spaces"
 msgstr "%(value)s não deve conter espaços"
 
+#: assets/models.py:144 assets/models.py:152 assets/models.py:160
+#: assets/models.py:168 assets/models.py:176 assets/models.py:283
+#: assets/models.py:291 assets/models.py:299 assets/models.py:864
+#: assets/models.py:1035 assets/models.py:1043 assets/models.py:1275
+#: assets/models.py:1283 assets/models.py:1506 assets/models.py:1514
 msgid "Code"
 msgstr "Código"
 
+#: assets/models.py:145 assets/models.py:153 assets/models.py:161
+#: assets/models.py:169 assets/models.py:177 assets/models.py:284
+#: assets/models.py:292 assets/models.py:300 assets/models.py:597
+#: assets/models.py:865 assets/models.py:1036 assets/models.py:1044
+#: assets/models.py:1137 assets/models.py:1276 assets/models.py:1284
+#: assets/models.py:1376 assets/models.py:1507 assets/models.py:1515
+#: assets/models.py:1603 contracts/templates/contracts/company_list.html:27
 msgid "Name"
 msgstr "Nome"
 
+#: assets/models.py:260 assets/models.py:584 assets/models.py:1124
+#: assets/models.py:1363 assets/models.py:1590 assets/models.py:1872
+#: assets/models.py:2034
 msgid "Date Created"
 msgstr "Data de criação"
 
+#: assets/models.py:262 assets/models.py:586 assets/models.py:1126
+#: assets/models.py:1365 assets/models.py:1592 assets/models.py:2036
+#: assets/models.py:2137
 msgid "last modified"
 msgstr "última alteração"
 
+#: assets/models.py:265 contracts/templates/contracts/company_documents.html:27
+#: contracts/templates/contracts/company_documents.html:86
+#: contracts/templates/contracts/company_documents_view.html:32
+#: contracts/templates/contracts/company_documents_view.html:52
+#: contracts/templates/contracts/contract_documents.html:36
+#: contracts/templates/contracts/contract_documents.html:95
+#: contracts/templates/contracts/contract_documents_view.html:41
+#: contracts/templates/contracts/contract_documents_view.html:61
+#: contracts/templates/contracts/project_details_view.html:49
+#: contracts/templates/contracts/project_documents.html:33
+#: contracts/templates/contracts/project_documents.html:92
+#: contracts/templates/contracts/project_documents_view.html:38
+#: contracts/templates/contracts/project_documents_view.html:58
+#: contracts/templates/contracts/tender_documents.html:27
+#: contracts/templates/contracts/tender_documents.html:86
+#: contracts/templates/contracts/tender_documents_view.html:32
+#: contracts/templates/contracts/tender_documents_view.html:52
+#: django_shapefiles/models.py:27
 msgid "Description"
 msgstr "Descrição"
 
+#: assets/models.py:268 assets/models.py:1867 assets/models.py:2029
 msgid "User"
 msgstr "Utilizador"
 
-msgid "Asset Id"
-msgstr "ID Infra-estrutura"
-
-msgid "Asset Code"
-msgstr "Código Infra-estrutura"
-
-msgid "Road Id"
-msgstr "ID estrada"
-
-msgid "Road Code"
-msgstr "Código de estrada"
-
-msgid "Date Surveyed"
-msgstr "Data do levantamento"
-
-msgid "Date Updated"
-msgstr "Data de actualização"
-
-msgid "Start Chainage (Km)"
-msgstr "Início do Segmento (Km)"
-
-msgid "Enter chainage for survey starting point"
-msgstr "Insira o ponto inicial do segmento (Km)"
-
-msgid "End Chainage (Km)"
-msgstr "Final do Segmento (Km)"
-
-msgid "Enter chainage for survey ending point"
-msgstr "Insira o ponto final da segmento levantado"
-
-msgid "Source"
-msgstr "Fonte"
-
-msgid "Choose the source of the survey"
-msgstr "Escolha a fonte do levantamento"
-
+#: assets/models.py:313
 msgid "National"
 msgstr "Nacional"
 
+#: assets/models.py:314
 msgid "Municipal"
 msgstr "Municipal"
 
+#: assets/models.py:315
 msgid "Urban"
 msgstr "Urbana"
 
+#: assets/models.py:316
 msgid "Rural"
 msgstr "Rural"
 
+#: assets/models.py:320
 msgid "Good"
 msgstr "Bom"
 
+#: assets/models.py:321
 msgid "Fair"
 msgstr "Razoável"
 
+#: assets/models.py:322
 msgid "Poor"
 msgstr "Fraco"
 
+#: assets/models.py:323
 msgid "Bad"
 msgstr "Mau"
 
+#: assets/models.py:327 assets/models.py:856
 msgid "Road"
 msgstr "Estrada"
 
+#: assets/models.py:328 assets/models.py:1267
 msgid "Bridge"
 msgstr "Ponte"
 
+#: assets/models.py:329 assets/models.py:1498
 msgid "Culvert"
 msgstr "Bueiro"
 
+#: assets/models.py:330 assets/models.py:1719
 msgid "Drift"
 msgstr "Drift"
 
+#: assets/models.py:333
 msgid "Low"
 msgstr "Baixo"
 
+#: assets/models.py:333
 msgid "Medium"
 msgstr "Médio"
 
+#: assets/models.py:333
 msgid "High"
 msgstr "Alto"
 
+#: assets/models.py:335
 msgid "Flat"
 msgstr "Plano"
 
+#: assets/models.py:335
 msgid "Rolling"
 msgstr "Ondulado"
 
+#: assets/models.py:335
 msgid "Mountainous"
 msgstr "Montanhoso"
 
+#: assets/models.py:337
 msgid "Undefined"
 msgstr "Não definido"
 
+#: assets/models.py:337
 msgid "Non-core"
 msgstr "Não principal"
 
+#: assets/models.py:337 assets/models.py:771
+#: assets/templates/assets/estrada_main.html:51
 msgid "Core"
 msgstr "Principal"
 
+#: assets/models.py:589 assets/models.py:1155 assets/models.py:1394
+#: assets/models.py:1621 assets/models.py:1859
+#: assets/templates/assets/estrada_main.html:230
+msgid "Road Code"
+msgstr "Código de estrada"
+
+#: assets/models.py:600 assets/models.py:1148 assets/models.py:1387
+#: assets/models.py:1614 assets/templates/assets/estrada_main.html:67
+#: assets/templates/assets/estrada_main.html:250
+#: contracts/templates/contracts/project_details.html:179
 msgid "Municipality"
 msgstr "Municipalidade"
 
+#: assets/models.py:604
 msgid "Choose the municipality for the road"
 msgstr "Escolha a municipalidade da estrada"
 
+#: assets/models.py:607 contracts/templates/contracts/contract_payments.html:44
+#: contracts/templates/contracts/contract_payments.html:100
+#: contracts/templates/contracts/contract_payments_view.html:41
+#: contracts/templates/contracts/contract_payments_view.html:64
+#: contracts/templates/contracts/project_financials_view.html:36
+#: contracts/templates/contracts/project_list.html:73
 msgid "Funding Source"
 msgstr "Fonte de financiamento"
 
+#: assets/models.py:612
 msgid "Enter the source funding for the road link"
 msgstr "Adicione a fonte de financiamento para a secção da estrada"
 
+#: assets/models.py:615
 msgid "Link Code"
 msgstr "Código da secção da estrada"
 
+#: assets/models.py:621
 msgid "Enter link code according to DRBFC standard"
 msgstr "Insira o código "
 
+#: assets/models.py:624
 msgid "Link Start Name"
 msgstr "Nome do início da secção"
 
-msgid "Enter the name of the link start location (municipal center, administrative post or nearest suco)"
-msgstr "Introduza o nome da localidade de início da secção da estrada (centro municipal, posto administrativo ou suco mais próximo)"
+#: assets/models.py:629
+msgid ""
+"Enter the name of the link start location (municipal center, administrative "
+"post or nearest suco)"
+msgstr ""
+"Introduza o nome da localidade de início da secção da estrada (centro "
+"municipal, posto administrativo ou suco mais próximo)"
 
+#: assets/models.py:633
 msgid "Link End Name"
 msgstr "Nome do fim da secção"
 
-msgid "Enter the name of the link end location (municipal center, administrative post or nearest suco)"
-msgstr "Introduza o nome da localidade do fim da secção da estrada (centro municipal, posto administrativo ou suco mais próximo)"
+#: assets/models.py:638
+msgid ""
+"Enter the name of the link end location (municipal center, administrative "
+"post or nearest suco)"
+msgstr ""
+"Introduza o nome da localidade do fim da secção da estrada (centro "
+"municipal, posto administrativo ou suco mais próximo)"
 
+#: assets/models.py:645
 msgid "Link End Chainage"
 msgstr "Final da secção"
 
+#: assets/models.py:648
 msgid "Enter chainage for link ending point"
 msgstr "Insira o ponto final da secção"
 
+#: assets/models.py:651
 msgid "Link Start Chainage"
 msgstr "Início da secção"
 
+#: assets/models.py:654
 msgid "Enter chainage for link starting point"
 msgstr "Insira o ponto inicial da secção"
 
+#: assets/models.py:657
 msgid "Link Length (Km)"
 msgstr "Extensão da secção (Km)"
 
+#: assets/models.py:662
 msgid "Enter road link length"
 msgstr "Insira o comprimento da secção da estrada"
 
+#: assets/models.py:667
 msgid "Geometry Length (m)"
 msgstr "Comprimento da geometria (m)"
 
+#: assets/models.py:670 assets/models.py:676 assets/models.py:682
 msgid "Do not edit"
 msgstr "Não editar"
 
+#: assets/models.py:673
 msgid "Geometry Start Chainage"
 msgstr "Geometria do início do segmento"
 
+#: assets/models.py:679
 msgid "Geometry End Chainage"
 msgstr "Geometria do fim do segmento"
 
+#: assets/models.py:686
 msgid "Surface Type"
 msgstr "Tipo de pavimento"
 
+#: assets/models.py:690
 msgid "Choose the type of surface of the road link carriageway"
 msgstr "Escolha o tipo de pavimento da faixa de rodagem da secção da estrada"
 
+#: assets/models.py:694
 msgid "Pavement Class"
 msgstr "Classe de Pavimento"
 
+#: assets/models.py:699
 msgid "Choose the pavement class of the road"
 msgstr "Escolha a classe de pavimento da estrada"
 
+#: assets/models.py:702
 msgid "Carriageway Width"
 msgstr "Largura da faixa de rodagem"
 
+#: assets/models.py:708
 msgid "Enter the width of the link carriageway"
 msgstr "Insira a largura da faixa de rodagem da secção da estrada"
 
+#: assets/models.py:712 assets/models.py:2020 assets/models.py:2126
+#: assets/templates/assets/estrada_main.html:234
+#: contracts/templates/contracts/project_details.html:170
 msgid "Asset Class"
 msgstr "Classe da Infra-estrutura"
 
+#: assets/models.py:717 assets/models.py:2025 assets/models.py:2129
 msgid "Choose the asset class"
 msgstr "Escolha a classe da infra-estrutura"
 
+#: assets/models.py:721
 msgid "Road Status"
 msgstr "Estado da Estrada"
 
+#: assets/models.py:725
 msgid "Enter road link current status"
 msgstr "Insira o actual estado da secção da estrada"
 
+#: assets/models.py:728 contracts/models.py:182
+#: contracts/templates/contracts/project_details_view.html:41
+#: contracts/templates/contracts/project_list.html:68
 msgid "Project Name"
 msgstr "Nome do Projecto"
 
+#: assets/models.py:732
 msgid "Enter road link project name"
 msgstr "Insira o nome do projecto da secção da estrada"
 
+#: assets/models.py:735
 msgid "Traffic Data"
 msgstr "Dados de trânsito"
 
+#: assets/models.py:740
 msgid "Choose the traffic volume for the road link"
 msgstr "Escolha o volume de trânsito para a secção da estrada"
 
+#: assets/models.py:743
 msgid "Surface Condition (SDI)"
 msgstr "Condição do pavimento (SDI)"
 
-msgid "Choose road link surface condition according to the Surface Distress Index (SDI): Good (SDI<=2), fair (2<SDI<=3), poor (3<SDI<=4) or bad (SDI>4)"
-msgstr "Escolha a condição do pavimento para a secção da estrada de acordo com o Surface Distress Index:  Bom (SDI<=2), Razoável (2<SDI<=3), Fraco (3<SDI<=4) or Mau (SDI>4)"
+#: assets/models.py:749
+msgid ""
+"Choose road link surface condition according to the Surface Distress Index "
+"(SDI): Good (SDI<=2), fair (2<SDI<=3), poor (3<SDI<=4) or bad (SDI>4)"
+msgstr ""
+"Escolha a condição do pavimento para a secção da estrada de acordo com o "
+"Surface Distress Index:  Bom (SDI<=2), Razoável (2<SDI<=3), Fraco (3<SDI<=4) "
+"or Mau (SDI>4)"
 
+#: assets/models.py:754
 msgid "Maintenance Needs"
 msgstr "Tipo de Manutenção"
 
+#: assets/models.py:758
 msgid "Choose the type of maintenace needs for the road link"
 msgstr "Escolha o tipo de manutenção necessária para a secção da estrada"
 
+#: assets/models.py:762
 msgid "Technical Class"
 msgstr "Classe Técnica"
 
-msgid "Choose road link technical class according to the 2010 Road Geometric Design Standards, DRBFC standards"
-msgstr "Escolha o tipo de classe técnica de acordo com o \"2010 Road Geometric Design standards\" e os standards da DNEPCC"
+#: assets/models.py:767
+msgid ""
+"Choose road link technical class according to the 2010 Road Geometric Design "
+"Standards, DRBFC standards"
+msgstr ""
+"Escolha o tipo de classe técnica de acordo com o \"2010 Road Geometric "
+"Design standards\" e os standards da DNEPCC"
 
+#: assets/models.py:773
 msgid "Set if the road is a high priority `core` road"
 msgstr "Defina Principal se for uma estrada de alta prioridade"
 
+#: assets/models.py:776 assets/templates/assets/estrada_main.html:137
 msgid "Population Served"
 msgstr "População Servida"
 
+#: assets/models.py:779
 msgid "Set the size of population served by this road"
 msgstr "Defina o total da população servida pela estrada"
 
+#: assets/models.py:782
 msgid "Road Construction Year"
 msgstr "Ano de Construção da Estrada"
 
+#: assets/models.py:785
 msgid "Terrain class"
 msgstr "Classe do terreno"
 
+#: assets/models.py:789
 msgid "Choose what terrain class the road runs through"
 msgstr "Escolha a classe the terreno pela qual a estrada passa"
 
+#: assets/models.py:792
 msgid "Rainfall Maximum"
 msgstr "Pluviosidade máxima"
 
+#: assets/models.py:795
 msgid "Enter the maximum amount of rainfall"
 msgstr "Insira o valor máximo da pluviosidade"
 
+#: assets/models.py:798
 msgid "Rainfall Minimum"
 msgstr "Pluviosidade mínima"
 
+#: assets/models.py:801
 msgid "Enter the minimum amount of rainfall"
 msgstr "Insira o valor mínimo da pluviosidade"
 
+#: assets/models.py:804
 msgid "Number of Lanes"
 msgstr "Número de faixas"
 
+#: assets/models.py:807
 msgid "Enter the number of lanes of the road"
 msgstr "Insira o número de faixas da estrada"
 
+#: assets/models.py:818
 msgid "Facilities Served"
 msgstr "Áreas servidas"
 
+#: assets/models.py:821
 msgid "Choose facilities served by this road"
 msgstr "Escolha as áreas servidas pela estrada"
 
+#: assets/models.py:825
 msgid "Economic Areas Served"
 msgstr "Áreas económicas servidas"
 
+#: assets/models.py:828
 msgid "Choose economic areas served by this road"
 msgstr "Escola as áreas económicas servidas pela estrada"
 
+#: assets/models.py:832
 msgid "Connections Served"
 msgstr "Ligações servidas"
 
+#: assets/models.py:835
 msgid "Choose the types of connections facilitated by this road"
 msgstr "Escolha o tipo de ligaçōes que a estrada serve"
 
+#: assets/models.py:858 assets/models.py:1269 assets/models.py:1500
+#: assets/models.py:1721
 msgid "Attributes"
 msgstr "Atributos"
 
-msgid "Asset Type"
-msgstr "Tipo de Infra-estrutura"
+#: assets/models.py:1121 assets/models.py:1360 assets/models.py:1587
+#: assets/models.py:1857
+msgid "Road Id"
+msgstr "ID estrada"
 
+#: assets/models.py:1129 assets/models.py:1368 assets/models.py:1595
+#: assets/templates/assets/estrada_main.html:218
 msgid "Structure Code"
 msgstr "Código de Estrutura"
 
+#: assets/models.py:1140 assets/models.py:1379 assets/models.py:1606
 msgid "Structure Class"
 msgstr "Classe de Estrutura"
 
+#: assets/models.py:1145 assets/models.py:1384 assets/models.py:1611
 msgid "Choose the structure class"
 msgstr "Escolha a classe da estrutura"
 
+#: assets/models.py:1152 assets/models.py:1391 assets/models.py:1618
 msgid "Choose the municipality for the structure"
 msgstr "Escolha a municipalidade da estrutura"
 
+#: assets/models.py:1160 assets/models.py:1399 assets/models.py:1626
 msgid "Enter the Road Code associated with the structure"
 msgstr "Insira o Código da Estrada onde se localiza a estrutura"
 
+#: assets/models.py:1163 assets/models.py:1402 assets/models.py:1629
 msgid "Structure Construction Year"
 msgstr "Ano de Construção da Estrutura"
 
+#: assets/models.py:1166 assets/models.py:1405 assets/models.py:1632
 msgid "Structure Length (m)"
 msgstr "Comprimento da Estrutura (m)"
 
+#: assets/models.py:1172 assets/models.py:1411 assets/models.py:1638
 msgid "Enter structure length"
 msgstr "Insira o comprimento da estrutura"
 
+#: assets/models.py:1175 assets/models.py:1414 assets/models.py:1641
 msgid "Structure Width (m)"
 msgstr "Largura da Estrutura (m)"
 
+#: assets/models.py:1181 assets/models.py:1420 assets/models.py:1647
 msgid "Enter structure width"
 msgstr "Insira a largura da estrutura"
 
+#: assets/models.py:1184 assets/models.py:1423 assets/models.py:1650
+#: assets/templates/assets/estrada_main.html:246
 msgid "Chainage"
 msgstr "Segmento"
 
+#: assets/models.py:1187 assets/models.py:1426 assets/models.py:1653
 msgid "Enter chainage point for the structure"
 msgstr "Insira o ponto de localização da estrutura"
 
+#: assets/models.py:1196
 msgid "Bridge Type"
 msgstr "Tipo de Ponte"
 
+#: assets/models.py:1200
 msgid "Choose the bridge type"
 msgstr "Escolha o tipo de ponte"
 
+#: assets/models.py:1203 assets/templates/assets/estrada_main.html:226
 msgid "River Name"
 msgstr "Nome do rio"
 
+#: assets/models.py:1207
 msgid "Enter the name of the river the bridge crosses over"
 msgstr "Insira o nome do rio atravessado pela ponte"
 
+#: assets/models.py:1210 assets/templates/assets/estrada_main.html:280
 msgid "Number of Spans"
 msgstr "Número de \"spans\""
 
+#: assets/models.py:1214
 msgid "Enter number of spans"
 msgstr "Insira o número de \"spans\" da ponte"
 
+#: assets/models.py:1217
 msgid "Span Length (m)"
 msgstr "Comprimento do \"Span\" (m)"
 
+#: assets/models.py:1223
 msgid "Enter span length"
 msgstr "Insira o comprimento do \"span\""
 
+#: assets/models.py:1227
 msgid "Deck Material"
 msgstr "Material do Tabuleiro"
 
+#: assets/models.py:1231
 msgid "Choose the bridge deck material"
 msgstr "Escolha o material do tabuleiro da ponte"
 
+#: assets/models.py:1235 assets/models.py:1466 assets/models.py:1687
+#: assets/templates/assets/estrada_main.html:292
 msgid "Protection Upstream"
 msgstr "Protecção a montante"
 
+#: assets/models.py:1240 assets/models.py:1471 assets/models.py:1692
 msgid "Choose the upstream protection type"
 msgstr "Escolha o tipo de protecção"
 
+#: assets/models.py:1244 assets/models.py:1475 assets/models.py:1696
+#: assets/templates/assets/estrada_main.html:296
 msgid "Protection Downstream"
 msgstr "Protecção a jusante"
 
+#: assets/models.py:1249 assets/models.py:1480 assets/models.py:1701
 msgid "Choose the downstream protection type"
 msgstr "Escolha o tipo de protecção"
 
+#: assets/models.py:1435
 msgid "Culvert Type"
 msgstr "Tipo de Bueiro"
 
+#: assets/models.py:1439
 msgid "Choose the culvert type"
 msgstr "Escolha o tipo de bueiro"
 
+#: assets/models.py:1442
 msgid "Structure Height (m)"
 msgstr "Altura da estrutura (m)"
 
+#: assets/models.py:1448
 msgid "Enter structure height"
 msgstr "Insira a altura da estrutura"
 
+#: assets/models.py:1451 assets/templates/assets/estrada_main.html:288
 msgid "Number of Cells"
 msgstr "Número de células"
 
+#: assets/models.py:1458 assets/models.py:1679
+#: assets/templates/assets/estrada_main.html:254
 msgid "Material"
 msgstr "Material"
 
+#: assets/models.py:1462
 msgid "Choose the culvert material"
 msgstr "Escolha o material do bueiro"
 
+#: assets/models.py:1662
 msgid "Drift Type"
 msgstr "Tipo de \"Drift\""
 
+#: assets/models.py:1666
 msgid "Choose the drift type"
 msgstr "Escolha o tipo de \"drift\""
 
+#: assets/models.py:1669
 msgid "Structure Thickness (m)"
 msgstr "Espessura da estrutura (m)"
 
+#: assets/models.py:1675
 msgid "Enter structure thickness"
 msgstr "Insira a espessura da estrutura"
 
+#: assets/models.py:1683
 msgid "Choose the drift material"
 msgstr "Escolha o tipo de material do \"drift\""
 
+#: assets/models.py:1731 assets/templates/assets/filter_pane.html:15
+#: assets/templatetags/assets.py:269
+#: contracts/templates/contracts/project_details.html:162
+msgid "Asset Type"
+msgstr "Tipo de Infra-estrutura"
+
+#: assets/models.py:1839 contracts/models.py:316
+msgid "Asset Id"
+msgstr "ID Infra-estrutura"
+
+#: assets/models.py:1847 contracts/templates/contracts/project_details.html:153
+msgid "Asset Code"
+msgstr "Código Infra-estrutura"
+
+#: assets/models.py:1871 assets/models.py:2185
+msgid "Date Surveyed"
+msgstr "Data do levantamento"
+
+#: assets/models.py:1873
+msgid "Date Updated"
+msgstr "Data de actualização"
+
+#: assets/models.py:1876
+msgid "Start Chainage (Km)"
+msgstr "Início do Segmento (Km)"
+
+#: assets/models.py:1879
+msgid "Enter chainage for survey starting point"
+msgstr "Insira o ponto inicial do segmento (Km)"
+
+#: assets/models.py:1882
+msgid "End Chainage (Km)"
+msgstr "Final do Segmento (Km)"
+
+#: assets/models.py:1885
+msgid "Enter chainage for survey ending point"
+msgstr "Insira o ponto final da segmento levantado"
+
+#: assets/models.py:1888 contracts/models.py:295
+msgid "Source"
+msgstr "Fonte"
+
+#: assets/models.py:1893
+msgid "Choose the source of the survey"
+msgstr "Escolha a fonte do levantamento"
+
+#: assets/models.py:2012
+#: contracts/templates/contracts/company_documents.html:24
+#: contracts/templates/contracts/company_documents.html:68
+#: contracts/templates/contracts/company_documents_view.html:29
+#: contracts/templates/contracts/company_documents_view.html:49
+#: contracts/templates/contracts/contract_documents.html:33
+#: contracts/templates/contracts/contract_documents.html:77
+#: contracts/templates/contracts/contract_documents_view.html:38
+#: contracts/templates/contracts/contract_documents_view.html:58
+#: contracts/templates/contracts/project_documents.html:30
+#: contracts/templates/contracts/project_documents.html:74
+#: contracts/templates/contracts/project_documents_view.html:35
+#: contracts/templates/contracts/project_documents_view.html:55
+#: contracts/templates/contracts/tender_documents.html:24
+#: contracts/templates/contracts/tender_documents.html:68
+#: contracts/templates/contracts/tender_documents_view.html:29
+#: contracts/templates/contracts/tender_documents_view.html:49
+#: django_shapefiles/models.py:20
 msgid "Title"
 msgstr "Título"
 
+#: assets/models.py:2015
 msgid "Approved"
 msgstr "Aprovado"
 
+#: assets/models.py:2017
 msgid "Planning Period"
 msgstr "Período do Planeamento"
 
+#: assets/models.py:2101
 msgid "Routine Maintenance"
 msgstr "Manutenção de rotina"
 
+#: assets/models.py:2102
 msgid "Periodic Maintenance"
 msgstr "Manutenção Periódica"
 
+#: assets/models.py:2103
 msgid "Rehabilitation"
 msgstr "Reabilitação"
 
+#: assets/models.py:2104
 msgid "Spot Improvement"
 msgstr "Melhoria de pontos"
 
+#: assets/models.py:2108
+#: contracts/templates/contracts/contract_details_view.html:100
+#: contracts/templates/contracts/contract_details_view.html:169
+#: contracts/templates/contracts/project_financials_view.html:57
 msgid "Year"
 msgstr "Ano"
 
+#: assets/models.py:2110
+#: contracts/templates/contracts/contract_details_view.html:170
+#: contracts/templates/contracts/project_financials.html:57
+#: contracts/templates/contracts/project_financials_view.html:46
 msgid "Budget"
 msgstr "Orçamento"
 
+#: assets/models.py:2115
 msgid "Enter the budget amount"
 msgstr "Insira o valor do orçamento"
 
+#: assets/models.py:2118 assets/templates/assets/estrada_main.html:264
 msgid "Length"
 msgstr "Comprimento"
 
+#: assets/models.py:2123
 msgid "Enter the length"
 msgstr "Insira o comprimento"
 
+#: assets/models.py:2132
 msgid "Work Type"
 msgstr "Tipo de Trabalho"
 
+#: assets/models.py:2135
 msgid "Choose the work type"
 msgstr "Escolha o tipo de trabalho"
 
+#: assets/models.py:2253
 msgid "Date of first Survey"
 msgstr "Data do primeiro levantamento"
 
+#: assets/models.py:2254
 msgid "Date of second Survey"
 msgstr "Data do segundo levantamento"
 
+#: assets/templates/assets/estrada_main.html:20
 msgid "Road Inventory"
 msgstr "Inventário de Estradas"
 
+#: assets/templates/assets/estrada_main.html:23
+#: assets/templates/assets/estrada_main.html:201
 msgid "Export all"
 msgstr "Exportar tudo"
 
+#: assets/templates/assets/estrada_main.html:26
+#: assets/templates/assets/estrada_main.html:205
 msgid "Select data"
 msgstr "Selecção de dados"
 
+#: assets/templates/assets/estrada_main.html:30
 msgid "Road Inventory Data"
 msgstr "Dados do Inventário de Estradas"
 
+#: assets/templates/assets/estrada_main.html:35
 msgid "Road code"
 msgstr "Código da estrada"
 
+#: assets/templates/assets/estrada_main.html:39
 msgid "Road name"
 msgstr "Nome da estrada"
 
+#: assets/templates/assets/estrada_main.html:43
 msgid "Asset class"
 msgstr "Classe da Infra-estrutura"
 
+#: assets/templates/assets/estrada_main.html:47
 msgid "Technical class"
 msgstr "Classe técnica"
 
+#: assets/templates/assets/estrada_main.html:55
 msgid "Link code"
 msgstr "Código da secção da estrada"
 
+#: assets/templates/assets/estrada_main.html:59
 msgid "Link name"
 msgstr "Nome da secção da estrada"
 
+#: assets/templates/assets/estrada_main.html:63
 msgid "Link length"
 msgstr "Extensão da secção"
 
+#: assets/templates/assets/estrada_main.html:71
 msgid "Link start name"
 msgstr "Nome do início da secção da estrada"
 
+#: assets/templates/assets/estrada_main.html:75
 msgid "Link start chainage"
 msgstr "Ponto do início da secção"
 
+#: assets/templates/assets/estrada_main.html:79
 msgid "Start Point - DMS"
 msgstr "Ponto inicial - DMS"
 
+#: assets/templates/assets/estrada_main.html:83
 msgid "Start Point - UTM"
 msgstr "Ponto inicial - UTM"
 
+#: assets/templates/assets/estrada_main.html:89
 msgid "Link end name"
 msgstr "Nome do fim da secção da estrada"
 
+#: assets/templates/assets/estrada_main.html:93
 msgid "Link end chainage"
 msgstr "Ponto do fim da secção"
 
+#: assets/templates/assets/estrada_main.html:97
 msgid "End Point - DMS"
 msgstr "Ponto final - DMS"
 
+#: assets/templates/assets/estrada_main.html:101
 msgid "End Point - UTM"
 msgstr "Ponto final - UTM"
 
+#: assets/templates/assets/estrada_main.html:105
 msgid "Surface type"
 msgstr "Tipo de pavimento"
 
+#: assets/templates/assets/estrada_main.html:109
 msgid "Pavement class"
 msgstr "Classe do pavimento"
 
+#: assets/templates/assets/estrada_main.html:113
 msgid "Carriageway width"
 msgstr "Largura da faixa de rodagem"
 
+#: assets/templates/assets/estrada_main.html:117
 msgid "Total width"
 msgstr "Largura total"
 
+#: assets/templates/assets/estrada_main.html:121
 msgid "Number of lanes"
 msgstr "Número de faixas de rodagem"
 
+#: assets/templates/assets/estrada_main.html:125
 msgid "Rainfall"
 msgstr "Pluviosidade"
 
+#: assets/templates/assets/estrada_main.html:129
 msgid "Terrain Class"
 msgstr "Classe do Terreno"
 
+#: assets/templates/assets/estrada_main.html:133
+#: assets/templates/assets/estrada_main.html:304
 msgid "Inventory Photos/Videos"
 msgstr "Fotos/Vídeos de Inventário"
 
+#: assets/templates/assets/estrada_main.html:145
 msgid "Condition and Traffic"
 msgstr "Condição e trânsito"
 
+#: assets/templates/assets/estrada_main.html:148
 msgid "Roughness (IRI)"
 msgstr "Rugosidade (IRI)"
 
+#: assets/templates/assets/estrada_main.html:152
 msgid "Surface condition"
 msgstr "Condição do pavimento"
 
+#: assets/templates/assets/estrada_main.html:156
 msgid "Maintenance needs"
 msgstr "Manutenção necessária"
 
+#: assets/templates/assets/estrada_main.html:160
 msgid "Traffic data"
 msgstr "Dados de trânsito"
 
+#: assets/templates/assets/estrada_main.html:164
 msgid "Project Data"
 msgstr "Dados do Projecto"
 
+#: assets/templates/assets/estrada_main.html:167
 msgid "Road status"
 msgstr "Estado da estrada"
 
+#: assets/templates/assets/estrada_main.html:171
+#: assets/templates/assets/estrada_main.html:300
 msgid "Construction Year"
 msgstr "Ano de Construção"
 
+#: assets/templates/assets/estrada_main.html:175
 msgid "Funding source"
 msgstr "Fontes de financiamento"
 
+#: assets/templates/assets/estrada_main.html:179
+#: contracts/templates/contracts/project_construction_schedule_view.html:8
+#: contracts/templates/contracts/project_details_view.html:9
+#: contracts/templates/contracts/project_documents_view.html:8
+#: contracts/templates/contracts/project_financials_view.html:8
 msgid "Project"
 msgstr "Projecto"
 
+#: assets/templates/assets/estrada_main.html:184
+#: assets/templates/assets/estrada_main.html:326
 msgid "Return to default selection"
 msgstr "Voltar à selecção inicial"
 
+#: assets/templates/assets/estrada_main.html:198
 msgid "Structure Inventory"
 msgstr "Inventário de Estruturas"
 
+#: assets/templates/assets/estrada_main.html:209
 msgid "Structure Inventory Data"
 msgstr "Dados do Inventário de Estruturas"
 
+#: assets/templates/assets/estrada_main.html:214
 msgid "Structure"
 msgstr "Estrutura"
 
+#: assets/templates/assets/estrada_main.html:222
 msgid "Structure Name"
 msgstr "Nome da Estrutura"
 
+#: assets/templates/assets/estrada_main.html:238
 msgid "GPS Latitude"
 msgstr "Latitude GPS"
 
+#: assets/templates/assets/estrada_main.html:242
 msgid "GPS Longitude"
 msgstr "Longitude GPS"
 
+#: assets/templates/assets/estrada_main.html:260
+#: contracts/templates/contracts/company_documents.html:25
+#: contracts/templates/contracts/company_documents_view.html:30
+#: contracts/templates/contracts/company_documents_view.html:50
+#: contracts/templates/contracts/contract_documents.html:34
+#: contracts/templates/contracts/contract_documents_view.html:39
+#: contracts/templates/contracts/contract_documents_view.html:59
+#: contracts/templates/contracts/project_documents.html:31
+#: contracts/templates/contracts/project_documents_view.html:36
+#: contracts/templates/contracts/project_documents_view.html:56
+#: contracts/templates/contracts/tender_documents.html:25
+#: contracts/templates/contracts/tender_documents_view.html:30
+#: contracts/templates/contracts/tender_documents_view.html:50
 msgid "Type"
 msgstr "Tipo"
 
+#: assets/templates/assets/estrada_main.html:268
 msgid "Width"
 msgstr "Largura"
 
+#: assets/templates/assets/estrada_main.html:272
 msgid "Height"
 msgstr "Altura"
 
+#: assets/templates/assets/estrada_main.html:276
 msgid "Thickness"
 msgstr "Espessura"
 
+#: assets/templates/assets/estrada_main.html:284
 msgid "Span Length"
 msgstr "Comprimento do \"Span\""
 
+#: assets/templates/assets/estrada_main.html:310
 msgid "Structure Condition Data"
 msgstr "Dados de Condição da Estrutura"
 
+#: assets/templates/assets/estrada_main.html:314
+#: assets/templates/assets/filter_pane.html:264
+#: assets/templatetags/assets.py:273 assets/templatetags/assets.py:277
+#: assets/templatetags/assets.py:281
 msgid "Structure Condition"
 msgstr "Condição da Estrutura"
 
+#: assets/templates/assets/estrada_main.html:318
 msgid "Condition Description"
 msgstr "Descrição da Condição"
 
+#: assets/templates/assets/estrada_main.html:322
 msgid "Condition Photos/Videos"
 msgstr "Fotos/Vídeos de Condição"
 
+#: assets/templates/assets/estrada_main.html:338
+#: contracts/templates/contracts/contracts.html:39
+#: contracts/templates/contracts/contracts.html:60
+#: registration_templates/registration/login.html:8
 msgid "Democratic Republic of Timor-Leste"
 msgstr "República Democrática de Timor-Leste"
 
+#: assets/templates/assets/estrada_main.html:338
+#: contracts/templates/contracts/contracts.html:40
+#: contracts/templates/contracts/contracts.html:60
+#: registration_templates/registration/login.html:9
 msgid "Ministry of Public Works"
 msgstr "Ministério das Obras Públicas"
 
+#: assets/templates/assets/estrada_main.html:339
+#: contracts/templates/contracts/contracts.html:61
 msgid "Created by Catalpa International"
 msgstr "Desenvolvido por Catalpa International"
 
+#: assets/templates/assets/filter_pane.html:5
 msgid "View"
 msgstr "Ver"
 
+#: assets/templates/assets/filter_pane.html:6
 msgid "Fullscreen view"
 msgstr "Ver ecrã inteiro"
 
+#: assets/templates/assets/filter_pane.html:8
 msgid "Map & Table"
 msgstr "Mapa & Tabela"
 
+#: assets/templates/assets/filter_pane.html:9
 msgid "Map"
 msgstr "Mapa"
 
+#: assets/templates/assets/filter_pane.html:10
 msgid "Table"
 msgstr "Tabela"
 
+#: assets/templates/assets/filter_pane.html:21
 msgid "Roads"
 msgstr "Estradas"
 
+#: assets/templates/assets/filter_pane.html:22
 msgid "Structures"
 msgstr "Estruturas"
 
+#: assets/templates/assets/filter_pane.html:29
+#: contracts/templates/contracts/contract_list.html:19
+#: contracts/templates/contracts/project_list.html:19
+#: contracts/templates/contracts/tender_list.html:19
 msgid "Filters"
 msgstr "Filtros"
 
+#: assets/templates/assets/filter_pane.html:30
 msgid "Clear all filters"
 msgstr "Limpar todos os filtros"
 
+#: assets/templates/assets/filter_pane.html:34
 msgid "Location"
 msgstr "Localização"
 
+#: assets/templates/assets/filter_pane.html:44
+#: assets/templates/assets/filter_pane.html:72
+#: assets/templates/assets/filter_pane.html:98
+#: assets/templates/assets/filter_pane.html:121
+#: assets/templates/assets/filter_pane.html:147
+#: assets/templates/assets/filter_pane.html:179
+#: assets/templates/assets/filter_pane.html:211
+#: assets/templates/assets/filter_pane.html:237
+#: assets/templates/assets/filter_pane.html:267
 msgid "Clear"
 msgstr "Limpar"
 
+#: assets/templates/assets/filter_pane.html:62
+#: assets/templates/assets/filter_pane.html:169
+#: assets/templatetags/assets.py:265
+#: contracts/templates/contracts/project_details_view.html:71
 msgid "Asset"
 msgstr "Infra-estrutura"
 
+#: assets/templates/assets/filter_pane.html:187
 msgid "Bridges"
 msgstr "Pontes"
 
+#: assets/templates/assets/filter_pane.html:191
 msgid "Culverts"
 msgstr "Bueiros"
 
+#: assets/templates/assets/filter_pane.html:195
 msgid "Drifts"
 msgstr "Drifts"
 
+#: assets/templates/assets/filter_pane.html:256
 msgid "Asset condition"
 msgstr "Condição da infra-estrutura"
 
+#: assets/templatetags/assets.py:285 assets/templatetags/assets.py:289
+#: assets/templatetags/assets.py:293 assets/templatetags/assets.py:305
 msgid "Structure Type"
 msgstr "Tipo de Estrutura"
 
+#: assets/templatetags/assets.py:297 assets/templatetags/assets.py:301
 msgid "Structure Material"
 msgstr "Material da Estrutura"
 
+#: assets/templatetags/assets.py:447 assets/templatetags/assets.py:461
+#: assets/templatetags/assets.py:475
 msgid "Select the type"
 msgstr "Escolha o tipo"
 
+#: assets/templatetags/assets.py:453
 msgid "Select the Deck Material"
 msgstr "Seleccione o material do tabuleiro"
 
+#: assets/templatetags/assets.py:467 assets/templatetags/assets.py:481
 msgid "Select the Material"
 msgstr "Seleccione o Material"
 
+#: contracts/forms.py:18
 msgid "Rehabilitation road X"
 msgstr "Reabilitação da estrada X"
 
+#: contracts/forms.py:26
 msgid "Project for the rehabilitation of road X"
 msgstr "Projecto para a reabilitação da estrada X"
 
+#: contracts/forms.py:198
 msgid "Associated projects"
 msgstr "Projectos associados"
 
+#: contracts/forms.py:199
 msgid "Select one or more projects for the tender"
 msgstr "Seleccione um ou mais projectos ao concurso"
 
+#: contracts/forms.py:264
 msgid "Contract for the upgrade of road A01-1 to technical class R1"
 msgstr "Contracto para o upgrade da estrada A01-1 para classe técnica R1"
 
+#: contracts/forms.py:292
 msgid "Due to unforeseen events, the contract start was postponed by 1 month"
-msgstr "Devido a eventos inesperados, o início do contracto foi atrasado por 1 mês"
+msgstr ""
+"Devido a eventos inesperados, o início do contracto foi atrasado por 1 mês"
 
+#: contracts/models.py:164
 msgid "Project Status"
 msgstr "Estado do Projecto"
 
+#: contracts/models.py:166 contracts/models.py:689 contracts/models.py:766
 msgid "Choose status"
 msgstr "Escolha o estado"
 
+#: contracts/models.py:171
+#: contracts/templates/contracts/project_details_view.html:37
 msgid "Program Name"
 msgstr "Nome do Programa"
 
+#: contracts/models.py:172
 msgid "Choose the program for the project"
 msgstr "Escolha o programa do projecto"
 
+#: contracts/models.py:177
+#: contracts/templates/contracts/project_details_view.html:78
+#: contracts/templates/contracts/project_list.html:71
 msgid "Type of Work"
 msgstr "Tipo de Trabalho"
 
+#: contracts/models.py:178
 msgid "Choose from the list"
 msgstr "Escolha da lista"
 
+#: contracts/models.py:183
 msgid "Enter project’s name"
 msgstr "Insira o nome do projecto"
 
+#: contracts/models.py:190
+#: contracts/templates/contracts/project_details_view.html:45
 msgid "Project Code"
 msgstr "Código do Projecto"
 
+#: contracts/models.py:191
 msgid "Enter project’s code"
 msgstr "Insira o código do projecto"
 
+#: contracts/models.py:194
 msgid "Enter a description of the project"
 msgstr "Insira a descrição do projecto"
 
+#: contracts/models.py:202
 msgid "Choose the funding source"
 msgstr "Escolha a fonte de financiamento"
 
+#: contracts/models.py:209
 msgid "Choose the donor"
 msgstr "Escolha o doador"
 
+#: contracts/models.py:213
 msgid "Enter schedule start date"
 msgstr "Escolha a data de início prevista"
 
+#: contracts/models.py:219 contracts/models.py:752
+#: contracts/templates/contracts/project_construction_schedule_view.html:37
 msgid "Duration (days)"
 msgstr "Duração (dias)"
 
+#: contracts/models.py:220
 msgid "Estimated duration of the work"
 msgstr "Duração estimada do trabalho"
 
+#: contracts/models.py:302
+#: contracts/templates/contracts/contract_payments.html:43
+#: contracts/templates/contracts/contract_payments.html:90
+#: contracts/templates/contracts/contract_payments_view.html:40
+#: contracts/templates/contracts/contract_payments_view.html:63
+#: contracts/templates/contracts/project_financials_view.html:40
 msgid "Donor"
 msgstr "Doador"
 
+#: contracts/models.py:320
 msgid "Select project's asset"
 msgstr "Escolha a infra-estrutura associada ao projecto"
 
+#: contracts/models.py:332
 msgid "Start Chainage"
 msgstr "Início do segmento"
 
+#: contracts/models.py:335 contracts/models.py:338
 msgid "In meters"
 msgstr "Em metros"
 
+#: contracts/models.py:338
 msgid "End Chainage"
 msgstr "Fim do segmento"
 
+#: contracts/models.py:364
 msgid "Start Chainage must be specified for roads"
 msgstr "O ponto de início do segmento deve ser inserido para estradas"
 
+#: contracts/models.py:372
 msgid "End Chainage must be specified for roads"
 msgstr "O ponto final do segmento deve ser inserido para estrada"
 
+#: contracts/models.py:378
 msgid "Start Chainage must be 0 or greater"
 msgstr "O Ponto de início do segmento deve ser 0 our maior"
 
+#: contracts/models.py:384
 msgid "Start Chainage must be less than End Chainage"
 msgstr "O Ponto inicial deve ser anterior ao ponto final"
 
+#: contracts/models.py:387
 msgid "End Chainage must be greater than Start Chainage"
 msgstr "O Ponto final deve ser posterior ao ponto inicial"
 
-msgid "Asset Id must identify a current Asset, or provide enough information to create a new Asset"
-msgstr "ID da infra-estrutura deve corresponder a uma já existente ou fornecer informação para a criação de uma nova"
+#: contracts/models.py:403
+msgid ""
+"Asset Id must identify a current Asset, or provide enough information to "
+"create a new Asset"
+msgstr ""
+"ID da infra-estrutura deve corresponder a uma já existente ou fornecer "
+"informação para a criação de uma nova"
 
-msgid "Could not create a new Asset, because the asset_type in the 'special' Asset Id is not valid."
-msgstr "Não foi possível criar uma nova infra-estrutura pois o asset_type no seu ID 'special' não é válido"
+#: contracts/models.py:427
+msgid ""
+"Could not create a new Asset, because the asset_type in the 'special' Asset "
+"Id is not valid."
+msgstr ""
+"Não foi possível criar uma nova infra-estrutura pois o asset_type no seu ID "
+"'special' não é válido"
 
-msgid "Could not create a new Asset, because the asset_class in the 'special' Asset Id is not valid."
-msgstr "Não foi possível criar uma nova infra-estrutura pois o asset_class no seu ID 'special' não é válido"
+#: contracts/models.py:438
+msgid ""
+"Could not create a new Asset, because the asset_class in the 'special' Asset "
+"Id is not valid."
+msgstr ""
+"Não foi possível criar uma nova infra-estrutura pois o asset_class no seu ID "
+"'special' não é válido"
 
-msgid "Could not create a new Asset, because the asset_municipality in the 'special' Asset Id is not valid."
-msgstr "Não foi possível criar uma nova infra-estrutura pois o asset_municipality no seu ID 'special' não é válido"
-
+#: contracts/models.py:501
 msgid "The Asset Code must be unique for this type of asset"
 msgstr "O código da infra-estrutura tem que ser único"
 
+#: contracts/models.py:566
 msgid "Start Chainage is too large for this road"
 msgstr "O ponto de início do segmento é demasiado alto para esta estrada"
 
+#: contracts/models.py:597
 #, python-format
 msgid "Ensure this value has at most 15 characters (it has %s)"
 msgstr "Garanta que este valor tem pelo menos 15 caracteres (it has %s)"
 
+#: contracts/models.py:621
 msgid "Enter year"
 msgstr "Insira o ano"
 
+#: contracts/models.py:623
 msgid "In USD"
 msgstr "Em USD"
 
+#: contracts/models.py:634
 msgid "Estimated days of work"
 msgstr "Dias estimados de trabalho"
 
+#: contracts/models.py:640 contracts/models.py:840
 msgid "Physical progress (%)"
 msgstr "Progresso físico (%)"
 
+#: contracts/models.py:641
 msgid "Estimated physical progress"
 msgstr "Progresso físico estimado"
 
+#: contracts/models.py:657
+#: contracts/templates/contracts/tender_details_view.html:30
+#: contracts/templates/contracts/tender_list.html:67
 msgid "Tender Code"
 msgstr "Código do Concurso"
 
+#: contracts/models.py:658
 msgid "Enter tender's code"
 msgstr "Insira o código do concurso"
 
+#: contracts/models.py:663
+#: contracts/templates/contracts/tender_details_view.html:48
 msgid "Announcement Date"
 msgstr "Data do Anúncio"
 
+#: contracts/models.py:664
 msgid "Tender announcement date"
 msgstr "Data do anúncio do concurso"
 
+#: contracts/models.py:669
+#: contracts/templates/contracts/tender_details_view.html:55
 msgid "Bid Submission Deadline"
 msgstr "Prazo de Submissão de Propostas"
 
+#: contracts/models.py:670
 msgid "Date of fid submission deadline"
 msgstr "Data limite para a submissão de propostas"
 
+#: contracts/models.py:675
 msgid "Number of Companies Tendering"
 msgstr "Número de Empresas em Concurso"
 
+#: contracts/models.py:676
 msgid "Enter the number of companies tendering"
 msgstr "Insira o número de empresas a concorrer"
 
+#: contracts/models.py:681
+#: contracts/templates/contracts/tender_details_view.html:63
 msgid "Evaluation Date"
 msgstr "Data de Avaliação"
 
+#: contracts/models.py:682
 msgid "Bids evaluation date"
 msgstr "Data de avaliação das propostas"
 
+#: contracts/models.py:687
 msgid "Tender Status"
 msgstr "Estado do Concurso"
 
+#: contracts/models.py:720
 msgid "Enter contract code"
 msgstr "Insira o código do contrato"
 
+#: contracts/models.py:722
 msgid "Enter a description of the contract"
 msgstr "Insira a descrição do contrato"
 
+#: contracts/models.py:727
 msgid "Associated tender"
 msgstr "Concurso Associado"
 
+#: contracts/models.py:728
 msgid "Choose a tender to create a contract"
 msgstr "Escolha o concurso para a criação do contracto"
 
+#: contracts/models.py:734 contracts/models.py:742
 msgid "Select a company from the list"
 msgstr "Selecione a empresa a partir da lista"
 
+#: contracts/models.py:745 contracts/models.py:771
 msgid "Contract start date"
 msgstr "Data de início do contrato"
 
+#: contracts/models.py:745
 msgid "Enter contract start date"
 msgstr "Insira a data de início do contrato"
 
+#: contracts/models.py:748
 msgid "Contract end date"
 msgstr "Data de fim de contrato"
 
+#: contracts/models.py:748
 msgid "Enter contract end date"
 msgstr "Insira a data de fim do contrato"
 
+#: contracts/models.py:753
 msgid "Duration in days"
 msgstr "Duração em dias"
 
+#: contracts/models.py:759
 msgid "Defect liability period (days)"
 msgstr "Período de responsabilidade pelos defeitos (dias)"
 
+#: contracts/models.py:760
 msgid "Duration of DLP in days"
 msgstr "Duração do Período de Responsabilidade em dias"
 
+#: contracts/models.py:772
 msgid "Enter new start date"
 msgstr "Insira uma nova data de início"
 
+#: contracts/models.py:778
 msgid "Contract duration"
 msgstr "Duração do contrato"
 
+#: contracts/models.py:779
 msgid "Enter new duration in days"
 msgstr "Insira uma nova duração em dias"
 
+#: contracts/models.py:784
+#: contracts/templates/contracts/contract_details_view.html:194
 msgid "Description (Reasons for Variations)"
 msgstr "Descrição (motivo para a alteração)"
 
+#: contracts/models.py:785
 msgid "Enter a reason for variations to the contract"
 msgstr "Insira o motivo para a alteração ao contrato"
 
+#: contracts/models.py:817
 msgid "Enter supervisor's name"
 msgstr "Insira o nome do supervisor"
 
+#: contracts/models.py:818
 msgid "Supervisor's phone number"
 msgstr "Telefone do supervisor"
 
+#: contracts/models.py:828 contracts/models.py:854
 msgid "Select year"
 msgstr "Seleccione o ano"
 
+#: contracts/models.py:829 contracts/models.py:857
 msgid "Budget per year in USD"
 msgstr "Orçamento por ano em USD"
 
+#: contracts/models.py:834
 msgid "Days of work for the milestone"
 msgstr "Dias de trabalho para a meta"
 
+#: contracts/models.py:841
 msgid "Milestone physical progress"
 msgstr "Meta para o progresso físico"
 
+#: contracts/models.py:862 contracts/models.py:1021
 msgid "Yes"
 msgstr "Sim"
 
+#: contracts/models.py:862 contracts/models.py:1021
 msgid "No"
 msgstr "Não"
 
+#: contracts/models.py:939
 msgid "January"
 msgstr "Janeiro"
 
+#: contracts/models.py:940
 msgid "February"
 msgstr "Fevereiro"
 
+#: contracts/models.py:941
 msgid "March"
 msgstr "Março"
 
+#: contracts/models.py:942
 msgid "April"
 msgstr "Abril"
 
+#: contracts/models.py:943
 msgid "May"
 msgstr "Maio"
 
+#: contracts/models.py:944
 msgid "June"
 msgstr "Junho"
 
+#: contracts/models.py:945
 msgid "July"
 msgstr "Julho"
 
+#: contracts/models.py:946
 msgid "August"
 msgstr "Agosto"
 
+#: contracts/models.py:947
 msgid "September"
 msgstr "Setembro"
 
+#: contracts/models.py:948
 msgid "October"
 msgstr "Outubro"
 
+#: contracts/models.py:949
 msgid "November"
 msgstr "Novembro"
 
+#: contracts/models.py:950
 msgid "December"
 msgstr "Dezembro"
 
+#: contracts/models.py:1021
 msgid "Unknown"
 msgstr "Desconhecido"
 
+#: contracts/models.py:1025
+#: contracts/templates/contracts/company_details_view.html:26
 msgid "Company Name"
 msgstr "Nome da Empresa"
 
+#: contracts/models.py:1026
 msgid "Enter company name"
 msgstr "Insira o nome da empresa"
 
+#: contracts/models.py:1029
 msgid "Enter company address"
 msgstr "Insira a morada da empresa"
 
+#: contracts/models.py:1035
 msgid "Enter company phone number"
 msgstr "Insira o telefone da empresa"
 
+#: contracts/models.py:1038
 msgid "Enter company email"
 msgstr "Insira o email da empresa"
 
+#: contracts/models.py:1043
 msgid "Enter company TIN number"
 msgstr "Insira o número TIN da empresa"
 
+#: contracts/models.py:1049
+#: contracts/templates/contracts/company_details_view.html:46
 msgid "Bank Account Number"
 msgstr "Número da Conta Bancária"
 
+#: contracts/models.py:1050
 msgid "Enter company bank account number"
 msgstr "Insira o número da conta bancária da empresa"
 
+#: contracts/models.py:1058
 msgid "Representative name"
 msgstr "Nome do representante"
 
+#: contracts/models.py:1059
 msgid "Enter company representative name"
 msgstr "Insira o nome do representante da empresa"
 
+#: contracts/models.py:1065
 msgid "Representative phone"
 msgstr "Telefone do representante"
 
+#: contracts/models.py:1066
 msgid "Enter company representative phone number"
 msgstr "Insira o número de telefone do representante da empresa"
 
+#: contracts/models.py:1071
 msgid "Representative email"
 msgstr "Email do representante"
 
+#: contracts/models.py:1072
 msgid "Enter company representative email"
 msgstr "Insira o email do representante da empresa"
 
+#: contracts/models.py:1079
+#: contracts/templates/contracts/company_details_view.html:62
 msgid "Woman-Led Company"
 msgstr "Empresa liderada por uma Mulher"
 
+#: contracts/models.py:1080
 msgid "Is the company director/owner a woman?"
 msgstr "O director/dono da empresa é uma mulher?"
 
+#: contracts/models.py:1088
+#: contracts/templates/contracts/company_details_view.html:66
 msgid "Company category"
 msgstr "Categoria da empresa"
 
+#: contracts/models.py:1089
 msgid "Choose category"
 msgstr "Escolha a categoria"
 
+#: contracts/models.py:1188
 msgid "project"
 msgstr "projecto"
 
+#: contracts/models.py:1189
 msgid "tender"
 msgstr "concurso"
 
+#: contracts/models.py:1190
 msgid "contract"
 msgstr "contrato"
 
+#: contracts/models.py:1191
 msgid "company"
 msgstr "empresa"
 
+#: contracts/templates/contracts/company_base.html:8
 msgid "Edit Company"
 msgstr "Editar Empresa"
 
+#: contracts/templates/contracts/company_base.html:10
 msgid "Create Company"
 msgstr "Adicionar Empresa"
 
+#: contracts/templates/contracts/company_details.html:7
+#: contracts/templates/contracts/company_details.html:24
+#: contracts/templates/contracts/company_details_view.html:15
+#: contracts/templates/contracts/company_details_view.html:24
+#: contracts/templates/contracts/company_documents.html:7
+#: contracts/templates/contracts/company_documents_view.html:15
 msgid "Company Details"
 msgstr "Detalhes da Empresa"
 
+#: contracts/templates/contracts/company_details.html:11
+#: contracts/templates/contracts/company_details.html:15
+#: contracts/templates/contracts/company_details_view.html:18
+#: contracts/templates/contracts/company_documents.html:10
+#: contracts/templates/contracts/company_documents_view.html:18
+#: contracts/templates/contracts/contract_details.html:20
+#: contracts/templates/contracts/contract_details.html:33
+#: contracts/templates/contracts/contract_details_view.html:27
+#: contracts/templates/contracts/contract_documents.html:19
+#: contracts/templates/contracts/contract_documents_view.html:27
+#: contracts/templates/contracts/contract_inspections.html:19
+#: contracts/templates/contracts/contract_inspections_view.html:27
+#: contracts/templates/contracts/contract_payments.html:19
+#: contracts/templates/contracts/contract_payments_view.html:27
+#: contracts/templates/contracts/contract_social_safeguard_data.html:19
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:27
+#: contracts/templates/contracts/project_construction_schedule.html:16
+#: contracts/templates/contracts/project_construction_schedule_view.html:24
+#: contracts/templates/contracts/project_details.html:17
+#: contracts/templates/contracts/project_details.html:27
+#: contracts/templates/contracts/project_details_view.html:25
+#: contracts/templates/contracts/project_documents.html:16
+#: contracts/templates/contracts/project_documents_view.html:24
+#: contracts/templates/contracts/project_financials.html:16
+#: contracts/templates/contracts/project_financials_view.html:24
+#: contracts/templates/contracts/tender_details.html:11
+#: contracts/templates/contracts/tender_details.html:15
+#: contracts/templates/contracts/tender_details_view.html:18
+#: contracts/templates/contracts/tender_documents.html:10
+#: contracts/templates/contracts/tender_documents_view.html:18
 msgid "Documents"
 msgstr "Documentos"
 
+#: contracts/templates/contracts/company_details.html:187
+#: contracts/templates/contracts/company_documents.html:96
+#: contracts/templates/contracts/contract_details.html:370
+#: contracts/templates/contracts/contract_documents.html:105
+#: contracts/templates/contracts/contract_inspections.html:100
+#: contracts/templates/contracts/contract_payments.html:126
+#: contracts/templates/contracts/contract_social_safeguard_data.html:162
+#: contracts/templates/contracts/project_construction_schedule.html:95
+#: contracts/templates/contracts/project_details.html:222
+#: contracts/templates/contracts/project_documents.html:102
+#: contracts/templates/contracts/project_financials.html:92
+#: contracts/templates/contracts/tender_details.html:136
+#: contracts/templates/contracts/tender_documents.html:96
+#: registration_templates/registration/password_change_form.html:41
+#: registration_templates/registration/password_reset_confirm.html:36
+#: registration_templates/registration/password_reset_form.html:17
 msgid "Cancel"
 msgstr "Cancelar"
 
+#: contracts/templates/contracts/company_details.html:189
+#: contracts/templates/contracts/company_documents.html:97
+#: contracts/templates/contracts/contract_details.html:372
+#: contracts/templates/contracts/contract_documents.html:106
+#: contracts/templates/contracts/contract_inspections.html:101
+#: contracts/templates/contracts/contract_payments.html:127
+#: contracts/templates/contracts/contract_social_safeguard_data.html:163
+#: contracts/templates/contracts/project_construction_schedule.html:96
+#: contracts/templates/contracts/project_details.html:224
+#: contracts/templates/contracts/project_documents.html:103
+#: contracts/templates/contracts/project_financials.html:93
+#: contracts/templates/contracts/tender_details.html:138
+#: contracts/templates/contracts/tender_documents.html:97
 msgid "Save"
 msgstr "Guardar"
 
+#: contracts/templates/contracts/company_details.html:191
+#: contracts/templates/contracts/contract_details.html:374
+#: contracts/templates/contracts/project_details.html:226
+#: contracts/templates/contracts/tender_details.html:140
 msgid "Create"
 msgstr "Adicionar"
 
+#: contracts/templates/contracts/company_details_view.html:8
+#: contracts/templates/contracts/company_documents_view.html:8
 msgid "Company"
 msgstr "Empresa"
 
+#: contracts/templates/contracts/company_details_view.html:10
+#: contracts/templates/contracts/company_documents_view.html:10
+#: contracts/templates/contracts/contract_details_view.html:10
+#: contracts/templates/contracts/contract_documents_view.html:10
+#: contracts/templates/contracts/contract_inspections_view.html:10
+#: contracts/templates/contracts/contract_payments_view.html:10
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:10
+#: contracts/templates/contracts/project_construction_schedule_view.html:10
+#: contracts/templates/contracts/project_details_view.html:11
+#: contracts/templates/contracts/project_documents_view.html:10
+#: contracts/templates/contracts/project_financials_view.html:10
+#: contracts/templates/contracts/tender_details_view.html:10
+#: contracts/templates/contracts/tender_documents_view.html:10
 msgid "Print"
 msgstr "Imprimir"
 
+#: contracts/templates/contracts/company_details_view.html:30
 msgid "Address"
 msgstr "Morada"
 
+#: contracts/templates/contracts/company_details_view.html:34
 msgid "Phone"
 msgstr "Telefone"
 
+#: contracts/templates/contracts/company_details_view.html:38
 msgid "Email"
 msgstr "Email"
 
+#: contracts/templates/contracts/company_details_view.html:42
 msgid "TIN"
 msgstr "TIN"
 
+#: contracts/templates/contracts/company_details_view.html:50
 msgid "Representative Name"
 msgstr "Nome do representante"
 
+#: contracts/templates/contracts/company_details_view.html:54
 msgid "Representative Phone"
 msgstr "Telefone do representante"
 
+#: contracts/templates/contracts/company_details_view.html:58
 msgid "Representative Email"
 msgstr "Email do representante"
 
+#: contracts/templates/contracts/company_details_view.html:71
 msgid "Associated as a contractor"
 msgstr "Associado como contratado"
 
+#: contracts/templates/contracts/company_details_view.html:79
 msgid "Associated as a subcontractor"
 msgstr "Associado como sub-contratado"
 
+#: contracts/templates/contracts/company_documents.html:16
+#: contracts/templates/contracts/contract_documents.html:25
+#: contracts/templates/contracts/project_documents.html:22
+#: contracts/templates/contracts/tender_documents.html:16
 msgid "Uploaded Documents"
 msgstr "Documentos carregados"
 
+#: contracts/templates/contracts/company_documents.html:17
+#: contracts/templates/contracts/contract_documents.html:26
+#: contracts/templates/contracts/contract_inspections.html:26
+#: contracts/templates/contracts/contract_payments.html:27
+#: contracts/templates/contracts/contract_social_safeguard_data.html:26
+#: contracts/templates/contracts/project_documents.html:23
+#: contracts/templates/contracts/tender_documents.html:17
 msgid "Add"
 msgstr "Adicionar"
 
+#: contracts/templates/contracts/company_documents.html:26
+#: contracts/templates/contracts/company_documents.html:82
+#: contracts/templates/contracts/company_documents_view.html:31
+#: contracts/templates/contracts/company_documents_view.html:51
+#: contracts/templates/contracts/contract_documents.html:35
+#: contracts/templates/contracts/contract_documents.html:91
+#: contracts/templates/contracts/contract_documents_view.html:40
+#: contracts/templates/contracts/contract_documents_view.html:60
+#: contracts/templates/contracts/project_documents.html:32
+#: contracts/templates/contracts/project_documents.html:88
+#: contracts/templates/contracts/project_documents_view.html:37
+#: contracts/templates/contracts/project_documents_view.html:57
+#: contracts/templates/contracts/tender_documents.html:26
+#: contracts/templates/contracts/tender_documents.html:82
+#: contracts/templates/contracts/tender_documents_view.html:31
+#: contracts/templates/contracts/tender_documents_view.html:51
 msgid "Document Date"
 msgstr "Data do documento"
 
+#: contracts/templates/contracts/company_documents.html:55
+#: contracts/templates/contracts/contract_documents.html:64
+#: contracts/templates/contracts/project_documents.html:61
+#: contracts/templates/contracts/tender_documents.html:55
 msgid "Save Document"
 msgstr "Salvar documento"
 
+#: contracts/templates/contracts/company_documents.html:56
+#: contracts/templates/contracts/company_documents.html:108
+#: contracts/templates/contracts/company_list.html:71
+#: contracts/templates/contracts/contract_documents.html:65
+#: contracts/templates/contracts/contract_documents.html:117
+#: contracts/templates/contracts/contract_inspections.html:61
+#: contracts/templates/contracts/contract_inspections.html:112
+#: contracts/templates/contracts/contract_list.html:149
+#: contracts/templates/contracts/contract_payments.html:72
+#: contracts/templates/contracts/contract_payments.html:138
+#: contracts/templates/contracts/contract_social_safeguard_data.html:63
+#: contracts/templates/contracts/contract_social_safeguard_data.html:174
+#: contracts/templates/contracts/contracts.html:72
+#: contracts/templates/contracts/project_documents.html:62
+#: contracts/templates/contracts/project_documents.html:114
+#: contracts/templates/contracts/project_list.html:138
+#: contracts/templates/contracts/tender_documents.html:56
+#: contracts/templates/contracts/tender_documents.html:108
+#: contracts/templates/contracts/tender_list.html:149
 msgid "Close"
 msgstr "Fechar"
 
+#: contracts/templates/contracts/company_documents.html:62
+#: contracts/templates/contracts/contract_documents.html:71
+#: contracts/templates/contracts/project_documents.html:68
+#: contracts/templates/contracts/tender_documents.html:62
 msgid "File"
 msgstr "Ficheiro"
 
+#: contracts/templates/contracts/company_documents.html:73
+#: contracts/templates/contracts/contract_documents.html:82
+#: contracts/templates/contracts/project_documents.html:79
+#: contracts/templates/contracts/tender_documents.html:73
 msgid "Document Type"
 msgstr "Tipo de documento"
 
+#: contracts/templates/contracts/company_documents.html:112
+#: contracts/templates/contracts/contract_documents.html:121
+#: contracts/templates/contracts/project_documents.html:118
+#: contracts/templates/contracts/tender_documents.html:112
 msgid "Delete Document"
 msgstr "Apagar documento"
 
+#: contracts/templates/contracts/company_documents.html:113
+#: contracts/templates/contracts/contract_documents.html:122
+#: contracts/templates/contracts/project_documents.html:119
+#: contracts/templates/contracts/tender_documents.html:113
 msgid "Are you sure you want to delete this document?"
 msgstr "Tem a certeza que pretende apagar este documento?"
 
+#: contracts/templates/contracts/company_documents.html:116
+#: contracts/templates/contracts/company_list.html:79
+#: contracts/templates/contracts/contract_documents.html:125
+#: contracts/templates/contracts/contract_inspections.html:120
+#: contracts/templates/contracts/contract_list.html:157
+#: contracts/templates/contracts/contract_payments.html:146
+#: contracts/templates/contracts/contract_social_safeguard_data.html:182
+#: contracts/templates/contracts/project_documents.html:122
+#: contracts/templates/contracts/project_list.html:146
+#: contracts/templates/contracts/tender_documents.html:116
+#: contracts/templates/contracts/tender_list.html:157
 msgid "Delete"
 msgstr "Apagar"
 
+#: contracts/templates/contracts/company_documents.html:117
+#: contracts/templates/contracts/company_list.html:80
+#: contracts/templates/contracts/contract_documents.html:126
+#: contracts/templates/contracts/contract_inspections.html:121
+#: contracts/templates/contracts/contract_list.html:158
+#: contracts/templates/contracts/contract_payments.html:147
+#: contracts/templates/contracts/contract_social_safeguard_data.html:183
+#: contracts/templates/contracts/project_documents.html:123
+#: contracts/templates/contracts/project_list.html:147
+#: contracts/templates/contracts/tender_documents.html:117
+#: contracts/templates/contracts/tender_list.html:158
 msgid "Don't delete"
 msgstr "Manter"
 
+#: contracts/templates/contracts/company_documents_view.html:24
+#: contracts/templates/contracts/contract_documents_view.html:33
+#: contracts/templates/contracts/project_documents_view.html:30
+#: contracts/templates/contracts/tender_documents_view.html:24
 msgid "List of documents"
 msgstr "Lista de documentos"
 
+#: contracts/templates/contracts/company_list.html:6
 msgid "Company Manager"
 msgstr "Gestor da Empresa"
 
+#: contracts/templates/contracts/company_list.html:8
 msgid "Create New Company"
 msgstr "Adicionar nova empresa"
 
+#: contracts/templates/contracts/company_list.html:14
 msgid "List of companies"
 msgstr "Lista de empresas"
 
+#: contracts/templates/contracts/company_list.html:19
+#: contracts/templates/contracts/contract_list.html:59
+#: contracts/templates/contracts/project_list.html:60
+#: contracts/templates/contracts/tender_list.html:59
 msgid "Export table"
 msgstr "Exportar tabela"
 
+#: contracts/templates/contracts/company_list.html:25
+#: contracts/templates/contracts/contract_list.html:65
+#: contracts/templates/contracts/project_list.html:66
+#: contracts/templates/contracts/tender_list.html:65
 msgid "Edit"
 msgstr "Editar"
 
+#: contracts/templates/contracts/company_list.html:28
 msgid "Total Contracts"
 msgstr "Total de Contratos"
 
+#: contracts/templates/contracts/company_list.html:29
 msgid "Active Contracts"
 msgstr "Contratos Activos"
 
+#: contracts/templates/contracts/company_list.html:60
 msgid "Welcome to the Company Manager"
 msgstr "Bem-vindo ao gestor de Empresas"
 
+#: contracts/templates/contracts/company_list.html:61
 msgid "No companies were created yet"
 msgstr "Ainda não foram adicionadas empresas"
 
+#: contracts/templates/contracts/company_list.html:75
 msgid "Delete Company"
 msgstr "Apagar Empresa"
 
+#: contracts/templates/contracts/company_list.html:76
 msgid "Are you sure you want to delete this company?"
 msgstr "Tem a certeza que deseja apagar esta empresa?"
 
+#: contracts/templates/contracts/contract_base.html:8
 msgid "Edit Contract"
 msgstr "Editar Contrato"
 
+#: contracts/templates/contracts/contract_base.html:10
 msgid "Create Contract"
 msgstr "Adicionar Contrato"
 
+#: contracts/templates/contracts/contract_details.html:7
+#: contracts/templates/contracts/contract_details.html:42
+#: contracts/templates/contracts/contract_details_view.html:15
+#: contracts/templates/contracts/contract_details_view.html:33
+#: contracts/templates/contracts/contract_documents.html:7
+#: contracts/templates/contracts/contract_documents_view.html:15
+#: contracts/templates/contracts/contract_inspections.html:7
+#: contracts/templates/contracts/contract_inspections_view.html:15
+#: contracts/templates/contracts/contract_payments.html:7
+#: contracts/templates/contracts/contract_payments_view.html:15
+#: contracts/templates/contracts/contract_social_safeguard_data.html:7
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:15
 msgid "Contract Details"
 msgstr "Detalhes do Contrato"
 
+#: contracts/templates/contracts/contract_details.html:11
+#: contracts/templates/contracts/contract_details.html:24
+#: contracts/templates/contracts/contract_details_view.html:18
+#: contracts/templates/contracts/contract_documents.html:10
+#: contracts/templates/contracts/contract_documents_view.html:18
+#: contracts/templates/contracts/contract_inspections.html:10
+#: contracts/templates/contracts/contract_inspections_view.html:18
+#: contracts/templates/contracts/contract_payments.html:10
+#: contracts/templates/contracts/contract_payments_view.html:18
+#: contracts/templates/contracts/contract_social_safeguard_data.html:10
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:18
 msgid "Inspections"
 msgstr "Inspecções"
 
+#: contracts/templates/contracts/contract_details.html:14
+#: contracts/templates/contracts/contract_details.html:27
+#: contracts/templates/contracts/contract_details_view.html:21
+#: contracts/templates/contracts/contract_documents.html:13
+#: contracts/templates/contracts/contract_documents_view.html:21
+#: contracts/templates/contracts/contract_inspections.html:13
+#: contracts/templates/contracts/contract_inspections_view.html:21
+#: contracts/templates/contracts/contract_payments.html:13
+#: contracts/templates/contracts/contract_payments_view.html:21
+#: contracts/templates/contracts/contract_social_safeguard_data.html:13
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:21
 msgid "Payments"
 msgstr "Pagamentos"
 
+#: contracts/templates/contracts/contract_details.html:17
+#: contracts/templates/contracts/contract_details.html:30
+#: contracts/templates/contracts/contract_details_view.html:24
+#: contracts/templates/contracts/contract_documents.html:16
+#: contracts/templates/contracts/contract_documents_view.html:24
+#: contracts/templates/contracts/contract_inspections.html:16
+#: contracts/templates/contracts/contract_inspections_view.html:24
+#: contracts/templates/contracts/contract_payments.html:16
+#: contracts/templates/contracts/contract_payments_view.html:24
+#: contracts/templates/contracts/contract_social_safeguard_data.html:16
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:24
 msgid "Social Safeguard"
 msgstr "Protecção Social"
 
+#: contracts/templates/contracts/contract_details.html:133
+#: contracts/templates/contracts/contract_details_view.html:70
 msgid "Supervisor"
 msgstr "Supervisor"
 
+#: contracts/templates/contracts/contract_details.html:162
+#: contracts/templates/contracts/contract_details_view.html:89
 msgid "Contract Value Total"
 msgstr "Valor Total do Contrato"
 
+#: contracts/templates/contracts/contract_details.html:191
+#: contracts/templates/contracts/contract_details_view.html:120
 msgid "Schedule"
 msgstr "Calendário"
 
+#: contracts/templates/contracts/contract_details.html:257
+#: contracts/templates/contracts/contract_details_view.html:137
 msgid "Milestones"
 msgstr "Metas"
 
+#: contracts/templates/contracts/contract_details.html:286
+#: contracts/templates/contracts/contract_details_view.html:158
 msgid "Amendments"
 msgstr "Aditamentos"
 
+#: contracts/templates/contracts/contract_details_view.html:8
+#: contracts/templates/contracts/contract_documents_view.html:8
+#: contracts/templates/contracts/contract_inspections_view.html:8
+#: contracts/templates/contracts/contract_payments_view.html:8
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:8
 msgid "Contract"
 msgstr "Contrato"
 
+#: contracts/templates/contracts/contract_details_view.html:35
+#: contracts/templates/contracts/contract_list.html:71
+#: contracts/templates/contracts/project_details_view.html:33
+#: contracts/templates/contracts/project_financials_view.html:32
+#: contracts/templates/contracts/project_list.html:69
+#: contracts/templates/contracts/tender_details_view.html:26
+#: contracts/templates/contracts/tender_list.html:70
 msgid "Status"
 msgstr "Estado"
 
+#: contracts/templates/contracts/contract_details_view.html:39
+#: contracts/templates/contracts/project_details_view.html:53
 msgid "Associated Tender"
 msgstr "Concurso Associado"
 
+#: contracts/templates/contracts/contract_details_view.html:42
 msgid "Projects in the Tender"
 msgstr "Projectos neste Concurso"
 
+#: contracts/templates/contracts/contract_details_view.html:53
+#: contracts/templates/contracts/contract_list.html:67
 msgid "Contract Code"
 msgstr "Código do Contrato"
 
+#: contracts/templates/contracts/contract_details_view.html:57
 msgid "Contract Description"
 msgstr "Descrição do Contrato"
 
+#: contracts/templates/contracts/contract_details_view.html:61
 msgid "Contractor"
 msgstr "Empresa contratada"
 
+#: contracts/templates/contracts/contract_details_view.html:65
 msgid "Sub-Contractor"
 msgstr "Empresa sub-contratada"
 
+#: contracts/templates/contracts/contract_details_view.html:74
 msgid "Supervisor Name"
 msgstr "Nome do Supervisor"
 
+#: contracts/templates/contracts/contract_details_view.html:75
 msgid "Phone Number"
 msgstr "Número de Telefone"
 
+#: contracts/templates/contracts/contract_details_view.html:92
+#: contracts/templates/contracts/contract_details_view.html:161
 msgid "Total Budget"
 msgstr "Orçamento Total"
 
+#: contracts/templates/contracts/contract_details_view.html:101
 msgid "Value"
 msgstr "Valor"
 
+#: contracts/templates/contracts/contract_details_view.html:115
 msgid "Defect Liability Period (Days)"
 msgstr "Período de Responsabilidade de Defeitos (Dias)"
 
+#: contracts/templates/contracts/contract_details_view.html:123
+#: contracts/templates/contracts/contract_details_view.html:185
 msgid "Contract Start Date"
 msgstr "Data de Início do Contrato"
 
+#: contracts/templates/contracts/contract_details_view.html:127
 msgid "Contract End Date"
 msgstr "Data de Fim do Contrato"
 
+#: contracts/templates/contracts/contract_details_view.html:131
+#: contracts/templates/contracts/contract_details_view.html:189
 msgid "Contract Duration"
 msgstr "Duração do Contrato"
 
+#: contracts/templates/contracts/contract_details_view.html:142
+#: contracts/templates/contracts/project_construction_schedule_view.html:49
 msgid "Days of Work"
 msgstr "Dias de Trabalho"
 
+#: contracts/templates/contracts/contract_details_view.html:143
 msgid "Progress"
 msgstr "Progresso"
 
+#: contracts/templates/contracts/contract_inspections.html:25
+#: contracts/templates/contracts/contract_inspections_view.html:33
 msgid "List of inspections"
 msgstr "Lista de Inspecções"
 
+#: contracts/templates/contracts/contract_inspections.html:32
+#: contracts/templates/contracts/contract_inspections.html:67
+#: contracts/templates/contracts/contract_inspections_view.html:38
+#: contracts/templates/contracts/contract_inspections_view.html:59
 msgid "Inspection Date"
 msgstr "Data da Inspecção"
 
+#: contracts/templates/contracts/contract_inspections.html:33
+#: contracts/templates/contracts/contract_inspections.html:73
+#: contracts/templates/contracts/contract_inspections_view.html:39
+#: contracts/templates/contracts/contract_inspections_view.html:60
 msgid "Inspection Entity"
 msgstr "Entidade Inspectora"
 
+#: contracts/templates/contracts/contract_inspections.html:34
+#: contracts/templates/contracts/contract_inspections.html:83
+#: contracts/templates/contracts/contract_inspections_view.html:40
+#: contracts/templates/contracts/contract_inspections_view.html:61
+#: contracts/templates/contracts/project_construction_schedule_view.html:50
 msgid "Physical Progress"
 msgstr "Progresso Físico"
 
+#: contracts/templates/contracts/contract_inspections.html:35
+#: contracts/templates/contracts/contract_inspections_view.html:41
+#: contracts/templates/contracts/contract_inspections_view.html:62
 msgid "Defect Liability Period"
 msgstr "Período de Responsabilidade de Defeitos"
 
+#: contracts/templates/contracts/contract_inspections.html:60
 msgid "Save Inspection"
 msgstr "Guardar Inspecção"
 
+#: contracts/templates/contracts/contract_inspections.html:69
 msgid "Select inspection date"
 msgstr "Seleccionar data da inspecção"
 
+#: contracts/templates/contracts/contract_inspections.html:75
 msgid "Choose entity that performed the inspection"
 msgstr "Escolha a entidade que realizou a inspecção"
 
+#: contracts/templates/contracts/contract_inspections.html:85
 msgid "Enter physical progress as inspected"
 msgstr "Insira o progresso físico verificado na inspecção"
 
+#: contracts/templates/contracts/contract_inspections.html:89
 msgid "Start Defect Liability Period"
 msgstr "Início do Período de Responsabilidade de Defeitos"
 
+#: contracts/templates/contracts/contract_inspections.html:90
 msgid "When DLP starts with the inspection"
 msgstr "O Período de Responsabilidade começou com após esta inspecção?"
 
+#: contracts/templates/contracts/contract_inspections.html:116
 msgid "Delete Inspection"
 msgstr "Apagar Inspecção"
 
+#: contracts/templates/contracts/contract_inspections.html:117
 msgid "Are you sure you want to delete this inspection?"
 msgstr "Tem a certeza que deseja apagar esta inspecção?"
 
+#: contracts/templates/contracts/contract_list.html:6
 msgid "Contract Manager"
 msgstr "Gestor de Contratos"
 
+#: contracts/templates/contracts/contract_list.html:8
 msgid "Create New Contract"
 msgstr "Adicionar um Novo Contrato"
 
+#: contracts/templates/contracts/contract_list.html:14
 msgid "List of contracts"
 msgstr "Lista de contratos"
 
+#: contracts/templates/contracts/contract_list.html:47
+#: contracts/templates/contracts/project_list.html:47
+#: contracts/templates/contracts/tender_list.html:47
 msgid "Value range"
 msgstr "Faixa de valores"
 
+#: contracts/templates/contracts/contract_list.html:52
+#: contracts/templates/contracts/project_list.html:52
+#: contracts/templates/contracts/tender_list.html:52
 msgid "over"
 msgstr "acima"
 
+#: contracts/templates/contracts/contract_list.html:68
+#: contracts/templates/contracts/tender_list.html:68
 msgid "Number of Projects"
 msgstr "Número de Projectos"
 
+#: contracts/templates/contracts/contract_list.html:69
 msgid "Project(s) Name"
 msgstr "Nome(s) do Projecto(s)"
 
+#: contracts/templates/contracts/contract_list.html:70
 msgid "Type of Works"
 msgstr "Tipo de Trabalho"
 
+#: contracts/templates/contracts/contract_list.html:138
+#: contracts/templates/contracts/project_list.html:127
 msgid "Welcome to the Contract Manager"
 msgstr "Bem-vindo ao Gestor de Contratos"
 
+#: contracts/templates/contracts/contract_list.html:139
 msgid "No contracts were created yet"
 msgstr "Ainda não foram adicionados contratos"
 
+#: contracts/templates/contracts/contract_list.html:153
 msgid "Delete Contract"
 msgstr "Apagar Contrato"
 
+#: contracts/templates/contracts/contract_list.html:154
 msgid "Are you sure you want to delete this contract?"
 msgstr "Tem a certeza que deseja apagar este contrato?"
 
+#: contracts/templates/contracts/contract_payments.html:25
+#: contracts/templates/contracts/contract_payments_view.html:33
 msgid "List of payments"
 msgstr "Lista de pagamentos"
 
-msgid "To add a payment, at least one company needs to first be created in the Company section"
-msgstr "Para adicionar um pagamento, pelo uma empresa terá que ser criada na secção de Empresas"
+#: contracts/templates/contracts/contract_payments.html:31
+msgid ""
+"To add a payment, at least one company needs to first be created in the "
+"Company section"
+msgstr ""
+"Para adicionar um pagamento, pelo uma empresa terá que ser criada na secção "
+"de Empresas"
 
+#: contracts/templates/contracts/contract_payments.html:41
+#: contracts/templates/contracts/contract_payments.html:78
+#: contracts/templates/contracts/contract_payments_view.html:38
+#: contracts/templates/contracts/contract_payments_view.html:61
 msgid "Payment Date"
 msgstr "Data do Pagamento"
 
+#: contracts/templates/contracts/contract_payments.html:42
+#: contracts/templates/contracts/contract_payments_view.html:39
 msgid "Payment Value (in USD)"
 msgstr "Valor do Pagamento (em USD)"
 
+#: contracts/templates/contracts/contract_payments.html:45
+#: contracts/templates/contracts/contract_payments.html:110
+#: contracts/templates/contracts/contract_payments_view.html:42
+#: contracts/templates/contracts/contract_payments_view.html:65
 msgid "Destination"
 msgstr "Destino"
 
+#: contracts/templates/contracts/contract_payments.html:71
 msgid "Save Payment"
 msgstr "Guardar Pagamento"
 
+#: contracts/templates/contracts/contract_payments.html:80
 msgid "Select payment date"
 msgstr "Seleccione a data do pagamento"
 
+#: contracts/templates/contracts/contract_payments.html:84
+#: contracts/templates/contracts/contract_payments_view.html:62
 msgid "Payment Value"
 msgstr "Valor do Pagamento"
 
+#: contracts/templates/contracts/contract_payments.html:86
 msgid "Enter total payment value"
 msgstr "Insira o valor total do pagamento"
 
+#: contracts/templates/contracts/contract_payments.html:91
 msgid "Choose donor from the list"
 msgstr "Escolha um doador da lista"
 
+#: contracts/templates/contracts/contract_payments.html:93
 msgid "Select donor"
 msgstr "Seleccione um doador"
 
+#: contracts/templates/contracts/contract_payments.html:102
 msgid "Choose funding source from the list"
 msgstr "Escolha a fonte de financiamento a partir da lista"
 
+#: contracts/templates/contracts/contract_payments.html:112
 msgid "Choose from the list the recipient of the payment"
 msgstr "Escolha o destinatário do pagamento a partir da lista"
 
+#: contracts/templates/contracts/contract_payments.html:142
 msgid "Delete Payment"
 msgstr "Apagar Pagamento"
 
+#: contracts/templates/contracts/contract_payments.html:143
 msgid "Are you sure you want to delete this payment?"
 msgstr "Tem a certeza que deseja apagar este pagamento?"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:25
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:33
 msgid "List of Social Safeguard Data"
 msgstr "Lista de dados da Protecção Social"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:32
+#: contracts/templates/contracts/contract_social_safeguard_data.html:70
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:38
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:61
 msgid "Reporting Month"
 msgstr "Mês Reportado"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:33
+#: contracts/templates/contracts/contract_social_safeguard_data.html:76
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:39
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:62
 msgid "Total Employees"
 msgstr "Total de Trabalhadores"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:34
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:40
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:63
 msgid "Total Female Employees"
 msgstr "Total de Trabalhadores Mulheres"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:35
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:41
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:64
 msgid "Total Employees With Disabilities"
 msgstr "Total de Trabalhadores com Deficiência"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:36
+#: contracts/templates/contracts/contract_social_safeguard_data.html:98
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:42
+#: contracts/templates/contracts/contract_social_safeguard_data_view.html:65
 msgid "Female Employees With Disabilities"
 msgstr "Total de Trabalhadores Mulheres com Deficiência"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:62
 msgid "Save Social Safeguard Report"
 msgstr "Guardar Informação da Protecção Social"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:68
 msgid "Number of Employees"
 msgstr "Número de trabalhadores"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:72
 msgid "Select month of the report"
 msgstr "Seleccione o mês reportado"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:81
 msgid "National Employees"
 msgstr "Trabalhadores Nacional"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:85
 msgid "International Employees"
 msgstr "Trabalhadores Internacionais"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:86
 msgid "Non timorese employees"
 msgstr "Trabalhadores Não-Timorenses"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:90
 msgid "Female Employees"
 msgstr "Trabalhadores Mulheres"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:94
 msgid "Employees With Disabilities"
 msgstr "Trabalhadores com Deficiência"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:102
 msgid "Young Employees"
 msgstr "Trabalhadores Jovens"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:106
 msgid "Young Female Employees"
 msgstr "Trabalhadores Mulheres Jovens"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:111
 msgid "Worker-days"
 msgstr "Trabalhador-dias"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:113
 msgid "Total Worker-days"
 msgstr "Total Trabalhador-dias"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:114
 msgid "Worker-days of all employees"
 msgstr "Trabalhador dias de todos os empregados"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:118
 msgid "Female Employees Worker-days"
 msgstr "Trabalhador-dias Empregadas Mulheres"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:122
 msgid "Employees With Disabilities Worker-days"
 msgstr "Trabalhador-dias Empregados com Deficiência"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:126
 msgid "Female Employees With Disabilities Worker-days"
 msgstr "Trabalhador-dias Empregadas Mulheres com Deficiência"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:130
 msgid "Young Employees Worker-days"
 msgstr "Trabalhador-dias Empregados Jovens"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:134
 msgid "Young Female Employees Worker-days"
 msgstr "Trabalhador-dias Empregados Mulheres Jovens"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:139
 msgid "Wages"
 msgstr "Remunerações"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:141
 msgid "Total Wages"
 msgstr "Total remunerações"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:142
 msgid "All salaries paid in USD"
 msgstr "Todos os salários pagos em USD"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:146
 msgid "Average Gross Wages"
 msgstr "Média de Salários Brutos"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:147
 msgid "Average of gross salaries in USD"
 msgstr "Média de salários brutos em USD"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:151
 msgid "Average Net Wages"
 msgstr "Média de Salários Líquidos"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:152
 msgid "Average of net salaries in USD"
 msgstr "Média de salários líquidos em USD"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:178
 msgid "Delete Social Safeguard Data"
 msgstr "Apagar Dados de Protecção Social"
 
+#: contracts/templates/contracts/contract_social_safeguard_data.html:179
 msgid "Are you sure you want to delete this data?"
 msgstr "Tem a certeza que deseja apagar estes dados?"
 
+#: contracts/templates/contracts/contracts.html:17
 msgid "Projects"
 msgstr "Projectos"
 
+#: contracts/templates/contracts/contracts.html:20
 msgid "Tenders"
 msgstr "Concursos"
 
+#: contracts/templates/contracts/contracts.html:23
 msgid "Contracts"
 msgstr "Contratos"
 
+#: contracts/templates/contracts/contracts.html:26
 msgid "Companies"
 msgstr "Empresas"
 
+#: contracts/templates/contracts/contracts.html:41
 msgid "Directorate General for Public Works"
 msgstr "Direcção Geral das Obras Públicas"
 
+#: contracts/templates/contracts/contracts.html:42
 msgid "National Directorate for Roads, Bridges and Flood Control"
 msgstr "Direcção Nacional de Estradas, Pontes e Controlo de Cheias"
 
+#: contracts/templates/contracts/contracts.html:55
 msgid "Exported from Estrada on"
 msgstr "Exportado do Estrada em"
 
+#: contracts/templates/contracts/contracts.html:55
 msgid "at"
 msgstr "em"
 
+#: contracts/templates/contracts/contracts.html:76
 msgid "Unsaved Changes"
 msgstr "Alterações não gravadas"
 
-msgid "You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?"
-msgstr "Tem alterações não gravadas que serão perdidas se sair desta página. Deseja continuar a editar?"
+#: contracts/templates/contracts/contracts.html:78
+msgid ""
+"You have unsaved changes made to this page which will be lost if you "
+"navigate away. Would you like to continue editing?"
+msgstr ""
+"Tem alterações não gravadas que serão perdidas se sair desta página. Deseja "
+"continuar a editar?"
 
+#: contracts/templates/contracts/contracts.html:82
 msgid "Discard"
 msgstr "Descartar"
 
+#: contracts/templates/contracts/contracts.html:83
 msgid "Continue Editing"
 msgstr "Continuar edição"
 
+#: contracts/templates/contracts/contracts.html:96
+#: contracts/templates/contracts/contracts.html:130
 msgid "Error"
 msgstr "Erro"
 
+#: contracts/templates/contracts/contracts.html:105
+#: contracts/templates/contracts/contracts.html:119
 msgid "Success"
 msgstr "Sucesso"
 
+#: contracts/templates/contracts/contracts.html:120 contracts/views.py:132
+#: contracts/views.py:353 contracts/views.py:364 contracts/views.py:662
+#: contracts/views.py:673
 msgid "You have successfully saved"
 msgstr "As alterações foram gravas com sucesso"
 
+#: contracts/templates/contracts/contracts.html:131 contracts/views.py:138
 msgid "Something went wrong"
 msgstr "Algo errado aconteceu"
 
+#: contracts/templates/contracts/project_base.html:8
 msgid "Edit Project"
 msgstr "Editar Projecto"
 
+#: contracts/templates/contracts/project_base.html:10
 msgid "Create Project"
 msgstr "Adicionar Projecto"
 
+#: contracts/templates/contracts/project_construction_schedule.html:7
+#: contracts/templates/contracts/project_construction_schedule_view.html:15
+#: contracts/templates/contracts/project_details.html:7
+#: contracts/templates/contracts/project_details.html:36
+#: contracts/templates/contracts/project_details_view.html:16
+#: contracts/templates/contracts/project_details_view.html:31
+#: contracts/templates/contracts/project_documents.html:7
+#: contracts/templates/contracts/project_documents_view.html:15
+#: contracts/templates/contracts/project_financials.html:7
+#: contracts/templates/contracts/project_financials_view.html:15
 msgid "Project Details"
 msgstr "Detalhes do Projecto"
 
+#: contracts/templates/contracts/project_construction_schedule.html:10
+#: contracts/templates/contracts/project_construction_schedule_view.html:18
+#: contracts/templates/contracts/project_details.html:11
+#: contracts/templates/contracts/project_details.html:21
+#: contracts/templates/contracts/project_details_view.html:19
+#: contracts/templates/contracts/project_documents.html:10
+#: contracts/templates/contracts/project_documents_view.html:18
+#: contracts/templates/contracts/project_financials.html:10
+#: contracts/templates/contracts/project_financials_view.html:18
 msgid "Financials"
 msgstr "Dados Financeiros"
 
+#: contracts/templates/contracts/project_construction_schedule.html:13
+#: contracts/templates/contracts/project_construction_schedule_view.html:21
+#: contracts/templates/contracts/project_details.html:14
+#: contracts/templates/contracts/project_details.html:24
+#: contracts/templates/contracts/project_details_view.html:22
+#: contracts/templates/contracts/project_documents.html:13
+#: contracts/templates/contracts/project_documents_view.html:21
+#: contracts/templates/contracts/project_financials.html:13
+#: contracts/templates/contracts/project_financials_view.html:21
 msgid "Construction Schedule"
 msgstr "Calendário de Construção"
 
+#: contracts/templates/contracts/project_construction_schedule.html:25
+#: contracts/templates/contracts/project_construction_schedule_view.html:30
 msgid "Estimated Schedule"
 msgstr "Calendário Estimado"
 
+#: contracts/templates/contracts/project_construction_schedule.html:61
+#: contracts/templates/contracts/project_construction_schedule_view.html:44
 msgid "Estimated Construction Milestones"
 msgstr "Metas de Construção Estimadas"
 
+#: contracts/templates/contracts/project_construction_schedule_view.html:33
 msgid "Start Date"
 msgstr "Data de Início"
 
+#: contracts/templates/contracts/project_details.html:115
+#: contracts/templates/contracts/project_details_view.html:69
 msgid "Asset Details"
 msgstr "Detalhes da Infra-estrutura"
 
+#: contracts/templates/contracts/project_details.html:145
 msgid "Couldn't find the asset you are looking for?"
 msgstr "Não encontrou a infra-estrutura que procura?"
 
+#: contracts/templates/contracts/project_details.html:146
 msgid "Add information for the new asset"
 msgstr "Adicionar informação sobre uma nova infra-estrutura"
 
+#: contracts/templates/contracts/project_details.html:157
+#, fuzzy
+#| msgid "Asset Details"
+msgid "Asset ID already exists"
+msgstr "Detalhes da Infra-estrutura"
+
+#: contracts/templates/contracts/project_details.html:188
 msgid "Chainage Start"
 msgstr "Início do segmento"
 
+#: contracts/templates/contracts/project_details.html:192
 msgid "Chainage End"
 msgstr "Fim do segmento"
 
+#: contracts/templates/contracts/project_details_view.html:59
+#: contracts/templates/contracts/tender_details_view.html:42
 msgid "Associated Contracts"
 msgstr "Contratos Associados"
 
+#: contracts/templates/contracts/project_financials.html:25
+#: contracts/templates/contracts/project_financials_view.html:30
 msgid "Funding"
 msgstr "Financiamento"
 
+#: contracts/templates/contracts/project_financials_view.html:49
 msgid "Total"
 msgstr "Total"
 
+#: contracts/templates/contracts/project_financials_view.html:58
 msgid "Approved Value"
 msgstr "Valor Approvado"
 
+#: contracts/templates/contracts/project_list.html:6
 msgid "Project Manager"
 msgstr "Gestor de Projecto"
 
+#: contracts/templates/contracts/project_list.html:8
 msgid "Create New Project"
 msgstr "Adicionar Novo Projecto"
 
+#: contracts/templates/contracts/project_list.html:14
 msgid "List of projects"
 msgstr "Lista de projectos"
 
+#: contracts/templates/contracts/project_list.html:70
 msgid "Program"
 msgstr "Programa"
 
+#: contracts/templates/contracts/project_list.html:72
 msgid "Estimated Budget"
 msgstr "Orçamento Estimado"
 
+#: contracts/templates/contracts/project_list.html:128
 msgid "No projects were created yet"
 msgstr "Ainda nenhum projecto foi adicionado"
 
+#: contracts/templates/contracts/project_list.html:142
 msgid "Delete Project"
 msgstr "Apagar Projecto"
 
+#: contracts/templates/contracts/project_list.html:143
 msgid "Are you sure you want to delete this project?"
 msgstr "Tem a certeza que deseja apagar este projecto?"
 
+#: contracts/templates/contracts/tender_base.html:8
 msgid "Edit Tender"
 msgstr "Editar Concurso"
 
+#: contracts/templates/contracts/tender_base.html:10
 msgid "Create Tender"
 msgstr "Adicionar Concurso"
 
+#: contracts/templates/contracts/tender_details.html:7
+#: contracts/templates/contracts/tender_details.html:24
+#: contracts/templates/contracts/tender_details_view.html:15
+#: contracts/templates/contracts/tender_details_view.html:24
+#: contracts/templates/contracts/tender_documents.html:7
+#: contracts/templates/contracts/tender_documents_view.html:15
 msgid "Tender Details"
 msgstr "Detalhes do Concurso"
 
+#: contracts/templates/contracts/tender_details.html:86
+#: contracts/templates/contracts/tender_details_view.html:53
 msgid "Bids and Evaluation"
 msgstr "Propostas e Avaliação"
 
+#: contracts/templates/contracts/tender_details_view.html:8
+#: contracts/templates/contracts/tender_documents_view.html:8
 msgid "Tender"
 msgstr "Concurso"
 
+#: contracts/templates/contracts/tender_details_view.html:34
 msgid "Associated Projects"
 msgstr "Projectos Associados"
 
+#: contracts/templates/contracts/tender_details_view.html:59
 msgid "Numbering of Companies Tendering"
 msgstr "Número de Empresas a Concorrer"
 
+#: contracts/templates/contracts/tender_list.html:6
 msgid "Tender Manager"
 msgstr "Gestor de Concursos"
 
+#: contracts/templates/contracts/tender_list.html:8
 msgid "Create New Tender"
 msgstr "Adicionar Novo Concurso"
 
+#: contracts/templates/contracts/tender_list.html:14
 msgid "List of tenders"
 msgstr "Lista de concursos"
 
+#: contracts/templates/contracts/tender_list.html:69
 msgid "Project(s) name"
 msgstr "Nome(s) do Projecto(s)"
 
+#: contracts/templates/contracts/tender_list.html:138
 msgid "Welcome to the Tender Manager"
 msgstr "Bem-vindo ao Gestor de Concursos"
 
+#: contracts/templates/contracts/tender_list.html:139
 msgid "No tenders were created yet"
 msgstr "Nenhum concurso foi ainda criado"
 
+#: contracts/templates/contracts/tender_list.html:153
 msgid "Delete Tender"
 msgstr "Apagar Concurso"
 
+#: contracts/templates/contracts/tender_list.html:154
 msgid "Are you sure you want to delete this tender?"
 msgstr "Tem a certeza que deseja apagar este concurso?"
 
-msgid "Please enter a correct username and password. Note that both fields may be case-sensitive"
-msgstr "O nome de utilizar ou palavra-passe estão incorrectos. Confirme se está a usar correctamente as maiúsculas e minúsculas"
+#: django_shapefiles/forms.py:25
+msgid ""
+"The shapefile components ( include at least .shp, .shx, .prj,  and .dbf )"
+msgstr ""
 
+#: django_shapefiles/forms.py:35
+msgid "include at least .shp, .shx, .prj, and .dbf )"
+msgstr ""
+
+#: django_shapefiles/models.py:24
+msgid "Give the shapefile a meaningful name to help identify it"
+msgstr ""
+
+#: django_shapefiles/models.py:29
+msgid ""
+"Describe the shapefiles contents, where it represents and what it contains"
+msgstr ""
+
+#: django_shapefiles/models.py:40
+msgid " .shp file: the shape format; the feature geometry itself "
+msgstr ""
+
+#: django_shapefiles/models.py:45
+msgid ""
+" .shx file: shape index format; a positional index of the feature geometry "
+"to allow seeking forwards and backwards quickly"
+msgstr ""
+
+#: django_shapefiles/models.py:50
+msgid ".dbf file: attribute format; columnar attributes for each shape"
+msgstr ""
+
+#: django_shapefiles/models.py:54
+msgid ".prj file: projection description and coordinate reference"
+msgstr ""
+
+#: registration_templates/base_registration.html:27
+msgid ""
+"Please enter a correct username and password. Note that both fields may be "
+"case-sensitive"
+msgstr ""
+"O nome de utilizar ou palavra-passe estão incorrectos. Confirme se está a "
+"usar correctamente as maiúsculas e minúsculas"
+
+#: registration_templates/base_registration.html:28
 msgid "This password is too short. It must contain at least 8 characters"
 msgstr "A sua palavra-passe deve conter pelo menos 8 caracteres"
 
+#: registration_templates/base_registration.html:29
 msgid "Your old password was entered incorrectly. Please enter it again"
 msgstr "A palavra-passe introduzida está incorrecta. Por favor volte a tentar."
 
+#: registration_templates/base_registration.html:30
 msgid "The two password fields didn't match"
 msgstr "Os dois campos da nova palavra-passe não coincidem"
 
+#: registration_templates/base_registration.html:31
 msgid "This password is entirely numeric"
 msgstr "A palavra-passe não pode conter apenas números"
 
+#: registration_templates/base_registration.html:32
 msgid "This password is too common"
 msgstr "A palavra-passa é demasiado comum"
 
+#: registration_templates/registration/login.html:23
+#: registration_templates/registration/login.html:24
 msgid "Username"
 msgstr "Nome de utilizador"
 
+#: registration_templates/registration/login.html:27
+#: registration_templates/registration/login.html:28
 msgid "Password"
 msgstr "Palavra-passe"
 
+#: registration_templates/registration/login.html:32
+#: registration_templates/registration/password_reset_form.html:5
 msgid "Forgot your password?"
 msgstr "Esqueceu-se da sua palavra-passe?"
 
+#: registration_templates/registration/login.html:33
 msgid "Log in"
 msgstr "Entrar"
 
-msgid "This road asset and project management system (Estrada), has been designed and developed by Catalpa International with funding from the Australian Government’s Departmentof Foreign Affairs and Trade (DFAT) and technical assistance from the International Labour Organization (ILO)"
-msgstr "Este sistema de gestão de infra-estruturas rodoviárias e projectos (Estrada) foi desenhado e desenvolvido pela Catalpa Internacional com fundos do Governo da Austrália através do seu Departamento dos Assuntos e Negócios Estrangeiros (DFAT) e assistência técnica da Organização Internacional do Trabalho (ILO)."
+#: registration_templates/registration/login.html:39
+msgid ""
+"This road asset and project management system (Estrada), has been designed "
+"and developed by Catalpa International with funding from the Australian "
+"Government’s Departmentof Foreign Affairs and Trade (DFAT) and technical "
+"assistance from the International Labour Organization (ILO)"
+msgstr ""
+"Este sistema de gestão de infra-estruturas rodoviárias e projectos (Estrada) "
+"foi desenhado e desenvolvido pela Catalpa Internacional com fundos do "
+"Governo da Austrália através do seu Departamento dos Assuntos e Negócios "
+"Estrangeiros (DFAT) e assistência técnica da Organização Internacional do "
+"Trabalho (ILO)."
 
+#: registration_templates/registration/logout.html:5
 msgid "Logged out"
 msgstr "Não autenticado"
 
+#: registration_templates/registration/password_change_done.html:5
+#: registration_templates/registration/password_reset_complete.html:5
 msgid "Well done!"
 msgstr "Sucesso!"
 
+#: registration_templates/registration/password_change_done.html:6
+#: registration_templates/registration/password_reset_complete.html:6
 msgid "Your password has been reset successfully"
 msgstr "A sua palavra-passe foi alterada com sucesso"
 
+#: registration_templates/registration/password_change_done.html:7
+#: registration_templates/registration/password_reset_complete.html:7
 msgid "Continue"
 msgstr "Continuar"
 
+#: registration_templates/registration/password_change_form.html:5
+#: registration_templates/registration/password_reset_confirm.html:7
 msgid "Create a new password"
 msgstr "Alterar palavra-passe"
 
+#: registration_templates/registration/password_change_form.html:8
+#: registration_templates/registration/password_reset_confirm.html:10
 msgid "Your password can't be too similar to your other personal information"
 msgstr "A sua palavra-passe não pode ser semelhante à sua informação pessoal"
 
+#: registration_templates/registration/password_change_form.html:9
+#: registration_templates/registration/password_reset_confirm.html:11
 msgid "Your password must contain at least 8 characters"
 msgstr "A sua palavra-passe deve conter pelo menos 8 caracteres"
 
+#: registration_templates/registration/password_change_form.html:10
+#: registration_templates/registration/password_reset_confirm.html:12
 msgid "Your password can't be a commonly used password"
 msgstr "A sua palavra-passe não pode ser uma palavra-passe comum"
 
+#: registration_templates/registration/password_change_form.html:11
+#: registration_templates/registration/password_reset_confirm.html:13
 msgid "Your password can't be entirely numeric"
 msgstr "A sua palavra-passe não pode conter apenas números"
 
+#: registration_templates/registration/password_change_form.html:25
+#: registration_templates/registration/password_change_form.html:26
 msgid "Old password"
 msgstr "Palavra-passe antiga"
 
+#: registration_templates/registration/password_change_form.html:32
+#: registration_templates/registration/password_change_form.html:33
+#: registration_templates/registration/password_reset_confirm.html:27
+#: registration_templates/registration/password_reset_confirm.html:28
 msgid "New password"
 msgstr "Nova palavra-passe"
 
+#: registration_templates/registration/password_change_form.html:36
+#: registration_templates/registration/password_change_form.html:37
+#: registration_templates/registration/password_reset_confirm.html:31
+#: registration_templates/registration/password_reset_confirm.html:32
 msgid "New password confirmation"
 msgstr "Confirme a nova palavra-passe"
 
+#: registration_templates/registration/password_change_form.html:42
+#: registration_templates/registration/password_reset_confirm.html:37
 msgid "Save changes"
 msgstr "Guardar alterações"
 
+#: registration_templates/registration/password_reset_confirm.html:41
 msgid "The link to reset your password is not valid anymore."
 msgstr "O link para redefinir a sua palavra-passe expirou."
 
+#: registration_templates/registration/password_reset_confirm.html:42
 msgid "Go back to the login page"
 msgstr "Regressar à página de entrada"
 
+#: registration_templates/registration/password_reset_done.html:5
 msgid "Reset your password"
 msgstr "Redefinir a sua palavra-passe"
 
-msgid "We have sent a reset password link to your email. Please, click on the link to set your new password. Thanks."
-msgstr "Enviamos um link para o seu email. Por favor, clique no link para redefinir a sua nova palavra-passe. Obrigado."
+#: registration_templates/registration/password_reset_done.html:6
+msgid ""
+"We have sent a reset password link to your email. Please, click on the link "
+"to set your new password. Thanks."
+msgstr ""
+"Enviamos um link para o seu email. Por favor, clique no link para redefinir "
+"a sua nova palavra-passe. Obrigado."
 
+#: registration_templates/registration/password_reset_email.html:6
 msgid "Hello there"
 msgstr "Viva"
 
-msgid "We received a request to change your Estrada password. Click the button below to create a new password"
-msgstr "Recebemos um pedido para redefinir a sua palavra-passe no Estrada. Clique no botão abaixo para criar uma nova palavra-passe"
+#: registration_templates/registration/password_reset_email.html:7
+msgid ""
+"We received a request to change your Estrada password. Click the button "
+"below to create a new password"
+msgstr ""
+"Recebemos um pedido para redefinir a sua palavra-passe no Estrada. Clique no "
+"botão abaixo para criar uma nova palavra-passe"
 
+#: registration_templates/registration/password_reset_email.html:9
 msgid "Reset my password"
 msgstr "Redefinir a sua palavra-passe"
 
-msgid "If you didn't mean to reset your password, then you can just ignore this email. Your password will not change"
-msgstr "Se não pretende alterar a sua palavra-passe, por favor ignore este email. A sua palavra-passe não será alterada"
+#: registration_templates/registration/password_reset_email.html:11
+msgid ""
+"If you didn't mean to reset your password, then you can just ignore this "
+"email. Your password will not change"
+msgstr ""
+"Se não pretende alterar a sua palavra-passe, por favor ignore este email. A "
+"sua palavra-passe não será alterada"
 
-msgid "Don’t worry. Resetting your password is easy, just tell us the email address you registered with Estrada."
-msgstr "Não se preocupe! Redefinir a sua palavra-passe é simples, indique-nos apenas o endereço de email com que se registou no Estrada."
+#: registration_templates/registration/password_reset_form.html:10
+msgid ""
+"Don’t worry. Resetting your password is easy, just tell us the email address "
+"you registered with Estrada."
+msgstr ""
+"Não se preocupe! Redefinir a sua palavra-passe é simples, indique-nos apenas "
+"o endereço de email com que se registou no Estrada."
 
+#: registration_templates/registration/password_reset_form.html:13
 msgid "Email address"
 msgstr "Endereço de email"
 
+#: registration_templates/registration/password_reset_form.html:18
 msgid "Send"
 msgstr "Enviar"
+
+#~ msgid ""
+#~ "Could not create a new Asset, because the asset_municipality in the "
+#~ "'special' Asset Id is not valid."
+#~ msgstr ""
+#~ "Não foi possível criar uma nova infra-estrutura pois o asset_municipality "
+#~ "no seu ID 'special' não é válido"
