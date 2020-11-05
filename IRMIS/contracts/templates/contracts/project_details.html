@@ -235,11 +235,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function checkNewAssetCode(new_code) {
         let hits = [];
         if (new_code.value != "") {
+            let new_code = new_code.value.toUpperCase();
             // check list of existing asset codes
             document.getElementById("id_assets-0-asset_id").options.forEach(o => {
-                if (o.textContent == new_code.value) {
-                    hits.push(o.textContent);
-                }
+                let code = o.textContent.toUpperCase();
+                if (code == new_code) { hits.push(code); }
             });
         }
         if (hits.length) {
