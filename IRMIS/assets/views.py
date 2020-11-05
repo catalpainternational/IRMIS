@@ -779,7 +779,11 @@ def protobuf_reports(request):
 
     # add the serialized report to the cache for future requests
     report_pb_serialized = report_protobuf.SerializeToString()
-    cache.set("report_%s" % abs(hash(str(final_filters))), report_pb_serialized)
+
+    # only cache reports for more than one asset ID (ie. not for current report on asset's surveys)
+    if not asset_id and not asset_code:
+        cache.set("report_%s" % abs(hash(str(final_filters))), report_pb_serialized)
+
     return HttpResponse(report_pb_serialized, content_type="application/octet-stream")
 
 
@@ -2165,11 +2169,23 @@ def protobuf_contract_reports(request, report_id):
         raise MethodNotAllowed(request.method)
 
     report_types = {
-        1: ["program"],
-        2: ["contractCode"],
-        3: ["assetClassTypeOfWork", "typeOfWorkYear", "assetClassYear"],
-        4: ["numberEmployeesSummary", "wagesSummary", "workedDaysSummary"],  # summary
-        5: ["numberEmployees", "wages", "workedDays"],  # single contract
+        1: ["program"],  # Financial and Physical Progress - Summary
+        2: ["contractCode"],  # Financial and Physical Progress - Detail
+        3: [
+            "assetClassTypeOfWork",
+            "typeOfWorkYear",
+            "assetClassYear",
+        ],  # Completed Contracts Length
+        4: [
+            "numberEmployeesSummary",
+            "wagesSummary",
+            "workedDaysSummary",
+        ],  # Social Safeguard - summary
+        5: [
+            "numberEmployees",
+            "wages",
+            "workedDays",
+        ],  # Social Safeguard - single contract
     }
 
     try:
@@ -2177,7 +2193,7 @@ def protobuf_contract_reports(request, report_id):
         report_data = {"filters": request.GET, "summary": 0}
         for rt in report_types[report_id]:
             # Initialise a new Contract Report
-            contract_report = ContractReport(report_id, rt, request.GET)
+            contract_report = ContractReport(report_id, rt, request.GET.copy())
             report_data[rt] = contract_report.execute_main_query()
 
             # add the Summary data for certain reports
