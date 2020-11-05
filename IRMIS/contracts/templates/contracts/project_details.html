@@ -233,14 +233,16 @@
 // Listener assignments should wait until DOM is loaded to fire
 document.addEventListener('DOMContentLoaded', function() {
     function checkNewAssetCode(new_code) {
-        // list of existing asset codes
         let hits = [];
-        document.getElementById("id_assets-0-asset_id").options.forEach(o => {
-            if (o.textContent == new_code.value) {
-                hits.push(o.textContent);
-            }
-        });
-        if (new_code.value != "" && hits.length) {
+        if (new_code.value != "") {
+            // check list of existing asset codes
+            document.getElementById("id_assets-0-asset_id").options.forEach(o => {
+                if (o.textContent == new_code.value) {
+                    hits.push(o.textContent);
+                }
+            });
+        }
+        if (hits.length) {
             document.querySelector('button.btn-primary').disabled = true;
             document.getElementById("existingAssetError").style.display = 'block';
             new_code.style.borderColor = '#ff5a5f';
