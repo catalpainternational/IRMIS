@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0 VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-11 03:20+0000\n"
+"POT-Creation-Date: 2020-11-06 01:12+0000\n"
 "PO-Revision-Date: 2020-08-11 03:00+0000\n"
 "Last-Translator: b'  <sergio@catalpa.io>'\n"
 "Language-Team: Catalpa International <info@catalpa.io>\n"
@@ -187,42 +187,6 @@ msgstr "Deskrisaun"
 msgid "User"
 msgstr "Uzuáriu"
 
-msgid "Asset Id"
-msgstr "Id Sasan (aset)"
-
-msgid "Asset Code"
-msgstr "Kodigu Sasan (aset)"
-
-msgid "Road Id"
-msgstr "Id Estrada "
-
-msgid "Road Code"
-msgstr "Kodigu Estrada "
-
-msgid "Date Surveyed"
-msgstr "Data Levantamentu"
-
-msgid "Date Updated"
-msgstr "Data Atual"
-
-msgid "Start Chainage (Km)"
-msgstr "Chainage Komesa (Km)"
-
-msgid "Enter chainage for survey starting point"
-msgstr "HatamacChainage ba levantamentu pontu komesa"
-
-msgid "End Chainage (Km)"
-msgstr "Chainage Ikus (Km)"
-
-msgid "Enter chainage for survey ending point"
-msgstr "Hatama chainage ba levantamentu pontu ikus"
-
-msgid "Source"
-msgstr "Fonte"
-
-msgid "Choose the source of the survey"
-msgstr "Hili fonte husi levantamentu "
-
 msgid "National"
 msgstr "Nasional"
 
@@ -285,6 +249,9 @@ msgstr "Laos prioridade"
 
 msgid "Core"
 msgstr "Prioridade"
+
+msgid "Road Code"
+msgstr "Kodigu Estrada "
 
 msgid "Municipality"
 msgstr "Munisipiu "
@@ -463,8 +430,8 @@ msgstr "Hili tipu ligasaun nebe serve husi estrada ne"
 msgid "Attributes"
 msgstr "Atribuisaun"
 
-msgid "Asset Type"
-msgstr "Tipu Sasan/Aset"
+msgid "Road Id"
+msgstr "Id Estrada "
 
 msgid "Structure Code"
 msgstr "Kodigu Estrutura"
@@ -579,6 +546,39 @@ msgstr "Hatama estrutura nia mahar "
 
 msgid "Choose the drift material"
 msgstr "Hili material drift "
+
+msgid "Asset Type"
+msgstr "Tipu Sasan/Aset"
+
+msgid "Asset Id"
+msgstr "Id Sasan (aset)"
+
+msgid "Asset Code"
+msgstr "Kodigu Sasan (aset)"
+
+msgid "Date Surveyed"
+msgstr "Data Levantamentu"
+
+msgid "Date Updated"
+msgstr "Data Atual"
+
+msgid "Start Chainage (Km)"
+msgstr "Chainage Komesa (Km)"
+
+msgid "Enter chainage for survey starting point"
+msgstr "HatamacChainage ba levantamentu pontu komesa"
+
+msgid "End Chainage (Km)"
+msgstr "Chainage Ikus (Km)"
+
+msgid "Enter chainage for survey ending point"
+msgstr "Hatama chainage ba levantamentu pontu ikus"
+
+msgid "Source"
+msgstr "Fonte"
+
+msgid "Choose the source of the survey"
+msgstr "Hili fonte husi levantamentu "
 
 msgid "Title"
 msgstr "Titlu "
@@ -960,9 +960,6 @@ msgstr "Labele kria Sasan/Aset foun, tamba tipu_sasan/aset iha \"espesial\" Id S
 
 msgid "Could not create a new Asset, because the asset_class in the 'special' Asset Id is not valid."
 msgstr "Labele kria Sasan/Aset foun, tamba klase_sasan/aset iha \"espesial\" Id Sasan/Aset la validu"
-
-msgid "Could not create a new Asset, because the asset_municipality in the 'special' Asset Id is not valid."
-msgstr "Labele kria Sasan/Aset foun, tamba munisipiu_sasan/aset iha \"espesial\" Id Sasan/Aset la validu"
 
 msgid "The Asset Code must be unique for this type of asset"
 msgstr "Kódigu sasan tenke iha kódigu úniku ba tipu sasan ne'e"
@@ -1712,6 +1709,11 @@ msgstr "La konsegue hetan sasan ita buka?"
 msgid "Add information for the new asset"
 msgstr "Aumenta informasaun kona-ba sasan foun"
 
+#, fuzzy
+#| msgid "Asset Details"
+msgid "Asset ID already exists"
+msgstr "Kódigu sasan ne'e eziste ona"
+
 msgid "Chainage Start"
 msgstr "Chainage komesa"
 
@@ -1798,6 +1800,30 @@ msgstr "Apaga Konkursu"
 
 msgid "Are you sure you want to delete this tender?"
 msgstr "Ita hakarak apaga konkursu ne"
+
+msgid "The shapefile components ( include at least .shp, .shx, .prj,  and .dbf )"
+msgstr ""
+
+msgid "include at least .shp, .shx, .prj, and .dbf )"
+msgstr ""
+
+msgid "Give the shapefile a meaningful name to help identify it"
+msgstr ""
+
+msgid "Describe the shapefiles contents, where it represents and what it contains"
+msgstr ""
+
+msgid " .shp file: the shape format; the feature geometry itself "
+msgstr ""
+
+msgid " .shx file: shape index format; a positional index of the feature geometry to allow seeking forwards and backwards quickly"
+msgstr ""
+
+msgid ".dbf file: attribute format; columnar attributes for each shape"
+msgstr ""
+
+msgid ".prj file: projection description and coordinate reference"
+msgstr ""
 
 msgid "Please enter a correct username and password. Note that both fields may be case-sensitive"
 msgstr "Favor hatama naran uzuáriu ho seña nebe los. Nota Katak linha rua ne talvez sensitivu"
@@ -1903,3 +1929,6 @@ msgstr "Email"
 
 msgid "Send"
 msgstr "Haruka"
+
+#~ msgid "Could not create a new Asset, because the asset_municipality in the 'special' Asset Id is not valid."
+#~ msgstr "Labele kria Sasan/Aset foun, tamba munisipiu_sasan/aset iha \"espesial\" Id Sasan/Aset la validu"
