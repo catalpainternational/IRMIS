@@ -1712,7 +1712,7 @@ msgstr "Aumenta informasaun kona-ba sasan foun"
 #, fuzzy
 #| msgid "Asset Details"
 msgid "Asset ID already exists"
-msgstr "Detallu Sasan/Aset"
+msgstr "Kódigu sasan ne'e eziste ona"
 
 msgid "Chainage Start"
 msgstr "Chainage komesa"

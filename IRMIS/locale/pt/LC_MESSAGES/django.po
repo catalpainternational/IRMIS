@@ -1713,7 +1713,7 @@ msgstr "Adicionar informação sobre uma nova infra-estrutura"
 #, fuzzy
 #| msgid "Asset Details"
 msgid "Asset ID already exists"
-msgstr "Detalhes da Infra-estrutura"
+msgstr "Este código de infra-estrutura já existe"
 
 msgid "Chainage Start"
 msgstr "Início do segmento"
