@@ -45,3 +45,7 @@ body {
 body > .header {
     margin-bottom: 18px;
 }
+
+body > .container {
+    background-color: white;
+}
