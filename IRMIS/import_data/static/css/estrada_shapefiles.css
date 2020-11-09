@@ -71,8 +71,8 @@ h1 {
     font-weight: 600;
     margin-bottom: 0;
     color: #3D4758;
+    margin-top: 5px;
     font-size: 22px;
-    margin-top: 0;
 }
 
 
@@ -129,3 +129,12 @@ div.shapefiles-table .table-cell:nth-child(2) {
     width: 70%;
 }
 
+
+/* Images */
+.arrow {
+    margin-right: 20px;
+}
+
+.arrow.left {
+    transform: rotate(90deg);
+}
