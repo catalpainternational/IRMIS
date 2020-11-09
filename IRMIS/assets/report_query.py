@@ -985,12 +985,12 @@ class ContractReport:
                 "        END as yrFour\n"
                 "    FROM (\n"
                 "        SELECT type_of_work,\n"
-                "        extract(year from contractStartDate)::integer as year,\n"
+                "        extract(year from contractEndDate)::integer as year,\n"
                 "        total_assets_length as length\n"
                 "        FROM contracts_core as con\n"
                 "        JOIN projects_core as prj on (con.tender_id = prj.tender_id)\n"
                 "        WHERE status = 'Completed'\n"
-                "        AND extract(year from contractStartDate)::integer >= (extract(year from current_date)::integer - 4)\n"
+                "        AND extract(year from contractEndDate)::integer >= (extract(year from current_date)::integer - 4)\n"
             ),
             "typeOfWorkYearFinalWrapper": (
                 "        GROUP BY type_of_work, year, total_assets_length\n"
@@ -999,7 +999,7 @@ class ContractReport:
             ),
             "assetClassYear": (
                 "SELECT \n"
-                "    extract(year from contractStartDate)::integer as title, \n"
+                "    extract(year from contractEndDate)::integer as title, \n"
                 "    SUM(nat_length) as national, \n"
                 "    SUM(mun_length) as municipal,\n"
                 "    SUM(rur_length) as rural,\n"
@@ -1007,7 +1007,7 @@ class ContractReport:
                 "FROM projects_core as prj\n"
                 "JOIN contracts_core as con on (con.tender_id = prj.tender_id)\n"
                 "WHERE status = 'Completed'\n"
-                "AND extract(year from contractStartDate)::integer >= (extract(year from current_date)::integer - 4)\n"
+                "AND extract(year from contractEndDate)::integer >= (extract(year from current_date)::integer - 4)\n"
             ),
             "social_safeguards": (
                 "SELECT\n"
@@ -1195,7 +1195,7 @@ class ContractReport:
             elif self.report_type == "typeOfWorkYear":
                 query += "GROUP BY type_of_work\n"
             elif self.report_type == "assetClassYear":
-                query += "GROUP BY extract(year from contractStartDate)::integer\n"
+                query += "GROUP BY extract(year from contractEndDate)::integer\n"
         elif self.report_id == 5:
             query += "GROUP BY yearMonthFormatted\n"
 
