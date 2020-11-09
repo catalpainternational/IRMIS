@@ -83,6 +83,28 @@ a {
 }
 
 
+/* Buttons */
+.btn:hover {
+    cursor: pointer;
+}
+
+.btn-secondary {
+    box-shadow: 0 0 4px 0 rgba(61, 71, 88, 0.3);
+    border: 1px solid #CFD1D6;
+    background-color: #FFFFFF;
+    color: #3D4758;
+}
+
+.btn-small {
+    border-radius: 2px;
+    line-height: 14px;
+    font-weight: 600;
+    min-width: 108px;
+    font-size: 12px;
+    height: 25px;
+}
+
+
 /* Tables */
 div.shapefiles-table {
     width: 100%;
