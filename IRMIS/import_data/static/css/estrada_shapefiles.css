@@ -186,3 +186,19 @@ table.geometries-table thead tr th {
 table.geometries-table tbody tr td {
     color: #3D4758;
 }
+
+
+/* Leaflet map */
+.leaflet-touch .leaflet-control-container .leaflet-bar {
+    box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+    border-radius: 4px;
+    border: none;
+}
+
+.leaflet-touch .leaflet-control-container .leaflet-bar a,
+.leaflet-touch .leaflet-control-container .leaflet-bar a:hover {
+    line-height: 26px;
+    font-size: 18px;
+    height: 26px;
+    width: 26px;
+}
