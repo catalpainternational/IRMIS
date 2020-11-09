@@ -1,36 +1,36 @@
 /* Typography */
 @font-face {
     font-family: "DIN";
-    src: url("../fonts/DIN-Light.woff2") format("woff2"),
-         url("../fonts/DIN-Light.woff") format("woff");
+    src: url("../DIN-Light.woff2") format("woff2"),
+         url("../DIN-Light.woff") format("woff");
     font-weight: 300;
 }
 
 @font-face {
     font-family: "DIN";
-    src: url("../fonts/DIN.woff2") format("woff2"),
-         url("../fonts/DIN.woff") format("woff");
+    src: url("../DIN.woff2") format("woff2"),
+         url("../DIN.woff") format("woff");
     font-weight: 400;
 }
 
 @font-face {
     font-family: "DIN";
-    src: url("../fonts/DIN-Medium.woff2") format("woff2"),
-         url("../fonts/DIN-Medium.woff") format("woff");
+    src: url("../DIN-Medium.woff2") format("woff2"),
+         url("../DIN-Medium.woff") format("woff");
     font-weight: 600;
 }
 
 @font-face {
     font-family: "DIN";
-    src: url("../fonts/DIN-Bold.woff2") format("woff2"),
-         url("../fonts/DIN-Bold.woff") format("woff");
+    src: url("../DIN-Bold.woff2") format("woff2"),
+         url("../DIN-Bold.woff") format("woff");
     font-weight: 700;
 }
 
 @font-face {
     font-family: "DIN";
-    src: url("../fonts/DIN-Black.woff2") format("woff2"),
-         url("../fonts/DIN-Black.woff") format("woff");
+    src: url("../DIN-Black.woff2") format("woff2"),
+         url("../DIN-Black.woff") format("woff");
     font-weight: 900;
 }
 
