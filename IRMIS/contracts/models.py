@@ -13,6 +13,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from assets.clean_assets import get_roads_by_road_code, get_first_road_link_for_chainage
 from assets.models import Road, Bridge, Culvert, Drift, Survey
+from assets.utilities import get_asset_code, get_asset_model
 
 import reversion
 
@@ -407,20 +408,10 @@ class ProjectAsset(models.Model):
 
             # preset asset_code and asset_model from the asset_type
             # and check the asset_type's validity
-            asset_type = new_asset_details[0]
-            if asset_type == "ROAD":
-                asset_code = "XX"
-                asset_model = Road
-            elif asset_type == "BRDG":
-                asset_code = "XB"
-                asset_model = Bridge
-            elif asset_type == "CULV":
-                asset_code = "XC"
-                asset_model = Culvert
-            elif asset_type == "DRFT":
-                asset_code = "XD"
-                asset_model = Drift
-            else:
+            asset_type = new_asset_details[0].upper()
+            asset_model = get_asset_model(asset_type)
+            asset_code = get_asset_code(asset_type)
+            if asset_model == None or asset_code == None:
                 raise ValidationError(
                     {
                         "asset_id": _(
