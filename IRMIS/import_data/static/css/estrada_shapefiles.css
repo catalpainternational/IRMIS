@@ -149,10 +149,6 @@ input[type="text"]:focus {
 
 
 /* Buttons */
-.btn:hover {
-    cursor: pointer;
-}
-
 .btn-secondary {
     box-shadow: 0 0 4px 0 rgba(61, 71, 88, 0.3);
     border: 1px solid #CFD1D6;
@@ -182,10 +178,6 @@ input[type="submit"] {
     font-size: 16px;
     color: #fff;
     border: none;
-}
-
-input[type="submit"]:hover {
-    cursor: pointer;
 }
 
 
