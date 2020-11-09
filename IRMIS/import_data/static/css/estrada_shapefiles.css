@@ -64,6 +64,20 @@ body > .container > .content {
     padding: 15px;
 }
 
+.shapefile-overview .group:not(:last-child) {
+    margin-bottom: 20px;
+}
+
+.shapefile-overview .group > p {
+    margin-bottom: 0;
+    margin-top: 8px;
+}
+
+.shapefile-overview .group > ul {
+    margin-bottom: 0;
+    margin-top: 8px;
+}
+
 
 /* Headings */
 h1 {
@@ -80,6 +94,57 @@ h1 {
 a {
     text-decoration: none;
     color: #03A59A;
+}
+
+label {
+    line-height: 17px;
+    font-weight: 700;
+    color: #3D4758;
+    font-size: 14px;
+}
+
+p {
+    line-height: 16px;
+    color: #3D4758;
+    font-size: 16px;
+}
+
+li {
+    line-height: 16px;
+    color: #3D4758;
+    font-size: 16px;
+}
+
+.helptext {
+    line-height: 14px;
+    font-weight: 500;
+    color: #818893;
+    font-size: 11px;
+}
+
+textarea,
+input[type="text"] {
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    border: 1px solid #CFD1D6;
+    background-color: #fff;
+    border-radius: 4px;
+    font-weight: 400;
+    color: #3D4758;
+    font-size: 16px;
+    display: block;
+    padding: 15px;
+    width: 100%;
+}
+
+input[type="text"] {
+    height: 38px;
+}
+
+textarea:focus,
+input[type="text"]:focus {
+    box-shadow: 0 0 2px 1px rgba(16, 165, 150, 0.5);
+    border-color:  #03A59A;
+    outline: none;
 }
 
 
