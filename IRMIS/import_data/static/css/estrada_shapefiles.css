@@ -116,24 +116,25 @@ li {
 }
 
 .helptext {
+    color: #818893 !important; /* override django_ajax_form CSS */
+    font-size: 11px !important; /* override django_ajax_form CSS */
     line-height: 14px;
     font-weight: 500;
-    color: #818893;
-    font-size: 11px;
 }
 
 textarea,
 input[type="text"] {
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    border-radius: 4px !important; /* override django_ajax_form CSS */
+    min-height: unset !important;
     border: 1px solid #CFD1D6;
     background-color: #fff;
-    border-radius: 4px;
+    padding: 15px !important; /* override django_ajax_form CSS */
+    width: 100% !important; /* override django_ajax_form CSS */
     font-weight: 400;
     color: #3D4758;
     font-size: 16px;
     display: block;
-    padding: 15px;
-    width: 100%;
 }
 
 input[type="text"] {
@@ -212,4 +213,22 @@ table.geometries-table tbody tr td {
     font-size: 18px;
     height: 26px;
     width: 26px;
+}
+
+
+/* Forms */
+.ajax-form form {
+    margin-bottom: 20px;
+    max-width: 400px;
+}
+
+.ajax-form form > p{
+    margin-bottom: 20px;
+    margin-top: 0;
+}
+
+.ajax-form input,
+.ajax-form textarea {
+    margin-bottom: 5px;
+    margin-top: 5px;
 }
