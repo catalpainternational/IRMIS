@@ -102,7 +102,6 @@ div.shapefiles-table .table-head .table-row .table-cell {
 }
 
 div.shapefiles-table .table-body .table-row .table-cell {
-    vertical-align: middle;
     line-height: 12px;
     font-weight: 400;
     color: #3D4758;
@@ -122,11 +121,43 @@ div.shapefiles-table .table-cell {
 }
 
 div.shapefiles-table .table-cell:nth-child(1) {
-    width: 30%;
+    flex-basis: 30%;
 }
 
 div.shapefiles-table .table-cell:nth-child(2) {
-    width: 70%;
+    flex-basis: 70%;
+}
+
+table.geometries-table {
+    border-spacing: 0;
+    overflow-x: auto;
+    display: block;
+    width: 100%;
+}
+
+table.geometries-table thead tr th {
+    border-bottom: 1px solid #DEE2E6;
+    padding: 12px 20px;
+    line-height: 17px;
+    font-weight: 600;
+    color: #3D4758;
+    font-size: 14px;
+}
+
+table.geometries-table thead tr th:not(:first-child) {
+    text-align: left;
+}
+
+table.geometries-table tbody tr td {
+    line-height: 12px;
+    font-weight: 400;
+    color: #3D4758;
+    font-size: 14px;
+    padding: 20px;
+}
+
+table.geometries-table tbody tr:not(:last-child) td {
+    border-bottom: 1px solid #DEE2E6;
 }
 
 
