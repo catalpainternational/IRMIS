@@ -949,53 +949,16 @@ class ContractReport:
             ),
             "typeOfWorkYear": (
                 "SELECT\n"
-                "    type_of_work as title,\n"
-                "    SUM(yrZero) as yrZero,\n"
-                "    SUM(yrOne) as yrOne,\n"
-                "    SUM(yrTwo) as yrTwo,\n"
-                "    SUM(yrThree) as yrThree,\n"
-                "    SUM(yrFour) as yrFour\n"
-                "FROM (\n"
-                "    SELECT\n"
-                "        type_of_work,\n"
-                "        CASE\n"
-                "            WHEN year = extract(year from current_date)::integer\n"
-                "            THEN length\n"
-                "            ELSE 0\n"
-                "        END as yrZero,\n"
-                "        CASE\n"
-                "            WHEN (year - 1) = extract(year from current_date)::integer\n"
-                "            THEN length\n"
-                "            ELSE 0\n"
-                "        END as yrOne,\n"
-                "        CASE\n"
-                "            WHEN (year - 2) = extract(year from current_date)::integer\n"
-                "            THEN length\n"
-                "            ELSE 0\n"
-                "        END as yrTwo,\n"
-                "        CASE\n"
-                "            WHEN (year - 3) = extract(year from current_date)::integer\n"
-                "            THEN length\n"
-                "            ELSE 0\n"
-                "        END as yrThree,\n"
-                "        CASE\n"
-                "            WHEN (year - 4) = extract(year from current_date)::integer\n"
-                "            THEN length\n"
-                "            ELSE 0\n"
-                "        END as yrFour\n"
-                "    FROM (\n"
-                "        SELECT type_of_work,\n"
-                "        extract(year from contractEndDate)::integer as year,\n"
-                "        total_assets_length as length\n"
-                "        FROM contracts_core as con\n"
-                "        JOIN projects_core as prj on (con.tender_id = prj.tender_id)\n"
-                "        WHERE status = 'Completed'\n"
-                "        AND extract(year from contractEndDate)::integer >= (extract(year from current_date)::integer - 4)\n"
-            ),
-            "typeOfWorkYearFinalWrapper": (
-                "        GROUP BY type_of_work, year, total_assets_length\n"
-                "    ) as work_types\n"
-                ") as work_year\n"
+                "    extract(year from contractEndDate)::integer as title,\n"
+                "    SUM(total_assets_length) FILTER (WHERE type_of_work = 'Routine maintenance') as routineMaintenance,\n"
+                "    SUM(total_assets_length) FILTER (WHERE type_of_work = 'Periodic maintenance') as periodicMaintenance,\n"
+                "    SUM(total_assets_length) FILTER (WHERE type_of_work = 'Rehabilitation') as rehabilitation,\n"
+                "    SUM(total_assets_length) FILTER (WHERE type_of_work = 'Reconstruction') as reconstruction,\n"
+                "    SUM(total_assets_length) FILTER (WHERE type_of_work = 'Spot improvement') as spotImprovement\n"
+                "FROM contracts_core as con\n"
+                "JOIN projects_core as prj on (con.tender_id = prj.tender_id)\n"
+                "WHERE status = 'Completed'\n"
+                "AND extract(year from contractEndDate)::integer >= (extract(year from current_date)::integer - 4)\n"
             ),
             "assetClassYear": (
                 "SELECT \n"
@@ -1147,10 +1110,6 @@ class ContractReport:
             # apply all other filters passed from frontend
             final_results = self.apply_frontend_filters(final_results)
 
-        # typeOfYear report needs a special closing wrapper added after applying the filters, if any
-        if self.report_type == "typeOfWorkYear":
-            final_results += self.report_clauses["typeOfWorkYearFinalWrapper"]
-
         # apply final grouping for report
         final_results = self.apply_grouping(final_results)
         self.reportSQL += "final_results AS (\n%s)" % final_results
@@ -1193,7 +1152,7 @@ class ContractReport:
             if self.report_type == "assetClassTypeOfWork":
                 query += "GROUP BY title\n"
             elif self.report_type == "typeOfWorkYear":
-                query += "GROUP BY type_of_work\n"
+                query += "GROUP BY title\n"
             elif self.report_type == "assetClassYear":
                 query += "GROUP BY extract(year from contractEndDate)::integer\n"
         elif self.report_id == 5:
