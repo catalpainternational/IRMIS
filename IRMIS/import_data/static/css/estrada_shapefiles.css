@@ -1,6 +1,43 @@
+/* Fonts */
+@font-face {
+    font-family: "DIN";
+    src: url("../fonts/DIN-Light.woff2") format("woff2"),
+         url("../fonts/DIN-Light.woff") format("woff");
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: "DIN";
+    src: url("../fonts/DIN.woff2") format("woff2"),
+         url("../fonts/DIN.woff") format("woff");
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: "DIN";
+    src: url("../fonts/DIN-Medium.woff2") format("woff2"),
+         url("../fonts/DIN-Medium.woff") format("woff");
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: "DIN";
+    src: url("../fonts/DIN-Bold.woff2") format("woff2"),
+         url("../fonts/DIN-Bold.woff") format("woff");
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: "DIN";
+    src: url("../fonts/DIN-Black.woff2") format("woff2"),
+         url("../fonts/DIN-Black.woff") format("woff");
+    font-weight: 900;
+}
+
 /* General */
 body {
     background-color: #3D4758;
+    font-family: "DIN";
     padding: 13px 15px;
     margin: 0;
 }
