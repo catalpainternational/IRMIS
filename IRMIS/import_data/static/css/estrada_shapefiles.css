@@ -41,3 +41,7 @@ body {
     padding: 13px 15px;
     margin: 0;
 }
+
+body > .header {
+    margin-bottom: 18px;
+}
