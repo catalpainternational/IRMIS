@@ -11,7 +11,7 @@ class Command(BaseCommand):
         self.stdout.write(
             self.style.MIGRATE_HEADING("~~~ Starting clean up of Project Assets ~~~ ")
         )
-        
+
         self.stdout.write(
             self.style.MIGRATE_HEADING("~~~ Setting unknown Asset codes ~~~ ")
         )
