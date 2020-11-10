@@ -50,9 +50,9 @@ def get_roads_from_errata(rc):
 def update_road_geometry_data(
     road, link_start, link_end, link_length, reset_geom=False
 ):
-    """ update the road link start/end chainage & length from its geometry
+    """update the road link start/end chainage & length from its geometry
 
-    returns 1 if the geom_ fields were updated, 0 if they were not """
+    returns 1 if the geom_ fields were updated, 0 if they were not"""
     if (
         reset_geom
         or not road.geom_start_chainage
@@ -75,12 +75,12 @@ def update_road_geometry_data(
 
 
 def update_road_link_data(road, link_start=-1, tolerance=50, reset_geom=False):
-    """ after updating the road link start/end chainage & length from its geometry
+    """after updating the road link start/end chainage & length from its geometry
     update the user editable start/end chainage values & length if they are too far out of range
 
     the link_start parameter is the previous road link's link_end_chainage value, if that value was altered
 
-    returns the new link_end_chainage value if changed, otherwise -1 """
+    returns the new link_end_chainage value if changed, otherwise -1"""
     reset_start = reset_geom
     reset_end = reset_geom
     reset_length = reset_geom
@@ -150,11 +150,11 @@ def clear_road_geometries(roads):
 
 
 def assess_road_geometries(roads, tolerance, reset_geom):
-    """ Assess the road geom_* fields for a (query)set of road links that belong to the same road code.
+    """Assess the road geom_* fields for a (query)set of road links that belong to the same road code.
 
     This function expects these road links to be in the correct order (by geometry)
 
-    returns a count of the total number of road links that were updated """
+    returns a count of the total number of road links that were updated"""
     start_chainage = -1
     updated = 0
 
@@ -216,9 +216,9 @@ def assess_road_geometries(roads, tolerance, reset_geom):
 
 
 def refresh_roads_by_road_code(rc, tolerance=50, reset_geom=False):
-    """ Assess all road links for a given road code and identify corrections to be made
+    """Assess all road links for a given road code and identify corrections to be made
 
-    returns a count of the total number of road links that were updated """
+    returns a count of the total number of road links that were updated"""
 
     errata_roads = get_roads_from_errata(rc)
     if len(errata_roads):
