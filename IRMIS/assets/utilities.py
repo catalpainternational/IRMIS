@@ -3,13 +3,14 @@ from .models import Bridge, Culvert, Drift, Road
 
 def get_asset_model(asset_type=""):
     asset_model = None
-    if asset_type.lower() == "road":
+    a_type = asset_type.lower()
+    if a_type == "road":
         asset_model = Road
-    elif asset_type.lower() == "bridge":
+    elif a_type == "bridge" or a_type == "brdg":
         asset_model = Bridge
-    elif asset_type.lower() == "culvert":
+    elif a_type == "culvert" or a_type == "culv":
         asset_model = Culvert
-    elif asset_type.lower() == "drift":
+    elif a_type == "drift" or a_type == "drft":
         asset_model = Drift
 
     return asset_model
@@ -17,13 +18,14 @@ def get_asset_model(asset_type=""):
 
 def get_asset_code(asset_type=""):
     asset_code = None
-    if asset_type.lower() == "road":
+    a_type = asset_type.lower()
+    if a_type == "road":
         asset_code = "XX"
-    elif asset_type.lower() == "bridge":
+    elif a_type == "bridge" or a_type == "brdg":
         asset_code = "XB"
-    elif asset_type.lower() == "culvert":
+    elif a_type == "culvert" or a_type == "culv":
         asset_code = "XC"
-    elif asset_type.lower() == "drift":
+    elif a_type == "drift" or a_type == "drft":
         asset_code = "XD"
 
     return asset_code
