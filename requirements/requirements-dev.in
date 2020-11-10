@@ -1,8 +1,9 @@
 -r requirements.txt
 -r ../IRMIS/catalpa_django_apps/requirements.in
-pylint
+
 black
-django-extensions
-pre-commit
 django-debug-toolbar
+django-extensions
 ipdb
+pre-commit
+pylint

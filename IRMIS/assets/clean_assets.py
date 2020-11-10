@@ -4,7 +4,7 @@ from django.db.models import Q
 import reversion
 
 from assets.models import Bridge, Culvert, Drift, Road
-from assets.utilities import get_asset_model
+from assets.utilities import get_asset_code, get_asset_model
 
 
 ## Road related data cleansing functions
@@ -16,9 +16,9 @@ ROAD_LINK_ERRATA = {"AL003": {"None": {"reason": "Duplicate"},}}
 
 
 def get_roads_by_road_code(rc):
-    """ pull all road links for a given road code
+    """pull all road links for a given road code
 
-    Hopefully in the correct order (fingers crossed) """
+    Hopefully in the correct order (fingers crossed)"""
     # "link_start_chainage" is still included in the `.order_by`
     # to support new imports of road data
     if rc in ROAD_LINK_ERRATA:
@@ -40,10 +40,10 @@ def get_roads_by_road_code(rc):
 
 
 def get_first_road_link_for_chainage(rc, chainage):
-    """ for a given road code and chainage this returns the first matching relevant road link
+    """for a given road code and chainage this returns the first matching relevant road link
 
     This assumes that all the supplied road links are for the same road code,
-    and that they are in the correct order """
+    and that they are in the correct order"""
     roads = get_roads_by_road_code(rc)
 
     road_link = next(
@@ -213,21 +213,27 @@ def set_unknown_asset_codes():
     set_unknown_drift_codes()
 
 
+def get_last_structure_code(prefix, last_structure):
+    if last_structure is None:
+        last_structure_code = "{}000".format(prefix)
+    else:
+        last_structure_code = last_structure.structure_code
+
+    return last_structure_code
+
+
 def set_unknown_road_codes():
     """ finds all roads with meaningless codes and assigns them XX indexed codes """
     roads = Road.objects.filter(
         Q(road_code__isnull=True) | Q(road_code__in=["X", "", "-", "Unknown"])
     )
-    prefix = "XX"
+    prefix = get_asset_code("ROAD")
     last_structure = (
         Road.objects.filter(structure_code__startswith=prefix)
         .order_by("-structure_code")
         .first()
     )
-    if last_structure is None:
-        last_structure_code = "{}000".format(prefix)
-    else:
-        last_structure_code = last_structure.structure_code
+    last_structure_code = get_last_structure_code(prefix, last_structure)
 
     structure_index_offset = int(last_structure_code.replace(prefix, "")) + 1
     for index, road in enumerate(roads):
@@ -240,16 +246,13 @@ def set_unknown_bridge_codes():
     bridges = Bridge.objects.filter(
         Q(structure_code__isnull=True) | Q(structure_code__in=["X", "", "-", "Unknown"])
     )
-    prefix = "XB"
+    prefix = get_asset_code("BRDG")
     last_structure = (
         Bridge.objects.filter(structure_code__startswith=prefix)
         .order_by("-structure_code")
         .first()
     )
-    if last_structure is None:
-        last_structure_code = "{}000".format(prefix)
-    else:
-        last_structure_code = last_structure.structure_code
+    last_structure_code = get_last_structure_code(prefix, last_structure)
 
     structure_index_offset = int(last_structure_code.replace(prefix, "")) + 1
     for index, bridge in enumerate(bridges):
@@ -264,16 +267,13 @@ def set_unknown_culvert_codes():
     culverts = Culvert.objects.filter(
         Q(structure_code__isnull=True) | Q(structure_code__in=["X", "", "-", "Unknown"])
     )
-    prefix = "XC"
+    prefix = get_asset_code("CULV")
     last_structure = (
         Culvert.objects.filter(structure_code__startswith=prefix)
         .order_by("-structure_code")
         .first()
     )
-    if last_structure is None:
-        last_structure_code = "{}000".format(prefix)
-    else:
-        last_structure_code = last_structure.structure_code
+    last_structure_code = get_last_structure_code(prefix, last_structure)
 
     structure_index_offset = int(last_structure_code.replace(prefix, "")) + 1
     for index, culvert in enumerate(culverts):
@@ -288,16 +288,13 @@ def set_unknown_drift_codes():
     drifts = Drift.objects.filter(
         Q(structure_code__isnull=True) | Q(structure_code__in=["X", "", "-", "Unknown"])
     )
-    prefix = "XD"
+    prefix = get_asset_code("DRFT")
     last_structure = (
         Drift.objects.filter(structure_code__startswith=prefix)
         .order_by("-structure_code")
         .first()
     )
-    if last_structure is None:
-        last_structure_code = "{}000".format(prefix)
-    else:
-        last_structure_code = last_structure.structure_code
+    last_structure_code = get_last_structure_code(prefix, last_structure)
 
     structure_index_offset = int(last_structure_code.replace(prefix, "")) + 1
     for index, drift in enumerate(drifts):
