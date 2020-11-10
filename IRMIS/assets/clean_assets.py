@@ -214,10 +214,12 @@ def set_unknown_asset_codes():
 
 
 def get_last_structure_code(prefix, last_structure):
-    if last_structure is None:
-        last_structure_code = "{}000".format(prefix)
-    else:
-        last_structure_code = last_structure.structure_code
+    last_structure_code = "{}000".format(prefix)
+    if last_structure is not None:
+        if hasattr("last_structure", "structure_code"):
+            last_structure_code = last_structure.structure_code
+        elif hasattr("last_structure", "road_code"):
+            last_structure_code = last_structure.road_code
 
     return last_structure_code
 
@@ -229,9 +231,7 @@ def set_unknown_road_codes():
     )
     prefix = get_asset_code("ROAD")
     last_structure = (
-        Road.objects.filter(structure_code__startswith=prefix)
-        .order_by("-structure_code")
-        .first()
+        Road.objects.filter(road_code__startswith=prefix).order_by("-road_code").first()
     )
     last_structure_code = get_last_structure_code(prefix, last_structure)
 
