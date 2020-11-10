@@ -63,7 +63,10 @@ def clean_project_assets(management_command):
             asset_count = len(assets)
             current_asset_id = project_asset.asset_id
             if asset_count == 1:
-                project_asset.asset_id = "%s-%s" % (project_asset_type.upper(), project_asset.asset_pk)
+                project_asset.asset_id = "%s-%s" % (
+                    project_asset_type.upper(),
+                    project_asset.asset_pk,
+                )
             if current_asset_id != project_asset.asset_id:
                 reversion_comment = (
                     reversion_comment + "Asset id updated to the asset's full Id. "
