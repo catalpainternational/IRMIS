@@ -1,0 +1,234 @@
+/* Typography */
+@font-face {
+    font-family: "DIN";
+    src: url("../DIN-Light.woff2") format("woff2"),
+         url("../DIN-Light.woff") format("woff");
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: "DIN";
+    src: url("../DIN.woff2") format("woff2"),
+         url("../DIN.woff") format("woff");
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: "DIN";
+    src: url("../DIN-Medium.woff2") format("woff2"),
+         url("../DIN-Medium.woff") format("woff");
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: "DIN";
+    src: url("../DIN-Bold.woff2") format("woff2"),
+         url("../DIN-Bold.woff") format("woff");
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: "DIN";
+    src: url("../DIN-Black.woff2") format("woff2"),
+         url("../DIN-Black.woff") format("woff");
+    font-weight: 900;
+}
+
+
+/* General */
+body {
+    background-color: #3D4758;
+    font-family: "DIN";
+    padding: 13px 15px;
+    margin: 0;
+}
+
+body > header {
+    margin-bottom: 18px;
+}
+
+body > .container {
+    background-color: white;
+}
+
+body > .container > header {
+    border-bottom: 1px solid #CFD1D6;
+    padding-right: 15px;
+    align-items: center;
+    padding-left: 15px;
+    display: flex;
+    height: 69px;
+}
+
+body > .container > .content {
+    padding: 15px;
+}
+
+.shapefile-overview .group:not(:last-child) {
+    margin-bottom: 20px;
+}
+
+.shapefile-overview .group > p {
+    margin-bottom: 0;
+    margin-top: 8px;
+}
+
+.shapefile-overview .group > ul {
+    margin-bottom: 0;
+    margin-top: 8px;
+}
+
+
+/* Headings */
+h1 {
+    line-height: 27px;
+    font-weight: 600;
+    margin-bottom: 0;
+    color: #3D4758;
+    margin-top: 5px;
+    font-size: 22px;
+}
+
+
+/* Text */
+a {
+    text-decoration: none;
+    color: #03A59A;
+}
+
+label {
+    line-height: 17px;
+    font-weight: 700;
+    color: #3D4758;
+    font-size: 14px;
+}
+
+p {
+    line-height: 16px;
+    color: #3D4758;
+    font-size: 16px;
+}
+
+li {
+    line-height: 16px;
+    color: #3D4758;
+    font-size: 16px;
+}
+
+.helptext {
+    color: #818893 !important; /* override django_ajax_form CSS */
+    font-size: 11px !important; /* override django_ajax_form CSS */
+    line-height: 14px;
+    font-weight: 500;
+}
+
+textarea,
+input[type="text"] {
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    border-radius: 4px !important; /* override django_ajax_form CSS */
+    min-height: unset !important;
+    border: 1px solid #CFD1D6;
+    background-color: #fff;
+    padding: 15px !important; /* override django_ajax_form CSS */
+    width: 100% !important; /* override django_ajax_form CSS */
+    font-weight: 400;
+    color: #3D4758;
+    font-size: 16px;
+    display: block;
+}
+
+input[type="text"] {
+    height: 38px;
+}
+
+textarea:focus,
+input[type="text"]:focus {
+    box-shadow: 0 0 2px 1px rgba(16, 165, 150, 0.5);
+    border-color:  #03A59A;
+    outline: none;
+}
+
+
+/* Buttons */
+.btn-secondary {
+    box-shadow: 0 0 4px 0 rgba(61, 71, 88, 0.3);
+    border: 1px solid #CFD1D6;
+    background-color: #FFFFFF;
+    color: #3D4758;
+}
+
+.btn-small {
+    border-radius: 2px;
+    line-height: 14px;
+    font-weight: 600;
+    min-width: 108px;
+    font-size: 12px;
+    height: 25px;
+}
+
+input[type="submit"] {
+    box-shadow: 0 2px 4px 0 rgba(0, 52, 62, 0.3);
+    background-color: #03A59A;
+    padding-bottom: 7px;
+    border-radius: 4px;
+    font-family: "DIN";
+    padding-top: 10px;
+    line-height: 14px;
+    font-weight: 600;
+    min-width: 135px;
+    font-size: 16px;
+    color: #fff;
+    border: none;
+}
+
+
+/* Tables */
+div.shapefiles-table .table-head .table-row .table-cell {
+    color: #3D4758;
+}
+
+div.shapefiles-table .table-body .table-row .table-cell {
+    color: #3D4758;
+}
+
+table.geometries-table thead tr th {
+    color: #3D4758;
+}
+
+table.geometries-table tbody tr td {
+    color: #3D4758;
+}
+
+
+/* Leaflet map */
+.leaflet-touch .leaflet-control-container .leaflet-bar {
+    box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+    border-radius: 4px;
+    border: none;
+}
+
+.leaflet-touch .leaflet-control-container .leaflet-bar a,
+.leaflet-touch .leaflet-control-container .leaflet-bar a:hover {
+    line-height: 26px;
+    font-size: 18px;
+    height: 26px;
+    width: 26px;
+}
+
+
+/* Forms */
+.ajax-form form {
+    margin-bottom: 20px;
+    max-width: 400px;
+}
+
+.ajax-form form > p{
+    margin-bottom: 20px;
+    margin-top: 0;
+}
+
+.ajax-form input,
+.ajax-form textarea {
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
