@@ -342,6 +342,9 @@ class ProjectAsset(models.Model):
     @property
     def asset_code(self):
         if self.asset_type and TYPE_CODE_CHOICES.get(self.asset_type.pk, None):
+            project_asset_id = self.asset_id.split("-")
+            if len(project_asset_id) == 1:
+                return self.asset_id
             return TYPE_CODE_CHOICES[self.asset_type.pk] + "-" + str(self.asset_pk)
         return None
 

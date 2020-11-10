@@ -22,7 +22,7 @@ def show_feedback(management_command, message, is_error=True, always_show=False)
 
 @periodic_task(run_every=crontab(minute=15, hour="12,23"))
 def clean_project_assets(management_command):
-    """Clean Project Assets, resynchronising them ith the originl Assets"""
+    """Clean Project Assets, resynchronising them with the originl Assets"""
     project_assets = ProjectAsset.objects.all()
 
     for project_asset in project_assets:
@@ -63,17 +63,13 @@ def clean_project_assets(management_command):
             asset_count = len(assets)
             current_asset_id = project_asset.asset_id
             if asset_count == 1:
-                if project_asset_type.upper() == "ROAD":
-                    if assets[0].link_code:
-                        project_asset.asset_id = assets[0].link_code
-                    elif assets[0].road_code:
-                        project_asset.asset_id = assets[0].road_code
-                else:
-                    if assets[0].structure_code:
-                        project_asset.asset_id = assets[0].structure_code
+                project_asset.asset_id = "%s-%s" % (
+                    project_asset_type.upper(),
+                    project_asset.asset_pk,
+                )
             if current_asset_id != project_asset.asset_id:
                 reversion_comment = (
-                    reversion_comment + "Asset id updated to the asset's code. "
+                    reversion_comment + "Asset id updated to the asset's full Id. "
                 )
 
         if reversion_comment != "":
