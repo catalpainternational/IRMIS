@@ -42,7 +42,6 @@ def clean_project_asset(management_command, project_asset):
                 True,
                 True,
             )
-            continue
 
         reversion_comment = reversion_comment + "Asset type and key updated. "
         project_asset.asset_type = ContentType.objects.get_for_model(
