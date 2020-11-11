@@ -380,6 +380,33 @@ def protobuf_road_set(request, chunk_name=None):
     return HttpResponse(roads_protobuf, content_type="application/octet-stream")
 
 
+def get_road_chainage_range(road):
+    start_chainage = -1
+    if road.geom_start_chainage is not None:
+        start_chainage = road.geom_start_chainage
+    elif road.link_start_chainage is not None:
+        start_chainage = road.link_start_chainage
+    if start_chainage < 0:
+        start_chainage = 0
+
+    end_chainage = -1
+    if road.geom_end_chainage is not None:
+        end_chainage = road.geom_end_chainage
+    elif road.link_end_chainage is not None:
+        end_chainage = road.link_end_chainage
+    if end_chainage < 0:
+        end_chainage = 1000000
+
+    # If any of the chainages came from the `link_` values
+    # then we do NOT assume that they are even in order
+    if end_chainage < start_chainage:
+        temp_chainage = end_chainage
+        end_chainage = start_chainage
+        start_chainage = temp_chainage
+
+    return start_chainage, end_chainage
+
+
 @login_required
 def protobuf_road_surveys(request, pk, survey_attribute=None):
     """ returns a protobuf object with the set of surveys for a particular road pk
@@ -389,13 +416,15 @@ def protobuf_road_surveys(request, pk, survey_attribute=None):
 
     # get the Road link requested
     road = get_object_or_404(Road.objects.all(), pk=pk)
+    start_chainage, end_chainage = get_road_chainage_range(road)
+
     # pull any Surveys that cover the Road Code above
     # note: road_* fields in the surveys are ONLY relevant for Bridges, Culverts or Drifts
     # the asset_* fields in a survey correspond to the road_* fields in a Road
     queryset = (
         Survey.objects.filter(asset_code=road.road_code)
-        .filter(chainage_start__gte=road.geom_start_chainage)
-        .filter(chainage_end__lte=road.geom_end_chainage)
+        .filter(chainage_start__gte=start_chainage)
+        .filter(chainage_end__lte=end_chainage)
     )
 
     filter_attribute = survey_attribute
