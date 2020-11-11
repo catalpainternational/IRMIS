@@ -1,7 +1,9 @@
 -r requirements.txt
 -r ../IRMIS/catalpa_django_apps/requirements.in
 
-black
+# Because black is still pre-release this requires the --pre flag
+black>=19,<20.0
+
 django-debug-toolbar
 django-extensions
 ipdb
