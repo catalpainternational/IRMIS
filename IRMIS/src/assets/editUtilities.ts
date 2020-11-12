@@ -67,7 +67,9 @@ function getSurveyReportsForAsset(state: { [name: string]: any }, identifiers: {
                         document.dispatchEvent(new CustomEvent(barEventName, barEventDetail));
                     }
 
-                    const attributeEntries = surveyReportData.attributes(identifiers.primaryAttribute, undefined, undefined, true).attributeEntries;
+                    const attributeEntries = surveyReportData
+                        .attributes(identifiers.primaryAttribute, undefined, undefined, true)
+                        .attributeEntries;
 
                     // Surveys are split across road links to enable their management
                     // But for presentation we want to repack split surveys
