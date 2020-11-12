@@ -2,6 +2,7 @@ import { getAssetSurveys } from "../surveyManager";
 import { getAssetReport } from "../reportManager";
 import { updateReportAttributeSummary } from "../roadAttributes";
 import { EstradaMedia } from "./models/media";
+import { EstradaSurveyAttribute } from "./models/surveyReport";
 
 
 export function getSurveysForAsset(
@@ -66,7 +67,22 @@ function getSurveyReportsForAsset(state: { [name: string]: any }, identifiers: {
                         document.dispatchEvent(new CustomEvent(barEventName, barEventDetail));
                     }
 
-                    state.reportRows = surveyReportData.attributes(identifiers.primaryAttribute).attributeEntries;
+                    const attributeEntries = surveyReportData.attributes(identifiers.primaryAttribute, undefined, undefined, true).attributeEntries;
+
+                    // Surveys are split across road links to enable their management
+                    // But for presentation we want to repack split surveys
+                    state.reportRows = [];
+                    let reportRow: EstradaSurveyAttribute;
+                    attributeEntries.forEach((entry) => {
+                        if (entry.isContiguousWith(reportRow)) {
+                            reportRow.setChainageEnd(entry.chainageEnd);
+                        } else {
+                            if (typeof reportRow !== "undefined") {
+                                state.reportRows.push(reportRow);
+                            }
+                            reportRow = entry;
+                        }
+                    });
 
                     const eventName = `${identifiers.reportDataTableId}.dataAdded`;
                     const eventDetail = { detail: { pendingRows: state.reportRows, clearRows: true } };
