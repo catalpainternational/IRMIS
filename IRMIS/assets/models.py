@@ -843,6 +843,10 @@ class Road(models.Model):
     def prefix(self):
         return "ROAD"
 
+    @property
+    def asset_code(self):
+        return self.road_code
+
     def __str__(self,):
         return "%s(%s) %s" % (self.road_code, self.link_code, self.road_name)
 
@@ -1254,6 +1258,10 @@ class Bridge(models.Model):
     def prefix(self):
         return "BRDG"
 
+    @property
+    def asset_code(self):
+        return self.structure_code
+
     def __str__(self,):
         return "%s(%s)" % (self.structure_name, self.pk)
 
@@ -1485,6 +1493,10 @@ class Culvert(models.Model):
     def prefix(self):
         return "CULV"
 
+    @property
+    def asset_code(self):
+        return self.structure_code
+
     def __str__(self,):
         return "%s(%s)" % (self.structure_name, self.pk)
 
@@ -1705,6 +1717,10 @@ class Drift(models.Model):
     @property
     def prefix(self):
         return "DRFT"
+
+    @property
+    def asset_code(self):
+        return self.structure_code
 
     def __str__(self,):
         return "%s(%s)" % (self.structure_name, self.pk)

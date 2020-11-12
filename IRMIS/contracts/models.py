@@ -118,12 +118,6 @@ def set_asset_status(project_ids, status_obj, status_source, source_id):
         ).distinct()
         for project_asset in project_assets:
             if project_asset.asset_object != None:
-                # look up asset code
-                if project_asset.asset_id.startswith("ROAD-"):
-                    asset_code = project_asset.asset_object.road_code
-                else:
-                    asset_code = project_asset.asset_object.structure_code
-
                 # Build the associated survey object
                 values = (
                     {"road_status": asset_status_code}
@@ -132,7 +126,7 @@ def set_asset_status(project_ids, status_obj, status_source, source_id):
                 )
                 survey_obj = build_survey(
                     project_asset.asset_id,
-                    asset_code,
+                    project_asset.asset_code,
                     "%s %s" % (status_source, source_id),
                     values,
                 )
@@ -338,6 +332,18 @@ class ProjectAsset(models.Model):
     asset_end_chainage = models.IntegerField(
         verbose_name=_("End Chainage"), blank=True, null=True, help_text=_("In meters"),
     )
+
+    @property
+    def actual_asset_code(self):
+        """The actual asset code is the asset code of the underlying asset
+        For Roads this is the road_code or link_code
+        For Structures this is the structure_code
+        For Surveys it is the asset_code
+        """
+        if self.asset_object:
+            return self.asset_object.asset_code
+        else:
+            return self.asset_code
 
     @property
     def asset_code(self):
