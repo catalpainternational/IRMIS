@@ -334,24 +334,29 @@ class ProjectAsset(models.Model):
     )
 
     @property
-    def actual_asset_code(self):
+    def asset_code(self):
         """The actual asset code is the asset code of the underlying asset
         For Roads this is the road_code or link_code
         For Structures this is the structure_code
-        For Surveys it is the asset_code
+        For Surveys it is the asset_code which references the Road or Structure
         """
         if self.asset_object:
             return self.asset_object.asset_code
         else:
-            return self.asset_code
+            return self.asset_full_id
 
     @property
-    def asset_code(self):
+    def asset_full_id(self):
+        """This should be the same as asset_id. 
+        However, it is rebuilt from the asset_type and asset_pk in preference 
+        over using the asset_id.
+        """
         if self.asset_type and TYPE_CODE_CHOICES.get(self.asset_type.pk, None):
+            return "%s-%s" % (TYPE_CODE_CHOICES[self.asset_type.pk], self.asset_pk)
+        else:
             project_asset_id = self.asset_id.split("-")
-            if len(project_asset_id) == 1:
+            if len(project_asset_id) == 2:
                 return self.asset_id
-            return TYPE_CODE_CHOICES[self.asset_type.pk] + "-" + str(self.asset_pk)
         return None
 
     @property
@@ -419,8 +424,8 @@ class ProjectAsset(models.Model):
             # and check the asset_type's validity
             asset_type = new_asset_details[0].upper()
             asset_model = get_asset_model(asset_type)
-            asset_code = get_asset_code(asset_type)
-            if asset_model == None or asset_code == None:
+            supplied_asset_code = get_asset_code(asset_type)
+            if asset_model == None or supplied_asset_code == None:
                 raise ValidationError(
                     {
                         "asset_id": _(
@@ -444,13 +449,16 @@ class ProjectAsset(models.Model):
 
             if len(new_asset_details) > 3:
                 # we've been supplied with an asset_code
-                asset_code = new_asset_details[3]
+                supplied_asset_code = new_asset_details[3]
             else:
                 # Fudge up an asset code from now() as a timestamp
                 dt = datetime.now()
                 utc_time = dt.replace(tzinfo=timezone.utc)
                 utc_timestamp = utc_time.timestamp()
-                asset_code = asset_code + str(utc_timestamp).replace(".", "")[0:13]
+                supplied_asset_code = supplied_asset_code + str(utc_timestamp).replace(".", "")[0:13]
+
+            # supplied asset_code must always be uppercased
+            supplied_asset_code = supplied_asset_code.upper()
 
             # Now we can build up our 'basic' asset
             asset_obj = asset_model(
@@ -458,8 +466,8 @@ class ProjectAsset(models.Model):
             )
 
             if asset_type == "ROAD":
-                asset_obj.road_code = asset_code
-                asset_obj.link_code = asset_code
+                asset_obj.road_code = supplied_asset_code
+                asset_obj.link_code = supplied_asset_code
 
                 asset_obj.link_start_chainage = self.asset_start_chainage
                 asset_obj.link_end_chainage = self.asset_end_chainage
@@ -484,7 +492,7 @@ class ProjectAsset(models.Model):
                     asset_obj.road_status_id = asset_status_id
 
             else:
-                asset_obj.structure_code = asset_code
+                asset_obj.structure_code = supplied_asset_code
 
             # save the asset object with a revision comment
             try:
@@ -503,11 +511,16 @@ class ProjectAsset(models.Model):
                     }
                 )
 
-            self.asset_id = asset_code
+            # This is the default, we change it almost immediately below
+            self.asset_id = supplied_asset_code
 
             # assign Asset obj to the Project Asset
             self.asset_pk = asset_obj.id
             self.asset_type = ContentType.objects.get_for_model(asset_model)
+
+            new_asset_id = self.asset_full_id
+            if new_asset_id is not None:
+                self.asset_id = new_asset_id
 
             # Build and save the associated 'baseline' survey object
             values = {
@@ -524,7 +537,7 @@ class ProjectAsset(models.Model):
                     values["structure_status"] = asset_status_code
 
             survey_obj = build_survey(
-                self.asset_code, asset_code, "Project %s" % self.project.name, values,
+                self.asset_full_id, supplied_asset_code, "Project %s" % self.project.name, values,
             )
             if asset_type == "ROAD":
                 survey_obj.chainage_start = self.asset_start_chainage
@@ -543,21 +556,16 @@ class ProjectAsset(models.Model):
                 if asset_status_code != "0":
                     values["road_status"] = asset_status_code
 
-                if TYPE_CODE_CHOICES[self.asset_type.pk] == "ROAD":
-                    asset_code = self.asset_object.road_code
-                else:
-                    asset_code = self.asset_object.structure_code
-
                 survey_obj = build_survey(
+                    self.asset_full_id,
                     self.asset_code,
-                    asset_code,
                     "Project %s" % self.project.name,
                     values,
                 )
 
                 if TYPE_CODE_CHOICES[self.asset_type.pk] == "ROAD":
                     road_link = get_first_road_link_for_chainage(
-                        asset_code, self.asset_start_chainage
+                        self.asset_code, self.asset_start_chainage
                     )
                     if not road_link:
                         raise ValidationError(
@@ -568,10 +576,8 @@ class ProjectAsset(models.Model):
                             }
                         )
 
-                    self.asset_id = "%s-%s" % (
-                        TYPE_CODE_CHOICES[self.asset_type.pk],
-                        self.asset_pk,
-                    )
+                    # reset the asset_id
+                    self.asset_id = self.asset_full_id
 
                     # save the road with an updated project name and a revision comment
                     update_road(
