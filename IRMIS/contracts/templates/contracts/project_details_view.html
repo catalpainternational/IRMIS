@@ -70,7 +70,7 @@
         <div>
             <label>{% trans "Asset" %}</label>
             {% for asset in assets %}
-            <p>{{ asset.asset_code }}:
+            <p>{{ asset.actual_asset_code }}:
                 {{ asset.asset_start_chainage|as_chainage }}-{{ asset.asset_end_chainage|as_chainage }}</p>
             {% endfor %}
         </div>
