@@ -769,6 +769,22 @@ export class EstradaSurveyAttribute extends Attribute implements IEstrada {
         this.setMediaList(values as Media[]);
     }
 
+    /** Returns true if this EstradaSurveyAttribute is contiguous with the supplied survey attribute */
+    isContiguousWith(attribute: EstradaSurveyAttribute) {
+        if (typeof attribute === "undefined") {
+            return false;
+        }
+
+        return this.assetType === attribute.assetType && 
+            this.assetCode === attribute.assetCode &&
+            this.dateSurveyed === attribute.dateSurveyed &&
+            this.userId === attribute.userId &&
+            this.addedBy === attribute.addedBy && 
+            this.primaryAttribute == attribute.primaryAttribute &&
+            this.value === attribute.value &&
+            (this.chainageEnd === attribute.chainageStart || this.chainageStart === attribute.chainageEnd);
+    }
+
     private unknownI8n(): string {
         return (window as any).gettext("Unknown") as string;
     }
