@@ -455,7 +455,9 @@ class ProjectAsset(models.Model):
                 dt = datetime.now()
                 utc_time = dt.replace(tzinfo=timezone.utc)
                 utc_timestamp = utc_time.timestamp()
-                supplied_asset_code = supplied_asset_code + str(utc_timestamp).replace(".", "")[0:13]
+                supplied_asset_code = (
+                    supplied_asset_code + str(utc_timestamp).replace(".", "")[0:13]
+                )
 
             # supplied asset_code must always be uppercased
             supplied_asset_code = supplied_asset_code.upper()
@@ -537,7 +539,10 @@ class ProjectAsset(models.Model):
                     values["structure_status"] = asset_status_code
 
             survey_obj = build_survey(
-                self.asset_full_id, supplied_asset_code, "Project %s" % self.project.name, values,
+                self.asset_full_id,
+                supplied_asset_code,
+                "Project %s" % self.project.name,
+                values,
             )
             if asset_type == "ROAD":
                 survey_obj.chainage_start = self.asset_start_chainage

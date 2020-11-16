@@ -50,7 +50,7 @@ function initializeProjectsListTable(table) {
     const project_municipality = -1;
     const hidden_columns = [
         project_code,
-        // project_assets, 
+        project_assets, 
         project_assets_class, 
         project_municipality,
     ];
@@ -115,7 +115,7 @@ function initializeTendersListTable(table) {
     const project_assets_class = -2;
     const project_municipality = -1;
     const hidden_columns = [
-        // project_assets, 
+        project_assets, 
         type_of_work, 
         project_budgets, 
         project_assets_class, 
@@ -179,7 +179,7 @@ function initializeContractsListTable(table) {
     const project_assets_class = -2;
     const project_municipality = -1;
     const hidden_columns = [
-        // project_assets, 
+        project_assets, 
         contract_budget_amendments, 
         project_assets_class, 
         project_municipality,
