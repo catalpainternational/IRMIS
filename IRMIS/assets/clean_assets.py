@@ -11,8 +11,9 @@ from assets.utilities import get_asset_code, get_asset_model
 ########################################
 
 # Identifies erroneous road links
-# "None" is usd for when there is no link code
-ROAD_LINK_ERRATA = {"AL003": {"None": {"reason": "Duplicate"},}}
+# structure is as follows "roadcode": {"linkcode": {"reason": "Reason Info"},}
+# "None" is used for the linkcode when there is no link code
+ROAD_LINK_ERRATA = {}
 
 
 def get_roads_by_road_code(rc):
