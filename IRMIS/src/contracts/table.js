@@ -44,28 +44,28 @@ function initializeProjectsListTable(table) {
     let order;
 
     // Define hidden columns
-    const project_code = -4;
-    const project_assets = -3;
-    const project_assets_class = -2;
-    const project_municipality = -1;
-    const hidden_columns = [
-        project_code,
-        project_assets, 
-        project_assets_class, 
-        project_municipality,
+    const projectCode = -4;
+    const projectAssets = -3;
+    const projectAssetsClass = -2;
+    const projectMunicipality = -1;
+    const hiddenColumns = [
+        projectCode,
+        projectAssets, 
+        projectAssetsClass, 
+        projectMunicipality,
     ];
 
     if (window.canChangeProjects) {
         order = [[1, 'asc']];
         columnDefs = [
             { orderable: false, targets: 0 },
-            { visible: false, targets: hidden_columns },
+            { visible: false, targets: hiddenColumns },
             { targets: 5, type: "sort-currency" }
         ];
     } else {
         order = [[0, 'asc']];
         columnDefs = [
-            { visible: false, targets: hidden_columns },
+            { visible: false, targets: hiddenColumns },
             { targets: 4, type: "sort-currency" }
         ];
     }
@@ -109,30 +109,30 @@ function initializeTendersListTable(table) {
     let order;
 
     // Define hidden columns
-    const project_assets = -5;
-    const type_of_work = -4;
-    const project_budgets = -3;
-    const project_assets_class = -2;
-    const project_municipality = -1;
-    const hidden_columns = [
-        project_assets, 
-        type_of_work, 
-        project_budgets, 
-        project_assets_class, 
-        project_municipality,
+    const projectAssets = -5;
+    const typeOfWork = -4;
+    const projectBudgets = -3;
+    const projectAssetsClass = -2;
+    const projectMunicipality = -1;
+    const hiddenColumns = [
+        projectAssets, 
+        typeOfWork, 
+        projectBudgets, 
+        projectAssetsClass, 
+        projectMunicipality,
     ];
 
     if (window.canChangeTenders) {
         order = [[1, 'asc']];
         columnDefs = [
             { orderable: false, targets: 0 },
-            { visible: false, targets: hidden_columns },
+            { visible: false, targets: hiddenColumns },
             { targets: 2, type: "sort-integer" },
         ];
     } else {
         order = [[0, 'asc']];
         columnDefs = [
-            { visible: false, targets: hidden_columns },
+            { visible: false, targets: hiddenColumns },
             { targets: 1, type: "sort-integer" }
         ];
     }
@@ -174,28 +174,28 @@ function initializeContractsListTable(table) {
     let order;
 
     // Define hidden columns
-    const project_assets = -4;
-    const contract_budget_amendments = -3;
-    const project_assets_class = -2;
-    const project_municipality = -1;
-    const hidden_columns = [
-        project_assets, 
-        contract_budget_amendments, 
-        project_assets_class, 
-        project_municipality,
+    const projectAssets = -4;
+    const contractBudgetAmendments = -3;
+    const projectAssetsClass = -2;
+    const projectMunicipality = -1;
+    const hiddenColumns = [
+        projectAssets, 
+        contractBudgetAmendments, 
+        projectAssetsClass, 
+        projectMunicipality,
     ];
 
     if (window.canChangeProjects) {
         order = [[1, 'asc']];
         columnDefs = [
             { orderable: false, targets: 0 },
-            { visible: false, targets: hidden_columns },
+            { visible: false, targets: hiddenColumns },
             { targets: 2, type: "sort-integer" }
         ];
     } else {
         order = [[0, 'asc']];
         columnDefs = [
-            { visible: false, targets: hidden_columns },
+            { visible: false, targets: hiddenColumns },
             { targets: 1, type: "sort-integer" }
         ];
     }
