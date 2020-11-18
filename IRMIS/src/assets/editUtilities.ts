@@ -85,6 +85,10 @@ function getSurveyReportsForAsset(state: { [name: string]: any }, identifiers: {
                             reportRow = entry;
                         }
                     });
+                    // @ts-ignore ts(2454) Variable 'reportRow' is used before being assigned.
+                    if (typeof reportRow !== "undefined") {
+                        state.reportRows.push(reportRow);
+                    }
 
                     const eventName = `${identifiers.reportDataTableId}.dataAdded`;
                     const eventDetail = { detail: { pendingRows: state.reportRows, clearRows: true } };
