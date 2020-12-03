@@ -43,17 +43,29 @@ function initializeProjectsListTable(table) {
     let columnDefs;
     let order;
 
+    // Define hidden columns
+    const projectCode = -4;
+    const projectAssets = -3;
+    const projectAssetsClass = -2;
+    const projectMunicipality = -1;
+    const hiddenColumns = [
+        projectCode,
+        projectAssets, 
+        projectAssetsClass, 
+        projectMunicipality,
+    ];
+
     if (window.canChangeProjects) {
         order = [[1, 'asc']];
         columnDefs = [
             { orderable: false, targets: 0 },
-            { visible: false, targets: [-4, -3, -2, -1] },
+            { visible: false, targets: hiddenColumns },
             { targets: 5, type: "sort-currency" }
         ];
     } else {
         order = [[0, 'asc']];
         columnDefs = [
-            { visible: false, targets: [-4, -3, -2, -1] },
+            { visible: false, targets: hiddenColumns },
             { targets: 4, type: "sort-currency" }
         ];
     }
@@ -96,17 +108,31 @@ function initializeTendersListTable(table) {
     let columnDefs;
     let order;
 
+    // Define hidden columns
+    const projectAssets = -5;
+    const typeOfWork = -4;
+    const projectBudgets = -3;
+    const projectAssetsClass = -2;
+    const projectMunicipality = -1;
+    const hiddenColumns = [
+        projectAssets, 
+        typeOfWork, 
+        projectBudgets, 
+        projectAssetsClass, 
+        projectMunicipality,
+    ];
+
     if (window.canChangeTenders) {
         order = [[1, 'asc']];
         columnDefs = [
             { orderable: false, targets: 0 },
-            { visible: false, targets: [-5, -4, -3, -2, -1] },
+            { visible: false, targets: hiddenColumns },
             { targets: 2, type: "sort-integer" },
         ];
     } else {
         order = [[0, 'asc']];
         columnDefs = [
-            { visible: false, targets: [-5, -4, -3, -2, -1] },
+            { visible: false, targets: hiddenColumns },
             { targets: 1, type: "sort-integer" }
         ];
     }
@@ -147,17 +173,29 @@ function initializeContractsListTable(table) {
     let columnDefs;
     let order;
 
+    // Define hidden columns
+    const projectAssets = -4;
+    const contractBudgetAmendments = -3;
+    const projectAssetsClass = -2;
+    const projectMunicipality = -1;
+    const hiddenColumns = [
+        projectAssets, 
+        contractBudgetAmendments, 
+        projectAssetsClass, 
+        projectMunicipality,
+    ];
+
     if (window.canChangeProjects) {
         order = [[1, 'asc']];
         columnDefs = [
             { orderable: false, targets: 0 },
-            { visible: false, targets: [-4, -3, -2, -1] },
+            { visible: false, targets: hiddenColumns },
             { targets: 2, type: "sort-integer" }
         ];
     } else {
         order = [[0, 'asc']];
         columnDefs = [
-            { visible: false, targets: [-4, -3, -2, -1] },
+            { visible: false, targets: hiddenColumns },
             { targets: 1, type: "sort-integer" }
         ];
     }

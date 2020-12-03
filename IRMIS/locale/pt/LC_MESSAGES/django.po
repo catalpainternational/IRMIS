@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-11 03:20+0000\n"
+"POT-Creation-Date: 2020-11-06 01:12+0000\n"
 "PO-Revision-Date: 2020-08-04 07:15+0000\n"
 "Last-Translator: b'  <sergio@catalpa.io>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -188,42 +188,6 @@ msgstr "Descrição"
 msgid "User"
 msgstr "Utilizador"
 
-msgid "Asset Id"
-msgstr "ID Infra-estrutura"
-
-msgid "Asset Code"
-msgstr "Código Infra-estrutura"
-
-msgid "Road Id"
-msgstr "ID estrada"
-
-msgid "Road Code"
-msgstr "Código de estrada"
-
-msgid "Date Surveyed"
-msgstr "Data do levantamento"
-
-msgid "Date Updated"
-msgstr "Data de actualização"
-
-msgid "Start Chainage (Km)"
-msgstr "Início do Segmento (Km)"
-
-msgid "Enter chainage for survey starting point"
-msgstr "Insira o ponto inicial do segmento (Km)"
-
-msgid "End Chainage (Km)"
-msgstr "Final do Segmento (Km)"
-
-msgid "Enter chainage for survey ending point"
-msgstr "Insira o ponto final da segmento levantado"
-
-msgid "Source"
-msgstr "Fonte"
-
-msgid "Choose the source of the survey"
-msgstr "Escolha a fonte do levantamento"
-
 msgid "National"
 msgstr "Nacional"
 
@@ -286,6 +250,9 @@ msgstr "Não principal"
 
 msgid "Core"
 msgstr "Principal"
+
+msgid "Road Code"
+msgstr "Código de estrada"
 
 msgid "Municipality"
 msgstr "Municipalidade"
@@ -464,8 +431,8 @@ msgstr "Escolha o tipo de ligaçōes que a estrada serve"
 msgid "Attributes"
 msgstr "Atributos"
 
-msgid "Asset Type"
-msgstr "Tipo de Infra-estrutura"
+msgid "Road Id"
+msgstr "ID estrada"
 
 msgid "Structure Code"
 msgstr "Código de Estrutura"
@@ -580,6 +547,39 @@ msgstr "Insira a espessura da estrutura"
 
 msgid "Choose the drift material"
 msgstr "Escolha o tipo de material do \"drift\""
+
+msgid "Asset Type"
+msgstr "Tipo de Infra-estrutura"
+
+msgid "Asset Id"
+msgstr "ID Infra-estrutura"
+
+msgid "Asset Code"
+msgstr "Código Infra-estrutura"
+
+msgid "Date Surveyed"
+msgstr "Data do levantamento"
+
+msgid "Date Updated"
+msgstr "Data de actualização"
+
+msgid "Start Chainage (Km)"
+msgstr "Início do Segmento (Km)"
+
+msgid "Enter chainage for survey starting point"
+msgstr "Insira o ponto inicial do segmento (Km)"
+
+msgid "End Chainage (Km)"
+msgstr "Final do Segmento (Km)"
+
+msgid "Enter chainage for survey ending point"
+msgstr "Insira o ponto final da segmento levantado"
+
+msgid "Source"
+msgstr "Fonte"
+
+msgid "Choose the source of the survey"
+msgstr "Escolha a fonte do levantamento"
 
 msgid "Title"
 msgstr "Título"
@@ -961,9 +961,6 @@ msgstr "Não foi possível criar uma nova infra-estrutura pois o asset_type no s
 
 msgid "Could not create a new Asset, because the asset_class in the 'special' Asset Id is not valid."
 msgstr "Não foi possível criar uma nova infra-estrutura pois o asset_class no seu ID 'special' não é válido"
-
-msgid "Could not create a new Asset, because the asset_municipality in the 'special' Asset Id is not valid."
-msgstr "Não foi possível criar uma nova infra-estrutura pois o asset_municipality no seu ID 'special' não é válido"
 
 msgid "The Asset Code must be unique for this type of asset"
 msgstr "O código da infra-estrutura tem que ser único"
@@ -1713,6 +1710,11 @@ msgstr "Não encontrou a infra-estrutura que procura?"
 msgid "Add information for the new asset"
 msgstr "Adicionar informação sobre uma nova infra-estrutura"
 
+#, fuzzy
+#| msgid "Asset Details"
+msgid "Asset ID already exists"
+msgstr "Este código de infra-estrutura já existe"
+
 msgid "Chainage Start"
 msgstr "Início do segmento"
 
@@ -1799,6 +1801,30 @@ msgstr "Apagar Concurso"
 
 msgid "Are you sure you want to delete this tender?"
 msgstr "Tem a certeza que deseja apagar este concurso?"
+
+msgid "The shapefile components ( include at least .shp, .shx, .prj,  and .dbf )"
+msgstr ""
+
+msgid "include at least .shp, .shx, .prj, and .dbf )"
+msgstr ""
+
+msgid "Give the shapefile a meaningful name to help identify it"
+msgstr ""
+
+msgid "Describe the shapefiles contents, where it represents and what it contains"
+msgstr ""
+
+msgid " .shp file: the shape format; the feature geometry itself "
+msgstr ""
+
+msgid " .shx file: shape index format; a positional index of the feature geometry to allow seeking forwards and backwards quickly"
+msgstr ""
+
+msgid ".dbf file: attribute format; columnar attributes for each shape"
+msgstr ""
+
+msgid ".prj file: projection description and coordinate reference"
+msgstr ""
 
 msgid "Please enter a correct username and password. Note that both fields may be case-sensitive"
 msgstr "O nome de utilizar ou palavra-passe estão incorrectos. Confirme se está a usar correctamente as maiúsculas e minúsculas"
@@ -1904,3 +1930,6 @@ msgstr "Endereço de email"
 
 msgid "Send"
 msgstr "Enviar"
+
+#~ msgid "Could not create a new Asset, because the asset_municipality in the 'special' Asset Id is not valid."
+#~ msgstr "Não foi possível criar uma nova infra-estrutura pois o asset_municipality no seu ID 'special' não é válido"

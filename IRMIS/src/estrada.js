@@ -17,7 +17,7 @@ import MediaDetailsBox from "./riot/media_details_box.riot";
 
 import { getGeoJsonDetails, getGeoJsonDetail } from "./assets/geoJsonAPI.js";
 
-import { getRoad } from "./roadManager";
+import { getMetadataChunksForRoads, getRoad } from "./roadManager";
 import { getStructure } from "./structureManager";
 
 import "./table";
@@ -39,7 +39,35 @@ export const estradaMap = new Map();
 riot.register("loading", Loading);
 riot.mount("loading", { modalid: "assets-loading" });
 
+let assets_loaded = false;
+
 window.addEventListener("load", () => {
+    loadMainPageMaps();
+
+    riot.register("planning_base", Planning_Base);
+    riot.register("reports_base", Reports_Base);
+    riot.register("data_table", Data_Table);
+
+    riot.register("traffic_data_details", TrafficDataDetails);
+    riot.mount("traffic_data_details");
+
+    riot.register("media_details_box", MediaDetailsBox);
+    riot.mount("media_details_box");
+
+    if (window.canEdit) {
+        riot.register("edit_base", Edit_Base);
+    }
+
+    window.goBack = () => { };
+
+    hashCheck();
+});
+
+window.addEventListener("hashchange", () => {
+    hashCheck();
+});
+
+function loadMainPageMaps() {
     // Set up the map and table - but without any data for either
     estradaMap.loadMap();
 
@@ -79,28 +107,17 @@ window.addEventListener("load", () => {
             });
         });
 
-    riot.register("planning_base", Planning_Base);
-    riot.register("reports_base", Reports_Base);
-    riot.register("data_table", Data_Table);
+}
 
-    riot.register("traffic_data_details", TrafficDataDetails);
-    riot.mount("traffic_data_details");
-
-    riot.register("media_details_box", MediaDetailsBox);
-    riot.mount("media_details_box");
-
-    if (window.canEdit) {
-        riot.register("edit_base", Edit_Base);
+function loadMainAssetData() {
+    if (assets_loaded) {
+        return;
     }
 
-    window.goBack = () => { };
-
-    hashCheck();
-});
-
-window.addEventListener("hashchange", () => {
-    hashCheck();
-});
+    // Start getting the asset data
+    getMetadataChunksForRoads();
+    assets_loaded = true;
+}
 
 function hashCheck() {
     const mainContent = document.getElementById("view-content");
@@ -138,6 +155,8 @@ function hashCheck() {
         if (planningBase) riot.unmount("planning_base", true);
         if (reportsBase) riot.unmount("reports_base", true);
         if (editBase) riot.unmount("edit_base", true);
+
+        loadMainAssetData();
         mainContent.hidden = false;
     }
 }

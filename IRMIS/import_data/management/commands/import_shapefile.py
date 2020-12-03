@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from assets.tasks import import_shapefile
+from import_data.tasks import import_shapefile
 
 
 # See also reimport_shapefiles

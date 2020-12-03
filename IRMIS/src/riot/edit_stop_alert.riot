@@ -11,8 +11,8 @@
                     <p>{props.description}</p>
                 </div>
                 <div class="d-flex justify-content-center modal-footer">
-                    <button type="button" class="btn btn-danger" onclick="{proceed}">{props.proceedlabel}</button>
-                    <button type="button" class="btn btn-light" onclick="{halt}">{props.stoplabel}</button>
+                    <button if="{ props.proceedlabel }" type="button" class="btn btn-danger" onclick="{proceed}">{props.proceedlabel}</button>
+                    <button if="{ props.stoplabel }" type="button" class="btn btn-light" onclick="{halt}">{props.stoplabel}</button>
                 </div>
             </div>
         </div>
@@ -44,11 +44,11 @@
                 // To respond to bootstrap modal events properly you must use the full
                 // jQuery `.on` event handler syntax
                 // and attach the event handler initially to `$(document)`
-                // and specify your modal's div with its selector 
+                // and specify your modal's div with its selector
                 $(document).on("show.bs.modal", state.selector, this, (e) => {
                     const self = e.data;
                     self.state.result = null;
-                }); 
+                });
                 $(document).on("hide.bs.modal", state.selector, this, (e) => {
                     // This only occurs for the `data-dismiss="modal"` elements
                     const self = e.data;

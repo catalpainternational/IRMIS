@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from assets.data_cleaning_utils import clean_link_codes
+from assets.clean_assets import clean_link_codes
 
 
 class Command(BaseCommand):

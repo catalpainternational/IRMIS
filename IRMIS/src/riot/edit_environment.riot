@@ -1,8 +1,11 @@
 <edit_environment>
     <div class="content-wrapper">
-        <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-between editorControls">
             <h5>{ window.gettext("Terrain Class Data") }</h5>
-            <button class="btn btn-primary" onclick="{ addEditTerrain }" disabled="{ props.editing }">
+            <button class="btn btn-primary" onclick="{ addEditTerrain }" disabled="{ props.editing }" if="{props.road.getGeojsonId() != 0}">
+                { window.gettext("Add") }
+            </button>
+            <button class="btn btn-primary" onclick="{ geometryAlert }" disabled="{ props.editing }" if="{props.road.getGeojsonId() == 0}">
                 { window.gettext("Add") }
             </button>
         </div>
@@ -30,12 +33,15 @@
     </div>
 
     <div class="content-wrapper">
-        <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-between editorControls">
             <h5>{ window.gettext("Rainfall Data") }</h5>
-            <button class="btn btn-primary" onclick="{ addEditRainfall }" disabled="{ props.editing }">
-                { window.gettext("Add") }</button>
+            <button class="btn btn-primary" onclick="{ addEditRainfall }" disabled="{ props.editing }" if="{props.road.getGeojsonId() != 0}">
+                { window.gettext("Add") }
+            </button>
+            <button class="btn btn-primary" onclick="{ geometryAlert }" disabled="{ props.editing }" if="{props.road.getGeojsonId() == 0}">
+                { window.gettext("Add") }
+            </button>
         </div>
-
         <!-- <stacked_bar id="{ identifiers.rainfall.stackedBarId }" entries="{ state.rainfalls }"
             total_title="{ window.gettext('Total road chainage') }">
         </stacked_bar> -->
@@ -320,6 +326,11 @@
         </form>
     </edit_modal>
 
+    <edit_stop_alert modalid="geometry-alert" title="{ window.gettext('Missing Geometry') }"
+        description="{ window.gettext('You may not add surveys for this asset until it has a geometry. Please contact Catalpa (estrada-support@catalpa.io) to help address this issue.') }"
+        proceedlabel="{ window.gettext('Okay') }" proceedresult="confirmed">
+    </edit_stop_alert>
+
     <edit_stop_alert modalid="delete-alert" title="{ window.gettext('Delete') }"
         description="{ window.gettext('Are you sure you want to delete this data entry?') }"
         proceedlabel="{ window.gettext('Delete') }" proceedresult="delete"
@@ -464,7 +475,9 @@
                 this.state.currentRequiredFieldNames = this.terrainRequiredFieldNames;
                 this.showEditModal();
             },
-
+            geometryAlert(e) {
+                this.showStopAlertModal("geometry-alert");
+            },
             // Modal IDs
             terrain_modal_id: "terrain-type-modal",
             rainfall_modal_id: "rainfall-modal",

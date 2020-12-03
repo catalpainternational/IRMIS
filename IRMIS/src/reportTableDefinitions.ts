@@ -805,65 +805,40 @@ export const reportContractsTableColumns: { [name: string]: any } = {
                 : data;
         },
     },
-    yrZero: {
-        title: (currentYr).toString(),
-        data: "yrzero",
+    routineMaintenance: {
+        title: (window as any).gettext("Routine Maintenance"),
+        data: "routineMaintenance",
         defaultContent: 0,
         orderable: false,
         className: "text-right",
-        render: (data: any, type: string) => {
-            return (type === "display" && data)
-                ? formatNumber((data / 1000).toFixed(2))
-                : data;
-        },
     },
-    yrOne: {
-        title: (currentYr - 1).toString(),
-        data: "yrone",
+    periodicMaintenance: {
+        title: (window as any).gettext("Periodic Maintenance"),
+        data: "periodicMaintenance",
         defaultContent: 0,
         orderable: false,
         className: "text-right",
-        render: (data: any, type: string) => {
-            return (type === "display" && data)
-                ? formatNumber((data / 1000).toFixed(2))
-                : data;
-        },
     },
-    yrTwo: {
-        title: (currentYr - 2).toString(),
-        data: "yrtwo",
+    rehabilitation: {
+        title: (window as any).gettext("Rehabilitation"),
+        data: "rehabilitation",
         defaultContent: 0,
         orderable: false,
         className: "text-right",
-        render: (data: any, type: string) => {
-            return (type === "display" && data)
-                ? formatNumber((data / 1000).toFixed(2))
-                : data;
-        },
     },
-    yrThree: {
-        title: (currentYr - 3).toString(),
-        data: "yrthree",
+    reconstruction: {
+        title: (window as any).gettext("Reconstruction"),
+        data: "reconstruction",
         defaultContent: 0,
         orderable: false,
         className: "text-right",
-        render: (data: any, type: string) => {
-            return (type === "display" && data)
-                ? formatNumber((data / 1000).toFixed(2))
-                : data;
-        },
     },
-    yrFour: {
-        title: (currentYr - 4).toString(),
-        data: "yrfour",
+    spotImprovement: {
+        title: (window as any).gettext("Spot Improvement"),
+        data: "spotImprovement",
         defaultContent: 0,
         orderable: false,
         className: "text-right",
-        render: (data: any, type: string) => {
-            return (type === "display" && data)
-                ? formatNumber((data / 1000).toFixed(2))
-                : data;
-        },
     },
     yearMonth: {
         title: (window as any).gettext("Year/Month"),
@@ -1216,11 +1191,11 @@ export const reportContractsColumnSets: { [name: string]: string[] } = {
     ],
     typeOfWorkYear: [
         reportContractsTableColumns.title,
-        reportContractsTableColumns.yrZero,
-        reportContractsTableColumns.yrOne,
-        reportContractsTableColumns.yrTwo,
-        reportContractsTableColumns.yrThree,
-        reportContractsTableColumns.yrFour,
+        reportContractsTableColumns.routineMaintenance,
+        reportContractsTableColumns.periodicMaintenance,
+        reportContractsTableColumns.rehabilitation,
+        reportContractsTableColumns.reconstruction,
+        reportContractsTableColumns.spotImprovement,
     ],
     assetClassYear: [
         reportContractsTableColumns.title,
@@ -1305,13 +1280,13 @@ export const reportContractsContent: { [name: string]: any } = {
         noReportData: (window as any).gettext("Sorry, data for financial and physical progress is not available yet"),
         fixedFilter: {},
         visibleFilters: {
-            // assetClass: true,
-            // typeOfWork: true,
-            // program: true,
-            // fundingSource: true,
-            // donor: true,
-            // fromDate: true,
-            // toDate: true,
+            assetClass: true,
+            typeOfWork: true,
+            program: true,
+            fundingSource: true,
+            donor: true,
+            fromDateFull: true,
+            toDateFull: true,
         },
         reportElements: {
             filters: true,
@@ -1328,13 +1303,13 @@ export const reportContractsContent: { [name: string]: any } = {
         noReportData: (window as any).gettext("Sorry, data for financial and physical progress is not available yet"),
         fixedFilter: {},
         visibleFilters: {
-            // assetClass: true,
-            // typeOfWork: true,
-            // program: true,
-            // fundingSource: true,
-            // donor: true,
-            // fromDate: true,
-            // toDate: true,
+            assetClass: true,
+            typeOfWork: true,
+            program: true,
+            fundingSource: true,
+            donor: true,
+            fromDateFull: true,
+            toDateFull: true,
         },
         reportElements: {
             filters: true,
@@ -1351,8 +1326,8 @@ export const reportContractsContent: { [name: string]: any } = {
         noReportData: (window as any).gettext("Sorry, data for completed contracts is not available yet"),
         fixedFilter: {},
         visibleFilters: {
-            // fundingSource: true,
-            // donor: true,
+            fundingSource: true,
+            donor: true,
         },
         reportElements: {
             filters: true,

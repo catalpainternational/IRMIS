@@ -94,9 +94,12 @@
 
     <!-- DATA TABLES FOR SURVEY-BASED ATTRIBUTES -->
     <div class="content-wrapper">
-        <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-between editorControls">
             <h5>{ window.gettext("Carriageway Width Data") }</h5>
-            <button class="btn btn-primary" onclick="{ addEditCarriageway }" disabled="{ props.editing }">
+            <button class="btn btn-primary" onclick="{ addEditCarriageway }" disabled="{ props.editing }" if="{props.road.getGeojsonId() != 0}">
+                { window.gettext("Add") }
+            </button>
+            <button class="btn btn-primary" onclick="{ geometryAlert }" disabled="{ props.editing }" if="{props.road.getGeojsonId() == 0}">
                 { window.gettext("Add") }
             </button>
         </div>
@@ -121,9 +124,12 @@
     </div>
 
     <div class="content-wrapper">
-        <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-between editorControls">
             <h5>{ window.gettext("Total Width Data") }</h5>
-            <button class="btn btn-primary" onclick="{ addEditTotalWidth }" disabled="{ props.editing }">
+            <button class="btn btn-primary" onclick="{ addEditTotalWidth }" disabled="{ props.editing }" if="{props.road.getGeojsonId() != 0}">
+                { window.gettext("Add") }
+            </button>
+            <button class="btn btn-primary" onclick="{ geometryAlert }" disabled="{ props.editing }" if="{props.road.getGeojsonId() == 0}">
                 { window.gettext("Add") }
             </button>
         </div>
@@ -148,9 +154,12 @@
     </div>
 
     <div class="content-wrapper">
-        <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-between editorControls">
             <h5>{ window.gettext("Number of Lanes Data") }</h5>
-            <button class="btn btn-primary" onclick="{ addEditLanes }" disabled="{ props.editing }">
+            <button class="btn btn-primary" onclick="{ addEditLanes }" disabled="{ props.editing }" if="{props.road.getGeojsonId() != 0}">
+                { window.gettext("Add") }
+            </button>
+            <button class="btn btn-primary" onclick="{ geometryAlert }" disabled="{ props.editing }" if="{props.road.getGeojsonId() == 0}">
                 { window.gettext("Add") }
             </button>
         </div>
@@ -174,9 +183,12 @@
     </div>
 
     <div class="content-wrapper">
-        <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-between editorControls">
             <h5>{ window.gettext("Technical Class Data") }</h5>
-            <button class="btn btn-primary" onclick="{ addEditTechnical }" disabled="{ props.editing }">
+            <button class="btn btn-primary" onclick="{ addEditTechnical }" disabled="{ props.editing }" if="{props.road.getGeojsonId() != 0}">
+                { window.gettext("Add") }
+            </button>
+            <button class="btn btn-primary" onclick="{ geometryAlert }" disabled="{ props.editing }" if="{props.road.getGeojsonId() == 0}">
                 { window.gettext("Add") }
             </button>
         </div>
@@ -516,6 +528,11 @@
         </form>
     </edit_modal>
 
+    <edit_stop_alert modalid="geometry-alert" title="{ window.gettext('Missing Geometry') }"
+        description="{ window.gettext('You may not add surveys for this asset until it has a geometry. Please contact Catalpa (estrada-support@catalpa.io) to help address this issue.') }"
+        proceedlabel="{ window.gettext('Okay') }" proceedresult="confirmed">
+    </edit_stop_alert>
+
     <edit_stop_alert modalid="delete-alert" title="{ window.gettext('Delete') }"
         description="{ window.gettext('Are you sure you want to delete this data entry?') }"
         proceedlabel="{ window.gettext('Delete') }" proceedresult="delete" stoplabel="{ window.gettext('Don\'t delete') }"
@@ -736,7 +753,9 @@
                 this.state.currentRequiredFieldNames = this.lanesRequiredFieldNames;
                 this.showEditModal();
             },
-
+            geometryAlert(e) {
+                this.showStopAlertModal("geometry-alert");
+            },
             // Modal IDs
             carriageway_modal_id: "carriageway-width-modal",
             total_width_modal_id: "total-width-modal",

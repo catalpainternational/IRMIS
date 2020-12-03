@@ -5,7 +5,7 @@ export function getAssetReport(filters: { [name: string]: any }) {
         .then((surveyReportList) => { return surveyReportList; });
 }
 
-export function getContractReport(reportType: string, filters: { [name: string]: [] }) {
+export function getContractReport(reportType: string, filters: { [name: string]: any }) {
     return Promise.resolve(getContractReports(reportType, filters))
         .then((contractReportList) => { return contractReportList; });
 }

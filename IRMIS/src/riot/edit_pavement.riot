@@ -1,8 +1,11 @@
 <edit_pavement>
     <div class="content-wrapper">
-        <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-between editorControls">
             <h5>{ window.gettext("Surface Type Data") }</h5>
-            <button class="btn btn-primary" onclick="{ addEditSurface }" disabled="{ props.editing }">
+            <button class="btn btn-primary" onclick="{ addEditSurface }" disabled="{ props.editing }" if="{props.road.getGeojsonId() != 0}">
+                { window.gettext("Add") }
+            </button>
+            <button class="btn btn-primary" onclick="{ geometryAlert }" disabled="{ props.editing }" if="{props.road.getGeojsonId() == 0}">
                 { window.gettext("Add") }
             </button>
         </div>
@@ -32,7 +35,10 @@
     <div class="content-wrapper">
         <div class="d-flex justify-content-between">
             <h5>{ window.gettext("Pavement Class Data") }</h5>
-            <button class="btn btn-primary" onclick="{ addEditPavement }" disabled="{ props.editing }">
+            <button class="btn btn-primary" onclick="{ addEditPavement }" disabled="{ props.editing }" if="{props.road.getGeojsonId() != 0}">
+                { window.gettext("Add") }
+            </button>
+            <button class="btn btn-primary" onclick="{ geometryAlert }" disabled="{ props.editing }" if="{props.road.getGeojsonId() == 0}">
                 { window.gettext("Add") }
             </button>
         </div>
@@ -221,6 +227,11 @@
         </form>
     </edit_modal>
 
+    <edit_stop_alert modalid="geometry-alert" title="{ window.gettext('Missing Geometry') }"
+        description="{ window.gettext('You may not add surveys for this asset until it has a geometry. Please contact Catalpa (estrada-support@catalpa.io) to help address this issue.') }"
+        proceedlabel="{ window.gettext('Okay') }" proceedresult="confirmed">
+    </edit_stop_alert>
+
     <edit_stop_alert modalid="delete-alert" title="{ window.gettext('Delete') }"
         description="{ window.gettext('Are you sure you want to delete this data entry?') }"
         proceedlabel="{ window.gettext('Delete') }" proceedresult="delete"
@@ -364,7 +375,9 @@
                 this.state.currentRequiredFieldNames = this.surfaceRequiredFieldNames;
                 this.showEditModal();
             },
-
+            geometryAlert(e) {
+                this.showStopAlertModal("geometry-alert");
+            },
             // Modal IDs
             surface_modal_id: "surface-type-modal",
             pavement_modal_id: "pavement-class-modal",

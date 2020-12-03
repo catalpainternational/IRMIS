@@ -16,6 +16,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.gis.db import models
 from django.core.cache import caches
 from django.core.files.base import ContentFile
+from django.db import connection
 from django.db.models import OuterRef, Q, Subquery
 from django.db.models.functions import Cast, Substr
 from django.http import (
@@ -73,8 +74,7 @@ from .models import (
     BreakpointRelationships,
 )
 
-from .tasks import delete_cache_key
-from .data_cleaning_utils import update_non_programmatic_surveys_by_road_code
+from .clean_surveys import update_non_programmatic_surveys_by_road_code
 from .report_query import ReportQuery, ContractReport
 from .serializers import RoadSerializer
 from .token_mixin import JWTRequiredMixin
@@ -143,6 +143,23 @@ def get_last_modified(request, pk=None):
             return Road.objects.all().latest("last_modified").last_modified
     except Road.DoesNotExist:
         return datetime.now()
+
+
+def delete_cache_key(key, multiple=False):
+    """ Takes cache key string as input and clears cache of it (if it exists).
+        If multiple argument is False, delete a single key. If True, try to
+        delete all keys that are a match for a key string prefix.
+    """
+    if not multiple:
+        cache.delete(key)
+    else:
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "DELETE FROM roads_cache_table WHERE cache_key LIKE '%s%';" % key
+                )
+        except TypeError:
+            pass
 
 
 @login_required
@@ -363,6 +380,33 @@ def protobuf_road_set(request, chunk_name=None):
     return HttpResponse(roads_protobuf, content_type="application/octet-stream")
 
 
+def get_road_chainage_range(road):
+    start_chainage = -1
+    if road.geom_start_chainage is not None:
+        start_chainage = road.geom_start_chainage
+    elif road.link_start_chainage is not None:
+        start_chainage = road.link_start_chainage
+    if start_chainage < 0:
+        start_chainage = 0
+
+    end_chainage = -1
+    if road.geom_end_chainage is not None:
+        end_chainage = road.geom_end_chainage
+    elif road.link_end_chainage is not None:
+        end_chainage = road.link_end_chainage
+    if end_chainage < 0:
+        end_chainage = 1000000
+
+    # If any of the chainages came from the `link_` values
+    # then we do NOT assume that they are even in order
+    if end_chainage < start_chainage:
+        temp_chainage = end_chainage
+        end_chainage = start_chainage
+        start_chainage = temp_chainage
+
+    return start_chainage, end_chainage
+
+
 @login_required
 def protobuf_road_surveys(request, pk, survey_attribute=None):
     """ returns a protobuf object with the set of surveys for a particular road pk
@@ -372,13 +416,15 @@ def protobuf_road_surveys(request, pk, survey_attribute=None):
 
     # get the Road link requested
     road = get_object_or_404(Road.objects.all(), pk=pk)
+    start_chainage, end_chainage = get_road_chainage_range(road)
+
     # pull any Surveys that cover the Road Code above
     # note: road_* fields in the surveys are ONLY relevant for Bridges, Culverts or Drifts
     # the asset_* fields in a survey correspond to the road_* fields in a Road
     queryset = (
         Survey.objects.filter(asset_code=road.road_code)
-        .filter(chainage_start__gte=road.geom_start_chainage)
-        .filter(chainage_end__lte=road.geom_end_chainage)
+        .filter(chainage_start__gte=start_chainage)
+        .filter(chainage_end__lte=end_chainage)
     )
 
     filter_attribute = survey_attribute
@@ -762,7 +808,11 @@ def protobuf_reports(request):
 
     # add the serialized report to the cache for future requests
     report_pb_serialized = report_protobuf.SerializeToString()
-    cache.set("report_%s" % abs(hash(str(final_filters))), report_pb_serialized)
+
+    # only cache reports for more than one asset ID (ie. not for current report on asset's surveys)
+    if not asset_id and not asset_code:
+        cache.set("report_%s" % abs(hash(str(final_filters))), report_pb_serialized)
+
     return HttpResponse(report_pb_serialized, content_type="application/octet-stream")
 
 
@@ -2148,11 +2198,23 @@ def protobuf_contract_reports(request, report_id):
         raise MethodNotAllowed(request.method)
 
     report_types = {
-        1: ["program"],
-        2: ["contractCode"],
-        3: ["assetClassTypeOfWork", "typeOfWorkYear", "assetClassYear"],
-        4: ["numberEmployeesSummary", "wagesSummary", "workedDaysSummary"],  # summary
-        5: ["numberEmployees", "wages", "workedDays"],  # single contract
+        1: ["program"],  # Financial and Physical Progress - Summary
+        2: ["contractCode"],  # Financial and Physical Progress - Detail
+        3: [
+            "assetClassTypeOfWork",
+            "typeOfWorkYear",
+            "assetClassYear",
+        ],  # Completed Contracts Length
+        4: [
+            "numberEmployeesSummary",
+            "wagesSummary",
+            "workedDaysSummary",
+        ],  # Social Safeguard - summary
+        5: [
+            "numberEmployees",
+            "wages",
+            "workedDays",
+        ],  # Social Safeguard - single contract
     }
 
     try:
@@ -2160,7 +2222,7 @@ def protobuf_contract_reports(request, report_id):
         report_data = {"filters": request.GET, "summary": 0}
         for rt in report_types[report_id]:
             # Initialise a new Contract Report
-            contract_report = ContractReport(report_id, rt, request.GET)
+            contract_report = ContractReport(report_id, rt, request.GET.copy())
             report_data[rt] = contract_report.execute_main_query()
 
             # add the Summary data for certain reports
