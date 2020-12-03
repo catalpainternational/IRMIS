@@ -31,7 +31,7 @@
         </section>
 
         <!-- Bridge-specific field -->
-        <section if="{ props.assetType === 'BRDG' }">
+        <section if="{ props.assettype === 'BRDG' }">
             <div class="form-group">
                 <label>{ window.gettext("River Name") }</label>
                 <small class="form-text text-muted">
@@ -86,7 +86,7 @@
         </section>
 
         <!-- Culvert -specific fields -->
-        <template if="{ props.assetType === 'CULV' }">
+        <template if="{ props.assettype === 'CULV' }">
             <section>
                 <div class="form-group">
                     <label>{ window.gettext("Height (meters)") }</label>
@@ -125,7 +125,7 @@
         </template>
 
         <!-- Drift -specific fields -->
-        <template if="{ props.assetType === 'DRFT' }">
+        <template if="{ props.assettype === 'DRFT' }">
             <section>
                 <div class="form-group">
                     <label>{ window.gettext("Thickness (meters)") }</label>
@@ -146,7 +146,7 @@
         </template>
 
         <!-- Bridge-specific field -->
-        <template if="{ props.assetType === 'BRDG' }">
+        <template if="{ props.assettype === 'BRDG' }">
             <section>
                 <div class="form-group">
                     <label>{ window.gettext("Number of spans") }</label>
@@ -221,7 +221,7 @@
                 state.length = props.structure.getLength();
                 state.width = props.structure.getWidth();
 
-                switch (props.assetType) {
+                switch (props.assettype) {
                     case "BRDG":
                         state.riverName = props.structure.getRiverName();
                         state.numberSpans = props.structure.getNumberSpans();

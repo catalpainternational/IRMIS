@@ -201,7 +201,7 @@ gettext("Number of companies");
 gettext("Contractor");
 gettext("Budget current year ($)");
 gettext("Total budget ($)");
-gettext("Total contract value ($)");
+gettext("Initial contract amount ($)");
 gettext("Value of the contract - including variations (amendments) ($)");
 gettext("Payments previous year ($)");
 gettext("Payments current year ($)");

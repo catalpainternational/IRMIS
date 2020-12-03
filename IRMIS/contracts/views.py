@@ -154,6 +154,15 @@ class ProjectListView(ListView):
             function="TRUNC",
             template="%(function)s(%(expressions)s, 2)",
         )
+    ).prefetch_related(
+        "status",
+        "program",
+        "type_of_work",
+        "funding_source",
+        "donor",
+        "tender",
+        "assets",
+        "assets__asset_object",
     )
 
     def get_context_data(self, *args, **kwargs):
@@ -205,11 +214,16 @@ class ProjectUpdateFormView(AddedFormsetMixin, UpdateView):
 class ProjectDetailView(DetailView):
     template_name = "contracts/project_details_view.html"
     model = models.Project
+    queryset = models.Project.objects.prefetch_related(
+        "status", "program", "tender", "assets", "assets__asset_object",
+    )
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context["assets"] = models.ProjectAsset.objects.filter(project=self.object.id)
-        context["contracts"] = models.Contract.objects.filter(tender=self.object.tender)
+        context["contracts"] = models.Contract.objects.filter(
+            tender=self.object.tender
+        ).prefetch_related("status", "tender", "contractor", "subcontractor")
         return context
 
 
@@ -236,6 +250,8 @@ class ProjectFinancialsDetailView(DetailView):
             function="TRUNC",
             template="%(function)s(%(expressions)s, 2)",
         )
+    ).prefetch_related(
+        "status", "program", "type_of_work", "funding_source", "donor", "tender"
     )
 
     def get_context_data(self, *args, **kwargs):
@@ -312,6 +328,12 @@ class TenderListView(ListView):
             function="TRUNC",
             template="%(function)s(%(expressions)s, 2)",
         )
+    ).prefetch_related(
+        "status",
+        "projects",
+        "projects__type_of_work",
+        "projects__assets",
+        "projects__assets__asset_object",
     )
 
     def get_context_data(self, *args, **kwargs):
@@ -404,6 +426,15 @@ class ContractListView(ListView):
             .values("total"),
             output_field=IntegerField(),
         ),
+    ).prefetch_related(
+        "status",
+        "tender",
+        "contractor",
+        "subcontractor",
+        "tender__projects",
+        "tender__projects__type_of_work",
+        "tender__projects__assets",
+        "tender__projects__assets__asset_object",
     )
 
     def get_context_data(self, *args, **kwargs):
@@ -464,7 +495,7 @@ class ContractDetailView(DetailView):
             .values("total"),
             output_field=IntegerField(),
         ),
-    )
+    ).prefetch_related("status", "tender", "contractor", "subcontractor")
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -618,7 +649,8 @@ class CompanyListView(ListView):
     queryset = models.Company.objects.annotate(
         total_contracts_amount=models.Company._active_contracts_subquery(),
         total_contracts=Count("contractor_for"),
-    )
+    ).prefetch_related("category")
+
     template_name = "contracts/company_list.html"
 
 

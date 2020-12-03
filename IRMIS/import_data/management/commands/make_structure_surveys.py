@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from assets.data_cleaning_utils import (
+from import_data.clean_surveys import (
     delete_redundant_surveys,
     get_current_structure_codes,
     refresh_surveys_by_structure_code,

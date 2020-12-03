@@ -1,19 +1,22 @@
 <edit_traffic>
     <div class="content-wrapper">
-        <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-between editorControls">
             <h5>{ window.gettext ("Traffic Data") }</h5>
-            <button class="btn btn-primary" onclick="{ addEditTraffic }" disabled="{ props.editing }">
+            <button class="btn btn-primary" onclick="{ addEditTraffic }" props.editing }" if="{props.road.getGeojsonId() != 0}">
+                { window.gettext("Add") }
+            </button>
+            <button class="btn btn-primary" onclick="{ geometryAlert }" disabled="{ props.editing }" if="{props.road.getGeojsonId() == 0}">
                 { window.gettext("Add") }
             </button>
         </div>
         <div class="table-spacing">
-            <data_table table_id="{identifiers.traffic_type.allDataTableId}" columns="{table_columns}" columnSortOrder="{table_columns_order}"
-                getHelpText="{props.parent.getHelpText}" canorder candelete>
+            <data_table tableid="{ identifiers.traffic_type.allDataTableId }" columns="{ table_columns }"
+                columnsortorder="{ table_columns_order }" canorder="{ true }" candelete="{ true }">
             </data_table>
         </div>
     </div>
 
-    <edit_modal modal_id="{ modal_id }" disableSave="{!state.canSave}">
+    <edit_modal modalid="{ modal_id }" disablesave="{ !state.canSave }">
         <span slot="modal_title">{window.gettext("Add Traffic Data")}</span>
 
         <form slot="modal_body">
@@ -137,10 +140,15 @@
         </form>
     </edit_modal>
 
-    <edit_stop_alert modalId="delete-alert" title="{window.gettext('Delete')}"
-        description="{window.gettext('Are you sure you want to delete this data entry?')}"
-        proceedLabel="{window.gettext('Delete')}" proceedResult="delete" stopLabel="{window.gettext('Don\'t delete')}"
-        stopResult="keep">
+    <edit_stop_alert modalid="geometry-alert" title="{ window.gettext('Missing Geometry') }"
+        description="{ window.gettext('You may not add surveys for this asset until it has a geometry. Please contact Catalpa (estrada-support@catalpa.io) to help address this issue.') }"
+        proceedlabel="{ window.gettext('Okay') }" proceedresult="confirmed">
+    </edit_stop_alert>
+
+    <edit_stop_alert modalid="delete-alert" title="{ window.gettext('Delete') }"
+        description="{ window.gettext('Are you sure you want to delete this data entry?') }"
+        proceedlabel="{ window.gettext('Delete') }" proceedresult="delete" stoplabel="{ window.gettext('Don\'t delete') }"
+        stopresult="keep">
     </edit_stop_alert>
 
     <div id="traffic-segments-modal" class="modal inventory-modal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -326,7 +334,7 @@
                     orderable: false,
                 },
                 {
-                    // To add a 'Delete' button include the attribute candelete
+                    // To add a 'Delete' button include the attribute candelete="{ true }"
                     // on the Riot dataTable tag as well
                     title: window.gettext("Delete"),
                     name: "Option", // Do NOT translate this
@@ -335,6 +343,9 @@
                     orderable: false,
                 },
             ],
+            geometryAlert(e) {
+                this.showStopAlertModal("geometry-alert");
+            },
             onMounted(props, state) {
                 state.road = makeEstradaRoad(props.road);
 
@@ -522,11 +533,11 @@
                             const refreshPromise = getSurveysForAsset(this.state, this.identifiers["traffic_type"]);
                             refreshPromise.then((result) => {
                                 this.update();
-                                this.props.showFeedback();
+                                this.props.showfeedback();
                             });
                         })
                         .catch((err) => {
-                            this.props.showFeedback(true);
+                            this.props.showfeedback(true);
                         })
                         .finally((r) => {
                             $("#asset-manager-loading").modal("hide");
@@ -537,20 +548,20 @@
                             const refreshPromise = getSurveysForAsset(this.state, this.identifiers["traffic_type"]);
                             refreshPromise.then((result) => {
                                 this.update();
-                                this.props.showFeedback();
+                                this.props.showfeedback();
                             });
                         })
                         .catch((err) => {
-                            this.props.showFeedback(true);
+                            this.props.showfeedback(true);
                         })
                         .finally((r) => {
                             $("#asset-manager-loading").modal("hide");
                         });
                 }
                 // clear input values
-                this.state.survey = new EstradaSurvey({}); 
+                this.state.survey = new EstradaSurvey({});
                 this.state.currentRowData = new EstradaSurvey({});
-                
+
                 this.update();
             },
             canSave() {

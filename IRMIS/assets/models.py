@@ -1,25 +1,25 @@
 from django.conf import settings
-from django.contrib.gis.db import models
-from django.contrib.gis.geos import Point
-from django.contrib.postgres.indexes import GistIndex
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.gis.db import models
+from django.contrib.gis.geos import Point
+from django.contrib.postgres.aggregates.general import ArrayAgg
 from django.contrib.postgres.fields import HStoreField, JSONField, DecimalRangeField
 from django.contrib.postgres.indexes import GistIndex
-from django.contrib.postgres.aggregates.general import ArrayAgg
-from django.utils.translation import ugettext_lazy as _
 from django.core.cache import caches
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db.models import Count, Max, OuterRef, Prefetch, Subquery
 from django.db.models.functions import Cast, Substr, Upper
 from django.db import connection, ProgrammingError
+from django.utils.translation import ugettext_lazy as _
+
 from warnings import warn
 from typing import Iterable
-from warnings import warn
 
 import importlib_resources as resources
 import re
+
 from . import sql_scripts
 
 import json
@@ -32,16 +32,16 @@ from datetime import datetime
 from collections import namedtuple
 
 from protobuf.media_pb2 import Medias as ProtoMedias
+from protobuf.plan_pb2 import Plans as ProtoPlans, PlanSnapshots as ProtoPlanSnapshots
 from protobuf.roads_pb2 import Roads as ProtoRoads, Projection
 from protobuf.survey_pb2 import Surveys as ProtoSurveys
 from protobuf.structure_pb2 import Structures as ProtoStructures
-from protobuf.plan_pb2 import Plans as ProtoPlans
-from protobuf.plan_pb2 import PlanSnapshots as ProtoPlanSnapshots
 
 from google.protobuf.timestamp_pb2 import Timestamp
 
-from .geodjango_utils import start_end_point_annos
 from csv_data_sources.models import CsvData
+
+from .geodjango_utils import start_end_point_annos
 from .managers import RoughnessManager
 
 cache = caches["default"]
@@ -106,6 +106,8 @@ class SchemaError(TypeError):
     pass
 
 
+## Assets - Related Data
+########################
 def getattr_protobuf(query_obj, query_key, default=None):
     if "__" not in query_key:
         return getattr(query_obj, query_key, default)
@@ -178,6 +180,22 @@ class TechnicalClass(models.Model):
         return self.name
 
 
+def get_asset_prefix(asset_type=""):
+    prefix = ""
+    if asset_type == "bridge":
+        prefix = "BRDG-"
+    elif asset_type == "culvert":
+        prefix = "CULV-"
+    elif asset_type == "drift":
+        prefix = "DRFT-"
+    elif asset_type == "survey":
+        prefix = "SURV-"
+    elif asset_type == "road":
+        prefix = "ROAD-"
+
+    return prefix
+
+
 class MediaQuerySet(models.QuerySet):
     def to_protobuf(self):
         """ returns a protobuf object from the queryset with a Media list """
@@ -206,17 +224,8 @@ class MediaQuerySet(models.QuerySet):
                     setattr(media_protobuf, protobuf_key, field_value)
 
             if getattr(media, "content_object", None):
-                model = media.content_type.model
-                if model == "bridge":
-                    prefix = "BRDG-"
-                elif model == "culvert":
-                    prefix = "CULV-"
-                elif model == "drift":
-                    prefix = "DRFT-"
-                elif model == "survey":
-                    prefix = "SURV-"
-                elif model == "road":
-                    prefix = "ROAD-"
+                asset_type = media.content_type.model
+                prefix = get_asset_prefix(asset_type)
                 setattr(media_protobuf, "fk_link", prefix + str(media.object_id))
 
             field_value = getattr(media, "date_created", None)
@@ -294,187 +303,7 @@ class ConnectionType(models.Model):
         return self.name
 
 
-class SurveyQuerySet(models.QuerySet):
-    def to_protobuf(self):
-        """ returns a roads survey protobuf object from the queryset """
-        # See survey.proto
-
-        surveys_protobuf = ProtoSurveys()
-
-        regular_fields = dict(
-            id="id",
-            asset_id="asset_id",
-            asset_code="asset_code",
-            road_id="road_id",
-            road_code="road_code",
-            chainage_start="chainage_start",
-            chainage_end="chainage_end",
-            source="source",
-        )
-
-        media_prefetch = Prefetch(
-            "media",
-            queryset=Media.objects.select_related("user").filter(
-                survey__id__in=self.values("id")
-            ),
-        )
-
-        surveys = self.order_by("id").prefetch_related(media_prefetch)
-
-        for survey in surveys:
-            survey_protobuf = surveys_protobuf.surveys.add()
-            for protobuf_key, query_key in regular_fields.items():
-                field_value = getattr(survey, query_key, None)
-                if field_value != None:
-                    setattr(survey_protobuf, protobuf_key, field_value)
-
-            field_value = getattr(survey, "date_updated", None)
-            if field_value != None:
-                ts = timestamp_from_datetime(field_value)
-                survey_protobuf.date_updated.CopyFrom(ts)
-
-            field_value = getattr(survey, "date_surveyed", None)
-            if field_value != None:
-                ts = timestamp_from_datetime(field_value)
-                survey_protobuf.date_surveyed.CopyFrom(ts)
-
-            if survey.user:
-                setattr(survey_protobuf, "user", survey.user.id)
-
-                if survey.user.first_name and survey.user.last_name:
-                    setattr(
-                        survey_protobuf,
-                        "added_by",
-                        "%s %s" % (survey.user.first_name, survey.user.last_name),
-                    )
-                elif survey.user.username:
-                    setattr(survey_protobuf, "added_by", survey.user.username)
-            else:
-                setattr(survey_protobuf, "added_by", "")
-
-            if survey.values:
-                # Dump the survey values as a json string
-                # Because these are not likely to get large,
-                # zipping them will probably not be optimal
-                survey_protobuf.values = json.dumps(
-                    survey.values, separators=(",", ":")
-                )
-
-            for media in survey.media.all():
-                media_protobuf = survey_protobuf.media.add()
-                setattr(media_protobuf, "id", media.id)
-                setattr(media_protobuf, "url", media.file.url)
-                setattr(media_protobuf, "fk_link", "SURV-" + str(survey.id))
-                if media.description:
-                    setattr(media_protobuf, "description", media.description)
-                setattr(media_protobuf, "added_by", media.user.username)
-                # set the info for create / modified dates
-                ts = timestamp_from_datetime(media.date_created)
-                media_protobuf.date_created.CopyFrom(ts)
-
-        return surveys_protobuf
-
-
-class SurveyManager(models.Manager):
-    def get_queryset(self):
-        return SurveyQuerySet(self.model, using=self._db)
-
-    def to_protobuf(self, road=None):
-        """ returns a roads survey protobuf object from the manager """
-        return self.get_queryset().to_protobuf()
-
-
-@reversion.register()
-class Survey(models.Model):
-    class Meta:
-        indexes = [
-            GistIndex(fields=["values"]),
-        ]
-
-    objects = SurveyManager()
-
-    # Global ID for an asset the survey links to (ex. BRDG-42)
-    asset_id = models.CharField(
-        verbose_name=_("Asset Id"),
-        validators=[no_spaces],
-        blank=True,
-        null=True,
-        db_index=True,
-        max_length=15,
-    )
-    asset_code = models.CharField(
-        verbose_name=_("Asset Code"),
-        validators=[no_spaces],
-        blank=True,
-        null=True,
-        db_index=True,
-        max_length=25,
-    )
-    # a disconnected reference to the road record this survey relates to
-    # for a survey connected to a road, this will be null and the actual value will be in asset_*
-    # for a survey connected to a structure, this is the road that that structure is on
-    road_id = models.IntegerField(verbose_name=_("Road Id"), blank=True, null=True)
-    road_code = models.CharField(
-        verbose_name=_("Road Code"),
-        validators=[no_spaces],
-        blank=True,
-        null=True,
-        max_length=25,
-    )
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        verbose_name=_("User"),
-        null=True,
-        on_delete=models.SET_NULL,
-    )
-    date_surveyed = models.DateTimeField(_("Date Surveyed"), null=True)
-    date_created = models.DateTimeField(_("Date Created"), auto_now_add=True)
-    date_updated = models.DateTimeField(_("Date Updated"), auto_now=True)
-    # chainage start and end are actually stored as meters, but shown in chainage format for Km
-    chainage_start = models.IntegerField(
-        verbose_name=_("Start Chainage (Km)"),
-        blank=True,
-        null=True,
-        help_text=_("Enter chainage for survey starting point"),
-    )
-    chainage_end = models.IntegerField(
-        verbose_name=_("End Chainage (Km)"),
-        blank=True,
-        null=True,
-        help_text=_("Enter chainage for survey ending point"),
-    )
-    source = models.CharField(
-        verbose_name=_("Source"),
-        default=None,
-        blank=True,
-        null=True,
-        max_length=155,
-        help_text=_("Choose the source of the survey"),
-    )
-    values = HStoreField()
-    media = GenericRelation(Media, related_query_name="survey")
-
-    @property
-    def prefix(self):
-        return "SURV"
-
-    def __str__(self,):
-        if not self.asset_id:
-            return "(%s) %s %s - Bad Survey" % (
-                self.id,
-                self.asset_code,
-                self.date_updated,
-            )
-        if self.asset_id.startswith("ROAD"):
-            return "%s(%s - %s) %s" % (
-                self.asset_code,
-                self.chainage_start,
-                self.chainage_end,
-                self.date_updated,
-            )
-        return "%s %s" % (self.asset_code, self.date_updated,)
-
-
+## Assets - Road, (Structures) Bridge, Culvert, Drift
 class Asset:
     """ Ultimately this will provide the definitions that are common to all types of Assets. """
 
@@ -536,6 +365,8 @@ def prepare_protobuf_nullable_int(raw_value):
     return nullable
 
 
+## Assets - Road
+################
 class RoadQuerySet(models.QuerySet):
     def to_chunks(self):
         """ returns an object defining the available chunks from the roads queryset """
@@ -978,7 +809,7 @@ class Road(models.Model):
     media = GenericRelation(Media, related_query_name="road")
     # a reference to the collated geojson file this road's geometry is in
     geojson_file = models.ForeignKey(
-        "CollatedGeoJsonFile", on_delete=models.DO_NOTHING, blank=True, null=True
+        "CollatedGeoJsonFile", on_delete=models.SET_NULL, blank=True, null=True
     )
 
     # How this road link `serves`
@@ -1012,6 +843,10 @@ class Road(models.Model):
     def prefix(self):
         return "ROAD"
 
+    @property
+    def asset_code(self):
+        return self.road_code
+
     def __str__(self,):
         return "%s(%s) %s" % (self.road_code, self.link_code, self.road_name)
 
@@ -1027,16 +862,8 @@ class RoadFeatureAttributes(models.Model):
     attributes = JSONField(verbose_name=_("Attributes"))
 
 
-class CollatedGeoJsonFile(models.Model):
-    """ FeatureCollection GeoJson(srid=4326) files made up of collated geometries """
-
-    key = models.SlugField(unique=True)
-    asset_type = models.CharField(
-        default="road", max_length=10, verbose_name=_("Asset Type")
-    )
-    geobuf_file = models.FileField(upload_to="geojson/geobuf/")
-
-
+## Assets - Structures
+######################
 class StructureProtectionType(models.Model):
     code = models.CharField(max_length=3, unique=True, verbose_name=_("Code"))
     name = models.CharField(max_length=50, verbose_name=_("Name"))
@@ -1206,6 +1033,8 @@ def structure_to_protobuf(
         media_protobuf.date_created.CopyFrom(ts)
 
 
+## Assets - Bridge
+##################
 class BridgeClass(models.Model):
     code = models.CharField(max_length=3, unique=True, verbose_name=_("Code"))
     name = models.CharField(max_length=50, verbose_name=_("Name"))
@@ -1429,10 +1258,27 @@ class Bridge(models.Model):
     def prefix(self):
         return "BRDG"
 
+    @property
+    def asset_code(self):
+        return self.structure_code
+
     def __str__(self,):
         return "%s(%s)" % (self.structure_name, self.pk)
 
 
+class BridgeFeatureAttributes(models.Model):
+    """
+    Original data fields of the Bridge model shapefiles
+    """
+
+    bridge = models.OneToOneField(
+        "Bridge", on_delete=models.CASCADE, verbose_name=_("Bridge")
+    )
+    attributes = JSONField(verbose_name=_("Attributes"))
+
+
+## Assets - Culvert
+###################
 class CulvertClass(models.Model):
     code = models.CharField(max_length=3, unique=True, verbose_name=_("Code"))
     name = models.CharField(max_length=50, verbose_name=_("Name"))
@@ -1589,7 +1435,7 @@ class Culvert(models.Model):
     )
     # a reference to the collated geojson file this Structure's geometry is in
     geojson_file = models.ForeignKey(
-        "CollatedGeoJsonFile", on_delete=models.DO_NOTHING, blank=True, null=True
+        "CollatedGeoJsonFile", on_delete=models.SET_NULL, blank=True, null=True
     )
 
     structure_type = models.ForeignKey(
@@ -1647,10 +1493,27 @@ class Culvert(models.Model):
     def prefix(self):
         return "CULV"
 
+    @property
+    def asset_code(self):
+        return self.structure_code
+
     def __str__(self,):
         return "%s(%s)" % (self.structure_name, self.pk)
 
 
+class CulvertFeatureAttributes(models.Model):
+    """
+    Original data fields of the Culvert model shapefiles
+    """
+
+    culvert = models.OneToOneField(
+        "Culvert", on_delete=models.CASCADE, verbose_name=_("Culvert")
+    )
+    attributes = JSONField(verbose_name=_("Attributes"))
+
+
+## Assets - Drift
+#################
 class DriftClass(models.Model):
     code = models.CharField(max_length=3, unique=True, verbose_name=_("Code"))
     name = models.CharField(max_length=50, verbose_name=_("Name"))
@@ -1803,7 +1666,7 @@ class Drift(models.Model):
     )
     # a reference to the collated geojson file this Structure's geometry is in
     geojson_file = models.ForeignKey(
-        "CollatedGeoJsonFile", on_delete=models.DO_NOTHING, blank=True, null=True
+        "CollatedGeoJsonFile", on_delete=models.SET_NULL, blank=True, null=True
     )
 
     structure_type = models.ForeignKey(
@@ -1855,8 +1718,218 @@ class Drift(models.Model):
     def prefix(self):
         return "DRFT"
 
+    @property
+    def asset_code(self):
+        return self.structure_code
+
     def __str__(self,):
         return "%s(%s)" % (self.structure_name, self.pk)
+
+
+class DriftFeatureAttributes(models.Model):
+    """
+    Original data fields of the Drift model shapefiles
+    """
+
+    drift = models.OneToOneField(
+        "Drift", on_delete=models.CASCADE, verbose_name=_("Drift")
+    )
+    attributes = JSONField(verbose_name=_("Attributes"))
+
+
+## Assets - Geometries
+######################
+class CollatedGeoJsonFile(models.Model):
+    """ FeatureCollection GeoJson(srid=4326) files made up of collated geometries """
+
+    key = models.SlugField(unique=True)
+    asset_type = models.CharField(
+        default="road", max_length=10, verbose_name=_("Asset Type")
+    )
+    geobuf_file = models.FileField(upload_to="geojson/geobuf/")
+
+
+## Surveys - Regular and Roughness
+##################################
+class SurveyQuerySet(models.QuerySet):
+    def to_protobuf(self):
+        """ returns a roads survey protobuf object from the queryset """
+        # See survey.proto
+
+        surveys_protobuf = ProtoSurveys()
+
+        regular_fields = dict(
+            id="id",
+            asset_id="asset_id",
+            asset_code="asset_code",
+            road_id="road_id",
+            road_code="road_code",
+            chainage_start="chainage_start",
+            chainage_end="chainage_end",
+            source="source",
+        )
+
+        media_prefetch = Prefetch(
+            "media",
+            queryset=Media.objects.select_related("user").filter(
+                survey__id__in=self.values("id")
+            ),
+        )
+
+        surveys = self.order_by("id").prefetch_related(media_prefetch)
+
+        for survey in surveys:
+            survey_protobuf = surveys_protobuf.surveys.add()
+            for protobuf_key, query_key in regular_fields.items():
+                field_value = getattr(survey, query_key, None)
+                if field_value != None:
+                    setattr(survey_protobuf, protobuf_key, field_value)
+
+            field_value = getattr(survey, "date_updated", None)
+            if field_value != None:
+                ts = timestamp_from_datetime(field_value)
+                survey_protobuf.date_updated.CopyFrom(ts)
+
+            field_value = getattr(survey, "date_surveyed", None)
+            if field_value != None:
+                ts = timestamp_from_datetime(field_value)
+                survey_protobuf.date_surveyed.CopyFrom(ts)
+
+            if survey.user:
+                setattr(survey_protobuf, "user", survey.user.id)
+
+                if survey.user.first_name and survey.user.last_name:
+                    setattr(
+                        survey_protobuf,
+                        "added_by",
+                        "%s %s" % (survey.user.first_name, survey.user.last_name),
+                    )
+                elif survey.user.username:
+                    setattr(survey_protobuf, "added_by", survey.user.username)
+            else:
+                setattr(survey_protobuf, "added_by", "")
+
+            if survey.values:
+                # Dump the survey values as a json string
+                # Because these are not likely to get large,
+                # zipping them will probably not be optimal
+                survey_protobuf.values = json.dumps(
+                    survey.values, separators=(",", ":")
+                )
+
+            for media in survey.media.all():
+                media_protobuf = survey_protobuf.media.add()
+                setattr(media_protobuf, "id", media.id)
+                setattr(media_protobuf, "url", media.file.url)
+                setattr(media_protobuf, "fk_link", "SURV-" + str(survey.id))
+                if media.description:
+                    setattr(media_protobuf, "description", media.description)
+                setattr(media_protobuf, "added_by", media.user.username)
+                # set the info for create / modified dates
+                ts = timestamp_from_datetime(media.date_created)
+                media_protobuf.date_created.CopyFrom(ts)
+
+        return surveys_protobuf
+
+
+class SurveyManager(models.Manager):
+    def get_queryset(self):
+        return SurveyQuerySet(self.model, using=self._db)
+
+    def to_protobuf(self, road=None):
+        """ returns a roads survey protobuf object from the manager """
+        return self.get_queryset().to_protobuf()
+
+
+@reversion.register()
+class Survey(models.Model):
+    class Meta:
+        indexes = [
+            GistIndex(fields=["values"]),
+        ]
+
+    objects = SurveyManager()
+
+    # Global ID for an asset the survey links to (ex. BRDG-42)
+    asset_id = models.CharField(
+        verbose_name=_("Asset Id"),
+        validators=[no_spaces],
+        blank=True,
+        null=True,
+        db_index=True,
+        max_length=15,
+    )
+    asset_code = models.CharField(
+        verbose_name=_("Asset Code"),
+        validators=[no_spaces],
+        blank=True,
+        null=True,
+        db_index=True,
+        max_length=25,
+    )
+    # a disconnected reference to the road record this survey relates to
+    # for a survey connected to a road, this will be null and the actual value will be in asset_*
+    # for a survey connected to a structure, this is the road that that structure is on
+    road_id = models.IntegerField(verbose_name=_("Road Id"), blank=True, null=True)
+    road_code = models.CharField(
+        verbose_name=_("Road Code"),
+        validators=[no_spaces],
+        blank=True,
+        null=True,
+        max_length=25,
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        verbose_name=_("User"),
+        null=True,
+        on_delete=models.SET_NULL,
+    )
+    date_surveyed = models.DateTimeField(_("Date Surveyed"), null=True)
+    date_created = models.DateTimeField(_("Date Created"), auto_now_add=True)
+    date_updated = models.DateTimeField(_("Date Updated"), auto_now=True)
+    # chainage start and end are actually stored as meters, but shown in chainage format for Km
+    chainage_start = models.IntegerField(
+        verbose_name=_("Start Chainage (Km)"),
+        blank=True,
+        null=True,
+        help_text=_("Enter chainage for survey starting point"),
+    )
+    chainage_end = models.IntegerField(
+        verbose_name=_("End Chainage (Km)"),
+        blank=True,
+        null=True,
+        help_text=_("Enter chainage for survey ending point"),
+    )
+    source = models.CharField(
+        verbose_name=_("Source"),
+        default=None,
+        blank=True,
+        null=True,
+        max_length=155,
+        help_text=_("Choose the source of the survey"),
+    )
+    values = HStoreField()
+    media = GenericRelation(Media, related_query_name="survey")
+
+    @property
+    def prefix(self):
+        return "SURV"
+
+    def __str__(self,):
+        if not self.asset_id:
+            return "(%s) %s %s - Bad Survey" % (
+                self.id,
+                self.asset_code,
+                self.date_updated,
+            )
+        if self.asset_id.startswith("ROAD"):
+            return "%s(%s - %s) %s" % (
+                self.asset_code,
+                self.chainage_start,
+                self.chainage_end,
+                self.date_updated,
+            )
+        return "%s %s" % (self.asset_code, self.date_updated,)
 
 
 class RoughnessSurvey(CsvData):

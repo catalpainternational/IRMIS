@@ -77,6 +77,7 @@
         </thead>
         <tbody>
             {% for contract in contract_list %}
+            {% with all_projects=contract.tender.projects.all %}
             <tr>
                 {% if perms.contracts.change_contract or perms.contracts.delete_contract %}
                 <td class="text-center">
@@ -94,18 +95,18 @@
                 <td><a href="{% url 'contract-contract-detail' contract.id %}">{{ contract.contract_code }}</a></td>
                 <td class="text-right to-format">{{ contract.tender.projects.count }}</td>
                 <td>
-                    {% for project in contract.tender.projects.all %}
+                    {% for project in all_projects %}
                     <div>{{ project.name }}</div>
                     {% endfor %}
                 </td>
                 <td>
-                    {% for project in contract.tender.projects.all %}
+                    {% for project in all_projects %}
                     <div>{{ project.type_of_work }}</div>
                     {% endfor %}
                 </td>
                 <td>{{ contract.status }}</td>
                 <td>
-                    {% for project in contract.tender.projects.all %}
+                    {% for project in all_projects %}
                     {% for asset in project.assets.all %}
                     <div>{{ asset.asset_code }}</div>
                     {% endfor %}
@@ -113,20 +114,21 @@
                 </td>
                 <td>$ {{ contract.total_amendments|default_if_none:contract.total_budget }}</td>
                 <td>
-                    {% for project in contract.tender.projects.all %}
+                    {% for project in all_projects %}
                     {% for asset in project.assets.all %}
                     <div>{{ asset.asset_class }}</div>
                     {% endfor %}
                     {% endfor %}
                 </td>
                 <td>
-                    {% for project in contract.tender.projects.all %}
+                    {% for project in all_projects %}
                     {% for asset in project.assets.all %}
                     <div>{{ asset.municipality }}</div>
                     {% endfor %}
                     {% endfor %}
                 </td>
             </tr>
+            {% endwith %}
             {% endfor %}
         </tbody>
     </table>

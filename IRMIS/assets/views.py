@@ -14,7 +14,9 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.gis.db import models
+from django.core.cache import caches
 from django.core.files.base import ContentFile
+from django.db import connection
 from django.db.models import OuterRef, Q, Subquery
 from django.db.models.functions import Cast, Substr
 from django.http import (
@@ -72,10 +74,12 @@ from .models import (
     BreakpointRelationships,
 )
 
-from .data_cleaning_utils import update_non_programmatic_surveys_by_road_code
+from .clean_surveys import update_non_programmatic_surveys_by_road_code
 from .report_query import ReportQuery, ContractReport
 from .serializers import RoadSerializer
 from .token_mixin import JWTRequiredMixin
+
+cache = caches["default"]
 
 
 @method_decorator(login_required, name="dispatch")
@@ -139,6 +143,23 @@ def get_last_modified(request, pk=None):
             return Road.objects.all().latest("last_modified").last_modified
     except Road.DoesNotExist:
         return datetime.now()
+
+
+def delete_cache_key(key, multiple=False):
+    """ Takes cache key string as input and clears cache of it (if it exists).
+        If multiple argument is False, delete a single key. If True, try to
+        delete all keys that are a match for a key string prefix.
+    """
+    if not multiple:
+        cache.delete(key)
+    else:
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "DELETE FROM roads_cache_table WHERE cache_key LIKE '%s%';" % key
+                )
+        except TypeError:
+            pass
 
 
 @login_required
@@ -295,6 +316,9 @@ def road_update(request):
             change_message,
         )
 
+    delete_cache_key("roadchunk_", multiple=True)
+    delete_cache_key("report_", multiple=True)
+
     versions = Version.objects.get_for_object(road)
     response = HttpResponse(
         req_pb.SerializeToString(), status=200, content_type="application/octet-stream"
@@ -337,6 +361,9 @@ def road_chunks_set(request):
 @login_required
 def protobuf_road_set(request, chunk_name=None):
     """ returns a protobuf object with the set of all Roads """
+    cached_pb = cache.get("roadchunk_%s" % abs(hash(chunk_name)), None)
+    if cached_pb:
+        return HttpResponse(cached_pb, content_type="application/octet-stream")
 
     roads = Road.objects.all()
     if chunk_name:
@@ -348,11 +375,36 @@ def protobuf_road_set(request, chunk_name=None):
                 Q(road_code__startswith=rc) | Q(road_code__startswith=rc.upper())
             )
 
-    roads_protobuf = roads.to_protobuf()
+    roads_protobuf = roads.to_protobuf().SerializeToString()
+    cache.set("roadchunk_%s" % abs(hash(chunk_name)), roads_protobuf)
+    return HttpResponse(roads_protobuf, content_type="application/octet-stream")
 
-    return HttpResponse(
-        roads_protobuf.SerializeToString(), content_type="application/octet-stream"
-    )
+
+def get_road_chainage_range(road):
+    start_chainage = -1
+    if road.geom_start_chainage is not None:
+        start_chainage = road.geom_start_chainage
+    elif road.link_start_chainage is not None:
+        start_chainage = road.link_start_chainage
+    if start_chainage < 0:
+        start_chainage = 0
+
+    end_chainage = -1
+    if road.geom_end_chainage is not None:
+        end_chainage = road.geom_end_chainage
+    elif road.link_end_chainage is not None:
+        end_chainage = road.link_end_chainage
+    if end_chainage < 0:
+        end_chainage = 1000000
+
+    # If any of the chainages came from the `link_` values
+    # then we do NOT assume that they are even in order
+    if end_chainage < start_chainage:
+        temp_chainage = end_chainage
+        end_chainage = start_chainage
+        start_chainage = temp_chainage
+
+    return start_chainage, end_chainage
 
 
 @login_required
@@ -364,13 +416,15 @@ def protobuf_road_surveys(request, pk, survey_attribute=None):
 
     # get the Road link requested
     road = get_object_or_404(Road.objects.all(), pk=pk)
+    start_chainage, end_chainage = get_road_chainage_range(road)
+
     # pull any Surveys that cover the Road Code above
     # note: road_* fields in the surveys are ONLY relevant for Bridges, Culverts or Drifts
     # the asset_* fields in a survey correspond to the road_* fields in a Road
     queryset = (
         Survey.objects.filter(asset_code=road.road_code)
-        .filter(chainage_start__gte=road.geom_start_chainage)
-        .filter(chainage_end__lte=road.geom_end_chainage)
+        .filter(chainage_start__gte=start_chainage)
+        .filter(chainage_end__lte=end_chainage)
     )
 
     filter_attribute = survey_attribute
@@ -484,15 +538,17 @@ def clean_id_filter(id_value, prefix):
 
 
 def id_filter_consistency(primary_id, drift_id, culvert_id, bridge_id, road_id=None):
-    if primary_id != None:
-        if drift_id != None and "DRFT-" + str(primary_id) == drift_id:
-            primary_id = drift_id
-        if culvert_id != None and "CULV-" + str(primary_id) == culvert_id:
-            primary_id = culvert_id
-        if bridge_id != None and "BRDG-" + str(primary_id) == bridge_id:
-            primary_id = bridge_id
-        if road_id != None and "ROAD-" + str(primary_id) == road_id:
-            primary_id = road_id
+    if primary_id:
+        prefix_id_mappings = [
+            ("DRFT-", drift_id),
+            ("CULV-", culvert_id),
+            ("BRDG-", bridge_id),
+            ("ROAD-", road_id),
+        ]
+        for prefix, obj_id in prefix_id_mappings:
+            if obj_id and prefix + str(primary_id) == obj_id:
+                primary_id = obj_id
+                break
 
     return primary_id
 
@@ -500,36 +556,23 @@ def id_filter_consistency(primary_id, drift_id, culvert_id, bridge_id, road_id=N
 def filter_consistency(asset, drift, culvert, bridge, road):
     """ If asset is not set, then it is set to a structure (bridge, culvert, drift),
     in preference to be set to a road value """
-    if asset == None and (
-        bridge != None or culvert != None or drift != None or road != None
-    ):
-        if bridge != None or culvert != None or drift != None:
-            if bridge != None:
-                asset = bridge
-            elif culvert != None:
-                asset = culvert
-            else:
-                asset = drift
-        else:
-            asset = road
+    validObjects = [
+        asset for asset in (bridge, culvert, drift, road) if asset is not None
+    ]
+    if asset == None and len(validObjects) == 1:
+        asset = validObjects[0]
 
     return asset
 
 
 def filters_consistency(assets, structures, drifts, culverts, bridges, roads):
-    if len(structures) == 0 and (
-        len(bridges) > 0 or len(culverts) > 0 or len(drifts) > 0
-    ):
-        if len(bridges) > 0:
-            structures = bridges
-        if len(culverts) > 0:
-            structures = culverts
-        else:
-            structures = drifts
-    if len(assets) == 0 and (len(structures) > 0 or len(roads) > 0):
-        if len(structures) > 0:
+    structureObjs = [objs for objs in (bridges, culverts, drifts) if len(objs)]
+    if not len(structures) and len(structureObjs) == 1:
+        structures = structureObjs[0]
+    if not len(assets):
+        if len(structures):
             assets = structures
-        else:
+        elif len(roads):
             assets = roads
 
     return assets, structures
@@ -709,6 +752,11 @@ def protobuf_reports(request):
     # ) and chainage:
     #     final_filters["chainage"] = chainage
 
+    # check the cache for pre-built version of the report
+    cached_report_pb = cache.get("report_%s" % abs(hash(str(final_filters))), None)
+    if cached_report_pb:
+        return HttpResponse(cached_report_pb, content_type="application/octet-stream")
+
     # Initialise the Report
     asset_report = ReportQuery(final_filters)
     final_lengths = asset_report.compile_summary_stats(
@@ -758,9 +806,14 @@ def protobuf_reports(request):
 
                 report_protobuf.attributes.append(report_attribute)
 
-    return HttpResponse(
-        report_protobuf.SerializeToString(), content_type="application/octet-stream"
-    )
+    # add the serialized report to the cache for future requests
+    report_pb_serialized = report_protobuf.SerializeToString()
+
+    # only cache reports for more than one asset ID (ie. not for current report on asset's surveys)
+    if not asset_id and not asset_code:
+        cache.set("report_%s" % abs(hash(str(final_filters))), report_pb_serialized)
+
+    return HttpResponse(report_pb_serialized, content_type="application/octet-stream")
 
 
 def bridge_create(req_pb):
@@ -1383,6 +1436,9 @@ def survey_create(request):
         # get the full new survey
         pb_survey = Survey.objects.filter(pk=initial_survey_id).to_protobuf().surveys[0]
 
+        # clear any report caches
+        delete_cache_key("report_", multiple=True)
+
         response = HttpResponse(
             pb_survey.SerializeToString(),
             status=200,
@@ -1480,6 +1536,9 @@ def survey_update(request):
         survey.save()
         # store the user who made the changes
         reversion.set_user(request.user)
+
+    # clear any report caches
+    delete_cache_key("report_", multiple=True)
 
     response = HttpResponse(
         req_pb.SerializeToString(), status=200, content_type="application/octet-stream"
@@ -1625,14 +1684,18 @@ def protobuf_structure_surveys(request, pk, survey_attribute=None):
 @login_required
 def protobuf_structures(request):
     """ returns a protobuf Structures object with sets of all available structure types """
+    cached_pb = cache.get("structures_protobuf", None)
+    if cached_pb:
+        return HttpResponse(cached_pb, content_type="application/octet-stream")
+
     structures_protobuf = structure_pb2.Structures()
     structures_protobuf.bridges.extend(Bridge.objects.all().to_protobuf().bridges)
     structures_protobuf.culverts.extend(Culvert.objects.all().to_protobuf().culverts)
     structures_protobuf.drifts.extend(Drift.objects.all().to_protobuf().drifts)
 
-    return HttpResponse(
-        structures_protobuf.SerializeToString(), content_type="application/octet-stream"
-    )
+    pb_string = structures_protobuf.SerializeToString()
+    cache.set("structures_protobuf", pb_string)
+    return HttpResponse(pb_string, content_type="application/octet-stream")
 
 
 @login_required
@@ -1714,6 +1777,10 @@ def structure_create(request, structure_type):
             content_type="application/octet-stream",
         )
 
+        delete_cache_key("structures_protobuf")
+        # clear any report caches
+        delete_cache_key("report_", multiple=True)
+
         return response
     except Exception as err:
         return HttpResponse(status=400)
@@ -1776,7 +1843,10 @@ def structure_update(request, pk):
             change_message,
         )
 
-    versions = Version.objects.get_for_object(structure)
+    delete_cache_key("structures_protobuf")
+    # clear any report caches
+    delete_cache_key("report_", multiple=True)
+
     response = HttpResponse(
         req_pb.SerializeToString(), status=200, content_type="application/octet-stream"
     )
@@ -2128,11 +2198,23 @@ def protobuf_contract_reports(request, report_id):
         raise MethodNotAllowed(request.method)
 
     report_types = {
-        1: ["program"],
-        2: ["contractCode"],
-        3: ["assetClassTypeOfWork", "typeOfWorkYear", "assetClassYear"],
-        4: ["numberEmployeesSummary", "wagesSummary", "workedDaysSummary"],  # summary
-        5: ["numberEmployees", "wages", "workedDays"],  # single contract
+        1: ["program"],  # Financial and Physical Progress - Summary
+        2: ["contractCode"],  # Financial and Physical Progress - Detail
+        3: [
+            "assetClassTypeOfWork",
+            "typeOfWorkYear",
+            "assetClassYear",
+        ],  # Completed Contracts Length
+        4: [
+            "numberEmployeesSummary",
+            "wagesSummary",
+            "workedDaysSummary",
+        ],  # Social Safeguard - summary
+        5: [
+            "numberEmployees",
+            "wages",
+            "workedDays",
+        ],  # Social Safeguard - single contract
     }
 
     try:
@@ -2140,7 +2222,7 @@ def protobuf_contract_reports(request, report_id):
         report_data = {"filters": request.GET, "summary": 0}
         for rt in report_types[report_id]:
             # Initialise a new Contract Report
-            contract_report = ContractReport(report_id, rt, request.GET)
+            contract_report = ContractReport(report_id, rt, request.GET.copy())
             report_data[rt] = contract_report.execute_main_query()
 
             # add the Summary data for certain reports

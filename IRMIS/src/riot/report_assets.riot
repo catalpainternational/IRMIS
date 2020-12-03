@@ -165,54 +165,54 @@
             </stacked_bar>
 
             <data_table hidden="{ !state.reportData.municipality || !hasDataTable(reportTableIds.municipality) }"
-                class="report-table" paging="false" canexport showTotal
-                table_id="{reportTableIds.municipality}" title="{ window.gettext('Municipality') }"
-                columns="{columns.municipality()}" columnSortOrder="{baseColumnSortOrder}">
+                class="report-table" paging="{ false }" canexport="{ true }" showtotal="{ true }"
+                tableid="{ reportTableIds.municipality }" title="{ window.gettext('Municipality') }"
+                columns="{ columns.municipality() }" columnsortorder="{ baseColumnSortOrder }">
             </data_table>
             <data_table hidden="{ !state.reportData.assetClass || !hasDataTable(reportTableIds.assetClass) }"
-                class="report-table" paging="false" canexport showTotal
-                table_id="{reportTableIds.assetClass}" title="{ window.gettext('Asset Class') }"
-                columns="{columns.assetClass()}" columnSortOrder="{baseColumnSortOrder}">
+                class="report-table" paging="{ false }" canexport="{ true }" showtotal="{ true }"
+                tableid="{ reportTableIds.assetClass }" title="{ window.gettext('Asset Class') }"
+                columns="{ columns.assetClass() }" columnsortorder="{ baseColumnSortOrder }">
             </data_table>
             <data_table hidden="{ !state.reportData.surfaceType || !hasDataTable(reportTableIds.surfaceType) }"
-                class="report-table" paging="false" canexport showTotal
-                table_id="{reportTableIds.surfaceType}" title="{ window.gettext('Surface Type') }"
-                columns="{columns.surfaceType()}" columnSortOrder="{baseColumnSortOrder}">
+                class="report-table" paging="{ false }" canexport="{ true }" showtotal="{ true }"
+                tableid="{ reportTableIds.surfaceType }" title="{ window.gettext('Surface Type') }"
+                columns="{ columns.surfaceType() }" columnsortorder="{ baseColumnSortOrder }">
             </data_table>
             <data_table hidden="{ !state.reportData.roadStatus || !hasDataTable(reportTableIds.roadStatus) }"
-                class="report-table" paging="false" canexport showTotal
-                table_id="{reportTableIds.roadStatus}" title="{ window.gettext('Road Status') }"
-                columns="{columns.roadStatus()}" columnSortOrder="{baseColumnSortOrder}">
+                class="report-table" paging="{ false }" canexport="{ true }" showtotal="{ true }"
+                tableid="{ reportTableIds.roadStatus }" title="{ window.gettext('Road Status') }"
+                columns="{ columns.roadStatus() }" columnsortorder="{ baseColumnSortOrder }">
             </data_table>
             <data_table hidden="{ !state.reportData.technicalClass || !hasDataTable(reportTableIds.technicalClass) }"
-                class="report-table" paging="false" canexport showTotal
-                table_id="{reportTableIds.technicalClass}" title="{ window.gettext('Technical Class') }"
-                columns="{columns.technicalClass()}" columnSortOrder="{baseColumnSortOrder}">
+                class="report-table" paging="{ false }" canexport="{ true }" showtotal="{ true }"
+                tableid="{ reportTableIds.technicalClass }" title="{ window.gettext('Technical Class') }"
+                columns="{ columns.technicalClass() }" columnsortorder="{ baseColumnSortOrder }">
             </data_table>
             <data_table hidden="{ !state.reportData.assetCondition || !hasDataTable(reportTableIds.assetCondition) }"
-                class="report-table" paging="false" canexport
-                table_id="{reportTableIds.assetCondition}" title="{ window.gettext('Surface Condition (SDI)') }"
-                columns="{columns.roadAssetCondition()}" columnSortOrder="{baseColumnSortOrder}">
+                class="report-table" paging="{ false }" canexport="{ true }"
+                tableid="{ reportTableIds.assetCondition }" title="{ window.gettext('Surface Condition (SDI)') }"
+                columns="{ columns.roadAssetCondition() }" columnsortorder="{ baseColumnSortOrder }">
             </data_table>
             <data_table hidden="{ !state.reportData.structureForm || !hasDataTable(reportTableIds.structureForm) }"
-                class="report-table" paging="false" canexport
-                table_id="{reportTableIds.structureForm}" title="{ window.gettext('Structure Form') }"
-                columns="{columns.assetType()}" columnSortOrder="{baseColumnSortOrder}">
+                class="report-table" paging="{ false }" canexport="{ true }"
+                tableid="{ reportTableIds.structureForm }" title="{ window.gettext('Structure Form') }"
+                columns="{ columns.assetType() }" columnsortorder="{ baseColumnSortOrder }">
             </data_table>
             <data_table hidden="{ !state.reportData.assetType || !hasDataTable(reportTableIds.structureClass) }"
-                class="report-table" paging="false" canexport showTotalCount
-                table_id="{reportTableIds.structureClass}" title="{ window.gettext('Asset Class') }"
-                columns="{columns.structureAssetClass()}" columnSortOrder="{baseColumnSortOrder}">
+                class="report-table" paging="{ false }" canexport="{ true }" showtotalcount="{ true }"
+                tableid="{ reportTableIds.structureClass }" title="{ window.gettext('Asset Class') }"
+                columns="{ columns.structureAssetClass() }" columnsortorder="{ baseColumnSortOrder }">
             </data_table>
             <data_table hidden="{ !state.reportData.assetCondition || !hasDataTable(reportTableIds.structureCondition) }"
-                class="report-table" paging="false" canexport showTotalCount
-                table_id="{reportTableIds.structureCondition}" title="{ window.gettext('Structure Condition') }"
-                columns="{columns.structureAssetCondition()}" columnSortOrder="{baseColumnSortOrder}">
+                class="report-table" paging="{ false }" canexport="{ true }" showtotalcount="{ true }"
+                tableid="{ reportTableIds.structureCondition }" title="{ window.gettext('Structure Condition') }"
+                columns="{ columns.structureAssetCondition() }" columnsortorder="{ baseColumnSortOrder }">
             </data_table>
             <data_table hidden="{ !state.reportData.assetRoughness || !hasDataTable(reportTableIds.assetRoughness) }"
-                class="report-table" paging="false" canexport
-                table_id="{reportTableIds.assetRoughness}" title="{ window.gettext('Roughness Condition (IRI)') }"
-                columns="{columns.assetRoughness()}" columnSortOrder="{baseColumnSortOrder}">
+                class="report-table" paging="{ false }" canexport="{ true }"
+                tableid="{ reportTableIds.assetRoughness }" title="{ window.gettext('Roughness Condition (IRI)') }"
+                columns="{ columns.assetRoughness() }" columnsortorder="{ baseColumnSortOrder }">
             </data_table>
         </div>
 
@@ -751,12 +751,12 @@
                     .then((surveyReportData) => {
                         switch (surveyReportData.length) {
                             case 0:
-                                this.props.showFeedback(true);
+                                this.props.showfeedback(true);
                                 this.state.noReport = true;
                                 break;
                             case 1:
                                 this.assembleSurveyReportData(surveyReportData[0]);
-                                this.props.showFeedback();
+                                this.props.showfeedback();
                                 break;
                             default:
                                 // A report with secondaryattributes defined
@@ -813,11 +813,11 @@
                                 });
 
                                 this.assembleSurveyReportData(assembledReportData);
-                                this.props.showFeedback();
+                                this.props.showfeedback();
                                 break;
                         }
                     }).catch(err => {
-                        this.props.showFeedback(true);
+                        this.props.showfeedback(true);
                         this.state.noReport = true;
                     }).finally((r) => {
                         $("#reports-loading").modal("hide");

@@ -1,6 +1,8 @@
 import json
 from datetime import date, datetime, timezone
 
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -9,14 +11,20 @@ from django.db.models import Count, OuterRef, Subquery
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from assets.data_cleaning_utils import get_first_road_link_for_chainage
+from assets.clean_assets import get_roads_by_road_code, get_first_road_link_for_chainage
 from assets.models import Road, Bridge, Culvert, Drift, Survey
-from assets.templatetags.assets import simple_asset_list
-from assets.views import get_asset_mapping
-
-from basemap.models import Municipality
+from assets.utilities import get_asset_code, get_asset_model
 
 import reversion
+
+
+YEAR_CHOICES = [(r, r) for r in range(date.today().year - 10, date.today().year + 11)]
+TYPE_CODE_CHOICES = {
+    28: "ROAD",
+    51: "BRDG",
+    50: "CULV",
+    54: "DRFT",
+}
 
 
 def no_spaces(value):
@@ -24,23 +32,6 @@ def no_spaces(value):
         raise ValidationError(
             _("%(value)s should not contain spaces"), params={"value": value}
         )
-
-
-YEAR_CHOICES = [(r, r) for r in range(date.today().year - 10, date.today().year + 11)]
-
-
-def get_related_asset(asset_id):
-    prefix, django_pk, mapping = get_asset_mapping(asset_id)
-    asset_model = mapping["model"]
-    asset_code = "road_code" if prefix == "ROAD" else "structure_code"
-
-    if django_pk in [None, 0]:
-        return None, None
-
-    assets = asset_model.objects.filter(pk=django_pk)
-    if len(assets) == 1:
-        return assets.first(), getattr(assets.first(), asset_code)
-    return None, None
 
 
 def build_survey(asset_id, asset_code, source, values):
@@ -53,7 +44,7 @@ def build_survey(asset_id, asset_code, source, values):
     )
 
 
-contract_to_asset_status_mapping = {
+CONTRACT_TO_ASSET_STATUS_MAPPING = {
     "projectstatus": {
         1: (3, "p"),  # Project Planning -> Asset Pending (3)
         2: (3, "p"),  # Project Submitted - waiting for approval -> Asset Pending (3)
@@ -81,28 +72,25 @@ contract_to_asset_status_mapping = {
 
 
 def map_to_asset_status(status_model):
-    status_type = status_model._meta.model_name
-    if status_type in contract_to_asset_status_mapping:
-        status_type_mappings = contract_to_asset_status_mapping[status_type]
-        if status_model.id in status_type_mappings:
-            return status_type_mappings[status_model.id]
-        else:
-            # No matching status id, so we just exit with dummy codes
-            return (0, "0")
-    else:
-        # No matching contract status type - programmer error
-        return (0, "0")
+    status_type_mappings = CONTRACT_TO_ASSET_STATUS_MAPPING.get(
+        status_model._meta.model_name, {}
+    )
+    return (
+        status_type_mappings[status_model.id]
+        if status_model.id in status_type_mappings
+        else (0, "0")
+    )
 
 
 def update_road(road_obj, project_name, funding_source, asset_status_id, change_source):
     road_changes = []
 
     # We only set (never clear) project (name), funding_source or road_status for the Road
-    if project_name != None:
+    if project_name is not None:
         # save the road with an updated project name
         road_obj.project = project_name
         road_changes.append("project")
-    if funding_source != None:
+    if funding_source is not None:
         road_obj.funding_source = funding_source
         road_changes.append("funding source")
     if asset_status_id != 0:
@@ -129,8 +117,7 @@ def set_asset_status(project_ids, status_obj, status_source, source_id):
             project__id__in=project_ids
         ).distinct()
         for project_asset in project_assets:
-            asset_obj, asset_code = get_related_asset(project_asset.asset_id)
-            if asset_obj != None:
+            if project_asset.asset_object is not None:
                 # Build the associated survey object
                 values = (
                     {"road_status": asset_status_code}
@@ -139,14 +126,19 @@ def set_asset_status(project_ids, status_obj, status_source, source_id):
                 )
                 survey_obj = build_survey(
                     project_asset.asset_id,
-                    asset_code,
+                    project_asset.asset_code,
                     "%s %s" % (status_source, source_id),
                     values,
                 )
 
                 if project_asset.asset_id.startswith("ROAD-"):
-                    update_road(asset_obj, None, None, asset_status_id, status_source)
-
+                    update_road(
+                        project_asset.asset_object,
+                        None,
+                        None,
+                        asset_status_id,
+                        status_source,
+                    )
                     # Finish up the associated Road survey
                     survey_obj.chainage_start = project_asset.asset_start_chainage
                     survey_obj.chainage_end = project_asset.asset_end_chainage
@@ -244,14 +236,13 @@ class Project(models.Model):
                 # and create relevant Surveys
                 asset_status_id, asset_status_code = map_to_asset_status(self.status)
                 for project_asset in ProjectAsset.objects.filter(project__id=self.id):
-                    funding_source = (
-                        self.funding_source.name
-                        if self.funding_source != None
+                    values = {
+                        "funding_source": self.funding_source.name
+                        if self.funding_source is not None
                         else None
-                    )
+                    }
 
                     # Build the associated survey object
-                    values = {"funding_source": funding_source}
                     survey_obj = build_survey(
                         project_asset.asset_id,
                         project_asset.asset_code,
@@ -260,7 +251,9 @@ class Project(models.Model):
                     )
 
                     if project_asset.asset_id.startswith("ROAD-"):
-                        update_road(project_asset, None, funding_source, 0, "project")
+                        update_road(
+                            project_asset, None, values["funding_source"], 0, "project"
+                        )
 
                         # Finish up the associated Road survey
                         survey_obj.chainage_start = project_asset.asset_start_chainage
@@ -311,17 +304,25 @@ class ProjectAsset(models.Model):
     project = models.ForeignKey(
         Project, on_delete=models.CASCADE, related_name="assets"
     )
-    # Global ID for an asset the project links to (ex. ROAD-322, BRDG-42)
-    # Here it is 30, to allow us to use the asset_id when creating a new asset
-    # But 'normally' it is only 15
+    # We used to use an asset_id field for linking, but it required multiple expensive SQL lookups.
+    # Therefore, a generic fk link relationship was used in its place to mitigate that.
+    # For details see contracts migration: 0060_project_assets_generic_relations.py
     asset_id = models.CharField(
         verbose_name=_("Asset Id"),
         validators=[no_spaces],
-        db_index=True,
         max_length=30,
         default="",
         help_text=_("Select project's asset"),
     )
+    asset_type = models.ForeignKey(
+        ContentType,
+        related_name="asset_type",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+    )
+    asset_pk = models.PositiveIntegerField(blank=True, null=True)
+    asset_object = GenericForeignKey("asset_type", "asset_pk")
     asset_start_chainage = models.IntegerField(
         verbose_name=_("Start Chainage"),
         blank=True,
@@ -334,48 +335,44 @@ class ProjectAsset(models.Model):
 
     @property
     def asset_code(self):
-        if self.asset_id == None or len(self.asset_id.strip()) == 0:
-            return None
+        """The actual asset code is the asset code of the underlying asset
+        For Roads this is the road_code or link_code
+        For Structures this is the structure_code
+        For Surveys it is the asset_code which references the Road or Structure
+        """
+        if self.asset_object:
+            return self.asset_object.asset_code
+        else:
+            return self.asset_full_id
 
-        asset_obj, asset_code = get_related_asset(self.asset_id)
-        if asset_obj != None:
-            return asset_code
-
-        codes = list(
-            filter(lambda x: x[0] == self.asset_id, simple_asset_list(self.asset_id))
-        )
-        return codes[0][1] if len(codes) == 1 else self.asset_id
+    @property
+    def asset_full_id(self):
+        """This should be the same as asset_id. 
+        However, it is rebuilt from the asset_type and asset_pk in preference 
+        over using the asset_id.
+        """
+        if self.asset_type and TYPE_CODE_CHOICES.get(self.asset_type.pk, None):
+            return "%s-%s" % (TYPE_CODE_CHOICES[self.asset_type.pk], self.asset_pk)
+        else:
+            project_asset_id = self.asset_id.split("-")
+            if len(project_asset_id) == 2:
+                return self.asset_id
+        return None
 
     @property
     def asset_class(self):
-        if self.asset_id == None or len(self.asset_id.strip()) == 0:
-            return None
-
-        asset_obj, asset_code = get_related_asset(self.asset_id)
-        if asset_obj != None:
-            return asset_obj.asset_class
-
-        return None
+        return self.asset_object.asset_class if self.asset_object else None
 
     @property
     def municipality(self):
-        if self.asset_id == None or len(self.asset_id.strip()) == 0:
-            return None
-
-        asset_obj, asset_code = get_related_asset(self.asset_id)
-        if asset_obj != None:
-            return asset_obj.administrative_area
-
-        return None
-
-    def clean_asset_id(self):
-        # ignore it, we clean this in clean below ...
-        pass
+        return self.asset_object.administrative_area if self.asset_object else None
 
     def clean(self):
         # First check the chainages if this is a Road
-        if self.asset_id.startswith("ROAD-") or self.asset_id.startswith("ROAD|"):
-            if self.asset_start_chainage == None:
+        if self.asset_id.startswith("ROAD") or (
+            self.asset_type and TYPE_CODE_CHOICES[self.asset_type.pk] == "ROAD"
+        ):
+            if self.asset_start_chainage is None:
                 raise ValidationError(
                     {
                         "asset_start_chainage": _(
@@ -383,7 +380,7 @@ class ProjectAsset(models.Model):
                         )
                     }
                 )
-            if self.asset_end_chainage == None:
+            if self.asset_end_chainage is None:
                 raise ValidationError(
                     {
                         "asset_end_chainage": _(
@@ -411,7 +408,6 @@ class ProjectAsset(models.Model):
             self.project.funding_source.name if self.project.funding_source else None
         )
         asset_status_id, asset_status_code = map_to_asset_status(self.project.status)
-
         # Check if the asset_id is actually a new Asset in disguise
         if "|" in self.asset_id:
             new_asset_details = self.asset_id.split("|")
@@ -423,25 +419,13 @@ class ProjectAsset(models.Model):
                         )
                     }
                 )
-            asset_type = new_asset_details[0]
-            asset_class = new_asset_details[1]
-            asset_municipality = new_asset_details[2]
 
             # preset asset_code and asset_model from the asset_type
             # and check the asset_type's validity
-            if asset_type == "ROAD":
-                asset_code = "XX"
-                asset_model = Road
-            elif asset_type == "BRDG":
-                asset_code = "XB"
-                asset_model = Bridge
-            elif asset_type == "CULV":
-                asset_code = "XC"
-                asset_model = Culvert
-            elif asset_type == "DRFT":
-                asset_code = "XD"
-                asset_model = Drift
-            else:
+            asset_type = new_asset_details[0].upper()
+            asset_model = get_asset_model(asset_type)
+            supplied_asset_code = get_asset_code(asset_type)
+            if asset_model is None or supplied_asset_code is None:
                 raise ValidationError(
                     {
                         "asset_id": _(
@@ -451,6 +435,7 @@ class ProjectAsset(models.Model):
                 )
 
             # validate the asset_class
+            asset_class = new_asset_details[1]
             if asset_class not in ["NAT", "MUN", "RUR", "HIGH", "URB"]:
                 raise ValidationError(
                     {
@@ -460,28 +445,22 @@ class ProjectAsset(models.Model):
                     }
                 )
 
-            # validate the asset_municipality
-            try:
-                municipality_id = int(asset_municipality)
-                municipality = Municipality.objects.get(pk=municipality_id)
-            except Municipality.DoesNotExist:
-                raise ValidationError(
-                    {
-                        "asset_id": _(
-                            "Could not create a new Asset, because the asset_municipality in the 'special' Asset Id is not valid."
-                        )
-                    }
-                )
+            asset_municipality = new_asset_details[2]
 
             if len(new_asset_details) > 3:
                 # we've been supplied with an asset_code
-                asset_code = new_asset_details[3]
+                supplied_asset_code = new_asset_details[3]
             else:
                 # Fudge up an asset code from now() as a timestamp
                 dt = datetime.now()
                 utc_time = dt.replace(tzinfo=timezone.utc)
                 utc_timestamp = utc_time.timestamp()
-                asset_code = asset_code + str(utc_timestamp).replace(".", "")[0:13]
+                supplied_asset_code = (
+                    supplied_asset_code + str(utc_timestamp).replace(".", "")[0:13]
+                )
+
+            # supplied asset_code must always be uppercased
+            supplied_asset_code = supplied_asset_code.upper()
 
             # Now we can build up our 'basic' asset
             asset_obj = asset_model(
@@ -489,8 +468,8 @@ class ProjectAsset(models.Model):
             )
 
             if asset_type == "ROAD":
-                asset_obj.road_code = asset_code
-                asset_obj.link_code = asset_code
+                asset_obj.road_code = supplied_asset_code
+                asset_obj.link_code = supplied_asset_code
 
                 asset_obj.link_start_chainage = self.asset_start_chainage
                 asset_obj.link_end_chainage = self.asset_end_chainage
@@ -509,13 +488,13 @@ class ProjectAsset(models.Model):
                 asset_obj.project = self.project.name
 
                 # We only set (never clear) funding_source or road_status for the Road
-                if funding_source != None:
+                if funding_source is not None:
                     asset_obj.funding_source = funding_source
                 if asset_status_id != 0:
                     asset_obj.road_status_id = asset_status_id
 
             else:
-                asset_obj.structure_code = asset_code
+                asset_obj.structure_code = supplied_asset_code
 
             # save the asset object with a revision comment
             try:
@@ -534,8 +513,16 @@ class ProjectAsset(models.Model):
                     }
                 )
 
-            # and now we can get it's Id
-            self.asset_id = "%s-%s" % (asset_type, asset_obj.id)
+            # This is the default, we change it almost immediately below
+            self.asset_id = supplied_asset_code
+
+            # assign Asset obj to the Project Asset
+            self.asset_pk = asset_obj.id
+            self.asset_type = ContentType.objects.get_for_model(asset_model)
+
+            new_asset_id = self.asset_full_id
+            if new_asset_id is not None:
+                self.asset_id = new_asset_id
 
             # Build and save the associated 'baseline' survey object
             values = {
@@ -543,7 +530,7 @@ class ProjectAsset(models.Model):
                 "municipality": asset_municipality,
                 "project": self.project.name,
             }
-            if funding_source != None:
+            if funding_source is not None:
                 values["funding_source"] = funding_source
             if asset_status_code != "0":
                 if asset_type == "ROAD":
@@ -552,79 +539,83 @@ class ProjectAsset(models.Model):
                     values["structure_status"] = asset_status_code
 
             survey_obj = build_survey(
-                self.asset_id, asset_code, "Project %s" % self.project.name, values,
+                self.asset_full_id,
+                supplied_asset_code,
+                "Project %s" % self.project.name,
+                values,
             )
             if asset_type == "ROAD":
                 survey_obj.chainage_start = self.asset_start_chainage
                 survey_obj.chainage_end = self.asset_end_chainage
 
             survey_obj.save()
-
-        elif self.asset_id.startswith("ROAD-"):
-            # Clean the asset_id for existing roads
-            asset_obj, asset_code = get_related_asset(self.asset_id)
-            if asset_obj != None:
-                road_link = get_first_road_link_for_chainage(
-                    asset_code, self.asset_start_chainage
-                )
-                if not road_link:
+        else:
+            # This is an existing Project Asset. Update its values
+            if (
+                self.asset_object is None
+                and self.asset_type is None
+                and self.asset_pk is None
+            ):
+                # We've only got the asset_id, so wire things up from there
+                existing_asset_details = self.asset_id.split("-")
+                asset_model = get_asset_model(existing_asset_details[0])
+                if asset_model is None:
                     raise ValidationError(
                         {
-                            "asset_start_chainage": _(
-                                "Start Chainage is too large for this road"
+                            "asset_id": _(
+                                "Could not create a new Asset, because the asset_type in the 'special' Asset Id is not valid."
                             )
                         }
                     )
+                self.asset_type = ContentType.objects.get_for_model(asset_model)
+                self.asset_pk = int(existing_asset_details[1])
 
-                # 'correct' the asset_id to point to the first matching road link
-                self.asset_id = "ROAD-" + str(road_link.id)
-
+            if self.asset_object is not None:
                 # Build the associated survey object
                 values = {
                     "project": self.project.name,
                 }
-                if funding_source != None:
+                if funding_source is not None:
                     values["funding_source"] = funding_source
                 if asset_status_code != "0":
                     values["road_status"] = asset_status_code
 
                 survey_obj = build_survey(
-                    self.asset_id, asset_code, "Project %s" % self.project.name, values,
+                    self.asset_full_id,
+                    self.asset_code,
+                    "Project %s" % self.project.name,
+                    values,
                 )
-                survey_obj.chainage_start = self.asset_start_chainage
-                survey_obj.chainage_end = self.asset_end_chainage
 
-                # save the road with an updated project name and a revision comment
-                update_road(
-                    road_link,
-                    self.project.name,
-                    funding_source,
-                    asset_status_id,
-                    "project",
-                )
+                if TYPE_CODE_CHOICES[self.asset_type.pk] == "ROAD":
+                    road_link = get_first_road_link_for_chainage(
+                        self.asset_code, self.asset_start_chainage
+                    )
+                    if not road_link:
+                        raise ValidationError(
+                            {
+                                "asset_start_chainage": _(
+                                    "Start Chainage is too large for this road"
+                                )
+                            }
+                        )
+
+                    # reset the asset_id
+                    self.asset_id = self.asset_full_id
+
+                    # save the road with an updated project name and a revision comment
+                    update_road(
+                        road_link,
+                        self.project.name,
+                        funding_source,
+                        asset_status_id,
+                        "project",
+                    )
+
+                    survey_obj.chainage_start = self.asset_start_chainage
+                    survey_obj.chainage_end = self.asset_end_chainage
 
                 # Save the associated survey object
-                survey_obj.save()
-
-        elif (
-            self.asset_id.startswith("BRDG-")
-            or self.asset_id.startswith("CULV-")
-            or self.asset_id.startswith("DRFT-")
-        ):
-            asset_obj, asset_code = get_related_asset(self.asset_id)
-            if asset_obj != None:
-                # Build and save the associated survey object
-                values = {
-                    "project": self.project.name,
-                }
-                if funding_source != None:
-                    values["funding_source"] = funding_source
-                if asset_status_code != "0":
-                    values["structure_status"] = asset_status_code
-
-                survey_obj = build_survey(
-                    self.asset_id, asset_code, "Project %s" % self.project.name, values,
-                )
                 survey_obj.save()
 
         # Finally check the asset_id is not too long (because we've fudged the length on the model)
@@ -640,11 +631,11 @@ class ProjectAsset(models.Model):
             )
 
     def __str__(self):
-        if self.asset_id.startswith("ROAD"):
-            return "{id}: {asset_code} @ {project} ({start} - {end})".format(
-                id=self.id,
-                asset_code=self.asset_code,
-                project=self.project_id,
+        print_string = "{id}: {asset_code} @ {project}".format(
+            id=self.id, asset_code=self.asset_code, project=self.project_id
+        )
+        if TYPE_CODE_CHOICES[self.asset_type.pk] == "ROAD":
+            print_string += " ({start} - {end})".format(
                 start="{0:0.3f}".format(
                     (self.asset_start_chainage or 0) / 1000
                 ).replace(".", "+"),
@@ -652,10 +643,7 @@ class ProjectAsset(models.Model):
                     ".", "+"
                 ),
             )
-        else:
-            return "{id}: {asset_code} @ {project}".format(
-                id=self.id, asset_code=self.asset_code, project=self.project_id
-            )
+        return print_string
 
 
 class ProjectBudget(models.Model):

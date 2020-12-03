@@ -17,7 +17,7 @@ import MediaDetailsBox from "./riot/media_details_box.riot";
 
 import { getGeoJsonDetails, getGeoJsonDetail } from "./assets/geoJsonAPI.js";
 
-import { getRoad } from "./roadManager";
+import { getMetadataChunksForRoads, getRoad } from "./roadManager";
 import { getStructure } from "./structureManager";
 
 import "./table";
@@ -37,9 +37,37 @@ import "./assets/models/monkeyPatch";
 export const estradaMap = new Map();
 
 riot.register("loading", Loading);
-riot.mount("loading", { modalId: "assets-loading" });
+riot.mount("loading", { modalid: "assets-loading" });
+
+let assets_loaded = false;
 
 window.addEventListener("load", () => {
+    loadMainPageMaps();
+
+    riot.register("planning_base", Planning_Base);
+    riot.register("reports_base", Reports_Base);
+    riot.register("data_table", Data_Table);
+
+    riot.register("traffic_data_details", TrafficDataDetails);
+    riot.mount("traffic_data_details");
+
+    riot.register("media_details_box", MediaDetailsBox);
+    riot.mount("media_details_box");
+
+    if (window.canEdit) {
+        riot.register("edit_base", Edit_Base);
+    }
+
+    window.goBack = () => { };
+
+    hashCheck();
+});
+
+window.addEventListener("hashchange", () => {
+    hashCheck();
+});
+
+function loadMainPageMaps() {
     // Set up the map and table - but without any data for either
     estradaMap.loadMap();
 
@@ -79,28 +107,17 @@ window.addEventListener("load", () => {
             });
         });
 
-    riot.register("planning_base", Planning_Base);
-    riot.register("reports_base", Reports_Base);
-    riot.register("data_table", Data_Table);
+}
 
-    riot.register("traffic_data_details", TrafficDataDetails);
-    riot.mount("traffic_data_details");
-
-    riot.register("media_details_box", MediaDetailsBox);
-    riot.mount("media_details_box");
-
-    if (window.canEdit) {
-        riot.register("edit_base", Edit_Base);
+function loadMainAssetData() {
+    if (assets_loaded) {
+        return;
     }
 
-    window.goBack = () => { };
-
-    hashCheck();
-});
-
-window.addEventListener("hashchange", () => {
-    hashCheck();
-});
+    // Start getting the asset data
+    getMetadataChunksForRoads();
+    assets_loaded = true;
+}
 
 function hashCheck() {
     const mainContent = document.getElementById("view-content");
@@ -118,16 +135,16 @@ function hashCheck() {
         if (editHash[1] === "BRDG" || editHash[1] === "CULV" || editHash[1] === "DRFT") {
             const globalId = editHash[1] + "-" + editHash[2];
             const structurePromise = getStructure(globalId);
-            riot.mount("edit_base", { structurePromise: structurePromise, assetType: editHash[1], page: editHash[3] });
+            riot.mount("edit_base", { structurepromise: structurePromise, assettype: editHash[1], page: editHash[3] });
         } else {
             const roadPromise = getRoad(editHash[2]);
-            riot.mount("edit_base", { roadPromise: roadPromise, assetType: editHash[1], page: editHash[3] });
+            riot.mount("edit_base", { roadpromise: roadPromise, assettype: editHash[1], page: editHash[3] });
         }
         mainContent.hidden = true;
     } else if (reportsHash !== null && !reportsBase) {
         if (planningBase) riot.unmount("planning_base", true);
         if (editBase) riot.unmount("edit_base", true);
-        riot.mount("reports_base", { page: reportsHash[1], pageId: reportsHash[2] });
+        riot.mount("reports_base", { page: reportsHash[1], pageid: reportsHash[2] });
         mainContent.hidden = true;
     } else if (planningHash !== null && !planningBase) {
         if (editBase) riot.unmount("edit_base", true);
@@ -138,6 +155,8 @@ function hashCheck() {
         if (planningBase) riot.unmount("planning_base", true);
         if (reportsBase) riot.unmount("reports_base", true);
         if (editBase) riot.unmount("edit_base", true);
+
+        loadMainAssetData();
         mainContent.hidden = false;
     }
 }

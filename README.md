@@ -13,7 +13,8 @@
 9. Install the POSTGIS extension for Postgresql (https://docs.djangoproject.com/en/3.0/ref/contrib/gis/install/postgis/).
 10. Get a copy of the Estrada DB from Production server (https://estrada-production.catalapa.build) and load the DB.
 11. Build local geometry files with Django management command `collate_geometries`.
-12. Run the server.
+12. Setup cache tables with Django management command `createcachetable`.
+13. Run the server.
 
 
 ## Extra Information and Details On Specific Management Commands & Project Technologies Used
@@ -45,28 +46,31 @@ Clone this repository before performing import. It's README contains information
 **Important**
 This entire sequence must be performed to completion before users are allowed to edit the imported features (roads).
 
-1. `./manage.py import_shapefiles ../../path/to/the/data-sources/repo/shapefiles <asset_type>`
-  - imports the shapefile geometries and copies properties across where useful
+** Step 1 below has been temporarily disabled while we work on doing a more nuanced per file reimport process. **
+** Please use import_shapefile instead.  Note that import_shapefile does not yet support deleting of any previous attempt at importing a file.  It can only be used once. **
+
+1. `./manage.py reimport_shapefiles ../../path/to/the/data-sources/repo/shapefiles <asset_type>`
+  - reimports the shapefile geometries and copies properties across where useful (note this does delete all existing assets for the `<asset_type>` being imported)
   - `<asset_type>` is one of "road", "bridge", "culvert", or "drift"
   - also calls `set_municipalities` and `collate_geometries` automatically
 
 2. `./manage.py import_csv ../../path/to/the/data-sources/repo/csv`
   - copies road attributes from the csv ( from program excel files )
 
-3. `./manage.py set_bridge_fields`
-  - determines the closest road to each bridge, and sets the bridge `road_id`, `road_code` and `asset_class` to match
+3. `./manage.py set_structure_fields`
+  - determines the closest road to each structure (bridge, culvert, drift), and sets the `road_id`, `road_code` and `asset_class` to match
 
-### Additional Steps - these are automatically performed after `import_shapefiles`
-  A. `./manage.py set_unknown_road_codes`
-    - Fixes roads with missing road codes, assigning these roads a unique `XX_` `road_code`.
+### Additional Steps - these are automatically performed after `reimport_shapefiles`
+  A. `./manage.py set_unknown_asset_codes`
+    - Fixes assets with missing road / structure codes , assigning these roads a unique `XX_` `road_code`, `XB_`/`XC_`/`XD_` `structure_code`.
 
   B. `./manage.py set_municipalities <optional: "all", "road", "bridge", "culvert" or "drift">`
     - Sets the administrative areas for each asset/structure, based the centroids of their respective geometries
     - Takes an optional argument to restrict the municipalities getting set to objects of a single type
     - If 'all' argument is given all of the assets/structures will have their municipalities set
 
-  C. `./manage.py collate_geometries <optional: "all", "road", "bridge", "culvert" or "drift">`
-    - you have edited roads, bridges, culverts, drifts, so re-collate
+  C. `./manage.py collate_geometries`
+    - you have imported / edited roads, bridges, culverts, drifts, so re-collate
 
 ### Additional Step - this is automatically performed by the survey commands below
   D. `./manage.py set_unknown_link_codes`
@@ -115,7 +119,7 @@ To run tests that match a pattern use `-k` e.g. `pytest -k api`
 ## Geobuf
 
 We use https://github.com/mapbox/geobuf for compressing GeoJson for transfer down the wire.
-`./manage.py collate_geometries` will group Road models and merge their geometries into a GeoJson FeatureCollection, then encode it into a geobuf file.
+`./manage.py collate_geometries` will group Road, Bridge, Culvert & Drift asset models and merge their geometries into a GeoJson FeatureCollection, then encode it into a geobuf file.
 The files are saved in the media root for access by the client.
 
 ## Protobuf
@@ -155,9 +159,9 @@ usage : `./manage.py make_geojson ainaro > ainaro.json`
 
 ## Periodic / Conditional Tasks
 
-### Set Bridge Fields
+### Set Structure Fields
 
-This command updates certain fields on the Bridge model which relate to the road the bridge is closest to. This is necessary as 'bridge' has a weak reference to a Road ID. This command does a nearest neighbour search and sets `road_id`, `asset_class` and `road_code` based on the nearest matching road.
+This command updates certain fields on the Bridge, Culvert and Drift models that relate to the road the bridge, culvert or drift is closest to. This is necessary as these models have a weak reference to a Road ID. This command does a nearest neighbour search and sets `road_id`, `asset_class` and `road_code` based on the nearest matching road.
 ```
-./manage.py set_bridge_fields
+./manage.py set_structure_fields
 ```

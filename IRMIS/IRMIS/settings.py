@@ -76,8 +76,11 @@ INSTALLED_APPS = [
     "rest_framework_gis",
     "reversion",
     "topology",
+    "import_data",
     # CATALPA UTILS
     "catalpa_django_apps.google_analytics",
+    "django_shapefiles",
+    "django_ajax_form",
 ]
 
 MIDDLEWARE = [
@@ -121,9 +124,19 @@ WSGI_APPLICATION = "IRMIS.wsgi.application"
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {"ENGINE": "django.contrib.gis.db.backends.postgis", "NAME": "irmis_db"}
+    "default": {
+        "ENGINE": "django.contrib.gis.db.backends.postgis",
+        "NAME": "estrada_db",
+    }
 }
 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "roads_cache_table",
+        "TIMEOUT": None,
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

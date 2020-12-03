@@ -21,6 +21,7 @@ from django.conf.urls import i18n as i18n_urls
 from django.conf.urls.static import static
 from django.urls import path, re_path, include, reverse_lazy
 from django.views.i18n import JavaScriptCatalog
+from django.contrib.auth.decorators import permission_required
 
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.documents import urls as wagtaildocs_urls
@@ -39,6 +40,7 @@ urlpatterns = [
     path("assets/", include("assets.urls")),
     path("contracts/", include("contracts.urls")),
     path("downloads/", include("protected_downloads.urls")),
+    path("import_data/", include("import_data.urls")),
     path("admin/", admin.site.urls),
     path("sentry-debug/", trigger_error),
     re_path(r"^cms/", include(wagtailadmin_urls)),
@@ -51,6 +53,7 @@ urlpatterns = [
     ),
     re_path(r"^accounts/", include(django_auth_urls)),
     re_path(r"^i18n/", include(i18n_urls)),
+    re_path(r"^shapefiles/", include("django_shapefiles.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

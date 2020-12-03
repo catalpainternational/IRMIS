@@ -90,7 +90,7 @@
             },
             showFeedback(error) {
                 this.update({
-                    showFeedback: true,
+                    showfeedback: true,
                     error: error,
                 });
                 setTimeout(() => this.closeFeedback(), 2000);
@@ -102,7 +102,7 @@
                     feedback.classList.add("slide-out");
                     setTimeout(() => {
                         feedback.classList.remove("slide-out");
-                        this.update({showFeedback: false});
+                        this.update({ showfeedback: false });
                     }, 300);
                 }
             },

@@ -510,8 +510,8 @@ msgstr "Orsamentu tinan atuál ($)"
 msgid "Total budget ($)"
 msgstr "Total orsamentu ($)"
 
-msgid "Total contract value ($)"
-msgstr "Valor total kontratu ($)"
+msgid "Initial contract amount ($)"
+msgstr "Valór inisiál kontratu ($)"
 
 msgid "Value of the contract - including variations (amendments) ($)"
 msgstr "Valór kontratu - inklui variasaun (amendment) ($)"

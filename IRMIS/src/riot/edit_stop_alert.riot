@@ -1,5 +1,5 @@
 <edit_stop_alert>
-    <div id="{props.modalId}" class="delete-modal modal" tabindex="-1" role="dialog">
+    <div id="{props.modalid}" class="delete-modal modal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
             <div class="modal-content">
                 <div class="d-flex justify-content-center modal-header">
@@ -11,8 +11,8 @@
                     <p>{props.description}</p>
                 </div>
                 <div class="d-flex justify-content-center modal-footer">
-                    <button type="button" class="btn btn-danger" onclick="{proceed}">{props.proceedLabel}</button>
-                    <button type="button" class="btn btn-light" onclick="{halt}">{props.stopLabel}</button>
+                    <button if="{ props.proceedlabel }" type="button" class="btn btn-danger" onclick="{proceed}">{props.proceedlabel}</button>
+                    <button if="{ props.stoplabel }" type="button" class="btn btn-light" onclick="{halt}">{props.stoplabel}</button>
                 </div>
             </div>
         </div>
@@ -28,7 +28,7 @@
         const initialiseStateFromProps = function(props, state) {
             state = state || {};
 
-            state.id = props.modalId || "stop-alert";
+            state.id = props.modalid || "stop-alert";
             state.modalLabel = `${state.id}Label`;
             state.selector = `#${state.id}`;
             state.resultEventName = `edit.${state.id}.result`;
@@ -44,11 +44,11 @@
                 // To respond to bootstrap modal events properly you must use the full
                 // jQuery `.on` event handler syntax
                 // and attach the event handler initially to `$(document)`
-                // and specify your modal's div with its selector 
+                // and specify your modal's div with its selector
                 $(document).on("show.bs.modal", state.selector, this, (e) => {
                     const self = e.data;
                     self.state.result = null;
-                }); 
+                });
                 $(document).on("hide.bs.modal", state.selector, this, (e) => {
                     // This only occurs for the `data-dismiss="modal"` elements
                     const self = e.data;
@@ -60,12 +60,12 @@
                 $(document).off("hide.bs.modal", state.selector);
             },
             proceed() {
-                this.state.result = this.props.proceedResult;
+                this.state.result = this.props.proceedresult;
                 // Go directly out of the dialog, the caller's handler will hide the dialog
                 this.dispatchResult(this.state.result, this.state.resultEventName);
             },
             halt() {
-                this.state.result = this.props.stopResult;
+                this.state.result = this.props.stopresult;
                 // Go directly out of the dialog, the caller's handler will hide the dialog
                 this.dispatchResult(this.state.result, this.state.resultEventName);
             },
