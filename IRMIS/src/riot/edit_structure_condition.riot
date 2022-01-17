@@ -1,0 +1,458 @@
+<edit_structure_condition>
+    <div class="content-wrapper">
+        <div class="d-flex justify-content-between editorControls">
+            <h5>{ window.gettext("Structure Condition") }</h5>
+            <button class="btn btn-primary" onclick="{ showEditModal }" disabled="{ props.editing }" if="{props.structure.getGeojsonId() != 0}">
+                { window.gettext("Add") }
+            </button>
+            <button class="btn btn-primary" onclick="{ geometryAlert }" disabled="{ props.editing }" if="{props.structure.getGeojsonId() == 0}">
+                { window.gettext("Add") }
+            </button>
+        </div>
+
+        <div class="table-spacing">
+            <data_table tableid="{ data_table_id }" columns="{ data_table_columns }"
+                columnsortorder="{ data_table_columns_order }" canorder="{ true }" candelete="{ true }">
+            </data_table>
+        </div>
+    </div>
+
+    <edit_modal modalid="{ modal_id }" disablesave="{ !state.canSave }">
+        <span slot="modal_title">{window.gettext("Add Structure Condition Information")}</span>
+
+        <form slot="modal_body">
+            <section>
+                <div class="form-group">
+                    <label>{ window.gettext("Survey Date") }</label>
+                    <span class="required">*</span>
+                    <small class="form-text text-muted">{props.parent.getHelpText("survey_date")}</small>
+                    <!-- It would be preferable to use the 'datetime-local' input type, however Firefox currently does not support it -->
+                    <input
+                        class="{state.errors.surveyDate ? 'danger' : null } { state.survey.surveyDate ? '' : 'inactive' } form-control"
+                        type="date" name="surveyDate" placeholder="Date" value="{state.survey.surveyDate}"
+                        oninput="{checkSurveyDate}" required pattern="\d{4}-\d{2}-\d{2}" max="{max_date()}">
+                    <div if="{state.errors.surveyDate}" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.surveyDate }.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h6>{ window.gettext("Condition") }</h6>
+                <div class="form-group">
+                    <label>{ window.gettext("Structure Conditions") }</label>
+                    <span class="required">*</span>
+                    <small class="form-text text-muted">{window.gettext("Choose the structure condition")}</small>
+                    <div if="{state.errors.assetCondition}" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.assetCondition }.</li>
+                        </ul>
+                    </div>
+                    <ul>
+                        <li each="{condition in conditions.options}" data-condition="{condition[0]}"
+                            onclick="{checkAssetCondition}">
+                            <span
+                                class="{ condition[0] == state.survey.assetCondition ? 'active' : ''  } radio image"></span>
+                            { condition[1] }
+                        </li>
+                    </ul>
+                </div>
+            </section>
+            <section>
+                <div class="form-group">
+                    <label>{ window.gettext("Condition Description") }</label>
+                    <small class="form-text text-muted">
+                        {window.gettext("Enter a description of the structure's condition")}
+                    </small>
+                    <input
+                        class="{ state.errors.conditionDescription ? 'danger' : null } { state.survey.conditionDescription ? '' : 'inactive' } form-control"
+                        type="text" maxlength="500" placeholder="E.g." value="{ state.survey.conditionDescription }"
+                        onblur="{ checkDescription }">
+                    <div if="{state.errors.conditionDescription}" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.conditionDescription }.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <h6>{ window.gettext("Upload media") }</h6>
+                <label>{ window.gettext("Photo/Video 1") }</label>
+                <upload_media mediaid="{ mediaId1 }" media="{ state.media1 }" surveymedia="{ true }" showfeedback="{ props.showfeedback }"></upload_media>
+                <label>{ window.gettext("Photo/Video 2") }</label>
+                <upload_media mediaid="{ mediaId2 }" media="{ state.media2 }" surveymedia="{ true }" showfeedback="{ props.showfeedback }"></upload_media>
+                <label>{ window.gettext("Photo/Video 3") }</label>
+                <upload_media mediaid="{ mediaId3 }" media="{ state.media3 }" surveymedia="{ true }" showfeedback="{ props.showfeedback }"></upload_media>
+            </section>
+            <div class="d-flex justify-content-end">
+                <span>[</span><span class="required">*</span><span>]: Mandatory</span>
+            </div>
+        </form>
+    </edit_modal>
+
+    <edit_stop_alert modalid="geometry-alert" title="{ window.gettext('Missing Geometry') }"
+        description="{ window.gettext('You may not add surveys for this asset until it has a geometry. Please contact Catalpa (estrada-support@catalpa.io) to help address this issue.') }"
+        proceedlabel="{ window.gettext('Okay') }" proceedresult="confirmed">
+    </edit_stop_alert>
+
+    <edit_stop_alert modalid="delete-alert" title="{ window.gettext('Delete') }"
+        description="{ window.gettext('Are you sure you want to delete this data entry?') }"
+        proceedlabel="{ window.gettext('Delete') }" proceedresult="delete" stoplabel="{ window.gettext('Don\'t delete') }"
+        stopresult="keep">
+    </edit_stop_alert>
+
+    <script>
+        import Edit_Stop_Alert from "./edit_stop_alert.riot";
+        import Data_Table from "./data_table.riot";
+        import Edit_Modal from "./edit_modal.riot";
+        import Upload_Media from "./upload_media.riot";
+
+        import {choice_or_default} from "../assets/protoBufUtilities";
+        import {checkRequiredFields} from "../assets/editUtilities";
+        import {ASSET_CONDITION_CHOICES} from "../assets/models/choices";
+
+        import {putMediaData, deleteMediaData} from "../assets/mediaAPI";
+        import {getMedias} from "../mediaManager";
+        import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
+        import {EstradaSurvey, makeEstradaSurvey} from "../assets/models/survey";
+        import {Survey} from "../../protobuf/survey_pb";
+
+        import $ from "jquery";
+
+        export default {
+            state: {
+                baseSurvey: new EstradaSurvey({}),
+                survey: new EstradaSurvey({}),
+                canSave: false,
+                errors: {},
+                pendingRows: [],
+                assetConditions: [{key: 0, title: "unknown", distance: 0, percent: 100, label: window.gettext("Loading")}],
+                editMode: false,
+                currentRowData: new EstradaSurvey({}),
+                mediaLinkQueue: [],
+            },
+            components: {
+                Edit_Stop_Alert, Edit_Modal, Data_Table, Upload_Media
+            },
+            // Structure Condition Survey
+            onMounted(props, state) {
+                state.structure = props.structure;
+
+                this.props.parent.getStructureSurveys(state, this.data_table_id, "asset_condition", "assetConditions");
+
+                state.survey.media = state.survey.media || [];
+                if (state.survey.media.length > 0) {
+                    state.media1 = state.survey.media[0] ? state.survey.media[0] : undefined;
+                    state.media2 = state.survey.media[1] ? state.survey.media[1] : undefined;
+                    state.media3 = state.survey.media[2] ? state.survey.media[2] : undefined;
+                }
+
+                this.mediaNeedsLinkingListener = (data) => {
+                    const newMedia = data.detail.media;
+                    this.state.mediaLinkQueue = this.state.mediaLinkQueue.filter(p => {
+                        if (p.getId() != newMedia.getId()) {return p;};
+                    }).concat(newMedia);
+                }
+                document.addEventListener(`${this.mediaId1}.mediaNeedsLinking`, this.mediaNeedsLinkingListener);
+                document.addEventListener(`${this.mediaId2}.mediaNeedsLinking`, this.mediaNeedsLinkingListener);
+                document.addEventListener(`${this.mediaId3}.mediaNeedsLinking`, this.mediaNeedsLinkingListener);
+
+                this.mediaNeedsRemovalListener = (data) => {
+                    const oldMedia = data.detail.media;
+                    this.state.mediaLinkQueue = this.state.mediaLinkQueue.filter(p => {
+                        if (p.getId() != oldMedia.getId()) {return p};
+                    });
+                }
+                document.addEventListener(`${this.mediaId1}.mediaNeedsRemoval`, this.mediaNeedsRemovalListener);
+                document.addEventListener(`${this.mediaId2}.mediaNeedsRemoval`, this.mediaNeedsRemovalListener);
+                document.addEventListener(`${this.mediaId3}.mediaNeedsRemoval`, this.mediaNeedsRemovalListener);
+
+                this.deleteListener = (data) => {
+                    const rowId = data.detail.rowId;
+                    this.showStopAlertModal("delete-alert", rowId);
+                };
+                document.addEventListener(`${this.data_table_id}.deleteRow`, this.deleteListener);
+            },
+            onUnmount(props, state) {
+                document.removeEventListener(`${this.data_table_id}.deleteRow`, this.deleteListener);
+                document.removeEventListener(`${this.mediaId1}.mediaNeedsLinking`, this.mediaNeedsLinkingListener);
+                document.removeEventListener(`${this.mediaId2}.mediaNeedsLinking`, this.mediaNeedsLinkingListener);
+                document.removeEventListener(`${this.mediaId3}.mediaNeedsLinking`, this.mediaNeedsLinkingListener);
+                document.removeEventListener(`${this.mediaId1}.mediaNeedsRemoval`, this.mediaNeedsRemovalListener);
+                document.removeEventListener(`${this.mediaId2}.mediaNeedsRemoval`, this.mediaNeedsRemovalListener);
+                document.removeEventListener(`${this.mediaId3}.mediaNeedsRemoval`, this.mediaNeedsRemovalListener);
+            },
+            mediaId1: "structureSurveyMedia1",
+            mediaId2: "structureSurveyMedia2",
+            mediaId3: "structureSurveyMedia3",
+            conditions: window.asset_schema.asset_condition,
+            modal_id: "structure-condition-modal",
+            data_table_id: "structure-condition-table",
+            data_table_columns_order: [[0, 'asc']],
+            data_table_columns: [
+                {
+                    title: window.gettext("Survey date"),
+                    data: "dateSurveyed",
+                    defaultContent: "",
+                    className: "text-center",
+                },
+                {
+                    title: window.gettext("Condition"),
+                    data: "assetCondition",
+                    defaultContent: "",
+                    className: "text-center",
+                    orderable: false,
+                    render: (data, type) => {
+                        return (type === 'display') ? choice_or_default(data, ASSET_CONDITION_CHOICES) : data;
+                    },
+                },
+                {
+                    title: window.gettext("Description"),
+                    data: "conditionDescription",
+                    defaultContent: "",
+                    className: "text-center",
+                    orderable: false,
+                },
+                {
+                    title: window.gettext("Media"),
+                    data: null,
+                    defaultContent: "",
+                    render: (data, type, row) => {
+                        const title = window.gettext("View Photos/Videos");
+                        return (row.media.length) ? `<a onclick="document.dispatchEvent(new CustomEvent('structure-condition-table.showSurveyMedia',{detail:{rowId:${row.id}}}))">${title}</a>` : "";
+                    },
+                    className: "text-center",
+                    orderable: false,
+                },
+                {
+                    title: window.gettext("Added by"),
+                    data: "addedBy",
+                    defaultContent: "",
+                    orderable: false,
+                },
+                {
+                    // To add a 'Delete' button include the attribute candelete="{ true }"
+                    // on the Riot dataTable tag as well
+                    title: window.gettext("Delete"),
+                    name: "Option", // Do NOT translate this
+                    defaultContent: "",
+                    className: "text-center",
+                    orderable: false,
+                },
+            ],
+            geometryAlert(e) {
+                this.showStopAlertModal("geometry-alert");
+            },
+
+            // Survey Modal
+            requiredFieldNames: ["surveyDate", "assetCondition",],
+            showEditModal() {
+                document.addEventListener(`${this.modal_id}.result`, (data) => {
+                    const modalResult = data.detail.result;
+
+                    switch (modalResult) {
+                        case "save":
+                            if (this.hasChanges()) {
+                                this.save();
+                            }
+                            break;
+                        case "cancel":
+                            this.discardChanges();
+                            break;
+                        default:
+                            if (this.hasChanges()) {
+                                this.showStopAlertModal("stop-alert");
+                            }
+                            break;
+                    }
+                }, {once: true});
+
+                $(`#${this.modal_id}`).modal("show");
+            },
+            showStopAlertModal(modalId, rowId, tableId) {
+                const eventName = `edit.${modalId}.result`;
+
+                document.addEventListener(eventName, (data) => {
+                    const stopAlertResult = data.detail.result;
+                    $(`#${modalId}`).modal("hide");
+
+                    if (stopAlertResult === "discard") {
+                        this.discardChanges();
+                    } else if (stopAlertResult === "delete") {
+                        this.state.editMode = true;
+                        // Coming out of the stop-alert modal we want to re-establish the data-table
+                        const eventName = `${tableId}.getRowData`;
+                        const eventDetail = {detail: {rowId: rowId, state: this.state}};
+                        document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+
+                        // void the survey asset_condition value and save
+                        if (this.state.currentRowData) {
+                            this.state.survey = this.state.currentRowData;
+                            this.state.survey.setId(rowId);
+                            if (this.state.structure.roadId && this.state.structure.roadId == !0) {
+                                this.state.survey.setRoadId(this.state.structure.roadId);
+                            }
+                            if (this.state.structure.roadCode) {
+                                this.state.survey.setRoadCode(this.state.structure.roadCode);
+                            }
+                            this.state.survey.setAssetId(this.state.structure.id);
+                            this.state.survey.setAssetCode(this.state.structure.code);
+                            this.state.survey.setValues(JSON.stringify({}));
+                            this.saveSurvey();
+                        }
+                        this.state.editMode = false;
+                    } else if (stopAlertResult === "continueEdit") {
+                        this.showEditModal();
+                    }
+                }, {once: true});
+
+                $(`#${modalId}`).modal("show");
+            },
+            discardChanges() {
+                $(`#${this.modal_id}`).modal("hide");
+                this.update({
+                    survey: makeEstradaSurvey(this.state.baseSurvey),
+                    mediaLinkQueue: [],
+                    errors: {},
+                });
+                this.clearMedias();
+            },
+            save(e) {
+                const missingFieldNames = checkRequiredFields(this.requiredFieldNames, this.state.survey);
+
+                if (Object.keys(this.state.errors).length) {
+                    // Cannot save if there are validation errors
+                    this.canSave();
+
+                    if (!this.state.canSave) {
+                        missingFieldNames.forEach((fieldName) => {
+                            if (!data[fieldName]) {
+                                errors[fieldName] = window.gettext("This field is required");
+                            }
+                        });
+                        this.showEditModal();
+                    }
+                } else {
+                    if (this.hasChanges()) {
+                        // Complete the survey
+                        this.state.survey.setUser($("#user_welcome").data("userId") || 0);
+                        this.state.survey.setSource("Estrada");
+                        this.state.survey.setChainageStart(0);
+                        this.state.survey.setChainageEnd(0);
+                        this.state.survey.setAssetId(this.props.structure.id);
+                        this.state.survey.setAssetCode(this.props.structure.code);
+                        this.state.survey.setValues(JSON.stringify({
+                            asset_condition: this.state.survey.assetCondition,
+                            condition_description: this.state.survey.conditionDescription,
+                        }));
+                        // If we're here we will have a user entered surveyDate, even so Date.now() is still used as a fall back
+                        const dateSurveyed = new proto.google.protobuf.Timestamp();
+                        const surveyDate = new Date(this.state.survey.surveyDate || Date.now().toISOString());
+                        dateSurveyed.fromDate(surveyDate);
+
+                        this.state.survey.setDateSurveyed(dateSurveyed);
+
+                        // set Survey structure/road information from state Structure
+                        this.state.survey.setRoadId(this.state.structure.roadId);
+                        this.state.survey.setRoadCode(this.state.structure.roadCode || "");
+
+                        this.saveSurvey();
+                    }
+
+                    // Reset baseSurvey now that we're done.
+                    this.baseSurvey = new EstradaSurvey({});
+
+                    $(`#${this.modal_id}`).modal("hide");
+                }
+            },
+            saveSurvey() {
+                $(`#${this.modal_id}`).modal("hide");
+                $("#asset-manager-loading").modal("show");
+
+                this.state.survey.media = this.state.mediaLinkQueue;
+                const surveyPromise = (!this.state.editMode)
+                    ? createSurvey(this.state.survey)
+                    : updateSurvey(this.state.survey);
+
+                surveyPromise
+                    .then((surveyData) => {
+                        this.props.parent.getStructureSurveys(
+                            this.state,
+                            this.data_table_id,
+                            "asset_condition",
+                            "assetConditions",
+                        );
+                        this.update({
+                            mediaLinkQueue: [],
+                            survey: makeEstradaSurvey(this.state.baseSurvey), // clear input values
+                        });
+                        this.clearMedias();
+                        this.props.showfeedback();
+                    })
+                    .catch((err) => {
+                        this.props.showfeedback(true);
+                    })
+                    .finally((r) => {
+                        $("#asset-manager-loading").modal("hide");
+                        this.update();
+                    });
+            },
+            canSave() {
+                const missingFieldNames = checkRequiredFields(this.requiredFieldNames, this.state.survey);
+
+                if (missingFieldNames.length || Object.keys(this.state.errors).length) {
+                    // Cannot save if there are validation errors
+                    this.state.canSave = false;
+                } else {
+                    // Can save if something has changed
+                    this.state.canSave = JSON.stringify(this.state.baseSurvey) !== JSON.stringify(this.state.survey);
+                }
+
+                this.update();
+            },
+            /** Compare the selected fields between baseSurvey and survey.
+                * `source` and `user` are deliberately not compared
+            */
+            hasChanges() {
+                const compareFieldNames = ["surveyDate", "assetCondition", "media"];
+                const surveyBase = compareFieldNames.map((fieldName) => {return this.state.baseSurvey[fieldName] || "";}).join("|||");
+                const surveyResult = compareFieldNames.map((fieldName) => {return this.state.survey[fieldName] || "";}).join("|||");
+
+                return (surveyBase !== surveyResult);
+            },
+            validate(fieldName, input, testResult, errorText) {
+                if (!testResult) {
+                    this.state.errors[fieldName] = errorText;
+                } else {
+                    delete this.state.errors[fieldName];
+                    this.state.survey[fieldName] = input;
+                }
+                this.canSave();
+            },
+            checkSurveyDate(e) {
+                const fieldName = e.currentTarget.name;
+                const input = e.currentTarget.value;
+                const testResult = input <= this.max_date();
+                const errorText = window.gettext("Survey date cannot be in the future");
+
+                this.validate(fieldName, input, testResult, errorText);
+            },
+            checkAssetCondition(e) {
+                this.state.survey.assetCondition = e.currentTarget.dataset.condition;
+                this.canSave();
+            },
+            checkDescription(e) {
+                this.state.survey.conditionDescription = e.currentTarget.value;
+                this.canSave();
+            },
+            clearMedias() {
+                document.dispatchEvent(new CustomEvent(`${this.mediaId1}.mediaCleared`, {}));
+                document.dispatchEvent(new CustomEvent(`${this.mediaId2}.mediaCleared`, {}));
+                document.dispatchEvent(new CustomEvent(`${this.mediaId3}.mediaCleared`, {}));
+            },
+            max_date: () => new Date().toISOString().substring(0, 10),
+        }
+    </script>
+</edit_structure_condition>

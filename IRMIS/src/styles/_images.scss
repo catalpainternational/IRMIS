@@ -1,0 +1,284 @@
+%plus-minus-shared {
+    background-position: center;
+    height: 25px;
+    width: 16px;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+%tick-error-shared {
+    background-position: left;
+    background-size: 23px;
+    height: 43px;
+    width: 43px;
+}
+
+.image {
+    background-repeat: no-repeat;
+    display: inline-block;
+}
+
+.app-logo {
+    background-image: url("../images/app_logo.svg");
+    height: 72px;
+    width: 287px;
+}
+
+.app-logo-dark-bg {
+    background-image: url("../images/app_logo_dark_bg.svg");
+    height: 34px;
+    width: 131px;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.rdtl-logo {
+    background-image: url("../images/RDTL.png");
+    background-size: contain;
+    height: 77px;
+    width: 80px;
+}
+
+.ausaid-logo {
+    background-image: url("../images/ausaid_logo.svg");
+    height: 36px;
+    width: 80px;
+}
+
+.aus-embassy-logo {
+    background-image: url("../images/aus_embassy_logo.svg");
+    background-size: cover;
+    height: 62px;
+    width: 92px;
+}
+
+.ilo-logo {
+    background-image: url("../images/ilo_logo.svg");
+    height: 41px;
+    width: 47px;
+}
+
+.checkbox {
+    background-image: url("../images/checkbox.svg");
+    vertical-align: middle;
+    height: 14px;
+    width: 14px;
+
+    &.selected {
+        background-image: url("../images/checkbox_active.svg");
+    }
+}
+
+.plus {
+    @extend %plus-minus-shared;
+    background-image: url("../images/plus.svg");
+    background-size: 16px 15px;
+}
+
+.minus {
+    @extend %plus-minus-shared;
+    background-image: url("../images/minus.svg");
+    background-size: 16px 4px;
+}
+
+.arrow {
+    background-image: url("../images/arrow.svg");
+    height: 14px;
+    width: 15px;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.caret {
+    background-image: url("../images/caret.svg");
+    height: 7px;
+    width: 12px;
+}
+
+.caret-dark {
+    background-image: url("../images/caret_dark.svg");
+    background-position: center;
+    background-size: contain;
+    height: 11px;
+    width: 12px;
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    &.left {
+        transform: rotate(90deg);
+    }
+}
+
+.radio {
+    background-image: url("../images/radio_unactive.svg");
+    vertical-align: middle;
+    height: 17px;
+    width: 17px;
+
+    &.active {
+        background-image: url("../images/radio_active.svg");
+    }
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.pencil {
+    background-image: url("../images/pencil.svg");
+    vertical-align: middle;
+    height: 16px;
+    width: 15px;
+
+    &.button {
+        margin-right: 10px;
+    }
+}
+
+tr.selected .pencil {
+    background-image: url("../images/pencil_white.svg");
+}
+
+.delete {
+    background-image: url("../images/delete.svg");
+    vertical-align: middle;
+    height: 14px;
+    width: 13px;
+}
+
+.document {
+    background-image: url("../images/document.svg");
+    background-size: contain;
+    vertical-align: middle;
+    height: 25px;
+    width: 20px;
+}
+
+.close {
+    background-image: url("../images/close.svg");
+    background-size: contain;
+    height: 20px;
+    width: 20px;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.tick {
+    @extend %tick-error-shared;
+    background-image: url("../images/tick.svg");
+}
+
+.error {
+    @extend %tick-error-shared;
+    background-image: url("../images/error.svg");
+}
+
+.alert.stop {
+    background-image: url("../images/stop_alert.svg");
+    height: 117px;
+    width: 124px;
+}
+
+.paper {
+    background-image: url("../images/paper.svg");
+    height: 32px;
+    width: 26px;
+}
+
+.no-data {
+    background-image: url("../images/no_data.svg");
+    background-position: center;
+    background-size: contain;
+    max-width: 100%;
+    height: 269px;
+    width: 566px;
+}
+
+.loading {
+    background-image: url("../images/loading_spinner.gif");
+    height: 120px;
+    width: 120px;
+}
+
+// Vehicle icons
+.icon {
+    margin: 0 10px;
+    width: 2rem;
+}
+
+.motorcycle {
+    background-image: url("../images/motorcycle_icon.svg");
+    height: 18px;
+    width: 24px;
+}
+
+.car {
+    background-image: url("../images/car_icon.svg");
+    height: 21px;
+    width: 26px;
+}
+
+.pickup {
+    background-image: url("../images/pickup_icon.svg");
+    height: 24px;
+    width: 25px;
+}
+
+.mini-bus {
+    background-image: url("../images/mini_bus_icon.svg");
+    height: 25px;
+    width: 25px;
+}
+
+.large-bus {
+    background-image: url("../images/large_bus_icon.svg");
+    height: 29px;
+    width: 28px;
+}
+
+.light-truck {
+    background-image: url("../images/light_truck_icon.svg");
+    height: 24px;
+    width: 27px;
+}
+
+.medium-truck {
+    background-image: url("../images/medium_truck_icon.svg");
+    height: 25px;
+    width: 25px;
+}
+
+.large-truck {
+    background-image: url("../images/large_truck_icon.svg");
+    height: 30px;
+    width: 28px;
+}
+
+.ufo {
+    background-image: url("../images/ufo_icon.svg");
+    height: 26px;
+    width: 30px;
+}
+
+.upload-cloud {
+    background-image: url("../images/upload_cloud.svg");
+    height: 55px;
+    width: 85px;
+}
+
+@media print {
+    .rdtl {
+        height: 125px;
+        width: 130px;
+    }
+}

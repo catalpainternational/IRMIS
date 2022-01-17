@@ -1,0 +1,30 @@
+<feedback_banner>
+    <template if="{ !props.error }">
+        <div class="align-items-center d-flex success slide-in">
+            <span class="tick image"></span>
+            <div class="d-flex flex-column flex-grow-1">
+                <span>{ window.gettext('Success') }</span>
+                <small class="text-muted">{ props.successmessage }</small>
+            </div>
+            <span class="close image" onclick="{ closeFeedback }"></span>
+        </div>
+    </template>
+    <template if="{ props.error }">
+        <div class="align-items-center d-flex unsuccess slide-in">
+            <span class="error image"></span>
+            <div class="d-flex flex-column flex-grow-1">
+                <span>{ window.gettext('Error') }</span>
+                <small class="text-muted">{ props.errormessage }</small>
+            </div>
+            <span class="close image" onclick="{ closeFeedback }"></span>
+        </div>
+    </template>
+
+    <script>
+        export default {
+            closeFeedback() {
+                this.props.close();
+            }
+        }
+    </script>
+</feedback_banner>

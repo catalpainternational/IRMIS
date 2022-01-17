@@ -1,0 +1,83 @@
+.action-modal,
+.delete-modal {
+    .modal-header {
+        padding-bottom: 0;
+    }
+
+    .modal-footer {
+        padding-top: 0;
+    }
+}
+
+.form-modal {
+    .modal-header {
+        border-bottom: 1px solid $light-gray;
+    }
+
+    .modal-footer {
+        border-top: 1px solid $light-gray;
+    }
+}
+
+.inventory-modal {
+    .modal-body {
+        padding-bottom: 40px;
+        padding-top: 0;
+    }
+}
+
+// Override Bootstrap modal styles
+.modal-content {
+    border-radius: 10px;
+    border: none;
+}
+
+.modal-sm {
+    max-width: 431px;
+}
+
+.modal-lg {
+    max-width: 675px;
+}
+
+.modal-header {
+    position: relative;
+    border-bottom: 0;
+    padding: 40px 0;
+    margin: 0 40px;
+
+    .close {
+        position: absolute;
+        padding: 0;
+        margin: 0;
+        top: 45px;
+        right: 0;
+    }
+
+    .alert {
+        margin-bottom: 0;
+    }
+}
+
+.modal-body {
+    padding: 20px 40px;
+}
+
+.modal-footer {
+    padding: 40px 0;
+    margin: 0 40px;
+    border-top: 0;
+
+    & > :not(:first-child) {
+        margin-left: 10px;
+    }
+
+    & > :not(:last-child) {
+        margin-right: 10px;
+    }
+}
+
+.modal-backdrop.show {
+    background-color: rgba(61, 71, 88, 0.5);
+    opacity: 1;
+}

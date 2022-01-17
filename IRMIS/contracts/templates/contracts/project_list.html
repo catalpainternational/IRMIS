@@ -1,0 +1,152 @@
+{% extends "contracts/contracts.html" %}
+{% load i18n %}
+
+{% block contracts_profile %}
+<header class="align-items-center d-flex justify-content-between no-back-button">
+    <h1>{% trans "Project Manager" %}</h1>
+    {% if perms.contracts.add_project %}
+    <a class="btn btn-primary" href="{% url 'contract-project-create' %}">{% trans "Create New Project" %}</a>
+    {% endif %}
+</header>
+
+<div class="content">
+    <div class="title-header">
+        <h5 class="title">{% trans "List of projects" %}</h5>
+    </div>
+
+    {% if project_list.exists %}
+    <div class="contract-filters">
+        <h6>{% trans "Filters" %}</h6>
+        <div class="d-flex justify-content-between">
+            <div class="d-flex flex-wrap">
+                <select id="project_status_select2" multiple="true">
+                    {% for status in status_list %}
+                    <option value="{{ status.name }}">{{ status.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <select id="project_type_of_work_select2" multiple="true">
+                    {% for type in type_of_work_list %}
+                    <option value="{{ type.name }}">{{ type.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <select id="asset_class_select2" multiple="true">
+                    {% for asset_class in asset_classes %}
+                    <option value="{{ asset_class.0 }}">{{ asset_class.1 }}</option>
+                    {% endfor %}
+                </select>
+
+                <select id="municipality_select2" multiple="true">
+                    {% for municipality in municipalities %}
+                    <option value="{{ municipality.id }}">{{ municipality.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <select id="value_select" class="form-control form-control-sm inactive">
+                    <option selected>{% trans "Value range" %}</option>
+                    <option data-min="0" data-max="49999">$0 - $49.999</option>
+                    <option data-min="50000" data-max="99999">$50.000 - $99.999</option>
+                    <option data-min="100000" data-max="499999">$100.000 - $499.999</option>
+                    <option data-min="500000" data-max="999999">$500.000 - $999.999</option>
+                    <option data-min="1000000">{% trans "over" %} $1.000.000</option>
+                </select>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end">
+        <button id="export-csv" class="btn btn-secondary btn-sm">{% trans "Export table" %}</button>
+    </div>
+    <table id="project-list-table" class="contracts-profile-table d-block table table-hover w-100">
+        <thead>
+            <tr>
+                {% if perms.contracts.change_project or perms.contracts.delete_project %}
+                <th>{% trans "Edit" %}</th>
+                {% endif %}
+                <th>{% trans "Project Name" %}</th>
+                <th>{% trans "Status" %}</th>
+                <th>{% trans "Program" %}</th>
+                <th>{% trans "Type of Work" %}</th>
+                <th>{% trans "Estimated Budget" %}</th>
+                <th>{% trans "Funding Source" %}</th>
+                <th></th> <!-- hidden project code column -->
+                <th></th> <!-- hidden project assets code column -->
+                <th></th> <!-- hidden project assets class column -->
+                <th></th> <!-- hidden project municipality column -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for project in project_list %}
+            {% with prj_assets=project.assets.all %}
+            <tr>
+                {% if perms.contracts.change_project or perms.contracts.delete_project %}
+                <td class="text-center">
+                    {% if perms.contracts.change_project and not perms.contracts.delete_project %}
+                    <a class="image pencil" href="{% url 'contract-project-update' project.id %}"></a>
+                    {% elif not perms.contracts.change_project and perms.contracts.delete_project %}
+                    <a class="image delete" href=""></a>
+                    {% else %}
+                    <a class="image pencil" href="{% url 'contract-project-update' project.id %}"></a>
+                    <span></span>
+                    <a class="image delete delete-link" data-delete="/contracts/api/project/{{ project.id }}/"></a>
+                    {% endif %}
+                </td>
+                {% endif %}
+                <td><a href="{% url 'contract-project-detail' project.id %}">{{ project.name }}</a></td>
+                <td>{{ project.status }}</td>
+                <td>{{ project.program }}</td>
+                <td>{{ project.type_of_work }}</td>
+                <td class="text-right to-format">{% if project.total_budget %}$ {{ project.total_budget }}{% endif %}</td>
+                <td>{{ project.funding_source|default_if_none:"" }}</td>
+                <td>{{ project.code }}</td>
+                <td>
+                    {% for asset in prj_assets %}
+                    <div>{{ asset.asset_code }}</div>
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for asset in prj_assets %}
+                    <div>{{ asset.asset_class }}</div>
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for asset in prj_assets %}
+                    <div>{{ asset.municipality }}</div>
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endwith %}
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="align-items-center d-flex flex-column justify-content-center no-data-wrapper">
+        <span class="no-data image"></span>
+        <h6 class="text-center">{% trans "Welcome to the Contract Manager" %}</h6>
+        <p class="text-center">{% trans "No projects were created yet" %}</p>
+    </div>
+    {% endif %}
+</div>
+
+<div class="action-modal delete-modal modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="d-flex justify-content-center modal-header">
+                <span class="alert stop image"></span>
+                <span class="close image" data-dismiss="modal" aria-label="{% trans 'Close' %}"
+                    aria-hidden="true"></span>
+            </div>
+            <div class="modal-body text-center">
+                <h6>{% trans "Delete Project" %}</h6>
+                <p>{% trans "Are you sure you want to delete this project?" %}</p>
+            </div>
+            <div class="d-flex justify-content-center modal-footer">
+                <button type="button" class="btn btn-danger delete-item">{% trans "Delete" %}</button>
+                <button type="button" class="btn btn-light" data-dismiss="modal">{% trans "Don't delete" %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

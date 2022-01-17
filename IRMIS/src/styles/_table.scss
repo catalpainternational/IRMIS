@@ -1,0 +1,396 @@
+// DataTables general styling
+#map-table-irmis {
+    &.map:not(.table) #table-roads, &.map:not(.table) #table-structures {
+        display: none;
+    }
+
+    &.table:not(.map) #all-data-table, &.table:not(.map) #structures-data-table {
+        max-height: calc(100vh - #{$top-menu-height} - 5px - 31px - 6px - 37px - #{$footer-height});
+    }
+
+    &.table.map #all-data-table, &.table.map #structures-data-table {
+        max-height: calc(60vh - #{$top-menu-height} - 5px - 10px - 31px - 6px - 37px - #{$footer-height});
+    }
+
+    #all-data-table, #structures-data-table {
+        margin-top: 0 !important;
+        overflow: auto;
+    }
+}
+
+%datatable-shared {
+    border-bottom: 1px solid $light-gray !important;
+    border-right: 1px solid $light-gray !important;
+    border-left: 1px solid $light-gray !important;
+}
+
+#structure-condition-table,
+#traffic-table,
+#history-table {
+    @extend %datatable-shared;
+    margin-top: 0 !important;
+    overflow-x: auto;
+}
+
+#carriageway-width-table, #carriageway-width-report-table,
+#total-width-table, #total-width-report-table,
+#technical-class-table, #technical-class-report-table,
+#number-lanes-table, #number-lanes-report-table,
+#terrain-type-table, #terrain-type-report-table,
+#surface-type-table, #surface-type-report-table,
+#rainfall-table, #rainfall-report-table,
+#pavement-class-table, #pavement-class-report-table,
+#asset-condition-table, #asset-condition-report-table {
+    @extend %datatable-shared;
+    overflow-x: auto;
+}
+
+.inventory-table,
+#inventory-media {
+    @extend %datatable-shared;
+    border-bottom: 1px solid $light-gray;
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
+    max-height: 353px; // table's height with 10 rows
+    overflow-y: auto;
+}
+
+.report-table {
+    & > div:first-of-type {
+        margin-top: 10px !important;
+    }
+
+    & > div.dataTables_wrapper {
+        margin-bottom: 20px !important;
+
+        table.dataTable {
+            @extend %datatable-shared;
+            overflow-x: auto;
+
+            .dark-left {
+                border-left: 1px solid $dark-gray;
+            }
+        }
+    }
+}
+
+#report-program-table,
+#report-contract-code-table,
+#report-asset-class-type-work-table,
+#report-type-work-year-table,
+#report-asset-class-year-table,
+#report-number-employees-summary-table,
+#report-number-employees-table,
+#report-wages-summary-table,
+#report-wages-table,
+#report-worked-days-summary-table,
+#report-worked-days-table {
+    @extend %datatable-shared;
+    margin-top: 10px !important;
+    overflow-x: auto;
+
+    .dark-left {
+        border-left: 1px solid $dark-gray;
+    }
+}
+
+#report-program-table,
+#report-contract-code-table,
+#report-number-employees-summary-table,
+#report-number-employees-table,
+#report-wages-summary-table,
+#report-wages-table,
+#report-worked-days-summary-table,
+#report-worked-days-table {
+    margin-bottom: 20px !important;
+}
+
+#report-asset-class-type-work-table,
+#report-type-work-year-table,
+#report-asset-class-year-table {
+    margin-bottom: 5px !important;
+}
+
+table.planning-dashboard-table {
+    @extend %datatable-shared;
+    margin-bottom: 0 !important;
+    margin-top: 10px !important;
+    overflow-x: auto;
+
+    thead th, tbody td {
+        border-left: none;
+    }
+
+    thead th:last-child, tbody td:last-child {
+        border-right: none;
+    }
+
+    tbody tr:last-child td {
+        border-bottom: none;
+    }
+}
+
+table.planning-table {
+    overflow-x: auto;
+
+    thead tr th {
+        border-bottom-width: 1px;
+        border-right: none;
+        border-top: none;
+    }
+
+    tbody tr td {
+        border-right: none;
+        height: 55px;
+
+        span {
+            border-right: 1px solid $light-gray;
+            margin: 0 10px;
+        }
+    }
+}
+
+table.contracts-profile-table {
+    overflow-x: auto;
+
+    thead tr th {
+        border-bottom-width: 1px;
+        border-top: none;
+        width: 100%;
+
+        &:first-child {
+            width: 60px;
+        }
+    }
+
+    tbody tr td {
+        height: 55px;
+        width: 100%;
+
+        &:first-child {
+            width: 60px;
+        }
+
+        span {
+            border-right: 1px solid $light-gray;
+            margin: 0 10px;
+        }
+    }
+}
+
+.contract-details-table {
+    overflow-x: auto;
+
+    thead th {
+        border-top: none;
+    }
+
+    thead th, tbody td {
+        height: 40px;
+    }
+}
+
+.table-spacing {
+    margin-top: 25px;
+}
+
+tfoot th, tfoot td {
+    vertical-align: middle !important;
+    border-bottom: none !important;
+    padding: 0 20px !important;
+    height: 30px;
+}
+
+.clip-text-ellipsis {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 300px;
+    overflow: hidden;
+}
+
+
+// Override DataTables.net styles
+div.dataTables_wrapper {
+    table.dataTable {
+        background-color: $white;
+
+        td.dataTables_empty {
+            text-align: left;
+        }
+    }
+
+    .dataTables_info {
+        padding-top: 8px;
+    }
+}
+
+.dataTables_wrapper ul.pagination {
+    margin: 0;
+
+    li.paginate_button.page-item {
+        &:focus {
+            outline: none;
+        }
+
+        &.active a.page-link {
+            border-radius: $radius;
+        }
+
+        a.page-link {
+            box-shadow: none;
+            margin-left: 0;
+            border: 0;
+        }
+    }
+}
+
+#all-data-table_wrapper ul.pagination,
+#structures-data-table_wrapper ul.pagination {
+    li.paginate_button.page-item {
+        &.active a.page-link {
+            background-color: $white;
+            color: $darker-gray;
+        }
+
+        a.page-link {
+            background-color: $darker-gray;
+            color: $white;
+        }
+    }
+}
+
+#project-document-list-table,
+#tender-document-list-table,
+#contract-document-list-table,
+#company-document-list-table {
+    thead tr th:nth-child(2), tbody tr td:nth-child(2) {
+        width: 30px;
+    }
+}
+
+#project-document-print-list-table_wrapper,
+#tender-document-print-list-table_wrapper,
+#contract-inspection-print-list-table_wrapper,
+#contract-payment-print-list-table_wrapper,
+#contract-social-safeguard-print-list-table_wrapper,
+#contract-document-print-list-table_wrapper,
+#company-document-print-list-table_wrapper {
+    display: none;
+}
+
+#project-list-table_wrapper ul.pagination,
+#project-document-list-table_wrapper ul.pagination,
+#project-document-view-list-table_wrapper ul.pagination,
+#tender-list-table_wrapper ul.pagination,
+#tender-document-list-table_wrapper ul.pagination,
+#tender-document-view-list-table_wrapper ul.pagination,
+#contract-list-table_wrapper ul.pagination,
+#contract-inspection-list-table_wrapper ul.pagination,
+#contract-inspection-view-list-table_wrapper ul.pagination,
+#contract-payment-list-table_wrapper ul.pagination,
+#contract-payment-view-list-table_wrapper ul.pagination,
+#contract-social-safeguard-list-table_wrapper ul.pagination,
+#contract-social-safeguard-view-list-table_wrapper ul.pagination,
+#contract-document-list-table_wrapper ul.pagination,
+#contract-document-view-list-table_wrapper ul.pagination,
+#company-list-table_wrapper ul.pagination,
+#company-document-list-table_wrapper ul.pagination,
+#company-document-view-list-table_wrapper ul.pagination,
+#history-table_wrapper ul.pagination,
+.content-wrapper ul.pagination {
+    li.paginate_button.page-item {
+        &.active a.page-link {
+            background-color: $darker-gray;
+            color: $white;
+        }
+
+        a.page-link {
+            background-color: $white;
+            color: $darker-gray;
+        }
+    }
+}
+
+.dt-buttons {
+    justify-content: flex-end;
+    background-color: $white;
+    align-items: center;
+    padding: 3px 15px;
+    display: flex;
+
+    div.btn {
+        margin-left: 5px;
+        flex: inherit;
+    }
+
+    h6 {
+        margin-bottom: 0;
+        padding-top: 2px;
+    }
+}
+
+#all-data-table,
+#structures-data-table {
+    thead th:not(.edit-col), tbody td:not(.edit-col) {
+        width: 100%;
+    }
+
+    thead th.edit-col, tbody td.edit-col {
+        width: 15px;
+    }
+}
+
+// Override Bootstrap table styles
+table.table {
+    thead th, tbody td {
+        width: 1%;
+    }
+
+    thead th {
+        position: sticky !important;
+        background-color: $white;
+        white-space: nowrap;
+        padding-left: 20px;
+        padding-right: 20px;
+        top: 0;
+    }
+
+    tbody td {
+        vertical-align: middle;
+        white-space: nowrap;
+        padding: 0 20px;
+        height: 30px;
+    }
+
+    thead th.edit-col, tbody td.edit-col {
+        padding-right: 7px !important;
+        padding-left: 7px !important;
+    }
+
+    &.table-bordered {
+        border: none;
+
+        thead th, tbody td {
+            border-color: $light-gray;
+        }
+
+        thead th {
+            border-bottom-width: 1px;
+        }
+
+        tbody tr:first-child td {
+            border-top: 0;
+        }
+    }
+
+    &.table-hover tbody tr {
+        &:hover {
+            background-color: $light-green;
+            cursor: pointer;
+        }
+
+        &.selected {
+            background-color: $green;
+        }
+    }
+}

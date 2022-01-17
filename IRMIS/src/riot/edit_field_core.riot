@@ -1,0 +1,31 @@
+<edit_field_core>
+    <div class="form-group">
+        <label>{ core.display }</label>
+        <small class="form-text text-muted">{ core.help_text || "" }</small>
+        <ul class="core">
+            <li each="{core_choice in core.options}" data-core="{core_choice[0]}" onclick="{checkCore}">
+                <span class="{ core_choice[0] == state.core ? 'active' : '' } radio image"></span>
+                { core_choice[1] }
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        /** constructor */
+        export default function EditFieldCore(){
+            // Return the initial state
+            return {
+                onBeforeMount(props, state) {
+                    state.core = props.asset.getCore();
+                    state.asset = props.asset;
+                },
+                checkCore(e) {
+                    this.state.core = e.currentTarget.dataset.core;
+                    this.state.asset.setCore(this.state.core);
+                    this.update();
+                },
+                core: window.asset_schema.core,
+            };
+        }
+    </script>
+</edit_field_core>

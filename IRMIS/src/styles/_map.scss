@@ -1,0 +1,53 @@
+#map-table-irmis.map.table {
+    #map-irmis {
+        margin-bottom: 10px;
+        height: 40vh;
+    }
+}
+
+#map-table-irmis.map:not(.table) {
+    #map-irmis {
+        height: calc(100vh - #{$top-menu-height} - 5px - #{$footer-height});
+    }
+}
+
+#map-table-irmis.table:not(.map) {
+    #map-irmis {
+        display: none;
+    }
+}
+
+// Override Leaflet styles
+.leaflet-touch {
+    .leaflet-bar {
+        margin-right: 30px;
+        margin-top: 40px;
+        border: none;
+
+        a.leaflet-control-zoom-in, a.leaflet-control-zoom-out {
+            box-shadow: 0 3px 8px 0 rgba(61, 71, 88, 0.25);
+            color: $darker-gray;
+            line-height: 34px;
+            border-bottom: 0;
+            height: 34px;
+            width: 34px;
+
+            &:hover {
+                background-color: $white;
+            }
+        }
+    }
+}
+
+.leaflet-popup {
+    .popup {
+        white-space: nowrap;
+        font-size: 12px;
+        display: flex;
+    }
+
+    a.leaflet-popup-close-button {
+        padding-right: 6px;
+        padding-top: 6px;
+    }
+}

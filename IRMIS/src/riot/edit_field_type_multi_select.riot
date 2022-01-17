@@ -1,0 +1,54 @@
+<edit_field_type_multi_select>
+    <div class="form-group">
+        <label>{ state.options.display }</label>
+        <small class="form-text text-muted">{ state.options.help_text || ""}</small>
+        <div if="{state.errors.multi_select}" class="invalid-tooltip">
+            <ul>
+                <li>{ state.errors.multi_select }.</li>
+            </ul>
+        </div>
+        <ul class="multi_select">
+            <li each="{option in state.options.options}" data-code="{option.code}" onclick="{checkSelectionList}">
+                <span
+                    class="{ state.getSelectionList().includes(Number(option.code)) ? 'selected' : '' } checkbox image"></span>
+                { option.name }
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        export default {
+            state: {
+                options: {
+                    display: "",
+                    help_text: "",
+                    options: [],
+                },
+                getSelectionList: () => { return []; },
+                setSelectionList: (value) => { },
+                errors: {
+                    multi_select: ""
+                }
+            },
+            onBeforeMount(props, state) {
+                state.options = props.options.options;
+                // These should be the protobuf object get and set members here, because we want the raw codes
+                state.getSelectionList = props.options.getSelectionList;
+                state.setSelectionList = props.options.setSelectionList;
+            },
+            checkSelectionList(e) {
+                // toggle the selection
+                const code = Number(e.currentTarget.dataset.code);
+                const selected = this.state.getSelectionList().includes(code);
+                let selection_list = this.state.getSelectionList();
+                if (selected) {
+                    selection_list = selection_list.filter((ea) => { return ea !== code; });
+                } else {
+                    selection_list.push(code);
+                }
+                this.state.setSelectionList(selection_list);
+                this.update();
+            },
+        }
+    </script>
+</edit_field_type_multi_select>

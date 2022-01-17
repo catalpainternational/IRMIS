@@ -1,0 +1,1935 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-11-06 01:12+0000\n"
+"PO-Revision-Date: 2020-08-04 07:15+0000\n"
+"Last-Translator: b'  <sergio@catalpa.io>'\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Translated-Using: django-rosetta 0.9.3\n"
+
+msgid "IRMIS"
+msgstr "IRMIS"
+
+msgid "Gabion works"
+msgstr "Gabião"
+
+msgid "Masonry works"
+msgstr "Alvenaria"
+
+msgid "RCC"
+msgstr "RCC"
+
+msgid "PCC concrete wall"
+msgstr "Parede de betão PCC"
+
+msgid "Beam"
+msgstr "Viga"
+
+msgid "Temporary"
+msgstr "Temporária"
+
+msgid "Truss"
+msgstr "Treliças"
+
+msgid "Arch"
+msgstr "Arco"
+
+msgid "Reinforced cement"
+msgstr "Cimento reforçado"
+
+msgid "Concrete (RCC)"
+msgstr "Betão (RCC)"
+
+msgid "Timber"
+msgstr "Viga"
+
+msgid "Suspension"
+msgstr "Suspensa"
+
+msgid "RCC box"
+msgstr "Caixa RCC"
+
+msgid "RCC pipe"
+msgstr "Tubo RCC"
+
+msgid "RCC slab"
+msgstr "Placa RCC"
+
+msgid "Steel pipe"
+msgstr "Tubo de aço"
+
+msgid "Stone scupper"
+msgstr "Scupper de pedra"
+
+msgid "Wooden"
+msgstr "Madeira"
+
+msgid "Concrete"
+msgstr "Betão"
+
+msgid "Steel"
+msgstr "Aço"
+
+msgid "Stone"
+msgstr "Pedra"
+
+msgid "Health facility"
+msgstr "Estabelecimento de saúde"
+
+msgid "School"
+msgstr "Escola"
+
+msgid "Police/security station"
+msgstr "Polícia/Segurança"
+
+msgid "Fire station"
+msgstr "Estação de bombeiros"
+
+msgid "Recreational area"
+msgstr "Área recreativa"
+
+msgid "Fishing"
+msgstr "Pesca"
+
+msgid "Farming"
+msgstr "Agricultura"
+
+msgid "Market"
+msgstr "Mercado"
+
+msgid "Tourism"
+msgstr "Turística"
+
+msgid "Commercial"
+msgstr "Comercial"
+
+msgid "Industrial"
+msgstr "Industrial"
+
+msgid "Cash crops"
+msgstr "Agricultura comercial"
+
+msgid "Connects municipalities"
+msgstr "Ligação municípios"
+
+msgid "Connects Dili to municipal centers"
+msgstr "Ligação Dili ao centro de municípios"
+
+msgid "Connects administrative posts"
+msgstr "Ligação postos administrativos"
+
+msgid "Connects to land border"
+msgstr "Ligação a fronteira terrestre"
+
+msgid "Connects to seaport"
+msgstr "Ligação a porto marítimo"
+
+msgid "Connects to airport"
+msgstr "Ligação a aeroporto"
+
+msgid "No protection works"
+msgstr "Sem trabalho de proteção"
+
+msgid "RCC concrete wall"
+msgstr "Parede de betão RCC"
+
+msgid "Stone masonry"
+msgstr "Alvenaria de pedra"
+
+msgid "Plum concrete"
+msgstr "Betão ciclópico"
+
+msgid "PCC"
+msgstr "PCC"
+
+msgid "Gabions"
+msgstr "Gabiões"
+
+msgid "Precast concrete bricks"
+msgstr "Tijolos de betão pré-fabricados"
+
+msgid "Clay bricks"
+msgstr "Tijolos de barro"
+
+msgid "PC"
+msgstr "PC"
+
+#, python-format
+msgid "%(value)s should not contain spaces"
+msgstr "%(value)s não deve conter espaços"
+
+msgid "Code"
+msgstr "Código"
+
+msgid "Name"
+msgstr "Nome"
+
+msgid "Date Created"
+msgstr "Data de criação"
+
+msgid "last modified"
+msgstr "última alteração"
+
+msgid "Description"
+msgstr "Descrição"
+
+msgid "User"
+msgstr "Utilizador"
+
+msgid "National"
+msgstr "Nacional"
+
+msgid "Municipal"
+msgstr "Municipal"
+
+msgid "Urban"
+msgstr "Urbana"
+
+msgid "Rural"
+msgstr "Rural"
+
+msgid "Good"
+msgstr "Bom"
+
+msgid "Fair"
+msgstr "Razoável"
+
+msgid "Poor"
+msgstr "Fraco"
+
+msgid "Bad"
+msgstr "Mau"
+
+msgid "Road"
+msgstr "Estrada"
+
+msgid "Bridge"
+msgstr "Ponte"
+
+msgid "Culvert"
+msgstr "Bueiro"
+
+msgid "Drift"
+msgstr "Drift"
+
+msgid "Low"
+msgstr "Baixo"
+
+msgid "Medium"
+msgstr "Médio"
+
+msgid "High"
+msgstr "Alto"
+
+msgid "Flat"
+msgstr "Plano"
+
+msgid "Rolling"
+msgstr "Ondulado"
+
+msgid "Mountainous"
+msgstr "Montanhoso"
+
+msgid "Undefined"
+msgstr "Não definido"
+
+msgid "Non-core"
+msgstr "Não principal"
+
+msgid "Core"
+msgstr "Principal"
+
+msgid "Road Code"
+msgstr "Código de estrada"
+
+msgid "Municipality"
+msgstr "Municipalidade"
+
+msgid "Choose the municipality for the road"
+msgstr "Escolha a municipalidade da estrada"
+
+msgid "Funding Source"
+msgstr "Fonte de financiamento"
+
+msgid "Enter the source funding for the road link"
+msgstr "Adicione a fonte de financiamento para a secção da estrada"
+
+msgid "Link Code"
+msgstr "Código da secção da estrada"
+
+msgid "Enter link code according to DRBFC standard"
+msgstr "Insira o código "
+
+msgid "Link Start Name"
+msgstr "Nome do início da secção"
+
+msgid "Enter the name of the link start location (municipal center, administrative post or nearest suco)"
+msgstr "Introduza o nome da localidade de início da secção da estrada (centro municipal, posto administrativo ou suco mais próximo)"
+
+msgid "Link End Name"
+msgstr "Nome do fim da secção"
+
+msgid "Enter the name of the link end location (municipal center, administrative post or nearest suco)"
+msgstr "Introduza o nome da localidade do fim da secção da estrada (centro municipal, posto administrativo ou suco mais próximo)"
+
+msgid "Link End Chainage"
+msgstr "Final da secção"
+
+msgid "Enter chainage for link ending point"
+msgstr "Insira o ponto final da secção"
+
+msgid "Link Start Chainage"
+msgstr "Início da secção"
+
+msgid "Enter chainage for link starting point"
+msgstr "Insira o ponto inicial da secção"
+
+msgid "Link Length (Km)"
+msgstr "Extensão da secção (Km)"
+
+msgid "Enter road link length"
+msgstr "Insira o comprimento da secção da estrada"
+
+msgid "Geometry Length (m)"
+msgstr "Comprimento da geometria (m)"
+
+msgid "Do not edit"
+msgstr "Não editar"
+
+msgid "Geometry Start Chainage"
+msgstr "Geometria do início do segmento"
+
+msgid "Geometry End Chainage"
+msgstr "Geometria do fim do segmento"
+
+msgid "Surface Type"
+msgstr "Tipo de pavimento"
+
+msgid "Choose the type of surface of the road link carriageway"
+msgstr "Escolha o tipo de pavimento da faixa de rodagem da secção da estrada"
+
+msgid "Pavement Class"
+msgstr "Classe de Pavimento"
+
+msgid "Choose the pavement class of the road"
+msgstr "Escolha a classe de pavimento da estrada"
+
+msgid "Carriageway Width"
+msgstr "Largura da faixa de rodagem"
+
+msgid "Enter the width of the link carriageway"
+msgstr "Insira a largura da faixa de rodagem da secção da estrada"
+
+msgid "Asset Class"
+msgstr "Classe da Infra-estrutura"
+
+msgid "Choose the asset class"
+msgstr "Escolha a classe da infra-estrutura"
+
+msgid "Road Status"
+msgstr "Estado da Estrada"
+
+msgid "Enter road link current status"
+msgstr "Insira o actual estado da secção da estrada"
+
+msgid "Project Name"
+msgstr "Nome do Projecto"
+
+msgid "Enter road link project name"
+msgstr "Insira o nome do projecto da secção da estrada"
+
+msgid "Traffic Data"
+msgstr "Dados de trânsito"
+
+msgid "Choose the traffic volume for the road link"
+msgstr "Escolha o volume de trânsito para a secção da estrada"
+
+msgid "Surface Condition (SDI)"
+msgstr "Condição do pavimento (SDI)"
+
+msgid "Choose road link surface condition according to the Surface Distress Index (SDI): Good (SDI<=2), fair (2<SDI<=3), poor (3<SDI<=4) or bad (SDI>4)"
+msgstr "Escolha a condição do pavimento para a secção da estrada de acordo com o Surface Distress Index:  Bom (SDI<=2), Razoável (2<SDI<=3), Fraco (3<SDI<=4) or Mau (SDI>4)"
+
+msgid "Maintenance Needs"
+msgstr "Tipo de Manutenção"
+
+msgid "Choose the type of maintenace needs for the road link"
+msgstr "Escolha o tipo de manutenção necessária para a secção da estrada"
+
+msgid "Technical Class"
+msgstr "Classe Técnica"
+
+msgid "Choose road link technical class according to the 2010 Road Geometric Design Standards, DRBFC standards"
+msgstr "Escolha o tipo de classe técnica de acordo com o \"2010 Road Geometric Design standards\" e os standards da DNEPCC"
+
+msgid "Set if the road is a high priority `core` road"
+msgstr "Defina Principal se for uma estrada de alta prioridade"
+
+msgid "Population Served"
+msgstr "População Servida"
+
+msgid "Set the size of population served by this road"
+msgstr "Defina o total da população servida pela estrada"
+
+msgid "Road Construction Year"
+msgstr "Ano de Construção da Estrada"
+
+msgid "Terrain class"
+msgstr "Classe do terreno"
+
+msgid "Choose what terrain class the road runs through"
+msgstr "Escolha a classe the terreno pela qual a estrada passa"
+
+msgid "Rainfall Maximum"
+msgstr "Pluviosidade máxima"
+
+msgid "Enter the maximum amount of rainfall"
+msgstr "Insira o valor máximo da pluviosidade"
+
+msgid "Rainfall Minimum"
+msgstr "Pluviosidade mínima"
+
+msgid "Enter the minimum amount of rainfall"
+msgstr "Insira o valor mínimo da pluviosidade"
+
+msgid "Number of Lanes"
+msgstr "Número de faixas"
+
+msgid "Enter the number of lanes of the road"
+msgstr "Insira o número de faixas da estrada"
+
+msgid "Facilities Served"
+msgstr "Áreas servidas"
+
+msgid "Choose facilities served by this road"
+msgstr "Escolha as áreas servidas pela estrada"
+
+msgid "Economic Areas Served"
+msgstr "Áreas económicas servidas"
+
+msgid "Choose economic areas served by this road"
+msgstr "Escola as áreas económicas servidas pela estrada"
+
+msgid "Connections Served"
+msgstr "Ligações servidas"
+
+msgid "Choose the types of connections facilitated by this road"
+msgstr "Escolha o tipo de ligaçōes que a estrada serve"
+
+msgid "Attributes"
+msgstr "Atributos"
+
+msgid "Road Id"
+msgstr "ID estrada"
+
+msgid "Structure Code"
+msgstr "Código de Estrutura"
+
+msgid "Structure Class"
+msgstr "Classe de Estrutura"
+
+msgid "Choose the structure class"
+msgstr "Escolha a classe da estrutura"
+
+msgid "Choose the municipality for the structure"
+msgstr "Escolha a municipalidade da estrutura"
+
+msgid "Enter the Road Code associated with the structure"
+msgstr "Insira o Código da Estrada onde se localiza a estrutura"
+
+msgid "Structure Construction Year"
+msgstr "Ano de Construção da Estrutura"
+
+msgid "Structure Length (m)"
+msgstr "Comprimento da Estrutura (m)"
+
+msgid "Enter structure length"
+msgstr "Insira o comprimento da estrutura"
+
+msgid "Structure Width (m)"
+msgstr "Largura da Estrutura (m)"
+
+msgid "Enter structure width"
+msgstr "Insira a largura da estrutura"
+
+msgid "Chainage"
+msgstr "Segmento"
+
+msgid "Enter chainage point for the structure"
+msgstr "Insira o ponto de localização da estrutura"
+
+msgid "Bridge Type"
+msgstr "Tipo de Ponte"
+
+msgid "Choose the bridge type"
+msgstr "Escolha o tipo de ponte"
+
+msgid "River Name"
+msgstr "Nome do rio"
+
+msgid "Enter the name of the river the bridge crosses over"
+msgstr "Insira o nome do rio atravessado pela ponte"
+
+msgid "Number of Spans"
+msgstr "Número de \"spans\""
+
+msgid "Enter number of spans"
+msgstr "Insira o número de \"spans\" da ponte"
+
+msgid "Span Length (m)"
+msgstr "Comprimento do \"Span\" (m)"
+
+msgid "Enter span length"
+msgstr "Insira o comprimento do \"span\""
+
+msgid "Deck Material"
+msgstr "Material do Tabuleiro"
+
+msgid "Choose the bridge deck material"
+msgstr "Escolha o material do tabuleiro da ponte"
+
+msgid "Protection Upstream"
+msgstr "Protecção a montante"
+
+msgid "Choose the upstream protection type"
+msgstr "Escolha o tipo de protecção"
+
+msgid "Protection Downstream"
+msgstr "Protecção a jusante"
+
+msgid "Choose the downstream protection type"
+msgstr "Escolha o tipo de protecção"
+
+msgid "Culvert Type"
+msgstr "Tipo de Bueiro"
+
+msgid "Choose the culvert type"
+msgstr "Escolha o tipo de bueiro"
+
+msgid "Structure Height (m)"
+msgstr "Altura da estrutura (m)"
+
+msgid "Enter structure height"
+msgstr "Insira a altura da estrutura"
+
+msgid "Number of Cells"
+msgstr "Número de células"
+
+msgid "Material"
+msgstr "Material"
+
+msgid "Choose the culvert material"
+msgstr "Escolha o material do bueiro"
+
+msgid "Drift Type"
+msgstr "Tipo de \"Drift\""
+
+msgid "Choose the drift type"
+msgstr "Escolha o tipo de \"drift\""
+
+msgid "Structure Thickness (m)"
+msgstr "Espessura da estrutura (m)"
+
+msgid "Enter structure thickness"
+msgstr "Insira a espessura da estrutura"
+
+msgid "Choose the drift material"
+msgstr "Escolha o tipo de material do \"drift\""
+
+msgid "Asset Type"
+msgstr "Tipo de Infra-estrutura"
+
+msgid "Asset Id"
+msgstr "ID Infra-estrutura"
+
+msgid "Asset Code"
+msgstr "Código Infra-estrutura"
+
+msgid "Date Surveyed"
+msgstr "Data do levantamento"
+
+msgid "Date Updated"
+msgstr "Data de actualização"
+
+msgid "Start Chainage (Km)"
+msgstr "Início do Segmento (Km)"
+
+msgid "Enter chainage for survey starting point"
+msgstr "Insira o ponto inicial do segmento (Km)"
+
+msgid "End Chainage (Km)"
+msgstr "Final do Segmento (Km)"
+
+msgid "Enter chainage for survey ending point"
+msgstr "Insira o ponto final da segmento levantado"
+
+msgid "Source"
+msgstr "Fonte"
+
+msgid "Choose the source of the survey"
+msgstr "Escolha a fonte do levantamento"
+
+msgid "Title"
+msgstr "Título"
+
+msgid "Approved"
+msgstr "Aprovado"
+
+msgid "Planning Period"
+msgstr "Período do Planeamento"
+
+msgid "Routine Maintenance"
+msgstr "Manutenção de rotina"
+
+msgid "Periodic Maintenance"
+msgstr "Manutenção Periódica"
+
+msgid "Rehabilitation"
+msgstr "Reabilitação"
+
+msgid "Spot Improvement"
+msgstr "Melhoria de pontos"
+
+msgid "Year"
+msgstr "Ano"
+
+msgid "Budget"
+msgstr "Orçamento"
+
+msgid "Enter the budget amount"
+msgstr "Insira o valor do orçamento"
+
+msgid "Length"
+msgstr "Comprimento"
+
+msgid "Enter the length"
+msgstr "Insira o comprimento"
+
+msgid "Work Type"
+msgstr "Tipo de Trabalho"
+
+msgid "Choose the work type"
+msgstr "Escolha o tipo de trabalho"
+
+msgid "Date of first Survey"
+msgstr "Data do primeiro levantamento"
+
+msgid "Date of second Survey"
+msgstr "Data do segundo levantamento"
+
+msgid "Road Inventory"
+msgstr "Inventário de Estradas"
+
+msgid "Export all"
+msgstr "Exportar tudo"
+
+msgid "Select data"
+msgstr "Selecção de dados"
+
+msgid "Road Inventory Data"
+msgstr "Dados do Inventário de Estradas"
+
+msgid "Road code"
+msgstr "Código da estrada"
+
+msgid "Road name"
+msgstr "Nome da estrada"
+
+msgid "Asset class"
+msgstr "Classe da Infra-estrutura"
+
+msgid "Technical class"
+msgstr "Classe técnica"
+
+msgid "Link code"
+msgstr "Código da secção da estrada"
+
+msgid "Link name"
+msgstr "Nome da secção da estrada"
+
+msgid "Link length"
+msgstr "Extensão da secção"
+
+msgid "Link start name"
+msgstr "Nome do início da secção da estrada"
+
+msgid "Link start chainage"
+msgstr "Ponto do início da secção"
+
+msgid "Start Point - DMS"
+msgstr "Ponto inicial - DMS"
+
+msgid "Start Point - UTM"
+msgstr "Ponto inicial - UTM"
+
+msgid "Link end name"
+msgstr "Nome do fim da secção da estrada"
+
+msgid "Link end chainage"
+msgstr "Ponto do fim da secção"
+
+msgid "End Point - DMS"
+msgstr "Ponto final - DMS"
+
+msgid "End Point - UTM"
+msgstr "Ponto final - UTM"
+
+msgid "Surface type"
+msgstr "Tipo de pavimento"
+
+msgid "Pavement class"
+msgstr "Classe do pavimento"
+
+msgid "Carriageway width"
+msgstr "Largura da faixa de rodagem"
+
+msgid "Total width"
+msgstr "Largura total"
+
+msgid "Number of lanes"
+msgstr "Número de faixas de rodagem"
+
+msgid "Rainfall"
+msgstr "Pluviosidade"
+
+msgid "Terrain Class"
+msgstr "Classe do Terreno"
+
+msgid "Inventory Photos/Videos"
+msgstr "Fotos/Vídeos de Inventário"
+
+msgid "Condition and Traffic"
+msgstr "Condição e trânsito"
+
+msgid "Roughness (IRI)"
+msgstr "Rugosidade (IRI)"
+
+msgid "Surface condition"
+msgstr "Condição do pavimento"
+
+msgid "Maintenance needs"
+msgstr "Manutenção necessária"
+
+msgid "Traffic data"
+msgstr "Dados de trânsito"
+
+msgid "Project Data"
+msgstr "Dados do Projecto"
+
+msgid "Road status"
+msgstr "Estado da estrada"
+
+msgid "Construction Year"
+msgstr "Ano de Construção"
+
+msgid "Funding source"
+msgstr "Fontes de financiamento"
+
+msgid "Project"
+msgstr "Projecto"
+
+msgid "Return to default selection"
+msgstr "Voltar à selecção inicial"
+
+msgid "Structure Inventory"
+msgstr "Inventário de Estruturas"
+
+msgid "Structure Inventory Data"
+msgstr "Dados do Inventário de Estruturas"
+
+msgid "Structure"
+msgstr "Estrutura"
+
+msgid "Structure Name"
+msgstr "Nome da Estrutura"
+
+msgid "GPS Latitude"
+msgstr "Latitude GPS"
+
+msgid "GPS Longitude"
+msgstr "Longitude GPS"
+
+msgid "Type"
+msgstr "Tipo"
+
+msgid "Width"
+msgstr "Largura"
+
+msgid "Height"
+msgstr "Altura"
+
+msgid "Thickness"
+msgstr "Espessura"
+
+msgid "Span Length"
+msgstr "Comprimento do \"Span\""
+
+msgid "Structure Condition Data"
+msgstr "Dados de Condição da Estrutura"
+
+msgid "Structure Condition"
+msgstr "Condição da Estrutura"
+
+msgid "Condition Description"
+msgstr "Descrição da Condição"
+
+msgid "Condition Photos/Videos"
+msgstr "Fotos/Vídeos de Condição"
+
+msgid "Democratic Republic of Timor-Leste"
+msgstr "República Democrática de Timor-Leste"
+
+msgid "Ministry of Public Works"
+msgstr "Ministério das Obras Públicas"
+
+msgid "Created by Catalpa International"
+msgstr "Desenvolvido por Catalpa International"
+
+msgid "View"
+msgstr "Ver"
+
+msgid "Fullscreen view"
+msgstr "Ver ecrã inteiro"
+
+msgid "Map & Table"
+msgstr "Mapa & Tabela"
+
+msgid "Map"
+msgstr "Mapa"
+
+msgid "Table"
+msgstr "Tabela"
+
+msgid "Roads"
+msgstr "Estradas"
+
+msgid "Structures"
+msgstr "Estruturas"
+
+msgid "Filters"
+msgstr "Filtros"
+
+msgid "Clear all filters"
+msgstr "Limpar todos os filtros"
+
+msgid "Location"
+msgstr "Localização"
+
+msgid "Clear"
+msgstr "Limpar"
+
+msgid "Asset"
+msgstr "Infra-estrutura"
+
+msgid "Bridges"
+msgstr "Pontes"
+
+msgid "Culverts"
+msgstr "Bueiros"
+
+msgid "Drifts"
+msgstr "Drifts"
+
+msgid "Asset condition"
+msgstr "Condição da infra-estrutura"
+
+msgid "Structure Type"
+msgstr "Tipo de Estrutura"
+
+msgid "Structure Material"
+msgstr "Material da Estrutura"
+
+msgid "Select the type"
+msgstr "Escolha o tipo"
+
+msgid "Select the Deck Material"
+msgstr "Seleccione o material do tabuleiro"
+
+msgid "Select the Material"
+msgstr "Seleccione o Material"
+
+msgid "Rehabilitation road X"
+msgstr "Reabilitação da estrada X"
+
+msgid "Project for the rehabilitation of road X"
+msgstr "Projecto para a reabilitação da estrada X"
+
+msgid "Associated projects"
+msgstr "Projectos associados"
+
+msgid "Select one or more projects for the tender"
+msgstr "Seleccione um ou mais projectos ao concurso"
+
+msgid "Contract for the upgrade of road A01-1 to technical class R1"
+msgstr "Contracto para o upgrade da estrada A01-1 para classe técnica R1"
+
+msgid "Due to unforeseen events, the contract start was postponed by 1 month"
+msgstr "Devido a eventos inesperados, o início do contracto foi atrasado por 1 mês"
+
+msgid "Project Status"
+msgstr "Estado do Projecto"
+
+msgid "Choose status"
+msgstr "Escolha o estado"
+
+msgid "Program Name"
+msgstr "Nome do Programa"
+
+msgid "Choose the program for the project"
+msgstr "Escolha o programa do projecto"
+
+msgid "Type of Work"
+msgstr "Tipo de Trabalho"
+
+msgid "Choose from the list"
+msgstr "Escolha da lista"
+
+msgid "Enter project’s name"
+msgstr "Insira o nome do projecto"
+
+msgid "Project Code"
+msgstr "Código do Projecto"
+
+msgid "Enter project’s code"
+msgstr "Insira o código do projecto"
+
+msgid "Enter a description of the project"
+msgstr "Insira a descrição do projecto"
+
+msgid "Choose the funding source"
+msgstr "Escolha a fonte de financiamento"
+
+msgid "Choose the donor"
+msgstr "Escolha o doador"
+
+msgid "Enter schedule start date"
+msgstr "Escolha a data de início prevista"
+
+msgid "Duration (days)"
+msgstr "Duração (dias)"
+
+msgid "Estimated duration of the work"
+msgstr "Duração estimada do trabalho"
+
+msgid "Donor"
+msgstr "Doador"
+
+msgid "Select project's asset"
+msgstr "Escolha a infra-estrutura associada ao projecto"
+
+msgid "Start Chainage"
+msgstr "Início do segmento"
+
+msgid "In meters"
+msgstr "Em metros"
+
+msgid "End Chainage"
+msgstr "Fim do segmento"
+
+msgid "Start Chainage must be specified for roads"
+msgstr "O ponto de início do segmento deve ser inserido para estradas"
+
+msgid "End Chainage must be specified for roads"
+msgstr "O ponto final do segmento deve ser inserido para estrada"
+
+msgid "Start Chainage must be 0 or greater"
+msgstr "O Ponto de início do segmento deve ser 0 our maior"
+
+msgid "Start Chainage must be less than End Chainage"
+msgstr "O Ponto inicial deve ser anterior ao ponto final"
+
+msgid "End Chainage must be greater than Start Chainage"
+msgstr "O Ponto final deve ser posterior ao ponto inicial"
+
+msgid "Asset Id must identify a current Asset, or provide enough information to create a new Asset"
+msgstr "ID da infra-estrutura deve corresponder a uma já existente ou fornecer informação para a criação de uma nova"
+
+msgid "Could not create a new Asset, because the asset_type in the 'special' Asset Id is not valid."
+msgstr "Não foi possível criar uma nova infra-estrutura pois o asset_type no seu ID 'special' não é válido"
+
+msgid "Could not create a new Asset, because the asset_class in the 'special' Asset Id is not valid."
+msgstr "Não foi possível criar uma nova infra-estrutura pois o asset_class no seu ID 'special' não é válido"
+
+msgid "The Asset Code must be unique for this type of asset"
+msgstr "O código da infra-estrutura tem que ser único"
+
+msgid "Start Chainage is too large for this road"
+msgstr "O ponto de início do segmento é demasiado alto para esta estrada"
+
+#, python-format
+msgid "Ensure this value has at most 15 characters (it has %s)"
+msgstr "Garanta que este valor tem pelo menos 15 caracteres (it has %s)"
+
+msgid "Enter year"
+msgstr "Insira o ano"
+
+msgid "In USD"
+msgstr "Em USD"
+
+msgid "Estimated days of work"
+msgstr "Dias estimados de trabalho"
+
+msgid "Physical progress (%)"
+msgstr "Progresso físico (%)"
+
+msgid "Estimated physical progress"
+msgstr "Progresso físico estimado"
+
+msgid "Tender Code"
+msgstr "Código do Concurso"
+
+msgid "Enter tender's code"
+msgstr "Insira o código do concurso"
+
+msgid "Announcement Date"
+msgstr "Data do Anúncio"
+
+msgid "Tender announcement date"
+msgstr "Data do anúncio do concurso"
+
+msgid "Bid Submission Deadline"
+msgstr "Prazo de Submissão de Propostas"
+
+msgid "Date of fid submission deadline"
+msgstr "Data limite para a submissão de propostas"
+
+msgid "Number of Companies Tendering"
+msgstr "Número de Empresas em Concurso"
+
+msgid "Enter the number of companies tendering"
+msgstr "Insira o número de empresas a concorrer"
+
+msgid "Evaluation Date"
+msgstr "Data de Avaliação"
+
+msgid "Bids evaluation date"
+msgstr "Data de avaliação das propostas"
+
+msgid "Tender Status"
+msgstr "Estado do Concurso"
+
+msgid "Enter contract code"
+msgstr "Insira o código do contrato"
+
+msgid "Enter a description of the contract"
+msgstr "Insira a descrição do contrato"
+
+msgid "Associated tender"
+msgstr "Concurso Associado"
+
+msgid "Choose a tender to create a contract"
+msgstr "Escolha o concurso para a criação do contracto"
+
+msgid "Select a company from the list"
+msgstr "Selecione a empresa a partir da lista"
+
+msgid "Contract start date"
+msgstr "Data de início do contrato"
+
+msgid "Enter contract start date"
+msgstr "Insira a data de início do contrato"
+
+msgid "Contract end date"
+msgstr "Data de fim de contrato"
+
+msgid "Enter contract end date"
+msgstr "Insira a data de fim do contrato"
+
+msgid "Duration in days"
+msgstr "Duração em dias"
+
+msgid "Defect liability period (days)"
+msgstr "Período de responsabilidade pelos defeitos (dias)"
+
+msgid "Duration of DLP in days"
+msgstr "Duração do Período de Responsabilidade em dias"
+
+msgid "Enter new start date"
+msgstr "Insira uma nova data de início"
+
+msgid "Contract duration"
+msgstr "Duração do contrato"
+
+msgid "Enter new duration in days"
+msgstr "Insira uma nova duração em dias"
+
+msgid "Description (Reasons for Variations)"
+msgstr "Descrição (motivo para a alteração)"
+
+msgid "Enter a reason for variations to the contract"
+msgstr "Insira o motivo para a alteração ao contrato"
+
+msgid "Enter supervisor's name"
+msgstr "Insira o nome do supervisor"
+
+msgid "Supervisor's phone number"
+msgstr "Telefone do supervisor"
+
+msgid "Select year"
+msgstr "Seleccione o ano"
+
+msgid "Budget per year in USD"
+msgstr "Orçamento por ano em USD"
+
+msgid "Days of work for the milestone"
+msgstr "Dias de trabalho para a meta"
+
+msgid "Milestone physical progress"
+msgstr "Meta para o progresso físico"
+
+msgid "Yes"
+msgstr "Sim"
+
+msgid "No"
+msgstr "Não"
+
+msgid "January"
+msgstr "Janeiro"
+
+msgid "February"
+msgstr "Fevereiro"
+
+msgid "March"
+msgstr "Março"
+
+msgid "April"
+msgstr "Abril"
+
+msgid "May"
+msgstr "Maio"
+
+msgid "June"
+msgstr "Junho"
+
+msgid "July"
+msgstr "Julho"
+
+msgid "August"
+msgstr "Agosto"
+
+msgid "September"
+msgstr "Setembro"
+
+msgid "October"
+msgstr "Outubro"
+
+msgid "November"
+msgstr "Novembro"
+
+msgid "December"
+msgstr "Dezembro"
+
+msgid "Unknown"
+msgstr "Desconhecido"
+
+msgid "Company Name"
+msgstr "Nome da Empresa"
+
+msgid "Enter company name"
+msgstr "Insira o nome da empresa"
+
+msgid "Enter company address"
+msgstr "Insira a morada da empresa"
+
+msgid "Enter company phone number"
+msgstr "Insira o telefone da empresa"
+
+msgid "Enter company email"
+msgstr "Insira o email da empresa"
+
+msgid "Enter company TIN number"
+msgstr "Insira o número TIN da empresa"
+
+msgid "Bank Account Number"
+msgstr "Número da Conta Bancária"
+
+msgid "Enter company bank account number"
+msgstr "Insira o número da conta bancária da empresa"
+
+msgid "Representative name"
+msgstr "Nome do representante"
+
+msgid "Enter company representative name"
+msgstr "Insira o nome do representante da empresa"
+
+msgid "Representative phone"
+msgstr "Telefone do representante"
+
+msgid "Enter company representative phone number"
+msgstr "Insira o número de telefone do representante da empresa"
+
+msgid "Representative email"
+msgstr "Email do representante"
+
+msgid "Enter company representative email"
+msgstr "Insira o email do representante da empresa"
+
+msgid "Woman-Led Company"
+msgstr "Empresa liderada por uma Mulher"
+
+msgid "Is the company director/owner a woman?"
+msgstr "O director/dono da empresa é uma mulher?"
+
+msgid "Company category"
+msgstr "Categoria da empresa"
+
+msgid "Choose category"
+msgstr "Escolha a categoria"
+
+msgid "project"
+msgstr "projecto"
+
+msgid "tender"
+msgstr "concurso"
+
+msgid "contract"
+msgstr "contrato"
+
+msgid "company"
+msgstr "empresa"
+
+msgid "Edit Company"
+msgstr "Editar Empresa"
+
+msgid "Create Company"
+msgstr "Adicionar Empresa"
+
+msgid "Company Details"
+msgstr "Detalhes da Empresa"
+
+msgid "Documents"
+msgstr "Documentos"
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Save"
+msgstr "Guardar"
+
+msgid "Create"
+msgstr "Adicionar"
+
+msgid "Company"
+msgstr "Empresa"
+
+msgid "Print"
+msgstr "Imprimir"
+
+msgid "Address"
+msgstr "Morada"
+
+msgid "Phone"
+msgstr "Telefone"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "TIN"
+msgstr "TIN"
+
+msgid "Representative Name"
+msgstr "Nome do representante"
+
+msgid "Representative Phone"
+msgstr "Telefone do representante"
+
+msgid "Representative Email"
+msgstr "Email do representante"
+
+msgid "Associated as a contractor"
+msgstr "Associado como contratado"
+
+msgid "Associated as a subcontractor"
+msgstr "Associado como sub-contratado"
+
+msgid "Uploaded Documents"
+msgstr "Documentos carregados"
+
+msgid "Add"
+msgstr "Adicionar"
+
+msgid "Document Date"
+msgstr "Data do documento"
+
+msgid "Save Document"
+msgstr "Salvar documento"
+
+msgid "Close"
+msgstr "Fechar"
+
+msgid "File"
+msgstr "Ficheiro"
+
+msgid "Document Type"
+msgstr "Tipo de documento"
+
+msgid "Delete Document"
+msgstr "Apagar documento"
+
+msgid "Are you sure you want to delete this document?"
+msgstr "Tem a certeza que pretende apagar este documento?"
+
+msgid "Delete"
+msgstr "Apagar"
+
+msgid "Don't delete"
+msgstr "Manter"
+
+msgid "List of documents"
+msgstr "Lista de documentos"
+
+msgid "Company Manager"
+msgstr "Gestor da Empresa"
+
+msgid "Create New Company"
+msgstr "Adicionar nova empresa"
+
+msgid "List of companies"
+msgstr "Lista de empresas"
+
+msgid "Export table"
+msgstr "Exportar tabela"
+
+msgid "Edit"
+msgstr "Editar"
+
+msgid "Total Contracts"
+msgstr "Total de Contratos"
+
+msgid "Active Contracts"
+msgstr "Contratos Activos"
+
+msgid "Welcome to the Company Manager"
+msgstr "Bem-vindo ao gestor de Empresas"
+
+msgid "No companies were created yet"
+msgstr "Ainda não foram adicionadas empresas"
+
+msgid "Delete Company"
+msgstr "Apagar Empresa"
+
+msgid "Are you sure you want to delete this company?"
+msgstr "Tem a certeza que deseja apagar esta empresa?"
+
+msgid "Edit Contract"
+msgstr "Editar Contrato"
+
+msgid "Create Contract"
+msgstr "Adicionar Contrato"
+
+msgid "Contract Details"
+msgstr "Detalhes do Contrato"
+
+msgid "Inspections"
+msgstr "Inspecções"
+
+msgid "Payments"
+msgstr "Pagamentos"
+
+msgid "Social Safeguard"
+msgstr "Protecção Social"
+
+msgid "Supervisor"
+msgstr "Supervisor"
+
+msgid "Contract Value Total"
+msgstr "Valor Total do Contrato"
+
+msgid "Schedule"
+msgstr "Calendário"
+
+msgid "Milestones"
+msgstr "Metas"
+
+msgid "Amendments"
+msgstr "Aditamentos"
+
+msgid "Contract"
+msgstr "Contrato"
+
+msgid "Status"
+msgstr "Estado"
+
+msgid "Associated Tender"
+msgstr "Concurso Associado"
+
+msgid "Projects in the Tender"
+msgstr "Projectos neste Concurso"
+
+msgid "Contract Code"
+msgstr "Código do Contrato"
+
+msgid "Contract Description"
+msgstr "Descrição do Contrato"
+
+msgid "Contractor"
+msgstr "Empresa contratada"
+
+msgid "Sub-Contractor"
+msgstr "Empresa sub-contratada"
+
+msgid "Supervisor Name"
+msgstr "Nome do Supervisor"
+
+msgid "Phone Number"
+msgstr "Número de Telefone"
+
+msgid "Total Budget"
+msgstr "Orçamento Total"
+
+msgid "Value"
+msgstr "Valor"
+
+msgid "Defect Liability Period (Days)"
+msgstr "Período de Responsabilidade de Defeitos (Dias)"
+
+msgid "Contract Start Date"
+msgstr "Data de Início do Contrato"
+
+msgid "Contract End Date"
+msgstr "Data de Fim do Contrato"
+
+msgid "Contract Duration"
+msgstr "Duração do Contrato"
+
+msgid "Days of Work"
+msgstr "Dias de Trabalho"
+
+msgid "Progress"
+msgstr "Progresso"
+
+msgid "List of inspections"
+msgstr "Lista de Inspecções"
+
+msgid "Inspection Date"
+msgstr "Data da Inspecção"
+
+msgid "Inspection Entity"
+msgstr "Entidade Inspectora"
+
+msgid "Physical Progress"
+msgstr "Progresso Físico"
+
+msgid "Defect Liability Period"
+msgstr "Período de Responsabilidade de Defeitos"
+
+msgid "Save Inspection"
+msgstr "Guardar Inspecção"
+
+msgid "Select inspection date"
+msgstr "Seleccionar data da inspecção"
+
+msgid "Choose entity that performed the inspection"
+msgstr "Escolha a entidade que realizou a inspecção"
+
+msgid "Enter physical progress as inspected"
+msgstr "Insira o progresso físico verificado na inspecção"
+
+msgid "Start Defect Liability Period"
+msgstr "Início do Período de Responsabilidade de Defeitos"
+
+msgid "When DLP starts with the inspection"
+msgstr "O Período de Responsabilidade começou com após esta inspecção?"
+
+msgid "Delete Inspection"
+msgstr "Apagar Inspecção"
+
+msgid "Are you sure you want to delete this inspection?"
+msgstr "Tem a certeza que deseja apagar esta inspecção?"
+
+msgid "Contract Manager"
+msgstr "Gestor de Contratos"
+
+msgid "Create New Contract"
+msgstr "Adicionar um Novo Contrato"
+
+msgid "List of contracts"
+msgstr "Lista de contratos"
+
+msgid "Value range"
+msgstr "Faixa de valores"
+
+msgid "over"
+msgstr "acima"
+
+msgid "Number of Projects"
+msgstr "Número de Projectos"
+
+msgid "Project(s) Name"
+msgstr "Nome(s) do Projecto(s)"
+
+msgid "Type of Works"
+msgstr "Tipo de Trabalho"
+
+msgid "Welcome to the Contract Manager"
+msgstr "Bem-vindo ao Gestor de Contratos"
+
+msgid "No contracts were created yet"
+msgstr "Ainda não foram adicionados contratos"
+
+msgid "Delete Contract"
+msgstr "Apagar Contrato"
+
+msgid "Are you sure you want to delete this contract?"
+msgstr "Tem a certeza que deseja apagar este contrato?"
+
+msgid "List of payments"
+msgstr "Lista de pagamentos"
+
+msgid "To add a payment, at least one company needs to first be created in the Company section"
+msgstr "Para adicionar um pagamento, pelo uma empresa terá que ser criada na secção de Empresas"
+
+msgid "Payment Date"
+msgstr "Data do Pagamento"
+
+msgid "Payment Value (in USD)"
+msgstr "Valor do Pagamento (em USD)"
+
+msgid "Destination"
+msgstr "Destino"
+
+msgid "Save Payment"
+msgstr "Guardar Pagamento"
+
+msgid "Select payment date"
+msgstr "Seleccione a data do pagamento"
+
+msgid "Payment Value"
+msgstr "Valor do Pagamento"
+
+msgid "Enter total payment value"
+msgstr "Insira o valor total do pagamento"
+
+msgid "Choose donor from the list"
+msgstr "Escolha um doador da lista"
+
+msgid "Select donor"
+msgstr "Seleccione um doador"
+
+msgid "Choose funding source from the list"
+msgstr "Escolha a fonte de financiamento a partir da lista"
+
+msgid "Choose from the list the recipient of the payment"
+msgstr "Escolha o destinatário do pagamento a partir da lista"
+
+msgid "Delete Payment"
+msgstr "Apagar Pagamento"
+
+msgid "Are you sure you want to delete this payment?"
+msgstr "Tem a certeza que deseja apagar este pagamento?"
+
+msgid "List of Social Safeguard Data"
+msgstr "Lista de dados da Protecção Social"
+
+msgid "Reporting Month"
+msgstr "Mês Reportado"
+
+msgid "Total Employees"
+msgstr "Total de Trabalhadores"
+
+msgid "Total Female Employees"
+msgstr "Total de Trabalhadores Mulheres"
+
+msgid "Total Employees With Disabilities"
+msgstr "Total de Trabalhadores com Deficiência"
+
+msgid "Female Employees With Disabilities"
+msgstr "Total de Trabalhadores Mulheres com Deficiência"
+
+msgid "Save Social Safeguard Report"
+msgstr "Guardar Informação da Protecção Social"
+
+msgid "Number of Employees"
+msgstr "Número de trabalhadores"
+
+msgid "Select month of the report"
+msgstr "Seleccione o mês reportado"
+
+msgid "National Employees"
+msgstr "Trabalhadores Nacional"
+
+msgid "International Employees"
+msgstr "Trabalhadores Internacionais"
+
+msgid "Non timorese employees"
+msgstr "Trabalhadores Não-Timorenses"
+
+msgid "Female Employees"
+msgstr "Trabalhadores Mulheres"
+
+msgid "Employees With Disabilities"
+msgstr "Trabalhadores com Deficiência"
+
+msgid "Young Employees"
+msgstr "Trabalhadores Jovens"
+
+msgid "Young Female Employees"
+msgstr "Trabalhadores Mulheres Jovens"
+
+msgid "Worker-days"
+msgstr "Trabalhador-dias"
+
+msgid "Total Worker-days"
+msgstr "Total Trabalhador-dias"
+
+msgid "Worker-days of all employees"
+msgstr "Trabalhador dias de todos os empregados"
+
+msgid "Female Employees Worker-days"
+msgstr "Trabalhador-dias Empregadas Mulheres"
+
+msgid "Employees With Disabilities Worker-days"
+msgstr "Trabalhador-dias Empregados com Deficiência"
+
+msgid "Female Employees With Disabilities Worker-days"
+msgstr "Trabalhador-dias Empregadas Mulheres com Deficiência"
+
+msgid "Young Employees Worker-days"
+msgstr "Trabalhador-dias Empregados Jovens"
+
+msgid "Young Female Employees Worker-days"
+msgstr "Trabalhador-dias Empregados Mulheres Jovens"
+
+msgid "Wages"
+msgstr "Remunerações"
+
+msgid "Total Wages"
+msgstr "Total remunerações"
+
+msgid "All salaries paid in USD"
+msgstr "Todos os salários pagos em USD"
+
+msgid "Average Gross Wages"
+msgstr "Média de Salários Brutos"
+
+msgid "Average of gross salaries in USD"
+msgstr "Média de salários brutos em USD"
+
+msgid "Average Net Wages"
+msgstr "Média de Salários Líquidos"
+
+msgid "Average of net salaries in USD"
+msgstr "Média de salários líquidos em USD"
+
+msgid "Delete Social Safeguard Data"
+msgstr "Apagar Dados de Protecção Social"
+
+msgid "Are you sure you want to delete this data?"
+msgstr "Tem a certeza que deseja apagar estes dados?"
+
+msgid "Projects"
+msgstr "Projectos"
+
+msgid "Tenders"
+msgstr "Concursos"
+
+msgid "Contracts"
+msgstr "Contratos"
+
+msgid "Companies"
+msgstr "Empresas"
+
+msgid "Directorate General for Public Works"
+msgstr "Direcção Geral das Obras Públicas"
+
+msgid "National Directorate for Roads, Bridges and Flood Control"
+msgstr "Direcção Nacional de Estradas, Pontes e Controlo de Cheias"
+
+msgid "Exported from Estrada on"
+msgstr "Exportado do Estrada em"
+
+msgid "at"
+msgstr "em"
+
+msgid "Unsaved Changes"
+msgstr "Alterações não gravadas"
+
+msgid "You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?"
+msgstr "Tem alterações não gravadas que serão perdidas se sair desta página. Deseja continuar a editar?"
+
+msgid "Discard"
+msgstr "Descartar"
+
+msgid "Continue Editing"
+msgstr "Continuar edição"
+
+msgid "Error"
+msgstr "Erro"
+
+msgid "Success"
+msgstr "Sucesso"
+
+msgid "You have successfully saved"
+msgstr "As alterações foram gravas com sucesso"
+
+msgid "Something went wrong"
+msgstr "Algo errado aconteceu"
+
+msgid "Edit Project"
+msgstr "Editar Projecto"
+
+msgid "Create Project"
+msgstr "Adicionar Projecto"
+
+msgid "Project Details"
+msgstr "Detalhes do Projecto"
+
+msgid "Financials"
+msgstr "Dados Financeiros"
+
+msgid "Construction Schedule"
+msgstr "Calendário de Construção"
+
+msgid "Estimated Schedule"
+msgstr "Calendário Estimado"
+
+msgid "Estimated Construction Milestones"
+msgstr "Metas de Construção Estimadas"
+
+msgid "Start Date"
+msgstr "Data de Início"
+
+msgid "Asset Details"
+msgstr "Detalhes da Infra-estrutura"
+
+msgid "Couldn't find the asset you are looking for?"
+msgstr "Não encontrou a infra-estrutura que procura?"
+
+msgid "Add information for the new asset"
+msgstr "Adicionar informação sobre uma nova infra-estrutura"
+
+#, fuzzy
+#| msgid "Asset Details"
+msgid "Asset ID already exists"
+msgstr "Este código de infra-estrutura já existe"
+
+msgid "Chainage Start"
+msgstr "Início do segmento"
+
+msgid "Chainage End"
+msgstr "Fim do segmento"
+
+msgid "Associated Contracts"
+msgstr "Contratos Associados"
+
+msgid "Funding"
+msgstr "Financiamento"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Approved Value"
+msgstr "Valor Approvado"
+
+msgid "Project Manager"
+msgstr "Gestor de Projecto"
+
+msgid "Create New Project"
+msgstr "Adicionar Novo Projecto"
+
+msgid "List of projects"
+msgstr "Lista de projectos"
+
+msgid "Program"
+msgstr "Programa"
+
+msgid "Estimated Budget"
+msgstr "Orçamento Estimado"
+
+msgid "No projects were created yet"
+msgstr "Ainda nenhum projecto foi adicionado"
+
+msgid "Delete Project"
+msgstr "Apagar Projecto"
+
+msgid "Are you sure you want to delete this project?"
+msgstr "Tem a certeza que deseja apagar este projecto?"
+
+msgid "Edit Tender"
+msgstr "Editar Concurso"
+
+msgid "Create Tender"
+msgstr "Adicionar Concurso"
+
+msgid "Tender Details"
+msgstr "Detalhes do Concurso"
+
+msgid "Bids and Evaluation"
+msgstr "Propostas e Avaliação"
+
+msgid "Tender"
+msgstr "Concurso"
+
+msgid "Associated Projects"
+msgstr "Projectos Associados"
+
+msgid "Numbering of Companies Tendering"
+msgstr "Número de Empresas a Concorrer"
+
+msgid "Tender Manager"
+msgstr "Gestor de Concursos"
+
+msgid "Create New Tender"
+msgstr "Adicionar Novo Concurso"
+
+msgid "List of tenders"
+msgstr "Lista de concursos"
+
+msgid "Project(s) name"
+msgstr "Nome(s) do Projecto(s)"
+
+msgid "Welcome to the Tender Manager"
+msgstr "Bem-vindo ao Gestor de Concursos"
+
+msgid "No tenders were created yet"
+msgstr "Nenhum concurso foi ainda criado"
+
+msgid "Delete Tender"
+msgstr "Apagar Concurso"
+
+msgid "Are you sure you want to delete this tender?"
+msgstr "Tem a certeza que deseja apagar este concurso?"
+
+msgid "The shapefile components ( include at least .shp, .shx, .prj,  and .dbf )"
+msgstr ""
+
+msgid "include at least .shp, .shx, .prj, and .dbf )"
+msgstr ""
+
+msgid "Give the shapefile a meaningful name to help identify it"
+msgstr ""
+
+msgid "Describe the shapefiles contents, where it represents and what it contains"
+msgstr ""
+
+msgid " .shp file: the shape format; the feature geometry itself "
+msgstr ""
+
+msgid " .shx file: shape index format; a positional index of the feature geometry to allow seeking forwards and backwards quickly"
+msgstr ""
+
+msgid ".dbf file: attribute format; columnar attributes for each shape"
+msgstr ""
+
+msgid ".prj file: projection description and coordinate reference"
+msgstr ""
+
+msgid "Please enter a correct username and password. Note that both fields may be case-sensitive"
+msgstr "O nome de utilizar ou palavra-passe estão incorrectos. Confirme se está a usar correctamente as maiúsculas e minúsculas"
+
+msgid "This password is too short. It must contain at least 8 characters"
+msgstr "A sua palavra-passe deve conter pelo menos 8 caracteres"
+
+msgid "Your old password was entered incorrectly. Please enter it again"
+msgstr "A palavra-passe introduzida está incorrecta. Por favor volte a tentar."
+
+msgid "The two password fields didn't match"
+msgstr "Os dois campos da nova palavra-passe não coincidem"
+
+msgid "This password is entirely numeric"
+msgstr "A palavra-passe não pode conter apenas números"
+
+msgid "This password is too common"
+msgstr "A palavra-passa é demasiado comum"
+
+msgid "Username"
+msgstr "Nome de utilizador"
+
+msgid "Password"
+msgstr "Palavra-passe"
+
+msgid "Forgot your password?"
+msgstr "Esqueceu-se da sua palavra-passe?"
+
+msgid "Log in"
+msgstr "Entrar"
+
+msgid "This road asset and project management system (Estrada), has been designed and developed by Catalpa International with funding from the Australian Government’s Departmentof Foreign Affairs and Trade (DFAT) and technical assistance from the International Labour Organization (ILO)"
+msgstr "Este sistema de gestão de infra-estruturas rodoviárias e projectos (Estrada) foi desenhado e desenvolvido pela Catalpa Internacional com fundos do Governo da Austrália através do seu Departamento dos Assuntos e Negócios Estrangeiros (DFAT) e assistência técnica da Organização Internacional do Trabalho (ILO)."
+
+msgid "Logged out"
+msgstr "Não autenticado"
+
+msgid "Well done!"
+msgstr "Sucesso!"
+
+msgid "Your password has been reset successfully"
+msgstr "A sua palavra-passe foi alterada com sucesso"
+
+msgid "Continue"
+msgstr "Continuar"
+
+msgid "Create a new password"
+msgstr "Alterar palavra-passe"
+
+msgid "Your password can't be too similar to your other personal information"
+msgstr "A sua palavra-passe não pode ser semelhante à sua informação pessoal"
+
+msgid "Your password must contain at least 8 characters"
+msgstr "A sua palavra-passe deve conter pelo menos 8 caracteres"
+
+msgid "Your password can't be a commonly used password"
+msgstr "A sua palavra-passe não pode ser uma palavra-passe comum"
+
+msgid "Your password can't be entirely numeric"
+msgstr "A sua palavra-passe não pode conter apenas números"
+
+msgid "Old password"
+msgstr "Palavra-passe antiga"
+
+msgid "New password"
+msgstr "Nova palavra-passe"
+
+msgid "New password confirmation"
+msgstr "Confirme a nova palavra-passe"
+
+msgid "Save changes"
+msgstr "Guardar alterações"
+
+msgid "The link to reset your password is not valid anymore."
+msgstr "O link para redefinir a sua palavra-passe expirou."
+
+msgid "Go back to the login page"
+msgstr "Regressar à página de entrada"
+
+msgid "Reset your password"
+msgstr "Redefinir a sua palavra-passe"
+
+msgid "We have sent a reset password link to your email. Please, click on the link to set your new password. Thanks."
+msgstr "Enviamos um link para o seu email. Por favor, clique no link para redefinir a sua nova palavra-passe. Obrigado."
+
+msgid "Hello there"
+msgstr "Viva"
+
+msgid "We received a request to change your Estrada password. Click the button below to create a new password"
+msgstr "Recebemos um pedido para redefinir a sua palavra-passe no Estrada. Clique no botão abaixo para criar uma nova palavra-passe"
+
+msgid "Reset my password"
+msgstr "Redefinir a sua palavra-passe"
+
+msgid "If you didn't mean to reset your password, then you can just ignore this email. Your password will not change"
+msgstr "Se não pretende alterar a sua palavra-passe, por favor ignore este email. A sua palavra-passe não será alterada"
+
+msgid "Don’t worry. Resetting your password is easy, just tell us the email address you registered with Estrada."
+msgstr "Não se preocupe! Redefinir a sua palavra-passe é simples, indique-nos apenas o endereço de email com que se registou no Estrada."
+
+msgid "Email address"
+msgstr "Endereço de email"
+
+msgid "Send"
+msgstr "Enviar"
+
+#~ msgid "Could not create a new Asset, because the asset_municipality in the 'special' Asset Id is not valid."
+#~ msgstr "Não foi possível criar uma nova infra-estrutura pois o asset_municipality no seu ID 'special' não é válido"

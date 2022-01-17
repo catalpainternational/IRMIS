@@ -1,0 +1,42 @@
+import os
+from .settings import INSTALLED_APPS, MIDDLEWARE
+
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.contrib.gis.db.backends.postgis",
+        "NAME": "estrada_db",
+    }
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    }
+    # "default": {
+    #     "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+    #     "LOCATION": "roads_cache_table",
+    #     "TIMEOUT": None,
+    # }
+}
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+SENDFILE_BACKEND = "sendfile.backends.development"
+DATA_UPLOAD_MAX_MEMORY_SIZE = 20971520
+
+# django extensions
+try:
+    import django_extensions
+    INSTALLED_APPS.append("django_extensions")
+except ImportError:
+    pass
+
+# django debug toolbar configuration
+try:
+    import debug_toolbar
+    INSTALLED_APPS.append("debug_toolbar")
+    MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
+    INTERNAL_IPS = ['127.0.0.1']
+except:
+    pass

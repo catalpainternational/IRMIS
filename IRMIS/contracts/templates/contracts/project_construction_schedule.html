@@ -1,0 +1,100 @@
+{% extends "contracts/project_base.html" %}
+{% load i18n %}
+
+{% block project_content %}
+<nav>
+    <a data-next="{% url 'contract-project-update' project.id %}">
+        <h6>{% trans "Project Details" %}</h6>
+    </a>
+    <a data-next="{% url 'contract-projectfinancials-update' project.id %}">
+        <h6>{% trans "Financials" %}</h6>
+    </a>
+    <a class="selected">
+        <h6>{% trans "Construction Schedule" %}</h6>
+    </a>
+    <a href="{% url 'contract-projectdocument-list' project.id %}">
+        <h6>{% trans "Documents" %}</h6>
+    </a>
+</nav>
+
+<div class="content">
+    <form method="post" action="{{ request.get_full_path }}">
+        {% csrf_token %}
+
+        <section>
+            <h6>{% trans "Estimated Schedule" %}</h6>
+            <div class="form-row">
+                <div class="col d-flex flex-wrap">
+                    <div class="form-group">
+                        {{ form.start_date.label_tag }}
+                        <small class="form-text text-muted">{{ form.start_date.help_text }}</small>
+                        {{ form.start_date }}
+                        {% if form.start_date.errors %}
+                        <div class="invalid-tooltip">
+                            {% for error in form.start_date.errors %}
+                            <ul>
+                                <li>{{ error }}</li>
+                            </ul>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.duration.label_tag }}
+                        <small class="form-text text-muted">{{ form.duration.help_text }}</small>
+                        {{ form.duration }}
+                        {% if form.duration.errors %}
+                        <div class="invalid-tooltip">
+                            {% for error in form.duration.errors %}
+                            <ul>
+                                <li>{{ error }}</li>
+                            </ul>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h6>{% trans "Estimated Construction Milestones" %}</h6>
+            <div class="flex-column form-row formset">
+                {{ formset.management_form }}
+                {% for form in formset %}
+                <div class="col d-flex flex-wrap">
+                    {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                    {% endfor %}
+                    {% for field in form.visible_fields %}
+                    <div class="form-group">
+                        {{ field.label_tag }}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                        {{ field }}
+                        {% if field.errors %}
+                        <div class="invalid-tooltip">
+                            {% for error in field.errors %}
+                            <ul>
+                                <li>{{ error }}</li>
+                            </ul>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <div class="d-flex justify-content-end">
+            <span>[</span><span class="required">*</span><span>]: Mandatory</span>
+        </div>
+
+        <div class="align-items-center buttons d-flex justify-content-end">
+            <a class="discard-link" data-back="{% url 'contract-project-list' %}">{% trans "Cancel" %}</a>
+            <button class="btn btn-primary">{% trans "Save" %}</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

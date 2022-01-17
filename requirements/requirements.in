@@ -1,0 +1,17 @@
+celery<5.0.0
+django>=2,<3
+wagtail<2.8.0
+
+django-rest-framework-condition
+django-reversion
+django-rosetta
+django-sendfile
+djangorestframework-gis
+djangorestframework-jwt
+geobuf
+importlib-resources
+protobuf
+psycopg2-binary
+sentry-sdk
+wagtail-modeltranslation
+xlrd

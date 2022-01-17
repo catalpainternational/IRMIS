@@ -1,0 +1,79 @@
+<edit_stop_alert>
+    <div id="{props.modalid}" class="delete-modal modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+            <div class="modal-content">
+                <div class="d-flex justify-content-center modal-header">
+                    <span class="alert stop image"></span>
+                    <span class="close image" data-dismiss="modal" aria-label="{window.gettext('Close')}" aria-hidden="true"></span>
+                </div>
+                <div class="modal-body text-center">
+                    <h6>{props.title}</h6>
+                    <p>{props.description}</p>
+                </div>
+                <div class="d-flex justify-content-center modal-footer">
+                    <button if="{ props.proceedlabel }" type="button" class="btn btn-danger" onclick="{proceed}">{props.proceedlabel}</button>
+                    <button if="{ props.stoplabel }" type="button" class="btn btn-light" onclick="{halt}">{props.stoplabel}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // To respond to bootstrap modal you events you MUST include:
+        // jQuery (as $) first,
+        // then the specific bootstrap modal library
+        import $ from "jquery";
+        import "bootstrap/js/dist/modal";
+
+        const initialiseStateFromProps = function(props, state) {
+            state = state || {};
+
+            state.id = props.modalid || "stop-alert";
+            state.modalLabel = `${state.id}Label`;
+            state.selector = `#${state.id}`;
+            state.resultEventName = `edit.${state.id}.result`;
+        };
+
+        export default {
+            state: {
+                result: null,
+            },
+            onMounted(props, state) {
+                initialiseStateFromProps(props, state);
+
+                // To respond to bootstrap modal events properly you must use the full
+                // jQuery `.on` event handler syntax
+                // and attach the event handler initially to `$(document)`
+                // and specify your modal's div with its selector
+                $(document).on("show.bs.modal", state.selector, this, (e) => {
+                    const self = e.data;
+                    self.state.result = null;
+                });
+                $(document).on("hide.bs.modal", state.selector, this, (e) => {
+                    // This only occurs for the `data-dismiss="modal"` elements
+                    const self = e.data;
+                    self.state.result = self.state.result || "close";
+                    self.dispatchResult(self.state.result, self.state.resultEventName);
+                });
+            },
+            onUnmounted(props, state) {
+                $(document).off("hide.bs.modal", state.selector);
+            },
+            proceed() {
+                this.state.result = this.props.proceedresult;
+                // Go directly out of the dialog, the caller's handler will hide the dialog
+                this.dispatchResult(this.state.result, this.state.resultEventName);
+            },
+            halt() {
+                this.state.result = this.props.stopresult;
+                // Go directly out of the dialog, the caller's handler will hide the dialog
+                this.dispatchResult(this.state.result, this.state.resultEventName);
+            },
+            dispatchResult(result, resultEventName) {
+                // The caller's handler must respond to this event once only
+                // this allows us to deal with Bootstrap 4's event handling problems.
+                document.dispatchEvent(new CustomEvent(resultEventName, { detail: { result }}));
+            }
+        }
+    </script>
+</edit_stop_alert>

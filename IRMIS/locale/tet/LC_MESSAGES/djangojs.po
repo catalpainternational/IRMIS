@@ -1,0 +1,1628 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-08-11 03:20+0000\n"
+"PO-Revision-Date: 2020-08-04 07:06+0000\n"
+"Last-Translator: b'  <sergio@catalpa.io>'\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Translated-Using: django-rosetta 0.9.3\n"
+
+msgid "Delete asset from the project"
+msgstr "Apaga sansa husi projetu"
+
+msgid "Project Name"
+msgstr "Naran Projetu "
+
+msgid "Status"
+msgstr "Estatutu"
+
+msgid "Program"
+msgstr "Programa"
+
+msgid "Type of Work"
+msgstr "Tipu Serbisu"
+
+msgid "Estimated Budget"
+msgstr "Estimativa Orsamentu"
+
+msgid "Funding Source"
+msgstr "Fonte Fundus"
+
+msgid "Projects"
+msgstr "Projetu sira"
+
+msgid "Search by Asset Code, Project Code or Project Name"
+msgstr "Buka husi Kodigu Sasan/Aset, Kodigu Projetu ou Naran Projetu"
+
+msgid "Project status"
+msgstr "Estatutu Projetu "
+
+msgid "Type of work"
+msgstr "Tipu serbisu "
+
+msgid "Asset class"
+msgstr "Klase sasan/aset"
+
+msgid "Municipality"
+msgstr "Munisipiu"
+
+msgid "Tender Code"
+msgstr "Kódigu Konkursu"
+
+msgid "Number of Projects"
+msgstr "Numeru projetu sira"
+
+msgid "Project(s) Name"
+msgstr "Projetu "
+
+msgid "Tenders"
+msgstr "Konkursu sira"
+
+msgid "Search by Asset Code or Tender Code"
+msgstr "Buka husi Kodigu Sasan/Aset ou Kodigu Konkursu"
+
+msgid "Tender status"
+msgstr "Estatutu konkursu"
+
+msgid "Contract Code"
+msgstr "Kódigu Kontratu "
+
+msgid "Contracts"
+msgstr "Kontratu"
+
+msgid "Search by Asset Code or Contract Code"
+msgstr "Buka husi Kodigu Sasan/Aset ou Kodigu Kontratu"
+
+msgid "Contract status"
+msgstr "Estatutu kontratu"
+
+msgid "Name"
+msgstr "Naran"
+
+msgid "Total Contracts"
+msgstr "Total Kontratu sira"
+
+msgid "Active Contracts"
+msgstr "Kontratu aktivu"
+
+msgid "Companies"
+msgstr "Kompañia"
+
+msgid "Search by Company Name or Company TIN"
+msgstr "Buka husi Naran Kompania ou TIN Kompania"
+
+msgid "No matching records found"
+msgstr "La hetan dadus nebe hanesan "
+
+msgid "No data available in table"
+msgstr "Laiha dadus iha tabela"
+
+msgid "Showing _START_ to _END_ of _TOTAL_ entries"
+msgstr "Hatudu _START_ to _END_ hosi _TOTAL_ entrada"
+
+msgid "Showing 0 to 0 of 0 entries"
+msgstr "Hatudu 0 to 0 entrada "
+
+msgid "Loading..."
+msgstr "Karegamentu "
+
+msgid "Processing..."
+msgstr "Prosesu"
+
+msgid "First"
+msgstr "Premeiru"
+
+msgid "Previous"
+msgstr "Antes"
+
+msgid "Next"
+msgstr "Tuir mai"
+
+msgid "Last"
+msgstr "Ikus"
+
+msgid "Asset Class"
+msgstr "Klase Sasan/Aset"
+
+msgid "Link Name"
+msgstr "Naran Linha"
+
+msgid "Start Point (DMS)"
+msgstr "Pontu Komesa (DMS)"
+
+msgid "Start Point (UTM)"
+msgstr "Pontu Komesa (UTM)"
+
+msgid "End Point (DMS)"
+msgstr "Pontu Ikus (DMS)"
+
+msgid "End Point (UTM)"
+msgstr "Pontu Ikus (UTM)"
+
+msgid "Rainfall"
+msgstr "Udan-been"
+
+msgid "Inventory Photos/Videos"
+msgstr "Inventariu Foto/Video"
+
+msgid "Roughness (IRI)"
+msgstr "Roughness (IRI)"
+
+msgid "Traffic data"
+msgstr "Dadus trafiku"
+
+msgid "Structure"
+msgstr "Estrutura"
+
+msgid "unknown"
+msgstr "La hatene"
+
+msgid "GPS Latitude"
+msgstr "GPS Latitude"
+
+msgid "GPS Longitude"
+msgstr "GPS Longitude"
+
+msgid "Material"
+msgstr "Material"
+
+msgid "Structure Type"
+msgstr "Tipu Estrutura "
+
+msgid "Structure Condition"
+msgstr "Kondisaun Estrutura"
+
+msgid "Condition Description"
+msgstr "Deskrisaun Kondisaun"
+
+msgid "Condition Photos/Videos"
+msgstr "Foto/Video hosi Kondisaun"
+
+msgid "View"
+msgstr "Visualizasaun"
+
+msgid "Chainage start"
+msgstr "Chainage komesa"
+
+msgid "Chainage end"
+msgstr "Chainage remata"
+
+msgid "Surface condition"
+msgstr "Kondisaun superfísie"
+
+msgid "Photos/Videos"
+msgstr "Foto/Video"
+
+msgid "Surface Type"
+msgstr "Tipu Superfície"
+
+msgid "Technical class"
+msgstr "Klase tekniku"
+
+msgid "Number of lanes"
+msgstr "Numeru pista"
+
+msgid "Carriageway width (m)"
+msgstr "Luan carriageway (m)"
+
+msgid "Total width (m)"
+msgstr "Total Luan (m)"
+
+msgid "Max. Rainfall (mm)"
+msgstr "Udan-been másimu (mm)"
+
+msgid "Unknown"
+msgstr "La hatene"
+
+msgid "Terrain class"
+msgstr "Klase terrain"
+
+msgid "Pavement class"
+msgstr "Klase pavimentu "
+
+msgid "Asset Condition segments"
+msgstr "Segmentu Kondisaun Sasan/Aset"
+
+msgid "Surface Type segments"
+msgstr "Segmentu Tipu Superfície"
+
+msgid "Technical Class segments"
+msgstr "Segmentu Klase Tekniku "
+
+msgid "Number of Lanes segments"
+msgstr "Numeru segmentu pista"
+
+msgid "Carriageway Width segments"
+msgstr "Segmentu Luan Carriageway"
+
+msgid "Total Width segments"
+msgstr "Segmentu Total Luan"
+
+msgid "Rainfall segments"
+msgstr "Segmentu Udan-been"
+
+msgid "Terrain Class segments"
+msgstr "Segmentu Klase Terrain"
+
+msgid "Pavement Class segments"
+msgstr "Pavimentu "
+
+msgid "Asset Type"
+msgstr "Tipu Sasan/Aset"
+
+msgid "Loading"
+msgstr "Karegamentu "
+
+msgid "Code"
+msgstr "Kodigu"
+
+msgid "Roads"
+msgstr "Estrada"
+
+msgid "Structures"
+msgstr "Estrutura"
+
+msgid "Road Network Reports"
+msgstr "Relatoriu Rede Estrada"
+
+msgid "Road Condition Reports"
+msgstr "Relatoriu Kondisaun Estrada"
+
+msgid "Road Network Reports by Road Class"
+msgstr "Relatoriu Naruk Rede Estrada hosi Klase"
+
+msgid "Structures Reports"
+msgstr "Relatoriu Estrutura"
+
+msgid "Road Network Length"
+msgstr "Naruk Rede Estrada"
+
+msgid "Road Network Length Breakdown"
+msgstr "Naruk Rede Estrada Breakdown"
+
+msgid "Surface Condition (SDI)"
+msgstr "Kondisaun Superfísie"
+
+msgid "IRI Roughness"
+msgstr "IRI Roughness"
+
+msgid "Road Network Length - National Class"
+msgstr "Relatoriu Naruk Rede Estrada - Klase Nasional"
+
+msgid "Road Network Length - Municipal Class"
+msgstr "Relatoriu Naruk Rede Estrada - Klase Munisipal"
+
+msgid "Road Network Length - Rural Class"
+msgstr "Relatoriu Naruk Rede Estrada - Klase Rural"
+
+msgid "Road Network Length - Urban Class"
+msgstr "Relatoriu Naruk Rede Estrada - Klase Urbana"
+
+msgid "Structures Overview"
+msgstr "Rezumu Estrutura"
+
+msgid "Structures Condition"
+msgstr "Kondisaun Estrutura"
+
+msgid "Title"
+msgstr "Titlu "
+
+msgid "Length (Km)"
+msgstr "Naruk (Km)"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Number of structures"
+msgstr "Numeru estrutura sira"
+
+msgid "Percentages (%)"
+msgstr "Persentajen (%)"
+
+msgid "Chainage Start"
+msgstr "Chainage komesa"
+
+msgid "Chainage End"
+msgstr "Chainage remata"
+
+msgid "Roughness Condition"
+msgstr "Kondisaun Roughness"
+
+msgid "Survey Date"
+msgstr "Data Levantamentu "
+
+msgid "A report on the total length of the road network. The report provides total length in kilometers and percentages according to Road Status and Technical Class. A number of filters can be selected in order to generate a length report according to the required criteria"
+msgstr "Relatoriu kona-ba naruk total ba rede estrada. Relatoriu fó naruk total iha kilometers no persentajen ba kada valor Estatutu Estrada no Klase Tékniku ba Estrada. Ita bele hili filtru sira atu kria relatoriu personalizadu"
+
+msgid "Click on Create Report button to access the Road Network Length report"
+msgstr "Klik butaun Kria Relatariu atu asesu Relatoriu Naruk Rede Estrada"
+
+msgid "The report will be shown in this area and will provide you with detailed Road Network Length information. You can use filters to generate a customized report"
+msgstr "Relatoriu ne'e sei hatudu iha area ne'e no sei fò dadus detallu kona-ba Naruk Rede Estrada. Ita bele uza filtru atu kria relatoriu personalizadu"
+
+msgid "Sorry, data for the road network is not available yet"
+msgstr "Deskulpa, dadus ba rede estrada seidauk iha"
+
+msgid "A breakdown report on the total length of the road network. The report provides information on total length in kilometers and percentages as well as Road Status and Technical Class, according to a breakdown by Municipality, Road Class and Surface Type"
+msgstr "Relatoriu breakdwon kona-ba naruk total husi rede estrada. Relatoriu fó naruk total iha kilometers no persentajen ba kada valor Estatutu Estrada no Klase Tékniku ba Estrada ho breakdown pur Munisipiu, Klase Estrada no Tipu Superfísie"
+
+msgid "Click on Create Report button to access the Road Network Length Breakdown report"
+msgstr "Klik butaun Kria Relatoriu atu asesu Relatoriu Breakdown Naruk Rede Estrada"
+
+msgid "The report will be shown in this area and will provide you with detailed Road Network Length Breakdown information. You can use filters to generate a customized report"
+msgstr "Relatoriu ne'e sei hatudu iha area ne'e no sei fò dadus detallu kona-ba Naruk Rede Estrada ho breakdown informasaun. Ita bele uza filtru atu kria relatoriu personalizadu"
+
+msgid "A report on Road Surface Condition. This report provides detailed Surface Condition information per segment"
+msgstr "Relatoriu kona-ba Kondisaun Surpefísie Estrada ida. Relatoriu ne'e fó detallu hosi kondisaun superfísie ba kada segmentu estrada ita hili."
+
+msgid "Please select a road above to view Surface Condition reports"
+msgstr "Favor hili estrada atu hare relatoriu kona-ba Kondisaun Superfísie"
+
+msgid "The report will be shown in this area and will provide you with detailed Surface Condition information per segment of the selected road"
+msgstr "Relatoriu ne'e sei hatudu iha area ne'e no sei fò dadus detallu kona-ba Kondisaun Surperfisíe ba kada sementu estrada ita hili."
+
+msgid "Sorry, Surface Condition data is not available for the selected road"
+msgstr "Deskulpa, seidauk iha dadus kona-ba kondisaun superfísia estrada ita hili"
+
+msgid "A report on Road IRI data. This report provides detailed information on a Road's Roughness per segment"
+msgstr "Relatoriu kona-ba dadus IRI ba Estrada ida. Relatoriu ne'e fó detallu hosi roughness estrada ba kada segmentu estrada ita hili."
+
+msgid "Please select a road above to view IRI Roughness reports"
+msgstr "Favor hili estrada iha leten atu hare relatoriu kona-ba IRI Roughness"
+
+msgid "The report will be shown in this area and will provide you with detailed IRI Roughness information per segment of the selected road"
+msgstr "Relatoriu hatudu area ne'e fó detallu kona-ba dadus IRI Rughness ba segmentu ba estrada ita hili"
+
+msgid "Sorry, IRI Roughness data is not available for the selected road"
+msgstr "Deskulpa, seidauk iha dadus kona-ba IRI Roughness ba estrada ita hili"
+
+msgid "A report on the total length of National Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for National Roads"
+msgstr "Relatoriu kona-ba naruk total ba estrada Klase Nasional. Relatoriu ne'e fó naruk total iha kilometers no persentajen ba kada valor Estatutu Estrada no Klase Tékniku ba Estrada Nasional"
+
+msgid "Click on Create Report button to access the Road Network Length report for National roads"
+msgstr "Klik butaun Kria Relatoriu atu asesu Relatoriu Naruk Rede Estrada klase Nasional"
+
+msgid "The report will be shown in this area and will provide you with detailed Road Network Length information for National class roads"
+msgstr "Relatoriu hatudu area ne'e fó detallu kona-ba naruk rede estrada ba estrada klase Nasional"
+
+msgid "Sorry, data for National Class roads is not available yet"
+msgstr "Deskulpa, seidauk iha dadus kona-ba estrada klase Nasional"
+
+msgid "A report on the total length of Municipal Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Municipal Roads"
+msgstr "Relatoriu kona-ba naruk total ba estrada Klase Munisipal. Relatoriu ne'e fó naruk total iha kilometers no persentajen ba kada valor Estatutu Estrada no Klase Tékniku ba Estrada Munisipal"
+
+msgid "Click on Create Report button to access the Road Network Length report for Municipal roads"
+msgstr "Klik butaun Kria Relatoriu atu asesu Relatoriu Naruk Rede Estrada klase Munisipal"
+
+msgid "The report will be shown in this area and will provide you with detailed Road Network Length information for Municipal class roads"
+msgstr "Relatoriu hatudu area ne'e fó detallu kona-ba naruk rede estrada ba estrada klase Munisipal"
+
+msgid "Sorry, data for Municipal Class roads is not available yet"
+msgstr "Deskulpa, seidauk iha dadus kona-ba Estrada Munisipal"
+
+msgid "A report on the total length of Rural Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Rural Roads"
+msgstr "Relatoriu kona-ba naruk total ba estrada Klase Rural. Relatoriu ne'e fó naruk total iha kilometers no persentajen ba kada valor Estatutu Estrada no Klase Tékniku ba Estrada Rural"
+
+msgid "Click on Create Report button to access the Road Network Length report for Rural roads"
+msgstr "Klik butaun Kria Relatoriu atu asesu relatoriu Naruk Rede Estrada ba Estrada rural"
+
+msgid "The report will be shown in this area and will provide you with detailed Road Network Length information for Rural class roads"
+msgstr "Relatoriu hatudu area ne'e fó informasaun detallu kona-ba naruk rede estrada ba estrada klase Rural"
+
+msgid "Sorry, data for Rural Class roads is not available yet"
+msgstr "Deskulpa, seidauk iha dadus ba Estrada Klase Rural"
+
+msgid "A report on the total length of Urban Class roads. The report provides total length in kilometers and percentages according to Road Status and Technical Class for Urban Roads"
+msgstr "Relatoriu kona-ba naruk total ba estrada Klase Urbana. Relatoriu ne'e fó naruk total iha kilometers no persentajen ba kada valor Estatutu Estrada no Klase Tékniku ba Estrada Urbana"
+
+msgid "Click on Create Report button to access the Road Network Length report for Urban roads"
+msgstr "Klik butaun Kria Relatoriu atu asesu Relatoriu Naruk Rede estrada ba klase Urbana"
+
+msgid "The report will be shown in this area and will provide you with detailed Road Network Length information for Urban class roads"
+msgstr "Relatoriu hatudu area ne'e fó informasaun detallu kona-ba naruk rede estrada ba estrada klase Urbana"
+
+msgid "Sorry, data for Urban Class roads is not available yet"
+msgstr "Deskulpa, seidauk iha dadus kona-ba estrada klase Urbana"
+
+msgid "A report on Structures data. This report provides detailed Structure totals and percentages according to structure type as well as by structure class"
+msgstr "Relatoriu ho dadus husi Estrutura sira. Relatoriu ne'e fó detallu hanesan total estrutura sira no persentajen ba kada tipu estrutura no mós klase estrutura"
+
+msgid "Click on Create Report button to access the Structure Class Report for structures"
+msgstr "Klik butaun Kria Relatoriu atu asesu Relatoriu Klase Estrutura"
+
+msgid "The report will be shown in this area and will provide you with detailed Structure Class information for structures"
+msgstr "Relatoriu hatudu area ne'e fó informasaun detallu kona-ba klase estrutura tomak"
+
+msgid "Sorry, data for structures is not available yet"
+msgstr "Deskulpa, seidauk iha dadus kona-ba estrutura sira"
+
+msgid "A report on Structures conditions. This report provides detailed Structure condition information by structure type"
+msgstr "Relatoriu kona-ba Kondisaun Estrutura. Relatoriu ne'e fó detallu kondisaun estrutura no tipu estrutura"
+
+msgid "Click on Create Report button to access the Structure Condition Report for structures"
+msgstr "Klik butaun Kria Relatoriu atu asesu Relatoriu Kondisaun Estrutura"
+
+msgid "The report will be shown in this area and will provide you with detailed Structure Condition information for structures"
+msgstr "Relatoriu hatudu area ne'e fó detallu kona-ba kondisaun estrutura ba estrutura sira"
+
+msgid "Contract Reports"
+msgstr "Relatoriu Kontratu"
+
+msgid "Social Safeguard Reports"
+msgstr "Relatoriu Protesaun Sosial"
+
+msgid "Financial and Physical Progress Summary"
+msgstr "Sumariu progresu finanseiru no fiziku"
+
+msgid "Financial and Physical Progress"
+msgstr "Progresu finanseiru no fiziku"
+
+msgid "Completed Contracts Length"
+msgstr "Naruk kontratu kompleta ona"
+
+msgid "Social Safeguard"
+msgstr "Protesaun sosial"
+
+msgid "Contract's Social Safeguard"
+msgstr "Dadus Protesaun Sosial ba Kontratu"
+
+msgid "Program name"
+msgstr "Naran programa"
+
+msgid "Contract code"
+msgstr "Kódigu kontratu"
+
+msgid "Project names"
+msgstr "Naran Projetu "
+
+msgid "Funding source"
+msgstr "Fonte Fundus"
+
+msgid "Number of assets"
+msgstr "Numeru sasan"
+
+msgid "Number of projects"
+msgstr "Numeru  projetu sira"
+
+msgid "Number of contracts"
+msgstr "Numeru kontratu sira"
+
+msgid "Number of companies"
+msgstr "Numeru kompañia sira"
+
+msgid "Contractor"
+msgstr "Kontratór"
+
+msgid "Budget current year ($)"
+msgstr "Orsamentu tinan atuál ($)"
+
+msgid "Total budget ($)"
+msgstr "Total orsamentu ($)"
+
+msgid "Initial contract amount ($)"
+msgstr "Valór inisiál kontratu ($)"
+
+msgid "Value of the contract - including variations (amendments) ($)"
+msgstr "Valór kontratu - inklui variasaun (amendment) ($)"
+
+msgid "Payments previous year ($)"
+msgstr "Pagamentu tinan kotuk ($)"
+
+msgid "Payments current year ($)"
+msgstr "Pagamentu tinan atuál ($)"
+
+msgid "Total payment ($)"
+msgstr "Total pagamentu ($)"
+
+msgid "Total progress payment (%)"
+msgstr "Total progresu pagamentu (%)"
+
+msgid "Balance ($)"
+msgstr "Saldu"
+
+msgid "Physical progress (%)"
+msgstr "Progresu fiziku ($)"
+
+msgid "Start date"
+msgstr "Data hahú"
+
+msgid "End date"
+msgstr "Data remata"
+
+msgid "Amendment start date"
+msgstr "Data hahú emenda"
+
+msgid "Amendment end date"
+msgstr "Data remata emenda"
+
+msgid "Date of last update"
+msgstr "Data atualiza ikus"
+
+msgid "DLP start date"
+msgstr "Data DLP hahú"
+
+msgid "DLP end date"
+msgstr "Data DLP remata"
+
+msgid "National"
+msgstr "Nasional "
+
+msgid "Rural"
+msgstr "Rural"
+
+msgid "Municipal"
+msgstr "Munisipal"
+
+msgid "Year/Month"
+msgstr "Tinan/Fulan"
+
+msgid "Internationals"
+msgstr "Internasional "
+
+msgid "Nationals"
+msgstr "Nasional "
+
+msgid "Employees With Disabilities"
+msgstr "Funsionáriu ho Defisiénsia"
+
+msgid "Females With Disabilities"
+msgstr "Fetu ho defisiénsia"
+
+msgid "Young"
+msgstr "Joven"
+
+msgid "Young Females"
+msgstr "Fetu joven"
+
+msgid "Female Employees"
+msgstr "Empregadu fetu"
+
+msgid "Internationals (%)"
+msgstr "Internasional (%)"
+
+msgid "Nationals (%)"
+msgstr "Nasional (%)"
+
+msgid "Employees With Disabilities (%)"
+msgstr "Funsionáriu ho defisiénsia (%)"
+
+msgid "Females With Disabilities (%)"
+msgstr "Fetu ho defisiénsia (%)"
+
+msgid "Young (%)"
+msgstr "Joven (%)"
+
+msgid "Young Females (%)"
+msgstr "Fetu Joven (%)"
+
+msgid "Female Employees (%)"
+msgstr "Funsionáriu Fetu (%)"
+
+msgid "Total Wage (in USD)"
+msgstr "Total salariu (USD)"
+
+msgid "Average Gross Wage (in USD)"
+msgstr "Média salariu brutu (USD)"
+
+msgid "Average Net Wage (in USD)"
+msgstr "Média salariu likidu (USD)"
+
+msgid "Total Worker-Days"
+msgstr "Total empregadu-loron"
+
+msgid "Females"
+msgstr "Fetu sira"
+
+msgid "A summary report on the financial and physical progress of all projects and contracts. This report provides aggregated information per program"
+msgstr "Sumariu kona-ba progresu finanseiru no fiziku husi projetu no kontratu hotu. Relatoriu ne'e fó informasaun agregadu hosi programa"
+
+msgid "Click on Create Report button to access the financial and physical progress summary report"
+msgstr "Klik butaun Kria Relatoriu atu acesu Sumariu Progresu Finanseiru no Fiziku"
+
+msgid "The report will be shown in this area and will provide you with detailed financial and physical progress information. You can use filters to generate a customized report"
+msgstr "Relatoriu hatudu iha area ne'e sei fó detallu progresu finanseiru no fiziku. Ita bele hili filtru atu kria relatoriu personalizadu"
+
+msgid "Sorry, data for financial and physical progress is not available yet"
+msgstr "Deskulpa, seidauk iha dadus kona-ba progresu finanseiru no fiziku"
+
+msgid "A report on the financial and physical progress of all projects and contracts. This report provides detailed information per contract"
+msgstr "Relatoriu progresu finanseiru no fiziku kona-ba projetu no kontratu hotu. Relatoriu ne'e fó detallu ba kontratu"
+
+msgid "Click on Create Report button to access the financial and physical progress report"
+msgstr "Klik butaun Kria Relatoriu atu acesu Relatoriu Progresu Finanseiru no Fiziku"
+
+msgid "A summary report on the total length of works completed by type of work, breakdown by road class and year"
+msgstr "Relatoriu sumariu kona-ba naruk total hosi servisu kompleta ona ba tipu servisu, breakdown ba klase estrada no tinan"
+
+msgid "Click on Create Report button to access the completed contracts report"
+msgstr "Klik butaun Kria Relatoriu atu asesu relatoriu kona-ba kontratu sira kompleta ona"
+
+msgid "The report will be shown in this area and will provide you with detailed completed contracts information. You can use filters to generate a customized report"
+msgstr "Relatoriu sei hatudu iha area ne'e no sei fó detallu kona-ba kontratu sira kompleta ona. Ita bele hili filtru atu kria relatoriu personalizadu"
+
+msgid "Sorry, data for completed contracts is not available yet"
+msgstr "Deskulpa, dadus kona-ba kontratu sira kompleta ona seidauk disponivel"
+
+msgid "A summary report on the social safeguard data for all contracts for the selected period. The report provides information on number of employees, wages and number of worker-days, with a breakdown by gender, age and disabilities"
+msgstr "Relatoriu sumariu ho dadus protesaun sosial ba kontratu tomak no ba periodu ita hili. Relatoriu fó informasaun hanesan numeru funsionáriu, salariu no funsionáriu-loron, ho breakdwon ba jeneru, idade no defisiénsia"
+
+msgid "Click on Create Report button to access social safeguard report"
+msgstr "Klik butaun Kria Relatoriu atu asesu relatoriu kona-ba protesaun sosial"
+
+msgid "The report will be shown in this area and will provide you with detailed social safeguard information. You can use filters to generate a customized report"
+msgstr "Relatoriu sei hatudu iha area ne'e no sei fó detallu kona-ba protesaun sosial. Ita bele hili filtru atu kria relatoriu personalizadu"
+
+msgid "Sorry, data for social safeguard is not available yet"
+msgstr "Deskukpa, seidauk iha dadus kona-ba protesaun sosial"
+
+msgid "A report on the social safeguard data for a selected contract and period. The report provides information on number of employees, wages and number of worker-days, with a breakdown by gender, age and disabilities"
+msgstr "Relatoriu kona-ba dadus protesaun sosial ba kontratu no periodu ita hili. Relatoriu fó informasaun hanesan numeru funsionáriu, salariu no numeru funsionáriu-loron, ho breakdown ba jeneru, idade no defisiénsia"
+
+msgid "Click on Create Report button to access social safeguard contracts report"
+msgstr "Klik butaun Kria Relatoriu atu asesu relatoriu kona-ba protesaun sosial husi kontratu"
+
+msgid "Earth"
+msgstr "Earth"
+
+msgid "Gravel"
+msgstr "Gravel"
+
+msgid "Paved"
+msgstr "Paved "
+
+msgid "Routine"
+msgstr "Rutina"
+
+msgid "Periodic"
+msgstr "Periódiku"
+
+msgid "Emergency"
+msgstr "Emerjénsia"
+
+msgid "Rehab"
+msgstr "Reabilitasaun"
+
+msgid "Rehab Pave"
+msgstr "Pavimentu Reabilita Ona"
+
+msgid "Unpaved"
+msgstr "Unpaved"
+
+msgid "Planned"
+msgstr "Planeadu"
+
+msgid "Pending"
+msgstr "Pendente"
+
+msgid "Ongoing"
+msgstr "La'o hela"
+
+msgid "Complete"
+msgstr "Kompletu"
+
+msgid "Export table"
+msgstr "Esporta tabela"
+
+msgid "Asset"
+msgstr "Sasan/aset"
+
+msgid "Link code and name"
+msgstr "Kodigu linha no naran "
+
+msgid "Link chainage"
+msgstr "Linha chainage"
+
+msgid "Link length"
+msgstr "Naruk linha "
+
+msgid "Save and continue"
+msgstr "Salva no kontinua"
+
+msgid "Carriageway Width Data"
+msgstr "Dadus Luan Carriageway"
+
+msgid "Add"
+msgstr "Aumenta"
+
+msgid "Current carriageway width"
+msgstr "Luan carriageway atual "
+
+msgid "View all data entries"
+msgstr "Hare dadus nebe hatama"
+
+msgid "Total Width Data"
+msgstr "Dadus Total Luan"
+
+msgid "Current total width"
+msgstr "Total Luan Atual "
+
+msgid "Number of Lanes Data"
+msgstr "Dadus Numeru Pista "
+
+msgid "Current number of lanes"
+msgstr " Numeru Pista  Atual "
+
+msgid "Technical Class Data"
+msgstr "Dadus Klase Tekniku"
+
+msgid "Current technical class"
+msgstr " Klase Tekniku Atual "
+
+msgid "Add Carriageway Width Information"
+msgstr "Aumenta Informasaun Luan Carriageway"
+
+msgid "Chainage"
+msgstr "Chainage"
+
+msgid "Carriageway width"
+msgstr "Luan carriageway "
+
+msgid "Add Total Width Information"
+msgstr "Aumenta Luan carriageway Total"
+
+msgid "Total width"
+msgstr "Total Luan"
+
+msgid "Add Technical Class Information"
+msgstr "Aumenta Informasaun Klase Tekniku"
+
+msgid "Road class"
+msgstr "Klase estrada"
+
+msgid "Add Number Lanes Information"
+msgstr "Aumenta Informasaun Numeru Pista"
+
+msgid "Number lanes"
+msgstr "Numeru pista"
+
+msgid "Delete"
+msgstr "Apaga"
+
+msgid "Are you sure you want to delete this data entry?"
+msgstr "ita hakarak apaga dadus ne?"
+
+msgid "Survey date"
+msgstr "Data levantamentu"
+
+msgid "Added by"
+msgstr "Aumenta husi"
+
+msgid "Technical Class"
+msgstr "Klase Tekniku "
+
+msgid "This field is required"
+msgstr "Area ne obrigatoriu "
+
+msgid "Survey date cannot be in the future"
+msgstr "Data levantamentu labele iha futuru"
+
+msgid "Link code cannot contain white spaces"
+msgstr "Kodigu linha labele inklui espasu mamuk"
+
+msgid "Chainage end-chainage start must be within 50m of link length."
+msgstr "Chainage remate tenke hahú iha 50m husi naruk linha laran"
+
+#, javascript-format
+msgid "Link length cannot contain more than %s digits, of which %s are decimals."
+msgstr "Linha nia naruk labele inklui liu %s numeru, nebe %s  mak decimais."
+
+msgid "Link length must be within 50m of chainage end-chainage start."
+msgstr "Naruk linha tenke iha 50m husi chainage remata - chainage komesa"
+
+#, javascript-format
+msgid "Carriage width cannot contain more than %s digits, of which %s are decimals"
+msgstr "Carriage nia luan labele inklui liu%s numeru,nebe %s  mak decimais "
+
+#, javascript-format
+msgid "Total width cannot contain more than %s digits, of which %s are decimals"
+msgstr "Total luan labele inklui liu %s numeru, nebe %s  mak decimais "
+
+msgid "Edit asset"
+msgstr "Edita sasan/aset"
+
+msgid "Location & Type"
+msgstr "Fatin & Tipu"
+
+msgid "Asset Details"
+msgstr "Detallu Sasan/Aset"
+
+msgid "Pavement"
+msgstr "Pavimentu "
+
+msgid "Traffic"
+msgstr "Trafiku"
+
+msgid "Social & Economic"
+msgstr "Sosial & Ekonomia "
+
+msgid "Condition"
+msgstr "Kondisaun "
+
+msgid "Maintenance"
+msgstr "Manutensaun"
+
+msgid "Environment"
+msgstr "Enviromentu"
+
+msgid "Photos and Videos"
+msgstr "Foto no Video"
+
+msgid "Edit structure"
+msgstr "Edita estrutura"
+
+msgid "Type"
+msgstr "Tipu"
+
+msgid "Protection"
+msgstr "Protesaun"
+
+msgid "History"
+msgstr "Istóriku"
+
+msgid "Change log"
+msgstr "Troka dokumentasaun"
+
+msgid "Unsaved Changes"
+msgstr "Alterasaun Sedauk Salva "
+
+msgid "You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?"
+msgstr "Ita sedauk salva ba mudansa nebe halo iha pajina ne no sei lakon kuandu ita taka. Ita sei hakarak kontinua atu edita? "
+
+msgid "Discard"
+msgstr "Soe tiha "
+
+msgid "Continue editing"
+msgstr "Kontinua edita"
+
+msgid "You have successfully saved"
+msgstr "Ita salva ho susesu "
+
+msgid "Something went wrong"
+msgstr "Buat ruma laloos"
+
+msgid "Close"
+msgstr "Taka "
+
+msgid "Democratic Republic of Timor-Leste"
+msgstr "República Democrática de Timor-Leste"
+
+msgid "Ministry of Public Works"
+msgstr "Ministro das Obras Públicas"
+
+msgid "Created by Catalpa International"
+msgstr "Kria husi Catalpa International"
+
+msgid "Surface Condition Data (SDI)"
+msgstr "Dadus Kondisaun Superfísie (SDI)"
+
+msgid "Total road chainage"
+msgstr "Total chainage Estrada"
+
+msgid "Current surface condition"
+msgstr "Kondisaun superfísie atual"
+
+msgid "Add Surface Condition Information"
+msgstr "Aumenta Informasaun Kondisaun Superfísie "
+
+msgid "Upload Photos and Videos"
+msgstr "Upload foto no video"
+
+msgid "Photo/Video 1"
+msgstr "Foto/Video 1"
+
+msgid "Photo/Video 2"
+msgstr "Foto/Video 2"
+
+msgid "Photo/Video 3"
+msgstr "Foto/Video 1"
+
+msgid "Road Conditions Media"
+msgstr "Media Kondisaun Estrada"
+
+msgid "View Photos/Videos"
+msgstr "Hare foto/video"
+
+msgid "Terrain Class Data"
+msgstr "Dadus Klase Terrain"
+
+msgid "Current terrain"
+msgstr "Terrain Atual "
+
+msgid "Rainfall Data"
+msgstr "Dadus udan-been"
+
+msgid "Current rainfall"
+msgstr "Udan-been atual"
+
+msgid "Add Terrain Class Information"
+msgstr "Aumenta Informasaun Klase Terrain "
+
+msgid "Chainage start (m)"
+msgstr "Chainage komesa (m)"
+
+msgid "Chainage end (m)"
+msgstr "Chainage remata (m)"
+
+msgid "Terrain Class"
+msgstr "Klase Terrain"
+
+msgid "Add Rainfall Information"
+msgstr "Aumenta Informasaun Udan-been"
+
+msgid "Source of data"
+msgstr "Fonte dadus"
+
+msgid "Station name"
+msgstr "Naran Estasaun"
+
+msgid "Location coordinates"
+msgstr "Koordenada fatin"
+
+msgid "Latitude (DMS)"
+msgstr "Latitude (DMS)"
+
+msgid "Longitude (DMS)"
+msgstr "Longitude (DMS)"
+
+msgid "Period of Survey"
+msgstr "Períodu Levantamentu"
+
+msgid "Period"
+msgstr "Períodu"
+
+msgid "Select survey period"
+msgstr "Hili periodu levantamentu"
+
+msgid "Year"
+msgstr "Tinan"
+
+msgid "Select survey year"
+msgstr "Hili tinan levantamentu"
+
+msgid "Rainfall Maximum"
+msgstr "Udan-been másimu"
+
+msgid "Rainfall Minimum"
+msgstr "Udan-been minimu"
+
+msgid "Maximum Rainfall (mm)"
+msgstr "Udan-been másimu (mm)"
+
+msgid "Minimum Rainfall (mm)"
+msgstr "Udan-been minimu (mm)"
+
+msgid "Construction Year"
+msgstr "Tinan Konstrusaun"
+
+msgid "Enter the construction year"
+msgstr "Hatama Tinan Konstrusaun"
+
+msgid "Changed"
+msgstr "Troka "
+
+msgid "Location"
+msgstr "Fatin "
+
+msgid "Select a Municipality"
+msgstr "Hili Munisipiu"
+
+msgid "Select an Asset Class"
+msgstr "Hili Klase Sasan/Aset"
+
+msgid "Cancel"
+msgstr "Kansela"
+
+msgid "Save"
+msgstr "Salva"
+
+msgid "Surface Type Data"
+msgstr "Dadus Tipu Superfície"
+
+msgid "Current surface type"
+msgstr "Tipu superfície atual"
+
+msgid "Pavement Class Data"
+msgstr "Dadus Klase Pavimentu"
+
+msgid "Current pavement"
+msgstr "Klase pavimentu atual"
+
+msgid "Add Surface Type Information"
+msgstr "Aumenta Informasaun Tipu superfície"
+
+msgid "Select a Surface Type"
+msgstr "Hili Tipu Superfície"
+
+msgid "Add Pavement Class Information"
+msgstr "Aumenta Informasaun Klase Pavimentu"
+
+msgid "Pavement Class"
+msgstr "Klase Pavimentu "
+
+msgid "Surface type"
+msgstr "Tipu Superfície"
+
+msgid "Social and Economic Data"
+msgstr "Dadus Sosial no Ekonomia"
+
+msgid "Social Data"
+msgstr "Dadus Sosial "
+
+msgid "Economic Data"
+msgstr "Dadus Ekonomia"
+
+msgid "Connections Data"
+msgstr "Dadus Ligasaun"
+
+msgid "Add Structure Condition Information"
+msgstr "Aumenta Informasaun Kondisaun Estrutura"
+
+msgid "Structure Conditions"
+msgstr "Kondisaun Estrutura"
+
+msgid "Choose the structure condition"
+msgstr "Hili Kondisaun Estrutura"
+
+msgid "Enter a description of the structure's condition"
+msgstr "Hatama deskrisaun kona ba kondisaun estrutura "
+
+msgid "Upload media"
+msgstr "Upload media"
+
+msgid "Description"
+msgstr "Deskrisaun"
+
+msgid "Media"
+msgstr "Media"
+
+msgid "Structure Code"
+msgstr "Kodigu Estrutura "
+
+msgid "Enter the code of the structure"
+msgstr "Hatama kodigu estrutura "
+
+msgid "Structure Name"
+msgstr "Naran Estrutura "
+
+msgid "Enter the name of the structure"
+msgstr "Hatama Naran estrutura "
+
+msgid "River Name"
+msgstr "Naran Mota"
+
+msgid "Enter the name of the river where the structure is located"
+msgstr "Hatama naran mota nebe estrutura iha ba"
+
+msgid "Length (meters)"
+msgstr "Naruk (metru)"
+
+msgid "Enter the structure's length in meters"
+msgstr "Hatama naruk estrutura iha metru"
+
+msgid "Width (meters)"
+msgstr "Luan (metru)"
+
+msgid "Enter the structure's width in meters"
+msgstr "Hatama luan estrutura iha metru"
+
+msgid "Height (meters)"
+msgstr "Aas (metru)"
+
+msgid "Enter the structure's height in meters"
+msgstr "Hatama aas estrutura iha metru"
+
+msgid "Number of cells"
+msgstr "Numeru sela"
+
+msgid "Enter the number of cells in the structure"
+msgstr "Hatama numeru sela estrutura "
+
+msgid "Thickness (meters)"
+msgstr "Mahar (metru)"
+
+msgid "Enter the structure's thickness in meters"
+msgstr "Hatama mahar estrutura iha metru"
+
+msgid "Number of spans"
+msgstr "Numeru spans"
+
+msgid "Enter the number of spans in the structure"
+msgstr "Hatama numeru span estrutura "
+
+msgid "Span Length"
+msgstr "Naruk span"
+
+msgid "Enter the span length for the structure"
+msgstr "Hatama naruk span estrutura "
+
+msgid "Code cannot contain white spaces"
+msgstr "Kodigu labele inklui espasu mamuk"
+
+#, javascript-format
+msgid "Width cannot contain more than %s digits, of which %s are decimals"
+msgstr "Luan labele inklui liu %s numeru, nebe %s  mak decimais "
+
+msgid "Add Traffic Data"
+msgstr "Aumenta Dadus Trafiku"
+
+msgid "Survey"
+msgstr "Levantamentu"
+
+msgid "From"
+msgstr "Husi"
+
+msgid "To"
+msgstr "Ba"
+
+msgid "Forecast Year"
+msgstr "Tinan Previzaun"
+
+msgid "Select forecast year"
+msgstr "Hili tinan previzaun"
+
+msgid "Total Count per Vehicle Type"
+msgstr "Konta Total kada Tipu Veikulu"
+
+msgid "Total Vehicles Breakdown"
+msgstr "Detallu Total Veikulu"
+
+msgid "Survey Type"
+msgstr "Tipu Levantamentu"
+
+msgid "Traffic Data Type"
+msgstr "Tipu Dadus Trafiku"
+
+msgid "Choose the traffic type for the road link"
+msgstr "Hili tipu trafiku ba linha estrada"
+
+msgid "AADT (Annual Average Daily Traffic)"
+msgstr "AADT (Annual Average Daily Traffic)"
+
+msgid "ADT (Average Daily Traffic)"
+msgstr "ADT (Average Daily Traffic)"
+
+msgid "Forecast"
+msgstr "Previzaun"
+
+msgid "Traffic Counting Method"
+msgstr "Metodu Konta Trafiku "
+
+msgid "Choose the method of counting the traffic for the road link"
+msgstr "Hili metodu konta trafiku ba linha estrada"
+
+msgid "Electronic"
+msgstr "Elektroniku "
+
+msgid "Manual"
+msgstr "Manual "
+
+msgid "Motorcycle"
+msgstr "Motor "
+
+msgid "2 axles, 2 wheels"
+msgstr "2 eixu, 2 roda"
+
+msgid "Passenger Car"
+msgstr "Kareta Pasajeiru"
+
+msgid "2 axles, 4 wheels"
+msgstr "2 eixu, 4 roda"
+
+msgid "Pickup/4WD"
+msgstr "Pickup/4WD"
+
+msgid "Mini Bus"
+msgstr "Bis kiik"
+
+msgid "Large Bus"
+msgstr "Bis boot"
+
+msgid "2-3 axles, 6-10 wheels"
+msgstr "2-3 eixu, 6-10 roda"
+
+msgid "Light Truck"
+msgstr "Kamioneta Kiik"
+
+msgid "Medium Truck"
+msgstr "Kamioneta Naton"
+
+msgid "Large Truck"
+msgstr "Kamioneta Boot "
+
+msgid "5 axles, 18 wheels"
+msgstr "5 eixu, 18 roda"
+
+msgid "Non Defined"
+msgstr "La defini"
+
+msgid "Data type"
+msgstr "Tipu dadus"
+
+msgid "Total vehicles"
+msgstr "Total veikulu "
+
+msgid "Survey TO date cannot be less than Survey FROM date"
+msgstr "Levantamentu TO data labele menus liu husi levantamentu HUSI data"
+
+msgid "Success"
+msgstr "Susesu"
+
+msgid "Error"
+msgstr "Erru"
+
+msgid "Please wait!"
+msgstr "Favor hein!"
+
+msgid "No media description provided"
+msgstr "Laiha deskrisaun ba media"
+
+msgid "Detailed Plans and Budgets"
+msgstr "Detallu Planu no Orsamentu"
+
+msgid "Upload 5-Year Plan"
+msgstr "Upload Planu Tinan 5"
+
+msgid "List of plans"
+msgstr "Lista Planu "
+
+msgid "Select the Excel file with the plan you prepared using the template and upload it here. Enter a simple and descriptive title, for example \"5-year Plan for National Roads 2020-2024\". Once the plan is approved, you can mark it as \"Approved\" on the plans list using the check box"
+msgstr "Hili dokumentus Excel ho planu nebe ita prepara uza formatu no upload iha ne. Hatama titlu simples no deskritivu, hanesan ezemplu \"Planu Tinan 5 ba Estrada Nasional 2020-2024\". Kuandu planu aprova ona, ita bele marka hanesan \"Aprova\" iha  lista planu uza kaixa verifikasaun/check box"
+
+msgid "Choose Excel File"
+msgstr "Hili Dokumentus Excel "
+
+msgid "Enter the plan title"
+msgstr "Hatama titlu planu iha ne"
+
+msgid "Are you sure you want to delete this plan?"
+msgstr "Ita hakarak apaga planu ne?"
+
+msgid "Approved"
+msgstr "Aprova"
+
+msgid "Planning Period"
+msgstr "Periodu Planeamentu"
+
+msgid "Date Uploaded"
+msgstr "Data upload "
+
+msgid "Added By"
+msgstr "Aumenta husi "
+
+msgid "You need to provide a Plan file"
+msgstr "Ita tenke fornese dokumentus Planu"
+
+msgid "Incorrect file type. Must be an Excel file."
+msgstr "Tipu dokumentus laloos. Dokumentus tenki iha Excel "
+
+msgid "Exceeded size limit of 20MB"
+msgstr "Kapasidade labele liu 20MB"
+
+msgid "You need to provide a plan title"
+msgstr "Ita tenke fornese titlu planu"
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "Plans"
+msgstr "Planu"
+
+msgid "Planning Templates"
+msgstr "Formatu Planeamentu"
+
+msgid "Directorate General for Public Works"
+msgstr "Direcção Geral das Obras Pública"
+
+msgid "National Directorate for Roads, Bridges and Flood Control"
+msgstr "Direcção  Nacional de Estradas, Pontes e Controlo de Cheias"
+
+msgid "Planning and Budgetting Dashboard"
+msgstr "Dashboard Planeamentu no Orsamentu"
+
+msgid "Print"
+msgstr "Print"
+
+msgid "5-Year Plan and Budget Summary"
+msgstr "Sumariu Planu Tinan 5 no Orsamentu"
+
+msgid "Total Budget"
+msgstr "Total Orsamentu"
+
+msgid "Budget"
+msgstr "Orsamentu"
+
+msgid "Length"
+msgstr "Naruk "
+
+msgid "Budget values in the table are in million USD and length in Km"
+msgstr "Valor orsamentu iha tabela iha million USD no naruk iha KM"
+
+msgid "Welcome to the planning and budgetting tool"
+msgstr "Benvindu iha instrumentu planeamentu no orsamentu "
+
+msgid "No plans available yet"
+msgstr "Planu sedauk iha "
+
+msgid "Exported from Estrada on"
+msgstr "Esporta husi Estrada iha "
+
+msgid "Routine Maintenance"
+msgstr "Manutensaun Rutina"
+
+msgid "Periodic Maintenance"
+msgstr "Manutensaun Periodiku "
+
+msgid "Rehabilitation"
+msgstr "Rehabilitasaun"
+
+msgid "Spot Improvement"
+msgstr "Spot Improvement"
+
+msgid "Budget ($)"
+msgstr "Orsamentu ($)"
+
+msgid "How to use the planning tool, step by step"
+msgstr "Hanusa atu uza instrumentu planeamentu , etapa kada etape"
+
+msgid "From the list below, download the Excel template for the road class you will be preparing the planning for. Example, if you want to prepare a 5-year plan for National Roads, download the Excel for National Roads"
+msgstr "Husi lista iha okos, download formatu Excel ba klase estrada nebe ita atu prepara planeamentu ba. Ezemplu, se ita hakarak prepara planu tinan 5 ba Estada Nasional, download excel ba Estrada Nasional"
+
+msgid "Open the Excel template on your computer and click on \"Enable connection\". If you need to get updated data on your file, click on Data > Refresh all from the Excel menu"
+msgstr "Loke formatu Excel iha ita nia komputador no hanehan iha \"Habele Konteidu\". Se ita presiza atu hetan dadus atual iha ita nia dokumentus, hanehan iha Dadus > Refreska hotu husi ementa Excel"
+
+msgid "Start preparing your plan"
+msgstr "Komesa prepara ita nia planu "
+
+msgid "Review criteria such as type of work criteria, unit costs and prioritization of facilities and connections"
+msgstr "Ezamina kriteria hanesan kriteria tipu serbisu, kustu unidade no prioritizasaun fasilidade no ligasaun"
+
+msgid "Pick the planned year of treatment for segments of roads that requires Rehabilitation, Spot Improvement or Periodic Maintenance"
+msgstr "Hili tinan nebe planu ona ba tratamentu ba segmentu estrada nebe presiza Rehabilitasaun, Spot Improvement  ou Manutensaun Periodiku"
+
+msgid "Access annual pans for each of the 5 years. Access a summary of the plan"
+msgstr "Asesu planu anual ba kada tinan husi planu tinan 5 nian. Asesu sumariu planu"
+
+msgid "On the \"Plans\" page, upload your plan to the Estrada and mark it as approved once the approval process is completed"
+msgstr "Iha pajina \"Planu\" upload ita nia planu ba  Estrada no marka hanesan aprova ona kuandu prosesu aprovasaun kompleta ona"
+
+msgid "Access the Planning dashboard to have an overview of all approved plans for the next 5 years for all road classes"
+msgstr "Asesu dashboard planeamentu atu hare sumariu husi planu tinan 5 nebe aprova ona ba klase estrada hotu-hotu"
+
+msgid "When reviews to the plan are required, download the most up-to-date plan from the Estrada and follow steps 2 to 7 as needed"
+msgstr "Kuandu presiza ezamina  planu, download planu nebe atual husi Estrada no tuir etape 2 to 7 kuandu presiza"
+
+msgid "You can find detailed guidelines on how to use the planning tools"
+msgstr "Ita bele hetan orientasaun detallu kona ba oinsa atu uza instrumentu planeamentu"
+
+msgid "here"
+msgstr "iha ne’e"
+
+msgid "Access token"
+msgstr "Asesu fixa"
+
+msgid "Token to get information from the Estrada database to your Excel planning file (valid for 24 hours from issuance)"
+msgstr "Fixa atu hetan informasaun husi baze-dadus ba ita nia dokumentus planeamentu excel (Validu ba oras 24)"
+
+msgid "Request Access Token"
+msgstr "Husu Asesu Fixa"
+
+msgid "Issued"
+msgstr "Fo sai"
+
+msgid "Copy"
+msgstr "Kopia"
+
+msgid "List of templates"
+msgstr "Lista formatu"
+
+msgid "Road Class"
+msgstr "Klase Estrada"
+
+msgid "Uploaded On"
+msgstr "Upload iha "
+
+msgid "5 year plan national roads"
+msgstr "Planu tinan 5 estrada nasional"
+
+msgid "5 year plan urban roads"
+msgstr "Planu tinan 5 estrada urbana"
+
+msgid "Urban"
+msgstr "Urbana"
+
+msgid "5 year plan rural roads"
+msgstr "Planu tinan 5 estrada rural"
+
+msgid "5 year plan municipal roads"
+msgstr "Planu tinan 5 estrada munisipal"
+
+msgid "Select report criteria"
+msgstr "Hili kriteria relatoriu "
+
+msgid "Structure form"
+msgstr "Forma Estrutura"
+
+msgid "Asset condition"
+msgstr "Segmentu Kondisaun Sasan/Aset"
+
+msgid "Road code"
+msgstr "Kódigu estrada"
+
+msgid "Report date"
+msgstr "Data relatoriu"
+
+msgid "Create Report"
+msgstr "Kria Relatoriu "
+
+msgid "Road Asset Management"
+msgstr "Jestaun Sasan/Aset Estrada"
+
+msgid "Report"
+msgstr "Relatoriu "
+
+msgid "Road"
+msgstr "Estrada"
+
+msgid "to"
+msgstr "Ba"
+
+msgid "Created on"
+msgstr "Kria iha"
+
+msgid "Filters applied"
+msgstr "Aplika filtru"
+
+msgid "Total Length"
+msgstr "Total Naruk"
+
+msgid "Total Count"
+msgstr "Sura Total "
+
+msgid "Road Status"
+msgstr "Estatutu Estrada"
+
+msgid "Structure Form"
+msgstr "Forma Estrutura"
+
+msgid "Roughness Condition (IRI)"
+msgstr "Kondisaun "
+
+msgid "Donor"
+msgstr "Doador"
+
+msgid "Quarter"
+msgstr "Kuartu"
+
+msgid "Month"
+msgstr "Fulan"
+
+msgid "Summary financial and physical progress of projects and contracts"
+msgstr "Sumariu progresu finanseiru no fiziku husi projetu no kontratu"
+
+msgid "Contracts detailed financial and physical progress"
+msgstr "Kontratu detallu progresu finanseiru no fiziku"
+
+msgid "By asset class and type of work"
+msgstr "Husi klase sasan/aset no tipu serbisu"
+
+msgid "Table shows completed contracts length. All values in Km."
+msgstr "Tabela hatudu naruk total kontratu sira kompleta ona. Valor hotu iha Km."
+
+msgid "By type of work and year"
+msgstr "Husi tipu serbisu no tinan"
+
+msgid "By asset class and year"
+msgstr "Husi klase sasan/aset no tinan"
+
+msgid "Number of employees"
+msgstr "Numeru empregadu"
+
+msgid "Wages"
+msgstr "Salariu"
+
+msgid "Worker-days"
+msgstr "Loron serbisu "
+
+msgid "January"
+msgstr "Janeiru "
+
+msgid "February"
+msgstr "Fevereiru"
+
+msgid "March"
+msgstr "Marsu"
+
+msgid "April"
+msgstr "Abril"
+
+msgid "May"
+msgstr "Maiu"
+
+msgid "June"
+msgstr "Junu"
+
+msgid "July"
+msgstr "Jullu"
+
+msgid "August"
+msgstr "Agostu"
+
+msgid "September"
+msgstr "Setembru"
+
+msgid "October"
+msgstr "Outubru"
+
+msgid "November"
+msgstr "Novembru"
+
+msgid "December"
+msgstr "Dezembru"
+
+msgid "Road Network Overview"
+msgstr "Vizaun Jeral Rede Estrada"
+
+msgid "Total Length of Road Network"
+msgstr "Naruk Total Rede Estrada"
+
+msgid "Asset Reports"
+msgstr "Relatoriu Sasan/Aset"
+
+msgid "Reports Builder"
+msgstr "Reports Builder"
+
+msgid "Report successfully created"
+msgstr "Relatoriu kria ho susesu"
+
+msgid "Asset Manager"
+msgstr "Jesaun Sasan/Aset"
+
+msgid "Reports"
+msgstr "Relatoriu"
+
+msgid "Planning"
+msgstr "Planeamentu"
+
+msgid "Hello"
+msgstr "Hello"
+
+msgid "Change password"
+msgstr "Troka seña"
+
+msgid "Log out"
+msgstr "Sai/Log out"
+
+msgid "Counting Method"
+msgstr "Metodu Konta"
+
+msgid "Click to upload"
+msgstr "Hanehan hodi upload"
+
+msgid "Maximum file size 25MB"
+msgstr "Dokumentus labele liu 25MB"
+
+msgid "Accepted file formats: JPEG, GIF, PNG, MP4, MOV, MPG, AVI, WMV, 3GP, TS, ASF, MNG, M4V, FLV, or WEBM"
+msgstr "Formatu fixeiru/dokumentu aseita: JPEG, GIF, PNG, MP4, MOV, MPG, AVI, WMV, 3GP, TS, ASF, MNG, M4V, FLV, or WEBM"
+
+msgid "Delete Photo/Video"
+msgstr "Apaga foto/video"
+
+msgid "Enter a description of the photo/video"
+msgstr "Hatama deskrisaun foto/video"
+
+msgid "Uploaded by"
+msgstr "Upload husi"
+
+msgid "on"
+msgstr "Iha "

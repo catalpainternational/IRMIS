@@ -1,0 +1,199 @@
+{% extends "contracts/contracts.html" %}
+{% load i18n %}
+
+{% block contracts_profile %}
+<header class="d-flex justify-content-between">
+    <div class="align-items-center d-flex">
+        <a class="caret-dark left image" href="{% url 'contract-contract-list' %}"></a>
+        <h1>{% trans "Contract" %} — {{ contract.contract_code }}</h1>
+    </div>
+    <button class="btn btn-secondary btn-sm print-profile">{% trans "Print" %}</button>
+</header>
+
+<nav>
+    <a class="selected">
+        <h6>{% trans "Contract Details" %}</h6>
+    </a>
+    <a href="{% url 'contract-contractinspection-detail' contract.id %}">
+        <h6>{% trans "Inspections" %}</h6>
+    </a>
+    <a href="{% url 'contract-contractpayment-detail' contract.id %}">
+        <h6>{% trans "Payments" %}</h6>
+    </a>
+    <a href="{% url 'contract-socialsafeguarddata-detail' contract.id %}">
+        <h6>{% trans "Social Safeguard" %}</h6>
+    </a>
+    <a href="{% url 'contract-contractdocument-detail' contract.id %}">
+        <h6>{% trans "Documents" %}</h6>
+    </a>
+</nav>
+
+<div class="content">
+    <section>
+        <h6>{% trans "Contract Details" %}</h6>
+        <div>
+            <label>{% trans "Status" %}</label>
+            <p>{{ contract.status }}</p>
+        </div>
+        <div>
+            <label>{% trans "Associated Tender" %}</label>
+            <p><a href="{% url 'contract-tender-detail' contract.tender.id %}">{{ contract.tender }}</a></p>
+            <div class="projects-list">
+                <label>{% trans "Projects in the Tender" %}</label>
+                {% if contract.tender.projects.all %}
+                <ul>
+                    {% for project in contract.tender.projects.all %}
+                    <li><a href="{% url 'contract-project-detail' project.id %}">{{ project.name }}</a></li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+        <div>
+            <label>{% trans "Contract Code" %}</label>
+            <p>{{ contract.contract_code }}</p>
+        </div>
+        <div>
+            <label>{% trans "Contract Description" %}</label>
+            <p>{{ contract.description }}</p>
+        </div>
+        <div>
+            <label>{% trans "Contractor" %}</label>
+            <p>{{ contract.contractor|default_if_none:"" }}</p>
+        </div>
+        <div>
+            <label>{% trans "Sub-Contractor" %}</label>
+            <p>{{ contract.subcontractor|default_if_none:"" }}</p>
+        </div>
+    </section>
+    <section>
+        <h6>{% trans "Supervisor" %}</h6>
+        <table class="contract-details-table d-block table table-hover w-100">
+            <thead>
+                <tr>
+                    <th>{% trans "Supervisor Name" %}</th>
+                    <th>{% trans "Phone Number" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for supervisor in supervisors %}
+                <tr>
+                    <td>{{ supervisor.name }}</td>
+                    <td>{{ supervisor.phone }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+    <section>
+        <h6>{% trans "Contract Value Total" %}</h6>
+        {% if contract.total_budget %}
+        <div class="total-budget">
+            <p>{% trans "Total Budget" %}</p>
+            <h1 class="to-format">$ {{ contract.total_budget }}</h1>
+        </div>
+        {% endif %}
+        <div>
+            <table class="contract-details-table d-block table table-hover w-100">
+                <thead>
+                    <tr>
+                        <th>{% trans "Year" %}</th>
+                        <th>{% trans "Value" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for budget in budgets %}
+                    <tr>
+                        <td>{{ budget.year }}</td>
+                        <td class="text-right to-format">$ {{ budget.value }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <label>{% trans "Defect Liability Period (Days)" %}</label>
+            <p class="to-format">{{ contract.defect_liability_days|default_if_none:"" }}</p>
+        </div>
+    </section>
+    <section>
+        <h6>{% trans "Schedule" %}</h6>
+        <div class="d-flex justify-content-between">
+            <div>
+                <label>{% trans "Contract Start Date" %}</label>
+                <p>{{ contract.start_date|date:"Y-m-d" }}</p>
+            </div>
+            <div>
+                <label>{% trans "Contract End Date" %}</label>
+                <p>{{ contract.end_date|date:"Y-m-d" }}</p>
+            </div>
+            <div>
+                <label>{% trans "Contract Duration" %}</label>
+                <p class="to-format">{{ contract.duration }}</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h6>{% trans "Milestones" %}</h6>
+        <div>
+            <table class="contract-details-table d-block table table-hover w-100">
+                <thead>
+                    <tr>
+                        <th>{% trans "Days of Work" %}</th>
+                        <th>{% trans "Progress" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for milestone in milestones %}
+                    <tr>
+                        <td class="text-right to-format">{{ milestone.days_of_work }}</td>
+                        <td class="text-right">{{ milestone.progress }}%</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+    <section>
+        <h6>{% trans "Amendments" %}</h6>
+        {% if contract.total_amendments %}
+        <div class="total-budget">
+            <p>{% trans "Total Budget" %}</p>
+            <h1 class="to-format">$ {{ contract.total_amendments }}</h1>
+        </div>
+        {% endif %}
+        <div>
+            <table class="contract-details-table d-block table table-hover w-100">
+                <thead>
+                    <tr>
+                        <th>{% trans "Year" %}</th>
+                        <th>{% trans "Budget" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for amendment in amendments %}
+                    <tr>
+                        <td>{{ amendment.year }}</td>
+                        <td class="text-right to-format">$ {{ amendment.value }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="d-flex justify-content-between">
+            <div>
+                <label>{% trans "Contract Start Date" %}</label>
+                <p>{{ contract.amendment_start_date|default_if_none:""|date:"Y-m-d" }}</p>
+            </div>
+            <div>
+                <label>{% trans "Contract Duration" %}</label>
+                <p class="to-format">{{ contract.amendment_duration|default_if_none:"" }}</p>
+            </div>
+        </div>
+        <div>
+            <label>{% trans "Description (Reasons for Variations)" %}</label>
+            <p>{{ contract.amendment_description }}</p>
+        </div>
+    </section>
+</div>
+{% endblock %}

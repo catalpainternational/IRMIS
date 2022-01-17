@@ -1,0 +1,63 @@
+#settings, #road-columns-dropdown, #structure-columns-dropdown {
+    span.image {
+        margin-right: 5px;
+    }
+}
+
+#settings {
+    padding: 10px 20px;
+    min-width: 196px;
+    top: 30px;
+}
+
+#road-columns-dropdown, #structure-columns-dropdown {
+    padding: 20px 30px;
+    top: 25px;
+
+    .asset-inventory-data {
+        .left-pane {
+            padding-right: 30px;
+        }
+
+        .right-pane {
+            border-right: 1px solid $light-gray;
+            padding-right: 15px;
+        }
+    }
+
+    .asset-condition-data {
+        padding-left: 15px;
+
+        .top-pane {
+            border-bottom: 1px solid $light-gray;
+            padding-bottom: 15px;
+        }
+
+        .bottom-pane {
+            padding-top: 15px;
+        }
+    }
+}
+
+// Override Bootstrap dropdown styles
+
+.dropdown-menu {
+    box-shadow: 0 0 10px 0 rgba(61, 71, 88, 0.5);
+    background-color: $white;
+    border-radius: $radius;
+    position: absolute;
+    display: flex;
+    z-index: 1001; // override Leaflet zoom controls
+    border: none;
+    left: unset;
+    top: 30px;
+    right: 0;
+}
+
+.dropdown:hover {
+    cursor: pointer;
+}
+
+.dropdown-divider {
+    border-color: $light-gray;
+}

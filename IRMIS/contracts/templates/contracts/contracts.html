@@ -1,0 +1,136 @@
+{% extends "assets/base.html" %}
+{% load static i18n %}
+
+{% block extra_js %}
+{{ block.super }}
+<script type="text/javascript" src="{% static 'contracts.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div id="contracts-base">
+    <div class="row">
+        <div id="side-menu">
+            <div>
+                <ul class="navigation">
+                    <ul>
+                        <li id="projects-tab" data-page="project" data-list="{% url 'contract-project-list' %}">
+                            {% trans "Projects" %}
+                        </li>
+                        <li id="tenders-tab" data-page="tender" data-list="{% url 'contract-tender-list' %}">
+                            {% trans "Tenders" %}
+                        </li>
+                        <li id="contracts-tab" data-page="contract" data-list="{% url 'contract-contract-list' %}">
+                            {% trans "Contracts" %}
+                        </li>
+                        <li id="companies-tab" data-page="company" data-list="{% url 'contract-company-list' %}">
+                            {% trans "Companies" %}
+                        </li>
+                    </ul>
+                </ul>
+            </div>
+        </div>
+
+        <div id="contracts">
+            <div>
+                <div class="print-header">
+                    <div class="align-items-center d-flex">
+                        <span class="image rdtl-logo"></span>
+                        <div class="d-flex flex-column">
+                            <span>{% trans "Democratic Republic of Timor-Leste" %}</span>
+                            <span>{% trans "Ministry of Public Works" %}</span>
+                            <span>{% trans "Directorate General for Public Works" %}</span>
+                            <span>{% trans "National Directorate for Roads, Bridges and Flood Control" %}</span>
+                            <small>Avenida da Restauração, Rai Kotu, Díli, Timor-Leste, Telf. +670 3311408</small>
+                        </div>
+                    </div>
+                </div>
+
+                {% block contracts_profile %}
+                {% endblock %}
+            </div>
+
+            <div class="print-footer">
+                <div class="d-flex align-items-center justify-content-between">
+                    <span class="app-logo image"></span>
+                    <p>{% trans "Exported from Estrada on" %} {% now "j F Y" %} {% trans "at" %} {% now "H:i" %}</p>
+                </div>
+            </div>
+
+            <footer>
+                <small>{% trans "Democratic Republic of Timor-Leste" %} / {% trans "Ministry of Public Works" %}</small>
+                <small>{% trans "Created by Catalpa International" %}</small>
+            </footer>
+        </div>
+    </div>
+</div>
+
+<div class="action-modal discard-modal modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="d-flex justify-content-center modal-header">
+                <span class="alert stop image"></span>
+                <span class="close image" data-dismiss="modal" aria-label="{% trans 'Close' %}"
+                    aria-hidden="true"></span>
+            </div>
+            <div class="modal-body text-center">
+                <h6>{% trans "Unsaved Changes" %}</h6>
+                <p>
+                    {% trans "You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?" %}
+                </p>
+            </div>
+            <div class="d-flex justify-content-center modal-footer">
+                <button type="button" class="btn btn-danger discard-changes">{% trans "Discard" %}</button>
+                <button type="button" class="btn btn-light" data-dismiss="modal">{% trans "Continue Editing" %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if messages %}
+{% for message in messages %}
+<div id="message-banner" class="feedback-banner">
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+    <div class="align-items-center d-flex unsuccess slide-in">
+        <span class="error image"></span>
+        <div class="d-flex flex-column flex-grow-1">
+            <span>{% trans "Error" %}</span>
+            <small class="text-muted">{{ message }}</small>
+        </div>
+        <span id="close-banner" class="close image"></span>
+    </div>
+    {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+    <div class="align-items-center d-flex success slide-in">
+        <span class="tick image"></span>
+        <div class="d-flex flex-column flex-grow-1">
+            <span>{% trans "Success" %}</span>
+            <small class="text-muted">{{ message }}</small>
+        </div>
+        <span id="close-banner" class="close image"></span>
+    </div>
+    {% endif %}
+</div>
+{% endfor %}
+{% endif %}
+
+<div id="success-banner" class="d-none feedback-banner">
+    <div class="align-items-center d-flex success slide-in">
+        <span class="tick image"></span>
+        <div class="d-flex flex-column flex-grow-1">
+            <span>{% trans "Success" %}</span>
+            <small class="text-muted">{% trans "You have successfully saved" %}</small>
+        </div>
+        <span id="close-banner" class="close image"></span>
+    </div>
+</div>
+
+<div id="error-banner" class="d-none feedback-banner">
+    <div class="align-items-center d-flex unsuccess slide-in">
+        <span class="error image"></span>
+        <div class="d-flex flex-column flex-grow-1">
+            <span>{% trans "Error" %}</span>
+            <small class="text-muted">{% trans "Something went wrong" %}</small>
+        </div>
+        <span id="close-banner" class="close image"></span>
+    </div>
+</div>
+{% endblock %}

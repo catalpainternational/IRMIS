@@ -1,0 +1,179 @@
+$toggle-views-height: calc(72px + 40px);
+
+%filter-shared {
+    background-color: $dark-gray;
+    border-radius: $radius;
+    color: $white;
+}
+
+%filter-active-shared {
+    background-color: $gray;
+}
+
+#side-menu {
+    height: calc(100% - #{$top-menu-height} - 5px);
+    background-color: $darker-gray;
+    width: $side-menu-width;
+    padding-right: 4px;
+    padding-left: 15px;
+
+    #view, #assetType {
+        margin-bottom: 40px;
+        padding-right: 6px;
+
+        a {
+            @extend %filter-shared;
+            margin-right: 2.5px;
+            margin-left: 2.5px;
+            height: 45px;
+            flex: 1;
+
+            &:hover {
+                cursor: pointer;
+            }
+
+            &:first-child {
+                margin-left: 0;
+            }
+
+            &:last-child {
+                margin-right: 0;
+            }
+
+            &.active {
+                @extend %filter-active-shared;
+            }
+        }
+    }
+
+    .filters {
+        height: calc(100% - #{$toggle-views-height} - #{$toggle-views-height} - #{$footer-height});
+        padding-right: 6px;
+        overflow-y: auto;
+        z-index: 1;
+
+        .filter {
+            @extend %filter-shared;
+            margin-bottom: 10px;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+
+            .header {
+                border-radius: $radius;
+                margin-bottom: 0;
+                min-height: 45px;
+                padding: 10px;
+
+                &.open {
+                    border-radius: $radius $radius 0 0;
+                }
+
+                &.active {
+                    @extend %filter-active-shared;
+                    border-bottom: 1px solid $gray;
+                    padding-right: 10px;
+                    padding-left: 10px;
+                }
+
+                &.open:not(.active) {
+                    border-bottom: 1px solid $darker-gray;
+                    margin-right: 10px;
+                    margin-left: 10px;
+                    padding-right: 0;
+                    padding-left: 0;
+                }
+
+                label {
+                    margin-bottom: 0;
+                    text-transform: capitalize;
+                }
+
+                .clear-filter, .clear-select2 {
+                    margin-right: 20px;
+
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
+            }
+
+            .options {
+                padding: 10px;
+
+                ul {
+                    margin-bottom: 0;
+                    padding-left: 0;
+
+                    .checkbox {
+                        margin-right: 5px;
+                    }
+                }
+            }
+        }
+    }
+
+    .clear-all-filters, .full-screen {
+        right: 8px;
+        top: -5px;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
+    .filters-section {
+        padding-bottom: 20px;
+
+        &:last-of-type {
+            padding-bottom: 0;
+        }
+    }
+
+    .navigation {
+        padding-right: 50px;
+        margin-bottom: 40px;
+        padding-left: 0;
+
+        &:last-of-type {
+            margin-bottom: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+            padding-left: 40px;
+        }
+
+        ul {
+            padding-left: 0;
+
+            li {
+                padding-bottom: 9px;
+                padding-left: 60px;
+                margin-bottom: 0;
+                padding-top: 9px;
+
+                &.active {
+                    border-bottom-right-radius: $radius;
+                    border-top-right-radius: $radius;
+                    background-color: $green;
+                }
+            }
+        }
+    }
+}
+
+#contracts-base #side-menu > div,
+planning_base #side-menu > div,
+reports_base #side-menu > div,
+edit_base #side-menu > div {
+    height: calc(100vh - #{$top-menu-height} - 5px - #{$footer-height});
+    padding-right: 6px;
+    margin-left: -15px;
+    overflow-y: auto;
+}
+
+#collapsed-side-menu {
+    width: 30px;
+}

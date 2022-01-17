@@ -1,0 +1,266 @@
+{% extends "contracts/project_base.html" %}
+{% load i18n %}
+
+{% block project_content %}
+<nav>
+    <a class="selected">
+        <h6>{% trans "Project Details" %}</h6>
+    </a>
+    {% if not project.id %}
+    <a class="disabled">
+        <h6>{% trans "Financials" %}</h6>
+    </a>
+    <a class="disabled">
+        <h6>{% trans "Construction Schedule" %}</h6>
+    </a>
+    <a class="disabled">
+        <h6>{% trans "Documents" %}</h6>
+    </a>
+    {% else %}
+    <a data-next="{% url 'contract-projectfinancials-update' project.id %}">
+        <h6>{% trans "Financials" %}</h6>
+    </a>
+    <a data-next="{% url 'contract-projectconstructionschedule-update' project.id %}">
+        <h6>{% trans "Construction Schedule" %}</h6>
+    </a>
+    <a href="{% url 'contract-projectdocument-list' project.id %}">
+        <h6>{% trans "Documents" %}</h6>
+    </a>
+    {% endif %}
+</nav>
+
+<div class="content">
+    <form id="project-details-form" method="post" action="{{ request.get_full_path }}">
+        {% csrf_token %}
+        <section>
+            <h6>{% trans "Project Details" %}</h6>
+
+            <div class="form-group">
+                {{ form.status.label_tag }}
+                <span class="required">*</span>
+                <small class="form-text text-muted">{{ form.status.help_text }}</small>
+                {{ form.status }}
+                {% if form.status.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.status.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.program.label_tag }}
+                <span class="required">*</span>
+                <small class="form-text text-muted">{{ form.program.help_text }}</small>
+                {{ form.program }}
+                {% if form.program.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.program.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.name.label_tag }}
+                <span class="required">*</span>
+                <small class="form-text text-muted">{{ form.name.help_text }}</small>
+                {{ form.name }}
+                {% if form.name.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.name.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.code.label_tag }}
+                <small class="form-text text-muted">{{ form.code.help_text }}</small>
+                {{ form.code }}
+                {% if form.code.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.code.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.description.label_tag }}
+                <small class="form-text text-muted">{{ form.description.help_text }}</small>
+                {{ form.description }}
+                {% if form.description.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.description.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </section>
+
+        <section class="no-max-width">
+            <h6>{% trans "Asset Details" %}</h6>
+
+            <div class="flex-column form-row formset">
+                {{ formset.management_form }}
+                {% for form in formset %}
+                <div class="col d-flex flex-wrap">
+                    {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                    {% endfor %}
+                    {% for field in form.visible_fields %}
+                    <div class="form-group">
+                        {{ field.label_tag }}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                        {{ field }}
+                        {% if field.errors %}
+                        <div class="invalid-tooltip">
+                            {% for error in field.errors %}
+                            <ul>
+                                <li>{{ error }}</li>
+                            </ul>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="flex-column form-row new-asset">
+                <span>{% trans "Couldn't find the asset you are looking for?" %}</span>
+                <a id="display-new-asset-fields">+ {% trans "Add information for the new asset" %}</a>
+
+                <div id="new-asset-fields" class="col flex-wrap" hidden>
+                    <input id="new-asset-id" type="hidden">
+                    <input id="new-asset-project" value="{{ project.id }}" type="hidden">
+
+                    <div class="form-group">
+                        <label>{% trans "Asset Code" %}</label>
+                        <input id="new-asset-code" class="form-control form-control-sm inactive" type="text" placeholder="A01-01">
+                        <div id="existingAssetError" class="invalid-tooltip" style="display: none">
+                            <ul>
+                                <li>{% trans "Asset ID already exists" %}</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>{% trans "Asset Type" %}</label>
+                        <select id="new-asset-type" class="form-control form-control-sm">
+                            {% for asset_type in asset_types %}
+                            <option value="{{ asset_type.0 }}">{{ asset_type.1 }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>{% trans "Asset Class" %}</label>
+                        <select id="new-asset-class" class="form-control form-control-sm inactive">
+                            <option value="">---------</option>
+                            {% for asset_class in asset_classes %}
+                            <option value="{{ asset_class.0 }}">{{ asset_class.1 }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>{% trans "Municipality" %}</label>
+                        <select id="new-asset-municipality" class="form-control form-control-sm inactive">
+                            <option value="">---------</option>
+                            {% for municipality in municipalities %}
+                            <option value="{{ municipality.id }}">{{ municipality.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>{% trans "Chainage Start" %}</label>
+                        <input id="new-asset-start-chainage" class="form-control form-control-sm inactive" type="text" placeholder="2000">
+                    </div>
+                    <div class="form-group">
+                        <label>{% trans "Chainage End" %}</label>
+                        <input id="new-asset-end-chainage" class="form-control form-control-sm inactive" type="text" placeholder="3000">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="form-group">
+                {{ form.type_of_work.label_tag }}
+                <span class="required">*</span>
+                <small class="form-text text-muted">{{ form.type_of_work.help_text }}</small>
+                {{ form.type_of_work }}
+                {% if form.type_of_work.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.type_of_work.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </section>
+
+        <div class="d-flex justify-content-end">
+            <span>[</span><span class="required">*</span><span>]: Mandatory</span>
+        </div>
+
+        <div class="align-items-center buttons d-flex justify-content-end">
+            <a class="discard-link" data-back="{% url 'contract-project-list' %}">{% trans "Cancel" %}</a>
+            {% if project.id is not None %}
+            <button class="btn btn-primary" type="submit" form="project-details-form">{% trans "Save" %}</button>
+            {% else %}
+            <button class="btn btn-primary" type="submit" form="project-details-form">{% trans "Create" %}</button>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<script>
+// Listener assignments should wait until DOM is loaded to fire
+document.addEventListener('DOMContentLoaded', function() {
+    function checkNewAssetCode() {
+        const new_asset_code = document.getElementById("new-asset-code");
+        const hits = [];
+        if (new_asset_code.value != "") {
+            let new_code = new_asset_code.value.toUpperCase();
+            // check list of existing asset codes
+            document.getElementById("id_assets-0-asset_id").options.forEach(o => {
+                let code = o.textContent.toUpperCase();
+                if (code === new_code) {
+                    hits.push(code);
+                }
+            });
+        }
+        if (hits.length) {
+            document.querySelector('button.btn-primary').disabled = true;
+            document.getElementById("existingAssetError").style.display = 'block';
+            new_asset_code.style.borderColor = '#ff5a5f';
+        } else {
+            document.querySelector('button.btn-primary').disabled = false;
+            document.getElementById("existingAssetError").style.display = 'none';
+            new_asset_code.style.borderColor = '#03A59A';
+        }
+    }
+
+    // Setup event listener for new asset code input changes
+    const new_code_element = document.getElementById("new-asset-code");
+    new_code_element.addEventListener("change", function() {
+        checkNewAssetCode();
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block extra_js %}
+<script type="text/javascript" src="{% static 'vendors~estrada.js' %}"></script>
+<script type="text/javascript" src="{% static 'estrada.js' %}"></script>
+{% endblock %}
+
+{% block title %}
+    {% with self.get_site.site_name as site_name %}
+        {% if site_name %}{{ site_name }}{% endif %}
+    {% endwith %}
+{% endblock %}
+
+{% block base_content %}
+    {% block content %}
+    {% endblock %}
+{% endblock %}

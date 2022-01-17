@@ -1,0 +1,58 @@
+.content .top-menu {
+    background-color: $darker-gray;
+
+    span.app-logo-dark-bg {
+        width: calc(#{$side-menu-width} - 15px);
+    }
+
+    & > div {
+        width: calc(100% - (#{$side-menu-width} - 15px));
+
+        #top-navigation {
+            a {
+                padding-bottom: 7.5px;
+                display: inline-block;
+                padding-top: 7.5px;
+            }
+
+            a:not(:first-child) {
+                margin-left: 10px;
+            }
+
+            a:not(:last-child) {
+                margin-right: 10px;
+            }
+
+            a.selected {
+                position: relative;
+            }
+
+            a.selected:after {
+                content: '';
+                border-radius: 2px;
+                position: absolute;
+                background: $green;
+                height: 4px;
+                bottom: 0;
+                top: 30px;
+                right: 0;
+                left: 0;
+            }
+        }
+
+        .dropdown {
+            span:not(.image) {
+                margin-right: 10px;
+            }
+        }
+    }
+}
+
+.registration .top-menu {
+    justify-content: flex-end;
+}
+
+.top-menu {
+    height: $top-menu-height;
+    margin-bottom: 5px;
+}

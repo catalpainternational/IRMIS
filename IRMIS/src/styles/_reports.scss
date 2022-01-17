@@ -1,0 +1,233 @@
+$form-control-lg-width: 300px;
+$form-control-width: 225px;
+
+#dashboard, #report-assets, #report-contracts {
+    height: calc(100vh - #{$top-menu-height} - 5px);
+    width: calc(100% - #{$side-menu-width});
+    padding-right: 8px;
+    overflow-y: auto;
+
+    & > div {
+        min-height: calc(100% - #{$footer-height});
+    }
+}
+
+reports_base {
+    padding-right: 7px;
+    display: block;
+
+    .content-wrapper {
+        padding: 25px 25px 15px 60px;
+        background-color: $white;
+        margin-bottom: 10px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        h6 {
+            margin-bottom: 10px;
+        }
+
+        .disabled {
+            pointer-events: none;
+
+            p {
+                color: $gray;
+            }
+        }
+    }
+
+    .report {
+        padding-bottom: 10px;
+        padding-top: 10px;
+
+        &:hover {
+            cursor: pointer;
+        }
+
+        p {
+            margin-left: 10px;
+            margin-bottom: 0;
+        }
+    }
+
+    .report:not(:last-child) {
+        border-bottom: 1px solid $light-gray;
+    }
+}
+
+report_dashboard, report_assets, report_contracts {
+    min-height: calc(100% - 40px);
+    display: block;
+
+    header {
+        border-bottom: 1px solid #CFD1D6;
+        background-color: #FFFFFF;
+        padding-right: 20px;
+        padding-left: 20px;
+        height: 70px;
+
+        h1 {
+            margin-left: 40px;
+            margin-bottom: 0;
+            margin-top: 5px;
+        }
+    }
+
+    .print-header, .print-footer {
+        display: none;
+    }
+
+    .content-wrapper {
+        background-color: $white;
+
+        .report-criteria {
+            border-bottom: 1px solid $darker-gray;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+
+            input[type="date"], input[type="month"] {
+                width: $form-control-width;
+                padding-left: 15px;
+                padding-bottom: 0;
+                margin-bottom: 0;
+                padding-top: 0;
+                height: 31px;
+            }
+
+            input[type="number"] {
+                padding-left: 15px;
+                padding-bottom: 0;
+                padding-top: 0;
+                height: 31px;
+            }
+
+            select {
+                height: 31px;
+            }
+
+        }
+
+        .report-content {
+            margin-bottom: 0;
+    
+            h6 {
+                margin-bottom: 0;
+            }
+    
+            .total, .total-length {
+                margin-bottom: 30px;
+    
+                h1 {
+                    margin-right: 30px;
+                    margin-bottom: 0;
+                    font-size: 30px;
+                    line-height: 44px;
+                }
+            }
+        }
+
+        p {
+            margin-bottom: 0;
+        }
+    }
+}
+
+report_assets, report_contracts {
+    header {
+        align-items: center;
+        display: flex;
+
+        .caret-dark {
+            background-size: 16px 10px;
+            height: 25px;
+            width: 25px;
+        }
+
+        h1 {
+            margin-left: 15px;
+        }
+    }
+
+    .content-wrapper .report-content {
+        .print-title {
+            display: none;
+        }
+
+        .filtered-segment {
+            margin-top: 5px;
+            display: flex;
+        }
+
+        .report-date {
+            margin-bottom: 30px;
+            display: block;
+        }
+
+        .filters-applied {
+            flex-direction: column;
+            margin-bottom: 30px;
+            display: flex;
+
+            p {
+                margin-bottom: 10px;
+            }
+
+            .filter:not(:last-of-type) {
+                margin-right: 30px;
+            }
+        }
+    }
+
+    p.report-description {
+        margin-bottom: 25px;
+    }
+
+    .options {
+        margin-bottom: 10px;
+        margin-right: 10px;
+    }
+
+    .chainages {
+        & > div {
+            width: calc((#{$form-control-lg-width} - 5px) / 2); // -5px because of margins
+        }
+
+        & > div:first-child {
+            margin-right: 2.5px;
+        }
+
+        & > div:last-child {
+            margin-left: 2.5px;
+        }
+    }
+
+    small.text-muted {
+        margin-bottom: 20px;
+        display: block;
+    }
+
+    button.create-report {
+        margin-top: 13px;
+    }
+}
+
+report_dashboard {
+    .content-wrapper.report-content {
+        padding: 25px 25px 20px 60px;
+    }
+
+    .total-length {
+        margin-right: 30px;
+
+        &:last-child {
+            margin-right: 0;
+        }
+
+        h1.highlight {
+            color: #03A59A;
+            font-size: 36px;
+        }
+    }
+}

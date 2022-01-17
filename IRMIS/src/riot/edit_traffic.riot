@@ -1,0 +1,677 @@
+<edit_traffic>
+    <div class="content-wrapper">
+        <div class="d-flex justify-content-between editorControls">
+            <h5>{ window.gettext ("Traffic Data") }</h5>
+            <button class="btn btn-primary" onclick="{ addEditTraffic }" props.editing }" if="{props.road.getGeojsonId() != 0}">
+                { window.gettext("Add") }
+            </button>
+            <button class="btn btn-primary" onclick="{ geometryAlert }" disabled="{ props.editing }" if="{props.road.getGeojsonId() == 0}">
+                { window.gettext("Add") }
+            </button>
+        </div>
+        <div class="table-spacing">
+            <data_table tableid="{ identifiers.traffic_type.allDataTableId }" columns="{ table_columns }"
+                columnsortorder="{ table_columns_order }" canorder="{ true }" candelete="{ true }">
+            </data_table>
+        </div>
+    </div>
+
+    <edit_modal modalid="{ modal_id }" disablesave="{ !state.canSave }">
+        <span slot="modal_title">{window.gettext("Add Traffic Data")}</span>
+
+        <form slot="modal_body">
+            <section>
+                <h6>{ window.gettext("Survey") }</h6>
+                <div class="form-group">
+                    <label>{ trafficTypes.display }</label>
+                    <span class="required">*</span>
+                    <ul>
+                        <li each="{type in trafficTypes.options}" data-type="{type[0]}" onclick="{checkTrafficType}">
+                            <span class="{type[0] == state.survey.trafficType ? 'active' : ''  } radio image"></span>
+                            { type[1] }
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section if="{state.survey.trafficType === 'AADT' || state.survey.trafficType === 'ADT'}">
+                <section>
+                    <div class="form-group">
+                        <label>{ countingMethods.display }</label>
+                        <span class="required">*</span>
+                        <ul>
+                            <li each="{method in countingMethods.options}" data-method="{method[0]}"
+                                onclick="{checkCountingMethod}">
+                                <span
+                                    class="{method[0] == state.survey.countMethod ? 'active' : ''  } radio image"></span>
+                                { method[1] }
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section>
+                    <div class="form-group">
+                        <label>{ window.gettext("Survey Date") }</label>
+                        <span class="required">*</span>
+                        <!-- It would be preferable to use the 'datetime-local' input type, however Firefox currently does not support it -->
+                        <div class="form-inline survey-field-height contains-tooltip">
+                            <span class="date-field-title">
+                                { window.gettext("From") }
+                            </span>
+                            <input
+                                class="{ state.errors.surveyFromDate ? 'danger' : null } { state.survey.surveyFromDate ? '' : 'inactive' } date-input-field form-control"
+                                type="date" id="surveyFromDate" name="surveyFromDate" placeholder="Date"
+                                value="{state.survey.surveyFromDate}" oninput="{checkSurveyDate}" required
+                                pattern="\d{4}-\d{2}-\d{2}" max="{max_date()}">
+                            <div if="{state.errors.surveyFromDate}" class="invalid-tooltip error-tooltip-date">
+                                <ul>
+                                    <li>{ state.errors.surveyFromDate }.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="form-inline survey-field-height contains-tooltip">
+                            <span class="date-field-title">
+                                { window.gettext("To") }
+                            </span>
+                            <input
+                                class="{ state.errors.surveyToDate ? 'danger' : null } { state.survey.surveyToDate ? '' : 'inactive' } date-input-field form-control"
+                                type="date" id="surveyToDate" name="surveyToDate" placeholder="Date"
+                                value="{state.survey.surveyToDate}" oninput="{checkSurveyDate}" required
+                                pattern="\d{4}-\d{2}-\d{2}" max="{max_date()}">
+                            <div if="{state.errors.surveyToDate}" class="invalid-tooltip error-tooltip-date">
+                                <ul>
+                                    <li>{ state.errors.surveyToDate }.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <section if="{state.survey.trafficType === 'Forecast'}">
+                <div class="form-group">
+                    <label>{ window.gettext("Forecast Year") }</label>
+                    <span class="required">*</span>
+                    <select
+                        class="{ state.errors.forecastYear ? 'danger' : null } { state.survey.forecastYear ? '' : 'inactive' } form-control date-input-field"
+                        onchange="{checkForecastYear}">
+                        <option value="">{ window.gettext("Select forecast year") }</option>
+                        <option each="{ year in forecastYears }" value="{ year }"
+                            selected="{ year === state.forecastYear }">{ year }</option>
+                    </select>
+                    <div if="{state.errors.forecastYear}" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.forecastYear }.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section if="{state.survey.trafficType}">
+                <div class="form-group traffic-width">
+                    <label>{ window.gettext("Total Count per Vehicle Type") }</label>
+                    <span class="required">*</span>
+                    <div class="form-inline vehicle-field-height contains-tooltip"
+                        each="{ vehicle in vehicleTypes.options }">
+                        <div class="icon">
+                            <span class="{ vehicle[0] } image"></span>
+                        </div>
+                        <div class="vehicle-name">
+                            { vehicle[1] }
+                        </div>
+                        <input
+                            class="{ state.errors[vehicle[3]] ? 'danger' : null } { state.survey[vehicle[3]] ? '' : 'inactive' } vehicle-input form-control"
+                            type="number" name="{ vehicle[3] }" placeholder="0000" value="{ state.survey[vehicle[3]] }"
+                            oninput="{checkCount}" min="0" max="999999999" step="1" required>
+                        <small>{ vehicle[2] }</small>
+                        <div if="{state.errors[vehicle[3]]}" class="invalid-tooltip error-tooltip-vehicle">
+                            <ul>
+                                <li>{ state.errors[vehicle[3]] }.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="d-flex justify-content-end">
+                <span>[</span><span class="required">*</span><span>]: Mandatory</span>
+            </div>
+        </form>
+    </edit_modal>
+
+    <edit_stop_alert modalid="geometry-alert" title="{ window.gettext('Missing Geometry') }"
+        description="{ window.gettext('You may not add surveys for this asset until it has a geometry. Please contact Catalpa (estrada-support@catalpa.io) to help address this issue.') }"
+        proceedlabel="{ window.gettext('Okay') }" proceedresult="confirmed">
+    </edit_stop_alert>
+
+    <edit_stop_alert modalid="delete-alert" title="{ window.gettext('Delete') }"
+        description="{ window.gettext('Are you sure you want to delete this data entry?') }"
+        proceedlabel="{ window.gettext('Delete') }" proceedresult="delete" stoplabel="{ window.gettext('Don\'t delete') }"
+        stopresult="keep">
+    </edit_stop_alert>
+
+    <div id="traffic-segments-modal" class="modal inventory-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title">{window.gettext("Total Vehicles Breakdown")}</h1>
+                    <span class="close image" data-dismiss="modal" aria-label="{ window.gettext('Close') }"
+                        aria-hidden="true" onclick="{clearDetailsData}"></span>
+                </div>
+                <div class="modal-body">
+                    <section class="details-survey-type">
+                        <div class="form-group">
+                            <label>{ window.gettext("Survey Type") }</label>
+                            <p if={state.currentRowData.values} class="details-modal-type-spacing">
+                                { state.currentRowData.values.trafficType }
+                            </p>
+                        </div>
+                    </section>
+                    <section if="{state.currentRowData.values}" class="details-forecast-methods-block">
+                        <div if="{!state.currentRowData.values.forecastYear}" class="form-group">
+                            <label>{ countingMethods.display }</label>
+                            <p class="details-modal-type-spacing">
+                                {state.currentRowData.values.countMethod == 1 ? 'Electronic' : 'Manual'}
+                            </p>
+                        </div>
+                        <div if="{state.currentRowData.values.forecastYear}" class="form-group">
+                            <label>{ window.gettext("Forecast Year") }</label>
+                            <p class="details-modal-type-spacing">
+                                {state.currentRowData.values.forecastYear}
+                            </p>
+                        </div>
+                    </section>
+                    <section if="{state.currentRowData.values && !state.currentRowData.values.forecastYear}">
+                        <div class="form-group">
+                            <label>{ window.gettext("Survey Date") }</label>
+                            <div class="form-inline survey-field-height">
+                                <span class="date-field-title details-modal-date-spacing">
+                                    { window.gettext("From") }
+                                </span>
+                                <span if={state.currentRowData.values} class="details-modal-date">
+                                    {state.currentRowData.values.surveyFromDate}
+                                </span>
+                                <span class="date-field-title details-modal-date-spacing">
+                                    { window.gettext("To") }
+                                </span>
+                                <span if="{state.currentRowData.values}" class="details-modal-date">
+                                    {state.currentRowData.values.surveyToDate}
+                                </span>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="no-max-width">
+                        <div class="form-group">
+                            <label>{ window.gettext("Total Count per Vehicle Type") }</label>
+                            <div if="{state.currentRowData.values}" class="form-inline vehicle-field-height"
+                                each="{ vehicle in vehicleTypes.options }">
+                                <div class="icon">
+                                    <span class="{ vehicle[0] } image"></span>
+                                </div>
+                                <div class="vehicle-name">
+                                    { vehicle[1] }
+                                </div>
+                                <div class="details-vehicle-spacing details-vehicle-count">
+                                    { parseVehicleCount(vehicle[3]) }
+                                </div>
+                                <small>{ vehicle[2] }</small>
+                            </div>
+                        </div>
+                    </section>
+                    <div if={state.currentRowData.values} class="form-inline details-total">
+                        <span class="details-total-title">{window.gettext("Total")}</span>
+                        <span class="details-total-number">{ countTotal() }</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        import Edit_Modal from "./edit_modal.riot";
+        import Edit_Stop_Alert from "./edit_stop_alert.riot";
+        import Data_Table from "./data_table.riot";
+
+        import {createSurvey, deleteSurvey, updateSurvey} from "../surveyManager";
+        import {checkRequiredFields, getSurveysForAsset} from "../assets/editUtilities";
+        import {withinMaxDigits, formatNumber} from "../assets/utilities";
+
+        import { makeEstradaRoad } from "../assets/models/road";
+        import { EstradaSurvey, makeEstradaSurvey } from "../assets/models/survey";
+
+        import $ from "jquery";
+
+        export default {
+            state: {
+                baseSurvey: new EstradaSurvey({}),
+                survey: {},
+                canSave: false,
+                errors: {},
+                pendingRows: [],
+                editMode: false,
+                maxCountDigits: 9,
+                currentRowData: new EstradaSurvey({}),
+            },
+            components: {
+                Edit_Modal, Edit_Stop_Alert, Data_Table
+            },
+            identifiers: {
+                traffic_type:{
+                    allDataTableId: "traffic-table",
+                    primaryAttribute: "trafficType",
+                    reportAttribute: "trafficType",
+                    reportDataTableId: null,
+                    stackedBarId: null
+                },
+            },
+
+            // Data for title and options
+            trafficTypes: {
+                display: window.gettext("Traffic Data Type"),
+                slug: "traffic_data_type",
+                help_text: window.gettext("Choose the traffic type for the road link"),
+                options: [
+                    ["AADT", window.gettext("AADT (Annual Average Daily Traffic)")],
+                    ["ADT", window.gettext("ADT (Average Daily Traffic)")],
+                    ["Forecast", window.gettext("Forecast")]
+                ]
+            },
+            countingMethods: {
+                display: window.gettext("Traffic Counting Method"),
+                slug: "traffic_counting_method",
+                help_text: window.gettext("Choose the method of counting the traffic for the road link"),
+                options: [
+                    ["1", window.gettext("Electronic")],
+                    ["2", window.gettext("Manual")]
+                ]
+            },
+            vehicleTypes: {
+                options: [
+                    ["motorcycle", window.gettext("Motorcycle"), window.gettext("2 axles, 2 wheels"), "motorcycleCount", "state.survey.motorcycleCount"],
+                    ["car", window.gettext("Passenger Car"), window.gettext("2 axles, 4 wheels"), "carCount", "state.survey.carCount"],
+                    ["pickup", window.gettext("Pickup/4WD"), window.gettext("2 axles, 4 wheels"), "pickupCount", "state.survey.pickupCount"],
+                    ["mini-bus", window.gettext("Mini Bus"), window.gettext("2 axles, 4 wheels"), "miniBusCount", "state.survey.miniBusCount"],
+                    ["large-bus", window.gettext("Large Bus"), window.gettext("2-3 axles, 6-10 wheels"), "largeBusCount", "state.survey.largeBusCount"],
+                    ["light-truck", window.gettext("Light Truck"), window.gettext("2 axles, 4 wheels"), "lightTruckCount", "state.survey.lightTruckCount"],
+                    ["medium-truck", window.gettext("Medium Truck"), window.gettext("2-3 axles, 6-10 wheels"), "mediumTruckCount", "state.survey.mediumTruckCount"],
+                    ["large-truck", window.gettext("Large Truck"), window.gettext("5 axles, 18 wheels"), "largeTruckCount", "state.survey.largeTruckCount"],
+                    ["ufo", window.gettext("Non Defined"), "", "ufoCount", "state.survey.ufoCount"]
+                ]
+            },
+            forecastYears: [...Array(33).keys()].map(i => i + new Date().getFullYear() - 12),
+
+            requiredFieldNames: [],
+
+            table_columns_order: [[0, 'desc']],
+            table_columns: [
+                {
+                    title: window.gettext("Survey date"),
+                    data: "trafficSurveyedDate",
+                    defaultContent: "",
+                    className: "text-center",
+                },
+                {
+                    title: window.gettext("Data type"),
+                    data: "trafficDataType",
+                    defaultContent: "",
+                    className: "text-left",
+                },
+                {
+                    title: window.gettext("Total vehicles"),
+                    data: "trafficCountTotal",
+                    defaultContent: "",
+                    className: "text-right",
+                    render: (data, type, row) => {
+                        return `<a onclick="document.dispatchEvent(new CustomEvent('traffic-table.trafficDetails',{detail:{rowId:${row.id}}}))">${ formatNumber(data) }</a>`;
+                    }
+                },
+                {
+                    title: window.gettext("Added by"),
+                    data: "addedBy",
+                    defaultContent: "",
+                    className: "text-left",
+                    orderable: false,
+                },
+                {
+                    // To add a 'Delete' button include the attribute candelete="{ true }"
+                    // on the Riot dataTable tag as well
+                    title: window.gettext("Delete"),
+                    name: "Option", // Do NOT translate this
+                    defaultContent: "",
+                    className: "text-center",
+                    orderable: false,
+                },
+            ],
+            geometryAlert(e) {
+                this.showStopAlertModal("geometry-alert");
+            },
+            onMounted(props, state) {
+                state.road = makeEstradaRoad(props.road);
+
+                this.deleteListener = (data) => {
+                    const tableId = data.detail.tableId;
+                    const rowId = data.detail.rowId;
+                    this.showStopAlertModal("delete-alert", rowId, tableId);
+                };
+
+                const refreshPromise = getSurveysForAsset(state, this.identifiers["traffic_type"]);
+
+                refreshPromise.then((results) => {
+                    // If we're not still loading, then we assume that we want to replace all rows
+                    const deleteEventName = `${this.identifiers["traffic_type"].allDataTableId}.dataAdded`;
+                    const deleteEventDetail = {detail: {pendingRows: this.state.pendingRows, clearRows: true}};
+                    document.dispatchEvent(new CustomEvent(deleteEventName, deleteEventDetail));
+
+                    document.addEventListener(`${this.identifiers["traffic_type"].allDataTableId}.deleteRow`, this.deleteListener);
+                    this.update();
+                });
+
+                this.trafficDetailsListener = (data) => {
+                    const getEventName = `${this.identifiers["traffic_type"].allDataTableId}.getRowData`;
+                    const getEventDetail = {detail: {rowId: data.detail.rowId, state: this.state}};
+                    document.dispatchEvent(new CustomEvent(getEventName, getEventDetail));
+                    this.update();
+                    $("#traffic-segments-modal").modal("show");
+                };
+                document.addEventListener(`${this.identifiers["traffic_type"].allDataTableId}.trafficDetails`, this.trafficDetailsListener);
+            },
+            onUnmount(props, state) {
+                document.removeEventListener(`${this.identifiers["traffic_type"].allDataTableId}.deleteRow`, this.deleteListener);
+                document.removeEventListener(`${this.identifiers["traffic_type"].allDataTableId}.trafficDetails`, this.trafficDetailsListener);
+            },
+            showStopAlertModal(modalId, rowId, tableId) {
+                const eventName = `edit.${modalId}.result`;
+
+                document.addEventListener(eventName, (data) => {
+                    const stopAlertResult = data.detail.result;
+                    $(`#${modalId}`).modal("hide");
+
+                    if (stopAlertResult === "discard") {
+                        this.discardChanges();
+                    } else if (stopAlertResult === "delete") {
+                        this.state.editMode = true;
+                        // Coming out of the stop-alert modal we want to re-establish the data-table
+                        const eventName = `${tableId}.getRowData`;
+                        const eventDetail = {detail: {rowId: rowId, state: this.state}};
+                        document.dispatchEvent(new CustomEvent(eventName, eventDetail));
+
+                        // void the survey asset_condition value and save
+                        if (this.state.currentRowData) {
+                            this.state.survey = this.state.currentRowData;
+                            this.state.survey.setId(rowId);
+                            this.state.survey.setAssetId("ROAD-" + this.state.road.id);
+                            this.state.survey.setAssetCode(this.state.road.code);
+                            this.state.survey.setValues(JSON.stringify({}));
+                            this.saveSurvey();
+                        }
+                        this.state.editMode = false;
+                    } else if (stopAlertResult === "continueEdit") {
+                        this.showEditModal();
+                    }
+                }, {once: true});
+
+                $(`#${modalId}`).modal("show");
+            },
+            discardChanges() {
+                $(`#${this.modal_id}`).modal("hide");
+                this.update({
+                    survey: makeEstradaSurvey(this.state.baseSurvey),
+                    errors: {},
+                });
+            },
+            addEditTraffic(e) {
+                this.state.survey = makeEstradaSurvey(this.state.baseSurvey);
+                this.state.errors = {};
+
+                this.showEditModal();
+            },
+            showEditModal() {
+                document.addEventListener(`${this.modal_id}.result`, (data) => {
+                    const modalResult = data.detail.result;
+
+                    switch (modalResult) {
+                        case "save":
+                            if (this.hasChanges()) {
+                                this.save();
+                            }
+                            break;
+                        case "cancel":
+                            this.discardChanges();
+                            break;
+                        default:
+                            if (this.hasChanges()) {
+                                this.showStopAlertModal("stop-alert");
+                            }
+                            break;
+                    }
+                }, {once: true});
+
+                $(`#${this.modal_id}`).modal("show");
+            },
+            hasChanges() {
+                const compareFieldNames = this.requiredFieldNames;
+                const surveyBase = compareFieldNames.map((fieldName) => {return this.state.baseSurvey[fieldName] || "";}).join("|||");
+                const surveyResult = compareFieldNames.map((fieldName) => {return this.state.survey[fieldName] || "";}).join("|||");
+
+                return (surveyBase !== surveyResult);
+            },
+            save(e) {
+                const missingFieldNames = checkRequiredFields(this.requiredFieldNames, this.state.survey);
+
+                if (Object.keys(this.state.errors).length) {
+                    // Cannot save if there are validation errors
+                    this.canSave();
+
+                    if (!this.state.canSave) {
+                        missingFieldNames.forEach((fieldName) => {
+                            if (!data[fieldName]) {
+                                errors[fieldName] = window.gettext("This field is required");
+                            }
+                        });
+                        this.showEditModal();
+                    }
+                } else {
+                    if (this.hasChanges()) {
+                        // Complete the survey
+                        this.state.survey.setUser($("#user_welcome").data("userId") || 0);
+                        this.state.survey.setSource("Estrada");
+                        this.state.survey.setChainageStart(this.state.survey.startChainage);
+                        this.state.survey.setChainageEnd(this.state.survey.endChainage);
+
+                        let traffic_data = {
+                            trafficType: this.state.survey.trafficType,
+                            counts: {},
+                            countTotal: 0,
+                        }
+
+                        // assign counts data and a total vehicle count
+                        this.vehicleTypes.options.forEach((field) => {
+                            if (this.state.survey[field[3]] && this.state.survey[field[3]] > 0) {
+                                let count = Number(this.state.survey[field[3]]);
+                                traffic_data.counts[field[3]] = count;
+                                traffic_data.countTotal += count;
+                            }
+                        });
+
+                        if (this.state.survey.trafficType == "Forecast") {
+                            traffic_data.surveyFromDate = new Date(this.state.survey.forecastYear + "-01-01").toISOString().substring(0, 10);
+                            traffic_data.surveyToDate = new Date(this.state.survey.forecastYear + "-12-31").toISOString().substring(0, 10);
+                            traffic_data.forecastYear = this.state.survey.forecastYear;
+                        } else {
+                            traffic_data.countMethod = this.state.survey.countMethod;
+                            traffic_data.surveyFromDate = this.state.survey.surveyFromDate;
+                            traffic_data.surveyToDate = this.state.survey.surveyToDate;
+                        }
+                        this.state.survey.setValues(JSON.stringify(traffic_data));
+                        // If we're here we will have a user entered surveyDate, even so Date.now() is still used as a fall back
+                        const dateSurveyed = new proto.google.protobuf.Timestamp();
+                        const surveyDate = new Date(traffic_data.surveyFromDate) || new Date();
+                        dateSurveyed.fromDate(surveyDate);
+
+                        this.state.survey.setDateSurveyed(dateSurveyed);
+
+                        // set Survey asset Ids from state Road road_code
+                        this.state.survey.setAssetId("ROAD-" + this.state.road.id);
+                        this.state.survey.setAssetCode(this.state.road.code);
+
+                        this.saveSurvey();
+                    }
+
+                    // Reset baseSurvey now that we're done.
+                    this.baseSurvey = new EstradaSurvey({});
+
+                    $(`#${this.modal_id}`).modal("hide");
+                }
+            },
+            saveSurvey() {
+                $(`#${this.modal_id}`).modal("hide");
+                $("#asset-manager-loading").modal("show");
+                if (!this.state.editMode) {
+                    createSurvey(this.state.survey)
+                        .then((surveyData) => {
+                            const refreshPromise = getSurveysForAsset(this.state, this.identifiers["traffic_type"]);
+                            refreshPromise.then((result) => {
+                                this.update();
+                                this.props.showfeedback();
+                            });
+                        })
+                        .catch((err) => {
+                            this.props.showfeedback(true);
+                        })
+                        .finally((r) => {
+                            $("#asset-manager-loading").modal("hide");
+                        });
+                } else {
+                    updateSurvey(this.state.survey)
+                        .then((surveyData) => {
+                            const refreshPromise = getSurveysForAsset(this.state, this.identifiers["traffic_type"]);
+                            refreshPromise.then((result) => {
+                                this.update();
+                                this.props.showfeedback();
+                            });
+                        })
+                        .catch((err) => {
+                            this.props.showfeedback(true);
+                        })
+                        .finally((r) => {
+                            $("#asset-manager-loading").modal("hide");
+                        });
+                }
+                // clear input values
+                this.state.survey = new EstradaSurvey({});
+                this.state.currentRowData = new EstradaSurvey({});
+
+                this.update();
+            },
+            canSave() {
+                const missingFieldNames = checkRequiredFields(this.requiredFieldNames, this.state.survey);
+                const missingVehicleCounts = this.vehicleTypes.options.filter((f) => {
+                    return !this.state.survey[f[3]] || this.state.survey[f[3]] == 0;
+                });
+                if (missingFieldNames.length || missingVehicleCounts.length == this.vehicleTypes.options.length || Object.keys(this.state.errors).length) {
+                    // Cannot save if there are validation errors
+                    this.state.canSave = false;
+                } else {
+                    // Can save if something has changed
+                    this.state.canSave = JSON.stringify(this.state.baseSurvey) !== JSON.stringify(this.state.survey);
+                }
+                this.update();
+            },
+            // Check and validation
+            validate(fieldName, input, testResult, errorText) {
+                if (!testResult) {
+                    this.state.errors[fieldName] = errorText;
+                } else {
+                    delete this.state.errors[fieldName];
+                    this.state.survey[fieldName] = input;
+                }
+
+                this.canSave();
+            },
+            checkCount(e) {
+                const fieldName = e.currentTarget.name;
+                const input = e.currentTarget.value;
+                const testResult = withinMaxDigits(input, this.state.maxCountDigits, 0);
+                const errorText = window.gettext(`Cannot contain more than ${this.state.maxCountDigits} digits and value shouldn't contain decimals`);
+                this.validate(fieldName, input, testResult, errorText);
+            },
+            checkMaxDate(input, fieldName) {
+                const errorText = window.gettext("Survey date cannot be in the future");
+                const testResult = input <= this.max_date();
+                this.validate(fieldName, input, testResult, errorText);
+                return testResult;
+            },
+            checkToFrom(input, fieldName) {
+                const fromDate = document.getElementById('surveyFromDate').value;
+                const toDate = document.getElementById('surveyToDate').value;
+                const errorText = window.gettext("Survey TO date cannot be less than Survey FROM date");
+                let testResult = true;
+                if (toDate && fromDate) {
+                    testResult = fromDate <= toDate;
+                }
+                if (testResult) {
+                    // clear both date fields with true
+                    // done in case user fixed one field's error by changing the other
+                    this.validate('surveyFromDate', fromDate, testResult, errorText);
+                    this.validate('surveyToDate', toDate, testResult, errorText);
+                } else {
+                    // only need to throw the error tooltip on one field
+                    this.validate(fieldName, input, testResult, errorText);
+                }
+            },
+            checkSurveyDate(e) {
+                const fieldName = e.currentTarget.name;
+                const input = e.currentTarget.value;
+                if (this.checkMaxDate(input, fieldName)) {
+                    this.checkToFrom(input, fieldName);
+                }
+            },
+            checkForecastYear(e) {
+                this.state.survey.forecastYear = e.currentTarget.value;
+                this.canSave();
+            },
+            checkTrafficType(e) {
+                if (e.currentTarget.dataset.type === 'Forecast') {
+                    this.requiredFieldNames = ['trafficType', 'forecastYear'];
+                    this.removeErrors(['surveyFromDate', 'surveyToDate']);
+                } else {
+                    this.requiredFieldNames = ['trafficType', 'surveyFromDate', 'surveyToDate', 'countMethod'];
+                    this.removeErrors(['forecastYear']);
+                }
+                this.state.survey.trafficType = e.currentTarget.dataset.type;
+                this.canSave();
+            },
+            checkCountingMethod(e) {
+                this.state.survey.countMethod = e.currentTarget.dataset.method;
+                this.canSave();
+            },
+            clearDetailsData() {
+                this.state.survey = new EstradaSurvey({});
+                $("#traffic-segments-modal").modal("hide");
+                this.update();
+            },
+            removeErrors(names) {
+                names.forEach((name) => {
+                    delete this.state.errors[name];
+                });
+            },
+            parseVehicleCount(vehicleType) {
+                const surveyValues = this.state.currentRowData.values ? this.state.currentRowData.values.counts || 0 : 0;
+
+                if (surveyValues) {
+                    const count = JSON.parse(surveyValues.replace(/\'/g, '"'))[vehicleType];
+                    return count ? formatNumber(count) : 0;
+                }
+                return surveyValues;
+            },
+            countTotal() {
+                const total = this.state.currentRowData.values.countTotal;
+                return total ? formatNumber(total) : total;
+            },
+            modal_id: "traffic-modal",
+            max_date: () => new Date().toISOString().substring(0, 10),
+            formatNumber: (value) => formatNumber(value),
+        }
+    </script>
+</edit_traffic>

@@ -1,0 +1,85 @@
+<edit_structure_protection>
+    <div class="content-wrapper">
+        <h5>{ window.gettext("Protection") }</h5>
+
+        <div>
+            <section>
+                <div class="form-group">
+                    <label>{ upstream_protections.display }</label>
+                    <small class="form-text text-muted">{props.parent.getHelpText("protection_upstream")}</small>
+                    <div if="{state.errors.protectionUpstream}" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.protectionUpstream }.</li>
+                        </ul>
+                    </div>
+                    <ul class="protection-upstream">
+                        <li each="{protector in upstream_protections.options}" data-condition="{protector.code}"
+                            onclick="{checkUpstream}">
+                            <span class="{ protector.code == state.upstream ? 'active' : '' } radio image"></span>
+                            { protector.name }
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section>
+                <div class="form-group">
+                    <label>{ downstream_protections.display }</label>
+                    <small class="form-text text-muted">{props.parent.getHelpText("protection_downstream")}</small>
+                    <div if="{state.errors.protectionDownstream}" class="invalid-tooltip">
+                        <ul>
+                            <li>{ state.errors.protectionDownstream }.</li>
+                        </ul>
+                    </div>
+                    <ul class="protection-downstream">
+                        <li each="{protector in downstream_protections.options}" data-condition="{protector.code}"
+                            onclick="{checkDownstream}">
+                            <span class="{ protector.code == state.downstream ? 'active' : '' } radio image"></span>
+                            { protector.name }
+                        </li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+
+        <div class="button-wrapper d-flex justify-content-end">
+            <button class="btn btn-primary" onclick="{ save }" disabled="{ props.saving }">
+                { window.gettext("Save and continue") }
+            </button>
+        </div>
+    </div>
+
+    <script>
+        import Edit_Stop_Alert from "./edit_stop_alert.riot";
+
+        export default {
+            state: {
+                canSave: false,
+                errors: {},
+            },
+            components: {
+                Edit_Stop_Alert
+            },
+            onBeforeMount(props, state) {
+                state.loading = true;
+                state.upstream = props.structure.getProtectionUpstream();
+                state.downstream = props.structure.getProtectionDownstream();
+            },
+            save(e) {
+                this.props.parent.saveStructure();
+            },
+            checkUpstream(e) {
+                this.state.upstream = e.currentTarget.dataset.condition;
+                this.props.structure.setProtectionUpstream(this.state.upstream);
+                this.update();
+            },
+            checkDownstream(e) {
+                this.state.downstream = e.currentTarget.dataset.condition;
+                this.props.structure.setProtectionDownstream(this.state.downstream);
+                this.update();
+            },
+            upstream_protections: window.asset_schema.protection_upstream,
+            downstream_protections: window.asset_schema.protection_downstream,
+        }
+    </script>
+</edit_structure_protection>

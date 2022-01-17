@@ -1,0 +1,76 @@
+$larger-form: 492px;
+$form: 316px;
+
+.registration-content {
+    .app-logo {
+        margin-bottom: 35px;
+        margin-top: 45px;
+    }
+
+    h5 {
+        margin-bottom: 20px;
+    }
+
+    p {
+        margin-bottom: 20px;
+
+        &.larger {
+            width: $larger-form;
+        }
+    }
+
+    ul.hints {
+        margin-bottom: 20px;
+        color: $dark-green;
+        padding-left: 0;
+    }
+
+    form {
+        width: $form;
+
+        .errorlist {
+            margin-bottom: 0;
+            padding-left: 0;
+        }
+
+        span.danger {
+            background-color: $red;
+            border-radius: $radius;
+            margin-bottom: 5px;
+            margin-top: 20px;
+            display: block;
+            padding: 7px;
+
+            &:first-of-type {
+                margin-top: 0;
+            }
+        }
+
+        &.larger {
+            width: $larger-form;
+        }
+    }
+
+    .rdtl > div {
+        margin-top: 10px;
+    }
+
+    .ownership {
+        border-top: 1px solid $light-gray;
+        padding-top: 20px;
+        margin-top: 40px;
+        width: $form;
+
+        & > div {
+            margin-top: 25px;
+
+            span:not(:first-child) {
+                margin-left: 5px;
+            }
+
+            span:not(:last-child) {
+                margin-right: 5px;
+            }
+        }
+    }
+}

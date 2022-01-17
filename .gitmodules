@@ -1,0 +1,9 @@
+[submodule "catalpa_django_apps"]
+	path = IRMIS/catalpa_django_apps
+	url = git@github.com:catalpainternational/catalpa_django_apps.git
+[submodule "IRMIS/django_ajax_form"]
+	path = IRMIS/django_ajax_form
+	url = git@github.com:catalpainternational/django_ajax_form.git
+[submodule "IRMIS/django_shapefiles"]
+	path = IRMIS/django_shapefiles
+	url = git@github.com:catalpainternational/django_shapefiles.git

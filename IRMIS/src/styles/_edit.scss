@@ -1,0 +1,274 @@
+$max-width: 400px;
+
+edit_base {
+    padding-right: 7px;
+    display: block;
+
+    #edit-base {
+        height: calc(100vh - #{$top-menu-height} - 5px);
+        width: calc(100% - #{$side-menu-width});
+        padding-right: 8px;
+        overflow-y: auto;
+
+        header {
+            border-bottom: 1px solid $light-gray;
+            background-color: $white;
+            padding-right: 20px;
+            padding-left: 20px;
+            height: 70px;
+
+            .caret-dark {
+                background-size: 16px 10px;
+                height: 25px;
+                width: 25px;
+            }
+
+            h1 {
+                margin-left: 15px;
+                margin-bottom: 0;
+                margin-top: 5px;
+            }
+        }
+
+        & > div {
+            min-height: calc(100% - #{$footer-height});
+        }
+    }
+
+    .content-wrapper {
+        background-color: $white;
+        padding: 30px 60px 60px;
+
+        &:not(:first-of-type) {
+            margin-top: 10px;
+        }
+
+        a.table-toggle {
+            color: $darker-gray;
+            margin-top: 25px;
+            cursor: default;
+
+            &:first-of-type {
+                margin-right: 20px;
+            }
+
+            &.active, &.active:hover {
+                cursor: pointer;
+                color: $green;
+            }
+        }
+    }
+}
+
+edit_location_type,
+edit_structure_type,
+edit_asset_details,
+edit_structure_details,
+edit_structure_protection,
+edit_structure_condition,
+edit_pavement,
+edit_project,
+edit_condition,
+edit_traffic,
+edit_social_economic,
+edit_maintenance,
+edit_environment,
+edit_media,
+edit_history {
+    section {
+        max-width: $max-width;
+        margin-bottom: 40px;
+        margin-top: 20px;
+
+        &:last-of-type {
+            margin-bottom: 20px;
+        }
+        
+        &.no-max-width {
+            max-width: unset;
+        }
+
+        h6 {
+            border-bottom: 1px solid $lighter-gray;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+        }
+
+        ul {
+            margin-bottom: 0;
+            padding-left: 0;
+
+            span.image {
+                margin-right: 15px;
+            }
+        }
+    }
+
+    section.wide {
+        max-width: inherit;
+    }
+}
+
+edit_location_type,
+edit_structure_type,
+edit_project,
+edit_maintenance,
+edit_media,
+edit_history {
+    background-color: $white;
+    padding: 30px 60px 60px;
+    display: block;
+
+    h5 {
+        max-width: $max-width;
+        margin-bottom: 20px;
+    }
+}
+
+edit_asset_details,
+edit_structure_details,
+edit_structure_protection,
+edit_structure_condition,
+edit_pavement,
+edit_condition {
+    h5 {
+        margin-bottom: 0;
+    }
+}
+
+feedback_banner, .feedback-banner {
+    & > div {
+        box-shadow: 0 0 10px 0 rgba(61, 71, 88, 0.5);
+        border-bottom-right-radius: $radius;
+        border-bottom-left-radius: $radius;
+        background-color: $white;
+        border-top-style: solid;
+        border-top-width: 10px;
+        padding-right: 30px;
+        padding-left: 30px;
+        position: absolute;
+        z-index: 1051;
+        height: 71px;
+        margin: auto;
+        width: 376px;
+        right: 0;
+        left: 0;
+        top: 0;
+
+        &.success {
+            border-top-color: $green;
+        }
+
+        &.unsuccess {
+            border-top-color: $red;
+        }
+    }
+}
+
+traffic_data_details #inventory-traffic-level-table_wrapper {
+    border-top: 1px solid #CFD1D6;
+    padding-top: 30px;
+
+    section {
+        margin-bottom: 25px;
+    }
+}
+
+edit_traffic,
+traffic_data_details {
+    .survey-field-height {
+        height: 30px;
+        align-items: flex-end;
+    }
+
+    .date-field-title {
+        font-size: 14px;
+        width: 96px;
+        margin-left: 10px;
+        font-weight: 400;
+    }
+
+    .date-input-field {
+        height: 28px;
+        width: 192px;
+        padding: 0;
+    }
+
+    .traffic-width {
+        width: 480px;
+    }
+
+    .vehicle-field-height {
+        height: 40px;
+    }
+
+    .vehicle-name {
+        width: 144px;
+        font-size: 14px;
+    }
+
+    .vehicle-input {
+        width: 115px !important;
+        margin: 0 36px 0 16px;
+        height: 28px;
+    }
+
+    .details-modal-type-spacing {
+        margin: 10px 0 0 10px;
+        font-size: 14px;
+    }
+
+    .details-survey-type {
+        display: inline-block;
+        width: 250px;
+        border-right: 1px solid #CFD1D6;
+        margin-right: 50px;
+        margin-bottom: 10px;
+    }
+
+    .details-forecast-methods-block {
+        display: inline-block;
+        margin-bottom: 10px;
+    }
+
+    .details-modal-date {
+        font-size: 14px;
+        font-weight: 700;
+        margin-right: 32px;
+    }
+
+    .details-modal-date-spacing {
+        width: 56px;
+    }
+
+    .details-vehicle-spacing {
+        margin-right: 88px;
+        font-weight: 700;
+        width: 100px;
+    }
+
+    .details-vehicle-count {
+        text-align: right;
+    }
+
+    .details-total {
+        padding-top: 20px;
+        border-top: 1px solid #CFD1D6;
+    }
+
+    .details-total-title {
+        margin-left: 50px;
+        font-size: 18px;
+    }
+
+    .details-total-number {
+        margin-left: 105px;
+        font-size: 18px;
+        width: 100px;
+        text-align: right;
+    }
+
+    .contains-tooltip {
+        position: relative;
+    }
+}

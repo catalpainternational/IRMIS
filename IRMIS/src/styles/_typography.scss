@@ -1,0 +1,536 @@
+@font-face {
+    font-family: "DIN";
+    src: url("../fonts/DIN-Light.woff2") format("woff2"),
+         url("../fonts/DIN-Light.woff") format("woff");
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: "DIN";
+    src: url("../fonts/DIN.woff2") format("woff2"),
+         url("../fonts/DIN.woff") format("woff");
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: "DIN";
+    src: url("../fonts/DIN-Medium.woff2") format("woff2"),
+         url("../fonts/DIN-Medium.woff") format("woff");
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: "DIN";
+    src: url("../fonts/DIN-Bold.woff2") format("woff2"),
+         url("../fonts/DIN-Bold.woff") format("woff");
+    font-weight: 800;
+}
+
+@font-face {
+    font-family: "DIN";
+    src: url("../fonts/DIN-Black.woff2") format("woff2"),
+         url("../fonts/DIN-Black.woff") format("woff");
+    font-weight: 900;
+}
+
+body {
+    line-height: 24px;
+    font-family: DIN;
+    font-size: 16px;
+}
+
+label {
+    color: $darker-gray;
+    line-height: 17px;
+    font-weight: 800;
+    font-size: 14px;
+}
+
+#side-menu label {
+    color: $white;
+}
+
+a {
+    line-height: 11px;
+    font-weight: 700;
+    font-size: 14px;
+    color: $green;
+
+    &:hover {
+        text-decoration: none;
+        color: $dark-green;
+        cursor: pointer;
+    }
+}
+
+.registration-content a {
+    color: $darker-gray;
+}
+
+#side-menu a {
+    line-height: 17px;
+    font-size: 14px;
+}
+
+#top-navigation a {
+    line-height: 17px;
+    font-weight: 400;
+    font-size: 14px;
+    color: $white;
+
+    &.selected {
+        font-weight: 700;
+    }
+}
+
+.new-asset > a {
+    line-height: 14px;
+    font-weight: 700;
+    font-size: 12px;
+    color: $green;
+
+    &:hover {
+        color: $green;
+    }
+}
+
+span {
+    color: $dark-green;
+    line-height: 17px;
+    font-weight: 700;
+    font-size: 14px;
+
+    &.danger {
+        color: $white;
+    }
+}
+
+.entry-legend .values span {
+    color: $darker-gray;
+    line-height: 10px;
+    font-weight: 500;
+    font-size: 12px;
+}
+
+.entry-legend .total span {
+    color: $darker-gray;
+    line-height: 10px;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+span.required {
+    color: $green;
+}
+
+#side-menu span {
+    line-height: 24px;
+    font-weight: 400;
+    font-size: 14px;
+    color: $white;
+
+    &.subtitle {
+        text-transform: uppercase;
+        font-size: 11px;
+    }
+}
+
+.top-menu span {
+    color: $white;
+}
+
+.registration-content {
+    .rdtl span {
+        text-transform: uppercase;
+        color: $darker-gray;
+        line-height: 12px;
+        font-size: 11px;
+    }
+
+    .ownership span {
+        text-align: justify;
+        color: $darker-gray;
+        line-height: 16px;
+        font-size: 11px;
+    }
+}
+
+.report-content span {
+    color: $darker-gray;
+    line-height: 17px;
+    font-weight: 500;
+    font-size: 12px;
+}
+
+.report-content .filters-applied span {
+    line-height: 16px;
+    font-size: 14px;
+}
+
+.new-asset > span {
+    color: $darker-gray;
+    line-height: 12px;
+    font-size: 14px;
+}
+
+p {
+    color: $dark-green;
+}
+
+.modal p {
+    color: $darker-gray;
+    line-height: 19px;
+    font-size: 16px;
+}
+
+reports_base p, planning_base p, .no-data-wrapper p {
+    color: $darker-gray;
+    line-height: 16px;
+    font-size: 14px;
+}
+
+.report-content p {
+    line-height: 17px;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.report-criteria {
+    input[type="date"], input[type="month"], input[type="number"], select {
+        line-height: 28px;
+        font-size: 14px;
+    }
+}
+
+.total-budget p {
+    color: $darker-gray;
+    line-height: 17px;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+small {
+    line-height: 14px;
+	font-weight: 500;
+	font-size: 11px;
+}
+
+footer small {
+    line-height: 10px;
+    font-size: 12px;
+    color: $gray;
+}
+
+input.form-control {
+    color: $darker-gray;
+
+    &:focus {
+        color: $darker-gray;
+    }
+}
+
+ul li {
+    line-height: 24px;
+    font-size: 14px;
+}
+
+.danger ul li {
+    line-height: 17px;
+}
+
+ul.navigation {
+    li {
+        line-height: 19px;
+        font-weight: 700;
+        font-size: 16px;
+        color: $white;
+    }
+
+    ul li {
+        line-height: 22px;
+        font-size: 18px;
+        color: $gray;
+
+        &.active {
+            color: $white;
+        }
+    }
+}
+
+h1, h1 span {
+    color: $darker-gray;
+    line-height: 27px;
+    font-weight: 700;
+    font-size: 22px;
+}
+
+.total-length h1, .total-budget h1 {
+    line-height: 44px;
+    font-size: 30px;
+
+    &.highlight {
+        color: #03A59A;
+        font-size: 36px;
+    }
+}
+
+h5 {
+    color: $dark-green;
+    line-height: 22px;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+edit_base h5 {
+    color: $darker-gray;
+}
+
+h5.title {
+    color: $darker-gray;
+    line-height: 24px;
+    margin-bottom: 0;
+    font-size: 20px;
+}
+
+planning_base h5 {
+    color: $darker-gray;
+    line-height: 24px;
+    font-size: 20px;
+}
+
+loading h5, stacked_bar h5 {
+    color: $darker-gray;
+}
+
+h6 {
+    line-height: 19px;
+    font-weight: 700;
+    font-size: 16px;
+    color: $white;
+}
+
+.contract-filters {
+    h6 {
+        color: $darker-gray;
+    }
+
+    select {
+        color: $darker-gray;
+        line-height: 28px;
+        font-size: 14px;
+    }
+}
+
+nav {
+    a h6 {
+        color: $darker-gray;
+        font-weight: 500;
+    }
+
+    a.selected h6 {
+        font-weight: 700;
+    }
+
+    a.disabled {
+        pointer-events: none;
+
+        h6 {
+            color: rgba(61, 71, 88, 0.5);
+        }
+    }
+}
+
+reports_base h6,
+planning_base h6,
+.no-data-wrapper h6 {
+    color: $darker-gray;
+}
+
+.modal h6 {
+    color: $darker-gray;
+    line-height: 19px;
+    font-weight: 800;
+    font-size: 16px;
+}
+
+section h6, .modal section h6 {
+    color: $darker-gray;
+    line-height: 24px;
+    font-weight: 700;
+    font-size: 20px;
+}
+
+section p {
+    color: $darker-gray;
+    line-height: 16px;
+    font-size: 16px;
+}
+
+section a {
+    line-height: 16px;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+table:not(.dataTable) {
+    th {
+        color: $darker-gray;
+        line-height: 17px;
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+    td {
+        color: $darker-gray;
+        line-height: 12px;
+        font-size: 14px;
+    }
+}
+
+// Override DataTables.net styles
+table.dataTable {
+    th, td {
+        color: $darker-gray;
+        line-height: 17px;
+        font-size: 14px;
+    }
+
+    a, a:not([href]) {
+        font-weight: 400;
+        color: $green;
+    }
+
+    tr.selected {
+        td {
+            color: $white;
+        }
+
+        a {
+            color: $darker-gray !important;
+        }
+    }
+}
+
+.dt-buttons h6 {
+    color: $darker-gray;
+    line-height: 17px;
+    font-weight: 800;
+    font-size: 14px;
+}
+
+ul.pagination li, .dataTables_info, .page-link {
+    line-height: 17px;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.dt-buttons {
+    button span {
+        color: $darker-gray;
+    }
+
+    div.btn {
+        line-height: 14px;
+        font-weight: 700;
+        font-size: 12px;
+    }
+}
+
+// Override DataTable.net styles for the main table
+
+#table-roads, 
+#table-structures {
+    .dataTables_info {
+        color: $white;
+    }
+}
+
+.dt-buttons {
+    button span {
+        color: $darker-gray;
+    }
+
+    div.btn {
+        line-height: 14px;
+        font-weight: 700;
+        font-size: 12px;
+    }
+}
+
+// Override Bootstrap styles
+
+.btn {
+    line-height: 14px;
+    font-weight: 700;
+}
+
+.btn-sm, .btn-sm span {
+    line-height: 14px;
+    font-size: 12px;
+}
+
+.btn-lg {
+    font-size: inherit;
+}
+
+.dropdown-menu {
+    line-height: 24px;
+    font-weight: 400;
+    font-size: 14px;
+
+    form button, a {
+        color: $darker-gray;
+        line-height: 30px;
+        font-weight: 500;
+        font-size: 16px;
+    }
+
+    h6 {
+        color: $darker-gray;
+        line-height: 17px;
+        font-weight: 700;
+        font-size: 14px;
+    }
+}
+
+.text-muted {
+	color: $gray !important;
+}
+
+.invalid-tooltip li {
+    line-height: 14px;
+    font-weight: 500;
+    font-size: 12px;
+    color: $white;
+}
+
+// Override Leaflet styles
+.leaflet-popup {
+    .label {
+        color: $darker-gray;
+        font-weight: 300;
+    }
+
+    .value {
+        color: $darker-gray;
+        font-weight: 700;
+    }
+}
+
+.leaflet-control-attribution a {
+    font-size: 11px;
+}
+
+
+@media print {
+    .print-header span {
+        text-transform: uppercase;
+        color: $darker-gray;
+    }
+
+    .print-footer p {
+        color: $darker-gray;
+        line-height: 20px;
+        font-size: 18px;
+    }
+}

@@ -1,0 +1,209 @@
+.entry-bar {
+    margin-bottom: 20px;
+    height: 20px;
+
+    & > div:first-child {
+        border-bottom-left-radius: $radius;
+        border-top-left-radius: $radius;
+    }
+
+    & > div:last-child {
+        border-bottom-right-radius: $radius;
+        border-top-right-radius: $radius;
+    }
+}
+
+.entry-legend div.values {
+    & > div {
+        margin-bottom: 5px;
+
+        & > div {
+            border-radius: $radius;
+            margin-right: 5px;
+            height: 20px;
+            width: 20px;
+        }
+    }
+
+    & > div:not(:last-of-type) {
+        margin-right: 15px;
+    }
+}
+
+%stacked-bar-shared {
+    margin-top: 25px;
+
+    .entry-0 {
+        background-color: #E7E8EA;
+    }
+}
+
+#asset-condition-stacked-bar, #report-asset-condition-bar {
+    @extend %stacked-bar-shared;
+
+    .entry-1 {
+        background-color: #03A59A;
+    }
+
+    .entry-2 {
+        background-color: #81D2CC;
+    }
+
+    .entry-3 {
+        background-color: #FFACAF;
+    }
+
+    .entry-4 {
+        background-color: #FF5A5F;
+    }
+}
+
+#report-roughness-condition-bar {
+    @extend %stacked-bar-shared;
+
+    .entry-good {
+        background-color: #03A59A;
+    }
+
+    .entry-fair {
+        background-color: #81D2CC;
+    }
+
+    .entry-poor {
+        background-color: #FFACAF;
+    }
+
+    .entry-bad {
+        background-color: #FF5A5F;
+    }
+}
+
+#pavement-class-stacked-bar, #report-pavement-class-bar {
+    @extend %stacked-bar-shared;
+
+    .entry-1 {
+        background-color: #03A59A;
+    }
+
+    .entry-2 {
+        background-color: #81D2CC;
+    }
+
+    .entry-3 {
+        background-color: #FFC100;
+    }
+}
+
+#report-asset-class-bar {
+    @extend %stacked-bar-shared;
+
+    .entry-NAT {
+        // National
+        background-color: #EC0007;
+    }
+
+    .entry-MUN {
+        // Municipal
+        background-color: #985321;
+    }
+
+    .entry-RUR {
+        // Rural
+        background-color: #FF9400;
+    }
+
+    .entry-URB {
+        // Urban
+        background-color: #FFDC00;
+    }
+}
+
+#report-road-status-bar {
+    @extend %stacked-bar-shared;
+    .entry-c, .entry-Kompletu {
+        // Complete
+        background-color: #03A59A;
+    }
+
+    .entry-o {
+        // Ongoing
+        background-color: #FFC100;
+    }
+
+    .entry-p, .entry-Pendente {
+        // Pending
+        background-color: #FFACAF;
+    }
+
+    .entry-n, .entry-Planeadu {
+        // Planned
+        background-color: #FF5A5F;
+    }
+}
+
+#rainfall-stacked-bar,
+#surface-type-stacked-bar,
+#report-surface-type-bar {
+    @extend %stacked-bar-shared;
+
+    .entry-1 {
+        background-color: #C0E8E5;
+    }
+
+    .entry-2 {
+        background-color: #3D4758;
+    }
+
+    .entry-3 {
+        background-color: #95A3A8;
+    }
+
+    .entry-4 {
+        background-color: #81D2CC;
+    }
+
+    .entry-5 {
+        background-color: #CAD1D3;
+    }
+
+    .entry-6 {
+        background-color: #61757D;
+    }
+
+    .entry-7 {
+        background-color: #03A59A;
+    }
+
+    .entry-8 {
+        background-color: #FFC100;
+    }
+
+    .entry-9 {
+        background-color: #FFACAF;
+    }
+}
+
+#terrain-type-stacked-bar, #report-terrain-type-bar {
+    @extend %stacked-bar-shared;
+
+    .entry-1 {
+        background-color: #FFEFBF;
+    }
+
+    .entry-2 {
+        background-color: #FFE07F;
+    }
+
+    .entry-3 {
+        background-color: #FFC100;
+    }
+}
+
+#report-assets {
+    stacked_bar.hidden {
+        display: none;
+    }
+    stacked_bar.show > div {
+        margin-bottom: 30px;
+    }
+}

@@ -1,0 +1,52 @@
+// General layout styles
+
+body {
+    padding-right: 15px;
+    padding-left: 15px;
+    overflow: hidden;
+
+    &.registration {
+        flex-direction: column;
+        max-width: 1024px;
+        margin: 0 auto;
+        display: flex;
+    }
+
+    &.content {
+        background-color: $darker-gray;
+    }
+}
+
+#map-table-irmis {
+    height: calc(100% - #{$top-menu-height} - 5px);
+    width: calc(100% - #{$side-menu-width});
+    padding-right: 15px;
+    margin-bottom: 0;
+    padding-left: 0;
+
+    & > div {
+        min-height: calc(100% - #{$footer-height});
+    }
+}
+
+ul {
+    list-style: none;
+
+    li:hover {
+        cursor: pointer;
+    }
+}
+
+.no-data-wrapper {
+    h6 {
+        max-width: 566px;
+        margin-bottom: 0;
+        margin-top: 15px;
+    }
+
+    p {
+        max-width: 566px;
+        margin-bottom: 0;
+        margin-top: 10px;
+    }
+}

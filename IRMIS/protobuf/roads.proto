@@ -1,0 +1,64 @@
+syntax = "proto3";
+import "media.proto";
+
+package assets;
+
+/* Remember to run `yarn protoc` after making any changes
+ * to regenerate the javascript and python protobuf implementations */
+
+message Projection {
+  float x = 1;
+  float y = 2;
+}
+
+message Road {
+  /* Note that field Id numbers once used, are fixed.
+   * The ordering shown here lines up with the model and groups the fields better.
+   * But the numbering preserves the original declaration */
+  uint32 id = 1;
+  uint32 geojson_id = 2;
+  string road_code = 3;
+  string road_name = 4;
+  string asset_class = 10; // road_type has been renamed to asset_class
+  string road_status = 20;
+  string link_code = 5;
+  /* string link_name = 6; */
+  string link_start_name = 16;
+  // link_start_chainage is uint - we use int32 so that we can set it to -ve to indicate when it is null / None
+  int32 link_start_chainage = 11;
+  string link_end_name = 17;
+  // link_end_chainage is uint - we use int32 so that we can set it to -ve to indicate when it is null / None
+  int32 link_end_chainage = 12;
+  float link_length = 7;
+  string surface_type = 8;
+  string asset_condition = 9; // surface_condition has been renamed to asset_condition
+  string pavement_class = 13;
+  float carriageway_width = 14;
+  float total_width = 29;
+  string administrative_area = 15;
+  string project = 18;
+  string funding_source = 19;
+  string technical_class = 21;
+  string maintenance_need = 22;
+  string traffic_level = 23;
+  // uint32 last_revision_id = 24;
+  Projection projection_start = 25;
+  Projection projection_end = 26;
+  // number_lanes is uint - we use int32 so that we can set it to -ve to indicate when it is null / None
+  int32 number_lanes = 27;
+  int32 rainfall_maximum = 28;
+  int32 rainfall_minimum = 38;
+  int32 construction_year = 30;
+  int32 population = 31;
+  // core is a nullable boolean - we use int32 so that we can set it to -ve to indicate when it is null / None
+  int32 core = 32;
+  repeated int32 served_facilities = 33;
+  repeated int32 served_economic_areas = 34;
+  repeated int32 served_connection_types = 35;
+  repeated Media inventory_media = 36;
+  repeated Media survey_media = 37;
+}
+
+message Roads {
+  repeated Road roads = 1;
+}

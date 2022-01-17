@@ -1,0 +1,1934 @@
+# IRMIS project level translations
+# Copyright (C) 2019
+# This file is distributed under the same license as the IRMIS package.
+# FIRST AUTHOR peter@catalpa.io, 2019.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0 VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-11-06 01:12+0000\n"
+"PO-Revision-Date: 2020-08-11 03:00+0000\n"
+"Last-Translator: b'  <sergio@catalpa.io>'\n"
+"Language-Team: Catalpa International <info@catalpa.io>\n"
+"Language: tet\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Translated-Using: django-rosetta 0.9.3\n"
+
+msgid "IRMIS"
+msgstr "IRMIS"
+
+msgid "Gabion works"
+msgstr "Gabion works "
+
+msgid "Masonry works"
+msgstr "Masonry works"
+
+msgid "RCC"
+msgstr "RCC"
+
+msgid "PCC concrete wall"
+msgstr "PCC concrete wall"
+
+msgid "Beam"
+msgstr "Beam"
+
+msgid "Temporary"
+msgstr "Temporariu"
+
+msgid "Truss"
+msgstr "Truss"
+
+msgid "Arch"
+msgstr "Arch"
+
+msgid "Reinforced cement"
+msgstr "Reinforced cement"
+
+msgid "Concrete (RCC)"
+msgstr "Betaun (RCC)"
+
+msgid "Timber"
+msgstr "Ai "
+
+msgid "Suspension"
+msgstr "Suspensaun "
+
+msgid "RCC box"
+msgstr "Kaixa RCC"
+
+msgid "RCC pipe"
+msgstr "Kanu RCC"
+
+msgid "RCC slab"
+msgstr "Bloku RCC"
+
+msgid "Steel pipe"
+msgstr "Kanu besi"
+
+msgid "Stone scupper"
+msgstr "Scupper fatuk"
+
+msgid "Wooden"
+msgstr "Ai "
+
+msgid "Concrete"
+msgstr "Betaun"
+
+msgid "Steel"
+msgstr "Besi"
+
+msgid "Stone"
+msgstr "Fatuk"
+
+msgid "Health facility"
+msgstr "Fasilidade saude"
+
+msgid "School"
+msgstr "Eskola"
+
+msgid "Police/security station"
+msgstr "Estasaun polisia/seguransa"
+
+msgid "Fire station"
+msgstr "Bombeiros "
+
+msgid "Recreational area"
+msgstr "Area rekreiu"
+
+msgid "Fishing"
+msgstr "Peska "
+
+msgid "Farming"
+msgstr "Agrikultura"
+
+msgid "Market"
+msgstr "Merkadu"
+
+msgid "Tourism"
+msgstr "Turismu"
+
+msgid "Commercial"
+msgstr "Komersial"
+
+msgid "Industrial"
+msgstr "Industrial "
+
+msgid "Cash crops"
+msgstr "Produtu tos"
+
+msgid "Connects municipalities"
+msgstr "Liga munisipiu "
+
+msgid "Connects Dili to municipal centers"
+msgstr "Liga Dili ba sentru munisipiu "
+
+msgid "Connects administrative posts"
+msgstr "Liga postu administrativu"
+
+msgid "Connects to land border"
+msgstr "Liga ba fronteira rai "
+
+msgid "Connects to seaport"
+msgstr "Liga ba portu "
+
+msgid "Connects to airport"
+msgstr "Liga ba aeroportu"
+
+msgid "No protection works"
+msgstr "Laiha protesaun serbisu"
+
+msgid "RCC concrete wall"
+msgstr "RCC Concrete Wall"
+
+msgid "Stone masonry"
+msgstr "Stone masonry"
+
+msgid "Plum concrete"
+msgstr "Plum concrete"
+
+msgid "PCC"
+msgstr "PCC"
+
+msgid "Gabions"
+msgstr "Gabions"
+
+msgid "Precast concrete bricks"
+msgstr "Precast concrete bricks"
+
+msgid "Clay bricks"
+msgstr "Tijolu "
+
+msgid "PC"
+msgstr "PC"
+
+#, python-format
+msgid "%(value)s should not contain spaces"
+msgstr "%(value)s Labele inklui espasu "
+
+msgid "Code"
+msgstr "Kodigu "
+
+msgid "Name"
+msgstr "Naran "
+
+msgid "Date Created"
+msgstr "Data Kria"
+
+msgid "last modified"
+msgstr "Modifika ikus"
+
+msgid "Description"
+msgstr "Deskrisaun"
+
+msgid "User"
+msgstr "Uzuáriu"
+
+msgid "National"
+msgstr "Nasional"
+
+msgid "Municipal"
+msgstr "Munisipiu "
+
+msgid "Urban"
+msgstr "Urbana"
+
+msgid "Rural"
+msgstr "Rural"
+
+msgid "Good"
+msgstr "Good"
+
+msgid "Fair"
+msgstr "Fair"
+
+msgid "Poor"
+msgstr "Poor"
+
+msgid "Bad"
+msgstr "Bad"
+
+msgid "Road"
+msgstr "Estrada "
+
+msgid "Bridge"
+msgstr "Ponte"
+
+msgid "Culvert"
+msgstr "Culvert "
+
+msgid "Drift"
+msgstr "Drift "
+
+msgid "Low"
+msgstr "Kraik"
+
+msgid "Medium"
+msgstr " Mediu"
+
+msgid "High"
+msgstr "Aas"
+
+msgid "Flat"
+msgstr "Flat"
+
+msgid "Rolling"
+msgstr "Rolling"
+
+msgid "Mountainous"
+msgstr "Mountainous"
+
+msgid "Undefined"
+msgstr "La defini"
+
+msgid "Non-core"
+msgstr "Laos prioridade"
+
+msgid "Core"
+msgstr "Prioridade"
+
+msgid "Road Code"
+msgstr "Kodigu Estrada "
+
+msgid "Municipality"
+msgstr "Munisipiu "
+
+msgid "Choose the municipality for the road"
+msgstr "Hili munisipiu husi estrada ne"
+
+msgid "Funding Source"
+msgstr "Fonte Fundus"
+
+msgid "Enter the source funding for the road link"
+msgstr "Hatama fonte fundus ba linha estrada"
+
+msgid "Link Code"
+msgstr "Kodigu Linha"
+
+msgid "Enter link code according to DRBFC standard"
+msgstr "Hatama kodigu linha tuir DNEPCC nia padraun "
+
+msgid "Link Start Name"
+msgstr "Naran Linha Komesa"
+
+msgid "Enter the name of the link start location (municipal center, administrative post or nearest suco)"
+msgstr "Hatama naran husi fatin linha komesa (sentru munisipiu, postu administrativu ou suku nebe besik) "
+
+msgid "Link End Name"
+msgstr "Naran Linha Ikus "
+
+msgid "Enter the name of the link end location (municipal center, administrative post or nearest suco)"
+msgstr "Hatama naran husi fatin linha ikus (sentru munisipiu, postu administrativu ou suku nebe besik) "
+
+msgid "Link End Chainage"
+msgstr "Linha Chainage Ikus"
+
+msgid "Enter chainage for link ending point"
+msgstr "Hatama chainage ba pontu linha ikus"
+
+msgid "Link Start Chainage"
+msgstr "Linha chainage Komesa"
+
+msgid "Enter chainage for link starting point"
+msgstr "Hatama chainage ba linha nia pontu komesa"
+
+msgid "Link Length (Km)"
+msgstr "Naruk Estasaun (km)"
+
+msgid "Enter road link length"
+msgstr "Hatama linha estrada nia naruk"
+
+msgid "Geometry Length (m)"
+msgstr "Naruk Jeometria (m)"
+
+msgid "Do not edit"
+msgstr "Labele edita "
+
+msgid "Geometry Start Chainage"
+msgstr "Jeometria Chainage Komesa"
+
+msgid "Geometry End Chainage"
+msgstr "Jeometria Chainage Ikus"
+
+msgid "Surface Type"
+msgstr "Tipu Superfísie"
+
+msgid "Choose the type of surface of the road link carriageway"
+msgstr "Hili tipu superfísie linha estrada nia carriageway "
+
+msgid "Pavement Class"
+msgstr "Klase Pavimentu "
+
+msgid "Choose the pavement class of the road"
+msgstr "Hili klase pavimentu husi estrada"
+
+msgid "Carriageway Width"
+msgstr "Luan Carriageway "
+
+msgid "Enter the width of the link carriageway"
+msgstr "Hatama luan husi linha Carriageaway"
+
+msgid "Asset Class"
+msgstr "Klase  Sasan/Aset"
+
+msgid "Choose the asset class"
+msgstr "Hili klase sasan/aset"
+
+msgid "Road Status"
+msgstr "Estatutu Estrada"
+
+msgid "Enter road link current status"
+msgstr "Hatama linha estrada nia estatutu atual"
+
+msgid "Project Name"
+msgstr "Naran Projetu"
+
+msgid "Enter road link project name"
+msgstr "Hatama naran projetu linha estrada"
+
+msgid "Traffic Data"
+msgstr "Dadus Trafiku"
+
+msgid "Choose the traffic volume for the road link"
+msgstr "Hili volume trafiku ba linha estrada"
+
+msgid "Surface Condition (SDI)"
+msgstr "Kondisaun Superfísie (SDI)"
+
+msgid "Choose road link surface condition according to the Surface Distress Index (SDI): Good (SDI<=2), fair (2<SDI<=3), poor (3<SDI<=4) or bad (SDI>4)"
+msgstr "Hili linha estrada nia kondisaun superfísie tuir Surface Distress Index  (SDI): Good (SDI<=2), fair (2<SDI<=3), poor (3<SDI<=4) or bad (SDI>4)"
+
+msgid "Maintenance Needs"
+msgstr "Presiza Manutensaun "
+
+msgid "Choose the type of maintenace needs for the road link"
+msgstr "Hili tipu manutensaun nebe presiza ba linha estrada "
+
+msgid "Technical Class"
+msgstr "Klase Tekniku "
+
+msgid "Choose road link technical class according to the 2010 Road Geometric Design Standards, DRBFC standards"
+msgstr "Hili linha estrada nia klase tekniku tuir Padraun Dezenhu Geometriku Estrada 2010, tuir padraun DNEPCC"
+
+msgid "Set if the road is a high priority `core` road"
+msgstr "Hili se estrada ne tama estrada prioridade as \"prioridade\""
+
+msgid "Population Served"
+msgstr "Serve populasaun"
+
+msgid "Set the size of population served by this road"
+msgstr "Hili numeru populasaun nebe serve husi estrada ne "
+
+msgid "Road Construction Year"
+msgstr "Tinan Konstrusaun Estrada "
+
+msgid "Terrain class"
+msgstr "Klase terrain"
+
+msgid "Choose what terrain class the road runs through"
+msgstr "Hili klase terrain nebe estrada ne halai tuir "
+
+msgid "Rainfall Maximum"
+msgstr "Udan-been másimu"
+
+msgid "Enter the maximum amount of rainfall"
+msgstr "Hatama montante másimu udan-been"
+
+msgid "Rainfall Minimum"
+msgstr "Udan-been minimu"
+
+msgid "Enter the minimum amount of rainfall"
+msgstr "Hatama montante minimu udan-been"
+
+msgid "Number of Lanes"
+msgstr "Numeru Pista"
+
+msgid "Enter the number of lanes of the road"
+msgstr "Hatama numeru pista estrada ne"
+
+msgid "Facilities Served"
+msgstr "Serve Fasilidade"
+
+msgid "Choose facilities served by this road"
+msgstr "Hili fasilidade nebe serve husi estrada ne"
+
+msgid "Economic Areas Served"
+msgstr "Serve Area Ekonomia "
+
+msgid "Choose economic areas served by this road"
+msgstr "Hili area ekonomia nebe serve husi estrada ne"
+
+msgid "Connections Served"
+msgstr "Serve Ligasaun"
+
+msgid "Choose the types of connections facilitated by this road"
+msgstr "Hili tipu ligasaun nebe serve husi estrada ne"
+
+msgid "Attributes"
+msgstr "Atribuisaun"
+
+msgid "Road Id"
+msgstr "Id Estrada "
+
+msgid "Structure Code"
+msgstr "Kodigu Estrutura"
+
+msgid "Structure Class"
+msgstr "Klase Estrutura "
+
+msgid "Choose the structure class"
+msgstr "Hili klase estrutura "
+
+msgid "Choose the municipality for the structure"
+msgstr "Hili munisipiu husi estrutura "
+
+msgid "Enter the Road Code associated with the structure"
+msgstr "Hatama Kodigu Estrada asosiadu ho estrutura"
+
+msgid "Structure Construction Year"
+msgstr "Tinan Konstrusaun Estrutura"
+
+msgid "Structure Length (m)"
+msgstr "Naruk Estrutura (m)"
+
+msgid "Enter structure length"
+msgstr "Hatama naruk estrutura "
+
+msgid "Structure Width (m)"
+msgstr "Luan Estrutura (m)"
+
+msgid "Enter structure width"
+msgstr "Hatama luan estrutura"
+
+msgid "Chainage"
+msgstr "Chainage"
+
+msgid "Enter chainage point for the structure"
+msgstr "Hatama pontu chainage ba estrutura"
+
+msgid "Bridge Type"
+msgstr "Tipu Ponte"
+
+msgid "Choose the bridge type"
+msgstr "Hili tipu ponte"
+
+msgid "River Name"
+msgstr "Naran Mota"
+
+msgid "Enter the name of the river the bridge crosses over"
+msgstr "Hatama naran mota nebe ponte iha ba"
+
+msgid "Number of Spans"
+msgstr "Numeru spans "
+
+msgid "Enter number of spans"
+msgstr "Hatama numeru spans"
+
+msgid "Span Length (m)"
+msgstr "Naruk span (m)"
+
+msgid "Enter span length"
+msgstr "Hatama naruk span"
+
+msgid "Deck Material"
+msgstr "Deck Material"
+
+msgid "Choose the bridge deck material"
+msgstr "Hili ponte nia deck material "
+
+msgid "Protection Upstream"
+msgstr "Protection Upstream"
+
+msgid "Choose the upstream protection type"
+msgstr "Hili tipu protection upstream"
+
+msgid "Protection Downstream"
+msgstr "Protection Downstream"
+
+msgid "Choose the downstream protection type"
+msgstr "Hili tipu protection downstream"
+
+msgid "Culvert Type"
+msgstr "Tipu Culvert"
+
+msgid "Choose the culvert type"
+msgstr "Hili tipu culvert"
+
+msgid "Structure Height (m)"
+msgstr "Aas Estrutura"
+
+msgid "Enter structure height"
+msgstr "Hatama estrutura nia aas"
+
+msgid "Number of Cells"
+msgstr "Numeru Sela"
+
+msgid "Material"
+msgstr "Material "
+
+msgid "Choose the culvert material"
+msgstr "Hili material culvert "
+
+msgid "Drift Type"
+msgstr "Tipu Drift"
+
+msgid "Choose the drift type"
+msgstr "Hili tipu drift "
+
+msgid "Structure Thickness (m)"
+msgstr "Mahar Estrutura (m)"
+
+msgid "Enter structure thickness"
+msgstr "Hatama estrutura nia mahar "
+
+msgid "Choose the drift material"
+msgstr "Hili material drift "
+
+msgid "Asset Type"
+msgstr "Tipu Sasan/Aset"
+
+msgid "Asset Id"
+msgstr "Id Sasan (aset)"
+
+msgid "Asset Code"
+msgstr "Kodigu Sasan (aset)"
+
+msgid "Date Surveyed"
+msgstr "Data Levantamentu"
+
+msgid "Date Updated"
+msgstr "Data Atual"
+
+msgid "Start Chainage (Km)"
+msgstr "Chainage Komesa (Km)"
+
+msgid "Enter chainage for survey starting point"
+msgstr "HatamacChainage ba levantamentu pontu komesa"
+
+msgid "End Chainage (Km)"
+msgstr "Chainage Ikus (Km)"
+
+msgid "Enter chainage for survey ending point"
+msgstr "Hatama chainage ba levantamentu pontu ikus"
+
+msgid "Source"
+msgstr "Fonte"
+
+msgid "Choose the source of the survey"
+msgstr "Hili fonte husi levantamentu "
+
+msgid "Title"
+msgstr "Titlu "
+
+msgid "Approved"
+msgstr "Aprova "
+
+msgid "Planning Period"
+msgstr "Periodu Planeamentu "
+
+msgid "Routine Maintenance"
+msgstr "Manutensaun Rutina"
+
+msgid "Periodic Maintenance"
+msgstr "Manutensaun Periodiku "
+
+msgid "Rehabilitation"
+msgstr "Rehabilitasaun "
+
+msgid "Spot Improvement"
+msgstr "Spot Improvement"
+
+msgid "Year"
+msgstr "Tinan"
+
+msgid "Budget"
+msgstr "Orsamentu "
+
+msgid "Enter the budget amount"
+msgstr "Hatama montante orsamentu "
+
+msgid "Length"
+msgstr "Naruk "
+
+msgid "Enter the length"
+msgstr "Hatama naruk "
+
+msgid "Work Type"
+msgstr "Tipu Serbisu "
+
+msgid "Choose the work type"
+msgstr "Hili tipu serbisu "
+
+msgid "Date of first Survey"
+msgstr "Data Levantamentu premeiru "
+
+msgid "Date of second Survey"
+msgstr "Data Levantamentu  segundu"
+
+msgid "Road Inventory"
+msgstr "Inventariu Estrada "
+
+msgid "Export all"
+msgstr "Esporta hotu "
+
+msgid "Select data"
+msgstr "Hili dadus "
+
+msgid "Road Inventory Data"
+msgstr "Dadus Inventariu Estrada"
+
+msgid "Road code"
+msgstr "Kodigu estrada"
+
+msgid "Road name"
+msgstr "Naran estrada"
+
+msgid "Asset class"
+msgstr "Klase sasan/aset"
+
+msgid "Technical class"
+msgstr "Klase tekniku"
+
+msgid "Link code"
+msgstr "Kodigu linha"
+
+msgid "Link name"
+msgstr "Naran linha"
+
+msgid "Link length"
+msgstr "Naruk Estasaun"
+
+msgid "Link start name"
+msgstr "Naran linha komesa"
+
+msgid "Link start chainage"
+msgstr "Linha chainage komesa"
+
+msgid "Start Point - DMS"
+msgstr "Pontu Komesa - DMS"
+
+msgid "Start Point - UTM"
+msgstr "Pontu Komesa - UTM"
+
+msgid "Link end name"
+msgstr "Naran linha ikus "
+
+msgid "Link end chainage"
+msgstr "Linha chainage ikus"
+
+msgid "End Point - DMS"
+msgstr "Pontu Ikus - DMS"
+
+msgid "End Point - UTM"
+msgstr "Pontu Ikus - UTM"
+
+msgid "Surface type"
+msgstr "Tipu superfície"
+
+msgid "Pavement class"
+msgstr "klase pavimentu"
+
+msgid "Carriageway width"
+msgstr "Luan carriageway "
+
+msgid "Total width"
+msgstr "Total luan "
+
+msgid "Number of lanes"
+msgstr "Numeru pista"
+
+msgid "Rainfall"
+msgstr "Udan-been"
+
+msgid "Terrain Class"
+msgstr "Klase Terrain"
+
+msgid "Inventory Photos/Videos"
+msgstr "Foto/Video ba Inventariu"
+
+msgid "Condition and Traffic"
+msgstr "Kondisaun no Trafiku "
+
+msgid "Roughness (IRI)"
+msgstr "Roughness (IRI)"
+
+msgid "Surface condition"
+msgstr "Kondisaun superfície"
+
+msgid "Maintenance needs"
+msgstr "Presiza manutensaun"
+
+msgid "Traffic data"
+msgstr "Dadus trafiku"
+
+msgid "Project Data"
+msgstr "Dadus Projetu"
+
+msgid "Road status"
+msgstr "Estatutu estrada "
+
+msgid "Construction Year"
+msgstr "Tinan Konstrusaun"
+
+msgid "Funding source"
+msgstr "Fonte Fundus"
+
+msgid "Project"
+msgstr "Projetu "
+
+msgid "Return to default selection"
+msgstr "Fila fali ba selesaun padraun "
+
+msgid "Structure Inventory"
+msgstr "Inventariu Estrutura"
+
+msgid "Structure Inventory Data"
+msgstr "Dadus Inventariu Estrutura "
+
+msgid "Structure"
+msgstr "Estrutura "
+
+msgid "Structure Name"
+msgstr "Naran Estrutura "
+
+msgid "GPS Latitude"
+msgstr "GPS Latitude"
+
+msgid "GPS Longitude"
+msgstr "GPS Longitude"
+
+msgid "Type"
+msgstr "Tipu"
+
+msgid "Width"
+msgstr "Luan"
+
+msgid "Height"
+msgstr "Aas"
+
+msgid "Thickness"
+msgstr "Mahar"
+
+msgid "Span Length"
+msgstr "Naruk Span"
+
+msgid "Structure Condition Data"
+msgstr "Dadus Kondisaun Estrutura "
+
+msgid "Structure Condition"
+msgstr "Kondisaun Estrutura "
+
+msgid "Condition Description"
+msgstr "Deskrisaun Kondisaun"
+
+msgid "Condition Photos/Videos"
+msgstr "Foto/Video ba Kondisaun"
+
+msgid "Democratic Republic of Timor-Leste"
+msgstr "República Democrática de Timor-Leste"
+
+msgid "Ministry of Public Works"
+msgstr "Ministério das Obras Públicas"
+
+msgid "Created by Catalpa International"
+msgstr "Kria husi Catalpa International "
+
+msgid "View"
+msgstr "Visualizasaun"
+
+msgid "Fullscreen view"
+msgstr "Visualizasaun Kompletu"
+
+msgid "Map & Table"
+msgstr "Mapa & Tabela"
+
+msgid "Map"
+msgstr "Mapa"
+
+msgid "Table"
+msgstr "Tabela"
+
+msgid "Roads"
+msgstr "Estrada"
+
+msgid "Structures"
+msgstr "Estrutura "
+
+msgid "Filters"
+msgstr "Filtru"
+
+msgid "Clear all filters"
+msgstr "Hamos filtru hotu"
+
+msgid "Location"
+msgstr "Fatin"
+
+msgid "Clear"
+msgstr "Hamos"
+
+msgid "Asset"
+msgstr "Sasan/aset"
+
+msgid "Bridges"
+msgstr "Ponte"
+
+msgid "Culverts"
+msgstr "Culverts"
+
+msgid "Drifts"
+msgstr "Drifts "
+
+msgid "Asset condition"
+msgstr "Kondisaun sasan/aset"
+
+msgid "Structure Type"
+msgstr "Tipu Estrutura "
+
+msgid "Structure Material"
+msgstr "Estrutura Material "
+
+msgid "Select the type"
+msgstr "Hili tipu "
+
+msgid "Select the Deck Material"
+msgstr "Hili Deck Material"
+
+msgid "Select the Material"
+msgstr "Hili Material "
+
+msgid "Rehabilitation road X"
+msgstr "Rehabilitasaun Estrada X"
+
+msgid "Project for the rehabilitation of road X"
+msgstr "Projetu ba rehabilitasaun estrada X"
+
+msgid "Associated projects"
+msgstr "Projetu asosiadu"
+
+msgid "Select one or more projects for the tender"
+msgstr "Hili  projetu ida ou liu ba konkursu "
+
+msgid "Contract for the upgrade of road A01-1 to technical class R1"
+msgstr "Kontratu ba hadiak estrada A01-1 ba klase tekniku R1"
+
+msgid "Due to unforeseen events, the contract start was postponed by 1 month"
+msgstr "Tamba sirkumtansia, data hahu kontratu tenke muda fulan 1"
+
+msgid "Project Status"
+msgstr "Estatutu Projetu"
+
+msgid "Choose status"
+msgstr "Hili estatutu"
+
+msgid "Program Name"
+msgstr "Naran Programa"
+
+msgid "Choose the program for the project"
+msgstr "Hili programa husi projetu "
+
+msgid "Type of Work"
+msgstr "Tipu Serbisu "
+
+msgid "Choose from the list"
+msgstr "Hili husi lista "
+
+msgid "Enter project’s name"
+msgstr "Hatama naran projetu"
+
+msgid "Project Code"
+msgstr "Kodigu Projetu"
+
+msgid "Enter project’s code"
+msgstr "Hatama kodigu projetu"
+
+msgid "Enter a description of the project"
+msgstr "Hatam deskrisaun ba projetu "
+
+msgid "Choose the funding source"
+msgstr "Hili fonte fundus"
+
+msgid "Choose the donor"
+msgstr "Hili doador"
+
+msgid "Enter schedule start date"
+msgstr "Hatama kalendariu data komesa"
+
+msgid "Duration (days)"
+msgstr "Durasaun (loron)"
+
+msgid "Estimated duration of the work"
+msgstr "Estimasaun durasaun serbisu "
+
+msgid "Donor"
+msgstr "Doador"
+
+msgid "Select project's asset"
+msgstr "Hili projetu nia sasan/aset "
+
+msgid "Start Chainage"
+msgstr "Chainage Komesa "
+
+msgid "In meters"
+msgstr "Iha metru "
+
+msgid "End Chainage"
+msgstr "Chainage Ikus"
+
+msgid "Start Chainage must be specified for roads"
+msgstr "Chainage Komesa tenke espesifiku ba estrada "
+
+msgid "End Chainage must be specified for roads"
+msgstr "Chainage Remata tenke espesifiku ba estrada "
+
+msgid "Start Chainage must be 0 or greater"
+msgstr "Chainage Komesa tenke 0 ou boot liu "
+
+msgid "Start Chainage must be less than End Chainage"
+msgstr "Chainage Komesa tenke kiik liu husi Chainage Remata"
+
+msgid "End Chainage must be greater than Start Chainage"
+msgstr "Chainage Remata tenke boot liu husi Chainage Komesa"
+
+msgid "Asset Id must identify a current Asset, or provide enough information to create a new Asset"
+msgstr "Id sasan/aset tenki identifika Sasan/Aset atual, ou fornese informasaun naton hodi kria Sasan/Aset foun"
+
+msgid "Could not create a new Asset, because the asset_type in the 'special' Asset Id is not valid."
+msgstr "Labele kria Sasan/Aset foun, tamba tipu_sasan/aset iha \"espesial\" Id Sasan/Aset la validu"
+
+msgid "Could not create a new Asset, because the asset_class in the 'special' Asset Id is not valid."
+msgstr "Labele kria Sasan/Aset foun, tamba klase_sasan/aset iha \"espesial\" Id Sasan/Aset la validu"
+
+msgid "The Asset Code must be unique for this type of asset"
+msgstr "Kódigu sasan tenke iha kódigu úniku ba tipu sasan ne'e"
+
+msgid "Start Chainage is too large for this road"
+msgstr "Chainage Komesa boot liu ba estrada ne"
+
+#, python-format
+msgid "Ensure this value has at most 15 characters (it has %s)"
+msgstr "Asegura katak valor ne iha karateristiku 15 (iha %s)"
+
+msgid "Enter year"
+msgstr "Hatama tinan"
+
+msgid "In USD"
+msgstr "iha USD"
+
+msgid "Estimated days of work"
+msgstr "Estimasaun loron serbisu "
+
+msgid "Physical progress (%)"
+msgstr "Progresu fiziku (%)"
+
+msgid "Estimated physical progress"
+msgstr "Estimasaun progresu fiziku"
+
+msgid "Tender Code"
+msgstr "Kodigu Konkursu"
+
+msgid "Enter tender's code"
+msgstr "Hatama kodigu konkursu"
+
+msgid "Announcement Date"
+msgstr "Data avizu "
+
+msgid "Tender announcement date"
+msgstr "Data avizu konkursu "
+
+msgid "Bid Submission Deadline"
+msgstr "Loron Ikus Hatama Lisita"
+
+msgid "Date of fid submission deadline"
+msgstr "Data Loron Ikus Hatama Lisita"
+
+msgid "Number of Companies Tendering"
+msgstr "Numeru Kompania Nebe Tuir Konkursu "
+
+msgid "Enter the number of companies tendering"
+msgstr "Hatama numeru kompania nebe tuir konkursu "
+
+msgid "Evaluation Date"
+msgstr "Data Avaliasaun"
+
+msgid "Bids evaluation date"
+msgstr "Data avaliasaun lisita"
+
+msgid "Tender Status"
+msgstr "Estatutu Konkursu"
+
+msgid "Enter contract code"
+msgstr "Hatama kodigu kontratu "
+
+msgid "Enter a description of the contract"
+msgstr "Hatama deskrisaun kontratu "
+
+msgid "Associated tender"
+msgstr "Konkursu asosiadu"
+
+msgid "Choose a tender to create a contract"
+msgstr "Hili konkursu hodi kria kontratu "
+
+msgid "Select a company from the list"
+msgstr "Hili kompania husi lista "
+
+msgid "Contract start date"
+msgstr "Data kontratu komesa"
+
+msgid "Enter contract start date"
+msgstr "Hatama data kontratu komesa"
+
+msgid "Contract end date"
+msgstr "Data kontratu remata"
+
+msgid "Enter contract end date"
+msgstr "Hatama data kontratu remata"
+
+msgid "Duration in days"
+msgstr "Durasaun iha loron"
+
+msgid "Defect liability period (days)"
+msgstr "Defect liability period (loron)"
+
+msgid "Duration of DLP in days"
+msgstr "Durasaun DLP iha loron"
+
+msgid "Enter new start date"
+msgstr "Hatama data komesa foun"
+
+msgid "Contract duration"
+msgstr "Durasaun kontratu"
+
+msgid "Enter new duration in days"
+msgstr "Hatama durasaun foun iha loron"
+
+msgid "Description (Reasons for Variations)"
+msgstr "Deskrisaun (Razaun ba Variasaun)"
+
+msgid "Enter a reason for variations to the contract"
+msgstr "Hatama razaun variasaun ba kontratu ne"
+
+msgid "Enter supervisor's name"
+msgstr "Hatama naran supervizor "
+
+msgid "Supervisor's phone number"
+msgstr "Numeru telefone supervizor "
+
+msgid "Select year"
+msgstr "Hili tinan"
+
+msgid "Budget per year in USD"
+msgstr "Orsamentu kada tinan iha USD"
+
+msgid "Days of work for the milestone"
+msgstr "Loron serbisu ba akontesimentu importante"
+
+msgid "Milestone physical progress"
+msgstr "Akontesimentu importante progresu fiziku "
+
+msgid "Yes"
+msgstr "Loos"
+
+msgid "No"
+msgstr "Lae"
+
+msgid "January"
+msgstr "Janeiru"
+
+msgid "February"
+msgstr "Fevereiru"
+
+msgid "March"
+msgstr "Marsu"
+
+msgid "April"
+msgstr "Abril"
+
+msgid "May"
+msgstr "Maiu"
+
+msgid "June"
+msgstr "Junu"
+
+msgid "July"
+msgstr "Jullu"
+
+msgid "August"
+msgstr "Agostu"
+
+msgid "September"
+msgstr "Setembru"
+
+msgid "October"
+msgstr "Outubru"
+
+msgid "November"
+msgstr "Novembru"
+
+msgid "December"
+msgstr "Dezembru"
+
+msgid "Unknown"
+msgstr "Lahatene"
+
+msgid "Company Name"
+msgstr "Naran Kompania"
+
+msgid "Enter company name"
+msgstr "Hatama naran kompania"
+
+msgid "Enter company address"
+msgstr "Hatama enderesu kompania"
+
+msgid "Enter company phone number"
+msgstr "Hatama numeru telefone kompania"
+
+msgid "Enter company email"
+msgstr "Hatama email kompania"
+
+msgid "Enter company TIN number"
+msgstr "Hatama numeru TIN kompania"
+
+msgid "Bank Account Number"
+msgstr "Numeru Konta Bankaria"
+
+msgid "Enter company bank account number"
+msgstr "Hatama numeru konta bankaria kompania"
+
+msgid "Representative name"
+msgstr "Naran reprezentante "
+
+msgid "Enter company representative name"
+msgstr "Hatama naran reprezentante kompania"
+
+msgid "Representative phone"
+msgstr "Numeru telefone reprezentante "
+
+msgid "Enter company representative phone number"
+msgstr "Hatama numeru telefone reprezentante "
+
+msgid "Representative email"
+msgstr "Email reprezentante "
+
+msgid "Enter company representative email"
+msgstr "Hatama email reprezentante kompania"
+
+msgid "Woman-Led Company"
+msgstr "Kompania Lidera Husi Feto "
+
+msgid "Is the company director/owner a woman?"
+msgstr "Diretor kompania/nain feto?"
+
+msgid "Company category"
+msgstr "Kategoria kompania"
+
+msgid "Choose category"
+msgstr "Hili kategoria"
+
+msgid "project"
+msgstr "Projetu "
+
+msgid "tender"
+msgstr "Konkursu"
+
+msgid "contract"
+msgstr "Kontratu"
+
+msgid "company"
+msgstr "Kompania"
+
+msgid "Edit Company"
+msgstr "Edita Kompania"
+
+msgid "Create Company"
+msgstr "kria Kompania"
+
+msgid "Company Details"
+msgstr "Detallu Kompania"
+
+msgid "Documents"
+msgstr "Dokumentus"
+
+msgid "Cancel"
+msgstr "Kansela "
+
+msgid "Save"
+msgstr "Salva"
+
+msgid "Create"
+msgstr "Kria"
+
+msgid "Company"
+msgstr "Kompania"
+
+msgid "Print"
+msgstr "Print"
+
+msgid "Address"
+msgstr "Enderesu"
+
+msgid "Phone"
+msgstr "Numeru telefone"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "TIN"
+msgstr "TIN"
+
+msgid "Representative Name"
+msgstr "Naran reprezentante"
+
+msgid "Representative Phone"
+msgstr "Numeru telefone reprezentante"
+
+msgid "Representative Email"
+msgstr "Email reprezentante"
+
+msgid "Associated as a contractor"
+msgstr "Nia hanesan Kontratór"
+
+msgid "Associated as a subcontractor"
+msgstr "Nia hanesan Sub-kontratór"
+
+msgid "Uploaded Documents"
+msgstr "Upload dokumentus"
+
+msgid "Add"
+msgstr "Aumenta"
+
+msgid "Document Date"
+msgstr "Data dokumentus"
+
+msgid "Save Document"
+msgstr "Salva dokumentus"
+
+msgid "Close"
+msgstr "Taka"
+
+msgid "File"
+msgstr "Dokumentus"
+
+msgid "Document Type"
+msgstr "Tipu Dokumentus"
+
+msgid "Delete Document"
+msgstr "Apaga Dokumentus"
+
+msgid "Are you sure you want to delete this document?"
+msgstr "Ita boot hakarak apaga dokumentus ne?"
+
+msgid "Delete"
+msgstr "Apaga"
+
+msgid "Don't delete"
+msgstr "Labele apaga "
+
+msgid "List of documents"
+msgstr "Lista dokumentus "
+
+msgid "Company Manager"
+msgstr "Jerente Kompania"
+
+msgid "Create New Company"
+msgstr "Kria  Kompania Foun"
+
+msgid "List of companies"
+msgstr "Lista kompania "
+
+msgid "Export table"
+msgstr "Esporta tabela"
+
+msgid "Edit"
+msgstr "Edita"
+
+msgid "Total Contracts"
+msgstr "Total kontratu"
+
+msgid "Active Contracts"
+msgstr "Kontratu Ativu"
+
+msgid "Welcome to the Company Manager"
+msgstr "Benvindu iha Jerente Kompania"
+
+msgid "No companies were created yet"
+msgstr "Sedauk kria kompania "
+
+msgid "Delete Company"
+msgstr "Apaga kompania"
+
+msgid "Are you sure you want to delete this company?"
+msgstr "Ita hakarak apaga kompania ne?"
+
+msgid "Edit Contract"
+msgstr "Edita Kontratu"
+
+msgid "Create Contract"
+msgstr "Kria Kontratu"
+
+msgid "Contract Details"
+msgstr "Detallu Kontratu"
+
+msgid "Inspections"
+msgstr "Fiskalizasaun"
+
+msgid "Payments"
+msgstr "Pagamentu"
+
+msgid "Social Safeguard"
+msgstr "Protesaun Sosial "
+
+msgid "Supervisor"
+msgstr "Supervizor"
+
+msgid "Contract Value Total"
+msgstr "Total Valor Kontratu"
+
+msgid "Schedule"
+msgstr "Kalendariu "
+
+msgid "Milestones"
+msgstr "Akontesimentu Importante"
+
+msgid "Amendments"
+msgstr "Emenda"
+
+msgid "Contract"
+msgstr "Kontratu"
+
+msgid "Status"
+msgstr "Estatutu"
+
+msgid "Associated Tender"
+msgstr "Konkursu Asosiadu"
+
+msgid "Projects in the Tender"
+msgstr "Projetu iha Konkursu"
+
+msgid "Contract Code"
+msgstr "Kodigu Kontratu"
+
+msgid "Contract Description"
+msgstr "Deskrisaun Kontratu"
+
+msgid "Contractor"
+msgstr "Contractor"
+
+msgid "Sub-Contractor"
+msgstr "Sub-Contractor"
+
+msgid "Supervisor Name"
+msgstr "Naran Supervizor"
+
+msgid "Phone Number"
+msgstr "Numeru Telefone"
+
+msgid "Total Budget"
+msgstr "Total Orsamentu"
+
+msgid "Value"
+msgstr "Valor "
+
+msgid "Defect Liability Period (Days)"
+msgstr "Defect Liability Period (Loron)"
+
+msgid "Contract Start Date"
+msgstr "Data Kontratu Komesa"
+
+msgid "Contract End Date"
+msgstr "Data Kontratu Remata"
+
+msgid "Contract Duration"
+msgstr "Durasaun Kontratu"
+
+msgid "Days of Work"
+msgstr "Loron Serbisu"
+
+msgid "Progress"
+msgstr "Progresiu"
+
+msgid "List of inspections"
+msgstr "Lista fiskalizasaun "
+
+msgid "Inspection Date"
+msgstr "Data fiskalizasaun "
+
+msgid "Inspection Entity"
+msgstr "Entidade fiskalizasaun "
+
+msgid "Physical Progress"
+msgstr "Progresu Fiziku "
+
+msgid "Defect Liability Period"
+msgstr "Defect Liability Period"
+
+msgid "Save Inspection"
+msgstr "Salva Fiskalizasaun "
+
+msgid "Select inspection date"
+msgstr "Hili data fiskalizasaun "
+
+msgid "Choose entity that performed the inspection"
+msgstr "Hili entidade nebe halo fiskalizasaun "
+
+msgid "Enter physical progress as inspected"
+msgstr "Hatama progresu inspesaun bazeia ba fiskalizasaun "
+
+msgid "Start Defect Liability Period"
+msgstr "Komesa Defect Liability Period"
+
+msgid "When DLP starts with the inspection"
+msgstr "Bainhira DLP komesa ho fiskalizasaun "
+
+msgid "Delete Inspection"
+msgstr "Apaga fiskalizasaun "
+
+msgid "Are you sure you want to delete this inspection?"
+msgstr "Ita hakarak apaga fiskalizasaun ne?"
+
+msgid "Contract Manager"
+msgstr "Jerente Kontratu"
+
+msgid "Create New Contract"
+msgstr "Kria kontratu foun "
+
+msgid "List of contracts"
+msgstr "Lista kontratu"
+
+msgid "Value range"
+msgstr "Variadade valor "
+
+msgid "over"
+msgstr "Liu "
+
+msgid "Number of Projects"
+msgstr "Numeru Projetu"
+
+msgid "Project(s) Name"
+msgstr "Naran Projetu"
+
+msgid "Type of Works"
+msgstr "Tipu Serbisu"
+
+msgid "Welcome to the Contract Manager"
+msgstr "Benvindu ba Jerente Kontratu "
+
+msgid "No contracts were created yet"
+msgstr "Kontratu sedauk kria "
+
+msgid "Delete Contract"
+msgstr "Apaga Kontratu "
+
+msgid "Are you sure you want to delete this contract?"
+msgstr "Ita hakarak apaga kontratu ne?"
+
+msgid "List of payments"
+msgstr "Lista pagamentu"
+
+msgid "To add a payment, at least one company needs to first be created in the Company section"
+msgstr "Atu aumenta pagamentu, tenki kria uluk pelumenus kompania ida uluk iha seksaun Kompania"
+
+msgid "Payment Date"
+msgstr "Data pagamentu"
+
+msgid "Payment Value (in USD)"
+msgstr "Valor pagamentu (USD)"
+
+msgid "Destination"
+msgstr "Destinu"
+
+msgid "Save Payment"
+msgstr "Salva Pagamentu"
+
+msgid "Select payment date"
+msgstr "Hili data pagamentu"
+
+msgid "Payment Value"
+msgstr "Valor pagamentu"
+
+msgid "Enter total payment value"
+msgstr "Hatama total valor pagamentu"
+
+msgid "Choose donor from the list"
+msgstr "Hili doador husi lista"
+
+msgid "Select donor"
+msgstr "Hili doador"
+
+msgid "Choose funding source from the list"
+msgstr "Hili rekursu orsamentu husi lista "
+
+msgid "Choose from the list the recipient of the payment"
+msgstr "Hili husi lista ema nebe sei simu pagamentu ne"
+
+msgid "Delete Payment"
+msgstr "Apaga pagamentu"
+
+msgid "Are you sure you want to delete this payment?"
+msgstr "ita hakarak apaga pagamentu ne?"
+
+msgid "List of Social Safeguard Data"
+msgstr "Lista Dadus Protesaun Sosial "
+
+msgid "Reporting Month"
+msgstr "Fulan Relatoriu"
+
+msgid "Total Employees"
+msgstr "Total Empregadu "
+
+msgid "Total Female Employees"
+msgstr "Total Empregadu Feto "
+
+msgid "Total Employees With Disabilities"
+msgstr "Total Empregadu Feto ho Defisiénsia"
+
+msgid "Female Employees With Disabilities"
+msgstr "Empregadu Feto ho Defisiénsia"
+
+msgid "Save Social Safeguard Report"
+msgstr "Salva Relatoriu Protesaun Sosial"
+
+msgid "Number of Employees"
+msgstr "Numeru Empregadu "
+
+msgid "Select month of the report"
+msgstr "Hili fulan relatoriu "
+
+msgid "National Employees"
+msgstr "Empregadu Nasional"
+
+msgid "International Employees"
+msgstr "Empregadu Internasional "
+
+msgid "Non timorese employees"
+msgstr "Empregado laos Timor oan"
+
+msgid "Female Employees"
+msgstr "Empregadu Feto "
+
+msgid "Employees With Disabilities"
+msgstr "Empregadu Feto ho Defisiénsia"
+
+msgid "Young Employees"
+msgstr "Empregadu Joven"
+
+msgid "Young Female Employees"
+msgstr "Empregadu Joven Feto "
+
+msgid "Worker-days"
+msgstr "Loron serbisu"
+
+msgid "Total Worker-days"
+msgstr "Total Loron serbisu"
+
+msgid "Worker-days of all employees"
+msgstr "Loron serbisu empregadu hotu"
+
+msgid "Female Employees Worker-days"
+msgstr "Loron serbisu Empregadu Feto "
+
+msgid "Employees With Disabilities Worker-days"
+msgstr "Loron serbisu Empregadu ho Defisiénsia"
+
+msgid "Female Employees With Disabilities Worker-days"
+msgstr "Loron serbisu Empregadu Feto ho Defisiénsia"
+
+msgid "Young Employees Worker-days"
+msgstr "Loron serbisu Empregadu Joven"
+
+msgid "Young Female Employees Worker-days"
+msgstr "Loron serbisu Empregadu Joven Feto"
+
+msgid "Wages"
+msgstr "Salariu "
+
+msgid "Total Wages"
+msgstr "Total Salariu"
+
+msgid "All salaries paid in USD"
+msgstr "Salariu hotu selu iha USD"
+
+msgid "Average Gross Wages"
+msgstr "Mediu Salariu Brutu"
+
+msgid "Average of gross salaries in USD"
+msgstr "Mediu salariu brutu iha USD"
+
+msgid "Average Net Wages"
+msgstr "Mediu Salariu Mos/Net"
+
+msgid "Average of net salaries in USD"
+msgstr "Mediu no salariu mos/net iha USD"
+
+msgid "Delete Social Safeguard Data"
+msgstr "Apaga Dadus Protesaun Sosial "
+
+msgid "Are you sure you want to delete this data?"
+msgstr "Ita hakarak apaga dadus ne?"
+
+msgid "Projects"
+msgstr "Projetu "
+
+msgid "Tenders"
+msgstr "Konkursu"
+
+msgid "Contracts"
+msgstr "Kontratu"
+
+msgid "Companies"
+msgstr "Kompania"
+
+msgid "Directorate General for Public Works"
+msgstr "Direção Geral  Obras Públicas "
+
+msgid "National Directorate for Roads, Bridges and Flood Control"
+msgstr "Direção Nacional de Estradas, Pontes e Controlo de Cheias"
+
+msgid "Exported from Estrada on"
+msgstr "Esporta husi Estrada iha "
+
+msgid "at"
+msgstr "Iha"
+
+msgid "Unsaved Changes"
+msgstr "Sedauk Salva mudansa"
+
+msgid "You have unsaved changes made to this page which will be lost if you navigate away. Would you like to continue editing?"
+msgstr "Alterasaun sedauk salva, ita boot sedauk salva ba mudansa nebe halo iha pajina ne no sei lakon kuandu ita taka. ita boot sei hakarak kontinua atu edita? "
+
+msgid "Discard"
+msgstr "Soe tiha"
+
+msgid "Continue Editing"
+msgstr "Kontinua Edita"
+
+msgid "Error"
+msgstr "Erru"
+
+msgid "Success"
+msgstr "Susesu"
+
+msgid "You have successfully saved"
+msgstr "ita boot salva ho susesu"
+
+msgid "Something went wrong"
+msgstr "Buat ruma sala"
+
+msgid "Edit Project"
+msgstr "Edita Projetu "
+
+msgid "Create Project"
+msgstr "Kria Projetu "
+
+msgid "Project Details"
+msgstr "Detallu Projetu"
+
+msgid "Financials"
+msgstr "Finanseiru"
+
+msgid "Construction Schedule"
+msgstr "Kalendariu Konstrusaun "
+
+msgid "Estimated Schedule"
+msgstr "Estimasaun Kalendariu"
+
+msgid "Estimated Construction Milestones"
+msgstr "Estimasaun  Akontesimentu Importante Konstrusaun"
+
+msgid "Start Date"
+msgstr "Data Komesa"
+
+msgid "Asset Details"
+msgstr "Detallu Sasan/Aset"
+
+msgid "Couldn't find the asset you are looking for?"
+msgstr "La konsegue hetan sasan ita buka?"
+
+msgid "Add information for the new asset"
+msgstr "Aumenta informasaun kona-ba sasan foun"
+
+#, fuzzy
+#| msgid "Asset Details"
+msgid "Asset ID already exists"
+msgstr "Kódigu sasan ne'e eziste ona"
+
+msgid "Chainage Start"
+msgstr "Chainage komesa"
+
+msgid "Chainage End"
+msgstr "Chainage remata"
+
+msgid "Associated Contracts"
+msgstr "Kahur kontratu"
+
+msgid "Funding"
+msgstr "Fundus"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Approved Value"
+msgstr "Valor Aprova"
+
+msgid "Project Manager"
+msgstr "Jerente Projetu"
+
+msgid "Create New Project"
+msgstr "Kria Projetu Foun"
+
+msgid "List of projects"
+msgstr "Lista Projetu "
+
+msgid "Program"
+msgstr "Programa"
+
+msgid "Estimated Budget"
+msgstr "Estimasaun Orsamentu"
+
+msgid "No projects were created yet"
+msgstr "Projetu sedauk kria"
+
+msgid "Delete Project"
+msgstr "Apaga Projetu "
+
+msgid "Are you sure you want to delete this project?"
+msgstr "Ita hakarak apaga projetu ne?"
+
+msgid "Edit Tender"
+msgstr "Edita Konkursu"
+
+msgid "Create Tender"
+msgstr "Kria Konkursu"
+
+msgid "Tender Details"
+msgstr "Detallu Konkursu"
+
+msgid "Bids and Evaluation"
+msgstr "Lisita no Avaliasaun"
+
+msgid "Tender"
+msgstr "Konkursu"
+
+msgid "Associated Projects"
+msgstr "Projetu Asosiadu"
+
+msgid "Numbering of Companies Tendering"
+msgstr "Numeru Kompania Nebe Tuir Konkursu"
+
+msgid "Tender Manager"
+msgstr "Jerente Konkursu"
+
+msgid "Create New Tender"
+msgstr "Kria Konkursu Foun"
+
+msgid "List of tenders"
+msgstr "Lista Konkursu"
+
+msgid "Project(s) name"
+msgstr "Naran Projetu"
+
+msgid "Welcome to the Tender Manager"
+msgstr "Bemvindu ba Jerente Konkursu"
+
+msgid "No tenders were created yet"
+msgstr "Konkursu sedauk kria"
+
+msgid "Delete Tender"
+msgstr "Apaga Konkursu"
+
+msgid "Are you sure you want to delete this tender?"
+msgstr "Ita hakarak apaga konkursu ne"
+
+msgid "The shapefile components ( include at least .shp, .shx, .prj,  and .dbf )"
+msgstr ""
+
+msgid "include at least .shp, .shx, .prj, and .dbf )"
+msgstr ""
+
+msgid "Give the shapefile a meaningful name to help identify it"
+msgstr ""
+
+msgid "Describe the shapefiles contents, where it represents and what it contains"
+msgstr ""
+
+msgid " .shp file: the shape format; the feature geometry itself "
+msgstr ""
+
+msgid " .shx file: shape index format; a positional index of the feature geometry to allow seeking forwards and backwards quickly"
+msgstr ""
+
+msgid ".dbf file: attribute format; columnar attributes for each shape"
+msgstr ""
+
+msgid ".prj file: projection description and coordinate reference"
+msgstr ""
+
+msgid "Please enter a correct username and password. Note that both fields may be case-sensitive"
+msgstr "Favor hatama naran uzuáriu ho seña nebe los. Nota Katak linha rua ne talvez sensitivu"
+
+msgid "This password is too short. It must contain at least 8 characters"
+msgstr "Seña ne badak liu. Tenki inklui mazemeinus 8 karateristiku"
+
+msgid "Your old password was entered incorrectly. Please enter it again"
+msgstr "Ita nia seña tuan hatama lalos. Favor hatama fali"
+
+msgid "The two password fields didn't match"
+msgstr "Lina rua ba seña nian ne hatama la hanesan"
+
+msgid "This password is entirely numeric"
+msgstr "Seña ida ne numeru hotu "
+
+msgid "This password is too common"
+msgstr "Seña ida ne komun liu "
+
+msgid "Username"
+msgstr "Naran Uzuáriu "
+
+msgid "Password"
+msgstr "Seña"
+
+msgid "Forgot your password?"
+msgstr "Haluha ita nia seña?"
+
+msgid "Log in"
+msgstr "Tama/log In"
+
+msgid "This road asset and project management system (Estrada), has been designed and developed by Catalpa International with funding from the Australian Government’s Departmentof Foreign Affairs and Trade (DFAT) and technical assistance from the International Labour Organization (ILO)"
+msgstr "Sistema sasan/aset estrada no jestaun projetu ida ne'e (Estrada), dezeñu no  dezenvolve husi Catalpa International ho fundus husi Governu Australia nia Departmentu Negosiu Estranjeiru no Komérsiu (DFAT) no hetan asistensia tekniku husi Organização Internacional do Trabalho (ILO)."
+
+msgid "Logged out"
+msgstr "Sai "
+
+msgid "Well done!"
+msgstr "Diak los!"
+
+msgid "Your password has been reset successfully"
+msgstr "Ita nia seña troka ona ho susesu"
+
+msgid "Continue"
+msgstr "Kontinua"
+
+msgid "Create a new password"
+msgstr "Kria seña foun"
+
+msgid "Your password can't be too similar to your other personal information"
+msgstr "Ita nia seña labele hanesan liu ho ita nia informasaun pesoal "
+
+msgid "Your password must contain at least 8 characters"
+msgstr "Ita nia seña mazemenus tenke inklui karateristiku 8"
+
+msgid "Your password can't be a commonly used password"
+msgstr "Ita labele uza seña nebe komun "
+
+msgid "Your password can't be entirely numeric"
+msgstr "Ita nia seña labele uza numeru hotu "
+
+msgid "Old password"
+msgstr "Seña tuan"
+
+msgid "New password"
+msgstr "Seña foun"
+
+msgid "New password confirmation"
+msgstr "Konfirmasaun seña foun "
+
+msgid "Save changes"
+msgstr "Salva mudansa"
+
+msgid "The link to reset your password is not valid anymore."
+msgstr "Linha atu hadia ita nia seña la validu ona."
+
+msgid "Go back to the login page"
+msgstr "Fila fali ba pagina tama nian"
+
+msgid "Reset your password"
+msgstr "Troka ita nia seña"
+
+msgid "We have sent a reset password link to your email. Please, click on the link to set your new password. Thanks."
+msgstr "Ami manda ona linha atu hadia seña ba ita nia email. Favor hanehan iha linha ne atu troka ita nia seña. Obrigado.  "
+
+msgid "Hello there"
+msgstr "Hello"
+
+msgid "We received a request to change your Estrada password. Click the button below to create a new password"
+msgstr "Ami simu pedidu atu troka ita nia seña Estrada. Hanehan iha butaun kraik atu kria seña foun. "
+
+msgid "Reset my password"
+msgstr "Hadia hau nia seña "
+
+msgid "If you didn't mean to reset your password, then you can just ignore this email. Your password will not change"
+msgstr "Se ita la planu atu hadia ita nia seña , entaun ita bele ignora email ida ne. Ita nia seña sei la troka"
+
+msgid "Don’t worry. Resetting your password is easy, just tell us the email address you registered with Estrada."
+msgstr "Lalika tauk. Atu troka ita nia seña fasil. Dehan mai ami email ida nebe ita uza hodi halo rejistrasaun ho Estrada"
+
+msgid "Email address"
+msgstr "Email"
+
+msgid "Send"
+msgstr "Haruka"
+
+#~ msgid "Could not create a new Asset, because the asset_municipality in the 'special' Asset Id is not valid."
+#~ msgstr "Labele kria Sasan/Aset foun, tamba munisipiu_sasan/aset iha \"espesial\" Id Sasan/Aset la validu"

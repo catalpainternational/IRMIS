@@ -1,0 +1,379 @@
+{% extends "contracts/contract_base.html" %}
+{% load i18n %}
+
+{% block contract_content %}
+<nav>
+    <a class="selected">
+        <h6>{% trans "Contract Details" %}</h6>
+    </a>
+    {% if not contract.id %}
+    <a class="disabled">
+        <h6>{% trans "Inspections" %}</h6>
+    </a>
+    <a class="disabled">
+        <h6>{% trans "Payments" %}</h6>
+    </a>
+    <a class="disabled">
+        <h6>{% trans "Social Safeguard" %}</h6>
+    </a>
+    <a class="disabled">
+        <h6>{% trans "Documents" %}</h6>
+    </a>
+    {% else %}
+    <a data-next="{% url 'contract-contractinspection-list' contract.id %}">
+        <h6>{% trans "Inspections" %}</h6>
+    </a>
+    <a data-next="{% url 'contract-contractpayment-list' contract.id %}">
+        <h6>{% trans "Payments" %}</h6>
+    </a>
+    <a data-next="{% url 'contract-socialsafeguarddata-list' contract.id %}">
+        <h6>{% trans "Social Safeguard" %}</h6>
+    </a>
+    <a href="{% url 'contract-contractdocument-list' contract.id %}">
+        <h6>{% trans "Documents" %}</h6>
+    </a>
+    {% endif %}
+</nav>
+
+<div class="content">
+    <form id="contract-details-form" method="post" action="{{ request.get_full_path }}">
+        {% csrf_token %}
+        <section>
+            <h6>{% trans "Contract Details" %}</h6>
+            <div class="form-group">
+                {{ form.status.label_tag }}
+                <span class="required">*</span>
+                <small class="form-text text-muted">{{ form.status.help_text }}</small>
+                {{ form.status }}
+                {% if form.status.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.status.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.tender.label_tag }}
+                <span class="required">*</span>
+                <small class="form-text text-muted">{{ form.tender.help_text }}</small>
+                {{ form.tender }}
+                {% if form.tender.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.tender.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.contract_code.label_tag }}
+                <span class="required">*</span>
+                <small class="form-text text-muted">{{ form.contract_code.help_text }}</small>
+                {{ form.contract_code }}
+                {% if form.contract_code.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.contract_code.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.description.label_tag }}
+                <small class="form-text text-muted">{{ form.description.help_text }}</small>
+                {{ form.description }}
+                {% if form.description.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.description.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.contractor.label_tag }}
+                <span class="required">*</span>
+                <small class="form-text text-muted">{{ form.contractor.help_text }}</small>
+                {{ form.contractor }}
+                {% if form.contractor.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.contractor.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.subcontractor.label_tag }}
+                <small class="form-text text-muted">{{ form.subcontractor.help_text }}</small>
+                {{ form.subcontractor }}
+                {% if form.subcontractor.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.subcontractor.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </section>
+        <section class="no-max-width">
+            <h6>{% trans "Supervisor" %}</h6>
+            <div class="flex-column form-row formset">
+                {{ supervisor.management_form }}
+                {% for form in supervisor %}
+                <div class="col d-flex flex-wrap">
+                    {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                    {% endfor %}
+                    {% for field in form.visible_fields %}
+                    <div class="form-group">
+                        {{ field.label_tag }}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                        {{ field }}
+                        {% if field.errors %}
+                        <div class="invalid-tooltip">
+                            {% for error in field.errors %}
+                            <ul>
+                                <li>{{ error }}</li>
+                            </ul>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        <section>
+            <h6>{% trans "Contract Value Total" %}</h6>
+            <div class="flex-column form-row formset">
+                {{ budget.management_form }}
+                {% for form in budget %}
+                <div class="col d-flex flex-wrap">
+                    {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                    {% endfor %}
+                    {% for field in form.visible_fields %}
+                    <div class="form-group">
+                        {{ field.label_tag }}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                        {{ field }}
+                        {% if field.errors %}
+                        <div class="invalid-tooltip">
+                            {% for error in field.errors %}
+                            <ul>
+                                <li>{{ error }}</li>
+                            </ul>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        <section class="no-max-width">
+            <h6>{% trans "Schedule" %}</h6>
+            <div class="flex-column form-row">
+                <div class="col d-flex flex-wrap">
+                    <div class="form-group">
+                        {{ form.start_date.label_tag }}
+                        <span class="required">*</span>
+                        <small class="form-text text-muted">{{ form.start_date.help_text }}</small>
+                        {{ form.start_date }}
+                        {% if form.start_date.errors %}
+                        <div class="invalid-tooltip">
+                            {% for error in form.start_date.errors %}
+                            <ul>
+                                <li>{{ error }}</li>
+                            </ul>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.end_date.label_tag }}
+                        <span class="required">*</span>
+                        <small class="form-text text-muted">{{ form.end_date.help_text }}</small>
+                        {{ form.end_date }}
+                        {% if form.end_date.errors %}
+                        <div class="invalid-tooltip">
+                            {% for error in form.end_date.errors %}
+                            <ul>
+                                <li>{{ error }}</li>
+                            </ul>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.duration.label_tag }}
+                        <span class="required">*</span>
+                        <small class="form-text text-muted">{{ form.duration.help_text }}</small>
+                        <input id="id_duration" class="form-control form-control-sm" type="number" name="duration" value="{{ form.duration.value|default_if_none:0 }}"  placeholder="365" min="0" required readonly>
+                        {% if form.duration.errors %}
+                        <div class="invalid-tooltip">
+                            {% for error in form.duration.errors %}
+                            <ul>
+                                <li>{{ error }}</li>
+                            </ul>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form.defect_liability_days.label_tag }}
+                <small class="form-text text-muted">{{ form.defect_liability_days.help_text }}</small>
+                {{ form.defect_liability_days }}
+                {% if form.defect_liability_days.errors %}
+                <div class="invalid-tooltip">
+                    {% for error in form.defect_liability_days.errors %}
+                    <ul>
+                        <li>{{ error }}</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </section>
+        <section>
+            <h6>{% trans "Milestones" %}</h6>
+            <div class="flex-column form-row formset">
+                {{ milestone.management_form }}
+                {% for form in milestone %}
+                <div class="col d-flex flex-wrap">
+                    {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                    {% endfor %}
+                    {% for field in form.visible_fields %}
+                    <div class="form-group">
+                        {{ field.label_tag }}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                        {{ field }}
+                        {% if field.errors %}
+                        <div class="invalid-tooltip">
+                            {% for error in field.errors %}
+                            <ul>
+                                <li>{{ error }}</li>
+                            </ul>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+        </section class="no-max-width">
+        <section>
+            <h6>{% trans "Amendments" %}</h6>
+            <div class="flex-column form-row formset">
+                {{ amendment.management_form }}
+                {% for form in amendment %}
+                <div class="col d-flex flex-wrap">
+                    {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                    {% endfor %}
+                    {% for field in form.visible_fields %}
+                    <div class="form-group">
+                        {{ field.label_tag }}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                        {{ field }}
+                        {% if field.errors %}
+                        <div class="invalid-tooltip">
+                            {% for error in field.errors %}
+                            <ul>
+                                <li>{{ error }}</li>
+                            </ul>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="flex-column form-row">
+                <div class="col d-flex flex-wrap">
+                    <div class="form-group">
+                        {{ form.amendment_start_date.label_tag }}
+                        <small class="form-text text-muted">{{ form.amendment_start_date.help_text }}</small>
+                        {{ form.amendment_start_date }}
+                        {% if form.amendment_start_date.errors %}
+                        <div class="invalid-tooltip">
+                            {% for error in form.amendment_start_date.errors %}
+                            <ul>
+                                <li>{{ error }}</li>
+                            </ul>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.amendment_duration.label_tag }}
+                        <small class="form-text text-muted">{{ form.amendment_duration.help_text }}</small>
+                        {{ form.amendment_duration }}
+                        {% if form.amendment_duration.errors %}
+                        <div class="invalid-tooltip">
+                            {% for error in form.amendment_duration.errors %}
+                            <ul>
+                                <li>{{ error }}</li>
+                            </ul>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="flex-column form-row">
+                <div class="col d-flex flex-wrap">
+                    <div class="form-group">
+                        {{ form.amendment_description.label_tag }}
+                        <small class="form-text text-muted">{{ form.amendment_description.help_text }}</small>
+                        {{ form.amendment_description }}
+                        {% if form.amendment_description.errors %}
+                        <div class="invalid-tooltip">
+                            {% for error in form.amendment_description.errors %}
+                            <ul>
+                                <li>{{ error }}</li>
+                            </ul>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="d-flex justify-content-end">
+            <span>[</span><span class="required">*</span><span>]: Mandatory</span>
+        </div>
+
+        <div class="align-items-center buttons d-flex justify-content-end">
+            <a class="discard-link" data-back="{% url 'contract-contract-list' %}">{% trans "Cancel" %}</a>
+            {% if contract.id is not None %}
+            <button class="btn btn-primary" type="submit" form="contract-details-form">{% trans "Save" %}</button>
+            {% else %}
+            <button class="btn btn-primary" type="submit" form="contract-details-form">{% trans "Create" %}</button>
+            {% endif %}
+        </div>
+    </form>
+</div>
+{% endblock %}

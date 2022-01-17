@@ -1,0 +1,77 @@
+{% extends "contracts/contracts.html" %}
+{% load i18n %}
+
+{% block contracts_profile %}
+<header class="d-flex justify-content-between">
+    <div class="align-items-center d-flex">
+        <a class="caret-dark left image" href="{% url 'contract-contract-list' %}"></a>
+        <h1>{% trans "Contract" %} — {{ contract.contract_code }}</h1>
+    </div>
+    <button class="btn btn-secondary btn-sm print-profile">{% trans "Print" %}</button>
+</header>
+
+<nav>
+    <a href="{% url 'contract-contract-detail' contract.id %}">
+        <h6>{% trans "Contract Details" %}</h6>
+    </a>
+    <a class="selected">
+        <h6>{% trans "Inspections" %}</h6>
+    </a>
+    <a href="{% url 'contract-contractpayment-detail' contract.id %}">
+        <h6>{% trans "Payments" %}</h6>
+    </a>
+    <a href="{% url 'contract-socialsafeguarddata-detail' contract.id %}">
+        <h6>{% trans "Social Safeguard" %}</h6>
+    </a>
+    <a href="{% url 'contract-contractdocument-detail' contract.id %}">
+        <h6>{% trans "Documents" %}</h6>
+    </a>
+</nav>
+
+<div class="content">
+    <div class="title-header">
+        <h5 class="title">{% trans "List of inspections" %}</h5>
+    </div>
+    <table id="contract-inspection-view-list-table" class="contracts-profile-table d-block table table-hover">
+        <thead>
+            <tr>
+                <th>{% trans "Inspection Date" %}</th>
+                <th>{% trans "Inspection Entity" %}</th>
+                <th>{% trans "Physical Progress" %}</th>
+                <th>{% trans "Defect Liability Period" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for inspection in inspections %}
+            <tr>
+                <td>{{ inspection.date|date:"Y-m-d" }}</td>
+                <td>{{ inspection.entity }}</td>
+                <td class="text-right to-format">{{ inspection.progress }} %</td>
+                <td>{{ inspection.get_defect_liability_period_display }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <table id="contract-inspection-print-list-table" class="contracts-profile-table d-block table table-hover">
+        <thead>
+            <tr>
+                <th>{% trans "Inspection Date" %}</th>
+                <th>{% trans "Inspection Entity" %}</th>
+                <th>{% trans "Physical Progress" %}</th>
+                <th>{% trans "Defect Liability Period" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for inspection in inspections %}
+            <tr>
+                <td>{{ inspection.date|date:"Y-m-d" }}</td>
+                <td>{{ inspection.entity }}</td>
+                <td class="text-right to-format">{{ inspection.progress }}</td>
+                <td>{{ inspection.get_defect_liability_period_display }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

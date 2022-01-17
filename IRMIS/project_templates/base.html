@@ -1,0 +1,96 @@
+{% load static i18n google_analytics %}
+
+<!DOCTYPE html>
+<html class="h-100 no-js" lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>
+            {% block title %}
+                {% if site_name %}{{ site_name }}{% endif %}
+            {% endblock %}
+            {% block title_suffix %}
+            {% endblock %}
+        </title>
+
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
+        <link rel="manifest" href="{% static 'site.webmanifest' %}">
+        <link rel="mask-icon" href="{% static 'safari-pinned-tab.svg' %}" color="#5bbad5">
+        <meta name="msapplication-TileColor" content="#ffffff">
+        <meta name="theme-color" content="#ffffff">
+
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        {# Global stylesheets #}
+        <link rel="stylesheet" type="text/css" href="{% static 'vendor.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'estrada.css' %}">
+
+        {% block extra_css %}
+            {# Override this in templates to add extra stylesheets #}
+        {% endblock %}
+        <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
+    </head>
+
+    <body class="h-100 {% block body_class %}{% endblock %}">
+
+        {% block base_content %}{% endblock %}
+
+        {# Global javascript #}
+        <script>
+            {% if perms.assets.change_road %}
+            window.canEdit = true;
+            {% endif %}
+
+            {% if perms.assets.change_plan %}
+            window.canEditPlans = true;
+            {% endif %}
+
+            {% if perms.contracts.view_contract_reports %}
+            window.canViewContractReports = true;
+            {% endif %}
+
+            {% if perms.contracts.change_project or perms.contracts.delete_project %}
+            window.canChangeProjects = true;
+            {% endif %}
+
+            {% if perms.contracts.change_tender or perms.contracts.delete_tender %}
+            window.canChangeTenders = true;
+            {% endif %}
+
+            {% if perms.contracts.change_contract or perms.contracts.delete_contract %}
+            window.canChangeContracts = true;
+            {% endif %}
+
+            {% if perms.contracts.change_company or perms.contracts.delete_company %}
+            window.canChangeCompanies = true;
+            {% endif %}
+
+            {% if user.get_full_name %}
+            window.user = '{{ user.get_full_name }}';
+            {% else %}
+            window.user = '{{ user.username }}';
+            {% endif %}
+
+            window.pk = '{{ user.pk }}';
+
+            {% get_current_language as LANGUAGE_CODE %}
+            {% get_available_languages as LANGUAGES %}
+            {% get_language_info_list for LANGUAGES as languages %}
+            window.language_code = '{{ LANGUAGE_CODE }}';
+            window.language_url = '{% url "set_language" %}';
+
+            window.password_change_url = '{% url "password_change" %}';
+            window.logout_url = '{% url "logout" %}';
+        </script>
+
+        {{ languages|json_script:"languages" }}
+
+        {% block extra_js %}
+            {# Override this in templates to add extra javascript #}
+        {% endblock %}
+
+        {% google_analyics_global_site_tag %}
+    </body>
+</html>

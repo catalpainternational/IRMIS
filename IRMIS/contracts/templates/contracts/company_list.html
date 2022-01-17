@@ -1,0 +1,85 @@
+{% extends "contracts/contracts.html" %}
+{% load i18n %}
+
+{% block contracts_profile %}
+<header class="align-items-center d-flex justify-content-between no-back-button">
+    <h1>{% trans "Company Manager" %}</h1>
+    {% if perms.contracts.add_company %}
+    <a class="btn btn-primary" href="{% url 'contract-company-create' %}">{% trans "Create New Company" %}</a>
+    {% endif %}
+</header>
+
+<div class="content">
+    <div class="title-header">
+        <h5 class="title">{% trans "List of companies" %}</h5>
+    </div>
+
+    {% if company_list.exists %}
+    <div class="d-flex justify-content-end">
+        <button id="export-csv" class="btn btn-secondary btn-sm">{% trans "Export table" %}</button>
+    </div>
+    <table id="company-list-table" class="contracts-profile-table d-block table table-hover w-100">
+        <thead>
+            <tr>
+                {% if perms.contracts.change_company or perms.contracts.delete_company %}
+                <th>{% trans "Edit" %}</th>
+                {% endif %}
+                <th>{% trans "Name" %}</th>
+                <th>{% trans "Total Contracts" %}</th>
+                <th>{% trans "Active Contracts" %}</th>
+                <th>TIN</th> <!-- hidden column -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for company in company_list %}
+            <tr>
+                {% if perms.contracts.change_company or perms.contracts.delete_company %}
+                <td class="text-center">
+                    {% if perms.contracts.change_company and not perms.contracts.delete_company %}
+                    <a class="image pencil" href="{% url 'contract-company-update' company.id %}"></a>
+                    {% elif not perms.contracts.change_company and perms.contracts.delete_company %}
+                    <a class="image delete" href=""></a>
+                    {% else %}
+                    <a class="image pencil" href="{% url 'contract-company-update' company.id %}"></a>
+                    <span></span>
+                    <a class="image delete delete-link" data-delete="/contracts/api/company/{{ company.id }}/"></a>
+                    {% endif %}
+                </td>
+                {% endif %}
+                <td><a href="{% url 'contract-company-detail' company.id %}">{{ company.name }}</a></td>
+                <td class="text-right to-format">{{ company.total_contracts }}</td>
+                <td class="text-right to-format">{{ company.total_contracts_amount|default_if_none:"0" }}</td>
+                <td>{{ company.TIN }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="align-items-center d-flex flex-column justify-content-center no-data-wrapper">
+        <span class="no-data image"></span>
+        <h6 class="text-center">{% trans "Welcome to the Company Manager" %}</h6>
+        <p class="text-center">{% trans "No companies were created yet" %}</p>
+    </div>
+    {% endif %}
+</div>
+
+<div class="action-modal delete-modal modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="d-flex justify-content-center modal-header">
+                <span class="alert stop image"></span>
+                <span class="close image" data-dismiss="modal" aria-label="{% trans 'Close' %}"
+                    aria-hidden="true"></span>
+            </div>
+            <div class="modal-body text-center">
+                <h6>{% trans "Delete Company" %}</h6>
+                <p>{% trans "Are you sure you want to delete this company?" %}</p>
+            </div>
+            <div class="d-flex justify-content-center modal-footer">
+                <button type="button" class="btn btn-danger delete-item">{% trans "Delete" %}</button>
+                <button type="button" class="btn btn-light" data-dismiss="modal">{% trans "Don't delete" %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

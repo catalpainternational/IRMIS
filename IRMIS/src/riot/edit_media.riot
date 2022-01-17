@@ -1,0 +1,98 @@
+<edit_media>
+    <h5>{ window.gettext("Upload Photos and Videos") }</h5>
+    <section>
+        <label>{ window.gettext("Photo/Video 1") }</label>
+        <upload_media mediaid="{ mediaId1 }" media="{ state.media1 }" fklink="{ state.fkLink }" showfeedback="{ props.showfeedback }"></upload_media>
+        <label>{ window.gettext("Photo/Video 2") }</label>
+        <upload_media mediaid="{ mediaId2 }" media="{ state.media2 }" fklink="{ state.fkLink }" showfeedback="{ props.showfeedback }"></upload_media>
+        <label>{ window.gettext("Photo/Video 3") }</label>
+        <upload_media mediaid="{ mediaId3 }" media="{ state.media3 }" fklink="{ state.fkLink }" showfeedback="{ props.showfeedback }"></upload_media>
+    </section>
+    <div class="button-wrapper d-flex justify-content-end">
+        <button class="btn btn-primary" onclick="{ save }" disabled="{ props.saving }">
+            { window.gettext ("Save and continue") }
+        </button>
+    </div>
+
+    <script>
+        import Upload_Media from "./upload_media.riot";
+        import {makeEstradaMedia} from "../assets/models/media";
+
+        export default {
+            components: {
+                Upload_Media
+            },
+            state: {
+                media: [],
+                fkLink: undefined,
+            },
+            onBeforeMount(props, state) {
+                if (props.structure) {
+                    state.structure = props.structure;
+                    state.media = props.structure.inventoryMedia.map(makeEstradaMedia);
+                    state.fkLink = props.structure.id;
+                } else if (props.asset) {
+                    state.asset = props.asset;
+                    state.media = props.asset.inventoryMedia.map(makeEstradaMedia);
+                    state.fkLink = "ROAD-" + props.asset.id;
+                }
+                state.media1 = state.media[0] ? state.media[0] : undefined;
+                state.media2 = state.media[1] ? state.media[1] : undefined;
+                state.media3 = state.media[2] ? state.media[2] : undefined;
+            },
+            onMounted(props, state) {
+                this.mediaNeedsLinkingListener = (data) => {
+                    const newMedia = data.detail.media;
+                    this.state.media = this.state.media.filter(p => {
+                        if (p.getId() != newMedia.getId()) {return p;};
+                    }).concat(newMedia);
+                    if (this.state.structure) {
+                        this.state.structure.setInventoryMediaList(this.state.media);
+                        document.dispatchEvent(new CustomEvent("estrada.structure.assetMetaDataUpdated", {detail: {asset: this.state.structure}}));
+                    } else if (this.state.asset) {
+                        this.state.asset.setInventoryMediaList(this.state.media);
+                        document.dispatchEvent(new CustomEvent("estrada.road.assetMetaDataUpdated", {detail: {asset: this.state.asset}}));
+                    }
+                }
+                document.addEventListener(`${this.mediaId1}.mediaNeedsLinking`, this.mediaNeedsLinkingListener);
+                document.addEventListener(`${this.mediaId2}.mediaNeedsLinking`, this.mediaNeedsLinkingListener);
+                document.addEventListener(`${this.mediaId3}.mediaNeedsLinking`, this.mediaNeedsLinkingListener);
+
+                this.mediaNeedsRemovalListener = (data) => {
+                    const oldMedia = data.detail.media;
+                    this.state.media = this.state.media.filter(p => {
+                        if (p.getId() != oldMedia.getId()) {return p};
+                    });
+                    if (this.state.structure) {
+                        this.state.structure.setInventoryMediaList(this.state.media);
+                        document.dispatchEvent(new CustomEvent("estrada.structure.assetMetaDataUpdated", {detail: {asset: this.state.structure}}));
+                    } else if (this.state.asset) {
+                        this.state.asset.setInventoryMediaList(this.state.media);
+                        document.dispatchEvent(new CustomEvent("estrada.road.assetMetaDataUpdated", {detail: {asset: this.state.asset}}));
+                    }
+                }
+                document.addEventListener(`${this.mediaId1}.mediaNeedsRemoval`, this.mediaNeedsRemovalListener);
+                document.addEventListener(`${this.mediaId2}.mediaNeedsRemoval`, this.mediaNeedsRemovalListener);
+                document.addEventListener(`${this.mediaId3}.mediaNeedsRemoval`, this.mediaNeedsRemovalListener);
+            },
+            onUnmount(props, state) {
+                document.removeEventListener(`${this.mediaId1}.mediaNeedsLinking`, this.mediaNeedsLinkingListener);
+                document.removeEventListener(`${this.mediaId2}.mediaNeedsLinking`, this.mediaNeedsLinkingListener);
+                document.removeEventListener(`${this.mediaId3}.mediaNeedsLinking`, this.mediaNeedsLinkingListener);
+                document.removeEventListener(`${this.mediaId1}.mediaNeedsRemoval`, this.mediaNeedsRemovalListener);
+                document.removeEventListener(`${this.mediaId2}.mediaNeedsRemoval`, this.mediaNeedsRemovalListener);
+                document.removeEventListener(`${this.mediaId3}.mediaNeedsRemoval`, this.mediaNeedsRemovalListener);
+            },
+            save(e) {
+                if (this.state.structure) {
+                    this.props.parent.saveStructure();
+                } else if (this.state.asset) {
+                    this.props.parent.save();
+                }
+            },
+            mediaId1: "inventoryMedia1",
+            mediaId2: "inventoryMedia2",
+            mediaId3: "inventoryMedia3",
+        }
+    </script>
+</edit_media>
